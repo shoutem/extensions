@@ -1,0 +1,67 @@
+import React, {
+  Component,
+} from 'react';
+import moment from 'moment';
+
+import {
+  ScrollView,
+  Title,
+	Video,
+  Screen,
+  Caption,
+  Tile,
+  View,
+} from '@shoutem/ui';
+import {
+  RichMedia,
+} from '@shoutem/ui-addons';
+import { connectStyle } from '@shoutem/theme';
+import { NavigationBar } from '@shoutem/ui/navigation';
+
+import { getAttachments } from 'shoutem.rss';
+
+import { ext } from '../const';
+
+
+export class VideoDetails extends Component {
+  static propTypes = {
+    // The video article to display
+    video: React.PropTypes.object.isRequired,
+  };
+
+  render() {
+    const { video } = this.props;
+
+    const videoAttachment = video.videoAttachments.length > 0 ? video.videoAttachments[0] : null;
+
+    const videoComponent =
+      videoAttachment ? <Video source={{ uri: videoAttachment.src }} /> : null;
+
+    return (
+      <Screen styleName="paper">
+        <NavigationBar
+          share={{
+            title: video.title,
+            text: video.summary,
+            link: videoAttachment ? videoAttachment.src : '',
+          }}
+        />
+
+        <ScrollView>
+          {videoComponent}
+
+          <Tile styleName="text-centric">
+            <Title styleName="md-gutter-bottom">{video.title}</Title>
+            <Caption>{moment(video.timeCreated).fromNow()}</Caption>
+          </Tile>
+
+          <View styleName="solid">
+            <RichMedia body={video.body} attachments={getAttachments(video)} />
+          </View>
+        </ScrollView>
+      </Screen>
+    );
+  }
+}
+
+export default connectStyle(ext('VideoDetails'))(VideoDetails);

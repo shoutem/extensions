@@ -1,0 +1,73 @@
+{
+  "title": "About",
+  "properties": {
+    "name": {
+      "format": "single-line",
+      "title": "Name",
+      "type": "string"
+    },
+    "info": {
+      "format": "html",
+      "title": "Information",
+      "type": "string"
+    },
+    "address": {
+      "format": "single-line",
+      "title": "Address",
+      "type": "string"
+    },
+    "latitude": {
+      "format": "single-line",
+      "title": "Latitude",
+      "type": "string"
+    },
+    "longitude": {
+      "format": "single-line",
+      "title": "Longitude",
+      "type": "string"
+    },
+    "hours": {
+      "format": "html",
+      "title": "Opening hours",
+      "type": "string"
+    },
+    "web": {
+      "format": "uri",
+      "title": "Website",
+      "type": "string"
+    },
+    "phone": {
+      "format": "single-line",
+      "title": "Phone",
+      "type": "string"
+    },
+    "twitter": {
+      "format": "single-line",
+      "title": "Twitter",
+      "type": "string"
+    },
+    "mail": {
+      "format": "single-line",
+      "title": "E-mail",
+      "type": "string"
+    },
+    "linkedin": {
+      "format": "single-line",
+      "title": "Linkedin",
+      "type": "string"
+    },
+    "facebook": {
+      "format": "single-line",
+      "title": "Facebook",
+      "type": "string"
+    },
+    "image": {
+      "format": "attachment",
+      "title": "Image",
+      "type": "object",
+      "referencedSchema": "shoutem.core.image-attachments"
+    }
+  },
+  "titleProperty": "name",
+  "type": "object"
+}

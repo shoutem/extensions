@@ -1,0 +1,24 @@
+{
+  "name": "cms",
+  "version": "0.10.2",
+  "type": "system",
+  "title": "CMS",
+  "description": "Shoutem CMS extension",
+  "categories": ["content"],
+  "settingsPages": [{
+    "page": "@.CmsSettingsPage",
+    "title": "Settings"
+  }],
+  "pages": [{
+    "name": "CmsPage",
+    "type": "component",
+    "path": "dummy.js"
+  }, {
+    "name": "CmsSettingsPage",
+    "type": "component",
+    "path": "dummy.js"
+  }],
+  "settings": {
+    "apiEndpoint": "http://api.beta.shoutem.com"
+  }
+}

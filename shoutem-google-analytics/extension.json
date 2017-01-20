@@ -1,0 +1,20 @@
+{
+  "name": "google-analytics",
+  "version": "0.1.2",
+  "type": "system",
+  "title": "Google Analytics",
+  "description": "Google analytics service",
+  "categories": ["analytics"],
+  "settingsPages": [{
+    "page": "@.TrackersPage",
+    "title": "Trackers"
+  }],
+  "settings": {
+    "trackers": []
+  },
+  "pages": [{
+    "name": "TrackersPage",
+    "type": "component",
+    "path": "dummy.js"
+  }]
+}

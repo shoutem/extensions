@@ -1,0 +1,52 @@
+{
+  "name": "menu",
+  "title": "Menu",
+  "version": "0.10.3",
+  "icon": "./server/assets/images/add-menu-items-image.png",
+  "description": "Browse through the list of restaurant menu items and explore details such as description, price, photos...",
+  "categories": [],
+  "shortcuts": [
+    {
+      "title": "Menu",
+      "description": "List of menu items with description",
+      "name": "openMenuListScreen",
+      "icon":"theme://restaurant_menu.png",
+      "screen": "@.MenuListScreen",
+      "adminPages": [
+        {
+          "page": "shoutem.cms.CmsPage",
+          "title": "Content",
+          "parameters": {
+            "schema": "@.Menu"
+          }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        }
+      ]
+    }
+  ],
+  "screens": [
+    {
+      "name": "MenuListScreen",
+      "title": "List",
+      "image": "./server/assets/images/screens/large-photo-list.png"
+    },
+    {
+      "name": "MenuSmallListScreen",
+      "title": "Small list",
+      "image": "./server/assets/images/screens/small-photo-list.png",
+      "extends": "@.MenuListScreen"
+    },
+    {
+      "name": "MenuDetailsScreen"
+    }
+  ],
+  "dataSchemas": [
+    {
+      "name": "Menu",
+      "path": "./server/data-schemas/Menu.json"
+    }
+  ]
+}

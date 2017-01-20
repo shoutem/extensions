@@ -1,0 +1,38 @@
+.trackers {
+  text-align: center;
+}
+
+.trackers__header {
+  h3 {
+    float: left;
+    margin-bottom: 24px;
+  }
+
+  .btn {
+    padding-top: 48px;
+    text-transform: capitalize;
+  }
+}
+
+.trackers__table {
+  margin-top: 24px;
+
+  &.table > thead > tr {
+    > :last-child,
+    > :nth-child(3) {
+      width: 17%;
+    }
+  }
+
+  &.table > tbody > tr > td {
+    padding-right: 8px;
+
+    .btn-icon {
+      padding: 0 7px;
+
+      &:hover {
+        color: #888fa1;
+      }
+    }
+  }
+}

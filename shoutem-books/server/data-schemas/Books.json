@@ -1,0 +1,46 @@
+{
+  "title": "Books",
+  "properties": {
+    "title": {
+      "type": "string",
+      "format": "single-line",
+      "title": "Title",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 200
+    },
+    "author": {
+      "type": "string",
+      "format": "single-line",
+      "title": "Author"
+    },
+    "price": {
+      "type": "string",
+      "format": "single-line",
+      "title": "Price"
+    },
+    "description": {
+      "type": "string",
+      "format": "multi-line",
+      "title": "Description"
+    },
+    "image": {
+      "type": "object",
+      "format": "attachment",
+      "title": "Image",
+      "referencedSchema": "shoutem.core.image-attachments"
+    },
+    "buyLinkTitle": {
+      "type": "string",
+      "format": "single-line",
+      "title": "Buy link title"
+    },
+    "buyUrl": {
+      "type": "string",
+      "format": "uri",
+      "title": "Buy URL"
+    }
+  },
+  "titleProperty": "title",
+  "type": "object"
+}

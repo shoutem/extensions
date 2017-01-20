@@ -1,0 +1,66 @@
+{
+  "name": "books",
+  "version": "0.2.3",
+  "title": "Books",
+  "icon": "./server/assets/images/add-books-image.png",
+  "description": "Enable users to browse through lists of books, explore details and make a purchase",
+  "categories": ["content"],
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.cms"
+  ],
+  "shortcuts": [
+    {
+      "title": "Books",
+      "screen": "@.BooksListScreen",
+      "icon": "theme://books.png",
+      "name": "openBooksListScreen",
+      "adminPages": [
+        {
+          "page": "shoutem.cms.CmsPage",
+          "title": "Content",
+          "parameters": {
+            "schema": "@.Books"
+          }
+        },
+        {
+          "page":"shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        }
+      ]
+    },
+    {
+      "title": "My books",
+      "screen": "@.MyBooksScreen",
+      "name": "openMyBooksScreen",
+      "settings": {
+        "favoritesSchema": "@.Books"
+      }
+    }
+  ],
+  "screens": [
+    {
+      "name": "BooksListScreen",
+      "title": "List",
+      "image": "./server/assets/images/screens/large-photo-list.png"
+    },
+    {
+      "name": "BooksSmallListScreen",
+      "title": "Small List",
+      "extends": "@.BooksListScreen",
+      "image": "./server/assets/images/screens/small-photo-list.png"
+    },
+    {
+      "name": "BooksDetailsScreen"
+    },
+    {
+      "name": "MyBooksScreen"
+    }
+  ],
+  "dataSchemas": [
+    {
+      "name": "Books",
+      "path": "./server/data-schemas/Books.json"
+    }
+  ]
+}

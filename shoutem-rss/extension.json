@@ -1,0 +1,16 @@
+{
+  "name": "rss",
+  "version": "0.2.2",
+  "type": "system",
+  "title": "RSS",
+  "description": "Shoutem RSS extension",
+  "categories": [],
+  "pages": [{
+    "name": "RssPage",
+    "type": "component",
+    "path": "dummy.js"
+  }],
+  "settings": {
+    "baseApiEndpoint": "http://api.dev.sauros.hr"
+  }
+}

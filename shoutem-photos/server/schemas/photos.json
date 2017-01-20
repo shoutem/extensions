@@ -1,0 +1,25 @@
+{
+  "properties": {
+    "name": {
+      "format": "single-line",
+      "title": "Name",
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "format": "multi-line",
+      "title": "Description",
+      "type": "string"
+    },    
+    "image": {
+      "format": "attachment",
+      "title": "Image",
+      "type": "object",
+      "referencedSchema": "shoutem.core.image-attachments",
+      "required": true
+    }
+  },
+  "title": "Photos",
+  "titleProperty": "name",
+  "type": "object"
+}

@@ -1,0 +1,8 @@
+{
+  "name": "shoutem.auth",
+  "version": "0.4.2",
+  "description": "Authentication extension that uses the Shoutem authentication backend.",
+  "dependencies": {
+    "urijs": "^1.18.1"
+  }
+}

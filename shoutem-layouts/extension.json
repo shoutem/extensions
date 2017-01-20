@@ -1,0 +1,13 @@
+{
+  "name": "layouts",
+  "version": "0.1.2",
+  "type": "system",
+  "title": "Layouts",
+  "description": "Shoutem Layout extension",
+  "categories": [],
+  "pages": [{
+    "name": "LayoutPage",
+    "type": "component",
+    "path": "dummy.js"
+  }]
+}

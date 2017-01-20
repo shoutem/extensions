@@ -1,0 +1,59 @@
+{
+  "name": "places",
+  "properties": {
+    "name": {
+      "format": "single-line",
+      "title": "Place name",
+      "type": "string"
+    },
+    "address": {
+      "format": "single-line",
+      "title": "Address",
+      "type": "string"
+    },
+    "latitude":{
+      "format": "single-line",
+      "title": "latitude",
+      "type": "string"
+    },
+    "longitude":{
+      "format": "single-line",
+      "title": "longitude",
+      "type": "string"
+    },
+    "description": {
+      "format": "multi-line",
+      "title": "Description",
+      "type": "string"
+    },
+    "url": {
+      "format": "uri",
+      "title": "Website",
+      "type": "string"
+    },
+    "image": {
+      "format": "attachment",
+      "title": "Image",
+      "type": "object",
+      "referencedSchema": "shoutem.core.image-attachments"
+    },
+    "mail": {
+      "format": "single-line",
+      "title": "E-mail",
+      "type": "string"
+    },
+    "openingHours": {
+      "format": "multi-line",
+      "title": "Open Hours",
+      "type": "string"
+    },
+    "phone": {
+      "format": "single-line",
+      "title": "Phone",
+      "type": "string"
+    }
+  },
+  "title": "places",
+  "titleProperty": "name",
+  "type": "object"
+}

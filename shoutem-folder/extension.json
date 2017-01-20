@@ -1,0 +1,77 @@
+{
+  "name": "folder",
+  "version": "0.2.2",
+  "title": "Folder",
+  "description": "Group navigation items under folder. You can choose between Grid and List layouts.",
+  "categories": [],
+  "icon": "server/assets/add-folder-image.png",
+  "shortcuts": [{
+    "name": "icons",
+    "title": "Folder",
+    "screen": "@.IconGrid",
+    "icon":"theme://folder.png",
+    "type": "navigation",
+    "adminPages": [
+      {
+        "page": "shoutem.layouts.LayoutPage",
+        "title": "Layout"
+      }
+    ]
+  }],
+  "screens": [{
+    "name":"IconGrid",
+    "title": "Icon grid",
+    "image": "./server/assets/screens/icon.png",
+    "settingsPage": {
+      "page": "shoutem.navigation.IconGrid"
+    },
+    "settings": {
+      "iconHeight": 24,
+      "iconWidth": 24,
+      "scrolling": "paged",
+      "gridAlignment": "bottomCenter",
+      "cols": 3,
+      "rows": 3,
+      "parallaxEffect": "onDeviceOrientation",
+      "backgroundImage": "",
+      "backgroundWidth": 48,
+      "backgroundHeight": 48
+    }
+  },
+  {
+    "name":"List",
+    "title": "List",
+    "image": "./server/assets/screens/list.png",
+    "extends": "@.IconGrid",
+    "settingsPage": {
+      "page": "shoutem.navigation.List"
+    },
+    "settings": {
+      "backgroundImage": "",
+      "parallaxEffect": "onScroll",
+      "inItemAlignment": "center",
+      "listAlignment": "top",
+      "topOffset": 120,
+      "showText": true,
+      "showIcon": false,
+      "itemHeight": 48
+    }
+  },
+  {
+    "name":"CardList",
+    "title": "Card list",
+    "image": "./server/assets/screens/card-list.png",
+    "extends": "@.IconGrid",
+    "settingsPage": {
+      "page": "shoutem.navigation.CardList"
+    },
+    "settings": {
+      "backgroundImage": "",
+      "parallaxEffect": "onScroll",
+      "cardHeight": "medium",
+      "itemGutter": "medium",
+      "itemText": "topLeft",
+      "isFullWidth": true
+    }
+  }]
+}

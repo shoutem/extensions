@@ -1,0 +1,64 @@
+{
+  "title": "People",
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "format": "single-line",
+      "title": "First name",
+      "required": true
+    },
+    "lastName": {
+      "type": "string",
+      "format": "single-line",
+      "title": "Last name"
+    },
+    "title": {
+      "type": "string",
+      "format": "single-line",
+      "title": "Title"
+    },
+    "biography": {
+      "type": "string",
+      "format": "multi-line",
+      "title": "Biography"
+    },
+    "image": {
+      "type": "object",
+      "format": "attachment",
+      "title": "Image",
+      "referencedSchema": "shoutem.core.image-attachments"
+    },
+    "phone": {
+      "type": "string",
+      "format": "single-line",
+      "title": "Phone"
+    },
+    "email": {
+      "type": "string",
+      "format": "single-line",
+      "title": "Email"
+    },
+    "linkedinProfileUrl": {
+      "type": "string",
+      "format": "uri",
+      "title": "LinkedIn profile URL"
+    },
+    "facebookProfileUrl": {
+      "type": "string",
+      "format": "uri",
+      "title": "Facebook profile URL"
+    },
+    "twitterPageUrl": {
+      "type": "string",
+      "format": "uri",
+      "title": "Twitter page URL"
+    },
+    "websiteUrl": {
+      "type": "string",
+      "format": "uri",
+      "title": "Website URL"
+    }
+  },
+  "titleProperty": "firstName",
+  "type": "object"
+}

@@ -1,0 +1,8 @@
+{
+  "name": "favorites",
+  "version": "0.1.2",
+  "type": "system",
+  "title": "Favorites",
+  "description": "Shoutem favorites extension",
+  "categories": ["content", "users"]
+}

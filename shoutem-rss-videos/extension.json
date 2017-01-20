@@ -1,0 +1,47 @@
+{
+  "name": "rss-videos",
+  "title": "Videos RSS",
+  "version": "0.10.3",
+  "description": "Show videos from RSS feed",
+  "icon": "server/assets/add-videos-image.png",
+  "categories": ["media"],
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.rss"
+  ],
+  "shortcuts": [{
+    "name": "videos-shortcut",
+    "title": "Videos RSS",
+    "screen": "@.VideosList",
+    "icon": "theme://play.png",
+    "adminPages": [{
+      "page": "shoutem.rss.RssPage",
+      "title": "Content",
+      "parameters": {
+        "schema": "shoutem.proxy.videos"
+      }
+    }, {
+        "page":"shoutem.layouts.LayoutPage",
+        "title": "Layout"
+    }]
+  }],
+  "screens": [
+  {
+    "name": "VideosList",
+    "title": "Big list",
+    "image": "server/assets/screens/big-list.png",
+    "navigatesTo": [
+      "@.VideoDetails"
+    ]
+  },
+    {
+    "name": "VideosSmallList",
+    "title": "Small list",
+    "image": "server/assets/screens/small-list.png",
+    "extends":"@.VideosList"
+  },
+  {
+    "name": "VideoDetails",
+    "title": "Details"
+  }]
+}

@@ -1,0 +1,29 @@
+{
+  "title": "Videos",
+  "properties": {
+    "name": {
+      "format": "single-line",
+      "title": "Name",
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "format": "html",
+      "title": "Description",
+      "type": "string"
+    },
+    "video": {
+      "type": "object",
+      "format": "attachment",
+      "title": "Video URL",
+      "referencedSchema": "shoutem.core.video-attachments"
+    },
+    "duration": {
+      "type": "string",
+      "format": "single-line",
+      "title": "Duration"
+    }
+  },
+  "titleProperty": "name",
+  "type": "object"
+}

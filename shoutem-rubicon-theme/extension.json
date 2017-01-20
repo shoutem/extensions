@@ -1,0 +1,23 @@
+{
+  "name": "rubicon-theme",
+  "version": "0.1.11",
+  "type": "system",
+  "title": "Rubicon Prime",
+  "description": "Rubicon theme - Shoutem default theme",
+  "categories": [],
+  "themes": [
+    {
+      "name": "Rubicon",
+      "title": "Rubicon Prime",
+      "description": "Rubicon is a beautiful universal theme applicable to application of any type. Its clean and modern design can easyl be modified to match your brand identity.",
+      "showcase": [ "server/assets/rubicon-video.mp4", "server/assets/rubicon-screenshot-1.jpg",  "server/assets/rubicon-screenshot-2.jpg", "server/assets/rubicon-screenshot-3.jpg", "server/assets/rubicon-screenshot-4.jpg"
+      ],
+      "icons":"server/assets/icons/",
+      "variables":"@.PrimeVariables"
+    }
+  ],
+  "themeVariables":[{
+    "name": "PrimeVariables",
+    "path": "server/themeVariables.json"
+  }]
+}

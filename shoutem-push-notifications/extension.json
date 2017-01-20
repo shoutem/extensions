@@ -1,0 +1,8 @@
+{
+  "name": "push-notifications",
+  "version": "0.1.2",
+  "type": "system",
+  "title": "Push Notifications",
+  "description": "Base extension for push notifications",
+  "categories": ["push"]
+}
