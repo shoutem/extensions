@@ -1,9 +1,10 @@
 {
   "name": "books",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",
   "description": "Enable users to browse through lists of books, explore details and make a purchase",
+  "platform": "1.0.*",
   "categories": ["content"],
   "dependencies": [
     "shoutem.layouts",

@@ -1,9 +1,10 @@
 {
   "name": "google-analytics",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "type": "system",
   "title": "Google Analytics",
   "description": "Google analytics service",
+  "platform": "1.0.*",
   "categories": ["analytics"],
   "settingsPages": [{
     "page": "@.TrackersPage",

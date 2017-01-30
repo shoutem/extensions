@@ -1,0 +1,21 @@
+{
+  "name": "arno-theme",
+  "title": "Arno",
+  "version": "0.0.11",
+  "description": "Arno theme",
+  "platform": "1.0.*",
+  "themes": [
+    {
+      "name": "Arno",
+      "title": "Arno",
+      "description": "Arno is a beautiful universal theme applicable to application of any type. Its clean and modern design can easyl be modified to match your brand identity.",
+      "showcase": [ "server/assets/Arno.png"],
+      "icons":"server/assets/icons/",
+      "variables":"@.ArnoVariables"
+    }
+  ],
+  "themeVariables":[{
+    "name": "ArnoVariables",
+    "path": "server/themeVariables.json"
+  }]
+}

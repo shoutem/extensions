@@ -1,0 +1,10 @@
+{
+  "name": "shoutem.arno-theme",
+  "version": "0.0.11",
+  "description": "Arno theme",
+  "rnpm": {
+    "assets": [
+      "fonts"
+    ]
+  }
+}

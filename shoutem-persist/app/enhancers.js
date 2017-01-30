@@ -6,13 +6,13 @@ let storePersistor;
 
 export function purgeStore() {
   if (storePersistor) {
-    storePersistor.purge();
-  } else {
-    console.warn(
-      'Trying to purge a store that has not yet been created. ' +
-      'Disabling store rehydration is not available at the moment.'
-    );
+    return storePersistor.purge();
   }
+
+  return Promise.reject(
+    'Trying to purge a store that has not yet been created. ' +
+    'Disabling store rehydration is not available at the moment.'
+  );
 }
 
 /**

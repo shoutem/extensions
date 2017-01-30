@@ -233,7 +233,7 @@
       "title": "Text",
       "format": "font",
       "default": {
-        "fontFamily": "Rubik-Medium",
+        "fontFamily": "Rubik-Regular",
         "fontStyle": "normal",
         "fontWeight": "600",
         "fontSize": 12,

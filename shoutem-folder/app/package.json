@@ -1,6 +1,6 @@
 {
   "name": "shoutem.folder",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "Main navigation",
   "dependencies": {
     "react-native-side-menu": "0.20.0"

@@ -1,0 +1,26 @@
+{
+  "name": "web-view",
+  "version": "0.5.5",
+  "title": "Web view",
+  "description": "Open web pages in web view",
+  "platform": "1.0.*",
+  "icon": "server/assets/add-web-page.png",
+  "categories": ["content"],
+  "shortcuts": [{
+    "name": "web-view",
+    "title": "Web view",
+    "icon": "theme://web.png",
+    "action": "@.openBrowserScreen",
+    "adminPages": [{
+      "page": "@.WebPage",
+      "title": "Content"
+    }]
+  }],
+  "screens": [{
+    "name": "BrowserScreen"
+  }],
+  "pages": [{
+    "name": "WebPage",
+    "path": "dummy.js"
+  }]
+}

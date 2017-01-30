@@ -1,9 +1,10 @@
 {
   "name": "rss",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "type": "system",
   "title": "RSS",
   "description": "Shoutem RSS extension",
+  "platform": "1.0.*",
   "categories": [],
   "pages": [{
     "name": "RssPage",

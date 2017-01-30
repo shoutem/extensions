@@ -1,17 +1,17 @@
-import PlacesDetailsLarge from './screens/PlacesDetailsLarge';
+import PlaceDetails from './screens/PlaceDetails';
 import PlacesListPhoto from './screens/PlacesListPhoto';
 import PlacesListIcon from './screens/PlacesListIcon';
-import PlacesDetailsMedium from './screens/PlacesDetailsMedium';
+import PlaceDetailsMedium from './screens/PlaceDetailsMedium';
 import MapList from './screens/MapList';
 import reducer from './reducers';
 
 import * as actions from './action';
 export const screens = {
-  PlacesDetailsLarge,
+  PlaceDetails,
   PlacesListPhoto,
   PlacesListIcon,
   MapList,
-  PlacesDetailsMedium
+  PlaceDetailsMedium
 };
 
 export { reducer };

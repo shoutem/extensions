@@ -1,8 +1,9 @@
 {
   "name": "products",
-  "version": "0.9.4",
+  "version": "0.9.6",
   "title": "Products",
   "description": "List of products with purchase link.",
+  "platform": "1.0.*",
   "categories": ["content"],
   "icon": "server/assets/add-products-image.png",
   "dependencies": [

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.firebase",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Firebase SDK bridge",
   "dependencies": {
     "react-native-fcm": "2.5.5",

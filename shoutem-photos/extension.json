@@ -1,8 +1,9 @@
 {
   "name": "photos",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "title": "Photos",
   "description": "Browse through images, preview them in full-screen, share them, pinch and zoom",
+  "platform": "1.0.*",
   "icon" : "server/assets/add-photos-image.png",
   "categories": ["content"],
   "shortcuts": [{

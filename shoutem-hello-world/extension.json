@@ -1,0 +1,35 @@
+{
+  "name": "hello-world",
+  "title": "Hello World",
+  "version": "0.0.4",
+  "description": "Example of creating plain js shortcut settings page ",
+  "platform": "1.0.*",
+  "shortcuts": [
+    {
+      "title": "Hello World",
+      "description": "Settings for Hello World",
+      "name": "hello-world",
+      "screen": "@.HelloWorld",
+      "settings": {
+        "greeting": "World"
+      },
+      "adminPages": [
+        {
+          "page": "@.HelloWorld",
+          "title": "Hello World"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "HelloWorld",
+      "path": "server/pages/hello-world/helloWorld.html"
+    }
+  ],
+  "screens": [
+    {
+      "name": "HelloWorld"
+    }
+  ]
+}

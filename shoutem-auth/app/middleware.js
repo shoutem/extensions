@@ -2,9 +2,10 @@ import { isRSAA, RSAA } from 'redux-api-middleware';
 import * as _ from 'lodash';
 import URI from 'urijs';
 
-import { NAVIGATE } from '@shoutem/core/navigation';
+import { redirectTo, NAVIGATE, NavigationOperations } from '@shoutem/core/navigation';
 import { priorities, setPriority, before } from '@shoutem/core/middlewareUtils';
 import { RESTART_APP } from '@shoutem/core/coreRedux';
+import { purgeStore } from 'shoutem.persist';
 import { getExtensionSettings } from 'shoutem.application';
 
 import { ext } from './const';
@@ -20,18 +21,16 @@ export function createLoginMiddleware(screens) {
     if (action.type === NAVIGATE) {
       const state = store.getState();
       if (isAuthenticationRequired(screens, action, state) && !isAuthenticated(state)) {
-        return next({
-          ...action,
-          route: {
-            screen: ext('LoginScreen'),
-            props: {
-              onLoginSuccess: () => store.dispatch({
-                ...action,
-                operation: 'replace',
-              }),
-            },
+        return next(redirectTo(action, {
+          screen: ext('LoginScreen'),
+          props: {
+            action,
+            onLoginSuccess: () => store.dispatch({
+              ...action,
+              operation: NavigationOperations.REPLACE,
+            }),
           },
-        });
+        }));
       }
     }
 
@@ -91,7 +90,9 @@ export const logoutMiddleware = setPriority(store => next => action => {
   const actionType = _.get(action, 'type');
 
   if (actionType === LOGOUT) {
-    store.dispatch({ type: RESTART_APP });
+    purgeStore().then(
+      () => store.dispatch({ type: RESTART_APP }),
+      (reason) => console.warn(reason));
   }
   return next(action);
 }, priorities.AUTH);

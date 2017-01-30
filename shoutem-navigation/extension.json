@@ -1,9 +1,10 @@
 {
   "name": "navigation",
-  "version": "0.5.0",
+  "version": "0.5.3",
   "type": "system",
   "title": "Navigation",
   "description": "Application Navigation",
+  "platform": "1.0.*",
   "categories": [],
   "icon": "server/assets/add-main-navigation-image.png",
   "shortcuts": [{
