@@ -3,6 +3,7 @@ import {
   Platform,
   Dimensions,
   StyleSheet,
+  StatusBar,
   NavigationExperimental,
 } from 'react-native';
 
@@ -26,17 +27,15 @@ const Colors = {
   INDICATOR: '#222222',
 };
 
+const STATUS_BAR_OFFSET = (Platform.OS === 'android' ? -StatusBar.currentConfig : 0);
+const NAVIGATION_BAR_HEIGHT = NavigationExperimental.Header.HEIGHT;
+
 const GALLERY_DOT_SIZE = 8;
 
 const SMALL_GUTTER = 5;
 const MEDIUM_GUTTER = 15;
 const LARGE_GUTTER = 30;
 const EXTRA_LARGE_GUTTER = 45;
-
-const STATUS_BAR_OFFSET = (Platform.OS === 'android' ? -25 : 0);
-const NAVIGATION_BAR_HEIGHT = 70;
-const RICH_MEDIA_IMAGE_HEIGHT = 200;
-const RICH_MEDIA_VIDEO_HEIGHT = 200;
 
 const sizeVariants = ['', 'left', 'right', 'top', 'bottom', 'horizontal', 'vertical'];
 const textComponents = [
@@ -490,10 +489,6 @@ export default (variables = {}) => ({
   },
 
   'shoutem.ui.Screen': {
-    '.full-screen': {
-      marginTop: -NAVIGATION_BAR_HEIGHT,
-    },
-
     '.paper': {
       backgroundColor: variables.paperColor,
     },
@@ -922,6 +917,11 @@ export default (variables = {}) => ({
   //
   // Other
   //
+  hoverNavigationBar: {
+    navigationHeader: {
+      paddingTop: 0,
+    },
+  },
   clearNavigationBar: {
     [INCLUDE]: ['imageOverlayText'],
     'shoutem.ui.Button': {
@@ -966,10 +966,6 @@ export default (variables = {}) => ({
     },
   },
   navigationBar: {
-    '.clear': {
-      [INCLUDE]: ['clearNavigationBar'],
-    },
-
     '.featured': {
       'shoutem.ui.Button': {
         'shoutem.ui.Icon': {
@@ -1067,6 +1063,9 @@ export default (variables = {}) => ({
   },
   'shoutem.ui.NavigationBar': {
     [INCLUDE]: ['navigationBar'],
+    '.clear': {
+      [INCLUDE]: ['clearNavigationBar'],
+    },
     'shoutem.ui.Title': {
       solidifyAnimation(driver, { layout, animationOptions }) {
         return {
@@ -1127,6 +1126,15 @@ export default (variables = {}) => ({
   },
   'shoutem.ui.navigation.NavigationBar': {
     [INCLUDE]: ['navigationBar'],
+
+    '.hover': {
+      [INCLUDE]: ['hoverNavigationBar'],
+    },
+
+    '.clear': {
+      [INCLUDE]: ['clearNavigationBar', 'hoverNavigationBar'],
+    },
+
     '.fade': {
       gradient: {
         [INCLUDE]: ['fillParent'],
@@ -1180,14 +1188,20 @@ export default (variables = {}) => ({
       color: variables.navBarText.color,
     },
 
-
-
-
+    navigationHeader: {
+      paddingTop: NAVIGATION_BAR_HEIGHT,
+    },
     container: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: NAVIGATION_BAR_HEIGHT,
       backgroundColor: variables.navBarBackground,
       borderBottomColor: variables.navBarBorderColor,
       borderBottomWidth: StyleSheet.hairlineWidth,
     },
+
   },
 
   'shoutem.ui.navigation.CardStack': {
@@ -1208,23 +1222,6 @@ export default (variables = {}) => ({
             { translateY: translate },
           ],
         };
-      },
-    },
-
-    '.root': {
-      'shoutem.ui.navigation.NavigationBar': {
-        navigationHeader: {
-          marginTop: 0,
-        },
-      },
-    },
-
-    'shoutem.ui.navigation.NavigationBar': {
-      navigationHeader: {
-        // TODO (zeljko): Screen height is not measured correctly when
-        // there are multiple navigation stacks. Find out why does this
-        // happen, and find a better way to solve it.
-        marginTop: NavigationExperimental.Header.HEIGHT,
       },
     },
 
@@ -1396,10 +1393,10 @@ export default (variables = {}) => ({
       fontSize: 14,
     },
     video: {
-      height: RICH_MEDIA_VIDEO_HEIGHT,
+      height: 200,
     },
     img: {
-      height: RICH_MEDIA_IMAGE_HEIGHT,
+      height: 200,
     },
     p: {
       [INCLUDE]: ['shoutem.ui.Text', 'multilineTextStyle'],

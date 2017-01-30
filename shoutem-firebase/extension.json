@@ -1,9 +1,10 @@
 {
   "name": "firebase",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "type": "system",
   "title": "Firebase extension",
   "description": "Firebase SDK bridge",
+  "platform": "1.0.*",
   "settingsPages": [{
     "page": "@.Settings",
     "title": "Settings"

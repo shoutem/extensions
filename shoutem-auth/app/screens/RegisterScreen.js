@@ -26,14 +26,15 @@ import { connect } from 'react-redux';
 
 import { loginRequired } from '../loginRequired';
 
+import { NavigationBar } from '@shoutem/ui/navigation';
+
+import { navigateBack } from '@shoutem/core/navigation';
+
 export class RegisterScreen extends Component {
   static propTypes = {
-    setNavBarProps: React.PropTypes.func,
+    navigateBack: React.PropTypes.func,
     register: React.PropTypes.func,
-    action: React.PropTypes.any,
-
     appId: React.PropTypes.any,
-    error: React.PropTypes.any,
   };
 
   constructor(props, contex) {
@@ -48,30 +49,28 @@ export class RegisterScreen extends Component {
   }
 
   performRegistration() {
-    const { register, appId } = this.props;
+    const { register, appId, navigateBack } = this.props;
     const { email, username, password } = this.state;
     if (_.isEmpty(email) || _.isEmpty(username) || _.isEmpty(password)) {
       Alert.alert('Error', 'All fields are mandatory check if you forgot to fill some.');
       return;
     }
-    register(appId, email, username, password).then(() => {
-      const { error } = this.props;
-      if (this.props.action && _.isEmpty(error)) {
-        this.props.action('replacePreviousAndPop');
+    register(appId, email, username, password).then((response) => {
+      const { error, payload } = response;
+      if (!error) {
+        navigateBack();
       }
-      if (!_.isEmpty(error)) {
-        Alert.alert('Registration failed', error);
+      if (error) {
+        const { message } = payload.response;
+        Alert.alert('Registration failed', message);
       }
     });
   }
 
   render() {
-    this.props.setNavBarProps({
-      title: 'REGISTER',
-    });
-
     return (
       <Screen>
+        <NavigationBar title="REGISTER" />
         <Divider styleName="section-header" />
         <TextInput
           placeholder="Email"
@@ -114,14 +113,13 @@ export class RegisterScreen extends Component {
   }
 }
 
-export const mapDispatchToProps = { register };
+export const mapDispatchToProps = { navigateBack, register };
 
 function mapStateToProps(state) {
   return {
     user: state[ext()].user,
     accessToken: state[ext()].accessToken,
     appId: getAppId(),
-    error: state[ext()].error,
   };
 }
 

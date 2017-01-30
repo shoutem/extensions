@@ -1,8 +1,9 @@
 {
   "name": "folder",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "title": "Folder",
   "description": "Group navigation items under folder. You can choose between Grid and List layouts.",
+  "platform": "1.0.*",
   "categories": [],
   "icon": "server/assets/add-folder-image.png",
   "shortcuts": [{

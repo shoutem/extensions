@@ -1,8 +1,11 @@
 {
   "name": "shoutem.persist",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "private": true,
   "main": "index.js",
+  "dependencies": {
+    "redux-persist": "^4.1.0"
+  },
   "peerDependencies": {
     "@shoutem/core": "*"
   }

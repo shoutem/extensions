@@ -1,10 +1,12 @@
 {
   "name": "places",
+  "title":"Places",
   "properties": {
     "name": {
       "format": "single-line",
       "title": "Place name",
-      "type": "string"
+      "type": "string",
+      "required":true
     },
     "address": {
       "format": "single-line",
@@ -22,7 +24,7 @@
       "type": "string"
     },
     "description": {
-      "format": "multi-line",
+      "format": "html",
       "title": "Description",
       "type": "string"
     },

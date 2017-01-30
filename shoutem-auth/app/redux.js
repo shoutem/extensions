@@ -41,23 +41,9 @@ export function accessToken(state = '', action) {
   }
 }
 
-export function error(state = '', action) {
-  switch (action.type) {
-    case LOGIN_SUCCESS:
-    case REGISTER_SUCCESS:
-      return {};
-    case REGISTER_FAILURE:
-    case LOGIN_FAILURE:
-      return action.payload.response.message;
-    default:
-      return state;
-  }
-}
-
 export default combineReducers({
   user,
   accessToken,
-  error,
 });
 
 export function login(appId, user, pass) {

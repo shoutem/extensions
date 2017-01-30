@@ -1,9 +1,10 @@
 {
   "name": "people",
   "title": "People",
-  "version": "0.10.3",
+  "version": "0.10.6",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Explore through the list of people/contacts",
+  "platform": "1.0.*",
   "categories": ["content"],
   "shortcuts": [
     {

@@ -1,0 +1,22 @@
+{
+  "name": "rubicon-rose-theme",
+  "version": "0.0.6",
+  "type": "system",
+  "title": "Rubicon Rose",
+  "description": "Rubicon Rose flavour",
+  "platform": "1.0.*",
+  "categories": [],
+  "themes": [
+    {
+      "name": "Rubicon",
+      "title": "Rubicon Rose",
+      "description": "Rubicon is a beautiful universal theme applicable to application of any type. Its clean and modern design can easyl be modified to match your brand identity.",
+      "showcase": [ "server/assets/rubicon-screenshot-1.jpg",  "server/assets/rubicon-screenshot-2.jpg", "server/assets/rubicon-screenshot-3.jpg"],
+      "variables":"@.RoseVariables"
+    }
+  ],
+  "themeVariables":[{
+    "name": "RoseVariables",
+    "path": "server/themeVariables.json"
+  }]
+}

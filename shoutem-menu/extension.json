@@ -1,10 +1,11 @@
 {
   "name": "menu",
   "title": "Menu",
-  "version": "0.10.3",
+  "version": "0.10.6",
   "icon": "./server/assets/images/add-menu-items-image.png",
   "description": "Browse through the list of restaurant menu items and explore details such as description, price, photos...",
-  "categories": [],
+  "platform": "1.0.*",
+  "categories": ["content"],
   "shortcuts": [
     {
       "title": "Menu",

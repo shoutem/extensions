@@ -1,9 +1,10 @@
 {
   "name": "cms",
-  "version": "0.10.2",
+  "version": "0.10.4",
   "type": "system",
   "title": "CMS",
   "description": "Shoutem CMS extension",
+  "platform": "1.0.*",
   "categories": ["content"],
   "settingsPages": [{
     "page": "@.CmsSettingsPage",

@@ -1,15 +1,17 @@
 {
   "name": "places",
-  "version": "0.9.1",
+  "version": "0.9.5",
   "title": "Places",
   "description": "List of POIs",
+  "platform": "1.0.*",
   "icon": "./server/assets/images/add-places-image.png",
   "categories": ["content"],
   "shortcuts": [
     {
-      "screen": "@.PlacesListPhoto",
-      "title": "Places",
       "name": "places-shortcut",
+      "title": "Places",
+      "screen": "@.PlacesListPhoto",
+      "icon": "theme://address-full.png",
       "adminPages": [{
         "page": "shoutem.cms.CmsPage",
         "title": "Content",
@@ -18,7 +20,7 @@
       }
     },
     { "page": "shoutem.layouts.LayoutPage",
-      "title": "List Layout"
+      "title": "Layout"
     }]
   }],
   "screens": [{
@@ -26,7 +28,7 @@
     "title": "Photo List",
     "image": "./server/assets/images/layout_photo.png",
     "navigatesTo": [
-      "@.PlacesListPhoto"
+      "@.PlaceDetails"
     ]
   }, {
     "name": "PlacesListIcon",
@@ -34,21 +36,21 @@
     "extends": "@.PlacesListPhoto",
     "image": "./server/assets/images/layout_icon.png"
   }, {
-    "name": "PlacesDetailsLarge",
+    "name": "PlaceDetails",
     "title": "Large photo details page",
     "image": "./server/assets/images/details_large.png"
   },
   {
-    "name": "PlacesDetailsMedium",
+    "name": "PlaceDetailsMedium",
     "title": "Medium photo details page",
-    "extends": "@.PlacesDetailsLarge",
+    "extends": "@.PlaceDetails",
     "image": "./server/assets/images/details_medium.png"
   },
   {
     "name": "MapList",
     "title": "Map View",
     "navigatesTo": [
-      "sstimac.shoutem-places.MapList"
+      "@.MapList"
     ]
   }],
   "dataSchemas": [{

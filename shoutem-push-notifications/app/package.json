@@ -1,6 +1,6 @@
 {
   "name": "shoutem.push-notifications",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Base extension for push notifications",
   "peerDependencies": {
     "@shoutem/core": "*"

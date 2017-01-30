@@ -9,8 +9,8 @@ import { ext } from './const.js';
 // it first find destination screen for the navigation action
 // then it checks if destination screen is decorated with loginRequired property
 
-function isActiveShortcutProtected(state) {
-  const activeShortcut = getActiveShortcut(state);
+function isActiveShortcutProtected(state, action) {
+  const activeShortcut = getActiveShortcut(state, action);
   const settings = getExtensionSettings(state, ext());
 
   if (settings.allScreensProtected) {
@@ -25,8 +25,9 @@ export function isAuthenticationRequired(screens = {}, action, state) {
     const screenName = action.route.screen;
     const screen = screens[screenName];
     if (!screen) {
-      throw new Error('Attempting to determine the authentication requirements ' +
+      console.warn('Attempting to determine the authentication requirements ' +
         `for an invalid screen: ${screenName}`);
+      return false;
     }
 
     // The screen is explicitly marked as public, this is useful
@@ -36,7 +37,7 @@ export function isAuthenticationRequired(screens = {}, action, state) {
       return false;
     }
 
-    return screen.loginRequired || isActiveShortcutProtected(state);
+    return screen.loginRequired || isActiveShortcutProtected(state, action);
   }
   return false;
 }

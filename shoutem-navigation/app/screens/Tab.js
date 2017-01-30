@@ -58,7 +58,4 @@ const mapStateToProps = (state, { shortcut }) => ({
 const mapDispatchToProps = { executeShortcut, navigateBack };
 
 
-export default loginRequired(
-  connect(mapStateToProps, mapDispatchToProps)(connectStyle(ext('Tab'))(Tab)),
-  false
-);
+export default connect(mapStateToProps, mapDispatchToProps)(connectStyle(ext('Tab'))(Tab));

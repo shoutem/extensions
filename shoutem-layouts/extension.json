@@ -1,9 +1,10 @@
 {
   "name": "layouts",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "type": "system",
   "title": "Layouts",
   "description": "Shoutem Layout extension",
+  "platform": "1.0.*",
   "categories": [],
   "pages": [{
     "name": "LayoutPage",

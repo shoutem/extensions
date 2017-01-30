@@ -1,9 +1,10 @@
 {
   "name": "rubicon-theme",
-  "version": "0.1.11",
+  "version": "0.1.15",
   "type": "system",
   "title": "Rubicon Prime",
   "description": "Rubicon theme - Shoutem default theme",
+  "platform": "1.0.*",
   "categories": [],
   "themes": [
     {

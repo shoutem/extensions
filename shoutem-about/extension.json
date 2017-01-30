@@ -1,8 +1,9 @@
 {
   "name": "about",
-  "version": "0.6.3",
+  "version": "0.6.6",
   "title": "About",
   "description": "About the app and your company",
+  "platform": "1.0.*",
   "icon": "server/assets/add-about-image.png",
   "categories": ["content"],
   "shortcuts": [{
