@@ -10,9 +10,12 @@ export default combineReducers({
 
 export function updateExtensionInstallationSettings(id, settings) {
   const config = {
-    endpoint: `//${url.apps}/v1/apps/${appId}/installations/${id}`,
-    headers: {
-      'Content-Type': 'application/vnd.api+json',
+    schema: EXTENSION_INSTALLATIONS,
+    request: {
+      endpoint: `//${url.apps}/v1/apps/${appId}/installations/${id}`,
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
     },
   };
 
@@ -24,7 +27,7 @@ export function updateExtensionInstallationSettings(id, settings) {
     },
   };
 
-  return update(config, EXTENSION_INSTALLATIONS, partialInstallation);
+  return update(config, partialInstallation);
 }
 
 export function loadShortcuts() {
@@ -33,7 +36,7 @@ export function loadShortcuts() {
     request: {
       endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts`,
       headers: {
-        'Accept': 'application/vnd.api+json',
+        Accept: 'application/vnd.api+json',
       },
     },
   };
@@ -43,9 +46,12 @@ export function loadShortcuts() {
 
 export function updateShortcutSettings(id, settings) {
   const config = {
-    endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts/${id}`,
-    headers: {
-      'Content-Type': 'application/vnd.api+json',
+    schema: SHORTCUTS,
+    request: {
+      endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts/${id}`,
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
     },
   };
 
@@ -57,5 +63,5 @@ export function updateShortcutSettings(id, settings) {
     },
   };
 
-  return update(config, SHORTCUTS, partialShortcut);
+  return update(config, partialShortcut);
 }

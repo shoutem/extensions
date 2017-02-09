@@ -10,9 +10,12 @@ export default combineReducers({
 
 export function updateExtensionInstallationSettings(id, settings) {
   const config = {
-    endpoint: `//${url.apps}/v1/apps/${appId}/installations/${id}`,
-    headers: {
-      'Content-Type': 'application/vnd.api+json',
+    schema: EXTENSION_INSTALLATIONS,
+    request: {
+      endpoint: `//${url.apps}/v1/apps/${appId}/installations/${id}`,
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
     },
   };
 
@@ -24,7 +27,7 @@ export function updateExtensionInstallationSettings(id, settings) {
     },
   };
 
-  return update(config, EXTENSION_INSTALLATIONS, partialInstallation);
+  return update(config, partialInstallation);
 }
 
 export function loadLegacyApplicationSettings() {
@@ -33,7 +36,7 @@ export function loadLegacyApplicationSettings() {
     request: {
       endpoint: `//${url.legacy}/v1/apps/${appId}/legacy-settings`,
       headers: {
-        'Accept': 'application/vnd.api+json',
+        Accept: 'application/vnd.api+json',
       },
     },
   };
@@ -42,9 +45,12 @@ export function loadLegacyApplicationSettings() {
 
 export function updateLegacyApplicationSettings(settings) {
   const config = {
-    endpoint: `//${url.legacy}/v1/apps/${appId}/legacy-settings`,
-    headers: {
-      'Content-Type': 'application/vnd.api+json',
+    schema: LEGACY_APPLICATION_SETTINGS,
+    request: {
+      endpoint: `//${url.legacy}/v1/apps/${appId}/legacy-settings`,
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
     },
   };
 
@@ -56,5 +62,5 @@ export function updateLegacyApplicationSettings(settings) {
     },
   };
 
-  return update(config, LEGACY_APPLICATION_SETTINGS, partialSettings);
+  return update(config, partialSettings);
 }

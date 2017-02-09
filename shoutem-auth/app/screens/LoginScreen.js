@@ -27,7 +27,8 @@ import {
   InteractionManager,
 } from 'react-native';
 
-import { login } from '../redux.js';
+import { login, isAuthenticated } from '../redux.js';
+import { errorMessages, getErrorMessage } from '../errorMessages';
 
 import { getAppId, getExtensionSettings } from 'shoutem.application';
 import { loginRequired } from '../loginRequired';
@@ -44,7 +45,7 @@ export class LoginScreen extends Component {
     extensions: React.PropTypes.any,
 
     user: React.PropTypes.any,
-    accessToken: React.PropTypes.any,
+    isAuthenticated: React.PropTypes.bool,
     appId: React.PropTypes.any,
     settings: React.PropTypes.any,
     isScreenActive: React.PropTypes.bool,
@@ -66,11 +67,11 @@ export class LoginScreen extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const { isScreenActive, accessToken, onLoginSuccess } = newProps;
+    const { isScreenActive, isAuthenticated, onLoginSuccess } = newProps;
     // We want to replace the login screen if the user is authenticated
     // but only if it's the currently active screen as we don't want to
     //  replace screens in the background
-    if (isScreenActive && accessToken) {
+    if (isScreenActive && isAuthenticated) {
       // We are running the callback after interactions because of the bug
       // in navigation which prevents us from navigating to other screens
       // while in the middle of a transition
@@ -87,29 +88,24 @@ export class LoginScreen extends Component {
   }
 
   performLogin() {
-    const { login, appId } = this.props;
+    const { login } = this.props;
     const { username, password } = this.state;
 
     if (_.isEmpty(username) || _.isEmpty(password)) {
-      Alert.alert('Error', 'All fields are mandatory check if you forgot to fill some.');
+      Alert.alert('Error', errorMessages.EMPTY_FIELDS);
       return;
     }
 
-    login(appId, username, password).then((response) => {
+    login(username, password).then(({ payload }) => {
       const { onLoginSuccess } = this.props;
-      const { error, payload } = response;
 
-      if (_.isFunction(onLoginSuccess) && !error) {
-        onLoginSuccess(response.user);
+      if (_.isFunction(onLoginSuccess)) {
+        onLoginSuccess(payload.user);
       }
-      if (error) {
-        const { message } = payload.response;
-        Alert.alert(
-            'Login failure',
-            message,
-        );
-      }
-    }, (response) => console.log('ERROR IN LOGIN SERVER COMMUNICATION', response));
+    }, ({ payload }) => {
+      const { response } = payload;
+      Alert.alert('Login failure', getErrorMessage(response && response.code));
+    });
   }
 
   renderRegisterButton() {
@@ -170,7 +166,7 @@ export class LoginScreen extends Component {
   }
 
   render() {
-    const components = !this.props.accessToken ? (
+    const components = !this.props.isAuthenticated ? (
       <View>
         <NavigationBar title="LOG IN" />
         {this.renderLoginComponent()}
@@ -191,7 +187,7 @@ const mapDispatchToProps = { navigateTo, login };
 function mapStateToProps(state, ownProps) {
   return {
     user: state[ext()].user,
-    accessToken: state[ext()].accessToken,
+    isAuthenticated: isAuthenticated(state),
     appId: getAppId(),
     extensions: state['shoutem.application'].extensions,
     settings: getExtensionSettings(state, ext()),

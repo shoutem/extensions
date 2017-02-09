@@ -26,6 +26,8 @@ import { connect } from 'react-redux';
 
 import { loginRequired } from '../loginRequired';
 
+import { errorMessages, getErrorMessage } from '../errorMessages';
+
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { navigateBack } from '@shoutem/core/navigation';
@@ -49,21 +51,15 @@ export class RegisterScreen extends Component {
   }
 
   performRegistration() {
-    const { register, appId, navigateBack } = this.props;
+    const { register, navigateBack } = this.props;
     const { email, username, password } = this.state;
     if (_.isEmpty(email) || _.isEmpty(username) || _.isEmpty(password)) {
-      Alert.alert('Error', 'All fields are mandatory check if you forgot to fill some.');
+      Alert.alert('Error', errorMessages.EMPTY_FIELDS);
       return;
     }
-    register(appId, email, username, password).then((response) => {
-      const { error, payload } = response;
-      if (!error) {
-        navigateBack();
-      }
-      if (error) {
-        const { message } = payload.response;
-        Alert.alert('Registration failed', message);
-      }
+    register(email, username, password).then(() => navigateBack(), ({ payload }) => {
+      const { response } = payload;
+      Alert.alert('Registration failed', getErrorMessage(response && response.code));
     });
   }
 
@@ -118,7 +114,6 @@ export const mapDispatchToProps = { navigateBack, register };
 function mapStateToProps(state) {
   return {
     user: state[ext()].user,
-    accessToken: state[ext()].accessToken,
     appId: getAppId(),
   };
 }

@@ -1,6 +1,6 @@
 {
   "name": "auth",
-  "version": "0.4.5",
+  "version": "0.4.10",
   "title": "User authentication",
   "icon": "server/assets/add-authentication-image.png",
   "description": "Shoutem user authentication extension",
