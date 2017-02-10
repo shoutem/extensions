@@ -1,71 +1,26 @@
 import _ from 'lodash';
-import { combineReducers } from 'redux';
-import { RSAA } from 'redux-api-middleware';
+import { find, resource } from '@shoutem/redux-io';
+import { chainReducers } from '@shoutem/redux-composers';
 
 import { ext } from './const';
-
-export const LOGIN_REQUEST = 'shoutem.auth.LOGIN_REQUEST';
-export const LOGIN_SUCCESS = 'shoutem.auth.LOGIN_SUCCESS';
-export const LOGIN_FAILURE = 'shoutem.auth.LOGIN_FAILURE';
-
-export const REGISTER_REQUEST = 'shoutem.auth.REGISTER_REQUEST';
-export const REGISTER_SUCCESS = 'shoutem.auth.REGISTER_SUCCESS';
-export const REGISTER_FAILURE = 'shoutem.auth.REGISTER_FAILURE';
 
 export const LOGOUT = 'shoutem.auth.LOGOUT';
 export const AUTHENTICATE = 'shoutem.auth.AUTHENTICATE';
 
-export const SERVER = 'https://api.dev.sauros.hr/';
+export const USER_SCHEMA = 'shoutem.auth.user';
+export const USER_CREDENTIALS_SCHEMA = 'shoutem.auth.user-credentials';
 
-export function user(state = {}, action) {
-  switch (action.type) {
-    case LOGIN_SUCCESS:
-    case REGISTER_SUCCESS:
-      return action.payload.user;
-    case LOGOUT:
-      return {};
-    default:
-      return state;
-  }
+export default chainReducers([
+  resource(USER_SCHEMA),
+  resource(USER_CREDENTIALS_SCHEMA),
+]);
+
+export function register(email, username, password) {
+  return find(USER_SCHEMA, '', { email, username, password });
 }
 
-export function accessToken(state = '', action) {
-  switch (action.type) {
-    case LOGIN_SUCCESS:
-    case REGISTER_SUCCESS:
-      return action.payload.access_token;
-    case LOGOUT:
-      return '';
-    default:
-      return state;
-  }
-}
-
-export default combineReducers({
-  user,
-  accessToken,
-});
-
-export function login(appId, user, pass) {
-  return {
-    [RSAA]: {
-      endpoint: `${SERVER}/api/account/verify_credentials.json?` +
-        `nid=${appId}&email=${user}&password=${pass}`,
-      method: 'GET',
-      types: [
-        {
-          type: LOGIN_REQUEST,
-          meta: {
-            nid: appId,
-            email: user,
-            password: pass,
-          },
-        },
-        LOGIN_SUCCESS,
-        LOGIN_FAILURE,
-      ],
-    },
-  };
+export function login(email, password) {
+  return find(USER_CREDENTIALS_SCHEMA, '', { email, password });
 }
 
 export function logout() {
@@ -81,38 +36,15 @@ export function authenticate(callback) {
   };
 }
 
-export function register(appId, email, username, password) {
-  return {
-    [RSAA]: {
-      endpoint: `${SERVER}/api/account/signup.json?nid=${appId}&` +
-        `email=${email}&username=${username}&password=${password}`,
-      method: 'POST',
-      types: [
-        {
-          type: REGISTER_REQUEST,
-          meta: {
-            nid: appId,
-            email,
-            username,
-            password,
-          },
-        },
-        REGISTER_SUCCESS,
-        REGISTER_FAILURE,
-      ],
-    },
-  };
-}
-
 // function checks whether or not the user is logged in the application
 // if the user is logged the acces token value in state is set
 export function isAuthenticated(state) {
-  return !_.isEmpty(state[ext()].accessToken);
+  return !_.isEmpty(state[ext()].access_token);
 }
 
 // function returns access token
 export function getAccessToken(state) {
-  return state[ext()].accessToken;
+  return state[ext()].access_token;
 }
 
 // function checks if user exists and if it does returns object with user data

@@ -3,7 +3,13 @@
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import reducer, { logoutAction } from './redux.js';
+import reducer, {
+  getUser,
+  getAccessToken,
+  authenticate,
+  logoutAction,
+  isAuthenticated,
+} from './redux.js';
 
 import _ from 'lodash';
 
@@ -37,9 +43,15 @@ const middleware = [
   logoutMiddleware,
 ];
 
+export { appDidMount } from './app';
+
 export {
   appWillMount,
   appScreens,
   middleware,
+  getUser,
+  getAccessToken,
+  authenticate,
   loginRequired,
+  isAuthenticated,
 };
