@@ -229,6 +229,10 @@ export default (variables = {}) => ({
       [INCLUDE]: ['multilineTextStyle'],
     },
 
+    '.muted': {
+      opacity: 0.5,
+    },
+
     backgroundColor: Colors.CLEAR,
   },
 
@@ -479,6 +483,10 @@ export default (variables = {}) => ({
       }
     },
 
+    '.muted': {
+      opacity: 0.3
+    },
+
     '.featured': {
       [INCLUDE]: ['featuredBackground'],
     },
@@ -486,9 +494,41 @@ export default (variables = {}) => ({
     '.center': {
       alignSelf: 'center',
     },
+
+    '.badge': {
+      alignItems: 'center',
+      backgroundColor: variables.primaryButtonText.color,
+      borderColor: variables.primaryButtonBackgroundColor,
+      borderRadius: 8,
+      borderWidth: 2,
+      height: 16,
+      justifyContent: 'center',
+      position: 'absolute',
+      width: 16,
+
+      'shoutem.ui.Text': {
+        color: variables.primaryButtonBackgroundColor,
+        fontSize: 9,
+        fontWeight: 'bold',
+        textAlign: 'center'
+      },
+    },
+
+    '.oval-highlight': {
+      alignItems: 'center',
+      backgroundColor: changeColorAlpha('#030303', 0.1),
+      borderRadius: 31,
+      height: 62,
+      justifyContent: 'center',
+      width: 62,
+    }
   },
 
   'shoutem.ui.Screen': {
+    '.full-screen': {
+      marginTop: -NAVIGATION_BAR_HEIGHT,
+    },
+
     '.paper': {
       backgroundColor: variables.paperColor,
     },
@@ -733,6 +773,13 @@ export default (variables = {}) => ({
       marginRight: 0,
     },
 
+    'shoutem.ui.View': {
+      '.badge': {
+        top: -4,
+        right: -4,
+      }
+    },
+
     paddingLeft: 0,
     paddingRight: 0,
   },
@@ -791,6 +838,18 @@ export default (variables = {}) => ({
       },
     },
 
+    // Buttons at the bottom of dialogs, widgets, etc.,
+    // usually Cancel/Confirm, No/Yes, etc.
+    '.confirmation': {
+      'shoutem.ui.Text': {
+        [INCLUDE]: ['boldTextStyle'],
+      },
+
+      // Medium gutter on both sides, 25 between buttons
+      flex: 1,
+      marginHorizontal: MEDIUM_GUTTER,
+    },
+
     '.full-width': {
       'shoutem.ui.Icon': {
         fontSize: 16,
@@ -836,6 +895,14 @@ export default (variables = {}) => ({
       marginRight: 10,
     },
 
+    'shoutem.ui.View': {
+      // Positions badge to top right of button icon
+      '.badge': {
+        top: -4,
+        right: 11,
+      }
+    },
+
     underlayColor: changeColorAlpha(variables.primaryButtonBackgroundColor, 0.5),
 
     backgroundColor: variables.primaryButtonBackgroundColor,
@@ -870,6 +937,10 @@ export default (variables = {}) => ({
     textAlign: 'center',
     textAlignVertical: 'center',
     fontSize: 24,
+  },
+
+  'shoutem.ui.Spinner': {
+    [INCLUDE]: ['guttersMargin'],
   },
 
   //
@@ -917,11 +988,6 @@ export default (variables = {}) => ({
   //
   // Other
   //
-  hoverNavigationBar: {
-    navigationHeader: {
-      paddingTop: 0,
-    },
-  },
   clearNavigationBar: {
     [INCLUDE]: ['imageOverlayText'],
     'shoutem.ui.Button': {
@@ -966,6 +1032,10 @@ export default (variables = {}) => ({
     },
   },
   navigationBar: {
+    '.clear': {
+      [INCLUDE]: ['clearNavigationBar'],
+    },
+
     '.featured': {
       'shoutem.ui.Button': {
         'shoutem.ui.Icon': {
@@ -1127,14 +1197,6 @@ export default (variables = {}) => ({
   'shoutem.ui.navigation.NavigationBar': {
     [INCLUDE]: ['navigationBar'],
 
-    '.hover': {
-      [INCLUDE]: ['hoverNavigationBar'],
-    },
-
-    '.clear': {
-      [INCLUDE]: ['clearNavigationBar', 'hoverNavigationBar'],
-    },
-
     '.fade': {
       gradient: {
         [INCLUDE]: ['fillParent'],
@@ -1158,6 +1220,10 @@ export default (variables = {}) => ({
         alignItems: 'center',
         justifyContent: 'center',
       },
+
+      '.full-width': {
+        width: window.width,
+      }
     },
 
     'shoutem.ui.Title': {
@@ -1188,18 +1254,18 @@ export default (variables = {}) => ({
       color: variables.navBarText.color,
     },
 
-    navigationHeader: {
-      paddingTop: NAVIGATION_BAR_HEIGHT,
-    },
     container: {
+      paddingTop: NAVIGATION_BAR_HEIGHT,
+      backgroundColor: variables.navBarBackground,
+      borderBottomColor: variables.navBarBorderColor,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    navigationHeader: {
       position: 'absolute',
       top: 0,
       left: 0,
       right: 0,
       height: NAVIGATION_BAR_HEIGHT,
-      backgroundColor: variables.navBarBackground,
-      borderBottomColor: variables.navBarBorderColor,
-      borderBottomWidth: StyleSheet.hairlineWidth,
     },
 
   },
@@ -1268,8 +1334,24 @@ export default (variables = {}) => ({
   //
   // Form components
   //
+  'shoutem.ui.FormGroup': {
+    'shoutem.ui.View': {
+      'shoutem.ui.Caption': {
+        backgroundColor: variables.paperColor,
+        paddingHorizontal: MEDIUM_GUTTER,
+        paddingTop: 12,
+      },
+
+      'shoutem.ui.TextInput': {
+        height: 39,
+        paddingVertical: 9,
+      },
+    }
+  },
+
   'shoutem.ui.TextInput': {
     [INCLUDE]: ['commonVariants', 'guttersMargin'],
+
     selectionColor: variables.text.color,
     placeholderTextColor: changeColorAlpha(variables.text.color, 0.5),
     backgroundColor: variables.paperColor,
@@ -1277,6 +1359,107 @@ export default (variables = {}) => ({
     paddingHorizontal: MEDIUM_GUTTER,
     paddingVertical: 18,
     ...variables.text,
+  },
+
+  'shoutem.ui.NumberInput': {
+    button: {
+      borderWidth: 0,
+      height: 40,
+      width: 40,
+      padding: 8,
+    },
+
+    icon: {
+      marginRight: 0,
+    },
+
+    inputContainer: {
+      borderBottomWidth: 1,
+      borderColor: 'rgba(0, 0, 0, 0.2)',
+      borderTopWidth: 1,
+    },
+
+    input: {
+      height: 38,
+      paddingVertical: 10,
+      textAlign: 'center',
+      width: 94,
+    },
+  },
+
+  // TODO: Search is defined with fixed colors at the moment but we will revisit it soon
+  'shoutem.ui.SearchField': {
+    clearIcon: {
+      color: '#2c2c2c',
+      opacity: 0.5,
+    },
+
+    container: {
+      backgroundColor: '#f0f0f0',
+      borderRadius: 5,
+      flex: 1,
+      height: 30,
+    },
+
+    searchIcon: {
+      color: '#888888',
+      fontSize: 16,
+    },
+
+    input: {
+      backgroundColor: '#f0f0f0',
+      color: '#888888',
+      flex: 1,
+      fontSize: 15,
+      height: 30,
+      paddingVertical: 6,
+      placeholderTextColor: '#888888',
+      selectionColor: '#888888',
+    },
+  },
+    
+  'shoutem.ui.Switch': {
+    container: {
+      borderRadius: 15,
+      height: 18,
+      marginVertical: 7,
+      paddingHorizontal: 2,
+      paddingVertical: 2,
+      width: 32,
+
+      muteAnimation(driver) {
+        return {
+          backgroundColor: driver.value.interpolate({
+            inputRange: [0, 1],
+            outputRange: [
+              changeColorAlpha(variables.text.color, 0.4),
+              changeColorAlpha(variables.text.color, 1)
+            ]
+          }),
+        };
+      }
+    },
+
+    thumb: {
+      backgroundColor: '#ffffff',
+      borderRadius: 7,
+      height: 14,
+      width: 14,
+
+      turnAnimation(driver, { layout, animationOptions }) {
+        const { x, width } = layout;
+        return {
+          transform: [
+            {
+              translateX: driver.value.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, animationOptions.containerWidth - width - 2 * x],
+              }),
+            },
+          ],
+        };
+      },
+    },
   },
 
   'shoutem.ui.DropDownMenu': {
@@ -1551,7 +1734,7 @@ export default (variables = {}) => ({
         paddingTop: MEDIUM_GUTTER,
         paddingHorizontal: MEDIUM_GUTTER,
         height: 60,
-        top: 0,
+        top: 70,
         left: 0,
         right: 0,
       },
@@ -1816,8 +1999,7 @@ export default (variables = {}) => ({
   'shoutem.navigation.Drawer': {
     menu: {
       // container
-      // Reverse Drawer full-screen marginTop offset and add real offset by design
-      paddingTop: NAVIGATION_BAR_HEIGHT + 55,
+      paddingTop: NAVIGATION_BAR_HEIGHT,
       backgroundColor: variables.mainNavBackground,
     },
     underlayScreensWrapper: {
