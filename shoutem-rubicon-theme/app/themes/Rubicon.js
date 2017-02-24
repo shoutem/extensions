@@ -369,6 +369,13 @@ export default (variables = {}) => ({
     },
 
     heroAnimation(driver, { layout, options }) {
+      if (Platform.OS === 'android') {
+        // Scroll events currently have a significant delay on
+        // Android, and this animation doesn't look smooth,
+        // so we are disabling it for now.
+        return {};
+      }
+
       return {
         transform: [
           {
@@ -526,7 +533,7 @@ export default (variables = {}) => ({
 
   'shoutem.ui.Screen': {
     '.full-screen': {
-      marginTop: -NAVIGATION_BAR_HEIGHT,
+      marginTop: Platform.OS === 'android' ? 0 : -NAVIGATION_BAR_HEIGHT,
     },
 
     '.paper': {
@@ -1006,6 +1013,12 @@ export default (variables = {}) => ({
   },
   navigationBarTextAnimations: {
     solidifyAnimation(driver, { layout, animationOptions }) {
+      if (Platform.OS === 'android') {
+        // Clear navigation bar is currently disabled on Android
+        // due to overflow issues.
+        return {};
+      }
+
       return {
         color: driver.value.interpolate({
           inputRange: [250, 300],
@@ -1033,7 +1046,9 @@ export default (variables = {}) => ({
   },
   navigationBar: {
     '.clear': {
-      [INCLUDE]: ['clearNavigationBar'],
+      // Clear navigation bar is currently disabled on Android
+      // due to overflow issues.
+      [INCLUDE]: (Platform.OS === 'android') ? undefined : ['clearNavigationBar'],
     },
 
     '.featured': {
@@ -1115,6 +1130,12 @@ export default (variables = {}) => ({
     },
 
     solidifyAnimation(driver) {
+      if (Platform.OS === 'android') {
+        // Clear navigation bar is currently disabled on Android
+        // due to overflow issues.
+        return {};
+      }
+
       return {
         container: {
           backgroundColor: driver.value.interpolate({
@@ -1198,7 +1219,9 @@ export default (variables = {}) => ({
     [INCLUDE]: ['navigationBar'],
 
     '.fade': {
-      gradient: {
+      // Clear navigation bar is currently disabled on Android
+      // due to overflow issues.
+      gradient: Platform.OS === 'android' ? undefined : {
         [INCLUDE]: ['fillParent'],
         colors: [Colors.CLEAR, 'rgba(0, 0, 0, 0.15)', Colors.CLEAR],
         locations: [0.0, 0.25, 1.0],
@@ -1210,6 +1233,15 @@ export default (variables = {}) => ({
             }),
           };
         }
+      },
+    },
+
+    '.none': {
+      // TODO - we are aware that in full screen case navigation bar blocks top screen touch
+      // When updated to RN > 0.42. fix by changing NavigationCardStack scene zIndex.
+      // Scene zIndex should be larger then navigation thus render above NavigationBar.
+      container: {
+        opacity: 0,
       },
     },
 
@@ -1291,7 +1323,9 @@ export default (variables = {}) => ({
       },
     },
 
-    cardStack: {},
+    cardStack: {
+      backgroundColor: variables.backgroundColor,
+    },
     card: {},
   },
 
@@ -1417,7 +1451,7 @@ export default (variables = {}) => ({
       selectionColor: '#888888',
     },
   },
-    
+
   'shoutem.ui.Switch': {
     container: {
       borderRadius: 15,
@@ -1885,7 +1919,10 @@ export default (variables = {}) => ({
     },
   },
   folderNavigation: {
-    [INCLUDE]: ['mainNavigation'],
+    '.main-navigation': {
+      // Active when the IconGrid or List layout is on root screen (in app's main navigation)
+      [INCLUDE]: ['mainNavigation'],
+    },
     '.text-hidden': {},
     '.small-icon': {
       icon: {
@@ -1904,6 +1941,10 @@ export default (variables = {}) => ({
         width: 48,
         height: 48,
       },
+    },
+
+    page: {
+      [INCLUDE]: ['alignmentVariants'],
     },
 
     icon: {
@@ -2058,8 +2099,6 @@ export default (variables = {}) => ({
       },
     },
     page: {
-      [INCLUDE]: ['alignmentVariants'],
-
       paddingTop: GRID_ITEM_VERTICAL_GUTTER,
       // Compensate 2px that left on the row side. Row calculated with in IconGrid is 373.
       paddingHorizontal: 1,
@@ -2114,6 +2153,14 @@ export default (variables = {}) => ({
   },
   'shoutem.navigation.List': {
     [INCLUDE]: ['folderNavigation'],
+    '.main-navigation': {
+      item: {
+        borderColor: variables.mainNavBorderColor,
+      },
+      chevron: {
+        color: changeColorAlpha(variables.mainNavItemColor, 0.5),
+      },
+    },
     // In item alignments, set on builder
     '.in-item-alignment-left': {
       iconAndTextContainer: {
@@ -2170,7 +2217,7 @@ export default (variables = {}) => ({
       alignItems: 'center',
     },
     chevron: {
-      color: changeColorAlpha(variables.mainNavItemColor, 0.5),
+      color: changeColorAlpha(variables.folderItemColor, 0.5),
     },
   },
 

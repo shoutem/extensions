@@ -1,5 +1,31 @@
 {
   "title": "Rubicon Prime",
+  "formats": {
+    "font": {
+      "default": {
+        "fontFamily": "Rubik-Regular",
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+        "fontSize": 20,
+        "color": "#222222"
+      },
+      "constraints": {
+        "fontFamily": {
+          "enum": [ "normal", "Rubik-Regular", "NotoSans", "NotoSerif"]
+        },
+        "fontStyle": {
+          "enum": ["normal", "italic"]
+        },
+        "fontWeight": {
+          "enum": ["normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900"]
+        },
+        "fontSize": {
+          "minimum": 10,
+          "maximum": 48
+        }
+      }
+    }
+  },
   "properties": {
 
 
@@ -36,70 +62,68 @@
       "title": "Heading",
       "format": "font",
       "default": {
-        "fontFamily": "Rubik-Regular",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
-        "fontSize": 25,
-        "color": "#222222"
+        "fontSize": 25
       },
-      "minFontSize": 20,
-      "maxFontSize": 40
+      "constraints": {
+        "fontSize": {
+          "minimum": 20,
+          "maximum": 40
+        }
+      }
     },
     "title": {
       "type": "object",
       "title": "Title",
       "format": "font",
-      "default": {
-        "fontFamily": "Rubik-Regular",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
-        "fontSize": 20,
-        "color": "#222222"
-      },
-      "minFontSize": 15,
-      "maxFontSize": 35
+      "constraints": {
+        "fontSize": {
+          "minimum": 15,
+          "maximum": 35
+        }
+      }
     },
     "subtitle": {
       "type": "object",
       "title": "Subtitle",
       "format": "font",
       "default": {
-        "fontFamily": "Rubik-Regular",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
-        "fontSize": 15,
-        "color": "#222222"
+        "fontSize": 15
       },
-      "minFontSize": 10,
-      "maxFontSize": 25
+      "constraints": {
+        "fontSize": {
+          "maximum": 25
+        }
+      }
     },
     "caption": {
       "type": "object",
       "title": "Caption",
       "format": "font",
       "default": {
-        "fontFamily": "Rubik-Regular",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
         "fontSize": 12,
         "color": "#666666"
       },
-      "minFontSize": 12,
-      "maxFontSize": 25
+      "constraints": {
+        "fontSize": {
+          "minimum": 12,
+          "maximum": 25
+        }
+      }
     },
     "text": {
       "type": "object",
       "title": "Text",
       "format": "font",
       "default": {
-        "fontFamily": "Rubik-Regular",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
         "fontSize": 15,
         "color": "#666666"
       },
-      "minFontSize": 12,
-      "maxFontSize": 25
+      "constraints": {
+        "fontSize": {
+          "minimum": 12,
+          "maximum": 25
+        }
+      }
     },
 
 
@@ -146,11 +170,7 @@
       "title": "Title",
       "format": "font",
       "default": {
-        "fontFamily": "Rubik-Regular",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
-        "fontSize": 15,
-        "color": "#222222"
+        "fontSize": 15
       }
     },
     "navBarIconsColor": {
@@ -233,8 +253,6 @@
       "title": "Text",
       "format": "font",
       "default": {
-        "fontFamily": "Rubik-Regular",
-        "fontStyle": "normal",
         "fontWeight": "600",
         "fontSize": 12,
         "color": "#ffffff"
