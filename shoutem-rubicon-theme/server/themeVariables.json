@@ -206,6 +206,12 @@
       "format": "color",
       "default": "rgba(50, 50, 50, 0.4)"
     },
+    "mainNavItemBackground": {
+      "type": "string",
+      "title": "Item background color",
+      "format": "color",
+      "default": "rgba(0, 0, 0, 0)"
+    },
     "mainNavSelectedItemBackground": {
       "type": "string",
       "title": "Selected item background",
@@ -233,15 +239,21 @@
 
 
 
-    "folderItemColor": {
+    "subNavItemColor": {
       "type": "string",
-      "title": "Folder item text color",
+      "title": "Item text color",
       "format": "color",
       "default": "#666666"
     },
-    "folderListBorderColor": {
+    "subNavItemBackground": {
       "type": "string",
-      "title": "Folder list border color",
+      "title": "Item background color",
+      "format": "color",
+      "default": "rgba(0, 0, 0, 0)"
+    },
+    "subNavListBorderColor": {
+      "type": "string",
+      "title": "List border color",
       "format": "color",
       "default": "#e0e0e0"
     },
@@ -255,7 +267,7 @@
       "default": {
         "fontWeight": "600",
         "fontSize": 12,
-        "color": "#ffffff"
+        "color": "#222222"
       }
     },
     "primaryButtonBackgroundColor": {
@@ -354,16 +366,18 @@
           "mainNavBackground",
           "mainNavBorderColor",
           "mainNavItemColor",
+          "mainNavItemBackground",
           "mainNavSelectedItemColor",
           "mainNavSelectedItemBackground",
           "mainNavSelectedItemBorderColor"
         ]
       },
       {
-        "title": "Folder",
+        "title": "Sub-navigation",
         "properties": [
-          "folderItemColor",
-          "folderListBorderColor"
+          "subNavItemColor",
+          "subNavItemBackground",
+          "subNavListBorderColor"
         ]
       },
       {

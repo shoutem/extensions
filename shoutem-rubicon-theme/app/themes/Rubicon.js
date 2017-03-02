@@ -217,6 +217,14 @@ export default (variables = {}) => ({
       textDecorationLine: 'line-through',
     },
 
+    '.h-left':{
+      textAlign: 'left',
+    },
+
+    '.h-right':{
+      textAlign: 'right',
+    },
+
     '.h-center': {
       textAlign: 'center',
     },
@@ -362,6 +370,10 @@ export default (variables = {}) => ({
   'shoutem.ui.Image': {
     [INCLUDE]: ['commonVariants', 'imageSizes', 'fill-parent'],
 
+    '.placeholder': {
+      backgroundColor: inverseColorBrightnessForAmount(variables.paperColor, 5),
+    },
+
     'shoutem.ui.Tile': {
       [INCLUDE]: ['textCentricTile', 'fillParent', 'imageOverlayText'],
 
@@ -473,7 +485,7 @@ export default (variables = {}) => ({
     },
 
     '.overlay': {
-      backgroundColor: variables.primaryOverlayColor,
+      backgroundColor: variables.imageOverlayColor,
     },
 
     '.solid': {
@@ -533,7 +545,7 @@ export default (variables = {}) => ({
 
   'shoutem.ui.Screen': {
     '.full-screen': {
-      marginTop: Platform.OS === 'android' ? 0 : -NAVIGATION_BAR_HEIGHT,
+      marginTop: Platform.OS === 'android' ? 0 : -(NAVIGATION_BAR_HEIGHT + StyleSheet.hairlineWidth),
     },
 
     '.paper': {
@@ -628,6 +640,7 @@ export default (variables = {}) => ({
 
     ...createSharedStyle(textComponents, {
       textAlign: 'center',
+      alignSelf: 'stretch',
     }),
 
     flex: 1,
@@ -800,8 +813,12 @@ export default (variables = {}) => ({
   textualButton: {
     'shoutem.ui.Text': {
       // Inherit color
-      ..._.omit(variables.text, ['color']),
+      ...variables.text
     },
+
+    'shoutem.ui.Icon':{
+       color: variables.text.color
+    }
   },
 
   'shoutem.ui.Button': {
@@ -817,9 +834,10 @@ export default (variables = {}) => ({
 
     '.textual': {
       // Use default text as button text style
-      // Text like button
-      // Common use with clearButton
+      // Text like button, without background color and margins
       [INCLUDE]: ['textualButton'],
+      [INCLUDE]: ['clearButton'],
+      [INCLUDE]: ['tightButton'],
     },
 
     '.secondary': {
@@ -1079,7 +1097,7 @@ export default (variables = {}) => ({
 
     'shoutem.ui.Icon': {
       [INCLUDE]: ['navigationBarTextAnimations'],
-      color: variables.navBarText.color,
+      color: variables.navBarIconsColor,
       fontSize: 24,
     },
 
@@ -1170,13 +1188,13 @@ export default (variables = {}) => ({
       boxingAnimation() {
         return {};
       },
+
       color: variables.navBarText.color,
       fontSize: 15,
       lineHeight: 18,
     },
 
     container: {
-      [INCLUDE]: ['fillParent'],
       [INCLUDE]: ['fillParent'],
       height: 70,
       backgroundColor: variables.navBarBackground,
@@ -1206,6 +1224,7 @@ export default (variables = {}) => ({
     },
 
     centerComponent: {
+      alignSelf: 'center',
       alignItems: 'center',
       flex: 1,
     },
@@ -1718,30 +1737,12 @@ export default (variables = {}) => ({
   //
   // ImageGallery
   //
-
-  galleryOverlayAnimations: {
-    fadeOutAnimation(driver, { layout, options }) {
-      return {
-        backgroundColor: driver.value.interpolate({
-          inputRange: [0, 1],
-          outputRange: [
-            variables.paperColor,
-            '#000000',
-          ],
-        }),
-        opacity: driver.value.interpolate({
-          inputRange: [0, 1],
-          outputRange: [1, 0],
-        }),
-      };
-    },
-  },
-
   'shoutem.ui.ImageGallery': {
     [INCLUDE]: ['guttersPadding'],
     pageMargin: 20,
     container: {
       flexGrow: 1,
+      backgroundColor: '#000000',
       lightsOffAnimation(driver, { layout, options }) {
         return {
           backgroundColor: driver.value.interpolate({
@@ -1759,40 +1760,74 @@ export default (variables = {}) => ({
       justifyContent: 'center',
       overflow: 'hidden',
     },
+  },
+
+  'shoutem.ui.ImageGalleryOverlay': {
+    '.full-screen': {
+      title: {
+        container: {
+          // We want the title background gradient to be
+          // visible underneath the navigation bar, but the
+          // title text should be rendered below the
+          // navigation bar.
+          paddingTop: 70 + MEDIUM_GUTTER,
+        },
+      },
+    },
+
+    container: {
+      [INCLUDE]: ['fillParent'],
+    },
     title: {
       container: {
-        // Top position will most likely be 0 or 70
-        [INCLUDE]: ['galleryOverlayAnimations'],
         position: 'absolute',
-        backgroundColor: variables.paperColor,
-        paddingTop: MEDIUM_GUTTER,
-        paddingHorizontal: MEDIUM_GUTTER,
-        height: 60,
-        top: 70,
+        top: 0,
         left: 0,
         right: 0,
+        paddingTop: MEDIUM_GUTTER,
+        paddingHorizontal: MEDIUM_GUTTER,
+
+        backgroundGradient: {
+          colors: ['rgba(0, 0, 0, 0.6)', 'rgba(0, 0, 0, 0.0)'],
+          locations: [0.17, 1.0],
+        },
       },
       text: {
-        color: variables.title.color,
+        color: variables.imageOverlayTextColor,
         textAlign: 'center',
       },
     },
     description: {
       container: {
-        [INCLUDE]: ['galleryOverlayAnimations'],
+        '.expanded': {
+          paddingTop: EXTRA_LARGE_GUTTER,
+
+          backgroundGradient: {
+            colors: ['rgba(0, 0, 0, 0.0)', 'rgba(0, 0, 0, 0.8)'],
+            locations: [0.36, 1.0],
+          },
+        },
+        '.collapsed': {
+          paddingTop: MEDIUM_GUTTER,
+
+          backgroundGradient: {
+            colors: ['rgba(0, 0, 0, 0.0)', 'rgba(0, 0, 0, 0.6)'],
+            locations: [0.02, 1.0],
+          },
+        },
+
         position: 'absolute',
-        backgroundColor: variables.paperColor,
-        paddingTop: SMALL_GUTTER,
         bottom: 0,
         left: 0,
         right: 0,
       },
+
       scroll: {
         maxHeight: 200,
         padding: MEDIUM_GUTTER,
       },
       text: {
-        color: variables.title.color,
+        color: variables.imageOverlayTextColor,
         textAlign: 'center',
       },
     },
@@ -1849,7 +1884,6 @@ export default (variables = {}) => ({
 
     'shoutem.ui.View': {
       'shoutem.ui.View': {
-        'shoutem.ui.Overlay': {
           'shoutem.ui.View': {
             'shoutem.ui.Heading': {
               color: 'white',
@@ -1876,10 +1910,6 @@ export default (variables = {}) => ({
             },
           },
 
-          alignSelf: 'stretch',
-          marginVertical: 0,
-        },
-
         [INCLUDE]: ['fillParent'],
       },
     },
@@ -1888,13 +1918,19 @@ export default (variables = {}) => ({
     flex: 0,
   },
 
+  'shoutem.ui.LinearGradient': {
+    '.fill-parent': {
+      [INCLUDE]: ['fillParent'],
+    }
+  },
+
   // ***************** //
   // END OF SHOUTEM-UI //
   // ***************** //
 
   //
   // Navigation
-  // Drawer, TabBar, Folder
+  // Drawer, TabBar, Sub-navigation
 
   mainNavigation: {
     '.selected': {
@@ -1911,6 +1947,9 @@ export default (variables = {}) => ({
         color: variables.mainNavSelectedItemColor,
       },
     },
+    item: {
+      backgroundColor: variables.mainNavItemBackground,
+    },
     icon: {
       tintColor: variables.mainNavItemColor,
     },
@@ -1918,7 +1957,7 @@ export default (variables = {}) => ({
       color: variables.mainNavItemColor,
     },
   },
-  folderNavigation: {
+  subNavigation: {
     '.main-navigation': {
       // Active when the IconGrid or List layout is on root screen (in app's main navigation)
       [INCLUDE]: ['mainNavigation'],
@@ -1947,12 +1986,16 @@ export default (variables = {}) => ({
       [INCLUDE]: ['alignmentVariants'],
     },
 
+    item: {
+      backgroundColor: variables.subNavItemBackground,
+    },
+
     icon: {
-      tintColor: variables.folderItemColor,
+      tintColor: variables.subNavItemColor,
     },
 
     text: {
-      color: variables.folderItemColor,
+      color: variables.subNavItemColor,
     },
 
     scrollView: {
@@ -2092,7 +2135,7 @@ export default (variables = {}) => ({
     },
   },
   'shoutem.navigation.IconGrid': {
-    [INCLUDE]: ['folderNavigation'],
+    [INCLUDE]: ['subNavigation'],
     '.text-hidden': {
       item: {
         marginBottom: GRID_ITEM_VERTICAL_GUTTER,
@@ -2125,7 +2168,6 @@ export default (variables = {}) => ({
       flexDirection: 'row',
     },
     item: {
-      backgroundColor: 'transparent', // Override MainNavigation item color
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'column',
@@ -2152,7 +2194,7 @@ export default (variables = {}) => ({
     },
   },
   'shoutem.navigation.List': {
-    [INCLUDE]: ['folderNavigation'],
+    [INCLUDE]: ['subNavigation'],
     '.main-navigation': {
       item: {
         borderColor: variables.mainNavBorderColor,
@@ -2192,8 +2234,7 @@ export default (variables = {}) => ({
       alignItems: 'center',
       flexDirection: 'row',
       borderTopWidth: 1,
-      borderColor: variables.folderListBorderColor,
-      backgroundColor: variables.paperColor,
+      borderColor: variables.subNavListBorderColor,
       height: 65,
     },
     iconAndTextContainer: {
@@ -2217,7 +2258,7 @@ export default (variables = {}) => ({
       alignItems: 'center',
     },
     chevron: {
-      color: changeColorAlpha(variables.folderItemColor, 0.5),
+      color: changeColorAlpha(variables.subNavItemColor, 0.5),
     },
   },
 
@@ -2261,13 +2302,14 @@ export default (variables = {}) => ({
         medium: 0.5,
         large: 0.625,
       },
+      backgroundColor: variables.subNavItemBackground,
     },
     text: {
       flex: 0,
       width: null,
       fontSize: 15,
       marginLeft: MEDIUM_GUTTER,
-      color: variables.folderItemColor,
+      color: variables.subNavItemColor,
     },
   },
 
