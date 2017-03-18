@@ -14,29 +14,29 @@ import {
   Alert,
 } from 'react-native';
 
-import { register } from '../redux.js';
-
-import { getAppId } from 'shoutem.application';
+import { connect } from 'react-redux';
 
 import _ from 'lodash';
 
+import { getAppId } from 'shoutem.application';
+import { NavigationBar } from '@shoutem/ui/navigation';
+import { navigateBack } from '@shoutem/core/navigation';
+
+import { register } from '../redux';
+
 import { ext } from '../const';
 
-import { connect } from 'react-redux';
-
 import { loginRequired } from '../loginRequired';
-
-import { errorMessages, getErrorMessage } from '../errorMessages';
-
-import { NavigationBar } from '@shoutem/ui/navigation';
-
-import { navigateBack } from '@shoutem/core/navigation';
+import { saveSession } from '../session';
+import {
+  errorMessages,
+  getErrorMessage,
+} from '../errorMessages';
 
 export class RegisterScreen extends Component {
   static propTypes = {
     navigateBack: React.PropTypes.func,
     register: React.PropTypes.func,
-    appId: React.PropTypes.any,
   };
 
   constructor(props, contex) {
@@ -57,10 +57,16 @@ export class RegisterScreen extends Component {
       Alert.alert('Error', errorMessages.EMPTY_FIELDS);
       return;
     }
-    register(email, username, password).then(() => navigateBack(), ({ payload }) => {
-      const { response } = payload;
-      Alert.alert('Registration failed', getErrorMessage(response && response.code));
-    });
+    register(email, username, password).then(
+      ({ payload }) => {
+        saveSession(JSON.stringify(payload));
+        navigateBack();
+      },
+      ({ payload }) => {
+        const { response } = payload;
+        Alert.alert('Registration failed', getErrorMessage(response && response.code));
+      },
+    );
   }
 
   render() {
@@ -74,7 +80,7 @@ export class RegisterScreen extends Component {
           autoCorrect={false}
           keyboardType="email-address"
           keyboardAppearance="dark"
-          onChangeText={(email) => this.setState({ email })}
+          onChangeText={email => this.setState({ email })}
           returnKeyType="done"
         />
         <Divider styleName="line" />
@@ -83,7 +89,7 @@ export class RegisterScreen extends Component {
           autoCapitalize="none"
           autoCorrect={false}
           keyboardAppearance="dark"
-          onChangeText={(username) => this.setState({ username })}
+          onChangeText={username => this.setState({ username })}
           returnKeyType="done"
         />
         <Divider styleName="line" />
@@ -93,7 +99,7 @@ export class RegisterScreen extends Component {
           autoCorrect={false}
           keyboardAppearance="dark"
           secureTextEntry
-          onChangeText={(password) => this.setState({ password })}
+          onChangeText={password => this.setState({ password })}
           returnKeyType="done"
         />
         <Divider styleName="section-header" />

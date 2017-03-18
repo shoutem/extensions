@@ -1,19 +1,37 @@
 import _ from 'lodash';
 import { find, resource } from '@shoutem/redux-io';
 import { chainReducers } from '@shoutem/redux-composers';
+import { preventStateRehydration } from '@shoutem/core/preventStateRehydration';
 
 import { ext } from './const';
 
 export const LOGOUT = 'shoutem.auth.LOGOUT';
 export const AUTHENTICATE = 'shoutem.auth.AUTHENTICATE';
+export const RESTORE_SESSION = 'shoutem.auth.RESTORE_SESSION';
 
 export const USER_SCHEMA = 'shoutem.auth.user';
 export const USER_CREDENTIALS_SCHEMA = 'shoutem.auth.user-credentials';
+export const USER_FACEBOOK_CREDENTIALS_SCHEMA = 'shoutem.auth.user-facebook-credentials';
 
-export default chainReducers([
-  resource(USER_SCHEMA),
-  resource(USER_CREDENTIALS_SCHEMA),
-]);
+const sessionReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case RESTORE_SESSION:
+      return payload;
+    case LOGOUT:
+      return {};
+    default:
+      return { ...state };
+  }
+};
+
+export default preventStateRehydration(
+  chainReducers([
+    sessionReducer,
+    resource(USER_SCHEMA),
+    resource(USER_CREDENTIALS_SCHEMA),
+    resource(USER_FACEBOOK_CREDENTIALS_SCHEMA),
+  ]),
+);
 
 export function register(email, username, password) {
   return find(USER_SCHEMA, '', { email, username, password });
@@ -21,6 +39,10 @@ export function register(email, username, password) {
 
 export function login(email, password) {
   return find(USER_CREDENTIALS_SCHEMA, '', { email, password });
+}
+
+export function loginWithFacebook(accessToken) {
+  return find(USER_FACEBOOK_CREDENTIALS_SCHEMA, '', { accessToken });
 }
 
 export function logout() {

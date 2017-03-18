@@ -2,7 +2,12 @@ import rio from '@shoutem/redux-io';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
 import URI from 'urijs';
 
-import { USER_SCHEMA, USER_CREDENTIALS_SCHEMA } from './redux';
+import {
+  USER_SCHEMA,
+  USER_CREDENTIALS_SCHEMA,
+  USER_FACEBOOK_CREDENTIALS_SCHEMA,
+} from './redux';
+
 const APPLICATION_EXTENSION = 'shoutem.application';
 
 export function appDidMount(app) {
@@ -45,7 +50,18 @@ export function appDidMount(app) {
     request: {
       endpoint: createAccountApiEndpoint(
         'verify_credentials.json',
-        'email={email}&password={password}'
+        'email={email}&password={password}',
+      ),
+      ...apiRequestOptions,
+    },
+  });
+
+  rio.registerSchema({
+    schema: USER_FACEBOOK_CREDENTIALS_SCHEMA,
+    request: {
+      endpoint: createAccountApiEndpoint(
+        'verify_facebook_credentials.json',
+        'access_token={accessToken}&auto_register=true&update_shoutem_profile=true',
       ),
       ...apiRequestOptions,
     },

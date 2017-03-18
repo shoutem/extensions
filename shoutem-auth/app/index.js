@@ -1,6 +1,8 @@
 // Constants `screens`, `actions` and `reducer` are exported via named export
 // It is important to use those exact names
 
+import _ from 'lodash';
+
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import reducer, {
@@ -9,21 +11,31 @@ import reducer, {
   authenticate,
   logoutAction,
   isAuthenticated,
-} from './redux.js';
+  RESTORE_SESSION,
+} from './redux';
 
-import _ from 'lodash';
+import { getSession } from './session';
 
 import {
   createLoginMiddleware,
-  createNetworkRequestMiddleware,
+  networkRequestMiddleware,
   logoutMiddleware,
-} from './middleware.js';
+} from './middleware';
 
 import { loginRequired } from './loginRequired';
 
 const appScreens = {};
 function appWillMount(app) {
-  _.map(app.getScreens(), (Screen, screenName) => { appScreens[screenName] = Screen; });
+  const { dispatch } = app.getStore();
+
+  _.each(app.getScreens(), (Screen, screenName) => { appScreens[screenName] = Screen; });
+
+  return getSession().then(
+    session => session && dispatch({
+      type: RESTORE_SESSION,
+      payload: JSON.parse(session),
+    }),
+  );
 }
 
 export const screens = {
@@ -39,7 +51,7 @@ export const actions = {
 
 const middleware = [
   createLoginMiddleware(appScreens),
-  createNetworkRequestMiddleware(),
+  networkRequestMiddleware,
   logoutMiddleware,
 ];
 
