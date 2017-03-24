@@ -19,7 +19,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { openURL } from 'shoutem.web-view';
 
-import { ext } from '../const.js';
+import { ext } from '../const';
 
 class PeopleDetailsScreen extends React.Component {
   static propTypes = {
@@ -36,7 +36,8 @@ class PeopleDetailsScreen extends React.Component {
     const { person } = this.props;
     return {
       styleName: person.image ? 'clear' : 'no-border',
-      animationName: person.image ? 'solidify' : '',
+      animationName: person.image ? 'solidify' : 'boxing',
+      title: `${person.firstName} ${person.lastName}`.toUpperCase(),
     };
   }
 
@@ -51,23 +52,25 @@ class PeopleDetailsScreen extends React.Component {
     return person.image ? (
       <Image
         animationName="hero"
-        styleName="large-square hero"
+        styleName="large-square placeholder"
         source={{ uri: person.image && person.image.url }}
-      />) : null;
+      />) : <View styleName="sm-gutter-top" />;
   }
 
   renderFooterButtons() {
     const { person } = this.props;
 
     return (
-      <View styleName="horizontal wrap">
-        {this.renderLinkButton('web', 'Web', person.websiteUrl)}
-        {this.renderLinkButton('call', 'Phone', person.phone ? `tel:${person.phone}` : null)}
-        {this.renderLinkButton('tweet', 'Twitter', person.twitterPageUrl)}
-        {this.renderLinkButton('linkedin', 'LinkedIn', person.linkedinProfileUrl)}
-        {this.renderLinkButton('facebook', 'Facebook', person.facebookProfileUrl)}
-        {this.renderLinkButton('email', 'Email',
+      <View styleName="horizontal h-center">
+        <View styleName="horizontal wrap h-start">
+          {this.renderLinkButton('web', 'Web', person.websiteUrl)}
+          {this.renderLinkButton('call', 'Phone', person.phone ? `tel:${person.phone}` : null)}
+          {this.renderLinkButton('tweet', 'Twitter', person.twitterPageUrl)}
+          {this.renderLinkButton('linkedin', 'LinkedIn', person.linkedinProfileUrl)}
+          {this.renderLinkButton('facebook', 'Facebook', person.facebookProfileUrl)}
+          {this.renderLinkButton('email', 'Email',
           person.email ? `mailto:${person.email}` : null)}
+        </View>
       </View>
     );
   }
@@ -78,9 +81,9 @@ class PeopleDetailsScreen extends React.Component {
     const { openURL, person } = this.props;
     const fullName = `${person.firstName} ${person.lastName}`;
 
-    if (name.toLowerCase() === 'email' || name.toLowerCase() === 'phone') {
+    if (/phone|email/i.test(name)) {
       return (
-        <Button styleName="stacked clear" onPress={() => Linking.openURL(url)}>
+        <Button styleName="stacked clear tight" onPress={() => Linking.openURL(url)}>
           <Icon name={icon} />
           <Text>{name}</Text>
         </Button>
@@ -88,7 +91,7 @@ class PeopleDetailsScreen extends React.Component {
     }
 
     return (
-      <Button styleName="stacked clear" onPress={() => openURL(url, fullName)}>
+      <Button styleName="stacked clear tight" onPress={() => openURL(url, fullName)}>
         <Icon name={icon} />
         <Text>{name}</Text>
       </Button>
@@ -109,7 +112,7 @@ class PeopleDetailsScreen extends React.Component {
           <View styleName="solid">
             <View styleName="vertical xl-gutter-top lg-gutter-bottom md-gutter-horizontal">
               <Title styleName="h-center md-gutter-bottom">{fullName}</Title>
-              <Caption styleName="h-center">{person.title}</Caption>
+              <Caption styleName="h-center">{person.profession}</Caption>
             </View>
 
             <RichMedia body={person.biography} />

@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { navigateTo } from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
 import { CmsListScreen } from 'shoutem.cms';
-import { isFavoriteSchema, getFavoriteCollection } from 'shoutem.favorites';
+import { isFavoritesSchema, getFavoriteCollection } from 'shoutem.favorites';
 
 import { ext } from '../const';
-import ListBooksView from '../components/ListBooksView.js';
+import ListBooksView from '../components/ListBooksView';
 
 export class BooksListScreen extends CmsListScreen {
   static propTypes = {
@@ -54,7 +54,7 @@ export class BooksListScreen extends CmsListScreen {
 
 export const mapStateToProps = (state, ownProps) => ({
   ...CmsListScreen.createMapStateToProps(state => state[ext()].allBooks)(state, ownProps),
-  hasFavorites: isFavoriteSchema(state, ext('Books')),
+  hasFavorites: isFavoritesSchema(state, ext('Books')),
   favoriteBooks: getFavoriteCollection(ext('Books'), state),
 });
 
@@ -63,5 +63,5 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('BooksListScreen'), {})(BooksListScreen)
+  connectStyle(ext('BooksListScreen'), {})(BooksListScreen),
 );

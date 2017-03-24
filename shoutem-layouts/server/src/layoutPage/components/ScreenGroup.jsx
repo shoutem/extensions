@@ -1,7 +1,9 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
 import Screen from './Screen';
-import { AdminPageRenderer, ExtensionContextProvider } from '@shoutem/web-core';
+import { SettingsPageRenderer, ExtensionContextProvider } from '@shoutem/web-core';
+
+const DEFAULT_GROUP_TITLE = 'Choose layout';
 
 export default class ScreenGroup extends Component {
   constructor(props) {
@@ -15,24 +17,29 @@ export default class ScreenGroup extends Component {
   }
 
   render() {
-    const { originalScreen, activeScreenDescriptor, onScreenSelected } = this.props;
+    const {
+      originalScreen,
+      activeScreenDescriptor,
+      onScreenSelected,
+      shortcutId,
+    } = this.props;
     const { alternativeScreens } = originalScreen;
-
-    if (!alternativeScreens || alternativeScreens.length === 0) {
-      // do not show this group if there are no alternative screens
-      return null;
-    }
 
     const alternativeScreen = _.find(alternativeScreens, [
       'canonicalName',
       activeScreenDescriptor.canonicalName,
     ]);
     const activeScreen = alternativeScreen || originalScreen;
+    const scope = {
+      shortcutId,
+      screenDescriptor: activeScreenDescriptor,
+    };
+    const title = _.get(originalScreen, 'groupTitle', DEFAULT_GROUP_TITLE);
 
     return (
       <div className="screen_group">
         <span className="screen_group__title">
-          Choose layout
+          {title}
         </span>
         <div className="screen_group__screen-list">
           <Screen
@@ -40,36 +47,39 @@ export default class ScreenGroup extends Component {
             isActive={originalScreen === activeScreen}
             onClick={onScreenSelected}
           />
-          {alternativeScreens.map(alternativeScreen => (
+          {alternativeScreens.map(screen => (
             <Screen
-              key={alternativeScreen.id}
-              screen={alternativeScreen}
-              isActive={alternativeScreen === activeScreen}
+              key={screen.id}
+              screen={screen}
+              isActive={screen === activeScreen}
               onClick={onScreenSelected}
             />
           ))}
+        </div>
+        <div className="screen_group__settings">
           {activeScreen && activeScreen.settingsPage && (
             <ExtensionContextProvider
               key={activeScreen.settingsPage.page}
               context={{ screenDescriptor: activeScreenDescriptor }}
             >
-              <AdminPageRenderer
+              <SettingsPageRenderer
                 key={activeScreen.settingsPage.page}
-                adminPageId={activeScreen.settingsPage.page}
+                settingsPageId={activeScreen.settingsPage.page}
+                scope={scope}
                 onError={this.handleLayoutSettingsPageError}
               />
             </ExtensionContextProvider>
           )}
-          <div className="screen_group__clear"></div>
         </div>
+        <div className="screen_group__clear"></div>
       </div>
     );
   }
 }
 
-
 ScreenGroup.propTypes = {
   originalScreen: PropTypes.object,
   activeScreenDescriptor: PropTypes.object,
+  shortcutId: PropTypes.string,
   onScreenSelected: PropTypes.func,
 };

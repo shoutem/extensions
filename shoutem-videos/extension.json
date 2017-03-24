@@ -1,11 +1,15 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "0.10.5",
-  "description": "Video gallery",
+  "version": "0.10.12",
+  "description": "Show a video gallery",
   "platform": "1.0.*",
   "icon": "server/assets/add-videos-image.png",
   "categories": ["media"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
   "shortcuts": [
     {
       "name": "openVideosList",

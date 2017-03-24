@@ -1,13 +1,13 @@
 import FCM from 'react-native-fcm';
 
-import { notificationReceived } from './actionCreators';
+import { deviceTokenReceived, notificationReceived } from './actionCreators';
 
 function appDidMount(app) {
   const store = app.getStore();
 
   function dispatchNotificationAction(receivedNotification) {
-    const { title, action } = receivedNotification;
-    const notification = { title };
+    const { body, title, action, opened_from_tray } = receivedNotification;
+    const notification = { body, openedFromTray: opened_from_tray, title };
 
     if (action) {
       try {
@@ -21,14 +21,21 @@ function appDidMount(app) {
     store.dispatch(notificationReceived(notification));
   }
 
-  // Display the FCM token only in development mode
-  if (process.env.NODE_ENV === 'development') {
-    FCM.getFCMToken().then(token => {
+  FCM.getFCMToken().then(token => {
+    store.dispatch(deviceTokenReceived(token));
+      // Display the FCM token only in development mode
+    if (process.env.NODE_ENV === 'development') {
       console.log('Firebase device token:', token);
-    });
-  }
+    }
+  });
 
   FCM.on('notification', dispatchNotificationAction);
+
+  FCM.getInitialNotification().then((notification) => {
+    if(notification) {
+      dispatchNotificationAction({...notification, opened_from_tray: true});
+    }
+  });
 }
 
 export {

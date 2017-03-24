@@ -7,7 +7,6 @@ import { ext } from './const';
 // Shoutem specified actions
 export function openPlacesList(shortcut) {
   return navigateTo({
-   screen: ext('PlacesListIcon')
+    screen: ext('IconPlacesList'),
   });
 }
-

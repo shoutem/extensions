@@ -2,7 +2,8 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
-import { ext } from '../const';
+
+import { cloneStatus } from '@shoutem/redux-io';
 
 import {
   GridRow,
@@ -14,10 +15,9 @@ import {
   mapDispatchToProps,
 } from './ArticlesListScreen';
 
-import { cloneStatus } from '@shoutem/redux-io';
-
 import FeaturedArticleView from '../components/FeaturedArticleView';
 import GridArticleView from '../components/GridArticleView';
+import { ext } from '../const';
 
 class ArticlesGridScreen extends ArticlesListScreen {
   static propTypes = {
@@ -61,7 +61,7 @@ class ArticlesGridScreen extends ArticlesListScreen {
   renderData(articles) {
     // Group the articles into rows with 2 columns
     const groupedArticles = GridRow.groupByRows(articles, 2,
-      (article) => (article.featured ? 2 : 1)
+      article => (article.featured ? 2 : 1),
     );
 
     // Transfer the loading status from the original collection

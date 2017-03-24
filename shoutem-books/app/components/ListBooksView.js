@@ -22,7 +22,6 @@ import LinkIconButton from './LinkIconButton';
 class ListBooksView extends React.Component {
   static propTypes = {
     onPress: React.PropTypes.func,
-    openURL: React.PropTypes.func,
     book: React.PropTypes.object.isRequired,
     hasFavoriteButton: React.PropTypes.bool,
   };
@@ -39,17 +38,19 @@ class ListBooksView extends React.Component {
 
   render() {
     const { book, hasFavoriteButton } = this.props;
-    const favorites = hasFavoriteButton ? <Favorite item={book} /> : null;
+    const favorites = hasFavoriteButton ? <Favorite item={book} schema={book.type} /> : null;
     const addToCartButton = <LinkIconButton book={book} />;
 
     return (
-      <TouchableOpacity onPress={this.openDetailsScreen}>
-        <Image styleName="large-banner" source={{ uri: book.image ? book.image.url : undefined }}>
+      <TouchableOpacity virtual onPress={this.openDetailsScreen}>
+        <Image
+          styleName="large-banner placeholder"
+          source={{ uri: book.image ? book.image.url : undefined }}
+        >
           <Tile>
-            <View styleName="actions">
-              {favorites || addToCartButton}
+            <View styleName="actions horizontal">
+              {favorites}{addToCartButton}
             </View>
-
             <Title>{book.title.toUpperCase()}</Title>
 
             <Caption>{formatBookCaption(book)}</Caption>
@@ -66,5 +67,5 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
 });
 
 export default connect(undefined, mapDispatchToProps)(
-  connectStyle(ext('ListBooksView'), {})(ListBooksView)
+  connectStyle(ext('ListBooksView'), {})(ListBooksView),
 );

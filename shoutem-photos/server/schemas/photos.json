@@ -4,19 +4,22 @@
       "format": "single-line",
       "title": "Name",
       "type": "string",
-      "required": true
+      "required": true,
+      "displayPriority": 1
     },
     "description": {
       "format": "multi-line",
       "title": "Description",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 2
     },    
     "image": {
       "format": "attachment",
       "title": "Image",
       "type": "object",
       "referencedSchema": "shoutem.core.image-attachments",
-      "required": true
+      "required": true,
+      "displayPriority": 3
     }
   },
   "title": "Photos",

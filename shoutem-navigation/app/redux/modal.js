@@ -1,9 +1,144 @@
-import { createNavigationReducer } from '@shoutem/core/navigation';
+import { InteractionManager } from 'react-native';
+import { combineReducers } from 'redux';
+
+import {
+  ROOT_NAVIGATION_STACK,
+  EMPTY_ROUTE,
+  NavigationOperations,
+
+  createNavigationReducer,
+
+  navigateTo,
+  getActiveNavigationStack,
+  setActiveNavigationStack,
+  navigateBack,
+  reset,
+} from '@shoutem/core/navigation';
 
 import { ext } from '../const';
 
+const MODAL_SCREEN = 'shoutem.navigation.Modal';
+
 export const MODAL_NAVIGATION_STACK = {
   name: ext('Modal'),
-  statePath: [ext(), 'modal'],
+  statePath: [ext(), 'modal', 'navigation'],
 };
-export default createNavigationReducer(MODAL_NAVIGATION_STACK.name);
+
+//
+// Actions
+//
+
+/**
+ * Open a route from the action in a new modal window.
+ * @typedef OPEN_MODAL
+ * @type {object}
+ * @property route {} The route to navigate to.
+ */
+export const OPEN_MODAL = 'shoutem.navigation.OPEN_MODAL';
+
+/**
+ * Saves the previous navigation stack
+ * @typedef SAVE_PREVIOUS_STACK
+ * @type {object}
+ * @property payload {} Previous navigation stack.
+ */
+export const SAVE_PREVIOUS_STACK = 'shoutem.navigation.SAVE_PREVIOUS_STACK';
+
+/**
+ * Closes the active modal window.
+ * @typedef CLOSE_MODAL
+ * @type {object}
+ */
+export const CLOSE_MODAL = 'shoutem.navigation.CLOSE_MODAL';
+
+/**
+ * @see OPEN_MODAL
+ * Navigates to the specified route in a new modal window.
+ * @returns {{ type: String }}
+ */
+export const openInModal = (route) => ({
+  type: OPEN_MODAL,
+  route,
+});
+
+/**
+ * @see CLOSE_MODAL
+ * Closes the active modal window.
+ * @returns {{ type: String }}
+ */
+export const closeModal = () => ({
+  type: CLOSE_MODAL,
+});
+
+/**
+ * @see SAVE_PREVIOUS_STACK
+ * Saves the previous active stack in the state.
+ * @param previousStack - Previous stack
+ * @returns {{ type: String, stack: {} }}
+ */
+export const savePreviousStack = previousStack => ({
+  type: SAVE_PREVIOUS_STACK,
+  stack: previousStack,
+});
+
+//
+// Middleware
+//
+
+/**
+ * Opens a modal by pushing the Modal screen to the ROOT_NAVIGATION_STACK.
+ * When modal is ready to display content, an arbitrary action specified in payload
+ * is dispatched.
+ * @param store
+ */
+export const openModalMiddleware = store => next => (action) => {
+  if (action.type === OPEN_MODAL) {
+    const { route } = action;
+    const previousStack = getActiveNavigationStack(store.getState());
+    const { dispatch } = store;
+
+    dispatch(savePreviousStack(previousStack));
+    dispatch(navigateTo(route, NavigationOperations.RESET, MODAL_NAVIGATION_STACK));
+    dispatch(navigateTo({ screen: MODAL_SCREEN }, undefined, ROOT_NAVIGATION_STACK));
+    dispatch(setActiveNavigationStack(MODAL_NAVIGATION_STACK));
+  }
+
+  return next(action);
+};
+
+/**
+ * Closes the active modal
+ * @param store
+ */
+export const closeModalMiddleware = store => next => (action) => {
+  if (action.type === CLOSE_MODAL) {
+    const { previousStack } = store.getState()[ext()].modal;
+    const { dispatch } = store;
+
+    dispatch(setActiveNavigationStack(previousStack));
+    dispatch(navigateBack(ROOT_NAVIGATION_STACK));
+
+    InteractionManager.runAfterInteractions(() => {
+      dispatch(reset([EMPTY_ROUTE], 0, MODAL_NAVIGATION_STACK));
+    });
+  }
+
+  return next(action);
+};
+
+//
+// Reducers
+//
+
+const previousStack = (state = {}, action) => {
+  if (action.type === SAVE_PREVIOUS_STACK) {
+    return { ...action.stack };
+  }
+  return state;
+};
+
+const reducer = combineReducers({
+  navigation: createNavigationReducer(MODAL_NAVIGATION_STACK.name),
+  previousStack,
+});
+export default reducer;

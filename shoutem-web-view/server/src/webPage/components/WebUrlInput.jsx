@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import {
   Button,
@@ -45,7 +46,7 @@ export default class WebUrlInput extends Component {
   }
 
   handleContinue() {
-    const url = this.state.url;
+    const url = _.trim(this.state.url);
     if (validateUrl(url)) {
       this.props.onContinueClick(url);
     } else {

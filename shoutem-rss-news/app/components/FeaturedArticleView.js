@@ -48,7 +48,7 @@ export default class FeaturedArticleView extends React.Component {
               <Title>{(article.title || '').toUpperCase()}</Title>
               <View styleName="horizontal md-gutter-top" virtual>
                 <Caption styleName="collapsible" numberOfLines={1}>{article.author}</Caption>
-                { dateFormat }
+                {dateFormat}
               </View>
             </Tile>
           </Image>

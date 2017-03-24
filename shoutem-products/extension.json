@@ -1,10 +1,14 @@
 {
   "name": "products",
-  "version": "0.9.6",
+  "version": "0.9.16",
   "title": "Products",
-  "description": "List of products with purchase link.",
+  "description": "Show products with purchase link",
   "platform": "1.0.*",
-  "categories": ["content"],
+  "categories": ["commerce"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
   "icon": "server/assets/add-products-image.png",
   "dependencies": [
     "shoutem.cms"
@@ -14,7 +18,7 @@
       "name": "openProductsList",
       "title": "Products",
       "screen": "@.ProductsList",
-      "icon": "theme://products.png",
+      "icon": "theme://cart.png",
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",

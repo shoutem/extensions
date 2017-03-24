@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import { ControlLabel, Row, Col, FormGroup } from 'react-bootstrap';
 import form from '../common/form';
@@ -28,7 +28,7 @@ const configuration = {
   },
 };
 
-export class GeneralSettings extends React.Component {
+export class GeneralSettings extends Component {
   constructor(props) {
     super(props);
     this.saveForm = this.saveForm.bind(this);
@@ -49,7 +49,7 @@ export class GeneralSettings extends React.Component {
       inItemAlignment,
       iconSize,
     } = fields;
-    const isShowTextOnly = _.get(settings, 'showText');
+    const showIcon = _.get(settings, ['showIcon'], true);
 
     return (
       <div>
@@ -69,7 +69,7 @@ export class GeneralSettings extends React.Component {
                   valuesMap={configuration.iconSize}
                   defaultKey={configuration.default.iconSize}
                   field={iconSize}
-                  disabled={isShowTextOnly}
+                  disabled={!showIcon}
                 />
               </Col>
             </Row>
@@ -107,6 +107,9 @@ export class GeneralSettings extends React.Component {
 GeneralSettings.propTypes = {
   settings: PropTypes.object.isRequired,
   onSettingsChanged: PropTypes.func.isRequired,
+  fields: PropTypes.object.isRequired,
+  form: PropTypes.object,
+  onFieldChange: PropTypes.func,
 };
 
 export default form((props) => {

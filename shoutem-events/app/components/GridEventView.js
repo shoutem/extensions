@@ -25,7 +25,7 @@ export default class extends BaseEventItem {
           <EventImage styleName="medium-wide" event={event} />
           <View styleName="content">
             <Subtitle numberOfLines={3}>{event.name}</Subtitle>
-            <View styleName="flexible horizontal v-center space-between">
+            <View styleName="flexible horizontal v-end space-between">
               <Caption>{formatDate(event.startTime)}</Caption>
               <Button styleName="tight clear" onPress={this.action}>
                 <Icon name="add-event" />

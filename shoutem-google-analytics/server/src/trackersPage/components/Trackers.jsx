@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
 import { ControlLabel, Button } from 'react-bootstrap';
-import { IconLabel } from '@shoutem/se-ui-kit';
+import { IconLabel } from '@shoutem/react-web-ui';
 import TrackerTableRow from './TrackerTableRow';
 import './style.scss';
 

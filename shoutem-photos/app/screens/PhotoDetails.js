@@ -1,127 +1,131 @@
 import React, {
-  Component
+  PureComponent,
+  PropTypes,
 } from 'react';
 
 import {
-  View as RNView,
-  Modal
+  StatusBar,
+  Platform,
 } from 'react-native';
 
 import {
-  Image,
-  Text,
-  Icon,
-  Title,
-  View,
+  ImageGallery,
+  Screen,
+  ImageGalleryOverlay,
 } from '@shoutem/ui';
 
-import { connectStyle } from '@shoutem/theme';
-import { ImageGallery } from '../components/ImageGallery';
-import Share from 'react-native-share';
+import {
+  NavigationBar,
+} from '@shoutem/ui/navigation';
 
-export default class PhotoDetails extends Component {
+import { connectStyle } from '@shoutem/theme';
+import _ from 'lodash';
+
+import { ext } from '../const';
+
+class PhotoDetails extends PureComponent {
+  static propTypes = {
+    photos: PropTypes.array,
+    photo: PropTypes.object.isRequired,
+    navigateBack: PropTypes.func,
+  };
 
   constructor(props) {
     super(props);
-    this.onPageSelected = this.onPageSelected.bind(this);
-    this.onFullScreen = this.onFullScreen.bind(this);
-    this.onShare = this.onShare.bind(this);
-    this.state = { 
-      fullScreen: false, 
-      position: 0 
-    }; 
+    this.onIndexSelected = this.onIndexSelected.bind(this);
+    this.onImageGalleryModeChange = this.onImageGalleryModeChange.bind(this);
+    this.onBackButton = this.onBackButton.bind(this);
+    this.getNavbarProps = this.getNavbarProps.bind(this);
+
+    this.state = {
+      mode: ImageGallery.IMAGE_GALLERY_MODE,
+      selectedPhotoIndex: 0,
+      shouldRenderGallery: false,
+    };
   }
 
-  componentWillMount(){
+  componentWillMount() {
     const { photo, photos } = this.props;
-    const position = photos.indexOf(photo);
-    this.setState({ 
-      position: position, 
+
+    const selectedPhotoIndex = _.findIndex(photos, ['id', photo.id]) || 0;
+
+    this.setState({
+      selectedPhotoIndex,
     });
   }
 
-  onShare() {
+  onBackButton() {
+    const { navigateBack } = this.props;
+
+    navigateBack();
+  }
+
+  onIndexSelected(index) {
+    this.setState({ selectedPhotoIndex: index });
+  }
+
+  onImageGalleryModeChange(newMode) {
+    const { mode } = this.state;
+
+    if (Platform.OS === 'ios') {
+      const isHidden = (newMode === ImageGallery.IMAGE_PREVIEW_MODE);
+      StatusBar.setHidden(isHidden, 'fade');
+    }
+
+    if (newMode !== mode) {
+      this.setState({ mode: newMode });
+    }
+  }
+
+  getNavbarProps() {
+    const { selectedPhotoIndex, mode } = this.state;
     const { photos } = this.props;
-    const position = this.state.position;
 
-    const nameText = photos[position].name ? photos[position].name.toUpperCase() : "" || photos[position].title ? photos[position].title.toUpperCase() : "";
-    const descriptionText = photos[position].description || photos[position].summary;
-    const imageUrl = _.get(photos[position], 'image.url') || _.get(photos[position], 'imageAttachments[0].url');
+    if (mode === ImageGallery.IMAGE_PREVIEW_MODE) {
+      return {
+        styleName: 'none',
+      };
+    }
 
+    const selectedPhoto = photos[selectedPhotoIndex];
 
-    Share.open({
-      title: nameText,
-      message: descriptionText,
-      url: imageUrl,
-    }, (sharingError) => {
-      console.error(sharingError);
-    });
+    return {
+      styleName: 'clear',
+      title: `${selectedPhotoIndex + 1} / ${photos.length}`,
+      share: {
+        title: _.get(selectedPhoto, 'title'),
+        link: _.get(selectedPhoto, 'source.uri'),
+      },
+    };
   }
 
-  onPageSelected(newPage){
-    const currentPage = this.state.position;
-    if (currentPage != newPage){
-      this.setState({position: newPage});
-    }
-  }
-
-  onFullScreen(newState){
-    if (this.state.fullScreen !== newState) {
-      this.setState({fullScreen:newState});
-    }
+  renderImageOverlay(imageData) {
+    return (
+      <ImageGalleryOverlay
+        styleName="full-screen"
+        title={imageData.title}
+        description={imageData.description}
+      />
+    );
   }
 
   render() {
-    const { photo, setNavBarProps, photos } = this.props;
-    const { position, fullScreen } = this.state;
+    const { selectedPhotoIndex } = this.state;
+    const { photos } = this.props;
 
-    //set the title in the NavigationBar depending on full screen status
-    if(fullScreen){
-      setNavBarProps({
-        leftComponent: <View></View>, //remove white back button
-        styleName:'clear'
-      });
-    }
-    else{
-      setNavBarProps({
-        title: position + 1 + "/" + photos.length,
-        rightComponent: <View styleName="horizontal"><Icon name="comment" style={style.icons} /><Icon style={style.icons} name="share" onPress={this.onShare} /></View>,
-      });  
-    }
-
-    return ( 
-      <RNView 
-        renderToHardwareTextureAndroid
-        style={[style.container, fullScreen&&style.fullScreenContainer]}>
-          <ImageGallery  
-            data={photos}
-            selectedPage={position}
-            onPageSelected={this.onPageSelected}
-            onFullScreen={this.onFullScreen}
-          /> 
-      </RNView> 
+    return (
+      <Screen styleName="paper full-screen">
+        <NavigationBar {...this.getNavbarProps()} />
+        <ImageGallery
+          data={photos}
+          renderImageOverlay={this.renderImageOverlay}
+          onIndexSelected={this.onIndexSelected}
+          selectedIndex={selectedPhotoIndex}
+          onModeChanged={this.onImageGalleryModeChange}
+        />
+      </Screen>
     );
   }
 }
 
-const style = {
-  container: {
-    backgroundColor: '#f2f2f2',
-    position:'absolute',
-    left:0,
-    right:0,
-    top:0,
-    bottom:0,
-  },
-  fullScreenContainer: {
-    backgroundColor: '#000000',
-  },
-  icons: {
-    color: '#333333',
-    marginHorizontal: 8,
-  },
-}
-
-const StyledPhotoDetails = connectStyle('shoutem.photos.photos', style)(PhotoDetails);
-
-
+export default connectStyle(ext('PhotoDetails'))(PhotoDetails);

@@ -21,7 +21,7 @@ export {
   screens,
 };
 
-export function appWillMount(app) {
+export function appDidMount(app) {
   const state = app.getState();
 
   // Configure the RSS news schema in RIO

@@ -3,15 +3,14 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
   TouchableOpacity,
-  Card,
   View,
   Title,
   Caption,
   Image,
-  Tile
+  Tile,
 } from '@shoutem/ui';
 
-import { fallbackImage } from '../index.js';
+import { fallbackImage } from '../index';
 
 /**
  * A component used to render a single list photo item
@@ -28,30 +27,35 @@ export default class ListPhotoView extends React.Component {
   }
 
   onPress() {
-    this.props.onPress(this.props.photo);
+    const { onPress, photo } = this.props;
+
+    if (_.isFunction(onPress)) {
+      onPress(photo);
+    }
   }
 
   render() {
     const { photo } = this.props;
-    const nameText = photo.name ? photo.name.toUpperCase() : "" || photo.title ? photo.title.toUpperCase() : "";
-    const imageUrl = _.get(photo, 'image.url') || _.get(photo, 'imageAttachments[0].url');
+
+    const title = _.get(photo, 'title');
+    const source = _.get(photo, 'source');
 
     return (
-        <View key={photo.id}>
-          <TouchableOpacity onPress={this.onPress}>
-            <Tile>
-                <Image
-                    styleName='large-wide'
-                    source={{ uri: imageUrl }}
-                    defaultSource={fallbackImage}
-                />
-                <View styleName='content'>
-                    <Title styleName='md-gutter' numberOfLines={2}>{nameText}</Title>
-                    <Caption styleName='md-gutter'>{moment(photo.timeUpdated).fromNow()}</Caption>
-                </View>
-            </Tile>      
-          </TouchableOpacity> 
-        </View>
+      <View key={photo.id}>
+        <TouchableOpacity onPress={this.onPress}>
+          <Tile>
+            <Image
+              styleName="large-banner"
+              source={source}
+              defaultSource={fallbackImage}
+            />
+            <View styleName="content md-gutter">
+              <Title numberOfLines={2}>{title.toUpperCase()}</Title>
+              <Caption>{moment(photo.timeUpdated).fromNow()}</Caption>
+            </View>
+          </Tile>
+        </TouchableOpacity>
+      </View>
     );
   }
 }

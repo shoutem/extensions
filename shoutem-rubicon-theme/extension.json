@@ -1,17 +1,21 @@
 {
   "name": "rubicon-theme",
-  "version": "0.1.34",
+  "version": "0.1.44",
   "type": "system",
   "title": "Rubicon Prime",
-  "description": "Rubicon theme - Shoutem default theme",
+  "description": "Rubicon theme",
   "platform": "1.0.*",
   "icon": "server/assets/add-rubicon-theme-image.png",
   "categories": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
   "themes": [
     {
       "name": "Rubicon",
       "title": "Rubicon Prime",
-      "description": "Rubicon is a beautiful universal theme applicable to application of any type. Its clean and modern design can easily be modified to match your brand identity.",
+      "description": "Rubicon Prime is our staple theme. Built to be both versatile and elegant, it smoothly transforms from a beautiful airy and spacious style to a more color dominated one.",
       "showcase": [ "server/assets/rubicon-video.mp4", "server/assets/rubicon-screenshot-1.jpg",  "server/assets/rubicon-screenshot-2.jpg", "server/assets/rubicon-screenshot-3.jpg", "server/assets/rubicon-screenshot-4.jpg"
       ],
       "icons":"server/assets/icons/",

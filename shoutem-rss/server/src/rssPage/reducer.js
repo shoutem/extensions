@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
-import { storage, one, collection, find, create, update } from '@shoutem/redux-io';
+import { one, collection, find, update } from '@shoutem/redux-io';
 import _ from 'lodash';
-import { auth, url, appId } from 'environment';
+import { url, appId } from 'environment';
 import { ext, data as contextData } from 'context';
 
 export const SHORTCUTS = 'shoutem.core.shortcuts';
@@ -16,9 +16,12 @@ export default combineReducers({
 
 export function updateShortcutSettings(id, settings) {
   const config = {
-    endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts/${id}`,
-    headers: {
-      'Content-Type': 'application/vnd.api+json',
+    schema: SHORTCUTS,
+    request: {
+      endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts/${id}`,
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
     },
   };
 
@@ -30,7 +33,7 @@ export function updateShortcutSettings(id, settings) {
     },
   };
 
-  return update(config, SHORTCUTS, partialShortcut);
+  return update(config, partialShortcut);
 }
 
 export function loadFeed(feedUrl) {
@@ -39,9 +42,9 @@ export function loadFeed(feedUrl) {
     request: {
       endpoint: `//${url.legacy}/v1/apps/${appId}/proxy/resources/${FEED_ITEMS}?filter[url]=${feedUrl}`,
       headers: {
-        'Accept': 'application/vnd.api+json',
+        Accept: 'application/vnd.api+json',
       },
-    }
+    },
   };
 
   return find(config, ext('feedItems'));
@@ -52,7 +55,7 @@ export function discoverFeeds(feedUrl) {
     type: 'shoutem.proxy.actions.discover-feeds',
     attributes: {
       schema: FEED_ITEMS,
-      url: feedUrl
+      url: feedUrl,
     },
   };
 
@@ -62,11 +65,11 @@ export function discoverFeeds(feedUrl) {
       endpoint: `//${url.legacy}/v1/apps/${appId}/proxy/actions/discover-feeds`,
       headers: {
         'Content-Type': 'application/vnd.api+json',
-        'Accept': 'application/vnd.api+json',
+        Accept: 'application/vnd.api+json',
       },
-      body: JSON.stringify({data: partialDiscoverFeeds}),
+      body: JSON.stringify({ data: partialDiscoverFeeds }),
       method: 'POST',
-    }
+    },
   };
 
   return find(config, ext('discoveredFeeds'));

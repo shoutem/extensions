@@ -10,20 +10,18 @@ import {
   Subtitle,
   Caption,
   Row,
-  Icon,
   Divider,
 } from '@shoutem/ui';
 
 export default class ListProductView extends Component {
+  static propTypes = {
+    product: React.PropTypes.object.isRequired,
+    onPress: React.PropTypes.func.isRequired,
+  };
+
   constructor(props) {
     super(props);
-    this.handleBuyPress = this.handleBuyPress.bind(this);
     this.handleItemPress = this.handleItemPress.bind(this);
-  }
-
-  handleBuyPress() {
-    const { product, onBuyPress } = this.props;
-    onBuyPress(product);
   }
 
   handleItemPress() {
@@ -32,15 +30,13 @@ export default class ListProductView extends Component {
   }
 
   render() {
-    const { product, onPress } = this.props;
-
+    const { product } = this.props;
     return (
       <TouchableOpacity onPress={this.handleItemPress}>
         <Row>
           <Image
-            styleName="small"
+            styleName="small placeholder"
             source={{ uri: _.get(product, 'image.url') }}
-            defaultSource={require('../assets/images/image-fallback.png')}
           />
           <View styleName="vertical stretch space-between">
             <Subtitle>{product.name}</Subtitle>
@@ -49,9 +45,6 @@ export default class ListProductView extends Component {
               <Caption styleName="line-through sm-gutter-left">{product.oldPrice}</Caption>
             </View>
           </View>
-          <TouchableOpacity onPress={this.handleBuyPress} >
-            <Icon name="add-to-cart" />
-          </TouchableOpacity>
         </Row>
         <Divider styleName="line" />
       </TouchableOpacity>

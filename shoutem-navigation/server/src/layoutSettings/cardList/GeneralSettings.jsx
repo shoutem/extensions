@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { ControlLabel, Row, Col, FormGroup } from 'react-bootstrap';
 import form from '../common/form';
 import DropdownWrapper from '../common/DropdownWrapper';
@@ -35,7 +35,7 @@ const configuration = {
   },
 };
 
-export class GeneralSettings extends React.Component {
+export class GeneralSettings extends Component {
   constructor(props) {
     super(props);
     this.saveForm = this.saveForm.bind(this);
@@ -105,6 +105,9 @@ export class GeneralSettings extends React.Component {
 GeneralSettings.propTypes = {
   settings: PropTypes.object.isRequired,
   onSettingsChanged: PropTypes.func.isRequired,
+  fields: PropTypes.object.isRequired,
+  form: PropTypes.object,
+  onFieldChange: PropTypes.func,
 };
 
 export default form((props) => {

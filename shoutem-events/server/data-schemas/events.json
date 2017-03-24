@@ -8,55 +8,53 @@
       "format": "single-line",
       "title": "Name",
       "type": "string",
-      "required": true
+      "required": true,
+      "displayPriority": 1
     },
     "featured": {
       "title": "Featured",
       "format": "boolean",
-      "type": "boolean"
+      "type": "boolean",
+      "displayPriority": 2
     },
     "description": {
       "title": "Description",
       "format": "html",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 3
     },
     "image": {
       "type": "object",
       "format": "attachment",
       "title": "Image",
-      "referencedSchema": "shoutem.core.image-attachments"
+      "referencedSchema": "shoutem.core.image-attachments",
+      "displayPriority": 4
     },
     "startTime": {
       "type": "object",
       "format": "date-time",
       "title": "Start time",
-      "required": true
+      "required": true,
+      "displayPriority": 5
     },
     "endTime": {
       "type": "object",
       "format": "date-time",
       "title": "End time",
-      "required": true
+      "required": true,
+      "displayPriority": 6
     },
     "rsvpLink": {
       "format": "uri",
       "title": "RSVP link",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 7
     },
-    "address": {
-      "format": "single-line",
-      "title": "Address",
-      "type": "string"
-    },
-    "longitude": {
-      "format": "single-line",
-      "title": "Longitude",
-      "type": "string"
-    },
-    "latitude": {
-      "format": "single-line",
-      "title": "Latitude",
-      "type": "string"
+    "location": {
+      "format": "geolocation",
+      "title": "Location",
+      "type": "object",
+      "displayPriority": 8
     }
   }
 }

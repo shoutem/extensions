@@ -6,7 +6,9 @@ import {
   REQUEST_PUSH_PERMISSION,
 } from './redux';
 
-import { appDidMount } from './app';
+import { appDidMount, appWillMount, appWillUnmount } from './app';
+
+import Permissions from './permissions';
 
 export {
   reducer,
@@ -15,4 +17,7 @@ export {
   USER_NOTIFIED,
   REQUEST_PUSH_PERMISSION,
   appDidMount,
+  appWillMount,
+  appWillUnmount,
+  Permissions,
 };

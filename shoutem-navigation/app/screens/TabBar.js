@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import {
   ScreenStack,
@@ -30,7 +30,7 @@ import {
 
 const TABS_LIMIT = 5;
 
-export class TabBar extends Component {
+export class TabBar extends PureComponent {
   static propTypes = {
     // Server props
     shortcut: React.PropTypes.object.isRequired,
@@ -66,7 +66,7 @@ export class TabBar extends Component {
   getStartingShortcut() {
     const { startingScreen, shortcut } = this.props;
     const childShortcuts = shortcut.children;
-    return _.find(childShortcuts, startingScreen) || _.first(childShortcuts);
+    return _.find(childShortcuts, ['id', startingScreen]) || _.first(childShortcuts);
   }
 
   getTabRouteForShortcut(shortcut) {
@@ -77,6 +77,14 @@ export class TabBar extends Component {
         shortcut,
       },
     };
+  }
+
+  getActiveShortcut() {
+    const { navigationState } = this.props;
+    const index = navigationState.index;
+    const shortcutPath = ['routes', [index], 'props', 'shortcut'];
+    const currentShortcut = (index > -1) ? _.get(navigationState, shortcutPath) : null;
+    return currentShortcut;
   }
 
   resetTabNavigationStateToTop(tabId) {
@@ -108,14 +116,6 @@ export class TabBar extends Component {
     }
   }
 
-  getActiveShortcut() {
-    const { navigationState } = this.props;
-    const index = navigationState.index;
-    const shortcutPath = ['routes', [index], 'props', 'shortcut'];
-    const currentShortcut = (index > -1) ? _.get(navigationState, shortcutPath) : null;
-    return currentShortcut;
-  }
-
   renderTabBarItems() {
     const { showText, showIcon, shortcut: { children } } = this.props;
     const activeShortcut = this.getActiveShortcut();
@@ -133,11 +133,14 @@ export class TabBar extends Component {
   }
 
   render() {
+    const { style } = this.props;
+
     return (
-      <Screen styleName="full-screen">
+      <Screen style={style.screen}>
         <NavigationBar hidden />
         <ScreenStack
           styleName="without-transitions"
+          useNativeAnimations={false}
           gestureResponseDistance={0}
           direction="vertical"
           navigationState={this.props.navigationState}

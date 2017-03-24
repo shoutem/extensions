@@ -38,7 +38,7 @@ export default class FeaturedArticleView extends React.Component {
       <TouchableOpacity key={article.id} onPress={this.onPress}>
         <View styleName="sm-gutter featured">
           <Image
-            styleName="featured"
+            styleName="featured placeholder"
             source={{ uri: _.get(article, 'image.url') }}
           >
             <Tile>

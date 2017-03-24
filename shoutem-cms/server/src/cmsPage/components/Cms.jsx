@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { isInitialized, shouldRefresh, isValid, isBusy } from '@shoutem/redux-io';
 import { connect } from 'react-redux';
 import { Button } from 'react-bootstrap';
-import { LoaderContainer } from '@shoutem/se-ui-kit';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 import { getShortcut } from 'environment';
 import { getCategories, getSchema, getResources, dataInitialized } from './../selectors';
 import {
@@ -72,14 +72,15 @@ export class Cms extends Component {
   }
 
   handleOpenInCmsClick() {
-    const { shortcut } = this.props;
+    const { shortcut, categories } = this.props;
 
     const shortcutSettings = shortcut.settings || {};
     const category = shortcutSettings.parentCategory;
-    const hasCategory = !!category;
+    const categoryId = _.get(category, 'id');
+    const currentCategory = categoryId && _.find(categories, { id: categoryId });
 
-    if (hasCategory) {
-      this.props.navigateToCategory(category.id);
+    if (currentCategory) {
+      this.props.navigateToCategory(categoryId);
     } else {
       this.createNewCategory().then(newCategoryId => (
         this.props.navigateToCategory(newCategoryId)

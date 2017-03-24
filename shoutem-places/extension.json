@@ -1,16 +1,20 @@
 {
   "name": "places",
-  "version": "0.9.5",
+  "version": "0.9.16",
   "title": "Places",
-  "description": "List of POIs",
-  "platform": "1.0.*",
+  "description": "Show items with location on list or map",
   "icon": "./server/assets/images/add-places-image.png",
   "categories": ["content"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
+  "platform": "1.0.*",
   "shortcuts": [
     {
       "name": "places-shortcut",
       "title": "Places",
-      "screen": "@.PlacesListPhoto",
+      "screen": "@.PlacesList",
       "icon": "theme://address-full.png",
       "adminPages": [{
         "page": "shoutem.cms.CmsPage",
@@ -19,21 +23,22 @@
         "schema": "@.places"
       }
     },
-    { "page": "shoutem.layouts.LayoutPage",
+    {
+      "page": "shoutem.layouts.LayoutPage",
       "title": "Layout"
     }]
   }],
   "screens": [{
-    "name": "PlacesListPhoto",
+    "name": "PlacesList",
     "title": "Photo List",
     "image": "./server/assets/images/layout_photo.png",
     "navigatesTo": [
       "@.PlaceDetails"
     ]
   }, {
-    "name": "PlacesListIcon",
+    "name": "IconPlacesList",
     "title": "Icon List",
-    "extends": "@.PlacesListPhoto",
+    "extends": "@.PlacesList",
     "image": "./server/assets/images/layout_icon.png"
   }, {
     "name": "PlaceDetails",
@@ -41,16 +46,16 @@
     "image": "./server/assets/images/details_large.png"
   },
   {
-    "name": "PlaceDetailsMedium",
+    "name": "MediumPlaceDetails",
     "title": "Medium photo details page",
     "extends": "@.PlaceDetails",
     "image": "./server/assets/images/details_medium.png"
   },
   {
-    "name": "MapList",
+    "name": "SinglePlaceMap",
     "title": "Map View",
     "navigatesTo": [
-      "@.MapList"
+      "@.PlaceDetails"
     ]
   }],
   "dataSchemas": [{

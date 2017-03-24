@@ -47,12 +47,16 @@ export class FolderBaseScreen extends React.Component {
   };
 
   static mapPropsToStyleNames = (styleNames, props) => {
-    const { showText, iconSize } = props;
+    const { showText, iconSize, isRootScreen } = props;
 
     styleNames.push(`${iconSize}-icon`);
 
     if (!showText) {
       styleNames.push('text-hidden');
+    }
+
+    if (isRootScreen) {
+      styleNames.push('main-navigation');
     }
 
     return styleNames;
@@ -83,6 +87,9 @@ export class FolderBaseScreen extends React.Component {
       },
     };
     this.scaler = new Scaler();
+    // Android: lineHeight must be an integer, so we're rounding possible float value to integer.
+    // https://github.com/facebook/react-native/issues/7877
+    this.scaler.addPropTransformer('lineHeight', oldValue => Math.round(oldValue));
   }
 
   /**
@@ -163,17 +170,18 @@ export class FolderBaseScreen extends React.Component {
   resolveNavBarProps() {
     const { shortcut: { title }, isRootScreen } = this.props;
     return {
-      hidden: isRootScreen,
+      styleName: isRootScreen ? 'none' : '',
       title,
     };
   }
 
   resolveScreenProps() {
+    const { isRootScreen } = this.props;
     return {
       // Main Navigation Screens does not have NavigationBar, so when Folder screen is Main
       // navigation screen (and has no NavigationBar) stretch screen.
       onLayout: this.layoutChanged,
-      styleName: 'paper',
+      styleName: isRootScreen ? 'full-screen' : '',
     };
   }
 

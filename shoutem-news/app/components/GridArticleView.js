@@ -35,15 +35,13 @@ export default class GridArticleView extends React.Component {
       <TouchableOpacity key={article.id} onPress={this.onPress}>
         <Card styleName="flexible">
           <Image
-            styleName="medium-wide"
+            styleName="medium-wide placeholder"
             source={{ uri: _.get(article, 'image.url') }}
-            defaultSource={require('../assets/images/image-fallback.png')}
           />
           <View styleName="flexible content space-between">
             <Subtitle numberOfLines={3} styleName="lg-gutter-bottom">{article.title}</Subtitle>
             <View styleName="horizontal">
-              <Caption styleName="collapsible" numberOfLines={1}>{article.newsAuthor}</Caption>
-              <Caption styleName="sm-gutter-left">{moment(article.timeUpdated).fromNow()}</Caption>
+              <Caption>{moment(article.timeUpdated).fromNow()}</Caption>
             </View>
           </View>
         </Card>

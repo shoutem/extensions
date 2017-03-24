@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
-import IconsBackgroundSettings from '../common/IconsBackgroundSettings';
-import BackgroundSettings from '../common/BackgroundSettings';
+import BackgroundSettings from '../common/background-settings';
 import provideScreenSettings from '../provideScreenSettings';
+import IconsBackgroundSettings from './IconsBackgroundSettings';
 import GeneralSettings from './GeneralSettings';
 
 const LAYOUT_TYPE = 'cardList';

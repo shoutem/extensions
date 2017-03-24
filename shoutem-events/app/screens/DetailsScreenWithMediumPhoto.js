@@ -7,15 +7,17 @@ import {
   Tile,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { connect } from 'react-redux';
 
 import { ext } from '../const';
-import { DetailsScreen } from './DetailsScreen';
+import { DetailsScreen, mapDispatchToProps } from './DetailsScreen';
 
 class DetailsScreenWithMediumPhoto extends DetailsScreen {
   renderWithoutPhoto(event) {
     return (
-      <Tile styleName="text-centric lg-gutter-top">
+      <Tile styleName="text-centric xl-gutter-top">
         {this.renderHeadlineDetails(event)}
+        {this.renderAddToCalendarButton()}
       </Tile>
     );
   }
@@ -28,11 +30,13 @@ class DetailsScreenWithMediumPhoto extends DetailsScreen {
     return (
       <View>
         <Image
-          styleName="large-wide"
+          styleName="large-wide placeholder"
+          animationName="hero"
           source={{ uri: _.get(event, 'image.url') }}
         />
         <Tile styleName="text-centric">
           {this.renderHeadlineDetails(event)}
+          {this.renderAddToCalendarButton()}
         </Tile>
       </View>
     );
@@ -44,11 +48,11 @@ class DetailsScreenWithMediumPhoto extends DetailsScreen {
     return {
       share: {
         title: event.name,
-        text: event.description,
         link: event.rsvpLink,
       },
       styleName: _.has(event, 'image.url') ? 'clear' : 'no-border',
-      animationName: _.has(event, 'image.url') ? 'solidify' : '',
+      animationName: _.has(event, 'image.url') ? 'solidify' : 'boxing',
+      title: event.name,
       ...options,
     };
   }
@@ -65,4 +69,6 @@ class DetailsScreenWithMediumPhoto extends DetailsScreen {
   }
 }
 
-export default connectStyle(ext(DetailsScreenWithMediumPhoto.name))(DetailsScreenWithMediumPhoto);
+export default connect(undefined, mapDispatchToProps)(
+  connectStyle(ext('DetailsScreenWithMediumPhoto'))(DetailsScreenWithMediumPhoto),
+);

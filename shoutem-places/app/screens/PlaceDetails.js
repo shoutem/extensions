@@ -1,9 +1,6 @@
-import React, {
-  Component
-} from 'react';
-import {
-  Linking
-} from 'react-native';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import {
   ScrollView,
   TouchableOpacity,
@@ -11,37 +8,41 @@ import {
   Row,
   Subtitle,
   Caption,
-  Button,
   Text,
   Title,
   View,
   Image,
   Divider,
-  Overlay,
   Tile,
-  Screen
+  Screen,
 } from '@shoutem/ui';
-
+import {
+  Linking,
+  Platform,
+} from 'react-native';
 import { InlineMap, RichMedia } from '@shoutem/ui-addons';
-import { connect } from 'react-redux';
 import { navigateTo } from '@shoutem/core/navigation';
 import { NavigationBar } from '@shoutem/ui/navigation';
+import { connectStyle } from '@shoutem/theme';
+
 import { openURL } from 'shoutem.web-view';
-import { bindActionCreators } from 'redux';
+import { ext } from '../const';
 
 export class PlaceDetails extends Component {
   static propTypes = {
     place: React.PropTypes.object.isRequired,
     openURL: React.PropTypes.func,
+    navigateTo: React.PropTypes.func,
   };
 
   constructor(props) {
     super(props);
     this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.createWebLink = this.createWebLink.bind(this);
-    this.createMapLink = this.createMapLink.bind(this);
-    this.createEmailLink = this.createEmailLink.bind(this);
-    this.createPhoneLink = this.createPhoneLink.bind(this);
+    this.openWebLink = this.openWebLink.bind(this);
+    this.openMapLink = this.openMapLink.bind(this);
+    this.openEmailLink = this.openEmailLink.bind(this);
+    this.openPhoneLink = this.openPhoneLink.bind(this);
+    this.openMapScreen = this.openMapScreen.bind(this);
   }
 
   getNavBarProps() {
@@ -49,82 +50,98 @@ export class PlaceDetails extends Component {
     return {
       styleName: place.image ? 'clear' : 'no-border',
       animationName: 'solidify',
+      title: place.name,
     };
   }
 
-  createInlineMap() {
-    const { place } = this.props;
-    Linking.openURL('geo:' + place.latitude + ',' + place.longitude);
+  openWebLink() {
+    const { place, openURL } = this.props;
+    openURL(place.url);
   }
 
-  renderInlineMap(place) {
-    if (place.latitude && place.longitude) {
-      return (
-        <View styleName="collapsed">
-          <TouchableOpacity onPress={this.createInlineMap(place)}>
-            <InlineMap
-              initialRegion={{ longitude: parseFloat(place.longitude),
-                latitude: parseFloat(place.latitude),
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-              }}
-              markers={[{
-                longitude: parseFloat(place.longitude),
-                latitude: parseFloat(place.latitude),
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-              }]}
-              styleName="medium-tall"
-            >
-              <Overlay styleName="fill-parent">
-                <View styleName="vertical v-center h-center">
-                  <Subtitle numberOfLines={1} >{place.name}</Subtitle>
-                  <Caption numberOfLines={2} >{place.address}</Caption>
-                </View>
-              </Overlay>
-            </InlineMap>
-          </TouchableOpacity>
-        </View>
-      );
+  openMapLink() {
+    const { location = {} } = this.props.place;
+    const { latitude, longitude, formattedAddress } = location;
+
+    const resolvedScheme = (Platform.OS === 'ios') ? `http://maps.apple.com/?ll=${latitude},${longitude}&q=${formattedAddress}` :
+    `geo:${latitude},${longitude}(${formattedAddress})`;
+
+    if (latitude && longitude) {
+      Linking.openURL(resolvedScheme);
     }
   }
 
-  getPlaceImage(place) {
-    return place.image ? { uri: place.image.url } : require('../assets/data/no_image.png');
+  openEmailLink() {
+    const { place } = this.props;
+    Linking.openURL(`mailto:${place.mail}`);
+  }
+
+  openPhoneLink() {
+    const { place } = this.props;
+    Linking.openURL(`tel:${place.phone}`);
+  }
+
+  openMapScreen() {
+    const { navigateTo, place } = this.props;
+    navigateTo({
+      screen: ext('SinglePlaceMap'),
+      props: {
+        place,
+        title: place.name,
+      },
+    });
   }
 
   renderLeadImage(place) {
     return (
-      <Image styleName="large-portrait" source={this.getPlaceImage(place)}>
+      <Image
+        styleName="large-portrait"
+        source={place.image ? { uri: place.image.url } : undefined}
+        animationName="hero"
+      >
         <Tile>
           <Title>{place.name.toUpperCase()}</Title>
           <Caption styleName="sm-gutter-top">{place.address}</Caption>
-          <Button styleName="md-gutter-top"><Text>CHECK IN HERE</Text></Button>
         </Tile>
       </Image>
     );
   }
 
-  createWebLink() {
-    const { place, openURL } = this.props;
-    openURL(place.url);
-  }
+  renderInlineMap(item) {
+    const { location = {} } = item;
+    const { latitude, longitude } = location;
 
-  createMapLink() {
-    const { place } = this.props;
-    if (place.latitude && place.longitude) {
-      Linking.openURL('geo:' + place.latitude + ',' + place.longitude);
+    if (!latitude || !longitude) {
+      return null;
     }
-  }
 
-  createEmailLink() {
-    const { place } = this.props;
-    Linking.openURL('mailto:' + place.mail);
-  }
-
-  createPhoneLink() {
-    const { place } = this.props;
-    Linking.openURL('tel:' + place.phone);
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={this.openMapScreen}
+        >
+          <InlineMap
+            initialRegion={{ longitude: parseFloat(longitude),
+              latitude: parseFloat(latitude),
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            }}
+            markers={[{
+              longitude: parseFloat(longitude),
+              latitude: parseFloat(latitude),
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            }]}
+            styleName="medium-tall"
+          >
+            <View styleName="fill-parent overlay vertical v-center h-center">
+              <Subtitle numberOfLines={1} >{item.name}</Subtitle>
+              <Caption numberOfLines={2} >{item.resolvedAddress}</Caption>
+            </View>
+          </InlineMap>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   renderDescription(place) {
@@ -139,6 +156,7 @@ export class PlaceDetails extends Component {
         </Tile>
       );
     }
+    return null;
   }
 
   renderOpeningHours(place) {
@@ -153,6 +171,7 @@ export class PlaceDetails extends Component {
         </Tile>
       );
     }
+    return null;
   }
 
   renderDisclosureButton(title, subtitle, icon, onPressCallback) {
@@ -163,12 +182,12 @@ export class PlaceDetails extends Component {
       <TouchableOpacity onPress={onPressCallback}>
         <Divider styleName="line" />
         <Row>
-          <Icon name={icon} />
+          <Icon styleName="indicator" name={icon} />
           <View styleName="vertical">
             <Subtitle>{subtitle}</Subtitle>
             <Text numberOfLines={1}>{title}</Text>
           </View>
-          <Icon styleName="disclosure" name="right-arrow" />
+          <Icon styleName="indicator disclosure" name="right-arrow" />
         </Row>
         <Divider styleName="line" />
       </TouchableOpacity>
@@ -177,25 +196,26 @@ export class PlaceDetails extends Component {
 
   render() {
     const { place } = this.props;
+    const { location = {} } = this.props.place;
     return (
-      <Screen styleName="full-screen">
+      <Screen styleName="full-screen paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderLeadImage(place)}
           {this.renderOpeningHours(place)}
           {this.renderInlineMap(place)}
           {this.renderDescription(place)}
-          {this.renderDisclosureButton(place.url, 'Visit webpage', 'web', this.createWebLink)}
-          {this.renderDisclosureButton(place.address, 'Directions', 'pin', this.createMapLink)}
-          {this.renderDisclosureButton(place.mail, 'Email', 'email', this.createEmailLink)}
-          {this.renderDisclosureButton(place.phone, 'Phone', 'call', this.createPhoneLink)}
+          {this.renderDisclosureButton(place.url, 'Visit webpage', 'web', this.openWebLink)}
+          {this.renderDisclosureButton(location.formattedAddress, 'Directions', 'pin',
+          this.openMapLink)}
+          {this.renderDisclosureButton(place.mail, 'Email', 'email', this.openEmailLink)}
+          {this.renderDisclosureButton(place.phone, 'Phone', 'call', this.openPhoneLink)}
         </ScrollView>
       </Screen>
     );
   }
 }
 
-export default connect(
-  undefined,
-  (dispatch) => bindActionCreators({ navigateTo, openURL }, dispatch),
-)(PlaceDetails);
+export default connect(undefined, { navigateTo, openURL })(
+    connectStyle(ext('PlaceDetails'))(PlaceDetails),
+  );

@@ -1,11 +1,15 @@
 {
   "name": "auth",
-  "version": "0.4.10",
-  "title": "User authentication",
+  "version": "0.5.3",
+  "title": "User Authentication",
   "icon": "server/assets/add-authentication-image.png",
-  "description": "Shoutem user authentication extension",
-  "platform": "1.0.*",
+  "description": "Show user profile, sign out user",
+  "platform": ">=1.0.19",
   "categories": ["users"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
     "screens": [{
       "name": "LoginScreen"
     }, {
@@ -26,11 +30,11 @@
   }],
   "pages": [{
     "name": "SettingsPage",
-    "type": "component",
+    "type": "native-component",
     "path": "dummy.js"
   }, {
     "name": "ProvidersPage",
-    "type": "component",
+    "type": "native-component",
     "path": "dummy.js"
   }],
   "settings": {

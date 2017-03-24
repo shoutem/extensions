@@ -29,6 +29,13 @@ class ArticlesGridScreen extends ArticlesListScreen {
     this.renderRow = this.renderRow.bind(this);
   }
 
+  getNavigationBarProps() {
+    return {
+      title: this.props.title || '',
+      styleName: 'featured',
+    };
+  }
+
   renderRow(articles, sectionId, index) {
     if (index === '0') {
       return (

@@ -39,7 +39,7 @@ export default class FeaturedArticleView extends BaseEventItem {
                 styleName="md-gutter-top"
               >
                 <Icon name="add-event" />
-                <Text>Add to calendar</Text>
+                <Text>ADD TO CALENDAR</Text>
               </Button>
             </Tile>
           </EventImage>

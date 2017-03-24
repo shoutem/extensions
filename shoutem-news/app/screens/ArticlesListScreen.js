@@ -7,7 +7,7 @@ import { navigateTo } from '@shoutem/core/navigation';
 
 import { CmsListScreen } from 'shoutem.cms';
 
-import { ext } from '../const.js';
+import { ext } from '../const';
 import ListArticleView from '../components/ListArticleView';
 import FeaturedArticleView from '../components/FeaturedArticleView';
 
@@ -88,7 +88,7 @@ export class ArticlesListScreen extends CmsListScreen {
 }
 
 export const mapStateToProps = CmsListScreen.createMapStateToProps(
-  (state) => state[ext()].latestNews
+  state => state[ext()].latestNews,
 );
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
@@ -96,5 +96,5 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ArticlesListScreen'), {})(ArticlesListScreen)
+  connectStyle(ext('ArticlesListScreen'), {})(ArticlesListScreen),
 );

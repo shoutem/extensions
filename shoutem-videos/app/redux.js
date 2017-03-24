@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { storage } from '@shoutem/redux-io';
 
 import { cmsCollection } from 'shoutem.cms';
-import { ext } from './const.js';
+import { ext } from './const';
 
 export const VIDEOS_SCHEMA = ext('Videos');
 

@@ -4,7 +4,7 @@ module.exports = {
   entry: './src/index.js',
   externals: {
     "@shoutem/redux-io": true,
-    "@shoutem/se-ui-kit": true,
+    "@shoutem/react-web-ui": true,
     "classnames": true,
     "context": true,
     "environment": true,

@@ -77,7 +77,7 @@ export class Rss extends Component {
   }
 
   onFeedUrlInputContinueClick(feedUrl) {
-    this.setState({ discoverInProgress: true });
+    this.setState({ discoverInProgress: true, error: '' });
     this.props.discoverFeeds(feedUrl);
   }
 

@@ -1,11 +1,11 @@
-import { appWillMount } from './app';
+import { appDidMount } from './app';
 import { googleAnalytics, GoogleAnalyticsService } from './ga';
 import middleware from './middleware';
 import { getGoogleAnalyticsTrackers } from './helpers/getGoogleAnalyticsTrackers';
 import { registerExtensionTrackers } from './helpers/registerExtensionTrackers';
 
 export {
-  appWillMount,
+  appDidMount,
   GoogleAnalyticsService,
   googleAnalytics,
   middleware,

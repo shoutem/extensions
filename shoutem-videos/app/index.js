@@ -1,6 +1,6 @@
-import VideosList from './screens/VideosList.js';
-import VideosSmallList from './screens/VideosSmallList.js';
-import VideoDetails from './screens/VideoDetails.js';
+import VideosList from './screens/VideosList';
+import VideosSmallList from './screens/VideosSmallList';
+import VideoDetails from './screens/VideoDetails';
 import reducer from './redux';
 
 export const screens = {

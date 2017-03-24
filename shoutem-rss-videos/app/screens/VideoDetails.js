@@ -6,7 +6,7 @@ import moment from 'moment';
 import {
   ScrollView,
   Title,
-	Video,
+  Video,
   Screen,
   Caption,
   Tile,
@@ -21,7 +21,6 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 import { getAttachments } from 'shoutem.rss';
 
 import { ext } from '../const';
-
 
 export class VideoDetails extends Component {
   static propTypes = {
@@ -42,9 +41,10 @@ export class VideoDetails extends Component {
         <NavigationBar
           share={{
             title: video.title,
-            text: video.summary,
             link: videoAttachment ? videoAttachment.src : '',
           }}
+          animationName="boxing"
+          title={video.title}
         />
 
         <ScrollView>

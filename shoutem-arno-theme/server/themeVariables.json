@@ -1,5 +1,31 @@
 {
   "title": "Arno Prime",
+  "formats": {
+    "font": {
+      "default": {
+        "fontFamily": "MuktaVaani-Regular",
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+        "fontSize": 20,
+        "color": "#2A3045"
+      },
+      "constraints": {
+        "fontFamily": {
+          "enum": [ "normal", "Rubik-Regular", "MuktaVaani-Regular"]
+        },
+        "fontStyle": {
+          "enum": ["normal"]
+        },
+        "fontWeight": {
+          "enum": ["normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900"]
+        },
+        "fontSize": {
+          "minimum": 10,
+          "maximum": 48
+        }
+      }
+    }
+  },
   "properties": {
 
 
@@ -36,70 +62,71 @@
       "title": "Heading",
       "format": "font",
       "default": {
-        "fontFamily": "MuktaVaani-Regular",
-        "fontStyle": "normal",
         "fontWeight": "800",
-        "fontSize": 27,
-        "color": "#2a3045"
+        "fontSize": 27
       },
-      "minFontSize": 20,
-      "maxFontSize": 40
+      "constraints": {
+        "fontSize": {
+          "minimum": 20,
+          "maximum": 40
+        }
+      }
     },
     "title": {
       "type": "object",
       "title": "Title",
       "format": "font",
       "default": {
-        "fontFamily": "MuktaVaani-Regular",
-        "fontStyle": "normal",
-        "fontWeight": "800",
-        "fontSize": 20,
-        "color": "#2a3045"
+        "fontWeight": "800"
       },
-      "minFontSize": 15,
-      "maxFontSize": 35
+      "constraints": {
+        "fontSize": {
+          "minimum": 15,
+          "maximum": 35
+        }
+      }
     },
     "subtitle": {
       "type": "object",
       "title": "Subtitle",
       "format": "font",
       "default": {
-        "fontFamily": "MuktaVaani-Regular",
-        "fontStyle": "normal",
         "fontWeight": "800",
-        "fontSize": 15,
-        "color": "#2a3045"
+        "fontSize": 15
       },
-      "minFontSize": 10,
-      "maxFontSize": 25
+      "constraints": {
+        "fontSize": {
+          "maximum": 25
+        }
+      }
     },
     "caption": {
       "type": "object",
       "title": "Captions",
       "format": "font",
       "default": {
-        "fontFamily": "MuktaVaani-Regular",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
-        "fontSize": 14,
-        "color": "#2a3045"
+        "fontSize": 14
       },
-      "minFontSize": 12,
-      "maxFontSize": 25
+      "constraints": {
+        "fontSize": {
+          "minimum": 12,
+          "maximum": 25
+        }
+      }
     },
     "text": {
       "type": "object",
       "title": "Text",
       "format": "font",
       "default": {
-        "fontFamily": "MuktaVaani-Regular",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
-        "fontSize": 17,
-        "color": "#2a3045"
+        "fontSize": 17
       },
-      "minFontSize": 12,
-      "maxFontSize": 25
+      "constraints": {
+        "fontSize": {
+          "minimum": 12,
+          "maximum": 25
+        }
+      }
     },
 
 
@@ -147,11 +174,7 @@
       "title": "Title",
       "format": "font",
       "default": {
-        "fontFamily": "MuktaVaani-Regular",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
-        "fontSize": 15,
-        "color": "#2a3045"
+        "fontSize": 15
       }
     },
     "navBarIconsColor": {
@@ -187,6 +210,12 @@
       "format": "color",
       "default": "#b1b1b1"
     },
+    "mainNavItemBackground": {
+      "type": "string",
+      "title": "Item background color",
+      "format": "color",
+      "default": "rgba(0, 0, 0, 0)"
+    },
     "mainNavSelectedItemBackground": {
       "type": "string",
       "title": "Selected item background",
@@ -214,15 +243,21 @@
 
 
 
-    "folderItemColor": {
+    "subNavItemColor": {
       "type": "string",
-      "title": "Folder item text color",
+      "title": "Item text color",
       "format": "color",
       "default": "#2a3045"
     },
-    "folderListBorderColor": {
+    "subNavItemBackground": {
       "type": "string",
-      "title": "Folder list border color",
+      "title": "Item background color",
+      "format": "color",
+      "default": "rgba(0, 0, 0, 0)"
+    },
+    "subNavListBorderColor": {
+      "type": "string",
+      "title": "List border color",
       "format": "color",
       "default": "#cbcbcb"
     },
@@ -234,8 +269,6 @@
       "title": "Text",
       "format": "font",
       "default": {
-        "fontFamily": "MuktaVaani-Regular",
-        "fontStyle": "normal",
         "fontWeight": "bold",
         "fontSize": 14,
         "color": "#FFFFFF"
@@ -337,16 +370,18 @@
           "mainNavBackground",
           "mainNavBorderColor",
           "mainNavItemColor",
+          "mainNavItemBackground",
           "mainNavSelectedItemColor",
           "mainNavSelectedItemBackground",
           "mainNavSelectedItemBorderColor"
         ]
       },
       {
-        "title": "Folder",
+        "title": "Sub-navigation",
         "properties": [
-          "folderItemColor",
-          "folderListBorderColor"
+          "subNavItemColor",
+          "subNavItemBackground",
+          "subNavListBorderColor"
         ]
       },
       {

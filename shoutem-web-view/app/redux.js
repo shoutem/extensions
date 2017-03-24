@@ -14,7 +14,7 @@ export function openExternalBrowserActionCreator(url) {
 // Shoutem specified actions
 export function openURL(url, title, showNavigationToolbar = true) {
   return navigateTo({
-    screen: ext('BrowserScreen'),
+    screen: ext('WebViewScreen'),
     props: {
       url,
       title,
@@ -24,7 +24,7 @@ export function openURL(url, title, showNavigationToolbar = true) {
   );
 }
 
-export function openBrowserScreen(state, action) {
+export function openWebViewScreen(state, action) {
   const shortcut = getShortcut(state, action.shortcutId);
   const { title } = shortcut;
   const {

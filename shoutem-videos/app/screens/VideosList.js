@@ -6,7 +6,7 @@ import { navigateTo } from '@shoutem/core/navigation';
 
 import { CmsListScreen } from 'shoutem.cms';
 
-import { ext } from '../const.js';
+import { ext } from '../const';
 import { VIDEOS_SCHEMA } from '../redux';
 import LargeVideoView from '../components/LargeVideoView';
 
@@ -47,7 +47,7 @@ export class VideosList extends CmsListScreen {
 }
 
 export const mapStateToProps = CmsListScreen.createMapStateToProps(
-  (state) => state[ext()].latestVideos
+  state => state[ext()].latestVideos,
 );
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({

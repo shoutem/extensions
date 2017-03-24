@@ -40,9 +40,8 @@ export default class SmallVideoView extends React.Component {
       <TouchableOpacity onPress={this.onPress}>
         <Row>
           <Image
-            styleName="medium rounded-corners"
+            styleName="medium rounded-corners placeholder"
             source={{ uri: _.get(video, 'video.thumbnailurl') }}
-            defaultSource={require('../assets/images/image-fallback.png')}
           >
             <Overlay styleName="rounded-small">
               <Icon name="play" />

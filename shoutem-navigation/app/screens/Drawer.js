@@ -24,7 +24,7 @@ import {
 } from '@shoutem/ui';
 
 import {
-  NavigationBar,
+  ChildNavigationBar,
 } from '@shoutem/ui/navigation';
 
 import SideMenu from 'react-native-side-menu';
@@ -36,7 +36,7 @@ export class Drawer extends Component {
   static propTypes = {
     // Server props
     shortcut: React.PropTypes.object.isRequired,
-    startingScreen: React.PropTypes.object,
+    startingScreen: React.PropTypes.string,
     showText: React.PropTypes.bool,
     showIcon: React.PropTypes.bool,
 
@@ -54,7 +54,6 @@ export class Drawer extends Component {
     super(props, context);
     this.drawerItemPressed = this.drawerItemPressed.bind(this);
     this.renderDrawerItem = this.renderDrawerItem.bind(this);
-    this.renderMenuButton = this.renderMenuButton.bind(this);
     this.drawerStatusChanged = this.drawerStatusChanged.bind(this);
     this.openMenu = this.openMenu.bind(this);
     this.resolveAndUpdateLayoutWidth = this.resolveAndUpdateLayoutWidth.bind(this);
@@ -76,7 +75,7 @@ export class Drawer extends Component {
   getStartingShortcut() {
     const { startingScreen, shortcut } = this.props;
     const childShortcuts = shortcut.children;
-    return _.find(childShortcuts, startingScreen) || _.first(childShortcuts);
+    return _.find(childShortcuts, ['id', startingScreen]) || _.first(childShortcuts);
   }
 
   resolveAndUpdateLayoutWidth({ nativeEvent: { layout: { width } } }) {
@@ -113,24 +112,25 @@ export class Drawer extends Component {
     }
   }
 
-  renderMenuButton(sceneProps) {
-    let handlePress = sceneProps.onNavigateBack;
-    let iconName = 'back';
-    if (sceneProps.scene.index === 0 || !handlePress) {
-      handlePress = this.openMenu;
-      iconName = 'sidebar';
+  getNavbarProps() {
+    const { navigationState } = this.props;
+
+    if (navigationState.index > 0) {
+      return { renderLeftComponent: undefined };
     }
 
-    return (
-      <View virtual styleName="container">
-        <Button onPress={handlePress}>
-          <Icon
-            name={iconName}
-            animationName={sceneProps.navBarProps.animationName}
-          />
-        </Button>
-      </View>
-    );
+    return {
+      renderLeftComponent: sceneProps => (
+        <View virtual styleName="container">
+          <Button onPress={this.openMenu}>
+            <Icon
+              name="sidebar"
+              animationName={sceneProps.navBarProps.animationName}
+            />
+          </Button>
+        </View>
+      ),
+    }
   }
 
   renderMenu(shortcuts, style) {
@@ -172,11 +172,8 @@ export class Drawer extends Component {
     const menu = this.renderMenu(shortcut.children, style);
 
     return (
-      <Screen styleName="full-screen paper" onLayout={this.resolveAndUpdateLayoutWidth}>
-        <NavigationBar
-          child
-          renderLeftComponent={this.renderMenuButton}
-        />
+      <Screen styleName="paper" onLayout={this.resolveAndUpdateLayoutWidth}>
+        <ChildNavigationBar {...this.getNavbarProps()} />
         <SideMenu
           menu={menu}
           isOpen={isOpen}

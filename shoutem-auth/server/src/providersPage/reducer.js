@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { one, find, update } from '@shoutem/redux-io';
-import { auth, url, appId } from 'environment';
+import { url, appId } from 'environment';
 import { ext } from 'context';
 import { EXTENSION_INSTALLATIONS, LEGACY_APPLICATION_SETTINGS } from 'types';
 

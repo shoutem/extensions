@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
-import { apiStateMiddleware, storage, one, collection, find, update } from '@shoutem/redux-io';
-import {url, appId, auth } from 'environment';
+import { collection, find } from '@shoutem/redux-io';
+import { url, appId } from 'environment';
 import { ext } from 'context';
 
 export const SHORTCUTS = 'shoutem.core.shortcuts';
 
 export default combineReducers({
-  shortcuts: collection(SHORTCUTS, ext('shortcuts'))
+  shortcuts: collection(SHORTCUTS, ext('shortcuts')),
 });
 
 export function loadShortcuts() {
@@ -15,10 +15,9 @@ export function loadShortcuts() {
     request: {
       endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts`,
       headers: {
-        'Accept': 'application/vnd.api+json',
-        Authorization: `Bearer ${auth.token}`
+        Accept: 'application/vnd.api+json',
       },
-    }
+    },
   };
 
   return find(config, ext('shortcuts'));

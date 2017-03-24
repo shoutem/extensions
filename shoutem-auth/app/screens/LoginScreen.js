@@ -2,14 +2,23 @@ import React, {
   Component,
 } from 'react';
 
-import { navigateTo, isScreenActive } from '@shoutem/core/navigation';
-import { ext } from '../const';
+import {
+  Alert,
+  InteractionManager,
+} from 'react-native';
+
+import {
+  AccessToken,
+  LoginManager,
+} from 'react-native-fbsdk';
 
 import { connect } from 'react-redux';
 
 import _ from 'lodash';
 
 import {
+  Heading,
+  Icon,
   TextInput,
   Screen,
   Divider,
@@ -20,40 +29,83 @@ import {
   Spinner,
 } from '@shoutem/ui';
 
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { connectStyle } from '@shoutem/theme';
 
 import {
-  Alert,
-  InteractionManager,
-} from 'react-native';
+  navigateTo,
+  isScreenActive,
+} from '@shoutem/core/navigation';
 
-import { login, isAuthenticated } from '../redux.js';
-import { errorMessages, getErrorMessage } from '../errorMessages';
+import { isBusy } from '@shoutem/redux-io';
 
-import { getAppId, getExtensionSettings } from 'shoutem.application';
+import {
+  getAppId,
+  getExtensionSettings,
+} from 'shoutem.application';
+
+import { NavigationBar } from '@shoutem/ui/navigation';
+
+import { ext } from '../const';
+
+import {
+  login,
+  loginWithFacebook,
+  isAuthenticated,
+} from '../redux';
+
+import {
+  errorMessages,
+  getErrorMessage,
+} from '../errorMessages';
+
+import { saveSession } from '../session';
+
 import { loginRequired } from '../loginRequired';
+
+const renderAuthenticatingMessage = () => (
+  <View styleName="xl-gutter-top">
+    <Heading styleName="h-center lg-gutter-bottom">Authenticating...</Heading>
+    <Spinner />
+  </View>
+);
+
+const handleLoginError = ({ payload }) => {
+  const { response } = payload;
+  Alert.alert('Login failure', getErrorMessage(response && response.code));
+};
+
+const { bool, func, shape, string } = React.PropTypes;
 
 export class LoginScreen extends Component {
   static propTypes = {
-    setNavBarProps: React.PropTypes.func,
-    navigateTo: React.PropTypes.func,
-    login: React.PropTypes.func,
-    logout: React.PropTypes.func,
-    onLoginSuccess: React.PropTypes.func,
-    action: React.PropTypes.any,
-    focused: React.PropTypes.any,
-    extensions: React.PropTypes.any,
+    navigateTo: func,
+    login: func,
+    loginWithFacebook: func,
 
-    user: React.PropTypes.any,
-    isAuthenticated: React.PropTypes.bool,
-    appId: React.PropTypes.any,
-    settings: React.PropTypes.any,
-    isScreenActive: React.PropTypes.bool,
+    isAuthenticated: bool,
+    isAuthenticating: bool,
+    onLoginSuccess: func,
+    settings: shape({
+      providers: shape({
+        email: shape({
+          enabled: bool,
+        }),
+        facebook: shape({
+          appId: string,
+          appName: string,
+          enabled: bool,
+        }),
+      }),
+      signupEnabled: bool,
+    }),
   };
 
   constructor(props, contex) {
     super(props, contex);
 
+    this.finishLogin = this.finishLogin.bind(this);
+    this.loginWithFacebook = this.loginWithFacebook.bind(this);
+    this.loginWithFacebookAccessToken = this.loginWithFacebookAccessToken.bind(this);
     this.openRegisterScreen = this.openRegisterScreen.bind(this);
     this.performLogin = this.performLogin.bind(this);
 
@@ -87,6 +139,41 @@ export class LoginScreen extends Component {
     navigateTo(route);
   }
 
+  loginWithFacebook() {
+    LoginManager.logInWithReadPermissions(['public_profile', 'email'])
+    .then((result) => {
+      if (result.isCancelled) {
+        throw new Error('Login was cancelled');
+      }
+      return AccessToken.getCurrentAccessToken();
+    }).then((data) => {
+      if (!(data && data.accessToken)) {
+        throw new Error();
+      }
+      this.loginWithFacebookAccessToken(data.accessToken);
+    }).catch((error) => {
+      Alert.alert('Login failure', error.message || errorMessages.UNEXPECTED_ERROR);
+    });
+  }
+
+  loginWithFacebookAccessToken(accessToken) {
+    const { loginWithFacebook } = this.props;
+
+    loginWithFacebook(accessToken)
+    .then(this.finishLogin)
+    .catch(handleLoginError);
+  }
+
+  finishLogin({ payload }) {
+    const { onLoginSuccess } = this.props;
+
+    saveSession(JSON.stringify(payload));
+
+    if (_.isFunction(onLoginSuccess)) {
+      onLoginSuccess(payload.user);
+    }
+  }
+
   performLogin() {
     const { login } = this.props;
     const { username, password } = this.state;
@@ -96,16 +183,9 @@ export class LoginScreen extends Component {
       return;
     }
 
-    login(username, password).then(({ payload }) => {
-      const { onLoginSuccess } = this.props;
-
-      if (_.isFunction(onLoginSuccess)) {
-        onLoginSuccess(payload.user);
-      }
-    }, ({ payload }) => {
-      const { response } = payload;
-      Alert.alert('Login failure', getErrorMessage(response && response.code));
-    });
+    login(username, password)
+    .then(this.finishLogin)
+    .catch(handleLoginError);
   }
 
   renderRegisterButton() {
@@ -139,7 +219,7 @@ export class LoginScreen extends Component {
             autoCorrect={false}
             keyboardType="email-address"
             keyboardAppearance="dark"
-            onChangeText={(username) => this.setState({ username })}
+            onChangeText={username => this.setState({ username })}
             returnKeyType="done"
           />
           <Divider styleName="line" />
@@ -149,7 +229,7 @@ export class LoginScreen extends Component {
             autoCorrect={false}
             keyboardAppearance="dark"
             secureTextEntry
-            onChangeText={(password) => this.setState({ password })}
+            onChangeText={password => this.setState({ password })}
             returnKeyType="done"
           />
           <Divider styleName="section-header" />
@@ -165,11 +245,37 @@ export class LoginScreen extends Component {
     return components;
   }
 
+  renderFacebookLoginButton() {
+    const { style } = this.props;
+
+    return (
+      <View>
+        <Caption styleName="h-center lg-gutter-vertical">
+          or sign in/sign up with your other account
+        </Caption>
+        <Button
+          onPress={this.loginWithFacebook}
+          styleName="full-width inflexible"
+        >
+          <Icon name="facebook" />
+          <Text>FACEBOOK</Text>
+        </Button>
+      </View>
+    );
+  }
+
   render() {
+    const { isAuthenticating, settings: { providers: { facebook } } } = this.props;
+
+    if (isAuthenticating) {
+      return renderAuthenticatingMessage();
+    }
+
     const components = !this.props.isAuthenticated ? (
       <View>
         <NavigationBar title="LOG IN" />
         {this.renderLoginComponent()}
+        {facebook.enabled ? this.renderFacebookLoginButton() : null}
         {this.renderRegisterButton()}
         <Divider styleName="section-header" />
       </View>
@@ -182,12 +288,13 @@ export class LoginScreen extends Component {
   }
 }
 
-const mapDispatchToProps = { navigateTo, login };
+const mapDispatchToProps = { navigateTo, login, loginWithFacebook };
 
 function mapStateToProps(state, ownProps) {
   return {
     user: state[ext()].user,
     isAuthenticated: isAuthenticated(state),
+    isAuthenticating: isBusy(state[ext()]),
     appId: getAppId(),
     extensions: state['shoutem.application'].extensions,
     settings: getExtensionSettings(state, ext()),
@@ -198,4 +305,4 @@ function mapStateToProps(state, ownProps) {
 export default loginRequired(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(LoginScreen), false);
+)(connectStyle(ext('LoginScreen'))(LoginScreen)), false);

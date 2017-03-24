@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import {
   Button,
@@ -7,7 +8,7 @@ import {
   FormControl,
   HelpBlock,
 } from 'react-bootstrap';
-import { LoaderContainer } from '@shoutem/se-ui-kit';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 import validator from 'validator';
 import './style.scss';
 
@@ -32,7 +33,7 @@ export default class FeedUrlInput extends Component {
   }
 
   getValidationState() {
-    return this.state.error ? 'error' : false;
+    return this.state.error ? 'error' : null;
   }
 
   handleTextChange(event) {
@@ -50,7 +51,7 @@ export default class FeedUrlInput extends Component {
   }
 
   handleContinue() {
-    const feedUrl = this.state.feedUrl;
+    const feedUrl = _.trim(this.state.feedUrl);
     if (validateUrl(feedUrl)) {
       this.props.onContinueClick(feedUrl);
     } else {
@@ -91,7 +92,7 @@ export default class FeedUrlInput extends Component {
 }
 
 FeedUrlInput.propTypes = {
-  inProgress: PropTypes.boolean,
+  inProgress: PropTypes.bool,
   onContinueClick: PropTypes.func,
   error: PropTypes.string,
 };

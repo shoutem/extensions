@@ -1,15 +1,15 @@
-import BrowserScreen from './screens/BrowserScreen';
+import WebViewScreen from './screens/WebViewScreen';
 import * as actions from './redux';
 import {
-  openBrowserScreen,
+  openWebViewScreen,
 } from './middleware';
 
 const screens = {
-  BrowserScreen,
+  WebViewScreen,
 };
 
 const middleware = [
-  openBrowserScreen,
+  openWebViewScreen,
 ];
 
 const { openURL } = actions;

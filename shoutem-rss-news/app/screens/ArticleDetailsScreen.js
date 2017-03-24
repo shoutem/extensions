@@ -30,14 +30,12 @@ import { ext } from '../const';
 import { getNewsFeed } from '../redux';
 import NextArticle from '../components/NextArticle';
 
-class ArticleDetailsScreen extends React.Component {
+class ArticleDetailsScreen extends React.PureComponent {
   static propTypes = {
     // The news article to display
     article: React.PropTypes.object.isRequired,
     // News articles collection being displayed
     articles: React.PropTypes.array,
-    // A function for configuring the navigation bar
-    showNext: React.PropTypes.bool,
     // The URL of the feed that the article belongs to, this
     // prop is only necessary if the showNext is true
     feedUrl: React.PropTypes.string,
@@ -46,20 +44,24 @@ class ArticleDetailsScreen extends React.Component {
     // attachments that are not directly referenced in the
     // article body.
     showInlineGallery: React.PropTypes.bool,
+    openNextArticle: React.PropTypes.func,
   };
 
   shouldRenderNextArticle() {
-    return this.props.articles && this.props.showNext;
+    return this.props.articles && this.props.openNextArticle;
   }
 
   renderUpNext() {
-    const { article: { id }, articles, feedUrl } = this.props;
+    const { article: { id }, articles, openNextArticle } = this.props;
     const currentArticleIndex = _.findIndex(articles, { id });
 
     const nextArticle = articles[currentArticleIndex + 1];
     if (nextArticle) {
       return (
-        <NextArticle article={nextArticle} feedUrl={feedUrl} />
+        <NextArticle
+          article={nextArticle}
+          openNextArticle={openNextArticle}
+        />
       );
     }
     return null;
@@ -78,8 +80,14 @@ class ArticleDetailsScreen extends React.Component {
 
   render() {
     const { article } = this.props;
+    const articleImage = getLeadImageUrl(article) ? { uri: getLeadImageUrl(article) } : undefined;
     const dateFormat = moment(article.timeUpdated).isBefore(0) ?
-    null : (<Caption styleName="md-gutter-left">{moment(article.timeUpdated).fromNow()}</Caption>);
+      null :
+      (
+        <Caption styleName="md-gutter-left">
+          {moment(article.timeUpdated).fromNow()}
+        </Caption>
+      );
 
     return (
       <Screen styleName="full-screen paper">
@@ -89,21 +97,20 @@ class ArticleDetailsScreen extends React.Component {
           title={article.title}
           share={{
             title: article.title,
-            text: article.summary,
             link: article.link,
           }}
         />
         <ScrollView>
           <Image
-            styleName="large-portrait"
-            source={{ uri: getLeadImageUrl(article) }}
+            styleName="large-portrait placeholder"
+            source={articleImage}
             animationName="hero"
           >
             <Tile animationName="hero">
               <Title styleName="centered">{article.title.toUpperCase()}</Title>
               <View styleName="horizontal collapsed" virtual>
                 <Caption numberOfLines={1} styleName="collapsible">{article.author}</Caption>
-                { dateFormat }
+                {dateFormat}
               </View>
               <Icon name="down-arrow" styleName="scroll-indicator" />
             </Tile>

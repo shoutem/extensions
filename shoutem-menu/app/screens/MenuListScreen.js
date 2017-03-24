@@ -7,7 +7,7 @@ import { connectStyle } from '@shoutem/theme';
 import { CmsListScreen } from 'shoutem.cms';
 
 import { ext } from '../const';
-import ListMenuView from '../components/ListMenuView.js';
+import ListMenuView from '../components/ListMenuView';
 
 export class MenuListScreen extends CmsListScreen {
   static propTypes = {
@@ -50,7 +50,7 @@ export class MenuListScreen extends CmsListScreen {
 }
 
 export const mapStateToProps = CmsListScreen.createMapStateToProps(
-  (state) => state[ext()].allMenuItems
+  state => state[ext()].allMenuItems,
 );
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
@@ -58,5 +58,5 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('MenuListScreen'), {})(MenuListScreen)
+  connectStyle(ext('MenuListScreen'), {})(MenuListScreen),
 );

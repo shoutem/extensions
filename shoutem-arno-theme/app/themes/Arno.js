@@ -49,6 +49,7 @@ const textComponents = [
   'shoutem.ui.Text',
   'shoutem.ui.Caption',
 ];
+const buttonChildComponents = [...textComponents, 'shoutem.ui.Icon'];
 const viewComponents = [
   'shoutem.ui.View',
   'shoutem.ui.Tile',
@@ -177,10 +178,6 @@ export default (variables = {}) => ({
     },
   },
 
-  dimmedFeaturedBackground: {
-    backgroundColor: inverseColorBrightnessForAmount(variables.featuredColor, 5),
-  },
-
   featuredBackground: {
     backgroundColor: variables.featuredColor,
   },
@@ -235,12 +232,24 @@ export default (variables = {}) => ({
       textAlign: 'center',
     },
 
+    '.h-left': {
+      textAlign: 'left',
+    },
+
+    '.h-right':{
+      textAlign: 'right',
+    },
+
     '.bold': {
       [INCLUDE]: ['boldTextStyle'],
     },
 
     '.multiline': {
       [INCLUDE]: ['multilineTextStyle'],
+    },
+
+    '.muted': {
+      opacity: 0.5,
     },
 
     backgroundColor: Colors.CLEAR,
@@ -276,7 +285,7 @@ export default (variables = {}) => ({
   'shoutem.ui.Caption': {
     [INCLUDE]: ['text'],
 
-    lineHeight: 16,
+    lineHeight: 25,
     letterSpacing: 0.4,
     opacity: 0.7,
     ...variables.caption,
@@ -339,13 +348,13 @@ export default (variables = {}) => ({
     },
 
     '.large': {
-      width: dimensionRelativeToIphone(359),
+      width: dimensionRelativeToIphone(375),
       height: dimensionRelativeToIphone(268),
       alignSelf: 'center',
     },
 
     '.large-portrait': {
-      width: dimensionRelativeToIphone(359),
+      width: dimensionRelativeToIphone(375),
       height: dimensionRelativeToIphone(496),
       alignSelf: 'center',
     },
@@ -357,7 +366,7 @@ export default (variables = {}) => ({
     },
 
     '.large-square': {
-      width: dimensionRelativeToIphone(359),
+      width: dimensionRelativeToIphone(375),
       height: dimensionRelativeToIphone(359),
       alignSelf: 'center',
     },
@@ -369,13 +378,17 @@ export default (variables = {}) => ({
     },
 
     '.large-ultra-wide': {
-      width: dimensionRelativeToIphone(359),
+      width: dimensionRelativeToIphone(375),
       height: dimensionRelativeToIphone(130),
       alignSelf: 'center',
     },
   },
   'shoutem.ui.Image': {
     [INCLUDE]: ['commonVariants', 'imageSizes', 'fill-parent'],
+
+    '.placeholder': {
+      backgroundColor: inverseColorBrightnessForAmount(variables.paperColor, 10),
+    },
 
     'shoutem.ui.Tile': {
       [INCLUDE]: ['textCentricTile', 'fillParent', 'imageOverlayText'],
@@ -384,6 +397,13 @@ export default (variables = {}) => ({
     },
 
     heroAnimation(driver, { layout, options }) {
+      if (Platform.OS === 'android') {
+        // Scroll events currently have a significant delay on
+        // Android, and this animation doesn't look smooth,
+        // so we are disabling it for now.
+        return {};
+      }
+
       return {
         transform: [
           {
@@ -406,8 +426,8 @@ export default (variables = {}) => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    resizeMode: 'stretch',
-    overflow: 'visible',
+    resizeMode: 'cover',
+    overflow: 'hidden',
   },
 
   //
@@ -482,7 +502,7 @@ export default (variables = {}) => ({
     },
 
     '.overlay': {
-      backgroundColor: variables.primaryOverlayColor,
+      backgroundColor: variables.imageOverlayColor,
     },
 
     '.solid': {
@@ -494,9 +514,11 @@ export default (variables = {}) => ({
     },
 
     '.dimmed': {
-      '.featured': {
-        [INCLUDE]: ['dimmedFeaturedBackground']
-      }
+      // Doesn't implement (need)
+    },
+
+    '.muted': {
+      opacity: 0.3
     },
 
     '.featured': {
@@ -506,9 +528,42 @@ export default (variables = {}) => ({
     '.center': {
       alignSelf: 'center',
     },
+
+    '.badge': {
+      alignItems: 'center',
+      backgroundColor: variables.navBarIconsColor,
+      borderColor: variables.navBarBackground,
+      borderRadius: 8,
+      borderWidth: 2,
+      height: 15,
+      justifyContent: 'center',
+      position: 'absolute',
+      width: 15,
+
+      'shoutem.ui.Text': {
+        color: variables.navBarBackground,
+        fontSize: 10,
+        fontWeight: '800',
+        opacity: 1,
+        textAlign: 'center',
+      },
+    },
+
+    '.oval-highlight': {
+      alignItems: 'center',
+      backgroundColor: changeColorAlpha('#030303', 0.1),
+      borderRadius: 31,
+      height: 62,
+      justifyContent: 'center',
+      width: 62,
+    }
   },
 
   'shoutem.ui.Screen': {
+    '.full-screen': {
+      marginTop: -NAVIGATION_BAR_HEIGHT,
+    },
+
     '.paper': {
       backgroundColor: variables.paperColor,
     },
@@ -605,6 +660,7 @@ export default (variables = {}) => ({
 
     ...createSharedStyle(textComponents, {
       textAlign: 'center',
+      alignSelf: 'stretch',
     }),
 
     flex: 1,
@@ -736,6 +792,7 @@ export default (variables = {}) => ({
 
     ...createSharedStyle(textComponents, {
       textAlign: 'center',
+      color: variables.tagOverlayTextColor,
     }),
 
     ...createSharedStyle(viewComponents, {
@@ -782,6 +839,13 @@ export default (variables = {}) => ({
       marginRight: 0,
     },
 
+    'shoutem.ui.View': {
+      '.badge': {
+        top: -4,
+        right: -4,
+      }
+    },
+
     paddingLeft: 0,
     paddingRight: 0,
   },
@@ -795,8 +859,12 @@ export default (variables = {}) => ({
   textualButton: {
     'shoutem.ui.Text': {
       // Inherit color
-      ..._.omit(variables.text, ['color']),
+      ...variables.text
     },
+
+    'shoutem.ui.Icon':{
+       color: variables.text.color
+    }
   },
 
   'shoutem.ui.Button': {
@@ -811,7 +879,11 @@ export default (variables = {}) => ({
     },
 
     '.textual': {
+      // Use default text as button text style
+      // Text like button, without background color and margins
       [INCLUDE]: ['textualButton'],
+      [INCLUDE]: ['clearButton'],
+      [INCLUDE]: ['tightButton'],
     },
 
     '.secondary': {
@@ -837,6 +909,18 @@ export default (variables = {}) => ({
       borderRadius: 0,
       borderWidth: 0,
       height: 48,
+    },
+
+     // Buttons at the bottom of dialogs, widgets, etc.,
+    // usually Cancel/Confirm, No/Yes, etc.
+    '.confirmation': {
+      'shoutem.ui.Text': {
+        [INCLUDE]: ['boldTextStyle'],
+      },
+
+      // Medium gutter on both sides, 25 between buttons
+      flex: 1,
+      marginHorizontal: MEDIUM_GUTTER,
     },
 
     // Vertically stacked icon and text
@@ -871,6 +955,14 @@ export default (variables = {}) => ({
       marginRight: 10,
     },
 
+    'shoutem.ui.View': {
+      // Positions badge to top right of button icon
+      '.badge': {
+        top: -4,
+        right: 23,
+      }
+    },
+
     underlayColor: changeColorAlpha(variables.primaryButtonBackgroundColor, 0.5),
 
     backgroundColor: variables.primaryButtonBackgroundColor,
@@ -902,10 +994,14 @@ export default (variables = {}) => ({
     },
 
     backgroundColor: Colors.CLEAR,
-    color: variables.primaryButtonText.color,
+    color: variables.text.color,
     textAlign: 'center',
     textAlignVertical: 'center',
     fontSize: 24,
+  },
+
+  'shoutem.ui.Spinner': {
+    [INCLUDE]: ['guttersMargin'],
   },
 
   //
@@ -924,7 +1020,7 @@ export default (variables = {}) => ({
     },
 
     refreshControl: {
-      tintColor: variables.secondaryButtonBackgroundColor,
+      tintColor: inverseColorBrightnessForAmount(variables.backgroundColor, 15),
     },
 
     loadMoreSpinner: {
@@ -953,11 +1049,6 @@ export default (variables = {}) => ({
   //
   // Other
   //
-  hoverNavigationBar: {
-    navigationHeader: {
-      paddingTop: 0,
-    },
-  },
   clearNavigationBar: {
     [INCLUDE]: ['imageOverlayText'],
     'shoutem.ui.Button': {
@@ -1008,6 +1099,10 @@ export default (variables = {}) => ({
       },
     },
 
+    '.clear': {
+      [INCLUDE]: ['clearNavigationBar'],
+    },
+
     '.featured': {
       'shoutem.ui.Button': {
         'shoutem.ui.Icon': {
@@ -1015,6 +1110,17 @@ export default (variables = {}) => ({
         },
         'shoutem.ui.Text': {
           color: variables.featuredNavBarIconsColor,
+        },
+      },
+
+      'shoutem.ui.View': {
+        '.badge': {
+          backgroundColor: variables.featuredNavBarIconsColor,
+          borderColor: variables.featuredColor,
+
+          'shoutem.ui.Text': {
+            color: variables.featuredColor,
+          },
         },
       },
 
@@ -1030,7 +1136,7 @@ export default (variables = {}) => ({
 
     'shoutem.ui.Icon': {
       [INCLUDE]: ['navigationBarTextAnimations'],
-      color: variables.navBarText.color,
+      color: variables.navBarIconsColor,
       fontSize: 24,
     },
 
@@ -1044,13 +1150,19 @@ export default (variables = {}) => ({
       [INCLUDE]: ['clearButton', 'tightButton'],
       'shoutem.ui.Icon': {
         [INCLUDE]: ['navigationBarTextAnimations'],
-        color: variables.featuredNavBarIconsColor,
+        color: variables.navBarIconsColor,
         marginVertical: 9,
       },
       'shoutem.ui.Text': {
         [INCLUDE]: ['navigationBarTextAnimations'],
-        color: variables.featuredNavBarIconsColor,
+        color: variables.navBarIconsColor,
         letterSpacing: 0,
+      },
+      'shoutem.ui.View': {
+        '.badge': {
+          top: 5,
+          right: 5,
+        }
       },
       paddingHorizontal: 9,
     },
@@ -1062,7 +1174,7 @@ export default (variables = {}) => ({
       },
       selectedOption: {
         'shoutem.ui.Icon': {
-          color: variables.featuredNavBarIconsColor,
+          color: variables.navBarIconsColor,
         },
         'shoutem.ui.Text': {
           ...variables.navBarLinks,
@@ -1087,10 +1199,6 @@ export default (variables = {}) => ({
   },
   'shoutem.ui.NavigationBar': {
     [INCLUDE]: ['navigationBar'],
-
-    '.clear': {
-      [INCLUDE]: ['clearNavigationBar'],
-    },
 
     'shoutem.ui.Title': {
       solidifyAnimation(driver, { layout, animationOptions }) {
@@ -1156,6 +1264,7 @@ export default (variables = {}) => ({
     },
 
     centerComponent: {
+      alignSelf: 'center',
       alignItems: 'center',
       flex: 1,
     },
@@ -1167,14 +1276,6 @@ export default (variables = {}) => ({
   },
   'shoutem.ui.navigation.NavigationBar': {
     [INCLUDE]: ['navigationBar'],
-
-    '.hover': {
-      [INCLUDE]: ['hoverNavigationBar'],
-    },
-
-    '.clear': {
-      [INCLUDE]: ['clearNavigationBar', 'hoverNavigationBar'],
-    },
 
     '.fade': {
       gradient: {
@@ -1192,6 +1293,15 @@ export default (variables = {}) => ({
       },
     },
 
+    '.none': {
+      // TODO - we are aware that in full screen case navigation bar blocks top screen touch
+      // When updated to RN > 0.42. fix by changing NavigationCardStack scene zIndex.
+      // Scene zIndex should be larger then navigation thus render above NavigationBar.
+      container: {
+        opacity: 0,
+      },
+    },
+
     'shoutem.ui.View': {
       '.container': {
         flex: 1,
@@ -1199,6 +1309,10 @@ export default (variables = {}) => ({
         alignItems: 'center',
         justifyContent: 'center',
       },
+
+      '.full-width': {
+        width: window.width,
+      }
     },
 
     'shoutem.ui.Title': {
@@ -1241,16 +1355,16 @@ export default (variables = {}) => ({
       };
     },
 
-    navigationHeader: {
-      paddingTop: NAVIGATION_BAR_HEIGHT,
-    },
     container: {
+      paddingTop: NAVIGATION_BAR_HEIGHT,
+      backgroundColor: variables.navBarBackground,
+    },
+    navigationHeader: {
       position: 'absolute',
       top: 0,
       left: 0,
       right: 0,
       height: NAVIGATION_BAR_HEIGHT,
-      backgroundColor: variables.navBarBackground,
     },
   },
 
@@ -1275,13 +1389,16 @@ export default (variables = {}) => ({
       },
     },
 
-    cardStack: {},
+    cardStack: {
+      backgroundColor: variables.backgroundColor,
+    },
     card: {},
   },
 
   sectionHeaderDivider: {
     'shoutem.ui.Caption': {
-      lineHeight: variables.caption.fontSize * 1.4,
+      // https://github.com/facebook/react-native/issues/7877
+      lineHeight: Math.round(variables.caption.fontSize * 1.4),
       marginTop: -1,
       marginBottom: SMALL_GUTTER,
       marginHorizontal: MEDIUM_GUTTER,
@@ -1319,22 +1436,173 @@ export default (variables = {}) => ({
   //
   // Form components
   //
+  'shoutem.ui.FormGroup': {
+    'shoutem.ui.View': {
+      'shoutem.ui.Caption': {
+        backgroundColor: variables.paperColor,
+        paddingHorizontal: MEDIUM_GUTTER,
+        paddingTop: 10,
+      },
+
+      'shoutem.ui.TextInput': {
+        height: 39,
+        paddingVertical: 9,
+      },
+
+      'shoutem.ui.DropDownMenu': {
+        horizontalContainer: {
+          alignItems: 'flex-start',
+          backgroundColor: variables.paperColor,
+          height: 39,
+          paddingHorizontal: MEDIUM_GUTTER,
+          paddingVertical: 9,
+        },
+
+        selectedOption: {
+          'shoutem.ui.Icon': {
+            color: variables.paperColor,
+          },
+
+          'shoutem.ui.Text': {
+            margin: 0,
+          },
+
+          borderWidth: 0,
+          paddingHorizontal: 0,
+        },
+
+        '.empty': {
+          selectedOption: {
+            'shoutem.ui.Text': {
+              color: changeColorAlpha(variables.text.color, 0.5),
+            },
+          },
+        },
+      },
+    }
+  },
+
   'shoutem.ui.TextInput': {
     [INCLUDE]: ['commonVariants', 'guttersMargin'],
+
     selectionColor: variables.text.color,
     placeholderTextColor: changeColorAlpha(variables.text.color, 0.5),
     backgroundColor: variables.paperColor,
     height: 55,
     paddingHorizontal: MEDIUM_GUTTER,
     ...variables.text,
+  },
 
+  'shoutem.ui.NumberInput': {
+    container: {
+      alignItems: 'center',
+      backgroundColor: variables.paperColor,
+      borderColor: variables.text.color,
+      borderRadius: 100,
+      borderWidth: 1,
+      height: 40,
+      paddingHorizontal: 9,
+      width: 174
+    },
+
+    button: {
+      [INCLUDE]: ['clearButton', 'tightButton'],
+      backgroundColor: variables.paperColor,
+    },
+
+    icon: {
+      color: variables.text.color,
+      marginRight: 0,
+    },
+
+    input: {
+      height: 38,
+      paddingVertical: 10,
+      textAlign: 'center',
+      width: 108,
+    },
+  },
+
+  // TODO: Search is defined with fixed colors at the moment but we will revisit it soon
+  'shoutem.ui.SearchField': {
+    clearIcon: {
+      color: '#2c2c2c',
+      opacity: 0.5,
+    },
+
+    container: {
+      backgroundColor: '#f0f0f0',
+      borderRadius: 5,
+      flex: 1,
+      height: 30,
+    },
+
+    searchIcon: {
+      color: '#888888',
+      fontSize: 16,
+    },
+
+    input: {
+      backgroundColor: '#f0f0f0',
+      color: '#888888',
+      flex: 1,
+      fontSize: 15,
+      height: 30,
+      paddingVertical: 6,
+      placeholderTextColor: '#888888',
+      selectionColor: '#888888',
+    },
+  },
+
+  'shoutem.ui.Switch': {
+    container: {
+      borderRadius: 15,
+      height: 18,
+      marginVertical: 7,
+      paddingHorizontal: 2,
+      paddingVertical: 2,
+      width: 32,
+
+      muteAnimation(driver) {
+        return {
+          backgroundColor: driver.value.interpolate({
+            inputRange: [0, 1],
+            outputRange: [
+              changeColorAlpha(variables.text.color, 0.4),
+              changeColorAlpha(variables.text.color, 1)
+            ]
+          }),
+        };
+      }
+    },
+
+    thumb: {
+      backgroundColor: '#ffffff',
+      borderRadius: 7,
+      height: 14,
+      width: 14,
+
+      turnAnimation(driver, { layout, animationOptions }) {
+        const { x, width } = layout;
+        return {
+          transform: [
+            {
+              translateX: driver.value.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, animationOptions.containerWidth - width - 2 * x],
+              }),
+            },
+          ],
+        };
+      },
+    },
   },
 
   'shoutem.ui.DropDownMenu': {
     '.horizontal': {
       horizontalContainer: {
         height: 40,
-        backgroundColor: inverseColorBrightnessForAmount(variables.paperColor, 5),
+        backgroundColor: variables.paperColor,
         alignItems: 'center',
         justifyContent: 'flex-start',
         width: window.width,
@@ -1345,9 +1613,21 @@ export default (variables = {}) => ({
     '.featured': {
       '.horizontal': {
         horizontalContainer: {
-          [INCLUDE]: ['dimmedFeaturedBackground'],
-          backgroundColor: inverseColorBrightnessForAmount(variables.featuredColor, 5),
+          [INCLUDE]: ['featuredBackground'],
         },
+      },
+    },
+
+    '.large': {
+      horizontalContainer: {
+        height: 40,
+        // Set to match the width of NumberInput
+        width: 174
+      },
+
+      selectedOption: {
+        justifyContent: 'space-between',
+        height: 38,
       },
     },
 
@@ -1359,6 +1639,7 @@ export default (variables = {}) => ({
         // TODO - see why Icon width and content alignment can not be defined properly
         width: 12,
         paddingLeft: -4.5,
+        color: variables.text.color,
       },
 
       'shoutem.ui.Text': {
@@ -1370,6 +1651,7 @@ export default (variables = {}) => ({
       paddingHorizontal: 10,
       borderRadius: 40,
       borderWidth: 1,
+      borderColor: variables.text.color,
     },
 
     modal: {
@@ -1473,8 +1755,9 @@ export default (variables = {}) => ({
       [INCLUDE]: ['shoutem.ui.Text', 'multilineTextStyle'],
     },
     container: {
+      [INCLUDE]: ['resetTextAndCaptionOpacity'],
       backgroundColor: variables.paperColor,
-      margin: MEDIUM_GUTTER,
+      marginHorizontal: LARGE_GUTTER,
     },
   },
 
@@ -1560,30 +1843,12 @@ export default (variables = {}) => ({
   //
   // ImageGallery
   //
-
-  galleryOverlayAnimations: {
-    fadeOutAnimation(driver, { layout, options }) {
-      return {
-        backgroundColor: driver.value.interpolate({
-          inputRange: [0, 1],
-          outputRange: [
-            variables.paperColor,
-            '#000000',
-          ],
-        }),
-        opacity: driver.value.interpolate({
-          inputRange: [0, 1],
-          outputRange: [1, 0],
-        }),
-      };
-    },
-  },
-
   'shoutem.ui.ImageGallery': {
     [INCLUDE]: ['guttersPadding'],
-    pageMargin: 0,
+    pageMargin: 20,
     container: {
-      flex: 1,
+      flexGrow: 1,
+      backgroundColor: '#000000',
       lightsOffAnimation(driver, { layout, options }) {
         return {
           backgroundColor: driver.value.interpolate({
@@ -1597,44 +1862,81 @@ export default (variables = {}) => ({
       },
     },
     page: {
-      flex: 1,
+      flexGrow: 1,
       justifyContent: 'center',
       overflow: 'hidden',
     },
+    imagePreview: {
+      image: {}
+    },
+  },
+
+  'shoutem.ui.ImageGalleryOverlay': {
+    '.full-screen': {
+      title: {
+        container: {
+          // We want the title background gradient to be
+          // visible underneath the navigation bar, but the
+          // title text should be rendered below the
+          // navigation bar.
+          paddingTop: NAVIGATION_BAR_HEIGHT + MEDIUM_GUTTER,
+        },
+      },
+    },
+
+    container: {
+      [INCLUDE]: ['fillParent'],
+    },
     title: {
       container: {
-        // Top position will most likely be 0 or 70
-        [INCLUDE]: ['galleryOverlayAnimations'],
         position: 'absolute',
-        backgroundColor: variables.paperColor,
-        paddingTop: MEDIUM_GUTTER,
-        paddingHorizontal: MEDIUM_GUTTER,
-        height: 60,
         top: 0,
         left: 0,
         right: 0,
+        paddingTop: MEDIUM_GUTTER,
+        paddingHorizontal: MEDIUM_GUTTER,
+
+        backgroundGradient: {
+          colors: ['rgba(0, 0, 0, 0.6)', 'rgba(0, 0, 0, 0.0)'],
+          locations: [0.17, 1.0],
+        },
       },
       text: {
-        color: variables.title.color,
+        color: variables.imageOverlayTextColor,
         textAlign: 'center',
       },
     },
     description: {
       container: {
-        [INCLUDE]: ['galleryOverlayAnimations'],
+        '.expanded': {
+          paddingTop: EXTRA_LARGE_GUTTER,
+
+          backgroundGradient: {
+            colors: ['rgba(0, 0, 0, 0.0)', 'rgba(0, 0, 0, 0.8)'],
+            locations: [0.36, 1.0],
+          },
+        },
+        '.collapsed': {
+          paddingTop: MEDIUM_GUTTER,
+
+          backgroundGradient: {
+            colors: ['rgba(0, 0, 0, 0.0)', 'rgba(0, 0, 0, 0.6)'],
+            locations: [0.02, 1.0],
+          },
+        },
+
         position: 'absolute',
-        backgroundColor: variables.paperColor,
-        paddingTop: SMALL_GUTTER,
         bottom: 0,
         left: 0,
         right: 0,
       },
+
       scroll: {
         maxHeight: 200,
         padding: MEDIUM_GUTTER,
       },
       text: {
-        color: variables.title.color,
+        color: variables.imageOverlayTextColor,
         textAlign: 'center',
       },
     },
@@ -1669,12 +1971,6 @@ export default (variables = {}) => ({
     },
   },
 
-  'shoutem.ui.ImageGallery': {
-    imagePreview: {
-      image: {},
-    },
-  },
-
   'shoutem.ui.MapView': {
     flex: 1,
   },
@@ -1696,36 +1992,32 @@ export default (variables = {}) => ({
 
     'shoutem.ui.View': {
       'shoutem.ui.View': {
-        'shoutem.ui.Overlay': {
           'shoutem.ui.View': {
+            backgroundColor: variables.imageOverlayColor,
             'shoutem.ui.Heading': {
-              color: 'white',
+              color: variables.imageOverlayTextColor,
               marginVertical: 8,
             },
 
             'shoutem.ui.Title': {
-              color: 'white',
+              color: variables.imageOverlayTextColor,
               marginVertical: 12,
             },
 
             'shoutem.ui.Subtitle': {
-              color: 'white',
+              color: variables.imageOverlayTextColor,
               marginTop: 80,
             },
 
             'shoutem.ui.Caption': {
-              color: 'white',
+              color: variables.imageOverlayTextColor,
               marginTop: 5,
             },
 
             'shoutem.ui.Text': {
-              color: 'white',
+              color: variables.imageOverlayTextColor,
             },
           },
-
-          alignSelf: 'stretch',
-          marginVertical: 0,
-        },
 
         [INCLUDE]: ['fillParent'],
       },
@@ -1735,13 +2027,28 @@ export default (variables = {}) => ({
     flex: 0,
   },
 
+  'shoutem.ui.LinearGradient': {
+    '.fill-parent': {
+      [INCLUDE]: ['fillParent'],
+    }
+  },
+
+  'shoutem.ui.Lightbox': {
+    'shoutem.ui.Image': {
+      '.preview': {
+        flex: 1,
+        resizeMode: 'contain',
+      },
+    },
+  },
+
   // ***************** //
   // END OF SHOUTEM-UI //
   // ***************** //
 
   //
   // Navigation
-  // Drawer, TabBar, Folder
+  // Drawer, TabBar, Sub-navigation
 
   mainNavigation: {
     '.selected': {
@@ -1768,8 +2075,11 @@ export default (variables = {}) => ({
       color: variables.mainNavItemColor,
     },
   },
-  folderNavigation: {
-    [INCLUDE]: ['mainNavigation'],
+  subNavigation: {
+    '.main-navigation': {
+      // Active when the IconGrid or List layout is on root screen (in app's main navigation)
+      [INCLUDE]: ['mainNavigation'],
+    },
     '.text-hidden': {},
     '.small-icon': {
       icon: {
@@ -1790,12 +2100,20 @@ export default (variables = {}) => ({
       },
     },
 
+    page: {
+      [INCLUDE]: ['alignmentVariants'],
+    },
+
+    item: {
+      backgroundColor: variables.subNavItemBackground,
+    },
+
     icon: {
-      tintColor: variables.folderItemColor,
+      tintColor: variables.subNavItemColor,
     },
 
     text: {
-      color: variables.folderItemColor,
+      color: variables.subNavItemColor,
     },
 
     scrollView: {
@@ -1812,7 +2130,7 @@ export default (variables = {}) => ({
     },
   },
   'shoutem.navigation.TabBar': {
-    'shoutem.ui.Screen': {
+    screen: {
       // TabBar container
       'shoutem.ui.View': {
         position: 'absolute',
@@ -1882,8 +2200,7 @@ export default (variables = {}) => ({
   },
   'shoutem.navigation.Drawer': {
     menu: {
-      // Reverse Drawer full-screen marginTop offset and add real offset by design
-      paddingTop: NAVIGATION_BAR_HEIGHT + 55,
+      paddingTop: NAVIGATION_BAR_HEIGHT,
       backgroundColor: variables.mainNavBackground,
     },
     underlayScreensWrapper: {
@@ -1935,15 +2252,13 @@ export default (variables = {}) => ({
     },
   },
   'shoutem.navigation.IconGrid': {
-    [INCLUDE]: ['folderNavigation'],
+    [INCLUDE]: ['subNavigation'],
     '.text-hidden': {
       item: {
         marginBottom: GRID_ITEM_VERTICAL_GUTTER,
       },
     },
     page: {
-      [INCLUDE]: ['alignmentVariants'],
-
       paddingTop: GRID_ITEM_VERTICAL_GUTTER,
       // Compensate 2px that left on the row side. Row calculated with in IconGrid is 373.
       paddingHorizontal: 1,
@@ -1970,7 +2285,6 @@ export default (variables = {}) => ({
       flexDirection: 'row',
     },
     item: {
-      backgroundColor: 'transparent', // Override MainNavigation item color
       justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'column',
@@ -1996,7 +2310,15 @@ export default (variables = {}) => ({
     },
   },
   'shoutem.navigation.List': {
-    [INCLUDE]: ['folderNavigation'],
+    [INCLUDE]: ['subNavigation'],
+    '.main-navigation': {
+      item: {
+        borderColor: variables.mainNavBorderColor,
+      },
+      chevron: {
+        color: changeColorAlpha(variables.mainNavItemColor, 0.5),
+      },
+    },
     // In item alignments, set on builder
     '.in-item-alignment-left': {
       iconAndTextContainer: {
@@ -2028,8 +2350,7 @@ export default (variables = {}) => ({
       alignItems: 'center',
       flexDirection: 'row',
       borderTopWidth: 1,
-      borderColor: variables.folderListBorderColor,
-      backgroundColor: variables.paperColor,
+      borderColor: variables.subNavListBorderColor,
       height: 65,
     },
     iconAndTextContainer: {
@@ -2053,7 +2374,7 @@ export default (variables = {}) => ({
       alignItems: 'center',
     },
     chevron: {
-      color: variables.mainNavItemColor,
+      color: variables.subNavItemColor,
     },
   },
 
@@ -2097,13 +2418,14 @@ export default (variables = {}) => ({
         medium: 0.5,
         large: 0.625,
       },
+      backgroundColor: variables.subNavItemBackground,
     },
     text: {
       flex: 0,
       width: null,
       fontSize: 15,
       marginLeft: MEDIUM_GUTTER,
-      color: variables.folderItemColor,
+      color: variables.subNavItemColor,
     },
   },
 
@@ -2164,6 +2486,39 @@ export default (variables = {}) => ({
             color: '#5f5f5f',
           },
         },
+      },
+    },
+  },
+
+  //
+  // Books
+  //
+  'shoutem.books.ListBooksView': {
+    'shoutem.ui.Divider': {
+      '.line': {
+        borderBottomWidth: 0,
+        borderBottomColor: 'transparent',
+        marginLeft: 0,
+        paddingBottom: SMALL_GUTTER,
+        paddingTop: 0,
+      }
+    }
+  },
+
+  //
+  // Photos
+  //
+  'shoutem.photos.PhotosGrid': {
+    list: {
+      listContent: {
+        padding: MEDIUM_GUTTER,
+      },
+    },
+  },
+  'shoutem.rss-photos.PhotosGrid': {
+    list: {
+      listContent: {
+        padding: MEDIUM_GUTTER,
       },
     },
   },

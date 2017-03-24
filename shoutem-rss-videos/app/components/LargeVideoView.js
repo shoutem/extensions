@@ -39,9 +39,8 @@ export default class LargeVideoView extends React.Component {
       <TouchableOpacity onPress={this.onPress}>
         <Tile>
           <Image
-            styleName="large-banner"
+            styleName="large-wide placeholder"
             source={{ uri: _.get(video, 'videoAttachments[0].thumbnailUrl') }}
-            defaultSource={require('../assets/images/image-fallback.png')}
           >
             <Overlay styleName="rounded-small">
               <Icon name="play" />

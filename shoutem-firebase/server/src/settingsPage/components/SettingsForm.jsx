@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { reduxForm } from 'redux-form';
 import { Button, ControlLabel, FormControl, FormGroup, HelpBlock } from 'react-bootstrap';
-import { LoaderContainer } from '@shoutem/se-ui-kit';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 import { ext } from 'context';
 import { validateFirebaseConfig } from '../services';
 import './style.scss';

@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 
 import {
   Subtitle,
@@ -32,7 +33,9 @@ export default class ListEventView extends React.Component {
   }
 
   onPress() {
-    this.props.onPress(this.props.event);
+    if (_.isFunction(this.props.onPress)) {
+      this.props.onPress(this.props.event);
+    }
   }
 
   action() {
@@ -43,17 +46,24 @@ export default class ListEventView extends React.Component {
     const { event, style } = this.props;
     return (
       <TouchableOpacity
+        disabled={!_.isFunction(this.props.onPress)}
         onPress={this.onPress}
         key={event.id}
         style={style}
       >
         <Row>
-          <EventImage styleName="small rounded-corners" event={event} />
+          <EventImage
+            styleName="small rounded-corners"
+            event={event}
+          />
           <View styleName="vertical stretch space-between">
             <Subtitle styleName="">{event.name}</Subtitle>
             <Caption>{formatDate(event.startTime)}</Caption>
           </View>
-          <Button styleName="right-icon" onPress={this.action}>
+          <Button
+            styleName="tight clear"
+            onPress={this.action}
+          >
             <Icon name="add-event" />
           </Button>
         </Row>

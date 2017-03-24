@@ -33,13 +33,12 @@ export default class ListPeopleView extends React.Component {
         <View>
           <Row>
             <Image
-              defaultSource={require('../assets/images/image-fallback.png')}
               source={{ uri: person.image ? person.image.url : undefined }}
-              styleName="small rounded-corners"
+              styleName="small rounded-corners placeholder"
             />
             <View styleName="vertical stretch space-between">
               <Subtitle>{person.firstName} {person.lastName}</Subtitle>
-              <Caption>{person.title}</Caption>
+              <Caption>{person.profession}</Caption>
             </View>
           </Row>
           <Divider styleName="line" />

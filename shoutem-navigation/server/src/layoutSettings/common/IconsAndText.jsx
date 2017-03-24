@@ -1,17 +1,58 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
+import _ from 'lodash';
 import { ControlLabel, Dropdown, MenuItem } from 'react-bootstrap';
 
 const SHOW_TEXT = 1;
 const SHOW_ICON = 2;
 const SHOW_TEXT_AND_ICON = SHOW_TEXT | SHOW_ICON;
 
-export default class IconsAndText extends React.Component {
+const getDisplayOptionsText = (showText, showIcon) => {
+  if (showText && showIcon) {
+    return 'Show text and icons';
+  }
+  if (showText) {
+    return 'Show text only';
+  }
+  if (showIcon) {
+    return 'Show icons only';
+  }
+  return '';
+};
+
+export default class IconsAndText extends Component {
   constructor(props) {
     super(props);
-    this.onDisplayOptionsSelected = this.onDisplayOptionsSelected.bind(this);
+
+    this.resolveCurrentOptions = this.resolveCurrentOptions.bind(this);
+    this.handleDisplayOptionsSelected = this.handleDisplayOptionsSelected.bind(this);
   }
 
-  onDisplayOptionsSelected(event) {
+  componentDidMount() {
+    this.resolveCurrentOptions(this.props);
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.resolveCurrentOptions(newProps);
+  }
+
+  resolveCurrentOptions(props) {
+    const { settings, textOnlySupported, iconsOnlySupported } = props;
+
+    const showIcon = _.get(settings, ['showIcon'], true);
+    const showText = _.get(settings, ['showText'], true);
+
+    if (!textOnlySupported && !showIcon) {
+      // if text only is not supported, 'turn on' icons
+      this.props.onSettingsChanged({ showIcon: true });
+    }
+
+    if (!iconsOnlySupported && !showText) {
+      // if icons only is not supported, 'turn on' text
+      this.props.onSettingsChanged({ showText: true });
+    }
+  }
+
+  handleDisplayOptionsSelected(event) {
     const { onSettingsChanged } = this.props;
     const newSettings = {
       showText: (event & SHOW_TEXT) === SHOW_TEXT,
@@ -20,30 +61,31 @@ export default class IconsAndText extends React.Component {
     onSettingsChanged(newSettings);
   }
 
-  getDisplayOptionsText(showText, showIcon) {
-    if(showText && showIcon) return 'Show text and icons';
-    if(showText) return 'Show text only';
-    if(showIcon) return 'Show icons only';
-    return '';
-  }
-
   render() {
-    const { settings } = this.props;
+    const { settings, textOnlySupported, iconsOnlySupported } = this.props;
     const showIcon = _.get(settings, ['showIcon'], true);
     const showText = _.get(settings, ['showText'], true);
 
     return (
       <div>
         <ControlLabel>Icons and text</ControlLabel>
-        <Dropdown onSelect={this.onDisplayOptionsSelected} className="block">
+        <Dropdown onSelect={this.handleDisplayOptionsSelected} className="block">
           <Dropdown.Toggle>
-            {this.getDisplayOptionsText(showText, showIcon)}
+            {getDisplayOptionsText(showText, showIcon)}
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            <MenuItem key={SHOW_TEXT} eventKey={SHOW_TEXT}>{this.getDisplayOptionsText(true, false)}</MenuItem>
-            <MenuItem key={SHOW_ICON} eventKey={SHOW_ICON}>{this.getDisplayOptionsText(false, true)}</MenuItem>
+            {textOnlySupported &&
+              <MenuItem key={SHOW_TEXT} eventKey={SHOW_TEXT}>
+                {getDisplayOptionsText(true, false)}
+              </MenuItem>
+            }
+            {iconsOnlySupported &&
+              <MenuItem key={SHOW_ICON} eventKey={SHOW_ICON}>
+                {getDisplayOptionsText(false, true)}
+              </MenuItem>
+            }
             <MenuItem key={SHOW_TEXT_AND_ICON} eventKey={SHOW_TEXT_AND_ICON}>
-              {this.getDisplayOptionsText(true, true)}
+              {getDisplayOptionsText(true, true)}
             </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
@@ -55,4 +97,11 @@ export default class IconsAndText extends React.Component {
 IconsAndText.propTypes = {
   settings: PropTypes.object.isRequired,
   onSettingsChanged: PropTypes.func.isRequired,
+  textOnlySupported: PropTypes.bool,
+  iconsOnlySupported: PropTypes.bool,
+};
+
+IconsAndText.defaultProps = {
+  textOnlySupported: true,
+  iconsOnlySupported: true,
 };

@@ -1,18 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { FormGroup, Checkbox, ControlLabel, Button, ButtonToolbar } from 'react-bootstrap';
-import { isInitialized, shouldRefresh, isBusy, isValid } from '@shoutem/redux-io';
 import _ from 'lodash';
-import {
-  updateExtensionInstallationSettings,
-  loadLegacyApplicationSettings,
-  updateLegacyApplicationSettings,
-} from './../reducer';
-import { getExtensionInstallationSettings, mergeSettings } from './../../settings';
-import { denormalizeItem } from 'denormalizer';
+
 import { ext } from 'context';
 import { getExtensionInstallation, url, appId } from 'environment';
-import { LEGACY_APPLICATION_SETTINGS } from 'types';
+
+import {
+  updateExtensionInstallationSettings,
+} from './../reducer';
+import { getExtensionInstallationSettings, mergeSettings } from './../../settings';
+
 import './providers.scss';
 
 export class Providers extends Component {
@@ -20,13 +18,11 @@ export class Providers extends Component {
     super(props);
     this.getExtensionInstallationSettings = this.getExtensionInstallationSettings.bind(this);
     this.setExtensionInstallationSettings = this.setExtensionInstallationSettings.bind(this);
-    this.getLegacyApplicationSettings = this.getLegacyApplicationSettings.bind(this);
-    this.setLegacyApplicationSettings = this.setLegacyApplicationSettings.bind(this);
     this.handleEmailEnabledChange = this.handleEmailEnabledChange.bind(this);
     this.handleAllowNewUserRegistrationChange = this.handleAllowNewUserRegistrationChange.bind(this);
     this.handleFacebookEnabledChange = this.handleFacebookEnabledChange.bind(this);
-    this.handleFacebookApiKeyChange = this.handleFacebookApiKeyChange.bind(this);
-    this.handleFacebookApiSecretChange = this.handleFacebookApiSecretChange.bind(this);
+    this.handleFacebookAppIdChange = this.handleFacebookAppIdChange.bind(this);
+    this.handleFacebookAppNameChange = this.handleFacebookAppNameChange.bind(this);
     this.handleFacebookSaveClick = this.handleFacebookSaveClick.bind(this);
     this.handleTwitterEnabledChange = this.handleTwitterEnabledChange.bind(this);
     this.handleTwitterConsumerKeyChange = this.handleTwitterConsumerKeyChange.bind(this);
@@ -35,34 +31,18 @@ export class Providers extends Component {
     this.getFacebookSettingsBuilderUrl = this.getFacebookSettingsBuilderUrl.bind(this);
     this.getTwitterSettingsBuilderUrl = this.getTwitterSettingsBuilderUrl.bind(this);
 
-    this.state = {
-      legacySettings: {
-        facebookApiKey: '',
-        facebookSecret: '',
-        twitterConsumerKey: '',
-        twitterConsumerKeySecret: ''
+    const {
+      providers: {
+        facebook = {}, twitter = {},
       },
-      facebookError: '',
-      twitterError: ''
-    }
-  }
+    } = getExtensionInstallationSettings(props.extensionInstallation);
 
-  componentWillMount() {
-    this.props.loadLegacyApplicationSettings();
-  }
-
-  componentWillReceiveProps(newProps) {
-    if (isInitialized(newProps.legacyApplicationSettings) &&
-        shouldRefresh(newProps.legacyApplicationSettings)) {
-      this.props.loadLegacyApplicationSettings();
-    }
-
-    if ((this.props.legacyApplicationSettings !== newProps.legacyApplicationSettings) &&
-      !isBusy(newProps.legacyApplicationSettings)) {
-      if (newProps.legacyApplicationSettings) {
-        this.setState({ legacySettings: newProps.legacyApplicationSettings });
-      }
-    }
+    this.state = {
+      facebookAppId: facebook.appId,
+      facebookAppName: facebook.appName,
+      twitterConsumerKey: twitter.consumerKey,
+      twitterConsumerKeySecret: twitter.consumerKeySecret,
+    };
   }
 
   getExtensionInstallationSettings() {
@@ -72,16 +52,8 @@ export class Providers extends Component {
   setExtensionInstallationSettings(settings) {
     const id = this.props.extensionInstallation.id;
     const currentSettings = this.getExtensionInstallationSettings();
-    const mergedSettings = mergeSettings(currentSettings, settings); 
+    const mergedSettings = mergeSettings(currentSettings, settings);
     this.props.updateExtensionInstallationSettings(id, mergedSettings);
-  }
-
-  getLegacyApplicationSettings() {
-    return this.state.legacySettings;
-  }
-
-  setLegacyApplicationSettings(settings) {
-    this.props.updateLegacyApplicationSettings(settings);
   }
 
   handleEmailEnabledChange(event) {
@@ -93,9 +65,9 @@ export class Providers extends Component {
       signupEnabled: enabled,
       providers: {
         email: {
-          enabled
-        }
-      }
+          enabled,
+        },
+      },
     });
   }
 
@@ -113,42 +85,36 @@ export class Providers extends Component {
     this.setExtensionInstallationSettings({
       providers: {
         facebook: {
-          enabled: event.target.checked
-        }
-      }
+          enabled: event.target.checked,
+        },
+      },
     });
   }
 
-  handleFacebookApiKeyChange(event) {
+  handleFacebookAppIdChange(event) {
     if (!event.target) {
       return;
     }
-    this.setState({
-      legacySettings: {
-        ...this.state.legacySettings,
-        facebookApiKey: event.target.value
-      }
-    });
+    this.setState({ facebookAppId: event.target.value });
   }
 
-  handleFacebookApiSecretChange(event) {
+  handleFacebookAppNameChange(event) {
     if (!event.target) {
       return;
     }
-    this.setState({
-      legacySettings: {
-        ...this.state.legacySettings,
-        facebookSecret: event.target.value
-      }
-    });
+    this.setState({ facebookAppName: event.target.value });
   }
 
   handleFacebookSaveClick() {
-    const { facebookApiKey, facebookSecret } = this.state.legacySettings;
-    if (facebookApiKey && facebookSecret) {
-      this.setLegacyApplicationSettings({
-        facebookApiKey: facebookApiKey,
-        facebookSecret: facebookSecret
+    const { facebookAppId, facebookAppName } = this.state;
+    if (facebookAppId && facebookAppName) {
+      this.setExtensionInstallationSettings({
+        providers: {
+          facebook: {
+            appId: facebookAppId,
+            appName: facebookAppName,
+          },
+        },
       });
       this.setState({ facebookError: '' });
     } else {
@@ -161,45 +127,41 @@ export class Providers extends Component {
       this.setExtensionInstallationSettings({
         providers: {
           twitter: {
-            enabled: event.target.checked
-          }
-        }
+            enabled: event.target.checked,
+          },
+        },
       });
     }
   }
 
   handleTwitterConsumerKeyChange(event) {
-    if (event.target) {
-      this.setState({
-        legacySettings: {
-          ...this.state.legacySettings,
-          twitterConsumerKey: event.target.value
-        }
-      });
+    if (!event.target) {
+      return;
     }
+    this.setState({ twitterConsumerKey: event.target.value });
   }
 
   handleTwitterConsumerKeySecretChange(event) {
-    if (event.target) {
-      this.setState({
-        legacySettings: {
-          ...this.state.legacySettings,
-          twitterConsumerKeySecret: event.target.value
-        }
-      });
+    if (!event.target) {
+      return;
     }
+    this.setState({ twitterConsumerKeySecret: event.target.value });
   }
 
   handleTwitterSaveClick() {
-    const { twitterConsumerKey, twitterConsumerKeySecret } = this.state.legacySettings;
+    const { twitterConsumerKey, twitterConsumerKeySecret } = this.state;
     if (twitterConsumerKey && twitterConsumerKeySecret) {
-      this.setLegacyApplicationSettings({
-        twitterConsumerKey: twitterConsumerKey,
-        twitterConsumerKeySecret: twitterConsumerKeySecret
+      this.setExtensionInstallationSettings({
+        providers: {
+          twitter: {
+            consumerKey: twitterConsumerKey,
+            consumerKeySecret: twitterConsumerKeySecret,
+          },
+        },
       });
       this.setState({ twitterError: '' });
     } else {
-      this.setState({ twitterError: 'Invalid Twitter credentials.' })
+      this.setState({ twitterError: 'Invalid Twitter credentials.' });
     }
   }
 
@@ -219,17 +181,14 @@ export class Providers extends Component {
     const twitterEnabled = _.get(settings, 'providers.twitter.enabled', false);
 
     const {
-      facebookApiKey,
-      facebookSecret,
+      facebookAppId,
+      facebookAppName,
       twitterConsumerKey,
-      twitterConsumerKeySecret
-    } = this.getLegacyApplicationSettings();
-
-    const {
+      twitterConsumerKeySecret,
       facebookError,
-      twitterError
+      twitterError,
     } = this.state;
-    
+
     return (
       <div>
         <form>
@@ -237,17 +196,17 @@ export class Providers extends Component {
             <h3>Select authentication providers</h3>
             <table className="table">
               <tbody>
-              <tr>
-                <td>
-                  <Checkbox
-                    checked={emailEnabled}
-                    onChange={this.handleEmailEnabledChange}
-                  >
-                    Email and password
-                  </Checkbox>
-                </td>
-              </tr>
-              {emailEnabled && (
+                <tr>
+                  <td>
+                    <Checkbox
+                      checked={emailEnabled}
+                      onChange={this.handleEmailEnabledChange}
+                    >
+                      Email and password
+                    </Checkbox>
+                  </td>
+                </tr>
+                {emailEnabled && (
                 <tr>
                   <td>
                     <h3>Email and password settings</h3>
@@ -259,18 +218,18 @@ export class Providers extends Component {
                     </Checkbox>
                   </td>
                 </tr>
-              )}
-              <tr>
-                <td>
-                  <Checkbox
-                    checked={facebookEnabled}
-                    onChange={this.handleFacebookEnabledChange}
-                  >
-                    Facebook
-                  </Checkbox>
-                </td>
-              </tr>
-              {facebookEnabled && (
+                )}
+                <tr>
+                  <td>
+                    <Checkbox
+                      checked={facebookEnabled}
+                      onChange={this.handleFacebookEnabledChange}
+                    >
+                      Facebook
+                    </Checkbox>
+                  </td>
+                </tr>
+                {facebookEnabled && (
                 <tr>
                   <td>
                     <h3>Facebook login setup</h3>
@@ -283,15 +242,15 @@ export class Providers extends Component {
                     <input
                       type="text"
                       className="form-control"
-                      value={facebookApiKey}
-                      onChange={this.handleFacebookApiKeyChange}
+                      value={facebookAppId}
+                      onChange={this.handleFacebookAppIdChange}
                     />
-                    <ControlLabel>App Secret</ControlLabel>
+                    <ControlLabel>App Name</ControlLabel>
                     <input
                       type="text"
                       className="form-control"
-                      value={facebookSecret}
-                      onChange={this.handleFacebookApiSecretChange}
+                      value={facebookAppName}
+                      onChange={this.handleFacebookAppNameChange}
                     />
                     {facebookError && (
                       <ControlLabel>{facebookError}</ControlLabel>
@@ -306,18 +265,18 @@ export class Providers extends Component {
                     </ButtonToolbar>
                   </td>
                 </tr>
-              )}
-              <tr>
-                <td>
-                  <Checkbox
-                    checked={twitterEnabled}
-                    onChange={this.handleTwitterEnabledChange}
-                  >
-                    Twitter
-                  </Checkbox>
-                </td>
-              </tr>
-              {twitterEnabled && (
+                )}
+                <tr>
+                  <td>
+                    <Checkbox
+                      checked={twitterEnabled}
+                      onChange={this.handleTwitterEnabledChange}
+                    >
+                      Twitter
+                    </Checkbox>
+                  </td>
+                </tr>
+                {twitterEnabled && (
                 <tr>
                   <td>
                     <h3>Twitter login setup</h3>
@@ -353,7 +312,7 @@ export class Providers extends Component {
                     </ButtonToolbar>
                   </td>
                 </tr>
-              )}
+                )}
               </tbody>
             </table>
           </FormGroup>
@@ -363,19 +322,16 @@ export class Providers extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps() {
   return {
     extensionInstallation: getExtensionInstallation(),
-    legacyApplicationSettings: denormalizeItem(state[ext()].providersPage.legacyApplicationSettings, undefined, LEGACY_APPLICATION_SETTINGS),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     updateExtensionInstallationSettings: (id, settings) => dispatch(updateExtensionInstallationSettings(id, settings)),
-    loadLegacyApplicationSettings: () => dispatch(loadLegacyApplicationSettings()),
-    updateLegacyApplicationSettings: (settings) => (dispatch(updateLegacyApplicationSettings(settings)))
   };
-};
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Providers);

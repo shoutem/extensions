@@ -1,21 +1,24 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { isInitialized } from '@shoutem/redux-io';
-import { EmptyResourcePlaceholder, LoaderContainer } from '@shoutem/se-ui-kit';
+import { EmptyResourcePlaceholder, LoaderContainer } from '@shoutem/react-web-ui';
 import { getShortcut } from 'environment';
-import ShortcutsList from '../components/ShortcutsList';
-import ShortcutIconListItem from '../components/ShortcutIconListItem';
+import ShortcutsTable from '../components/shortcuts-table';
+import ShortcutIconRow from '../components/shortcut-icon-row';
 import { updateShortcut } from '../reducer';
 import emptyImage from '../../assets/empty.png';
 import { loadShortcuts } from './actions';
 
 import './style.scss';
 
-export class IconsPage extends React.Component {
+export class IconsPage extends Component {
   constructor(props) {
     super(props);
     this.handleIconChange = this.handleIconChange.bind(this);
-    this.renderShortcutsList = this.renderShortcutsList.bind(this);
+    this.extractAllShortcuts = this.extractAllShortcuts.bind(this);
+    this.renderShortcutRow = this.renderShortcutRow.bind(this);
+    this.renderShortcutsTable = this.renderShortcutsTable.bind(this);
   }
 
   handleIconChange(shortcutId, changedIcon) {
@@ -26,7 +29,33 @@ export class IconsPage extends React.Component {
     });
   }
 
-  renderShortcutsList(shortcuts) {
+  extractAllShortcuts(shortcuts) {
+    return _.reduce(shortcuts, (result, shortcut) => {
+      if (_.isEmpty(shortcut.children)) {
+        return [...result, shortcut];
+      }
+
+      return [
+        ...result,
+        shortcut,
+        ...this.extractAllShortcuts(shortcut.children),
+      ];
+    }, []);
+  }
+
+  renderShortcutRow(shortcut) {
+    return (
+      <ShortcutIconRow
+        shortcutType={shortcut.shortcutType}
+        title={shortcut.title}
+        icon={shortcut.icon}
+        shortcutId={shortcut.id}
+        onIconSelected={this.handleIconChange}
+      />
+    );
+  }
+
+  renderShortcutsTable(shortcuts) {
     if (!shortcuts || shortcuts.length === 0) {
       return (
         <EmptyResourcePlaceholder
@@ -40,31 +69,22 @@ export class IconsPage extends React.Component {
     }
 
     return (
-      <div className="icons-page">
-        <ShortcutsList
-          className="icons-page__shortcuts-list"
-          shortcuts={shortcuts}
-          headerTitles={['Navigation item', 'Icon']}
-          getListItem={(shortcut) => (
-            <ShortcutIconListItem
-              shortcutType={shortcut.shortcutType}
-              title={shortcut.title}
-              icon={shortcut.icon}
-              shortcutId={shortcut.id}
-              onIconSelected={this.handleIconChange}
-            />
-          )}
-        />
-      </div>
+      <ShortcutsTable
+        className="icons-page__shortcuts-table"
+        shortcuts={shortcuts}
+        headerTitles={['Navigation item', 'Icon']}
+        renderRow={this.renderShortcutRow}
+      />
     );
   }
 
   render() {
     const { shortcut } = this.props;
+    const shortcuts = this.extractAllShortcuts(shortcut.children);
 
     return (
       <LoaderContainer className="icons-page" isLoading={!isInitialized(shortcut)}>
-        {this.renderShortcutsList(shortcut.children)}
+        {this.renderShortcutsTable(shortcuts)}
       </LoaderContainer>
     );
   }

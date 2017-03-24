@@ -4,68 +4,69 @@
     "name": {
       "format": "single-line",
       "title": "Name",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 1
     },
     "info": {
       "format": "html",
       "title": "Information",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 2
     },
-    "address": {
-      "format": "single-line",
-      "title": "Address",
-      "type": "string"
-    },
-    "latitude": {
-      "format": "single-line",
-      "title": "Latitude",
-      "type": "string"
-    },
-    "longitude": {
-      "format": "single-line",
-      "title": "Longitude",
-      "type": "string"
+    "location": {
+      "format": "geolocation",
+      "title": "Location",
+      "type": "object",
+      "displayPriority": 3
     },
     "hours": {
       "format": "html",
       "title": "Opening hours",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 4
     },
     "web": {
       "format": "uri",
       "title": "Website",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 5
     },
     "phone": {
       "format": "single-line",
       "title": "Phone",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 6
     },
     "twitter": {
-      "format": "single-line",
+      "format": "uri",
       "title": "Twitter",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 7
     },
     "mail": {
       "format": "single-line",
       "title": "E-mail",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 8
     },
     "linkedin": {
-      "format": "single-line",
+      "format": "uri",
       "title": "Linkedin",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 9
     },
     "facebook": {
-      "format": "single-line",
+      "format": "uri",
       "title": "Facebook",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 10
     },
     "image": {
       "format": "attachment",
       "title": "Image",
       "type": "object",
-      "referencedSchema": "shoutem.core.image-attachments"
+      "referencedSchema": "shoutem.core.image-attachments",
+      "displayPriority": 11
     }
   },
   "titleProperty": "name",

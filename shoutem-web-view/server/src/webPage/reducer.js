@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { storage, one, find, update } from '@shoutem/redux-io';
+import { one, update } from '@shoutem/redux-io';
 import { url, appId } from 'environment';
 
 export const SHORTCUTS = 'shoutem.core.shortcuts';
@@ -10,9 +10,12 @@ export default combineReducers({
 
 export function updateShortcutSettings(id, settings) {
   const config = {
-    endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts/${id}`,
-    headers: {
-      'Content-Type': 'application/vnd.api+json',
+    schema: SHORTCUTS,
+    request: {
+      endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts/${id}`,
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
     },
   };
 
@@ -24,5 +27,5 @@ export function updateShortcutSettings(id, settings) {
     },
   };
 
-  return update(config, SHORTCUTS, partialShortcut);
+  return update(config, partialShortcut);
 }

@@ -10,7 +10,7 @@ import {
   mapStateToProps,
   mapDispatchToProps,
 } from './MenuListScreen';
-import SmallListMenuView from '../components/SmallListMenuView.js';
+import SmallListMenuView from '../components/SmallListMenuView';
 
 class MenuSmallListScreen extends MenuListScreen {
 
@@ -34,5 +34,5 @@ class MenuSmallListScreen extends MenuListScreen {
 }
 
 export default connectStyle(ext('MenuSmallListScreen'))(
-  connect(mapStateToProps, mapDispatchToProps)(MenuSmallListScreen)
+  connect(mapStateToProps, mapDispatchToProps)(MenuSmallListScreen),
 );

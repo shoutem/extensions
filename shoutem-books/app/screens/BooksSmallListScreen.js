@@ -6,7 +6,7 @@ import {
   mapStateToProps,
   mapDispatchToProps,
 } from './BooksListScreen';
-import SmallListBooksView from '../components/SmallListBooksView.js';
+import SmallListBooksView from '../components/SmallListBooksView';
 
 class BooksSmallListScreen extends BooksListScreen {
 

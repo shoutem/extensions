@@ -19,12 +19,10 @@ import moment from 'moment';
 import { ext } from '../const';
 import NextArticle from '../components/NextArticle';
 
-class ArticleDetailsScreen extends React.Component {
+class ArticleDetailsScreen extends React.PureComponent {
   static propTypes = {
     // The news article to display
     article: React.PropTypes.object.isRequired,
-    // News articles collection being displayed
-    articles: React.PropTypes.array,
     // The next article, if this article is defined, the
     // up next view will be displayed on this screen
     nextArticle: React.PropTypes.object,
@@ -46,22 +44,23 @@ class ArticleDetailsScreen extends React.Component {
 
   render() {
     const { article } = this.props;
+    const articleImage = article.image ? { uri: _.get(article, 'image.url') } : undefined;
 
     return (
       <Screen styleName="full-screen paper">
         <NavigationBar
           styleName="clear"
           animationName="solidify"
+          title={article.title}
           share={{
-            title: article.title,
-            text: article.summary,
             link: article.link,
+            title: article.title,
           }}
         />
         <ScrollView>
           <Image
-            styleName="large-portrait"
-            source={{ uri: _.get(article, 'image.url') }}
+            styleName="large-portrait placeholder"
+            source={articleImage}
             animationName="hero"
           >
             <Tile animationName="hero">

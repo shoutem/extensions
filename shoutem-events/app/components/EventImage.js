@@ -6,8 +6,8 @@ function EventImage(props) {
   return (
     <Image
       {...props}
+      styleName={`placeholder ${props.styleName}`}
       source={{ uri: _.get(props.event, 'image.url') }}
-      defaultSource={require('../assets/images/image-fallback.png')}
     >
       {props.children}
     </Image>

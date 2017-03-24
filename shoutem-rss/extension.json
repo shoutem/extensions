@@ -1,14 +1,15 @@
 {
   "name": "rss",
-  "version": "0.2.4",
+  "version": "0.2.13",
   "type": "system",
   "title": "RSS",
-  "description": "Shoutem RSS extension",
+  "description": "Integrate with RSS feed source",
   "platform": "1.0.*",
-  "categories": [],
+  "icon": "server/assets/add-rss-image.png",
+  "categories": ["content"],
   "pages": [{
     "name": "RssPage",
-    "type": "component",
+    "type": "native-component",
     "path": "dummy.js"
   }],
   "settings": {

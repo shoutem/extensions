@@ -19,7 +19,10 @@ class LinkIconButton extends React.Component {
 
     if (book.buyUrl) {
       return (
-        <Button styleName="clear" onPress={() => openURL(book.buyUrl, book.title)}>
+        <Button
+          styleName="tight clear textual sm-gutter-left"
+          onPress={() => openURL(book.buyUrl, book.title)}
+        >
           <Icon name="cart" />
         </Button>
       );

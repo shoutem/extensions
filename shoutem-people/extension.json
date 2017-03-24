@@ -1,11 +1,15 @@
 {
   "name": "people",
   "title": "People",
-  "version": "0.10.6",
+  "version": "0.10.14",
   "icon": "./server/assets/images/add-people-image.png",
-  "description": "Explore through the list of people/contacts",
+  "description": "Show people and contact details",
   "platform": "1.0.*",
   "categories": ["content"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
   "shortcuts": [
     {
       "title": "People",

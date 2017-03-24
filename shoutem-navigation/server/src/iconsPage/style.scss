@@ -2,7 +2,7 @@
   margin-top: 50px;
 }
 
-.navigation__table {
+.shortcuts-table {
   width: 100%;
   table-layout: fixed;
 
@@ -20,7 +20,7 @@
     padding: 8px 0 7px;
   }
 
-  &.icons-page__shortcuts-list {
+  &.icons-page__shortcuts-table {
     th {
       width: 38%;
     }
@@ -51,7 +51,7 @@
   right: 12px;
 }
 
-.navigation__table-label {
+.shortcuts-table__label {
   margin-right: 8px;
 
   .se-icon {

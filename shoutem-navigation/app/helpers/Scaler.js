@@ -29,6 +29,19 @@ function getResizeRatio(pageDimensions, referentResolution) {
 export default class Scaler {
   constructor() {
     this.resizeRatio = 1;
+    this.transformersMap = [];
+  }
+
+  addPropTransformer(propName, transformerFunction) {
+    _.set(this.transformersMap, propName, transformerFunction);
+  }
+
+  hasTransformer(propName) {
+    return _.has(this.transformersMap, propName);
+  }
+
+  transform(propName, value) {
+    return this.transformersMap[propName](value);
   }
 
   /**
@@ -75,7 +88,11 @@ export default class Scaler {
 
     _.keys(result).forEach(propertyName => {
       if (Number.isSafeInteger(result[propertyName])) {
-        result[propertyName] = this.scale(result[propertyName]);
+        const scaledValue = this.scale(result[propertyName]);
+
+        result[propertyName] = this.hasTransformer(propertyName) ?
+                                this.transform(propertyName, scaledValue) :
+                                scaledValue;
       }
     });
 

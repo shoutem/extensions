@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
-import { LoaderContainer } from '@shoutem/se-ui-kit';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 
 const MAX_VISIBLE_CATEGORIES = 2;
 

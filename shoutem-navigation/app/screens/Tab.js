@@ -10,12 +10,11 @@ import { connectStyle } from '@shoutem/theme';
 import { Screen } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
-import { loginRequired } from 'shoutem.auth';
 import { executeShortcut } from 'shoutem.application';
 import { ext } from '../const';
 import { getTabNavigationStack, getTabNavigationState } from '../redux';
 
-class Tab extends React.Component {
+class Tab extends React.PureComponent {
   static propTypes = {
     shortcut: React.PropTypes.object.isRequired,
     navigationState: React.PropTypes.object,

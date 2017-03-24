@@ -7,9 +7,9 @@ import { connectStyle } from '@shoutem/theme';
 import { CmsListScreen } from 'shoutem.cms';
 
 import { ext } from '../const';
-import ListPeopleView from '../components/ListPeopleView.js';
+import ListPeopleView from '../components/ListPeopleView';
 
-class PeopleListScreen extends CmsListScreen {
+export class PeopleListScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
     navigateTo: React.PropTypes.func.isRequired,
@@ -48,7 +48,7 @@ class PeopleListScreen extends CmsListScreen {
 }
 
 export const mapStateToProps = CmsListScreen.createMapStateToProps(
-  (state) => state[ext()].allPeople
+  state => state[ext()].allPeople,
 );
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
@@ -56,5 +56,5 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PeopleListScreen'), {})(PeopleListScreen)
+  connectStyle(ext('PeopleListScreen'), {})(PeopleListScreen),
 );

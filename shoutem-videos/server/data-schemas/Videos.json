@@ -5,23 +5,27 @@
       "format": "single-line",
       "title": "Name",
       "type": "string",
-      "required": true
+      "required": true,
+      "displayPriority": 1
     },
     "description": {
       "format": "html",
       "title": "Description",
-      "type": "string"
+      "type": "string",
+      "displayPriority": 2
     },
     "video": {
       "type": "object",
       "format": "attachment",
       "title": "Video URL",
-      "referencedSchema": "shoutem.core.video-attachments"
+      "referencedSchema": "shoutem.core.video-attachments",
+      "displayPriority": 3
     },
     "duration": {
       "type": "string",
       "format": "single-line",
-      "title": "Duration"
+      "title": "Duration",
+      "displayPriority": 4
     }
   },
   "titleProperty": "name",

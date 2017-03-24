@@ -1,37 +1,32 @@
 import React from 'react';
-import _ from 'lodash';
 import { connectStyle } from '@shoutem/theme';
 import { Tile } from '@shoutem/ui';
+import { connect } from 'react-redux';
 
 import EventImage from '../components/EventImage';
 import { ext } from '../const';
-import { DetailsScreen } from './DetailsScreen';
+import { DetailsScreen, mapDispatchToProps } from './DetailsScreen';
 
 class DetailsScreenWithLargePhoto extends DetailsScreen {
-  getTileStyle(event) {
-    if (!_.has(event, 'image.url')) {
-      return {
-        style: {
-          backgroundColor: '#2c2c2c',
-        },
-      };
-    }
-    return null;
-  }
-
   renderHeader(event) {
     return (
-      <EventImage animationName="hero" styleName="large-portrait" event={event}>
+      <EventImage
+        animationName="hero"
+        styleName="large-portrait"
+        event={event}
+      >
         <Tile
           animationName="hero"
           styleName="text-centric"
-          {...this.getTileStyle(event)}
         >
           {this.renderHeadlineDetails(event, false)}
+          {this.renderAddToCalendarButton(false)}
         </Tile>
       </EventImage>
     );
   }
 }
 
-export default connectStyle(ext(DetailsScreenWithLargePhoto.name))(DetailsScreenWithLargePhoto);
+export default connect(undefined, mapDispatchToProps)(
+  connectStyle(ext('DetailsScreenWithLargePhoto'))(DetailsScreenWithLargePhoto),
+);

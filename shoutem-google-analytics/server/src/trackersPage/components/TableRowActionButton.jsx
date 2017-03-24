@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
-import { FontIcon } from '@shoutem/se-ui-kit';
+import { FontIcon } from '@shoutem/react-web-ui';
 
 export default function TableRowActionButton({ onClick, disabled, iconName }) {
   return (

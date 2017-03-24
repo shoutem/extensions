@@ -1,11 +1,15 @@
 {
   "name": "books",
-  "version": "0.2.5",
+  "version": "0.2.15",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",
-  "description": "Enable users to browse through lists of books, explore details and make a purchase",
+  "description": "Show books and authors",
   "platform": "1.0.*",
   "categories": ["content"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
   "dependencies": [
     "shoutem.layouts",
     "shoutem.cms"
@@ -33,9 +37,12 @@
     {
       "title": "My books",
       "screen": "@.MyBooksScreen",
+      "icon": "theme://add-to-favorites-full.png",
       "name": "openMyBooksScreen",
       "settings": {
-        "favoritesSchema": "@.Books"
+        "favoritesSchemas": [
+          "@.Books"
+        ]
       }
     }
   ],

@@ -34,6 +34,12 @@
   background-color: rgba(228, 230, 233, 0.4);
 }
 
+.feed-preview__feed-url-text-wrapper {
+  display: "inline-block";
+  float: left;
+  width: calc(100% - 64px);
+}
+
 .feed-preview__feed-url {
   padding-left: 20px;
   font-family: MuseoSans;
@@ -52,8 +58,9 @@
 
 .feed-preview__rss-img {
   display: inline-block;
+  float: left;
   position: relative;
-  top: 6px;
+  top: 10px;
   left: 12px;
   width: 24px;
   height: 24px;

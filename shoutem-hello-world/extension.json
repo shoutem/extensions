@@ -1,7 +1,7 @@
 {
   "name": "hello-world",
   "title": "Hello World",
-  "version": "0.0.4",
+  "version": "0.0.8",
   "description": "Example of creating plain js shortcut settings page ",
   "platform": "1.0.*",
   "shortcuts": [
@@ -24,6 +24,7 @@
   "pages": [
     {
       "name": "HelloWorld",
+      "type": "html",
       "path": "server/pages/hello-world/helloWorld.html"
     }
   ],

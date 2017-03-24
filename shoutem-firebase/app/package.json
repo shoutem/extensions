@@ -1,11 +1,13 @@
 {
   "name": "shoutem.firebase",
-  "version": "0.1.4",
+  "version": "0.1.14",
   "description": "Firebase SDK bridge",
   "dependencies": {
+    "request": "2.79.0",
     "react-native-fcm": "2.5.5",
     "xcode": "0.8.9",
-    "lodash": "^4.17.2"
+    "lodash": "^4.17.2",
+    "urijs": "1.18.5"
   },
   "peerDependencies": {
     "@shoutem/core": "*"

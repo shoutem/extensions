@@ -8,16 +8,19 @@ import {
 import { connectStyle } from '@shoutem/theme';
 
 import { CmsListScreen } from 'shoutem.cms';
-import { saveFavorite, isFavoriteItem } from 'shoutem.favorites';
+import { saveFavorite, deleteFavorite, isFavoriteItem } from 'shoutem.favorites';
 
 import { ext } from '../const';
 
 class Favorite extends React.Component {
   static propTypes = {
     item: React.PropTypes.any.isRequired,
+    schema: React.PropTypes.string,
     saveFavorite: React.PropTypes.func,
+    deleteFavorite: React.PropTypes.func,
     isFavorite: React.PropTypes.bool,
     iconStyle: React.PropTypes.string,
+    buttonStyle: React.PropTypes.string,
   };
 
   constructor(props) {
@@ -26,9 +29,13 @@ class Favorite extends React.Component {
   }
 
   toggleFavorite() {
-    const { item, saveFavorite } = this.props;
+    const { item, schema, saveFavorite, isFavorite, deleteFavorite } = this.props;
 
-    saveFavorite(item.id, ext('Books'));
+    if (isFavorite) {
+      deleteFavorite(item.id, schema);
+    } else {
+      saveFavorite({ id: item.id }, schema);
+    }
   }
 
   renderIcon() {
@@ -40,8 +47,12 @@ class Favorite extends React.Component {
   }
 
   render() {
+    const { buttonStyle } = this.props;
     return (
-      <Button styleName="clear" onPress={this.toggleFavorite}>
+      <Button
+        styleName={`clear textual tight ${buttonStyle}`}
+        onPress={this.toggleFavorite}
+      >
         {this.renderIcon()}
       </Button>
     );
@@ -54,8 +65,9 @@ export const mapStateToProps = (state, ownProps) => ({
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   saveFavorite,
+  deleteFavorite,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('Favorite'), {})(Favorite)
+  connectStyle(ext('Favorite'), {})(Favorite),
 );

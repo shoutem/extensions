@@ -18,13 +18,14 @@ class List extends FolderBaseScreen {
 
   resolvePageProps() {
     const { topOffset, listAlignment } = this.getLayoutSettings();
-    const { pageHeight } = this.state;
+    const { screenDimensions: { height } } = this.state;
+    const { style } = this.props;
     return {
-      ...super.resolvePageProps(),
       style: {
         paddingTop: topOffset,
         // Min height stretch page so list can be vertically aligned
-        minHeight: pageHeight,
+        minHeight: height,
+        ...style.page,
       },
       styleName: listAlignment,
     };

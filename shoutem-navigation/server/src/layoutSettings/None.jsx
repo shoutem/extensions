@@ -1,11 +1,9 @@
 import React, { PropTypes } from 'react';
 
-export default class None extends React.Component {
-  render() {
-    return (
-      <div></div>
-    );
-  }
+export default function None() {
+  return (
+    <div />
+  );
 }
 
 None.propTypes = {

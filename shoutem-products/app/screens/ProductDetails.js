@@ -13,6 +13,11 @@ import {
   Tile,
   Heading,
   ScrollView,
+  Title,
+  Caption,
+  Divider,
+  TouchableOpacity,
+  Row,
 } from '@shoutem/ui';
 import { RichMedia } from '@shoutem/ui-addons';
 import { connectStyle } from '@shoutem/theme';
@@ -33,6 +38,7 @@ export class ProductDetails extends React.Component {
     this.onBuyPress = this.onBuyPress.bind(this);
     this.getNavBarProps = this.getNavBarProps.bind(this);
     this.renderProductPriceInfo = this.renderProductPriceInfo.bind(this);
+    this.renderBuyField = this.renderBuyField.bind(this);
   }
 
   onBuyPress() {
@@ -42,14 +48,16 @@ export class ProductDetails extends React.Component {
 
   getNavBarProps() {
     const { product } = this.props;
+    const share = {
+      title: product.name,
+      link: product.link,
+    };
+
     return {
       styleName: 'clear',
-      share: {
-        link: product.link,
-        title: product.name,
-        text: product.description,
-      },
       animationName: 'solidify',
+      share,
+      title: product.name,
     };
   }
 
@@ -58,47 +66,118 @@ export class ProductDetails extends React.Component {
     const oldPrice = product.oldPrice;
     return (
       oldPrice ?
-        <View styleName="vertical h-center">
-          <Subtitle styleName="line-through lg-gutter-top">
+        <View virtual styleName="vertical h-center">
+          <Subtitle styleName="line-through">
             {oldPrice}
           </Subtitle>
-          <Heading>
+          <Heading styleName="sm-gutter-bottom">
             {product.currentPrice}
           </Heading>
-        </View> : <Heading styleName="xl-gutter-top">{product.currentPrice}</Heading>
+        </View> : <Heading styleName="sm-gutter-bottom">{product.currentPrice}</Heading>
+    );
+  }
+
+  renderBuyField() {
+    const { product } = this.props;
+
+    if (!product.link) {
+      return null;
+    }
+    return (
+      <Button styleName="md-gutter-top" onPress={this.onBuyPress}>
+        <Text>{product.buyTitle}</Text>
+      </Button>
+    );
+  }
+
+  renderNoImage() {
+    const { product } = this.props;
+
+    if (product.image) {
+      return (
+        <Image
+          animationName="hero"
+          styleName="large-square placeholder"
+          source={{ uri: _.get(product, 'image.url') }}
+          key={product.name}
+        >
+          <Tile animationName="hero" styleName="text-centric fill-parent">
+            <Title
+              styleName="xl-gutter-top md-gutter-bottom lg-gutter-horizontal"
+            >
+              {product.name.toUpperCase()}
+            </Title>
+            {this.renderProductPriceInfo()}
+            {this.renderBuyField()}
+          </Tile>
+        </Image>);
+    }
+    return (
+      <Image
+        animationName="hero"
+        styleName="large-square placeholder"
+      >
+        <Tile animationName="hero" styleName="text-centric fill-parent">
+          <Subtitle
+            styleName="lg-gutter-top xl-gutter-bottom md-gutter-horizontal"
+          >
+            {product.name.toUpperCase()}
+          </Subtitle>
+          {this.renderProductPriceInfo()}
+          {this.renderBuyField()}
+        </Tile>
+      </Image>
+    );
+  }
+
+  renderInformation() {
+    const { product } = this.props;
+
+    if (!product.description) {
+      return null;
+    }
+    return (
+      <Tile>
+        <Divider styleName="section-header">
+          <Caption>INFORMATION</Caption>
+        </Divider>
+        <RichMedia body={product.description} />
+      </Tile>
+    );
+  }
+
+  renderDisclosureBuyLink() {
+    const { product } = this.props;
+
+    if (!product.link) {
+      return null;
+    }
+    return (
+      <TouchableOpacity onPress={this.onBuyPress}>
+        <Divider styleName="section-header">
+          <Caption />
+        </Divider>
+        <Row>
+          <Icon styleName="indicator" name="laptop" />
+          <View styleName="vertical">
+            <Subtitle>{product.buyTitle}</Subtitle>
+            <Text numberOfLines={1}>{product.link}</Text>
+          </View>
+          <Icon styleName="indicator disclosure" name="right-arrow" />
+        </Row>
+      </TouchableOpacity>
     );
   }
 
   render() {
-    const { product } = this.props;
-
-    const imageUrl = _.get(product, 'image.url') ?
-      { uri: _.get(product, 'image.url') } : require('../assets/images/image-fallback.png');
-
     return (
       <Screen styleName="full-screen paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
-          <Image
-            animationName="hero"
-            styleName="large-square hero"
-            source={imageUrl}
-            key={product.name}
-          >
-            <Tile animationName="hero">
-              <Heading styleName="md-gutter-top">{product.name.toUpperCase()}</Heading>
-              <Button styleName="md-gutter-top" onPress={this.onBuyPress}>
-                <Icon name="add-to-cart" />
-                <Text>{product.buyTitle}</Text>
-              </Button>
-            </Tile>
-          </Image>
-          <View styleName="solid">
-            <View styleName="lg-gutter-bottom vertical h-center">
-              {this.renderProductPriceInfo()}
-            </View>
-            <RichMedia body={product.description} />
-          </View>
+          {this.renderNoImage()}
+          {this.renderInformation()}
+          {this.renderDisclosureBuyLink()}
+          <Divider styleName="section-header" />
         </ScrollView>
       </Screen>
     );

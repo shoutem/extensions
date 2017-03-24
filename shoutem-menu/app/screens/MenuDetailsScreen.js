@@ -25,16 +25,20 @@ class MenuDetailsScreen extends React.Component {
     const { item } = this.props;
 
     const price = item.price ? (
-      <Overlay>
-        <Subtitle>{item.price}</Subtitle>
+      <Overlay style={{ backgroundColor: 'white' }}>
+        <Subtitle styleName="sm-gutter-horizontal">{item.price}</Subtitle>
       </Overlay>) : null;
 
     return (
       <Screen styleName="full-screen paper">
-        <NavigationBar styleName="clear" animationName="solidify" />
+        <NavigationBar
+          styleName="clear"
+          animationName="solidify"
+          title={item.name}
+        />
         <ScrollView>
           <Image
-            styleName="large-square hero"
+            styleName="large-square placeholder"
             animationName="hero"
             source={{ uri: item.image ? item.image.url : undefined }}
           >

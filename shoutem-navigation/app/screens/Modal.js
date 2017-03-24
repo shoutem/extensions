@@ -2,17 +2,11 @@ import React, {
   PureComponent,
 } from 'react';
 
-import {
-  InteractionManager,
-} from 'react-native';
-
 import { connect } from 'react-redux';
 
 import {
   ScreenStack,
   navigateBack,
-  setActiveNavigationStack,
-  ROOT_NAVIGATION_STACK,
 } from '@shoutem/core/navigation';
 
 import { connectStyle } from '@shoutem/theme';
@@ -24,69 +18,49 @@ import {
   Icon,
 } from '@shoutem/ui';
 
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { ChildNavigationBar } from '@shoutem/ui/navigation';
 
 import { ext } from '../const';
 
 import {
-  MODAL_NAVIGATION_STACK,
+  closeModal,
 } from '../redux';
 
 class Modal extends PureComponent {
   static propTypes = {
+    closeModal: React.PropTypes.func,
     navigationState: React.PropTypes.object,
     style: React.PropTypes.object,
-    setActiveNavigationStack: React.PropTypes.func,
-    replaceWith: React.PropTypes.func,
     navigateBack: React.PropTypes.func,
-    onModalActive: React.PropTypes.func,
-    previousStack: React.PropTypes.object,
   };
 
   constructor(props, context) {
     super(props, context);
     this.closeModal = this.closeModal.bind(this);
-    this.renderCloseButton = this.renderCloseButton.bind(this);
-  }
-
-  componentWillMount() {
-    this.props.setActiveNavigationStack(MODAL_NAVIGATION_STACK);
-  }
-
-  componentDidMount() {
-    const { onModalActive } = this.props;
-
-    if (!!onModalActive) {
-      InteractionManager.runAfterInteractions(onModalActive);
-    }
   }
 
   closeModal() {
-    const { setActiveNavigationStack, navigateBack, previousStack } = this.props;
+    const { closeModal } = this.props;
 
-    setActiveNavigationStack(previousStack);
-    navigateBack(ROOT_NAVIGATION_STACK);
+    closeModal();
   }
 
-  renderCloseButton(sceneProps) {
+  getNavbarProps() {
     const { navigationState } = this.props;
-    const iconName = 'back';
-
-    let handlePress = this.closeModal;
 
     if (navigationState.index > 0) {
-      handlePress = sceneProps.onNavigateBack;
+      return { renderLeftComponent: undefined };
     }
 
-    return (
-      <View virtual styleName="container">
-        <Button onPress={handlePress}>
-          <Icon
-            name={iconName}
-          />
-        </Button>
-      </View>
-    );
+    return {
+      renderLeftComponent: () => (
+        <View virtual styleName="container">
+          <Button onPress={this.closeModal}>
+            <Icon name="close" />
+          </Button>
+        </View>
+      ),
+    }
   }
 
   render() {
@@ -94,12 +68,8 @@ class Modal extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar
-          child
-          renderLeftComponent={this.renderCloseButton}
-        />
+        <ChildNavigationBar {...this.getNavbarProps()} />
         <ScreenStack
-          styleName="root"
           navigationState={navigationState}
           onNavigateBack={navigateBack}
         />
@@ -108,7 +78,7 @@ class Modal extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({ navigationState: state[ext()].modal });
-const mapDispatchToProps = { navigateBack, setActiveNavigationStack };
+const mapStateToProps = state => ({ navigationState: state[ext()].modal.navigation });
+const mapDispatchToProps = { closeModal, navigateBack };
 
 export default connect(mapStateToProps, mapDispatchToProps)(connectStyle(ext('Modal'))(Modal));

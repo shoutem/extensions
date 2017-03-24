@@ -32,7 +32,7 @@ class ArticleMediumDetailsScreen extends React.Component {
     // News articles collection being displayed
     articles: React.PropTypes.array,
     // A function for configuring the navigation bar
-    showNext: React.PropTypes.bool,
+    openNextArticle: React.PropTypes.func,
     // The URL of the feed that the article belongs to, this
     // prop is only necessary if the showNext is true
     feedUrl: React.PropTypes.string,
@@ -42,21 +42,46 @@ class ArticleMediumDetailsScreen extends React.Component {
     // article body.
   };
 
+  getNavBarProps() {
+    const { article } = this.props;
+    return {
+      styleName: getLeadImageUrl(article) ? 'clear' : 'no-border',
+      animationName: getLeadImageUrl(article) ? 'solidify' : '',
+      share: {
+        title: article.title,
+        link: article.link,
+      },
+    };
+  }
+
   shouldRenderNextArticle() {
-    return this.props.articles && this.props.showNext;
+    return this.props.articles && this.props.openNextArticle;
   }
 
   renderUpNext() {
-    const { article: { id }, articles, feedUrl } = this.props;
+    const { article: { id }, articles, openNextArticle } = this.props;
     const currentArticleIndex = _.findIndex(articles, { id });
 
     const nextArticle = articles[currentArticleIndex + 1];
     if (nextArticle) {
       return (
-        <NextArticle article={nextArticle} feedUrl={feedUrl} />
+        <NextArticle
+          article={nextArticle}
+          openNextArticle={openNextArticle}
+        />
       );
     }
     return null;
+  }
+
+  renderImage() {
+    const { article } = this.props;
+    return getLeadImageUrl(article) ? (
+      <Image
+        animationName="hero"
+        styleName="large"
+        source={{ uri: getLeadImageUrl(article) }}
+      />) : null;
   }
 
   render() {
@@ -67,29 +92,16 @@ class ArticleMediumDetailsScreen extends React.Component {
 
     return (
       <Screen styleName={screenStyle}>
-        <NavigationBar
-          styleName="clear"
-          animationName="solidify"
-          title={article.title}
-          share={{
-            title: article.title,
-            text: article.summary,
-            link: article.link,
-          }}
-        />
+        <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
-          <Image
-            styleName="large"
-            source={{ uri: getLeadImageUrl(article) }}
-            animationName="hero"
-          />
+          {this.renderImage()}
           <View styleName="solid">
-            <Tile styleName="text-centric md-gutter-bottom">
+            <Tile styleName="text-centric md-gutter-bottom xl-gutter-bottom">
               <Title>{article.title.toUpperCase()}</Title>
 
               <View styleName="horizontal md-gutter-top">
                 <Caption numberOfLines={1}>{article.newsAuthor}</Caption>
-                { dateFormat }
+                {dateFormat}
               </View>
             </Tile>
             <RichMedia

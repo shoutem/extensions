@@ -1,14 +1,15 @@
 {
   "name": "layouts",
-  "version": "0.1.4",
+  "version": "0.1.15",
   "type": "system",
   "title": "Layouts",
-  "description": "Shoutem Layout extension",
+  "description": "Extension that enables app creator to choose between different layouts of the same screen",
   "platform": "1.0.*",
+  "icon": "server/assets/add-layouts-image.png",
   "categories": [],
   "pages": [{
     "name": "LayoutPage",
-    "type": "component",
+    "type": "native-component",
     "path": "dummy.js"
   }]
 }

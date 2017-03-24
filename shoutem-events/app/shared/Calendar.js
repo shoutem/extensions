@@ -1,13 +1,27 @@
+import _ from 'lodash';
 import moment from 'moment';
-import CalendarManager from 'react-native-calendar-manager';
+import { Alert, Linking } from 'react-native';
+import CalendarManager, { PERMISSION_ERROR } from 'react-native-calendar-manager';
+
+const showSuggestionToGrantCalendarAccess = () => {
+  Alert.alert(
+    'Grant calendar access',
+    'You disabled calendar access for this application. Do you want to enable it in' +
+      ' settings now?',
+    [
+      { text: 'Settings', onPress: () => Linking.openURL('app-settings:') },
+      { text: 'Cancel' },
+    ],
+  );
+};
 
 export function toMoment(date) {
-  return moment(date, 'YYYY-MM-DDThh:mm:ss');
+  return moment(date, 'YYYY-MM-DDThh:mm:ssZ');
 }
 
 export function addToCalendar(event) {
   const fromDate = toMoment(event.startTime);
-  const toDate = event.endtime ? toMoment(event.endtime)
+  const toDate = event.endTime ? toMoment(event.endTime)
                                : fromDate.clone().add(1, 'hours');
 
   CalendarManager.addEvent({
@@ -15,7 +29,12 @@ export function addToCalendar(event) {
     rsvpLink: event.rsvpLink,
     startTime: fromDate.valueOf(),
     endTime: toDate.valueOf(),
-    location: event.address || '',
+    location: _.get(event, 'location.formattedAddress', ''),
+  }, (error) => {
+    console.log(error);
+    if (error.type === PERMISSION_ERROR) {
+      showSuggestionToGrantCalendarAccess();
+    }
   });
 }
 

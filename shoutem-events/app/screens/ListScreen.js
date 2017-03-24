@@ -1,13 +1,14 @@
 import React from 'react';
+import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import { navigateTo } from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
-import { EmptyStateView, MapView } from '@shoutem/ui-addons';
 import {
   View,
   Button,
-  Text,
+  Subtitle,
 } from '@shoutem/ui';
 
 import { CmsListScreen } from 'shoutem.cms';
@@ -15,29 +16,13 @@ import { triggerEvent } from 'shoutem.analytics';
 
 import ListEventView from '../components/ListEventView';
 import FeaturedEventView from '../components/FeaturedEventView';
-import isValidEvent from '../shared/isValidEvent';
 import { addToCalendar } from '../shared/Calendar';
+import EventsMap from '../components/EventsMap';
 import {
   EVENTS_SCHEME,
   EVENTS_TAG,
   ext,
 } from '../const';
-
-/**
- * Create markers out of events.
- * Filter events with location and bind event properties.
- *
- * @param events
- * @returns {*}
- */
-function getMarkersFromEvents(events) {
-  return events.filter(isValidEvent).map(event => ({
-    latitude: parseFloat(event.latitude),
-    longitude: parseFloat(event.longitude),
-    title: event.address,
-    event,
-  }));
-}
 
 function hasFeaturedEvent(events) {
   return events.some(event => event.featured);
@@ -47,23 +32,33 @@ export class ListScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
     navigateTo: React.PropTypes.func,
-    // If true, map is shown as first view
-    mapMode: React.PropTypes.bool,
   };
 
   constructor(props, context) {
     super(props, context);
+    this.fetchData = this.fetchData.bind(this);
     this.renderRow = this.renderRow.bind(this);
     this.openDetailsScreen = this.openDetailsScreen.bind(this);
-    this.toggleMapViewMode = this.toggleMapViewMode.bind(this);
+    this.toggleMapMode = this.toggleMapMode.bind(this);
     this.addToCalendar = this.addToCalendar.bind(this);
     this.state = {
       ...this.state,
       schema: EVENTS_SCHEME,
       renderCategoriesInline: true,
-      selectedMapEvent: null,
-      mapMode: props.mapMode,
+      shouldRenderMap: false,
     };
+  }
+
+  fetchData(category) {
+    const { find } = this.props;
+    const { schema } = this.state;
+
+    InteractionManager.runAfterInteractions(() =>
+      find(schema, undefined, {
+        'filter[categories]': category.id,
+        'filter[endTime][gt]': (new Date()).toISOString(), // filtering past events
+      }),
+    );
   }
 
   openDetailsScreen(event) {
@@ -81,8 +76,9 @@ export class ListScreen extends CmsListScreen {
     this.props.triggerEvent('Event', 'Add to calendar', { label: event.name });
   }
 
-  toggleMapViewMode() {
-    this.setState({ mapMode: !this.state.mapMode });
+  toggleMapMode() {
+    const { shouldRenderMap } = this.state;
+    this.setState({ shouldRenderMap: !shouldRenderMap });
   }
 
   renderCategoriesDropDown(styleName) {
@@ -94,17 +90,24 @@ export class ListScreen extends CmsListScreen {
     return super.renderCategoriesDropDown(newStyleName);
   }
 
-  getNavBarProps() {
+  getNavBarProps(screenTitle = 'List') {
     const { data } = this.props;
+    const { shouldRenderMap } = this.state;
     const newNavBarProps = super.getNavBarProps();
 
-    newNavBarProps.renderRightComponent = () => (
-      <View virtual styleName="container">
-        <Button styleName="clear" onPress={this.toggleMapViewMode}>
-          <Text styleName="regular">{this.state.mapMode ? 'List' : 'Map'}</Text>
-        </Button>
-      </View>
-    );
+    newNavBarProps.renderRightComponent = () => {
+      if (_.isEmpty(data)) {
+        return null;
+      }
+
+      return (
+        <View virtual styleName="container">
+          <Button styleName="clear" onPress={this.toggleMapMode}>
+            <Subtitle>{ shouldRenderMap ? screenTitle : 'Map' }</Subtitle>
+          </Button>
+        </View>
+      );
+    };
 
     if (hasFeaturedEvent(data)) {
       newNavBarProps.styleName = `${newNavBarProps.styleName || ''} featured`;
@@ -143,40 +146,23 @@ export class ListScreen extends CmsListScreen {
     return this.renderEventListItem(event);
   }
 
-  renderEventsMap(events) {
-    const markers = getMarkersFromEvents(events);
-
-    if (markers.length < 1) {
-      return (
-        <EmptyStateView
-          message="Nothing to show on the map, events don't have location."
-        />
-      );
-    }
-
+  renderEventsMap(data) {
+    const { style } = this.props;
     return (
-      <MapView
-        markers={markers}
-        onMarkerPressed={(marker) => {
-          this.setState({ selectedMapEvent: marker.event });
-        }}
-        onPress={() => {
-          this.setState({ selectedMapEvent: null });
-        }}
+      <EventsMap
+        data={data}
+        style={style}
+        addToCalendar={this.addToCalendar}
+        openDetailsScreen={this.openDetailsScreen}
       />
     );
   }
 
   renderData(data) {
-    const selectedMapEvent = this.state.selectedMapEvent;
+    const { shouldRenderMap } = this.state;
 
-    if (this.state.mapMode) {
-      return (
-        <View styleName="flexible">
-          {this.renderEventsMap(data)}
-          {selectedMapEvent ? this.renderEventListItem(selectedMapEvent, { height: 95 }) : null}
-        </View>
-      );
+    if (shouldRenderMap) {
+      return this.renderEventsMap(data);
     }
 
     return super.renderData(data);
@@ -184,7 +170,7 @@ export class ListScreen extends CmsListScreen {
 }
 
 export const mapStateToProps = CmsListScreen.createMapStateToProps(
-  (state) => state[ext()][EVENTS_TAG]
+  state => state[ext()][EVENTS_TAG],
 );
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
@@ -193,5 +179,5 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext(ListScreen.name))(ListScreen)
+  connectStyle(ext('ListScreen'))(ListScreen),
 );

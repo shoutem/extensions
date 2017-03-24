@@ -83,12 +83,27 @@ export class CmsListScreen extends PureComponent {
     title: React.PropTypes.string.isRequired,
     // The currently selected category on this screen
     selectedCategory: React.PropTypes.object,
+    style: React.PropTypes.shape({
+      screen: Screen.propTypes.style,
+      list: ListView.propTypes.style,
+      emptyState: EmptyStateView.propTypes.style,
+      categories: DropDownMenu.propTypes.style,
+    }),
 
     // actions
     find: React.PropTypes.func.isRequired,
     next: React.PropTypes.func.isRequired,
     clear: React.PropTypes.func.isRequired,
     setScreenState: React.PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    style: {
+      screen: {},
+      list: {},
+      emptyState: {},
+      categories: {},
+    },
   };
 
   /**
@@ -283,6 +298,10 @@ export class CmsListScreen extends PureComponent {
   fetchCategories() {
     const { find, parentCategoryId } = this.props;
 
+    if (!parentCategoryId) {
+      return;
+    }
+
     InteractionManager.runAfterInteractions(() =>
       find(CATEGORIES_SCHEMA, undefined, {
         'filter[parent]': parentCategoryId,
@@ -310,7 +329,19 @@ export class CmsListScreen extends PureComponent {
   }
 
   renderPlaceholderView() {
-    const { categories, data } = this.props;
+    const { categories, data, parentCategoryId, style } = this.props;
+
+    // If collection doesn't exist (`parentCategoryId` is undefined), notify user to create
+    // content and reload app, because `parentCategoryId` is retrieved through app configuration
+    if (_.isUndefined(parentCategoryId)) {
+      return (
+        <EmptyStateView
+          icon="error"
+          message="Please create content and reload your app."
+          style={style.emptyState}
+        />
+      );
+    }
 
     const message = (isError(categories) || isError(data)) ?
       'Unexpected error occurred.' : 'Nothing here at this moment.';
@@ -323,12 +354,13 @@ export class CmsListScreen extends PureComponent {
         retryButtonTitle="TRY AGAIN"
         onRetry={retryFunction}
         message={message}
+        style={style.emptyState}
       />
     );
   }
 
   renderCategoriesDropDown(styleName) {
-    const { selectedCategory, categories } = this.props;
+    const { selectedCategory, categories, style } = this.props;
     if (categories.length <= 1 || !this.isCategoryValid(selectedCategory)) {
       return null;
     }
@@ -341,17 +373,18 @@ export class CmsListScreen extends PureComponent {
         valueProperty={"id"}
         onOptionSelected={this.onCategorySelected}
         selectedOption={selectedCategory}
+        style={style.categories}
       />
     );
   }
 
   renderData(data) {
-    console.log('render 3');
     if (this.shouldRenderPlaceholderView()) {
       return this.renderPlaceholderView();
     }
 
     const loading = isBusy(data) || !isInitialized(data);
+    const { style } = this.props;
 
     return (
       <ListView
@@ -362,15 +395,16 @@ export class CmsListScreen extends PureComponent {
         onLoadMore={this.loadMore}
         getSectionId={this.getSectionId}
         renderSectionHeader={this.renderSectionHeader}
+        style={style.list}
       />
     );
   }
 
   render() {
-    const { data } = this.props;
+    const { data, style } = this.props;
 
     return (
-      <Screen>
+      <Screen style={style.screen}>
         <NavigationBar {...this.getNavBarProps()} />
         {this.state.renderCategoriesInline ? this.renderCategoriesDropDown('horizontal') : null}
         {this.renderData(data)}

@@ -4,7 +4,7 @@ import {
   Subtitle,
   Caption,
   Image,
-  View,
+  Tile,
 } from '@shoutem/ui';
 import _ from 'lodash';
 
@@ -33,13 +33,15 @@ export default class NextArticle extends React.Component {
     return (
       <TouchableOpacity onPress={this.handlePress}>
         <Image
-          styleName="large-ultra-wide"
+          styleName="large-ultra-wide placeholder"
           source={{ uri: _.get(article, 'image.url') }}
         >
-          <View styleName="fill-parent overlay vertical md-gutter space-between">
-            <Caption styleName="bold bright">UP NEXT</Caption>
-            <Subtitle styleName="bright" numberOfLines={2}>{article.title}</Subtitle>
-          </View>
+          <Tile
+            styleName="fill-parent overlay md-gutter-vertical lg-gutter-horizontal space-between"
+          >
+            <Caption styleName="bold bright h-left">UP NEXT</Caption>
+            <Subtitle styleName="bright h-left" numberOfLines={2}>{article.title}</Subtitle>
+          </Tile>
         </Image>
       </TouchableOpacity>
     );

@@ -2,7 +2,7 @@
 
 const execSync = require('child_process').execSync;
 
-execSync('react-native link react-native-fcm', (error, stdout, stderr) => {
+execSync('node node_modules/react-native/local-cli/cli.js link react-native-fcm', (error, stdout, stderr) => {
   console.log(stdout);
   console.log(stderr);
   if (error !== null) {

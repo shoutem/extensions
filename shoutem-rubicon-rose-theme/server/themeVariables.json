@@ -1,5 +1,31 @@
 {
   "title": "Rubicon Rose",
+  "formats": {
+    "font": {
+      "default": {
+        "fontFamily": "NotoSerif",
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+        "fontSize": 20,
+        "color": "#222222"
+      },
+      "constraints": {
+        "fontFamily": {
+          "enum": [ "normal", "Rubik-Regular", "NotoSans", "NotoSerif"]
+        },
+        "fontStyle": {
+          "enum": ["normal", "italic"]
+        },
+        "fontWeight": {
+          "enum": ["normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900"]
+        },
+        "fontSize": {
+          "minimum": 10,
+          "maximum": 48
+        }
+      }
+    }
+  },
   "properties": {
 
 
@@ -36,70 +62,75 @@
       "title": "Heading",
       "format": "font",
       "default": {
-        "fontFamily": "NotoSerif",
-        "fontStyle": "normal",
         "fontWeight": "700",
         "fontSize": 25,
         "color": "#222222"
       },
-      "minFontSize": 20,
-      "maxFontSize": 40
+      "constraints": {
+        "fontSize": {
+          "minimum": 20,
+          "maximum": 40
+        }
+      }
     },
     "title": {
       "type": "object",
       "title": "Title",
       "format": "font",
       "default": {
-        "fontFamily": "NotoSerif",
-        "fontStyle": "normal",
         "fontWeight": "700",
-        "fontSize": 20,
         "color": "#3A3A3A"
       },
-      "minFontSize": 15,
-      "maxFontSize": 35
+      "constraints": {
+        "fontSize": {
+          "minimum": 15,
+          "maximum": 35
+        }
+      }
     },
     "subtitle": {
       "type": "object",
       "title": "Subtitle",
       "format": "font",
       "default": {
-        "fontFamily": "NotoSerif",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
         "fontSize": 14,
         "color": "#3A3A3A"
       },
-      "minFontSize": 10,
-      "maxFontSize": 25
+      "constraints": {
+        "fontSize": {
+          "maximum": 25
+        }
+      }
     },
     "caption": {
       "type": "object",
       "title": "Caption",
       "format": "font",
       "default": {
-        "fontFamily": "NotoSerif",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
         "fontSize": 12,
         "color": "#9D9C9D"
       },
-      "minFontSize": 12,
-      "maxFontSize": 25
+      "constraints": {
+        "fontSize": {
+          "minimum": 12,
+          "maximum": 25
+        }
+      }
     },
     "text": {
       "type": "object",
       "title": "Text",
       "format": "font",
       "default": {
-        "fontFamily": "NotoSerif",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
         "fontSize": 16,
         "color": "#5a5a5a"
       },
-      "minFontSize": 12,
-      "maxFontSize": 25
+      "constraints": {
+        "fontSize": {
+          "minimum": 12,
+          "maximum": 25
+        }
+      }
     },
 
 
@@ -146,9 +177,6 @@
       "title": "Title",
       "format": "font",
       "default": {
-        "fontFamily": "NotoSerif",
-        "fontStyle": "normal",
-        "fontWeight": "normal",
         "fontSize": 15,
         "color": "#E05E7A"
       }
@@ -186,6 +214,12 @@
       "format": "color",
       "default": "rgba(50, 50, 50, 0.4)"
     },
+    "mainNavItemBackground": {
+      "type": "string",
+      "title": "Item background color",
+      "format": "color",
+      "default": "rgba(0, 0, 0, 0)"
+    },
     "mainNavSelectedItemBackground": {
       "type": "string",
       "title": "Selected item background",
@@ -213,15 +247,21 @@
 
 
 
-    "folderItemColor": {
+    "subNavItemColor": {
       "type": "string",
-      "title": "Folder item text color",
+      "title": "Item text color",
       "format": "color",
       "default": "#5a5a5a"
     },
-    "folderListBorderColor": {
+    "subNavItemBackground": {
       "type": "string",
-      "title": "Folder list border color",
+      "title": "Item background color",
+      "format": "color",
+      "default": "rgba(0, 0, 0, 0)"
+    },
+    "subNavListBorderColor": {
+      "type": "string",
+      "title": "List border color",
       "format": "color",
       "default": "#e0e0e0"
     },
@@ -233,8 +273,6 @@
       "title": "Text",
       "format": "font",
       "default": {
-        "fontFamily": "NotoSerif",
-        "fontStyle": "normal",
         "fontWeight": "bold",
         "fontSize": 12,
         "color": "#E05E7A"
@@ -336,16 +374,18 @@
           "mainNavBackground",
           "mainNavBorderColor",
           "mainNavItemColor",
+          "mainNavItemBackground",
           "mainNavSelectedItemColor",
           "mainNavSelectedItemBackground",
           "mainNavSelectedItemBorderColor"
         ]
       },
       {
-        "title": "Folder",
+        "title": "Sub-navigation",
         "properties": [
-          "folderItemColor",
-          "folderListBorderColor"
+          "subNavItemColor",
+          "subNavItemBackground",
+          "subNavListBorderColor"
         ]
       },
       {

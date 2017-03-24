@@ -1,17 +1,21 @@
 {
   "name": "menu",
-  "title": "Menu",
-  "version": "0.10.6",
+  "title": "Restaurant menu",
+  "version": "0.10.12",
   "icon": "./server/assets/images/add-menu-items-image.png",
-  "description": "Browse through the list of restaurant menu items and explore details such as description, price, photos...",
+  "description": "Show a restaurant menu",
   "platform": "1.0.*",
   "categories": ["content"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
   "shortcuts": [
     {
       "title": "Menu",
       "description": "List of menu items with description",
       "name": "openMenuListScreen",
-      "icon":"theme://restaurant_menu.png",
+      "icon":"theme://restaurant-menu.png",
       "screen": "@.MenuListScreen",
       "adminPages": [
         {

@@ -1,26 +1,31 @@
 {
   "name": "web-view",
-  "version": "0.5.5",
+  "version": "0.9.4",
   "title": "Web view",
-  "description": "Open web pages in web view",
+  "description": "Show a web page in-app or in a browser",
   "platform": "1.0.*",
   "icon": "server/assets/add-web-page.png",
-  "categories": ["content"],
+  "categories": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
   "shortcuts": [{
     "name": "web-view",
     "title": "Web view",
     "icon": "theme://web.png",
-    "action": "@.openBrowserScreen",
+    "action": "@.openWebViewScreen",
     "adminPages": [{
       "page": "@.WebPage",
       "title": "Content"
     }]
   }],
   "screens": [{
-    "name": "BrowserScreen"
+    "name": "WebViewScreen"
   }],
   "pages": [{
     "name": "WebPage",
-    "path": "dummy.js"
+    "path": "dummy.js",
+    "type": "native-component"
   }]
 }

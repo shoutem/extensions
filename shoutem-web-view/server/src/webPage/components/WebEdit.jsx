@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { FormGroup, ControlLabel, Checkbox } from 'react-bootstrap';
-import { FontIcon } from '@shoutem/se-ui-kit';
+import { FontIcon } from '@shoutem/react-web-ui';
 import "./style.scss";
 
 export default class WebEdit extends Component {

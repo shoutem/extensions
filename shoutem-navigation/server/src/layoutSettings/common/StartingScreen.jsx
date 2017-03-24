@@ -1,9 +1,11 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
+import _ from 'lodash';
 import { ControlLabel, Dropdown, MenuItem } from 'react-bootstrap';
 
-export default class StartingScreen extends React.Component {
+export default class StartingScreen extends Component {
   constructor(props) {
     super(props);
+
     this.getStartingScreenDropdownTitle = this.getStartingScreenDropdownTitle.bind(this);
     this.onStartingScreenSelected = this.onStartingScreenSelected.bind(this);
   }
@@ -22,7 +24,7 @@ export default class StartingScreen extends React.Component {
     }
 
     const { childShortcuts } = this.props;
-    const shortcut = _.find(childShortcuts, { id: shortcutId});
+    const shortcut = _.find(childShortcuts, { id: shortcutId });
     if (!shortcut) {
       return 'First shortcut in the main navigation';
     }
@@ -56,12 +58,11 @@ export default class StartingScreen extends React.Component {
           </Dropdown>
         )}
         {!hasChildShortcuts && (
-          <Dropdown className="block">
-            <Dropdown.Toggle disabled>
+          <Dropdown disabled className="block">
+            <Dropdown.Toggle>
               Add some screens first
             </Dropdown.Toggle>
-            <Dropdown.Menu>
-            </Dropdown.Menu>
+            <Dropdown.Menu />
           </Dropdown>
         )}
       </div>

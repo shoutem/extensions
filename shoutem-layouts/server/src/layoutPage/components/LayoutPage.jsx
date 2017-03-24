@@ -5,7 +5,7 @@ import { shouldRefresh, isInitialized } from '@shoutem/redux-io';
 import { updateShortcut, loadHierarchy, HIERARCHY } from './../reducer';
 import { denormalizeItem } from 'denormalizer';
 import ScreenGroup from './ScreenGroup';
-import { LoaderContainer, EmptyResourcePlaceholder } from '@shoutem/se-ui-kit';
+import { LoaderContainer, EmptyResourcePlaceholder } from '@shoutem/react-web-ui';
 import { ext } from 'context';
 import { getShortcut } from 'environment';
 import './style.scss';
@@ -69,7 +69,7 @@ export class LayoutPage extends Component {
     });
   }
 
-  renderScreenHierarchy(hierarchy, screenMapping) {
+  renderScreenHierarchy(hierarchy) {
     const screens = _.get(hierarchy, 'originalScreens', []);
 
     if (screens.length === 0) {
@@ -84,14 +84,18 @@ export class LayoutPage extends Component {
       );
     }
 
+    const { shortcut } = this.props;
+    const screenMapping = this.getScreenMappings(shortcut);
+
     return (
-      <div>
+      <div className="screen_group__container">
         {screens.map(screen => (
           <ScreenGroup
             key={screen.id}
             originalScreen={screen}
             activeScreenDescriptor={screenMapping[screen.canonicalName]}
             onScreenSelected={this.handleScreenSelected}
+            shortcutId={shortcut.id}
           />
         ))}
       </div>
@@ -99,14 +103,13 @@ export class LayoutPage extends Component {
   }
 
   render() {
-    const { shortcut, hierarchy } = this.props;
-    const screenMapping = this.getScreenMappings(shortcut);
+    const { hierarchy } = this.props;
     const hierarchyInitialized = hierarchy && isInitialized(hierarchy);
 
     return (
       <div className="layout-page">
         <LoaderContainer isLoading={!hierarchyInitialized} size="50px">
-          {this.renderScreenHierarchy(hierarchy, screenMapping)}
+          {this.renderScreenHierarchy(hierarchy)}
         </LoaderContainer>
       </div>
     );

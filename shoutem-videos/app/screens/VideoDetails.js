@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import { ext } from '../const';
 
 import {
   ScrollView,
@@ -14,15 +13,18 @@ import {
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
+import { ext } from '../const';
+
 function VideoDetails({ video }) {
   return (
     <Screen styleName="paper">
       <NavigationBar
         share={{
           title: video.name,
-          text: video.description,
           link: video.video.url,
         }}
+        title={video.name}
+        animationName="boxing"
       />
       <ScrollView>
         <Video source={{ uri: video.video.url }} />

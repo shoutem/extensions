@@ -1,6 +1,6 @@
 {
   "name": "shoutem.persist",
-  "version": "0.1.4",
+  "version": "0.1.8",
   "private": true,
   "main": "index.js",
   "peerDependencies": {

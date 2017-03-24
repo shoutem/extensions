@@ -1,22 +1,25 @@
 /* eslint-disable quotes,max-len */
 const fs = require('fs');
-const http = require('http');
+const request = require('request');
 const _ = require('lodash');
+const URI = require('urijs');
+
 const SHOUTEM_APPLICATION = 'shoutem.application';
 const API_ENDPOINT = 'legacyApiEndpoint';
 
 const download = (url, path, callback) => {
   const file = fs.createWriteStream(path);
-  http.get(url, response => {
-    response.pipe(file);
-    file.on('finish', () => {
-      file.close(callback);
-    });
-  }).on('error', err => {
+  request.get(url)
+  .on('error', (err) => {
     fs.unlink(path);
+
     if (callback) {
       callback(err.message);
     }
+  })
+  .pipe(file)
+  .on('finish', () => {
+    file.close(callback);
   });
 };
 
@@ -27,7 +30,7 @@ const downloadConfigurationFile = ({ endpoint, filename }) => {
   });
 };
 
-const isApplicationExtension = (i) => i.type === 'shoutem.core.extensions' && i.id === SHOUTEM_APPLICATION;
+const isApplicationExtension = i => i.type === 'shoutem.core.extensions' && i.id === SHOUTEM_APPLICATION;
 
 exports.preBuild = function preBuild(appConfiguration, buildConfiguration) {
   const appId = buildConfiguration.appId;
@@ -39,7 +42,8 @@ exports.preBuild = function preBuild(appConfiguration, buildConfiguration) {
     throw new Error(`${API_ENDPOINT} not set in ${SHOUTEM_APPLICATION} settings`);
   }
 
-  const endpointForResource = (res) => `${legacyApi}/${appId}/firebase/objects/FirebaseProject/${res}`;
+  const uri = new URI(legacyApi).protocol('http').toString();
+  const endpointForResource = res => `${uri}${appId}/firebase/objects/FirebaseProject/${res}`;
 
   [
     {

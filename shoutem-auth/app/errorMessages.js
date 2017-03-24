@@ -9,4 +9,5 @@ export const errorMessages = Object.freeze({
   UNEXPECTED_ERROR: 'Unexpected error.',
 });
 
-export const getErrorMessage = errorCode => errorMessages[errorCode] || errorMessages.UNEXPECTED_ERROR;
+export const getErrorMessage = errorCode =>
+    errorMessages[errorCode] || errorMessages.UNEXPECTED_ERROR;

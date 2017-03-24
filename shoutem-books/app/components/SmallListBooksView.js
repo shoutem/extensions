@@ -35,15 +35,14 @@ class SmallListBooksView extends React.Component {
 
   render() {
     const { book, hasFavoriteButton } = this.props;
-    const favorites = hasFavoriteButton ? <Favorite item={book} /> : null;
+    const favorites = hasFavoriteButton ? <Favorite item={book} schema={book.type} /> : null;
     const addToCartButton = <LinkIconButton book={book} />;
 
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Row>
           <Image
-            styleName="small rounded-corners"
-            defaultSource={require('../assets/images/image-fallback.png')}
+            styleName="small rounded-corners placeholder"
             source={{ uri: _.get(book, 'image.url') }}
           />
 
@@ -52,7 +51,7 @@ class SmallListBooksView extends React.Component {
             <Caption>{formatBookCaption(book)}</Caption>
           </View>
 
-          {favorites || addToCartButton}
+          {favorites}{addToCartButton}
         </Row>
 
         <Divider styleName="line" />
@@ -63,5 +62,5 @@ class SmallListBooksView extends React.Component {
 
 export default connect(
   undefined,
-  {}
+  {},
 )(SmallListBooksView);

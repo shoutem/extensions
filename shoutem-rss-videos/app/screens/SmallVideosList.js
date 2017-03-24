@@ -17,5 +17,5 @@ class SmallVideosList extends VideosList {
 }
 
 export default connectStyle(ext('SmallVideosList'))(
-  connect(mapStateToProps, mapDispatchToProps)(SmallVideosList)
+  connect(mapStateToProps, mapDispatchToProps)(SmallVideosList),
 );

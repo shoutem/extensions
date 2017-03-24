@@ -1,11 +1,15 @@
 {
   "name": "rss-videos",
   "title": "Videos RSS",
-  "version": "0.10.5",
-  "description": "Show videos from RSS feed",
+  "version": "0.10.11",
+  "description": "Show a video gallery from an RSS feed",
   "platform": "1.0.*",
   "icon": "server/assets/add-videos-image.png",
   "categories": ["media"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
   "dependencies": [
     "shoutem.layouts",
     "shoutem.rss"

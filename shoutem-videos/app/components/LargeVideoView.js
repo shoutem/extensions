@@ -15,7 +15,6 @@ import {
   Icon,
 } from '@shoutem/ui';
 
-const fallbackBackgroundImage = require('../assets/images/image-fallback.png');
 /**
  * A component used to render a single list video item with a large
  * video preview thumbnail.
@@ -42,9 +41,8 @@ class LargeVideoView extends React.Component {
       <TouchableOpacity onPress={this.onPress}>
         <Tile>
           <Image
-            styleName="large"
+            styleName="large-wide placeholder"
             source={{ uri: _.get(video, 'video.thumbnailurl') }}
-            defaultSource={fallbackBackgroundImage}
           >
             <Overlay styleName="rounded-small">
               <Icon name="play" />

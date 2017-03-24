@@ -28,16 +28,19 @@ export default class ListMenuView extends React.Component {
   render() {
     const { item } = this.props;
     const price = item.price ? (
-      <Overlay>
+      <Overlay style={{ backgroundColor: 'white' }}>
         <Subtitle styleName="sm-gutter-horizontal">{item.price}</Subtitle>
       </Overlay>) : null;
 
     return (
       <TouchableOpacity key={item.id} onPress={this.onPress}>
-        <Image styleName="large-banner" source={{ uri: item.image ? item.image.url : undefined }}>
+        <Image
+          styleName="large-banner placeholder"
+          source={{ uri: item.image ? item.image.url : undefined }}
+        >
           <Tile>
             <Title styleName="md-gutter-bottom">{item.name.toUpperCase()}</Title>
-              {price}
+            {price}
           </Tile>
         </Image>
         <Divider styleName="line" />

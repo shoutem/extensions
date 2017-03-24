@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo as navigateToAction } from '@shoutem/core/navigation';
 
 import { connect } from 'react-redux';
 import {
@@ -39,7 +39,7 @@ export class ArticlesListScreen extends RssListScreen {
       props: {
         article,
         feedUrl,
-        showNext: true,
+        openNextArticle: this.openDetailsScreen,
       },
     };
 
@@ -64,7 +64,7 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = { navigateTo, find, next };
+export const mapDispatchToProps = { navigateTo: navigateToAction, find, next };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('ArticlesListScreen'), {})(ArticlesListScreen),

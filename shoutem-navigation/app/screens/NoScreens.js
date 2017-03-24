@@ -7,7 +7,7 @@ import { ext } from '../const';
 
 function NoScreens() {
   return (
-    <Screen styleName="full-screen paper">
+    <Screen styleName="paper">
       <NavigationBar hidden />
       <EmptyStateView message={"Sorry, this app doesn't have any screens to open."} />
     </Screen>

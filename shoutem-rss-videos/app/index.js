@@ -1,10 +1,10 @@
-import VideosList from './screens/VideosList.js';
-import VideosSmallList from './screens/SmallVideosList.js';
-import VideoDetails from './screens/VideoDetails.js';
-import reducer, { RSS_VIDEOS_SCHEMA } from './redux';
-
 import rio from '@shoutem/redux-io';
 import { buildFeedUrl } from 'shoutem.rss';
+
+import VideosList from './screens/VideosList';
+import VideosSmallList from './screens/SmallVideosList';
+import VideoDetails from './screens/VideoDetails';
+import reducer, { RSS_VIDEOS_SCHEMA } from './redux';
 
 export const screens = {
   VideosList,
@@ -14,7 +14,7 @@ export const screens = {
 
 export { reducer };
 
-export function appWillMount(app) {
+export function appDidMount(app) {
   const state = app.getState();
 
   // Configure the RSS schema in RIO

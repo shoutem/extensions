@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { one, find, update } from '@shoutem/redux-io';
-import { url, appId, auth } from 'environment';
+import { url, appId } from 'environment';
 import { ext } from 'context';
 
 export const SHORTCUTS = 'shoutem.core.shortcuts';
@@ -13,15 +13,17 @@ export default combineReducers({
 
 export function updateShortcut(shortcut) {
   const config = {
-    endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts/${shortcut.id}`,
-    headers: {
-      Accept: 'application/vnd.api+json',
-      'Content-Type': 'application/vnd.api+json',
-      Authorization: `Bearer ${auth.token}`,
+    schema: SHORTCUTS,
+    request: {
+      endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts/${shortcut.id}`,
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
     },
   };
 
-  return update(config, SHORTCUTS, {
+  return update(config, {
     type: SHORTCUTS,
     ...shortcut,
   });
@@ -35,7 +37,6 @@ export function loadHierarchy(shortcutId) {
       endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts/${shortcutId}/screen-hierarchy`,
       headers: {
         Accept: 'application/vnd.api+json',
-        Authorization: `Bearer ${auth.token}`,
       },
     },
   };

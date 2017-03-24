@@ -1,39 +1,29 @@
 {
   "name": "photos",
-  "version": "0.1.4",
+  "version": "0.9.4",
   "title": "Photos",
-  "description": "Browse through images, preview them in full-screen, share them, pinch and zoom",
+  "description": "Show a photo gallery",
   "platform": "1.0.*",
   "icon" : "server/assets/add-photos-image.png",
-  "categories": ["content"],
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.cms"
+  ],
+  "categories": ["media"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
   "shortcuts": [{
       "name": "photos-shortcut",
-      "title": "Manual",
-      "screen": "shoutem.photos.PhotosList",
+      "title": "Manual photos",
+      "screen": "@.PhotosList",
       "icon": "theme://photo.png",
       "adminPages": [{
         "page": "shoutem.cms.CmsPage",
         "title": "Content",
         "parameters": {
-          "schema": "shoutem.photos.Photos"
-        }
-      },
-      {
-        "page": "shoutem.layouts.LayoutPage",
-        "title": "Layout"
-      }]
-  },
-  {
-      "name": "photos-rss-shortcut",
-      "title": "Photos RSS feed",
-      "description": "Loads photos from RSS feed in List view",
-      "screen": "shoutem.photos.PhotosList",
-      "icon":"theme://photo.png",
-      "adminPages": [{
-        "page": "shoutem.rss.RssPage",
-        "title": "Content",
-        "parameters": {
-          "schema": "shoutem.proxy.photos"
+          "schema": "@.Photos"
         }
       },
       {
@@ -44,13 +34,13 @@
   "screens": [{
     "name": "PhotosList",
     "title": "List",
-    "navigatesTo":["shoutem.photos.PhotosList"],
-    "image":"./server/assets/screens/large-photo-list.png"
+    "navigatesTo":["@.PhotosList"],
+    "image":"./server/assets/screens/layout-large-list.png"
   },{
     "name": "PhotosGrid",
     "title": "Grid",
-    "extends": "shoutem.photos.PhotosList",
-    "image":"./server/assets/screens/large-photo-list.png"
+    "extends": "@.PhotosList",
+    "image":"./server/assets/screens/layout-grid.png"
   },{
     "name": "PhotoDetails",
     "title": "PhotoDetails"

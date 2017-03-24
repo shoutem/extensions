@@ -34,11 +34,11 @@ export default class ListArticleView extends React.Component {
 
     return (
       <TouchableOpacity key={article.id} onPress={this.onPress}>
+        <Divider styleName="line" />
         <Row>
           <Image
-            styleName="small rounded-corners"
+            styleName="small rounded-corners placeholder"
             source={{ uri: _.get(article, 'image.url') }}
-            defaultSource={require('../assets/images/image-fallback.png')}
           />
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={2}>{article.title}</Subtitle>

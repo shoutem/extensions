@@ -4,30 +4,27 @@ import provideScreenSettings from './provideScreenSettings';
 import StartingScreen from './common/StartingScreen';
 import IconsAndText from './common/IconsAndText';
 
-export class Tabbar extends React.Component {
-  render() {
-    const { settings, childShortcuts, onSettingsChanged } = this.props;
-    return (
-      <div>
-        <h3>Settings</h3>
-        <form>
-          <FormGroup>
-            <StartingScreen
-              settings={settings}
-              childShortcuts={childShortcuts}
-              onSettingsChanged={onSettingsChanged}
-            />
-          </FormGroup>
-          <FormGroup>
-            <IconsAndText
-              settings={settings}
-              onSettingsChanged={onSettingsChanged}
-            />
-          </FormGroup>
-        </form>
-      </div>
-    );
-  }
+export function Tabbar({ settings, childShortcuts, onSettingsChanged }) {
+  return (
+    <div>
+      <h3>Settings</h3>
+      <form>
+        <FormGroup>
+          <StartingScreen
+            settings={settings}
+            childShortcuts={childShortcuts}
+            onSettingsChanged={onSettingsChanged}
+          />
+        </FormGroup>
+        <FormGroup>
+          <IconsAndText
+            settings={settings}
+            onSettingsChanged={onSettingsChanged}
+          />
+        </FormGroup>
+      </form>
+    </div>
+  );
 }
 
 Tabbar.propTypes = {

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { LoaderContainer } from '@shoutem/se-ui-kit';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 import { ext } from 'context';
 import { fetchFirebaseConfig, updateFirebaseConfig } from './actions';
 import SettingsForm from './components/SettingsForm';

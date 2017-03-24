@@ -19,7 +19,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 import { CmsListScreen } from 'shoutem.cms';
 import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
 
-import ListBooksView from '../components/ListBooksView.js';
+import ListBooksView from '../components/ListBooksView';
 import { ext } from '../const';
 
 class MyBooksScreen extends React.Component {
@@ -85,7 +85,7 @@ class MyBooksScreen extends React.Component {
       'Unexpected error occurred.' : 'Nothing here at this moment.';
 
     return (
-      <EmptyStateView icon="ic_books" message={message} />
+      <EmptyStateView icon="books" message={message} />
     );
   }
 
@@ -100,9 +100,7 @@ class MyBooksScreen extends React.Component {
     );
   }
 
-  render() {
-    const { title, data } = this.props;
-
+  renderData(data) {
     if (!this.isCollectionValid(data)) {
       return this.renderPlaceholderView();
     }
@@ -110,22 +108,28 @@ class MyBooksScreen extends React.Component {
     const loading = isBusy(data) || !isInitialized(data);
 
     return (
+      <ListView
+        data={data}
+        renderRow={this.renderRow}
+        loading={loading}
+      />
+    );
+  }
+
+  render() {
+    const { title, data } = this.props;
+    return (
       <Screen>
         <NavigationBar
           title={title}
         />
-
-        <ListView
-          data={data}
-          renderRow={this.renderRow}
-          loading={loading}
-        />
+        {this.renderData(data)}
       </Screen>
     );
   }
 }
 
-export const mapStateToProps = (state) => ({
+export const mapStateToProps = state => ({
   favorites: getFavoriteItems(state),
   data: getCollection(state[ext()].favoriteBooks, state),
 });
@@ -136,5 +140,5 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('MyBooksScreen'), {})(MyBooksScreen)
+  connectStyle(ext('MyBooksScreen'), {})(MyBooksScreen),
 );

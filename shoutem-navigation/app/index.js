@@ -9,6 +9,10 @@ import Tab from './screens/Tab';
 import NoScreens from './screens/NoScreens';
 
 import reducer, {
+  CLOSE_MODAL,
+  OPEN_MODAL,
+  openInModal,
+  closeModal,
   middleware,
 } from './redux';
 
@@ -24,6 +28,17 @@ export const screens = {
   Modal,
 };
 
+export {
+  CLOSE_MODAL,
+  OPEN_MODAL,
+  openInModal,
+  closeModal,
+};
+
 export const actions = {};
 
 export { reducer, middleware };
+
+export {
+  appWillMount,
+} from './app';

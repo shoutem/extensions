@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { FormGroup, ControlLabel } from 'react-bootstrap';
-import { FontIcon } from '@shoutem/se-ui-kit';
+import { FontIcon } from '@shoutem/react-web-ui';
 import { isBusy }  from '@shoutem/redux-io';
 import { loadFeed, FEED_ITEMS } from './../reducer';
 import { getFeedItems } from './../selectors';
@@ -31,9 +31,11 @@ export class FeedPreview extends Component {
             <ControlLabel>Loading from</ControlLabel>
             <div className="feed-preview__feed-url-container">
               <div className="feed-preview__rss-img" />
-              <span className="feed-preview__feed-url">
-                {feedUrl}
-              </span>
+              <div className="feed-preview__feed-url-text-wrapper text-ellipsis">
+                <span className="feed-preview__feed-url">
+                  {feedUrl}
+                </span>
+              </div>
               <FontIcon 
                 className="feed-preview__remove"
                 name="close" 

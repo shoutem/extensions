@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as _ from 'lodash';
-
 import {
   Screen,
   Image,
@@ -12,6 +11,7 @@ import {
   RichMedia,
   ScrollView,
   View,
+  ShareButton,
 } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
@@ -31,8 +31,35 @@ class BooksDetailsScreen extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.renderFavoriteButton = this.renderFavoriteButton.bind(this);
+  }
+
+  getNavBarProps() {
+    const { book, hasFavoriteButton } = this.props;
+    const favorites = hasFavoriteButton ?
+      (<Favorite
+        virtual
+        item={book}
+        schema={book.type}
+        buttonStyle={book.buyUrl ? null : 'md-gutter-right'}
+      />) : null;
+    const share = book.buyUrl ?
+    (<ShareButton
+      url={book.buyUrl}
+      title={book.title}
+    />
+) : null;
+
+    return {
+      renderRightComponent: () => (
+        <View virtual styleName="container">
+          {favorites}
+          {share}
+        </View>
+      ),
+      animationName: 'solidify',
+      title: book.title,
+    };
   }
 
   renderFavoriteButton() {
@@ -47,39 +74,20 @@ class BooksDetailsScreen extends React.Component {
     return null;
   }
 
-  getTileStyle() {
-    const { book } = this.props;
-
-    if (!_.has(book, 'image.url')) {
-      return {
-        style: {
-          backgroundColor: '#2c2c2c',
-        },
-      };
-    }
-    return null;
-  }
-
   render() {
     const { book, openURL } = this.props;
 
     return (
       <Screen styleName="full-screen paper">
-        <NavigationBar
-          styleName="clear"
-          animationName="solidify"
-          renderRightComponent={this.renderFavoriteButton}
-        />
-
+        <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           <Image
-            styleName="large-square hero"
+            styleName="large-square placeholder"
             animationName="hero"
             source={{ uri: _.get(book, 'image.url') }}
           >
             <Tile
               animationName="hero"
-              {...this.getTileStyle()}
             >
               <Title styleName="md-gutter-bottom">
                 {book.title.toUpperCase()}
@@ -102,5 +110,5 @@ class BooksDetailsScreen extends React.Component {
 
 export default connect(
   undefined,
-  { openURL }
+  { openURL },
 )(BooksDetailsScreen);

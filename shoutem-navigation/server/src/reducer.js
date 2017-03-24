@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import Uri from 'urijs';
 import { storage, update } from '@shoutem/redux-io';
-import { url, appId, auth } from 'environment';
+import { url, appId } from 'environment';
 import iconsPageReducer from './iconsPage/actions';
 
 export const SHORTCUTS = 'shoutem.core.shortcuts';
@@ -23,15 +23,17 @@ export function updateShortcut(shortcut) {
     .toString();
 
   const config = {
-    endpoint: uri,
-    headers: {
-      Accept: 'application/vnd.api+json',
-      'Content-Type': 'application/vnd.api+json',
-      Authorization: `Bearer ${auth.token}`,
+    schema: SHORTCUTS,
+    request: {
+      endpoint: uri,
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
     },
   };
 
-  return update(config, SHORTCUTS, {
+  return update(config, {
     type: SHORTCUTS,
     ...shortcut,
   });

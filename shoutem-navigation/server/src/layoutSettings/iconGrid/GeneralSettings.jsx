@@ -1,6 +1,6 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { ControlLabel, Row, Col, FormGroup } from 'react-bootstrap';
-import { NumericDropdown } from '@shoutem/se-ui-kit';
+import { NumericDropdown } from '@shoutem/react-web-ui';
 import IconsAndText from '../common/IconsAndText';
 import form from '../common/form';
 import DropdownWrapper from '../common/DropdownWrapper';
@@ -33,7 +33,7 @@ const configuration = {
   },
 };
 
-export class GeneralSettings extends React.Component {
+export class GeneralSettings extends Component {
   constructor(props) {
     super(props);
     this.saveForm = this.saveForm.bind(this);
@@ -44,7 +44,7 @@ export class GeneralSettings extends React.Component {
   saveForm() {
     const newSettings = this.props.form.toObject();
     this.props.onSettingsChanged(newSettings);
-  }l
+  }
 
   render() {
     const {
@@ -71,6 +71,7 @@ export class GeneralSettings extends React.Component {
                 <IconsAndText
                   settings={settings}
                   onSettingsChanged={onSettingsChanged}
+                  textOnlySupported={false}
                 />
               </Col>
             </Row>
@@ -121,6 +122,8 @@ GeneralSettings.propTypes = {
   settings: PropTypes.object.isRequired,
   onSettingsChanged: PropTypes.func.isRequired,
   fields: PropTypes.object.isRequired,
+  form: PropTypes.object,
+  onFieldChange: PropTypes.func,
 };
 
 export default form((props) => {

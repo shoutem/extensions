@@ -2,6 +2,7 @@ import GridScreen from './screens/GridScreen';
 import DetailsScreen from './screens/DetailsScreenWithMediumPhoto';
 import DetailsScreenWithLargePhoto from './screens/DetailsScreenWithLargePhoto';
 import ListScreen from './screens/ListScreen';
+import SingleEventMapScreen from './screens/SingleEventMapScreen';
 import reducer from './redux';
 
 export {
@@ -13,4 +14,5 @@ export const screens = {
   GridScreen,
   DetailsScreen,
   DetailsScreenWithLargePhoto,
+  SingleEventMapScreen,
 };

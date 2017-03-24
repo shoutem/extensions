@@ -8,10 +8,16 @@ import { TouchableOpacity, Image } from '@shoutem/ui';
  * Wraps Folder children with Image if Folder item has background.
  */
 export function FolderItemContainer(props) {
-  const { children, backgroundImageUrl } = props;
+  const { children, backgroundImageUrl, style } = props;
   const touchableOpacityProps = _.omit(props, ['children', 'backgroundImageUrl']);
+  delete touchableOpacityProps.style.backgroundImage;
+
   const backgroundImageComponent = backgroundImageUrl &&
-    <Image styleName="fill-parent" source={resolveIconSource(backgroundImageUrl)} />;
+    <Image
+      styleName="fill-parent"
+      style={style.backgroundImage}
+      source={resolveIconSource(backgroundImageUrl)}
+    />;
 
   return (
     <TouchableOpacity {...touchableOpacityProps}>

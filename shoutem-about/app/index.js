@@ -1,10 +1,10 @@
 import reducer from './reducers';
-import About from './screens/About.js';
-import Map from './screens/Map.js';
+import AboutScreen from './screens/AboutScreen';
+import MapScreen from './screens/MapScreen';
 
 export const screens = {
-  About,
-  Map,
+  AboutScreen,
+  MapScreen,
 };
 
 export { reducer };

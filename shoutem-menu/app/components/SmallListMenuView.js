@@ -35,8 +35,7 @@ export default class SmallListMenuView extends React.Component {
       >
         <Row>
           <Image
-            styleName="small"
-            defaultSource={require('../assets/images/image-fallback.png')}
+            styleName="small placeholder"
             source={{ uri: _.get(item, 'image.url') }}
           />
           <View styleName="vertical stretch space-between">

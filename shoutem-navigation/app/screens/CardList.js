@@ -49,6 +49,10 @@ class CardList extends FolderBaseScreen {
       item: {
         ...style.item,
         height: width * heightRatio,
+        backgroundImage: {
+          width,
+          height: width * heightRatio,
+        },
       },
       text: style.text,
     };

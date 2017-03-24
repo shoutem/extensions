@@ -21,27 +21,9 @@ import NextArticle from '../components/NextArticle';
 class ArticleMediumDetailsScreen extends React.Component {
   static propTypes = {
     article: React.PropTypes.object.isRequired,
-    articles: React.PropTypes.array,
     nextArticle: React.PropTypes.object,
     openArticle: React.PropTypes.func,
   };
-
-  getNavBarProps() {
-    const { article } = this.props;
-    const styleName = article.image ? 'clear' : undefined;
-    const animationName = article.image ? 'solidify' : 'boxing';
-
-    return {
-      styleName,
-      animationName,
-      share: {
-        title: article.title,
-        text: article.summary,
-        link: article.link,
-      },
-      title: article.title,
-    };
-  }
 
   renderUpNext() {
     const { nextArticle, openArticle } = this.props;
@@ -72,10 +54,20 @@ class ArticleMediumDetailsScreen extends React.Component {
   render() {
     const { article } = this.props;
     const screenStyle = article.image ? 'full-screen paper' : 'paper';
+    const styleName = article.image ? 'clear' : undefined;
+    const animationName = article.image ? 'solidify' : 'boxing';
 
     return (
       <Screen styleName={screenStyle}>
-        <NavigationBar {...this.getNavBarProps()} />
+        <NavigationBar
+          styleName={styleName}
+          animationName={animationName}
+          share={{
+            link: article.link,
+            title: article.title,
+          }}
+          title={article.title}
+        />
         <ScrollView>
           {this.renderImage()}
 
@@ -83,7 +75,7 @@ class ArticleMediumDetailsScreen extends React.Component {
             <Tile styleName="text-centric md-gutter-bottom">
               <Title>{article.title.toUpperCase()}</Title>
 
-              <View styleName="horizontal md-gutter-top">
+              <View styleName="horizontal md-gutter-top xl-gutter-bottom">
                 <Caption numberOfLines={1}>{article.newsAuthor}</Caption>
                 <Caption styleName="md-gutter-left">
                   {moment(article.timeUpdated).fromNow()}

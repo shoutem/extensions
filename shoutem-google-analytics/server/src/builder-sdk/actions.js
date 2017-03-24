@@ -4,9 +4,12 @@ import { EXTENSION_INSTALLATIONS } from './types';
 
 export function updateExtensionInstallationSettings(id, settings) {
   const config = {
-    endpoint: `//${url.apps}/v1/apps/${appId}/installations/${id}`,
-    headers: {
-      'Content-Type': 'application/vnd.api+json',
+    schema: EXTENSION_INSTALLATIONS,
+    request: {
+      endpoint: `//${url.apps}/v1/apps/${appId}/installations/${id}`,
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+      },
     },
   };
 
@@ -18,5 +21,5 @@ export function updateExtensionInstallationSettings(id, settings) {
     },
   };
 
-  return update(config, EXTENSION_INSTALLATIONS, partialInstallation);
+  return update(config, partialInstallation);
 }
