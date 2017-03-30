@@ -1,0 +1,10 @@
+{
+  "name": "theme",
+  "version": "0.1.7",
+  "type": "system",
+  "title": "Theme",
+  "description": "Resolve and store theme related configuration",
+  "platform": "1.0.*",
+  "icon": "server/assets/add-theme-image.png",
+  "categories": []
+}

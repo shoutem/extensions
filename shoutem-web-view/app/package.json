@@ -1,6 +1,6 @@
 {
-  "name": "shoutem.web-view",
-  "version": "0.9.4",
+  "name": "shootem.web-view",
+  "version": "0.9.5",
   "main": "index.js",
   "peerDependencies": {
     "@shoutem/core": "*"

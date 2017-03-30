@@ -83,7 +83,7 @@ class PhotoDetails extends PureComponent {
 
     if (mode === ImageGallery.IMAGE_PREVIEW_MODE) {
       return {
-        styleName: 'none',
+        styleName: 'clear none',
       };
     }
 

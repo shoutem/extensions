@@ -21,7 +21,7 @@
       "name": "openProducts",
       "screen": "@.ProductsListScreen",
       "adminPages": [{
-        "page": "@.ShopifyPage",
+        "page": "shoutem.shopify.ShopifyPage",
         "title": "Content"
       },
       {
@@ -65,18 +65,7 @@
     }
   ],
   "settingsPages": [{
-    "page": "@.ShopifySettingsPage",
+    "page": "shoutem.shopify.ShopifySettingsPage",
     "title": "Settings"
-  }],
-  "pages": [
-    {
-      "name": "ShopifyPage",
-      "type": "native-component",
-      "path": "dummy.js"
-    },
-    {
-      "name": "ShopifySettingsPage",
-      "type": "native-component",
-      "path": "dummy.js"
-    }]
+  }]
 }

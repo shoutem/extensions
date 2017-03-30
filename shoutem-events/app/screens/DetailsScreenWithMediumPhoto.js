@@ -34,7 +34,7 @@ class DetailsScreenWithMediumPhoto extends DetailsScreen {
           animationName="hero"
           source={{ uri: _.get(event, 'image.url') }}
         />
-        <Tile styleName="text-centric">
+        <Tile styleName="text-centric inflexible">
           {this.renderHeadlineDetails(event)}
           {this.renderAddToCalendarButton()}
         </Tile>

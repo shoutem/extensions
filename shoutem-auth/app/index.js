@@ -25,7 +25,7 @@ import {
 import { loginRequired } from './loginRequired';
 
 const appScreens = {};
-function appWillMount(app) {
+function appDidMount(app) {
   const { dispatch } = app.getStore();
 
   _.each(app.getScreens(), (Screen, screenName) => { appScreens[screenName] = Screen; });
@@ -55,10 +55,8 @@ const middleware = [
   logoutMiddleware,
 ];
 
-export { appDidMount } from './app';
-
 export {
-  appWillMount,
+  appDidMount,
   appScreens,
   middleware,
   getUser,

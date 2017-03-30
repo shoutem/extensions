@@ -3,11 +3,8 @@ import _ from 'lodash';
 import {
   TouchableOpacity,
   View,
+  Image,
 } from '@shoutem/ui';
-
-import { Image } from 'react-native';
-
-import { fallbackImage } from '../index';
 
 /**
  * A component used to render a single grid photo item
@@ -44,9 +41,9 @@ export default class GridPhotoView extends React.Component {
       <View key={photo.id}>
         <TouchableOpacity onPress={this.onPress}>
           <Image
+            styleName="placeholder"
             style={{ width, height }}
             source={source}
-            defaultSource={fallbackImage}
             resizeMethod="resize"
           />
         </TouchableOpacity>

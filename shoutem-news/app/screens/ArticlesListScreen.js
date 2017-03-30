@@ -9,11 +9,6 @@ import { CmsListScreen } from 'shoutem.cms';
 
 import { ext } from '../const';
 import ListArticleView from '../components/ListArticleView';
-import FeaturedArticleView from '../components/FeaturedArticleView';
-
-function hasFeaturedNews(news) {
-  return news.some(article => article.featured);
-}
 
 export class ArticlesListScreen extends CmsListScreen {
   static propTypes = {
@@ -49,18 +44,6 @@ export class ArticlesListScreen extends CmsListScreen {
     navigateTo(route);
   }
 
-  getNavBarProps() {
-    const navBarProps = super.getNavBarProps();
-    const { data } = this.props;
-    const newNavBarProps = { ...navBarProps };
-
-    if (hasFeaturedNews(data)) {
-      newNavBarProps.styleName = `${newNavBarProps.styleName || ''} featured`;
-    }
-
-    return newNavBarProps;
-  }
-
   getNextArticle(article) {
     const { data } = this.props;
     const currentArticleIndex = _.findIndex(data, { id: article.id });
@@ -68,16 +51,6 @@ export class ArticlesListScreen extends CmsListScreen {
   }
 
   renderRow(article) {
-    if (article.featured) {
-      return (
-        <FeaturedArticleView
-          article={article}
-          selectedCategoryId={this.props.selectedCategory.id}
-          onPress={this.openDetailsScreen}
-        />
-      );
-    }
-
     return (
       <ListArticleView
         article={article}

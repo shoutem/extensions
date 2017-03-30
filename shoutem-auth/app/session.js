@@ -1,13 +1,16 @@
+
 import { getAppId } from 'shoutem.application';
 
 import { AsyncStorage } from 'react-native';
 
 import { ext } from './const';
 
-const storageKey = `app-${getAppId()}:${ext()}.session`;
+export function getStorageKey() {
+  return `app-${getAppId()}:${ext()}.session`;
+}
 
-export const saveSession = session => AsyncStorage.setItem(storageKey, session);
+export const saveSession = session => AsyncStorage.setItem(getStorageKey(), session);
 
-export const clearSession = () => AsyncStorage.removeItem(storageKey);
+export const clearSession = () => AsyncStorage.removeItem(getStorageKey());
 
-export const getSession = () => AsyncStorage.getItem(storageKey);
+export const getSession = () => AsyncStorage.getItem(getStorageKey());

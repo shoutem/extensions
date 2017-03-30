@@ -1,0 +1,31 @@
+{
+  "name": "shoutem-notification-center",
+  "title": "Notification center",
+  "version": "0.0.6",
+  "description": "Show user's received notifications",
+  "platform": "1.0.*",
+  "categories":[],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
+  "shortcuts": [
+    {
+      "title": "Notifications",
+      "description": "List of received notifications",
+      "name": "openNotificationsList",
+      "screen": "@.NotificationsList"
+    },
+    {
+      "title": "Push groups",
+      "description": "List of available push groups",
+      "name": "openPushGroupsList",
+      "screen": "@.PushGroupsList"
+    }
+  ],
+  "screens": [
+    {
+      "name": "PushGroupsList"
+    }
+  ]
+}

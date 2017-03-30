@@ -1,5 +1,5 @@
 {
-  "name": "shoutem.firebase",
+  "name": "shootem.firebase",
   "version": "0.1.14",
   "description": "Firebase SDK bridge",
   "dependencies": {

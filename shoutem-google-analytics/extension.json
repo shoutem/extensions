@@ -7,15 +7,10 @@
   "icon": "server/assets/add-analytics-image.png",
   "categories": ["analytics"],
   "settingsPages": [{
-    "page": "@.TrackersPage",
+    "page": "shoutem.google-analytics.TrackersPage",
     "title": "Trackers"
   }],
   "settings": {
     "trackers": []
-  },
-  "pages": [{
-    "name": "TrackersPage",
-    "type": "native-component",
-    "path": "dummy.js"
-  }]
+  }
 }

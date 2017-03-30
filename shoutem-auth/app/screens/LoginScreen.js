@@ -17,7 +17,6 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import {
-  Heading,
   Icon,
   TextInput,
   Screen,
@@ -62,12 +61,7 @@ import { saveSession } from '../session';
 
 import { loginRequired } from '../loginRequired';
 
-const renderAuthenticatingMessage = () => (
-  <View styleName="xl-gutter-top">
-    <Heading styleName="h-center lg-gutter-bottom">Authenticating...</Heading>
-    <Spinner />
-  </View>
-);
+const renderAuthenticatingMessage = () => <Spinner styleName="xl-gutter-top" />;
 
 const handleLoginError = ({ payload }) => {
   const { response } = payload;
@@ -246,8 +240,6 @@ export class LoginScreen extends Component {
   }
 
   renderFacebookLoginButton() {
-    const { style } = this.props;
-
     return (
       <View>
         <Caption styleName="h-center lg-gutter-vertical">

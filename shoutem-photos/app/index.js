@@ -10,5 +10,3 @@ const screens = {
 };
 
 export { reducer, screens };
-
-export const fallbackImage = require('./assets/image-fallback.png');

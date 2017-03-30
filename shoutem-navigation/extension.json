@@ -1,7 +1,6 @@
 {
   "name": "navigation",
-  "version": "0.5.25",
-  "type": "system",
+  "version": "0.5.26",
   "title": "Main Navigation",
   "description": "App-level navigation",
   "platform": "1.0.*",
@@ -17,14 +16,13 @@
     "title": "Main navigation",
     "screen": "@.TabBar",
     "type": "navigation",
-    "unique": true,
     "adminPages": [
       {
         "page": "shoutem.layouts.LayoutPage",
         "title": "Layout"
       },
       {
-        "page": "@.IconsPage",
+        "page": "shoutem.navigation.IconsPage",
         "title": "Icons"
       }
     ]
@@ -35,7 +33,7 @@
     "image": "./server/assets/screens/tabbar.png",
     "groupTitle": "Choose navigation",
     "settingsPage": {
-      "page": "@.TabBar"
+      "page": "shoutem.navigation.TabBar"
     },
     "settings": {
       "startingScreen": null,
@@ -48,7 +46,7 @@
     "image": "./server/assets/screens/drawer.png",
     "extends": "@.TabBar",
     "settingsPage": {
-      "page": "@.Drawer"
+      "page": "shoutem.navigation.Drawer"
     },
     "settings": {
       "startingScreen": null,
@@ -61,7 +59,7 @@
     "image": "./server/assets/screens/icon.png",
     "extends": "@.TabBar",
     "settingsPage": {
-      "page": "@.IconGrid"
+      "page": "shoutem.navigation.IconGrid"
     },
     "settings": {
       "iconSize": "medium",
@@ -80,7 +78,7 @@
     "image": "./server/assets/screens/list.png",
     "extends": "@.TabBar",
     "settingsPage": {
-      "page": "@.List"
+      "page": "shoutem.navigation.List"
     },
     "settings": {
       "backgroundImage": "",
@@ -98,30 +96,5 @@
     "image": "./server/assets/screens/none.png",
     "extends": "@.TabBar",
     "settingsPage": {}
-  }],
-  "pages": [{
-    "name": "List",
-    "path": "filename_ending_in_js_indicating_component.js",
-    "type": "native-component"
-  }, {
-    "name": "CardList",
-    "path": "filename_ending_in_js_indicating_component.js",
-    "type": "native-component"
-  }, {
-    "name": "IconGrid",
-    "path": "filename_ending_in_js_indicating_component.js",
-    "type": "native-component"
-  }, {
-    "name": "Drawer",
-    "path": "filename_ending_in_js_indicating_component.js",
-    "type": "native-component"
-  }, {
-    "name": "TabBar",
-    "path": "filename_ending_in_js_indicating_component.js",
-    "type": "native-component"
-  }, {
-    "name": "IconsPage",
-    "path": "filename_ending_in_js_indicating_component.js",
-    "type": "native-component"
   }]
 }

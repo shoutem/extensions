@@ -7,11 +7,6 @@
   "platform": "1.0.*",
   "icon": "server/assets/add-rss-image.png",
   "categories": ["content"],
-  "pages": [{
-    "name": "RssPage",
-    "type": "native-component",
-    "path": "dummy.js"
-  }],
   "settings": {
     "baseApiEndpoint": "http://api.dev.sauros.hr"
   }

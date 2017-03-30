@@ -1,6 +1,6 @@
 {
   "name": "auth",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "title": "User Authentication",
   "icon": "server/assets/add-authentication-image.png",
   "description": "Show user profile, sign out user",
@@ -22,20 +22,11 @@
       "action": "@.logoutAction"
     }],
   "settingsPages": [{
-    "page": "@.SettingsPage",
+    "page": "shoutem.auth.SettingsPage",
     "title": "Settings"
   }, {
-    "page": "@.ProvidersPage",
+    "page": "shoutem.auth.ProvidersPage",
     "title": "Authentication providers"
-  }],
-  "pages": [{
-    "name": "SettingsPage",
-    "type": "native-component",
-    "path": "dummy.js"
-  }, {
-    "name": "ProvidersPage",
-    "type": "native-component",
-    "path": "dummy.js"
   }],
   "settings": {
     "signupEnabled": true,

@@ -11,6 +11,7 @@ import {
   DropDownMenu,
   ListView,
   Screen,
+  View,
 } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
@@ -122,7 +123,7 @@ export class CmsListScreen extends PureComponent {
       const collection = getCmsCollection(state);
       if (!collection) {
         throw new Error('Invalid collection selector passed to createMapStateToProps ' +
-          `of the CmsListScreen. Expected an array but the selector returned: ${collection}`
+          `of the CmsListScreen. Expected an array but the selector returned: ${collection}`,
         );
       }
 
@@ -157,7 +158,7 @@ export class CmsListScreen extends PureComponent {
           clear,
           next,
         },
-        dispatch
+        dispatch,
       )
     );
   }
@@ -177,7 +178,7 @@ export class CmsListScreen extends PureComponent {
     if (!this.state.schema) {
       throw Error(
         'Invalid Screen state "schema". Screen that extends CMSListScreen ' +
-        'must define (content) "schema" property in the state.'
+        'must define (content) "schema" property in the state.',
       );
     }
     this.refreshInvalidContent(this.props, true);
@@ -212,10 +213,13 @@ export class CmsListScreen extends PureComponent {
   getNavBarProps() {
     const { title } = this.props;
     const { renderCategoriesInline } = this.state;
+    const inlineCategories = renderCategoriesInline ? null : this.renderCategoriesDropDown();
 
     return {
       renderRightComponent: () => (
-        renderCategoriesInline ? null : this.renderCategoriesDropDown()
+        <View virtual styleName="container">
+          {inlineCategories}
+        </View>
       ),
       title: (title || '').toUpperCase(),
     };
@@ -305,7 +309,7 @@ export class CmsListScreen extends PureComponent {
     InteractionManager.runAfterInteractions(() =>
       find(CATEGORIES_SCHEMA, undefined, {
         'filter[parent]': parentCategoryId,
-      })
+      }),
     );
   }
 
@@ -316,7 +320,7 @@ export class CmsListScreen extends PureComponent {
     InteractionManager.runAfterInteractions(() =>
       find(schema, undefined, {
         'filter[categories]': category.id,
-      })
+      }),
     );
   }
 

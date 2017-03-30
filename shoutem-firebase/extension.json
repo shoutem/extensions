@@ -7,14 +7,7 @@
   "platform": "1.0.*",
   "icon": "server/assets/add-firebase-image.png",
   "settingsPages": [{
-    "page": "@.Settings",
+    "page": "shoutem.firebase.Settings",
     "title": "Settings"
-  }],
-  "pages": [
-    {
-      "name": "Settings",
-      "type": "native-component",
-      "path": "dummy.js"
-    }
-  ]
+  }]
 }

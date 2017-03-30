@@ -1,6 +1,6 @@
 {
   "name": "shoutem.auth",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Authentication extension that uses the Shoutem authentication backend.",
   "dependencies": {
     "fs-extra": "1.0.0",

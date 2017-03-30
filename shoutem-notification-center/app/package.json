@@ -1,0 +1,8 @@
+{
+  "name": "shoutem.shoutem-notification-center",
+  "version": "0.0.6",
+  "description": "Displays a list of received notifications and adds ability to manage group subscriptions",
+  "peerDependencies": {
+    "@shoutem/core": "*"
+  }
+}

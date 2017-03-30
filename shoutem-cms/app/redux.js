@@ -10,8 +10,11 @@ export const CATEGORIES_SCHEMA = 'shoutem.core.categories';
 export const IMAGE_ATTACHMENTS_SCHEMA = 'shoutem.core.image-attachments';
 export const VIDEO_ATTACHMENTS_SCHEMA = 'shoutem.core.video-attachments';
 
-const _2h = 2 * 60 * 60;
-const _15min = 15 * 60;
+// 2 hours
+const EXPIRATION_TIME_CATEGORIES = 2 * 60 * 60;
+
+// 15 minutes
+const EXPIRATION_TIME_RESOURCES = 15 * 60;
 
 function getCategoryIds(action) {
   return _.get(action, ['meta', 'params', 'filter[categories]']);
@@ -41,7 +44,7 @@ function createCollectionCreator(schema, settings) {
  *   keys represent category IDs, and values resources
  *   in those categories.
  */
-export function cmsCollection(schema, settings = { expirationTime: _15min }) {
+export function cmsCollection(schema, settings = { expirationTime: EXPIRATION_TIME_RESOURCES }) {
   return mapReducers(getCategoryIds, createCollectionCreator(schema, settings));
 }
 
@@ -56,7 +59,7 @@ export function cmsCollection(schema, settings = { expirationTime: _15min }) {
 export function childCategories() {
   return mapReducers(
     getParentCategoryId,
-    createCollectionCreator(CATEGORIES_SCHEMA, { expirationTime: _2h })
+    createCollectionCreator(CATEGORIES_SCHEMA, { expirationTime: EXPIRATION_TIME_CATEGORIES }),
   );
 }
 

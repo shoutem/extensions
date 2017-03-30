@@ -1,6 +1,6 @@
 {
   "name": "web-view",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "title": "Web view",
   "description": "Show a web page in-app or in a browser",
   "platform": "1.0.*",
@@ -16,16 +16,11 @@
     "icon": "theme://web.png",
     "action": "@.openWebViewScreen",
     "adminPages": [{
-      "page": "@.WebPage",
+      "page": "shoutem.web-view.WebPage",
       "title": "Content"
     }]
   }],
   "screens": [{
     "name": "WebViewScreen"
-  }],
-  "pages": [{
-    "name": "WebPage",
-    "path": "dummy.js",
-    "type": "native-component"
   }]
 }

@@ -13,12 +13,6 @@
       "required": true,
       "displayPriority": 1
     },
-    "featured": {
-      "type": "boolean",
-      "format": "boolean",
-      "title": "Featured",
-      "displayPriority": 2
-    },
     "body": {
       "type": "string",
       "format": "html",

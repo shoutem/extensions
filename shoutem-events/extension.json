@@ -1,6 +1,6 @@
 {
   "name": "events",
-  "version": "0.9.12",
+  "version": "0.9.13",
   "title": "Events",
   "description": "Show items with location and time",
   "platform": "1.0.*",
@@ -12,7 +12,7 @@
   "icon":"server/assets/add-events-image.png",
   "shortcuts": [
     {
-      "screen": "@.ListScreen",
+      "screen": "@.GridScreen",
       "title": "Events",
       "name": "events-shortcut",
       "icon":"theme://events.png",
@@ -33,30 +33,30 @@
   ],
   "screens": [
     {
-      "name": "ListScreen",
-      "title": "List",
-      "image": "./server/assets/images/layout-news-list-with-featured-selected.png",
+      "name": "GridScreen",
+      "title": "Grid",
+      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png",
       "navigatesTo": [
-        "@.DetailsScreen",
+        "@.DetailsScreenWithLargePhoto",
         "@.SingleEventMapScreen"
       ]
     },
     {
-      "name": "GridScreen",
-      "title": "Grid",
-      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png",
-      "extends": "@.ListScreen"
+      "name": "ListScreen",
+      "title": "List",
+      "image": "./server/assets/images/layout-news-list-with-featured-selected.png",
+      "extends": "@.GridScreen"
     },
     {
       "name": "DetailsScreen",
       "title": "Details screen with medium photo",
-      "image": "./server/assets/images/details-medium-photo.png"
+      "image": "./server/assets/images/details-medium-photo.png",
+      "extends": "@.DetailsScreenWithLargePhoto"
     },
     {
       "name": "DetailsScreenWithLargePhoto",
       "title": "Details screen with large photo",
-      "image": "./server/assets/images/details-large-photo.png",
-      "extends": "@.DetailsScreen"
+      "image": "./server/assets/images/details-large-photo.png"
     }
   ],
   "dataSchemas": [

@@ -10,8 +10,6 @@ import {
   Tile,
 } from '@shoutem/ui';
 
-import { fallbackImage } from '../index';
-
 /**
  * A component used to render a single list photo item
  */
@@ -47,7 +45,6 @@ export default class ListPhotoView extends React.Component {
             <Image
               styleName="large-banner"
               source={source}
-              defaultSource={fallbackImage}
             />
             <View styleName="content md-gutter">
               <Title numberOfLines={2}>{title.toUpperCase()}</Title>

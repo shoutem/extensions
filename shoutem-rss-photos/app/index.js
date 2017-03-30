@@ -15,8 +15,6 @@ export const screens = {
 
 export { reducer };
 
-export const fallbackImage = require('./assets/image-fallback.png');
-
 export function appDidMount(app) {
   const state = app.getState();
 
