@@ -1,34 +1,62 @@
-import { isRSAA, RSAA } from 'redux-api-middleware';
+import {
+  isRSAA,
+  RSAA,
+} from 'redux-api-middleware';
+
 import * as _ from 'lodash';
 import URI from 'urijs';
 
-import { redirectTo, NAVIGATE, NavigationOperations } from '@shoutem/core/navigation';
+import { UPDATE_SUCCESS } from '@shoutem/redux-io';
+
+import {
+  isEmptyRoute,
+  isNavigationAction,
+  navigateTo,
+  redirectTo,
+  rewrite,
+  REPLACE,
+} from '@shoutem/core/navigation';
+
 import { priorities, setPriority, before } from '@shoutem/core/middlewareUtils';
+
 import { RESTART_APP } from '@shoutem/core/coreRedux';
 import { getExtensionSettings } from 'shoutem.application';
 
 import { ext } from './const';
-import { isAuthenticated, LOGOUT, AUTHENTICATE } from './redux';
+import {
+  isAuthenticated,
+  isUserUpdateAction,
+  getUser,
+  LOGOUT,
+  AUTHENTICATE,
+} from './redux';
+
 import { getAuthHeader } from './shared/getAuthHeader';
 import { isAuthenticationRequired } from './isAuthenticationRequired';
-import { clearSession } from './session.js';
+
+import {
+  clearSession,
+  getSession,
+  saveSession,
+} from './session.js';
 
 const APPLICATION_EXTENSION = 'shoutem.application';
 const AUTH_HEADERS = 'headers.Authorization';
 
+const hasValidRoute = action => action.route && !isEmptyRoute(action.route);
+
 export function createLoginMiddleware(screens) {
   return setPriority(store => next => (action) => {
-    if (action.type === NAVIGATE) {
+    // We want to intercept only actions with a route because this is the only way
+    // to open a new screen.
+    if (isNavigationAction(action) && hasValidRoute(action)) {
       const state = store.getState();
       if (isAuthenticationRequired(screens, action, state) && !isAuthenticated(state)) {
         return next(redirectTo(action, {
           screen: ext('LoginScreen'),
           props: {
             action,
-            onLoginSuccess: () => store.dispatch({
-              ...action,
-              operation: NavigationOperations.REPLACE,
-            }),
+            onLoginSuccess: () => store.dispatch(rewrite(action, REPLACE)),
           },
         }));
       }
@@ -38,6 +66,14 @@ export function createLoginMiddleware(screens) {
   }, priorities.AUTH);
 }
 
+/**
+ * Enables an action within a screen to require authentication.
+ * For example, when a comment button is clicked and this action requires a session.
+ *
+ * If the user is not authenticated, this middleware will present a login screen.
+ * After successful login, it will execute the callback provided in the action.
+ * If the user is already logged in, the callback will be immediately executed.
+ */
 export const authenticateMiddleware = setPriority(store => next => (action) => {
   if (action.type === AUTHENTICATE) {
     const state = store.getState();
@@ -45,20 +81,33 @@ export const authenticateMiddleware = setPriority(store => next => (action) => {
     if (isAuthenticated(state)) {
       action.callback(state[ext()].user);
     } else {
-      store.dispatch({
-        type: NAVIGATE,
-        route: {
-          screen: ext('LoginScreen'),
-          props: {
-            onLoginSuccess: action.callback,
-          },
+      store.dispatch(navigateTo({
+        screen: ext('LoginScreen'),
+        props: {
+          onLoginSuccess: action.callback,
         },
-      });
+      }));
     }
   }
 
   return next(action);
 }, priorities.AUTH);
+
+/**
+ * Listens to user profile changes and updates the saved session.
+ * When the app is restarted and we restore the session, it will have the updates.
+ */
+export const userUpdatedMiddleware = store => next => (action) => {
+  if (action.type === UPDATE_SUCCESS && isUserUpdateAction(action)) {
+    getSession().then((session = {}) => {
+      const user = getUser(store.getState());
+
+      const newSession = { ...JSON.parse(session), user };
+      saveSession(JSON.stringify(newSession));
+    });
+  }
+  return next(action);
+};
 
 /**
  * Sets header Authorization value for every network request to endpoints registered
@@ -77,6 +126,7 @@ export const networkRequestMiddleware = setPriority(store => next => (action) =>
 
       return result;
     }, []);
+
     const endpoint = new URI(action[RSAA].endpoint).hostname();
     if (servers.includes(endpoint) && !_.has(action[RSAA], AUTH_HEADERS)) {
       _.set(action[RSAA], AUTH_HEADERS, getAuthHeader(state));

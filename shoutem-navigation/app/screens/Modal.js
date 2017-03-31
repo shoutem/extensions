@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import {
   ScreenStack,
   navigateBack,
+  closeModal,
 } from '@shoutem/core/navigation';
 
 import { connectStyle } from '@shoutem/theme';
@@ -21,10 +22,6 @@ import {
 import { ChildNavigationBar } from '@shoutem/ui/navigation';
 
 import { ext } from '../const';
-
-import {
-  closeModal,
-} from '../redux';
 
 class Modal extends PureComponent {
   static propTypes = {

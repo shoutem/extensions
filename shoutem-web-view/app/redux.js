@@ -1,19 +1,20 @@
-import { navigateTo } from '@shoutem/core/navigation';
+import { createNavigationAction, navigateTo } from '@shoutem/core/navigation';
 import { getShortcut } from 'shoutem.application';
 
 import { ext } from './const';
 
-// Shoutem specified actions
-export function openURL(url, title, showNavigationToolbar = true) {
-  return navigateTo({
-    screen: ext('WebViewScreen'),
-    props: {
-      url,
-      title,
-      showNavigationToolbar,
-    },
+const getWebViewRoute = (url, title, showNavigationToolbar = true) => ({
+  screen: ext('WebViewScreen'),
+  props: {
+    url,
+    title,
+    showNavigationToolbar,
   },
-  );
+});
+
+// Shoutem specified actions
+export function openURL(url, title, showNavigationToolbar) {
+  return navigateTo(getWebViewRoute(url, title, showNavigationToolbar));
 }
 
 export function openWebViewScreen(state, action) {
@@ -24,8 +25,11 @@ export function openWebViewScreen(state, action) {
     showNavigationToolbar,
   } = shortcut.settings;
 
-  const openUrlAction = openURL(url, title, showNavigationToolbar);
-  openUrlAction.operation = action.navigationOperation || openUrlAction.operation;
-  openUrlAction.navigationStack = action.navigationStack;
-  return openUrlAction;
+  const route = getWebViewRoute(url, title, showNavigationToolbar);
+
+  const { navigationAction, navigationStack } = action;
+
+  const actionToDispatch = createNavigationAction(navigationAction, route, navigationStack);
+
+  return actionToDispatch;
 }

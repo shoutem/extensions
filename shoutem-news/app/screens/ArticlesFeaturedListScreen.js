@@ -25,6 +25,10 @@ export class ArticlesFeaturedListScreen extends ArticlesListScreen {
     this.renderRow = this.renderRow.bind(this);
   }
 
+  getNavBarProps() {
+    return { ...super.getNavBarProps(), styleName: 'featured' };
+  }
+
   renderRow(article, sectionId, index) {
     if (index === '0') {
       return (

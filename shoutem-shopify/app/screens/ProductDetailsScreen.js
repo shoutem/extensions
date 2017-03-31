@@ -27,10 +27,14 @@ import {
 } from '@shoutem/ui';
 
 import { NavigationBar } from '@shoutem/ui/navigation';
-import { navigateTo } from '@shoutem/core/navigation';
-import { connectStyle } from '@shoutem/theme';
 
-import { closeModal, openInModal } from 'shoutem.navigation';
+import {
+  navigateTo,
+  closeModal,
+  openInModal
+} from '@shoutem/core/navigation';
+
+import { connectStyle } from '@shoutem/theme';
 
 import { ext } from '../const';
 import CartIcon from '../components/CartIcon';

@@ -1,10 +1,10 @@
 {
   "name": "auth",
-  "version": "0.5.4",
+  "version": "0.6.3",
   "title": "User Authentication",
   "icon": "server/assets/add-authentication-image.png",
   "description": "Show user profile, sign out user",
-  "platform": ">=1.0.19",
+  "platform": ">=1.0.21",
   "categories": ["users"],
   "repository": {
     "type": "git",
@@ -14,13 +14,22 @@
       "name": "LoginScreen"
     }, {
       "name": "RegisterScreen"
+    },
+     {
+      "name": "UserProfileScreen"
     }],
   "shortcuts": [{
-      "title": "Logout",
-      "description": "Allows user to logout from application",
-      "name": "logoutAction",
-      "action": "@.logoutAction"
-    }],
+    "title": "Logout",
+    "description": "Allows user to logout from application",
+    "name": "logoutAction",
+    "action": "@.logoutAction"
+  }, {
+    "title": "My profile",
+    "description": "This screen lets users manage their user profile",
+    "icon": "theme://profile.png",
+    "name": "openUserProfile",
+    "screen": "@.UserProfileScreen"
+  }],
   "settingsPages": [{
     "page": "shoutem.auth.SettingsPage",
     "title": "Settings"

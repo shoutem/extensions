@@ -29,6 +29,10 @@ class ArticlesGridScreen extends ArticlesListScreen {
     this.renderRow = this.renderRow.bind(this);
   }
 
+  getNavBarProps() {
+    return { ...super.getNavBarProps(), styleName: 'featured' };
+  }
+
   renderRow(articles, sectionId, index) {
     // Featured articles are rendered in full width
     if (index === '0') {

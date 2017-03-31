@@ -12,10 +12,13 @@ import {
 } from '@shoutem/ui';
 
 import { EmptyStateView } from '@shoutem/ui-addons';
-import { navigateTo } from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
 
-import { closeModal, openInModal } from 'shoutem.navigation';
+import {
+  navigateTo,
+  closeModal,
+  openInModal,
+} from '@shoutem/core/navigation';
 
 import { ext, PAGE_SIZE } from '../const';
 import ListItem from './ListItem';

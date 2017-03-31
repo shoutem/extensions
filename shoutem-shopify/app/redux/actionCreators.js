@@ -2,8 +2,10 @@ import _ from 'lodash';
 import { Alert } from 'react-native';
 import Shopify from 'react-native-shopify';
 
-import { navigateTo } from '@shoutem/core/navigation';
-import { openInModal } from 'shoutem.navigation';
+import {
+  navigateTo,
+  openInModal,
+} from '@shoutem/core/navigation';
 
 import { ext, PAGE_SIZE } from '../const';
 import { getProducts } from './selectors';

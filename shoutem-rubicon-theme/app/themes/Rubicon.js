@@ -371,6 +371,10 @@ export default (variables = {}) => ({
 
     '.placeholder': {
       backgroundColor: inverseColorBrightnessForAmount(variables.paperColor, 10),
+
+      'shoutem.ui.Icon': {
+        color: inverseColorBrightnessForAmount(variables.paperColor, 30),
+      }
     },
 
     'shoutem.ui.Tile': {
@@ -780,6 +784,12 @@ export default (variables = {}) => ({
 
     activeOpacity: 0.8,
   },
+
+  'shoutem.ui.TouchableNativeFeedback': {
+    [INCLUDE]: ['commonVariants'],
+  },
+
+  'shoutem.ui.Touchable': {},
 
   tightButton: {
     'shoutem.ui.Icon': {
@@ -2158,7 +2168,10 @@ export default (variables = {}) => ({
       borderRadius: 0,
       paddingHorizontal: SMALL_GUTTER,
       borderColor: 'transparent',
-      activeOpacity: 1,
+      touchableOpacity: {
+        activeOpacity: 0.5,
+      },
+      touchableNativeFeedback: {},
     },
     icon: {
       height: 24,

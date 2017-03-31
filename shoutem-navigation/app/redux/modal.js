@@ -4,7 +4,8 @@ import { combineReducers } from 'redux';
 import {
   ROOT_NAVIGATION_STACK,
   EMPTY_ROUTE,
-  NavigationOperations,
+  OPEN_MODAL,
+  CLOSE_MODAL,
 
   createNavigationReducer,
 
@@ -29,46 +30,12 @@ export const MODAL_NAVIGATION_STACK = {
 //
 
 /**
- * Open a route from the action in a new modal window.
- * @typedef OPEN_MODAL
- * @type {object}
- * @property route {} The route to navigate to.
- */
-export const OPEN_MODAL = 'shoutem.navigation.OPEN_MODAL';
-
-/**
  * Saves the previous navigation stack
  * @typedef SAVE_PREVIOUS_STACK
  * @type {object}
  * @property payload {} Previous navigation stack.
  */
 export const SAVE_PREVIOUS_STACK = 'shoutem.navigation.SAVE_PREVIOUS_STACK';
-
-/**
- * Closes the active modal window.
- * @typedef CLOSE_MODAL
- * @type {object}
- */
-export const CLOSE_MODAL = 'shoutem.navigation.CLOSE_MODAL';
-
-/**
- * @see OPEN_MODAL
- * Navigates to the specified route in a new modal window.
- * @returns {{ type: String }}
- */
-export const openInModal = (route) => ({
-  type: OPEN_MODAL,
-  route,
-});
-
-/**
- * @see CLOSE_MODAL
- * Closes the active modal window.
- * @returns {{ type: String }}
- */
-export const closeModal = () => ({
-  type: CLOSE_MODAL,
-});
 
 /**
  * @see SAVE_PREVIOUS_STACK
@@ -98,8 +65,8 @@ export const openModalMiddleware = store => next => (action) => {
     const { dispatch } = store;
 
     dispatch(savePreviousStack(previousStack));
-    dispatch(navigateTo(route, NavigationOperations.RESET, MODAL_NAVIGATION_STACK));
-    dispatch(navigateTo({ screen: MODAL_SCREEN }, undefined, ROOT_NAVIGATION_STACK));
+    dispatch(reset(route, MODAL_NAVIGATION_STACK));
+    dispatch(navigateTo({ screen: MODAL_SCREEN }, ROOT_NAVIGATION_STACK));
     dispatch(setActiveNavigationStack(MODAL_NAVIGATION_STACK));
   }
 
@@ -119,7 +86,7 @@ export const closeModalMiddleware = store => next => (action) => {
     dispatch(navigateBack(ROOT_NAVIGATION_STACK));
 
     InteractionManager.runAfterInteractions(() => {
-      dispatch(reset([EMPTY_ROUTE], 0, MODAL_NAVIGATION_STACK));
+      dispatch(reset(EMPTY_ROUTE, MODAL_NAVIGATION_STACK));
     });
   }
 

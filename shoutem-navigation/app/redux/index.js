@@ -14,12 +14,7 @@ import tabBar, {
 import drawer from './drawer';
 import modal, {
   MODAL_NAVIGATION_STACK,
-  OPEN_MODAL,
-  CLOSE_MODAL,
   SAVE_PREVIOUS_STACK,
-
-  openInModal,
-  closeModal,
 
   openModalMiddleware,
   closeModalMiddleware,
@@ -48,12 +43,7 @@ export {
 
 export {
   MODAL_NAVIGATION_STACK,
-  OPEN_MODAL,
-  CLOSE_MODAL,
   SAVE_PREVIOUS_STACK,
-
-  openInModal,
-  closeModal,
 };
 
 export const middleware = [

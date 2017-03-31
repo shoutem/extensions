@@ -9,10 +9,6 @@ import Tab from './screens/Tab';
 import NoScreens from './screens/NoScreens';
 
 import reducer, {
-  CLOSE_MODAL,
-  OPEN_MODAL,
-  openInModal,
-  closeModal,
   middleware,
 } from './redux';
 
@@ -26,13 +22,6 @@ export const screens = {
   List,
   CardList,
   Modal,
-};
-
-export {
-  CLOSE_MODAL,
-  OPEN_MODAL,
-  openInModal,
-  closeModal,
 };
 
 export const actions = {};

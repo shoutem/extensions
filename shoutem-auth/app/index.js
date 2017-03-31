@@ -5,6 +5,9 @@ import _ from 'lodash';
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
+import UserProfileScreen from './screens/UserProfileScreen';
+import EditProfileScreen from './screens/EditProfileScreen';
+
 import reducer, {
   getUser,
   getAccessToken,
@@ -12,35 +15,31 @@ import reducer, {
   logoutAction,
   isAuthenticated,
   RESTORE_SESSION,
+  LOGIN,
+  LOGOUT,
+  REGISTER,
 } from './redux';
-
-import { getSession } from './session';
 
 import {
   createLoginMiddleware,
   networkRequestMiddleware,
   logoutMiddleware,
+  userUpdatedMiddleware,
 } from './middleware';
 
 import { loginRequired } from './loginRequired';
 
 const appScreens = {};
-function appDidMount(app) {
-  const { dispatch } = app.getStore();
 
+function appWillMount(app) {
   _.each(app.getScreens(), (Screen, screenName) => { appScreens[screenName] = Screen; });
-
-  return getSession().then(
-    session => session && dispatch({
-      type: RESTORE_SESSION,
-      payload: JSON.parse(session),
-    }),
-  );
 }
 
 export const screens = {
   LoginScreen,
   RegisterScreen,
+  UserProfileScreen,
+  EditProfileScreen,
 };
 
 export { reducer };
@@ -53,10 +52,13 @@ const middleware = [
   createLoginMiddleware(appScreens),
   networkRequestMiddleware,
   logoutMiddleware,
+  userUpdatedMiddleware,
 ];
 
+export { appDidMount } from './app';
+
 export {
-  appDidMount,
+  appWillMount,
   appScreens,
   middleware,
   getUser,
@@ -64,4 +66,8 @@ export {
   authenticate,
   loginRequired,
   isAuthenticated,
+  LOGIN,
+  LOGOUT,
+  REGISTER,
+  RESTORE_SESSION,
 };

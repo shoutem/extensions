@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import {
-  navigateTo,
+  createNavigationAction,
   isNavigationAction,
 } from '@shoutem/core/navigation';
 import { EXECUTE_SHORTCUT, getShortcut, getActiveShortcut } from './redux';
@@ -90,7 +90,7 @@ const navigateToShortcutScreen = store => next => action => {
     const title = shortcut.title;
 
     if (screen) {
-      store.dispatch(navigateTo({
+      const route = {
         screen,
         title,
         props: {
@@ -100,7 +100,11 @@ const navigateToShortcutScreen = store => next => action => {
         context: {
           shortcutId: shortcut.id,
         },
-      }, action.navigationOperation, action.navigationStack));
+      };
+
+      const { navigationAction, navigationStack } = action;
+
+      store.dispatch(createNavigationAction(navigationAction, route, navigationStack));
     }
   }
 

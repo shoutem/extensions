@@ -25,9 +25,8 @@ import {
   InlineMap,
 } from '@shoutem/ui-addons';
 
-import { closeModal } from 'shoutem.navigation';
-
 import { connectStyle } from '@shoutem/theme';
+import { closeModal } from '@shoutem/core/navigation';
 
 import { ext } from '../../const';
 import {

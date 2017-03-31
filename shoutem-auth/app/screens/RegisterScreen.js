@@ -22,7 +22,10 @@ import { getAppId } from 'shoutem.application';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { navigateBack } from '@shoutem/core/navigation';
 
-import { register } from '../redux';
+import {
+  register,
+  userRegistered,
+} from '../redux';
 
 import { ext } from '../const';
 
@@ -60,6 +63,7 @@ export class RegisterScreen extends Component {
     register(email, username, password).then(
       ({ payload }) => {
         saveSession(JSON.stringify(payload));
+        userRegistered(payload);
         navigateBack();
       },
       ({ payload }) => {
@@ -115,7 +119,11 @@ export class RegisterScreen extends Component {
   }
 }
 
-export const mapDispatchToProps = { navigateBack, register };
+export const mapDispatchToProps = {
+  navigateBack,
+  register,
+  userRegistered,
+};
 
 function mapStateToProps(state) {
   return {

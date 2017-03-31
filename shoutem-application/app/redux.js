@@ -52,15 +52,16 @@ export function getActiveShortcut(state, action) {
 /**
  * Creates a redux action that is used to execute shortcuts provided by configuration
  * @param shortcutId {string} an Id of a shortcut
- * @param navigationOperation The navigation operation to use (push, replace, etc.), if none
- * provided, push operation will be used.
+ * @param navigationAction The navigation action type to use (navigate, replace,
+ *  reset to route, open in modal etc.). Shoutem core will resolve the navigation action from this type,
+ *  with a sensible default if none is provided.
  * @param navigationStack The navigation stack to execute the shortcutId on.
  * @returns {{type: string, shortcutId: *}} a redux action with type EXECUTE_SHORTCUT
  */
-export const executeShortcut = (shortcutId, navigationOperation, navigationStack) => ({
+export const executeShortcut = (shortcutId, navigationAction, navigationStack) => ({
   type: EXECUTE_SHORTCUT,
   navigationStack,
-  navigationOperation,
+  navigationAction,
   shortcutId,
 });
 

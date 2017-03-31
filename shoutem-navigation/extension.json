@@ -1,9 +1,9 @@
 {
   "name": "navigation",
-  "version": "0.5.26",
+  "version": "0.5.28",
   "title": "Main Navigation",
   "description": "App-level navigation",
-  "platform": "1.0.*",
+  "platform": ">=1.0.21",
   "categories": [],
   "repository": {
     "type": "git",

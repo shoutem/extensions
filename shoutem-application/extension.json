@@ -1,6 +1,6 @@
 {
   "name": "application",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",

@@ -8,7 +8,7 @@ import {
 } from '@shoutem/redux-io';
 
 import { RssListScreen } from 'shoutem.rss';
-import { openInModal } from 'shoutem.navigation';
+import { openInModal } from '@shoutem/core/navigation';
 
 import { ext } from '../const';
 import {

@@ -5,8 +5,6 @@ import React, {
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { closeModal, openInModal } from 'shoutem.navigation';
-
 import {
   Caption,
   Divider,
@@ -22,6 +20,11 @@ import {
 import { connectStyle } from '@shoutem/theme';
 
 import { NavigationBar } from '@shoutem/ui/navigation';
+
+import {
+  closeModal,
+  openInModal,
+} from '@shoutem/core/navigation';
 
 import { ext } from '../const';
 import CartFooter from '../components/CartFooter';

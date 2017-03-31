@@ -5,10 +5,9 @@ import _ from 'lodash';
 
 import {
   ScreenStack,
-  navigateTo,
   navigateBack,
   setActiveNavigationStack,
-  NavigationOperations,
+  RESET_TO_ROUTE,
 } from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
 import { executeShortcut } from 'shoutem.application';
@@ -106,7 +105,7 @@ export class Drawer extends Component {
     if (activeShortcut) {
       this.props.executeShortcut(
         activeShortcut.id,
-        NavigationOperations.RESET,
+        RESET_TO_ROUTE,
         DRAWER_NAVIGATION_STACK
       );
     }
@@ -194,7 +193,7 @@ export class Drawer extends Component {
 }
 
 const mapStateToProps = state => ({ navigationState: state[ext()].drawer });
-const mapDispatchToProps = { navigateTo, navigateBack, setActiveNavigationStack, executeShortcut };
+const mapDispatchToProps = { navigateBack, setActiveNavigationStack, executeShortcut };
 
 export default shortcutChildrenRequired(
   connect(mapStateToProps, mapDispatchToProps)(connectStyle(ext('Drawer'))(Drawer))

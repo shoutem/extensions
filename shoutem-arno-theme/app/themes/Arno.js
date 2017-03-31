@@ -830,6 +830,12 @@ export default (variables = {}) => ({
     activeOpacity: 0.8,
   },
 
+  'shoutem.ui.TouchableNativeFeedback': {
+    [INCLUDE]: ['commonVariants'],
+  },
+
+  'shoutem.ui.Touchable': {},
+
   tightButton: {
     'shoutem.ui.Icon': {
       marginRight: 0,
@@ -2183,7 +2189,10 @@ export default (variables = {}) => ({
       borderRadius: 0,
       paddingHorizontal: SMALL_GUTTER,
       borderColor: 'transparent',
-      activeOpacity: 1,
+      touchableOpacity: {
+        activeOpacity: 0.5,
+      },
+      touchableNativeFeedback: {},
     },
     icon: {
       height: 24,

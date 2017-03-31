@@ -91,7 +91,7 @@ export class TabBar extends PureComponent {
     const tabNavigationState = getTabNavigationStateFromTabBarState(this.props, tabId);
     const tabNavigationStackName = getTabNavigationStack(tabId);
     const firstRoute = _.head(tabNavigationState.routes);
-    this.props.reset([firstRoute], 0, tabNavigationStackName);
+    this.props.reset(firstRoute, tabNavigationStackName);
   }
 
   openShortcut(shortcut) {
@@ -112,7 +112,7 @@ export class TabBar extends PureComponent {
     if (hasRouteWithKey(navigationState, stackName)) {
       jumpToKey(stackName, TAB_BAR_NAVIGATION_STACK);
     } else {
-      navigateTo(this.getTabRouteForShortcut(shortcut), undefined, TAB_BAR_NAVIGATION_STACK);
+      navigateTo(this.getTabRouteForShortcut(shortcut), TAB_BAR_NAVIGATION_STACK);
     }
   }
 

@@ -1,10 +1,10 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "platform": "1.0.*",
+  "platform": ">=1.0.21",
   "dependencies": [
     "shoutem.layouts"
   ],

@@ -1,3 +1,6 @@
 {
-
+  "name": "shoutem.web-view",
+  "version": "0.9.6",
+  "description": "Shoutem web view extension",
+  "author": "Shoutem"
 }

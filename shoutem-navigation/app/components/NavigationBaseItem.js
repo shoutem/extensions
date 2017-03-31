@@ -27,7 +27,9 @@ export class NavigationBaseItem extends React.Component {
   }
 
   onPress() {
-    this.props.onPress(this.props.shortcut);
+    // Delay the onPress handler so that we can
+    // display the touch animations without blocking ui
+    requestAnimationFrame(() => this.props.onPress(this.props.shortcut));
   }
 
   getShortcutLayoutSettings(layoutName, props = this.props) {

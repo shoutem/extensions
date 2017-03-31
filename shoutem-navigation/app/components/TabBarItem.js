@@ -1,20 +1,21 @@
 import React from 'react';
+import { LayoutAnimation } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
 import { ext } from '../const';
-import { TouchableOpacity } from '@shoutem/ui';
+import { Touchable } from '@shoutem/ui';
 import { NavigationBaseItem } from './NavigationBaseItem';
 
 class TabBarItem extends NavigationBaseItem {
   render() {
     return (
-      <TouchableOpacity
+      <Touchable
         onPress={this.onPress}
         styleName="flexible"
         style={this.props.style.item}
       >
         {this.renderIcon()}
         {this.renderText()}
-      </TouchableOpacity>
+      </Touchable>
     );
   }
 }
@@ -23,6 +24,7 @@ const mapPropsToStyleNames = (styleNames, props) => {
   const customStyleNames = [];
 
   if (props.selected) {
+    LayoutAnimation.easeInEaseOut();
     customStyleNames.push('selected');
   }
 

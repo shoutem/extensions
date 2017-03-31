@@ -1,6 +1,6 @@
 {
-  "name": "shootem.navigation",
-  "version": "0.5.26",
+  "name": "shoutem.navigation",
+  "version": "0.5.28",
   "description": "Main navigation",
   "dependencies": {
     "react-native-side-menu": "0.20.0"

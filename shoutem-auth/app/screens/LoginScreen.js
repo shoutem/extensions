@@ -50,6 +50,7 @@ import {
   login,
   loginWithFacebook,
   isAuthenticated,
+  userLoggedIn,
 } from '../redux';
 
 import {
@@ -67,6 +68,9 @@ const handleLoginError = ({ payload }) => {
   const { response } = payload;
   Alert.alert('Login failure', getErrorMessage(response && response.code));
 };
+
+const getFacebookAccessToken = () => AccessToken.refreshCurrentAccessTokenAsync().then(() =>
+  AccessToken.getCurrentAccessToken());
 
 const { bool, func, shape, string } = React.PropTypes;
 
@@ -92,6 +96,8 @@ export class LoginScreen extends Component {
       }),
       signupEnabled: bool,
     }),
+    // Dispatched with user data returned from server when user has logged in
+    userLoggedIn: func,
   };
 
   constructor(props, contex) {
@@ -100,6 +106,7 @@ export class LoginScreen extends Component {
     this.finishLogin = this.finishLogin.bind(this);
     this.loginWithFacebook = this.loginWithFacebook.bind(this);
     this.loginWithFacebookAccessToken = this.loginWithFacebookAccessToken.bind(this);
+    this.openFacebookLogin = this.openFacebookLogin.bind(this);
     this.openRegisterScreen = this.openRegisterScreen.bind(this);
     this.performLogin = this.performLogin.bind(this);
 
@@ -134,6 +141,18 @@ export class LoginScreen extends Component {
   }
 
   loginWithFacebook() {
+    getFacebookAccessToken()
+    .then((data) => {
+      if (data && data.accessToken) {
+        this.loginWithFacebookAccessToken(data.accessToken);
+      } else {
+        throw new Error('Access token is not valid');
+      }
+    })
+    .catch(this.openFacebookLogin);
+  }
+
+  openFacebookLogin() {
     LoginManager.logInWithReadPermissions(['public_profile', 'email'])
     .then((result) => {
       if (result.isCancelled) {
@@ -154,14 +173,15 @@ export class LoginScreen extends Component {
     const { loginWithFacebook } = this.props;
 
     loginWithFacebook(accessToken)
-    .then(this.finishLogin)
+    .then(response => this.finishLogin(response, accessToken))
     .catch(handleLoginError);
   }
 
-  finishLogin({ payload }) {
-    const { onLoginSuccess } = this.props;
+  finishLogin({ payload }, accessToken) {
+    const { onLoginSuccess, userLoggedIn } = this.props;
 
     saveSession(JSON.stringify(payload));
+    userLoggedIn({ ...payload.user, facebookAccessToken: accessToken });
 
     if (_.isFunction(onLoginSuccess)) {
       onLoginSuccess(payload.user);
@@ -280,7 +300,12 @@ export class LoginScreen extends Component {
   }
 }
 
-const mapDispatchToProps = { navigateTo, login, loginWithFacebook };
+const mapDispatchToProps = {
+  navigateTo,
+  login,
+  loginWithFacebook,
+  userLoggedIn,
+};
 
 function mapStateToProps(state, ownProps) {
   return {
@@ -288,7 +313,6 @@ function mapStateToProps(state, ownProps) {
     isAuthenticated: isAuthenticated(state),
     isAuthenticating: isBusy(state[ext()]),
     appId: getAppId(),
-    extensions: state['shoutem.application'].extensions,
     settings: getExtensionSettings(state, ext()),
     isScreenActive: isScreenActive(state, ownProps.screenId),
   };

@@ -1,4 +1,8 @@
 import React from 'react';
+import {
+  InteractionManager,
+  LayoutAnimation,
+} from 'react-native';
 import { connect } from 'react-redux';
 
 import {
@@ -22,6 +26,15 @@ class Tab extends React.PureComponent {
     navigateBack: React.PropTypes.func,
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      // Renders an empty view until the interaction is complete
+      shouldRenderContent: false,
+    };
+  }
+
   componentWillMount() {
     const { navigationState, shortcut, executeShortcut } = this.props;
     if (isEmptyNavigationState(navigationState)) {
@@ -30,10 +43,19 @@ class Tab extends React.PureComponent {
     }
   }
 
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      LayoutAnimation.easeInEaseOut();
+      this.setState({
+        shouldRenderContent: true,
+      });
+    });
+  }
+
   render() {
     const { navigationState, navigateBack } = this.props;
     let screenContent = null;
-    if (!isEmptyNavigationState(navigationState)) {
+    if (!isEmptyNavigationState(navigationState) && this.state.shouldRenderContent) {
       screenContent = (
         <ScreenStack
           navigationState={navigationState}
