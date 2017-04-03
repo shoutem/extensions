@@ -27,6 +27,7 @@ class IconPlacesList extends PlacesList {
 
   renderRow(place) {
     const { navigateTo } = this.props;
+    const { formattedAddress } = place.location;
 
     return (
       <TouchableOpacity
@@ -44,7 +45,7 @@ class IconPlacesList extends PlacesList {
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={2}>{place.name}</Subtitle>
             <View styleName="horizontal">
-              <Caption>{place.address}</Caption>
+              <Caption>{formattedAddress}</Caption>
             </View>
           </View>
         </Row>

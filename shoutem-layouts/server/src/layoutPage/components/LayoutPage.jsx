@@ -1,7 +1,7 @@
 import React, { Component, PropTypes} from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { shouldRefresh, isInitialized } from '@shoutem/redux-io';
+import { shouldRefresh, isValid } from '@shoutem/redux-io';
 import { updateShortcut, loadHierarchy, HIERARCHY } from './../reducer';
 import { denormalizeItem } from 'denormalizer';
 import ScreenGroup from './ScreenGroup';
@@ -14,17 +14,10 @@ import layoutImage from './../assets/layout.png';
 export class LayoutPage extends Component {
   constructor(props) {
     super(props);
+
     this.checkData = this.checkData.bind(this);
     this.handleScreenSelected = this.handleScreenSelected.bind(this);
     this.renderScreenHierarchy = this.renderScreenHierarchy.bind(this);
-  }
-
-  checkData(props) {
-    const { hierarchy, shortcut, loadHierarchy } = props;
-
-    if (shouldRefresh(hierarchy)) {
-      loadHierarchy(shortcut.id);
-    }
   }
 
   componentWillMount() {
@@ -33,6 +26,14 @@ export class LayoutPage extends Component {
 
   componentWillReceiveProps(newProps) {
     this.checkData(newProps);
+  }
+
+  checkData(props) {
+    const { hierarchy, shortcut, loadHierarchy } = props;
+
+    if (shouldRefresh(hierarchy)) {
+      loadHierarchy(shortcut.id);
+    }
   }
 
   getScreenMappings(shortcut) {
@@ -104,11 +105,11 @@ export class LayoutPage extends Component {
 
   render() {
     const { hierarchy } = this.props;
-    const hierarchyInitialized = hierarchy && isInitialized(hierarchy);
+    const isHierarchyValid = hierarchy && isValid(hierarchy);
 
     return (
       <div className="layout-page">
-        <LoaderContainer isLoading={!hierarchyInitialized} size="50px">
+        <LoaderContainer isLoading={!isHierarchyValid} size="50px">
           {this.renderScreenHierarchy(hierarchy)}
         </LoaderContainer>
       </div>

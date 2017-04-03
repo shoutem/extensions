@@ -9,7 +9,6 @@ import {
   View,
   Divider,
   Caption,
-  Overlay,
   Subtitle,
   TouchableOpacity,
   ScrollView,
@@ -239,6 +238,7 @@ export class AboutScreen extends BaseAboutScreen {
           {this.renderMap(profile)}
           {this.renderOpeningHours(profile)}
           {this.renderFooterButtons(profile)}
+          <Divider />
         </View>
       </ScrollView>
     );

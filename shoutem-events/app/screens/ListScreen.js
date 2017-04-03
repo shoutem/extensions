@@ -10,6 +10,7 @@ import {
   Button,
   Subtitle,
 } from '@shoutem/ui';
+import { isInitialized } from '@shoutem/redux-io';
 
 import { CmsListScreen } from 'shoutem.cms';
 import { triggerEvent } from 'shoutem.analytics';
@@ -96,7 +97,7 @@ export class ListScreen extends CmsListScreen {
     const newNavBarProps = super.getNavBarProps();
 
     newNavBarProps.renderRightComponent = () => {
-      if (_.isEmpty(data)) {
+      if (_.isEmpty(data) || !isInitialized(data)) {
         return null;
       }
 

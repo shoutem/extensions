@@ -25,16 +25,19 @@ export default class ScreenGroup extends Component {
     } = this.props;
     const { alternativeScreens } = originalScreen;
 
+    const title = _.get(originalScreen, 'groupTitle', DEFAULT_GROUP_TITLE);
+    const activeScreenCanonicalName = _.get(activeScreenDescriptor, 'canonicalName');
+
     const alternativeScreen = _.find(alternativeScreens, [
       'canonicalName',
-      activeScreenDescriptor.canonicalName,
+      activeScreenCanonicalName,
     ]);
     const activeScreen = alternativeScreen || originalScreen;
+
     const scope = {
       shortcutId,
       screenDescriptor: activeScreenDescriptor,
     };
-    const title = _.get(originalScreen, 'groupTitle', DEFAULT_GROUP_TITLE);
 
     return (
       <div className="screen_group">

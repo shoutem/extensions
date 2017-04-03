@@ -34,6 +34,7 @@
     "name": "ArticlesGridScreen",
     "title": "Grid",
     "image": "./server/assets/screens/grid.png",
+    "groupTitle": "Choose List screen layout",
     "navigatesTo": [
       "@.ArticleDetailsScreen"
     ]
@@ -44,12 +45,13 @@
     "extends": "@.ArticlesGridScreen"
   }, {
    "name": "ArticlesFeaturedListScreen",
-   "title": "List with featured item",
+   "title": "List with featured item 2",
    "image": "./server/assets/screens/featuredlist.png",
-   "extends": "@.ArticlesListScreen"
+   "extends": "@.ArticlesGridScreen"
   }, {
     "name":"ArticleDetailsScreen",
     "title": "Large photo details",
+    "groupTitle": "Choose Details screen layout",
     "image": "./server/assets/screens/large-details.png"
   },{
     "name":"ArticleMediumDetailsScreen",

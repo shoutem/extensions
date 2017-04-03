@@ -200,6 +200,7 @@ export class PlacesListBase extends CmsListScreen {
 
   renderRow(place) {
     const { navigateTo } = this.props;
+    const { formattedAddress } = place.location;
 
     return (
       <TouchableOpacity
@@ -215,7 +216,7 @@ export class PlacesListBase extends CmsListScreen {
         >
           <Tile>
             <Title styleName="vertical" numberOfLines={2}>{place.name.toUpperCase()}</Title>
-            <Caption styleName="vertical">{place.address}</Caption>
+            <Caption styleName="vertical">{formattedAddress}</Caption>
           </Tile>
         </Image>
         <Divider styleName="line" />

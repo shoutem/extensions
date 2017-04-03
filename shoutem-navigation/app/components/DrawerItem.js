@@ -2,18 +2,18 @@ import React from 'react';
 import { connectStyle } from '@shoutem/theme';
 import { ext } from '../const';
 import { NavigationBaseItem } from './NavigationBaseItem';
-import { TouchableOpacity } from '@shoutem/ui';
+import { Touchable } from '@shoutem/ui';
 
 class DrawerItem extends NavigationBaseItem {
   render() {
     return (
-      <TouchableOpacity
+      <Touchable
         onPress={this.onPress}
         style={this.props.style.item}
       >
         {this.renderIcon()}
         {this.renderText()}
-      </TouchableOpacity>
+      </Touchable>
     );
   }
 }

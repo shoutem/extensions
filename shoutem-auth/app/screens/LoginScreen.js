@@ -226,7 +226,8 @@ export class LoginScreen extends Component {
     if (settings.providers.email.enabled) {
       components = (
         <View>
-          <Divider styleName="section-header" />
+          <Divider />
+          <Divider styleName="line" />
           <TextInput
             placeholder="Username or Email"
             autoCapitalize="none"
@@ -246,7 +247,8 @@ export class LoginScreen extends Component {
             onChangeText={password => this.setState({ password })}
             returnKeyType="done"
           />
-          <Divider styleName="section-header" />
+          <Divider styleName="line" />
+          <Divider />
           <Button
             styleName="full-width inflexible"
             onPress={this.performLogin}
@@ -289,7 +291,7 @@ export class LoginScreen extends Component {
         {this.renderLoginComponent()}
         {facebook.enabled ? this.renderFacebookLoginButton() : null}
         {this.renderRegisterButton()}
-        <Divider styleName="section-header" />
+        <Divider />
       </View>
     ) : <Spinner style={{ marginTop: 25 }} />; // TODO - use a styleName
     return (

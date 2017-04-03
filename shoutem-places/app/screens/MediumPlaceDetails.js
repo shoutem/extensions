@@ -46,6 +46,8 @@ class MediumPlaceDetails extends PlaceDetails {
   }
 
   renderPlaceInfo(place) {
+    const { formattedAddress } = place.location;
+
     return (
       <Tile styleName="text-centric">
         <Title
@@ -54,13 +56,14 @@ class MediumPlaceDetails extends PlaceDetails {
         >
           {place.name.toUpperCase()}
         </Title>
-        <Caption styleName="centered sm-gutter-top lg-gutter-bottom">{place.address}</Caption>
+        <Caption styleName="centered sm-gutter-top lg-gutter-bottom">{formattedAddress}</Caption>
       </Tile>
     );
   }
 
   render() {
     const { place } = this.props;
+    const { location = {} } = place;
     return (
       <Screen styleName="full-screen paper">
         <NavigationBar {...this.getNavBarProps()} />
@@ -72,7 +75,7 @@ class MediumPlaceDetails extends PlaceDetails {
           {this.renderInlineMap(place)}
           {this.renderDescription(place)}
           {this.renderDisclosureButton(place.url, 'Visit webpage', 'web', this.openWebLink)}
-          {this.renderDisclosureButton(place.address, 'Directions', 'pin', this.openMapLink)}
+          {this.renderDisclosureButton(location.formattedAddress, 'Directions', 'pin', this.openMapLink)}
           {this.renderDisclosureButton(place.mail, 'Email', 'email', this.openEmailLink)}
           {this.renderDisclosureButton(place.phone, 'Phone', 'call', this.openPhoneLink)}
         </ScrollView>

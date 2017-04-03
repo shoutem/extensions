@@ -1,6 +1,6 @@
 {
   "name": "about",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "title": "About",
   "description": "Show info about your app or your business",
   "platform": "1.0.*",

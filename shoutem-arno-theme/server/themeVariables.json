@@ -11,7 +11,7 @@
       },
       "constraints": {
         "fontFamily": {
-          "enum": [ "normal", "Rubik-Regular", "MuktaVaani-Regular"]
+          "enum": [ "Rubik-Regular", "NotoSans", "NotoSerif", "MuktaVaani-Regular"]
         },
         "fontStyle": {
           "enum": ["normal"]
@@ -141,19 +141,19 @@
       "type": "string",
       "title": "Image overlay text color",
       "format": "color",
-      "default": "#FFFFFF"
+      "default": "#ffffff"
     },
     "tagOverlayColor": {
       "type": "string",
       "title": "Tag overlay color",
       "format": "color",
-      "default": "#FFFFFF"
+      "default": "rgba(0, 0, 0, 0.5)"
     },
     "tagOverlayTextColor": {
       "type": "string",
       "title": "Tag overlay text color",
       "format": "color",
-      "default": "#2a3045"
+      "default": "#ffffff"
     },
 
 
@@ -193,7 +193,7 @@
       "type": "string",
       "title": "Featured icons color",
       "format": "color",
-      "default": "#ffffff"
+      "default": "#2A3045"
     },
 
 
@@ -208,7 +208,7 @@
       "type": "string",
       "title": "Item text and icon color",
       "format": "color",
-      "default": "#b1b1b1"
+      "default": "rgba(42, 48, 69, 0.5)"
     },
     "mainNavItemBackground": {
       "type": "string",
@@ -226,19 +226,19 @@
       "type": "string",
       "title": "Selected item text and icon color",
       "format": "color",
-      "default": "#666666"
+      "default": "#2A3045"
     },
     "mainNavSelectedItemBorderColor": {
       "type": "string",
       "title": "Selected item border color",
       "format": "color",
-      "default": "#363636"
+      "default": "#2A3045"
     },
     "mainNavBorderColor": {
       "type": "string",
       "title": "Main navigation border color",
       "format": "color",
-      "default": "#cbcbcb"
+      "default": "#E5E6E8"
     },
 
 
@@ -253,13 +253,13 @@
       "type": "string",
       "title": "Item background color",
       "format": "color",
-      "default": "rgba(0, 0, 0, 0)"
+      "default": "#ffffff"
     },
     "subNavListBorderColor": {
       "type": "string",
       "title": "List border color",
       "format": "color",
-      "default": "#cbcbcb"
+      "default": "#E5E6E8"
     },
 
 
@@ -271,20 +271,20 @@
       "default": {
         "fontWeight": "bold",
         "fontSize": 14,
-        "color": "#FFFFFF"
+        "color": "#2A3045"
       }
     },
     "primaryButtonBackgroundColor": {
       "type": "string",
       "title": "Background color",
       "format": "color",
-      "default": "rgba(0,0,0,0)"
+      "default": "rgba(255, 255, 255, 0.7)"
     },
     "primaryButtonBorderColor": {
       "type": "string",
       "title": "Button border color",
       "format": "color",
-      "default": "#ffffff"
+      "default": "#2A3045"
     },
     "secondaryButtonTextColor": {
       "type": "string",
@@ -311,7 +311,7 @@
       "type": "string",
       "title": "Line color",
       "format": "color",
-      "default": "#cbcbcb"
+      "default": "#E5E6E8"
     },
     "sectionHeaderBackgroundColor": {
       "type": "string",

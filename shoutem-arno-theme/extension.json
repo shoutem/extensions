@@ -1,7 +1,7 @@
 {
   "name": "arno-theme",
   "title": "Arno",
-  "version": "0.0.47",
+  "version": "0.0.50",
   "description": "Arno theme",
   "platform": "1.0.*",
   "icon": "server/assets/add-arno-theme-image.png",

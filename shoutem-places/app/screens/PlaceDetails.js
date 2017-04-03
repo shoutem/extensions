@@ -93,6 +93,7 @@ export class PlaceDetails extends Component {
   }
 
   renderLeadImage(place) {
+    const { formattedAddress } = place.location;
     return (
       <Image
         styleName="large-portrait"
@@ -101,7 +102,7 @@ export class PlaceDetails extends Component {
       >
         <Tile>
           <Title>{place.name.toUpperCase()}</Title>
-          <Caption styleName="sm-gutter-top">{place.address}</Caption>
+          <Caption styleName="sm-gutter-top">{formattedAddress}</Caption>
         </Tile>
       </Image>
     );
@@ -109,34 +110,36 @@ export class PlaceDetails extends Component {
 
   renderInlineMap(item) {
     const { location = {} } = item;
-    const { latitude, longitude } = location;
+    const { latitude, longitude, formattedAddress } = location;
 
     if (!latitude || !longitude) {
       return null;
     }
 
+    const marker = {
+      longitude: parseFloat(longitude),
+      latitude: parseFloat(latitude),
+    };
+    const region = {
+      ...marker,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    };
+
     return (
-      <View>
+      <View styleName="solid">
         <TouchableOpacity
           onPress={this.openMapScreen}
         >
           <InlineMap
-            initialRegion={{ longitude: parseFloat(longitude),
-              latitude: parseFloat(latitude),
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
-            markers={[{
-              longitude: parseFloat(longitude),
-              latitude: parseFloat(latitude),
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }]}
+            initialRegion={region}
+            markers={[marker]}
+            selectedMarker={marker}
             styleName="medium-tall"
           >
             <View styleName="fill-parent overlay vertical v-center h-center">
               <Subtitle numberOfLines={1} >{item.name}</Subtitle>
-              <Caption numberOfLines={2} >{item.resolvedAddress}</Caption>
+              <Caption numberOfLines={2} >{formattedAddress}</Caption>
             </View>
           </InlineMap>
         </TouchableOpacity>

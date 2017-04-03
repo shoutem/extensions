@@ -5,6 +5,7 @@ import {
   StyleSheet,
   StatusBar,
   NavigationExperimental,
+  TouchableNativeFeedback,
 } from 'react-native';
 
 import {
@@ -285,7 +286,7 @@ export default (variables = {}) => ({
   indicator: {
     // Adds opacity to default color
     // TODO - document!
-    color: changeColorAlpha(Colors.INDICATOR, 0.5),
+    color: variables.text.color,
   },
 
   //
@@ -842,9 +843,7 @@ export default (variables = {}) => ({
     '.textual': {
       // Use default text as button text style
       // Text like button, without background color and margins
-      [INCLUDE]: ['textualButton'],
-      [INCLUDE]: ['clearButton'],
-      [INCLUDE]: ['tightButton'],
+      [INCLUDE]: ['textualButton', 'clearButton', 'tightButton'],
     },
 
     '.secondary': {
@@ -973,7 +972,7 @@ export default (variables = {}) => ({
 
   'shoutem.ui.Spinner': {
     [INCLUDE]: ['guttersMargin'],
-    color: inverseColorBrightnessForAmount(variables.backgroundColor, 15),
+    color: changeColorAlpha(variables.text.color, 0.5),
   },
 
   //
@@ -992,7 +991,7 @@ export default (variables = {}) => ({
     },
 
     refreshControl: {
-      tintColor: inverseColorBrightnessForAmount(variables.backgroundColor, 15),
+      tintColor: changeColorAlpha(variables.text.color, 0.5),
     },
 
     loadMoreSpinner: {
@@ -1032,6 +1031,14 @@ export default (variables = {}) => ({
         color: variables.imageOverlayTextColor,
       },
     },
+
+    'shoutem.ui.Title': {
+      // We have a problem with animations attaching too late
+      // during initial screen render, temporary workaround is to
+      // hide the title initially.
+      color: Colors.CLEAR,
+    },
+
     container: {
       backgroundColor: 'transparent',
       borderBottomColor: 'transparent',
@@ -1368,7 +1375,9 @@ export default (variables = {}) => ({
     cardStack: {
       backgroundColor: variables.backgroundColor,
     },
-    card: {},
+    card: {
+      backgroundColor: variables.backgroundColor,
+    },
     sceneContainer: {
       // This container is currently created only
       // when the navigation bar is rendered inline
@@ -1381,6 +1390,7 @@ export default (variables = {}) => ({
 
       flex: 1,
       flexDirection: 'column-reverse',
+      backgroundColor: variables.backgroundColor,
     },
   },
 
@@ -2171,7 +2181,11 @@ export default (variables = {}) => ({
       touchableOpacity: {
         activeOpacity: 0.5,
       },
-      touchableNativeFeedback: {},
+      touchableNativeFeedback: {
+        background: Platform.OS === 'android' && TouchableNativeFeedback.Ripple(
+          changeColorAlpha(variables.mainNavItemColor, 0.3)
+        ),
+      },
     },
     icon: {
       height: 24,
@@ -2224,7 +2238,14 @@ export default (variables = {}) => ({
       flexDirection: 'row',
       paddingLeft: LARGE_GUTTER,
       paddingRight: SMALL_GUTTER * 2,
-      activeOpacity: 0.5,
+      touchableOpacity: {
+        activeOpacity: 0.5,
+      },
+      touchableNativeFeedback: {
+        background: Platform.OS === 'android' && TouchableNativeFeedback.Ripple(
+          changeColorAlpha(variables.mainNavItemColor, 0.2)
+        ),
+      },
     },
     icon: {
       height: 24,

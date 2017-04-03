@@ -1,6 +1,6 @@
 {
   "name": "auth",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "title": "User Authentication",
   "icon": "server/assets/add-authentication-image.png",
   "description": "Show user profile, sign out user",

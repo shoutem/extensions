@@ -20,7 +20,7 @@ export class MapList extends Component {
 
   constructor(props) {
     super(props);
-    const { selectedPlace } = this.props;
+    const { selectedPlace, places, initialRegion } = this.props;
 
     this.createMarkersFromPlaces = this.createMarkersFromPlaces.bind(this);
     this.renderImageRow = this.renderImageRow.bind(this);
@@ -30,6 +30,14 @@ export class MapList extends Component {
       ...this.state,
       selectedMarker: this.createMarker(selectedPlace),
     };
+
+    // We don't expect these to change at any time, so we declare these in the "upper" scope
+    this.markers = this.createMarkersFromPlaces(places);
+    this.region = !initialRegion ? {
+      ..._.first(this.markers),
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    } : initialRegion;
   }
 
   setSelectedMarker(selectedMarker) {
@@ -49,8 +57,6 @@ export class MapList extends Component {
       return {
         latitude: parseFloat(latitude),
         longitude: parseFloat(longitude),
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
         placeId: place.id,
       };
     }
@@ -83,7 +89,8 @@ export class MapList extends Component {
   renderImageRow() {
     const { navigateTo } = this.props;
     const returnedPlace = this.findSelectedPlace();
-    const { image, name, address } = returnedPlace;
+    const { image, name, location } = returnedPlace;
+    const { formattedAddress } = location;
 
     return (
       <TouchableOpacity
@@ -100,7 +107,7 @@ export class MapList extends Component {
           />
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={1}>{name}</Subtitle>
-            <Caption styleName="horizontal" numberOfLines={2}>{address}</Caption>
+            <Caption styleName="horizontal" numberOfLines={2}>{formattedAddress}</Caption>
           </View>
         </Row>
         <Divider styleName="line" />
@@ -108,17 +115,17 @@ export class MapList extends Component {
   }
 
   render() {
-    const { places, initialRegion } = this.props;
     const { selectedMarker } = this.state;
+
     const printImageRow = (selectedMarker) ? this.renderImageRow() : null;
-    const markers = this.createMarkersFromPlaces(places);
+
     return (
       <View styleName="flexible">
         <View styleName="flexible">
           <MapView
-            markers={markers}
+            markers={this.markers}
             onMarkerPressed={this.setSelectedMarker}
-            initialRegion={initialRegion}
+            initialRegion={this.region}
             selectedMarker={selectedMarker}
           />
         </View>

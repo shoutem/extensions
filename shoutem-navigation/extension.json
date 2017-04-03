@@ -1,6 +1,6 @@
 {
   "name": "navigation",
-  "version": "0.5.28",
+  "version": "0.5.29",
   "title": "Main Navigation",
   "description": "App-level navigation",
   "platform": ">=1.0.21",

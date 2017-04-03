@@ -11,7 +11,7 @@
       },
       "constraints": {
         "fontFamily": {
-          "enum": [ "normal", "Rubik-Regular", "NotoSans", "NotoSerif"]
+          "enum": [ "Rubik-Regular", "NotoSans", "NotoSerif", "MuktaVaani-Regular"]
         },
         "fontStyle": {
           "enum": ["normal", "italic"]
@@ -316,7 +316,7 @@
       "type": "string",
       "title": "Section background color",
       "format": "color",
-      "default": "#2a2a2a"
+      "default": "#181818"
     }
 
 

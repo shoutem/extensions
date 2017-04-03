@@ -77,7 +77,8 @@ export class RegisterScreen extends Component {
     return (
       <Screen>
         <NavigationBar title="REGISTER" />
-        <Divider styleName="section-header" />
+        <Divider />
+        <Divider styleName="line" />
         <TextInput
           placeholder="Email"
           autoCapitalize="none"
@@ -106,14 +107,14 @@ export class RegisterScreen extends Component {
           onChangeText={password => this.setState({ password })}
           returnKeyType="done"
         />
-        <Divider styleName="section-header" />
+        <Divider styleName="line" />
+        <Divider />
         <Button
           styleName="full-width inflexible"
           onPress={this.performRegistration}
         >
           <Text>REGISTER</Text>
         </Button>
-        <Divider styleName="line" />
       </Screen>
     );
   }

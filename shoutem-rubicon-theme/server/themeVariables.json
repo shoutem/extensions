@@ -11,7 +11,7 @@
       },
       "constraints": {
         "fontFamily": {
-          "enum": [ "normal", "Rubik-Regular", "NotoSans", "NotoSerif"]
+          "enum": [ "Rubik-Regular", "NotoSans", "NotoSerif", "MuktaVaani-Regular"]
         },
         "fontStyle": {
           "enum": ["normal", "italic"]
@@ -143,7 +143,7 @@
       "type": "string",
       "title": "Tag overlay color",
       "format": "color",
-      "default": "rgba(0, 0, 0, 0.7)"
+      "default": "rgba(0, 0, 0, 0.5)"
     },
     "tagOverlayTextColor": {
       "type": "string",
@@ -177,7 +177,7 @@
       "type": "string",
       "title": "Icons color",
       "format": "color",
-      "default": "#AEAEAE"
+      "default": "#222222"
     },
     "featuredNavBarTitleColor": {
       "type": "string",
@@ -274,31 +274,31 @@
       "type": "string",
       "title": "Background color",
       "format": "color",
-      "default": "#659CEC"
+      "default": "#FFFFFF"
     },
     "primaryButtonBorderColor": {
       "type": "string",
       "title": "Button border color",
       "format": "color",
-      "default": "#659CEC"
+      "default": "#FFFFFF"
     },
     "secondaryButtonTextColor": {
       "type": "string",
       "title": "Secondary button text color",
       "format": "color",
-      "default": "#659CEC"
+      "default": "#FFFFFF"
     },
     "secondaryButtonBackgroundColor": {
       "type": "string",
       "title": "Secondary button background color",
       "format": "color",
-      "default": "#ffffff"
+      "default": "#659CEC"
     },
     "secondaryButtonBorderColor": {
       "type": "string",
       "title": "Secondary button border color",
       "format": "color",
-      "default": "#659CEC"
+      "default": "rgba(101, 156, 236, 0)"
     },
 
 

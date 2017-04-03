@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { Dimensions, ScrollView } from 'react-native';
+import {
+  Dimensions,
+  ScrollView,
+  Animated,
+} from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -77,6 +81,27 @@ export class Drawer extends Component {
     return _.find(childShortcuts, ['id', startingScreen]) || _.first(childShortcuts);
   }
 
+  getNavbarProps() {
+    const { navigationState } = this.props;
+
+    if (navigationState.index > 0) {
+      return { renderLeftComponent: undefined };
+    }
+
+    return {
+      renderLeftComponent: sceneProps => (
+        <View virtual styleName="container">
+          <Button onPress={this.openMenu}>
+            <Icon
+              name="sidebar"
+              animationName={sceneProps.navBarProps.animationName}
+            />
+          </Button>
+        </View>
+      ),
+    };
+  }
+
   resolveAndUpdateLayoutWidth({ nativeEvent: { layout: { width } } }) {
     this.setState({ layoutWidth: width });
   }
@@ -111,25 +136,24 @@ export class Drawer extends Component {
     }
   }
 
-  getNavbarProps() {
-    const { navigationState } = this.props;
-
-    if (navigationState.index > 0) {
-      return { renderLeftComponent: undefined };
-    }
-
-    return {
-      renderLeftComponent: sceneProps => (
-        <View virtual styleName="container">
-          <Button onPress={this.openMenu}>
-            <Icon
-              name="sidebar"
-              animationName={sceneProps.navBarProps.animationName}
-            />
-          </Button>
-        </View>
-      ),
-    }
+  /**
+   * Returns an animation used when closing the drawer, we are
+   * implementing it here because we want to use native animation
+   * driver for this animation.
+   *
+   * @param prop The prop to animate.
+   * @param value The final value of the animation.
+   * @returns {CompositeAnimation} The animation config.
+   */
+  drawerAnimationFunction(prop, value) {
+    return Animated.spring(
+      prop,
+      {
+        toValue: value,
+        friction: 8,
+        useNativeDriver: true,
+      }
+    );
   }
 
   renderMenu(shortcuts, style) {
@@ -178,6 +202,7 @@ export class Drawer extends Component {
           isOpen={isOpen}
           openMenuOffset={this.calculateSideMenuWidth()}
           onChange={this.drawerStatusChanged}
+          animationFunction={this.drawerAnimationFunction}
         >
           <View styleName="flexible" style={style.underlayScreensWrapper}>
             <ScreenStack
