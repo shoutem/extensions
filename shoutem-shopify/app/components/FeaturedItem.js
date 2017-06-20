@@ -38,10 +38,10 @@ const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
         >
           <Tile>
             { minimum_compare_at_price ?
-              <Overlay>
-                <Heading styleName="md-gutter-top">
-                  {`${getDiscount(parseInt(minimum_price, 10),
-                    parseInt(minimum_compare_at_price, 10))} %`}
+              <Overlay styleName="image-overlay">
+                <Heading>
+                  {`-${getDiscount(parseInt(minimum_price, 10),
+                    parseInt(minimum_compare_at_price, 10))}%`}
                 </Heading>
               </Overlay>
               :
@@ -61,7 +61,7 @@ const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
               onPress={onAddToCart}
             >
               <Icon name="cart" />
-              <Text>ADD TO BASKET</Text>
+              <Text>ADD TO CART</Text>
             </Button>
           </Tile>
         </Image>

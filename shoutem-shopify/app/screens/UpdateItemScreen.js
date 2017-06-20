@@ -356,7 +356,7 @@ class UpdateItemScreen extends Component {
 
     return (
       <Screen>
-        <NavigationBar title="ADD TO BASKET" />
+        <NavigationBar title="ADD TO CART" />
         <ScrollView>
           {this.renderItemDetails()}
           <Divider styleName="line" />
