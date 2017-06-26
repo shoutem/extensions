@@ -1,9 +1,9 @@
 {
   "name": "shoutem.shopify",
-  "version": "0.1.9",
+  "version": "0.1.13",
   "description": "Shopify",
   "dependencies": {
-    "react-native-shopify": "0.1.0",
+    "react-native-shopify": "0.2.4",
     "world-countries": "^1.8.1"
   },
   "rnpm": {

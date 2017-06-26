@@ -153,7 +153,7 @@ class CartScreen extends Component {
     return (
       <Screen>
         <NavigationBar
-          title="SHOPPING BASKET"
+          title="SHOPPING CART"
         />
         { _.size(cart) ? this.renderContent() : renderEmptyScreen()}
       </Screen>

@@ -11,6 +11,7 @@ import {
   Icon,
   Screen,
   View,
+  Spinner,
 } from '@shoutem/ui';
 
 import { NavigationBar } from '@shoutem/ui/navigation';
@@ -36,6 +37,8 @@ import { getCartSize } from '../redux/selectors';
 
 const defaultCollection = { id: 0, title: 'All' };
 
+const spinnerStyle = { marginTop: 20 };
+
 const { func, number, shape, string } = React.PropTypes;
 
 /**
@@ -46,7 +49,7 @@ export class ProductsListScreen extends Component {
     // Number of items that the user has added to his cart
     cartSize: number.isRequired,
     // Selected collection
-    collection: collectionShape.isRequired,
+    collection: collectionShape,
     // Used to navigate to cart
     navigateTo: func.isRequired,
     // Dispatched when the user selects a collection to load products that belong
@@ -155,13 +158,13 @@ export class ProductsListScreen extends Component {
 
   render() {
     const { collection, shop } = this.props;
-    const { collections } = shop;
+    const { collections, isLoading } = shop;
 
     return (
       <Screen>
         <NavigationBar {...this.getNavBarProps()} />
         {_.size(collections) > 1 ? this.renderCollectionsPicker() : null}
-        { this.renderProducts(collection.id) }
+        { isLoading ? <Spinner style={spinnerStyle} /> : this.renderProducts(collection.id) }
       </Screen>
     );
   }

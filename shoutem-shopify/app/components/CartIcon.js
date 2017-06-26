@@ -26,7 +26,7 @@ const CartIcon = ({ cartSize, onPress }) => (
 
 const getBadge = quantity => (
   <View styleName="badge">
-    <Text>{quantity}</Text>
+    <Text>{quantity < 10 ? quantity : '...' }</Text>
   </View>
 );
 

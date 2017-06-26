@@ -1,7 +1,7 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "0.1.9",
+  "version": "0.1.13",
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
   "platform": ">=1.0.21",

@@ -31,7 +31,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 import {
   navigateTo,
   closeModal,
-  openInModal
+  openInModal,
 } from '@shoutem/core/navigation';
 
 import { connectStyle } from '@shoutem/theme';
@@ -51,26 +51,21 @@ import { getCartSize } from '../redux/selectors';
 const { func, number } = React.PropTypes;
 
 const getDiscount = (price, originalPrice) =>
-    Math.round((100 * (parseFloat(price) - parseFloat(originalPrice))) / parseFloat(originalPrice));
+  Math.round((100 * (parseFloat(price) - parseFloat(originalPrice))) / parseFloat(originalPrice));
 
-const renderPageIndicators = (selectedIndex, data) => {
-  if (_.size(data) > 1) {
-    return (
-      // TODO change this with gradient when shoutem/ui-private#28 gets merged
-      <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-        <Image
-          style={{ width: null }}
-          source={require('../assets/images/gradient.png')}
-        >
-          <PageIndicators
-            activeIndex={selectedIndex}
-            count={_.size(data)}
-          />
-        </Image>
-      </View>
-    );
+const renderPageIndicators = (data, selectedIndex) => {
+
+  if(_.size(data) < 2) {
+    return null;
   }
-  return null;
+
+  return (
+    <PageIndicators
+      activeIndex={selectedIndex}
+      count={_.size(data)}
+      styleName="overlay-bottom"
+    />
+  );
 };
 
 /**
@@ -223,12 +218,10 @@ class ProductDetailsScreen extends Component {
       <Tile>
         <View styleName="content vertical h-center">
           { minimum_compare_at_price ?
-            <Overlay>
-              <View>
-                <Heading styleName="md-gutter-top">
-                  {`${getDiscount(minimum_price, minimum_compare_at_price)} %`}
-                </Heading>
-              </View>
+            <Overlay styleName="image-overlay">
+              <Heading>
+                {`-${getDiscount(minimum_price, minimum_compare_at_price)}%`}
+              </Heading>
             </Overlay>
             :
             null
@@ -247,7 +240,7 @@ class ProductDetailsScreen extends Component {
             onPress={this.onAddToCart}
           >
             <Icon name="cart" />
-            <Text>ADD TO BASKET</Text>
+            <Text>ADD TO CART</Text>
           </Button>
         </View>
       </Tile>
@@ -265,7 +258,7 @@ class ProductDetailsScreen extends Component {
             {this.renderGallery()}
           </View>
           {this.renderProductHeader()}
-          <RichMedia body={body_html} />
+          {body_html ? <RichMedia body={body_html} /> : null}
         </ScrollView>
         { this.renderImageGallery() }
       </Screen>
