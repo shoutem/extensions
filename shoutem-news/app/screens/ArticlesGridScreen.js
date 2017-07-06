@@ -15,9 +15,11 @@ import {
   mapDispatchToProps,
 } from './ArticlesListScreen';
 
-import FeaturedArticleView from '../components/FeaturedArticleView';
-import GridArticleView from '../components/GridArticleView';
+import { FeaturedArticleView } from '../components/FeaturedArticleView';
+import { GridArticleView } from '../components/GridArticleView';
 import { ext } from '../const';
+
+const ITEMS_PER_ROW = 2;
 
 class ArticlesGridScreen extends ArticlesListScreen {
   static propTypes = {
@@ -36,10 +38,16 @@ class ArticlesGridScreen extends ArticlesListScreen {
   renderRow(articles, sectionId, index) {
     // Featured articles are rendered in full width
     if (index === '0') {
+      const article = articles[index];
       return (
         <FeaturedArticleView
-          article={articles[0]}
-          onPress={this.openDetailsScreen}
+          key={article.id}
+          articleId={article.id}
+          title={article.title}
+          imageUrl={_.get(article, 'image.url')}
+          author={article.newsAuthor}
+          date={article.timeUpdated}
+          onPress={this.openArticleWithId}
         />
       );
     }
@@ -50,8 +58,11 @@ class ArticlesGridScreen extends ArticlesListScreen {
       return (
         <GridArticleView
           key={article.id}
-          article={article}
-          onPress={this.openDetailsScreen}
+          articleId={article.id}
+          title={article.title}
+          imageUrl={_.get(article, 'image.url')}
+          date={article.timeUpdated}
+          onPress={this.openArticleWithId}
         />
       );
     });
@@ -64,25 +75,17 @@ class ArticlesGridScreen extends ArticlesListScreen {
 
   renderData(articles) {
     // Group the articles into rows with 2 columns
-    const itemsPerRow = 2;
-    const groupedArticles = GridRow.groupByRows(
-      articles,
-      itemsPerRow,
-      resolveArticleSpan(itemsPerRow));
-    function resolveArticleSpan(itemsPerRow) {
-      let isFirst = true;
-      return function resolveArticleSpan() {
-    // First article is featured; fills whole row
-        const articleSpan = isFirst ? itemsPerRow : 1;
+    let isFirstArticle = false;
+    const groupedArticles = GridRow.groupByRows(articles, ITEMS_PER_ROW, () => {
+      if (isFirstArticle) {
+        // The first article is featured, and it
+        // should take up the entire width of the grid
+        isFirstArticle = false;
+        return ITEMS_PER_ROW;
+      }
 
-        if (isFirst) {
-          isFirst = false;
-        }
-
-        return articleSpan;
-      };
-    }
-
+      return 1;
+    });
 
     // Transfer the loading status from the original collection
     cloneStatus(articles, groupedArticles);

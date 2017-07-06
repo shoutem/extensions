@@ -56,7 +56,7 @@ function getApplicationAnalyticsData(store) {
   const screen = activeRoute.screen;
   const extension = getExtensionNameFromScreen(screen);
   const shortcutId = (getActiveShortcut(state) || {}).id;
-  const appId = getAppId();
+  const appId = `${getAppId()}`; // All GA dimensions values should be sent as strings
 
   return { appId, extension, screen, shortcutId };
 }

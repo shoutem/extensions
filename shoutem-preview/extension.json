@@ -1,10 +1,10 @@
 {
   "name": "preview",
-  "version": "0.1.8",
+  "version": "0.1.9",
+  "platform": "1.1.*",
   "type": "system",
   "title": "Builder Preview",
   "description": "Provides the support for app preview in the builder",
-  "platform": "1.0.*",
   "icon": "server/assets/add-preview-image.png",
   "categories": []
 }

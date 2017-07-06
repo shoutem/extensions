@@ -8,7 +8,7 @@ import {
   Caption,
   Title,
   Tile,
-  RichMedia,
+  Html,
   ScrollView,
   View,
   ShareButton,
@@ -16,10 +16,10 @@ import {
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { openURL } from 'shoutem.web-view';
+import { Favorite } from 'shoutem.favorites';
 
 import { formatBookCaption } from '../shared/formatBookCaption';
 import { LinkButton } from '../components/LinkButton';
-import Favorite from '../components/Favorite';
 
 /* eslint-disable react/prefer-stateless-function */
 class BooksDetailsScreen extends React.Component {
@@ -59,6 +59,7 @@ class BooksDetailsScreen extends React.Component {
       ),
       animationName: 'solidify',
       title: book.title,
+      styleName: 'clear',
     };
   }
 
@@ -100,7 +101,7 @@ class BooksDetailsScreen extends React.Component {
           <Divider styleName="line" />
 
           <View styleName="solid">
-            <RichMedia body={book.description} />
+            <Html body={book.description} />
           </View>
         </ScrollView>
       </Screen>

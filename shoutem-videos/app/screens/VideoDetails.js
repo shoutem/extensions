@@ -7,7 +7,7 @@ import {
   Video,
   Screen,
   Caption,
-  RichMedia,
+  Html,
   Tile,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
@@ -36,7 +36,7 @@ function VideoDetails({ video }) {
           </Caption>
         </Tile>
 
-        <RichMedia body={video.description} />
+        <Html body={video.description} />
       </ScrollView>
     </Screen>
   );

@@ -1,6 +1,8 @@
 import { AppState } from 'react-native';
 import codePush from 'react-native-code-push';
 
+import { isProduction } from 'shoutem.application';
+
 import { syncPackage } from './shared/syncPackage';
 import { getDeploymentFromState } from './redux';
 
@@ -25,17 +27,23 @@ const createHandleAppStateChange = (app) => (state) => {
 };
 
 export function appWillMount() {
-  return codePush.notifyAppReady();
+  if (isProduction()) {
+    return codePush.notifyAppReady();
+  }
 }
 
 export function appDidMount(app) {
   // Check for updates on app start
-  getNewBundle(app);
-  handleAppStateChange = createHandleAppStateChange(app);
-  // Check for updates on app resume
-  AppState.addEventListener('change', handleAppStateChange);
+  if (isProduction()) {
+    getNewBundle(app);
+    handleAppStateChange = createHandleAppStateChange(app);
+    // Check for updates on app resume
+    AppState.addEventListener('change', handleAppStateChange);
+  }
 }
 
 export function appWillUnmount() {
-  AppState.removeEventListener('change', handleAppStateChange);
+  if (isProduction()) {
+    AppState.removeEventListener('change', handleAppStateChange);
+  }
 }

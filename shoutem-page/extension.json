@@ -1,0 +1,84 @@
+{
+  "name": "page",
+  "version": "0.0.6",
+  "platform": "1.1.*",
+  "title": "Page",
+  "description": "Show a single screen with info and child items",
+  "icon": "server/assets/add-page-image.png",
+  "categories": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
+  "shortcuts": [{
+    "name": "openPage",
+    "title": "Page",
+    "icon": "theme://folder.png",
+    "screen": "@.LargePhotoScreen",
+    "type": "navigation",
+    "settings": {
+      "navigationLayoutType": "iconGrid"
+    },
+    "adminPages": [{
+      "page": "shoutem.cms.CmsPage",
+      "title": "Content",
+      "parameters": {
+        "schema": "@.Page"
+      }
+    },{
+      "page":"shoutem.layouts.LayoutPage",
+      "title": "Layout"
+    }]
+  }],
+  "screens": [{
+    "name": "LargePhotoScreen",
+    "title": "Large photo",
+    "image": "./server/assets/screens/large-details.png",
+    "settingsPage": {
+      "page": "@.PageSettings"
+    },
+    "settings": {
+      "iconGrid": {
+        "scrolling": "continuous",
+        "gridAlignment": "bottomCenter",
+        "cols": 3,
+        "rows": 3,
+        "parallaxEffect": "onDeviceOrientation",
+        "backgroundImage": "",
+        "showText": true,
+        "showIcon": true,
+        "iconSize": "medium",
+        "marginSize": "comfortable"
+      },
+      "list": {
+        "backgroundImage": "",
+        "parallaxEffect": "onScroll",
+        "inItemAlignment": "left",
+        "listAlignment": "top",
+        "topOffset": 0,
+        "showText": true,
+        "showIcon": false,
+        "itemHeight": 48
+      }
+    }
+  }, {
+    "name": "MediumPhotoScreen",
+    "title": "Medium photo",
+    "image": "./server/assets/screens/medium-details.png",
+    "settingsPage": {
+      "page": "@.PageSettings"
+    },
+    "extends": "@.LargePhotoScreen"
+  }],
+  "dataSchemas": [
+    {
+      "name": "Page",
+      "path": "server/data-schemas/Page.json"
+    }
+  ],
+  "pages": [{
+    "name": "PageSettings",
+    "path": "filename_ending_in_js_indicating_component.js",
+    "type": "native-component"
+  }]
+}

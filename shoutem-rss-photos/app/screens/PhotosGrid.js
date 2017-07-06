@@ -76,13 +76,13 @@ class PhotosGrid extends PhotosBaseScreen {
     );
   }
 
-  renderFeed() {
+  renderData() {
     const { photos } = this.state;
 
     const groupedPhotos = GridRow.groupByRows(photos, NUMBER_OF_COLUMNS);
     cloneStatus(photos, groupedPhotos);
 
-    return super.renderFeed(groupedPhotos);
+    return super.renderData(groupedPhotos);
   }
 }
 

@@ -17,3 +17,6 @@ build
 
 # Zip files
 *.zip
+
+# IDE directories and files
+.vscode

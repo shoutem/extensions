@@ -1,10 +1,10 @@
 {
   "name": "analytics",
-  "version": "0.1.9",
+  "version": "0.1.11",
+  "platform": "1.1.*",
   "type": "system",
   "title": "Analytics",
   "description": "Shoutem analytics extension defines interface in a form of  dispatched redux actions which can be used to track Shoutem events. Use middleware to intercept analytics actions and track events.",
-  "platform": "1.0.*",
   "icon": "server/assets/add-analytics-image.png",
   "categories": ["analytics"]
 }

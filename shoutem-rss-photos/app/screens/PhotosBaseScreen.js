@@ -48,7 +48,7 @@ export class PhotosBaseScreen extends RssListScreen {
     this.openDetailsScreen = this.openDetailsScreen.bind(this);
     this.renderRow = this.renderRow.bind(this);
 
-    const photos = remapAndFilterPhotos(this.props.feed);
+    const photos = remapAndFilterPhotos(this.props.data);
 
     this.state = {
       ...this.state,
@@ -58,8 +58,8 @@ export class PhotosBaseScreen extends RssListScreen {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.feed !== nextProps.feed) {
-      const photos = remapAndFilterPhotos(nextProps.feed);
+    if (this.props.data !== nextProps.data) {
+      const photos = remapAndFilterPhotos(nextProps.data);
       this.setState({ photos });
     }
   }
@@ -84,7 +84,7 @@ export const mapStateToProps = (state, ownProps) => {
 
   return {
     feedUrl,
-    feed: getPhotosFeed(state, feedUrl),
+    data: getPhotosFeed(state, feedUrl),
   };
 };
 

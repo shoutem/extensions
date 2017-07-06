@@ -8,7 +8,7 @@ import { initializeUiAddons } from '@shoutem/ui-addons';
 import { extractAppActions } from './shared/extractAppActions';
 import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 import { openInitialScreen } from './shared/openInitialScreen';
-import { isProduction } from './shared/isProduction';
+import { isRelease } from './shared/isRelease';
 import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
 import { CONFIGURATION_SCHEMA, ACTIVE_APP_STATE } from './const';
 import buildConfig from './buildConfig.json';
@@ -32,6 +32,8 @@ export const getAppId = () => {
   return _.get(application, 'props.appId') || buildConfig.appId;
 };
 
+export const isPreviewMode = () => _.get(application, 'props.isPreview');
+
 export const initializeApp = () => {
   initializeUiAddons();
 };
@@ -46,7 +48,7 @@ function loadConfiguration(app) {
         resolve();
       }
     });
-    if (isProduction()) {
+    if (isRelease()) {
       dispatch(loadLocalConfiguration());
     } else {
       const appId = getAppId(app);

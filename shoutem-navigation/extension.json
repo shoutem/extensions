@@ -1,9 +1,10 @@
 {
   "name": "navigation",
-  "version": "0.5.29",
+  "version": "0.7.1",
+  "platform": "1.1.*",
+  "type": "system",
   "title": "Main Navigation",
   "description": "App-level navigation",
-  "platform": ">=1.0.21",
   "categories": [],
   "repository": {
     "type": "git",
@@ -16,14 +17,19 @@
     "title": "Main navigation",
     "screen": "@.TabBar",
     "type": "navigation",
+    "unique": true,
     "adminPages": [
       {
         "page": "shoutem.layouts.LayoutPage",
         "title": "Layout"
       },
       {
-        "page": "shoutem.navigation.IconsPage",
+        "page": "@.IconsPage",
         "title": "Icons"
+      },
+      {
+        "page": "@.NavigationBarPage",
+        "title": "Navigation bar"
       }
     ]
   }],
@@ -33,7 +39,7 @@
     "image": "./server/assets/screens/tabbar.png",
     "groupTitle": "Choose navigation",
     "settingsPage": {
-      "page": "shoutem.navigation.TabBar"
+      "page": "@.TabBar"
     },
     "settings": {
       "startingScreen": null,
@@ -46,7 +52,7 @@
     "image": "./server/assets/screens/drawer.png",
     "extends": "@.TabBar",
     "settingsPage": {
-      "page": "shoutem.navigation.Drawer"
+      "page": "@.Drawer"
     },
     "settings": {
       "startingScreen": null,
@@ -59,7 +65,7 @@
     "image": "./server/assets/screens/icon.png",
     "extends": "@.TabBar",
     "settingsPage": {
-      "page": "shoutem.navigation.IconGrid"
+      "page": "@.IconGrid"
     },
     "settings": {
       "iconSize": "medium",
@@ -78,7 +84,7 @@
     "image": "./server/assets/screens/list.png",
     "extends": "@.TabBar",
     "settingsPage": {
-      "page": "shoutem.navigation.List"
+      "page": "@.List"
     },
     "settings": {
       "backgroundImage": "",
@@ -96,5 +102,33 @@
     "image": "./server/assets/screens/none.png",
     "extends": "@.TabBar",
     "settingsPage": {}
-  }]
+  }],
+  "pages": [{
+    "name": "List",
+    "type": "native-component"
+  }, {
+    "name": "CardList",
+    "type": "native-component"
+  }, {
+    "name": "IconGrid",
+    "type": "native-component"
+  }, {
+    "name": "Drawer",
+    "type": "native-component"
+  }, {
+    "name": "TabBar",
+    "type": "native-component"
+  }, {
+    "name": "IconsPage",
+    "type": "native-component"
+  }, {
+    "name": "NavigationBarPage",
+    "type": "native-component"
+  }],
+  "settings": {
+    "showTitle": true,
+    "backgroundImageEnabledFirstScreen": false,
+    "backgroundImage": null,
+    "fitContainer": true
+  }
 }

@@ -1,6 +1,8 @@
 import configuration from './configuration.json';
 import buildConfig from './buildConfig.json';
 
+import ListScreen from './components/ListScreen';
+
 import {
   resolveScreenLayout,
   navigateToShortcutScreen,
@@ -11,6 +13,7 @@ import {
 import { openInitialScreen } from './shared/openInitialScreen';
 import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
 import { isProduction } from './shared/isProduction';
+import { isRelease } from './shared/isRelease';
 import { getFirstShortcut } from './shared/getFirstShortcut';
 import {
   CONFIGURATION_SCHEMA,
@@ -24,6 +27,7 @@ import {
   appWillUnmount,
   appActions,
   getAppId,
+  isPreviewMode,
 } from './app';
 import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 
@@ -64,7 +68,11 @@ export {
   getActiveShortcut,
   getFirstShortcut,
   isConfigurationLoaded,
+  isPreviewMode,
   isProduction,
+  isRelease,
+
+  ListScreen,
 
   executeShortcut,
   openInitialScreen,

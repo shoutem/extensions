@@ -1,1 +1,0 @@
-export { PlacesList } from './PlacesList';

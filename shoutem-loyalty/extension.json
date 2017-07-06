@@ -1,0 +1,125 @@
+{
+  "name": "loyalty",
+  "version": "0.0.5",
+  "title": "Loyalty",
+  "description": "Reward your returning customers",
+  "platform": "1.0.*",
+  "categories": ["commerce"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
+  "icon":"server/assets/add-loyalty-image.png",
+  "shortcuts": [
+    {
+      "screen": "@.PunchCardListScreen",
+      "title": "Punch Card",
+      "name": "punch-card-shortcut",
+      "icon":"theme://gift.png",
+      "adminPages": [
+        {
+          "page": "shoutem.cms.CmsPage",
+          "title": "Content",
+          "parameters":{
+            "schema": "@.punchCards"
+          }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        }
+      ]
+    },
+    {
+      "screen": "@.PointsCardScreen",
+      "title": "My Card",
+      "name": "points-card-shortcut",
+      "icon":"theme://loyalty-card.png",
+      "adminPages": [
+        {
+          "page": "@.PointsCardSettingsPage",
+          "title": "Settings"
+        }
+      ]
+    },
+    {
+      "screen": "@.RewardsListScreen",
+      "title": "Rewards",
+      "name": "rewards-shortcut",
+      "icon":"theme://gift.png",
+      "adminPages": [
+        {
+          "page": "shoutem.cms.CmsPage",
+          "title": "Content",
+          "parameters":{
+            "schema": "@.cmsRewards"
+          }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        }
+      ]
+    }
+  ],
+  "screens": [
+    {
+      "name": "PunchCardListScreen",
+      "title": "Punch Card",
+      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
+    },
+    {
+      "name": "PointsCardScreen",
+      "title": "Points Card",
+      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
+    },
+    {
+      "name": "RewardsListScreen",
+      "title": "Rewards",
+      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.LoyaltySettingsPage",
+      "title": "Settings"
+    }
+  ],
+  "dataSchemas": [
+     {
+      "name": "punchCards",
+      "path": "server/data-schemas/punchCards.json"
+    },
+    {
+      "name": "cmsRewards",
+      "path": "server/data-schemas/cmsRewards.json"
+    }
+  ],
+  "pages": [
+    {
+      "name": "LoyaltySettingsPage",
+      "path": "server/build/index.html?page=LoyaltySettingsPage",
+      "type": "html"
+    },
+    {
+      "name": "PointsCardSettingsPage",
+      "path": "server/build/index.html?page=PointsCardSettingsPage",
+      "type": "html"
+    }
+  ],
+  "settings": {
+    "apiEndpoint": "loyalty.api.dev.sauros.hr",
+    "cmsEndpoint": "v4.api.dev.sauros.hr",
+    "rules": [{
+      "ruleType": "visit",
+      "implementationData": {
+        "pointsPerVisit": 1
+      }
+    }, {
+      "ruleType": "linearPoint",
+      "implementationData": {
+        "coefficient": 0.1
+      }
+    }]
+  }
+}

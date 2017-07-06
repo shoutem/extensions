@@ -4,6 +4,7 @@ import {
   SELECT_PUSH_NOTIFICATION_GROUPS,
   USER_NOTIFIED,
   REQUEST_PUSH_PERMISSION,
+  DEVICE_TOKEN_RECEIVED,
 } from './redux';
 
 import { appDidMount, appWillMount, appWillUnmount } from './app';
@@ -16,6 +17,7 @@ export {
   SELECT_PUSH_NOTIFICATION_GROUPS,
   USER_NOTIFIED,
   REQUEST_PUSH_PERMISSION,
+  DEVICE_TOKEN_RECEIVED,
   appDidMount,
   appWillMount,
   appWillUnmount,

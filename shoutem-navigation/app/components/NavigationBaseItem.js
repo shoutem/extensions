@@ -1,20 +1,24 @@
 import React from 'react';
 import _ from 'lodash';
 import { resolveIconSource } from 'shoutem.theme';
-import { Text, Image } from '@shoutem/ui';
+
+import {
+  Text,
+  Image,
+} from '@shoutem/ui';
 
 const missingIconSource = require('../assets/images/missing_icon.png');
 
+const { bool, func, object } = React.PropTypes;
+
 export class NavigationBaseItem extends React.Component {
   static propTypes = {
-    shortcut: React.PropTypes.object.isRequired,
-    style: React.PropTypes.object,
-    showText: React.PropTypes.bool,
-    showIcon: React.PropTypes.bool,
-    showBackground: React.PropTypes.bool,
-    iconSize: React.PropTypes.string,
-    onPress: React.PropTypes.func,
-    selected: React.PropTypes.bool,
+    /* eslint-disable react/forbid-prop-types */
+    shortcut: object.isRequired,
+    style: object,
+    showText: bool,
+    showIcon: bool,
+    onPress: func,
   };
 
   static defaultProps = {
@@ -29,6 +33,8 @@ export class NavigationBaseItem extends React.Component {
   onPress() {
     // Delay the onPress handler so that we can
     // display the touch animations without blocking ui
+
+    /* eslint-disable-next-line no-undef */
     requestAnimationFrame(() => this.props.onPress(this.props.shortcut));
   }
 
@@ -38,12 +44,19 @@ export class NavigationBaseItem extends React.Component {
   }
 
   resolveIconProps() {
-    const { style, shortcut } = this.props;
+    const { style, shortcut: { icon } } = this.props;
 
-    const source = shortcut.icon ? resolveIconSource(shortcut.icon) : missingIconSource;
+    const iconStyle = { ...style.icon };
+
+    if (icon && icon.split('.').pop() !== 'png') {
+       // If it's not a PNG icon, remove tint color
+      iconStyle.tintColor = undefined;
+    }
+
+    const source = icon ? resolveIconSource(icon) : missingIconSource;
 
     return {
-      style: style.icon,
+      style: iconStyle,
       source,
     };
   }
@@ -74,7 +87,7 @@ export class NavigationBaseItem extends React.Component {
     }
     return (
       <Text {...this.resolveTextProps()}>
-       {shortcut.title}
+        {shortcut.title}
       </Text>
     );
   }

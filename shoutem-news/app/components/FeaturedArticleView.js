@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import {
   TouchableOpacity,
   Title,
@@ -15,10 +14,14 @@ import moment from 'moment';
 /**
  * A component used to render featured news articles
  */
-export default class FeaturedArticleView extends React.Component {
+export class FeaturedArticleView extends React.Component {
   static propTypes = {
     onPress: React.PropTypes.func,
-    article: React.PropTypes.object.isRequired,
+    articleId: React.PropTypes.string,
+    title: React.PropTypes.string,
+    author: React.PropTypes.string,
+    imageUrl: React.PropTypes.string,
+    date: React.PropTypes.string,
   };
 
   constructor(props) {
@@ -27,27 +30,31 @@ export default class FeaturedArticleView extends React.Component {
   }
 
   onPress() {
-    this.props.onPress(this.props.article);
+    this.props.onPress(this.props.articleId);
   }
 
   render() {
-    const { article } = this.props;
+    const { title, imageUrl, date, author } = this.props;
 
-    /* eslint-disable no-multi-spaces */
+    const momentDate = moment(date);
+    const dateInfo = momentDate.isAfter(0) ? (
+      <Caption styleName="md-gutter-left">
+        {momentDate.fromNow()}
+      </Caption>
+    ) : null;
+
     return (
-      <TouchableOpacity key={article.id} onPress={this.onPress}>
+      <TouchableOpacity onPress={this.onPress}>
         <View styleName="sm-gutter featured">
           <Image
             styleName="featured placeholder"
-            source={{ uri: _.get(article, 'image.url') }}
+            source={{ uri: imageUrl }}
           >
             <Tile>
-              <Title>{(article.title || '').toUpperCase()}</Title>
+              <Title>{(title || '').toUpperCase()}</Title>
               <View styleName="horizontal md-gutter-top" virtual>
-                <Caption styleName="collapsible" numberOfLines={1}>{article.newsAuthor}</Caption>
-                <Caption styleName="md-gutter-left">
-                  {moment(article.timeUpdated).fromNow()}
-                </Caption>
+                <Caption styleName="collapsible" numberOfLines={1}>{author}</Caption>
+                {dateInfo}
               </View>
             </Tile>
           </Image>

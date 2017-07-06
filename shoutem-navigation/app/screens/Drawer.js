@@ -159,7 +159,7 @@ export class Drawer extends Component {
   renderMenu(shortcuts, style) {
     return (
       <ScrollView
-        style={style.menu}
+        contentContainerStyle={style.menu}
         alwaysBounceVertical={false}
       >
         <View style={style.menuItems} styleName="flexible">

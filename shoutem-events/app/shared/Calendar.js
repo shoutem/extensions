@@ -43,5 +43,10 @@ export function formatDate(date) {
     return '';
   }
 
-  return toMoment(date).format('MMMM D • hh:mm A');
+  const momentDate = toMoment(date);
+  // Time should be formatted to user local timezone and time format settings
+  return [
+    momentDate.format('MMM D'),
+    momentDate.toDate().toLocaleTimeString(),
+  ].join(' • ');
 }

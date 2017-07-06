@@ -46,8 +46,8 @@ export default class SingleEventMapScreen extends PureComponent {
     if (Platform.OS === 'ios') {
       return (
         <View virtual styleName="container">
-          <Button styleName="clear" onPress={this.openMaps}>
-            <Text>Open in Maps</Text>
+          <Button onPress={this.openMaps}>
+            <Text>Directions</Text>
           </Button>
         </View>
       );

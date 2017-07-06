@@ -1,9 +1,9 @@
 {
   "name": "events",
-  "version": "0.9.13",
+  "version": "0.9.19",
+  "platform": "1.1.*",
   "title": "Events",
   "description": "Show items with location and time",
-  "platform": "1.0.*",
   "categories": ["content"],
   "repository": {
     "type": "git",
@@ -16,6 +16,10 @@
       "title": "Events",
       "name": "events-shortcut",
       "icon":"theme://events.png",
+      "settings": {
+        "sortField": "startTime",
+        "sortOrder": "ascending"
+      },
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",

@@ -10,13 +10,12 @@ import {
   Button,
   Heading,
   Icon,
-  Image,
   ImageGallery,
   InlineGallery,
   NavigationBar as UINavigationBar,
   Overlay,
   PageIndicators,
-  RichMedia,
+  Html,
   Screen,
   ScrollView,
   Subtitle,
@@ -258,7 +257,7 @@ class ProductDetailsScreen extends Component {
             {this.renderGallery()}
           </View>
           {this.renderProductHeader()}
-          {body_html ? <RichMedia body={body_html} /> : null}
+          {body_html ? <Html body={body_html} /> : null}
         </ScrollView>
         { this.renderImageGallery() }
       </Screen>

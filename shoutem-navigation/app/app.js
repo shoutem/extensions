@@ -1,6 +1,8 @@
 import { BackAndroid, ToastAndroid } from 'react-native';
-
 import { getActiveNavigationStackState, navigateBack } from '@shoutem/core/navigation';
+import { NavigationBar } from '@shoutem/ui/navigation';
+import { getExtensionSettings } from 'shoutem.application';
+import { ext } from './const';
 
 // The time duration after the first back button press during
 // which the user is able to immediately exit the app.
@@ -32,4 +34,24 @@ export const appWillMount = (app) => {
     // default back button behavior.
     return false;
   });
+};
+
+export const appDidMount = (app) => {
+  const store = app.getStore();
+  const state = store.getState();
+
+  const settings = getExtensionSettings(state, ext());
+  const {
+    backgroundImage,
+    backgroundImageEnabledFirstScreen,
+    showTitle,
+    fitContainer,
+  } = settings;
+
+  // Setup background image of the NavigationBar component for all screens
+  if (backgroundImage && !backgroundImageEnabledFirstScreen) {
+    NavigationBar.globalNavigationBarImage = backgroundImage;
+  }
+  NavigationBar.showTitle = showTitle;
+  NavigationBar.fitContainer = fitContainer;
 };

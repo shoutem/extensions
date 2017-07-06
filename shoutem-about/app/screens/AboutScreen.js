@@ -12,9 +12,9 @@ import {
   Subtitle,
   TouchableOpacity,
   ScrollView,
+  Html,
 } from '@shoutem/ui';
 import {
-  RichMedia,
   InlineMap,
 } from '@shoutem/ui-addons';
 
@@ -32,8 +32,8 @@ import { ext } from '../const';
 export class AboutScreen extends BaseAboutScreen {
   static propTypes = {
     ...BaseAboutScreen.propTypes,
-    navigateTo: React.PropTypes.func.isRequired,
-    openURL: React.PropTypes.func.isRequired,
+    navigateTo: React.PropTypes.func,
+    openURL: React.PropTypes.func,
   };
 
   getNavBarProps() {
@@ -69,7 +69,7 @@ export class AboutScreen extends BaseAboutScreen {
     };
   }
 
-  renderImage(profile) {
+  renderImage(profile, styleName) {
     if (!_.get(profile, 'image')) {
       return (
         <View styleName="xl-gutter-top">
@@ -80,7 +80,7 @@ export class AboutScreen extends BaseAboutScreen {
 
     return (
       <Image
-        styleName="large"
+        styleName={styleName || 'large'}
         source={{ uri: profile.image.url }}
         defaultSource={require('../assets/images/image-fallback.png')}
         animationName="hero"
@@ -110,10 +110,7 @@ export class AboutScreen extends BaseAboutScreen {
     }
 
     return (
-      <RichMedia
-        body={profile.info}
-        attachments={profile.attachments}
-      />
+      <Html body={profile.info} />
     );
   }
 
@@ -174,7 +171,7 @@ export class AboutScreen extends BaseAboutScreen {
         <Divider styleName="section-header">
           <Caption>OPENING HOURS</Caption>
         </Divider>
-        <RichMedia body={profile.hours} />
+        <Html body={profile.hours} />
         <Divider />
       </View>
     );

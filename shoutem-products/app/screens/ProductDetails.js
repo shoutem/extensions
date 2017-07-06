@@ -18,8 +18,8 @@ import {
   Divider,
   TouchableOpacity,
   Row,
+  Html,
 } from '@shoutem/ui';
-import { RichMedia } from '@shoutem/ui-addons';
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
@@ -141,7 +141,7 @@ export class ProductDetails extends React.Component {
         <Divider styleName="section-header">
           <Caption>INFORMATION</Caption>
         </Divider>
-        <RichMedia body={product.description} />
+        <Html body={product.description} />
       </Tile>
     );
   }

@@ -7,6 +7,7 @@ import { Alert } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
+import { isPreviewMode } from 'shoutem.application';
 import { Permissions } from 'shoutem.push-notifications';
 
 import {
@@ -36,6 +37,13 @@ const renderEmptyScreen = () => (
   <EmptyStateView message={'There are no push groups defined'} />
 );
 
+const showPreviewModeNotification = () => {
+  Alert.alert(
+    'Preview mode',
+    'Push notifications are not supported in preview mode.',
+  );
+};
+
 const showSuggestionToEnableNotifications = () => {
   Alert.alert(
     'Enable notifications',
@@ -46,13 +54,13 @@ const showSuggestionToEnableNotifications = () => {
       { text: 'Cancel' },
     ],
   );
-}
+};
 
 /**
  * Displays a list of push groups for this app and marks those that the user is subscribed to.
  * It also lets the user subscribe or unsubscribe from groups.
  */
-class PushGroupsList extends Component {
+export class PushGroupsList extends Component {
   static propTypes = {
     // All push groups for the app
     groups: arrayOf(pushGroupShape).isRequired,
@@ -72,6 +80,11 @@ class PushGroupsList extends Component {
   }
 
   componentDidMount() {
+    if (isPreviewMode()) {
+      showPreviewModeNotification();
+      return;
+    }
+
     this.checkIfNotificationsAreEnabled();
   }
 
@@ -135,7 +148,7 @@ class PushGroupsList extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+export const mapStateToProps = state => ({
   groups: state[ext()].groups.data || [],
   selectedGroups: state[ext()].selectedGroups || [],
 });

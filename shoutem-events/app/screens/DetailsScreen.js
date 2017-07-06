@@ -9,7 +9,7 @@ import {
   Title,
   Caption,
   Icon,
-  RichMedia,
+  Html,
   View,
   Button,
   Text,
@@ -174,10 +174,7 @@ export class DetailsScreen extends React.Component {
         <Divider styleName="section-header">
           <Caption>INFORMATION</Caption>
         </Divider>
-        <RichMedia
-          body={event.description}
-          attachments={event.attachments}
-        />
+        <Html body={event.description} />
       </View>
     ) : null;
   }

@@ -1,10 +1,10 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "0.1.13",
+  "version": "0.1.15",
+  "platform": "1.1.*",
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "platform": ">=1.0.21",
   "dependencies": [
     "shoutem.layouts"
   ],
@@ -21,7 +21,7 @@
       "name": "openProducts",
       "screen": "@.ProductsListScreen",
       "adminPages": [{
-        "page": "shoutem.shopify.ShopifyPage",
+        "page": "@.ShopifyPage",
         "title": "Content"
       },
       {
@@ -65,7 +65,18 @@
     }
   ],
   "settingsPages": [{
-    "page": "shoutem.shopify.ShopifySettingsPage",
+    "page": "@.ShopifySettingsPage",
     "title": "Settings"
-  }]
+  }],
+  "pages": [
+    {
+      "name": "ShopifyPage",
+      "type": "native-component",
+      "path": "dummy.js"
+    },
+    {
+      "name": "ShopifySettingsPage",
+      "type": "native-component",
+      "path": "dummy.js"
+    }]
 }

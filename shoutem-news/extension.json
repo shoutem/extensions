@@ -1,9 +1,9 @@
 {
   "name": "news",
-  "version": "0.9.15",
+  "version": "0.10.4",
+  "platform": "1.1.*",
   "title": "News",
   "description": "Show news articles",
-  "platform": "1.0.*",
   "icon": "server/assets/add-news-image.png",
   "categories": ["content"],
   "repository": {

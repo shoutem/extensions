@@ -55,7 +55,7 @@ export const mapStateToProps = (state, ownProps) => {
   const feedUrl = _.get(ownProps, 'shortcut.settings.feedUrl');
   return {
     feedUrl,
-    feed: getVideosFeed(state, feedUrl),
+    data: getVideosFeed(state, feedUrl),
   };
 };
 

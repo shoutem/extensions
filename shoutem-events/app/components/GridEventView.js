@@ -26,7 +26,7 @@ export default class extends BaseEventItem {
           <View styleName="content">
             <Subtitle numberOfLines={3}>{event.name}</Subtitle>
             <View styleName="flexible horizontal v-end space-between">
-              <Caption>{formatDate(event.startTime)}</Caption>
+              <Caption styleName="collapsible">{formatDate(event.startTime)}</Caption>
               <Button styleName="tight clear" onPress={this.action}>
                 <Icon name="add-event" />
               </Button>

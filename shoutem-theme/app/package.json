@@ -1,6 +1,6 @@
 {
   "name": "shoutem.theme",
-  "version": "0.1.7",
+  "version": "0.1.10",
   "private": true,
   "main": "index.js",
   "peerDependencies": {

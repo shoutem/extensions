@@ -2,7 +2,7 @@
   "name": "hello-world",
   "title": "Hello World",
   "version": "0.0.8",
-  "description": "Example of creating plain js shortcut settings page ",
+  "description": "An example of a simple extension with both app and server functionalities",
   "platform": "1.0.*",
   "shortcuts": [
     {

@@ -38,20 +38,6 @@
       "title": "Article URL",
       "pattern": "^(https?|bundle|shoutem|tel|sms|mail|itms)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]$",
       "displayPriority": 6
-    },
-    "video": {
-      "type": "object",
-      "format": "attachment",
-      "title": "Video",
-      "referencedSchema": "shoutem.core.video-attachments",
-      "displayPriority": 7
-    },
-    "audio": {
-      "type": "object",
-      "format": "attachment",
-      "title": "Audio",
-      "referencedSchema": "shoutem.core.audio-attachments",
-      "displayPriority": 8
     }
   }
 }

@@ -3,7 +3,7 @@ import {
   View,
   Screen,
   TouchableOpacity,
-  Subtitle,
+  Icon,
 } from '@shoutem/ui';
 import { Linking, Platform } from 'react-native';
 import { NavigationBar } from '@shoutem/ui/navigation';
@@ -34,7 +34,7 @@ export default class SinglePlaceMap extends PureComponent {
 
     const resolvedScheme = (Platform.OS === 'ios') ?
     `http://maps.apple.com/?ll=${latitude},${longitude}&q=${formattedAddress}` :
-    `geo:${latitude},${longitude}(${formattedAddress})`;
+    `geo:${latitude},${longitude}?q=${formattedAddress}`;
 
     if (latitude && longitude) {
       Linking.openURL(resolvedScheme);
@@ -45,9 +45,9 @@ export default class SinglePlaceMap extends PureComponent {
     return (
       <View styleName="container md-gutter-right">
         <TouchableOpacity
-          onPress={() => this.openMapLink()}
+          onPress={this.openMapLink}
         >
-          <Subtitle>Open in Maps</Subtitle>
+          <Icon name="directions" />
         </TouchableOpacity>
       </View>
     );

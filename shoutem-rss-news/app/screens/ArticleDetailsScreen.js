@@ -1,5 +1,8 @@
 import React from 'react';
 import { Dimensions } from 'react-native';
+import * as _ from 'lodash';
+import moment from 'moment';
+
 import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
@@ -11,34 +14,27 @@ import {
   Icon,
   Image,
   ImageGallery,
+  Html,
 } from '@shoutem/ui';
 import {
   NavigationBar,
 } from '@shoutem/ui/navigation';
 
-import {
-  RichMedia,
-} from '@shoutem/ui-addons';
-
-import * as _ from 'lodash';
-import moment from 'moment';
-import { connect } from 'react-redux';
-
-import { getLeadImageUrl, getAttachments } from 'shoutem.rss';
+import { getLeadImageUrl, createRenderAttachment } from 'shoutem.rss';
+import { NextArticle } from 'shoutem.news';
 
 import { ext } from '../const';
-import { getNewsFeed } from '../redux';
-import NextArticle from '../components/NextArticle';
 
-class ArticleDetailsScreen extends React.PureComponent {
+export class ArticleDetailsScreen extends React.PureComponent {
   static propTypes = {
     // The news article to display
     article: React.PropTypes.object.isRequired,
-    // News articles collection being displayed
-    articles: React.PropTypes.array,
-    // The URL of the feed that the article belongs to, this
-    // prop is only necessary if the showNext is true
-    feedUrl: React.PropTypes.string,
+    // The next article, if this article is defined, the
+    // up next view will be displayed on this screen
+    nextArticle: React.PropTypes.object,
+    // A function that will open the given article, this
+    // function is required to show the up next view
+    openArticle: React.PropTypes.func,
     // Whether the inline gallery should be displayed on the
     // details screen. Inline gallery displays the image
     // attachments that are not directly referenced in the
@@ -47,23 +43,18 @@ class ArticleDetailsScreen extends React.PureComponent {
     openNextArticle: React.PropTypes.func,
   };
 
-  shouldRenderNextArticle() {
-    return this.props.articles && this.props.openNextArticle;
-  }
-
   renderUpNext() {
-    const { article: { id }, articles, openNextArticle } = this.props;
-    const currentArticleIndex = _.findIndex(articles, { id });
-
-    const nextArticle = articles[currentArticleIndex + 1];
-    if (nextArticle) {
+    const { nextArticle, openArticle } = this.props;
+    if (nextArticle && openArticle) {
       return (
         <NextArticle
-          article={nextArticle}
-          openNextArticle={openNextArticle}
+          title={nextArticle.title}
+          imageUrl={getLeadImageUrl(nextArticle)}
+          openArticle={() => openArticle(nextArticle)}
         />
       );
     }
+
     return null;
   }
 
@@ -80,14 +71,13 @@ class ArticleDetailsScreen extends React.PureComponent {
 
   render() {
     const { article } = this.props;
-    const articleImage = getLeadImageUrl(article) ? { uri: getLeadImageUrl(article) } : undefined;
-    const dateFormat = moment(article.timeUpdated).isBefore(0) ?
-      null :
-      (
-        <Caption styleName="md-gutter-left">
-          {moment(article.timeUpdated).fromNow()}
-        </Caption>
-      );
+    const articleImageUrl = getLeadImageUrl(article);
+    const momentDate = moment(article.timeUpdated);
+    const dateInfo = momentDate.isAfter(0) ? (
+      <Caption styleName="md-gutter-left">
+        {momentDate.fromNow()}
+      </Caption>
+    ) : null;
 
     return (
       <Screen styleName="full-screen paper">
@@ -103,25 +93,22 @@ class ArticleDetailsScreen extends React.PureComponent {
         <ScrollView>
           <Image
             styleName="large-portrait placeholder"
-            source={articleImage}
+            source={articleImageUrl ? { uri: articleImageUrl } : undefined}
             animationName="hero"
           >
             <Tile animationName="hero">
               <Title styleName="centered">{article.title.toUpperCase()}</Title>
               <View styleName="horizontal collapsed" virtual>
                 <Caption numberOfLines={1} styleName="collapsible">{article.author}</Caption>
-                {dateFormat}
+                {dateInfo}
               </View>
               <Icon name="down-arrow" styleName="scroll-indicator" />
             </Tile>
           </Image>
           <View styleName="solid">
-            <RichMedia
-              body={article.body}
-              attachments={getAttachments(article)}
-            />
+            <Html body={article.body} renderElement={createRenderAttachment(article, 'image')} />
             {this.renderInlineGallery()}
-            {this.shouldRenderNextArticle() && this.renderUpNext()}
+            {this.renderUpNext()}
           </View>
         </ScrollView>
       </Screen>
@@ -129,6 +116,4 @@ class ArticleDetailsScreen extends React.PureComponent {
   }
 }
 
-export default connect((state, ownProps) => ({
-  articles: getNewsFeed(state, ownProps.feedUrl),
-}))(connectStyle(ext('ArticleDetailsScreen'), {})(ArticleDetailsScreen));
+export default connectStyle(ext('ArticleDetailsScreen'))(ArticleDetailsScreen);

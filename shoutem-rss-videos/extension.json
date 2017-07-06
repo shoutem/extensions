@@ -1,9 +1,9 @@
 {
   "name": "rss-videos",
   "title": "Videos RSS",
-  "version": "0.10.11",
+  "version": "0.10.17",
+  "platform": "1.1.*",
   "description": "Show a video gallery from an RSS feed",
-  "platform": "1.0.*",
   "icon": "server/assets/add-videos-image.png",
   "categories": ["media"],
   "repository": {
@@ -34,10 +34,7 @@
   {
     "name": "VideosList",
     "title": "Big list",
-    "image": "server/assets/screens/big-list.png",
-    "navigatesTo": [
-      "@.VideoDetails"
-    ]
+    "image": "server/assets/screens/big-list.png"
   },
     {
     "name": "VideosSmallList",
@@ -46,7 +43,6 @@
     "extends":"@.VideosList"
   },
   {
-    "name": "VideoDetails",
-    "title": "Details"
+    "name": "VideoDetails"
   }]
 }

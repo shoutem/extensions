@@ -3,6 +3,7 @@ export {
   NOTIFICATION_RECEIVED,
   USER_NOTIFIED,
   REQUEST_PUSH_PERMISSION,
+  DEVICE_TOKEN_RECEIVED,
 } from './actionTypes';
 
 export {

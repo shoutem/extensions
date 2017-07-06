@@ -56,6 +56,11 @@ export class TabBar extends PureComponent {
     super(props, context);
 
     this.openShortcut = this.openShortcut.bind(this);
+    // Debounce the reset tab to top to avoid weird issues (e.g., app freezes)
+    // when the navigation state is being reset during transitions.
+    this.resetTabNavigationStateToTop = _.debounce(this.resetTabNavigationStateToTop, 300, {
+      maxWait: 100,
+    });
   }
 
   componentWillMount() {

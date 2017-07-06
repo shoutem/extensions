@@ -11,8 +11,8 @@ import {
 } from './ArticlesListScreen';
 
 import { ext } from '../const.js';
-import ListArticleView from '../components/ListArticleView';
-import FeaturedArticleView from '../components/FeaturedArticleView';
+import { ListArticleView } from '../components/ListArticleView';
+import { FeaturedArticleView } from '../components/FeaturedArticleView';
 
 export class ArticlesFeaturedListScreen extends ArticlesListScreen {
   static propTypes = {
@@ -26,23 +26,35 @@ export class ArticlesFeaturedListScreen extends ArticlesListScreen {
   }
 
   getNavBarProps() {
-    return { ...super.getNavBarProps(), styleName: 'featured' };
+    return {
+      ...super.getNavBarProps(),
+      styleName: 'featured',
+    };
   }
 
   renderRow(article, sectionId, index) {
     if (index === '0') {
       return (
         <FeaturedArticleView
-          article={article}
-          onPress={this.openDetailsScreen}
+          key={article.id}
+          articleId={article.id}
+          title={article.title}
+          imageUrl={_.get(article, 'image.url')}
+          author={article.newsAuthor}
+          date={article.timeUpdated}
+          onPress={this.openArticleWithId}
         />
       );
     }
 
     return (
       <ListArticleView
-        article={article}
-        onPress={this.openDetailsScreen}
+        key={article.id}
+        articleId={article.id}
+        title={article.title}
+        imageUrl={_.get(article, 'image.url')}
+        date={article.timeUpdated}
+        onPress={this.openArticleWithId}
       />
     );
   }

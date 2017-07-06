@@ -8,7 +8,7 @@ import {
   Icon,
   Image,
   Tile,
-  RichMedia,
+  Html,
   View,
 } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
@@ -17,9 +17,9 @@ import * as _ from 'lodash';
 import moment from 'moment';
 
 import { ext } from '../const';
-import NextArticle from '../components/NextArticle';
+import { NextArticle } from '../components/NextArticle';
 
-class ArticleDetailsScreen extends React.PureComponent {
+export class ArticleDetailsScreen extends React.PureComponent {
   static propTypes = {
     // The news article to display
     article: React.PropTypes.object.isRequired,
@@ -35,7 +35,11 @@ class ArticleDetailsScreen extends React.PureComponent {
     const { nextArticle, openArticle } = this.props;
     if (nextArticle && openArticle) {
       return (
-        <NextArticle article={nextArticle} openArticle={openArticle} />
+        <NextArticle
+          title={nextArticle.title}
+          imageUrl={_.get(nextArticle, 'image.url')}
+          openArticle={() => openArticle(nextArticle)}
+        />
       );
     }
 
@@ -76,10 +80,7 @@ class ArticleDetailsScreen extends React.PureComponent {
             <Icon name="down-arrow" styleName="scroll-indicator" />
           </Image>
           <View styleName="solid">
-            <RichMedia
-              body={article.body}
-              attachments={article.attachments}
-            />
+            <Html body={article.body} />
             {this.renderUpNext()}
           </View>
         </ScrollView>

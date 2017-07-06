@@ -74,9 +74,8 @@ export class BaseAboutScreen extends PureComponent {
       return true;
     }
 
-    // The collection is considered valid if there were no errors while
-    // fetching it, and if it is not empty
-    return collection && !isError(collection) && (collection.length > 0);
+    // The collection is considered valid if it is not empty
+    return !_.isEmpty(collection);
   }
 
   shouldRenderPlaceholderView() {
@@ -84,16 +83,16 @@ export class BaseAboutScreen extends PureComponent {
     return _.isUndefined(parentCategoryId) || !this.isCollectionValid(data);
   }
 
-  fetchData() {
+  fetchData(schema) {
     const { find, parentCategoryId } = this.props;
-    const { schema } = this.state;
+    const { schema: defaultSchema } = this.state;
 
     if (!parentCategoryId) {
       return;
     }
 
     InteractionManager.runAfterInteractions(() =>
-      find(schema, undefined, {
+      find(schema || defaultSchema, undefined, {
         'filter[categories]': parentCategoryId,
       }),
     );

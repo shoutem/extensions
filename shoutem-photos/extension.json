@@ -1,9 +1,9 @@
 {
   "name": "photos",
-  "version": "0.9.6",
+  "version": "1.0.1",
+  "platform": "1.1.*",
   "title": "Photos",
   "description": "Show a photo gallery",
-  "platform": ">=1.0.21",
   "icon" : "server/assets/add-photos-image.png",
   "dependencies": [
     "shoutem.layouts",

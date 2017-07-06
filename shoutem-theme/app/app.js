@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { getActiveTheme } from './redux';
-import { appThemeAssets } from './service/AppThemeAssets';
+import { appThemeAssets } from './services/AppThemeAssets';
 import { getConfiguration } from 'shoutem.application';
 
 let activeTheme;

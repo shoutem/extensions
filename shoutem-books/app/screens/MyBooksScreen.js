@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import * as _ from 'lodash';
+
 import { connectStyle } from '@shoutem/theme';
 import {
   isError,
@@ -73,9 +75,8 @@ class MyBooksScreen extends React.Component {
       return true;
     }
 
-    // The collection is considered valid if there were no errors while
-    // fetching it, and if it is not empty
-    return collection && !isError(collection) && (collection.length > 0);
+    // The collection is considered valid if it is not empty
+    return !_.isEmpty(collection);
   }
 
   renderPlaceholderView() {

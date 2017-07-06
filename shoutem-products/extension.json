@@ -1,9 +1,9 @@
 {
   "name": "products",
-  "version": "0.9.16",
+  "version": "0.9.18",
+  "platform": "1.1.*",
   "title": "Products",
   "description": "Show products with purchase link",
-  "platform": "1.0.*",
   "categories": ["commerce"],
   "repository": {
     "type": "git",

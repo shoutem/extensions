@@ -1,7 +1,7 @@
-import { appThemeAssets } from '../service/AppThemeAssets';
+import { appThemeAssets } from '../services/AppThemeAssets';
 
 // Custom icon url starts with "theme://"
-const customIconUrlRegex = /^theme:\/\//;
+export const customIconUrlRegex = /^theme:\/\//;
 
 /**
  * Strip custom theme prefix and return icon name.

@@ -1,0 +1,45 @@
+{
+  "name": "react-hello-world",
+  "title": "React Hello World",
+  "version": "0.0.2",
+  "platform": "1.1.*",
+  "description": "An example of a simple extension with both app and server functionalities",
+  "shortcuts": [
+    {
+      "title": "React Hello World",
+      "description": "React settings for Hello World",
+      "name": "hello-world",
+      "screen": "@.HelloWorld",
+      "settings": {
+        "greeting": "World"
+      },
+      "adminPages": [
+        {
+          "page": "@.HelloShortcut",
+          "title": "Hello Shortcut"
+        }
+      ]
+    }
+  ],
+  "settingsPages": [{
+    "page": "@.HelloExtension",
+    "title": "Hello Extension"
+  }],
+  "pages": [
+    {
+      "name": "HelloShortcut",
+      "path": "server/build/index.html?page=HelloShortcutPage",
+      "type": "html"
+    },
+    {
+      "name": "HelloExtension",
+      "path": "server/build/index.html?page=HelloExtensionPage",
+      "type": "html"
+    }
+  ],
+  "screens": [
+    {
+      "name": "HelloWorld"
+    }
+  ]
+}

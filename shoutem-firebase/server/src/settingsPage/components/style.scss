@@ -1,0 +1,19 @@
+.firebase-settings-form {
+  .firebase-settings-form__footer {
+    .btn {
+      margin-top: 24px;
+    }
+  }
+
+  .form-group textarea.form-control {
+    padding: 12px;
+    resize: vertical;
+
+    &[cols="4"] {
+      height: 100px;
+    }
+    &[cols="2"] {
+      height: 66px;
+    }
+  }
+}

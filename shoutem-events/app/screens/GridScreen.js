@@ -6,6 +6,8 @@ import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow, View } from '@shoutem/ui';
 
+import { currentLocation } from 'shoutem.cms';
+
 import { ext } from '../const';
 import GridEventView from '../components/GridEventView';
 import { mapDispatchToProps, mapStateToProps, ListScreen } from './ListScreen';
@@ -61,5 +63,5 @@ class GridScreen extends ListScreen {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('GridScreen'))(GridScreen),
+  connectStyle(ext('GridScreen'))(currentLocation(GridScreen)),
 );

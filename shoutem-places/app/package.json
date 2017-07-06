@@ -1,5 +1,10 @@
 {
   "name": "shoutem.places",
-  "version": "0.9.16",
-  "description": "Interactive list of POIs"
+  "version": "0.10.1",
+  "description": "Interactive list of POIs",
+  "rnpm": {
+    "commands": {
+      "postlink": "node node_modules/shoutem.places/scripts/run.js"
+    }
+  }
 }

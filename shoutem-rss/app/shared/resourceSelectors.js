@@ -1,13 +1,7 @@
 import _ from 'lodash';
 
-/**
- * Returns the lead image URL from the provided RSS resource
- *
- * @param resource The RSS resource.
- * @returns {string} The image URL or undefined.
- */
-export function getLeadImageUrl(resource) {
-  return _.get(resource, 'imageAttachments[0].src');
+export function getLeadAttachment(resource, type) {
+  return _.get(resource, `${type}Attachments[0]`);
 }
 
 /**
@@ -16,13 +10,11 @@ export function getLeadImageUrl(resource) {
  * @param resource The RSS resource.
  * @returns {string} The image URL or undefined.
  */
-export function getAttachments(resource) {
-  // We don't want to show the lead image in the attachments
-  const images = _.reject(resource.imageAttachments, { src: getLeadImageUrl(resource) });
+export function getLeadImageUrl(resource) {
+  return _.get(getLeadAttachment(resource, 'image'), 'src');
+}
 
-  return {
-    images,
-    videos: resource.videoAttachments,
-    audios: resource.audioAttachments,
-  };
+export function isLeadAttachment(resource, attachmentId, type) {
+  const leadAttachment = getLeadAttachment(resource, type);
+  return leadAttachment && leadAttachment.id === attachmentId;
 }

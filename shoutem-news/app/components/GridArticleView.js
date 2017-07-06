@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import {
   TouchableOpacity,
   Subtitle,
@@ -13,10 +12,13 @@ import moment from 'moment';
 /**
  * A component used to render a single grid article item
  */
-export default class GridArticleView extends React.Component {
+export class GridArticleView extends React.Component {
   static propTypes = {
     onPress: React.PropTypes.func,
-    article: React.PropTypes.object.isRequired,
+    articleId: React.PropTypes.string,
+    title: React.PropTypes.string,
+    imageUrl: React.PropTypes.string,
+    date: React.PropTypes.string,
   };
 
   constructor(props) {
@@ -25,24 +27,29 @@ export default class GridArticleView extends React.Component {
   }
 
   onPress() {
-    this.props.onPress(this.props.article);
+    this.props.onPress(this.props.articleId);
   }
 
   render() {
-    const { article } = this.props;
+    const { title, imageUrl, date } = this.props;
+
+    const momentDate = moment(date);
+    const dateInfo = momentDate.isAfter(0) ? (
+      <View styleName="horizontal">
+        <Caption>{momentDate.fromNow()}</Caption>
+      </View>
+    ) : null;
 
     return (
-      <TouchableOpacity key={article.id} onPress={this.onPress}>
+      <TouchableOpacity onPress={this.onPress}>
         <Card styleName="flexible">
           <Image
             styleName="medium-wide placeholder"
-            source={{ uri: _.get(article, 'image.url') }}
+            source={{ uri: imageUrl }}
           />
           <View styleName="flexible content space-between">
-            <Subtitle numberOfLines={3} styleName="lg-gutter-bottom">{article.title}</Subtitle>
-            <View styleName="horizontal">
-              <Caption>{moment(article.timeUpdated).fromNow()}</Caption>
-            </View>
+            <Subtitle numberOfLines={3} styleName="lg-gutter-bottom">{title}</Subtitle>
+            {dateInfo}
           </View>
         </Card>
       </TouchableOpacity>

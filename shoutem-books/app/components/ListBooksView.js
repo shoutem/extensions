@@ -13,10 +13,10 @@ import {
 import { connectStyle } from '@shoutem/theme';
 
 import { CmsListScreen } from 'shoutem.cms';
+import { Favorite } from 'shoutem.favorites';
 
 import { ext } from '../const';
 import { formatBookCaption } from '../shared/formatBookCaption';
-import Favorite from './Favorite';
 import LinkIconButton from './LinkIconButton';
 
 class ListBooksView extends React.Component {
@@ -48,7 +48,7 @@ class ListBooksView extends React.Component {
           source={{ uri: book.image ? book.image.url : undefined }}
         >
           <Tile>
-            <View styleName="actions horizontal">
+            <View virtual styleName="actions horizontal">
               {favorites}{addToCartButton}
             </View>
             <Title>{book.title.toUpperCase()}</Title>

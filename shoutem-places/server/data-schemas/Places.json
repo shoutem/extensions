@@ -13,38 +13,45 @@
       "format": "html",
       "title": "Description",
       "type": "string",
-      "displayPriority": 3
+      "displayPriority": 4
     },
     "url": {
       "format": "uri",
       "title": "Website",
       "type": "string",
-      "displayPriority": 4
+      "pattern": "^(https?|bundle|shoutem|tel|sms|mail|itms)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]$",
+      "displayPriority": 5
     },
     "image": {
       "format": "attachment",
       "title": "Image",
       "type": "object",
       "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 5
+      "displayPriority": 6
     },
     "mail": {
       "format": "single-line",
       "title": "E-mail",
       "type": "string",
-      "displayPriority": 6
+      "displayPriority": 7
     },
     "openingHours": {
       "format": "multi-line",
       "title": "Open Hours",
       "type": "string",
-      "displayPriority": 7
+      "displayPriority": 8
     },
     "phone": {
       "format": "single-line",
       "title": "Phone",
       "type": "string",
-      "displayPriority": 8
+      "displayPriority": 9
+    },
+    "rsvpLink": {
+      "format": "uri",
+      "title": "RSVP link",
+      "type": "string",
+      "displayPriority": 3
     },
     "location": {
       "format": "geolocation",

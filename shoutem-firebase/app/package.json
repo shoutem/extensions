@@ -1,6 +1,6 @@
 {
-  "name": "shootem.firebase",
-  "version": "0.1.14",
+  "name": "shoutem.firebase",
+  "version": "0.1.17",
   "description": "Firebase SDK bridge",
   "dependencies": {
     "request": "2.79.0",

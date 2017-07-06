@@ -7,7 +7,7 @@ export const FAVORITES_TAG = 'favorite';
 /**
  * A selector that retrieves ids of items from all favorites schemas.
  *
- * @param state Current redux state containing items ids
+ * @param state {Object} Current redux state containing items ids
  * @returns {[]} An array of item ids.
  */
 export function getFavoriteItems(state) {
@@ -18,8 +18,8 @@ export function getFavoriteItems(state) {
  * Selects only items ids for a specific favorites schema
  * from current state.
  *
- * @param schema The schema name for favorite items
- * @param state Redux state containing favorites schemas
+ * @param schema {string} The schema name for favorite items
+ * @param state {Object} Redux state containing favorites schemas
  * @returns {[]} An array of favorite items ids.
  */
 export function getFavoriteCollection(schema, state) {
@@ -32,7 +32,7 @@ export function getFavoriteCollection(schema, state) {
  * TODO (Belma): Extend map with false values for
  * other schemas which are not using favorites.
  *
- * @param state Redux state containing favorites schemas.
+ * @param state {Object} Redux state containing favorites schemas.
  * @returns {{}} A map of favorites schemas.
  */
 export function getFavoritesSchemas(state) {
@@ -42,8 +42,8 @@ export function getFavoritesSchemas(state) {
 /**
  * Checks if schema is enabled as a favorites schema.
  *
- * @param state Redux state containing favorites schemas.
- * @param schema Schema name
+ * @param state {Object} Redux state containing favorites schemas.
+ * @param schema {string} Schema name
  * @returns {boolean}
  */
 export function isFavoritesSchema(state, schema) {
@@ -53,9 +53,9 @@ export function isFavoritesSchema(state, schema) {
 /**
  * Checks if given item is in favorite state.
  *
- * @param state Redux state containing favorite items
- * @param schema Schema name
- * @param id Item id
+ * @param state {Object} Redux state containing favorite items
+ * @param schema {string} Schema name
+ * @param id {string} Item id
  * @returns {boolean}
  */
 export function isFavoriteItem(state, schema, id) {
@@ -65,16 +65,18 @@ export function isFavoriteItem(state, schema, id) {
 /**
  * Action creator for fetching favorite items.
  *
- * @param schema Schema name
- * @param collection Collection of items' ids
+ * @param schema {string} Schema name
+ * @param collection {array} Collection of items' ids
+ * @param options {Object} Additional options object for find action
  * @returns {*}
  */
-export function fetchFavoritesData(schema, collection, tag = FAVORITES_TAG) {
+export function fetchFavoritesData(schema, collection, options = {}, tag = FAVORITES_TAG) {
   if (_.isEmpty(collection)) {
     return clear(schema, tag);
   }
 
   return find(schema, tag, {
+    ...options,
     'filter[id]': _.join(_.map(collection, 'id'), ','),
   });
 }

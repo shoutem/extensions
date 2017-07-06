@@ -119,6 +119,7 @@ export const networkRequestMiddleware = setPriority(store => next => (action) =>
     const appSettings = getExtensionSettings(state, APPLICATION_EXTENSION);
 
     const { legacyApiEndpoint, apiEndpoint } = appSettings;
+
     const servers = _.reduce([legacyApiEndpoint, apiEndpoint], (result, server) => {
       if (server) {
         result.push(new URI(server).hostname());

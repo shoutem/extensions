@@ -49,7 +49,7 @@ export default class SocialButton extends Component {
     }
 
     return (
-      <Button styleName="stacked textual" onPress={this.buttonPressHandle}>
+      <Button styleName="stacked clear tight" onPress={this.buttonPressHandle}>
         <Icon name={icon} />
         <Text>{title}</Text>
       </Button>
