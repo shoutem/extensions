@@ -3,8 +3,8 @@ const fs = require('fs-extra');
 const plist = require('plist');
 
 const SHOUTEM_AUTH = 'shoutem.auth';
-const infoPlistPath = '../../ios/ShoutemApp/Info.plist';
-const stringsXMLPath = '../../android/app/src/main/res/values/strings.xml';
+const infoPlistPath = '../../../ios/ShoutemApp/Info.plist';
+const stringsXMLPath = '../../../android/app/src/main/res/values/strings.xml';
 
 const isAuthExtension = i => i.type === 'shoutem.core.extensions' && i.id === SHOUTEM_AUTH;
 
