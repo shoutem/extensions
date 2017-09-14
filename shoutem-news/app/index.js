@@ -1,24 +1,31 @@
-import ArticlesGridScreen from './screens/ArticlesGridScreen';
-import ArticleDetailsScreen from './screens/ArticleDetailsScreen';
-import ArticleMediumDetailsScreen from './screens/ArticleMediumDetailsScreen';
-import ArticlesListScreen from './screens/ArticlesListScreen';
-import ArticlesFeaturedListScreen from './screens/ArticlesFeaturedListScreen';
 import reducer from './reducer';
+import * as extension from './extension.js';
+import ArticlesScreen from './screens/ArticlesScreen';
+import GridArticlesScreen from './screens/GridArticlesScreen';
+import ArticleDetailsScreen from './screens/ArticleDetailsScreen';
+import LargeArticleDetailsScreen from './screens/LargeArticleDetailsScreen';
 
 export { FeaturedArticleView } from './components/FeaturedArticleView';
 export { GridArticleView } from './components/GridArticleView';
 export { ListArticleView } from './components/ListArticleView';
 export { NextArticle } from './components/NextArticle';
 
-const screens = {
-  ArticlesListScreen,
-  ArticlesGridScreen,
-  ArticleDetailsScreen,
-  ArticleMediumDetailsScreen,
-  ArticlesFeaturedListScreen,
+export const screens = {
+  ...extension.screens,
+  ArticlesScreen: GridArticlesScreen,
+  FixedGridArticlesScreen: GridArticlesScreen,
+  CompactListArticlesScreen: ArticlesScreen,
+  FeaturedCompactListArticlesScreen: ArticlesScreen,
+  LargeListArticlesScreen: ArticlesScreen,
+  MediumListArticlesScreen: ArticlesScreen,
+  FeaturedMediumListArticlesScreen: ArticlesScreen,
+  TileListArticlesScreen: ArticlesScreen,
+  ArticleDetailsScreen: LargeArticleDetailsScreen,
+  SolidNavbarMediumArticleDetailsScreen: ArticleDetailsScreen,
+  SolidNavbarLargeArticleDetailsScreen: LargeArticleDetailsScreen,
+  ClearNavbarMediumArticleDetailsScreen: ArticleDetailsScreen,
 };
 
-export {
-  reducer,
-  screens,
-};
+export const themes = extension.themes;
+
+export { reducer };

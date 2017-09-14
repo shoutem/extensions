@@ -6,6 +6,7 @@ import './style.scss';
 export default class WebEdit extends Component {
   constructor(props) {
     super(props);
+
     this.handleShowNavigationToolbarChange = this.handleShowNavigationToolbarChange.bind(this);
   }
 
@@ -16,7 +17,13 @@ export default class WebEdit extends Component {
   }
 
   render() {
-    const { url, showNavigationToolbar, onRemoveClick } = this.props;
+    const {
+      url,
+      showNavigationToolbar,
+      hasNavigationToolbarToggle,
+      onRemoveClick,
+    } = this.props;
+
     return (
       <div>
         <form>
@@ -26,7 +33,7 @@ export default class WebEdit extends Component {
               <div className="web-edit__web-img" />
               <div className="text-ellipsis">
                 <span className="web-edit__url">
-                 {url}
+                  {url}
                 </span>
               </div>
               <FontIcon
@@ -36,13 +43,17 @@ export default class WebEdit extends Component {
                 onClick={onRemoveClick}
               />
             </div>
-            <ControlLabel>Screen options</ControlLabel>
-            <Checkbox
-              checked={showNavigationToolbar}
-              onChange={this.handleShowNavigationToolbarChange}
-            >
-              Show navigation toolbar
-            </Checkbox>
+            {hasNavigationToolbarToggle && (
+              <div>
+                <ControlLabel>Screen options</ControlLabel>
+                <Checkbox
+                  checked={showNavigationToolbar}
+                  onChange={this.handleShowNavigationToolbarChange}
+                >
+                  Show navigation toolbar
+                </Checkbox>
+              </div>
+            )}
           </FormGroup>
         </form>
       </div>
@@ -51,6 +62,7 @@ export default class WebEdit extends Component {
 }
 
 WebEdit.propTypes = {
+  hasNavigationToolbarToggle: PropTypes.bool,
   url: PropTypes.string,
   showNavigationToolbar: PropTypes.bool,
   onRemoveClick: PropTypes.func,

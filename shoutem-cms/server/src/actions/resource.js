@@ -1,7 +1,9 @@
+import _ from 'lodash';
 import { find } from '@shoutem/redux-io';
 import { url, appId } from 'environment';
 import { ext } from 'context';
 import { CURRENT_SCHEMA } from '../types';
+import { isAllCategoriesSelected } from '../services';
 
 function resolveSortParam(sortOptions) {
   if (!sortOptions) {
@@ -22,23 +24,31 @@ function resolveSortParam(sortOptions) {
     { sort: `-${field}` };
 }
 
-function resolveCategoryParam(categoryId) {
+function resolveCategoryParam(parentCategoryId, visibleCategoryIds = []) {
+  const categoryFilter = _.isEmpty(visibleCategoryIds) ?
+    parentCategoryId :
+    _.join(visibleCategoryIds);
+
   return {
-    'filter[categories]': categoryId,
+    'filter[categories]': categoryFilter,
   };
 }
 
-
-export function loadResources(categoryId, sortOptions) {
+export function loadResources(
+  parentCategoryId,
+  visibleCategoryIds,
+  sortOptions,
+  schema = CURRENT_SCHEMA
+) {
   const queryParams = {
-    ...resolveCategoryParam(categoryId),
+    ...resolveCategoryParam(parentCategoryId, visibleCategoryIds),
     ...resolveSortParam(sortOptions),
   };
 
   const config = {
-    schema: CURRENT_SCHEMA,
+    schema,
     request: {
-      endpoint: `//${url.legacy}/v1/apps/${appId}/resources/${CURRENT_SCHEMA}`,
+      endpoint: `//${url.legacy}/v1/apps/${appId}/resources/${schema}`,
       headers: {
         Accept: 'application/vnd.api+json',
       },

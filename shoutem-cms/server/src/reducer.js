@@ -10,7 +10,11 @@ const storageReducer = combineReducers({
 });
 
 const cmsPage = combineReducers({
-  categories: collection(CATEGORIES, ext('all')),
+  categories: combineReducers({
+    all: collection(CATEGORIES, ext('all')),
+    child: collection(CATEGORIES, ext('child')),
+    parent: collection(CATEGORIES, ext('parent')),
+  }),
   schema: one(SCHEMAS, ext('schema')),
   resources: collection(CURRENT_SCHEMA, ext('all')),
 });

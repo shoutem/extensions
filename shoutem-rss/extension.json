@@ -1,7 +1,7 @@
 {
   "name": "rss",
-  "version": "0.2.18",
-  "platform": "1.1.*",
+  "version": "1.2.0",
+  "platform": "1.2.*",
   "type": "system",
   "title": "RSS",
   "description": "Integrate with RSS feed source",

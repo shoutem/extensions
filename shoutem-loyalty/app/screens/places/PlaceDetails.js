@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 
+import _ from 'lodash';
+
 import {
   Button,
   Caption,
   Divider,
+  Html,
+  ListView,
   Icon,
   Image,
   Row,
@@ -17,11 +21,12 @@ import {
   Title,
   TouchableOpacity,
   View,
-  Html,
 } from '@shoutem/ui';
 
 import {
   find,
+  getCollection,
+  isBusy,
 } from '@shoutem/redux-io';
 
 import {
@@ -46,20 +51,35 @@ import { connectStyle } from '@shoutem/theme';
 import { openURL } from 'shoutem.web-view';
 import {
   ext,
+  PLACE_REWARDS_SCHEMA,
 } from '../../const';
 
 import {
   placeShape,
+  rewardShape,
 } from '../../components/shapes';
+
+import PlaceRewardListView from '../../components/PlaceRewardListView';
+import PlaceLoyaltyPointsView from '../../components/PlaceLoyaltyPointsView';
+
+import {
+  getCardStateForPlace,
+ } from '../../redux';
 
 /* eslint-disable class-methods-use-this */
 
-const { func } = React.PropTypes;
+const { arrayOf, func } = React.PropTypes;
 
 export class PlaceDetails extends Component {
   static propTypes = {
     // The place
     place: placeShape.isRequired,
+    // Rewards for this place
+    rewards: arrayOf(rewardShape),
+    /* Actions */
+    find: func,
+    // Opens the assign points flow in a modal dialog
+    openInModal: func,
     openURL: func,
     navigateTo: func,
   };
@@ -69,12 +89,24 @@ export class PlaceDetails extends Component {
 
     this.collectPoints = this.collectPoints.bind(this);
     this.getNavBarProps = this.getNavBarProps.bind(this);
+    this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(this);
+    this.navigateToRewardDetailsScreen = this.navigateToRewardDetailsScreen.bind(this);
     this.openWebLink = this.openWebLink.bind(this);
     this.openMapLink = this.openMapLink.bind(this);
     this.openEmailLink = this.openEmailLink.bind(this);
     this.openPhoneLink = this.openPhoneLink.bind(this);
     this.openMapScreen = this.openMapScreen.bind(this);
     this.openURL = this.openURL.bind(this);
+
+    this.renderRewardRow = this.renderRewardRow.bind(this);
+  }
+
+  componentWillMount() {
+    const { find, place } = this.props;
+
+    find(PLACE_REWARDS_SCHEMA, undefined, {
+      'filter[place.id]': place.id,
+    });
   }
 
   getNavBarProps() {
@@ -82,8 +114,44 @@ export class PlaceDetails extends Component {
 
     return {
       styleName: image ? 'clear' : 'no-border',
+      animationName: 'solidify',
       title: name.toUpperCase(),
     };
+  }
+
+  navigateToPointsHistoryScreen() {
+    const { navigateTo, place } = this.props;
+
+    navigateTo({
+      screen: ext('PointsHistoryScreen'),
+      props: {
+        place,
+      },
+    });
+  }
+
+  navigateToRewardDetailsScreen(reward) {
+    const { navigateTo, place } = this.props;
+    const { placeRewardsParentCategoryId: parentCategoryId } = place;
+
+    navigateTo({
+      screen: ext('RewardDetailsScreen'),
+      props: {
+        reward: { ...reward, parentCategoryId, location: place.id },
+        place,
+      },
+    });
+  }
+
+  collectPoints() {
+    const { openInModal, place } = this.props;
+
+    openInModal({
+      screen: ext('VerificationScreen'),
+      props: {
+        place,
+      },
+    });
   }
 
   openURL() {
@@ -146,6 +214,56 @@ export class PlaceDetails extends Component {
           <Caption styleName="sm-gutter-top">{formattedAddress}</Caption>
         </Tile>
       </Image>
+    );
+  }
+
+  renderPoints() {
+    const { place } = this.props;
+
+    return (
+      <PlaceLoyaltyPointsView
+        onCollectPointsPress={this.collectPoints}
+        onPointsHistoryPress={this.navigateToPointsHistoryScreen}
+        place={place}
+      />
+    );
+  }
+
+  renderRewardRow(reward) {
+    const { place } = this.props;
+
+    return (
+      <PlaceRewardListView
+        key={reward.id}
+        onPress={this.navigateToRewardDetailsScreen}
+        place={place}
+        reward={reward}
+      />
+    );
+  }
+
+  renderRewards() {
+    const { rewards } = this.props;
+
+    const data = isBusy(rewards) ? [] : [...rewards];
+
+    return (
+      <View>
+        <Divider styleName="section-header">
+          <Caption>REWARDS</Caption>
+        </Divider>
+        {!isBusy(rewards) && _.isEmpty(rewards) ?
+          <Caption styleName="h-center md-gutter-top xl-gutter-horizontal">
+            Currently, there are no rewards available for this store.
+          </Caption>
+          :
+          <ListView
+            data={data}
+            loading={isBusy(rewards)}
+            renderRow={this.renderRewardRow}
+          />
+        }
+      </View>
     );
   }
 
@@ -272,6 +390,8 @@ export class PlaceDetails extends Component {
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderLeadImage()}
+          {this.renderPoints()}
+          {this.renderRewards()}
           {this.renderOpeningHours()}
           {this.renderButtons()}
           {this.renderInlineMap()}
@@ -287,6 +407,21 @@ export class PlaceDetails extends Component {
   }
 }
 
+export const mapStateToProps = (state, ownProps) => {
+  const { allPlaceRewards, allTransactions } = state[ext()];
+
+  const { place } = ownProps;
+
+  const cardState = getCardStateForPlace(state, place.id);
+  const points = cardState ? cardState.points : 0;
+
+  return {
+    place: { ...place, points },
+    rewards: getCollection(allPlaceRewards, state),
+    transactions: getCollection(allTransactions, state),
+  };
+};
+
 export const mapDispatchToProps = {
   find,
   navigateTo,
@@ -294,5 +429,5 @@ export const mapDispatchToProps = {
   openURL,
 };
 
-export default connect(undefined, mapDispatchToProps)(
+export default connect(mapStateToProps, mapDispatchToProps)(
 connectStyle(ext('PlaceDetails'))(PlaceDetails));

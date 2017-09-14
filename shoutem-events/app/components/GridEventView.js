@@ -23,9 +23,9 @@ export default class extends BaseEventItem {
       <TouchableOpacity onPress={this.onPress}>
         <Card styleName="flexible">
           <EventImage styleName="medium-wide" event={event} />
-          <View styleName="content">
+          <View styleName="content space-between">
             <Subtitle numberOfLines={3}>{event.name}</Subtitle>
-            <View styleName="flexible horizontal v-end space-between">
+            <View styleName="horizontal space-between v-center">
               <Caption styleName="collapsible">{formatDate(event.startTime)}</Caption>
               <Button styleName="tight clear" onPress={this.action}>
                 <Icon name="add-event" />

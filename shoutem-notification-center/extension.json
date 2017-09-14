@@ -1,8 +1,8 @@
 {
   "name": "notification-center",
   "title": "Notification settings",
-  "version": "0.0.8",
-  "platform": "1.1.*",
+  "version": "1.2.0",
+  "platform": "1.2.*",
   "description": "Manage push notification settings within the app",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories":[""],

@@ -1,10 +1,16 @@
 import reducer from './reducers';
-import MediumPhotoScreen from './screens/MediumPhotoScreen';
-import LargePhotoScreen from './screens/LargePhotoScreen';
+import * as extension from './extension.js';
+
+const { PageScreen } = extension.screens;
 
 export const screens = {
-  MediumPhotoScreen,
-  LargePhotoScreen,
+  ...extension.screens,
+  ClearNavbarLargePageScreen: PageScreen,
+  SolidNavbarLargePageScreen: PageScreen,
+  ClearNavbarMediumPageScreen: PageScreen,
+  SolidNavbarMediumPageScreen: PageScreen
 };
+
+export const themes = extension.themes;
 
 export { reducer };

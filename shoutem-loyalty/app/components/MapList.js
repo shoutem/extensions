@@ -130,11 +130,19 @@ export class MapList extends Component {
   }
 
   renderImageRow() {
-    const { places } = this.props;
+    const { cardStatesByLocation, places } = this.props;
 
     const returnedPlace = this.findSelectedPlace(places);
+    const { id } = returnedPlace;
 
-    return <PlaceIconView place={returnedPlace} />;
+    const points = _.get(cardStatesByLocation[id], 'points');
+
+    return (
+      <PlaceIconView
+        place={returnedPlace}
+        points={points}
+      />
+    );
   }
 
   render() {
@@ -168,9 +176,11 @@ export class MapList extends Component {
 
 export default connectStyle(ext('MapList'))(MapList);
 
-const { arrayOf, number, shape } = React.PropTypes;
+const { arrayOf, number, object, shape } = React.PropTypes;
 
 MapList.propTypes = {
+  // A dictionary of card states with location as the key
+  cardStatesByLocation: object,
   places: arrayOf(placeShape).isRequired,
   selectedPlace: placeShape,
   initialRegion: shape({

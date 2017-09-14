@@ -1,5 +1,5 @@
 export {
   PlacesListScreen,
   PlacesList,
-} from './PlacesList';
+} from './PlacesListScreen';
 

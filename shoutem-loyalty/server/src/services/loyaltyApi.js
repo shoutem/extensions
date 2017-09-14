@@ -1,20 +1,30 @@
 import Uri from 'urijs';
 
-const LoyaltyApi = {};
+export default class LoyaltyApi {
+  constructor() {
+    this.init = this.init.bind(this);
+    this.isInitialized = this.isInitialized.bind(this);
+    this.getUrl = this.getUrl.bind(this);
 
-export function initLoyaltyApi(apiEndpoint) {
-  LoyaltyApi.apiEndpoint = apiEndpoint;
-}
-
-export function loyaltyApi(path = '', query = {}) {
-  if (!LoyaltyApi.apiEndpoint) {
-    throw new Error('Cannot connect to loyalty: apiEndpoint missing from extension settings.');
+    this.endpoint = null;
   }
 
-  return new Uri()
-    .protocol(location.protocol)
-    .host(LoyaltyApi.apiEndpoint)
-    .path(path)
-    .query(query)
-    .toString();
+  init(endpoint) {
+    if (!endpoint) {
+      throw new Error('Loyalty endpoint cannot be empty!');
+    }
+
+    this.endpoint = endpoint;
+  }
+
+  isInitialized() {
+    return !!this.endpoint;
+  }
+
+  getUrl(path = '') {
+    return new Uri(path)
+      .protocol(location.protocol)
+      .host(this.endpoint)
+      .toString();
+  }
 }

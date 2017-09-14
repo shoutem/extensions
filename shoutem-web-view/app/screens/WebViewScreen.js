@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   WebView,
   InteractionManager,
@@ -7,13 +8,24 @@ import {
 import { View, Screen } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
+import {
+  EmptyStateView,
+} from '@shoutem/ui-addons';
+
+import { NO_URL_MESSAGE } from '../const';
 import NavigationToolbar from '../components/NavigationToolbar';
+
+const { bool, shape, string } = React.PropTypes;
 
 export default class WebViewScreen extends React.Component {
   static propTypes = {
-    url: React.PropTypes.string,
-    title: React.PropTypes.string,
-    showNavigationToolbar: React.PropTypes.bool,
+    shortcut: shape({
+      settings: shape({
+        showNavigationToolbar: bool,
+        url: string,
+        title: string,
+      }),
+    }),
   };
 
   constructor(props) {
@@ -43,6 +55,12 @@ export default class WebViewScreen extends React.Component {
     });
   }
 
+  getSettings() {
+    const { shortcut } = this.props;
+
+    return shortcut ? shortcut.settings || {} : this.props;
+  }
+
   setWebViewRef(ref) {
     this.webViewRef = ref;
   }
@@ -60,7 +78,7 @@ export default class WebViewScreen extends React.Component {
   }
 
   isNavigationEnabled() {
-    const { showNavigationToolbar } = this.props;
+    const { showNavigationToolbar } = this.getSettings();
     const { webNavigationState } = this.state;
 
     const webNavigation = webNavigationState.canGoBack || webNavigationState.canGoForward;
@@ -68,7 +86,7 @@ export default class WebViewScreen extends React.Component {
   }
 
   renderNavigationBar() {
-    const { url, title } = this.props;
+    const { url, title } = this.getSettings();
 
     return (
       <NavigationBar
@@ -82,15 +100,13 @@ export default class WebViewScreen extends React.Component {
   }
 
   renderWebView() {
-    const { url } = this.props;
+    const { url } = this.getSettings();
 
     if (this.state.isAnimationFinished) {
       return (
         <WebView
           ref={this.setWebViewRef}
-          source={{
-            uri: url || 'http://www.google.com',
-          }}
+          source={{ uri: url }}
           scalesPageToFit
           onNavigationStateChange={this.onNavigationStateChange}
         />
@@ -127,7 +143,19 @@ export default class WebViewScreen extends React.Component {
     );
   }
 
+  renderPlaceholderView() {
+    return (
+      <EmptyStateView message={NO_URL_MESSAGE} />
+    );
+  }
+
   render() {
+    const { url } = this.getSettings();
+
+    if (!url) {
+      return this.renderPlaceholderView();
+    }
+
     return (
       <Screen>
         {this.renderNavigationBar()}

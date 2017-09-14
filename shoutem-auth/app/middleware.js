@@ -109,6 +109,8 @@ export const userUpdatedMiddleware = store => next => (action) => {
   return next(action);
 };
 
+let legacyApiDomain;
+
 /**
  * Sets header Authorization value for every network request to endpoints registered
  * in shoutem.application that doesn't already include any Authorization header
@@ -116,20 +118,18 @@ export const userUpdatedMiddleware = store => next => (action) => {
 export const networkRequestMiddleware = setPriority(store => next => (action) => {
   if (isRSAA(action)) {
     const state = store.getState();
-    const appSettings = getExtensionSettings(state, APPLICATION_EXTENSION);
 
-    const { legacyApiEndpoint, apiEndpoint } = appSettings;
+    if (!legacyApiDomain) {
+      const appSettings = getExtensionSettings(state, APPLICATION_EXTENSION);
 
-    const servers = _.reduce([legacyApiEndpoint, apiEndpoint], (result, server) => {
-      if (server) {
-        result.push(new URI(server).hostname());
-      }
+      const { legacyApiEndpoint } = appSettings;
 
-      return result;
-    }, []);
+      legacyApiDomain = legacyApiEndpoint && new URI(legacyApiEndpoint).domain();
+    }
 
-    const endpoint = new URI(action[RSAA].endpoint).hostname();
-    if (servers.includes(endpoint) && !_.has(action[RSAA], AUTH_HEADERS)) {
+    const endpointDomain = new URI(action[RSAA].endpoint).domain();
+
+    if (legacyApiDomain === endpointDomain && !_.has(action[RSAA], AUTH_HEADERS)) {
       _.set(action[RSAA], AUTH_HEADERS, getAuthHeader(state));
     }
   }

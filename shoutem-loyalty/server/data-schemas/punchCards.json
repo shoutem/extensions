@@ -1,5 +1,5 @@
 {
-  "name": "punchCards",
+  "name": "punch-cards",
   "title": "Punch cards",
   "titleProperty": "title",
   "type": "object",
@@ -28,6 +28,7 @@
       "type": "object",
       "format": "date-time",
       "title": "Start of validity",
+      "required": true,
       "displayPriority": 5
     },
     "endTime": {
@@ -39,15 +40,10 @@
     "pointsRequired": {
       "format": "integer",
       "minimum": 1,
+      "required": true,
       "title": "Stamps required",
       "type": "integer",
       "displayPriority": 7
-    },
-    "code": {
-      "format": "single-line",
-      "title": "QR code",
-      "type": "string",
-      "displayPriority": 8
     }
   }
 }

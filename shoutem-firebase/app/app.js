@@ -2,44 +2,52 @@ import FCM from 'react-native-fcm';
 
 import { isProduction } from 'shoutem.application';
 
-import { deviceTokenReceived, notificationReceived } from './actionCreators';
+import {
+  handleReceivedToken,
+} from './services/fcm';
+
+import { notificationReceived } from './actionCreators';
 
 function appDidMount(app) {
-  if (isProduction()) {
-    const store = app.getStore();
+  if (!isProduction()) {
+    return;
+  }
 
-    function dispatchNotificationAction(receivedNotification) {
-      const { body, title, action, opened_from_tray } = receivedNotification;
-      const notification = { body, openedFromTray: opened_from_tray, title };
+  const store = app.getStore();
 
-      if (action) {
-        try {
-          const actionObject = JSON.parse(action);
-          notification.action = actionObject;
-        } catch (e) {
-          console.log('Unable to parse notification action object', e);
-        }
+  const { dispatch } = store;
+
+  const dispatchNotificationAction = (receivedNotification) => {
+    const { body, title, action, opened_from_tray } = receivedNotification;
+    const notification = { body, openedFromTray: opened_from_tray, title };
+
+    if (action) {
+      try {
+        const actionObject = JSON.parse(action);
+        notification.action = actionObject;
+      } catch (e) {
+        console.log('Unable to parse notification action object', e);
       }
-
-      store.dispatch(notificationReceived(notification));
     }
 
-    FCM.getFCMToken().then(token => {
-      store.dispatch(deviceTokenReceived(token));
-      // Display the FCM token only in development mode
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Firebase device token:', token);
-      }
-    });
+    dispatch(notificationReceived(notification));
+  };
 
-    FCM.on('notification', dispatchNotificationAction);
+  FCM.getFCMToken().then((token) => {
+    handleReceivedToken(token, dispatch);
+  });
 
-    FCM.getInitialNotification().then((notification) => {
-      if (notification) {
-        dispatchNotificationAction({...notification, opened_from_tray: true});
-      }
-    });
-  }
+  FCM.on('notification', dispatchNotificationAction);
+
+  FCM.getInitialNotification().then((notification) => {
+    if (notification) {
+      dispatchNotificationAction({ ...notification, opened_from_tray: true });
+    }
+  });
+
+  FCM.on('refreshToken', (token) => {
+    handleReceivedToken(token, dispatch);
+  });
 }
 
 export {

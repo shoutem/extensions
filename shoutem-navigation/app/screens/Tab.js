@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   InteractionManager,
-  LayoutAnimation,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -35,17 +34,8 @@ class Tab extends React.PureComponent {
     };
   }
 
-  componentWillMount() {
-    const { navigationState, shortcut, executeShortcut } = this.props;
-    if (isEmptyNavigationState(navigationState)) {
-      const navigationStack = getTabNavigationStack(shortcut.id);
-      executeShortcut(shortcut.id, undefined, navigationStack);
-    }
-  }
-
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      LayoutAnimation.easeInEaseOut();
       this.setState({
         shouldRenderContent: true,
       });

@@ -97,7 +97,7 @@ function favoriteItems(state = {}, action) {
 function schemas(state = {}, action) {
   switch (action.type) {
     case LOAD_FAVORITES_SCHEMAS:
-      return _.merge({}, state, action.favoritesSchemas);
+      return { ...action.favoritesSchemas };
     default:
       return state;
   }

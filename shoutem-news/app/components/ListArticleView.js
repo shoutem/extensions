@@ -10,10 +10,14 @@ import {
   Divider,
 } from '@shoutem/ui';
 
+import {
+  ArticleView,
+} from './ArticleView';
+
 /**
  * A component used to render a single list article item
  */
-export class ListArticleView extends React.Component {
+export class ListArticleView extends ArticleView {
   static propTypes = {
     onPress: React.PropTypes.func,
     articleId: React.PropTypes.string,
@@ -21,15 +25,6 @@ export class ListArticleView extends React.Component {
     imageUrl: React.PropTypes.string,
     date: React.PropTypes.string,
   };
-
-  constructor(props) {
-    super(props);
-    this.onPress = this.onPress.bind(this);
-  }
-
-  onPress() {
-    this.props.onPress(this.props.articleId);
-  }
 
   render() {
     const { title, imageUrl, date } = this.props;

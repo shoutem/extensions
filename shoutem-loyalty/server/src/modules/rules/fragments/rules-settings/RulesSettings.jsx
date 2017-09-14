@@ -1,31 +1,42 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { LoaderContainer } from '@shoutem/react-web-ui';
-import { isInitialized, shouldLoad } from '@shoutem/redux-io';
-import { Button, FormGroup, Checkbox } from 'react-bootstrap';
-import { loadRules, updateRules, getRulesById } from '../../redux';
-import { updateRuleById } from '../../services';
-import RulesTable from '../../components/rules-table';
-import './style.scss';
+import { shouldLoad } from '@shoutem/redux-io';
+import { RulesForm, RulesToggleSwitch } from '../../components';
+import {
+  loadRules,
+  createRules,
+  updateRules,
+  deleteRules,
+  getRulesById,
+} from '../../redux';
+
+function resolveRules(ruleTemplates, rules) {
+  return _.reduce(ruleTemplates, (result, ruleTemplate) => {
+    const { ruleType } = ruleTemplate;
+
+    const rule = _.find(rules, { ruleType });
+    const enabled = !!rule;
+    const resolvedRule = rule || ruleTemplate;
+
+    return {
+      ...result,
+      [ruleType]: { ...resolvedRule, enabled },
+    };
+  }, {});
+}
 
 export class RulesSettings extends Component {
   constructor(props) {
     super(props);
 
     this.checkData = this.checkData.bind(this);
-    this.handleRuleChange = this.handleRuleChange.bind(this);
-    this.handleSaveChanges = this.handleSaveChanges.bind(this);
-    this.handleToggleRequireReceipt = this.handleToggleRequireReceipt.bind(this);
-    this.calculateHasChanges = this.calculateHasChanges.bind(this);
+    this.handleRulesPlaceToggle = this.handleRulesPlaceToggle.bind(this);
+    this.handleUpdateRules = this.handleUpdateRules.bind(this);
+    this.handleUpdateRequireReceipt = this.handleUpdateRequireReceipt.bind(this);
 
-    const { rules, requireReceiptCode } = props;
     this.state = {
-      changedRuleIds: [],
-      rules,
-      requireReceiptCode,
-      inProgress: false,
-      hasChanges: false,
+      inError: false,
     };
   }
 
@@ -38,113 +49,100 @@ export class RulesSettings extends Component {
   }
 
   checkData(nextProps, props = {}) {
-    const { programId, rules: nextRules } = nextProps;
-    const { rules } = props;
+    const { currentPlaceId } = props;
+    const {
+      programId: nextProgramId,
+      currentPlaceId: nextCurrentPlaceId,
+    } = nextProps;
 
-    if (shouldLoad(nextProps, props, 'rules')) {
-      this.props.loadRules(programId);
+    if (
+      currentPlaceId !== nextCurrentPlaceId ||
+      shouldLoad(nextProps, props, 'rules')
+    ) {
+      this.props.loadRules(nextProgramId, nextCurrentPlaceId);
+      this.setState({ inError: false });
     }
+  }
 
-    if (rules !== nextRules) {
-      this.setState({ rules: nextRules });
+  handleRulesPlaceToggle() {
+    const { rules, ruleTemplates, programId, currentPlaceId } = this.props;
+    const shouldCreatePlaceRules = _.isEmpty(rules);
+
+    if (shouldCreatePlaceRules) {
+      this.props.createRules(ruleTemplates, programId, currentPlaceId);
+    } else {
+      this.props.deleteRules(rules, programId);
     }
   }
 
-  handleRuleChange(rule, rulePatch) {
-    const { changedRuleIds, rules } = this.state;
-    const { id } = rule;
+  handleUpdateRules(newRules) {
+    const {
+      programId,
+      rules: initialRules,
+      currentPlaceId,
+    } = this.props;
 
-    this.setState({
-      rules: updateRuleById(rules, id, rulePatch),
-      changedRuleIds: [...changedRuleIds, id],
-      hasChanges: true,
-    });
+    this.props.updateRules(initialRules, newRules, programId, currentPlaceId)
+      .then(undefined, () => this.setState({ inError: true }));
   }
 
-  handleToggleRequireReceipt() {
-    const { requireReceiptCode } = this.state;
-
-    const nextRequireReceiptCode = !requireReceiptCode;
-    this.setState({
-      requireReceiptCode: nextRequireReceiptCode,
-      hasChanges: this.calculateHasChanges(nextRequireReceiptCode),
-    });
-  }
-
-  calculateHasChanges(newRequireReceiptCode) {
-    const { changedRuleIds } = this.state;
-    const { requireReceiptCode } = this.props;
-
-    return !_.isEmpty(changedRuleIds) ||
-      requireReceiptCode !== newRequireReceiptCode;
-  }
-
-  handleSaveChanges() {
-    const { changedRuleIds, rules, requireReceiptCode } = this.state;
-    const { programId, updateRules, onUpdateRequiredReceipt } = this.props;
-
-    this.setState({ inProgress: true });
-    const changedRules = _.filter(rules, rule => changedRuleIds.includes(rule.id));
-
-    return Promise.all([
-      updateRules(changedRules, programId),
-      onUpdateRequiredReceipt({ requireReceiptCode }),
-    ]).then(() => (
-      this.setState({
-        changedRuleIds: [],
-        inProgress: false,
-        hasChanges: false,
-      }))
-    );
+  handleUpdateRequireReceipt(requireReceiptCode) {
+    const settingsPatch = { requireReceiptCode };
+    this.props.onUpdateExtension(settingsPatch);
   }
 
   render() {
     const {
-      requireReceiptCode,
       rules,
-      hasChanges,
-      inProgress,
-    } = this.state;
+      ruleTemplates,
+      currentPlaceId,
+      requireReceiptCode,
+    } = this.props;
+
+    const { inError } = this.state;
+
+    const hasRules = !_.isEmpty(rules);
+    const showRulesForm = !currentPlaceId || hasRules;
+    const resolvedRules = resolveRules(ruleTemplates, rules);
 
     return (
-      <LoaderContainer
-        isLoading={!isInitialized(rules)}
-        className="rules-settings"
-      >
+      <div className="rules-settings">
         <h3>Program settings</h3>
-        <RulesTable
-          rules={rules}
-          onRuleChange={this.handleRuleChange}
-        />
-        <FormGroup>
-          <Checkbox
-            checked={requireReceiptCode}
-            onChange={this.handleToggleRequireReceipt}
-          >
-            Require receipt code for purchase validation
-          </Checkbox>
-        </FormGroup>
-        <Button
-          bsStyle="primary"
-          onClick={this.handleSaveChanges}
-          disabled={!hasChanges}
-        >
-          <LoaderContainer isLoading={inProgress}>
-            Save
-          </LoaderContainer>
-        </Button>
-      </LoaderContainer>
+        {currentPlaceId &&
+          <RulesToggleSwitch
+            onToggle={this.handleRulesPlaceToggle}
+            value={hasRules}
+          />
+        }
+        {showRulesForm &&
+          <RulesForm
+            onUpdateRequiredReceipt={this.handleUpdateRequireReceipt}
+            onUpdateRules={this.handleUpdateRules}
+            requireReceiptCode={requireReceiptCode}
+            rules={resolvedRules}
+          />
+        }
+        {inError &&
+          <p className="text-error">
+            Something went wrong. Please refresh this page and try again.
+          </p>
+        }
+      </div>
     );
   }
 }
 
 RulesSettings.propTypes = {
-  programId: PropTypes.string,
   rules: PropTypes.object,
+  ruleTemplates: PropTypes.array,
+  programId: PropTypes.string,
+  currentPlaceId: PropTypes.string,
   requireReceiptCode: PropTypes.bool,
   loadRules: PropTypes.func,
+  createRules: PropTypes.func,
   updateRules: PropTypes.func,
-  onUpdateRequiredReceipt: PropTypes.func,
+  deleteRules: PropTypes.func,
+  onUpdateExtension: PropTypes.func,
 };
 
 function mapStateToProps(state) {
@@ -153,13 +151,22 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
+  const { extensionName } = ownProps;
+  const scope = { extensionName };
+
   return {
-    loadRules: (programId) => (
-      dispatch(loadRules(programId))
+    loadRules: (programId, placeId) => (
+      dispatch(loadRules(programId, placeId, scope))
     ),
-    updateRules: (changedRules, programId) => (
-      dispatch(updateRules(changedRules, programId))
+    createRules: (ruleTemplates, programId, placeId) => (
+      dispatch(createRules(ruleTemplates, programId, placeId, scope))
+    ),
+    updateRules: (initialRules, newRules, programId, placeId) => (
+      dispatch(updateRules(initialRules, newRules, programId, placeId, scope))
+    ),
+    deleteRules: (rules, programId) => (
+      dispatch(deleteRules(rules, programId, scope))
     ),
   };
 }

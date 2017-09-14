@@ -1,13 +1,10 @@
 import React from 'react';
-
 import { connect } from 'react-redux';
 
 import moment from 'moment';
 
 import {
-  find,
   getCollection,
-  getOne,
   next,
  } from '@shoutem/redux-io';
 
@@ -24,13 +21,18 @@ import { connectStyle } from '@shoutem/theme';
 
 import {
   ext,
-  TRANSACTIONS_SCHEMA,
 } from '../const';
 
-import { transaction as transactionShape } from '../components/shapes';
+import {
+  placeShape,
+  transactionShape,
+} from '../components/shapes';
+
 import TransactionItem from '../components/TransactionItem';
 
-const { arrayOf, func, shape, string } = React.PropTypes;
+import { refreshTransactions } from '../services';
+
+const { arrayOf, func } = React.PropTypes;
 
 /* eslint-disable class-methods-use-this */
 
@@ -41,33 +43,25 @@ const { arrayOf, func, shape, string } = React.PropTypes;
 export class PointsHistoryScreen extends ListScreen {
   static propTypes = {
     ...ListScreen.propTypes,
-     // Loyalty card for user
-    card: shape({
-      // Card ID
-      id: string,
-    }),
     // Transactions
     data: arrayOf(transactionShape),
-    // Actions
-    find: func,
+    // Place to which transactions belong to
+    place: placeShape,
     next: func,
+    // Refreshes transactions
+    refreshTransactions: func,
   };
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      schema: TRANSACTIONS_SCHEMA,
-    };
+    this.renderRow = this.renderRow.bind(this);
   }
 
   fetchData() {
-    const { card, find } = this.props;
-    const { schema } = this.state;
+    const { refreshTransactions } = this.props;
 
-    find(schema, undefined, {
-      'filter[card]': card.id,
-    });
+    refreshTransactions();
   }
 
   getSectionId({ createdAt }) {
@@ -88,6 +82,13 @@ export class PointsHistoryScreen extends ListScreen {
   }
 
   renderRow(transaction) {
+    const { place } = this.props;
+    const { transactionData } = transaction;
+
+    if (place && place.id !== transactionData.location) {
+      return null;
+    }
+
     return <TransactionItem transaction={transaction} />;
   }
 
@@ -99,15 +100,14 @@ export class PointsHistoryScreen extends ListScreen {
 }
 
 export const mapStateToProps = (state) => {
-  const { allTransactions, card } = state[ext()];
+  const { allTransactions } = state[ext()];
 
   return {
-    card: getOne(card, state),
     data: getCollection(allTransactions, state),
   };
 };
 
-export const mapDispatchToProps = { find, next };
+export const mapDispatchToProps = { next, refreshTransactions };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('PointsHistoryScreen'))(PointsHistoryScreen),

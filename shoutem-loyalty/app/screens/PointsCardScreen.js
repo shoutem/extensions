@@ -3,22 +3,24 @@ import React from 'react';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode';
 
+import _ from 'lodash';
+
 import {
-  find,
   getCollection,
-  getOne,
-  isBusy,
-  shouldRefresh,
+  isInitialized,
  } from '@shoutem/redux-io';
 
-import { navigateTo, openInModal } from '@shoutem/core/navigation';
+import {
+  navigateTo,
+  openInModal,
+ } from '@shoutem/core/navigation';
 
 import {
   Button,
   Caption,
-  Divider,
-  ListView,
   Screen,
+  ScrollView,
+  Spinner,
   Title,
   Text,
   View,
@@ -33,42 +35,61 @@ import {
 } from 'shoutem.auth';
 
 import {
-  ext,
-  CARD_STATE_SCHEMA,
-  TRANSACTIONS_SCHEMA,
-} from '../const';
+  getExtensionSettings,
+} from 'shoutem.application';
 
-import { refreshCard } from '../redux';
-import TransactionItem from '../components/TransactionItem';
-import { transaction as transactionShape } from '../components/shapes';
+import { QRCodeScanner } from 'shoutem.camera';
+
+import { ext } from '../const';
+
+import {
+  fetchCashierInfo,
+  getCardId,
+  getSingleCardState,
+} from '../redux';
+
+import {
+  authorizeTransactionByQRCode,
+  refreshCardState,
+  refreshTransactions,
+} from '../services';
+
+import NoProgramScreen from './NoProgramScreen';
+import TransactionHistoryView from '../components/TransactionHistoryView';
+
+import {
+  cashierShape,
+  transactionShape,
+ } from '../components/shapes';
 
 const { arrayOf, func, number, shape, string } = React.PropTypes;
 
-const VISIBLE_TRANSACTIONS = 2;
-
-const renderTransactionRow = transaction => <TransactionItem transaction={transaction} />;
-
 /**
- * Shows points card details
+ * Shows points card details for a single card loyalty program
  */
 export class PointsCardScreen extends React.Component {
   static propTypes = {
+    // Assigns points to card when cashier scans a QR code
+    authorizeTransactionByQRCode: func,
+    // Card ID for user's loyalty card
+    cardId: string,
     // Card state, with points
     cardState: shape({
       points: number,
     }),
-    // Parent card - it belongs to a user within a loyalty program
-    card: shape({
-      id: string,
-    }),
-    // Actions
-    find: func,
+    // Cashier info for this user, empty if he's not a cashier.
+    // A cashier can scan a QR code and a user can see his points card info.
+    cashierInfo: cashierShape,
     // Navigates to points history screen
     navigateTo: func,
     // Opens the assign points flow in a modal dialog
     openInModal: func,
-    // Refreshes the loyalty card
-    refreshCard: func,
+    // ID of loyalty program for this extension
+    programId: string,
+    // Refreshes loyalty card points
+    refreshCardState: func,
+    // Refreshes loyalty card transactions
+    refreshTransactions: func,
     // Recent transactions
     transactions: arrayOf(transactionShape),
   };
@@ -77,6 +98,7 @@ export class PointsCardScreen extends React.Component {
     super(props);
 
     this.assignPoints = this.assignPoints.bind(this);
+    this.handleScanCode = this.handleScanCode.bind(this);
     this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(this);
     this.refreshCardState = this.refreshCardState.bind(this);
   }
@@ -85,23 +107,18 @@ export class PointsCardScreen extends React.Component {
     this.refreshCardState();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { card: { id } } = this.props;
-    const { card: { id: nextId }, cardState } = nextProps;
-
-    const hasNewCardId = !id && nextId;
-
-    if (hasNewCardId || (nextId && shouldRefresh(cardState))) {
-      this.refreshCardState(nextId);
-    }
-  }
-
   assignPoints() {
     const { openInModal } = this.props;
 
     openInModal({
-      screen: ext('VerificationScreen'),
+      screen: ext('PinVerificationScreen'),
     });
+  }
+
+  handleScanCode(code) {
+    const { authorizeTransactionByQRCode } = this.props;
+
+    authorizeTransactionByQRCode(code.data);
   }
 
   navigateToPointsHistoryScreen() {
@@ -112,90 +129,106 @@ export class PointsCardScreen extends React.Component {
     });
   }
 
-  refreshCardState(newCardId) {
-    const { card, find, refreshCard } = this.props;
+  refreshCardState() {
+    const { refreshCardState, refreshTransactions } = this.props;
 
-    const cardId = card.id || newCardId;
-
-    if (!cardId) {
-      refreshCard();
-      return;
-    }
-
-    find(CARD_STATE_SCHEMA, undefined, {
-      cardId,
-    });
-
-    find(TRANSACTIONS_SCHEMA, undefined, {
-      'filter[card]': cardId,
-    });
+    refreshCardState();
+    refreshTransactions();
   }
 
-  renderTransactionHistory() {
-    const { transactions } = this.props;
-
-    return (
-      <View>
-        <Divider styleName="section-header">
-          <Caption>POINTS HISTORY</Caption>
-        </Divider>
-        <ListView
-          data={transactions.slice(0, VISIBLE_TRANSACTIONS)}
-          loading={isBusy(transactions)}
-          renderRow={renderTransactionRow}
-        />
-        <Button
-          styleName="md-gutter-vertical"
-          onPress={this.navigateToPointsHistoryScreen}
-        >
-          <Text>SEE ENTIRE HISTORY</Text>
-        </Button>
-      </View>
-    );
-  }
-
-  render() {
-    const { cardState } = this.props;
+  renderPointsCardInfo() {
+    const { cardId, cardState = {}, transactions } = this.props;
     const { points = 0 } = cardState;
 
     return (
       <Screen>
         <NavigationBar title="MY CARD" />
-        <View styleName="content sm-gutter solid vertical h-center">
-          <TouchableOpacity onPress={this.assignPoints}>
-            <QRCode
-              size={160}
-              value={'QRCodeValueForMyCard'}
-            />
-          </TouchableOpacity>
-          <Caption styleName="h-center sm-gutter">Points</Caption>
-          <Title styleName="h-center">{cardState ? points : ''}</Title>
-          <Button
-            styleName="secondary md-gutter-vertical"
-            style={{ width: 160 }}
-            onPress={() => this.refreshCardState()}
-          >
-            <Text>REFRESH</Text>
-          </Button>
-        </View>
-        {this.renderTransactionHistory()}
+        <ScrollView>
+          <View styleName="content sm-gutter solid vertical h-center">
+            <TouchableOpacity onPress={this.assignPoints}>
+              <QRCode
+                size={160}
+                value={JSON.stringify([cardId])}
+              />
+            </TouchableOpacity>
+            <Caption styleName="h-center sm-gutter">Points</Caption>
+            <Title styleName="h-center">{points}</Title>
+            <Button
+              styleName="secondary md-gutter-vertical"
+              style={{ width: 160 }}
+              onPress={this.refreshCardState}
+            >
+              <Text>REFRESH</Text>
+            </Button>
+          </View>
+          <TransactionHistoryView
+            onShowHistory={this.navigateToPointsHistoryScreen}
+            transactions={transactions}
+          />
+        </ScrollView>
       </Screen>
     );
+  }
+
+  renderQRCodeScanner() {
+    return (
+      <QRCodeScanner
+        onQRCodeScanned={this.handleScanCode}
+      />);
+  }
+
+  renderContent() {
+    const { cashierInfo } = this.props;
+
+    if (!isInitialized(cashierInfo)) {
+      return <Spinner styleName="xl-gutter-top" />;
+    }
+
+    const isUserACashier = _.has(cashierInfo, 'data');
+
+    return isUserACashier ? this.renderQRCodeScanner() : this.renderPointsCardInfo();
+  }
+
+  renderScreen() {
+    return (
+      <Screen>
+        <NavigationBar title="MY CARD" />
+        {this.renderContent()}
+      </Screen>
+    );
+  }
+
+  render() {
+    const { programId } = this.props;
+
+    return programId ? this.renderScreen() : (<NoProgramScreen />);
   }
 }
 
 export const mapStateToProps = (state) => {
-  const { allTransactions, card, cardState } = state[ext()];
+  const { allTransactions, cashierInfo } = state[ext()];
+
+  const extensionSettings = getExtensionSettings(state, ext());
+  const programId = _.get(extensionSettings, 'program.id');
 
   return {
-    card: getOne(card, state),
-    cardState: getOne(cardState, state),
+    cardId: getCardId(state),
+    cardState: getSingleCardState(state),
+    cashierInfo,
+    programId,
     transactions: getCollection(allTransactions, state),
   };
 };
 
-export const mapDispatchToProps = { find, refreshCard, navigateTo, openInModal };
+export const mapDispatchToProps = {
+  authorizeTransactionByQRCode,
+  fetchCashierInfo,
+  refreshCardState,
+  refreshTransactions,
+  navigateTo,
+  openInModal,
+};
 
 export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('PointsCardScreen'))(PointsCardScreen),
-), true);
+));

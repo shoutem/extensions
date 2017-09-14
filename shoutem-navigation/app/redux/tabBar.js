@@ -4,7 +4,6 @@ import { mapReducers } from '@shoutem/redux-composers';
 
 import {
   createNavigationReducer,
-  navigationReducer,
   setActiveNavigationStack,
   jumpToKey,
 } from '@shoutem/core/navigation';
@@ -90,7 +89,7 @@ const tabKeySelector = action => {
   const stackName = _.get(action, 'navigationStack.name');
   return _.startsWith(stackName, TAB_NAVIGATOR_PREFIX) ? stackName : undefined;
 };
-const tabStates = mapReducers(tabKeySelector, navigationReducer);
+const tabStates = mapReducers(tabKeySelector, createNavigationReducer);
 
 export default combineReducers({
   navigationState: tabBarState,

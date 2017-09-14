@@ -1,4 +1,6 @@
 import React from 'react';
+import moment from 'moment';
+
 import {
   TouchableOpacity,
   Title,
@@ -9,30 +11,14 @@ import {
   Divider,
 } from '@shoutem/ui';
 
-import moment from 'moment';
+import {
+  ArticleView,
+} from './ArticleView';
 
 /**
  * A component used to render featured news articles
  */
-export class FeaturedArticleView extends React.Component {
-  static propTypes = {
-    onPress: React.PropTypes.func,
-    articleId: React.PropTypes.string,
-    title: React.PropTypes.string,
-    author: React.PropTypes.string,
-    imageUrl: React.PropTypes.string,
-    date: React.PropTypes.string,
-  };
-
-  constructor(props) {
-    super(props);
-    this.onPress = this.onPress.bind(this);
-  }
-
-  onPress() {
-    this.props.onPress(this.props.articleId);
-  }
-
+export class FeaturedArticleView extends ArticleView {
   render() {
     const { title, imageUrl, date, author } = this.props;
 

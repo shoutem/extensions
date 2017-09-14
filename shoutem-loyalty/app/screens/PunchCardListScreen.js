@@ -21,7 +21,7 @@ import {
 
 import {
   CMS_PUNCHCARDS_SCHEMA,
-  PUNCHCARDS_SCHEMA,
+  PUNCH_REWARDS_SCHEMA,
   ext,
 } from '../const';
 
@@ -49,7 +49,7 @@ export class PunchCardListScreen extends RewardsListScreen {
     this.state = {
       ...this.state,
       cmsSchema: CMS_PUNCHCARDS_SCHEMA,
-      schema: PUNCHCARDS_SCHEMA,
+      schema: PUNCH_REWARDS_SCHEMA,
     };
   }
 
@@ -62,8 +62,8 @@ export class PunchCardListScreen extends RewardsListScreen {
         onPress={() => this.navigateToRewardDetails(reward)}
       >
         <Image
-          styleName="large-banner"
-          source={{ uri: image.url }}
+          styleName="large-banner placeholder"
+          source={{ uri: image && image.url }}
         >
           <Tile>
             <Title styleName="lg-gutter">{title.toUpperCase()}</Title>
@@ -92,4 +92,4 @@ export const mapStateToProps = (state, ownProps) => {
 
 export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('PunchCardListScreen'))(PunchCardListScreen),
-), true);
+));

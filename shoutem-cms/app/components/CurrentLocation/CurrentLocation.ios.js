@@ -54,7 +54,7 @@ export default function (WrappedComponent) {
         <WrappedComponent
           {...this.props}
           currentLocation={currentLocation}
-          promptForLocationPermission={this.promptForLocationPermission}
+          checkPermissionStatus={this.checkPermissionStatus}
         />
       );
     }

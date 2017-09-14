@@ -15,7 +15,7 @@
 
   &:hover {
     .screen_group__screen-bezel::before {
-      opacity: 1.0;
+      opacity: 0.2;
     }
   }
 
@@ -84,6 +84,7 @@
 }
 
 .screen_group__screen_name {
+  font-size: 13px;
   text-align: center;
   padding-top: 10px;
   width:80px;

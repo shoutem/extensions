@@ -61,7 +61,7 @@ export class RssListScreen extends ListScreen {
         <EmptyStateView {...emptyStateViewProps} />
       );
     }
-    
+
     return super.renderPlaceholderView(data);
   }
 }

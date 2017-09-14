@@ -1,7 +1,7 @@
 {
   "name": "google-analytics",
-  "version": "0.1.14",
-  "platform": "1.1.*",
+  "version": "1.2.0",
+  "platform": "1.2.*",
   "title": "Google Analytics",
   "description": "Enable Google analytics",
   "icon": "server/assets/add-analytics-image.png",

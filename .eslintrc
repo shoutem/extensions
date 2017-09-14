@@ -4,19 +4,59 @@
     "mocha": true
   },
   "plugins": [
+    "react",
     "react-native"
   ],
   "parser": "babel-eslint",
   "rules": {
     "no-empty-label": 0,
-    "no-console": 0,
-    "import/no-unresolved": 0,
+    "no-multiple-empty-lines": [2, {
+      "max": 1
+    }],
+    "no-console": 2,
+    "no-shadow": 1,
     "global-require": 0,
     "no-underscore-dangle": 0,
     "space-before-keywords": 0,
     "space-after-keywords": 0,
     "space-return-throw-case": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/extensions": 0,
+    "import/prefer-default-export": 0,
+    "import/no-named-as-default": 0,
+    "import/no-unresolved": 0,
+    "import/first": 2,
+    "react/forbid-prop-types": 0,
+    "react/require-default-props": 0,
+    "react/self-closing-comp": [2, {
+      "component": true,
+      "html": false
+    }],
+    "react/no-multi-comp": 2,
+    "react/jsx-sort-props": 1,
+    "react/jsx-wrap-multilines": 2,
+    "react/jsx-tag-spacing": [2, {
+      "beforeSelfClosing": "always"
+    }],
+    "react/jsx-handler-names": 2,
+    "react/jsx-closing-bracket-location": 2,
+    "react/jsx-filename-extension": [1, {
+      "extensions": [".js", ".jsx"]
+    }],
+    "react/jsx-no-bind": [2, {
+      "allowArrowFunctions": false,
+      "allowBind": false
+    }],
     "react-native/no-unused-styles": 2,
+    "react-native/no-inline-styles": 2,
     "react-native/split-platform-components": 2
+  },
+  "parserOptions":{
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "ecmaFeatures": {
+    "jsx": true
   }
 }

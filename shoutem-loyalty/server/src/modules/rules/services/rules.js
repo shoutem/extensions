@@ -1,32 +1,42 @@
 import _ from 'lodash';
-import { cloneStatus } from '@shoutem/redux-io';
 
-export function updateRuleById(rules, ruleId, rulePatch) {
-  const updatedRule = {
-    ...rules[ruleId],
-    ...rulePatch,
-  };
-
-  const updatedRules = {
-    ...rules,
-    [ruleId]: updatedRule,
-  };
-
-  cloneStatus(rules, updatedRules);
-
-  return updatedRules;
+function parseNumericString(string) {
+  return _.replace(string, ',', '.');
 }
 
-export function validateNumericRule(number) {
-  if (_.isEmpty(number)) {
-    return false;
-  }
+export function validateNumericRule(ruleValue) {
+  const number = parseNumericString(ruleValue);
 
   if (_.isNumber(number)) {
     return true;
   }
 
-  // Calling _.toNumber for a string that is not a number results in NaN.
-  // That's why a check !_.isNaN is needed.
+  if (_.isEmpty(number)) {
+    return false;
+  }
+
   return !_.isNaN(_.toNumber(number));
+}
+
+export function transformNumericRule(ruleValue) {
+  return _.toNumber(parseNumericString(ruleValue));
+}
+
+export function getRulesToCreate(rules) {
+  return _.filter(rules, rule => !rule.id && rule.enabled);
+}
+
+export function getRulesToDelete(rules) {
+  return _.filter(rules, rule => rule.id && !rule.enabled);
+}
+
+export function getRulesToUpdate(initialRules, newRules) {
+  return _.filter(newRules, rule => {
+    const { id, implementationData } = rule;
+    const initialRule = _.find(initialRules, { id });
+
+    return (
+      initialRule && !_.isEqual(initialRule.implementationData, implementationData)
+    );
+  });
 }

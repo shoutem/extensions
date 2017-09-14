@@ -1,28 +1,26 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import { Table } from 'react-bootstrap';
+import { isBusy } from '@shoutem/redux-io';
 import { LoaderContainer } from '@shoutem/react-web-ui';
+import { getCategoriesDisplayLabel } from '../../services';
 import './style.scss';
-
-const MAX_VISIBLE_CATEGORIES = 2;
 
 function getCategoryName(resource) {
   const categories = _.filter(resource.categories, { autoCreated: false });
   const categoryNames = _.map(categories, 'name');
 
-  const visibleCategories = categoryNames.slice(0, MAX_VISIBLE_CATEGORIES);
-  if (categories.length > MAX_VISIBLE_CATEGORIES) {
-    visibleCategories.push(`+ ${(categoryNames.length - MAX_VISIBLE_CATEGORIES)} more`);
-  }
-
-  return visibleCategories.join(', ');
+  return getCategoriesDisplayLabel(categoryNames);
 }
 
-export default function ContentPreview({ resources, titleProp, hasContent, inProgress }) {
+export default function ContentPreview({ resources, titleProp, hasContent }) {
   return (
     <div className="content-preview">
       {hasContent && <span className="content-preview__overlay" />}
-      <LoaderContainer isLoading={inProgress} isOverlay>
+      <LoaderContainer
+        isLoading={isBusy(resources)}
+        isOverlay
+      >
         <Table className="content-preview__table">
           <thead>
             <tr>
@@ -50,6 +48,7 @@ export default function ContentPreview({ resources, titleProp, hasContent, inPro
 }
 
 ContentPreview.propTypes = {
+  categories: PropTypes.array,
   resources: PropTypes.object.isRequired,
   titleProp: PropTypes.string.isRequired,
   hasContent: PropTypes.bool,

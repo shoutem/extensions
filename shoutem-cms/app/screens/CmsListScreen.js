@@ -28,6 +28,7 @@ import {
   isBusy,
   isInitialized,
   isError,
+  cloneStatus,
 
   getCollection,
   getOne,
@@ -59,6 +60,27 @@ function printChangedProps(props, nextProps) {
       console.log(` -> ${propName}`);
     }
   }
+}
+
+/**
+ * Returns the categories that should be displayed in the app
+ * based on the shortcut settings configured in the builder.
+ *
+ * @param {[]} allCategories All CMS categories connected to a shortcut.
+ * @param {[]} visibleCategories A list of categories that should be visible
+ *   in the app. If this list is empty, all categories will be displayed.
+ */
+function getCategoriesToDisplay(allCategories, visibleCategories) {
+  if (_.isEmpty(visibleCategories)) {
+    // Show all categories, if the app owner hasn't explicitly
+    // selected any visible categories, this is the default state.
+    return allCategories;
+  }
+
+  // Visible categories have been configured, so show only the selected categories
+  const categoriesToDisplay = _.intersectionBy(allCategories, visibleCategories, 'id');
+  cloneStatus(allCategories, categoriesToDisplay);
+  return categoriesToDisplay;
 }
 
 /**
@@ -120,8 +142,13 @@ export class CmsListScreen extends PureComponent {
     return (state, ownProps) => {
       const { screenId } = ownProps;
       const parentCategoryId = _.get(ownProps, 'shortcut.settings.parentCategory.id');
+      const visibleCategories = _.get(ownProps, 'shortcut.settings.visibleCategories', []);
       const sortField = _.get(ownProps, 'shortcut.settings.sortField');
       const sortOrder = _.get(ownProps, 'shortcut.settings.sortOrder');
+
+      const allCategories = getCategories(state, parentCategoryId);
+      const categoriesToDisplay = getCategoriesToDisplay(allCategories, visibleCategories);
+
       const collection = getCmsCollection(state);
       if (!collection) {
         throw new Error('Invalid collection selector passed to createMapStateToProps ' +
@@ -136,7 +163,7 @@ export class CmsListScreen extends PureComponent {
         sortField,
         sortOrder,
         data: getCollection(collection[selectedCategoryId], state),
-        categories: getCategories(state, parentCategoryId),
+        categories: categoriesToDisplay,
         selectedCategory: getOne(selectedCategoryId, state, CATEGORIES_SCHEMA),
       };
     };
@@ -195,6 +222,16 @@ export class CmsListScreen extends PureComponent {
       printChangedProps(this.props, nextProps);
     }
 
+    // check if we need user location
+    const { sortField, checkPermissionStatus } = nextProps;
+
+    const isSortByLocation = sortField === 'location';
+    const isLocationAvailable = !!nextProps.currentLocation;
+
+    if (isSortByLocation && !isLocationAvailable && _.isFunction(checkPermissionStatus)) {
+      checkPermissionStatus();
+    }
+
     this.refreshInvalidContent(nextProps);
   }
 
@@ -231,6 +268,10 @@ export class CmsListScreen extends PureComponent {
       ),
       title: (title || '').toUpperCase(),
     };
+  }
+
+  getListProps() {
+    return {};
   }
 
   getQueryParams(options) {
@@ -457,6 +498,8 @@ export class CmsListScreen extends PureComponent {
         getSectionId={this.getSectionId}
         renderSectionHeader={this.renderSectionHeader}
         style={style.list}
+        initialListSize={1}
+        {...this.getListProps()}
       />
     );
   }

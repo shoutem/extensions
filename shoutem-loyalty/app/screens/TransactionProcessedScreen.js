@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import {
   Button,
-  Icon,
+  Image,
   Screen,
   Subtitle,
   Text,
@@ -18,6 +18,9 @@ import { closeModal } from '@shoutem/core/navigation';
 import { ext } from '../const';
 
 const { bool, func, number } = React.PropTypes;
+
+const STAMP_ICON = require('../assets/icons/stamp.png');
+const TROPHY_ICON = require('../assets/icons/trophy.png');
 
 const getNavBarProps = () => ({
   renderLeftComponent: () => null,
@@ -41,10 +44,10 @@ export class TransactionProcessedScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onContinue = this.onContinue.bind(this);
+    this.handleContinue = this.handleContinue.bind(this);
   }
 
-  onContinue() {
+  handleContinue() {
     const { closeModal } = this.props;
 
     closeModal();
@@ -53,20 +56,23 @@ export class TransactionProcessedScreen extends React.Component {
   render() {
     const { points, redeemed } = this.props;
 
-    const icon = redeemed ? 'trophy' : 'stamp';
-    const message = redeemed ? 'You have redeemed your reward!' : `Your card was stamped ${points} times`;
+    const message = redeemed ?
+      'You have redeemed your reward!' : `Your card was stamped ${points} times`;
 
     return (
       <Screen>
         <NavigationBar {...getNavBarProps()} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <View styleName="oval-highlight">
-            <Icon name={icon} />
+            <Image
+              source={redeemed ? TROPHY_ICON : STAMP_ICON}
+              styleName="small-avatar"
+            />
           </View>
           <Subtitle styleName="h-center md-gutter-top xl-gutter-horizontal">{message}</Subtitle>
           <Button
             styleName="secondary lg-gutter-vertical"
-            onPress={this.onContinue}
+            onPress={this.handleContinue}
           >
             <Text>CONTINUE</Text>
           </Button>

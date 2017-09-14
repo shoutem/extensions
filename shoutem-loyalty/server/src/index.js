@@ -1,12 +1,17 @@
 // Constants `screens`, `actions` and `reducer` are exported via named export
 // It is important to use those exact names
 
-import LoyaltySettingsPage from './pages/loyalty-settings-page';
-import PointsCardSettingsPage from './pages/points-card-settings-page';
+import {
+  RewardsSettingsPage,
+  LoyaltySettingsPage,
+  PointsCardSettingsPage,
+} from './pages';
+import { cmsApi } from './modules/cms';
 
 import reducer from './redux';
 
 export const pages = {
+  RewardsSettingsPage,
   LoyaltySettingsPage,
   PointsCardSettingsPage,
 };
@@ -14,7 +19,8 @@ export const pages = {
 let pageReducer = null;
 
 export function pageWillMount(page) {
-  pageReducer = reducer(page);
+  cmsApi.initSession(page);
+  pageReducer = reducer();
 }
 
 export { pageReducer as reducer };

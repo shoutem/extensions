@@ -5,19 +5,14 @@ import { connect } from 'react-redux';
 
 import { navigateTo } from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
+
 import {
-  Divider,
-  Image,
-  Row,
-  Subtitle,
-  TouchableOpacity,
-  View,
-} from '@shoutem/ui';
+  EmptyStateView,
+} from '@shoutem/ui-addons';
 
 import {
   find,
   getCollection,
-  getOne,
   next,
   shouldRefresh,
 } from '@shoutem/redux-io';
@@ -34,15 +29,16 @@ import {
 } from 'shoutem.auth';
 
 import {
-  CMS_REWARDS_SCHEMA,
-  CARD_STATE_SCHEMA,
   REWARDS_SCHEMA,
+  CARD_STATE_SCHEMA,
+  POINT_REWARDS_SCHEMA,
   ext,
 } from '../const';
 
-import { refreshCard } from '../redux';
+import { refreshCard } from '../services';
 
 import NoProgramScreen from './NoProgramScreen';
+import RewardListView from '../components/RewardListView';
 
 const { func, number, shape, string } = React.PropTypes;
 
@@ -79,10 +75,11 @@ export class RewardsListScreen extends ListScreen {
     super(props, context);
 
     this.renderRow = this.renderRow.bind(this);
+    this.navigateToRewardDetails = this.navigateToRewardDetails.bind(this);
 
     this.state = {
-      cmsSchema: CMS_REWARDS_SCHEMA,
-      schema: REWARDS_SCHEMA,
+      cmsSchema: REWARDS_SCHEMA,
+      schema: POINT_REWARDS_SCHEMA,
     };
   }
 
@@ -132,26 +129,36 @@ export class RewardsListScreen extends ListScreen {
   }
 
   renderRow(reward) {
-    const { id, image, pointsRequired, title } = reward;
-
     return (
-      <TouchableOpacity
-        key={id}
-        onPress={() => this.navigateToRewardDetails(reward)}
-      >
-        <Row>
-          <Image
-            styleName="small placeholder"
-            source={{ uri: image.url }}
-          />
-          <View styleName="vertical stretch space-between">
-            <Subtitle>{title}</Subtitle>
-            <Subtitle>{`${pointsRequired} points`}</Subtitle>
-          </View>
-        </Row>
-        <Divider styleName="line" />
-      </TouchableOpacity>
+      <RewardListView
+        key={reward.id}
+        onPress={this.navigateToRewardDetails}
+        reward={reward}
+      />
     );
+  }
+
+  renderPlaceholderView() {
+    const { data, parentCategoryId } = this.props;
+
+    // If collection doesn't exist (`parentCategoryId` is undefined), notify user to create
+    // content and reload app, because `parentCategoryId` is retrieved through app configuration
+    if (_.isUndefined(parentCategoryId)) {
+      return (
+        <EmptyStateView
+          icon="error"
+          message="Please create content and reload your app."
+        />
+      );
+    }
+
+    return super.renderPlaceholderView(data);
+  }
+
+  shouldRenderPlaceholderView() {
+    const { parentCategoryId, data } = this.props;
+
+    return _.isUndefined(parentCategoryId) || super.shouldRenderPlaceholderView(data);
   }
 
   render() {
@@ -163,15 +170,16 @@ export class RewardsListScreen extends ListScreen {
 
 export const mapStateToProps = (state, ownProps) => {
   const parentCategoryId = _.get(ownProps, 'shortcut.settings.parentCategory.id');
-  const { allRewards, card } = state[ext()];
+  const { allPointRewards, card: { data = {} } } = state[ext()];
 
-  const { programId } = getExtensionSettings(state, ext());
+  const extensionSettings = getExtensionSettings(state, ext());
+  const programId = _.get(extensionSettings, 'program.id');
 
   return {
-    card: getOne(card, state),
+    card: data,
     parentCategoryId,
     programId,
-    data: getCollection(allRewards, state),
+    data: getCollection(allPointRewards, state),
     user: getUser(state),
   };
 };
@@ -180,4 +188,4 @@ export const mapDispatchToProps = { find, navigateTo, next, refreshCard };
 
 export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('RewardsListScreen'))(RewardsListScreen),
-), true);
+));

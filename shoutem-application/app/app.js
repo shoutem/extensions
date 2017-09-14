@@ -2,7 +2,7 @@ import { AppState } from 'react-native';
 import * as _ from 'lodash';
 
 import rio, { checkExpiration } from '@shoutem/redux-io';
-import { extendActionToTargetAllMapReducers } from '@shoutem/redux-composers';
+import { applyToAll } from '@shoutem/redux-composers';
 import { initializeUiAddons } from '@shoutem/ui-addons';
 
 import { extractAppActions } from './shared/extractAppActions';
@@ -31,8 +31,6 @@ export const getAppId = () => {
 
   return _.get(application, 'props.appId') || buildConfig.appId;
 };
-
-export const isPreviewMode = () => _.get(application, 'props.isPreview');
 
 export const initializeApp = () => {
   initializeUiAddons();
@@ -73,7 +71,7 @@ function registerConfigurationSchema() {
 }
 
 function dispatchCheckExpiration(app) {
-  app.getStore().dispatch(extendActionToTargetAllMapReducers(checkExpiration()));
+  app.getStore().dispatch(applyToAll(checkExpiration()));
 }
 
 function createAppStateChangeHandler(app) {
@@ -109,6 +107,11 @@ export function appDidMount(app) {
   }
   unsubscribeFromConfigurationLoaded();
 }
+
+/**
+ * Returns true if environment is development, false otherwise.
+ */
+export const isDevelopment = () => process.env.NODE_ENV === 'development';
 
 export function appDidFinishLaunching(app) {
   openInitialScreen(app);

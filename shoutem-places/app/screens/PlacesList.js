@@ -45,20 +45,6 @@ export class PlacesList extends CmsListScreen {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    // check if we need user location
-    const { sortField, checkPermissionStatus } = nextProps;
-
-    const isSortByLocation = sortField === 'location';
-    const isLocationAvailable = !!nextProps.currentLocation;
-
-    if (isSortByLocation && !isLocationAvailable && _.isFunction(checkPermissionStatus)) {
-      checkPermissionStatus();
-    }
-
-    super.componentWillReceiveProps(nextProps);
-  }
-
   fetchData(options) {
     LayoutAnimation.easeInEaseOut();
     return super.fetchData(options);
@@ -125,6 +111,7 @@ export class PlacesList extends CmsListScreen {
         onLoadMore={this.loadMore}
         getSectionId={this.getSectionId}
         renderSectionHeader={this.renderSectionHeader}
+        initialListSize={1}
       />
     );
   }

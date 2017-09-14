@@ -69,7 +69,7 @@ export class ProductsList extends Component {
     shop: shopShape.isRequired,
     // Product tag for which products are displayed
     tag: string,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -83,6 +83,12 @@ export class ProductsList extends Component {
   }
 
   componentDidMount() {
+    const { error } = this.props.shop;
+
+    if (error) {
+      return;
+    }
+
     this.refreshData();
   }
 

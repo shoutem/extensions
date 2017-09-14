@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
-import { invalidate, isInitialized, shouldRefresh, isValid, isBusy } from '@shoutem/redux-io';
+import { invalidate, shouldLoad, shouldRefresh, isValid } from '@shoutem/redux-io';
 import { connect } from 'react-redux';
-import { Button } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { getShortcut } from 'environment';
 import { getCategories, getSchema, getResources, dataInitialized } from '../../selectors';
@@ -14,68 +13,74 @@ import {
   loadResources,
   loadSchema,
 } from '../../actions';
-import ContentPreview from '../../components/content-preview';
-import SortOptions from '../../components/sort-options';
+import {
+  ManageContentButton,
+  ContentPreview,
+  SortOptions,
+} from '../../components';
+import AdvancedSetup from '../../fragments/advanced-setup';
 import { CURRENT_SCHEMA } from '../../types';
-import { getSortOptions } from '../../services/shortcut';
+import {
+  getSortOptions,
+  getParentCategoryId,
+  getVisibleCategoryIds,
+} from '../../services';
 import './style.scss';
 
 export class CmsPage extends Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      creatingCategory: false,
-    };
 
     this.handleOpenInCmsClick = this.handleOpenInCmsClick.bind(this);
-    this.createNewCategory = this.createNewCategory.bind(this);
+    this.handleCreateCategory = this.handleCreateCategory.bind(this);
     this.checkData = this.checkData.bind(this);
     this.handleSortOptionsChange = this.handleSortOptionsChange.bind(this);
+    this.handleToggleAdvancedSetup = this.handleToggleAdvancedSetup.bind(this);
+
+    const { shortcut } = props;
+    const visibleCategoryIds = getVisibleCategoryIds(shortcut);
+    const showAdvancedSetup = !_.isEmpty(visibleCategoryIds);
+
+    this.state = {
+      showAdvancedSetup,
+    };
   }
 
   componentWillMount() {
     this.checkData(this.props);
   }
 
-  componentWillReceiveProps(newProps) {
-    this.checkData(newProps, true);
+  componentWillReceiveProps(nextProps) {
+    this.checkData(nextProps, this.props);
   }
 
-  checkData(props, checkIsInitialized = false) {
-    const { categories, schema, resources, shortcut } = props;
+  checkData(nextProps, props = {}) {
+    const { categories, resources, shortcut } = nextProps;
 
-    if (shouldRefresh(schema)) {
-      if (!checkIsInitialized || isInitialized(schema)) {
-        this.props.loadSchema();
-      }
+    if (shouldLoad(nextProps, props, 'schema')) {
+      this.props.loadSchema();
     }
 
-    if (shouldRefresh(categories)) {
-      if (!checkIsInitialized || isInitialized(categories)) {
-        this.props.loadCategories();
-      }
+    if (shouldLoad(nextProps, props, 'categories')) {
+      this.props.loadCategories();
     }
 
     if (isValid(categories) && shouldRefresh(resources)) {
-      const shortcutSettings = shortcut.settings || {};
-      const { parentCategory } = shortcutSettings;
+      const parentCategoryId = getParentCategoryId(shortcut);
 
-      if (parentCategory && parentCategory.id) {
+      if (parentCategoryId) {
         const sortOptions = getSortOptions(shortcut);
-
-        this.props.loadResources(parentCategory.id, sortOptions);
+        const visibleCategoryIds = getVisibleCategoryIds(shortcut);
+        this.props.loadResources(parentCategoryId, visibleCategoryIds, sortOptions);
       }
     }
   }
 
-  createNewCategory() {
-    this.setState({ creatingCategory: true });
+  handleCreateCategory() {
+    const { shortcut } = this.props;
 
-    return this.props.createCategory(this.props.shortcut)
-      .then(categoryId => {
-        this.setState({ creatingCategory: false });
-        return categoryId;
-      });
+    return this.props.createCategory(shortcut)
+      .then(this.props.navigateToCategory);
   }
 
   handleSortOptionsChange(options) {
@@ -84,55 +89,71 @@ export class CmsPage extends Component {
     this.props.updateSortOptions(shortcut, options);
   }
 
+  handleToggleAdvancedSetup() {
+    const { showAdvancedSetup } = this.state;
+    this.setState({ showAdvancedSetup: !showAdvancedSetup });
+  }
+
   handleOpenInCmsClick() {
-    const { shortcut, categories } = this.props;
+    const { categories, shortcut } = this.props;
 
-    const shortcutSettings = shortcut.settings || {};
-    const category = shortcutSettings.parentCategory;
-    const categoryId = _.get(category, 'id');
-    const currentCategory = categoryId && _.find(categories, { id: categoryId });
+    const parentCategoryId = getParentCategoryId(shortcut);
+    const parentCategory = _.find(categories, { id: parentCategoryId });
 
-    if (currentCategory) {
-      this.props.navigateToCategory(categoryId);
-    } else {
-      this.createNewCategory().then(newCategoryId => (
-        this.props.navigateToCategory(newCategoryId)
-      ));
+    if (!parentCategory) {
+      return this.handleCreateCategory();
     }
+
+    return this.props.navigateToCategory(parentCategoryId);
   }
 
   render() {
-    const { resources, schema, shortcut, initialized } = this.props;
-    const { creatingCategory } = this.state;
+    const {
+      resources,
+      schema,
+      shortcut,
+      initialized,
+    } = this.props;
+    const { showAdvancedSetup } = this.state;
 
     const hasContent = initialized && !_.isEmpty(resources);
+    const cmsButtonLabel = hasContent ? 'Edit items' : 'Create items';
+
     const sortOptions = getSortOptions(shortcut);
+    const parentCategoryId = getParentCategoryId(shortcut);
+    const visibleCategoryIds = getVisibleCategoryIds(shortcut);
 
     return (
       <LoaderContainer className="cms" isLoading={!initialized}>
         <div className="cms__header">
           <SortOptions
             className="pull-left"
-            schema={schema}
             disabled={!hasContent}
-            sortOptions={sortOptions}
             onSortOptionsChange={this.handleSortOptionsChange}
+            schema={schema}
+            sortOptions={sortOptions}
           />
-          <Button
-            bsSize="large"
-            className="cms__header-items-button pull-right"
-            onClick={this.handleOpenInCmsClick}
-          >
-            <LoaderContainer isLoading={creatingCategory} >
-              {hasContent ? 'Edit items' : 'Create items'}
-            </LoaderContainer>
-          </Button>
+          <ManageContentButton
+            className="pull-right"
+            cmsButtonLabel={cmsButtonLabel}
+            onNavigateToCmsClick={this.handleOpenInCmsClick}
+            onToggleAdvancedSetup={this.handleToggleAdvancedSetup}
+            showAdvancedSetup={showAdvancedSetup}
+          />
         </div>
+        {showAdvancedSetup &&
+          <AdvancedSetup
+            onCreateCategory={this.handleCreateCategory}
+            parentCategoryId={parentCategoryId}
+            schema={schema}
+            shortcut={shortcut}
+            visibleCategoryIds={visibleCategoryIds}
+          />
+        }
         <ContentPreview
+          hasContent={hasContent}
           resources={resources}
           titleProp={schema.titleProperty}
-          hasContent={hasContent}
-          inProgress={isBusy(resources)}
         />
       </LoaderContainer>
     );
@@ -162,9 +183,11 @@ CmsPage.propTypes = {
 
 function mapStateToProps(state) {
   const shortcut = getShortcut();
+  const initialized = dataInitialized(shortcut)(state);
+
   return {
     shortcut,
-    initialized: dataInitialized(state, shortcut),
+    initialized,
     categories: getCategories(state),
     schema: getSchema(state),
     resources: getResources(state),
@@ -173,12 +196,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    loadCategories: () => dispatch(loadCategories()),
+    loadSchema: () => dispatch(loadSchema()),
+    loadResources: (categoryId, visibleCategories, sortOptions) => (
+      dispatch(loadResources(categoryId, visibleCategories, sortOptions))
+    ),
     createCategory: (shortcut) => (
       dispatch(createCategory(shortcut))
     ),
-    loadCategories: () => dispatch(loadCategories()),
-    loadSchema: () => dispatch(loadSchema()),
-    loadResources: (categoryId, sortOptions) => dispatch(loadResources(categoryId, sortOptions)),
     navigateToCategory: (categoryId) => (
       navigateToCategoryContent(categoryId)
     ),

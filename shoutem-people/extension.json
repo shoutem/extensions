@@ -1,8 +1,8 @@
 {
   "name": "people",
   "title": "People",
-  "version": "0.10.16",
-  "platform": "1.1.*",
+  "version": "1.2.0",
+  "platform": "1.2.*",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
   "categories": ["content"],

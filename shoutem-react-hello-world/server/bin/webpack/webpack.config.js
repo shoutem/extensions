@@ -5,7 +5,7 @@ const resolveDevServer = require('./devServer');
 const isProduction = require('./env');
 
 module.exports = {
-  devtool: isProduction ? 'eval' : '#source-maps',
+  devtool: isProduction ? 'false' : '#source-maps',
   context: path.join(__dirname, '../../'),
   entry: {
     extension: './bin/main.js',
