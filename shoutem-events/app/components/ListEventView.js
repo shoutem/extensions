@@ -14,33 +14,12 @@ import {
 
 import { formatDate } from '../shared/Calendar';
 import EventImage from './EventImage';
+import { BaseEventItem } from './BaseEventItem';
 
 /**
  * Component used to render single list event item
  */
-export default class ListEventView extends React.Component {
-  static propTypes = {
-    onPress: React.PropTypes.func,
-    action: React.PropTypes.func,
-    event: React.PropTypes.object.isRequired,
-    style: React.PropTypes.object,
-  };
-
-  constructor(props) {
-    super(props);
-    this.onPress = this.onPress.bind(this);
-    this.action = this.action.bind(this);
-  }
-
-  onPress() {
-    if (_.isFunction(this.props.onPress)) {
-      this.props.onPress(this.props.event);
-    }
-  }
-
-  action() {
-    this.props.action(this.props.event);
-  }
+export default class ListEventView extends BaseEventItem {
 
   render() {
     const { event, style } = this.props;

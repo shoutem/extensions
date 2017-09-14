@@ -1,0 +1,20 @@
+:global {
+  .members-page {
+    padding-top: 24px;
+    min-height: 672px;
+  }
+
+  .members-page__search {
+    float: right;
+
+    .form-group .form-control {
+      max-width: 230px;
+      max-height: 40px;
+      box-shadow: inset 0 0 0 0 rgba(68,79,108,.3);
+
+      &:focus {
+        box-shadow: inset 0 0 0 0 rgba(68,79,108,.3);
+      }
+    }
+  }
+}

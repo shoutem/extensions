@@ -20,12 +20,35 @@ if (~appBuildGradleContents.indexOf(googleServicesPlugin)) {
 }
 
 // 2. add firebase-core dependency
-const firebaseCore = `compile 'com.google.firebase:firebase-core:10.0.1'`;
-if (~newAppBuildGradleContents.indexOf(firebaseCore)) {
-  console.log(`"com.google.gms.google-services" is already added as a dependency in ${appBuildGradlePath}`);
+const fcmDependency = `compile project(':react-native-fcm')`;
+const newFcmDependency = `compile (project(':react-native-fcm'))`;
+
+// always add new fcm dependency if it doesn't exist
+if (~newAppBuildGradleContents.indexOf(newFcmDependency)) {
+  console.log(`"${newFcmDependency}" is already added as a dependency in ${appBuildGradlePath}`);
 } else {
-  newAppBuildGradleContents = newAppBuildGradleContents.replace(dependenciesStart,
-    `${dependenciesStart}\n${' '.repeat(GRADLE_TABSPACE)}${firebaseCore}`);
+
+  
+
+  // link the react-native packages
+  require('../link_firebase_dependencies');
+  // always remove old fcm dependency if it exists
+  if (~newAppBuildGradleContents.indexOf(fcmDependency)) {
+    newAppBuildGradleContents = newAppBuildGradleContents.replace(fcmDependency, '');
+  }
+  const firebaseDependencies =
+    `compile (project(':react-native-fcm')) { 
+        exclude group: 'com.google.firebase', module: 'firebase-core'
+        exclude group: 'com.google.firebase', module: 'firebase-messaging'
+    }
+    compile 'com.google.firebase:firebase-core:10.2.1'
+    compile 'com.google.firebase:firebase-messaging:10.2.1'`;
+
+  // append new react-native-fcm dependency
+  newAppBuildGradleContents = newAppBuildGradleContents.replace(
+    dependenciesStart,
+    `${dependenciesStart}\n${' '.repeat(GRADLE_TABSPACE)}${firebaseDependencies}`
+  );
 }
 
 fs.writeFileSync(appBuildGradlePath, newAppBuildGradleContents);

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { connect } from 'react-redux';
 
 import {
@@ -15,39 +14,42 @@ import {
   Html,
   Screen,
   ScrollView,
+  Tile,
   Title,
   Text,
   View,
 } from '@shoutem/ui';
 
-import {
-  getOne,
- } from '@shoutem/redux-io';
-
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { ext } from '../const';
-import { isPunchCard } from '../redux';
+import {
+  getCardStateForPlace,
+  isPunchCard,
+ } from '../redux';
 
-import { reward as rewardShape } from '../components/shapes';
+import {
+  cardStateShape,
+  rewardShape,
+} from '../components/shapes';
 import Stamps from '../components/Stamps';
 
-const { func, number, shape } = React.PropTypes;
+import RewardProgressBar from '../components/RewardProgressBar';
+
+const { func } = React.PropTypes;
 
 /**
- * Shows details for a general reward or a punch card.
- * If the user loyalty card has enough points he can see a button to redeem the reward.
+ * Shows details for a reward or a punch card.
+ * If the user's loyalty card has enough points, he can see an option to redeem the reward.
+ * A reward can belong to a place or to a single card, not related to a place.
  */
 export class RewardDetailsScreen extends React.Component {
   static propTypes = {
-    // User loyalty card
-    card: shape({
-      // Points on the card
-      points: number,
-    }),
+    // User's loyalty card state
+    cardState: cardStateShape,
     // Reward description
-    reward: rewardShape,
+    reward: rewardShape.isRequired,
     // Opens the redeem reward or stamp a punch card flow in a new modal screen
     openInModal: func,
     // Navigates back to list of rewards when the redeem or stamp flow starts
@@ -57,19 +59,18 @@ export class RewardDetailsScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    this.performAction = this.performAction.bind(this);
+    this.handleAction = this.handleAction.bind(this);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getNavBarProps() {
-    const { reward: image } = this.props;
-
     return {
-      styleName: image ? 'clear' : 'no-border',
-      animationName: image ? 'solidify' : 'boxing',
+      styleName: 'clear',
+      animationName: 'solidify',
     };
   }
 
-  performAction(redeem) {
+  handleAction(redeem) {
     const { reward, navigateBack, openInModal } = this.props;
 
     navigateBack();
@@ -86,17 +87,46 @@ export class RewardDetailsScreen extends React.Component {
     const { reward } = this.props;
     const { image } = reward;
 
-    return image ?
+    return (
       <Image
         source={{ uri: image && image.url }}
         styleName="large placeholder"
+        animationName="hero"
       />
-      :
-      <View styleName="sm-gutter-top" />;
+    );
+  }
+
+  renderSummary() {
+    const { cardState: { points = 0 }, reward } = this.props;
+    const { pointsRequired, title } = reward;
+
+    return (
+      <Tile>
+        <View styleName="content vertical">
+          <Title styleName="h-center xl-gutter-top md-gutter-bottom">{title}</Title>
+          {isPunchCard(reward) ?
+            <View styleName="vertical h-center">
+              <Stamps reward={reward} />
+            </View>
+            :
+            <View>
+              <Caption styleName="h-center md-gutter-bottom">
+                {`Requires ${pointsRequired} points`}
+              </Caption>
+              <RewardProgressBar
+                points={points}
+                pointsRequired={pointsRequired}
+              />
+            </View>
+          }
+          {this.renderActionButton()}
+        </View>
+      </Tile>
+    );
   }
 
   renderActionButton() {
-    const { card: { points: cardPoints = 0 }, reward } = this.props;
+    const { cardState: { points: cardPoints = 0 }, reward } = this.props;
     const { points = 0, pointsRequired } = reward;
 
     if (!isPunchCard(reward) && cardPoints < pointsRequired) {
@@ -106,38 +136,29 @@ export class RewardDetailsScreen extends React.Component {
     const shouldRedeem = !isPunchCard(reward) || points >= pointsRequired;
 
     return (
-      <Button
-        styleName="secondary md-gutter-horizontal lg-gutter-top"
-        onPress={() => this.performAction(shouldRedeem)}
-      >
-        <Text>{shouldRedeem ? 'REDEEM' : 'STAMP CARD'}</Text>
-      </Button>
+      <View styleName="h-center vertical">
+        <Button
+          styleName="secondary md-gutter"
+          onPress={() => this.handleAction(shouldRedeem)}
+        >
+          <Text>{shouldRedeem ? 'REDEEM' : 'STAMP CARD'}</Text>
+        </Button>
+      </View>
     );
   }
 
   render() {
     const { reward } = this.props;
-
-    const { description, image, pointsRequired, title } = reward;
-
-    const screenStyle = image ? 'full-screen paper' : 'paper';
+    const { description } = reward;
 
     return (
-      <Screen styleName={screenStyle}>
+      <Screen styleName="full-screen paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderImage()}
-          <View styleName="content xl-gutter-horizontal vertical h-center">
-            <Title styleName="h-center xl-gutter-top md-gutter-bottom">{title}</Title>
-            {isPunchCard(reward) ?
-              <Stamps reward={reward} />
-              :
-              <Caption>{`${pointsRequired} points`}</Caption>
-            }
-            {this.renderActionButton()}
-          </View>
-          <View styleName="lg-gutter-top md-gutter-horizontal">
-            <Html body={description} />
+          {this.renderSummary()}
+          <View styleName="md-gutter-horizontal">
+            {description ? <Html body={description} /> : null}
           </View>
         </ScrollView>
       </Screen>
@@ -145,11 +166,12 @@ export class RewardDetailsScreen extends React.Component {
   }
 }
 
-export const mapStateToProps = (state) => {
-  const { cardState } = state[ext()];
+export const mapStateToProps = (state, ownProps) => {
+  const { place } = ownProps;
+  const placeId = place ? place.id : null;
 
   return {
-    card: getOne(cardState, state),
+    cardState: getCardStateForPlace(state, placeId) || {},
   };
 };
 

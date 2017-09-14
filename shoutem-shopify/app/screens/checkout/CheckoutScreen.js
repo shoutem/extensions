@@ -50,6 +50,10 @@ const fields = [{
   label: 'City',
 },
 {
+  name: 'province',
+  label: 'Province',
+},
+{
   name: 'zip',
   label: 'Postal code',
 }];
@@ -152,7 +156,7 @@ class CheckoutScreen extends Component {
     return (
       <Screen>
         <NavigationBar title="CHECKOUT" />
-        <ScrollView style={{ paddingTop: 30 }}>
+        <ScrollView>
           {_.map(fields, this.renderInput)}
           {this.renderCountryPicker()}
         </ScrollView>

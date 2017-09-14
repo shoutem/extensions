@@ -41,7 +41,6 @@ export function getShortcutSettings(shortcut) {
   return getSettings(shortcut);
 }
 
-
 export function updateShortcutSettings(shortcut, settingsPatch) {
   const currentSettings = getShortcutSettings(shortcut);
   const settings = mergeSettings(currentSettings, settingsPatch);

@@ -8,24 +8,19 @@ export default combineReducers({
   shortcut: one(SHORTCUTS, 'shortcut'),
 });
 
-export function updateShortcutSettings(id, settings) {
+export function updateShortcut(shortcut) {
   const config = {
     schema: SHORTCUTS,
     request: {
-      endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts/${id}`,
+      endpoint: `//${url.apps}/v1/apps/${appId}/shortcuts/${shortcut.id}`,
       headers: {
         'Content-Type': 'application/vnd.api+json',
       },
     },
   };
 
-  const partialShortcut = {
+  return update(config, {
     type: SHORTCUTS,
-    id,
-    attributes: {
-      settings,
-    },
-  };
-
-  return update(config, partialShortcut);
+    ...shortcut,
+  });
 }

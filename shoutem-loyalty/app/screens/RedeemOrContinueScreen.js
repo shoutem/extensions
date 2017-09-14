@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import {
   Button,
-  Icon,
+  Image,
   Screen,
   Subtitle,
   Text,
@@ -16,10 +16,12 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { ext } from '../const';
-import { createTransaction } from '../redux';
-import { reward as rewardShape } from '../components/shapes';
+import { redeemReward } from '../services';
+import { authorizationShape, rewardShape } from '../components/shapes';
 
-const { func, number, string } = React.PropTypes;
+const { func, number } = React.PropTypes;
+
+const STAMP_ICON = require('../assets/icons/stamp.png');
 
 /**
  * Lets the user choose if he wants to redeem his reward immediately or not.
@@ -28,25 +30,26 @@ const { func, number, string } = React.PropTypes;
  */
 export class RedeemOrContinueScreen extends React.Component {
   static propTypes = {
+    // Navigates to transaction processed screen
     navigateTo: func,
-    // An already verified PIN
-    pin: string,
+    // An already verified authorization,
+    authorization: authorizationShape,
     // Points assigned in transaction
     points: number,
     // Reward that can be redeemed
     reward: rewardShape,
-    // Creates a transaction to redeem a reward
-    createTransaction: func,
+    // Redeems the reward
+    redeemReward: func,
   };
 
   constructor(props) {
     super(props);
 
-    this.onRedeemLater = this.onRedeemLater.bind(this);
-    this.onRedeemNow = this.onRedeemNow.bind(this);
+    this.handleRedeemLater = this.handleRedeemLater.bind(this);
+    this.handleRedeemNow = this.handleRedeemNow.bind(this);
   }
 
-  onRedeemLater() {
+  handleRedeemLater() {
     const { navigateTo, points } = this.props;
 
     navigateTo({
@@ -57,16 +60,16 @@ export class RedeemOrContinueScreen extends React.Component {
     });
   }
 
-  onRedeemNow() {
+  handleRedeemNow() {
     const { pointsRequired } = this.props.reward;
 
     this.processTransaction(-pointsRequired);
   }
 
   processTransaction(points) {
-    const { createTransaction, pin, reward } = this.props;
+    const { redeemReward, authorization, reward } = this.props;
 
-    createTransaction({ points }, pin, reward);
+    redeemReward({ points }, authorization, reward);
   }
 
   render() {
@@ -75,29 +78,31 @@ export class RedeemOrContinueScreen extends React.Component {
         <NavigationBar title="REDEEM REWARD" />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <View styleName="oval-highlight">
-            <Icon name="stamp" />
+            <Image
+              source={STAMP_ICON}
+              styleName="small-avatar"
+            />
           </View>
           <Subtitle styleName="h-center md-gutter-top xl-gutter-horizontal">
             Your reward can be redeemed.
           </Subtitle>
           <View styleName="h-center horizontal lg-gutter-vertical">
-            <Button onPress={this.onRedeemLater}>
+            <Button onPress={this.handleRedeemLater}>
               <Text>REDEEM LATER</Text>
             </Button>
             <Button
               styleName="secondary md-gutter-left"
-              onPress={this.onRedeemNow}
+              onPress={this.handleRedeemNow}
             >
               <Text>REDEEM NOW</Text>
             </Button>
           </View>
-
         </View>
       </Screen>
     );
   }
 }
 
-export default connect(undefined, { createTransaction, navigateTo })(
+export default connect(undefined, { redeemReward, navigateTo })(
   connectStyle(ext('RedeemOrContinueScreen'))(RedeemOrContinueScreen),
 );

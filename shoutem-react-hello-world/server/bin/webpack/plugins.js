@@ -73,8 +73,15 @@ function resolvePlugins() {
 
   const hotModuleReplacementPlugin = new webpack.HotModuleReplacementPlugin();
 
+  const nodeEnv = new webpack.DefinePlugin({
+    'process.env': {
+      NODE_ENV: JSON.stringify('production'),
+    },
+  });
+
   if (isProduction) {
     return [
+      nodeEnv,
       commonsChunkPlugin,
       htmlWebpackPlugin,
       loaderOptionsPlugin,

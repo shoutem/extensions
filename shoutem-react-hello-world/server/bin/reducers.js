@@ -1,8 +1,7 @@
-import _ from 'lodash';
 import { combineReducers } from 'redux';
 import {
   reducer as coreReducer,
-} from '@shoutem/api';
+} from '@shoutem/redux-api-sdk';
 
 export function createRootReducer(extensionName, reducer) {
   return combineReducers({

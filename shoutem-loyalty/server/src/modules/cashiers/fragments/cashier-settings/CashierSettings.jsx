@@ -1,7 +1,9 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import { LoaderContainer, InlineModal } from '@shoutem/react-web-ui';
-import { isInitialized, shouldLoad } from '@shoutem/redux-io';
+import { InlineModal } from '@shoutem/react-web-ui';
+import { shouldLoad } from '@shoutem/redux-io';
+import _ from 'lodash';
+import { getExtensionState } from '@shoutem/redux-api-sdk';
 import { getErrorCode } from '../../../../services';
 import CashiersTable from '../../components/cashiers-table';
 import CashierForm from '../../components/cashier-form';
@@ -10,28 +12,27 @@ import {
   createCashier,
   updateCashier,
   deleteCashier,
-  getCashiers,
+  getCashiersWithPlace,
 } from '../../redux';
-import { resolveErrorMessage } from '../../services';
-import './style.scss';
+import { getErrorMessage } from '../../services';
 
 export class CashierSettings extends Component {
   constructor(props) {
     super(props);
 
     this.checkData = this.checkData.bind(this);
-    this.showAddCashierModal = this.showAddCashierModal.bind(this);
-    this.hideAddCashierModal = this.hideAddCashierModal.bind(this);
+    this.setInitialState = this.setInitialState.bind(this);
+    this.handleAddCashierClick = this.handleAddCashierClick.bind(this);
+    this.handleEditCashierClick = this.handleEditCashierClick.bind(this);
+    this.handleHideCashierModal = this.handleHideCashierModal.bind(this);
     this.handleCashierCreated = this.handleCashierCreated.bind(this);
     this.handleCashierUpdated = this.handleCashierUpdated.bind(this);
     this.handleCashierDeleted = this.handleCashierDeleted.bind(this);
-
-    this.state = {
-      showAddCashierModal: false,
-    };
+    this.renderCashierModal = this.renderCashierModal.bind(this);
   }
 
   componentWillMount() {
+    this.setInitialState();
     this.checkData(this.props);
   }
 
@@ -40,19 +41,45 @@ export class CashierSettings extends Component {
   }
 
   checkData(nextProps, props = {}) {
-    const { programId } = nextProps;
+    const { currentPlaceId } = props;
+    const {
+      programId: nextProgramId,
+      currentPlaceId: nextCurrentPlaceId,
+    } = nextProps;
 
-    if (shouldLoad(nextProps, props, 'cashiers')) {
-      this.props.loadCashiers(programId);
+    const placeIdChanged = currentPlaceId !== nextCurrentPlaceId;
+
+    if (placeIdChanged) {
+      this.setState({ currentPlaceId: nextCurrentPlaceId });
+    }
+
+    if (placeIdChanged || shouldLoad(nextProps, props, 'cashiers')) {
+      this.props.loadCashiers(nextProgramId, nextCurrentPlaceId);
     }
   }
 
-  showAddCashierModal() {
-    this.setState({ showAddCashierModal: true });
+  setInitialState() {
+    this.setState({
+      showAddCashierModal: false,
+      currentCashier: null,
+    });
   }
 
-  hideAddCashierModal() {
-    this.setState({ showAddCashierModal: false });
+  handleAddCashierClick() {
+    this.setState({
+      showAddCashierModal: true,
+    });
+  }
+
+  handleEditCashierClick(cashier) {
+    this.setState({
+      showAddCashierModal: true,
+      currentCashier: cashier,
+    });
+  }
+
+  handleHideCashierModal() {
+    this.setInitialState();
   }
 
   handleCashierCreated(cashier) {
@@ -60,17 +87,25 @@ export class CashierSettings extends Component {
 
     return new Promise((resolve, reject) => {
       this.props.createCashier(cashier, programId, appId)
-        .then(() => this.setState({ showAddCashierModal: false }),
-          (action) => {
-            const errorCode = getErrorCode(action);
-            reject(resolveErrorMessage(errorCode));
-          });
+        .then(this.setInitialState, (action) => {
+          const errorCode = getErrorCode(action);
+          reject(getErrorMessage(errorCode));
+        });
     });
   }
 
-  handleCashierUpdated(cashierId, cashierPatch) {
+  handleCashierUpdated(cashierPatch) {
     const { programId } = this.props;
-    this.props.updateCashier(cashierId, cashierPatch, programId);
+    const { currentCashier } = this.state;
+    const { id } = currentCashier;
+
+    return new Promise((resolve, reject) => {
+      this.props.updateCashier(id, cashierPatch, programId)
+        .then(this.setInitialState, (action) => {
+          const errorCode = getErrorCode(action);
+          reject(getErrorMessage(errorCode));
+        });
+    });
   }
 
   handleCashierDeleted(cashierId) {
@@ -78,31 +113,47 @@ export class CashierSettings extends Component {
     this.props.deleteCashier(cashierId, programId);
   }
 
+  renderCashierModal() {
+    const { places, placesDescriptor, currentPlaceId } = this.props;
+    const { currentCashier } = this.state;
+
+    const inEditMode = !!currentCashier;
+    const modalTitle = inEditMode ? 'Edit cashier' : 'Add a cashier';
+    const handleSubmit = inEditMode ? this.handleCashierUpdated : this.handleCashierCreated;
+    const placeId = _.get(currentCashier, 'location', currentPlaceId);
+
+    return (
+      <InlineModal
+        className="add-cashier-modal"
+        onHide={this.handleHideCashierModal}
+        title={modalTitle}
+      >
+        <CashierForm
+          initialPlaceId={placeId}
+          initialValues={currentCashier}
+          onCancel={this.handleHideCashierModal}
+          onSubmit={handleSubmit}
+          places={places}
+          placesDescriptor={placesDescriptor}
+        />
+      </InlineModal>
+    );
+  }
+
   render() {
-    const { cashiers } = this.props;
+    const { cashiers, places } = this.props;
     const { showAddCashierModal } = this.state;
 
     return (
       <div className="cashier-settings">
-        <LoaderContainer isLoading={!isInitialized(cashiers)}>
-          <CashiersTable
-            cashiers={cashiers}
-            onAddCashierClick={this.showAddCashierModal}
-            onEditCashierClick={this.handleCashierUpdated}
-            onDeleteCashierClick={this.handleCashierDeleted}
-          />
-        </LoaderContainer>
-        {showAddCashierModal &&
-          <InlineModal
-            title="Add a cashier"
-            onHide={this.hideAddCashierModal}
-          >
-            <CashierForm
-              onCancel={this.hideAddCashierModal}
-              onSubmit={this.handleCashierCreated}
-            />
-          </InlineModal>
-        }
+        <CashiersTable
+          cashiers={cashiers}
+          hasPlaces={!_.isEmpty(places)}
+          onAddClick={this.handleAddCashierClick}
+          onDeleteClick={this.handleCashierDeleted}
+          onEditClick={this.handleEditCashierClick}
+        />
+        {showAddCashierModal && this.renderCashierModal()}
       </div>
     );
   }
@@ -116,27 +167,36 @@ CashierSettings.propTypes = {
   createCashier: PropTypes.func,
   updateCashier: PropTypes.func,
   deleteCashier: PropTypes.func,
+  currentPlaceId: PropTypes.string,
+  places: PropTypes.array,
+  placesDescriptor: PropTypes.object,
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  const { extensionName } = ownProps;
+  const extensionState = getExtensionState(state, extensionName);
+
   return {
-    cashiers: getCashiers(state),
+    cashiers: getCashiersWithPlace(extensionState)(state),
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
+  const { extensionName } = ownProps;
+  const scope = { extensionName };
+
   return {
-    loadCashiers: (programId) => (
-      dispatch(loadCashiers(programId))
+    loadCashiers: (programId, placeId) => (
+      dispatch(loadCashiers(programId, placeId, scope))
     ),
     createCashier: (cashier, programId, appId) => (
-      dispatch(createCashier(cashier, programId, appId))
+      dispatch(createCashier(cashier, programId, appId, scope))
     ),
     updateCashier: (cashierId, cashierPatch, programId) => (
-      dispatch(updateCashier(cashierId, cashierPatch, programId))
+      dispatch(updateCashier(cashierId, cashierPatch, programId, scope))
     ),
     deleteCashier: (cashierId, programId) => (
-      dispatch(deleteCashier(cashierId, programId))
+      dispatch(deleteCashier(cashierId, programId, scope))
     ),
   };
 }

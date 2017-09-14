@@ -1,9 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { getShortcut } from 'environment';
+import { data } from 'context';
 import _ from 'lodash';
 import normalizeUrl from 'normalize-url';
-import { updateShortcutSettings } from './../reducer';
+import { updateShortcut } from './../reducer';
 import WebUrlInput from './WebUrlInput';
 import WebEdit from './WebEdit';
 
@@ -31,7 +32,7 @@ export class Web extends Component {
   getShortcutSettings() {
     const { shortcut } = this.props;
     if (shortcut && shortcut.settings) {
-      return this.props.shortcut.settings;
+      return shortcut.settings;
     }
     return {
       url: '',
@@ -40,10 +41,21 @@ export class Web extends Component {
   }
 
   setShortcutSettings(settings) {
-    const id = this.props.shortcut.id;
+    const { shortcut, updateShortcut } = this.props;
+    const { id } = shortcut;
+
     const currentSettings = this.getShortcutSettings();
+
     const mergedSettings = { ...currentSettings, ...settings };
-    this.props.updateShortcutSettings(id, mergedSettings);
+
+    const updatedShortcut = {
+      id,
+      attributes: {
+        settings: mergedSettings,
+      },
+    };
+
+    updateShortcut(updatedShortcut);
   }
 
   handleUrlInputContinueClick(url) {
@@ -63,6 +75,8 @@ export class Web extends Component {
     const activeScreen = this.getActiveScreen();
     const { url, showNavigationToolbar } = this.getShortcutSettings();
 
+    const { hasNavigationToolbar } = data.params;
+
     return (
       <div>
         {(activeScreen === ACTIVE_SCREEN_INPUT) && (
@@ -72,6 +86,7 @@ export class Web extends Component {
         )}
         {(activeScreen === ACTIVE_SCREEN_EDIT) && (
           <WebEdit
+            hasNavigationToolbarToggle={hasNavigationToolbar}
             url={url}
             showNavigationToolbar={showNavigationToolbar}
             onRemoveClick={this.handleUrlRemoveClick}
@@ -85,10 +100,10 @@ export class Web extends Component {
 
 Web.propTypes = {
   shortcut: PropTypes.object,
-  updateShortcutSettings: PropTypes.func,
+  updateShortcut: PropTypes.func,
 };
 
-function mapStateToProps(state) {
+function mapStateToProps() {
   return {
     shortcut: getShortcut(),
   };
@@ -96,7 +111,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateShortcutSettings: (id, settings) => dispatch(updateShortcutSettings(id, settings)),
+    updateShortcut: shortcut => dispatch(updateShortcut(shortcut)),
   };
 }
 

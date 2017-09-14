@@ -1,14 +1,28 @@
-import _ from 'lodash';
 import { updateShortcutSettings } from '../builder-sdk';
-import { CATEGORIES } from '../types';
+import { invalidate } from '@shoutem/redux-io';
+import { CATEGORIES, CURRENT_SCHEMA } from '../types';
 
-export function updateParentCategory(shortcut, parentCategoryId) {
-  const patch = {
-    parentCategory: {
-      type: CATEGORIES,
-      id: _.toString(parentCategoryId),
-    },
+export function updateShortcutCategories(
+  shortcut,
+  parentCategoryId,
+  visibleCategoryIds = [],
+  schema = CURRENT_SCHEMA,
+) {
+  const visibleCategories = _.map(visibleCategoryIds, categoryId => ({
+    type: CATEGORIES,
+    id: categoryId,
+  }));
+
+  return (dispatch) => {
+    const patch = {
+      parentCategory: {
+        type: CATEGORIES,
+        id: parentCategoryId,
+      },
+      visibleCategories,
+    };
+
+    return dispatch(updateShortcutSettings(shortcut, patch))
+      .then(() => dispatch(invalidate(schema)));
   };
-
-  return updateShortcutSettings(shortcut, patch);
 }

@@ -3,18 +3,57 @@ import { Button } from 'react-bootstrap';
 import { IconLabel, EditableTable } from '@shoutem/react-web-ui';
 import './style.scss';
 
-const TABLE_HEADERS = ['First Name', 'Last Name', 'PIN', ''];
-const TABLE_ROW_DESCRIPTORS = [
-  { property: 'firstName', isRequired: true },
-  { property: 'lastName', isRequired: true },
-  { property: 'pin', isRequired: true },
-];
+function getHeaders(hasPlaces) {
+  if (!hasPlaces) {
+    return ['First Name', 'Last Name', 'PIN', ''];
+  }
+
+  return ['First Name', 'Last Name', 'Store', 'PIN', ''];
+}
+
+function getRowDescriptors(hasPlaces) {
+  const firstNameDescriptor = {
+    property: 'firstName',
+    isRequired: true,
+  };
+
+  const lastNameDescriptor = {
+    property: 'lastName',
+    isRequired: true,
+  };
+
+  const pinDescriptor = {
+    property: 'pin',
+    isRequired: true,
+  };
+
+  const storeDescriptor = {
+    property: 'placeName',
+    isRequired: true,
+  };
+
+  if (!hasPlaces) {
+    return [
+      firstNameDescriptor,
+      lastNameDescriptor,
+      pinDescriptor,
+    ];
+  }
+
+  return [
+    firstNameDescriptor,
+    lastNameDescriptor,
+    storeDescriptor,
+    pinDescriptor,
+  ];
+}
 
 export default function CashiersTable({
   cashiers,
-  onAddCashierClick,
-  onEditCashierClick,
-  onDeleteCashierClick,
+  onAddClick,
+  onDeleteClick,
+  onEditClick,
+  hasPlaces,
 }) {
   return (
     <div className="cashiers-table">
@@ -22,7 +61,7 @@ export default function CashiersTable({
         <h3>Cashier settings</h3>
         <Button
           className="btn-icon pull-right"
-          onClick={onAddCashierClick}
+          onClick={onAddClick}
         >
           <IconLabel iconName="add">
             Add cashier
@@ -31,13 +70,13 @@ export default function CashiersTable({
       </div>
       <EditableTable
         className="cashiers-table"
-        rows={cashiers}
-        headers={TABLE_HEADERS}
-        rowDescriptors={TABLE_ROW_DESCRIPTORS}
-        onRowUpdated={onEditCashierClick}
-        onRowDeleted={onDeleteCashierClick}
         emptyStateText="No cashiers yet"
+        headers={getHeaders(hasPlaces)}
         isStatic
+        onRowDeleted={onDeleteClick}
+        onRowUpdateClick={onEditClick}
+        rowDescriptors={getRowDescriptors(hasPlaces)}
+        rows={cashiers}
       />
     </div>
   );
@@ -45,8 +84,9 @@ export default function CashiersTable({
 
 CashiersTable.propTypes = {
   cashiers: PropTypes.array,
-  onAddCashierClick: PropTypes.func,
-  onEditCashierClick: PropTypes.func,
-  onDeleteCashierClick: PropTypes.func,
+  onAddClick: PropTypes.func,
+  onDeleteClick: PropTypes.func,
+  onEditClick: PropTypes.func,
+  hasPlaces: PropTypes.bool,
 };
 

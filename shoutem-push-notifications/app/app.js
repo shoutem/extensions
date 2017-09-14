@@ -71,16 +71,11 @@ const appDidMount = (app) => {
   });
 
   store.dispatch(requestPushPermission());
-
-  // subscribe to the default push notification group
-  store.dispatch(selectPushNotificationGroups({
-    added: [DEFAULT_PUSH_NOTIFICATION_GROUP],
-  }));
 };
 
 const appWillUnmount = () => {
   AppState.removeEventListener('change', appStateChangeHandler);
-}
+};
 
 export {
   appDidMount,

@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
-import { Dropdown, MenuItem } from 'react-bootstrap';
-import { FontIcon, IconLabel } from '@shoutem/react-web-ui';
+import { MenuItem } from 'react-bootstrap';
+import { FontIcon, IconLabel, Dropdown } from '@shoutem/react-web-ui';
 import './style.scss';
 
 const UNSUPPORTED_FORMATS = [
@@ -17,6 +17,11 @@ const UNSUPPORTED_FORMATS = [
   'entity-reference-array',
 ];
 
+const ALWAYS_AVAILABLE_SORT_FORMATS = [
+  { name: 'timeCreated', title: 'Created time' },
+  { name: 'timeUpdated', title: 'Updated time' },
+];
+
 const resolveDisplayOrderIcon = (currentOrder) => (
   currentOrder === 'ascending' ? 'order-ascending' : 'order-descending'
 );
@@ -25,8 +30,8 @@ class SortOptions extends Component {
   constructor(props) {
     super(props);
 
-    this.onFieldChange = this.onFieldChange.bind(this);
-    this.onOrderingChange = this.onOrderingChange.bind(this);
+    this.handleFieldChange = this.handleFieldChange.bind(this);
+    this.handleOrderingChange = this.handleOrderingChange.bind(this);
     this.calculateDisplayProperties = this.calculateDisplayProperties.bind(this);
 
     this.state = {
@@ -48,7 +53,7 @@ class SortOptions extends Component {
     this.calculateDisplayProperties(schema, sortOptions);
   }
 
-  onFieldChange(field) {
+  handleFieldChange(field) {
     const { onSortOptionsChange } = this.props;
     const { currentOrder } = this.state;
 
@@ -60,7 +65,7 @@ class SortOptions extends Component {
     });
   }
 
-  onOrderingChange(order) {
+  handleOrderingChange(order) {
     const { onSortOptionsChange } = this.props;
     const { currentField } = this.state;
 
@@ -82,15 +87,21 @@ class SortOptions extends Component {
       ...field,
       name,
     }));
-    const displayFields = _.filter(fields, (property) => (
+
+    const schemaDisplayFields = _.filter(fields, (property) => (
       !_.includes(UNSUPPORTED_FORMATS, property.format)
     ));
+
+    const displayFields = [
+      ...schemaDisplayFields,
+      ...ALWAYS_AVAILABLE_SORT_FORMATS,
+    ];
 
     // resolve field and order or set defaults
     const field = _.get(sortOptions, 'field', 'name');
     const order = _.get(sortOptions, 'order', 'ascending');
 
-    const currentField = _.get(properties, [field]);
+    const currentField = _.find(displayFields, { name: field });
 
     this.setState({
       displayFields,
@@ -105,36 +116,43 @@ class SortOptions extends Component {
 
     const classes = classNames('sort-options', className);
 
-    const displayFieldTitle = _.get(currentField, 'title', '');
-    const displayFieldLabel = `Sort by ${displayFieldTitle}`;
     const displayOrder = _.upperFirst(currentOrder);
+    const displayFieldTitle = _.get(currentField, 'title');
+    const displayFieldLabel = displayFieldTitle ?
+      `Sort by ${displayFieldTitle}` :
+      'Select sort field';
 
     return (
       <div className={classes}>
         <Dropdown
           className="sort-options__field-selector"
-          onSelect={this.onFieldChange}
           disabled={disabled}
+          onSelect={this.handleFieldChange}
         >
           <Dropdown.Toggle>
             {displayFieldLabel}
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            <MenuItem>
-              {displayFieldTitle}
-            </MenuItem>
-            <MenuItem divider />
+            {displayFieldTitle &&
+              <MenuItem>
+                {displayFieldTitle}
+              </MenuItem>
+            }
+            {displayFieldTitle && <MenuItem divider />}
             {displayFields.map((field) =>
-              <MenuItem key={field.name} eventKey={field.name}>
+              <MenuItem
+                eventKey={field.name}
+                key={field.name}
+              >
                 {field.title}
               </MenuItem>
             )}
           </Dropdown.Menu>
         </Dropdown>
         <Dropdown
-          onSelect={this.onOrderingChange}
-          disabled={disabled}
           className="sort-options__order-selector"
+          disabled={disabled}
+          onSelect={this.handleOrderingChange}
         >
           <Dropdown.Toggle>
             <FontIcon

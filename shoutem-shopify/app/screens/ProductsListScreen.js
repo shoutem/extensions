@@ -19,7 +19,7 @@ import {
   getScreenState,
   navigateTo,
   setScreenState,
- } from '@shoutem/core/navigation';
+} from '@shoutem/core/navigation';
 
 import { connectStyle } from '@shoutem/theme';
 
@@ -65,7 +65,7 @@ export class ProductsListScreen extends Component {
     shortcut: shape({
       title: string,
     }),
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -134,7 +134,7 @@ export class ProductsListScreen extends Component {
     });
   }
 
-  renderCollectionsPicker() {
+  renderCollectionsPicker(styleName = 'horizontal') {
     const { collection, shop } = this.props;
     const { collections } = shop;
 
@@ -145,6 +145,7 @@ export class ProductsListScreen extends Component {
         selectedOption={collection || collections[0]}
         titleProperty={'title'}
         valueProperty={'id'}
+        styleName={styleName}
       />
     );
   }
@@ -157,7 +158,7 @@ export class ProductsListScreen extends Component {
   }
 
   render() {
-    const { collection, shop } = this.props;
+    const { collection = {}, shop } = this.props;
     const { collections, isLoading } = shop;
 
     return (
@@ -175,7 +176,8 @@ export class ProductsListScreen extends Component {
  */
 const getCollectionsVisibleInShortcut = (selectedCollections, allCollections) => {
   return _.filter(allCollections, collection =>
-   !_.size(selectedCollections) || _.includes(selectedCollections, collection.id));
+    !_.size(selectedCollections) || _.includes(selectedCollections, collection.id)
+  );
 };
 
 export const mapStateToProps = (state, ownProps) => {
@@ -205,5 +207,5 @@ export const mapStateToProps = (state, ownProps) => {
 export const mapDispatchToProps = { navigateTo, refreshProducts, setScreenState };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    connectStyle(ext('ProductsListScreen'))(ProductsListScreen),
+  connectStyle(ext('ProductsListScreen'))(ProductsListScreen),
 );

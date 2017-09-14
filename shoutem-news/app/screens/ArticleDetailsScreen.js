@@ -5,7 +5,6 @@ import {
   Screen,
   Title,
   Caption,
-  Icon,
   Image,
   Tile,
   Html,
@@ -42,19 +41,70 @@ export class ArticleDetailsScreen extends React.PureComponent {
         />
       );
     }
-
     return null;
+  }
+
+  isNavigationBarClear() {
+    const { navigationBarStyle } = this.props;
+    return navigationBarStyle === 'clear';
+  }
+
+  renderImage() {
+    const { article } = this.props;
+
+    if (article.image) {
+      return (
+        <Image
+          styleName="large"
+          source={{ uri: _.get(article, 'image.url') }}
+          animationName="hero"
+        />
+      );
+    }
+    return null;
+  }
+
+  renderHeader() {
+    const { article } = this.props;
+
+    return (
+      <Tile styleName="text-centric md-gutter-bottom">
+        <Title>{article.title.toUpperCase()}</Title>
+        <View styleName="horizontal md-gutter-top">
+          <Caption numberOfLines={1}>{article.newsAuthor}</Caption>
+          <Caption styleName="md-gutter-left">
+            {moment(article.timeUpdated).fromNow()}
+          </Caption>
+        </View>
+      </Tile>
+    );
   }
 
   render() {
     const { article } = this.props;
-    const articleImage = article.image ? { uri: _.get(article, 'image.url') } : undefined;
+
+    let styleName = '';
+    let animationName = '';
+    let screenStyle = 'paper';
+    if (this.isNavigationBarClear()) {
+      if (article.image) {
+        // If navigation bar is clear and image exists, navigation bar should be initially clear
+        // but after scrolling down navigation bar should appear (solidify animation)
+        styleName = 'clear';
+        screenStyle += ' full-screen';
+        animationName = 'solidify';
+      } else {
+        // If navigation bar is clear, but there is no image, navigation bar should be set to solid,
+        // but boxing animation should be applied so title appears after scrolling down
+        animationName = 'boxing';
+      }
+    }
 
     return (
-      <Screen styleName="full-screen paper">
+      <Screen styleName={screenStyle}>
         <NavigationBar
-          styleName="clear"
-          animationName="solidify"
+          styleName={styleName}
+          animationName={animationName}
           title={article.title}
           share={{
             link: article.link,
@@ -62,27 +112,15 @@ export class ArticleDetailsScreen extends React.PureComponent {
           }}
         />
         <ScrollView>
-          <Image
-            styleName="large-portrait placeholder"
-            source={articleImage}
-            animationName="hero"
-          >
-            <Tile animationName="hero">
-              <Title styleName="centered">{article.title.toUpperCase()}</Title>
-              {/* Virtual prop makes View pass Tile color style to Caption */}
-              <View styleName="horizontal md-gutter-top" virtual>
-                <Caption styleName="collapsible" numberOfLines={1}>{article.newsAuthor}</Caption>
-                <Caption styleName="md-gutter-left">
-                  {moment(article.timeUpdated).fromNow()}
-                </Caption>
-              </View>
-            </Tile>
-            <Icon name="down-arrow" styleName="scroll-indicator" />
-          </Image>
+          {this.renderImage()}
           <View styleName="solid">
-            <Html body={article.body} />
+            {this.renderHeader()}
+            <View styleName="sm-gutter-horizontal md-gutter-vertical">
+              <Html body={article.body} />
+            </View>
             {this.renderUpNext()}
           </View>
+
         </ScrollView>
       </Screen>
     );

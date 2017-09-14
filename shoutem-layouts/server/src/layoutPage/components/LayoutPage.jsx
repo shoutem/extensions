@@ -46,20 +46,30 @@ export class LayoutPage extends Component {
 
   handleScreenSelected(event) {
     const { shortcut } = this.props;
-    const { canonicalName, canonicalType } = event;
+    const {
+      canonicalName: selectedCanonicalName,
+      canonicalType: selectedCanonicalType,
+    } = event;
 
-    // update requests defining whole screen array where screen with corresponding
-    // canonical type is modified by defining canonical name of selected screen from
-    // screen group that is selected
+    // When switching screens, we just need to change canonicalName.
+    // Other settings (user's and default) will be handled on server side.
+    // We also need to send the complete screen array to server, modifying only
+    // canonicalName for screen of corresponding canonicalType.
     const screens = _.get(shortcut, 'screens', []);
     const newScreens = _.map(screens, screen => {
-      if (screen.canonicalType === canonicalType) {
+      const { canonicalType, canonicalName } = screen;
+
+      if (canonicalType === selectedCanonicalType) {
         return {
-          ...screen,
-          canonicalName,
+          canonicalType: selectedCanonicalType,
+          canonicalName: selectedCanonicalName,
         };
       }
-      return screen;
+
+      return {
+        canonicalType,
+        canonicalName,
+      };
     });
 
     this.props.updateShortcut({
@@ -136,6 +146,6 @@ function mapDispatchToProps(dispatch) {
     updateShortcut: (shortcut) => dispatch(updateShortcut(shortcut)),
     loadHierarchy: (shortcutId) => dispatch(loadHierarchy(shortcutId)),
   };
-};
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(LayoutPage);

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { isEmail } from 'validator';
 
 const ERROR_CODES = {
@@ -38,19 +39,21 @@ function validatePassword(password) {
 }
 
 export function validateCashier(cashier) {
-  const { firstName, lastName, email, password } = cashier;
+  const { id, firstName, lastName, email, password } = cashier;
   const errors = {};
 
-  errors.password = validatePassword(password);
   errors.firstName = validateRequiredField(firstName, 'First name');
   errors.lastName = validateRequiredField(lastName, 'Last name');
-  errors.email = validateEmail(email);
   errors.pin = validateRequiredField(firstName, 'Pin');
+
+  // email & password cannot be changed for existing users and don't have to be validated
+  errors.email = _.isEmpty(id) ? validateEmail(email) : null;
+  errors.password = _.isEmpty(id) ? validatePassword(password) : null;
 
   return errors;
 }
 
-export function resolveErrorMessage(errorCode) {
+export function getErrorMessage(errorCode) {
   if (errorCode === ERROR_CODES.DUPLICATE_PIN) {
     return { pin: 'Pin must be unique.' };
   }

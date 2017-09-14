@@ -1,6 +1,6 @@
 {
   "name": "shoutem.page",
-  "version": "0.0.6",
+  "version": "1.2.0",
   "description": "Page",
   "scripts": {
     "clean": "rimraf ./build/*",

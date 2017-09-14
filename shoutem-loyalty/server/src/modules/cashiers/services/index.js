@@ -1,9 +1,9 @@
 import {
   validateCashier,
-  resolveErrorMessage,
+  getErrorMessage,
 } from './validation';
 
 export {
   validateCashier,
-  resolveErrorMessage,
+  getErrorMessage,
 };

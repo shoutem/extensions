@@ -41,10 +41,6 @@ export default class CurrentLocationBase extends Component {
     };
   }
 
-  componentWillMount() {
-    this.checkPermissionStatus();
-  }
-
   updatePermissionIfChanged(permissionGranted) {
     const { updateLocationPermission, updateSecondPromptStatus, permissionStatus } = this.props;
     const { permission, secondPrompt } = permissionStatus;

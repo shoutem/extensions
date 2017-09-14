@@ -8,7 +8,7 @@ import {
   HelpBlock,
 } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { fetchExtension, updateExtensionSettings, getExtension } from '@shoutem/api';
+import { fetchExtension, updateExtensionSettings, getExtension } from '@shoutem/redux-api-sdk';
 import { shouldRefresh } from '@shoutem/redux-io';
 import { connect } from 'react-redux';
 import './style.scss';

@@ -1,9 +1,9 @@
 {
   "name": "hello-world",
   "title": "Hello World",
-  "version": "0.0.8",
+  "version": "1.2.0",
   "description": "An example of a simple extension with both app and server functionalities",
-  "platform": "1.0.*",
+  "platform": "1.2.*",
   "shortcuts": [
     {
       "title": "Hello World",

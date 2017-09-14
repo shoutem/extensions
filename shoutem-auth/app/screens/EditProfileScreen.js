@@ -157,7 +157,7 @@ class EditProfileScreen extends Component {
     return _.map(_.keys(fields), key => this.renderInput(key, fields[key]));
   }
 
-  render() {
+  renderContent() {
     const { user } = this.props;
     const { name, profile_image_url: image } = user;
 
@@ -167,7 +167,7 @@ class EditProfileScreen extends Component {
     }
 
     return (
-      <Screen>
+      <View>
         <NavigationBar {...this.getNavbarProps()} />
         <ScrollView>
           <ProfileImage
@@ -178,6 +178,14 @@ class EditProfileScreen extends Component {
           {this.renderForm()}
           <Caption styleName="lg-gutter-vertical h-center">{`Username: ${name}`}</Caption>
         </ScrollView>
+      </View>
+    );
+  }
+
+  render() {
+    return (
+      <Screen>
+        {this.renderContent()}
       </Screen>
     );
   }

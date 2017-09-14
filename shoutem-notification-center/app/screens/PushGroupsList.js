@@ -7,7 +7,7 @@ import { Alert } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { isPreviewMode } from 'shoutem.application';
+import { isProduction } from 'shoutem.application';
 import { Permissions } from 'shoutem.push-notifications';
 
 import {
@@ -24,7 +24,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 import { EmptyStateView } from '@shoutem/ui-addons';
 import { connectStyle } from '@shoutem/theme';
 
-import { selectPushNotificationGroups } from '../redux';
+import { fetchGroups, selectPushNotificationGroups } from '../redux';
 
 import { ext, GROUP_PREFIX } from '../const';
 import { pushGroup as pushGroupShape } from '../components/shapes';
@@ -40,7 +40,9 @@ const renderEmptyScreen = () => (
 const showPreviewModeNotification = () => {
   Alert.alert(
     'Preview mode',
-    'Push notifications are not supported in preview mode.',
+    'Push notifications are not supported in preview mode. ' +
+      'You can see groups but you can\'t toggle subscriptions. Everything ' +
+      'does work in the app!',
   );
 };
 
@@ -64,6 +66,8 @@ export class PushGroupsList extends Component {
   static propTypes = {
     // All push groups for the app
     groups: arrayOf(pushGroupShape).isRequired,
+    // Fetches push groups
+    fetchGroups: func,
     // Tags of push groups that the user is subscribed to
     selectedGroups: arrayOf(string).isRequired,
     // Used to subscribe and unsubscribe from groups
@@ -80,7 +84,13 @@ export class PushGroupsList extends Component {
   }
 
   componentDidMount() {
-    if (isPreviewMode()) {
+    const { fetchGroups } = this.props;
+
+    fetchGroups();
+
+    // Push groups and notifications are not enabled when there are no certificates set up.
+    // They are usually set up only in production environments
+    if (!isProduction()) {
       showPreviewModeNotification();
       return;
     }
@@ -153,6 +163,6 @@ export const mapStateToProps = state => ({
   selectedGroups: state[ext()].selectedGroups || [],
 });
 
-export default connect(mapStateToProps, { selectPushNotificationGroups })(
+export default connect(mapStateToProps, { fetchGroups, selectPushNotificationGroups })(
   connectStyle(ext('PushGroupsListScreen'))(PushGroupsList),
 );

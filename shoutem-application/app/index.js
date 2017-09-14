@@ -1,7 +1,8 @@
 import configuration from './configuration.json';
 import buildConfig from './buildConfig.json';
 
-import ListScreen from './components/ListScreen';
+import RemoteDataListScreen from './screens/RemoteDataListScreen';
+import DeviceInfo from './services/device-info';
 
 import {
   resolveScreenLayout,
@@ -27,7 +28,7 @@ import {
   appWillUnmount,
   appActions,
   getAppId,
-  isPreviewMode,
+  isDevelopment,
 } from './app';
 import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 
@@ -68,11 +69,14 @@ export {
   getActiveShortcut,
   getFirstShortcut,
   isConfigurationLoaded,
-  isPreviewMode,
   isProduction,
+  isDevelopment,
   isRelease,
 
-  ListScreen,
+  RemoteDataListScreen,
+  // For backwards compatibility only,
+  // remove this when all extensions have been updated.
+  RemoteDataListScreen as ListScreen,
 
   executeShortcut,
   openInitialScreen,
@@ -85,4 +89,6 @@ export {
   appDidMount,
   appDidFinishLaunching,
   appWillUnmount,
+
+  DeviceInfo,
 };

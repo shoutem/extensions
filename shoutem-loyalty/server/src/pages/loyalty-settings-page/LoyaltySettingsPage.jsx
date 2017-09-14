@@ -1,35 +1,51 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import api, {
+import {
   fetchExtension,
   updateExtensionSettings,
-  getExtension,
-} from '@shoutem/api';
-import { isInitialized, shouldLoad } from '@shoutem/redux-io';
+  getExtensionState,
+} from '@shoutem/redux-api-sdk';
+import { isInitialized, shouldLoad, shouldRefresh } from '@shoutem/redux-io';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import LoyaltyDisabledPlaceholder from '../../components/loyalty-disabled-placeholder';
 import { CashierSettings } from '../../modules/cashiers';
 import { RulesSettings } from '../../modules/rules';
-import { enableLoyalty } from '../../redux';
-import { initLoyaltyApi } from '../../services';
-import ext from '../../const';
+import { CmsSelect, cmsApi } from '../../modules/cms';
+import { loyaltyApi } from '../../services';
+import {
+  enableLoyalty,
+  getLoyaltyPlaces,
+  loadLoyaltyPlaces,
+  PROGRAMS,
+} from '../../redux';
 import './style.scss';
+
+const PLACES_DESCRIPTOR = {
+  filterKeyProp: 'id',
+  filterLabelProp: 'name',
+};
 
 class LoyaltySettingsPage extends Component {
   constructor(props) {
     super(props);
 
     this.checkData = this.checkData.bind(this);
-    this.resolveStateFromSettings = this.resolveStateFromSettings.bind(this);
+    this.initializeApiEndpoints = this.initializeApiEndpoints.bind(this);
     this.handleUpdateExtension = this.handleUpdateExtension.bind(this);
+    this.handlePlaceChange = this.handlePlaceChange.bind(this);
     this.handleEnableLoyalty = this.handleEnableLoyalty.bind(this);
+    this.renderLoyaltySettings = this.renderLoyaltySettings.bind(this);
 
-    props.fetchExtension();
+    const settings = _.get(props, 'ownExtension.settings', {});
+    const { program, rules, requireReceiptCode } = settings;
+    const programId = _.get(program, 'id', null);
 
     this.state = {
-      loyaltyApiInitialized: false,
-      appId: api.config.appId,
+      programId,
+      rules,
+      requireReceiptCode,
+      currentPlaceId: null,
     };
   }
 
@@ -42,119 +58,157 @@ class LoyaltySettingsPage extends Component {
   }
 
   checkData(nextProps, props = {}) {
-    const { extension } = props;
-    const { extension: nextExtension } = nextProps;
+    const {
+      appId: nextAppId,
+      ownExtension: nextOwnExtension,
+      places: nextPlaces,
+    } = nextProps;
 
-    if (shouldLoad(nextProps, props, 'extension')) {
+    const nextSettings = _.get(nextOwnExtension, 'settings', {});
+    this.initializeApiEndpoints(nextSettings);
+
+    if (shouldLoad(nextProps, props, 'ownExtension')) {
       this.props.fetchExtension();
     }
 
-    const nextSettings = _.get(nextExtension, 'settings', {});
-    const settings = _.get(extension, 'settings', {});
-
-    this.resolveStateFromSettings(nextSettings, settings);
-  }
-
-  resolveStateFromSettings(nextSettings, settings) {
-    const { loyaltyApiInitialized } = this.state;
-    const { programId, rules, requireReceiptCode } = settings;
-    const {
-      programId: nextProgramId,
-      rules: nextRules,
-      requireReceiptCode: nextRequireReceipt,
-      apiEndpoint: nextApiEndpoint,
-    } = nextSettings;
-
-    if (!programId && nextProgramId) {
-      this.setState({ programId: nextProgramId });
-    }
-
-    if (!_.isEmpty(nextRules) && rules !== nextRules) {
-      this.setState({ rules: nextRules });
-    }
-
-    if (requireReceiptCode !== nextRequireReceipt) {
-      this.setState({ requireReceiptCode: nextRequireReceipt });
-    }
-
-    if (!loyaltyApiInitialized && nextApiEndpoint) {
-      initLoyaltyApi(nextApiEndpoint);
-      this.setState({ loyaltyApiInitialized: true });
+    if (cmsApi.isInitialized() && shouldRefresh(nextPlaces)) {
+      this.props.loadPlaces(nextAppId);
     }
   }
 
-  handleUpdateExtension(settings) {
-    const {
-      extension,
-    } = this.props;
-    return this.props.updateExtensionSettings(extension, settings);
+  initializeApiEndpoints(nextSettings) {
+    const { apiEndpoint, cmsEndpoint } = nextSettings;
+
+    if (!loyaltyApi.isInitialized()) {
+      loyaltyApi.init(apiEndpoint);
+    }
+
+    if (!cmsApi.isInitialized()) {
+      cmsApi.init(cmsEndpoint);
+    }
+  }
+
+  handleUpdateExtension(settingsPatch) {
+    const { ownExtension } = this.props;
+    return this.props.updateExtensionSettings(ownExtension, settingsPatch);
+  }
+
+  handlePlaceChange(placeId) {
+    this.setState({ currentPlaceId: placeId });
   }
 
   handleEnableLoyalty() {
     const { rules } = this.state;
 
     return this.props.enableLoyalty(rules)
-      .then(programId => (
-        this.handleUpdateExtension({ programId })
-          .then(() => this.setState({ programId }))
-      ));
+      .then(programId => {
+        const program = {
+          type: PROGRAMS,
+          id: programId,
+        };
+
+        return Promise.all([programId, this.handleUpdateExtension({ program })]);
+      }).then(([programId]) => this.setState({ programId }));
+  }
+
+  renderLoyaltySettings() {
+    const {
+      programId,
+      requireReceiptCode,
+      currentPlaceId,
+      rules,
+    } = this.state;
+    const { appId, places, ownExtensionName } = this.props;
+
+    return (
+      <div>
+        {!_.isEmpty(places) &&
+          <CmsSelect
+            allItemsLabel="All stores"
+            descriptor={PLACES_DESCRIPTOR}
+            dropdownLabel="Select a store"
+            onFilterChange={this.handlePlaceChange}
+            resources={places}
+          />
+        }
+        <RulesSettings
+          currentPlaceId={currentPlaceId}
+          extensionName={ownExtensionName}
+          onUpdateExtension={this.handleUpdateExtension}
+          programId={programId}
+          requireReceiptCode={requireReceiptCode}
+          ruleTemplates={rules}
+        />
+        <CashierSettings
+          appId={appId}
+          currentPlaceId={currentPlaceId}
+          extensionName={ownExtensionName}
+          places={places}
+          placesDescriptor={PLACES_DESCRIPTOR}
+          programId={programId}
+        />
+      </div>
+    );
   }
 
   render() {
-    const { appId, programId, requireReceiptCode } = this.state;
-    const { extension } = this.props;
+    const { programId } = this.state;
+    const { ownExtension, places } = this.props;
+    const dataLoading = !isInitialized(ownExtension) || !isInitialized(places);
 
     return (
       <LoaderContainer
-        isLoading={!isInitialized(extension)}
         className="loyalty-settings-page"
+        isLoading={dataLoading}
       >
         {!programId &&
           <LoyaltyDisabledPlaceholder
             onEnableLoyaltyClick={this.handleEnableLoyalty}
           />
         }
-        {programId &&
-          <div>
-            <RulesSettings
-              programId={programId}
-              requireReceiptCode={requireReceiptCode}
-              onUpdateRequiredReceipt={this.handleUpdateExtension}
-            />
-            <CashierSettings
-              appId={appId}
-              programId={programId}
-            />
-          </div>
-        }
+        {programId && this.renderLoyaltySettings()}
       </LoaderContainer>
     );
   }
 }
 
 LoyaltySettingsPage.propTypes = {
-  extension: PropTypes.object,
+  appId: PropTypes.string,
+  ownExtension: PropTypes.object,
   fetchExtension: PropTypes.func,
   updateExtensionSettings: PropTypes.func,
   enableLoyalty: PropTypes.func,
   createAuthorization: PropTypes.func,
+  places: PropTypes.array,
+  loadPlaces: PropTypes.func,
+  ownExtensionName: PropTypes.string,
 };
 
-function mapStateToProps(state) {
-  const extension = getExtension(state, ext());
-
+function mapStateToProps(state, ownProps) {
+  const { ownExtensionName } = ownProps;
+  const extensionState = getExtensionState(state, ownExtensionName);
   return {
-    extension,
+    places: getLoyaltyPlaces(extensionState, state),
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
+  const { ownExtensionName } = ownProps;
+  const scope = { extensionName: ownExtensionName };
+
   return {
-    fetchExtension: () => dispatch(fetchExtension(ext())),
+    fetchExtension: () => (
+      dispatch(fetchExtension(ownExtensionName))
+    ),
     updateExtensionSettings: (extension, settings) => (
       dispatch(updateExtensionSettings(extension, settings))
     ),
-    enableLoyalty: (rules) => dispatch(enableLoyalty(rules)),
+    enableLoyalty: (rules, authorizationTypes) => (
+      dispatch(enableLoyalty(rules, authorizationTypes, scope))
+    ),
+    loadPlaces: (appId, categoryId) => (
+      dispatch(loadLoyaltyPlaces(appId, categoryId, scope))
+    ),
   };
 }
 

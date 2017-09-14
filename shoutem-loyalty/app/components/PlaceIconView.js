@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {
+  Component,
+} from 'react';
+
 import {
   TouchableOpacity,
   Caption,
-  Icon,
   Image,
   Divider,
   Row,
@@ -10,48 +12,56 @@ import {
   View,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { ext } from '../const';
+import { Favorite } from 'shoutem.favorites';
+
+import { ext, PLACES_SCHEMA } from '../const';
 import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
 import { placeShape } from './shapes';
 
 const DEFAULT_IMAGE = require('../assets/data/no_image.png');
 
-const { func } = React.PropTypes;
+const { func, number } = React.PropTypes;
 
 /**
  * Renders a single place in a list.
  */
-const PlaceIconView = (props) => {
-  const { place, onPress } = props;
-  const { points } = place;
-  const imageSource = place.image ? { uri: place.image.url } : DEFAULT_IMAGE;
+class PlaceIconView extends Component {
+  static propTypes = {
+    // The place
+    place: placeShape.isRequired,
+    // Points for this place
+    points: number,
+    // Called when place is pressed
+    onPress: func,
+  };
 
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <Row>
-        <Image
-          styleName="small rounded-corners"
-          source={imageSource}
-        />
-        <View styleName="vertical stretch space-between">
-          <Subtitle numberOfLines={2}>{place.name}</Subtitle>
-          <View styleName="horizontal">
-            <Caption>{`${points || 'No'} points collected` }</Caption>
+  render() {
+    const { place, points, onPress } = this.props;
+    const imageSource = place.image ? { uri: place.image.url } : DEFAULT_IMAGE;
+
+    return (
+      <TouchableOpacity onPress={onPress}>
+        <Row>
+          <Image
+            styleName="small rounded-corners"
+            source={imageSource}
+          />
+          <View styleName="vertical stretch space-between">
+            <Subtitle numberOfLines={2}>{place.name}</Subtitle>
+            <View styleName="horizontal">
+              <Caption>{`${points || 'No'} points collected`}</Caption>
+            </View>
           </View>
-        </View>
-        <Icon styleName="disclosure" name="right-arrow" />
-      </Row>
-      <Divider styleName="line" />
-    </TouchableOpacity>
-  );
-};
-
-PlaceIconView.propTypes = {
-  // The place
-  place: placeShape.isRequired,
-  // Called when place is pressed
-  onPress: func,
-};
+          <Favorite
+            item={place}
+            schema={PLACES_SCHEMA}
+          />
+        </Row>
+        <Divider styleName="line" />
+      </TouchableOpacity>
+    );
+  }
+}
 
 const styledComponent = connectStyle(ext('PlaceIconView'))(PlaceIconView);
 

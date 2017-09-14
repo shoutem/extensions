@@ -1,0 +1,53 @@
+{
+  "name": "social",
+  "title": "Social",
+  "version": "0.0.1",
+  "description": "Social wall",
+  "platform": "1.1.*",
+  "screens": [
+    {
+      "name": "SocialWallScreen"
+    },
+    {
+      "name": "StatusDetailsScreen"
+    },
+    {
+      "name": "CreateStatusScreen"
+    },
+    {
+      "name": "MembersScreen"
+    },
+    {
+      "name": "SearchScreen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "title": "Wall",
+      "name": "wall",
+      "screen": "@.SocialWallScreen"
+    },
+    {
+      "title": "Members",
+      "name": "members",
+      "screen": "@.MembersScreen"
+    }
+  ],
+  "settingsPages": [{
+    "page": "@.SocialSettingsPage",
+    "title": "Settings"
+  }],
+  "pages": [
+    {
+      "name": "SocialSettingsPage",
+      "path": "server/build/index.html?page=SocialSettingsPage",
+      "type": "html"
+    }
+  ],
+  "settings": {
+    "maxStatusLength": 140,
+    "enablePhotoAttachments": true,
+    "enableComments": true,
+    "enableInteractions": true
+  }
+}

@@ -1,8 +1,8 @@
 {
   "name": "menu",
   "title": "Restaurant menu",
-  "version": "0.10.13",
-  "platform": "1.1.*",
+  "version": "1.2.0",
+  "platform": "1.2.*",
   "icon": "./server/assets/images/add-menu-items-image.png",
   "description": "Show a restaurant menu",
   "categories": ["content"],

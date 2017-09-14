@@ -1,20 +1,16 @@
 import { combineReducers } from 'redux';
 import _ from 'lodash';
 
-import { Alert } from 'react-native';
-
 import {
   collection,
   create,
-  getOne,
   find,
-  invalidate,
+  getCollection,
   storage,
-  one,
+  resource,
  } from '@shoutem/redux-io';
 
 import { preventStateRehydration } from '@shoutem/core/preventStateRehydration';
-import { navigateTo } from '@shoutem/core/navigation';
 
 import {
   getAppId,
@@ -22,186 +18,186 @@ import {
 
 import { getUser } from 'shoutem.auth';
 
+import { cmsCollection } from 'shoutem.cms';
+
 import {
   AUTHORIZATIONS_SCHEMA,
   CARD_SCHEMA,
+  CASHIERS_SCHEMA,
   CARD_STATE_SCHEMA,
   ext,
-  CMS_PUNCHCARDS_SCHEMA,
-  CMS_REWARDS_SCHEMA,
-  PUNCHCARDS_SCHEMA,
+  PLACES_SCHEMA,
+  PLACE_REWARDS_SCHEMA,
+  PUNCH_REWARDS_SCHEMA,
+  POINT_REWARDS_SCHEMA,
   REWARDS_SCHEMA,
+  RULES_SCHEMA,
   TRANSACTIONS_SCHEMA,
 } from './const';
 
 const requestConfig = {
   request: {
     headers: {
+      'Accept': 'application/vnd.api+json',
       'Content-Type': 'application/vnd.api+json',
     },
   },
 };
 
 /**
- * Returns true if the reward can be redeemed, false otherwise
+ * Returns card ID for active loyalty card from state.
+ *
+ * @returns Card ID
+ */
+export const getCardId = (state) => {
+  const { data } = state[ext()].card || {};
+
+  return data && data.id;
+};
+
+/**
+ * Checks if the user can redeem the reward.
+ *
+ * @returns true if the reward can be redeemed, false otherwise
  */
 export const canRedeem = ({ points = 0, pointsRequired }) => points >= pointsRequired;
 
 /**
- * Returns true if the reward is a punch card, false otherwise
+ * Checks if the reward is a punch card.
+ *
+ * @returns true if the reward is a punch card, false otherwise
  */
 export const isPunchCard = reward => reward && !_.has(reward, 'numberOfRewards');
 
-const showTransactionError = (message) => {
-  Alert.alert(
-  'Error',
-    message,
-  );
+/**
+ * Gets cashier attributes from state
+ */
+export const getCashierInfo = state => _.get(state[ext()].cashierInfo, 'data.attributes');
+
+/**
+ * Returns state for single card, not tied to a specific place.
+ *
+ * @return Card state for single card loyalty
+ */
+export const getSingleCardState = state => getCardStateForPlace(state, null);
+
+/**
+ * Returns point card state for a place.
+ *
+ * @returns Card state for place with given ID, or single card state if null is passed as ID
+ */
+export const getCardStateForPlace = (state, placeId) => {
+  const { allCardStates } = state[ext()];
+
+  const cardStates = getCollection(allCardStates, state);
+
+  return _.find(cardStates, { 'location': placeId });
 };
 
 /**
- * Fetches the loyalty card for the logged in user. If it doesn't exist, creates a new one.
+ * Creates a loyalty card for the user with given ID
+ *
+ * @param userId User ID
+ * @returns Server response with new card ID
  */
-export const refreshCard = () => {
-  return (dispatch, getState) => {
-    const user = getUser(getState());
-    const { id } = user;
+export const createCardForUser = (userId) => {
+  return (dispatch) => {
+    const newCard = {
+      type: CARD_SCHEMA,
+      attributes: {
+        user: { id: `${userId}` },
+      },
+    };
 
-    dispatch(find(CARD_SCHEMA, undefined, { user: `/user:${id}` }))
-    .catch(() => {
-      const newCard = {
-        type: CARD_SCHEMA,
-        attributes: {
-          user: { id: `${id}` },
-        },
-      };
+    const config = {
+      ...requestConfig,
+      schema: CARD_SCHEMA,
+    };
 
-      const config = {
-        request: {
-          headers: {
-            'Content-Type': 'application/vnd.api+json',
-          },
-        },
-        schema: CARD_SCHEMA,
-      };
-
-      dispatch(create(config, newCard, { user: '' }));
-    });
+    return dispatch(create(config, newCard, { user: '' }));
   };
 };
 
 /**
- * Creates a loyalty transaction. Navigates the user to a result screen on success.
- * A punch card reward can be stamped or redeemed. A regular eward can only be redeemed.
+ * Fetches card from server for user.
  *
- * If this is a redeeming transaction, points are negative. Their value is equal to points
- * required to redeem a reward.
+ * @param userId User ID
+ * @returns Server response with new card ID
+ */
+export const fetchCard = userId => find(CARD_SCHEMA, undefined, { user: `user:${userId}` });
+
+/**
+ * Fetches point card state from server to refresh local state.
  *
- * @param data - Transaction data, such as amount spent or whether this was a purchase or visit.
+ * @param cardId Loyalty card ID
+ */
+export const fetchCardState = cardId => find(CARD_STATE_SCHEMA, undefined, { cardId });
+
+/**
+ * Fetches cashier info for user.
+ *
+ * @param userId User ID
+ * @returns Server response with cashier info
+ */
+export const fetchCashierInfo = userId => find(CASHIERS_SCHEMA, undefined, { userId });
+
+/**
+ * Fetches point rewards from server
+ */
+export const fetchPointRewards = (cardId, parentCategoryId) =>
+  find(POINT_REWARDS_SCHEMA, undefined, {
+    'filter[app]': getAppId(),
+    'filter[schema]': REWARDS_SCHEMA,
+    'filter[category]': parentCategoryId,
+    'filter[card]': cardId,
+  });
+
+/**
+ * Fetches transactions from server to refresh local state.
+ *
+ * @param cardId Loyalty card ID
+ */
+export const fetchRules = () => find(RULES_SCHEMA, undefined, {});
+
+/**
+ * Fetches transactions from server to refresh local state.
+ *
+ * @param cardId Loyalty card ID
+ */
+export const fetchTransactions = cardId =>
+  find(TRANSACTIONS_SCHEMA, undefined, { 'filter[card]': cardId });
+
+/**
+ * Creates a transaction.
+ *
+ * @param attributes - Transaction attributes, such as as card, reward type or transaction data.
  * @param pin - Cashier pin
- * @param reward - An optional reward.
  *
  */
-export const createTransaction = (data, pin, reward) => {
+export const createTransaction = (attributes, authorization) => {
   return (dispatch, getState) => {
-    const state = getState();
-    const { card: cardState } = state[ext()];
-    const { id: card } = getOne(cardState, state);
+    const { authorizationType, pin, cardId } = authorization;
 
-    const { points } = data;
+    const { id: userId } = getUser(getState());
+
+    const data = authorizationType === 'pin' ? { pin } : { userId };
 
     const item = {
       type: TRANSACTIONS_SCHEMA,
       attributes: {
         authorizations: [{
-          authorizationType: 'pin',
-          data: {
-            pin,
-          },
+          authorizationType,
+          data,
         }],
-        card,
-        [isPunchCard(reward) ? 'punchReward' : 'pointReward']: reward && reward.id,
-        transactionData: {
-          cms: {
-            appId: getAppId(),
-            schema: isPunchCard(reward) ? CMS_PUNCHCARDS_SCHEMA : CMS_REWARDS_SCHEMA,
-            category: reward && reward.parentCategoryId,
-          },
-          ...data,
-        },
+        ...attributes,
+        card: cardId || getCardId(getState()),
       },
     };
 
     const config = { ...requestConfig, schema: TRANSACTIONS_SCHEMA };
 
-    dispatch(create(config, item)).then(({ payload: { data: { attributes } } }) => {
-      const { points: awardedPoints } = attributes.transactionData;
-
-      dispatch(processTransactionResults(data, reward, points, awardedPoints, pin));
-    })
-    .catch(({ payload }) => {
-      const { errors } = payload.response;
-
-      showTransactionError(errors[0].detail);
-    });
-  };
-};
-
-/**
- * Processes transaction results and takes the user to a result screen.
- * If there was a reward in the transaction, this screen shows that it was redeemed
- * or that a punch card was stamped.
- *
- * If there was no reward, the user is taken to a screen where he can see how much
- * points he earned on his regular loyalty card.
- *
- * If the reward is a punch card, lets the user choose if he wants to redeem it
- * right away.
- *
- * The action invalidates the punch card or card state schema based on transaction type.
- *
- * @param data - Transaction data, such as amount spent
- * @param reward - An optional reward
- * @param points - Points included in the transaction, if any
- * @param awardedPoints - Points awarded after a transaction based on visit or amount spent
- * @param pin - The PIN number used in the transaction
- *
- */
-export const processTransactionResults = (data, reward, points, awardedPoints, pin) => {
-  return (dispatch) => {
-    const schemaToInvalidate = isPunchCard(reward) ? PUNCHCARDS_SCHEMA : CARD_STATE_SCHEMA;
-
-    dispatch(invalidate(schemaToInvalidate));
-
-    // If the reward is a punch card and this transaction made it eligible for redemption,
-    // ask the user if he wants to redeem it
-    if (isPunchCard(reward)) {
-      const { points: originalPoints = 0, pointsRequired } = reward;
-
-      const canRedeem = (points + originalPoints) >= pointsRequired;
-
-      if (canRedeem) {
-        dispatch(navigateTo({
-          screen: ext('RedeemOrContinueScreen'),
-          props: {
-            pin,
-            reward,
-            points,
-          },
-        }));
-
-        return;
-      }
-    }
-
-    dispatch(navigateTo({
-      screen: ext(`${reward ? 'TransactionProcessedScreen' : 'PointsEarnedScreen'}`),
-      props: {
-        data,
-        points: points || awardedPoints,
-        redeemed: points < 0,
-      },
-    }));
+    return dispatch(create(config, item)).then(({ payload: { data: { attributes } } }) =>
+      attributes.transactionData);
   };
 };
 
@@ -211,31 +207,37 @@ export const processTransactionResults = (data, reward, points, awardedPoints, p
  * @param pin - Cashier PIN
  */
 export const verifyPin = (pin) => {
-  return (dispatch) => {
-    const item = [{
-      type: AUTHORIZATIONS_SCHEMA,
-      attributes: {
-        authorizationType: 'pin',
-        data: {
-          pin,
-        },
+  const item = [{
+    type: AUTHORIZATIONS_SCHEMA,
+    attributes: {
+      authorizationType: 'pin',
+      data: {
+        pin,
       },
-    }];
+    },
+  }];
 
-    return dispatch(create(AUTHORIZATIONS_SCHEMA, item));
-  };
+  const config = { ...requestConfig, schema: AUTHORIZATIONS_SCHEMA };
+
+  return create(config, item);
 };
 
 export default preventStateRehydration(
   combineReducers({
-    card: one(CARD_SCHEMA, ''),
-    cards: storage(CARD_SCHEMA),
-    cardState: one(CARD_STATE_SCHEMA, ''),
+    card: resource(CARD_SCHEMA),
+    cashierInfo: resource(CASHIERS_SCHEMA),
+    allCardStates: collection(CARD_STATE_SCHEMA),
     cardStates: storage(CARD_STATE_SCHEMA),
-    punchCards: storage(PUNCHCARDS_SCHEMA),
-    allPunchCards: collection(PUNCHCARDS_SCHEMA),
-    rewards: storage(REWARDS_SCHEMA),
-    allRewards: collection(REWARDS_SCHEMA),
+    punchCards: storage(PUNCH_REWARDS_SCHEMA),
+    allPunchCards: collection(PUNCH_REWARDS_SCHEMA),
+    allLocations: cmsCollection(PLACES_SCHEMA),
+    locations: storage(PLACES_SCHEMA),
+    allPlaceRewards: collection(PLACE_REWARDS_SCHEMA),
+    placeRewards: storage(PLACE_REWARDS_SCHEMA),
+    pointRewards: storage(POINT_REWARDS_SCHEMA),
+    allPointRewards: collection(POINT_REWARDS_SCHEMA),
+    rules: storage(RULES_SCHEMA),
+    allRules: collection(RULES_SCHEMA),
     transactions: storage(TRANSACTIONS_SCHEMA),
     allTransactions: collection(TRANSACTIONS_SCHEMA),
   }));

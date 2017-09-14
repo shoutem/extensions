@@ -8,7 +8,11 @@ import {
   HelpBlock,
 } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { fetchShortcut, updateShortcutSettings, getShortcut } from '@shoutem/api';
+import {
+  fetchShortcut,
+  updateShortcutSettings,
+  getShortcut,
+} from '@shoutem/redux-api-sdk';
 import { shouldRefresh } from '@shoutem/redux-io';
 import { connect } from 'react-redux';
 import './style.scss';

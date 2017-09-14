@@ -1,6 +1,6 @@
 {
   "name": "shoutem.cms",
-  "version": "0.10.16",
+  "version": "1.2.2",
   "description": "Shoutem CMS extension",
   "rnpm": {
     "commands": {

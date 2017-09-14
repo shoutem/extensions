@@ -1,17 +1,17 @@
-import {
+export {
   loadCategories,
   createCategory,
   navigateToCategoryContent,
 } from './category';
 
 export {
-  loadCategories,
-  createCategory,
-  navigateToCategoryContent,
-};
+  loadResources,
+} from './resource';
 
-import { loadResources } from './resource';
-export { loadResources };
+export {
+  loadSchema,
+} from './schema';
 
-import { loadSchema } from './schema';
-export { loadSchema };
+export {
+  updateShortcutCategories,
+} from './shortcut';

@@ -1,2 +1,2 @@
-import CashierForm from './CashierForm';
+import CashierForm from './CashierFormWrapper';
 export default CashierForm;

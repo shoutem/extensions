@@ -19,11 +19,6 @@ import { ext } from '../const';
 
 const { func, number, shape } = React.PropTypes;
 
-const getNavBarProps = () => ({
-  renderLeftComponent: () => null,
-  title: 'POINTS EARNED',
-});
-
 /**
  * Informs the user about his transaction details and how much points he was awarded.
  */
@@ -43,10 +38,18 @@ export class PointsEarnedScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onConfirm = this.onConfirm.bind(this);
+    this.handleConfirm = this.handleConfirm.bind(this);
   }
 
-  onConfirm() {
+  // eslint-disable-next-line class-methods-use-this
+  getNavBarProps() {
+    return {
+      renderLeftComponent: () => null,
+      title: 'POINTS EARNED',
+    };
+  }
+
+  handleConfirm() {
     const { closeModal } = this.props;
 
     closeModal();
@@ -58,10 +61,10 @@ export class PointsEarnedScreen extends React.Component {
 
     return (
       <Screen>
-        <NavigationBar {...getNavBarProps()} />
+        <NavigationBar {...this.getNavBarProps()} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <Subtitle styleName="oval-highlight">
-            {`Your bill was $${amount}`}
+            {amount ? `Your bill was $${amount}` : ''}
           </Subtitle>
           <Title
             style={{
@@ -79,7 +82,7 @@ export class PointsEarnedScreen extends React.Component {
           </Subtitle>
           <Button
             styleName="secondary xl-gutter-vertical"
-            onPress={this.onConfirm}
+            onPress={this.handleConfirm}
           >
             <Text>CONFIRM</Text>
           </Button>

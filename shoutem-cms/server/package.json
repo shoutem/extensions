@@ -1,6 +1,6 @@
 {
   "name": "shoutem.cms",
-  "version": "0.10.16",
+  "version": "1.2.2",
   "description": "Shoutem CMS extension",
   "author": "Shoutem",
   "watch": {
@@ -21,7 +21,9 @@
     "build-watch": "run-p watch build-serve",
     "dev": "node server.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "reselect": "^2.5.4"
+  },
   "devDependencies": {
     "@shoutem/webpack-prepend-append": "^1.0.1",
     "babel-core": "^6.10.4",

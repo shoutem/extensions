@@ -18,3 +18,12 @@ export function getSortOptions(shortcut) {
     order,
   };
 }
+
+export function getParentCategoryId(shortcut) {
+  return _.get(shortcut, 'settings.parentCategory.id');
+}
+
+export function getVisibleCategoryIds(shortcut) {
+  const visibleCategories = _.get(shortcut, 'settings.visibleCategories', []);
+  return _.map(visibleCategories, 'id');
+}

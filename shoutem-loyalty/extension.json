@@ -1,9 +1,9 @@
 {
   "name": "loyalty",
-  "version": "0.0.5",
+  "version": "1.2.3",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "platform": "1.0.*",
+  "platform": "1.2.*",
   "categories": ["commerce"],
   "repository": {
     "type": "git",
@@ -21,12 +21,8 @@
           "page": "shoutem.cms.CmsPage",
           "title": "Content",
           "parameters":{
-            "schema": "@.punchCards"
+            "schema": "@.punch-cards"
           }
-        },
-        {
-          "page": "shoutem.layouts.LayoutPage",
-          "title": "Layout"
         }
       ]
     },
@@ -52,14 +48,40 @@
           "page": "shoutem.cms.CmsPage",
           "title": "Content",
           "parameters":{
-            "schema": "@.cmsRewards"
+            "schema": "@.rewards"
+          }
+        }
+      ]
+    },
+    {
+      "screen": "@.PlacesListScreen",
+      "title": "Stores",
+      "name": "stores-shortcut",
+      "icon":"theme://address-full.png",
+      "adminPages": [
+        {
+          "page": "shoutem.cms.CmsPage",
+          "title": "Stores",
+          "parameters":{
+            "schema": "@.places"
           }
         },
         {
-          "page": "shoutem.layouts.LayoutPage",
-          "title": "Layout"
+          "page": "@.RewardsSettingsPage",
+          "title": "Rewards"
         }
       ]
+    },
+    {
+      "title": "My Stores",
+      "description": "List of favorited stores",
+      "name": "FavoritesList",
+      "screen": "@.FavoritesListScreen",
+      "settings": {
+        "favoritesSchemas": [
+          "@.places"
+        ]
+      }
     }
   ],
   "screens": [
@@ -77,6 +99,16 @@
       "name": "RewardsListScreen",
       "title": "Rewards",
       "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
+    },
+    {
+      "name": "PlacesListScreen",
+      "title": "Stores",
+      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
+    },
+    {
+      "name": "FavoritesList",
+      "title": "Icon List",
+      "image": "./server/assets/images/layout_icon.png"
     }
   ],
   "settingsPages": [
@@ -87,12 +119,20 @@
   ],
   "dataSchemas": [
      {
-      "name": "punchCards",
+      "name": "punch-cards",
       "path": "server/data-schemas/punchCards.json"
     },
     {
-      "name": "cmsRewards",
-      "path": "server/data-schemas/cmsRewards.json"
+      "name": "rewards",
+      "path": "server/data-schemas/rewards.json"
+    },
+    {
+      "name": "places",
+      "path": "server/data-schemas/places.json"
+    },
+    {
+      "name": "place-rewards",
+      "path": "server/data-schemas/placeRewards.json"
     }
   ],
   "pages": [
@@ -105,11 +145,16 @@
       "name": "PointsCardSettingsPage",
       "path": "server/build/index.html?page=PointsCardSettingsPage",
       "type": "html"
+    },
+    {
+      "name": "RewardsSettingsPage",
+      "path": "server/build/index.html?page=RewardsSettingsPage",
+      "type": "html"
     }
   ],
   "settings": {
-    "apiEndpoint": "loyalty.api.dev.sauros.hr",
-    "cmsEndpoint": "v4.api.dev.sauros.hr",
+    "apiEndpoint": "loyalty.api.shoutem.com",
+    "cmsEndpoint": "v4.api.shoutem.com",
     "rules": [{
       "ruleType": "visit",
       "implementationData": {
@@ -120,6 +165,11 @@
       "implementationData": {
         "coefficient": 0.1
       }
-    }]
+    }],
+    "schemas": {
+      "places": "@.places",
+      "rewards": "@.rewards",
+      "placeRewards": "@.place-rewards"
+    }
   }
 }

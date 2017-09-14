@@ -9,12 +9,20 @@ node_modules
 # Optional npm cache directory
 .npm
 
+# Yarn files
+yarn.lock
+
 # Webstorm files
 .idea
+## WebStorm RN build
+.tmp/
 
 # Build files
 build
 
 # Zip files
 *.zip
-*.tgz
+
+# IDE files and folders
+.vscode
+jsconfig.json

@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { Alert } from 'react-native';
-
 import { connect } from 'react-redux';
+import QRCode from 'react-native-qrcode';
 
 import { navigateTo } from '@shoutem/core/navigation';
 
@@ -11,132 +10,92 @@ import {
   Screen,
   Subtitle,
   Text,
-  TextInput,
   View,
 } from '@shoutem/ui';
-
-import {
-  invalidate,
-} from '@shoutem/redux-io';
-
 
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import {
-  ext,
-} from '../const';
+  loginRequired,
+} from 'shoutem.auth';
 
-import { reward as rewardShape } from '../components/shapes';
+import { ext } from '../const';
 
 import {
-  createTransaction,
-  verifyPin,
+  getCardId,
 } from '../redux';
 
-const { bool, func } = React.PropTypes;
+import { placeShape, rewardShape } from '../components/shapes';
 
-const onWrongPin = () => {
-  Alert.alert(
-  'Wrong pin',
-  'The PIN you entered was incorrect.',
-    [
-      { text: 'Try again' },
-    ],
-  );
+const { bool, func, string } = React.PropTypes;
+
+/**
+ * Encodes reward values in an array to save space in QR code.
+ */
+const getEncodedRewardValues = (reward) => {
+  const { id, location = '', numberOfRewards = '', parentCategoryId, pointsRequired, title } = reward;
+
+  return [id, location, numberOfRewards, parentCategoryId, pointsRequired, title];
 };
 
 /**
- * Lets the cashier enter his PIN before proceeding to stamp a card or redeem a reward.
- * If the user wants to redeem a reward, the transaction is immediately processed.
- * If the cashier wants to stamp a punch card or assign points to a loyalty card,
- * the screen takes him to the next step.
+ * Shows points card details for a single card loyalty program
  */
 export class VerificationScreen extends React.Component {
   static propTypes = {
+    // User's loyalty card ID
+    cardId: string,
+    // Navigates to PIN verification screen
+    navigateTo: func,
+    // Where the transaction takes place
+    place: placeShape,
     // Reward being stamped or redeemed
     reward: rewardShape,
     // True if he user want to redeem a reward, false otherwise
     redeem: bool,
-    // Creates a transaction for redeeming a reward
-    createTransaction: func,
-    // Used to navigate to the next step
-    navigateTo: func,
-    // Verifies the entered PIN
-    verifyPin: func,
   };
 
   constructor(props) {
     super(props);
 
-    this.onNext = this.onNext.bind(this);
-
-    this.state = {};
+    this.navigateToPinVerificationScreen = this.navigateToPinVerificationScreen.bind(this);
   }
 
-  onNext() {
-    const { verifyPin } = this.props;
-    const { pin } = this.state;
-
-    verifyPin(pin)
-    .then(() => {
-      this.onPinVerified(pin);
-    })
-    .catch(onWrongPin);
-  }
-
-  onPinVerified(pin) {
-    const { createTransaction, redeem, reward } = this.props;
-
-    // If the user wants to redeem a reward, we do it automatically by substracting the
-    // required number of points from his punch or loyalty card
-    if (redeem) {
-      createTransaction({ points: -reward.pointsRequired }, pin, reward);
-      return;
-    }
-
-    this.navigateToNextStep(pin);
-  }
-
-  navigateToNextStep(pin) {
-    const { navigateTo, reward } = this.props;
+  navigateToPinVerificationScreen() {
+    const { navigateTo, place, reward, redeem } = this.props;
 
     navigateTo({
-      screen: ext(`${reward ? 'StampCardScreen' : 'AssignPointsScreen'}`),
+      screen: ext('PinVerificationScreen'),
       props: {
-        pin,
+        place,
         reward,
+        redeem,
       },
     });
   }
 
-  renderPinComponent() {
-    return (
-      <TextInput
-        placeholder="Enter your PIN"
-        autoCapitalize="none"
-        autoCorrect={false}
-        keyboardType="numeric"
-        keyboardAppearance="light"
-        onChangeText={pin => this.setState({ pin })}
-        returnKeyType="done"
-        secureTextEntry
-      />
-    );
-  }
-
   render() {
+    const { cardId, reward, redeem } = this.props;
+
+    const rewardData = reward ? getEncodedRewardValues(reward) : '';
+
+    const transactionData = [cardId, rewardData, redeem];
+
     return (
       <Screen>
-        <NavigationBar title="CASHIER PIN" />
-        <View styleName="vertical flexible h-center lg-gutter-top">
-          <Subtitle styleName="h-center md-gutter-bottom">Show this screen to cashier</Subtitle>
-          {this.renderPinComponent()}
+        <NavigationBar />
+        <View styleName="sm-gutter flexible vertical h-center v-center">
+          <Subtitle styleName="xl-gutter-bottom">Show this screen to the Cashier</Subtitle>
+          <QRCode
+            size={160}
+            value={JSON.stringify(transactionData)}
+          />
           <Button
-            styleName="secondary lg-gutter-vertical"
-            onPress={this.onNext}
+            styleName="secondary md-gutter-vertical"
+            onPress={this.navigateToPinVerificationScreen}
           >
-            <Text>NEXT</Text>
+            <Text>USE PIN INSTEAD</Text>
           </Button>
         </View>
       </Screen>
@@ -144,6 +103,12 @@ export class VerificationScreen extends React.Component {
   }
 }
 
-export default connect(undefined, { createTransaction, invalidate, verifyPin, navigateTo })(
+export const mapStateToProps = (state) => {
+  return {
+    cardId: getCardId(state),
+  };
+};
+
+export default loginRequired(connect(mapStateToProps, { navigateTo })(
   connectStyle(ext('VerificationScreen'))(VerificationScreen),
-);
+));

@@ -1,50 +1,80 @@
-import React from 'react';
+import React, {
+  Component,
+} from 'react';
 
 import moment from 'moment';
 
 import {
   Caption,
   Divider,
-  Icon,
+  Image,
   Row,
-  Text,
+  Subtitle,
   View,
 } from '@shoutem/ui';
 
 import { connectStyle } from '@shoutem/theme';
 
 import { ext } from '../const';
-import { transaction as transactionShape } from '../components/shapes';
+import { transactionShape } from '../components/shapes';
 
 const TRANSACTION_DATE_FORMAT = 'MMMM DD';
+
+const GIFT_ICON = require('../assets/icons/gift.png');
+const PLUS_ICON = require('../assets/icons/plus.png');
 
 /**
  * A points card transaction item, used to display transaction history
  */
-const TransactionItem = ({ transaction }) => {
-  const { createdAt, transactionData: { points } } = transaction;
+class TransactionItem extends Component {
+  static propTypes = {
+    // The transaction
+    transaction: transactionShape.isRequired,
+  };
 
-  const isRedeemed = points < 0;
+  render() {
+    const { transaction } = this.props;
+    const { createdAt, transactionData } = transaction;
 
-  const label = isRedeemed ? `${-points} redeemed` : `${points} added`;
+    const { amount, points, purchase, rewardName = '' } = transactionData;
 
-  return (
-    <View>
-      <Row styleName="small">
-        <Icon name={isRedeemed ? 'gift' : 'plus-button'} />
-        <Text styleName="h-center">{label}</Text>
-        <Caption styleName="h-right">
-          {moment(createdAt).format(TRANSACTION_DATE_FORMAT)}
-        </Caption>
-      </Row>
-      <Divider styleName="line" />
-    </View>
-  );
-};
+    const isRedeemed = points < 0;
 
-TransactionItem.propTypes = {
-  // The transaction
-  transaction: transactionShape.isRequired,
-};
+    const action = isRedeemed ? 'Reward redeemed' : 'Points gained';
+    const activity = `Store visited ${purchase ? ` ·  $${amount} spent` : ''}`;
+    const subtitle = isRedeemed ? rewardName : activity;
+
+    const date = moment(createdAt).format(TRANSACTION_DATE_FORMAT);
+
+    return (
+      <View>
+        <Row>
+          <Image
+            source={isRedeemed ? GIFT_ICON : PLUS_ICON}
+            styleName="small-avatar"
+          />
+          <View
+            style={{ flex: 6 }}
+            styleName="vertical stretch space-between"
+          >
+            <Subtitle>{action}</Subtitle>
+            <View styleName="horizontal">
+              <Caption>
+                {`${date}  ·  ${subtitle}`}
+              </Caption>
+            </View>
+          </View>
+          <Subtitle
+            style={{ flex: 1 }}
+            styleName="h-right"
+          >
+            {`${isRedeemed ? '' : '+'}${points}`}
+          </Subtitle>
+        </Row>
+        <Divider styleName="line" />
+      </View>
+    );
+  }
+}
 
 export default connectStyle(ext('TransactionItem'))(TransactionItem);

@@ -1,5 +1,19 @@
-import rsaaPromise from './rsaaPromise';
+export rsaaPromise from './rsaaPromise';
 
 export {
-  rsaaPromise,
-};
+  getSortOptions,
+  getParentCategoryId,
+  getVisibleCategoryIds,
+} from './shortcut';
+
+export {
+  getDropdownOptions,
+  getSelectedOptionLabel,
+} from './dropdown';
+
+export {
+  ALL_CATEGORIES_OPTION,
+  isAllCategoriesSelected,
+  getCategoriesDisplayLabel,
+} from './categories';
+

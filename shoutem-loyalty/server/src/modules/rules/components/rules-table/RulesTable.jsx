@@ -1,8 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
 import { ControlLabel } from 'react-bootstrap';
-import { validateNumericRule } from '../../services';
+import {
+  validateNumericRule,
+  transformNumericRule,
+} from '../../services';
 import RuleTableRow from '../rule-table-row';
+import './style.scss';
 
 export const RULES_TO_DISPLAY = {
   VISIT: {
@@ -10,7 +14,7 @@ export const RULES_TO_DISPLAY = {
     customerAction: 'Visit (QR or PIN verification)',
     unit: 'points',
     valueKey: 'pointsPerVisit',
-    valueTransformer: _.toNumber,
+    valueTransformer: transformNumericRule,
     validateRule: validateNumericRule,
   },
   LINEAR_POINT: {
@@ -18,7 +22,7 @@ export const RULES_TO_DISPLAY = {
     customerAction: 'Purchase (PIN, QR or receipt scanning)',
     unit: 'points per currency unit',
     valueKey: 'coefficient',
-    valueTransformer: _.toNumber,
+    valueTransformer: transformNumericRule,
     validateRule: validateNumericRule,
   },
 };
@@ -31,7 +35,7 @@ export default class RulesTable extends Component {
   }
 
   renderRuleTableRow(ruleType) {
-    const { rules, onRuleChange } = this.props;
+    const { rules, onRuleChange, onRuleToggle } = this.props;
     const rule = _.find(rules, { ruleType: ruleType.type });
 
     if (!rule) {
@@ -40,9 +44,10 @@ export default class RulesTable extends Component {
 
     return (
       <RuleTableRow
-        key={rule.id}
-        rule={rule}
+        key={`${rule.ruleType}-${rule.id}`}
         onRuleChange={onRuleChange}
+        onRuleToggle={onRuleToggle}
+        rule={rule}
         {...ruleType}
       />
     );
@@ -53,8 +58,15 @@ export default class RulesTable extends Component {
       <table className="table rules-table">
         <thead>
           <tr>
-            <th><ControlLabel>Customer’s action</ControlLabel></th>
-            <th><ControlLabel>Value</ControlLabel></th>
+            <th className="rules-table__action-col">
+              <ControlLabel>Customer’s action</ControlLabel>
+            </th>
+            <th className="rules-table__value-col">
+              <ControlLabel>Value</ControlLabel>
+            </th>
+            <th className="rules-table__enabled-col">
+              <ControlLabel>Rule enabled</ControlLabel>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -68,4 +80,5 @@ export default class RulesTable extends Component {
 RulesTable.propTypes = {
   rules: PropTypes.object,
   onRuleChange: PropTypes.func,
+  onRuleToggle: PropTypes.func,
 };

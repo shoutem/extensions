@@ -20,6 +20,7 @@ function createExecuteShortcutActionMiddleware(actions) {
       }
 
       const shortcutAction = actions[actionName];
+
       if (typeof shortcutAction === 'function') {
         return store.dispatch(shortcutAction(state, action));
       }

@@ -9,8 +9,10 @@ import FCM from './firebase';
 
 // eslint-disable-next-line no-unused-vars
 const requestPermissions = store => next => action => {
-  if (action.type === REQUEST_PUSH_PERMISSION) {
-    FCM.requestPermissions();
+  if (isProduction()) {
+    if (action.type === REQUEST_PUSH_PERMISSION) {
+      FCM.requestPermissions();
+    }
   }
 
   return next(action);
