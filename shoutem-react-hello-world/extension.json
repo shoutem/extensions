@@ -1,9 +1,9 @@
 {
   "name": "react-hello-world",
   "title": "React Hello World",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "platform": "1.2.*",
-  "description": "An example of a simple extension with both app and server functionalities",
+  "description": "An example of a simple extension with both app and server functionality",
   "shortcuts": [
     {
       "title": "React Hello World",

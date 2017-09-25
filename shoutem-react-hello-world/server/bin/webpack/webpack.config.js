@@ -21,6 +21,7 @@ module.exports = {
   plugins: resolvePlugins(),
   resolve: {
     modules: [
+      path.join(__dirname, '../..'),
       'node_modules',
     ],
     extensions: ['.js', '.jsx', '.json', '.css', '.sass', '.scss', '.html']
