@@ -1,9 +1,9 @@
 {
-  "name": "shoutem-loyalty",
+  "name": "jack-loyalty",
   "version": "0.0.1",
-  "description": "Shoutem Loyalty Extension",
+  "description": " Loyalty Extension",
   "keywords": [
-    "Shoutem"
-  ],
-  "author": "shoutem"
+    "Shoutem" add a code bar to get points
+  ],add to apple pay /samsung pay or android pay
+  "author": "loyalty rewards
 }
