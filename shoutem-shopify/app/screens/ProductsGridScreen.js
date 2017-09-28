@@ -24,6 +24,10 @@ class ProductsGridScreen extends ProductsListScreen {
     return { ...super.getNavBarProps(), styleName: 'featured' };
   }
 
+  renderCollectionsPicker() {
+    return super.renderCollectionsPicker('horizontal featured');
+  }
+
   /* eslint-disable class-methods-use-this */
   renderProducts(collectionId) {
     return (

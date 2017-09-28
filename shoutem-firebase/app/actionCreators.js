@@ -1,6 +1,4 @@
-import { NOTIFICATION_RECEIVED } from 'shoutem.push-notifications';
-
-export const DEVICE_TOKEN_RECEIVED = 'shoutem.firebase.DEVICE_TOKEN_RECEIVED';
+import { DEVICE_TOKEN_RECEIVED, NOTIFICATION_RECEIVED } from 'shoutem.push-notifications';
 
 /**
  * Emits the received notification

@@ -11,8 +11,8 @@ const DELETE_FAVORITE_ITEM = 'shoutem.favorites.DELETE_FAVORITE_ITEM';
  * Action creator used to save favorite items
  * for a specific scheme.
  *
- * @param data Data containing favorite items.
- * @param schema Schema name of favorite items.
+ * @param data {Object} Data containing favorite items.
+ * @param schema {string} Schema name of favorite items.
  * @returns {{type: string, data: {}, schema: string}} Action.
  */
 export function saveFavorite(data, schema) {
@@ -27,9 +27,9 @@ export function saveFavorite(data, schema) {
  * Action creator used to delete a favorite item
  * for a specific scheme.
  *
- * @param data Data containing favorite items.
- * @param schema Schema name of favorite items.
- * @returns {{type: string, data: {}, schema: string}} Action.
+ * @param id {string} containing favorite items.
+ * @param schema {string} Schema name of favorite items.
+ * @returns {{type: string, id: string, schema: string}} Action.
  */
 export function deleteFavorite(id, schema) {
   return {
@@ -42,7 +42,7 @@ export function deleteFavorite(id, schema) {
 /**
  * Action creator used to load favorites schemas in state.
  *
- * @param favoritesSchemas Map containing favorites schemas.
+ * @param favoritesSchemas {array} Map containing favorites schemas.
  * @returns {{type: string, favoritesSchemas: {}}} Action.
  */
 export function loadFavoritesSchemas(favoritesSchemas) {
@@ -57,8 +57,8 @@ export function loadFavoritesSchemas(favoritesSchemas) {
  * if it is already favorite (toggle). Saves state to storage and
  * returns all favorite items.
  *
- * @param state Current global redux state.
- * @param action Object containing schema name for which
+ * @param state {Object} Current global redux state.
+ * @param action {Object} Object containing schema name for which
  * items are saved and data array containing favorite item.
  * @returns {{}} New state with refreshed favorite items.
  */
@@ -89,15 +89,15 @@ function favoriteItems(state = {}, action) {
 
 /**
  * A reducer that returns all favorites schemas.
- * @param state Current global redux state.
- * @param action Object containing favorites schemas.
+ * @param state {Object} Current global redux state.
+ * @param action {Object} Object containing favorites schemas.
  * @returns {{}} New state containing favorites schemas.
  *
  */
 function schemas(state = {}, action) {
   switch (action.type) {
     case LOAD_FAVORITES_SCHEMAS:
-      return _.merge({}, state, action.favoritesSchemas);
+      return { ...action.favoritesSchemas };
     default:
       return state;
   }

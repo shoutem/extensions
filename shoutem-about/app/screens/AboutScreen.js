@@ -1,9 +1,29 @@
-import React from 'react';
 import { StatusBar } from 'react-native';
 import { connect } from 'react-redux';
+import { InteractionManager } from 'react-native';
+import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 
+import React, {
+  PureComponent,
+} from 'react';
+
 import {
+  EmptyStateView,
+} from '@shoutem/ui-addons';
+
+import {
+  find,
+  isBusy,
+  isInitialized,
+  isError,
+  shouldRefresh,
+  getCollection,
+} from '@shoutem/redux-io';
+
+import {
+  Screen,
+  Spinner,
   Title,
   Image,
   View,
@@ -12,32 +32,92 @@ import {
   Subtitle,
   TouchableOpacity,
   ScrollView,
+  Html,
 } from '@shoutem/ui';
+
 import {
-  RichMedia,
   InlineMap,
 } from '@shoutem/ui-addons';
 
+import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
-
-import {
-  isBusy,
-  isInitialized,
-} from '@shoutem/redux-io';
-
-import { BaseAboutScreen, mapDispatchToProps, mapStateToProps } from './BaseAboutScreen';
+import { navigateTo } from '@shoutem/core/navigation';
+import { openURL } from 'shoutem.web-view';
 import SocialButton from '../components/SocialButton';
 import { ext } from '../const';
 
-export class AboutScreen extends BaseAboutScreen {
+export class AboutScreen extends PureComponent {
   static propTypes = {
-    ...BaseAboutScreen.propTypes,
-    navigateTo: React.PropTypes.func.isRequired,
-    openURL: React.PropTypes.func.isRequired,
+    // The parent category that is used to display
+    // the available categories in the drop down menu
+    parentCategoryId: React.PropTypes.any,
+    // Primary CMS data to display
+    data: React.PropTypes.array.isRequired,
+    // The shortcut title
+    title: React.PropTypes.string.isRequired,
+    // actions
+    find: React.PropTypes.func.isRequired,
+    navigateTo: React.PropTypes.func,
+    openURL: React.PropTypes.func,
+    // Settings
+    navigationBarStyle: React.PropTypes.string.isRequired,
+    imageSize: React.PropTypes.string.isRequired
   };
 
+  constructor(props, context) {
+    super(props, context);
+    this.fetchData = this.fetchData.bind(this);
+
+    this.state = {
+      schema: ext('About'),
+    };
+  }
+
+  componentWillMount() {
+    const { data } = this.props;
+    if (shouldRefresh(data)) {
+      this.fetchData();
+    }
+  }
+
+  isCollectionValid(collection) {
+    if ((!isInitialized(collection) && !isError(collection)) || isBusy(collection)) {
+      // If collection is not initialized but has error it means initialization failed.
+      // The collection is loading, treat it as valid for now
+      return true;
+    }
+
+    // The collection is considered valid if it is not empty
+    return !_.isEmpty(collection);
+  }
+
+  shouldRenderPlaceholderView() {
+    const { parentCategoryId, data } = this.props;
+    return _.isUndefined(parentCategoryId) || !this.isCollectionValid(data);
+  }
+
+  fetchData(schema) {
+    const { find, parentCategoryId } = this.props;
+    const { schema: defaultSchema } = this.state;
+
+    if (!parentCategoryId) {
+      return;
+    }
+
+    InteractionManager.runAfterInteractions(() =>
+      find(schema || defaultSchema, undefined, {
+        'filter[categories]': parentCategoryId,
+      }),
+    );
+  }
+
+  isNavigationBarClear() {
+    const { navigationBarStyle } = this.props;
+    return navigationBarStyle === 'clear';
+  }
+
   getNavBarProps() {
-    const { data, title, parentCategoryId } = this.props;
+    const { data, title, parentCategoryId, navigationBarStyle } = this.props;
 
     if (!_.isUndefined(parentCategoryId) && (isBusy(data) || !isInitialized(data))) {
       // Do not show shortcut title in NavigationBar if still loading
@@ -57,11 +137,32 @@ export class AboutScreen extends BaseAboutScreen {
     if (hasImage) {
       StatusBar.setBarStyle('light-content');
     }
+    
+    let styleName = '';
+    let animationName = '';
+    if (this.isNavigationBarClear()) {
+      if (hasImage) {
+        // If navigation bar is clear and image exists, navigation bar should be initially clear
+        // with fade effect (to add shadow to image), but after scrolling down navigation bar
+        // should appear (solidify animation)
+        styleName = 'fade clear';
+        animationName = 'solidify';
+      } else {
+        // If navigation bar is clear, but there is no image, navigation bar should be set to solid,
+        // but boxing animation should be applied so that title and borders appear
+        animationName = 'boxing';
+      }
+    }
 
     return {
-      title: _.get(profile, 'name'),
-      styleName: hasImage ? 'fade clear' : '',
-      animationName: hasImage ? 'solidify' : 'boxing',
+      // If navigation bar is clear, show the name that is rendered below the image, so it looks like
+      // it is transferred to the navigation bar when scrolling. Otherwise show the screen title
+      // (from the shortcut). The screen title is always displayed on solid navigation bars.
+      title: this.isNavigationBarClear() ?
+        _.get(profile, 'name').toUpperCase() :
+        _.get(this.props, 'shortcut.title', '').toUpperCase(),
+      styleName,
+      animationName,
       share: _.isUndefined(profile, 'web') ? null : {
         title: _.get(profile, 'name'),
         link: _.get(profile, 'web'),
@@ -69,10 +170,44 @@ export class AboutScreen extends BaseAboutScreen {
     };
   }
 
-  renderImage(profile) {
+  renderPlaceholderView() {
+    const { data, parentCategoryId } = this.props;
+    let emptyStateViewProps;
+
+    if (_.isUndefined(parentCategoryId)) {
+      // If collection doesn't exist (`parentCategoryId` is undefined), notify user to create
+      // content and reload app, because `parentCategoryId` is retrieved through app configuration
+      emptyStateViewProps = {
+        icon: 'error',
+        message: 'Please create content and reload your app.',
+      };
+    } else {
+      emptyStateViewProps = {
+        icon: 'refresh',
+        message: (isError(data)) ?
+          'Unexpected error occurred.' : 'Nothing here at this moment.',
+        onRetry: this.fetchData,
+        retryButtonTitle: 'TRY AGAIN',
+      };
+    }
+
+    return <EmptyStateView {...emptyStateViewProps} />;
+  }
+
+  renderLoadingSpinner() {
+    return (
+      <View styleName="xl-gutter-top">
+        <Spinner styleName="lg-gutter-top" />
+      </View>
+    );
+  }
+
+  renderImage(profile, styleName) {
+    const extraSpace = profile.image ? 'xl-gutter-top' : null;
+
     if (!_.get(profile, 'image')) {
       return (
-        <View styleName="xl-gutter-top">
+        <View styleName={extraSpace}>
           <Divider />
         </View>
       );
@@ -80,7 +215,7 @@ export class AboutScreen extends BaseAboutScreen {
 
     return (
       <Image
-        styleName="large"
+        styleName={styleName || 'large'}
         source={{ uri: profile.image.url }}
         defaultSource={require('../assets/images/image-fallback.png')}
         animationName="hero"
@@ -93,11 +228,11 @@ export class AboutScreen extends BaseAboutScreen {
       return null;
     }
 
-    const extraSpace = profile.image ? null : 'xl-gutter-bottom';
+    const extraSpace = profile.image ? null : 'lg-gutter-bottom';
 
     return (
       <View styleName={extraSpace}>
-        <Title styleName="xl-gutter-top lg-gutter-bottom h-center">
+        <Title styleName="xl-gutter-top xl-gutter-bottom h-center">
           {profile.name.toUpperCase()}
         </Title>
       </View>
@@ -110,10 +245,10 @@ export class AboutScreen extends BaseAboutScreen {
     }
 
     return (
-      <RichMedia
-        body={profile.info}
-        attachments={profile.attachments}
-      />
+      <View styleName="md-gutter-horizontal md-gutter-bottom">
+        <Html body={profile.info} />
+      </View>
+      
     );
   }
 
@@ -174,7 +309,9 @@ export class AboutScreen extends BaseAboutScreen {
         <Divider styleName="section-header">
           <Caption>OPENING HOURS</Caption>
         </Divider>
-        <RichMedia body={profile.hours} />
+        <View styleName="md-gutter-horizontal md-gutter-top">
+          <Html body={profile.hours} />
+        </View>
         <Divider />
       </View>
     );
@@ -229,9 +366,11 @@ export class AboutScreen extends BaseAboutScreen {
   }
 
   renderAboutInfo(profile) {
+    const { imageSize } = this.props;
+
     return (
       <ScrollView>
-        {this.renderImage(profile)}
+        {this.renderImage(profile, imageSize)}
         <View styleName="solid">
           {this.renderTitle(profile)}
           {this.renderInfo(profile)}
@@ -243,7 +382,48 @@ export class AboutScreen extends BaseAboutScreen {
       </ScrollView>
     );
   }
+
+  renderData(data) {
+    // If no data is available, render placeholder view
+    if (this.shouldRenderPlaceholderView()) {
+      return this.renderPlaceholderView();
+    }
+
+    // If data is still loading, render loading spinner
+    if (isBusy(data) || !isInitialized(data)) {
+      return this.renderLoadingSpinner();
+    }
+
+    // If valid data is retrieved, take first input only
+    // And finally, proceed with rendering actual About content
+    const profile = _.first(data);
+    return this.renderAboutInfo(profile);
+  }
+
+  render() {
+    const { data, navigationBarStyle } = this.props;
+    const fullScreen = this.isNavigationBarClear() ? "full-screen" : "";
+
+    return (
+      <Screen styleName={`${fullScreen} paper`}>
+        <NavigationBar {...this.getNavBarProps()} />
+        {this.renderData(data)}
+      </Screen>
+    );
+  }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  const parentCategoryId = _.get(ownProps, 'shortcut.settings.parentCategory.id');
+  const collection = state[ext()].allAbout;
+
+  return {
+    parentCategoryId,
+    data: getCollection(collection[parentCategoryId], state),
+  };
+};
+
+const mapDispatchToProps = { navigateTo, openURL, find };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('About'))(AboutScreen)

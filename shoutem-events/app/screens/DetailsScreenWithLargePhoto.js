@@ -7,7 +7,7 @@ import EventImage from '../components/EventImage';
 import { ext } from '../const';
 import { DetailsScreen, mapDispatchToProps } from './DetailsScreen';
 
-class DetailsScreenWithLargePhoto extends DetailsScreen {
+export class DetailsScreenWithLargePhoto extends DetailsScreen {
   renderHeader(event) {
     return (
       <EventImage

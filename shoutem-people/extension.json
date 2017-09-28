@@ -1,10 +1,10 @@
 {
   "name": "people",
   "title": "People",
-  "version": "0.10.14",
+  "version": "1.2.0",
+  "platform": "1.2.*",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
-  "platform": "1.0.*",
   "categories": ["content"],
   "repository": {
     "type": "git",

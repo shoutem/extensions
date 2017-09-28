@@ -1,6 +1,9 @@
 import configuration from './configuration.json';
 import buildConfig from './buildConfig.json';
 
+import RemoteDataListScreen from './screens/RemoteDataListScreen';
+import DeviceInfo from './services/device-info';
+
 import {
   resolveScreenLayout,
   navigateToShortcutScreen,
@@ -11,6 +14,7 @@ import {
 import { openInitialScreen } from './shared/openInitialScreen';
 import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
 import { isProduction } from './shared/isProduction';
+import { isRelease } from './shared/isRelease';
 import { getFirstShortcut } from './shared/getFirstShortcut';
 import {
   CONFIGURATION_SCHEMA,
@@ -24,6 +28,7 @@ import {
   appWillUnmount,
   appActions,
   getAppId,
+  isDevelopment,
 } from './app';
 import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 
@@ -65,6 +70,13 @@ export {
   getFirstShortcut,
   isConfigurationLoaded,
   isProduction,
+  isDevelopment,
+  isRelease,
+
+  RemoteDataListScreen,
+  // For backwards compatibility only,
+  // remove this when all extensions have been updated.
+  RemoteDataListScreen as ListScreen,
 
   executeShortcut,
   openInitialScreen,
@@ -77,4 +89,6 @@ export {
   appDidMount,
   appDidFinishLaunching,
   appWillUnmount,
+
+  DeviceInfo,
 };

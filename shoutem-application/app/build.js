@@ -9,7 +9,7 @@ function writeJsonToFile(json, file) {
 }
 
 exports.preBuild = function preBuild(appConfiguration, buildConfiguration) {
-  const configuration = buildConfiguration.production ? appConfiguration : {};
+  const configuration = buildConfiguration.release ? appConfiguration : {};
   writeJsonToFile(configuration, 'configuration.json');
   writeJsonToFile(buildConfiguration, 'buildConfig.json');
 }

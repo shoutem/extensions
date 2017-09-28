@@ -8,11 +8,11 @@ import { connectStyle } from '@shoutem/theme';
 import {
   View,
   Button,
-  Subtitle,
+  Text,
 } from '@shoutem/ui';
 import { isInitialized } from '@shoutem/redux-io';
 
-import { CmsListScreen } from 'shoutem.cms';
+import { CmsListScreen, currentLocation } from 'shoutem.cms';
 import { triggerEvent } from 'shoutem.analytics';
 
 import ListEventView from '../components/ListEventView';
@@ -50,13 +50,28 @@ export class ListScreen extends CmsListScreen {
     };
   }
 
-  fetchData(category) {
+  componentWillReceiveProps(nextProps) {
+    // check if we need user location
+    const { sortField, checkPermissionStatus } = nextProps;
+
+    const isSortByLocation = sortField === 'location';
+    const isLocationAvailable = !!nextProps.currentLocation;
+
+    if (isSortByLocation && !isLocationAvailable && _.isFunction(checkPermissionStatus)) {
+      checkPermissionStatus();
+    }
+
+    super.componentWillReceiveProps(nextProps);
+  }
+
+  fetchData(options) {
     const { find } = this.props;
     const { schema } = this.state;
 
+    const queryParams = super.getQueryParams(options);
     InteractionManager.runAfterInteractions(() =>
       find(schema, undefined, {
-        'filter[categories]': category.id,
+        ...queryParams,
         'filter[endTime][gt]': (new Date()).toISOString(), // filtering past events
       }),
     );
@@ -64,7 +79,7 @@ export class ListScreen extends CmsListScreen {
 
   openDetailsScreen(event) {
     this.props.navigateTo({
-      screen: ext('DetailsScreen'),
+      screen: ext('DetailsScreenWithLargePhoto'),
       title: event.name,
       props: {
         event,
@@ -104,7 +119,7 @@ export class ListScreen extends CmsListScreen {
       return (
         <View virtual styleName="container">
           <Button styleName="clear" onPress={this.toggleMapMode}>
-            <Subtitle>{ shouldRenderMap ? screenTitle : 'Map' }</Subtitle>
+            <Text>{shouldRenderMap ? screenTitle : 'Map'}</Text>
           </Button>
         </View>
       );
@@ -180,5 +195,5 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ListScreen'))(ListScreen),
+  connectStyle(ext('ListScreen'))(currentLocation(ListScreen)),
 );

@@ -1,11 +1,23 @@
 import FCM from 'react-native-fcm';
 
-import { deviceTokenReceived, notificationReceived } from './actionCreators';
+import { isProduction } from 'shoutem.application';
+
+import {
+  handleReceivedToken,
+} from './services/fcm';
+
+import { notificationReceived } from './actionCreators';
 
 function appDidMount(app) {
+  if (!isProduction()) {
+    return;
+  }
+
   const store = app.getStore();
 
-  function dispatchNotificationAction(receivedNotification) {
+  const { dispatch } = store;
+
+  const dispatchNotificationAction = (receivedNotification) => {
     const { body, title, action, opened_from_tray } = receivedNotification;
     const notification = { body, openedFromTray: opened_from_tray, title };
 
@@ -18,23 +30,23 @@ function appDidMount(app) {
       }
     }
 
-    store.dispatch(notificationReceived(notification));
-  }
+    dispatch(notificationReceived(notification));
+  };
 
-  FCM.getFCMToken().then(token => {
-    store.dispatch(deviceTokenReceived(token));
-      // Display the FCM token only in development mode
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Firebase device token:', token);
-    }
+  FCM.getFCMToken().then((token) => {
+    handleReceivedToken(token, dispatch);
   });
 
   FCM.on('notification', dispatchNotificationAction);
 
   FCM.getInitialNotification().then((notification) => {
-    if(notification) {
-      dispatchNotificationAction({...notification, opened_from_tray: true});
+    if (notification) {
+      dispatchNotificationAction({ ...notification, opened_from_tray: true });
     }
+  });
+
+  FCM.on('refreshToken', (token) => {
+    handleReceivedToken(token, dispatch);
   });
 }
 

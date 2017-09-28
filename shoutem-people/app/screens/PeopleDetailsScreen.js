@@ -11,7 +11,7 @@ import {
   Button,
   Icon,
   View,
-  RichMedia,
+  Html,
   ScrollView,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
@@ -115,7 +115,7 @@ class PeopleDetailsScreen extends React.Component {
               <Caption styleName="h-center">{person.profession}</Caption>
             </View>
 
-            <RichMedia body={person.biography} />
+            <Html body={person.biography} />
           </View>
 
           {this.renderFooterButtons()}

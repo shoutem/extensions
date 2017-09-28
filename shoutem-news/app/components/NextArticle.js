@@ -6,41 +6,31 @@ import {
   Image,
   Tile,
 } from '@shoutem/ui';
-import _ from 'lodash';
 
 /**
  * A component used to render the next article info on
  * the article details screen.
  */
-export default class NextArticle extends React.Component {
+export class NextArticle extends React.Component {
   static propTypes = {
-    article: React.PropTypes.object.isRequired,
+    title: React.PropTypes.string,
+    imageUrl: React.PropTypes.string,
     openArticle: React.PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.handlePress = this.handlePress.bind(this);
-  }
-
-  handlePress() {
-    const { article, openArticle } = this.props;
-    openArticle(article);
-  }
-
   render() {
-    const { article } = this.props;
+    const { title, imageUrl, openArticle } = this.props;
     return (
-      <TouchableOpacity onPress={this.handlePress}>
+      <TouchableOpacity onPress={openArticle}>
         <Image
           styleName="large-ultra-wide placeholder"
-          source={{ uri: _.get(article, 'image.url') }}
+          source={{ uri: imageUrl }}
         >
           <Tile
-            styleName="fill-parent overlay md-gutter-vertical lg-gutter-horizontal space-between"
+            styleName="fill-parent md-gutter space-between"
           >
-            <Caption styleName="bold bright h-left">UP NEXT</Caption>
-            <Subtitle styleName="bright h-left" numberOfLines={2}>{article.title}</Subtitle>
+            <Caption styleName="bold h-left">UP NEXT</Caption>
+            <Subtitle styleName="h-left" numberOfLines={2}>{title}</Subtitle>
           </Tile>
         </Image>
       </TouchableOpacity>

@@ -20,7 +20,7 @@ class LinkIconButton extends React.Component {
     if (book.buyUrl) {
       return (
         <Button
-          styleName="tight clear textual sm-gutter-left"
+          styleName="tight clear md-gutter-left"
           onPress={() => openURL(book.buyUrl, book.title)}
         >
           <Icon name="cart" />
@@ -36,4 +36,4 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   openURL,
 });
 
-export default connect(undefined, mapDispatchToProps)((LinkIconButton));
+export default connect(undefined, mapDispatchToProps)(LinkIconButton);

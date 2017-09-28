@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 
-import { DEVICE_TOKEN_RECEIVED } from 'shoutem.firebase';
-import { SELECT_PUSH_NOTIFICATION_GROUPS } from 'shoutem.push-notifications';
+import { DEVICE_TOKEN_RECEIVED, SELECT_PUSH_NOTIFICATION_GROUPS } from 'shoutem.push-notifications';
 
 import { resource } from '@shoutem/redux-io';
 import { chainReducers } from '@shoutem/redux-composers';
@@ -10,7 +9,7 @@ import { chainReducers } from '@shoutem/redux-composers';
 import {
   GROUPS_SCHEMA,
   NOTIFICATIONS_SCHEMA,
-  SELECTED_GROUPS_SCHEMA
+  SELECTED_GROUPS_SCHEMA,
 } from './actionCreators';
 
 const deviceToken = (state = '', action) => {

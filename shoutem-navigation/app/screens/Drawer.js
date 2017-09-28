@@ -13,8 +13,14 @@ import {
   setActiveNavigationStack,
   RESET_TO_ROUTE,
 } from '@shoutem/core/navigation';
+
 import { connectStyle } from '@shoutem/theme';
-import { executeShortcut } from 'shoutem.application';
+
+import {
+  executeShortcut,
+  getActiveShortcut,
+} from 'shoutem.application';
+
 import DrawerItem from '../components/DrawerItem';
 import { ext } from '../const';
 import { DRAWER_NAVIGATION_STACK } from '../redux';
@@ -44,12 +50,12 @@ export class Drawer extends Component {
     showIcon: React.PropTypes.bool,
 
     // Props from local state (connect)
+    activeShortcut: React.PropTypes.object,
     navigationState: React.PropTypes.object,
     style: React.PropTypes.object,
 
     executeShortcut: React.PropTypes.func,
     setActiveNavigationStack: React.PropTypes.func,
-    replaceWith: React.PropTypes.func,
     navigateBack: React.PropTypes.func,
   };
 
@@ -63,7 +69,6 @@ export class Drawer extends Component {
 
     this.state = {
       layoutWidth: windowWidth,
-      activeShortcut: null,
       isOpen: false,
     };
   }
@@ -72,7 +77,7 @@ export class Drawer extends Component {
     this.props.setActiveNavigationStack(DRAWER_NAVIGATION_STACK);
 
     const activeShortcut = this.getStartingShortcut();
-    this.setState({ activeShortcut }, this.openShortcut);
+    this.openShortcut(activeShortcut);
   }
 
   getStartingShortcut() {
@@ -116,22 +121,22 @@ export class Drawer extends Component {
     this.setState({ isOpen: true });
   }
 
-  drawerItemPressed(activeShortcut) {
-    this.setState({ activeShortcut, isOpen: !this.state.isOpen }, this.openShortcut);
+  drawerItemPressed(shortcut) {
+    this.setState({ isOpen: !this.state.isOpen }, () => this.openShortcut(shortcut));
   }
 
   drawerStatusChanged(isOpen) {
     this.setState({ isOpen });
   }
 
-  openShortcut() {
-    const { activeShortcut } = this.state;
+  openShortcut(shortcut) {
+    const { activeShortcut } = this.props;
 
-    if (activeShortcut) {
+    if (activeShortcut !== shortcut) {
       this.props.executeShortcut(
-        activeShortcut.id,
+        shortcut.id,
         RESET_TO_ROUTE,
-        DRAWER_NAVIGATION_STACK
+        DRAWER_NAVIGATION_STACK,
       );
     }
   }
@@ -159,7 +164,7 @@ export class Drawer extends Component {
   renderMenu(shortcuts, style) {
     return (
       <ScrollView
-        style={style.menu}
+        contentContainerStyle={style.menu}
         alwaysBounceVertical={false}
       >
         <View style={style.menuItems} styleName="flexible">
@@ -170,8 +175,7 @@ export class Drawer extends Component {
   }
 
   renderDrawerItem(shortcut) {
-    const { activeShortcut } = this.state;
-    const { showText, showIcon } = this.props;
+    const { activeShortcut, showText, showIcon } = this.props;
     return (
       <DrawerItem
         key={`drawer-item-${shortcut.id}`}
@@ -185,8 +189,8 @@ export class Drawer extends Component {
   }
 
   render() {
-    const { isOpen, activeShortcut } = this.state;
-    const { shortcut, style } = this.props;
+    const { isOpen } = this.state;
+    const { activeShortcut, shortcut, style } = this.props;
 
     if (!activeShortcut) {
       return null;
@@ -217,7 +221,11 @@ export class Drawer extends Component {
   }
 }
 
-const mapStateToProps = state => ({ navigationState: state[ext()].drawer });
+const mapStateToProps = state => ({
+  activeShortcut: getActiveShortcut(state),
+  navigationState: state[ext()].drawer,
+});
+
 const mapDispatchToProps = { navigateBack, setActiveNavigationStack, executeShortcut };
 
 export default shortcutChildrenRequired(

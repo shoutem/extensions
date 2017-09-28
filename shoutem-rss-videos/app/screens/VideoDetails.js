@@ -11,14 +11,12 @@ import {
   Caption,
   Tile,
   View,
+  Html,
 } from '@shoutem/ui';
-import {
-  RichMedia,
-} from '@shoutem/ui-addons';
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
-import { getAttachments } from 'shoutem.rss';
+import { createRenderAttachment } from 'shoutem.rss';
 
 import { ext } from '../const';
 
@@ -56,7 +54,7 @@ export class VideoDetails extends Component {
           </Tile>
 
           <View styleName="solid">
-            <RichMedia body={video.body} attachments={getAttachments(video)} />
+            <Html body={video.body} renderElement={createRenderAttachment(video, 'video')} />
           </View>
         </ScrollView>
       </Screen>

@@ -142,24 +142,24 @@ export class LoginScreen extends Component {
 
   loginWithFacebook() {
     getFacebookAccessToken()
-    .then((data) => {
-      if (data && data.accessToken) {
-        this.loginWithFacebookAccessToken(data.accessToken);
-      } else {
-        throw new Error('Access token is not valid');
-      }
-    })
-    .catch(this.openFacebookLogin);
+      .then((data) => {
+        if (data && data.accessToken) {
+          this.loginWithFacebookAccessToken(data.accessToken);
+        } else {
+          throw new Error('Access token is not valid');
+        }
+      })
+      .catch(this.openFacebookLogin);
   }
 
   openFacebookLogin() {
     LoginManager.logInWithReadPermissions(['public_profile', 'email'])
-    .then((result) => {
-      if (result.isCancelled) {
-        throw new Error('Login was cancelled');
-      }
-      return AccessToken.getCurrentAccessToken();
-    }).then((data) => {
+      .then((result) => {
+        if (result.isCancelled) {
+          throw new Error('Login was cancelled');
+        }
+        return AccessToken.getCurrentAccessToken();
+      }).then((data) => {
       if (!(data && data.accessToken)) {
         throw new Error();
       }
@@ -173,8 +173,8 @@ export class LoginScreen extends Component {
     const { loginWithFacebook } = this.props;
 
     loginWithFacebook(accessToken)
-    .then(response => this.finishLogin(response, accessToken))
-    .catch(handleLoginError);
+      .then(response => this.finishLogin(response, accessToken))
+      .catch(handleLoginError);
   }
 
   finishLogin({ payload }, accessToken) {
@@ -198,8 +198,8 @@ export class LoginScreen extends Component {
     }
 
     login(username, password)
-    .then(this.finishLogin)
-    .catch(handleLoginError);
+      .then(this.finishLogin)
+      .catch(handleLoginError);
   }
 
   renderRegisterButton() {
@@ -281,22 +281,30 @@ export class LoginScreen extends Component {
   render() {
     const { isAuthenticating, settings: { providers: { facebook } } } = this.props;
 
-    if (isAuthenticating) {
-      return renderAuthenticatingMessage();
+    let screenContent = null;
+    if (isAuthenticating || this.props.isAuthenticated) {
+      // We want to display the authenticating state if the
+      // auth request is in progress, or if we are already
+      // authenticated. The latter case can happen if the
+      // login screen is left in the navigation stack history,
+      // but the user authenticated successfully in another
+      // part of the app.
+      screenContent = renderAuthenticatingMessage();
+    } else {
+      screenContent = (
+        <View>
+          <NavigationBar title="LOG IN" />
+          {this.renderLoginComponent()}
+          {facebook.enabled ? this.renderFacebookLoginButton() : null}
+          {this.renderRegisterButton()}
+          <Divider />
+        </View>
+      );
     }
 
-    const components = !this.props.isAuthenticated ? (
-      <View>
-        <NavigationBar title="LOG IN" />
-        {this.renderLoginComponent()}
-        {facebook.enabled ? this.renderFacebookLoginButton() : null}
-        {this.renderRegisterButton()}
-        <Divider />
-      </View>
-    ) : <Spinner style={{ marginTop: 25 }} />; // TODO - use a styleName
     return (
       <Screen>
-        {components}
+        {screenContent}
       </Screen>
     );
   }

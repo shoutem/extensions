@@ -1,0 +1,19 @@
+:global {
+  .member-table-row {
+    cursor: pointer;
+
+    &:hover {
+      background-color: #ecf9fd;
+    }
+  }
+
+  .member-table-row__status {
+    text-align: center;
+    font-weight: bold;
+    color: #75c51d;
+
+    &.blocked {
+      color: #d0021b;
+    }
+  }
+}

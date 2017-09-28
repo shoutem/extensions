@@ -12,8 +12,9 @@ import {
   Caption,
 } from '@shoutem/ui';
 
+import { Favorite } from 'shoutem.favorites';
+
 import { formatBookCaption } from '../shared/formatBookCaption';
-import Favorite from './Favorite';
 import LinkIconButton from './LinkIconButton';
 
 

@@ -7,7 +7,7 @@ import {
   Caption,
   Image,
   Tile,
-  RichMedia,
+  Html,
   View,
 } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
@@ -16,25 +16,12 @@ import * as _ from 'lodash';
 import moment from 'moment';
 
 import { ext } from '../const';
-import NextArticle from '../components/NextArticle';
+import { ArticleDetailsScreen } from './ArticleDetailsScreen';
 
-class ArticleMediumDetailsScreen extends React.Component {
+class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
   static propTypes = {
-    article: React.PropTypes.object.isRequired,
-    nextArticle: React.PropTypes.object,
-    openArticle: React.PropTypes.func,
+    ...ArticleDetailsScreen.propTypes,
   };
-
-  renderUpNext() {
-    const { nextArticle, openArticle } = this.props;
-    if (nextArticle && openArticle) {
-      return (
-        <NextArticle article={nextArticle} openArticle={openArticle} />
-      );
-    }
-
-    return null;
-  }
 
   renderImage() {
     const { article } = this.props;
@@ -83,10 +70,7 @@ class ArticleMediumDetailsScreen extends React.Component {
               </View>
             </Tile>
 
-            <RichMedia
-              body={article.body}
-              attachments={article.attachments}
-            />
+            <Html body={article.body} />
             {this.renderUpNext()}
           </View>
         </ScrollView>

@@ -1,7 +1,8 @@
 {
   "name": "rss-photos",
   "title": "Photos RSS",
-  "version": "0.9.6",
+  "version": "1.2.0",
+  "platform": "1.2.*",
   "description": "Show a photo gallery from an RSS feed",
   "icon" : "server/assets/add-photos-image.png",
   "dependencies": [
@@ -13,7 +14,6 @@
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "platform": "1.0.*",
   "shortcuts": [{
       "name": "photos-rss-shortcut",
       "title": "Photos RSS",

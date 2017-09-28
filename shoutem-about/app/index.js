@@ -1,10 +1,23 @@
 import reducer from './reducers';
-import AboutScreen from './screens/AboutScreen';
-import MapScreen from './screens/MapScreen';
+
+import * as extension from './extension.js';
+
+import AboutScreen, {
+  AboutScreen as AboutScreenComponent,
+} from './screens/AboutScreen';
+
+export const components = {
+  AboutScreen: AboutScreenComponent,
+};
 
 export const screens = {
+  ...extension.screens,
   AboutScreen,
-  MapScreen,
+  SolidNavbarLargeAboutScreen: AboutScreen,
+  ClearNavbarMediumAboutScreen: AboutScreen,
+  SolidNavbarMediumAboutScreen: AboutScreen
 };
+
+export const themes = extension.themes;
 
 export { reducer };

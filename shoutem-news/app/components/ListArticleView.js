@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import moment from 'moment';
 import {
   TouchableOpacity,
@@ -11,38 +10,41 @@ import {
   Divider,
 } from '@shoutem/ui';
 
+import {
+  ArticleView,
+} from './ArticleView';
+
 /**
  * A component used to render a single list article item
  */
-export default class ListArticleView extends React.Component {
+export class ListArticleView extends ArticleView {
   static propTypes = {
     onPress: React.PropTypes.func,
-    article: React.PropTypes.object.isRequired,
+    articleId: React.PropTypes.string,
+    title: React.PropTypes.string,
+    imageUrl: React.PropTypes.string,
+    date: React.PropTypes.string,
   };
 
-  constructor(props) {
-    super(props);
-    this.onPress = this.onPress.bind(this);
-  }
-
-  onPress() {
-    this.props.onPress(this.props.article);
-  }
-
   render() {
-    const { article } = this.props;
+    const { title, imageUrl, date } = this.props;
+
+    const momentDate = moment(date);
+    const dateInfo = momentDate.isAfter(0) ? (
+      <Caption>{momentDate.fromNow()}</Caption>
+    ) : null;
 
     return (
-      <TouchableOpacity key={article.id} onPress={this.onPress}>
+      <TouchableOpacity onPress={this.onPress}>
         <Divider styleName="line" />
         <Row>
           <Image
             styleName="small rounded-corners placeholder"
-            source={{ uri: _.get(article, 'image.url') }}
+            source={{ uri: imageUrl }}
           />
           <View styleName="vertical stretch space-between">
-            <Subtitle numberOfLines={2}>{article.title}</Subtitle>
-            <Caption>{moment(article.timeUpdated).fromNow()}</Caption>
+            <Subtitle numberOfLines={2}>{title}</Subtitle>
+            {dateInfo}
           </View>
         </Row>
         <Divider styleName="line" />

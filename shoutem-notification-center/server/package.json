@@ -1,5 +1,5 @@
 {
-  "name": "shoutem.shoutem-notification-center",
-  "version": "0.0.6",
-  "description": "Displays a list of received notifications"
+  "name": "shoutem.notification-center",
+  "version": "1.2.0",
+  "description": "Manage push notification settings within the app"
 }

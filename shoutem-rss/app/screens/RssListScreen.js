@@ -1,82 +1,28 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 
 import _ from 'lodash';
-
-import {
-  Screen,
-  ListView,
-} from '@shoutem/ui';
-
-import {
-  NavigationBar,
-} from '@shoutem/ui/navigation';
 
 import {
   EmptyStateView,
 } from '@shoutem/ui-addons';
 
-import {
-  isBusy,
-  isInitialized,
-  isError,
-  shouldRefresh,
-} from '@shoutem/redux-io';
+import { ListScreen } from 'shoutem.application';
 
-export class RssListScreen extends PureComponent {
+const { func, string } = React.PropTypes;
+
+export class RssListScreen extends ListScreen {
   static propTypes = {
-    // The shortcut title
-    title: React.PropTypes.string,
+    ...ListScreen.propTypes,
     // The url of the RSS feed to display
-    feedUrl: React.PropTypes.string,
-    // RSS feed items to display
-    feed: React.PropTypes.array,
+    feedUrl: string,
 
     // Actions
-    navigateTo: React.PropTypes.func,
-    find: React.PropTypes.func,
-    next: React.PropTypes.func,
-    setNavBarProps: React.PropTypes.func,
-    style: React.PropTypes.shape({
-      screen: Screen.propTypes.style,
-      list: ListView.propTypes.style,
-      emptyState: EmptyStateView.propTypes.style,
-    }),
+    navigateTo: func,
+    find: func,
+    next: func.isRequired,
   };
 
-  static defaultProps = {
-    style: {
-      screen: {},
-      list: {},
-      emptyState: {},
-    },
-  };
-
-  constructor(props, context) {
-    super(props, context);
-    this.fetchFeed = this.fetchFeed.bind(this);
-    this.loadMore = this.loadMore.bind(this);
-  }
-
-  componentWillMount() {
-    const { feed } = this.props;
-
-    if (shouldRefresh(feed, true)) {
-      this.fetchFeed();
-    }
-  }
-
-  getNavigationBarProps() {
-    const { title } = this.props;
-    return {
-      title: (title || '').toUpperCase(),
-    };
-  }
-
-  loadMore() {
-    this.props.next(this.props.feed);
-  }
-
-  fetchFeed() {
+  fetchData() {
     const { feedUrl, find } = this.props;
     const { schema } = this.state;
 
@@ -89,81 +35,33 @@ export class RssListScreen extends PureComponent {
     });
   }
 
-  shouldRenderPlaceholderView(feed) {
+  shouldRenderPlaceholderView(data) {
     const { feedUrl } = this.props;
 
-    if (feedUrl && (!isInitialized(feed) || isBusy(feed))) {
-      // The feed is loading, treat it as valid for now
-      return false;
+    if (_.isUndefined(feedUrl)) {
+      return true;
     }
 
-    // We want to render a placeholder in case of errors, or
-    // if the feed is empty
-    return _.isUndefined(feedUrl) || isError(feed) || !feed || (feed.length === 0);
+    return super.shouldRenderPlaceholderView(data);
   }
 
-  renderPlaceholderView(feed) {
+  renderPlaceholderView(data) {
     const { feedUrl, style } = this.props;
-    let emptyStateViewProps;
 
     if (_.isUndefined(feedUrl)) {
       // If feed doesn't exist (`feedUrl` is undefined), notify user to specify feed URL
       // and reload app, because `feedUrl` is retrieved through app configuration
-      emptyStateViewProps = {
+      const emptyStateViewProps = {
         icon: 'error',
         message: 'Please specify RSS feed URL and reload your app.',
+        style: style.emptyState,
       };
-    } else {
-      emptyStateViewProps = {
-        icon: 'refresh',
-        message: isError(feed) ?
-          'Unexpected error occurred.' :
-          'Nothing here at this moment.',
-        onRetry: this.fetchFeed,
-        retryButtonTitle: 'TRY AGAIN',
-      };
+
+      return (
+        <EmptyStateView {...emptyStateViewProps} />
+      );
     }
 
-    return (
-      <EmptyStateView
-        {...emptyStateViewProps}
-        style={style.emptyState}
-      />
-    );
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  renderRow(feedItem) {
-    // Override this function to render feed items
-    return null;
-  }
-
-  renderFeed(feed) {
-    if (this.shouldRenderPlaceholderView(feed)) {
-      return this.renderPlaceholderView(feed);
-    }
-
-    return (
-      <ListView
-        data={feed}
-        renderRow={this.renderRow}
-        loading={isBusy(feed) || !isInitialized(feed)}
-        onRefresh={this.fetchFeed}
-        onLoadMore={this.loadMore}
-        style={this.props.style.list}
-      />
-    );
-  }
-
-  render() {
-    const { feed, style } = this.props;
-    const navigationBarProps = this.getNavigationBarProps();
-
-    return (
-      <Screen style={style.screen}>
-        <NavigationBar {...navigationBarProps} />
-        {this.renderFeed(feed)}
-      </Screen>
-    );
+    return super.renderPlaceholderView(data);
   }
 }

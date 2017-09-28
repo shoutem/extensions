@@ -1,10 +1,10 @@
 {
   "name": "menu",
   "title": "Restaurant menu",
-  "version": "0.10.12",
+  "version": "1.2.0",
+  "platform": "1.2.*",
   "icon": "./server/assets/images/add-menu-items-image.png",
   "description": "Show a restaurant menu",
-  "platform": "1.0.*",
   "categories": ["content"],
   "repository": {
     "type": "git",

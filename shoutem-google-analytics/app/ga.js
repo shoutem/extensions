@@ -47,9 +47,13 @@ export class GoogleAnalyticsService {
    * return {GoogleAnalyticsTracker}
    */
   createAndAddTracker(trackerConfig) {
-    const tracker = createTracker(trackerConfig);
-    this.trackers.push(tracker);
-    return tracker;
+    try {
+      const tracker = createTracker(trackerConfig);
+      this.trackers.push(tracker);
+      return tracker;
+    } catch (e) {
+      console.warn('Failed to initialize tracker with config:', trackerConfig);
+    }
   }
 
   /**

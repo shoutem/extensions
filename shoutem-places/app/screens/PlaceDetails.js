@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import {
   ScrollView,
   TouchableOpacity,
@@ -15,16 +14,18 @@ import {
   Divider,
   Tile,
   Screen,
+  Button,
+  Html,
 } from '@shoutem/ui';
 import {
   Linking,
   Platform,
 } from 'react-native';
-import { InlineMap, RichMedia } from '@shoutem/ui-addons';
+import { InlineMap } from '@shoutem/ui-addons';
 import { navigateTo } from '@shoutem/core/navigation';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
-
+import { Favorite } from 'shoutem.favorites';
 import { openURL } from 'shoutem.web-view';
 import { ext } from '../const';
 
@@ -33,6 +34,7 @@ export class PlaceDetails extends Component {
     place: React.PropTypes.object.isRequired,
     openURL: React.PropTypes.func,
     navigateTo: React.PropTypes.func,
+    hasFavorites: React.PropTypes.bool,
   };
 
   constructor(props) {
@@ -43,15 +45,38 @@ export class PlaceDetails extends Component {
     this.openEmailLink = this.openEmailLink.bind(this);
     this.openPhoneLink = this.openPhoneLink.bind(this);
     this.openMapScreen = this.openMapScreen.bind(this);
+    this.openURL = this.openURL.bind(this);
+
+    this.state = {
+      ...this.state,
+      schema: ext('places'),
+    };
   }
 
   getNavBarProps() {
     const { place } = this.props;
+    const { schema } = this.state;
+
     return {
+      renderRightComponent: () => (
+        <View virtual styleName="container">
+          <Favorite
+            item={place}
+            navBarButton
+            schema={schema}
+          />
+        </View>
+      ),
       styleName: place.image ? 'clear' : 'no-border',
       animationName: 'solidify',
       title: place.name,
     };
+  }
+
+  openURL() {
+    const { place, openURL } = this.props;
+
+    openURL(place.rsvpLink, place.name);
   }
 
   openWebLink() {
@@ -64,7 +89,7 @@ export class PlaceDetails extends Component {
     const { latitude, longitude, formattedAddress } = location;
 
     const resolvedScheme = (Platform.OS === 'ios') ? `http://maps.apple.com/?ll=${latitude},${longitude}&q=${formattedAddress}` :
-    `geo:${latitude},${longitude}(${formattedAddress})`;
+    `geo:${latitude},${longitude}?q=${formattedAddress}`;
 
     if (latitude && longitude) {
       Linking.openURL(resolvedScheme);
@@ -93,7 +118,8 @@ export class PlaceDetails extends Component {
   }
 
   renderLeadImage(place) {
-    const { formattedAddress } = place.location;
+    const { location = {} } = place;
+    const { formattedAddress = '' } = location;
     return (
       <Image
         styleName="large-portrait"
@@ -154,7 +180,7 @@ export class PlaceDetails extends Component {
           <Divider styleName="section-header">
             <Caption>LOCATION INFO</Caption>
           </Divider>
-          <RichMedia body={place.description} />
+          <Html body={place.description} />
           <Divider styleName="line" />
         </Tile>
       );
@@ -175,6 +201,25 @@ export class PlaceDetails extends Component {
       );
     }
     return null;
+  }
+
+  renderRsvpButton(place) {
+    return place.rsvpLink ? (
+      <Button onPress={this.openURL}>
+        <Text>RESERVATION</Text>
+      </Button>
+    ) : null;
+  }
+
+  renderButtons() {
+    const { place } = this.props;
+    return (
+      <Row>
+        <View styleName="horizontal h-center">
+          {this.renderRsvpButton(place)}
+        </View>
+      </Row>
+    );
   }
 
   renderDisclosureButton(title, subtitle, icon, onPressCallback) {
@@ -206,6 +251,7 @@ export class PlaceDetails extends Component {
         <ScrollView>
           {this.renderLeadImage(place)}
           {this.renderOpeningHours(place)}
+          {this.renderButtons()}
           {this.renderInlineMap(place)}
           {this.renderDescription(place)}
           {this.renderDisclosureButton(place.url, 'Visit webpage', 'web', this.openWebLink)}

@@ -18,6 +18,7 @@
       "type": "object",
       "format": "attachment",
       "title": "Video URL",
+      "required": true,
       "referencedSchema": "shoutem.core.video-attachments",
       "displayPriority": 3
     },

@@ -74,7 +74,7 @@ export default class ScreenGroup extends Component {
             </ExtensionContextProvider>
           )}
         </div>
-        <div className="screen_group__clear"></div>
+        <div className="screen_group__clear" />
       </div>
     );
   }

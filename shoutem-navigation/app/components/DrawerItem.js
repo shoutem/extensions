@@ -1,8 +1,9 @@
 import React from 'react';
 import { connectStyle } from '@shoutem/theme';
+import { Touchable } from '@shoutem/ui';
+
 import { ext } from '../const';
 import { NavigationBaseItem } from './NavigationBaseItem';
-import { Touchable } from '@shoutem/ui';
 
 class DrawerItem extends NavigationBaseItem {
   render() {

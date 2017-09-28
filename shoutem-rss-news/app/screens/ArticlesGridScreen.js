@@ -1,22 +1,19 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { connectStyle } from '@shoutem/theme';
 
-import {
-  GridRow,
-} from '@shoutem/ui';
+import { connectStyle } from '@shoutem/theme';
+import { GridRow } from '@shoutem/ui';
+import { cloneStatus } from '@shoutem/redux-io';
+
+import { getLeadImageUrl } from 'shoutem.rss';
+import { FeaturedArticleView, GridArticleView } from 'shoutem.news';
 
 import {
   ArticlesListScreen,
   mapStateToProps,
   mapDispatchToProps,
 } from './ArticlesListScreen';
-
-import { cloneStatus } from '@shoutem/redux-io';
-
-import GridArticleView from '../components/GridArticleView';
-import FeaturedArticleView from '../components/FeaturedArticleView';
 import { ext } from '../const';
 
 class ArticlesGridScreen extends ArticlesListScreen {
@@ -38,10 +35,16 @@ class ArticlesGridScreen extends ArticlesListScreen {
 
   renderRow(articles, sectionId, index) {
     if (index === '0') {
+      const article = articles[index];
       return (
         <FeaturedArticleView
-          article={articles[0]}
-          onPress={this.openDetailsScreen}
+          key={article.id}
+          articleId={article.id}
+          title={article.title}
+          imageUrl={getLeadImageUrl(article)}
+          author={article.author}
+          date={article.timeUpdated}
+          onPress={this.openArticleWithId}
         />
       );
     }
@@ -50,8 +53,11 @@ class ArticlesGridScreen extends ArticlesListScreen {
       return (
         <GridArticleView
           key={article.id}
-          article={article}
-          onPress={this.openDetailsScreen}
+          articleId={article.id}
+          title={article.title}
+          imageUrl={getLeadImageUrl(article)}
+          date={article.timeUpdated}
+          onPress={this.openArticleWithId}
         />
       );
     });
@@ -63,7 +69,7 @@ class ArticlesGridScreen extends ArticlesListScreen {
     );
   }
 
-  renderFeed(articles) {
+  renderData(articles) {
     // Group the articles into rows with 2 columns, except for the
     // first article. The first article is treated as a featured article
     let isFirstArticle = true;
@@ -79,7 +85,7 @@ class ArticlesGridScreen extends ArticlesListScreen {
     // Transfer the loading status from the original collection
     cloneStatus(articles, groupedArticles);
 
-    return super.renderFeed(groupedArticles);
+    return super.renderData(groupedArticles);
   }
 }
 

@@ -30,11 +30,11 @@ export class PhotosList extends PhotosBaseScreen {
     return null;
   }
 
-  renderFeed() {
+  renderData() {
     const { photos } = this.state;
-    // We're overriding renderFeed method by providing it
+    // We're overriding renderData method by providing it
     // filtered and remaped photos (from state)
-    return super.renderFeed(photos);
+    return super.renderData(photos);
   }
 }
 

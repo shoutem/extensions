@@ -10,6 +10,7 @@ import {
   Screen,
   Text,
   Button,
+  Icon,
   View,
 } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
@@ -36,23 +37,20 @@ export default class MapScreen extends Component {
     Linking.canOpenURL(geoURL).then((supported) => {
       if (supported) {
         Linking.openURL(geoURL);
-      } else {
+      } else if (Platform.OS === 'ios') {
         Linking.openURL(`http://maps.apple.com/?ll=${marker.latitude},${marker.longitude}`);
       }
     });
   }
 
   renderNavigateButton() {
-    if (Platform.OS === 'ios') {
-      return (
-        <View virtual styleName="container">
-          <Button styleName="clear" onPress={this.openMaps}>
-            <Text>Open in Maps</Text>
-          </Button>
-        </View>
-      );
-    }
-    return null;
+    return (
+      <View virtual styleName="container">
+        <Button onPress={this.openMaps}>
+          <Icon name="directions" />
+        </Button>
+      </View>
+    );
   }
 
   render() {

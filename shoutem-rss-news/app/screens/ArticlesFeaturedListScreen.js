@@ -1,18 +1,17 @@
 import React from 'react';
-import _ from 'lodash';
+import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
-import { connect } from 'react-redux';
+
+import { getLeadImageUrl } from 'shoutem.rss';
+import { FeaturedArticleView, ListArticleView } from 'shoutem.news';
 
 import {
   ArticlesListScreen,
   mapStateToProps,
   mapDispatchToProps,
 } from './ArticlesListScreen';
-
 import { ext } from '../const.js';
-import ListArticleView from '../components/ListArticleView';
-import FeaturedArticleView from '../components/FeaturedArticleView';
 
 export class ArticlesFeaturedListScreen extends ArticlesListScreen {
   static propTypes = {
@@ -25,21 +24,29 @@ export class ArticlesFeaturedListScreen extends ArticlesListScreen {
     this.renderRow = this.renderRow.bind(this);
   }
 
-  renderRow(article) {
-    const completeFeed = this.props.feed;
-    if (article === _.head(completeFeed)) {
+  renderRow(article, sectionId, index) {
+    if (index === '0') {
       return (
         <FeaturedArticleView
-          article={article}
-          onPress={this.openDetailsScreen}
+          key={article.id}
+          articleId={article.id}
+          title={article.title}
+          imageUrl={getLeadImageUrl(article)}
+          author={article.author}
+          date={article.timeUpdated}
+          onPress={this.openArticleWithId}
         />
       );
     }
 
     return (
       <ListArticleView
-        article={article}
-        onPress={this.openDetailsScreen}
+        key={article.id}
+        articleId={article.id}
+        title={article.title}
+        imageUrl={getLeadImageUrl(article)}
+        date={article.timeUpdated}
+        onPress={this.openArticleWithId}
       />
     );
   }

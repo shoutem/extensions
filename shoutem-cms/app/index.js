@@ -1,5 +1,8 @@
 export { CmsListScreen } from './screens/CmsListScreen';
 
+import currentLocation from './components/CurrentLocation';
+export { currentLocation };
+
 import reducer from './redux';
 export { reducer };
 

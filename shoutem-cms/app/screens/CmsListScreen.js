@@ -28,6 +28,7 @@ import {
   isBusy,
   isInitialized,
   isError,
+  cloneStatus,
 
   getCollection,
   getOne,
@@ -59,6 +60,27 @@ function printChangedProps(props, nextProps) {
       console.log(` -> ${propName}`);
     }
   }
+}
+
+/**
+ * Returns the categories that should be displayed in the app
+ * based on the shortcut settings configured in the builder.
+ *
+ * @param {[]} allCategories All CMS categories connected to a shortcut.
+ * @param {[]} visibleCategories A list of categories that should be visible
+ *   in the app. If this list is empty, all categories will be displayed.
+ */
+function getCategoriesToDisplay(allCategories, visibleCategories) {
+  if (_.isEmpty(visibleCategories)) {
+    // Show all categories, if the app owner hasn't explicitly
+    // selected any visible categories, this is the default state.
+    return allCategories;
+  }
+
+  // Visible categories have been configured, so show only the selected categories
+  const categoriesToDisplay = _.intersectionBy(allCategories, visibleCategories, 'id');
+  cloneStatus(allCategories, categoriesToDisplay);
+  return categoriesToDisplay;
 }
 
 /**
@@ -120,6 +142,13 @@ export class CmsListScreen extends PureComponent {
     return (state, ownProps) => {
       const { screenId } = ownProps;
       const parentCategoryId = _.get(ownProps, 'shortcut.settings.parentCategory.id');
+      const visibleCategories = _.get(ownProps, 'shortcut.settings.visibleCategories', []);
+      const sortField = _.get(ownProps, 'shortcut.settings.sortField');
+      const sortOrder = _.get(ownProps, 'shortcut.settings.sortOrder');
+
+      const allCategories = getCategories(state, parentCategoryId);
+      const categoriesToDisplay = getCategoriesToDisplay(allCategories, visibleCategories);
+
       const collection = getCmsCollection(state);
       if (!collection) {
         throw new Error('Invalid collection selector passed to createMapStateToProps ' +
@@ -131,8 +160,10 @@ export class CmsListScreen extends PureComponent {
 
       return {
         parentCategoryId,
+        sortField,
+        sortOrder,
         data: getCollection(collection[selectedCategoryId], state),
-        categories: getCategories(state, parentCategoryId),
+        categories: categoriesToDisplay,
         selectedCategory: getOne(selectedCategoryId, state, CATEGORIES_SCHEMA),
       };
     };
@@ -167,6 +198,8 @@ export class CmsListScreen extends PureComponent {
     super(props, context);
     this.fetchCategories = this.fetchCategories.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.getFetchDataOptions = this.getFetchDataOptions.bind(this);
+    this.getQueryParams = this.getQueryParams.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.onCategorySelected = this.onCategorySelected.bind(this);
@@ -189,6 +222,16 @@ export class CmsListScreen extends PureComponent {
       printChangedProps(this.props, nextProps);
     }
 
+    // check if we need user location
+    const { sortField, checkPermissionStatus } = nextProps;
+
+    const isSortByLocation = sortField === 'location';
+    const isLocationAvailable = !!nextProps.currentLocation;
+
+    if (isSortByLocation && !isLocationAvailable && _.isFunction(checkPermissionStatus)) {
+      checkPermissionStatus();
+    }
+
     this.refreshInvalidContent(nextProps);
   }
 
@@ -199,7 +242,7 @@ export class CmsListScreen extends PureComponent {
   }
 
   onCategorySelected(category) {
-    const { selectedCategory, setScreenState, screenId } = this.props;
+    const { selectedCategory, setScreenState, screenId, sortField, sortOrder } = this.props;
     if (selectedCategory.id === category.id) {
       // The category is already selected.
       return;
@@ -207,6 +250,8 @@ export class CmsListScreen extends PureComponent {
 
     setScreenState(screenId, {
       selectedCategoryId: category.id,
+      sortField,
+      sortOrder,
     });
   }
 
@@ -222,6 +267,57 @@ export class CmsListScreen extends PureComponent {
         </View>
       ),
       title: (title || '').toUpperCase(),
+    };
+  }
+
+  getListProps() {
+    return {};
+  }
+
+  getQueryParams(options) {
+    const sortField = _.get(options, 'sortField');
+    const sortOrder = _.get(options, 'sortOrder');
+
+    const params = {
+      'filter[categories]': _.get(options, 'category.id'),
+    };
+
+    if (!sortField) {
+      return { ...params };
+    }
+
+    const sort = sortOrder === 'ascending' ? sortField : `-${sortField}`;
+
+    if (sortField === 'location') {
+      const { currentLocation } = this.props;
+
+      const latitude = _.get(currentLocation, 'coords.latitude');
+      const longitude = _.get(currentLocation, 'coords.longitude');
+
+      const isCurrentLocationAvailable = !!latitude && !!longitude;
+      // default to sort by name when location is unavailable
+      if (!isCurrentLocationAvailable) {
+        return {
+          ...params,
+          sort: 'name',
+        };
+      }
+
+      return { ...params, sort, latitude, longitude };
+    }
+
+    return { ...params, sort };
+  }
+
+  getFetchDataOptions(props) {
+    const category = props.selectedCategory;
+    const sortField = props.sortField;
+    const sortOrder = props.sortOrder;
+
+    return {
+      category,
+      sortField,
+      sortOrder,
     };
   }
 
@@ -254,7 +350,6 @@ export class CmsListScreen extends PureComponent {
 
     // Categories are required to resolve
     // either selectedCategory or data for selected category.
-
     if (
       !this.isCategoryValid(selectedCategory) ||
       (categories !== this.props.categories && !this.isSelectedCategoryValid(nextProps))
@@ -263,8 +358,15 @@ export class CmsListScreen extends PureComponent {
     }
 
     const nextCategory = nextProps.selectedCategory;
-    if (this.isCategoryValid(nextCategory) && shouldRefresh(data)) {
-      this.fetchData(nextCategory);
+
+    const shouldRefreshData = this.isCategoryValid(nextCategory) && shouldRefresh(data);
+    const hasOrderingChanged =
+      this.props.sortField !== nextProps.sortField ||
+      this.props.sortOrder !== nextProps.sortOrder;
+    const hasLocationChanged = !_.isEqual(this.props.currentLocation, nextProps.currentLocation);
+
+    if (shouldRefreshData || hasOrderingChanged || hasLocationChanged) {
+      this.fetchData(this.getFetchDataOptions(nextProps));
     }
   }
 
@@ -277,7 +379,7 @@ export class CmsListScreen extends PureComponent {
   }
 
   isCategoryValid(category) {
-    return category && (category.id !== undefined);
+    return _.has(category, 'id');
   }
 
   isCollectionValid(collection) {
@@ -286,10 +388,8 @@ export class CmsListScreen extends PureComponent {
       // The collection is loading, treat it as valid for now
       return true;
     }
-
-    // The collection is considered valid if there were no errors while
-    // fetching it, and if it is not empty
-    return collection && !isError(collection) && (collection.length > 0);
+    // The collection is considered valid if it is not empty
+    return !_.isEmpty(collection);
   }
 
   shouldRenderPlaceholderView() {
@@ -313,14 +413,12 @@ export class CmsListScreen extends PureComponent {
     );
   }
 
-  fetchData(category) {
+  fetchData(options) {
     const { find } = this.props;
     const { schema } = this.state;
 
     InteractionManager.runAfterInteractions(() =>
-      find(schema, undefined, {
-        'filter[categories]': category.id,
-      }),
+      find(schema, undefined, this.getQueryParams(options)),
     );
   }
 
@@ -329,7 +427,7 @@ export class CmsListScreen extends PureComponent {
   }
 
   refreshData() {
-    this.fetchData(this.props.selectedCategory);
+    this.fetchData(this.getFetchDataOptions(this.props));
   }
 
   renderPlaceholderView() {
@@ -400,6 +498,8 @@ export class CmsListScreen extends PureComponent {
         getSectionId={this.getSectionId}
         renderSectionHeader={this.renderSectionHeader}
         style={style.list}
+        initialListSize={1}
+        {...this.getListProps()}
       />
     );
   }

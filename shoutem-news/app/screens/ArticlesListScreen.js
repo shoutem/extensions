@@ -8,7 +8,7 @@ import { navigateTo } from '@shoutem/core/navigation';
 import { CmsListScreen } from 'shoutem.cms';
 
 import { ext } from '../const';
-import ListArticleView from '../components/ListArticleView';
+import { ListArticleView } from '../components/ListArticleView';
 
 export class ArticlesListScreen extends CmsListScreen {
   static propTypes = {
@@ -18,7 +18,8 @@ export class ArticlesListScreen extends CmsListScreen {
 
   constructor(props, context) {
     super(props, context);
-    this.openDetailsScreen = this.openDetailsScreen.bind(this);
+    this.openArticle = this.openArticle.bind(this);
+    this.openArticleWithId = this.openArticleWithId.bind(this);
     this.renderRow = this.renderRow.bind(this);
 
     this.state = {
@@ -27,21 +28,27 @@ export class ArticlesListScreen extends CmsListScreen {
     };
   }
 
-  openDetailsScreen(article) {
+  openArticle(article) {
     const { navigateTo } = this.props;
     const nextArticle = this.getNextArticle(article);
 
     const route = {
-      screen: ext('ArticleMediumDetailsScreen'),
+      screen: ext('ArticleDetailsScreen'),
       title: article.title,
       props: {
         article,
         nextArticle,
-        openArticle: this.openDetailsScreen,
+        openArticle: this.openArticle,
       },
     };
 
     navigateTo(route);
+  }
+
+  openArticleWithId(id) {
+    const { data } = this.props;
+    const article = _.find(data, { id });
+    this.openArticle(article);
   }
 
   getNextArticle(article) {
@@ -53,8 +60,12 @@ export class ArticlesListScreen extends CmsListScreen {
   renderRow(article) {
     return (
       <ListArticleView
-        article={article}
-        onPress={this.openDetailsScreen}
+        key={article.id}
+        articleId={article.id}
+        title={article.title}
+        imageUrl={_.get(article, 'image.url')}
+        date={article.timeUpdated}
+        onPress={this.openArticleWithId}
       />
     );
   }

@@ -8,13 +8,14 @@ import {
   Image,
   Screen,
   Tile,
+  View,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 import { navigateTo } from '@shoutem/core/navigation';
 import { NavigationBar } from '@shoutem/ui/navigation';
-
+import { Favorite } from 'shoutem.favorites';
 import { openURL } from 'shoutem.web-view';
-import { ext } from '../const.js';
+import { ext } from '../const';
 
 import { PlaceDetails } from './PlaceDetails';
 
@@ -25,7 +26,18 @@ class MediumPlaceDetails extends PlaceDetails {
 
   getNavBarProps() {
     const { place } = this.props;
+    const { schema } = this.state;
+
     return {
+      renderRightComponent: () => (
+        <View virtual styleName="container">
+          <Favorite
+            item={place}
+            navBarButton
+            schema={schema}
+          />
+        </View>
+      ),
       styleName: place.image ? 'clear' : 'no-border',
       animationName: place.image ? 'solidify' : 'boxing',
       title: place.name,
@@ -46,7 +58,8 @@ class MediumPlaceDetails extends PlaceDetails {
   }
 
   renderPlaceInfo(place) {
-    const { formattedAddress } = place.location;
+    const { location = {} } = place;
+    const { formattedAddress = '' } = location;
 
     return (
       <Tile styleName="text-centric">
@@ -68,7 +81,6 @@ class MediumPlaceDetails extends PlaceDetails {
       <Screen styleName="full-screen paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
-
           {this.renderLeadImage(place)}
           {this.renderPlaceInfo(place)}
           {this.renderOpeningHours(place)}

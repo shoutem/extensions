@@ -19,6 +19,11 @@ import {
   NavigationBar,
 } from '@shoutem/ui/navigation';
 
+import {
+  executeShortcut,
+  getActiveShortcut,
+} from 'shoutem.application';
+
 import { ext } from '../const';
 import TabBarItem from '../components/TabBarItem';
 import { shortcutChildrenRequired } from '../helpers';
@@ -45,6 +50,7 @@ export class TabBar extends PureComponent {
 
     tabStates: React.PropTypes.object,
     tabStacks: React.PropTypes.object,
+    executeShortcut: React.PropTypes.func,
     navigateTo: React.PropTypes.func,
     navigateBack: React.PropTypes.func,
     reset: React.PropTypes.func,
@@ -56,6 +62,11 @@ export class TabBar extends PureComponent {
     super(props, context);
 
     this.openShortcut = this.openShortcut.bind(this);
+    // Debounce the reset tab to top to avoid weird issues (e.g., app freezes)
+    // when the navigation state is being reset during transitions.
+    this.resetTabNavigationStateToTop = _.debounce(this.resetTabNavigationStateToTop, 300, {
+      maxWait: 100,
+    });
   }
 
   componentWillMount() {
@@ -71,20 +82,15 @@ export class TabBar extends PureComponent {
 
   getTabRouteForShortcut(shortcut) {
     return {
+      context: {
+        shortcutId: shortcut.id,
+      },
       key: getTabNavigationStack(shortcut.id).name,
       screen: ext('Tab'),
       props: {
         shortcut,
       },
     };
-  }
-
-  getActiveShortcut() {
-    const { navigationState } = this.props;
-    const index = navigationState.index;
-    const shortcutPath = ['routes', [index], 'props', 'shortcut'];
-    const currentShortcut = (index > -1) ? _.get(navigationState, shortcutPath) : null;
-    return currentShortcut;
   }
 
   resetTabNavigationStateToTop(tabId) {
@@ -96,8 +102,14 @@ export class TabBar extends PureComponent {
 
   openShortcut(shortcut) {
     // eslint-disable-next-line no-shadow
-    const { navigationState, navigateTo, jumpToKey, setActiveNavigationStack } = this.props;
-    const activeShortcut = this.getActiveShortcut();
+    const {
+      activeShortcut,
+      executeShortcut,
+      navigationState,
+      navigateTo,
+      jumpToKey,
+      setActiveNavigationStack,
+    } = this.props;
 
     if (shortcut === activeShortcut) {
       // Tapping twice on the same tab resets tab screens stack.
@@ -106,19 +118,29 @@ export class TabBar extends PureComponent {
     }
 
     const navigationStack = getTabNavigationStack(shortcut.id);
-    setActiveNavigationStack(navigationStack);
-
     const stackName = navigationStack.name;
+
     if (hasRouteWithKey(navigationState, stackName)) {
+      setActiveNavigationStack(navigationStack);
       jumpToKey(stackName, TAB_BAR_NAVIGATION_STACK);
     } else {
-      navigateTo(this.getTabRouteForShortcut(shortcut), TAB_BAR_NAVIGATION_STACK);
+      // Navigate to a new tab only if the shortcut opens a screen
+      if (shortcut.screen) {
+        setActiveNavigationStack(navigationStack);
+        navigateTo(this.getTabRouteForShortcut(shortcut), TAB_BAR_NAVIGATION_STACK);
+      }
+
+      executeShortcut(shortcut.id, undefined, navigationStack);
     }
   }
 
   renderTabBarItems() {
-    const { showText, showIcon, shortcut: { children } } = this.props;
-    const activeShortcut = this.getActiveShortcut();
+    const {
+      activeShortcut,
+      showText,
+      showIcon,
+      shortcut: { children }
+    } = this.props;
 
     return _.take(children, TABS_LIMIT).map(shortcut => (
       <TabBarItem
@@ -127,7 +149,7 @@ export class TabBar extends PureComponent {
         showIcon={showIcon}
         shortcut={shortcut}
         onPress={this.openShortcut}
-        selected={activeShortcut === shortcut}
+        selected={_.isEqual(activeShortcut, shortcut)}
       />
     ));
   }
@@ -154,8 +176,13 @@ export class TabBar extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => state[ext()].tabBar;
+const mapStateToProps = (state) => ({
+  ...state[ext()].tabBar,
+  activeShortcut: getActiveShortcut(state),
+});
+
 const mapDispatchToProps = {
+  executeShortcut,
   navigateTo,
   jumpToKey,
   navigateBack,

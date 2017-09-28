@@ -5,6 +5,7 @@ import { mapReducers } from '@shoutem/redux-composers';
 import { storage, collection, getCollection } from '@shoutem/redux-io';
 
 import { ext } from './const';
+import permissionStatus from './reducers';
 
 export const CATEGORIES_SCHEMA = 'shoutem.core.categories';
 export const IMAGE_ATTACHMENTS_SCHEMA = 'shoutem.core.image-attachments';
@@ -75,10 +76,15 @@ export function getCategories(state, parentId) {
   return getCollection(state[ext()].childCategories[parentId], state);
 }
 
+export function getLocationPermissionStatus(state) {
+  return state[ext()].permissionStatus;
+}
+
 export default combineReducers({
   categories: storage(CATEGORIES_SCHEMA),
   images: storage(IMAGE_ATTACHMENTS_SCHEMA),
   videos: storage(VIDEO_ATTACHMENTS_SCHEMA),
 
   childCategories: childCategories(),
+  permissionStatus,
 });

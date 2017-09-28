@@ -4,6 +4,7 @@ import { navigateTo } from '@shoutem/core/navigation';
 import NoScreens from '../screens/NoScreens';
 import NoContent from '../screens/NoContent';
 import mapIsRootScreenToProps from './mapIsRootScreenToProps';
+import mapExtensionSettingsToProps from './mapExtensionSettingsToProps';
 import { connect } from 'react-redux';
 
 /**
@@ -19,7 +20,7 @@ function ShortcutChildrenRequired(props) {
 
   return _.isEmpty(shortcut.children) ?
     fallbackScreen :
-    <WrappedComponent {...props } />;
+    <WrappedComponent {...props} />;
 }
 
 ShortcutChildrenRequired.propTypes = {
@@ -28,10 +29,15 @@ ShortcutChildrenRequired.propTypes = {
   WrappedComponent: React.PropTypes.func,
 };
 
+const mapStateToProps = (state, ownProps) => ({
+  ...mapIsRootScreenToProps(state, ownProps),
+  ...mapExtensionSettingsToProps(state, ownProps),
+});
+
 const ConnectedShortcutChildrenRequired =
-  connect(mapIsRootScreenToProps, { navigateTo })(
+  connect(mapStateToProps, { navigateTo })(
   ShortcutChildrenRequired
 );
 
 export default (WrappedComponent) => props =>
-  <ConnectedShortcutChildrenRequired {...props} WrappedComponent={WrappedComponent}/>;
+  <ConnectedShortcutChildrenRequired {...props} WrappedComponent={WrappedComponent} />;

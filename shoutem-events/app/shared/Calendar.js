@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { Alert, Linking } from 'react-native';
 import CalendarManager, { PERMISSION_ERROR } from 'react-native-calendar-manager';
+import { DeviceInfo } from 'shoutem.application';
 
 const showSuggestionToGrantCalendarAccess = () => {
   Alert.alert(
@@ -43,5 +44,11 @@ export function formatDate(date) {
     return '';
   }
 
-  return toMoment(date).format('MMMM D • hh:mm A');
+  const hourFormat24 = _.get(DeviceInfo, 'HOUR_FORMAT.H24');
+  let format = 'MMM D • hh:mm A';
+
+  if (hourFormat24 === DeviceInfo.getHourFormat()) {
+    format = 'MMM D • HH:mm';
+  }
+  return toMoment(date).format(format);
 }

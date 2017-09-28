@@ -2,13 +2,13 @@ import { AppState } from 'react-native';
 import * as _ from 'lodash';
 
 import rio, { checkExpiration } from '@shoutem/redux-io';
-import { extendActionToTargetAllMapReducers } from '@shoutem/redux-composers';
+import { applyToAll } from '@shoutem/redux-composers';
 import { initializeUiAddons } from '@shoutem/ui-addons';
 
 import { extractAppActions } from './shared/extractAppActions';
 import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 import { openInitialScreen } from './shared/openInitialScreen';
-import { isProduction } from './shared/isProduction';
+import { isRelease } from './shared/isRelease';
 import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
 import { CONFIGURATION_SCHEMA, ACTIVE_APP_STATE } from './const';
 import buildConfig from './buildConfig.json';
@@ -46,7 +46,7 @@ function loadConfiguration(app) {
         resolve();
       }
     });
-    if (isProduction()) {
+    if (isRelease()) {
       dispatch(loadLocalConfiguration());
     } else {
       const appId = getAppId(app);
@@ -71,7 +71,7 @@ function registerConfigurationSchema() {
 }
 
 function dispatchCheckExpiration(app) {
-  app.getStore().dispatch(extendActionToTargetAllMapReducers(checkExpiration()));
+  app.getStore().dispatch(applyToAll(checkExpiration()));
 }
 
 function createAppStateChangeHandler(app) {
@@ -107,6 +107,11 @@ export function appDidMount(app) {
   }
   unsubscribeFromConfigurationLoaded();
 }
+
+/**
+ * Returns true if environment is development, false otherwise.
+ */
+export const isDevelopment = () => process.env.NODE_ENV === 'development';
 
 export function appDidFinishLaunching(app) {
   openInitialScreen(app);

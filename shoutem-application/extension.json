@@ -1,10 +1,11 @@
 {
   "name": "application",
-  "version": "0.2.11",
+  "version": "1.2.1",
+  "platform": "1.2.*",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "platform": "1.0.*",
-   "icon": "server/assets/add-application-image.png",
-  "categories": []
+  "icon": "server/assets/add-application-image.png",
+  "categories": [],
+  "native": true
 }

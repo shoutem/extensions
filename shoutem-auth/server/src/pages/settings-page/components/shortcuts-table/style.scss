@@ -1,0 +1,13 @@
+:global {
+  .shortcuts-table {
+    &.table {
+      margin-top: 16px;
+    }
+
+    &.table > tbody > tr.shortcuts-table__empty-row {
+      border-bottom: none;
+      color: #888fa1;
+      margin-top: 8px;
+    }
+  }
+}

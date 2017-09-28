@@ -1,13 +1,20 @@
 {
   "name": "firebase",
-  "version": "0.1.14",
+  "version": "1.2.5",
+  "platform": "1.2.*",
   "type": "system",
   "title": "Firebase",
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
-  "platform": "1.0.*",
   "icon": "server/assets/add-firebase-image.png",
   "settingsPages": [{
-    "page": "shoutem.firebase.Settings",
+    "page": "@.Settings",
     "title": "Settings"
-  }]
+  }],
+  "pages": [
+    {
+      "name": "Settings",
+      "type": "native-component",
+      "path": "dummy.js"
+    }
+  ]
 }
