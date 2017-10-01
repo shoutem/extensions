@@ -2,7 +2,7 @@
   "name": "loyalty",
   "version": "1.2.3",
   "title": "Loyalty",
-  "description": "Reward your returning customers",
+  "description": "Reward your  customers",
   "platform": "1.2.*",
   "categories": ["commerce"],
   "repository": {
@@ -27,13 +27,13 @@
       ]
     },
     {
-      "screen": "@.PointsCardScreen",
-      "title": "My Card",
-      "name": "points-card-shortcut",
-      "icon":"theme://loyalty-card.png",
+      "screen": "@.PointsbarScreen",
+      "title": "My points",
+      "name": "points-shortcut",
+      "icon":"theme://loyalty-points.png",
       "adminPages": [
         {
-          "page": "@.PointsCardSettingsPage",
+          "page": "@.PointsSettingsPage",
           "title": "Settings"
         }
       ]
@@ -61,9 +61,9 @@
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
-          "title": "Stores",
-          "parameters":{
-            "schema": "@.places"
+          "title": "soda bottles/cans/cap ",
+          "parameters":{356354
+            "schema": "@.JACKVENDING"
           }
         },
         {
@@ -73,8 +73,8 @@
       ]
     },
     {
-      "title": "My Stores",
-      "description": "List of favorited stores",
+      "title": "DRINKS YOU LOVE",
+      "description": "List of favorited PRODUCTS",
       "name": "FavoritesList",
       "screen": "@.FavoritesListScreen",
       "settings": {
@@ -86,13 +86,11 @@
   ],
   "screens": [
     {
-      "name": "PunchCardListScreen",
-      "title": "Punch Card",
-      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
+ d-with-featured-selected.png"
     },
     {
-      "name": "PointsCardScreen",
-      "title": "Points Card",
+      "name": "Pointscreen",
+      "title": "Points",
       "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
     },
     {
@@ -101,9 +99,7 @@
       "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
     },
     {
-      "name": "PlacesListScreen",
-      "title": "Stores",
-      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
+  "
     },
     {
       "name": "FavoritesList",
@@ -119,21 +115,14 @@
   ],
   "dataSchemas": [
      {
-      "name": "punch-cards",
-      "path": "server/data-schemas/punchCards.json"
+    "
     },
     {
       "name": "rewards",
       "path": "server/data-schemas/rewards.json"
     },
     {
-      "name": "places",
-      "path": "server/data-schemas/places.json"
-    },
-    {
-      "name": "place-rewards",
-      "path": "server/data-schemas/placeRewards.json"
-    }
+
   ],
   "pages": [
     {
@@ -142,7 +131,7 @@
       "type": "html"
     },
     {
-      "name": "PointsCardSettingsPage",
+      "name": "PointsSettingsPage",
       "path": "server/build/index.html?page=PointsCardSettingsPage",
       "type": "html"
     },
