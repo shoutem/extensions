@@ -59,18 +59,17 @@ export class EventsListScreen extends ListScreen {
   }
 
   fetchData() {
-    const { shortcut: { settings: { icalUrl } }, find } = this.props;
+    const { shortcut, find } = this.props;
+    const icalUrl = _.get(shortcut, 'settings.icalUrl');
 
     const now = moment();
     const endDate = now.format('YYYY-MM-DD');
-    // const endTime = now.format('HH:mm:ss');
 
     InteractionManager.runAfterInteractions(() =>
       find(EVENTS_PROXY_SCHEMA, 'allEvents', {
         url: icalUrl,
         'filter[endDate]': endDate, // filtering past events
-//        'filter[endTime]': endTime,
-        'sort': 'startDate,-startTime'
+        sort: 'startDate,-startTime',
       }),
     );
   }

@@ -64,6 +64,16 @@ export function fetchWordpressPosts(params) {
   );
 }
 
+export function navigateToUrl(url) {
+  return {
+    type: '@@navigator/NAVIGATE_REQUEST',
+    payload: {
+      component: 'external',
+      options: { url },
+    },
+  };
+}
+
 function createFeedItemInfo(feedItem, shortcutState) {
   const mediaList = _.get(shortcutState, 'media');
   const dateTime = toLocalDateTime(feedItem.date);

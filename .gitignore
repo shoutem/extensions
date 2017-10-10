@@ -26,3 +26,6 @@ build
 # IDE files and folders
 .vscode
 jsconfig.json
+
+# MacOSX system file
+.DS_Store

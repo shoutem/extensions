@@ -2,7 +2,10 @@ import React, {
   PureComponent,
 } from 'react';
 
-import { InteractionManager } from 'react-native';
+import {
+  AppState,
+  InteractionManager,
+} from 'react-native';
 
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
@@ -200,6 +203,7 @@ export class CmsListScreen extends PureComponent {
     this.fetchData = this.fetchData.bind(this);
     this.getFetchDataOptions = this.getFetchDataOptions.bind(this);
     this.getQueryParams = this.getQueryParams.bind(this);
+    this.handleAppStateChange = this.handleAppStateChange.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.onCategorySelected = this.onCategorySelected.bind(this);
@@ -217,27 +221,48 @@ export class CmsListScreen extends PureComponent {
     this.refreshInvalidContent(this.props, true);
   }
 
+  componentDidMount() {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
   componentWillReceiveProps(nextProps) {
     if (process.env.NODE_ENV === 'development') {
       printChangedProps(this.props, nextProps);
     }
 
-    // check if we need user location
-    const { sortField, checkPermissionStatus } = nextProps;
-
-    const isSortByLocation = sortField === 'location';
-    const isLocationAvailable = !!nextProps.currentLocation;
-
-    if (isSortByLocation && !isLocationAvailable && _.isFunction(checkPermissionStatus)) {
-      checkPermissionStatus();
-    }
-
+    this.checkPermissionStatus(nextProps);
     this.refreshInvalidContent(nextProps);
   }
 
   componentDidUpdate() {
     if (process.env.NODE_ENV === 'development') {
       console.log(`[CMSListScreen] ${this.props.title} - componentDidUpdate`);
+    }
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange(appState) {
+    const { currentAppState } = this.state;
+
+    this.setState({ currentAppState: appState });
+
+    if (currentAppState === 'background' && appState === 'active') {
+      this.checkPermissionStatus();
+    }
+  }
+
+  checkPermissionStatus(props = this.props) {
+     // check if we need user location
+    const { sortField, checkPermissionStatus } = props;
+
+    const isSortByLocation = sortField === 'location';
+    const isLocationAvailable = !!props.currentLocation;
+
+    if (isSortByLocation && !isLocationAvailable && _.isFunction(checkPermissionStatus)) {
+      checkPermissionStatus();
     }
   }
 

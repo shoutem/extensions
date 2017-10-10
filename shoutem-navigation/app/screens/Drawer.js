@@ -11,7 +11,7 @@ import {
   ScreenStack,
   navigateBack,
   setActiveNavigationStack,
-  RESET_TO_ROUTE,
+  RESET,
 } from '@shoutem/core/navigation';
 
 import { connectStyle } from '@shoutem/theme';
@@ -135,7 +135,7 @@ export class Drawer extends Component {
     if (activeShortcut !== shortcut) {
       this.props.executeShortcut(
         shortcut.id,
-        RESET_TO_ROUTE,
+        RESET,
         DRAWER_NAVIGATION_STACK,
       );
     }

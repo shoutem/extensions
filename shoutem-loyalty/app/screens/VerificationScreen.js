@@ -24,6 +24,7 @@ import { ext } from '../const';
 
 import {
   getCardId,
+  isPunchCard,
 } from '../redux';
 
 import { placeShape, rewardShape } from '../components/shapes';
@@ -34,9 +35,9 @@ const { bool, func, string } = React.PropTypes;
  * Encodes reward values in an array to save space in QR code.
  */
 const getEncodedRewardValues = (reward) => {
-  const { id, location = '', numberOfRewards = '', parentCategoryId, pointsRequired, title } = reward;
+  const { id, location = '', parentCategoryId, points, pointsRequired, title } = reward;
 
-  return [id, location, numberOfRewards, parentCategoryId, pointsRequired, title];
+  return [id, location, isPunchCard(reward), parentCategoryId, points, pointsRequired, title];
 };
 
 /**

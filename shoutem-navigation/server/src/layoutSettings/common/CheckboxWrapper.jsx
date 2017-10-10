@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Checkbox } from 'react-bootstrap';
+import { Checkbox } from '@shoutem/react-web-ui';
 
 export default function CheckboxWrapper(props) {
   const { value, children, ...otherProps } = props;

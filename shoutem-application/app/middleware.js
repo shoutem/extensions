@@ -39,8 +39,19 @@ function createExecuteShortcutActionMiddleware(actions) {
 // eslint-disable-next-line no-unused-vars
 // TODO (zeljko): Move this to shoutem.layouts?
 const resolveScreenLayout = store => next => action => {
-  if (isNavigationAction(action) && action.route) {
-    const routeShortcutId = _.get(action, 'route.context.shortcutId');
+  let routeInfo = {};
+  if (action.route || action.routes) {
+    routeInfo = action.route ? {
+      route: action.route,
+      path: ['route'],
+    } : {
+      route: _.last(action.routes),
+      path: ['routes', `${_.indexOf(action.routes, _.last(action.routes))}`],
+    };
+  }
+
+  if (isNavigationAction(action) && routeInfo.route) {
+    const routeShortcutId = _.get(routeInfo.route, 'context.shortcutId');
     const state = store.getState();
     const activeShortcut = routeShortcutId ?
       getShortcut(state, routeShortcutId) :
@@ -50,11 +61,11 @@ const resolveScreenLayout = store => next => action => {
       return next(action);
     }
 
-    const screenLayout = _.find(activeShortcut.screens, { canonicalType: action.route.screen });
+    const screenLayout = _.find(activeShortcut.screens, { canonicalType: routeInfo.route.screen });
     if (screenLayout) {
       const newAction = { ...action };
-      newAction.route.screen = screenLayout.canonicalName;
-      newAction.route.props = {
+      _.set(newAction, [...routeInfo.path, 'screen'], screenLayout.canonicalName);
+      _.set(newAction, [...routeInfo.path, 'props'], {
         // Each screen will get:
         // 1. any props specified directly in the navigation action,
         // 2. any screen settings defined by the user through the settings page,
@@ -63,15 +74,14 @@ const resolveScreenLayout = store => next => action => {
         title: activeShortcut.title,
         shortcut: activeShortcut,
         ...screenLayout.settings,
-        ...action.route.props,
-      };
-      newAction.route.context = {
-        ...action.route.context,
+        ..._.get(action, [...routeInfo.path, 'props']),
+      });
+      _.set(newAction, [...routeInfo.path, 'context'], {
+        ..._.get(action, [...routeInfo.path, 'context']),
         // Make sure that the shortcut we actually used
         // to resolve everything ends up in the context.
         shortcutId: activeShortcut.id,
-      };
-
+      });
       return next(newAction);
     }
   }

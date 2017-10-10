@@ -4,6 +4,7 @@ import {
   areAllScreensProtected,
   buildShortcutTree,
 } from '../../services';
+import './style.scss';
 
 export default class ProtectedScreenSettings extends Component {
   constructor(props) {
@@ -50,7 +51,7 @@ export default class ProtectedScreenSettings extends Component {
     }
 
     return (
-      <div>
+      <div className="protected-screen-settings">
         <h3>Select screens that require sign in</h3>
         <ShortcutsTable
           shortcutTree={shortcutTree}

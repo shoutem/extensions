@@ -64,10 +64,14 @@ export const canRedeem = ({ points = 0, pointsRequired }) => points >= pointsReq
 
 /**
  * Checks if the reward is a punch card.
+ * There are two criteria to distinguish them from point rewards:
+ *
+ * 1. Punch cards don't have a number of rewards defined.
+ * 2. A reward can have a punch card flag. This happens when encoding it for QR scanning.
  *
  * @returns true if the reward is a punch card, false otherwise
  */
-export const isPunchCard = reward => reward && !_.has(reward, 'numberOfRewards');
+export const isPunchCard = reward => reward && (reward.isPunchCard || !_.has(reward, 'numberOfRewards'));
 
 /**
  * Gets cashier attributes from state
@@ -176,11 +180,11 @@ export const fetchTransactions = cardId =>
  */
 export const createTransaction = (attributes, authorization) => {
   return (dispatch, getState) => {
-    const { authorizationType, pin, cardId } = authorization;
+    const { authorizationType, cardId } = authorization;
 
     const { id: userId } = getUser(getState());
 
-    const data = authorizationType === 'pin' ? { pin } : { userId };
+    const data = authorization.data || (authorizationType === 'userId' && { userId });
 
     const item = {
       type: TRANSACTIONS_SCHEMA,

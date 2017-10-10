@@ -1,7 +1,7 @@
 {
   "name": "web-view",
-  "version": "1.2.4",
-  "platform": "1.2.*",
+  "version": "1.3.0",
+  "platform": "1.3.*",
   "title": "Web view",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",

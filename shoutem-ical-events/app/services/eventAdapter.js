@@ -19,7 +19,7 @@ export default function adaptProxiedEvent(proxiedEvent) {
     location,
     attachments,
     geo,
-    RSVP
+    RSVP,
   } = proxiedEvent;
 
   const start = toDate(startDate, startTime, startTimeZone);
@@ -27,7 +27,7 @@ export default function adaptProxiedEvent(proxiedEvent) {
   const name = summary;
   const imageUrl = _.get(attachments, '[0].source');
 
-  return { 
+  return {
     name,
     summary,
     description,
@@ -39,10 +39,10 @@ export default function adaptProxiedEvent(proxiedEvent) {
     endTimeZone,
     location,
     attachments,
-    start, 
-    end, 
-    imageUrl, 
-    geo, 
-    RSVP
+    start,
+    end,
+    imageUrl,
+    geo,
+    RSVP,
   };
 }

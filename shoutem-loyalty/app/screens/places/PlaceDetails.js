@@ -66,6 +66,10 @@ import {
   getCardStateForPlace,
  } from '../../redux';
 
+ import {
+  refreshTransactions,
+} from '../../services';
+
 /* eslint-disable class-methods-use-this */
 
 const { arrayOf, func } = React.PropTypes;
@@ -82,6 +86,7 @@ export class PlaceDetails extends Component {
     openInModal: func,
     openURL: func,
     navigateTo: func,
+    refreshTransactions: func,
   };
 
   constructor(props) {
@@ -102,11 +107,13 @@ export class PlaceDetails extends Component {
   }
 
   componentWillMount() {
-    const { find, place } = this.props;
+    const { find, place, refreshTransactions } = this.props;
 
     find(PLACE_REWARDS_SCHEMA, undefined, {
       'filter[place.id]': place.id,
     });
+
+    refreshTransactions();
   }
 
   getNavBarProps() {
@@ -427,6 +434,7 @@ export const mapDispatchToProps = {
   navigateTo,
   openInModal,
   openURL,
+  refreshTransactions,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

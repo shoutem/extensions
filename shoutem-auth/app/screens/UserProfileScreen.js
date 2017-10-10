@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import React, {
   Component,
 } from 'react';
@@ -33,7 +35,6 @@ import {
 } from '../redux';
 
 import { ext } from '../const';
-import { loginRequired } from '../loginRequired';
 
 const { func } = React.PropTypes;
 
@@ -60,20 +61,24 @@ export class UserProfileScreen extends Component {
   }
 
   getNavBarProps() {
-    const { logout } = this.props;
+    const { logout, isProfileOwner } = this.props;
 
     return {
       renderRightComponent: () => {
-        return (
-          <View virtual styleName="container">
-            <Button
-              onPress={logout}
-              styleName="clear"
-            >
-              <Subtitle>Logout</Subtitle>
-            </Button>
-          </View>
-        );
+        if (isProfileOwner) {
+          return (
+            <View virtual styleName="container">
+              <Button
+                onPress={logout}
+                styleName="clear"
+              >
+                <Subtitle>Logout</Subtitle>
+              </Button>
+            </View>
+          );
+        } else {
+          return null;
+        }
       },
       title: 'PROFILE',
     };
@@ -99,7 +104,10 @@ export class UserProfileScreen extends Component {
   }
 
   toggleImageGallery() {
-    this.setState({ shouldRenderImageGallery: !this.state.shouldRenderImageGallery });
+    const { profile_image_url: image } = this.props.user;
+    if (image) {
+      this.setState({ shouldRenderImageGallery: !this.state.shouldRenderImageGallery });
+    }
   }
 
   openEditProfileScreen() {
@@ -135,6 +143,24 @@ export class UserProfileScreen extends Component {
     );
   }
 
+  renderEditButton() {
+    const { isProfileOwner } = this.props;
+
+    if (!isProfileOwner) {
+      return null;
+    }
+
+    return (
+      <Button
+        styleName="secondary md-gutter-vertical"
+        onPress={this.openEditProfileScreen}
+      >
+        <Icon name="edit" />
+        <Text>EDIT PROFILE</Text>
+      </Button>
+    );
+  }
+
   renderContent() {
     const { description, location, name, profile_image_url: image } = this.props.user;
 
@@ -142,7 +168,7 @@ export class UserProfileScreen extends Component {
       <View styleName="vertical h-center lg-gutter-top">
         <ProfileImage
           onPress={this.toggleImageGallery}
-          uri={image}
+          uri={image || undefined}
         />
         {name ?
           <Title styleName="md-gutter-vertical">{`${name}`}</Title>
@@ -154,13 +180,7 @@ export class UserProfileScreen extends Component {
           :
           null
         }
-        <Button
-          styleName="secondary md-gutter-vertical"
-          onPress={this.openEditProfileScreen}
-        >
-          <Icon name="edit" />
-          <Text>EDIT PROFILE</Text>
-        </Button>
+        {this.renderEditButton()}
         <Text styleName="h-center">
           {description}
         </Text>
@@ -181,9 +201,16 @@ export class UserProfileScreen extends Component {
   }
 }
 
-export const mapStateToProps = state => ({
-  user: getUser(state) || {},
-});
+export const mapStateToProps = (state, ownProps) => {
+  const me = getUser(state);
+  const isProfileOwner = ownProps.user ? _.get(ownProps.user, 'id') === _.get(me, 'id') : me;
+  const user = isProfileOwner ? me : ownProps.user || me;
+
+  return {
+    user: user || me || {},
+    isProfileOwner,
+  };
+};
 
 export const mapDispatchToProps = {
   closeModal,
@@ -191,7 +218,7 @@ export const mapDispatchToProps = {
   openInModal,
 };
 
-export default loginRequired(connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(connectStyle(ext('UserProfileScreen'))(UserProfileScreen)), true);
+)(connectStyle(ext('UserProfileScreen'))(UserProfileScreen));

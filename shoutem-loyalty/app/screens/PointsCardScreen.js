@@ -38,7 +38,7 @@ import {
   getExtensionSettings,
 } from 'shoutem.application';
 
-import { QRCodeScanner } from 'shoutem.camera';
+import { QRCodeScanner, navigateToQRCodeScannerScreen } from 'shoutem.camera';
 
 import { ext } from '../const';
 
@@ -49,6 +49,7 @@ import {
 } from '../redux';
 
 import {
+  authorizeTransactionByBarCode,
   authorizeTransactionByQRCode,
   refreshCardState,
   refreshTransactions,
@@ -62,15 +63,17 @@ import {
   transactionShape,
  } from '../components/shapes';
 
-const { arrayOf, func, number, shape, string } = React.PropTypes;
+const { arrayOf, bool, func, number, shape, string } = React.PropTypes;
 
 /**
  * Shows points card details for a single card loyalty program
  */
 export class PointsCardScreen extends React.Component {
   static propTypes = {
+    // Assigns points to card when the user scans a bar code
+    authorizeTransactionByBarCode: func.isRequired,
     // Assigns points to card when cashier scans a QR code
-    authorizeTransactionByQRCode: func,
+    authorizeTransactionByQRCode: func.isRequired,
     // Card ID for user's loyalty card
     cardId: string,
     // Card state, with points
@@ -80,6 +83,8 @@ export class PointsCardScreen extends React.Component {
     // Cashier info for this user, empty if he's not a cashier.
     // A cashier can scan a QR code and a user can see his points card info.
     cashierInfo: cashierShape,
+    // True if the user can collect points by scanning a bar code, false otherwise
+    enableBarcodeScan: bool,
     // Navigates to points history screen
     navigateTo: func,
     // Opens the assign points flow in a modal dialog
@@ -100,7 +105,9 @@ export class PointsCardScreen extends React.Component {
     this.assignPoints = this.assignPoints.bind(this);
     this.handleScanCode = this.handleScanCode.bind(this);
     this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(this);
+    this.onBarCodeScanned = this.onBarCodeScanned.bind(this);
     this.refreshCardState = this.refreshCardState.bind(this);
+    this.scanBarCode = this.scanBarCode.bind(this);
   }
 
   componentWillMount() {
@@ -129,6 +136,18 @@ export class PointsCardScreen extends React.Component {
     });
   }
 
+  scanBarCode() {
+    const { navigateToQRCodeScannerScreen } = this.props;
+
+    navigateToQRCodeScannerScreen(this.onBarCodeScanned, 'Scan Barcode');
+  }
+
+  onBarCodeScanned(code) {
+    const { authorizeTransactionByBarCode } = this.props;
+
+    authorizeTransactionByBarCode(code.data);
+  }
+
   refreshCardState() {
     const { refreshCardState, refreshTransactions } = this.props;
 
@@ -136,8 +155,20 @@ export class PointsCardScreen extends React.Component {
     refreshTransactions();
   }
 
+  renderBarcodeScanButton() {
+    return (
+      <Button
+        styleName="sm-gutter-vertical"
+        style={{ width: 160 }}
+        onPress={this.scanBarCode}
+      >
+        <Text>SCAN BARCODE</Text>
+      </Button>
+  );
+  }
+
   renderPointsCardInfo() {
-    const { cardId, cardState = {}, transactions } = this.props;
+    const { cardId, cardState = {}, enableBarcodeScan, transactions } = this.props;
     const { points = 0 } = cardState;
 
     return (
@@ -160,6 +191,7 @@ export class PointsCardScreen extends React.Component {
             >
               <Text>REFRESH</Text>
             </Button>
+            {enableBarcodeScan && this.renderBarcodeScanButton()}
           </View>
           <TransactionHistoryView
             onShowHistory={this.navigateToPointsHistoryScreen}
@@ -210,6 +242,7 @@ export const mapStateToProps = (state) => {
 
   const extensionSettings = getExtensionSettings(state, ext());
   const programId = _.get(extensionSettings, 'program.id');
+  const enableBarcodeScan = _.get(extensionSettings, 'enableBarcodeScan');
 
   return {
     cardId: getCardId(state),
@@ -221,7 +254,9 @@ export const mapStateToProps = (state) => {
 };
 
 export const mapDispatchToProps = {
+  authorizeTransactionByBarCode,
   authorizeTransactionByQRCode,
+  navigateToQRCodeScannerScreen,
   fetchCashierInfo,
   refreshCardState,
   refreshTransactions,

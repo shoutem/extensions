@@ -1,10 +1,13 @@
 {
   "name": "ical-events",
-  "title": "Ical Events",
-  "version": "1.2.0",
+  "title": "iCal Events",
+  "version": "1.3.1",
   "description": "Shoutem extension for managing iCal events",
   "icon": "server/assets/add-events-image.png",
-  "platform": "1.2.*",
+  "categories": [
+    "content"
+  ],
+  "platform": "1.3.*",
   "pages": [
     {
       "name": "IcalPage",

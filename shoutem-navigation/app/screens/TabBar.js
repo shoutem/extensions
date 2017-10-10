@@ -4,7 +4,7 @@ import {
   ScreenStack,
   navigateTo,
   jumpToKey,
-  reset,
+  resetToRoute,
   navigateBack,
   setActiveNavigationStack,
   hasRouteWithKey,
@@ -53,7 +53,7 @@ export class TabBar extends PureComponent {
     executeShortcut: React.PropTypes.func,
     navigateTo: React.PropTypes.func,
     navigateBack: React.PropTypes.func,
-    reset: React.PropTypes.func,
+    resetToRoute: React.PropTypes.func,
     jumpToKey: React.PropTypes.func,
     setActiveNavigationStack: React.PropTypes.func,
   };
@@ -97,7 +97,7 @@ export class TabBar extends PureComponent {
     const tabNavigationState = getTabNavigationStateFromTabBarState(this.props, tabId);
     const tabNavigationStackName = getTabNavigationStack(tabId);
     const firstRoute = _.head(tabNavigationState.routes);
-    this.props.reset(firstRoute, tabNavigationStackName);
+    this.props.resetToRoute(firstRoute, tabNavigationStackName);
   }
 
   openShortcut(shortcut) {
@@ -186,7 +186,7 @@ const mapDispatchToProps = {
   navigateTo,
   jumpToKey,
   navigateBack,
-  reset,
+  resetToRoute,
   setActiveNavigationStack,
 };
 export default shortcutChildrenRequired(

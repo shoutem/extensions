@@ -1,8 +1,8 @@
 {
   "name": "rss-photos",
   "title": "Photos RSS",
-  "version": "1.2.0",
-  "platform": "1.2.*",
+  "version": "1.3.0",
+  "platform": "1.3.*",
   "description": "Show a photo gallery from an RSS feed",
   "icon" : "server/assets/add-photos-image.png",
   "dependencies": [

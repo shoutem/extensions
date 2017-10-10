@@ -13,7 +13,7 @@ import {
   getActiveNavigationStack,
   setActiveNavigationStack,
   navigateBack,
-  reset,
+  resetToRoute,
 } from '@shoutem/core/navigation';
 
 import { ext } from '../const';
@@ -65,8 +65,8 @@ export const openModalMiddleware = store => next => (action) => {
     const { dispatch } = store;
 
     dispatch(savePreviousStack(previousStack));
-    dispatch(reset(route, MODAL_NAVIGATION_STACK));
-    dispatch(navigateTo({ screen: MODAL_SCREEN }, ROOT_NAVIGATION_STACK));
+    dispatch(resetToRoute(route, MODAL_NAVIGATION_STACK));
+    dispatch(navigateTo({ screen: MODAL_SCREEN, props: route.props }, ROOT_NAVIGATION_STACK));
     dispatch(setActiveNavigationStack(MODAL_NAVIGATION_STACK));
   }
 
@@ -86,7 +86,7 @@ export const closeModalMiddleware = store => next => (action) => {
     dispatch(navigateBack(ROOT_NAVIGATION_STACK));
 
     InteractionManager.runAfterInteractions(() => {
-      dispatch(reset(EMPTY_ROUTE, MODAL_NAVIGATION_STACK));
+      dispatch(resetToRoute(EMPTY_ROUTE, MODAL_NAVIGATION_STACK));
     });
   }
 

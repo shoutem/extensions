@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import _ from 'lodash';
 import {
   Button,
   ButtonToolbar,
@@ -8,8 +9,7 @@ import {
   HelpBlock,
 } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { fetchExtension, updateExtensionSettings, getExtension } from '@shoutem/redux-api-sdk';
-import { shouldRefresh } from '@shoutem/redux-io';
+import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
 import { connect } from 'react-redux';
 import './style.scss';
 
@@ -102,7 +102,7 @@ class ExtensionPage extends Component {
     } = this.state;
 
     return (
-      <div className="hello-extension-settings-page">
+      <div className="flurry-extension-page">
         <form onSubmit={this.handleSubmit}>
           <FormGroup>
             <h3>Flurry API keys</h3>

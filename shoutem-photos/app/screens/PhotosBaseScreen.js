@@ -62,7 +62,7 @@ export class PhotosBaseScreen extends CmsListScreen {
     const { openInModal } = this.props;
     const { photos } = this.state;
     const route = {
-      screen: ext('PhotoDetails'),
+      screen: ext('PhotoDetailsScreen'),
       props: {
         photo,
         photos,

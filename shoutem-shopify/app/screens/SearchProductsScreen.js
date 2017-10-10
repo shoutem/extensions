@@ -2,6 +2,8 @@ import React, {
   Component,
 } from 'react';
 
+import { Platform } from 'react-native';
+
 import { connect } from 'react-redux';
 
 import _ from 'lodash';
@@ -97,24 +99,24 @@ class SearchProductsScreen extends Component {
     this.setState({ selectedTag: matchingTag, submitted: true });
   }
 
-  getNavBarProps() {
+  renderSearchField() {
     const { tagFilter } = this.state;
 
-    return {
-      renderLeftComponent: () => {
-        return (
-          <View styleName="container full-width md-gutter-left sm-gutter-right">
-            <SearchField
-              placeholder="Search"
-              onChangeText={this.onFilterChange}
-              onSubmitEditing={this.onSubmit}
-              value={tagFilter}
-            />
-            {renderCancelButton(this.onCancel)}
-          </View>
-        );
-      },
-    };
+    const topGutter = Platform.OS === 'android' ? 'sm-gutter-top' : 'lg-gutter-top';
+
+    return (
+      <View
+        styleName={`horizontal ${topGutter} md-gutter-left sm-gutter-right v-center`}
+      >
+        <SearchField
+          placeholder="Search"
+          onChangeText={this.onFilterChange}
+          onSubmitEditing={this.onSubmit}
+          value={tagFilter}
+        />
+        {renderCancelButton(this.onCancel)}
+      </View>
+    );
   }
 
   selectTag(tag) {
@@ -160,7 +162,8 @@ class SearchProductsScreen extends Component {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
+        <NavigationBar hidden />
+        {this.renderSearchField()}
         {tagFilter && !selectedTag ? this.renderTagSuggestions() : null}
         {selectedTag ? <ProductsList tag={selectedTag} /> : null}
       </Screen>

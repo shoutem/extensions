@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { FormGroup, Checkbox } from 'react-bootstrap';
+import { FormGroup } from 'react-bootstrap';
+import { Checkbox } from '@shoutem/react-web-ui';
 import _ from 'lodash';
 import { getExtensionInstallation, getShortcut } from 'environment';
 import { ext } from 'context';
