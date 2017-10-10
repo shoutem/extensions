@@ -1,7 +1,7 @@
 {
   "name": "photos",
-  "version": "1.2.0",
-  "platform": "1.2.*",
+  "version": "1.3.0",
+  "platform": "1.3.*",
   "title": "Photos",
   "description": "Show a photo gallery",
   "icon" : "server/assets/add-photos-image.png",
@@ -17,7 +17,7 @@
   "shortcuts": [{
       "name": "photos-shortcut",
       "title": "Manual photos",
-      "screen": "@.PhotosList",
+      "screen": "@.PhotosScreen",
       "icon": "theme://photo.png",
       "adminPages": [{
         "page": "shoutem.cms.CmsPage",
@@ -32,18 +32,50 @@
       }]
   }],
   "screens": [{
-    "name": "PhotosList",
-    "title": "List",
-    "navigatesTo":["@.PhotosList"],
-    "image":"./server/assets/screens/layout-large-list.png"
+    "name": "PhotosScreen",
+    "title": "Large list",
+    "navigatesTo":["@.PhotoDetailsScreen"],
+    "image": "./server/assets/screens/layout-photos-large-list.png",
+    "settings": {
+      "listType": "large-list"
+    }
   },{
-    "name": "PhotosGrid",
-    "title": "Grid",
-    "extends": "@.PhotosList",
-    "image":"./server/assets/screens/layout-grid.png"
+    "name": "CompactGridPhotosScreen",
+    "title": "Compact grid",
+    "extends": "@.PhotosScreen",
+    "image": "./server/assets/screens/layout-photos-compact-grid.png"
   },{
-    "name": "PhotoDetails",
-    "title": "PhotoDetails"
+    "name": "FixedGridPhotosScreen",
+    "title": "Fixed grid",
+    "extends": "@.PhotosScreen",
+    "image": "./server/assets/screens/layout-photos-fixed-grid.png"
+  },{
+    "name": "PhotosTileList",
+    "title": "Tile list",
+    "extends": "@.PhotosScreen",
+    "image": "./server/assets/screens/layout-photos-tile-list.png",
+    "settings": {
+      "listType": "tile-list"
+    }
+  },{
+    "name": "PhotosCompactList",
+    "title": "Compact list",
+    "extends": "@.PhotosScreen",
+    "image": "./server/assets/screens/layout-photos-compact-list.png",
+    "settings": {
+      "listType": "compact-list"
+    }
+  },{
+    "name": "PhotosMediumList",
+    "title": "Medium list",
+    "extends": "@.PhotosScreen",
+    "image": "./server/assets/screens/layout-photos-medium-list.png",
+    "settings": {
+      "listType": "medium-list"
+    }
+  },{
+    "name": "PhotoDetailsScreen",
+    "title": "PhotoDetailsScreen"
   }],
   "dataSchemas": [{
     "name": "Photos",

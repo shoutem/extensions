@@ -7,6 +7,7 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import UserProfileScreen from './screens/UserProfileScreen';
 import EditProfileScreen from './screens/EditProfileScreen';
+import MyProfileScreen from './screens/MyProfileScreen';
 
 import reducer, {
   getUser,
@@ -14,6 +15,7 @@ import reducer, {
   authenticate,
   logoutAction,
   isAuthenticated,
+  openProfile,
   RESTORE_SESSION,
   LOGIN,
   LOGOUT,
@@ -25,6 +27,7 @@ import {
   networkRequestMiddleware,
   logoutMiddleware,
   userUpdatedMiddleware,
+  authenticateMiddleware,
 } from './middleware';
 
 import { loginRequired } from './loginRequired';
@@ -40,6 +43,7 @@ export const screens = {
   RegisterScreen,
   UserProfileScreen,
   EditProfileScreen,
+  MyProfileScreen,
 };
 
 export { reducer };
@@ -53,6 +57,7 @@ const middleware = [
   networkRequestMiddleware,
   logoutMiddleware,
   userUpdatedMiddleware,
+  authenticateMiddleware,
 ];
 
 export { appDidMount } from './app';
@@ -66,6 +71,7 @@ export {
   authenticate,
   loginRequired,
   isAuthenticated,
+  openProfile,
   LOGIN,
   LOGOUT,
   REGISTER,

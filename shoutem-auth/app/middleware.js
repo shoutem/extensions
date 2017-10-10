@@ -13,6 +13,7 @@ import {
   isNavigationAction,
   navigateTo,
   redirectTo,
+  navigateBack,
   rewrite,
   REPLACE,
 } from '@shoutem/core/navigation';
@@ -84,7 +85,10 @@ export const authenticateMiddleware = setPriority(store => next => (action) => {
       store.dispatch(navigateTo({
         screen: ext('LoginScreen'),
         props: {
-          onLoginSuccess: action.callback,
+          onLoginSuccess: () => {
+            store.dispatch(navigateBack());
+            action.callback();
+          },
         },
       }));
     }

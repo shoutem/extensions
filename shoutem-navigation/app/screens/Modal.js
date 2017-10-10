@@ -29,6 +29,12 @@ class Modal extends PureComponent {
     navigationState: React.PropTypes.object,
     style: React.PropTypes.object,
     navigateBack: React.PropTypes.func,
+
+    // Our Modal screen automatically adds a left navigation bar
+    // component that fires closeModal action. Setting this props allows
+    // us to override this, and use the navBar components defined within the 
+    // screen/component that is being opened within our Modal screen
+    customNavigationBar: React.PropTypes.bool,
   };
 
   constructor(props, context) {
@@ -37,15 +43,13 @@ class Modal extends PureComponent {
   }
 
   closeModal() {
-    const { closeModal } = this.props;
-
-    closeModal();
+    this.props.closeModal();
   }
 
   getNavbarProps() {
-    const { navigationState } = this.props;
+    const { navigationState, customNavigationBar } = this.props;
 
-    if (navigationState.index > 0) {
+    if (navigationState.index > 0 || customNavigationBar) {
       return { renderLeftComponent: undefined };
     }
 
@@ -57,18 +61,18 @@ class Modal extends PureComponent {
           </Button>
         </View>
       ),
-    }
+    };
   }
 
   render() {
-    const { navigationState, navigateBack } = this.props;
+    const { navigationState } = this.props;
 
     return (
       <Screen>
         <ChildNavigationBar {...this.getNavbarProps()} />
         <ScreenStack
           navigationState={navigationState}
-          onNavigateBack={navigateBack}
+          onNavigateBack={this.props.navigateBack}
         />
       </Screen>
     );

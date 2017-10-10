@@ -124,7 +124,7 @@ export class LoginScreen extends Component {
     // We want to replace the login screen if the user is authenticated
     // but only if it's the currently active screen as we don't want to
     //  replace screens in the background
-    if (isScreenActive && isAuthenticated) {
+    if (isScreenActive && isAuthenticated && _.isFunction(onLoginSuccess)) {
       // We are running the callback after interactions because of the bug
       // in navigation which prevents us from navigating to other screens
       // while in the middle of a transition
@@ -182,10 +182,6 @@ export class LoginScreen extends Component {
 
     saveSession(JSON.stringify(payload));
     userLoggedIn({ ...payload.user, facebookAccessToken: accessToken });
-
-    if (_.isFunction(onLoginSuccess)) {
-      onLoginSuccess(payload.user);
-    }
   }
 
   performLogin() {
@@ -222,6 +218,8 @@ export class LoginScreen extends Component {
 
   renderLoginComponent() {
     const { settings } = this.props;
+    const { username } = this.state;
+
     let components = null;
     if (settings.providers.email.enabled) {
       components = (
@@ -236,6 +234,7 @@ export class LoginScreen extends Component {
             keyboardAppearance="dark"
             onChangeText={username => this.setState({ username })}
             returnKeyType="done"
+            value={username}
           />
           <Divider styleName="line" />
           <TextInput
@@ -280,7 +279,6 @@ export class LoginScreen extends Component {
 
   render() {
     const { isAuthenticating, settings: { providers: { facebook } } } = this.props;
-
     let screenContent = null;
     if (isAuthenticating || this.props.isAuthenticated) {
       // We want to display the authenticating state if the

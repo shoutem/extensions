@@ -5,6 +5,7 @@ import { combineReducers } from 'redux';
 import { find, resource, update } from '@shoutem/redux-io';
 import { chainReducers } from '@shoutem/redux-composers';
 import { preventStateRehydration } from '@shoutem/core/preventStateRehydration';
+import { navigateTo } from '@shoutem/core/navigation';
 
 import { getAppId } from 'shoutem.application';
 
@@ -155,4 +156,15 @@ export function logoutAction() {
   return (dispatch) => {
     dispatch(logout());
   };
+}
+
+export function openProfile(user, title = 'PROFILE') {
+  const route = {
+    screen: ext('UserProfileScreen'),
+    title,
+    props: {
+      user,
+    },
+  };
+  return navigateTo(route);
 }

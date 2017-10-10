@@ -1,0 +1,75 @@
+{
+  "name": "social",
+  "title": "Social",
+  "version": "1.3.0",
+  "description": "Let members create posts, comment and like them",
+  "categories": ["users"],
+
+  "platform": "1.3.*",
+  "icon": "server/assets/add-community-image.png",
+  "screens": [
+    {
+      "name": "SocialWallScreen"
+    },
+    {
+      "name": "StatusDetailsScreen"
+    },
+    {
+      "name": "CreateStatusScreen"
+    },
+    {
+      "name": "MembersScreen"
+    },
+    {
+      "name": "SearchScreen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "title": "Wall",
+      "name": "wall",
+      "screen": "@.SocialWallScreen",
+      "adminPages": [
+        {
+          "page": "@.ShortcutInfoPage",
+          "title": "Info"
+        }
+      ]
+    },
+    {
+      "title": "Members",
+      "name": "members",
+      "screen": "@.MembersScreen",
+      "adminPages": [
+        {
+          "page": "@.ShortcutInfoPage",
+          "title": "Info"
+        }
+      ]
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.SocialSettingsPage",
+      "title": "Settings"
+    }
+  ],
+  "pages": [
+    {
+      "name": "SocialSettingsPage",
+      "path": "server/build/index.html?page=SocialSettingsPage",
+      "type": "html"
+    },
+    {
+      "name": "ShortcutInfoPage",
+      "path": "server/build/index.html?page=ShortcutInfoPage",
+      "type": "html"
+    }
+  ],
+  "settings": {
+    "maxStatusLength": 140,
+    "enablePhotoAttachments": true,
+    "enableComments": true,
+    "enableInteractions": true
+  }
+}

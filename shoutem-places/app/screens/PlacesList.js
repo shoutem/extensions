@@ -35,7 +35,6 @@ export class PlacesList extends CmsListScreen {
     this.getNavBarProps = this.getNavBarProps.bind(this);
     this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(this);
     this.toggleMapView = this.toggleMapView.bind(this);
-    this.isDataLoading = this.isDataLoading.bind(this);
 
     this.state = {
       ...this.state,
@@ -84,15 +83,9 @@ export class PlacesList extends CmsListScreen {
     return <PlacePhotoView place={place} />;
   }
 
-  isDataLoading(data) {
-    const { permission } = this.props.permissionStatus;
-
-    return isBusy(data) || !isInitialized(data) || permission === undefined;
-  }
-
   renderData(data) {
     const { mapView } = this.state;
-    const loading = this.isDataLoading(data);
+    const loading = isBusy(data) || !isInitialized(data);
 
     if (this.shouldRenderPlaceholderView()) {
       return this.renderPlaceholderView();

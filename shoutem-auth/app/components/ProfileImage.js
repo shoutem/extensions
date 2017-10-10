@@ -11,9 +11,6 @@ import { connectStyle } from '@shoutem/theme';
 
 import { ext } from '../const';
 
-/**
- * Displays a cart icon and a badge with number of items in it (if any).
- */
 const ProfileImage = ({ isEditable, onPress, uri }) => (
   <View styleName="h-center lg-gutter-vertical solid vertical">
     <TouchableOpacity onPress={onPress}>

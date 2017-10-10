@@ -72,7 +72,7 @@ export class PinVerificationScreen extends React.Component {
   onPinVerified(pin) {
     const { redeemReward, redeem, reward } = this.props;
 
-    const authorization = { authorizationType: 'pin', pin };
+    const authorization = { authorizationType: 'pin', data: { pin } };
 
     // If the user wants to redeem a reward, we do it automatically by substracting the
     // required number of points from his punch or loyalty card

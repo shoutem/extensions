@@ -1,9 +1,9 @@
 {
   "name": "events",
-  "version": "1.2.3",
+  "version": "1.3.1",
   "title": "Events",
   "description": "Show items with location and time",
-  "platform": "1.2.*",
+  "platform": "1.3.*",
   "categories": [
     "content"
   ],
@@ -98,7 +98,7 @@
     },
     {
       "name": "FixedGridEventsScreen",
-      "title": "Fixed grid with featured item",
+      "title": "Fixed grid with a featured item",
       "image": "./server/assets/images/fixed-grid-featured.png",
       "extends": "@.EventsScreen",
       "settings": {
@@ -108,7 +108,7 @@
     },
     {
       "name": "FeaturedCompactListEventsScreen",
-      "title": "Compact list with featured item",
+      "title": "Compact list with a featured item",
       "image": "./server/assets/images/compact-list-featured.png",
       "extends": "@.EventsScreen",
       "settings": {
@@ -128,7 +128,7 @@
     },
     {
       "name": "FeaturedMediumListEventsScreen",
-      "title": "Medium list with featured item",
+      "title": "Medium list with a featured item",
       "image": "./server/assets/images/medium-list-featured.png",
       "extends": "@.EventsScreen",
       "settings": {

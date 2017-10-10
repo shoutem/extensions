@@ -1,8 +1,8 @@
 {
   "name": "auth",
-  "version": "1.2.3",
-  "platform": "1.2.*",
-  "title": "User Authentication",
+  "version": "1.3.5",
+  "platform": "1.3.*",
+  "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
   "description": "Show user profile, sign out user",
   "categories": ["users"],
@@ -10,42 +10,69 @@
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-    "screens": [{
+  "screens": [
+    {
       "name": "LoginScreen"
-    }, {
+    },
+    {
       "name": "RegisterScreen"
     },
-     {
+    {
       "name": "UserProfileScreen"
-    }],
-  "shortcuts": [{
-    "title": "Logout",
-    "description": "Allows user to logout from application",
-    "name": "logoutAction",
-    "action": "@.logoutAction"
-  }, {
-    "title": "My profile",
-    "description": "This screen lets users manage their user profile",
-    "icon": "theme://profile.png",
-    "name": "openUserProfile",
-    "screen": "@.UserProfileScreen"
-  }],
-  "settingsPages": [{
-    "page": "@.SettingsPage",
-    "title": "Settings"
-  }, {
-    "page": "@.ProvidersPage",
-    "title": "Authentication providers"
-  }],
-  "pages": [{
-    "name": "SettingsPage",
-    "type": "native-component",
-    "path": "dummy.js"
-  }, {
-    "name": "ProvidersPage",
-    "type": "native-component",
-    "path": "dummy.js"
-  }],
+    },
+    {
+      "name": "EditProfileScreen"
+    },
+    {
+      "name": "MyProfileScreen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "title": "Logout",
+      "description": "Allows user to logout from application",
+      "name": "logoutAction",
+      "action": "@.logoutAction"
+    },
+    {
+      "title": "My profile",
+      "description": "This screen lets users manage their user profile",
+      "icon": "theme://profile.png",
+      "name": "openMyProfile",
+      "screen": "@.MyProfileScreen"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.MembersPage",
+      "title": "App users"
+    },
+    {
+      "page": "@.SettingsPage",
+      "title": "Settings"
+    },
+    {
+      "page": "@.ProvidersPage",
+      "title": "Authentication providers"
+    }
+  ],
+  "pages": [
+    {
+      "name": "SettingsPage",
+      "path": "server/build/index.html?page=SettingsPage",
+      "type": "html"
+    },
+    {
+      "name": "ProvidersPage",
+      "path": "server/build/index.html?page=ProvidersPage",
+      "type": "html"
+    },
+    {
+      "name": "MembersPage",
+      "path": "server/build/index.html?page=MembersPage",
+      "type": "html"
+    }
+  ],
   "settings": {
     "signupEnabled": true,
     "allScreensProtected": false,

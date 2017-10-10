@@ -1,3 +1,10 @@
-.btn-toolbar {
-    margin-top: 15px;
+:global {
+  .settings-page {
+    max-width: 552px;
+    margin: auto;
+
+    .btn-toolbar {
+      margin-top: 15px;
+    }
+  }
 }

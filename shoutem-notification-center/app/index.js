@@ -1,14 +1,15 @@
-import NotificationsList from './screens/NotificationsList';
-import PushGroupsList from './screens/PushGroupsList';
+import NotificationDetailsScreen from './screens/NotificationDetailsScreen';
+import NotificationsScreen from './screens/NotificationsScreen';
+import PushGroupsScreen from './screens/PushGroupsScreen';
 
-import {
+import reducer, {
   middleware,
-  reducer,
 } from './redux';
 
 const screens = {
-  NotificationsList,
-  PushGroupsList,
+  NotificationDetailsScreen,
+  NotificationsScreen,
+  PushGroupsScreen,
 };
 
 export {

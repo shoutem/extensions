@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
-import { LoaderContainer } from '@shoutem/react-web-ui';
-import { Button, FormGroup, Checkbox } from 'react-bootstrap';
+import { LoaderContainer, Checkbox } from '@shoutem/react-web-ui';
+import { Button, FormGroup } from 'react-bootstrap';
 import RulesTable from '../../components/rules-table';
 import './style.scss';
 

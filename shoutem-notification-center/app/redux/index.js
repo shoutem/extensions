@@ -1,18 +1,35 @@
-import middleware from './middleware';
-import reducer from './reducer';
+import { combineReducers } from 'redux';
+
+import notificationsReducer from './notifications';
+
+import {
+  deviceToken,
+  groups,
+  manuallyUnsubscribedGroups,
+  middleware,
+  selectedGroups,
+} from './groups';
+
+export {
+  NOTIFICATIONS_SCHEMA,
+  markAsRead,
+  fetchNotifications,
+} from './notifications';
 
 export {
   GROUPS_SCHEMA,
-  NOTIFICATIONS_SCHEMA,
-  READ_NOTIFICATIONS_SCHEMA,
   SELECTED_GROUPS_SCHEMA,
-  LOAD_SUCCESS,
-  LOAD_REQUEST,
-  markAsRead,
-  fetchNotifications,
   fetchGroups,
   fetchSelectedGroups,
   selectPushNotificationGroups,
-} from './actionCreators';
+} from './groups';
 
-export { middleware, reducer };
+export { middleware };
+
+export default combineReducers({
+  deviceToken,
+  notifications: notificationsReducer(),
+  groups,
+  manuallyUnsubscribedGroups,
+  selectedGroups,
+});

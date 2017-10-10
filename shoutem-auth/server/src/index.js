@@ -1,17 +1,21 @@
-import SettingsPage from './settingsPage/components/Settings';
-import ProvidersPage from './providersPage/components/Providers';
-import reducer from './reducer';
-import { createDenormalizer } from 'denormalizer';
-import { store } from 'context';
+import SettingsPage from './pages/settings-page';
+import ProvidersPage from './pages/providers-page';
+import MembersPage from './pages/members-page';
+import reducer from './redux';
+import { shoutemUrls } from './services';
+import './style.scss';
 
-const adminPages = {
+export const pages = {
   SettingsPage,
-  ProvidersPage
+  ProvidersPage,
+  MembersPage,
 };
 
-export {
-  adminPages,
-  reducer
-};
+let pageReducer = null;
 
-createDenormalizer(store.getState);
+export function pageWillMount(page) {
+  pageReducer = reducer();
+  shoutemUrls.init(page);
+}
+
+export { pageReducer as reducer };

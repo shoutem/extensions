@@ -6,24 +6,20 @@ import { connect } from 'react-redux';
 
 import {
   FEED_ITEMS,
+  navigateToUrl,
   getFeedItems,
   fetchWordpressPosts,
-} from '../../redux';
-import FeedUrlInput from '../../components/feed-url-input';
-import FeedPreview from '../../components/feed-preview';
+} from 'src/redux';
+import FeedUrlInput from 'src/components/feed-url-input';
+import FeedPreview from 'src/components/feed-preview';
 import './style.scss';
-import ext from '../../const';
-import { validateWordpressUrl } from '../../services/wordpress';
+import ext from 'src/const';
+import { validateWordpressUrl } from 'src/services/wordpress';
 
 const ACTIVE_SCREEN_INPUT = 0;
 const ACTIVE_SCREEN_PREVIEW = 1;
 
 class WordpressFeedPage extends Component {
-  static propTypes = {
-    shortcut: PropTypes.object,
-    updateShortcutSettings: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
 
@@ -120,7 +116,7 @@ class WordpressFeedPage extends Component {
   render() {
     const activeScreen = this.getActiveScreen();
     const { feedUrl } = this.state;
-    const { feedItems } = this.props;
+    const { feedItems, navigateToUrl } = this.props;
 
     return (
       <div className="wordpress-feed-page">
@@ -137,6 +133,7 @@ class WordpressFeedPage extends Component {
               feedUrl={feedUrl}
               feedItems={feedItems}
               onRemoveClick={this.handleFeedPreviewRemoveClick}
+              onLinkClick={navigateToUrl}
             />
           </div>
         )}
@@ -159,6 +156,7 @@ WordpressFeedPage.defaultProps = {
   feedItems: [],
 };
 
+
 function mapStateToProps(state, ownProps) {
   const { shortcut, shortcutId } = ownProps;
   const extensionName = ext();
@@ -176,6 +174,7 @@ function mapDispatchToProps(dispatch) {
     ),
     clearFeedItems: () => dispatch(clear(FEED_ITEMS, 'feedItems')),
     fetchWordpressPosts: (params) => dispatch(fetchWordpressPosts(params)),
+    navigateToUrl: (url) => dispatch(navigateToUrl(url)),
   };
 }
 

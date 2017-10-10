@@ -65,7 +65,7 @@ export class SettingsPage extends Component {
     return (
       <LoaderContainer
         isLoading={!isInitialized(shortcuts) || !isInitialized(appSettings)}
-        className="settings-page"
+        className="auth-settings-page settings-page"
       >
         <GeneralSettings
           appSettings={appSettings}

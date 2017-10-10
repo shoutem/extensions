@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { Button, ButtonToolbar, Radio, FormGroup, ControlLabel } from 'react-bootstrap';
+import { Button, ButtonToolbar, FormGroup, ControlLabel } from 'react-bootstrap';
+import { Radio } from '@shoutem/react-web-ui';
 import './style.scss';
 
 export default class FeedSelector extends Component {

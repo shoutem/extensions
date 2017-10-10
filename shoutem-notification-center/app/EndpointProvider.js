@@ -7,7 +7,7 @@ const initialize = (legacyApiEndpointBase, appId) => {
     throw new Error(`Unable to initialize Endpoint on ${legacyApiEndpointBase} for app ${appId}`);
   }
 
-  const notificationsUrl = `${legacyApiEndpointBase}/${appId}/notifications/functions/`;
+  const notificationsUrl = `${legacyApiEndpointBase}/${appId}/notifications/functions`;
   const inbox = `${notificationsUrl}/getInbox?device_id=${UNIVERSAL_DEVICE_ID}`;
   const markAsRead = `${notificationsUrl}/read?device_id=${UNIVERSAL_DEVICE_ID}`;
 

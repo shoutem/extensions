@@ -58,11 +58,11 @@ export class NotificationDetailsScreen extends Component {
 
     return (
       <View styleName="vertical h-center v-start">
-        { title && (
-           <Title styleName="xl-gutter-top lg-gutter-bottom">
+        {title ? (
+          <Title styleName="xl-gutter-top lg-gutter-bottom">
             {title.toUpperCase()}
           </Title>
-        )}
+        ) : null}
         <Caption styleName="xl-gutter-bottom">
           {formatTimestamp(timestamp)}
         </Caption>

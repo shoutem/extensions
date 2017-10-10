@@ -117,7 +117,7 @@ export class MembersPage extends Component {
     const memberCount = getMemberCount(members);
 
     return (
-      <div className="members-page">
+      <div className="auth-settings-page members-page">
         <SearchInput
           className="members-page__search"
           disabled={isBusy(members)}

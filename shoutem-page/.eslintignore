@@ -1,5 +1,0 @@
-**/build/*
-**/node_modules/*
-**/server.js
-**/webpack.config*.js
-**/test-utils/setup.js

@@ -4,10 +4,8 @@ import { connect } from 'react-redux';
 import { ControlLabel, FormGroup } from 'react-bootstrap';
 import { Switch } from '@shoutem/react-web-ui';
 import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
-import { getTwitterSettingsUrl } from './services';
 import {
   FacebookSetupForm,
-  TwitterSetupForm,
   ProviderFormWrapper,
 } from './components';
 import './style.scss';
@@ -36,15 +34,14 @@ export class ProvidersPage extends Component {
   }
 
   render() {
-    const { appId, extension } = this.props;
+    const { extension } = this.props;
     const { settings } = extension;
 
     const emailEnabled = _.get(settings, 'providers.email.enabled', false);
     const facebookSettings = _.get(settings, 'providers.facebook', {});
-    const twitterSettings = _.get(settings, 'providers.twitter', {});
 
     return (
-      <div className="providers-page">
+      <div className="auth-settings-page providers-page">
         <h3>Select authentication providers</h3>
         <FormGroup className="providers-page__provider">
           <ControlLabel>Email and password</ControlLabel>
@@ -60,16 +57,6 @@ export class ProvidersPage extends Component {
           onSetupUpdate={this.handleUpdateExtension}
         >
           <FacebookSetupForm />
-        </ProviderFormWrapper>
-        <ProviderFormWrapper
-          providerId="twitter"
-          title="Twitter"
-          providerSettings={twitterSettings}
-          onSetupUpdate={this.handleUpdateExtension}
-        >
-          <TwitterSetupForm
-            twitterSettingsUrl={getTwitterSettingsUrl(appId)}
-          />
         </ProviderFormWrapper>
       </div>
     );

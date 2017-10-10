@@ -122,9 +122,9 @@ export const redeemReward = (data, authorization, reward) =>
  * Reward values are encoded in an array to save space.
  */
 const getRewardFromEncodedValues = (rewardData) => {
-  const [id, location, numberOfRewards, parentCategoryId, pointsRequired, title] = rewardData;
+  const [id, location, isPunchCard, parentCategoryId, points, pointsRequired, title] = rewardData;
 
-  return { id, location, numberOfRewards, parentCategoryId, pointsRequired, title };
+  return { id, location, isPunchCard, parentCategoryId, points, pointsRequired, title };
 };
 
 /**
@@ -153,6 +153,28 @@ export const authorizeTransactionByQRCode = (dataString) => {
 
     dispatch(openInModal(getPostAuthorizationRoute(authorization, place, reward)));
   };
+};
+
+/**
+ * Authorizes a transaction when a user scans a Barcode to collect points.
+ */
+export const authorizeTransactionByBarCode = (expression) => dispatch => {
+  const authorization = { authorizationType: 'regex', data: { expression } };
+
+  dispatch(createTransaction({ transactionData: {} }, authorization))
+  .then(({ points }) => {
+    dispatch(openInModal({
+      screen: ext('PointsEarnedScreen'),
+      props: {
+        data: {},
+        points,
+      },
+    }));
+  }).catch(({ payload }) => {
+    const { errors } = payload.response;
+
+    showTransactionError(errors[0].detail);
+  });
 };
 
 /**

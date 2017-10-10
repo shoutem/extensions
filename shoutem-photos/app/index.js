@@ -1,12 +1,13 @@
 import reducer from './reducers/';
-import PhotosGrid from './screens/PhotosGrid';
-import PhotosList from './screens/PhotosList';
-import PhotoDetails from './screens/PhotoDetails';
+import * as extension from './extension.js';
+import PhotosScreen from './screens/PhotosScreen';
 
-const screens = {
-  PhotosGrid,
-  PhotosList,
-  PhotoDetails,
+export const screens = {
+  ...extension.screens,
+  PhotosMediumList: PhotosScreen,
+  PhotosTileList: PhotosScreen,
+  PhotosCompactList: PhotosScreen,
+  PhotosLargeList: PhotosScreen,
 };
 
-export { reducer, screens };
+export { reducer, };
