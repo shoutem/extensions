@@ -28,6 +28,8 @@ import { NumberInput } from '@shoutem/ui-addons';
 
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 import {
   product as productShape,
@@ -220,7 +222,7 @@ class UpdateItemScreen extends Component {
           styleName="secondary"
           onPress={() => canUpdate && onActionButtonClicked(add, { variant, quantity })}
         >
-          <Text styleName="bold lg-gutter-horizontal">CONFIRM</Text>
+          <Text styleName="bold lg-gutter-horizontal">{I18n.t(ext('addItemConfirmButton'))}</Text>
         </Button>
       </View>
     );
@@ -241,14 +243,14 @@ class UpdateItemScreen extends Component {
           styleName="confirmation"
           onPress={() => onActionButtonClicked(remove)}
         >
-          <Text>REMOVE</Text>
+          <Text>{I18n.t(ext('cartItemRemoveButton'))}</Text>
         </Button>
         {
           <Button
             styleName="confirmation secondary"
             onPress={() => canUpdate && onActionButtonClicked(update, { variant, quantity })}
           >
-            <Text>UPDATE</Text>
+            <Text>{I18n.t(ext('cartItemUpdateButton'))}</Text>
           </Button>
         }
       </View>
@@ -300,7 +302,7 @@ class UpdateItemScreen extends Component {
               value={quantity}
             />
             :
-            <Subtitle styleName="muted">Out of stock</Subtitle>
+            <Subtitle styleName="muted">{I18n.t(ext('outOfStockMessage'))}</Subtitle>
         }
       </View>
     );
@@ -356,7 +358,7 @@ class UpdateItemScreen extends Component {
 
     return (
       <Screen>
-        <NavigationBar title="ADD TO CART" />
+        <NavigationBar title={I18n.t(ext('addToCartNavBarTitle'))} />
         <ScrollView>
           {this.renderItemDetails()}
           <Divider styleName="line" />

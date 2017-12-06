@@ -3,179 +3,122 @@ import _ from 'lodash';
 import { updateShortcutSettings } from '@shoutem/redux-api-sdk';
 import { clear, isBusy } from '@shoutem/redux-io';
 import { connect } from 'react-redux';
-
 import {
   FEED_ITEMS,
   navigateToUrl,
   getFeedItems,
-  fetchWordpressPosts,
+  fetchWordPressPosts,
+  validateWordPressUrl,
 } from 'src/redux';
-import FeedUrlInput from 'src/components/feed-url-input';
-import FeedPreview from 'src/components/feed-preview';
+import { FeedUrlInput, FeedPreview } from 'src/components';
+import { isFeedUrlInsecure } from 'src/services';
 import './style.scss';
-import ext from 'src/const';
-import { validateWordpressUrl } from 'src/services/wordpress';
 
-const ACTIVE_SCREEN_INPUT = 0;
-const ACTIVE_SCREEN_PREVIEW = 1;
-
-class WordpressFeedPage extends Component {
+class WordPressFeedPage extends Component {
   constructor(props) {
     super(props);
 
-    this.getActiveScreen = this.getActiveScreen.bind(this);
-    this.saveFeedUrl = this.saveFeedUrl.bind(this);
-    this.handleFeedUrlInputContinueClick = this.handleFeedUrlInputContinueClick.bind(this);
+    this.handleSaveUrl = this.handleSaveUrl.bind(this);
     this.handleFeedPreviewRemoveClick = this.handleFeedPreviewRemoveClick.bind(this);
+  }
 
-    const feedUrl = _.get(props.shortcut, 'settings.feedUrl');
-    this.state = {
-      error: null,
-      hasChanges: false,
-      feedUrl,
-    };
-
-    this.fetchPosts({ feedUrl });
+  componentWillMount() {
+    this.checkData(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
+    this.checkData(nextProps, this.props);
+  }
+
+  checkData(nextProps, props = {}) {
     const { shortcut: nextShortcut } = nextProps;
-    const { feedUrl } = this.state;
+    const { shortcut } = props;
 
-    // Must be check with "undefined" because _.isEmpty() will validate this clause
-    // when feedUrl === null which is set when we want to clear { feedUrl } and this causes feedUrl
-    // to be set even when user removed it.
-    if (feedUrl === undefined) {
-      const nextFeedUrl = _.get(nextShortcut, 'settings.feedUrl');
+    const feedUrl = _.get(shortcut, 'settings.feedUrl');
+    const nextFeedUrl = _.get(nextShortcut, 'settings.feedUrl');
 
-      this.setState({
+    if (feedUrl !== nextFeedUrl) {
+      this.props.fetchWordPressPosts({
         feedUrl: nextFeedUrl,
+        shortcutId: nextShortcut.id,
       });
-
-      if (nextFeedUrl && validateWordpressUrl(nextFeedUrl)) {
-        nextProps.fetchWordpressPosts({ feedUrl: nextFeedUrl, shortcutId: nextShortcut.id });
-      }
     }
   }
 
-  getActiveScreen() {
-    const { feedUrl } = this.state;
-    if (!_.isEmpty(feedUrl)) {
-      return ACTIVE_SCREEN_PREVIEW;
-    }
-    return ACTIVE_SCREEN_INPUT;
-  }
-
-  saveFeedUrl(feedUrl) {
+  handleSaveUrl(feedUrl) {
     const { shortcut } = this.props;
-    const settings = { feedUrl };
+    const { id: shortcutId } = shortcut;
 
-    if (!_.isEmpty(feedUrl) && !validateWordpressUrl(feedUrl)) {
-      this.setState({ error: 'Invalid URL', inProgress: false });
-      return;
+    if (feedUrl && !isFeedUrlInsecure(feedUrl)) {
+      return this.props.validateWordPressUrl({ feedUrl, shortcutId })
+        .then(() => this.props.updateShortcutSettings(shortcut, { feedUrl }));
     }
 
-    this.setState({ error: '', inProgress: true });
-    this.props.updateShortcutSettings(shortcut, settings).then(() => {
-      this.setState({ hasChanges: false, inProgress: false });
-    }).catch((err) => {
-      this.setState({ error: err, inProgress: false });
-    });
-  }
-
-  fetchPosts({ feedUrl }) {
-    const { shortcut } = this.props;
-
-    if (!feedUrl || !shortcut || !validateWordpressUrl(feedUrl)) {
-      return;
-    }
-
-    this.props.fetchWordpressPosts({
-      feedUrl,
-      shortcutId: shortcut.id,
-    });
-  }
-
-  handleFeedUrlInputContinueClick(feedUrl) {
-    this.setState({
-      feedUrl,
-    });
-    this.saveFeedUrl(feedUrl);
-    this.fetchPosts({ feedUrl });
+    return this.props.updateShortcutSettings(shortcut, { feedUrl });
   }
 
   handleFeedPreviewRemoveClick() {
-    this.setState({
-      feedUrl: '',
-    });
-
-    this.saveFeedUrl('');
+    this.handleSaveUrl('');
     this.props.clearFeedItems();
   }
 
   render() {
-    const activeScreen = this.getActiveScreen();
-    const { feedUrl } = this.state;
-    const { feedItems, navigateToUrl } = this.props;
+    const { shortcut, feedItems, navigateToUrl } = this.props;
+
+    const feedUrl = _.get(shortcut, 'settings.feedUrl');
+    const isFeedUrlEmpty = _.isEmpty(feedUrl);
 
     return (
       <div className="wordpress-feed-page">
-        {(activeScreen === ACTIVE_SCREEN_INPUT) && (
+        {isFeedUrlEmpty && (
           <FeedUrlInput
             inProgress={isBusy(feedItems)}
-            error={this.state.error}
-            onContinueClick={this.handleFeedUrlInputContinueClick}
+            onContinueClick={this.handleSaveUrl}
           />
         )}
-        {(activeScreen === ACTIVE_SCREEN_PREVIEW) && (
-          <div>
-            <FeedPreview
-              feedUrl={feedUrl}
-              feedItems={feedItems}
-              onRemoveClick={this.handleFeedPreviewRemoveClick}
-              onLinkClick={navigateToUrl}
-            />
-          </div>
+        {!isFeedUrlEmpty && (
+          <FeedPreview
+            feedItems={feedItems}
+            feedUrl={feedUrl}
+            onLinkClick={navigateToUrl}
+            onRemoveClick={this.handleFeedPreviewRemoveClick}
+          />
         )}
       </div>
     );
   }
 }
 
-WordpressFeedPage.propTypes = {
+WordPressFeedPage.propTypes = {
   shortcut: PropTypes.object,
   feedItems: PropTypes.array,
-  fetchShortcut: PropTypes.func,
   updateShortcutSettings: PropTypes.func,
+  validateWordPressUrl: PropTypes.func,
   loadFeed: PropTypes.func,
   clearFeedItems: PropTypes.func,
-  fetchWordpressPosts: PropTypes.func,
+  fetchWordPressPosts: PropTypes.func,
+  navigateToUrl: PropTypes.func,
 };
-
-WordpressFeedPage.defaultProps = {
-  feedItems: [],
-};
-
 
 function mapStateToProps(state, ownProps) {
-  const { shortcut, shortcutId } = ownProps;
-  const extensionName = ext();
+  const { extensionName, shortcutId } = ownProps;
+  const feedItems = getFeedItems(state, extensionName, shortcutId);
 
   return {
-    feedItems: getFeedItems(state, extensionName, shortcutId),
-    shortcut,
+    feedItems,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateShortcutSettings: (shortcut, { feedUrl }) => (
-      dispatch(updateShortcutSettings(shortcut, { feedUrl }))
+    updateShortcutSettings: (shortcut, settingsPatch) => (
+      dispatch(updateShortcutSettings(shortcut, settingsPatch))
     ),
     clearFeedItems: () => dispatch(clear(FEED_ITEMS, 'feedItems')),
-    fetchWordpressPosts: (params) => dispatch(fetchWordpressPosts(params)),
+    fetchWordPressPosts: (params) => dispatch(fetchWordPressPosts(params)),
+    validateWordPressUrl: (params) => dispatch(validateWordPressUrl(params)),
     navigateToUrl: (url) => dispatch(navigateToUrl(url)),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WordpressFeedPage);
+export default connect(mapStateToProps, mapDispatchToProps)(WordPressFeedPage);

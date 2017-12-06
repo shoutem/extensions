@@ -9,15 +9,12 @@ import EventDetailsScreen from './screens/EventDetailsScreen';
 import EventDetailsScreenWithMediumPhoto from './screens/EventDetailsScreenWithMediumPhoto';
 import EventMapScreen from './screens/EventMapScreen';
 
-// themes imports
-
-
 export const screens = {
   EventsScreen,
   EventsListScreen,
   EventDetailsScreen,
   EventDetailsScreenWithMediumPhoto,
-  EventMapScreen
+  EventMapScreen,
 };
 
 export const themes = {

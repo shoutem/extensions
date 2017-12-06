@@ -26,6 +26,8 @@ export function loadResources(
 
   const params = {
     q: {
+      'page[limit]': 1000,
+      'page[offset]': 0,
       ...categoryQuery,
       ...filter,
     },

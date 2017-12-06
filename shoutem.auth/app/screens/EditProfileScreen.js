@@ -25,7 +25,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 import { ImagePicker } from '@shoutem/ui-addons';
 import { connectStyle } from '@shoutem/theme';
 import { isBusy } from '@shoutem/redux-io';
-
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 import {
@@ -38,15 +38,6 @@ import { user as userShape } from '../components/shapes';
 import ProfileImage from '../components/ProfileImage';
 
 const { func } = React.PropTypes;
-
-const ERROR_UPDATING_PROFILE = 'There was an error while updating your profile. Please try again';
-
-const fields = {
-  name: 'Name and surname',
-  location: 'Location',
-  url: 'Website',
-  description: 'Bio',
-};
 
 const renderSavingChangesMessage = () => (
   <View styleName="xl-gutter-top">
@@ -75,25 +66,38 @@ class EditProfileScreen extends Component {
     this.changeProfileImage = this.changeProfileImage.bind(this);
     this.onDone = this.onDone.bind(this);
 
-    this.state = { ...props.user };
+    this.state = { ..._.get(props.user, 'profile', {}) };
+
+    this.fields = {
+      name: I18n.t(ext('userNameAndSurname')),
+      location: I18n.t(ext('userLocation')),
+      url: I18n.t(ext('userWebsite')),
+      description: I18n.t(ext('userBioTitle')),
+    };
   }
 
   onDone() {
     const { onClose, updateProfile, user } = this.props;
 
-    const updates = _.mapValues(fields, (value, key) => this.state[key]);
+    const updates = _.mapValues(this.fields, (value, key) => this.state[key]);
     const hasChanges = _.some(_.keys(updates), key => user[key] !== updates[key]);
+    const newUser = {
+      ...user,
+      profile: { ...updates }
+    };
+
+    delete newUser.userGroups;
 
     if (!hasChanges) {
       return onClose();
     }
 
-    return updateProfile({ ...updates })
-    .then(onClose)
-    .catch((error) => {
-      console.log(error);
-      Alert.alert('Update failure', ERROR_UPDATING_PROFILE);
-    });
+    return updateProfile(newUser)
+      .then(onClose)
+      .catch((error) => {
+        console.log(error);
+        Alert.alert(I18n.t(ext('profileUpdatingErrorTitle')), I18n.t(ext('profileUpdatingErrorMessage')));
+      });
   }
 
   getNavbarProps() {
@@ -104,11 +108,11 @@ class EditProfileScreen extends Component {
           virtual
         >
           <Button onPress={this.onDone}>
-            <Subtitle>Done</Subtitle>
+            <Subtitle>{I18n.t(ext('doneNavBarButton'))}</Subtitle>
           </Button>
         </View>
       ),
-      title: 'EDIT PROFILE',
+      title: I18n.t(ext('editProfileNavBarTitle')),
     };
   }
 
@@ -123,9 +127,9 @@ class EditProfileScreen extends Component {
 
     ImagePicker.showImagePicker(options, (response) => {
       if (response.error) {
-        Alert.alert('Image selection error', response.error);
+        Alert.alert(I18n.t(ext('imageSelectError')), response.error);
       } else if (!response.didCancel) {
-        updateProfileImage(response.data);
+        this.setState({ image: response.data });
       }
     });
   }
@@ -146,7 +150,7 @@ class EditProfileScreen extends Component {
           maxLength={160}
           multiline={isTextArea}
           numberOfLines={4}
-          value={this.state[name]}
+          value={this.state[name] || ''}
         />
         <Divider styleName="line sm-gutter-bottom" />
       </FormGroup>
@@ -154,13 +158,13 @@ class EditProfileScreen extends Component {
   }
 
   renderForm() {
-    return _.map(_.keys(fields), key => this.renderInput(key, fields[key]));
+    return _.map(_.keys(this.fields), key => this.renderInput(key, this.fields[key]));
   }
 
   renderContent() {
     const { user } = this.props;
-    const { name, profile_image_url: image } = user;
-
+    const { profile, username } = user;
+    const { firstName, lastName, image } = profile;
 
     if (isBusy(user)) {
       return renderSavingChangesMessage();
@@ -173,10 +177,12 @@ class EditProfileScreen extends Component {
           <ProfileImage
             isEditable
             onPress={this.changeProfileImage}
-            uri={image}
+            uri={image || ''}
           />
           {this.renderForm()}
-          <Caption styleName="lg-gutter-vertical h-center">{`Username: ${name}`}</Caption>
+          <Caption styleName="lg-gutter-vertical h-center">
+            {I18n.t(ext('loggedInUserInfo'), { username })}
+          </Caption>
         </ScrollView>
       </View>
     );

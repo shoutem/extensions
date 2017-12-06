@@ -14,6 +14,8 @@ import {
 } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
+import { I18n } from 'shoutem.i18n';
+
 import { formatTimestamp } from '../shared/calendar';
 import { ext } from '../const';
 
@@ -47,7 +49,7 @@ export class NotificationDetailsScreen extends Component {
         onPress={this.handleViewNotification}
         styleName="secondary"
       >
-        <Text>VIEW</Text>
+        <Text>{I18n.t(ext('viewNotificationButton'))}</Text>
       </Button>
     );
   }

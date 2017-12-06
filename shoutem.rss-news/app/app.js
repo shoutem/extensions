@@ -8,7 +8,7 @@ export function appDidMount(app) {
   const state = app.getState();
 
   // Configure the RSS news schema in RIO
-  rio.registerSchema({
+  rio.registerResource({
     schema: RSS_NEWS_SCHEMA,
     request: {
       endpoint: buildFeedUrl(state, RSS_NEWS_SCHEMA),

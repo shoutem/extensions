@@ -11,9 +11,9 @@ import {
 } from '@shoutem/redux-io';
 import _ from 'lodash';
 import { createSelector } from 'reselect';
-import { getLoyaltyUrl } from '../../services';
-import { getLoyaltyPlaces } from '../../redux';
-import ext from '../../const';
+import { getLoyaltyUrl } from 'src/services';
+import { getLoyaltyPlaces } from 'src/modules/program';
+import ext from 'src/const';
 
 // CONST
 export const moduleName = 'cashiers';
@@ -29,9 +29,9 @@ export function getCashiers(state) {
   return getCollection(cashiers, state);
 }
 
-export const getCashiersWithPlace = extensionState => createSelector(
-  getCashiers,
-  state => getLoyaltyPlaces(extensionState, state),
+export const getCashiersWithPlace = createSelector(
+  state => getCashiers(state),
+  state => getLoyaltyPlaces(state),
   (cashiers, places) => {
     const cashiersWithPlace = _.map(cashiers, cashier => {
       const place = _.find(places, { id: cashier.location });

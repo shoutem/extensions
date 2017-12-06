@@ -11,8 +11,10 @@ import {
   Divider,
   Image
 } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { BaseEventItem } from './BaseEventItem';
 import { formatDate } from '../services/Calendar';
+import { ext } from '../const';
 
 /**
  * A component used to render events
@@ -39,7 +41,7 @@ export default class FeaturedEventView extends BaseEventItem {
                 styleName="md-gutter-top"
               >
                 <Icon name="add-event" />
-                <Text>ADD TO CALENDAR</Text>
+                <Text>{I18n.t(ext('addToCalendarButton'))}</Text>
               </Button>
             </Tile>
           </Image>

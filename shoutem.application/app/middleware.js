@@ -3,10 +3,11 @@ import {
   createNavigationAction,
   isNavigationAction,
 } from '@shoutem/core/navigation';
-import { EXECUTE_SHORTCUT, getShortcut, getActiveShortcut } from './redux';
 import { priorities, setPriority } from '@shoutem/core/middlewareUtils';
 import { LOAD_REQUEST } from '@shoutem/redux-io';
 import { Alert } from 'react-native';
+import { I18n } from 'shoutem.i18n';
+import { EXECUTE_SHORTCUT, getShortcut, getActiveShortcut } from './redux';
 
 function createExecuteShortcutActionMiddleware(actions) {
   const middleware = store => next => action => {
@@ -140,7 +141,7 @@ setPriority(injectShortcutIdToActionRouteContext, priorities.NAVIGATION);
 
 
 const alertNoInternet = _.throttle(
-  () => Alert.alert('Network error', 'No internet connection, please check your network.'),
+  () => Alert.alert(I18n.t(ext('networkErrorTitle')), I18n.t(ext('networkErrorMessage'))),
   15 * 1000,
   { leading: true, trailing: false }
 );

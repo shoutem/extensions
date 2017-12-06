@@ -12,6 +12,8 @@ import {
   ListScreen,
 } from 'shoutem.application';
 
+import { I18n } from 'shoutem.i18n';
+
 import {
   Caption,
   Divider,
@@ -94,7 +96,7 @@ export class PointsHistoryScreen extends ListScreen {
 
   getNavigationBarProps() {
     return {
-      title: 'POINTS HISTORY',
+      title: I18n.t(ext('pointsHistoryNavBarTitle')),
     };
   }
 }
@@ -112,4 +114,3 @@ export const mapDispatchToProps = { next, refreshTransactions };
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('PointsHistoryScreen'))(PointsHistoryScreen),
 );
-

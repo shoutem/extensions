@@ -2,8 +2,11 @@
 'use_strict';
 
 const fs = require('fs');
-const appDelegateHeaderPath = 'ios/ShoutemApp/AppDelegate.h';
-const appDelegatePath = 'ios/ShoutemApp/AppDelegate.m';
+const getAppDelegateHeaderPath = require('@shoutem/build-tools').getAppDelegateHeaderPath;
+const getAppDelegatePath = require('@shoutem/build-tools').getAppDelegatePath;
+
+const appDelegateHeaderPath = getAppDelegateHeaderPath();
+const appDelegatePath = getAppDelegatePath();
 
 let appDelegateHeaderContents = fs.readFileSync(appDelegateHeaderPath, "utf8");
 let appDelegateContents = fs.readFileSync(appDelegatePath, "utf8");

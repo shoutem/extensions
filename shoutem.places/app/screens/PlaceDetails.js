@@ -27,6 +27,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Favorite } from 'shoutem.favorites';
 import { openURL } from 'shoutem.web-view';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 export class PlaceDetails extends Component {
@@ -178,7 +179,7 @@ export class PlaceDetails extends Component {
       return (
         <Tile>
           <Divider styleName="section-header">
-            <Caption>LOCATION INFO</Caption>
+            <Caption>{I18n.t('shoutem.cms.descriptionTitle')}</Caption>
           </Divider>
           <Html body={place.description} />
           <Divider styleName="line" />
@@ -193,8 +194,7 @@ export class PlaceDetails extends Component {
       return (
         <Tile>
           <Divider styleName="section-header">
-
-            <Caption>OPEN HOURS</Caption>
+            <Caption>{I18n.t('shoutem.cms.openHours')}</Caption>
           </Divider>
           <Text styleName="md-gutter">{place.openingHours}</Text>
         </Tile>
@@ -206,7 +206,7 @@ export class PlaceDetails extends Component {
   renderRsvpButton(place) {
     return place.rsvpLink ? (
       <Button onPress={this.openURL}>
-        <Text>RESERVATION</Text>
+        <Text>{I18n.t('shoutem.cms.rsvpButton')}</Text>
       </Button>
     ) : null;
   }
@@ -254,11 +254,10 @@ export class PlaceDetails extends Component {
           {this.renderButtons()}
           {this.renderInlineMap(place)}
           {this.renderDescription(place)}
-          {this.renderDisclosureButton(place.url, 'Visit webpage', 'web', this.openWebLink)}
-          {this.renderDisclosureButton(location.formattedAddress, 'Directions', 'pin',
-          this.openMapLink)}
-          {this.renderDisclosureButton(place.mail, 'Email', 'email', this.openEmailLink)}
-          {this.renderDisclosureButton(place.phone, 'Phone', 'call', this.openPhoneLink)}
+          {this.renderDisclosureButton(place.url, I18n.t('shoutem.cms.websiteButton'), 'web', this.openWebLink)}
+          {this.renderDisclosureButton(location.formattedAddress, I18n.t('shoutem.cms.directionsButton'), 'pin', this.openMapLink)}
+          {this.renderDisclosureButton(place.mail, I18n.t('shoutem.cms.emailButton'), 'email', this.openEmailLink)}
+          {this.renderDisclosureButton(place.phone, I18n.t('shoutem.cms.phoneButton'), 'call', this.openPhoneLink)}
         </ScrollView>
       </Screen>
     );

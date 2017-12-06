@@ -1,11 +1,13 @@
 {
   "name": "auth",
-  "version": "1.3.5",
-  "platform": "1.3.*",
+  "version": "1.5.10",
+  "platform": "1.5.*",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
   "description": "Show user profile, sign out user",
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -44,36 +46,42 @@
   ],
   "settingsPages": [
     {
-      "page": "@.MembersPage",
-      "title": "App users"
+      "page": "@.UsersPage",
+      "title": "Users"
     },
     {
-      "page": "@.SettingsPage",
-      "title": "Settings"
+      "page": "@.ProtectedScreensPage",
+      "title": "Protected Screens"
     },
     {
-      "page": "@.ProvidersPage",
-      "title": "Authentication providers"
+      "page": "@.UserGroupsPage",
+      "title": "Groups"
+    },
+    {
+      "page": "@.GeneralSettingsPage",
+      "title": "General"
     }
   ],
   "pages": [
     {
-      "name": "SettingsPage",
-      "path": "server/build/index.html?page=SettingsPage",
-      "type": "html"
+      "name": "GeneralSettingsPage",
+      "type": "react-page"
     },
     {
-      "name": "ProvidersPage",
-      "path": "server/build/index.html?page=ProvidersPage",
-      "type": "html"
+      "name": "ProtectedScreensPage",
+      "type": "react-page"
     },
     {
-      "name": "MembersPage",
-      "path": "server/build/index.html?page=MembersPage",
-      "type": "html"
+      "name": "UsersPage",
+      "type": "react-page"
+    },
+    {
+      "name": "UserGroupsPage",
+      "type": "react-page"
     }
   ],
   "settings": {
+    "authApiEndpoint": "auth.api.shoutem.com",
     "signupEnabled": true,
     "allScreensProtected": false,
     "providers": {

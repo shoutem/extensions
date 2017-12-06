@@ -6,7 +6,11 @@ import {
   Text,
 } from '@shoutem/ui';
 
+import { I18n } from 'shoutem.i18n';
+
 import { post as postShape } from './shapes';
+import { ext } from '../const';
+
 const { func } = React.PropTypes;
 
 export default class CommentButton extends React.Component {
@@ -32,7 +36,7 @@ export default class CommentButton extends React.Component {
         onPress={this.commentStatus}
       >
         <Icon name="comment" />
-        <Text>COMMENT</Text>
+        <Text>{I18n.t(ext('commentButton'))}</Text>
       </Button>
     );
   }

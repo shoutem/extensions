@@ -17,6 +17,8 @@ import {
 
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 
 import ListItem from './ListItem';
@@ -61,7 +63,7 @@ const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
               onPress={onAddToCart}
             >
               <Icon name="cart" />
-              <Text>ADD TO CART</Text>
+              <Text>{I18n.t(ext('addToCartButton'))}</Text>
             </Button>
           </Tile>
         </Image>

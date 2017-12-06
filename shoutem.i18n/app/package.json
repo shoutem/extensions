@@ -1,0 +1,8 @@
+{
+  "name": "shoutem.i18n",
+  "version": "1.5.5",
+  "description": "Configure the language and regional settings of your app.",
+  "dependencies": {
+    "i18n-js": "3.0.1"
+  }
+}

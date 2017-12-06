@@ -6,9 +6,10 @@ import {
   FormGroup,
   ControlLabel,
   FormControl,
+  HelpBlock,
 } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { validateWordpressUrl } from '../../services/wordpress';
+import { validateWordPressUrl } from 'src/services';
 import './style.scss';
 
 export default class FeedUrlInput extends Component {
@@ -18,84 +19,92 @@ export default class FeedUrlInput extends Component {
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleContinueClick = this.handleContinueClick.bind(this);
-    this.getValidationState = this.getValidationState.bind(this);
-    this.handleTextChangeError = this.handleTextChangeError.bind(this);
+    this.updateFeedUrl = this.updateFeedUrl.bind(this);
+
+    const { feedUrl } = props;
 
     this.state = {
-      feedUrl: '',
-      error: props.error,
+      feedUrl,
+      inProgress: false,
+      error: null,
     };
   }
 
-  getValidationState() {
-    return this.state.error ? 'error' : 'success';
+  updateFeedUrl(feedUrl) {
+    this.setState({ inProgress: true });
+
+    this.props.onContinueClick(feedUrl)
+      .then(() => this.setState({ inProgress: false }))
+      .catch(() => (
+        this.setState({
+          inProgress: false,
+          error: 'Provided URL is not a valid WordPress URL.',
+        })
+      ));
   }
 
   handleContinueClick() {
     const feedUrl = _.trim(this.state.feedUrl, '/ ');
-    if (!validateWordpressUrl(feedUrl)) {
-      this.setState({
-        error: 'Invalid url.',
-      });
-    } else {
-      this.props.onContinueClick(feedUrl);
+    const feedUrlValid = validateWordPressUrl(feedUrl);
+
+    if (!feedUrlValid) {
+      this.setState({ error: 'Invalid URL.' });
+      return;
     }
+
+    this.updateFeedUrl(feedUrl);
   }
 
   handleTextChange(event) {
-    this.setState({
-      feedUrl: event.target.value,
-      error: null,
-    });
+    const feedUrl = event.target.value;
+    this.setState({ feedUrl, error: null });
   }
 
   handleSubmit(event) {
     event.preventDefault();
+
     if (this.state.feedUrl) {
       this.handleContinueClick();
     }
   }
 
-  handleTextChangeError() {
-    if (!this.state.error) {
-      return null;
-    }
-    return (
-      <ControlLabel className="text-error feed-url-input__error">
-        {this.state.error}
-      </ControlLabel>
-    );
-  }
-
   render() {
+    const { inProgress, error, feedUrl } = this.state;
+    const validationState = error ? 'error' : 'success';
+
     return (
       <div className="feed-url-input">
         <form onSubmit={this.handleSubmit}>
-          <FormGroup validationState={this.getValidationState()}>
+          <FormGroup validationState={validationState}>
             <ControlLabel>
-              Wordpress page URL
+              WordPress page URL
             </ControlLabel>
             <FormControl
-              type="text"
               className="form-control"
-              value={this.state.feedUrl}
               onChange={this.handleTextChange}
+              type="text"
+              value={feedUrl}
             />
+            {error && (
+              <div className="has-error">
+                <HelpBlock>{error}</HelpBlock>
+              </div>
+            )}
           </FormGroup>
-          {this.handleTextChangeError()}
         </form>
         <ControlLabel>
-          WordPress versions 4.4 or newer. In case your site is using WordPress version 4.4 to 4.7, you will need to install a plugin
-          in order to fetch posts. For WordPress version 4.7 and above it is going to work out of the box. 
+          WordPress versions 4.4 or newer. In case your site is using WordPress version 4.4 to 4.7,
+          you will need to install a plugin in order to fetch posts. For WordPress version 4.7 and
+          above it is going to work out of the box.
           If you are using an older version of WordPress, you will need to update it.
         </ControlLabel>
         <ButtonToolbar>
           <Button
             bsStyle="primary"
-            disabled={!this.state.feedUrl}
+            disabled={!feedUrl}
             onClick={this.handleContinueClick}
           >
-            <LoaderContainer isLoading={this.props.inProgress}>
+            <LoaderContainer isLoading={inProgress}>
               Continue
             </LoaderContainer>
           </Button>
@@ -107,10 +116,4 @@ export default class FeedUrlInput extends Component {
 
 FeedUrlInput.propTypes = {
   onContinueClick: PropTypes.func,
-  error: PropTypes.string,
-  inProgress: PropTypes.bool,
-};
-
-FeedUrlInput.defaultProps = {
-  inProgress: false,
 };

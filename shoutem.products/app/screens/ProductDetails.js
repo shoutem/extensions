@@ -24,6 +24,7 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { openURL as openURLAction } from 'shoutem.web-view';
+import { I18n } from 'shoutem.i18n';
 
 import { ext } from '../const';
 
@@ -139,7 +140,7 @@ export class ProductDetails extends React.Component {
     return (
       <Tile>
         <Divider styleName="section-header">
-          <Caption>INFORMATION</Caption>
+          <Caption>{I18n.t('shoutem.cms.descriptionTitle')}</Caption>
         </Divider>
         <Html body={product.description} />
       </Tile>

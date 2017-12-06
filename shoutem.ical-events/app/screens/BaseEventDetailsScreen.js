@@ -18,6 +18,7 @@ import {
 } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { InlineMap } from '@shoutem/ui-addons';
+import { I18n } from 'shoutem.i18n';
 
 import { formatDate, addToCalendar } from '../services/Calendar';
 import { ext } from '../extension';
@@ -135,7 +136,7 @@ export class BaseEventDetailsScreen extends React.Component {
         styleName={`${darkened ? 'secondary' : ''} md-gutter-top`}
       >
         <Icon name="add-event" />
-        <Text>ADD TO CALENDAR</Text>
+        <Text>{I18n.t(ext('addToCalendarButton'))}</Text>
       </Button>
     );
   }
@@ -146,7 +147,7 @@ export class BaseEventDetailsScreen extends React.Component {
         <Divider styleName="line" />
         <Row styleName="small">
           <Icon name="add-event" />
-          <Text>RSVP</Text>
+          <Text>{I18n.t('shoutem.cms.rsvpButton')}</Text>
           <Icon styleName="disclosure" name="right-arrow" />
         </Row>
       </TouchableOpacity>
@@ -157,7 +158,7 @@ export class BaseEventDetailsScreen extends React.Component {
     return event.description ? (
       <View styleName="solid">
         <Divider styleName="section-header">
-          <Caption>INFORMATION</Caption>
+          <Caption>{I18n.t('shoutem.cms.descriptionTitle')}</Caption>
         </Divider>
         <Html body={event.description} />
       </View>

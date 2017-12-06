@@ -24,6 +24,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 import { ImagePicker } from '@shoutem/ui-addons';
 
 import { loginRequired } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
 
 import { user as userShape } from '../components/shapes';
 import { ext } from '../const';
@@ -82,7 +83,7 @@ export class CreateStatusScreen extends Component {
     const { onStatusCreated } = this.props;
     const { postingDisabled } = this.state;
     if (postingDisabled) {
-      Alert.alert('This post appears to be blank. Please write something.');
+      Alert.alert(I18n.t(ext('blankPostWarning')));
     } else {
       onStatusCreated(this.state.text, this.state.imageData);
     }
@@ -115,7 +116,7 @@ export class CreateStatusScreen extends Component {
           styleName="clear"
           onPress={this.addNewStatus}
         >
-          <Text>Post</Text>
+          <Text>{I18n.t(ext('postCommentButton'))}</Text>
         </Button>
       </View>
     );

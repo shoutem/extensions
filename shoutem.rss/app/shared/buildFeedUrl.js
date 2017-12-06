@@ -5,10 +5,11 @@ import { ext } from '../const';
 export function buildFeedUrl(state, schema) {
   const appId = getAppId();
   const settings = getExtensionSettings(state, ext());
-  // TODO (zeljko): The default URL shouldn't be here, but the configuration
-  // is not yet available in appDidMount, we should remove this when we add
-  // support for async lifecycle methods
-  const baseApiEndpoint = settings.baseApiEndpoint || 'http://api.dev.sauros.hr';
 
-  return `${baseApiEndpoint}/v1/apps/${appId}/proxy/resources/${schema}`;
+  const baseApiEndpoint = settings.baseApiEndpoint;
+  if (!baseApiEndpoint) {
+    console.error(`Base API endpoint not set in ${ext()} settings.`);
+  }
+
+  return `${baseApiEndpoint}/v1/apps/${appId}/proxy/resources/${schema}{?query*}`;
 }

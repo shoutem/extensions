@@ -18,11 +18,11 @@ const EXPIRATION_TIME_CATEGORIES = 2 * 60 * 60;
 const EXPIRATION_TIME_RESOURCES = 15 * 60;
 
 function getCategoryIds(action) {
-  return _.get(action, ['meta', 'params', 'filter[categories]']);
+  return _.get(action, ['meta', 'params', 'query', 'filter[categories]']);
 }
 
 function getParentCategoryId(action) {
-  return _.get(action, ['meta', 'params', 'filter[parent]']);
+  return _.get(action, ['meta', 'params', 'query', 'filter[parent]']);
 }
 
 /**

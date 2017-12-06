@@ -1,0 +1,17 @@
+{
+  "shoutem": {
+    "notification-center": {
+      "viewNotificationButton": "VIEW",
+      "notificationListNavBarTitle": "NOTIFICATIONS",
+      "pushGroupsSettingsNavBarTitle": "SETTINGS",
+      "noGroupsErrorMessage": "There are no push groups defined.",
+      "pushGroupsPreviewAlertTitle": "Preview mode",
+      "pushGroupsPreviewAlertMessage": "Push notifications are not supported in preview mode. You can see groups, but you can't toggle subscriptions. Don't worry, everything works in the live app.",
+      "notificationPermissionsAlertTitle": "Enable notifications",
+      "notificationPermissionsAlertMessage": "You disabled push notifications for this application. Do you want to enable them in settings now?",
+      "notificationPermissionsSettings": "Go to Settings",
+      "notificationPermissionsCancel": "Cancel",
+      "subscribeToPushGroups": "Send me push notifications for"
+    }
+  }
+}

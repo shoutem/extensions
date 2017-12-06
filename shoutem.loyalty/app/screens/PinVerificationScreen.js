@@ -1,8 +1,7 @@
 import React from 'react';
-
 import { Alert } from 'react-native';
-
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import {
   Button,
@@ -16,27 +15,27 @@ import {
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
+import { I18n } from 'shoutem.i18n';
+
+import { ext } from '../const';
 import {
-  ext,
-} from '../const';
-
-import { rewardShape } from '../components/shapes';
-
+  rewardShape,
+  placeShape,
+} from '../components/shapes';
 import {
   authorizePointsByPin,
   redeemReward,
 } from '../services';
-
 import { verifyPin } from '../redux';
 
 const { bool, func } = React.PropTypes;
 
 const onWrongPin = () => {
   Alert.alert(
-  'Wrong pin',
-  'The PIN you entered was incorrect.',
+  I18n.t(ext('wrongPinErrorTitle')),
+  I18n.t(ext('wrongPinErrorMessage')),
     [
-      { text: 'Try again' },
+      { text: I18n.t('shoutem.application.tryAgainButton') },
     ],
   );
 };
@@ -51,6 +50,8 @@ export class PinVerificationScreen extends React.Component {
   static propTypes = {
     // Authorizes assigning points by PIN
     authorizePointsByPin: func,
+    //
+    place: placeShape,
     // Reward being stamped or redeemed
     reward: rewardShape,
     // True if he user want to redeem a reward, false otherwise
@@ -85,14 +86,16 @@ export class PinVerificationScreen extends React.Component {
   }
 
   handleNext() {
-    const { verifyPin } = this.props;
+    const { verifyPin, place } = this.props;
     const { pin } = this.state;
 
-    verifyPin(pin)
-    .then(() => {
-      this.onPinVerified(pin);
-    })
-    .catch(onWrongPin);
+    const locationId = _.get(place, 'id');
+
+    verifyPin(pin, locationId)
+      .then(() => {
+        this.onPinVerified(pin);
+      })
+      .catch(onWrongPin);
   }
 
   navigateToNextStep(authorization) {
@@ -105,7 +108,7 @@ export class PinVerificationScreen extends React.Component {
     return (
       <TextInput
         autoFocus
-        placeholder="Enter your PIN"
+        placeholder={I18n.t(ext('pinPlaceholder'))}
         autoCapitalize="none"
         autoCorrect={false}
         keyboardAppearance="light"
@@ -119,15 +122,15 @@ export class PinVerificationScreen extends React.Component {
   render() {
     return (
       <Screen>
-        <NavigationBar title="CASHIER PIN" />
+        <NavigationBar title={I18n.t(ext('pinVerificationNavBarTitle'))} />
         <View styleName="lg-gutter-top vertical">
-          <Subtitle styleName="h-center md-gutter-bottom">Show this screen to cashier</Subtitle>
+          <Subtitle styleName="h-center md-gutter-bottom">{I18n.t(ext('cashierVerificationMessage'))}</Subtitle>
           {this.renderPinComponent()}
           <Button
             styleName="full-width inflexible lg-gutter-vertical"
             onPress={this.handleNext}
           >
-            <Text>CONTINUE</Text>
+            <Text>{I18n.t(ext('rewardRedemptionContinueButton'))}</Text>
           </Button>
         </View>
       </Screen>

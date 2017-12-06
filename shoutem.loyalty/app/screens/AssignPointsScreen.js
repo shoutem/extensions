@@ -16,8 +16,6 @@ import {
   TextInput,
 } from '@shoutem/ui';
 
-import { getExtensionSettings } from 'shoutem.application';
-
 import {
   getCollection,
   invalidate,
@@ -27,6 +25,8 @@ import { navigateTo } from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
+import { getExtensionSettings } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
 import { getUser } from 'shoutem.auth';
 
 import { ext } from '../const';
@@ -35,15 +35,6 @@ import { collectPoints } from '../services';
 import { fetchRules } from '../redux';
 
 import { authorizationShape } from '../components/shapes';
-
-const fields = [{
-  name: 'amount',
-  label: 'Receipt sum',
-  keyboardType: 'numeric',
-}, {
-  name: 'receiptCode',
-  label: 'Receipt code',
-}];
 
 const CURRENCY_PREFIX = '$ ';
 
@@ -78,6 +69,15 @@ export class AssignPointsScreen extends React.Component {
     this.processTransaction = this.processTransaction.bind(this);
 
     this.state = { purchase: false, rules: {}, visit: false };
+
+    this.fields = [{
+      name: 'amount',
+      label: I18n.t(ext('cashierPointAwardReceiptSum')),
+      keyboardType: 'numeric',
+    }, {
+      name: 'receiptCode',
+      label: I18n.t(ext('cashierPointAwardReceiptCode')),
+    }];
   }
 
   componentWillMount() {
@@ -135,7 +135,7 @@ export class AssignPointsScreen extends React.Component {
 
     return (
       <View styleName="horizontal v-center solid space-between md-gutter">
-        <Caption>Customer visited this store</Caption>
+        <Caption>{I18n.t(ext('visitToggleButton'))}</Caption>
         <Switch
           value={visit}
           onValueChange={value => this.setState({ visit: value })}
@@ -149,7 +149,7 @@ export class AssignPointsScreen extends React.Component {
 
     return (
       <View styleName="horizontal v-center solid space-between md-gutter">
-        <Caption>Customer made a purchase</Caption>
+        <Caption>{I18n.t(ext('purchaseToggleButton'))}</Caption>
         <Switch
           value={purchase}
           onValueChange={value => this.setState({ purchase: value })}
@@ -164,7 +164,7 @@ export class AssignPointsScreen extends React.Component {
     return (
       <View>
         <Divider styleName="section-header">
-          <Caption>ASSIGN POINTS FOR</Caption>
+          <Caption>{I18n.t(ext('cashierPointAwardAssigningTitle'))}</Caption>
         </Divider>
         {_.includes(rules, RULE_VISIT) ? this.renderVisitSwitch() : null}
         {_.includes(rules, RULE_PURCHASE) ? this.renderPurchaseSwitch() : null}
@@ -175,12 +175,12 @@ export class AssignPointsScreen extends React.Component {
   renderPurchaseDetails() {
     const { requireReceiptCode } = this.props;
 
-    const visibleFields = requireReceiptCode ? fields : fields.slice(0, 1);
+    const visibleFields = requireReceiptCode ? this.fields : this.fields.slice(0, 1);
 
     return (
       <View>
         <Divider styleName="section-header">
-          <Caption>ENTER PURCHASE DETAILS</Caption>
+          <Caption>{I18n.t(ext('cashierPointAwardTransactionTitle'))}</Caption>
         </Divider>
         {_.map(visibleFields, this.renderInput)}
       </View>
@@ -195,7 +195,7 @@ export class AssignPointsScreen extends React.Component {
           style={{ width: 200 }}
           onPress={this.processTransaction}
         >
-          <Text>CONFIRM</Text>
+          <Text>{I18n.t(ext('confirmButton'))}</Text>
         </Button>
       </View>
     );
@@ -207,7 +207,7 @@ export class AssignPointsScreen extends React.Component {
 
     return (
       <Screen>
-        <NavigationBar title="ASSIGN POINTS" />
+      <NavigationBar title={I18n.t(ext('cashierPointAwardNavBarTitle'))} />
         <ScrollView>
           {this.renderActivityDetails()}
           {purchase ? this.renderPurchaseDetails() : null}

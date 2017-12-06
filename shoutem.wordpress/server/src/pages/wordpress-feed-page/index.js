@@ -1,2 +1,2 @@
-import WordpressFeedPage from './WordpressFeedPage';
-export default WordpressFeedPage;
+import WordPressFeedPage from './WordPressFeedPage';
+export default WordPressFeedPage;

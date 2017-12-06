@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 
 import _ from 'lodash';
 
+import { I18n } from 'shoutem.i18n';
+
 import {
   Screen,
   ListView,
@@ -21,6 +23,8 @@ import {
   isError,
   shouldRefresh,
 } from '@shoutem/redux-io';
+
+import { ext } from '../const';
 
 const { array, func, shape, string } = React.PropTypes;
 
@@ -60,7 +64,15 @@ export default class RemoteDataListScreen extends PureComponent {
   }
 
   componentWillMount() {
-    const { data } = this.props;
+    this.refreshData(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.refreshData(nextProps, this.props);
+  }
+
+  refreshData(nextProps, props = {}) {
+    const { data } = nextProps;
 
     if (shouldRefresh(data, true)) {
       this.fetchData();
@@ -111,10 +123,10 @@ export default class RemoteDataListScreen extends PureComponent {
     const emptyStateViewProps = {
       icon: 'refresh',
       message: isError(data) ?
-        'Unexpected error occurred.' :
-        'Nothing here at this moment.',
+        I18n.t(ext('unexpectedErrorMessage')) :
+        I18n.t(ext('preview.noContentErrorMessage')),
       onRetry: this.fetchData,
-      retryButtonTitle: 'TRY AGAIN',
+      retryButtonTitle: I18n.t(ext('tryAgainButton')),
       style: style.emptyState,
     };
 

@@ -15,6 +15,8 @@ import {
 
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 import { transactionShape } from '../components/shapes';
 
@@ -40,8 +42,10 @@ class TransactionItem extends Component {
 
     const isRedeemed = points < 0;
 
-    const action = isRedeemed ? 'Reward redeemed' : 'Points gained';
-    const activity = `Store visited ${purchase ? ` ·  $${amount} spent` : ''}`;
+    const action = isRedeemed ? I18n.t(ext('rewardRedeemed')) : I18n.t(ext('historyItemPointsGainedTitle'));
+    const activity = purchase ?
+      I18n.t(ext('historyItemWithPurchaseMessage'), { amountSpent: transactionData.amount }) :
+      I18n.t(ext('historyItemNoPurchaseMessage'));
     const subtitle = isRedeemed ? rewardName : activity;
 
     const date = moment(createdAt).format(TRANSACTION_DATE_FORMAT);

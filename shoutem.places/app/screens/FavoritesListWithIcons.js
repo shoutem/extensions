@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { ext } from '../const';
-import { FavoritesList, mapStateToProps } from '../screens/FavoritesList';
+import { FavoritesList, mapStateToProps, mapDispatchToProps } from '../screens/FavoritesList';
 import PlaceIconView from '../components/PlaceIconView';
 
 class FavoritesListWithIcons extends FavoritesList {
@@ -15,6 +15,6 @@ class FavoritesListWithIcons extends FavoritesList {
   }
 }
 
-export default connect(mapStateToProps, undefined)(
+export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('FavoritesListWithIcons'))(FavoritesListWithIcons),
 );

@@ -1,0 +1,8 @@
+{
+  "shoutem": {
+    "web-view": {
+      "noUrlErrorMessage": "Please enter a valid URL and reload your app.",
+      "noUrlErrorTitle": "No URL"
+    }
+  }
+}

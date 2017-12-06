@@ -22,6 +22,8 @@ import { EmptyStateView } from '@shoutem/ui-addons';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../../const';
 import { refreshShippingMethods, selectShippingMethod } from '../../redux/actionCreators';
 import CartFooter from '../../components/CartFooter';
@@ -54,8 +56,7 @@ const getDeliveryRangeCaption = ([startDateInMiliseconds, endDateInMiliseconds])
 };
 
 const renderEmptyScreen = () => {
-  const message = 'We could not get any shipping options from Shopify.' +
-    ' Please check with the store owner if he provides shipping to your country for this item.';
+  const message = I18n.t(ext('shippingMethodFetchErrorMessage'));
 
   return (
     <EmptyStateView message={message} />
@@ -111,7 +112,7 @@ class ShippingMethodScreen extends Component {
             <Subtitle>{title}</Subtitle>
             <Text>{`${price} ${currency}`}</Text>
             {deliveryRange ?
-              <Caption>{`Estimated delivery time: ${getDeliveryRangeCaption(deliveryRange)}`}</Caption>
+              <Caption>{`${I18n.t(ext('estimatedDeliveryTime'))}${getDeliveryRangeCaption(deliveryRange)}`}</Caption>
               :
               null
             }
@@ -127,7 +128,7 @@ class ShippingMethodScreen extends Component {
     return (
       <Screen>
         <NavigationBar
-          title="SHIPPING"
+          title={I18n.t(ext('shippingScreenNavBarTitle'))}
         />
         <View style={{ marginTop: 30 }} />
         <ListView
@@ -162,4 +163,3 @@ export default connect(
   mapStateToProps, { refreshShippingMethods, selectShippingMethod })(
     connectStyle(ext('ShippingMethodScreen'))(ShippingMethodScreen),
 );
-

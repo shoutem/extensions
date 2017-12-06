@@ -18,6 +18,8 @@ import { PlacesListScreen } from './screens/places';
 import PlaceDetails from './screens/places/PlaceDetails';
 import SinglePlaceMap from './screens/places/SinglePlaceMap';
 
+import enTranslations from './translations/en.json';
+
 import reducer from './redux';
 
 export {
@@ -42,6 +44,14 @@ export const screens = {
   NoProgramScreen,
   FavoritesListScreen,
   VerificationScreen,
+};
+
+export const shoutem = {
+  i18n: {
+    translations: {
+      en: enTranslations,
+    },
+  },
 };
 
 export {

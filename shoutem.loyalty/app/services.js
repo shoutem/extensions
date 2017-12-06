@@ -1,4 +1,5 @@
 import { Alert } from 'react-native';
+import _ from 'lodash';
 
 import {
   invalidate,
@@ -15,6 +16,7 @@ import {
 } from 'shoutem.application';
 
 import { getUser } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
 
 import {
   createCardForUser,
@@ -36,10 +38,14 @@ import {
   PUNCH_REWARDS_SCHEMA,
 } from './const';
 
-const showTransactionError = (message) => {
+import { getErrorMessage } from './translations';
+
+const showTransactionError = (error) => {
+  const errorMessage = getErrorMessage(error.code);
+
   Alert.alert(
-  'Error',
-    message,
+    I18n.t('shoutem.application.errorTitle'),
+    errorMessage,
   );
 };
 
@@ -49,7 +55,7 @@ const showTransactionError = (message) => {
  */
 export const refreshCard = () => {
   return (dispatch, getState) => {
-    const { id: userId } = getUser(getState());
+    const { legacyId: userId } = getUser(getState());
 
     return dispatch(fetchCard(userId))
       .catch(() => {
@@ -135,11 +141,11 @@ export const authorizeTransactionByQRCode = (dataString) => {
   return (dispatch, getState) => {
     const data = JSON.parse(dataString);
 
-    const [cardId, rewardData, redeem] = data;
+    const [cardId, placeId, rewardData, redeem] = data;
 
     const reward = rewardData && getRewardFromEncodedValues(rewardData);
 
-    const authorization = { authorizationType: 'userId', cardId };
+    const authorization = { authorizationType: 'userId', placeId, cardId };
 
     if (redeem) {
       dispatch(openInModal(EMPTY_ROUTE));
@@ -172,8 +178,7 @@ export const authorizeTransactionByBarCode = (expression) => dispatch => {
     }));
   }).catch(({ payload }) => {
     const { errors } = payload.response;
-
-    showTransactionError(errors[0].detail);
+    showTransactionError(errors[0]);
   });
 };
 
@@ -207,26 +212,34 @@ export const makeTransaction = (data, authorization, reward) => {
   return (dispatch) => {
     const { points } = data;
 
-    const attributes = {
-      [isPunchCard(reward) ? 'punchReward' : 'pointReward']: reward && reward.id,
-      transactionData: {
-        cms: {
-          appId: getAppId(),
-          schema: reward && getSchemaForReward(reward),
-          category: reward && reward.parentCategoryId,
-        },
-        rewardName: reward && reward.title,
-        ...data,
+    const defaultTransactionData = {
+      cms: {
+        appId: getAppId(),
+        schema: reward && getSchemaForReward(reward),
+        category: reward && reward.parentCategoryId,
       },
+      rewardName: reward && reward.title,
+      ...data,
     };
 
-    dispatch(createTransaction(attributes, authorization)).then(({ points: awardedPoints }) => {
-      dispatch(processTransactionResults(data, reward, points, awardedPoints, authorization));
-    }).catch(({ payload }) => {
-      const { errors } = payload.response;
+    const location = _.get(authorization, 'placeId');
+    const transactionData = !!location ?
+      { ...defaultTransactionData, location } :
+      { ...defaultTransactionData };
+    const rewardId = _.get(reward, 'id');
 
-      showTransactionError(errors[0].detail);
-    });
+    const attributes = isPunchCard(reward) ?
+      { punchReward: rewardId, transactionData } :
+      { pointReward: rewardId, transactionData };
+
+    dispatch(createTransaction(attributes, authorization))
+      .then(({ points: awardedPoints }) => {
+        dispatch(processTransactionResults(data, reward, points, awardedPoints, authorization));
+      })
+      .catch(({ payload }) => {
+        const { errors } = payload.response;
+        showTransactionError(errors[0]);
+      });
   };
 };
 

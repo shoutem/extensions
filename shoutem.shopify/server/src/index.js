@@ -1,16 +1,12 @@
-import ShopifyPage from './ShopifyPage.js';
-import ShopifySettingsPage from './ShopifySettingsPage.js';
-import reducer from './reducer';
+// Constants `screens`, `actions` and `reducer` are exported via named export
+// It is important to use those exact names
 
-const adminPages = {
-  ShopifyPage,
-  ShopifySettingsPage,
-};
+// export everything from extension.js
+export * from './extension';
 
-export {
-  adminPages,
-};
+// list of exports supported by shoutem can be found here: https://shoutem.github.io/docs/extensions/reference/extension-exports
 
-export {
-  reducer,
-};
+import './style.scss';
+
+import reducer from './redux';
+export { reducer };

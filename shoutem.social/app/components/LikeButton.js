@@ -6,7 +6,11 @@ import {
   Text,
 } from '@shoutem/ui';
 
+import { I18n } from 'shoutem.i18n';
+
 import { post as postShape } from './shapes';
+import { ext } from '../const';
+
 const { func } = React.PropTypes;
 
 export default class LikeButton extends React.Component {
@@ -38,7 +42,7 @@ export default class LikeButton extends React.Component {
       >
         <Icon name="like" style={likeButtonStyle} />
         <Text style={likeButtonStyle}>
-          {!status.liked ? 'LIKE' : 'UNLIKE'}
+          {!status.liked ? I18n.t(ext('likeButton')) : I18n.t(ext('unlikeButton'))}
         </Text>
       </Button>
     );

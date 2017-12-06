@@ -13,6 +13,8 @@ import ShippingMethodScreen from './screens/checkout/ShippingMethodScreen';
 import PaymentScreen from './screens/checkout/PaymentScreen';
 import OrderCompleteScreen from './screens/checkout/OrderCompleteScreen';
 
+import enTranslations from './translations/en.json';
+
 import { actions, reducer } from './redux';
 
 export const screens = {
@@ -26,6 +28,14 @@ export const screens = {
   ShippingMethodScreen,
   PaymentScreen,
   OrderCompleteScreen,
+};
+
+export const shoutem = {
+  i18n: {
+    translations: {
+      en: enTranslations,
+    },
+  },
 };
 
 export { appDidMount } from './app';

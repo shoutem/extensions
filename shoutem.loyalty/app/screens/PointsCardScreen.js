@@ -7,6 +7,7 @@ import _ from 'lodash';
 
 import {
   getCollection,
+  isBusy,
   isInitialized,
  } from '@shoutem/redux-io';
 
@@ -37,6 +38,8 @@ import {
 import {
   getExtensionSettings,
 } from 'shoutem.application';
+
+import { I18n } from 'shoutem.i18n';
 
 import { QRCodeScanner, navigateToQRCodeScannerScreen } from 'shoutem.camera';
 
@@ -139,10 +142,14 @@ export class PointsCardScreen extends React.Component {
   scanBarCode() {
     const { navigateToQRCodeScannerScreen } = this.props;
 
-    navigateToQRCodeScannerScreen(this.onBarCodeScanned, 'Scan Barcode');
+    navigateToQRCodeScannerScreen(this.onBarCodeScanned, I18n.t(ext('scanBarcodeNavBarTitle')));
   }
 
   onBarCodeScanned(code) {
+    if (!code.data) {
+      return;
+    }
+
     const { authorizeTransactionByBarCode } = this.props;
 
     authorizeTransactionByBarCode(code.data);
@@ -162,18 +169,21 @@ export class PointsCardScreen extends React.Component {
         style={{ width: 160 }}
         onPress={this.scanBarCode}
       >
-        <Text>SCAN BARCODE</Text>
+        <Text>{I18n.t(ext('scanBarcodeButton'))}</Text>
       </Button>
   );
   }
 
   renderPointsCardInfo() {
-    const { cardId, cardState = {}, enableBarcodeScan, transactions } = this.props;
+    const { cardId, cardState = {}, cardStates, enableBarcodeScan, transactions } = this.props;
     const { points = 0 } = cardState;
+
+    const isRefreshingPoints = isBusy(cardStates);
+    const pointsButtonStyleName = `secondary md-gutter-vertical ${isRefreshingPoints && 'muted'}`;
 
     return (
       <Screen>
-        <NavigationBar title="MY CARD" />
+        <NavigationBar title={I18n.t(ext('myCardScreenNavBarTitle'))} />
         <ScrollView>
           <View styleName="content sm-gutter solid vertical h-center">
             <TouchableOpacity onPress={this.assignPoints}>
@@ -182,14 +192,14 @@ export class PointsCardScreen extends React.Component {
                 value={JSON.stringify([cardId])}
               />
             </TouchableOpacity>
-            <Caption styleName="h-center sm-gutter">Points</Caption>
+            <Caption styleName="h-center sm-gutter">{I18n.t(ext('myCardScreenPointsTitle'))}</Caption>
             <Title styleName="h-center">{points}</Title>
             <Button
-              styleName="secondary md-gutter-vertical"
+              styleName={pointsButtonStyleName}
               style={{ width: 160 }}
               onPress={this.refreshCardState}
             >
-              <Text>REFRESH</Text>
+              <Text>{I18n.t(ext('refreshButton'))}</Text>
             </Button>
             {enableBarcodeScan && this.renderBarcodeScanButton()}
           </View>
@@ -224,7 +234,7 @@ export class PointsCardScreen extends React.Component {
   renderScreen() {
     return (
       <Screen>
-        <NavigationBar title="MY CARD" />
+        <NavigationBar title={I18n.t(ext('myCardScreenNavBarTitle'))} />
         {this.renderContent()}
       </Screen>
     );
@@ -238,7 +248,7 @@ export class PointsCardScreen extends React.Component {
 }
 
 export const mapStateToProps = (state) => {
-  const { allTransactions, cashierInfo } = state[ext()];
+  const { allCardStates, allTransactions, cashierInfo } = state[ext()];
 
   const extensionSettings = getExtensionSettings(state, ext());
   const programId = _.get(extensionSettings, 'program.id');
@@ -246,8 +256,10 @@ export const mapStateToProps = (state) => {
 
   return {
     cardId: getCardId(state),
+    cardStates: getCollection(allCardStates, state),
     cardState: getSingleCardState(state),
     cashierInfo,
+    enableBarcodeScan,
     programId,
     transactions: getCollection(allTransactions, state),
   };

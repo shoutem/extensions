@@ -26,6 +26,8 @@ import {
   openInModal,
 } from '@shoutem/core/navigation';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 import CartFooter from '../components/CartFooter';
 import CartItem from '../components/CartItem';
@@ -129,8 +131,8 @@ class CartScreen extends Component {
     return (
       <Screen>
         <Divider styleName="section-header">
-          <Caption>PRODUCT NAME</Caption>
-          <Caption>PRICE</Caption>
+          <Caption>{I18n.t(ext('cartScreenProductName'))}</Caption>
+          <Caption>{I18n.t(ext('cartScreenProductPrice'))}</Caption>
         </Divider>
         <ScrollView>
           <ListView
@@ -140,7 +142,7 @@ class CartScreen extends Component {
         </ScrollView>
         <Divider styleName="line" />
         <CartFooter
-          action="PROCEED TO CHECKOUT"
+          action={I18n.t(ext('proceedToCheckoutButton'))}
           onActionButtonClicked={this.proceedToCheckout}
         />
       </Screen>
@@ -153,7 +155,7 @@ class CartScreen extends Component {
     return (
       <Screen>
         <NavigationBar
-          title="SHOPPING CART"
+          title={I18n.t(ext('cartScreenNavBarTitle'))}
         />
         { _.size(cart) ? this.renderContent() : renderEmptyScreen()}
       </Screen>
@@ -167,7 +169,7 @@ const renderEmptyScreen = () => (
       <Icon name="cart" />
     </View>
     <Subtitle styleName="h-center md-gutter-top xl-gutter-horizontal">
-      {'You haven\'t added any products yet.'}
+      {I18n.t(ext('emptyCartMessage'))}
     </Subtitle>
   </View>
 );

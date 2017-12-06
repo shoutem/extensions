@@ -48,7 +48,10 @@ import {
 } from '@shoutem/ui/navigation';
 
 import { connectStyle } from '@shoutem/theme';
+
+import { I18n } from 'shoutem.i18n';
 import { openURL } from 'shoutem.web-view';
+
 import {
   ext,
   PLACE_REWARDS_SCHEMA,
@@ -57,6 +60,7 @@ import {
 import {
   placeShape,
   rewardShape,
+  transactionShape,
 } from '../../components/shapes';
 
 import PlaceRewardListView from '../../components/PlaceRewardListView';
@@ -67,8 +71,8 @@ import {
  } from '../../redux';
 
  import {
-  refreshTransactions,
-} from '../../services';
+   refreshTransactions
+ } from '../../services';
 
 /* eslint-disable class-methods-use-this */
 
@@ -87,6 +91,8 @@ export class PlaceDetails extends Component {
     openURL: func,
     navigateTo: func,
     refreshTransactions: func,
+     // Transactions for this place
+    transactions: arrayOf(transactionShape),
   };
 
   constructor(props) {
@@ -110,7 +116,9 @@ export class PlaceDetails extends Component {
     const { find, place, refreshTransactions } = this.props;
 
     find(PLACE_REWARDS_SCHEMA, undefined, {
-      'filter[place.id]': place.id,
+      query: {
+        'filter[place.id]': place.id,
+      }
     });
 
     refreshTransactions();
@@ -123,7 +131,23 @@ export class PlaceDetails extends Component {
       styleName: image ? 'clear' : 'no-border',
       animationName: 'solidify',
       title: name.toUpperCase(),
+      renderRightComponent: () => this.renderRightNavBarComponent(),
     };
+  }
+
+  renderRightNavBarComponent() {
+    const { transactions } = this.props;
+
+    return (
+      <View virtual styleName="container">
+        {_.size(transactions) ? (<Button
+          onPress={this.navigateToPointsHistoryScreen}
+          styleName="clear"
+        >
+          <Text>History</Text>
+        </Button>) : null}
+      </View>
+    );
   }
 
   navigateToPointsHistoryScreen() {
@@ -230,7 +254,6 @@ export class PlaceDetails extends Component {
     return (
       <PlaceLoyaltyPointsView
         onCollectPointsPress={this.collectPoints}
-        onPointsHistoryPress={this.navigateToPointsHistoryScreen}
         place={place}
       />
     );
@@ -257,11 +280,11 @@ export class PlaceDetails extends Component {
     return (
       <View>
         <Divider styleName="section-header">
-          <Caption>REWARDS</Caption>
+          <Caption>{I18n.t(ext('storeRewardsListTitle'))}</Caption>
         </Divider>
         {!isBusy(rewards) && _.isEmpty(rewards) ?
           <Caption styleName="h-center md-gutter-top xl-gutter-horizontal">
-            Currently, there are no rewards available for this store.
+            {I18n.t(ext('noRewardsForStore'))}
           </Caption>
           :
           <ListView
@@ -321,7 +344,7 @@ export class PlaceDetails extends Component {
       return (
         <Tile>
           <Divider styleName="section-header">
-            <Caption>LOCATION INFO</Caption>
+            <Caption>{I18n.t(ext('storeDescriptionTitle'))}</Caption>
           </Divider>
           <View styleName="md-gutter">
             <Html body={description} />
@@ -340,7 +363,7 @@ export class PlaceDetails extends Component {
       return (
         <Tile>
           <Divider styleName="section-header">
-            <Caption>OPEN HOURS</Caption>
+            <Caption>{I18n.t(ext('openHours'))}</Caption>
           </Divider>
           <Text styleName="md-gutter">{openingHours}</Text>
         </Tile>
@@ -354,7 +377,7 @@ export class PlaceDetails extends Component {
 
     return rsvpLink ? (
       <Button onPress={this.openURL}>
-        <Text>RESERVATION</Text>
+        <Text>{I18n.t(ext('rsvp'))}</Text>
       </Button>
     ) : null;
   }
@@ -403,16 +426,23 @@ export class PlaceDetails extends Component {
           {this.renderButtons()}
           {this.renderInlineMap()}
           {this.renderDescription(place)}
-          {this.renderDisclosureButton(place.url, 'Visit webpage', 'web', this.openWebLink)}
-          {this.renderDisclosureButton(location.formattedAddress, 'Directions', 'pin',
+          {this.renderDisclosureButton(place.url, I18n.t(ext('websiteButton')), 'web', this.openWebLink)}
+          {this.renderDisclosureButton(location.formattedAddress, I18n.t(ext('directionsButton')), 'pin',
           this.openMapLink)}
-          {this.renderDisclosureButton(place.mail, 'Email', 'email', this.openEmailLink)}
-          {this.renderDisclosureButton(place.phone, 'Phone', 'call', this.openPhoneLink)}
+          {this.renderDisclosureButton(place.mail, I18n.t(ext('emailButton')), 'email', this.openEmailLink)}
+          {this.renderDisclosureButton(place.phone, I18n.t(ext('phoneButton')), 'call', this.openPhoneLink)}
         </ScrollView>
       </Screen>
     );
   }
 }
+
+const getTransactionsForPlace = (transactions, place) =>
+  _.filter(transactions, (transaction) => {
+    const { transactionData } = transaction;
+
+    return place.id === transactionData.location;
+  });
 
 export const mapStateToProps = (state, ownProps) => {
   const { allPlaceRewards, allTransactions } = state[ext()];
@@ -422,10 +452,12 @@ export const mapStateToProps = (state, ownProps) => {
   const cardState = getCardStateForPlace(state, place.id);
   const points = cardState ? cardState.points : 0;
 
+  const transactions = getCollection(allTransactions, state);
+
   return {
     place: { ...place, points },
     rewards: getCollection(allPlaceRewards, state),
-    transactions: getCollection(allTransactions, state),
+    transactions: getTransactionsForPlace(transactions, place),
   };
 };
 

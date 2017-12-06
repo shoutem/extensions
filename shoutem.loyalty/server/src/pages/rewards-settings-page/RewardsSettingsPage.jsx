@@ -1,14 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { shouldLoad, isInitialized } from '@shoutem/redux-io';
+import { isInitialized } from '@shoutem/redux-io';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import _ from 'lodash';
-import {
-  fetchShortcut,
-  fetchExtension,
-} from '@shoutem/redux-api-sdk';
-import { cmsApi } from '../../modules/cms';
-import { PlaceRewards } from '../../modules/rewards';
+import { initializeApiEndpoints } from 'src/services';
+import { PlaceRewards } from 'src/modules/place-rewards';
 import './style.scss';
 
 const PLACES_DESCRIPTOR = {
@@ -36,41 +31,17 @@ const REWARDS_DESCRIPTOR = {
   ],
 };
 
-export class RewardsPage extends Component {
+export default class RewardsPage extends Component {
   constructor(props) {
     super(props);
 
-    this.checkData = this.checkData.bind(this);
+    const { ownExtension: { settings } } = props;
+    initializeApiEndpoints(settings);
 
     this.state = {
       rewardsCategoryId: null,
       placesCategoryId: null,
     };
-  }
-
-  componentWillMount() {
-    this.checkData(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.checkData(nextProps, this.props);
-  }
-
-  checkData(nextProps, props = {}) {
-    const { ownExtension } = nextProps;
-
-    if (shouldLoad(nextProps, props, 'shortcut')) {
-      this.props.fetchShortcut();
-    }
-
-    if (shouldLoad(nextProps, props, 'ownExtension')) {
-      this.props.fetchExtension();
-    }
-
-    const cmsEndpoint = _.get(ownExtension, 'settings.cmsEndpoint');
-    if (!cmsApi.isInitialized()) {
-      cmsApi.init(cmsEndpoint);
-    }
   }
 
   render() {
@@ -116,18 +87,3 @@ RewardsPage.propTypes = {
   shortcutId: PropTypes.string,
   ownExtensionName: PropTypes.string,
 };
-
-function mapDispatchToProps(dispatch, ownProps) {
-  const { shortcutId, ownExtensionName } = ownProps;
-
-  return {
-    fetchShortcut: () => (
-      dispatch(fetchShortcut(shortcutId))
-    ),
-    fetchExtension: () => (
-      dispatch(fetchExtension(ownExtensionName))
-    ),
-  };
-}
-
-export default connect(null, mapDispatchToProps)(RewardsPage);

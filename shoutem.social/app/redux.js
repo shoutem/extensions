@@ -19,6 +19,7 @@ import { getAppId } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
 
 import { apiVersion, getApiEndpoint } from './app';
+import { adaptUserForSocialActions } from './services/userProfileDataAdapter';
 
 import { ext } from './const';
 
@@ -125,8 +126,8 @@ const updateStatusesAfterLike = (state, action) => ({
           ...status.shoutem_favorited_by,
           count: status.shoutem_favorited_by.count + 1,
           users: [
-            { 
-              id: action.meta.options.user.id, 
+            {
+              id: action.meta.options.user.id,
               name: action.meta.options.user.name,
               first_name: action.meta.options.user.first_name,
               last_name: action.meta.options.user.last_name,
@@ -197,7 +198,7 @@ const statusesReducer = (prepend) => {
   const defaultResourceReducer = resource(STATUSES_SCHEMA, DEFAULT_STATE);
 
   return (state, action) => {
-    
+
     const { payload, type } = action;
     switch (type) {
       // Load statuses/comments
@@ -210,32 +211,53 @@ const statusesReducer = (prepend) => {
         // If a new status/comment is created
         if (canHandleOperation(action, CREATE)) {
           const newState = appendNewStatus(state, action, prepend);
-          setStatus(newState, state[STATUS]);
-          
+          setStatus(newState, updateStatus(
+            state[STATUS],
+            {
+              validationStatus: validationStatus.VALID,
+              busyStatus: busyStatus.IDLE,
+              error: false,
+            }
+          ));
+
           return newState;
 
         // If status is liked
         } else if (canHandleOperation(action, LIKE)) {
           const newState = updateStatusesAfterLike(state, action);
-          setStatus(newState, state[STATUS]);
-          
+          setStatus(newState, updateStatus(
+            state[STATUS],
+            {
+              validationStatus: validationStatus.VALID,
+              busyStatus: busyStatus.IDLE,
+              error: false,
+            }
+          ));
+
           return newState;
 
         // If status is unliked
         } else if (canHandleOperation(action, UNLIKE)) {
           const newState = updateStatusesAfterUnlike(state, action);
-          setStatus(newState, state[STATUS]);
-          
+          setStatus(newState, updateStatus(
+            state[STATUS],
+            {
+              validationStatus: validationStatus.VALID,
+              busyStatus: busyStatus.IDLE,
+              error: false,
+            }
+          ));
+
           return newState;
 
         // If status/comment is deleted
         } else if (canHandleOperation(action, DELETE)) {
           const newState = removeStatus(state, action);
           setStatus(newState, state[STATUS]);
-          
+
           return newState;
         }
-        
+
         return state;
       default:
         return defaultResourceReducer(state, action);
@@ -254,10 +276,17 @@ const wallReducer = () => {
         // If a new comment is created
         if (canHandleOperation(action, CREATE)) {
           const newState = increaseNumberOfComments(state, action);
-          setStatus(newState, state[STATUS]);
+          setStatus(newState, updateStatus(
+            state[STATUS],
+            {
+              validationStatus: validationStatus.VALID,
+              busyStatus: busyStatus.IDLE,
+              error: false,
+            }
+          ));
 
           return newState;
-          
+
         // If a comment is deleted
         } else if (canHandleOperation(action, DELETE)) {
           const newState = decreaseNumberOfComments(state, action);
@@ -297,8 +326,14 @@ const processUsers = (state, action) => {
     ...getNextActionParams(action),
     cursor,
   } : {};
+
+  // Legacy API endpoint always returns a cursor property, even when there are no more pages.
+  // This results in endless requests.
+  // Since we don't know what the page size is, we end the cycle when the users response is empty.
+  const hasMore = cursor && !_.isEmpty(payload.users);
+
   const nextPageUrl = createUsersApiEndpoint('all.json', formatParams(params));
-  const links = cursor ? { next: nextPageUrl } : { next: null };
+  const links = hasMore ? { next: nextPageUrl } : { next: null };
 
   setStatus(newState, updateStatus(
     state[STATUS],
@@ -319,7 +354,7 @@ const usersReducer = () => {
   const defaultResourceReducer = resource(USERS_SCHEMA, DEFAULT_STATE);
 
   return (state = DEFAULT_STATE, action) => {
-    
+
     const { type } = action;
     switch (type) {
       // Load users
@@ -418,6 +453,7 @@ export function fetchComments(statusId) {
     offset: 0,
     limit: 6,
     count: 10,
+    in_reply_to_status_id: statusId,
   };
   const rioConfig = {
     schema: STATUSES_SCHEMA,
@@ -427,7 +463,7 @@ export function fetchComments(statusId) {
       ...apiRequestOptions,
     },
   };
-  return find(rioConfig, '', { in_reply_to_status_id: statusId }, {
+  return find(rioConfig, '', params, {
     operation: LOAD,
   });
 }
@@ -473,18 +509,20 @@ export function deleteComment(comment) {
   const { id, in_reply_to_status_id } = comment;
   const params = {
     id,
-    in_reply_to_status_id,
   };
-  
+  const qs = {
+    in_reply_to_status_id,
+  }
+
   const rioConfig = {
     schema: STATUSES_SCHEMA,
     request: {
-      endpoint: createStatusesApiEndpoint('destroy/{id}.json', formatParams()),
+      endpoint: createStatusesApiEndpoint('destroy/{id}.json', formatParams(qs)),
       method: 'POST',
       ...apiRequestOptions,
     },
   };
-  
+
   return create(rioConfig, null, params, { operation: DELETE });
 }
 
@@ -525,7 +563,7 @@ export function createComment(statusId, text, imageData) {
   const rioConfig = {
     schema: STATUSES_SCHEMA,
     request: {
-      endpoint: createStatusesApiEndpoint('update.json', ''),
+      endpoint: createStatusesApiEndpoint('update.json', formatParams(params)),
       method: 'POST',
       body: formatParams(body),
       ...apiPostRequestOptions,
@@ -553,7 +591,7 @@ export function likeStatus(statusId) {
   return (dispatch, getState) => {
     dispatch(create(rioConfig, null, null, {
       operation: LIKE,
-      user: getUser(getState()),
+      user: adaptUserForSocialActions(getUser(getState())),
     }));
   };
 }
@@ -571,9 +609,9 @@ export function unlikeStatus(statusId) {
     },
   };
   return (dispatch, getState) => {
-    dispatch(create(rioConfig, null, null, { 
-      operation: UNLIKE, 
-      user: getUser(getState()), 
+    dispatch(create(rioConfig, null, null, {
+      operation: UNLIKE,
+      user: adaptUserForSocialActions(getUser(getState())),
     }));
   };
 }

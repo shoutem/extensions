@@ -7,8 +7,8 @@ import {
   ReduxFormElement,
 } from '@shoutem/react-web-ui';
 import { Row, Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
-import { getFormState } from '../../../../redux';
-import { CmsSelect } from '../../../cms';
+import { getFormState } from 'src/redux';
+import { CmsSelect } from 'src/modules/cms';
 import { validateCashier } from '../../services';
 import './style.scss';
 
@@ -96,7 +96,12 @@ export function CashierForm({
         </Row>
       }
       <ButtonToolbar>
-        <Button bsStyle="primary" bsSize="large" disabled={submitting} type="submit">
+        <Button
+          bsSize="large"
+          bsStyle="primary"
+          disabled={submitting}
+          type="submit"
+        >
           <LoaderContainer isLoading={submitting}>
             {inEditMode ? 'Save' : 'Add'}
           </LoaderContainer>

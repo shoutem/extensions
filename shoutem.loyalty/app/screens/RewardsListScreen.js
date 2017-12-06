@@ -28,6 +28,8 @@ import {
   loginRequired,
 } from 'shoutem.auth';
 
+import { I18n } from 'shoutem.i18n';
+
 import {
   REWARDS_SCHEMA,
   CARD_STATE_SCHEMA,
@@ -106,10 +108,12 @@ export class RewardsListScreen extends ListScreen {
     }
 
     find(schema, undefined, {
-      'filter[app]': getAppId(),
-      'filter[schema]': cmsSchema,
-      'filter[category]': parentCategoryId,
-      'filter[card]': cardId,
+      query: {
+        'filter[app]': getAppId(),
+        'filter[schema]': cmsSchema,
+        'filter[category]': parentCategoryId,
+        'filter[card]': cardId,
+      },
     });
 
     find(CARD_STATE_SCHEMA, undefined, {
@@ -147,7 +151,7 @@ export class RewardsListScreen extends ListScreen {
       return (
         <EmptyStateView
           icon="error"
-          message="Please create content and reload your app."
+          message={I18n.t('shoutem.application.preview.noContentErrorMessage')}
         />
       );
     }

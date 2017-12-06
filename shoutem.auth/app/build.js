@@ -10,21 +10,18 @@ const isAuthExtension = i => i.type === 'shoutem.core.extensions' && i.id === SH
 const configureFacebookSettingsIOS = (facebookAppId, facebookAppName) => {
   console.log('Configuring Facebook login settings for iOS');
 
-  // After clone extension is placed in ./extensions/shoutem.auth/app where root directory
-  // is directory of clonned app.
   // If extension failed to download by CLI it is placed directly to node_modules.
-  // TODO(Ivan): Change this to write Info.plist and locally,
-  // when Info.plist merging is enabled
-  const infoPlistPath = nearestSync('ios/ShoutemApp/Info.plist', __dirname);
+  // Read CFBundleURLTypes from global info.plist and save it into
+  // extension once project is configured.
+  const authInfoPlist = {
+    CFBundleURLTypes: [{
+      CFBundleURLSchemes: [`fb${facebookAppId}`],
+    }],
+    FacebookAppID: facebookAppId,
+    FacebookDisplayName: facebookAppName,
+  };
 
-  const infoPlistFile = fs.readFileSync(infoPlistPath, 'utf8');
-  const infoPlist = plist.parse(infoPlistFile);
-
-  infoPlist.CFBundleURLTypes.push({ CFBundleURLSchemes: [`fb${facebookAppId}`] });
-  infoPlist.FacebookAppID = facebookAppId;
-  infoPlist.FacebookDisplayName = facebookAppName;
-
-  fs.writeFileSync(infoPlistPath, plist.build(infoPlist));
+  fs.writeFileSync('ios/Info.plist', plist.build(authInfoPlist));
 };
 
 const configureFacebookSettingsAndroid = (facebookAppId) => {

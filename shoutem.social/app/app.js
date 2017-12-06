@@ -32,7 +32,7 @@ export function appDidMount(app) {
     },
   };
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: STATUSES_SCHEMA,
     request: {
       endpoint: '',
@@ -40,7 +40,7 @@ export function appDidMount(app) {
     },
   });
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: USERS_SCHEMA,
     request: {
       endpoint: '',

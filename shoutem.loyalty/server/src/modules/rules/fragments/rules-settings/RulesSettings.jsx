@@ -2,7 +2,8 @@ import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { shouldLoad } from '@shoutem/redux-io';
-import { RulesForm, RulesToggleSwitch } from '../../components';
+import { ToggleSwitch } from 'src/components';
+import { RulesForm } from '../../components';
 import {
   loadRules,
   createRules,
@@ -33,7 +34,6 @@ export class RulesSettings extends Component {
     this.checkData = this.checkData.bind(this);
     this.handleRulesPlaceToggle = this.handleRulesPlaceToggle.bind(this);
     this.handleUpdateRules = this.handleUpdateRules.bind(this);
-    this.handleUpdateRequireReceipt = this.handleUpdateRequireReceipt.bind(this);
 
     this.state = {
       inError: false,
@@ -82,13 +82,12 @@ export class RulesSettings extends Component {
       currentPlaceId,
     } = this.props;
 
-    this.props.updateRules(initialRules, newRules, programId, currentPlaceId)
-      .then(undefined, () => this.setState({ inError: true }));
-  }
-
-  handleUpdateRequireReceipt(requireReceiptCode) {
-    const settingsPatch = { requireReceiptCode };
-    this.props.onUpdateExtension(settingsPatch);
+    return this.props.updateRules(
+      initialRules,
+      newRules,
+      programId,
+      currentPlaceId
+    ).then(undefined, () => this.setState({ inError: true }));
   }
 
   render() {
@@ -96,7 +95,6 @@ export class RulesSettings extends Component {
       rules,
       ruleTemplates,
       currentPlaceId,
-      requireReceiptCode,
     } = this.props;
 
     const { inError } = this.state;
@@ -107,18 +105,17 @@ export class RulesSettings extends Component {
 
     return (
       <div className="rules-settings">
-        <h3>Program settings</h3>
+        <h3>Rules</h3>
         {currentPlaceId &&
-          <RulesToggleSwitch
+          <ToggleSwitch
+            message="Enable custom rules for this place"
             onToggle={this.handleRulesPlaceToggle}
             value={hasRules}
           />
         }
         {showRulesForm &&
           <RulesForm
-            onUpdateRequiredReceipt={this.handleUpdateRequireReceipt}
             onUpdateRules={this.handleUpdateRules}
-            requireReceiptCode={requireReceiptCode}
             rules={resolvedRules}
           />
         }

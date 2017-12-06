@@ -1,0 +1,26 @@
+:global {
+  .translations-modal__dropzone-preview {
+    overflow: hidden;
+    cursor: pointer;
+    background: #f4f5f6 center/24px no-repeat;
+    border: 1px transparent;
+    border-radius: 4px;
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    transition: background-color 0.1s;
+  }
+
+  .translations-modal__uploader {
+    width: 100%;
+
+    .loader {
+      height: 122px;
+      padding-top: 37px;
+    }
+
+    .file-uploader__dropzone {
+      height: 122px;
+    }
+  }
+}

@@ -18,7 +18,7 @@ export function appDidMount(app) {
   const state = app.getState();
 
   // Configure the RSS schema in RIO
-  rio.registerSchema({
+  rio.registerResource({
     schema: RSS_VIDEOS_SCHEMA,
     request: {
       endpoint: buildFeedUrl(state, RSS_VIDEOS_SCHEMA),

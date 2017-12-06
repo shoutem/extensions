@@ -1,21 +1,21 @@
 import React, { PropTypes, Component } from 'react';
+import _ from 'lodash';
 import { ControlLabel, Row, Col, FormGroup } from 'react-bootstrap';
 import { ImageUploader } from '@shoutem/web-core';
-import { url, appId } from 'environment';
+import { url, appId, getAppPublishSettings } from 'environment';
 import { UndeletableS3Uploader } from '../../../fileUpload';
 import form from '../form';
-import DropdownWrapper from '../DropdownWrapper';
 import './style.scss';
 
-const configuration = {
-  default: {
-    parallaxEffect: 'onDeviceOrientation',
-  },
-  parallaxEffect: {
-    onDeviceOrientation: 'On device orientation',
-    onScroll: 'On scroll',
-  },
-};
+const TABLET_BACKGROUND_SCREEN_MIN_WIDTH = 1536;
+const TABLET_BACKGROUND_SCREEN_MIN_HEIGHT = 2048;
+
+const BACKGROUND_SCREEN_MIN_WIDTH = 750;
+const BACKGROUND_SCREEN_MIN_HEIGHT = 1136;
+
+function shouldUseUniversalBuild(publishSettings) {
+  return _.get(publishSettings, 'ios.useUniversalBuild', false);
+}
 
 export class BackgroundSettings extends Component {
   constructor(props) {
@@ -23,6 +23,9 @@ export class BackgroundSettings extends Component {
 
     this.saveForm = this.saveForm.bind(this);
     this.handleBackgroundDeleteSuccess = this.handleBackgroundDeleteSuccess.bind(this);
+    this.handleTabletBackgroundDeleteSuccess = this.handleTabletBackgroundDeleteSuccess.bind(this);
+    this.renderBackgroundImage = this.renderBackgroundImage.bind(this);
+    this.renderTabletBackgroundImage = this.renderTabletBackgroundImage.bind(this);
 
     props.onFieldChange(this.saveForm);
     this.uploader = new UndeletableS3Uploader({
@@ -30,6 +33,13 @@ export class BackgroundSettings extends Component {
       basePolicyServerPath: url.apps,
       folderName: 'images',
     });
+
+    const appPublishSettings = getAppPublishSettings();
+    const useUniversalBuild = shouldUseUniversalBuild(appPublishSettings);
+
+    this.state = {
+      useUniversalBuild,
+    };
   }
 
   saveForm() {
@@ -45,10 +55,70 @@ export class BackgroundSettings extends Component {
     onSettingsChanged(newSettings);
   }
 
+  handleTabletBackgroundDeleteSuccess() {
+    const { onSettingsChanged } = this.props;
+    const newSettings = {
+      tabletBackgroundImage: null,
+    };
+    onSettingsChanged(newSettings);
+  }
+
+  renderTabletBackgroundImage() {
+    const {
+      fields: {
+        tabletBackgroundImage,
+      },
+    } = this.props;
+
+    return (
+      <Col md={6}>
+        <ControlLabel>
+          {`Tablet screen background
+           (min ${TABLET_BACKGROUND_SCREEN_MIN_WIDTH}x${TABLET_BACKGROUND_SCREEN_MIN_HEIGHT}px)`}
+        </ControlLabel>
+        <ImageUploader
+          previewSize="tablet"
+          onUploadSuccess={tabletBackgroundImage.onChange}
+          preview={tabletBackgroundImage.value}
+          minWidth={TABLET_BACKGROUND_SCREEN_MIN_WIDTH}
+          minHeight={TABLET_BACKGROUND_SCREEN_MIN_HEIGHT}
+          icon="add-photo"
+          uploader={this.uploader}
+          onDeleteSuccess={this.handleTabletBackgroundDeleteSuccess}
+        />
+      </Col>
+    );
+  }
+
+  renderBackgroundImage() {
+    const {
+      fields: {
+        backgroundImage,
+      },
+    } = this.props;
+
+    return (
+      <Col md={6}>
+        <ControlLabel>
+          {`Screen background
+                   (min ${BACKGROUND_SCREEN_MIN_WIDTH}x${BACKGROUND_SCREEN_MIN_HEIGHT}px)`}
+        </ControlLabel>
+        <ImageUploader
+          previewSize="custom"
+          onUploadSuccess={backgroundImage.onChange}
+          preview={backgroundImage.value}
+          minWidth={BACKGROUND_SCREEN_MIN_WIDTH}
+          minHeight={BACKGROUND_SCREEN_MIN_HEIGHT}
+          icon="add-photo"
+          uploader={this.uploader}
+          onDeleteSuccess={this.handleBackgroundDeleteSuccess}
+        />
+      </Col>
+    );
+  }
+
   render() {
-    const { parallaxEffect, backgroundImage } = this.props.fields;
-    const minWidth = 750;
-    const minHeight = 1136;
+    const { useUniversalBuild } = this.state;
 
     return (
       <div className="background-settings">
@@ -56,27 +126,8 @@ export class BackgroundSettings extends Component {
         <form>
           <FormGroup>
             <Row>
-              <Col md={7}>
-                <ControlLabel>{`Screen background (min ${minWidth}x${minHeight}px)`}</ControlLabel>
-                <ImageUploader
-                  previewSize="custom"
-                  onUploadSuccess={backgroundImage.onChange}
-                  preview={backgroundImage.value}
-                  minWidth={minWidth}
-                  minHeight={minHeight}
-                  icon="add-photo"
-                  uploader={this.uploader}
-                  onDeleteSuccess={this.handleBackgroundDeleteSuccess}
-                />
-              </Col>
-              {/* <Col md={5}>
-                <ControlLabel>Parallax effect</ControlLabel>
-                <DropdownWrapper
-                  valuesMap={configuration.parallaxEffect}
-                  defaultKey={configuration.default.parallaxEffect}
-                  field={parallaxEffect}
-                />
-              </Col> */}
+              {this.renderBackgroundImage()}
+              {useUniversalBuild && this.renderTabletBackgroundImage()}
             </Row>
           </FormGroup>
         </form>
@@ -96,10 +147,15 @@ BackgroundSettings.propTypes = {
 export default form((props) => {
   const { settings } = props;
   return {
-    fields: ['parallaxEffect', 'backgroundImage'],
+    fields: [
+      'parallaxEffect',
+      'backgroundImage',
+      'tabletBackgroundImage',
+    ],
     defaultValues: {
       parallaxEffect: settings.parallaxEffect,
       backgroundImage: settings.backgroundImage,
+      tabletBackgroundImage: settings.tabletBackgroundImage,
     },
     validation: {},
   };

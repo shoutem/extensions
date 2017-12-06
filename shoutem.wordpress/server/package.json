@@ -1,7 +1,7 @@
 {
   "name": "shoutem.wordpress",
-  "version": "1.3.3",
-  "description": "Show news articles from Wordpress blog.",
+  "version": "1.5.1",
+  "description": "Show news articles from WordPress blog.",
   "scripts": {
     "clean": "rimraf ./build/*",
     "build": "npm run clean && cross-env NODE_ENV=production webpack --config ./bin/webpack/webpack.config.js",

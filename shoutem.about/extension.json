@@ -1,9 +1,9 @@
 {
   "name": "about",
-  "version": "1.3.0",
+  "version": "1.5.1",
   "title": "About",
   "description": "Show info about your app or your business",
-  "platform": "1.3.*",
+  "platform": "1.5.*",
   "icon": "server/assets/add-about-image.png",
   "categories": [
     "content"

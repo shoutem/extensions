@@ -4,6 +4,7 @@ import ArticlesScreen from './screens/ArticlesScreen';
 import GridArticlesScreen from './screens/GridArticlesScreen';
 import ArticleDetailsScreen from './screens/ArticleDetailsScreen';
 import LargeArticleDetailsScreen from './screens/LargeArticleDetailsScreen';
+import enTranslations from './translations/en.json';
 
 export { FeaturedArticleView } from './components/FeaturedArticleView';
 export { GridArticleView } from './components/GridArticleView';
@@ -27,5 +28,13 @@ export const screens = {
 };
 
 export const themes = extension.themes;
+
+export const shoutem = {
+  i18n: {
+    translations: {
+      en: enTranslations,
+    },
+  },
+};
 
 export { reducer };

@@ -4,7 +4,7 @@ import { API_ENDPOINT } from './const';
 import { WORDPRESS_NEWS_SCHEMA, WORDPRESS_MEDIA_SCHEMA } from './redux';
 
 export function appDidMount() {
-  rio.registerSchema({
+  rio.registerResource({
     schema: WORDPRESS_NEWS_SCHEMA,
     request: {
       endpoint: API_ENDPOINT,
@@ -15,7 +15,7 @@ export function appDidMount() {
     },
   });
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: WORDPRESS_MEDIA_SCHEMA,
     request: {
       endpoint: API_ENDPOINT,

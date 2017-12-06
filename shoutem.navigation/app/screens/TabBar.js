@@ -21,7 +21,6 @@ import {
 
 import {
   executeShortcut,
-  getActiveShortcut,
 } from 'shoutem.application';
 
 import { ext } from '../const';
@@ -58,6 +57,14 @@ export class TabBar extends PureComponent {
     setActiveNavigationStack: React.PropTypes.func,
   };
 
+  state = {
+    // Stores the currently selected shortcut. We cannot use the active
+    // shortcut from global state, because shortcuts can be nested. The
+    // tab should remain selected while the shortcut from the tab bar is
+    // active, or any of its children are active.
+    selectedShortcut: null,
+  };
+
   constructor(props, context) {
     super(props, context);
 
@@ -76,8 +83,7 @@ export class TabBar extends PureComponent {
 
   getStartingShortcut() {
     const { startingScreen, shortcut } = this.props;
-    const childShortcuts = shortcut.children;
-    return _.find(childShortcuts, ['id', startingScreen]) || _.first(childShortcuts);
+    return _.find(shortcut.children, ['id', startingScreen]) || _.first(shortcut.children);
   }
 
   getTabRouteForShortcut(shortcut) {
@@ -103,7 +109,6 @@ export class TabBar extends PureComponent {
   openShortcut(shortcut) {
     // eslint-disable-next-line no-shadow
     const {
-      activeShortcut,
       executeShortcut,
       navigationState,
       navigateTo,
@@ -111,7 +116,9 @@ export class TabBar extends PureComponent {
       setActiveNavigationStack,
     } = this.props;
 
-    if (shortcut === activeShortcut) {
+    const { selectedShortcut } = this.state;
+
+    if (shortcut === selectedShortcut) {
       // Tapping twice on the same tab resets tab screens stack.
       this.resetTabNavigationStateToTop(shortcut.id);
       return;
@@ -120,27 +127,41 @@ export class TabBar extends PureComponent {
     const navigationStack = getTabNavigationStack(shortcut.id);
     const stackName = navigationStack.name;
 
+    if (shortcut.action) {
+      // This is an external action, we don't want to change anything
+      // in the ui, just execute this shortcut
+      executeShortcut(shortcut.id, undefined, navigationStack);
+      return;
+    }
+
     if (hasRouteWithKey(navigationState, stackName)) {
+      // We are returning to an existing tab, it is already
+      // rendered, just jump to it
       setActiveNavigationStack(navigationStack);
       jumpToKey(stackName, TAB_BAR_NAVIGATION_STACK);
     } else {
-      // Navigate to a new tab only if the shortcut opens a screen
-      if (shortcut.screen) {
-        setActiveNavigationStack(navigationStack);
-        navigateTo(this.getTabRouteForShortcut(shortcut), TAB_BAR_NAVIGATION_STACK);
-      }
-
+      // We are navigation to a tab for the first time, push the new
+      // tab to the navigation stack
+      setActiveNavigationStack(navigationStack);
+      navigateTo(this.getTabRouteForShortcut(shortcut), TAB_BAR_NAVIGATION_STACK);
       executeShortcut(shortcut.id, undefined, navigationStack);
     }
+
+    // Update the selected shortcut, so that the correct tab is
+    // marked as selected in the tab bar ui
+    this.setState({
+      selectedShortcut: shortcut,
+    });
   }
 
   renderTabBarItems() {
     const {
-      activeShortcut,
       showText,
       showIcon,
-      shortcut: { children }
+      shortcut: { children },
     } = this.props;
+
+    const { selectedShortcut } = this.state;
 
     return _.take(children, TABS_LIMIT).map(shortcut => (
       <TabBarItem
@@ -149,7 +170,7 @@ export class TabBar extends PureComponent {
         showIcon={showIcon}
         shortcut={shortcut}
         onPress={this.openShortcut}
-        selected={_.isEqual(activeShortcut, shortcut)}
+        selected={shortcut === selectedShortcut}
       />
     ));
   }
@@ -178,7 +199,6 @@ export class TabBar extends PureComponent {
 
 const mapStateToProps = (state) => ({
   ...state[ext()].tabBar,
-  activeShortcut: getActiveShortcut(state),
 });
 
 const mapDispatchToProps = {

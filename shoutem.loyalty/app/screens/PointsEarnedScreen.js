@@ -15,6 +15,8 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { closeModal } from '@shoutem/core/navigation';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 
 const { func, number, shape } = React.PropTypes;
@@ -45,7 +47,7 @@ export class PointsEarnedScreen extends React.Component {
   getNavBarProps() {
     return {
       renderLeftComponent: () => null,
-      title: 'POINTS EARNED',
+      title: I18n.t(ext('pointsEarnedNavBarTitle')),
     };
   }
 
@@ -64,7 +66,7 @@ export class PointsEarnedScreen extends React.Component {
         <NavigationBar {...this.getNavBarProps()} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <Subtitle styleName="oval-highlight">
-            {amount ? `Your bill was $${amount}` : ''}
+            {amount ? I18n.t(ext('pointsEarnedAmountSpent'), { amountSpent: amount }) : ''}
           </Subtitle>
           <Title
             style={{
@@ -76,15 +78,15 @@ export class PointsEarnedScreen extends React.Component {
           >
             {`+${points}`}
           </Title>
-          <Title styleName="h-center">Congratulations!</Title>
+          <Title styleName="h-center">{I18n.t(ext('pointsEarnedCongratulations'))}</Title>
           <Subtitle styleName="h-center md-gutter">
-            {`You've earned ${points} points!`}
+            {I18n.t(ext('pointsEarnedMessage'), { count: points || 0 })}
           </Subtitle>
           <Button
             styleName="secondary xl-gutter-vertical"
             onPress={this.handleConfirm}
           >
-            <Text>CONFIRM</Text>
+            <Text>{I18n.t(ext('confirmButton'))}</Text>
           </Button>
         </View>
       </Screen>

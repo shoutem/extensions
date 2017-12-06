@@ -1,41 +1,26 @@
-import React, { Component, PropTypes } from 'react';
-import _ from 'lodash';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { navigateToExtension } from '../../redux';
+import { navigateToSettings } from '../../redux';
 
-export class PointsCardSettingsPage extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleNavigateToLoyaltyClick = this.handleNavigateToLoyaltyClick.bind(this);
-  }
-
-  handleNavigateToLoyaltyClick() {
-    const { appId, ownExtension } = this.props;
-    const extensionId = _.get(ownExtension, 'id');
-    this.props.navigateToExtension(appId, extensionId);
-  }
-
-  render() {
-    return (
-      <p className="points-card-settings-page">
-        To configure your Loyalty program, please click{' '}
-        <a onClick={this.handleNavigateToLoyaltyClick}>here</a>.
-      </p>
-    );
-  }
+export function PointsCardSettingsPage({ navigateToLoyaltySettings }) {
+  return (
+    <p className="points-card-settings-page">
+      To configure your Loyalty program, please click{' '}
+      <a onClick={navigateToLoyaltySettings}>here</a>.
+    </p>
+  );
 }
 
 PointsCardSettingsPage.propTypes = {
-  appId: PropTypes.string,
-  ownExtension: PropTypes.object,
-  navigateToExtension: PropTypes.func,
+  navigateToLoyaltySettings: PropTypes.func,
 };
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
+  const { appId, ownExtensionName } = ownProps;
+
   return {
-    navigateToExtension: (appId, extensionId) => (
-      dispatch(navigateToExtension(appId, extensionId))
+    navigateToLoyaltySettings: () => (
+      dispatch(navigateToSettings(appId, ownExtensionName))
     ),
   };
 }

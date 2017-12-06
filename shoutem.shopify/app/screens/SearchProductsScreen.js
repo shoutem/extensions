@@ -29,6 +29,8 @@ import {
 
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 import ProductsList from '../components/ProductsList';
 import { shop as shopShape } from '../components/shapes';
@@ -46,7 +48,7 @@ const renderCancelButton = onPress => (
 );
 
 const renderNoTagFound = (tag) => {
-  const message = `There are no tags matching "${tag}"`;
+  const message = `${I18n.t(ext('noItemsWithSpecificTag'))}"${tag}"`;
 
   return (
     <EmptyStateView
@@ -109,7 +111,7 @@ class SearchProductsScreen extends Component {
         styleName={`horizontal ${topGutter} md-gutter-left sm-gutter-right v-center`}
       >
         <SearchField
-          placeholder="Search"
+          placeholder={I18n.t(ext('itemSearchPlaceholder'))}
           onChangeText={this.onFilterChange}
           onSubmitEditing={this.onSubmit}
           value={tagFilter}

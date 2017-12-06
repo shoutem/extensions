@@ -30,10 +30,14 @@ import {
   getUser,
   LOGOUT,
   AUTHENTICATE,
+  getAccessToken,
 } from './redux';
 
-import { getAuthHeader } from './shared/getAuthHeader';
 import { isAuthenticationRequired } from './isAuthenticationRequired';
+
+function getAuthHeader(state) {
+  return `Bearer ${getAccessToken(state)}`;
+}
 
 import {
   clearSession,
@@ -78,15 +82,17 @@ export function createLoginMiddleware(screens) {
 export const authenticateMiddleware = setPriority(store => next => (action) => {
   if (action.type === AUTHENTICATE) {
     const state = store.getState();
+    const { dispatch } = store;
+    const user = getUser(state);
 
     if (isAuthenticated(state)) {
       action.callback(state[ext()].user);
     } else {
-      store.dispatch(navigateTo({
+      dispatch(navigateTo({
         screen: ext('LoginScreen'),
         props: {
           onLoginSuccess: () => {
-            store.dispatch(navigateBack());
+            dispatch(navigateBack());
             action.callback();
           },
         },

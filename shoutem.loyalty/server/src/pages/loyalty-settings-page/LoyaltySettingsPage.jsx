@@ -1,24 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
+import { shouldLoad } from '@shoutem/redux-io';
 import {
-  fetchExtension,
-  updateExtensionSettings,
-  getExtensionState,
-} from '@shoutem/redux-api-sdk';
-import { isInitialized, shouldLoad, shouldRefresh } from '@shoutem/redux-io';
-import { LoaderContainer } from '@shoutem/react-web-ui';
-import LoyaltyDisabledPlaceholder from '../../components/loyalty-disabled-placeholder';
-import { CashierSettings } from '../../modules/cashiers';
-import { RulesSettings } from '../../modules/rules';
-import { CmsSelect, cmsApi } from '../../modules/cms';
-import { loyaltyApi } from '../../services';
-import {
+  PROGRAMS,
+  ProgramSettings,
   enableLoyalty,
   getLoyaltyPlaces,
   loadLoyaltyPlaces,
-  PROGRAMS,
-} from '../../redux';
+} from 'src/modules/program';
+import { LoyaltyDisabledPlaceholder } from 'src/components';
+import { getProgramId, initializeApiEndpoints } from 'src/services';
+import { CashierSettings } from 'src/modules/cashiers';
+import { RulesSettings } from 'src/modules/rules';
+import { CmsSelect } from 'src/modules/cms';
 import './style.scss';
 
 const PLACES_DESCRIPTOR = {
@@ -31,20 +27,26 @@ class LoyaltySettingsPage extends Component {
     super(props);
 
     this.checkData = this.checkData.bind(this);
-    this.initializeApiEndpoints = this.initializeApiEndpoints.bind(this);
     this.handleUpdateExtension = this.handleUpdateExtension.bind(this);
     this.handlePlaceChange = this.handlePlaceChange.bind(this);
     this.handleEnableLoyalty = this.handleEnableLoyalty.bind(this);
     this.renderLoyaltySettings = this.renderLoyaltySettings.bind(this);
 
-    const settings = _.get(props, 'ownExtension.settings', {});
-    const { program, rules, requireReceiptCode } = settings;
-    const programId = _.get(program, 'id', null);
+    const { ownExtension: { settings } } = props;
+    initializeApiEndpoints(settings);
+
+    const {
+      rules,
+      requireReceiptCode,
+      enableBarcodeScan,
+    } = settings;
+    const programId = getProgramId(settings);
 
     this.state = {
       programId,
       rules,
       requireReceiptCode,
+      enableBarcodeScan,
       currentPlaceId: null,
     };
   }
@@ -58,33 +60,10 @@ class LoyaltySettingsPage extends Component {
   }
 
   checkData(nextProps, props = {}) {
-    const {
-      appId: nextAppId,
-      ownExtension: nextOwnExtension,
-      places: nextPlaces,
-    } = nextProps;
+    const { appId } = this.props;
 
-    const nextSettings = _.get(nextOwnExtension, 'settings', {});
-    this.initializeApiEndpoints(nextSettings);
-
-    if (shouldLoad(nextProps, props, 'ownExtension')) {
-      this.props.fetchExtension();
-    }
-
-    if (cmsApi.isInitialized() && shouldRefresh(nextPlaces)) {
-      this.props.loadPlaces(nextAppId);
-    }
-  }
-
-  initializeApiEndpoints(nextSettings) {
-    const { apiEndpoint, cmsEndpoint } = nextSettings;
-
-    if (!loyaltyApi.isInitialized()) {
-      loyaltyApi.init(apiEndpoint);
-    }
-
-    if (!cmsApi.isInitialized()) {
-      cmsApi.init(cmsEndpoint);
+    if (shouldLoad(nextProps, props, 'places')) {
+      this.props.loadPlaces(appId);
     }
   }
 
@@ -115,20 +94,36 @@ class LoyaltySettingsPage extends Component {
     const {
       programId,
       requireReceiptCode,
+      enableBarcodeScan,
       currentPlaceId,
       rules,
     } = this.state;
     const { appId, places, ownExtensionName } = this.props;
 
+    const showPlaceSelect = !_.isEmpty(places);
+
+    // Program settings are applied on global level.
+    // When place is chosen, only settings that can be applied to specific place can be shown.
+    const showProgramSettings = !currentPlaceId;
+
     return (
       <div>
-        {!_.isEmpty(places) &&
+        {showPlaceSelect &&
           <CmsSelect
             allItemsLabel="All stores"
             descriptor={PLACES_DESCRIPTOR}
             dropdownLabel="Select a store"
             onFilterChange={this.handlePlaceChange}
             resources={places}
+          />
+        }
+        {showProgramSettings &&
+          <ProgramSettings
+            enableBarcodeScan={enableBarcodeScan}
+            extensionName={ownExtensionName}
+            onUpdateExtension={this.handleUpdateExtension}
+            programId={programId}
+            requireReceiptCode={requireReceiptCode}
           />
         }
         <RulesSettings
@@ -153,21 +148,16 @@ class LoyaltySettingsPage extends Component {
 
   render() {
     const { programId } = this.state;
-    const { ownExtension, places } = this.props;
-    const dataLoading = !isInitialized(ownExtension) || !isInitialized(places);
 
     return (
-      <LoaderContainer
-        className="loyalty-settings-page"
-        isLoading={dataLoading}
-      >
+      <div className="loyalty-settings-page settings-page">
         {!programId &&
           <LoyaltyDisabledPlaceholder
             onEnableLoyaltyClick={this.handleEnableLoyalty}
           />
         }
         {programId && this.renderLoyaltySettings()}
-      </LoaderContainer>
+      </div>
     );
   }
 }
@@ -175,7 +165,6 @@ class LoyaltySettingsPage extends Component {
 LoyaltySettingsPage.propTypes = {
   appId: PropTypes.string,
   ownExtension: PropTypes.object,
-  fetchExtension: PropTypes.func,
   updateExtensionSettings: PropTypes.func,
   enableLoyalty: PropTypes.func,
   createAuthorization: PropTypes.func,
@@ -184,11 +173,9 @@ LoyaltySettingsPage.propTypes = {
   ownExtensionName: PropTypes.string,
 };
 
-function mapStateToProps(state, ownProps) {
-  const { ownExtensionName } = ownProps;
-  const extensionState = getExtensionState(state, ownExtensionName);
+function mapStateToProps(state) {
   return {
-    places: getLoyaltyPlaces(extensionState, state),
+    places: getLoyaltyPlaces(state),
   };
 }
 
@@ -197,9 +184,6 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName: ownExtensionName };
 
   return {
-    fetchExtension: () => (
-      dispatch(fetchExtension(ownExtensionName))
-    ),
     updateExtensionSettings: (extension, settings) => (
       dispatch(updateExtensionSettings(extension, settings))
     ),

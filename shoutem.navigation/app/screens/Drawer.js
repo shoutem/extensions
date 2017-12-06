@@ -11,7 +11,7 @@ import {
   ScreenStack,
   navigateBack,
   setActiveNavigationStack,
-  RESET,
+  RESET_TO_ROUTE,
 } from '@shoutem/core/navigation';
 
 import { connectStyle } from '@shoutem/theme';
@@ -19,6 +19,7 @@ import { connectStyle } from '@shoutem/theme';
 import {
   executeShortcut,
   getActiveShortcut,
+  isShortcutVisible,
 } from 'shoutem.application';
 
 import DrawerItem from '../components/DrawerItem';
@@ -82,8 +83,7 @@ export class Drawer extends Component {
 
   getStartingShortcut() {
     const { startingScreen, shortcut } = this.props;
-    const childShortcuts = shortcut.children;
-    return _.find(childShortcuts, ['id', startingScreen]) || _.first(childShortcuts);
+    return _.find(shortcut.children, ['id', startingScreen]) || _.first(shortcut.children);
   }
 
   getNavbarProps() {
@@ -135,7 +135,7 @@ export class Drawer extends Component {
     if (activeShortcut !== shortcut) {
       this.props.executeShortcut(
         shortcut.id,
-        RESET,
+        RESET_TO_ROUTE,
         DRAWER_NAVIGATION_STACK,
       );
     }
@@ -224,6 +224,7 @@ export class Drawer extends Component {
 const mapStateToProps = state => ({
   activeShortcut: getActiveShortcut(state),
   navigationState: state[ext()].drawer,
+  isShortcutVisible: (shortcutId) => isShortcutVisible(state, shortcutId),
 });
 
 const mapDispatchToProps = { navigateBack, setActiveNavigationStack, executeShortcut };

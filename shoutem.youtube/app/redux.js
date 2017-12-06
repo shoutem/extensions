@@ -54,9 +54,8 @@ function getNextActionParams(action) {
 
 function getNextActionEndpoint(action) {
   const params = getNextActionParams(action);
-  const unusedParams = _.omit(params, ['type']);
   const endpointUri = new URI(API_ENDPOINT.replace(/{type}/g, params.type));
-  const resolvedParams = { ...endpointUri.query(true), ...unusedParams };
+  const resolvedParams = { ...endpointUri.query(true), ...params.query };
 
   return endpointUri.query(resolvedParams).toString();
 }
@@ -73,7 +72,7 @@ function getNextActionLinks(action) {
 }
 
 function getFeedUrlFromAction(action) {
-  return _.get(action, ['meta', 'params', 'feedUrl']);
+  return _.get(action, ['meta', 'params', 'query', 'feedUrl']);
 }
 
 export function youtubeResource(schema, initialState = []) {
@@ -177,34 +176,40 @@ function fetchUserPlaylistId(feedUrl, apiKey) {
 }
 
 function fetchUserUploads(feedUrl, apiKey, playlistIds) {
-  const params = {
+  const params = { 
+    query: {
+      ...sharedParams,
+      playlistId: playlistIds,
+      key: apiKey,
+      feedUrl,
+    },
     type: 'playlistItems',
-    playlistId: playlistIds,
-    key: apiKey,
-    feedUrl,
   };
-  return find(YOUTUBE_VIDEOS_SCHEMA, undefined, { ...params, ...sharedParams });
+  return find(YOUTUBE_VIDEOS_SCHEMA, undefined, { ...params });
 }
 
 function buildFeedParams(feedUrl, apiKey) {
   if (/channel/i.test(feedUrl)) {
     return {
       type: 'search',
-      channelId: extractChannelId(feedUrl),
-      key: apiKey,
+      query: {
+        channelId: extractChannelId(feedUrl),
+        key: apiKey,
+      },
     };
   } else if (/playlist/i.test(feedUrl)) {
     return {
       type: 'playlistItems',
-      playlistId: extractPlaylistId(feedUrl),
-      key: apiKey,
+      query: {
+        playlistId: extractPlaylistId(feedUrl),
+        key: apiKey,
+      },
     };
   }
   return {};
 }
 
 function userFeedThunk(feedUrl, apiKey) {
-  let params;
   return (dispatch) => {
     dispatch(fetchUserPlaylistId(feedUrl, apiKey)).then((action) => {
       const { payload } = action;
@@ -213,7 +218,7 @@ function userFeedThunk(feedUrl, apiKey) {
         );
       dispatch(fetchUserUploads(feedUrl, apiKey, playlistIds));
     });
-    return find(YOUTUBE_VIDEOS_SCHEMA, undefined, { ...params, ...sharedParams });
+    return find(YOUTUBE_VIDEOS_SCHEMA, undefined, { ...sharedParams });
   };
 }
 

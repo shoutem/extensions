@@ -2,14 +2,17 @@
 
 const fs = require('fs');
 const xcode = require('xcode');
+const getXcodeProjectPath = require('@shoutem/build-tools').getXcodeProjectPath;
+const getXcodeProjectName = require('@shoutem/build-tools').getXcodeProjectName;
 
 const extensionPath = '../node_modules/shoutem.push-notifications';
 const folderPath = `${extensionPath}/ios`;
 
-const xcodeprojPath = 'ios/ShoutemApp.xcodeproj/project.pbxproj';
+const xcodeprojPath = getXcodeProjectPath();
 const xcodeProject = xcode.project(xcodeprojPath).parseSync();
+const pbxGroupName = getXcodeProjectName();
 
-const groupKey = xcodeProject.findPBXGroupKey({ name: 'ShoutemApp' });
+const groupKey = xcodeProject.findPBXGroupKey({ name: pbxGroupName });
 
 xcodeProject.addHeaderFile(`${folderPath}/Permissions.h`, {}, groupKey);
 xcodeProject.addSourceFile(`${folderPath}/Permissions.m`,

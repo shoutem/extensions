@@ -23,6 +23,8 @@ import {
 
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 import CartIcon from '../components/CartIcon';
 import ProductsList from '../components/ProductsList';
@@ -111,7 +113,7 @@ export class ProductsListScreen extends Component {
           </View>
         );
       },
-      title: shortcut.title || 'SHOP',
+      title: shortcut.title || I18n.t(ext('shopTitlePlaceholder')),
     };
   }
 

@@ -1,0 +1,19 @@
+:global {
+  .user-group-table-row {
+    td:last-child {
+      padding-right: 12px;
+    }
+  }
+
+  .user-group-table-row__switch {
+    text-align: center;
+
+    .switch__button {
+      vertical-align: middle;
+    }
+  }
+
+  .user-groups-actions-menu {
+    cursor: pointer;
+  }
+}

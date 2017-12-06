@@ -16,6 +16,10 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { MapView } from '@shoutem/ui-addons';
 
+import { I18n } from 'shoutem.i18n';
+
+import { ext } from '../extension';
+
 export default class EventMapScreen extends PureComponent {
   static propTypes = {
     marker: React.PropTypes.object,
@@ -47,7 +51,7 @@ export default class EventMapScreen extends PureComponent {
       return (
         <View virtual styleName="container">
           <Button onPress={this.openMaps}>
-            <Text>Directions</Text>
+            <Text>{I18n.t('shoutem.cms.directionsButton')}</Text>
           </Button>
         </View>
       );

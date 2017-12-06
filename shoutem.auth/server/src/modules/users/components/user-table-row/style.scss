@@ -1,0 +1,31 @@
+:global {
+  .user-table-row {
+    cursor: pointer;
+
+    &:hover {
+      background-color: #ecf9fd;
+    }
+  }
+
+  .user-table-row__status {
+    text-align: center;
+    font-weight: bold;
+    color: #75c51d;
+
+    &.blocked {
+      color: #d0021b;
+    }
+  }
+
+  .user-table-row__actions {
+    text-align: right;
+
+    .btn-group {
+      padding-right: 12px;
+    }
+  }
+
+  .table > tbody > tr > td.user-table-row__group {
+    padding: 0;
+  }
+}

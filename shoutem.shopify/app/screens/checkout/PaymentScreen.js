@@ -21,39 +21,12 @@ import {
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../../const';
 import CartFooter from '../../components/CartFooter';
 import { payment as paymentShape } from '../../components/shapes';
 import { completeCheckout } from '../../redux/actionCreators';
-
-const fields = [{
-  name: 'number',
-  label: 'Card number',
-  keyboardType: 'numeric',
-},
-{
-  name: 'expiryMonth',
-  label: 'Expiry month (mm)',
-  keyboardType: 'numeric',
-},
-{
-  name: 'expiryYear',
-  label: 'Expiry year (yy)',
-  keyboardType: 'numeric',
-},
-{
-  name: 'cvv',
-  label: 'Security code',
-  keyboardType: 'numeric',
-},
-{
-  name: 'firstName',
-  label: 'First name',
-},
-{
-  name: 'lastName',
-  label: 'Last name',
-}];
 
 const { func } = React.PropTypes;
 
@@ -74,6 +47,34 @@ class PaymentScreen extends Component {
     super(props);
     this.completeCheckout = this.completeCheckout.bind(this);
     this.renderInput = this.renderInput.bind(this);
+    this.fields = [{
+      name: 'number',
+      label: 'Card number',
+      keyboardType: 'numeric',
+    },
+    {
+      name: 'expiryMonth',
+      label: 'Expiry month (mm)',
+      keyboardType: 'numeric',
+    },
+    {
+      name: 'expiryYear',
+      label: 'Expiry year (yy)',
+      keyboardType: 'numeric',
+    },
+    {
+      name: 'cvv',
+      label: 'Security code',
+      keyboardType: 'numeric',
+    },
+    {
+      name: 'firstName',
+      label: 'First name',
+    },
+    {
+      name: 'lastName',
+      label: 'Last name',
+    }]
 
     this.state = {};
   }
@@ -81,12 +82,12 @@ class PaymentScreen extends Component {
   completeCheckout() {
     const { completeCheckout } = this.props;
 
-    const values = _.map(fields, ({ name }) => this.state[name]);
+    const values = _.map(this.fields, ({ name }) => this.state[name]);
     if (_.some(values, _.isEmpty)) {
-      Alert.alert('Error', 'All fields are mandatory check if you forgot to fill some.');
+      Alert.alert(I18n.t(ext('paymentInfoFormErrorTitle')), I18n.t(ext('paymentInfoFormErrorMessage')));
       return;
     }
-    const creditCard = _.reduce(fields, (result, field) => {
+    const creditCard = _.reduce(this.fields, (result, field) => {
       const { name } = field;
       return { ...result, [name]: this.state[name] };
     }, {});
@@ -118,11 +119,11 @@ class PaymentScreen extends Component {
     return (
       <View styleName="flexible">
         <ScrollView style={{ paddingTop: 30 }}>
-          {_.map(fields, this.renderInput)}
+          {_.map(this.fields, this.renderInput)}
         </ScrollView>
         <Divider styleName="line" />
         <CartFooter
-          action="COMPLETE PAYMENT"
+          action={I18n.t(ext('completePaymentButton'))}
           onActionButtonClicked={this.completeCheckout}
           withShipping
         />
@@ -136,7 +137,7 @@ class PaymentScreen extends Component {
     return (
       <Screen>
         <NavigationBar
-          title="PAYMENT"
+          title={I18n.t(ext('paymentScreenNavBarTitle'))}
         />
         { isProcessing ? renderProcessingPaymentMessage() : this.renderPaymentForm() }
       </Screen>

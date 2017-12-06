@@ -14,6 +14,9 @@ import {
 } from '@shoutem/ui';
 
 import { connectStyle } from '@shoutem/theme';
+
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 
 import {
@@ -60,7 +63,7 @@ export class PlaceRewardListView extends Component {
           />
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={2}>{title}</Subtitle>
-            <Caption>{`Requires ${pointsRequired} points`}</Caption>
+            <Caption>{I18n.t(ext('pointsRequiredStores'), { count: pointsRequired || 0 })}</Caption>
           </View>
           <Icon styleName="disclosure" name="right-arrow" />
         </Row>

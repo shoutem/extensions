@@ -1,5 +1,8 @@
 import codePush from 'react-native-code-push';
 import { Alert } from 'react-native';
+import { I18n } from 'shoutem.i18n';
+
+import { ext } from '../const';
 /**
  * Calls Code Push sync method to synchronize app package with changes
  * deployed on Code Push identified by provided deployment key
@@ -17,15 +20,15 @@ export function syncPackage(deploymentKey, showUpdateDialog) {
           .then((localPackage) => {
             if (showUpdateDialog) {
               Alert.alert(
-                'New Content',
-                'New content is available in the app, would you like to load it now?',
+                I18n.t(ext('newContentAlertTitle')),
+                I18n.t(ext('newContentAlertMessage')),
                 [
                   {
-                    text: 'Later',
+                    text: I18n.t(ext('laterButton')),
                     onPress: () => localPackage.install(codePush.InstallMode.ON_NEXT_RESTART),
                   },
                   {
-                    text: 'Yes',
+                    text: I18n.t(ext('acceptButton')),
                     onPress: () => localPackage.install(codePush.InstallMode.IMMEDIATE),
                   },
                 ]

@@ -15,6 +15,7 @@ import { navigateTo } from '@shoutem/core/navigation';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { Favorite } from 'shoutem.favorites';
 import { openURL } from 'shoutem.web-view';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 import { PlaceDetails } from './PlaceDetails';
@@ -86,10 +87,10 @@ class MediumPlaceDetails extends PlaceDetails {
           {this.renderOpeningHours(place)}
           {this.renderInlineMap(place)}
           {this.renderDescription(place)}
-          {this.renderDisclosureButton(place.url, 'Visit webpage', 'web', this.openWebLink)}
-          {this.renderDisclosureButton(location.formattedAddress, 'Directions', 'pin', this.openMapLink)}
-          {this.renderDisclosureButton(place.mail, 'Email', 'email', this.openEmailLink)}
-          {this.renderDisclosureButton(place.phone, 'Phone', 'call', this.openPhoneLink)}
+          {this.renderDisclosureButton(place.url, I18n.t('shoutem.cms.websiteButton'), 'web', this.openWebLink)}
+          {this.renderDisclosureButton(location.formattedAddress, I18n.t('shoutem.cms.directionsButton'), 'pin', this.openMapLink)}
+          {this.renderDisclosureButton(place.mail, I18n.t('shoutem.cms.emailButton'), 'email', this.openEmailLink)}
+          {this.renderDisclosureButton(place.phone, I18n.t('shoutem.cms.phoneButton'), 'call', this.openPhoneLink)}
         </ScrollView>
       </Screen>
     );

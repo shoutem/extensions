@@ -1,11 +1,14 @@
 import React from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
+
 import { navigateTo } from '@shoutem/core/navigation';
+import { isShortcutVisible } from 'shoutem.application';
+
 import NoScreens from '../screens/NoScreens';
 import NoContent from '../screens/NoContent';
 import mapIsRootScreenToProps from './mapIsRootScreenToProps';
 import mapExtensionSettingsToProps from './mapExtensionSettingsToProps';
-import { connect } from 'react-redux';
 
 /**
  * Navigation shortcuts, such as Drawer, Folder, TabBar, must have child shortcuts.
@@ -32,6 +35,10 @@ ShortcutChildrenRequired.propTypes = {
 const mapStateToProps = (state, ownProps) => ({
   ...mapIsRootScreenToProps(state, ownProps),
   ...mapExtensionSettingsToProps(state, ownProps),
+  shortcut: {
+    ...ownProps.shortcut,
+    children: _.filter(ownProps.shortcut.children, (s) => isShortcutVisible(state, s.id))
+  },
 });
 
 const ConnectedShortcutChildrenRequired =

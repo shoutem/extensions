@@ -2,6 +2,7 @@ import { connectStyle } from '@shoutem/theme';
 import React from 'react';
 import { LayoutAnimation } from 'react-native';
 import { FavoritesListScreen } from 'shoutem.favorites';
+import { I18n } from 'shoutem.i18n';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import {
@@ -71,7 +72,7 @@ export class FavoritesList extends FavoritesListScreen {
     const { mapView } = this.state;
     const { favorites } = this.props;
 
-    const actionText = mapView ? 'List' : 'Map';
+    const actionText = mapView ? I18n.t('shoutem.cms.navBarListViewButton') : I18n.t('shoutem.cms.navBarMapViewButton');
 
     if (_.isEmpty(favorites)) {
       return null;
@@ -101,8 +102,13 @@ export class FavoritesList extends FavoritesListScreen {
   }
 }
 
-export const mapStateToProps = FavoritesListScreen.createMapStateToProps(ext('places'));
+export const mapStateToProps = FavoritesListScreen.createMapStateToProps(
+  ext('places'),
+  (state) => state[ext()].allPlaces,
+);
 
-export default connect(mapStateToProps, undefined)(
+export const mapDispatchToProps = FavoritesListScreen.createMapDispatchToProps();
+
+export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('FavoritesList'), {})(FavoritesList)
 );

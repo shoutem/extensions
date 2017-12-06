@@ -6,7 +6,7 @@ import { VIMEO_SCHEMA } from './redux';
 export function appDidMount(app) {
   const state = app.getState();
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: VIMEO_SCHEMA,
     request: {
       endpoint: buildFeedUrl(state, VIMEO_SCHEMA),

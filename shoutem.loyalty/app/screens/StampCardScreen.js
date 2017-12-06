@@ -13,14 +13,12 @@ import {
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
-import {
-  ext,
-} from '../const';
+import { I18n } from 'shoutem.i18n';
 
 import { authorizationShape, rewardShape } from '../components/shapes';
 import Stamps from '../components/Stamps';
-
 import { collectPoints } from '../services';
+import { ext } from '../const';
 
 const { func } = React.PropTypes;
 
@@ -80,7 +78,7 @@ export class StampCardScreen extends React.Component {
 
     return (
       <Screen>
-        <NavigationBar title="STAMP CARD" />
+      <NavigationBar title={I18n.t(ext('punchCardStampingNavBarTitle'))} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <Title styleName="h-center xl-gutter-top md-gutter-bottom">{title}</Title>
           <Stamps
@@ -92,7 +90,7 @@ export class StampCardScreen extends React.Component {
               styleName="secondary lg-gutter-vertical"
               onPress={this.handleDone}
             >
-              <Text>DONE</Text>
+              <Text>{I18n.t(ext('punchCardStampingDoneButton'))}</Text>
             </Button>
             :
             null

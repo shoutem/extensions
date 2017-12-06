@@ -7,6 +7,8 @@ import {
   openInModal,
 } from '@shoutem/core/navigation';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext, PAGE_SIZE } from '../const';
 import { getProducts } from './selectors';
 
@@ -195,8 +197,6 @@ export function refreshProducts(collectionId = 0, tag, resetMode) {
 
     return Shopify.getProducts(nextPage, collectionId, tag && [tag])
     .then((products) => {
-      console.log(products);
-
       // If we got less products than the page size, we need to ask for the same page next time
       // to get recently added products
       const lastLoadedPage = _.size(products) < PAGE_SIZE ? nextPage - 1 : nextPage;
@@ -225,7 +225,7 @@ export function startCheckout(cart) {
       dispatch(openInModal(route));
     }).catch((error) => {
       Alert.alert(
-        'Error with checkout',
+        I18n.t(ext('checkoutErrorTitle')),
         error.message,
       );
     });
@@ -264,8 +264,8 @@ export function updateCustomerInformation(customer) {
       }));
     }).catch((error) => {
       Alert.alert(
-        'Error with checkout',
-         error.message,
+        I18n.t(ext('checkoutErrorTitle')),
+        error.message,
       );
     });
   };
@@ -371,9 +371,8 @@ export function selectShippingMethod(method) {
     }).catch((error) => {
       console.log(error);
       Alert.alert(
-        'Error with checkout',
-        'The shipping method couldn\'t be selected.' +
-        ' Please try again or contact the store owner.',
+        I18n.t(ext('checkoutErrorTitle')),
+        I18n.t(ext('shippingMethodSelectionErrorMessage')),
       );
     });
   };
@@ -397,7 +396,7 @@ export function completeCheckout(creditCard) {
     .catch((error) => {
       dispatch(paymentProcessing(false));
       Alert.alert(
-        'Error with checkout',
+        I18n.t(ext('checkoutErrorTitle')),
         error.message,
       );
     });

@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Linking } from 'react-native';
 import CurrentLocationBase from './CurrentLocationBase';
+import { I18n } from 'shoutem.application';
+import { ext } from '../../const';
 
 export default function (WrappedComponent) {
   class CurrentLocation extends CurrentLocationBase {
@@ -17,10 +19,8 @@ export default function (WrappedComponent) {
     }
 
     promptForLocationPermission() {
-      const alert = 'You disabled location permissions for this application.' +
-        'Do you want to enable it in' +
-        ' settings now?';
-      const confirmationMessage = 'Settings';
+      const alert = I18n.t(ext('iosLocationPermissionDisabled'));
+      const confirmationMessage = I18n.t(ext('iosLocationPermissionSettings'));
 
       super.promptForLocationPermission(alert, confirmationMessage, this.openAppSettings);
     }

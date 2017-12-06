@@ -6,6 +6,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { MapView, EmptyStateView } from '@shoutem/ui-addons';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import PlaceIconView from '../components/PlaceIconView';
 
@@ -147,7 +148,7 @@ export class MapList extends Component {
       return (
         <EmptyStateView
           icon="address-full"
-          message="None of your items have a location property set"
+          message={I18n.t('shoutem.cms.noLocationsProvidedErrorMessage')}
         />
       );
     }

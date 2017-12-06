@@ -11,6 +11,8 @@ import {
 
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import { shop as shopShape } from './shapes';
 
 import { ext } from '../const';
@@ -18,7 +20,7 @@ import { getCartTotal } from '../redux/selectors';
 
 const renderStatusRow = (cartTotal, { currency }) => (
   <View styleName="horizontal md-gutter space-between">
-    <Subtitle>Total price:</Subtitle>
+    <Subtitle>{I18n.t(ext('totalPrice'))}</Subtitle>
     <Subtitle>
       {`${currency} ${cartTotal}`}
     </Subtitle>

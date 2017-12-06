@@ -33,6 +33,7 @@ import {
   CmsListScreen,
   currentLocation,
  } from 'shoutem.cms';
+ import { I18n } from 'shoutem.i18n';
 
 import MapList from '../../components/MapList';
 import PlaceIconView from '../../components/PlaceIconView';
@@ -68,7 +69,6 @@ export class PlacesList extends CmsListScreen {
     this.getNavBarProps = this.getNavBarProps.bind(this);
     this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(this);
     this.toggleMapView = this.toggleMapView.bind(this);
-    this.isDataLoading = this.isDataLoading.bind(this);
 
     this.state = {
       ...this.state,
@@ -110,7 +110,7 @@ export class PlacesList extends CmsListScreen {
 
   renderRightNavBarComponent() {
     const { mapView } = this.state;
-    const actionText = mapView ? 'List' : 'Map';
+    const actionText = mapView ? I18n.t('shoutem.cms.navBarListViewButton') : I18n.t('shoutem.cms.navBarMapViewButton');
 
     return (
       <View virtual styleName="container md-gutter-right">
@@ -126,11 +126,11 @@ export class PlacesList extends CmsListScreen {
 
   promptForLocationPermission(message, confirmationMessage, onConfirmation) {
     const confirmOption = { text: confirmationMessage, onPress: onConfirmation };
-    const cancelOption = { text: 'Cancel' };
+    const cancelOption = { text: I18n.t(ext('cancelButton')) };
     const alertOptions = [confirmOption, cancelOption];
 
     Alert.alert(
-      'Grant location access',
+      I18n.t(ext('locationPermissionsPrompt')),
       message,
       alertOptions,
     );
@@ -157,16 +157,10 @@ export class PlacesList extends CmsListScreen {
     );
   }
 
-  isDataLoading(data) {
-    const { permission } = this.props.permissionStatus;
-
-    return isBusy(data) || !isInitialized(data) || permission === undefined;
-  }
-
   renderData(data) {
     const { cardStatesByLocation } = this.props;
     const { mapView } = this.state;
-    const loading = this.isDataLoading(data);
+    const loading = isBusy(data) || !isInitialized(data);
 
     if (this.shouldRenderPlaceholderView()) {
       return this.renderPlaceholderView();

@@ -19,6 +19,7 @@ import {
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
+import { I18n } from 'shoutem.i18n';
 
 import MapList from '../components/MapList';
 import PlacePhotoView from '../components/PlacePhotoView';
@@ -58,7 +59,7 @@ export class PlacesList extends CmsListScreen {
 
   renderRightNavBarComponent() {
     const { mapView } = this.state;
-    const actionText = mapView ? 'List' : 'Map';
+    const actionText = mapView ? I18n.t('shoutem.cms.navBarListViewButton') : I18n.t('shoutem.cms.navBarMapViewButton');
 
     return (
       <View virtual styleName="container md-gutter-right">

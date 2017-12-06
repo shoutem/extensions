@@ -4,6 +4,7 @@
 import HelloShortcutPage from './pages/hello-shortcut-page';
 import HelloExtensionPage from './pages/hello-extension-page';
 import reducer from './redux';
+import './style.scss';
 
 export const pages = {
   HelloShortcutPage,

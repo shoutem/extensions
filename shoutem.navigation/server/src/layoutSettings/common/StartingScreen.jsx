@@ -7,52 +7,62 @@ export default class StartingScreen extends Component {
     super(props);
 
     this.getStartingScreenDropdownTitle = this.getStartingScreenDropdownTitle.bind(this);
-    this.onStartingScreenSelected = this.onStartingScreenSelected.bind(this);
+    this.handleStartingScreenSelected = this.handleStartingScreenSelected.bind(this);
   }
 
-  onStartingScreenSelected(event) {
+  handleStartingScreenSelected(shortcutKey) {
     const { onSettingsChanged } = this.props;
+    if (!onSettingsChanged) {
+      return;
+    }
+
     const newSettings = {
-      startingScreen: event,
+      startingScreen: shortcutKey,
     };
+
     onSettingsChanged(newSettings);
   }
 
-  getStartingScreenDropdownTitle(shortcutId) {
-    if (!shortcutId) {
+  getStartingScreenDropdownTitle(shortcutKey) {
+    const { childShortcuts } = this.props;
+
+    if (!shortcutKey) {
       return 'First shortcut in the main navigation';
     }
 
-    const { childShortcuts } = this.props;
-    const shortcut = _.find(childShortcuts, { id: shortcutId });
+    const shortcut = _.find(childShortcuts, { key: shortcutKey });
     if (!shortcut) {
       return 'First shortcut in the main navigation';
     }
 
-    const firstChildShortcutId = _.get(childShortcuts, [0, 'id']);
-    if (shortcut.id === firstChildShortcutId) {
+    const firstChildShortcutKey = _.get(childShortcuts, [0, 'key']);
+    if (shortcut.key === firstChildShortcutKey) {
       return `First screen in the main navigation (${shortcut.title})`;
     }
+
     return shortcut.title;
   }
 
   render() {
     const { settings, childShortcuts } = this.props;
-    const firstChildShortcutId = _.get(childShortcuts, [0, 'id']);
-    const startingScreenId = _.get(settings, ['startingScreen'], firstChildShortcutId);
-    const hasChildShortcuts = childShortcuts && childShortcuts.length > 0;
+
+    const firstChildShortcutKey = _.get(childShortcuts, [0, 'key']);
+    const startingScreenKey = _.get(settings, ['startingScreen'], firstChildShortcutKey);
+
+    const dropdownTitle = this.getStartingScreenDropdownTitle(startingScreenKey);
+    const hasChildShortcuts = !_.isEmpty(childShortcuts);
 
     return (
       <div>
         <ControlLabel>Starting screen</ControlLabel>
         {hasChildShortcuts && (
-          <Dropdown onSelect={this.onStartingScreenSelected} className="block">
+          <Dropdown onSelect={this.handleStartingScreenSelected} className="block">
             <Dropdown.Toggle>
-              {this.getStartingScreenDropdownTitle(startingScreenId)}
+              {dropdownTitle}
             </Dropdown.Toggle>
             <Dropdown.Menu>
               {childShortcuts.map(shortcut => (
-                <MenuItem key={shortcut.id} eventKey={shortcut.id}>{shortcut.title}</MenuItem>
+                <MenuItem key={shortcut.key} eventKey={shortcut.key}>{shortcut.title}</MenuItem>
               ))}
             </Dropdown.Menu>
           </Dropdown>

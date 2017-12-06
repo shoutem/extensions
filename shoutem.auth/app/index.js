@@ -11,6 +11,7 @@ import MyProfileScreen from './screens/MyProfileScreen';
 
 import reducer, {
   getUser,
+  getUserGroups,
   getAccessToken,
   authenticate,
   logoutAction,
@@ -31,6 +32,8 @@ import {
 } from './middleware';
 
 import { loginRequired } from './loginRequired';
+
+import enTranslations from './translations/en.json';
 
 const appScreens = {};
 
@@ -60,13 +63,22 @@ const middleware = [
   authenticateMiddleware,
 ];
 
-export { appDidMount } from './app';
+export const shoutem = {
+  i18n: {
+    translations: {
+      en: enTranslations,
+    },
+  },
+};
+
+export { appDidMount, appWillUnmount } from './app';
 
 export {
   appWillMount,
   appScreens,
   middleware,
   getUser,
+  getUserGroups,
   getAccessToken,
   authenticate,
   loginRequired,

@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux'
+import { bindActionCreators } from 'redux';
 import moment from 'moment';
 
 import { navigateTo } from '@shoutem/core/navigation';
@@ -12,23 +12,23 @@ import { find, next, getCollection, isInitialized } from '@shoutem/redux-io';
 
 // TODO currentLocation should probably be extracted into shoutem.application
 import { currentLocation } from 'shoutem.cms';
-import { ListScreen } from 'shoutem.application';
+import { RemoteDataListScreen } from 'shoutem.application';
 import { triggerEvent } from 'shoutem.analytics';
+import { I18n } from 'shoutem.i18n';
 
 import ListEventView from '../components/ListEventView';
 import { addToCalendar } from '../services/Calendar';
 import EventsMap from '../components/EventsMap';
 import { ext } from '../extension';
-
-const EVENTS_PROXY_SCHEMA = 'shoutem.proxy.ical.events';
+import { EVENTS_PROXY_SCHEMA } from '../redux';
 
 function hasFeaturedEvent(events) {
   return events.some(event => event.featured);
 }
 
-export class EventsListScreen extends ListScreen {
+export class EventsListScreen extends RemoteDataListScreen {
   static propTypes = {
-    ...ListScreen.propTypes,
+    ...RemoteDataListScreen.propTypes,
     navigateTo: React.PropTypes.func,
   };
 
@@ -59,17 +59,19 @@ export class EventsListScreen extends ListScreen {
   }
 
   fetchData() {
-    const { shortcut, find } = this.props;
+    const { shortcut } = this.props;
     const icalUrl = _.get(shortcut, 'settings.icalUrl');
 
     const now = moment();
     const endDate = now.format('YYYY-MM-DD');
 
     InteractionManager.runAfterInteractions(() =>
-      find(EVENTS_PROXY_SCHEMA, 'allEvents', {
-        url: icalUrl,
-        'filter[endDate]': endDate, // filtering past events
-        sort: 'startDate,-startTime',
+      this.props.find(EVENTS_PROXY_SCHEMA, 'allEvents', {
+        query: {
+          url: icalUrl,
+          'filter[endDate]': endDate, // filtering past events
+          sort: 'startDate,-startTime',
+        },
       }),
     );
   }
@@ -103,7 +105,7 @@ export class EventsListScreen extends ListScreen {
     return super.renderCategoriesDropDown(newStyleName);
   }
 
-  getNavigationBarProps(screenTitle = 'List') {
+  getNavigationBarProps(screenTitle = I18n.t('shoutem.cms.navBarListViewButton')) {
     const { data } = this.props;
     const { shouldRenderMap } = this.state;
     const newNavBarProps = super.getNavigationBarProps();
@@ -116,7 +118,7 @@ export class EventsListScreen extends ListScreen {
       return (
         <View virtual styleName="container">
           <Button styleName="clear" onPress={this.toggleMapMode}>
-            <Text>{shouldRenderMap ? screenTitle : 'Map'}</Text>
+          <Text>{shouldRenderMap ? screenTitle : I18n.t('shoutem.cms.navBarMapViewButton')}</Text>
           </Button>
         </View>
       );
@@ -169,8 +171,8 @@ export class EventsListScreen extends ListScreen {
 
 export function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    find: find,
-    next: next,
+    find,
+    next,
     navigateTo,
     triggerEvent,
   }, dispatch);

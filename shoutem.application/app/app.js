@@ -5,12 +5,14 @@ import rio, { checkExpiration } from '@shoutem/redux-io';
 import { applyToAll } from '@shoutem/redux-composers';
 import { initializeUiAddons } from '@shoutem/ui-addons';
 
+import { I18n } from 'shoutem.i18n';
+
 import { extractAppActions } from './shared/extractAppActions';
 import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 import { openInitialScreen } from './shared/openInitialScreen';
 import { isRelease } from './shared/isRelease';
 import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
-import { CONFIGURATION_SCHEMA, ACTIVE_APP_STATE } from './const';
+import { CONFIGURATION_SCHEMA, ACTIVE_APP_STATE, ext } from './const';
 import buildConfig from './buildConfig.json';
 import {
   loadLocalConfiguration,
@@ -56,7 +58,7 @@ function loadConfiguration(app) {
 }
 
 function registerConfigurationSchema() {
-  rio.registerSchema({
+  rio.registerResource({
     schema: CONFIGURATION_SCHEMA,
     request: {
       // appId is RIO url variable because it can be changed when fetching configuration
@@ -103,7 +105,7 @@ export function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
   if (!isConfigurationLoaded(state)) {
-    throw new Error('App configuration failed to load.');
+    throw new Error(I18n.t(ext('configurationLoadErrorMessage')));
   }
   unsubscribeFromConfigurationLoaded();
 }

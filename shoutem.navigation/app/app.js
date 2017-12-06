@@ -2,6 +2,7 @@ import { BackAndroid, ToastAndroid } from 'react-native';
 import { getActiveNavigationStackState, navigateBack } from '@shoutem/core/navigation';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { getExtensionSettings } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
 import { ext } from './const';
 
 // The time duration after the first back button press during
@@ -23,7 +24,7 @@ export const appWillMount = (app) => {
 
     if (!exitAppConfirmationVisible) {
       exitAppConfirmationVisible = true;
-      ToastAndroid.show('Press back again to exit', ToastAndroid.LONG);
+      ToastAndroid.show(I18n.t(ext('androidExitMessage')), ToastAndroid.LONG);
       setTimeout(() => {
         exitAppConfirmationVisible = false;
       }, allowAppExitDurationMs);

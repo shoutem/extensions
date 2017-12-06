@@ -12,6 +12,8 @@ import reducer, {
   middleware,
 } from './redux';
 
+import enTranslations from './translations/en.json';
+
 export const screens = {
   TabBar,
   Tab,
@@ -25,6 +27,14 @@ export const screens = {
 };
 
 export const actions = {};
+
+export const shoutem = {
+  i18n: {
+    translations: {
+      en: enTranslations,
+    },
+  },
+};
 
 export {
   reducer,

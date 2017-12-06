@@ -16,7 +16,11 @@ import {
 
 import { ActionSheet } from '@shoutem/ui-addons';
 
+import { I18n } from 'shoutem.i18n';
+
 import { comment as commentShape } from '../components/shapes';
+import { adaptSocialUserForProfileScreen } from '../services/userProfileDataAdapter';
+import { ext } from '../const';
 
 export default class CommentView extends React.Component {
   static propTypes = {
@@ -36,7 +40,7 @@ export default class CommentView extends React.Component {
     const { comment, openProfile } = this.props;
     const { user } = comment;
 
-    openProfile(user);
+    openProfile(adaptSocialUserForProfileScreen(user));
   }
 
   renderStatusAttachments() {
@@ -63,8 +67,8 @@ export default class CommentView extends React.Component {
       ActionSheet.showActionSheetWithOptions(
         {
           options: [
-            'Delete',
-            'Cancel'
+            I18n.t(ext('deleteCommentOption')),
+            I18n.t(ext('cancelCommentSelectionOption'))
           ],
           destructiveButtonIndex: 0,
           cancelButtonIndex: 1,

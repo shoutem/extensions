@@ -23,6 +23,8 @@ import {
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 import {
   getCardStateForPlace,
@@ -111,7 +113,7 @@ export class RewardDetailsScreen extends React.Component {
             :
             <View>
               <Caption styleName="h-center md-gutter-bottom">
-                {`Requires ${pointsRequired} points`}
+                {I18n.t(ext('rewardPointRequirement'), { count: pointsRequired || 0 })}
               </Caption>
               <RewardProgressBar
                 points={points}
@@ -141,7 +143,7 @@ export class RewardDetailsScreen extends React.Component {
           styleName="secondary md-gutter"
           onPress={() => this.handleAction(shouldRedeem)}
         >
-          <Text>{shouldRedeem ? 'REDEEM' : 'STAMP CARD'}</Text>
+          <Text>{shouldRedeem ? I18n.t(ext('punchCardRedeemButton')) : I18n.t(ext('punchCardStampButton'))}</Text>
         </Button>
       </View>
     );

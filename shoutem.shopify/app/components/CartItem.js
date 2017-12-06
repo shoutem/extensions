@@ -10,6 +10,8 @@ import {
 
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import {
   cartItem as cartItemShape,
   shop as shopShape,
@@ -40,7 +42,7 @@ const CartItem = ({ cartItem, shop }) => {
             ellipsizeMode="middle"
             numberOfLines={1}
           >
-            {`${title}  ·  Quantity: ${quantity}`}
+            {`${title}  ·  ${I18n.t(ext('itemQuantity'))}${quantity}`}
           </Caption>
         </View>
       </View>

@@ -20,6 +20,8 @@ import {
 
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 
 import TransactionItem from './TransactionItem';
@@ -64,7 +66,7 @@ export class TransactionHistoryView extends React.Component {
           source={NO_ACTIVITY_ICON}
           styleName="small-avatar"
         />
-        <Text styleName="h-start">No activity</Text>
+        <Text styleName="h-start">{I18n.t(ext('noHistory'))}</Text>
       </Row>
     );
   }
@@ -102,7 +104,7 @@ export class TransactionHistoryView extends React.Component {
         styleName="md-gutter-vertical"
         onPress={onShowHistory}
       >
-        <Text>SEE ENTIRE HISTORY</Text>
+        <Text>{I18n.t(ext('fullHistoryButton'))}</Text>
       </Button>
     );
   }
@@ -111,7 +113,7 @@ export class TransactionHistoryView extends React.Component {
     return (
       <View>
         <Divider styleName="section-header">
-          <Caption>POINTS HISTORY</Caption>
+          <Caption>{I18n.t(ext('pointsHistoryTitle'))}</Caption>
         </Divider>
         {this.renderHistoryItems()}
       </View>

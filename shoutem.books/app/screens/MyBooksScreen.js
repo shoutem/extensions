@@ -18,6 +18,7 @@ import {
 import { EmptyStateView } from '@shoutem/ui-addons';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
+import { I18n } from 'shoutem.i18n';
 import { CmsListScreen } from 'shoutem.cms';
 import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
 
@@ -83,7 +84,7 @@ class MyBooksScreen extends React.Component {
     const { data } = this.props;
 
     const message = isError(data) ?
-      'Unexpected error occurred.' : 'Nothing here at this moment.';
+      I18n.t('shoutem.application.unexpectedError') : I18n.t('shoutem.application.preview.noContentErrorMessage');
 
     return (
       <EmptyStateView icon="books" message={message} />

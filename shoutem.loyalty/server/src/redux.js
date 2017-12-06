@@ -1,132 +1,73 @@
-import _ from 'lodash';
 import { createScopedReducer } from '@shoutem/redux-api-sdk';
-import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
-import { create, storage, getCollection, collection } from '@shoutem/redux-io';
-import rulesReducer, { moduleName as rules, createRule } from './modules/rules';
-import cashiersReducer, { moduleName as cashiers } from './modules/cashiers';
-import cmsReducer, { moduleName as cms, loadResources } from './modules/cms';
-import rewardsReducer, { moduleName as rewards } from './modules/rewards';
-import { getLoyaltyUrl } from './services';
-import ext from './const';
-
-// CONST
-export const PROGRAMS = ext('programs');
-export const AUTHORIZATIONS = ext('authorizations');
-export const PLACES = ext('places');
-export const PLACE_REWARDS = ext('place-rewards');
+import ext from 'src/const';
+import programReducer, {
+  moduleName as program,
+} from 'src/modules/program';
+import rulesReducer, {
+  moduleName as rules,
+} from 'src/modules/rules';
+import cashiersReducer, {
+  moduleName as cashiers,
+} from 'src/modules/cashiers';
+import cmsReducer, {
+  moduleName as cms,
+} from 'src/modules/cms';
+import punchRewardsReducer, {
+  moduleName as punchRewards,
+} from 'src/modules/punch-rewards';
+import transactionsReducer, {
+  moduleName as transactions,
+} from 'src/modules/transactions';
+import {
+  moduleName as placeRewards,
+  extensionReducer as placeRewardsExtensionReducer,
+  shortcutReducer as placeRewardsShortcutReducer,
+} from 'src/modules/place-rewards';
 
 // SELECTORS
 export function getFormState(state) {
   return _.get(state, [ext(), 'form']);
 }
 
-export function getLoyaltyPlaces(extensionState, state) {
-  const loyaltyPlaces = _.get(extensionState, 'loyalty.places');
-  return getCollection(loyaltyPlaces, state);
-}
-
 // ACTIONS
-function createProgram(scope) {
-  const config = {
-    schema: PROGRAMS,
-    request: {
-      endpoint: getLoyaltyUrl('/v1/programs'),
-      headers: {
-        Accept: 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
-      },
-    },
-  };
-
-  const newProgram = {
-    type: PROGRAMS,
-    attributes: {
-      name: 'Program',
-    },
-  };
-
-  return create(config, newProgram, scope);
-}
-
-function createAuthorization(programId, authorizationType = 'pin', scope) {
-  const config = {
-    schema: AUTHORIZATIONS,
-    request: {
-      endpoint: getLoyaltyUrl(`/v1/programs/${programId}/authorizations`),
-      headers: {
-        Accept: 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
-      },
-    },
-  };
-
-  const authorization = {
-    type: AUTHORIZATIONS,
-    attributes: {
-      authorizationType,
-      implementationData: {},
-    },
-  };
-
-  return create(config, authorization, scope);
-}
-
-export function enableLoyalty(ruleTemplates, authorizationTypes = ['pin', 'userId'], scope) {
-  return dispatch => (
-    dispatch(createProgram(scope))
-      .then(action => {
-        const programId = _.get(action, ['payload', 'data', 'id']);
-
-        const ruleActions = _.map(ruleTemplates, rule => (
-          dispatch(createRule(rule, programId, null, scope))
-        ));
-
-        const authActions = _.map(authorizationTypes, authType => (
-          dispatch(createAuthorization(programId, authType, scope))
-        ));
-
-        return Promise.all([
-          ...authActions,
-          ...ruleActions,
-        ]).then(() => programId);
-      })
-  );
-}
-
-export function loadLoyaltyPlaces(appId, categoryId, scope) {
-  return loadResources(appId, categoryId, PLACES, {}, PLACES, scope);
-}
-
-export function navigateToExtension(appId, installationId) {
-  const options = { appId, installationId };
+export function navigateToSettings(appId, sectionId) {
+  const options = { appId, sectionId };
 
   return {
     type: '@@navigator/NAVIGATE_REQUEST',
     payload: {
-      component: 'extension',
+      component: 'settings',
       options,
     },
   };
 }
 
-export default () => (
+export function navigateToUrl(url) {
+  return {
+    type: '@@navigator/NAVIGATE_REQUEST',
+    payload: {
+      component: 'external',
+      options: { url },
+    },
+  };
+}
+
+// REDUCER
+export const reducer = () => (
   createScopedReducer({
     extension: {
       form: formReducer,
+      [program]: programReducer,
       [rules]: rulesReducer,
       [cashiers]: cashiersReducer,
       [cms]: cmsReducer,
-      loyalty: combineReducers({
-        places: collection(PLACES, PLACES),
-      }),
-      storage: combineReducers({
-        [PLACES]: storage(PLACES),
-        [PLACE_REWARDS]: storage(PLACE_REWARDS),
-      }),
+      [transactions]: transactionsReducer,
+      [punchRewards]: punchRewardsReducer,
+      [placeRewards]: placeRewardsExtensionReducer,
     },
     shortcut: {
-      [rewards]: rewardsReducer,
+      [placeRewards]: placeRewardsShortcutReducer,
     },
   })
 );

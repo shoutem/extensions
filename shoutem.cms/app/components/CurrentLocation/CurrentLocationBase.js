@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { Alert } from 'react-native';
+import { I18n } from 'shoutem.i18n';
 
+import { ext } from '../../const';
 import {
   PermissionStatus,
   updateLocationPermission,
@@ -82,11 +84,11 @@ export default class CurrentLocationBase extends Component {
 
   promptForLocationPermission(message, confirmationMessage, onConfirmation) {
     const confirmOption = { text: confirmationMessage, onPress: onConfirmation };
-    const cancelOption = { text: 'Cancel' };
+    const cancelOption = { text: I18n.t(ext('cancelLocationPermissions')) };
     const alertOptions = [confirmOption, cancelOption];
 
     Alert.alert(
-      'Grant location access',
+      I18n.t(ext('locationPermissionsPrompt')),
       message,
       alertOptions,
     );

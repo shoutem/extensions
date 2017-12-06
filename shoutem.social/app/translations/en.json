@@ -1,0 +1,41 @@
+{
+  "shoutem": {
+    "social": {
+      "commentButton": "COMMENT",
+      "deleteCommentOption": "Delete",
+      "cancelCommentSelectionOption": "Cancel",
+      "likeButton": "LIKE",
+      "unlikeButton": "UNLIKE",
+      "numberOfLikesMessage": {
+        "one": "{{firstUser}} likes this",
+        "other": "{{firstUser}} and {{secondUser}} like this",
+      },
+      "numberOfOtherUserLikesMessage": {
+        "one": "{{firstUser}}, {{secondUser}} and 1 other like this",
+        "other": "{{firstUser}}, {{secondUser}} and {{count}} others like this"
+      },
+      "numberOfLikes": {
+        "one": "{{count}} Like",
+        "other": "{{count}} Likes"
+      },
+      "blankPostWarning": "This post appears to be blank. Please write something.",
+      "numberOfComments": {
+        "one": "{{count}} Comment",
+        "other": "{{count}} Comments",
+        "zero": "No comments"
+      },
+      "postCommentButton": "Post",
+      "navBarSearchPlaceholder": "Search",
+      "searchCancelButton": "Cancel",
+      "postDetailsTitle": "POST DETAILS",
+      "newStatusTitle": "NEW STATUS",
+      "newStatusPlaceholder": "Share your thoughts",
+      "viewStatusLikes": "LIKES",
+      "deleteStatusOption": "Delete",
+      "cancelStatusSelectionOption": "Cancel",
+      "postStatusButton": "Post",
+      "newCommentPlaceholder": "Add new comment...",
+      "postDetailsNavBarTitle": "POST DETAILS"
+    }
+  }
+}

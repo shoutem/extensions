@@ -1,7 +1,7 @@
 {
   "name": "navigation",
-  "version": "1.3.1",
-  "platform": "1.3.*",
+  "version": "1.5.6",
+  "platform": "1.5.*",
   "type": "system",
   "title": "Main Navigation",
   "description": "App-level navigation",
@@ -74,6 +74,7 @@
       "cols": 3,
       "rows": 3,
       "parallaxEffect": "onDeviceOrientation",
+      "tabletBackgroundImage": "",
       "backgroundImage": "",
       "backgroundWidth": 48,
       "backgroundHeight": 48
@@ -88,6 +89,7 @@
     },
     "settings": {
       "backgroundImage": "",
+      "tabletBackgroundImage": "",
       "parallaxEffect": "onScroll",
       "inItemAlignment": "center",
       "listAlignment": "top",

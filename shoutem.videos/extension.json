@@ -1,8 +1,8 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "1.3.0",
-  "platform": "1.3.*",
+  "version": "1.5.1",
+  "platform": "1.5.*",
   "description": "Show a video gallery",
   "icon": "server/assets/add-videos-image.png",
   "categories": ["media"],

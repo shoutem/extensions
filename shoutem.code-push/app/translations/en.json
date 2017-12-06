@@ -1,0 +1,10 @@
+{
+  "shoutem": {
+    "code-push": {
+      "newContentAlertTitle": "New content",
+      "newContentAlertMessage": "New content is available in the app, would you like to load it now?",
+      "laterButton": "Later",
+      "acceptButton": "Yes"
+    }
+  }
+}

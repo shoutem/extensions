@@ -2,6 +2,23 @@ import _ from 'lodash';
 import { getExtensionSettings, getActiveShortcut } from 'shoutem.application';
 import { ext } from './const.js';
 
+/**
+ * Checks if screen is protected. We consider a screen protected if a shortcut that's
+ * opening it is protected.
+ * @param shortcut
+ * @param action
+ * @returns {boolean}
+ */
+function isShortcutScreenProtected(shortcut, action) {
+  const isShortcutProtected =
+    _.get(shortcut, ['settings', _.camelCase(ext()), 'protected'], false);
+
+  const shortcutScreen = _.get(shortcut, 'screen');
+  const actionScreen = _.get(action, 'route.screen');
+
+  return isShortcutProtected && shortcutScreen === actionScreen;
+}
+
 // function that takes 2 parameters
 // screens - map of screens installed in users application
 // action - next action that needs to be executed
@@ -17,7 +34,7 @@ function isActiveShortcutProtected(state, action) {
     return true;
   }
 
-  return _.get(activeShortcut, 'settings.shoutemAuth.protected', false);
+  return isShortcutScreenProtected(activeShortcut, action);
 }
 
 export function isAuthenticationRequired(screens = {}, action, state) {
@@ -36,6 +53,7 @@ export function isAuthenticationRequired(screens = {}, action, state) {
     if (screen.loginRequired === false) {
       return false;
     }
+
 
     return screen.loginRequired || isActiveShortcutProtected(state, action);
   }

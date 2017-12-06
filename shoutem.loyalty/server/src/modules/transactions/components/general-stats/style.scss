@@ -1,0 +1,19 @@
+:global {
+  .general-stats {
+    margin-top: 24px;
+    padding: 16px 24px;
+    background-color: #f4f5f6;
+    height: 88px;
+  }
+
+  .general-stats__item {
+    margin-top: 4px;
+    text-align: center;
+    color: #808799;
+
+    label {
+      margin-top: 12px;
+      color: #444f6c;
+    }
+  }
+}

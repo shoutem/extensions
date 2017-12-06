@@ -34,6 +34,7 @@ import {
   logout,
 } from '../redux';
 
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 const { func } = React.PropTypes;
@@ -72,7 +73,7 @@ export class UserProfileScreen extends Component {
                 onPress={logout}
                 styleName="clear"
               >
-                <Subtitle>Logout</Subtitle>
+                <Subtitle>{I18n.t(ext('profileNavBarLogoutButton'))}</Subtitle>
               </Button>
             </View>
           );
@@ -80,7 +81,7 @@ export class UserProfileScreen extends Component {
           return null;
         }
       },
-      title: 'PROFILE',
+      title: I18n.t(ext('profileNavBarTitle')),
     };
   }
 
@@ -156,13 +157,27 @@ export class UserProfileScreen extends Component {
         onPress={this.openEditProfileScreen}
       >
         <Icon name="edit" />
-        <Text>EDIT PROFILE</Text>
+        <Text>{I18n.t(ext('editProfileButton'))}</Text>
       </Button>
     );
   }
 
   renderContent() {
-    const { description, location, name, profile_image_url: image } = this.props.user;
+    const { profile } = this.props.user;
+
+    if (_.isEmpty(profile)) {
+      return null
+    };
+
+    const {
+      firstName,
+      lastName,
+      image,
+      address,
+      website,
+      about
+    } = profile;
+    const name = `${firstName} ${lastName}`;
 
     return (
       <View styleName="vertical h-center lg-gutter-top">
@@ -171,18 +186,23 @@ export class UserProfileScreen extends Component {
           uri={image || undefined}
         />
         {name ?
-          <Title styleName="md-gutter-vertical">{`${name}`}</Title>
+          <Title styleName="md-gutter-vertical">{name}</Title>
           :
           null
         }
-        {location ?
-          <Caption styleName="md-gutter-vertical">{`${location}`}</Caption>
+        {address ?
+          <Caption styleName="md-gutter-vertical">{`${address}`}</Caption>
+          :
+          null
+        }
+        {website ?
+          <Caption styleName="md-gutter-vertical">{`${website}`}</Caption>
           :
           null
         }
         {this.renderEditButton()}
         <Text styleName="h-center">
-          {description}
+          {about}
         </Text>
       </View>
     );
@@ -203,7 +223,7 @@ export class UserProfileScreen extends Component {
 
 export const mapStateToProps = (state, ownProps) => {
   const me = getUser(state);
-  const isProfileOwner = ownProps.user ? _.get(ownProps.user, 'id') === _.get(me, 'id') : me;
+  const isProfileOwner = !_.isEmpty(ownProps.user) ? _.get(ownProps.user, 'id') === _.get(me, 'legacyId') : !_.isEmpty(me);
   const user = isProfileOwner ? me : ownProps.user || me;
 
   return {

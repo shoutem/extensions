@@ -6,6 +6,8 @@ import {
   Linking,
 } from 'react-native';
 
+import { I18n } from 'shoutem.i18n';
+
 import {
   Screen,
   Text,
@@ -15,6 +17,8 @@ import {
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { MapView } from '@shoutem/ui-addons';
+
+import { ext } from '../const';
 
 export default class SingleEventMapScreen extends PureComponent {
   static propTypes = {
@@ -47,7 +51,7 @@ export default class SingleEventMapScreen extends PureComponent {
       return (
         <View virtual styleName="container">
           <Button onPress={this.openMaps}>
-            <Text>Directions</Text>
+            <Text>{I18n.t('shoutem.cms.directionsButton')}</Text>
           </Button>
         </View>
       );

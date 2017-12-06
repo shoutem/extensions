@@ -35,6 +35,8 @@ import {
 
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 import CartIcon from '../components/CartIcon';
 import UpdateItemScreen from './UpdateItemScreen';
@@ -239,7 +241,7 @@ class ProductDetailsScreen extends Component {
             onPress={this.onAddToCart}
           >
             <Icon name="cart" />
-            <Text>ADD TO CART</Text>
+            <Text>{I18n.t(ext('addToCartButton'))}</Text>
           </Button>
         </View>
       </Tile>

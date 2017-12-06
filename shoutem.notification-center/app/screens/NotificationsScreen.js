@@ -1,28 +1,17 @@
 import React from 'react';
-
+import _ from 'lodash';
 import { connect } from 'react-redux';
-
-import {
-  InteractionManager,
-} from 'react-native';
-
+import { InteractionManager } from 'react-native';
 import { next } from '@shoutem/redux-io';
 import { navigateTo } from '@shoutem/core/navigation';
-
 import { connectStyle } from '@shoutem/theme';
 import { ListScreen } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
 
-import {
-  fetchNotifications,
-  markAsRead,
-} from '../redux';
-
+import { fetchNotifications, markAsRead } from '../redux';
 import { notificationShape } from '../components/shapes';
 import NotificationView from '../components/NotificationView';
-
 import { ext } from '../const';
-
-const TITLE = 'NOTIFICATIONS';
 
 const { arrayOf, func, shape } = React.PropTypes;
 
@@ -46,17 +35,42 @@ class NotificationsScreen extends ListScreen {
     this.handleNotificationPress = this.handleNotificationPress.bind(this);
   }
 
+  // @see shoutem.application.RemoteDataListScreen
   fetchData() {
     const { fetchNotifications } = this.props;
+    const rioFindParams = this.getSelectedGroupsAsParams();
 
     InteractionManager.runAfterInteractions(() => {
-      fetchNotifications();
+      fetchNotifications(rioFindParams);
     });
+  }
+
+  /**
+   * Filters out the groups the user is subscribed to
+   * by checking their (firebase) tags.
+   * Returns a redux-io find() params object
+   */
+  getSelectedGroupsAsParams() {
+    const { groups, selectedGroups } = this.props;
+
+    if (_.isEmpty(selectedGroups)) {
+      return;
+    }
+
+    const groupIds = groups
+      .filter(group => _.includes(selectedGroups, `group.${group.tag}`))
+      .map(group => group.id);
+
+    return {
+      query: {
+        'filter[groupIds]': groupIds.join(),
+      }
+    };
   }
 
   getNavigationBarProps() {
     return {
-      title: TITLE,
+      title: I18n.t(ext('notificationListNavBarTitle')),
     };
   }
 
@@ -78,7 +92,7 @@ class NotificationsScreen extends ListScreen {
 
   getListProps() {
     return {
-      data: this.props.data.data,
+      data: this.props.data.data || [],
     };
   }
 
@@ -92,6 +106,8 @@ class NotificationsScreen extends ListScreen {
 
 const mapStateToProps = state => ({
   data: state[ext()].notifications,
+  groups: state[ext()].groups.data || [],
+  selectedGroups: state[ext()].selectedGroups,
 });
 
 export default connect(mapStateToProps, { fetchNotifications, markAsRead, navigateTo, next })(

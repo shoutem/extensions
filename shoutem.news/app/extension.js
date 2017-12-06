@@ -8,9 +8,6 @@ import GridArticlesScreen from './screens/GridArticlesScreen';
 import ArticleDetailsScreen from './screens/ArticleDetailsScreen';
 import LargeArticleDetailsScreen from './screens/LargeArticleDetailsScreen';
 
-// themes imports
-
-
 export const screens = {
   ArticlesScreen,
   GridArticlesScreen,

@@ -36,7 +36,7 @@ export function appDidMount(app) {
 
   initialize(legacyApiEndpoint, appId);
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: NOTIFICATIONS_SCHEMA,
     request: {
       endpoint: getEndpointProvider().inbox,
@@ -44,7 +44,7 @@ export function appDidMount(app) {
     },
   });
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: GROUPS_SCHEMA,
     request: {
       endpoint: getEndpointProvider().groups,
@@ -52,7 +52,7 @@ export function appDidMount(app) {
     },
   });
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: SELECTED_GROUPS_SCHEMA,
     request: {
       endpoint: getEndpointProvider().selectedGroups,

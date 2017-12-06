@@ -1,16 +1,16 @@
 import { createScopedReducer, getShortcutState } from '@shoutem/redux-api-sdk';
 import { resource, find, cloneStatus, RESOLVED_ENDPOINT } from '@shoutem/redux-io';
 import _ from 'lodash';
-import { toLocalDateTime } from './services/wordpress';
+import { toLocalDateTime } from './services';
 import ext from './const';
 
 export const FEED_ITEMS = 'shoutem.wordpress.feedItems';
-export const WORDPRESS_MEDIA_SCHEMA = 'shoutem.wordpress.media';
+export const WORD_PRESS_MEDIA_SCHEMA = 'shoutem.wordpress.media';
 
 export default createScopedReducer({
   shortcut: {
     feedItems: resource(FEED_ITEMS),
-    media: resource(WORDPRESS_MEDIA_SCHEMA),
+    media: resource(WORD_PRESS_MEDIA_SCHEMA),
   },
 });
 
@@ -35,12 +35,13 @@ export function loadPosts({ feedUrl, shortcutId }) {
       },
     },
   };
+
   return find(config, ext('feedItems'), { shortcutId }, resolvedEndpointOptions);
 }
 
 function loadPostsMedia({ feedUrl, posts, per_page, appendMode = false }) {
   const config = {
-    schema: WORDPRESS_MEDIA_SCHEMA,
+    schema: WORD_PRESS_MEDIA_SCHEMA,
     request: {
       endpoint: `${feedUrl}/wp-json/wp/v2/media`,
       resourceType: 'json',
@@ -55,13 +56,22 @@ function loadPostsMedia({ feedUrl, posts, per_page, appendMode = false }) {
   }, { feedUrl, appendMode });
 }
 
-export function fetchWordpressPosts(params) {
+export function fetchWordPressPosts(params) {
   return dispatch => (
-    dispatch(loadPosts(params)).then((action) => {
-      const { payload: posts } = action;
-      return dispatch(loadPostsMedia({ ...params, posts })).then(() => action);
-    })
+    dispatch(loadPosts(params))
+      .then((action) => {
+        const { payload: posts } = action;
+        return dispatch(loadPostsMedia({ ...params, posts })).then(() => action);
+      })
   );
+}
+
+/**
+ * Used only for WordPressUrl validation: if URL is valid, request will return 200 OK,
+ * otherwise it will fail.
+ */
+export function validateWordPressUrl(params) {
+  return loadPosts(params);
 }
 
 export function navigateToUrl(url) {

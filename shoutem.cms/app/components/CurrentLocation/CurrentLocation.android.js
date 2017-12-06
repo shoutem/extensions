@@ -3,6 +3,8 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { PermissionsAndroid } from 'react-native';
 import CurrentLocationBase from './CurrentLocationBase';
+import { I18n } from 'shoutem.i18n';
+import { ext } from '../../const';
 
 export default function (WrappedComponent) {
   class CurrentLocation extends CurrentLocationBase {
@@ -29,9 +31,8 @@ export default function (WrappedComponent) {
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
           /* eslint-disable quote-props */
-          'title': 'Location Permission',
-          'message': 'This app needs access to  your location ' +
-          'to display relevant data',
+          'title': I18n.t(ext('androidLocationPermissionTitle')),
+          'message': I18n.t(ext('androidLocationPermissionMessage')),
           /* eslint-enable quote-props */
         }
       ).then(() => {
@@ -42,9 +43,8 @@ export default function (WrappedComponent) {
     }
 
     promptForLocationPermission() {
-      const alert = 'You disabled location permissions for this application.' +
-        'Do you want to enable it now?';
-      const confirmationMessage = 'Enable';
+      const alert = I18n.t(ext('androidLocationPermissionDisabled'));
+      const confirmationMessage = I18n.t(ext('androidLocationPermissionEnable'));
 
       super.promptForLocationPermission(alert, confirmationMessage, this.requestPermission);
     }
@@ -67,4 +67,3 @@ export default function (WrappedComponent) {
     CurrentLocationBase.mapDispatchToProps,
   )(CurrentLocation);
 }
-

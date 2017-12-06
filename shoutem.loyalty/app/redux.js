@@ -9,15 +9,10 @@ import {
   storage,
   resource,
  } from '@shoutem/redux-io';
-
 import { preventStateRehydration } from '@shoutem/core/preventStateRehydration';
 
-import {
-  getAppId,
-} from 'shoutem.application';
-
+import { getAppId } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
-
 import { cmsCollection } from 'shoutem.cms';
 
 import {
@@ -38,7 +33,7 @@ import {
 const requestConfig = {
   request: {
     headers: {
-      'Accept': 'application/vnd.api+json',
+      Accept: 'application/vnd.api+json',
       'Content-Type': 'application/vnd.api+json',
     },
   },
@@ -79,24 +74,23 @@ export const isPunchCard = reward => reward && (reward.isPunchCard || !_.has(rew
 export const getCashierInfo = state => _.get(state[ext()].cashierInfo, 'data.attributes');
 
 /**
- * Returns state for single card, not tied to a specific place.
- *
- * @return Card state for single card loyalty
- */
-export const getSingleCardState = state => getCardStateForPlace(state, null);
-
-/**
  * Returns point card state for a place.
  *
  * @returns Card state for place with given ID, or single card state if null is passed as ID
  */
 export const getCardStateForPlace = (state, placeId) => {
   const { allCardStates } = state[ext()];
-
   const cardStates = getCollection(allCardStates, state);
 
-  return _.find(cardStates, { 'location': placeId });
+  return _.find(cardStates, { location: placeId });
 };
+
+/**
+ * Returns state for single card, not tied to a specific place.
+ *
+ * @return Card state for single card loyalty
+ */
+export const getSingleCardState = state => getCardStateForPlace(state, null);
 
 /**
  * Creates a loyalty card for the user with given ID
@@ -150,10 +144,12 @@ export const fetchCashierInfo = userId => find(CASHIERS_SCHEMA, undefined, { use
  */
 export const fetchPointRewards = (cardId, parentCategoryId) =>
   find(POINT_REWARDS_SCHEMA, undefined, {
-    'filter[app]': getAppId(),
-    'filter[schema]': REWARDS_SCHEMA,
-    'filter[category]': parentCategoryId,
-    'filter[card]': cardId,
+    query: {
+      'filter[app]': getAppId(),
+      'filter[schema]': REWARDS_SCHEMA,
+      'filter[category]': parentCategoryId,
+      'filter[card]': cardId,
+    },
   });
 
 /**
@@ -169,7 +165,11 @@ export const fetchRules = () => find(RULES_SCHEMA, undefined, {});
  * @param cardId Loyalty card ID
  */
 export const fetchTransactions = cardId =>
-  find(TRANSACTIONS_SCHEMA, undefined, { 'filter[card]': cardId });
+  find(TRANSACTIONS_SCHEMA, undefined, {
+     query: { 
+       'filter[card]': cardId,
+     }, 
+  });
 
 /**
  * Creates a transaction.
@@ -182,7 +182,7 @@ export const createTransaction = (attributes, authorization) => {
   return (dispatch, getState) => {
     const { authorizationType, cardId } = authorization;
 
-    const { id: userId } = getUser(getState());
+    const { legacyId: userId } = getUser(getState());
 
     const data = authorization.data || (authorizationType === 'userId' && { userId });
 
@@ -200,23 +200,25 @@ export const createTransaction = (attributes, authorization) => {
 
     const config = { ...requestConfig, schema: TRANSACTIONS_SCHEMA };
 
-    return dispatch(create(config, item)).then(({ payload: { data: { attributes } } }) =>
-      attributes.transactionData);
+    return dispatch(create(config, item))
+      .then(response => _.get(response, 'payload.data.attributes.transactionData'));
   };
 };
 
 /**
- * Verifies cashier PIN.
+ * Verifies cashier PIN on specified location.
  *
  * @param pin - Cashier PIN
+ * @param placeId - Place Id
  */
-export const verifyPin = (pin) => {
+export const verifyPin = (pin, placeId) => {
   const item = [{
     type: AUTHORIZATIONS_SCHEMA,
     attributes: {
       authorizationType: 'pin',
       data: {
         pin,
+        location: placeId,
       },
     },
   }];

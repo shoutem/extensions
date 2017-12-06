@@ -43,6 +43,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
 import { navigateTo } from '@shoutem/core/navigation';
 import { openURL } from 'shoutem.web-view';
+import { I18n } from 'shoutem.i18n';
 import SocialButton from '../components/SocialButton';
 import { ext } from '../const';
 
@@ -106,7 +107,9 @@ export class AboutScreen extends PureComponent {
 
     InteractionManager.runAfterInteractions(() =>
       find(schema || defaultSchema, undefined, {
-        'filter[categories]': parentCategoryId,
+        query: {
+          'filter[categories]': parentCategoryId,
+        },
       }),
     );
   }
@@ -137,7 +140,7 @@ export class AboutScreen extends PureComponent {
     if (hasImage) {
       StatusBar.setBarStyle('light-content');
     }
-    
+
     let styleName = '';
     let animationName = '';
     if (this.isNavigationBarClear()) {
@@ -179,15 +182,15 @@ export class AboutScreen extends PureComponent {
       // content and reload app, because `parentCategoryId` is retrieved through app configuration
       emptyStateViewProps = {
         icon: 'error',
-        message: 'Please create content and reload your app.',
+        message: I18n.t('shoutem.application.preview.noContentErrorMessage'),
       };
     } else {
       emptyStateViewProps = {
         icon: 'refresh',
         message: (isError(data)) ?
-          'Unexpected error occurred.' : 'Nothing here at this moment.',
+        I18n.t('shoutem.application.unexpectedError') : I18n.t('shoutem.application.emptyCollectionMessage'),
         onRetry: this.fetchData,
-        retryButtonTitle: 'TRY AGAIN',
+        retryButtonTitle: I18n.t('shoutem.application.tryAgainButton'),
       };
     }
 
@@ -248,7 +251,7 @@ export class AboutScreen extends PureComponent {
       <View styleName="md-gutter-horizontal md-gutter-bottom">
         <Html body={profile.info} />
       </View>
-      
+
     );
   }
 
@@ -280,7 +283,7 @@ export class AboutScreen extends PureComponent {
     return (
       <View>
         <Divider styleName="section-header">
-          <Caption>LOCATION</Caption>
+          <Caption>{I18n.t('shoutem.cms.mapTitle')}</Caption>
         </Divider>
         <TouchableOpacity onPress={openMap}>
           <InlineMap
@@ -307,7 +310,7 @@ export class AboutScreen extends PureComponent {
     return (
       <View styleName="vertical">
         <Divider styleName="section-header">
-          <Caption>OPENING HOURS</Caption>
+          <Caption>{I18n.t('shoutem.cms.openHours')}</Caption>
         </Divider>
         <View styleName="md-gutter-horizontal md-gutter-top">
           <Html body={profile.hours} />
@@ -329,13 +332,13 @@ export class AboutScreen extends PureComponent {
           <SocialButton
             icon="web"
             url={profile.web}
-            title="Web"
+            title={I18n.t('shoutem.cms.websiteButton')}
             openURL={openURL}
           />
           <SocialButton
             icon="call"
             url={profile.phone && `tel:${profile.phone}`}
-            title="Phone"
+            title={I18n.t('shoutem.cms.phoneButton')}
           />
           <SocialButton
             icon="tweet"
@@ -346,7 +349,7 @@ export class AboutScreen extends PureComponent {
           <SocialButton
             icon="email"
             url={profile.mail && `mailto:${profile.mail}`}
-            title="Email"
+            title={I18n.t('shoutem.cms.emailButton')}
           />
           <SocialButton
             icon="linkedin"

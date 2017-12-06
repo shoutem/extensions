@@ -1,15 +1,16 @@
 import moment from 'moment';
 import { Alert, Linking } from 'react-native';
 import CalendarManager, { PERMISSION_ERROR } from 'react-native-calendar-manager';
+import { I18n } from 'shoutem.i18n';
+import { ext } from '../extension';
 
 const showSuggestionToGrantCalendarAccess = () => {
   Alert.alert(
-    'Grant calendar access',
-    'You disabled calendar access for this application. Do you want to enable it in' +
-      ' settings now?',
+    I18n.t(ext('calendarPermissionsTitle')),
+    I18n.t(ext('calendarPermissionsMessage')),
     [
-      { text: 'Settings', onPress: () => Linking.openURL('app-settings:') },
-      { text: 'Cancel' },
+      { text: I18n.t(ext('calendarPermissionsSettings')), onPress: () => Linking.openURL('app-settings:') },
+      { text: I18n.t(ext('calendarPermissionsCancel')) },
     ],
   );
 };

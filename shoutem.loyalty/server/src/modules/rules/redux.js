@@ -11,8 +11,8 @@ import {
   remove,
 } from '@shoutem/redux-io';
 import { createSelector } from 'reselect';
-import { getLoyaltyUrl } from '../../services';
-import ext from '../../const';
+import { getLoyaltyUrl } from 'src/services';
+import ext from 'src/const';
 import {
   getRulesToCreate,
   getRulesToDelete,

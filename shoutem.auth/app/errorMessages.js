@@ -1,13 +1,29 @@
-export const errorMessages = Object.freeze({
-  EMAIL_UNKNOWN: 'Your username / email was not found.',
-  INVALID_CREDENTIALS: 'Wrong password. Please try again.',
-  SIGNUP_EMAIL_INVALID: 'Wrong email format. Make sure your email format is name@domain.com.',
-  SIGNUP_USERNAME_INVALID: 'Please change the username so it has at least 3 characters, ' +
-    'starts with a letter and contains only letters, numbers and underscores.',
-  SIGNUP_PASSWORD_INVALID: 'Password has to be at least 6 characters long. Please try again.',
-  EMPTY_FIELDS: 'All of the fields must be filled. Please try again.',
-  UNEXPECTED_ERROR: 'Unexpected error.',
-});
+import { I18n } from 'shoutem.i18n';
+import { ext } from './const';
+
+export const errorMessages = {
+  get EMAIL_UNKNOWN() {
+    return I18n.t(ext('unknownEmailErrorMessage'));
+  },
+  get INVALID_CREDENTIALS() {
+    return I18n.t(ext('invalidCredentialsErrorMessage'));
+  },
+  get SIGNUP_EMAIL_INVALID() {
+    return I18n.t(ext('invalidEmailFormatErrorMessage'));
+  },
+  get SIGNUP_USERNAME_INVALID() {
+    return I18n.t(ext('invalidUsernameFormatErrorMessage'));
+  },
+  get SIGNUP_PASSWORD_INVALID() {
+    return I18n.t(ext('invalidPasswordFormatErrorMessage'));
+  },
+  get EMPTY_FIELDS() {
+    return I18n.t(ext('formNotFilledErrorMessage'));
+  },
+  get UNEXPECTED_ERROR() {
+    return I18n.t('shoutem.application.unexpectedErrorMessage');
+  },
+};
 
 export const getErrorMessage = errorCode =>
     errorMessages[errorCode] || errorMessages.UNEXPECTED_ERROR;

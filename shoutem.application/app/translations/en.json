@@ -1,0 +1,19 @@
+{
+  "shoutem": {
+    "application": {
+      "errorTitle": "Error",
+      "preview": {
+        "unsupportedActionMessage": "This action cannot be performed in Preview.",
+        "pushGroupsPreviewAlertTitle": "Preview mode",
+        "pushGroupsPreviewAlertMessage": "Push notifications are not supported in preview mode. You can see groups, but you can't toggle subscriptions. Don't worry, everything works in the live app.",
+        "noContentErrorMessage": "Please create content and reload your app."
+      },
+      "emptyCollectionErrorMessage": "Nothing here at this moment.",
+      "unexpectedErrorMessage": "Unexpected error occurred.",
+      "tryAgainButton": "TRY AGAIN",
+      "configurationLoadErrorMessage": "App configuration failed to load.",
+      "networkErrorTitle": "Network error",
+      "networkErrorMessage": "No internet connection, please check your network."
+    }
+  }
+}

@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Linking, Alert } from 'react-native';
+import { I18n } from 'shoutem.i18n';
+import { ext } from '../extension';
 
 import {
   Text,
@@ -29,8 +31,8 @@ export default class SocialButton extends Component {
           Linking.openURL(url);
         } else {
           Alert.alert(
-            'Error',
-            'This action cannot be performed in Preview.',
+            I18n.t('shoutem.application.errorTitle'),
+            I18n.t('shoutem.application.preview.unsupportedActionMessage'),
             [{ text: 'OK', onPress: () => {} }],
           );
         }

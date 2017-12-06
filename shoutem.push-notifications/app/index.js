@@ -12,7 +12,17 @@ import { appDidMount, appWillMount, appWillUnmount } from './app';
 
 import Permissions from './permissions';
 
+import enTranslations from './translations/en.json';
+
 export const DEFAULT_PUSH_NOTIFICATION_GROUP = 'broadcast';
+
+export const shoutem = {
+  i18n: {
+    translations: {
+      en: enTranslations,
+    },
+  },
+};
 
 export {
   reducer,

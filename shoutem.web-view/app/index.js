@@ -5,8 +5,18 @@ import {
   openWebViewScreen,
  } from './middleware';
 
+import enTranslations from './translations/en.json';
+
 const screens = {
   WebViewScreen,
+};
+
+export const shoutem = {
+  i18n: {
+    translations: {
+      en: enTranslations,
+    },
+  },
 };
 
 const middleware = [

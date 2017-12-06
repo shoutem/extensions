@@ -13,6 +13,7 @@ import {
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 import { Favorite } from 'shoutem.favorites';
+import { I18n } from 'shoutem.i18n';
 
 import { ext, PLACES_SCHEMA } from '../const';
 import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
@@ -38,7 +39,7 @@ class PlaceIconView extends Component {
   render() {
     const { place, points, onPress } = this.props;
     const imageSource = place.image ? { uri: place.image.url } : DEFAULT_IMAGE;
-
+    
     return (
       <TouchableOpacity onPress={onPress}>
         <Row>
@@ -49,7 +50,7 @@ class PlaceIconView extends Component {
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={2}>{place.name}</Subtitle>
             <View styleName="horizontal">
-              <Caption>{`${points || 'No'} points collected`}</Caption>
+              <Caption>{I18n.t(ext('pointsInStore'), { count: points || 0 })}</Caption>
             </View>
           </View>
           <Favorite

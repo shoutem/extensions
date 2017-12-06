@@ -1,6 +1,47 @@
 :global {
-  .auth-settings-page {
-    max-width: 552px;
-    margin: auto;
+  body.extension-sandbox-container {
+    padding-top: 48px;
+
+    .modal-backdrop {
+      background-color: #ffffff;
+
+      .in {
+        opacity: 0.8;
+      }
+    }
+
+    .settings-page {
+      max-width: 552px;
+      margin: auto;
+
+      &.is-wide {
+        max-width: 808px;
+      }
+
+      > h3:first-child {
+        margin-top: 0;
+      }
+    }
+
+    .modal.settings-page-modal .modal-dialog:not(.modal-lg) {
+      width: 100%;
+
+      .modal-header,
+      .modal-body {
+        max-width: 552px;
+        margin: auto;
+      }
+    }
+
+    .settings-page-modal-small.modal-dialog,
+    .modal.settings-page-modal-small .modal-dialog {
+      min-width: 518px;
+      max-width: 552px;
+
+      @media (max-width: 553px) {
+        min-width: 400px;
+        max-width: 464px;
+      }
+    }
   }
 }

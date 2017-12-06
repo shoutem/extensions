@@ -29,7 +29,7 @@ export function appDidMount(app) {
     },
   };
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: CARD_SCHEMA,
     request: {
       endpoint: `${programEndpoint}/cards/{user}`,
@@ -37,7 +37,7 @@ export function appDidMount(app) {
     },
   });
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: CARD_STATE_SCHEMA,
     request: {
       endpoint: `${programEndpoint}/cards/{cardId}/state?filter[cardType]=point`,
@@ -45,7 +45,7 @@ export function appDidMount(app) {
     },
   });
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: CASHIERS_SCHEMA,
     request: {
       endpoint: `${programEndpoint}/cashiers/user:{userId}`,
@@ -53,7 +53,7 @@ export function appDidMount(app) {
     },
   });
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: AUTHORIZATIONS_SCHEMA,
     request: {
       endpoint: `${programEndpoint}/authorizations/verify`,
@@ -63,23 +63,23 @@ export function appDidMount(app) {
     },
   });
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: PUNCH_REWARDS_SCHEMA,
     request: {
-      endpoint: `${programEndpoint}/rewards/punch`,
+      endpoint: `${programEndpoint}/rewards/punch{?query*}`,
       ...jsonApiRequestOptions,
     },
   });
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: POINT_REWARDS_SCHEMA,
     request: {
-      endpoint: `${programEndpoint}/rewards/point`,
+      endpoint: `${programEndpoint}/rewards/point{?query*}`,
       ...jsonApiRequestOptions,
     },
   });
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: RULES_SCHEMA,
     request: {
       endpoint: `${programEndpoint}/rules`,
@@ -87,18 +87,10 @@ export function appDidMount(app) {
     },
   });
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: TRANSACTIONS_SCHEMA,
     request: {
-      endpoint: `${programEndpoint}/transactions`,
-      ...jsonApiRequestOptions,
-    },
-  });
-
-  rio.registerSchema({
-    schema: TRANSACTIONS_SCHEMA,
-    request: {
-      endpoint: `${programEndpoint}/transactions`,
+      endpoint: `${programEndpoint}/transactions{?query*}`,
       ...jsonApiRequestOptions,
     },
   });

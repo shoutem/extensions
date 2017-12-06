@@ -42,6 +42,8 @@ import {
   setScreenState as setScreenStateAction,
 } from '@shoutem/core/navigation';
 
+import { I18n } from 'shoutem.i18n';
+
 import {
   CATEGORIES_SCHEMA,
 
@@ -433,7 +435,9 @@ export class CmsListScreen extends PureComponent {
 
     InteractionManager.runAfterInteractions(() =>
       find(CATEGORIES_SCHEMA, undefined, {
-        'filter[parent]': parentCategoryId,
+        query: {
+          'filter[parent]': parentCategoryId,
+        },
       }),
     );
   }
@@ -443,7 +447,9 @@ export class CmsListScreen extends PureComponent {
     const { schema } = this.state;
 
     InteractionManager.runAfterInteractions(() =>
-      find(schema, undefined, this.getQueryParams(options)),
+      find(schema, undefined, {
+        query: { ...this.getQueryParams(options) },
+      }),
     );
   }
 
@@ -464,21 +470,21 @@ export class CmsListScreen extends PureComponent {
       return (
         <EmptyStateView
           icon="error"
-          message="Please create content and reload your app."
+          message={I18n.t('shoutem.application.preview.noContentErrorMessage')}
           style={style.emptyState}
         />
       );
     }
 
     const message = (isError(categories) || isError(data)) ?
-      'Unexpected error occurred.' : 'Nothing here at this moment.';
+    I18n.t(ext('unexpectedError')) : I18n.t('shoutem.application.preview.noContentErrorMessage');
 
     const retryFunction = !this.isCollectionValid(data) ? this.refreshData : this.fetchCategories;
 
     return (
       <EmptyStateView
         icon="refresh"
-        retryButtonTitle="TRY AGAIN"
+        retryButtonTitle={I18n.t('shoutem.application.tryAgainButton')}
         onRetry={retryFunction}
         message={message}
         style={style.emptyState}

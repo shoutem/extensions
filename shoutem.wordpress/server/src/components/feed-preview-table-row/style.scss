@@ -1,0 +1,13 @@
+:global {
+  .feed-preview-table-row__image-preview {
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 36px;
+    width: 36px;
+  }
+
+  .feed-preview-table-row__date {
+    text-align: right;
+  }
+}

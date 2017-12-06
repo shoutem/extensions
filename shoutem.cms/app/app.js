@@ -13,9 +13,7 @@ export function appDidMount(app) {
   const appId = getAppId();
   const apiEndpoint = getExtensionSettings(state, ext()).apiEndpoint;
   if (!apiEndpoint) {
-    throw new Error(
-      'CMS api endpoint not configured. Check the CMS extension settings in the builder.'
-    );
+    console.error(`CMS API endpoint not set in ${ext()} settings.`);
   }
 
   const jsonApiRequestOptions = {
@@ -24,18 +22,18 @@ export function appDidMount(app) {
     },
   };
 
-  rio.registerSchema({
+  rio.registerResource({
     schema: CATEGORIES_SCHEMA,
     request: {
-      endpoint: `${apiEndpoint}/v1/apps/${appId}/categories`,
+      endpoint: `${apiEndpoint}/v1/apps/${appId}/categories/{?query*}`,
       ...jsonApiRequestOptions,
     },
   });
 
-  rio.registerSchema((schemaName) => ({
+  rio.registerResource((schemaName) => ({
     schema: schemaName,
     request: {
-      endpoint: `${apiEndpoint}/v1/apps/${appId}/resources/${schemaName}`,
+      endpoint: `${apiEndpoint}/v1/apps/${appId}/resources/${schemaName}/{?query*}`,
       ...jsonApiRequestOptions,
     },
   }));

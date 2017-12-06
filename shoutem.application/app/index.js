@@ -37,9 +37,16 @@ import reducer, {
   fetchConfiguration,
   getExtensionSettings,
   getConfiguration,
+  showAllShortcuts,
+  showShortcut,
+  hideShortcut,
   getShortcut,
+  getAllShortcuts,
   getActiveShortcut,
+  isShortcutVisible,
 } from './redux';
+
+import enTranslations from './translations/en.json';
 
 const actions = {
   executeShortcut,
@@ -53,6 +60,14 @@ const middleware = [
   injectShortcutIdToActionRouteContext,
   noInternetMiddleware,
 ];
+
+export const shoutem = {
+  i18n: {
+    translations: {
+      en: enTranslations,
+    },
+  },
+};
 
 initializeApp();
 export {
@@ -68,6 +83,8 @@ export {
   getExtensionSettings,
   getActiveShortcut,
   getFirstShortcut,
+  getAllShortcuts,
+  isShortcutVisible,
   isConfigurationLoaded,
   isProduction,
   isDevelopment,
@@ -81,6 +98,9 @@ export {
   executeShortcut,
   openInitialScreen,
   resolveAppEndpoint,
+  showAllShortcuts,
+  showShortcut,
+  hideShortcut,
 
   actions,
   reducer,

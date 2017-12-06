@@ -20,6 +20,9 @@ import {
 } from '@shoutem/ui';
 
 import { ListScreen, getExtensionSettings } from 'shoutem.application';
+import { openProfile, authenticate } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
+
 import { getUser, isAuthenticated } from 'shoutem.auth/redux';
 
 import {
@@ -29,7 +32,6 @@ import {
   unlikeStatus,
 } from '../redux';
 
-import { openProfile, authenticate } from 'shoutem.auth';
 
 import { ext } from '../const';
 import StatusView from '../components/StatusView';
@@ -68,13 +70,14 @@ export class SocialWallScreen extends ListScreen {
       enablePhotoAttachments,
     } = this.props;
     const status = _.find(data.data, { id: statusId });
-    
+
     const route = {
       screen: ext('StatusDetailsScreen'),
-      title: 'POST DETAILS',
+      title: I18n.t(ext('postDetailsTitle')),
       props: {
         user,
         statusId,
+        status,
         addComment: this.addComment,
         openUserLikes: this.openUserLikes,
         onLikeAction: this.onLikeAction,
@@ -107,10 +110,10 @@ export class SocialWallScreen extends ListScreen {
 
     const route = {
       screen: ext('CreateStatusScreen'),
-      title: 'NEW STATUS',
+      title: I18n.t(ext('newStatusTitle')),
       props: {
-        title: 'NEW STATUS',
-        placeholder: 'Share your thoughts',
+        title: I18n.t(ext('newStatusTitle')),
+        placeholder: I18n.t(ext('newStatusPlaceholder')),
         user,
         enablePhotoAttachments,
         statusMaxLength,
@@ -144,10 +147,10 @@ export class SocialWallScreen extends ListScreen {
 
     const route = {
       screen: ext('MembersScreen'),
-      title: 'LIKES',
+      title: I18n.t(ext('viewStatusLikes')),
       props: {
         users: this.getUsersWhoLiked(status),
-        title: 'LIKES',
+        title: I18n.t(ext('viewStatusLikes')),
       },
     };
 
@@ -215,7 +218,7 @@ export class SocialWallScreen extends ListScreen {
                 source={{ uri: profile_image_url }}
               />
             </TouchableOpacity>
-            <Text styleName="sm-gutter-right md-gutter-left">Share your thoughts</Text>
+            <Text styleName="sm-gutter-right md-gutter-left">{I18n.t(ext('newStatusPlaceholder'))}</Text>
           </Row>
         </View>
       </TouchableOpacity>
@@ -241,7 +244,7 @@ const mapStateToProps = (state) => {
   return {
     data: state[ext()].statuses,
     user: getUser(state) || {},
-    statusMaxLength: Number(_.get(extension, 'maxStatusLength', 140)),    
+    statusMaxLength: Number(_.get(extension, 'maxStatusLength', 140)),
     enablePhotoAttachments: _.get(extension, 'enablePhotoAttachments', true),
     enableComments: _.get(extension, 'enableComments', true),
     enableInteractions: _.get(extension, 'enableInteractions', true),

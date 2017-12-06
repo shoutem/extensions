@@ -13,6 +13,7 @@ import {
 import { isInitialized } from '@shoutem/redux-io';
 
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
+import { I18n } from 'shoutem.i18n';
 import { triggerEvent } from 'shoutem.analytics';
 import FeaturedEventView from '../components/FeaturedEventView';
 import { addToCalendar } from '../shared/Calendar';
@@ -49,19 +50,30 @@ export class EventsScreen extends CmsListScreen {
       renderCategoriesInline: true,
       shouldRenderMap: false,
     };
+    this.navBarViewTitle = {
+      map: I18n.t('shoutem.cms.navBarMapViewButton'),
+      list: I18n.t('shoutem.cms.navBarListViewButton'),
+    };
   }
 
   fetchData(options) {
     const { find } = this.props;
     const { schema } = this.state;
 
-    const queryParams = super.getQueryParams(options);
     InteractionManager.runAfterInteractions(() =>
       find(schema, undefined, {
-        ...queryParams,
-        'filter[endTime][gt]': (new Date()).toISOString(), // filtering past events
+        query: this.getQueryParams(options),
       }),
     );
+  }
+
+  getQueryParams(options) {
+    const queryParams = super.getQueryParams(options);
+
+    return {
+      ...queryParams,
+      'filter[endTime][gt]': (new Date()).toISOString(), // filtering past events
+    };
   }
 
   openDetailsScreen(event) {
@@ -106,7 +118,7 @@ export class EventsScreen extends CmsListScreen {
       return (
         <View virtual styleName="container">
           <Button styleName="clear" onPress={this.toggleMapMode}>
-            <Text>{shouldRenderMap ? screenTitle : 'Map'}</Text>
+            <Text>{shouldRenderMap ? this.navBarViewTitle.list : this.navBarViewTitle.map}</Text>
           </Button>
         </View>
       );

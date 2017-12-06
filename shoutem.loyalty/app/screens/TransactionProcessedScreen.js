@@ -15,6 +15,8 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { closeModal } from '@shoutem/core/navigation';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 
 const { bool, func, number } = React.PropTypes;
@@ -24,7 +26,7 @@ const TROPHY_ICON = require('../assets/icons/trophy.png');
 
 const getNavBarProps = () => ({
   renderLeftComponent: () => null,
-  title: 'CONGRATULATIONS',
+  title: I18n.t(ext('rewardRedemptionCongratulation')),
 });
 
 /**
@@ -57,7 +59,8 @@ export class TransactionProcessedScreen extends React.Component {
     const { points, redeemed } = this.props;
 
     const message = redeemed ?
-      'You have redeemed your reward!' : `Your card was stamped ${points} times`;
+      I18n.t(ext('rewardRedemptionMessage')) :
+      I18n.t(ext('punchCardStampedMessage'), { count: points || 0 });
 
     return (
       <Screen>
@@ -74,7 +77,7 @@ export class TransactionProcessedScreen extends React.Component {
             styleName="secondary lg-gutter-vertical"
             onPress={this.handleContinue}
           >
-            <Text>CONTINUE</Text>
+            <Text>{I18n.t(ext('rewardRedemptionContinueButton'))}</Text>
           </Button>
         </View>
       </Screen>

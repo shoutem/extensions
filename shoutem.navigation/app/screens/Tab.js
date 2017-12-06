@@ -14,7 +14,6 @@ import { Screen } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { executeShortcut } from 'shoutem.application';
-import { loginRequired } from 'shoutem.auth';
 import { ext } from '../const';
 import { getTabNavigationStack, getTabNavigationState } from '../redux';
 
@@ -69,6 +68,4 @@ const mapStateToProps = (state, { shortcut }) => ({
 });
 const mapDispatchToProps = { executeShortcut, navigateBack };
 
-
-export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('Tab'))(Tab)), false);
+export default connect(mapStateToProps, mapDispatchToProps)(connectStyle(ext('Tab'))(Tab));

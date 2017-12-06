@@ -15,6 +15,8 @@ import { navigateTo } from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 import { redeemReward } from '../services';
 import { authorizationShape, rewardShape } from '../components/shapes';
@@ -75,7 +77,7 @@ export class RedeemOrContinueScreen extends React.Component {
   render() {
     return (
       <Screen>
-        <NavigationBar title="REDEEM REWARD" />
+        <NavigationBar title={I18n.t(ext('redeemRewardNavBarTitle'))} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <View styleName="oval-highlight">
             <Image
@@ -84,17 +86,17 @@ export class RedeemOrContinueScreen extends React.Component {
             />
           </View>
           <Subtitle styleName="h-center md-gutter-top xl-gutter-horizontal">
-            Your reward can be redeemed.
+            {I18n.t(ext('redeemMessage'))}
           </Subtitle>
           <View styleName="h-center horizontal lg-gutter-vertical">
             <Button onPress={this.handleRedeemLater}>
-              <Text>REDEEM LATER</Text>
+              <Text>{I18n.t(ext('redeemLaterButton'))}</Text>
             </Button>
             <Button
               styleName="secondary md-gutter-left"
               onPress={this.handleRedeemNow}
             >
-              <Text>REDEEM NOW</Text>
+              <Text>{I18n.t(ext('redeemNowButton'))}</Text>
             </Button>
           </View>
         </View>

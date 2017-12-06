@@ -1,7 +1,3 @@
-.feed-preview__container {
-  padding-bottom: 24px;
-}
-
 .feed-preview__feed-url-container {
   height: 48px;
   line-height: 48px;
@@ -16,7 +12,6 @@
 
 .feed-preview__feed-url {
   padding-left: 20px;
-  font-family: MuseoSans;
   font-size: 14px;
   font-weight: normal;
   color: #808799;
@@ -28,4 +23,10 @@
   top: 14px;
   right: 12px;
   cursor: pointer;
+}
+
+.feed-preview__insecure-warning .btn-textual {
+  text-decoration: underline;
+  color: inherit;
+  opacity: 1;
 }

@@ -63,12 +63,12 @@ class PeopleDetailsScreen extends React.Component {
     return (
       <View styleName="horizontal h-center">
         <View styleName="horizontal wrap h-start">
-          {this.renderLinkButton('web', 'Web', person.websiteUrl)}
-          {this.renderLinkButton('call', 'Phone', person.phone ? `tel:${person.phone}` : null)}
+          {this.renderLinkButton('web', I18n.t('shoutem.cms.websiteButton'), person.websiteUrl)}
+          {this.renderLinkButton('call', I18n.t('shoutem.cms.phoneButton'), person.phone ? `tel:${person.phone}` : null)}
           {this.renderLinkButton('tweet', 'Twitter', person.twitterPageUrl)}
           {this.renderLinkButton('linkedin', 'LinkedIn', person.linkedinProfileUrl)}
           {this.renderLinkButton('facebook', 'Facebook', person.facebookProfileUrl)}
-          {this.renderLinkButton('email', 'Email',
+          {this.renderLinkButton('email', I18n.t('shoutem.cms.emailButton'),
           person.email ? `mailto:${person.email}` : null)}
         </View>
       </View>

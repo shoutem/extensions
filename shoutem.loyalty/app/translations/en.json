@@ -1,0 +1,89 @@
+{
+  "shoutem": {
+    "loyalty": {
+      "pointsInStore": {
+        "one": "{{count}} point collected.",
+        "other": "{{count}} points collected.",
+        "zero": "No points collected."
+      },
+      "collectPointsButton": "COLLECT",
+      "pointsHistoryButton": "HISTORY",
+      "noPointsCollected": "No points collected.",
+      "pointsRequiredStores": {
+        "one": "Requires {{count}} point.",
+        "other": "Requires {{count}} points."
+        },
+      "pointsRequiredRewards": " points.",
+      "noHistory": "No activity.",
+      "fullHistoryButton": "SHOW ENTIRE HISTORY",
+      "pointsHistoryTitle": "POINTS HISTORY",
+      "rewardRedeemed": "Reward redeemed",
+      "historyItemPointsGainedTitle": "Points gained",
+      "historyItemWithPurchaseMessage": "Store visited · ${{amountSpent}} spent ",
+      "historyItemNoPurchaseMessage": "Store visited",
+      "storeRewardsListTitle": "REWARDS",
+      "noRewardsForStore": "Currently, there are no rewards available for this store.",
+      "storeDescriptionTitle": "LOCATION INFO",
+      "openHours": "OPEN HOURS",
+      "rsvp": "Reservation",
+      "websiteButton": "Visit webpage",
+      "emailButton": "Email",
+      "phoneButton": "Phone",
+      "cancelButton": "Cancel",
+      "locationPermissionsPrompt": "Grant location access",
+      "cashierPointAwardNavBarTitle": "ASSIGN POINTS",
+      "cashierPointAwardAssigningTitle": "ASSIGN POINTS FOR",
+      "cashierPointAwardReceiptSum": "Receipt sum",
+      "cashierPointAwardReceiptCode": "Receipt code",
+      "purchaseToggleButton": "Customer made a purchase",
+      "visitToggleButton": "Customer visited this store",
+      "cashierPointAwardTransactionTitle": "ENTER PURCHASE DETAILS",
+      "confirmButton": "CONFIRM",
+      "noProgramNavBarTitle": "LOYALTY",
+      "noProgramErrorMessage": "Turn on loyalty program in extension settings.",
+      "wrongPinErrorTitle": "Wrong PIN",
+      "wrongPinErrorMessage": "The PIN you entered was incorrect.",
+      "pinPlaceholder": "Enter your PIN",
+      "pinVerificationNavBarTitle": "CASHIER PIN",
+      "pinVerificationContinueButton": "CONTINUE",
+      "refreshButton": "REFRESH",
+      "myCardScreenNavBarTitle": "MY CARD",
+      "myCardScreenPointsTitle": "Points",
+      "scanBarcodeButton": "SCAN BARCODE",
+      "scanBarcodeNavBarTitle": "Scan Barcode",
+      "pointsEarnedNavBarTitle": "POINTS EARNED",
+      "pointsEarnedAmountSpent": "Your bill was ${{amountSpent}}",
+      "pointsEarnedCongratulations": "Congratulations!",
+      "pointsEarnedMessage": {
+        "one": "You've earned 1 point",
+        "other": "You've earned {{count}} points"
+      },
+      "pointsHistoryNavBarTitle": "POINTS HISTORY",
+      "redeemRewardNavBarTitle": "REDEEM REWARD",
+      "redeemLaterButton": "REDEEM LATER",
+      "redeemNowButton": "REDEEM NOW",
+      "redeemMessage": "Your reward can be redeemed.",
+      "punchCardRedeemButton": "REDEEM",
+      "punchCardStampButton": "STAMP CARD",
+      "punchCardStampingNavBarTitle": "STAMP CARD",
+      "punchCardStampingDoneButton": "DONE",
+      "punchCardStampedMessage": {
+        "one": "Your card was stamped once.",
+        "other": "Your card was stamped {{count}} times"
+      },
+      "rewardRedemptionMessage": "You have redeemed your reward",
+      "rewardPointRequirement": {
+        "one": "Requires {{count}} point",
+        "other": "Requires {{count}} points"
+      },
+      "rewardRedemptionCongratulation": "CONGRATULATIONS",
+      "rewardRedemptionContinueButton": "CONTINUE",
+      "cardStampingDoneMessage": "STAMP CARD",
+      "cashierVerificationMessage": "Show this screen to the Cashier.",
+      "usePinInstead": "USE PIN INSTEAD",
+      "numberOfRewardsInvalidErrorMessage": "This reward is currently out of stock.",
+      "authDataExpressionInvalidErrorMessage": "The barcode is not valid!",
+      "transactionExistsErrorMessage": "The bar code was already scanned!"
+    }
+  }
+}

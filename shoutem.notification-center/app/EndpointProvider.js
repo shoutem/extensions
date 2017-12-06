@@ -8,7 +8,7 @@ const initialize = (legacyApiEndpointBase, appId) => {
   }
 
   const notificationsUrl = `${legacyApiEndpointBase}/${appId}/notifications/functions`;
-  const inbox = `${notificationsUrl}/getInbox?device_id=${UNIVERSAL_DEVICE_ID}`;
+  const inbox = `${notificationsUrl}/getInbox?device_id=${UNIVERSAL_DEVICE_ID}{?query*}`;
   const markAsRead = `${notificationsUrl}/read?device_id=${UNIVERSAL_DEVICE_ID}`;
 
   const groups = `${legacyApiEndpointBase}/${appId}/notifications/objects/Group?device_id=${UNIVERSAL_DEVICE_ID}`;

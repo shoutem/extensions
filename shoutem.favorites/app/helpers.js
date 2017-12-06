@@ -77,6 +77,8 @@ export function fetchFavoritesData(schema, collection, options = {}, tag = FAVOR
 
   return find(schema, tag, {
     ...options,
-    'filter[id]': _.join(_.map(collection, 'id'), ','),
+    query: {
+      'filter[id]': _.join(_.map(collection, 'id'), ','),
+    },
   });
 }

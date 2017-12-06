@@ -13,9 +13,13 @@ import {
   Lightbox,
 } from '@shoutem/ui';
 
+import { I18n } from 'shoutem.i18n';
+
 import LikeButton from '../components/LikeButton';
 import CommentButton from '../components/CommentButton';
 import { post as postShape } from '../components/shapes';
+import { adaptSocialUserForProfileScreen } from '../services/userProfileDataAdapter';
+import { ext } from '../const';
 
 const { func, bool, object, array } = React.PropTypes;
 
@@ -66,7 +70,7 @@ export default class StatusView extends React.Component {
     const { status, openProfile } = this.props;
     const { user } = status;
 
-    openProfile(user);
+    openProfile(adaptSocialUserForProfileScreen(user));
   }
 
   handleClickOnLikes() {
@@ -83,22 +87,31 @@ export default class StatusView extends React.Component {
     if (showUsersWhoLiked && numOfLikes >= 1) {
       const firstNames = _.map(_.get(status, 'shoutem_favorited_by.users'), 'first_name');
       let othersCount;
-      let others;
 
       switch (numOfLikes) {
         case 1:
-          likesText = `${firstNames[0]} likes this`;
+          likesText = I18n.t(ext('numberOfLikesMessage'), { 
+            firstUser: firstNames[0],
+            count: numOfLikes || 0,
+          });
           break;
         case 2:
-          likesText = `${firstNames[0]} and ${firstNames[1]} like this`;
+          likesText = I18n.t(ext('numberOfLikesMessage'), { 
+            firstUser: firstNames[0], 
+            secondUser: firstNames[1], 
+            count: numOfLikes || 0,
+          });
           break;
         default:
           othersCount = numOfLikes - 2;
-          others = `${othersCount} ${othersCount >= 2 ? 'others' : 'other'}`;
-          likesText = `${firstNames[0]}, ${firstNames[1]} and ${others} like this`;
+          likesText = I18n.t(ext('numberOfOtherUserLikesMessage'), { 
+            firstUser: firstNames[0],
+            secondUser: firstNames[1],
+            count: othersCount || 0,
+          });
       }
     } else if (numOfLikes >= 1) {
-      likesText = numOfLikes > 1 ? `${numOfLikes} Likes` : `${numOfLikes} Like`;
+      likesText = I18n.t(ext('numberOfLikes'), { count: numOfLikes || 0 })
     }
 
     return likesText;
@@ -185,7 +198,7 @@ export default class StatusView extends React.Component {
 
     const commentInfo = this.commentsAreEnabled() ?
       <TouchableOpacity onPress={this.handleClickOnStatus}>
-        <Caption>{numOfComments} Comments</Caption>
+        <Caption>{I18n.t(ext('numberOfComments'), { count: numOfComments || 0 })}</Caption>
       </TouchableOpacity> : null;
 
     const likesAndCommentsPlaceholder = likeInfo || commentInfo ?

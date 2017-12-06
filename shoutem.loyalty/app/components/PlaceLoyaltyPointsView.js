@@ -2,12 +2,11 @@ import React, {
   Component,
 } from 'react';
 
-import _ from 'lodash';
-
 import { connect } from 'react-redux';
 
 import {
   getCollection,
+  isBusy,
  } from '@shoutem/redux-io';
 
 import {
@@ -20,14 +19,18 @@ import {
 } from '@shoutem/ui';
 
 import { connectStyle } from '@shoutem/theme';
+
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
+
+import { refreshCardState, refreshTransactions } from '../services';
 
 import {
   placeShape,
-  transactionShape,
  } from './shapes';
 
-const { arrayOf, func } = React.PropTypes;
+const { func } = React.PropTypes;
 
 /**
  * A component for place loyalty points layout.
@@ -38,34 +41,48 @@ class PlaceLoyaltyPointsView extends Component {
     place: placeShape.isRequired,
     // Called when collect points is pressed
     onCollectPointsPress: func,
-    // Called when points history is pressed
-    onPointsHistoryPress: func,
-    // Transactions for this place
-    transactions: arrayOf(transactionShape),
+    // Refreshes card state
+    refreshCardState: func,
+    // Refreshes transactions on the loyalty card
+    refreshTransactions: func,
   };
 
+  constructor(props) {
+    super(props);
+
+    this.refreshCardState = this.refreshCardState.bind(this);
+  }
+
+  refreshCardState() {
+    const { refreshCardState, refreshTransactions } = this.props;
+
+    refreshCardState();
+    refreshTransactions();
+  }
+
   render() {
-    const { place, onCollectPointsPress, onPointsHistoryPress, transactions } = this.props;
+    const { cardStates, place, onCollectPointsPress } = this.props;
+
+    const isRefreshingPoints = isBusy(cardStates);
 
     return (
       <Tile>
         <View styleName="content h-center lg-gutter-vertical vertical">
           <Caption>Points collected</Caption>
-          <Title styleName="md-gutter-top">{place.points || 'No points collected'}</Title>
+          <Title styleName="md-gutter-top">{place.points || I18n.t(ext('noPointsCollected'))}</Title>
           <View styleName="horizontal lg-gutter-top">
             <Button
               onPress={onCollectPointsPress}
               styleName="secondary md-gutter-right"
             >
-              <Text>COLLECT</Text>
+              <Text>{I18n.t(ext('collectPointsButton'))}</Text>
             </Button>
-            {_.size(transactions) ?
-              <Button onPress={onPointsHistoryPress}>
-                <Text>HISTORY</Text>
-              </Button>
-              :
-              null
-            }
+            <Button
+              styleName={`${isRefreshingPoints && 'muted'}`}
+              onPress={this.refreshCardState}
+            >
+              <Text>{I18n.t(ext('pointsHistoryButton'))}</Text>
+            </Button>
           </View>
         </View>
       </Tile>
@@ -73,24 +90,14 @@ class PlaceLoyaltyPointsView extends Component {
   }
 }
 
-const getTransactionsForPlace = (transactions, place) =>
-  _.filter(transactions, (transaction) => {
-    const { transactionData } = transaction;
-
-    return place.id === transactionData.location;
-  });
-
-export const mapStateToProps = (state, ownProps) => {
-  const { allTransactions } = state[ext()];
-  const { place } = ownProps;
-
-  const transactions = getCollection(allTransactions, state);
+export const mapStateToProps = (state) => {
+  const { allCardStates } = state[ext()];
 
   return {
-    transactions: getTransactionsForPlace(transactions, place),
+    cardStates: getCollection(allCardStates, state),
   };
 };
 
-export default connect(mapStateToProps)(
+export default connect(mapStateToProps, { refreshCardState, refreshTransactions })(
   connectStyle(ext('PlaceLoyaltyPointsView'))(PlaceLoyaltyPointsView),
 );

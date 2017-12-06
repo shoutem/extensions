@@ -6,4 +6,9 @@ export {
   CashierSettings,
 };
 
+export {
+  loadCashiers,
+  getCashiers,
+} from './redux';
+
 export default reducer;

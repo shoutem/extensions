@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { InlineModal } from '@shoutem/react-web-ui';
 import { shouldLoad } from '@shoutem/redux-io';
 import _ from 'lodash';
-import { getExtensionState } from '@shoutem/redux-api-sdk';
-import { getErrorCode } from '../../../../services';
-import CashiersTable from '../../components/cashiers-table';
-import CashierForm from '../../components/cashier-form';
+import { getErrorCode } from 'src/services';
+import { CashiersTable, CashierForm } from '../../components';
 import {
   loadCashiers,
   createCashier,
@@ -124,7 +122,7 @@ export class CashierSettings extends Component {
 
     return (
       <InlineModal
-        className="add-cashier-modal"
+        className="add-cashier-modal settings-page-modal"
         onHide={this.handleHideCashierModal}
         title={modalTitle}
       >
@@ -172,12 +170,9 @@ CashierSettings.propTypes = {
   placesDescriptor: PropTypes.object,
 };
 
-function mapStateToProps(state, ownProps) {
-  const { extensionName } = ownProps;
-  const extensionState = getExtensionState(state, extensionName);
-
+function mapStateToProps(state) {
   return {
-    cashiers: getCashiersWithPlace(extensionState)(state),
+    cashiers: getCashiersWithPlace(state),
   };
 }
 

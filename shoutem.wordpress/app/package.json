@@ -1,6 +1,6 @@
 {
   "name": "shoutem.wordpress",
-  "version": "1.3.3",
+  "version": "1.5.1",
   "private": true,
   "main": "index.js",
   "peerDependencies": {

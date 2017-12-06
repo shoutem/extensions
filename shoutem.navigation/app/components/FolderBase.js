@@ -227,9 +227,10 @@ export default class FolderBase extends React.Component {
   }
 
   renderScrollView() {
+    const { shortcut } = this.props;
     return (
       <ScrollView {...this.resolveScrollViewProps()}>
-        {this.renderPages(this.groupChildrenIntoPages(this.props.shortcut.children))}
+        {this.renderPages(this.groupChildrenIntoPages(shortcut.children))}
       </ScrollView>
     );
   }

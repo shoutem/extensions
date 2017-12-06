@@ -1,66 +1,48 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import { isBusy } from '@shoutem/redux-io';
+import { isInitialized } from '@shoutem/redux-io';
+import { LoaderContainer } from '@shoutem/react-web-ui';
+import FeedPreviewTableRow from '../feed-preview-table-row';
 import './style.scss';
 
-const renderImage = (item) => {
-  const itemImage = _.get(item, 'featured_media_object.source_url');
-
-  if (!itemImage) {
-    return null;
-  }
-
-  const imageStyle = {
-    backgroundImage: `url(${itemImage})`,
-  };
-
+function renderEmptyRow() {
   return (
-    <div className="feed-preview-table-item__image-preview" style={imageStyle}></div>
+    <tr className="feed-preview-table__empty-row">
+      <td colSpan="3">No content to show</td>
+    </tr>
   );
-};
+}
 
-export default function FeedPreviewTable({ feedItems = [] }) {
-  const loading = isBusy(feedItems);
+export default function FeedPreviewTable({ feedItems }) {
+  const isFeedEmpty = _.isEmpty(feedItems);
 
   return (
-    <table className="table feed-preview-table">
-      <thead>
-        <tr>
-          <th className="feed-preview-table__image">Image</th>
-          <th className="feed-preview-table__title">Title</th>
-          <th className="feed-preview-table__date">Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {loading && (
+    <LoaderContainer
+      isLoading={!isFeedEmpty && !isInitialized(feedItems)}
+      isOverlay
+    >
+      <table className="table feed-preview-table">
+        <thead>
           <tr>
-            <td colSpan="3">loading content...</td>
+            <th className="feed-preview-table__image">Image</th>
+            <th className="feed-preview-table__title">Title</th>
+            <th className="feed-preview-table__date">Date</th>
           </tr>
-        )}
-        {!loading && (feedItems.length === 0) && (
-          <tr>
-            <td colSpan="3">No content to show</td>
-          </tr>
-        )}
-        {(!loading) && feedItems.map(item => (
-          <tr key={item.id} className="feed-preview-table-item">
-            <td className="feed-preview-table-item__image">
-              {renderImage(item)}
-            </td>
-            <td className="feed-preview-table-item__title">{item.title.rendered}</td>
-            <td className="feed-preview-table-item__date">
-              <span title={item.dateTimeFormatted}>{item.dateTimeDisplay}</span>
-            </td>
-          </tr>))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {isFeedEmpty && renderEmptyRow()}
+          {!isFeedEmpty && _.map(feedItems, feedItem =>
+            <FeedPreviewTableRow
+              feedItem={feedItem}
+              key={feedItem.id}
+            />
+          )}
+        </tbody>
+      </table>
+    </LoaderContainer>
   );
 }
 
 FeedPreviewTable.propTypes = {
   feedItems: PropTypes.array,
-};
-
-FeedPreviewTable.defaultProps = {
-  feedItems: [],
 };

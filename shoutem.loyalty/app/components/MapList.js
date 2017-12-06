@@ -6,6 +6,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { MapView, EmptyStateView } from '@shoutem/ui-addons';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import PlaceIconView from './PlaceIconView';
 
@@ -135,7 +136,9 @@ export class MapList extends Component {
     const returnedPlace = this.findSelectedPlace(places);
     const { id } = returnedPlace;
 
-    const points = _.get(cardStatesByLocation[id], 'points');
+
+    const points = _.has(returnedPlace, 'points') ?
+      returnedPlace.points : _.get(cardStatesByLocation[id], 'points');
 
     return (
       <PlaceIconView
@@ -153,7 +156,7 @@ export class MapList extends Component {
       return (
         <EmptyStateView
           icon="address-full"
-          message="None of your items have a location property set"
+          message={I18n.t(ext('noLocationsProvidedErrorMessage'))}
         />
       );
     }

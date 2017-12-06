@@ -9,8 +9,6 @@ import CreateStatusScreen from './screens/CreateStatusScreen';
 import MembersScreen from './screens/MembersScreen';
 import SearchScreen from './screens/SearchScreen';
 
-// themes imports
-
 export const screens = {
   SocialWallScreen,
   StatusDetailsScreen,

@@ -3,7 +3,7 @@ import { mapReducers } from '@shoutem/redux-composers';
 import { collection } from '@shoutem/redux-io';
 
 function getFeedUrl(action) {
-  return _.get(action, ['meta', 'params', 'filter[url]']);
+  return _.get(action, ['meta', 'params', 'query', 'filter[url]']);
 }
 
 const _15min = 15 * 60;

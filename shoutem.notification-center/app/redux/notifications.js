@@ -2,24 +2,21 @@ import _ from 'lodash';
 import { RSAA } from 'redux-api-middleware';
 import {
   find,
-  LOAD_SUCCESS,
+  invalidate,
   resource,
+  LOAD_SUCCESS,
 } from '@shoutem/redux-io';
-
 import {
+  STATUS,
   busyStatus,
   setStatus,
-  STATUS,
   updateStatus,
   validationStatus,
 } from '@shoutem/redux-io/status';
-
 import { isAppendMode } from '@shoutem/redux-io/actions/find';
 import { canHandleAction } from '@shoutem/redux-io/reducers/resource';
-
-import { ext } from '../const';
-
 import getEndpointProvider from '../EndpointProvider';
+import { ext } from '../const';
 
 const MARK_AS_READ_REQUEST = 'shoutem.notification-center.MARK_AS_READ_REQUEST';
 const MARK_AS_READ_SUCCESS = 'shoutem.notification-center.MARK_AS_READ_SUCCESS';
@@ -60,8 +57,12 @@ export function markAsRead({ id }) {
   };
 }
 
-export function fetchNotifications() {
-  return find(NOTIFICATIONS_SCHEMA);
+export function fetchNotifications (params) {
+  return find(NOTIFICATIONS_SCHEMA, '', params);
+}
+
+export function invalidateNotifications () {
+  return invalidate(NOTIFICATIONS_SCHEMA);
 }
 
 const getNextActionParams = (action) => ({

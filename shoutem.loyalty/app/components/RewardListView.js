@@ -12,6 +12,9 @@ import {
 } from '@shoutem/ui';
 
 import { connectStyle } from '@shoutem/theme';
+
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 
 import {
@@ -56,7 +59,7 @@ export class RewardListView extends Component {
           />
           <View styleName="vertical stretch space-between">
             <Subtitle>{title}</Subtitle>
-            <Subtitle>{`${pointsRequired} points`}</Subtitle>
+            <Subtitle>{`${pointsRequired}${I18n.t(ext('pointsRequiredRewards'))}`}</Subtitle>
           </View>
         </Row>
         <Divider styleName="line" />

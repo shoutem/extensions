@@ -14,6 +14,7 @@ export {
   NOTIFICATIONS_SCHEMA,
   markAsRead,
   fetchNotifications,
+  invalidateNotifications,
 } from './notifications';
 
 export {

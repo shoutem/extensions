@@ -24,36 +24,37 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 import { EmptyStateView } from '@shoutem/ui-addons';
 import { connectStyle } from '@shoutem/theme';
 
-import { fetchGroups, selectPushNotificationGroups } from '../redux';
+import { I18n } from 'shoutem.i18n';
+
+import {
+  fetchGroups,
+  selectPushNotificationGroups,
+  invalidateNotifications,
+} from '../redux';
 
 import { ext, GROUP_PREFIX } from '../const';
 import { pushGroupShape } from '../components/shapes';
 
-const TITLE = 'SETTINGS';
-
 const { arrayOf, func, string } = React.PropTypes;
 
 const renderEmptyScreen = () => (
-  <EmptyStateView message={'There are no push groups defined'} />
+  <EmptyStateView message={I18n.t(ext('noGroupsErrorMessage'))} />
 );
 
 const showPreviewModeNotification = () => {
   Alert.alert(
-    'Preview mode',
-    'Push notifications are not supported in preview mode. ' +
-      'You can see groups but you can\'t toggle subscriptions. Everything ' +
-      'does work in the app!',
+    I18n.t('shoutem.application.preview.pushGroupsPreviewAlertTitle'),
+    I18n.t('shoutem.application.preview.pushGroupsPreviewAlertMessage'),
   );
 };
 
 const showSuggestionToEnableNotifications = () => {
   Alert.alert(
-    'Enable notifications',
-    'You disabled push notifications for this application. Do you want to enable them in' +
-      ' settings now?',
+    I18n.t(ext('notificationPermissionsAlertTitle')),
+    I18n.t(ext('notificationPermissionsAlertMessage')),
     [
-      { text: 'Go to settings', onPress: () => Permissions.openSettings() },
-      { text: 'Cancel' },
+      { text: I18n.t(ext('notificationPermissionsSettings')), onPress: () => Permissions.openSettings() },
+      { text: I18n.t(ext('notificationPermissionsCancel')) },
     ],
   );
 };
@@ -72,6 +73,8 @@ export class PushGroupsScreen extends Component {
     selectedGroups: arrayOf(string).isRequired,
     // Used to subscribe and unsubscribe from groups
     selectPushNotificationGroups: func.isRequired,
+    // Used to invalidate notifications after a change in subscribed groups
+    invalidateNotifications: func.isRequired,
   };
 
   constructor(props) {
@@ -99,12 +102,16 @@ export class PushGroupsScreen extends Component {
   }
 
   onToggleGroupSubscription(tag, value) {
-    const { selectPushNotificationGroups } = this.props;
+    const {
+      selectPushNotificationGroups,
+      invalidateNotifications,
+    } = this.props;
 
     const added = value ? [tag] : [];
     const removed = value ? [] : [tag];
 
     selectPushNotificationGroups({ added, removed });
+    invalidateNotifications();
   }
 
   checkIfNotificationsAreEnabled() {
@@ -132,7 +139,6 @@ export class PushGroupsScreen extends Component {
         </Row>
         <Divider styleName="line" />
       </View>
-
     );
   }
 
@@ -145,9 +151,9 @@ export class PushGroupsScreen extends Component {
 
     return (
       <Screen>
-        <NavigationBar title={TITLE} />
+        <NavigationBar title={I18n.t(ext('pushGroupsSettingsNavBarTitle'))} />
         <View styleName="md-gutter solid">
-          <Subtitle styleName="h-center">Send me a push notification for</Subtitle>
+          <Subtitle styleName="h-center">{I18n.t(ext('subscribeToPushGroups'))}</Subtitle>
         </View>
         <ListView
           data={[...groups]}
@@ -163,6 +169,6 @@ export const mapStateToProps = state => ({
   selectedGroups: state[ext()].selectedGroups || [],
 });
 
-export default connect(mapStateToProps, { fetchGroups, selectPushNotificationGroups })(
+export default connect(mapStateToProps, { fetchGroups, invalidateNotifications, selectPushNotificationGroups })(
   connectStyle(ext('PushGroupsListScreen'))(PushGroupsScreen),
 );

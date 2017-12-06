@@ -20,12 +20,13 @@ import {
 } from '@shoutem/ui';
 
 import { openProfile } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
 
 import { ext } from '../const';
 import MemberView from '../components/MemberView';
 
 export class SearchScreen extends Component {
-  
+
   constructor(props) {
     super(props);
     this.renderRightComponent = this.renderRightComponent.bind(this);
@@ -68,7 +69,7 @@ export class SearchScreen extends Component {
   renderRightComponent() {
     return (
       <Button styleName="clear" onPress={this.onCancel}>
-        <Subtitle>Cancel</Subtitle>
+        <Subtitle>{I18n.t(ext('searchCancelButton'))}</Subtitle>
       </Button>
     );
   }
@@ -77,7 +78,7 @@ export class SearchScreen extends Component {
     return (
       <View styleName="container full-width md-gutter-left sm-gutter-right">
         <SearchField
-          placeholder="Search"
+          placeholder={I18n.t(ext('navBarSearchPlaceholder'))}
           onChangeText={this.onHandleText}
           onSubmitEditing={this.onSubmit}
         />
@@ -98,12 +99,12 @@ export class SearchScreen extends Component {
 
   render() {
     const { users } = this.props;
-    
+
     const filteredUsers =
       this.state.text
       ? _.get(users, 'data').filter(user => this.userMeetsSearchCriteria(user))
       : _.get(users, 'data');
-    
+
     return (
       <Screen styleName="paper">
         <NavigationBar

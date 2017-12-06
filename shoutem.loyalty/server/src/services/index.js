@@ -2,12 +2,24 @@ import LoyaltyApi from './loyaltyApi';
 const loyaltyApi = new LoyaltyApi();
 const getLoyaltyUrl = loyaltyApi.getUrl;
 
-import {
+import ShoutemUrls from './shoutemUrls';
+const shoutemUrls = new ShoutemUrls();
+
+export {
   getErrorCode,
 } from './errors';
 
 export {
   loyaltyApi,
   getLoyaltyUrl,
-  getErrorCode,
+  shoutemUrls,
 };
+
+export {
+  getProgramId,
+  initializeApiEndpoints,
+} from './settings';
+
+export {
+  createSelectOptions,
+} from './selectOptions';

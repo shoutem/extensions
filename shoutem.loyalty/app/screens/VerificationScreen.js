@@ -1,5 +1,5 @@
 import React from 'react';
-
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode';
 
@@ -19,6 +19,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 import {
   loginRequired,
 } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
 
 import { ext } from '../const';
 
@@ -77,17 +78,18 @@ export class VerificationScreen extends React.Component {
   }
 
   render() {
-    const { cardId, reward, redeem } = this.props;
+    const { cardId, reward, redeem, place } = this.props;
 
     const rewardData = reward ? getEncodedRewardValues(reward) : '';
+    const placeId = _.get(place, 'id');
 
-    const transactionData = [cardId, rewardData, redeem];
+    const transactionData = [cardId, placeId, rewardData, redeem];
 
     return (
       <Screen>
         <NavigationBar />
         <View styleName="sm-gutter flexible vertical h-center v-center">
-          <Subtitle styleName="xl-gutter-bottom">Show this screen to the Cashier</Subtitle>
+          <Subtitle styleName="xl-gutter-bottom">{I18n.t(ext('cashierVerificationMessage'))}</Subtitle>
           <QRCode
             size={160}
             value={JSON.stringify(transactionData)}
@@ -96,7 +98,7 @@ export class VerificationScreen extends React.Component {
             styleName="secondary md-gutter-vertical"
             onPress={this.navigateToPinVerificationScreen}
           >
-            <Text>USE PIN INSTEAD</Text>
+            <Text>{I18n.t(ext('usePinInstead'))}</Text>
           </Button>
         </View>
       </Screen>

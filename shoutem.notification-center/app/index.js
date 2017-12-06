@@ -6,10 +6,20 @@ import reducer, {
   middleware,
 } from './redux';
 
+import enTranslations from './translations/en.json';
+
 const screens = {
   NotificationDetailsScreen,
   NotificationsScreen,
   PushGroupsScreen,
+};
+
+export const shoutem = {
+  i18n: {
+    translations: {
+      en: enTranslations,
+    },
+  },
 };
 
 export {

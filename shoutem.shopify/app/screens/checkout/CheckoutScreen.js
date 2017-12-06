@@ -20,6 +20,8 @@ import _ from 'lodash';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
 
+import { I18n } from 'shoutem.i18n';
+
 import countryData from 'world-countries';
 
 import { ext } from '../../const';
@@ -27,46 +29,12 @@ import CartFooter from '../../components/CartFooter';
 import { customer as customerShape } from '../../components/shapes';
 import { updateCustomerInformation } from '../../redux/actionCreators';
 
-const fields = [{
-  autoCapitalize: 'none',
-  name: 'email',
-  label: 'Email',
-  keyboardType: 'email-address',
-},
-{
-  name: 'firstName',
-  label: 'First name',
-},
-{
-  name: 'lastName',
-  label: 'Last name',
-},
-{
-  name: 'address1',
-  label: 'Address',
-},
-{
-  name: 'city',
-  label: 'City',
-},
-{
-  name: 'province',
-  label: 'Province',
-},
-{
-  name: 'zip',
-  label: 'Postal code',
-}];
-
 const { func } = React.PropTypes;
 
 // TODO: Where to put this transformation? We need it because the ListView can reference
 // only first level and not nested properties
 const loadCountries = () => _.sortBy(_.map(countryData, ({ name: { common: name }, cca2 }) =>
 ({ name, cca2 })), 'name');
-
-const emptyOption = { name: 'Select', cca2: '' };
-const countries = [emptyOption, ...loadCountries()];
 
 /**
  * Lets the user enter his email and address when performing a checkout with selected
@@ -87,6 +55,36 @@ class CheckoutScreen extends Component {
     this.onCountrySelected = this.onCountrySelected.bind(this);
     this.proceedToShippingMethod = this.proceedToShippingMethod.bind(this);
     this.renderInput = this.renderInput.bind(this);
+    this.fields = [{
+      autoCapitalize: 'none',
+      name: 'email',
+      label: I18n.t(ext('checkoutEmail')),
+      keyboardType: 'email-address',
+    },
+    {
+      name: 'firstName',
+      label: I18n.t(ext('checkoutFirstName')),
+    },
+    {
+      name: 'lastName',
+      label: I18n.t(ext('checkoutLastName')),
+    },
+    {
+      name: 'address1',
+      label: I18n.t(ext('checkoutAddress')),
+    },
+    {
+      name: 'city',
+      label: I18n.t(ext('checkoutCity')),
+    },
+    {
+      name: 'province',
+      label: I18n.t(ext('checkoutProvince')),
+    },
+    {
+      name: 'zip',
+      label: I18n.t(ext('checkoutPostalCode')),
+    }];
 
     this.state = { ...props.customer };
   }
@@ -98,11 +96,10 @@ class CheckoutScreen extends Component {
   proceedToShippingMethod() {
     const { updateCustomerInformation } = this.props;
     const { countryCode } = this.state;
-
-    const values = _.map(fields, ({ name }) => this.state[name]);
+    const values = _.map(this.fields, ({ name }) => this.state[name]);
 
     if (_.some(values, _.isEmpty) || !countryCode) {
-      Alert.alert('Error', 'All fields are mandatory check if you forgot to fill some.');
+      Alert.alert(I18n.t(ext('checkoutFormErrorTitle')), I18n.t(ext('checkoutFormErrorMessage')));
       return;
     }
     // TODO: Local state contains only customer info so this is a clean practical way of getting
@@ -134,12 +131,14 @@ class CheckoutScreen extends Component {
   }
 
   renderCountryPicker() {
+    const emptyOption = { name: I18n.t(ext('countrySelectionPlaceholder')), cca2: '' };
+    const countries = [emptyOption, ...loadCountries()];
     const { countryCode } = this.state;
     const selectedCountry = _.find(countries, { 'cca2': countryCode });
 
     return (
       <FormGroup>
-        <Caption>COUNTRY</Caption>
+        <Caption>{I18n.t(ext('countrySelectionTitle'))}</Caption>
         <DropDownMenu
           onOptionSelected={this.onCountrySelected}
           options={countries}
@@ -155,14 +154,14 @@ class CheckoutScreen extends Component {
   render() {
     return (
       <Screen>
-        <NavigationBar title="CHECKOUT" />
+        <NavigationBar title={I18n.t(ext('checkoutNavBarTitle'))} />
         <ScrollView>
-          {_.map(fields, this.renderInput)}
+          {_.map(this.fields, this.renderInput)}
           {this.renderCountryPicker()}
         </ScrollView>
         <Divider styleName="line" />
         <CartFooter
-          action="CONTINUE"
+          action={I18n.t(ext('checkoutContinueButton'))}
           onActionButtonClicked={this.proceedToShippingMethod}
         />
       </Screen>

@@ -42,6 +42,8 @@ import {
   getExtensionSettings,
 } from 'shoutem.application';
 
+import { I18n } from 'shoutem.i18n';
+
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { ext } from '../const';
@@ -51,6 +53,9 @@ import {
   loginWithFacebook,
   isAuthenticated,
   userLoggedIn,
+  getUser,
+  getAccessToken,
+  hideShortcuts,
 } from '../redux';
 
 import {
@@ -66,7 +71,7 @@ const renderAuthenticatingMessage = () => <Spinner styleName="xl-gutter-top" />;
 
 const handleLoginError = ({ payload }) => {
   const { response } = payload;
-  Alert.alert('Login failure', getErrorMessage(response && response.code));
+  Alert.alert(I18n.t(ext('loginFailErrorTitle')), getErrorMessage(response && response.code));
 };
 
 const getFacebookAccessToken = () => AccessToken.refreshCurrentAccessTokenAsync().then(() =>
@@ -128,7 +133,12 @@ export class LoginScreen extends Component {
       // We are running the callback after interactions because of the bug
       // in navigation which prevents us from navigating to other screens
       // while in the middle of a transition
-      InteractionManager.runAfterInteractions(onLoginSuccess);
+      InteractionManager.runAfterInteractions(() => {
+        const { user, settings } = newProps;
+        const { hideShortcuts } = this.props;
+        hideShortcuts(user, settings);
+        onLoginSuccess()
+      });
     }
   }
 
@@ -146,7 +156,7 @@ export class LoginScreen extends Component {
         if (data && data.accessToken) {
           this.loginWithFacebookAccessToken(data.accessToken);
         } else {
-          throw new Error('Access token is not valid');
+          throw new Error(I18n.t(ext('tokenErrorMessage')));
         }
       })
       .catch(this.openFacebookLogin);
@@ -156,7 +166,7 @@ export class LoginScreen extends Component {
     LoginManager.logInWithReadPermissions(['public_profile', 'email'])
       .then((result) => {
         if (result.isCancelled) {
-          throw new Error('Login was cancelled');
+          throw new Error(I18n.t(ext('loginCancelErrorMessage')));
         }
         return AccessToken.getCurrentAccessToken();
       }).then((data) => {
@@ -165,7 +175,7 @@ export class LoginScreen extends Component {
       }
       this.loginWithFacebookAccessToken(data.accessToken);
     }).catch((error) => {
-      Alert.alert('Login failure', error.message || errorMessages.UNEXPECTED_ERROR);
+      Alert.alert(I18n.t(ext('loginFailErrorTitle')), error.message || errorMessages.UNEXPECTED_ERROR);
     });
   }
 
@@ -173,15 +183,19 @@ export class LoginScreen extends Component {
     const { loginWithFacebook } = this.props;
 
     loginWithFacebook(accessToken)
-      .then(response => this.finishLogin(response, accessToken))
+      .then(response => this.finishLogin(response))
       .catch(handleLoginError);
   }
 
-  finishLogin({ payload }, accessToken) {
-    const { onLoginSuccess, userLoggedIn } = this.props;
+  finishLogin() {
+    const { userLoggedIn, settings, user, access_token } = this.props;
 
-    saveSession(JSON.stringify(payload));
-    userLoggedIn({ ...payload.user, facebookAccessToken: accessToken });
+
+    saveSession(JSON.stringify({ access_token }));
+    userLoggedIn({
+      user,
+      access_token,
+    });
   }
 
   performLogin() {
@@ -189,7 +203,7 @@ export class LoginScreen extends Component {
     const { username, password } = this.state;
 
     if (_.isEmpty(username) || _.isEmpty(password)) {
-      Alert.alert('Error', errorMessages.EMPTY_FIELDS);
+      Alert.alert(I18n.t('shoutem.application.errorTitle'), I18n.t(ext('formNotFilledErrorMessage')));
       return;
     }
 
@@ -205,10 +219,10 @@ export class LoginScreen extends Component {
       buttons = (
         <View>
           <Caption styleName="h-center lg-gutter-vertical">
-            Not a member?
+            {I18n.t(ext('noAccountSectionTitle'))}
           </Caption>
           <Button styleName="full-width inflexible" onPress={this.openRegisterScreen}>
-            <Text>REGISTER</Text>
+            <Text>{I18n.t(ext('registerButton'))}</Text>
           </Button>
         </View>
       );
@@ -227,7 +241,7 @@ export class LoginScreen extends Component {
           <Divider />
           <Divider styleName="line" />
           <TextInput
-            placeholder="Username or Email"
+            placeholder={I18n.t(ext('usernameOrEmailPlaceholder'))}
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="email-address"
@@ -238,7 +252,7 @@ export class LoginScreen extends Component {
           />
           <Divider styleName="line" />
           <TextInput
-            placeholder="Password"
+            placeholder={I18n.t(ext('passwordPlaceholder'))}
             autoCapitalize="none"
             autoCorrect={false}
             keyboardAppearance="dark"
@@ -252,7 +266,7 @@ export class LoginScreen extends Component {
             styleName="full-width inflexible"
             onPress={this.performLogin}
           >
-            <Text>LOG IN</Text>
+            <Text>{I18n.t(ext('logInButton'))}</Text>
           </Button>
         </View>
       );
@@ -264,14 +278,14 @@ export class LoginScreen extends Component {
     return (
       <View>
         <Caption styleName="h-center lg-gutter-vertical">
-          or sign in/sign up with your other account
+          {I18n.t(ext('socialLoginSectionTitle'))}
         </Caption>
         <Button
           onPress={this.loginWithFacebook}
           styleName="full-width inflexible"
         >
           <Icon name="facebook" />
-          <Text>FACEBOOK</Text>
+          <Text>{I18n.t(ext('facebookLogInButton'))}</Text>
         </Button>
       </View>
     );
@@ -291,7 +305,7 @@ export class LoginScreen extends Component {
     } else {
       screenContent = (
         <View>
-          <NavigationBar title="LOG IN" />
+          <NavigationBar title={I18n.t(ext('logInNavBarTitle'))} />
           {this.renderLoginComponent()}
           {facebook.enabled ? this.renderFacebookLoginButton() : null}
           {this.renderRegisterButton()}
@@ -313,16 +327,18 @@ const mapDispatchToProps = {
   login,
   loginWithFacebook,
   userLoggedIn,
+  hideShortcuts,
 };
 
 function mapStateToProps(state, ownProps) {
   return {
-    user: state[ext()].user,
+    user: getUser(state),
     isAuthenticated: isAuthenticated(state),
     isAuthenticating: isBusy(state[ext()]),
     appId: getAppId(),
     settings: getExtensionSettings(state, ext()),
     isScreenActive: isScreenActive(state, ownProps.screenId),
+    access_token: getAccessToken(state),
   };
 }
 

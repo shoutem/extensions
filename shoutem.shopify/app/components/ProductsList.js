@@ -20,6 +20,8 @@ import {
   openInModal,
 } from '@shoutem/core/navigation';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext, PAGE_SIZE } from '../const';
 import ListItem from './ListItem';
 import UpdateItemScreen from '../screens/UpdateItemScreen';
@@ -124,8 +126,8 @@ export class ProductsList extends Component {
     return (
       <EmptyStateView
         icon="refresh"
-        message="There are no products for this collection"
-        retryButtonTitle="TRY AGAIN"
+        message={I18n.t(ext('noItemsInCollection'))}
+        retryButtonTitle={I18n.t('shoutem.application.tryAgainButton')}
         onRetry={() => this.refreshData(true)}
       />
     );
@@ -134,7 +136,7 @@ export class ProductsList extends Component {
   getNoProductsForTagView() {
     const { tag } = this.props;
 
-    const message = `There are no products for "${tag}".`;
+    const message = I18n.t(ext('noItemsWithSpecificTag'), { unmatchedTag: tag});
 
     return (
       <EmptyStateView
@@ -219,13 +221,12 @@ export class ProductsList extends Component {
     const { error } = this.props.shop;
 
     if (error) {
-      const message = 'There was an error while fetching the shop.\n';
-      return <EmptyStateView message={message} />;
+      return <EmptyStateView message={I18n.t(ext('fetchingShopErrorMessage'))} />;
     }
 
     return (
       <Screen>
-        { this.renderContent() }
+        {this.renderContent()}
       </Screen>
     );
   }

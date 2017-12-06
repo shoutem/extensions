@@ -5,6 +5,8 @@ import {
   AppState,
 } from 'react-native';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from './const';
 
 import {
@@ -53,11 +55,11 @@ const appDidMount = (app) => {
     }
 
     Alert.alert(
-      'Message received',
+      I18n.t(ext('messageReceivedAlert')),
       notificationContent.body,
       [
-        { text: 'View', onPress: onNotificationAction.bind(null, notificationContent) },
-        { text: 'Dismiss', onPress: () => {} },
+        { text: I18n.t(ext('messageReceivedAlertView')), onPress: onNotificationAction.bind(null, notificationContent) },
+        { text: I18n.t(ext('messageReceivedAlertDismiss')), onPress: () => {} },
       ]
     );
   }

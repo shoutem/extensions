@@ -19,6 +19,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import { getAppId } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { navigateBack } from '@shoutem/core/navigation';
 
@@ -42,8 +43,8 @@ export class RegisterScreen extends Component {
     register: React.PropTypes.func,
   };
 
-  constructor(props, contex) {
-    super(props, contex);
+  constructor(props, context) {
+    super(props, context);
     this.performRegistration = this.performRegistration.bind(this);
 
     this.state = {
@@ -57,7 +58,7 @@ export class RegisterScreen extends Component {
     const { register, navigateBack } = this.props;
     const { email, username, password } = this.state;
     if (_.isEmpty(email) || _.isEmpty(username) || _.isEmpty(password)) {
-      Alert.alert('Error', errorMessages.EMPTY_FIELDS);
+      Alert.alert(I18n.t('shoutem.application.errorTitle'), errorMessages.EMPTY_FIELDS);
       return;
     }
     register(email, username, password).then(
@@ -68,7 +69,7 @@ export class RegisterScreen extends Component {
       },
       ({ payload }) => {
         const { response } = payload;
-        Alert.alert('Registration failed', getErrorMessage(response && response.code));
+        Alert.alert(I18n.t(ext('registrationFailedErrorTitle')), getErrorMessage(response && response.code));
       },
     );
   }
@@ -76,11 +77,11 @@ export class RegisterScreen extends Component {
   render() {
     return (
       <Screen>
-        <NavigationBar title="REGISTER" />
+        <NavigationBar title={I18n.t(ext('registerNavBarTitle'))} />
         <Divider />
         <Divider styleName="line" />
         <TextInput
-          placeholder="Email"
+          placeholder={I18n.t(ext('emailPlaceholder'))}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="email-address"
@@ -90,7 +91,7 @@ export class RegisterScreen extends Component {
         />
         <Divider styleName="line" />
         <TextInput
-          placeholder="Username"
+          placeholder={I18n.t(ext('usernamePlaceholder'))}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardAppearance="dark"
@@ -99,7 +100,7 @@ export class RegisterScreen extends Component {
         />
         <Divider styleName="line" />
         <TextInput
-          placeholder="Password"
+          placeholder={I18n.t(ext('passwordPlaceholder'))}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardAppearance="dark"
@@ -113,7 +114,7 @@ export class RegisterScreen extends Component {
           styleName="full-width inflexible"
           onPress={this.performRegistration}
         >
-          <Text>REGISTER</Text>
+          <Text>{I18n.t(ext('registerButton'))}</Text>
         </Button>
       </Screen>
     );

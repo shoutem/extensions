@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from '@shoutem/ui';
 import { user as userShape } from '../components/shapes';
+import { adaptSocialUserForProfileScreen } from '../services/userProfileDataAdapter';
 
 const { func } = React.PropTypes;
 
@@ -28,7 +29,7 @@ export default class MemberView extends React.Component {
   openUserProfile() {
     const { user, openProfile } = this.props;
 
-    openProfile(user);
+    openProfile(adaptSocialUserForProfileScreen(user));
   }
 
   render() {

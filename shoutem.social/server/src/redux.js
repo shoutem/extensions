@@ -1,21 +1,12 @@
 import { createScopedReducer } from '@shoutem/redux-api-sdk';
 
-export function navigateToExtension(options) {
-  const { appId, canonicalName, installationId } = options;
-  if (!appId) {
-    throw new Error('Cannot navigate to extension: no appId!');
-  }
-
-  if (!canonicalName && !installationId) {
-    throw new Error(
-      'Cannot navigate to extension: installationId or extension name must be provided'
-    );
-  }
+export function navigateToSettings(appId, sectionId) {
+  const options = { appId, sectionId };
 
   return {
     type: '@@navigator/NAVIGATE_REQUEST',
     payload: {
-      component: 'extension',
+      component: 'settings',
       options,
     },
   };

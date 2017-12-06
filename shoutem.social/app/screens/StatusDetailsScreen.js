@@ -5,8 +5,10 @@ import React, {
 
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { KeyboardAvoidingView, Alert, Platform, Keyboard } from 'react-native';
+import { Alert, Platform, Keyboard } from 'react-native';
 import _ from 'lodash';
+
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { connectStyle } from '@shoutem/theme';
 import { ImagePicker, ActionSheet } from '@shoutem/ui-addons';
@@ -17,7 +19,6 @@ import { isBusy, isInitialized, next, hasNext } from '@shoutem/redux-io';
 
 import {
   Button,
-  ScrollView,
   ListView,
   Screen,
   View,
@@ -27,9 +28,10 @@ import {
   Icon,
   Image,
   Row,
-  Subtitle,
-  TouchableOpacity,
 } from '@shoutem/ui';
+
+import { openProfile, authenticate } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
 
 import StatusView from '../components/StatusView';
 import CommentView from '../components/CommentView';
@@ -43,9 +45,7 @@ import {
   deleteComment,
 } from '../redux';
 
-import { openProfile, authenticate } from 'shoutem.auth';
-
-const { array, number, func, bool, object } = PropTypes;
+const { array, number, func, bool } = PropTypes;
 
 export class StatusDetailsScreen extends Component {
   static propTypes = {
@@ -98,7 +98,7 @@ export class StatusDetailsScreen extends Component {
   }
 
   fetchData() {
-    const { statusId, fetchComments, comments } = this.props;
+    const { statusId, fetchComments } = this.props;
 
     fetchComments(statusId);
   }
@@ -118,7 +118,7 @@ export class StatusDetailsScreen extends Component {
     authenticate(() => {
       createComment(statusId, text, image64Data)
         .then(this.onSubmit())
-        .then(this.scrollDownOnComment({ animation: true }));
+        .then(this.scrollDownOnComment());
       Keyboard.dismiss();
       this.setState({ text: '' });
     });
@@ -191,7 +191,7 @@ export class StatusDetailsScreen extends Component {
   }
 
   renderLoadComments() {
-    if(!hasNext(this.props.comments)) {
+    if (!hasNext(this.props.comments)) {
       return null;
     }
 
@@ -203,7 +203,7 @@ export class StatusDetailsScreen extends Component {
         <Divider styleName="line" />
       </View>
     );
-  };
+  }
 
   isStatusAuthorOrAppOwner() {
     const { statuses, statusId } = this.props;
@@ -219,23 +219,22 @@ export class StatusDetailsScreen extends Component {
     ActionSheet.showActionSheetWithOptions(
       {
         options: [
-          'Delete',
-          'Cancel'
+          I18n.t(ext('deleteStatusOption')),
+          I18n.t(ext('cancelStatusSelectionOption')),
         ],
         destructiveButtonIndex: 0,
         cancelButtonIndex: 1,
       },
       (index) => {
-        switch (index) {
-          case 0:
-            return deleteStatus(status).then(navigateBack());
+        if (index === 0) {
+          return deleteStatus(status).then(navigateBack());
         }
       }
     );
   }
 
   renderRightComponent() {
-    if(!this.isStatusAuthorOrAppOwner()) {
+    if (!this.isStatusAuthorOrAppOwner()) {
       return null;
     }
 
@@ -255,7 +254,7 @@ export class StatusDetailsScreen extends Component {
 
     return (
       <View key={index}>
-        <CommentView openProfile={openProfile} comment={comment} deleteComment={deleteComment}/>
+        <CommentView openProfile={openProfile} comment={comment} deleteComment={deleteComment} />
         <Divider styleName="line" />
         {loadMoreText}
       </View>
@@ -263,13 +262,7 @@ export class StatusDetailsScreen extends Component {
   }
 
   renderAddCommentSection() {
-    const { image64Data } = this.state;
     const { enablePhotoAttachments } = this.props;
-    const keyboardOffSet = image64Data ? 80 : -60;
-    // Padding was a problem on android
-    // TODO (Ivan): If this problem repeats,
-    // it should be extracted into new component in Shoutem UI.
-    const behavior = (Platform.OS === 'android') ? "height" : "padding";
 
     const addPhotoButton = enablePhotoAttachments ?
       <Button
@@ -280,10 +273,7 @@ export class StatusDetailsScreen extends Component {
       </Button> : null;
 
     return (
-      <KeyboardAvoidingView
-        behavior={behavior}
-        keyboardVerticalOffset={keyboardOffSet}
-      >
+      <View>
         {this.renderAttachedImage()}
         <Divider styleName="line" />
         <View
@@ -297,10 +287,10 @@ export class StatusDetailsScreen extends Component {
             disabled={this.state.text.length === 0}
             onPress={this.handleStatusCommentClick}
           >
-            <Text>Post</Text>
+            <Text>{I18n.t(ext('postStatusButton'))}</Text>
           </Button>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 
@@ -334,12 +324,12 @@ export class StatusDetailsScreen extends Component {
       <TextInput
         autoFocus={scrollDownOnOpen}
         multiline
-        placeholder="Add new comment..."
+        placeholder={I18n.t(ext('newCommentPlaceholder'))}
         styleName="flexible"
         value={this.state.text}
         onChangeText={this.handleTextChange}
         onContentSizeChange={this.handleContentSizeChange}
-        onFocus={this.scrollDownOnFocus}
+        returnKeyType="done"
         style={{
           height: this.calculateTextInputHight(),
         }}
@@ -351,22 +341,23 @@ export class StatusDetailsScreen extends Component {
     const {
       statusId,
       statuses,
+      status,
       openUserLikes,
       onLikeAction,
       openProfile,
       enableComments,
-      enableInteractions,
+      enableInteractions
     } = this.props;
-    const status = _.find(statuses, { id: statusId });
 
     return (
       <View>
         <StatusView
-          status={status}
+          status={status || _.find(statuses, { id: statusId })}
           openUserLikes={openUserLikes}
           addComment={this.focusOnComment}
           onLikeAction={onLikeAction}
           openProfile={openProfile}
+          showUsersWhoLiked
           enableImageFullScreen
           enableInteractions={enableInteractions}
           enableComments={enableComments}
@@ -380,21 +371,29 @@ export class StatusDetailsScreen extends Component {
     const addCommentSection = enableComments ? this.renderAddCommentSection() : null;
     const commentsData = _.get(comments, 'data', []);
 
+    const areCommentsLoading = isBusy(comments) && !isInitialized(comments);
+
     return (
       <Screen styleName="paper">
         <NavigationBar
-          title="POST DETAILS"
+          title={I18n.t(ext('postDetailsNavBarTitle'))}
           renderRightComponent={this.renderRightComponent}
         />
         <Divider styleName="line" />
-        <ListView
-          data={[...commentsData]}
-          ref={this.captureScrollViewRef}
-          loading={isBusy(comments) && !isInitialized(comments)}
-          renderHeader={this.renderStatus}
-          renderRow={this.renderRow}
-        />
-        {addCommentSection}
+        <KeyboardAwareScrollView
+          enableAutoAutomaticScroll={(Platform.OS === 'ios')}
+          enableOnAndroid
+          keyboardShouldPersistTaps="always"
+        >
+          <ListView
+            data={[...commentsData]}
+            ref={this.captureScrollViewRef}
+            loading={areCommentsLoading}
+            renderHeader={this.renderStatus}
+            renderRow={this.renderRow}
+          />
+          {areCommentsLoading ? null : addCommentSection}
+        </KeyboardAwareScrollView>
       </Screen>
     );
   }

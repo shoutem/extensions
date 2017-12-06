@@ -28,6 +28,8 @@ import {
 import { connectStyle } from '@shoutem/theme';
 import { closeModal } from '@shoutem/core/navigation';
 
+import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../../const';
 import {
   cart as cartShape,
@@ -48,7 +50,7 @@ const GEOCODE_API_KEY = 'AIzaSyAvAszYWg777gS9PNkrhGDR_gglRPiRh0g';
 const getNavBarProps = () => (
   {
     renderLeftComponent: () => null,
-    title: 'ORDER COMPLETE',
+    title: I18n.t(ext('orderCompletedNavBarTitle')),
   }
 );
 
@@ -80,7 +82,7 @@ const renderAddress = (customer, addressType) => {
 const renderShippingMethod = method => (
   <Row>
     <View styleName="vertical">
-      <Text>SHIPPING METHOD</Text>
+      <Text>{I18n.t(ext('chosenShippingMethodTitle'))}</Text>
       <Text styleName="sm-gutter-top">{method.title}</Text>
     </View>
   </Row>
@@ -150,7 +152,7 @@ class OrderCompleteScreen extends Component {
     return (
       <Row>
         <Heading styleName="h-center lg-gutter">
-          {`Thank you ${customer.firstName}!`}
+          {I18n.t(ext('thankYouMessage'), { firstNameOfBuyer: firstName })}
         </Heading>
       </Row>
     );
@@ -189,9 +191,9 @@ class OrderCompleteScreen extends Component {
     return (
       <Row>
         <View styleName="vertical">
-          <Text>YOUR ORDER IS CONFIRMED</Text>
+          <Text>{I18n.t(ext('orderConfirmationTitle'))}</Text>
           <Text styleName="sm-gutter-top">
-            {'We\'ve accepted your offer and we\'re getting it ready. A confirmation email has been sent to'}
+            {I18n.t(ext('orderConfirmationMessage'))}
           </Text>
           <Text styleName="bold">{`${email}.`}</Text>
         </View>
@@ -205,11 +207,11 @@ class OrderCompleteScreen extends Component {
     return (
       <View>
         <Divider styleName="section-header">
-          <Caption>CUSTOMER INFORMATION</Caption>
+          <Caption>{I18n.t(ext('customerInformationTitle'))}</Caption>
         </Divider>
-        {renderAddress(customer, 'SHIPPING ADDRESS')}
+        {renderAddress(customer, I18n.t(ext('shippingAddress')))}
         {renderShippingMethod(selectedShippingMethod)}
-        {renderAddress(customer, 'BILLING ADDRESS')}
+        {renderAddress(customer, I18n.t(ext('billingAddress')))}
       </View>
     );
   }
@@ -220,7 +222,7 @@ class OrderCompleteScreen extends Component {
     return (
       <View>
         <Divider styleName="section-header">
-          <Caption>ORDER SUMMARY</Caption>
+          <Caption>{I18n.t(ext('orderSummary'))}</Caption>
         </Divider>
         <ListView
           data={cart}
@@ -243,7 +245,7 @@ class OrderCompleteScreen extends Component {
           styleName="secondary"
           onPress={this.returnToShop}
         >
-          <Text styleName="bold">RETURN TO SHOP</Text>
+          <Text styleName="bold">{I18n.t(ext('returnToShopButton'))}</Text>
         </Button>
       </View>
     );

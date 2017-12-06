@@ -1,9 +1,8 @@
 {
   "name": "shoutem.loyalty",
-  "version": "1.3.3",
+  "version": "1.5.8",
   "private": true,
   "main": "index.js",
-  "platform": "1.3.*",
   "dependencies": {
     "react-native-qrcode": "0.2.3"
   },

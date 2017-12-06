@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
@@ -13,7 +14,6 @@ import {
 import {
   getCollection,
 } from '@shoutem/redux-io';
-
 
 import {
   loginRequired,
@@ -54,7 +54,11 @@ export class PunchCardListScreen extends RewardsListScreen {
   }
 
   renderRow(reward) {
-    const { id, image, title } = reward;
+    const title = _.get(reward, 'title', '');
+    const image = _.get(reward, 'image');
+    const id = _.get(reward, 'id');
+
+    const iconStyle = { color: '#ffffff' };
 
     return (
       <TouchableOpacity
@@ -62,16 +66,14 @@ export class PunchCardListScreen extends RewardsListScreen {
         onPress={() => this.navigateToRewardDetails(reward)}
       >
         <Image
-          styleName="large-banner placeholder"
           source={{ uri: image && image.url }}
+          styleName="large-banner placeholder"
         >
           <Tile>
             <Title styleName="lg-gutter">{title.toUpperCase()}</Title>
             <Stamps
+              iconStyle={iconStyle}
               reward={reward}
-              iconStyle={{
-                color: '#ffffff',
-              }}
             />
           </Tile>
         </Image>

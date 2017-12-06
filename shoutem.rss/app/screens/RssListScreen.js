@@ -6,13 +6,16 @@ import {
   EmptyStateView,
 } from '@shoutem/ui-addons';
 
-import { ListScreen } from 'shoutem.application';
+import { RemoteDataListScreen } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
+
+import { ext } from '../const';
 
 const { func, string } = React.PropTypes;
 
-export class RssListScreen extends ListScreen {
+export class RssListScreen extends RemoteDataListScreen {
   static propTypes = {
-    ...ListScreen.propTypes,
+    ...RemoteDataListScreen.propTypes,
     // The url of the RSS feed to display
     feedUrl: string,
 
@@ -31,7 +34,9 @@ export class RssListScreen extends ListScreen {
     }
 
     find(schema, undefined, {
-      'filter[url]': feedUrl,
+      query: {
+        'filter[url]': feedUrl,
+      },
     });
   }
 
@@ -53,7 +58,7 @@ export class RssListScreen extends ListScreen {
       // and reload app, because `feedUrl` is retrieved through app configuration
       const emptyStateViewProps = {
         icon: 'error',
-        message: 'Please specify RSS feed URL and reload your app.',
+        message: I18n.t(ext('noUrlMessage')),
         style: style.emptyState,
       };
 

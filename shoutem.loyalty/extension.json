@@ -1,26 +1,28 @@
 {
   "name": "loyalty",
-  "version": "1.3.2",
+  "version": "1.5.8",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "platform": "1.3.*",
-  "categories": ["commerce"],
+  "platform": "1.5.*",
+  "categories": [
+    "commerce"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "icon":"server/assets/add-loyalty-image.png",
+  "icon": "server/assets/images/add-loyalty-image.png",
   "shortcuts": [
     {
       "screen": "@.PunchCardListScreen",
       "title": "Punch Card",
       "name": "punch-card-shortcut",
-      "icon":"theme://gift.png",
+      "icon": "theme://gift.png",
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
           "title": "Content",
-          "parameters":{
+          "parameters": {
             "schema": "@.punch-cards"
           }
         }
@@ -30,7 +32,7 @@
       "screen": "@.PointsCardScreen",
       "title": "My Card",
       "name": "points-card-shortcut",
-      "icon":"theme://loyalty-card.png",
+      "icon": "theme://loyalty-card.png",
       "adminPages": [
         {
           "page": "@.PointsCardSettingsPage",
@@ -42,12 +44,12 @@
       "screen": "@.RewardsListScreen",
       "title": "Rewards",
       "name": "rewards-shortcut",
-      "icon":"theme://gift.png",
+      "icon": "theme://gift.png",
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
           "title": "Content",
-          "parameters":{
+          "parameters": {
             "schema": "@.rewards"
           }
         }
@@ -57,12 +59,12 @@
       "screen": "@.PlacesListScreen",
       "title": "Stores",
       "name": "stores-shortcut",
-      "icon":"theme://address-full.png",
+      "icon": "theme://address-full.png",
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
           "title": "Stores",
-          "parameters":{
+          "parameters": {
             "schema": "@.places"
           }
         },
@@ -115,10 +117,14 @@
     {
       "page": "@.LoyaltySettingsPage",
       "title": "Settings"
+    },
+    {
+      "page": "@.TransactionsPage",
+      "title": "Points"
     }
   ],
   "dataSchemas": [
-     {
+    {
       "name": "punch-cards",
       "path": "server/data-schemas/punchCards.json"
     },
@@ -150,22 +156,29 @@
       "name": "RewardsSettingsPage",
       "path": "server/build/index.html?page=RewardsSettingsPage",
       "type": "html"
+    },
+    {
+      "name": "TransactionsPage",
+      "type": "react-page"
     }
   ],
   "settings": {
     "apiEndpoint": "loyalty.api.shoutem.com",
     "cmsEndpoint": "v4.api.shoutem.com",
-    "rules": [{
-      "ruleType": "visit",
-      "implementationData": {
-        "pointsPerVisit": 1
+    "rules": [
+      {
+        "ruleType": "visit",
+        "implementationData": {
+          "pointsPerVisit": 1
+        }
+      },
+      {
+        "ruleType": "linearPoint",
+        "implementationData": {
+          "coefficient": 0.1
+        }
       }
-    }, {
-      "ruleType": "linearPoint",
-      "implementationData": {
-        "coefficient": 0.1
-      }
-    }],
+    ],
     "schemas": {
       "places": "@.places",
       "rewards": "@.rewards",

@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
-import { LoaderContainer, Checkbox } from '@shoutem/react-web-ui';
-import { Button, FormGroup } from 'react-bootstrap';
+import { LoaderContainer } from '@shoutem/react-web-ui';
+import { Button } from 'react-bootstrap';
 import RulesTable from '../../components/rules-table';
 import './style.scss';
 
@@ -11,16 +11,12 @@ export default class RulesSettings extends Component {
 
     this.handleRuleChange = this.handleRuleChange.bind(this);
     this.handleSaveChangesClick = this.handleSaveChangesClick.bind(this);
-    this.handleRequireReceiptToggle = this.handleRequireReceiptToggle.bind(this);
-    this.updateChangedRules = this.updateChangedRules.bind(this);
-    this.updateRequireReceipt = this.updateRequireReceipt.bind(this);
     this.handleRuleEnabledToggle = this.handleRuleEnabledToggle.bind(this);
     this.calculateHasChanges = this.calculateHasChanges.bind(this);
 
-    const { requireReceiptCode, rules } = props;
+    const { rules } = props;
 
     this.state = {
-      requireReceiptCode,
       rules,
       rulePatches: {},
       inProgress: false,
@@ -60,70 +56,29 @@ export default class RulesSettings extends Component {
     }, this.calculateHasChanges);
   }
 
-  handleRequireReceiptToggle() {
-    const { requireReceiptCode } = this.state;
-
-    this.setState({
-      requireReceiptCode: !requireReceiptCode,
-    }, this.calculateHasChanges);
-  }
-
   handleSaveChangesClick() {
-    this.setState({ inProgress: true });
-
-    Promise.all([
-      this.updateChangedRules(),
-      this.updateRequireReceipt(),
-    ]).then(() => this.setState({
-      inProgress: false,
-      hasChanges: false,
-    }));
-  }
-
-  updateChangedRules() {
-    const { rules: initialRules } = this.props;
     const { rules } = this.state;
 
-    if (_.isEqual(rules, initialRules)) {
-      return Promise.resolve();
-    }
+    this.setState({ inProgress: true });
 
-    return this.props.onUpdateRules(rules);
-  }
-
-  updateRequireReceipt() {
-    const { requireReceiptCode: initialRequireReceiptCode } = this.props;
-    const { requireReceiptCode } = this.state;
-
-    if (requireReceiptCode === initialRequireReceiptCode) {
-      return Promise.resolve();
-    }
-
-    return this.props.onUpdateRequiredReceipt(requireReceiptCode);
+    this.props.onUpdateRules(rules).then(() => (
+      this.setState({
+        inProgress: false,
+        hasChanges: false,
+      })
+    ));
   }
 
   calculateHasChanges() {
-    const {
-      requireReceiptCode,
-      rules,
-    } = this.state;
+    const { rules } = this.state;
+    const { rules: initialRules } = this.props;
 
-    const {
-      rules: initialRules,
-      requireReceiptCode: initialRequireReceiptCode,
-    } = this.props;
-
-    const hasChanges = (
-      initialRequireReceiptCode !== requireReceiptCode ||
-      !_.isEqual(initialRules, rules)
-    );
-
+    const hasChanges = !_.isEqual(initialRules, rules);
     this.setState({ hasChanges });
   }
 
   render() {
     const {
-      requireReceiptCode,
       rules,
       inProgress,
       hasChanges,
@@ -136,21 +91,13 @@ export default class RulesSettings extends Component {
           onRuleToggle={this.handleRuleEnabledToggle}
           rules={rules}
         />
-        <FormGroup>
-          <Checkbox
-            checked={!!requireReceiptCode}
-            onChange={this.handleRequireReceiptToggle}
-          >
-            Require receipt code for purchase validation
-          </Checkbox>
-        </FormGroup>
         <Button
           bsStyle="primary"
           disabled={!hasChanges}
           onClick={this.handleSaveChangesClick}
         >
           <LoaderContainer isLoading={inProgress}>
-            Update settings
+            Update rules
           </LoaderContainer>
         </Button>
       </div>
@@ -160,7 +107,6 @@ export default class RulesSettings extends Component {
 
 RulesSettings.propTypes = {
   rules: PropTypes.object,
-  requireReceiptCode: PropTypes.bool,
   onUpdateRules: PropTypes.func,
   onUpdateRequiredReceipt: PropTypes.func,
 };

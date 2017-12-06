@@ -1,11 +1,11 @@
 {
   "name": "youtube",
   "title": "Youtube",
-  "version": "1.3.1",
+  "version": "1.5.2",
   "description": "Show a video gallery from Youtube channel, user or playlist",
   "categories": ["media"],
   "icon" : "server/assets/add-videos-youtube-image.png",
-  "platform": ">=1.2.0",
+  "platform": "1.5.*",
   "shortcuts": [
     {
       "title": "Youtube",
