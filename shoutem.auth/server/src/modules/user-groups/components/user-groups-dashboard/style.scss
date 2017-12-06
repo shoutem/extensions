@@ -1,0 +1,33 @@
+:global {
+  .user-groups-dashboard {
+    .table {
+      margin-top: 24px;
+
+      > tbody > tr > td {
+        padding: 4px 0;
+      }
+    }
+
+    .table-header__actions {
+      width: 104px;
+    }
+
+    .table-header__default {
+      width: 128px;
+    }
+  }
+
+  .user-groups-dashboard__title {
+    h3 {
+      float: left;
+      margin-top: 0;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      text-transform: none;
+      font-weight: normal;
+      padding-bottom: 36px;
+    }
+  }
+}

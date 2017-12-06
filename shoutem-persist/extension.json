@@ -1,9 +1,0 @@
-{
-  "name": "persist",
-  "version": "0.1.4",
-  "type": "system",
-  "title": "Persist",
-  "description": "Persist redux state",
-  "platform": "1.0.*",
-  "categories": []
-}

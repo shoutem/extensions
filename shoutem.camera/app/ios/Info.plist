@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>NSCameraUsageDescription</key>
+    <string>App needs your camera to be able to scan QR codes</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>App needs your microphone to be able to scan QR codes</string>
+  </dict>
+</plist>

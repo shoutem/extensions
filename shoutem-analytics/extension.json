@@ -1,9 +1,0 @@
-{
-  "name": "analytics",
-  "version": "0.1.4",
-  "type": "system",
-  "title": "Analytics",
-  "description": "Uniform Shoutem analytics",
-  "platform": "1.0.*",
-  "categories": ["analytics"]
-}

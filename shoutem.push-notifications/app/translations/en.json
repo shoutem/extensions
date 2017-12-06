@@ -1,0 +1,9 @@
+{
+  "shoutem": {
+    "push-notifications": {
+      "messageReceivedAlert": "Message received",
+      "messageReceivedAlertView": "View",
+      "messageReceivedAlertDismiss": "Dismiss"
+    }
+  }
+}

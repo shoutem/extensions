@@ -1,0 +1,80 @@
+{
+  "name": "wordpress",
+  "version": "1.5.1",
+  "title": "WordPress",
+  "description": "Show news articles from WordPress blog.",
+  "platform": "1.5.*",
+  "icon": "server/assets/extension-icon.png",
+  "categories": [
+    "content"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
+  "dependencies": [
+    "shoutem.layouts"
+  ],
+  "shortcuts": [
+    {
+      "name": "wordpress-shortcut",
+      "title": "WordPress",
+      "icon": "theme://news.png",
+      "screen": "@.ArticlesGridScreen",
+      "adminPages": [
+        {
+          "page": "@.WordPressFeedPage",
+          "title": "Content",
+          "parameters": {
+            "schema": "shoutem.wordpress.feedItems"
+          }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "WordPressFeedPage",
+      "type": "react-page"
+    }
+  ],
+  "screens": [
+    {
+      "name": "ArticlesGridScreen",
+      "title": "Grid",
+      "image": "./server/assets/screens/grid.png",
+      "groupTitle": "Choose List screen layout",
+      "navigatesTo": [
+        "@.ArticleDetailsScreen"
+      ]
+    },
+    {
+      "name": "ArticlesListScreen",
+      "title": "List",
+      "image": "./server/assets/screens/list.png",
+      "extends": "@.ArticlesGridScreen"
+    },
+    {
+      "name": "ArticlesFeaturedListScreen",
+      "title": "List with a featured item",
+      "image": "./server/assets/screens/featuredlist.png",
+      "extends": "@.ArticlesGridScreen"
+    },
+    {
+      "name": "ArticleDetailsScreen",
+      "title": "Large photo details",
+      "groupTitle": "Choose Details screen layout",
+      "image": "./server/assets/screens/large-details.png"
+    },
+    {
+      "name": "ArticleMediumDetailsScreen",
+      "title": "Regular details",
+      "image": "./server/assets/screens/medium-details.png",
+      "extends": "@.ArticleDetailsScreen"
+    }
+  ]
+}

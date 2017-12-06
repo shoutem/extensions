@@ -1,0 +1,9 @@
+{
+  "name": "shoutem.rss-news",
+  "version": "1.5.1",
+  "private": true,
+  "main": "index.js",
+  "peerDependencies": {
+    "@shoutem/core": "*"
+  }
+}

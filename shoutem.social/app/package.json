@@ -1,0 +1,8 @@
+{
+  "name": "shoutem.social",
+  "version": "1.5.4",
+  "description": "Social wall",
+  "dependencies": {
+    "react-native-keyboard-aware-scroll-view": "0.3.0"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "name": "photos",
+  "version": "1.5.1",
+  "platform": "1.5.*",
+  "title": "Photos",
+  "description": "Show a photo gallery",
+  "icon" : "server/assets/add-photos-image.png",
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.cms"
+  ],
+  "categories": ["media"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
+  "shortcuts": [{
+      "name": "photos-shortcut",
+      "title": "Manual photos",
+      "screen": "@.PhotosScreen",
+      "icon": "theme://photo.png",
+      "adminPages": [{
+        "page": "shoutem.cms.CmsPage",
+        "title": "Content",
+        "parameters": {
+          "schema": "@.Photos"
+        }
+      },
+      {
+        "page": "shoutem.layouts.LayoutPage",
+        "title": "Layout"
+      }]
+  }],
+  "screens": [{
+    "name": "PhotosScreen",
+    "title": "Large list",
+    "navigatesTo":["@.PhotoDetailsScreen"],
+    "image": "./server/assets/screens/layout-photos-large-list.png",
+    "settings": {
+      "listType": "large-list"
+    }
+  },{
+    "name": "CompactGridPhotosScreen",
+    "title": "Compact grid",
+    "extends": "@.PhotosScreen",
+    "image": "./server/assets/screens/layout-photos-compact-grid.png"
+  },{
+    "name": "FixedGridPhotosScreen",
+    "title": "Fixed grid",
+    "extends": "@.PhotosScreen",
+    "image": "./server/assets/screens/layout-photos-fixed-grid.png"
+  },{
+    "name": "PhotosTileList",
+    "title": "Tile list",
+    "extends": "@.PhotosScreen",
+    "image": "./server/assets/screens/layout-photos-tile-list.png",
+    "settings": {
+      "listType": "tile-list"
+    }
+  },{
+    "name": "PhotosCompactList",
+    "title": "Compact list",
+    "extends": "@.PhotosScreen",
+    "image": "./server/assets/screens/layout-photos-compact-list.png",
+    "settings": {
+      "listType": "compact-list"
+    }
+  },{
+    "name": "PhotosMediumList",
+    "title": "Medium list",
+    "extends": "@.PhotosScreen",
+    "image": "./server/assets/screens/layout-photos-medium-list.png",
+    "settings": {
+      "listType": "medium-list"
+    }
+  },{
+    "name": "PhotoDetailsScreen",
+    "title": "PhotoDetailsScreen"
+  }],
+  "dataSchemas": [{
+    "name": "Photos",
+    "path": "server/schemas/photos.json"
+  }]
+}

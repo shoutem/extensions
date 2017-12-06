@@ -1,0 +1,40 @@
+{
+  "shoutem": {
+    "auth": {
+      "profileUpdatingErrorTitle": "Update failed",
+      "profileUpdatingErrorMessage": "There was an error while updating your profile. Please try again.",
+      "userNameAndSurname": "Name and surname",
+      "userLocation": "Location",
+      "userWebsite": "Website",
+      "userBioTitle": "Bio",
+      "editProfileNavBarTitle": "EDIT PROFILE",
+      "doneNavBarButton": "Done",
+      "imageSelectErrorMessage": "Image selection error.",
+      "loggedInUserInfo": "Username: {{username}}",
+      "tokenErrorMessage": "Access token is not valid.",
+      "loginCancelErrorMessage": "Login was cancelled.",
+      "loginFailErrorTitle": "Login failed",
+      "noAccountSectionTitle": "Not a member?",
+      "registerButton": "REGISTER",
+      "usernameOrEmailPlaceholder": "Username or Email",
+      "logInButton": "LOG IN",
+      "socialLoginSectionTitle": "or sign in/sign up with your other account",
+      "facebookLogInButton": "FACEBOOK",
+      "logInNavBarTitle": "LOG IN",
+      "registrationFailedErrorTitle": "Registration failed",
+      "registerNavBarTitle": "REGISTER",
+      "emailPlaceholder": "Email",
+      "usernamePlaceholder": "Username",
+      "passwordPlaceholder": "Password",
+      "profileNavBarLogoutButton": "Logout",
+      "profileNavBarTitle": "PROFILE",
+      "editProfileButton": "EDIT PROFILE",
+      "unknownEmailErrorMessage": "Your username / email was not found.",
+      "invalidCredentialsErrorMessage": "Wrong password. Please try again.",
+      "invalidEmailFormatErrorMessage": "Wrong email format. Make sure your email format is name@domain.com",
+      "invalidUsernameFormatErrorMessage": "Please change the username so it has at least 3 characters, starts with a letter and contains only letters, numbers and underscores.",
+      "invalidPasswordFormatErrorMessage": "Password has to be at least 6 characters long. Please try again.",
+      "formNotFilledErrorMessage": "All of the fields must be filled. Please try again."
+    }
+  }
+}

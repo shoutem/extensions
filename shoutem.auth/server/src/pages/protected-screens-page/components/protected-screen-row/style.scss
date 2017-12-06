@@ -1,0 +1,14 @@
+:global {
+  .protected-screen-row {
+    height: 64px;
+    cursor: pointer;
+
+    .checkbox {
+      padding-top: 6px;
+    }
+  }
+
+  .table > tbody > tr.protected-screen-row > td {
+    padding: 0;
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "shoutem": {
+    "rss": {
+      "noUrlMessage": "Please specify RSS feed URL and reload the app."
+    }
+  }
+}

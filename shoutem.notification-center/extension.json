@@ -1,0 +1,35 @@
+{
+  "name": "notification-center",
+  "title": "Notifications",
+  "version": "1.5.3",
+  "platform": "1.5.*",
+  "description": "View and manage push notifications within the app",
+  "icon": "./server/assets/images/add-notifications-settings-image.png",
+  "categories":["users"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
+  "shortcuts": [
+    {
+      "title": "Notification center",
+      "description": "List of received notifications",
+      "name": "openNotificationsScreen",
+      "screen": "@.NotificationsScreen"
+    },
+    {
+      "title": "Group settings",
+      "description": "List of available push groups",
+      "name": "openPushGroupsScreen",
+      "screen": "@.PushGroupsScreen"
+    }
+  ],
+  "screens": [
+    {
+      "name": "NotificationsScreen"
+    },
+    {
+      "name": "PushGroupsScreen"
+    }
+  ]
+}

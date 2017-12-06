@@ -1,0 +1,37 @@
+.background-settings {
+  .image-preview-custom,
+  .image-uploader__custom {
+    background-size: contain;
+    width: 264px;
+    height: 469px;
+
+    .circular-loader {
+      padding-top: 210px;
+    }
+
+    &.no-img,
+    &.image-preview__delete {
+      .se-icon {
+        padding-top: 210px;
+      }
+    }
+  }
+
+  .image-preview-tablet,
+  .image-uploader__tablet {
+    background-size: contain;
+    width: 264px;
+    height: 352px;
+
+    .circular-loader {
+      padding-top: 151px;
+    }
+
+    &.no-img,
+    &.image-preview__delete {
+      .se-icon {
+        padding-top: 151px;
+      }
+    }
+  }
+}

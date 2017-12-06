@@ -1,0 +1,20 @@
+{
+  "name": "i18n",
+  "title": "Language & Region",
+  "version": "1.5.5",
+  "description": "Configure the language and regional settings of your app.",
+  "icon": "server/assets/add-translation.png",
+  "platform": "1.5.*",
+  "pages": [
+    {
+      "name": "LanguagePage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.LanguagePage",
+      "title": "Language"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "firebase",
+  "version": "1.5.1",
+  "platform": "1.5.*",
+  "type": "system",
+  "title": "Firebase",
+  "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
+  "icon": "server/assets/add-firebase-image.png",
+  "settingsPages": [
+    {
+      "page": "@.Settings",
+      "title": "Settings"
+    }
+  ],
+  "pages": [
+    {
+      "name": "Settings",
+      "type": "native-component",
+      "path": "dummy.js"
+    }
+  ]
+}

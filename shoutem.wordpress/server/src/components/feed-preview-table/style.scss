@@ -1,0 +1,18 @@
+:global {
+  .feed-preview-table {
+    margin-top: 24px;
+
+    &.table > tbody > tr.feed-preview-table__empty-row {
+      border-bottom: none;
+    }
+  }
+
+  .feed-preview-table__image {
+    width: 64px;
+  }
+
+  .feed-preview-table__date {
+    text-align: right;
+    width: 20%;
+  }
+}

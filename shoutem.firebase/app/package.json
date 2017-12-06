@@ -1,0 +1,20 @@
+{
+  "name": "shoutem.firebase",
+  "version": "1.5.1",
+  "description": "Firebase SDK bridge",
+  "dependencies": {
+    "request": "2.79.0",
+    "react-native-fcm": "5.0.0",
+    "xcode": "0.8.9",
+    "lodash": "^4.17.2",
+    "urijs": "1.18.5"
+  },
+  "peerDependencies": {
+    "@shoutem/core": "*"
+  },
+  "rnpm": {
+    "commands": {
+      "postlink": "node node_modules/shoutem.firebase/scripts/run.js"
+    }
+  }
+}

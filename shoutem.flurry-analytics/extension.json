@@ -1,0 +1,24 @@
+{
+  "name": "flurry-analytics",
+  "title": "Flurry analytics",
+  "version": "1.5.1",
+  "description": "Measure and analyze activity across your app with Flurry analytics",
+  "platform": "1.5.*",
+  "icon": "server/assets/add-analytics-image.png",
+  "categories": [
+    "analytics"
+  ],
+  "settingsPages": [
+    {
+      "page": "@.ExtensionPage",
+      "title": "Extension settings"
+    }
+  ],
+  "pages": [
+    {
+      "name": "ExtensionPage",
+      "path": "server/build/index.html?page=ExtensionPage",
+      "type": "html"
+    }
+  ]
+}

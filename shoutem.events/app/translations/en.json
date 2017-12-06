@@ -1,0 +1,11 @@
+{
+  "shoutem": {
+    "events": {
+      "addToCalendarButton": "ADD TO CALENDAR",
+      "calendarPermissionsTitle": "Grant calendar access",
+      "calendarPermissionsMessage": "You disabled calendar access for this application. Do you want to enable it in settings now?",
+      "calendarPermissionsSettings": "Go to Settings",
+      "calendarPermissionsCancel": "Cancel"
+    }
+  }
+}

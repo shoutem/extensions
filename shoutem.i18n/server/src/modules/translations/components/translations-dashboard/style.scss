@@ -1,0 +1,34 @@
+:global {
+  .translations-dashboard__table {
+    .table > tbody > tr > td {
+      padding: 4px 0;
+    }
+
+    .table > thead > tr > th {
+      &:first-child {
+        width: 80px;
+      }
+
+      .control-label {
+        padding: 0px;
+        height: 0px;
+      }
+    }
+  }
+
+  .translations-dashboard__title {
+    margin-top: 48px;
+
+    h3 {
+      float: left;
+      margin-top: 0;
+      margin-bottom: 24px;
+    }
+  }
+
+  .translations-dashboard__btn-add {
+    text-transform: none;
+    font-weight: normal;
+    padding-bottom: 24px;
+  }
+}

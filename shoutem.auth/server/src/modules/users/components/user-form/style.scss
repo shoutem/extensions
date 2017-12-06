@@ -1,0 +1,25 @@
+:global {
+  .user-form {
+    .row {
+      margin: 0;
+    }
+
+    .btn-toolbar {
+      margin: 48px -12px 12px;
+    }
+  }
+
+  .user-form__firstName {
+    padding: 0 12px 0 0;
+  }
+
+  .user-form__lastName {
+    padding: 0 0 0 12px;
+  }
+
+  .user-form__groups {
+    label {
+      color: #444f6c;
+    }
+  }
+}

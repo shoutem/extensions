@@ -1,0 +1,25 @@
+{
+  "shoutem": {
+    "cms": {
+      "androidLocationPermissionTitle": "Location Permission",
+      "androidLocationPermissionMessage": "This app needs access to your location to display relevant data.",
+      "androidLocationPermissionDisabled": "You disabled location permissions for this application. Do you want to enable them now?",
+      "androidLocationPermissionEnable": "Enable",
+      "iosLocationPermissionDisabled": "You disabled location permissions for this application. Do you want to enable it in settings now?",
+      "iosLocationPermissionSettings": "Go to Settings",
+      "cancelLocationPermissions": "Cancel",
+      "locationPermissionsPrompt": "Grant location access",
+      "noLocationsProvidedErrorMessage": "None of your items have a location specified.",
+      "directionsButton": "Directions",
+      "descriptionTitle": "INFORMATION",
+      "mapTitle": "LOCATION",
+      "openHours": "OPEN HOURS",
+      "emailButton": "Email",
+      "phoneButton": "Phone",
+      "websiteButton": "Visit webpage",
+      "rsvpButton": "RSVP",
+      "navBarListViewButton": "List",
+      "navBarMapViewButton": "Map"
+    }
+  }
+}
