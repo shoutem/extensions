@@ -196,6 +196,7 @@ function buildFeedParams(feedUrl, apiKey) {
         channelId: extractChannelId(feedUrl),
         key: apiKey,
       },
+      feedUrl
     };
   } else if (/playlist/i.test(feedUrl)) {
     return {
@@ -204,6 +205,7 @@ function buildFeedParams(feedUrl, apiKey) {
         playlistId: extractPlaylistId(feedUrl),
         key: apiKey,
       },
+      feedUrl
     };
   }
   return {};
