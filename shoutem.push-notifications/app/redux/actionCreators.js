@@ -2,6 +2,7 @@ import {
   USER_NOTIFIED,
   REQUEST_PUSH_PERMISSION,
   SELECT_PUSH_NOTIFICATION_GROUPS,
+  SHOW_PUSH_NOTIFICATION,
 } from './actionTypes';
 
 /**
@@ -39,3 +40,17 @@ export function selectPushNotificationGroups({ added, removed }) {
   };
 }
 
+/**
+ * @see SHOW_PUSH_NOTIFICATION
+ * Used for displaying a push notification when the app is open
+ * @param notification - the notification to display
+ * @returns {{type: String, payload: {notification: Object}}}
+ */
+export function showPushNotification(notification) {
+  return {
+    type: SHOW_PUSH_NOTIFICATION,
+    payload: {
+      notification,
+    }
+  };
+}

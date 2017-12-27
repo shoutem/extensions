@@ -6,6 +6,7 @@ import {
   USER_NOTIFIED,
   REQUEST_PUSH_PERMISSION,
   DEVICE_TOKEN_RECEIVED,
+  SHOW_PUSH_NOTIFICATION,
 } from './redux';
 
 import { appDidMount, appWillMount, appWillUnmount } from './app';
@@ -13,6 +14,8 @@ import { appDidMount, appWillMount, appWillUnmount } from './app';
 import Permissions from './permissions';
 
 import enTranslations from './translations/en.json';
+
+import middleware from './middleware';
 
 export const DEFAULT_PUSH_NOTIFICATION_GROUP = 'broadcast';
 
@@ -36,4 +39,6 @@ export {
   appWillMount,
   appWillUnmount,
   Permissions,
+  middleware,
+  SHOW_PUSH_NOTIFICATION,
 };
