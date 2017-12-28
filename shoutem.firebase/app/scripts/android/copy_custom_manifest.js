@@ -25,7 +25,7 @@ permissions.forEach(permission => {
 
 // add firebase services
 const services = `
-  <service android:name="com.evollu.react.fcm.MessagingService">
+  <service android:name="com.evollu.react.fcm.MessagingService" android:enabled="true" android:exported="true">
       <intent-filter>
           <action android:name="com.google.firebase.MESSAGING_EVENT"/>
       </intent-filter>
@@ -36,14 +36,15 @@ const services = `
           <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
       </intent-filter>
   </service>
+  
   <receiver android:name="com.evollu.react.fcm.FIRLocalMessagingPublisher"/>
   <receiver android:enabled="true" android:exported="true"  android:name="com.evollu.react.fcm.FIRSystemBootEventReceiver">
-      <intent-filter>
-          <action android:name="android.intent.action.BOOT_COMPLETED"/>
-          <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
-          <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
-          <category android:name="android.intent.category.DEFAULT" />
-      </intent-filter>
+    <intent-filter>
+      <action android:name="android.intent.action.BOOT_COMPLETED"/>
+      <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+      <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+      <category android:name="android.intent.category.DEFAULT" />
+    </intent-filter>
   </receiver>
 `;
 
