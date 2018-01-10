@@ -15,7 +15,7 @@ import Permissions from './permissions';
 
 import enTranslations from './translations/en.json';
 
-import middleware from './middleware';
+import { showNotification } from './middleware';
 
 export const DEFAULT_PUSH_NOTIFICATION_GROUP = 'broadcast';
 
@@ -26,6 +26,10 @@ export const shoutem = {
     },
   },
 };
+
+export const middleware = [
+  showNotification,
+]
 
 export {
   reducer,
@@ -39,6 +43,5 @@ export {
   appWillMount,
   appWillUnmount,
   Permissions,
-  middleware,
   SHOW_PUSH_NOTIFICATION,
 };
