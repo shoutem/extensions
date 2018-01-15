@@ -4,6 +4,7 @@ export {
   USER_NOTIFIED,
   REQUEST_PUSH_PERMISSION,
   DEVICE_TOKEN_RECEIVED,
+  SHOW_PUSH_NOTIFICATION,
 } from './actionTypes';
 
 export {

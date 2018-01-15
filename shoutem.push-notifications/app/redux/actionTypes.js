@@ -36,3 +36,11 @@ export const REQUEST_PUSH_PERMISSION = 'shoutem.push-notifications.REQUEST_PUSH_
  @property token String
  */
 export const DEVICE_TOKEN_RECEIVED = 'shoutem.push-notifications.DEVICE_TOKEN_RECEIVED';
+
+/**
+ @typedef SHOW_PUSH_NOTIFICATION
+ @type {object}
+ @property type String
+ @property token String
+ */
+export const SHOW_PUSH_NOTIFICATION = 'shoutem.push-notifications.SHOW_PUSH_NOTIFICATION';
