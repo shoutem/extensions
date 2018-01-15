@@ -29,7 +29,7 @@ export const shoutem = {
 
 export const middleware = [
   showNotification,
-]
+];
 
 export {
   reducer,

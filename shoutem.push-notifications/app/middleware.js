@@ -1,11 +1,9 @@
 import { Alert } from 'react-native';
-
 import FCM from 'react-native-fcm';
-
 import _ from 'lodash';
 
 import { I18n } from 'shoutem.i18n';
-
+ 
 import { SHOW_PUSH_NOTIFICATION } from './redux';
 
 function onNotificationAction(notificationContent, store) {
