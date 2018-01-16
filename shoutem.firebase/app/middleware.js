@@ -5,7 +5,7 @@ import {
 } from 'shoutem.push-notifications';
 import { isProduction } from 'shoutem.application';
 
-import FCM from './firebase';
+import FCM from 'react-native-fcm';
 
 // eslint-disable-next-line no-unused-vars
 const requestPermissions = store => next => action => {

@@ -4,7 +4,7 @@
   "description": "Firebase SDK bridge",
   "dependencies": {
     "request": "2.79.0",
-    "react-native-fcm": "5.0.0",
+    "react-native-fcm": "10.0.3",
     "xcode": "0.8.9",
     "lodash": "^4.17.2",
     "urijs": "1.18.5"
