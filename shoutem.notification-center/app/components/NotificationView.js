@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import moment from 'moment';
@@ -17,7 +18,7 @@ import { ext } from '../const';
 
 import { notificationShape } from './shapes';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 export class NotificationView extends Component {
   static propTypes = {

@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Screen } from '@shoutem/ui';
+import { Screen, isIphoneX } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { actions } from 'shoutem.application';
@@ -12,7 +13,10 @@ import {
   shortcutChildrenRequired,
 } from './index';
 
-const { bool, shape, string } = React.PropTypes;
+const { bool, shape, string } = PropTypes;
+
+const isTabBarOnScreen = true;
+const IPHONE_X_HOME_INDICATOR_PADDING = isTabBarOnScreen ? 0 : 34;
 
 const resolveStyleName = (props) => {
   const {
@@ -69,17 +73,23 @@ export default function createSubNavigationScreen(Component) {
 
     resolveScreenProps() {
       const { isRootScreen } = this.props;
+
+      const style = isIphoneX ? {
+        paddingBottom: IPHONE_X_HOME_INDICATOR_PADDING,
+      } : {};
+
       return {
         // Main Navigation Screens does not have NavigationBar, so when Folder screen is Main
         // navigation screen (and has no NavigationBar) stretch screen.
         onLayout: this.layoutChanged,
         styleName: isRootScreen ? 'full-screen' : '',
+        style,
       };
     }
 
     render() {
       return (
-        <Screen {...this.resolveScreenProps()} >
+        <Screen {...this.resolveScreenProps()}>
           <NavigationBar {...this.resolveNavBarProps()} />
           <Component {...this.props} />
         </Screen>

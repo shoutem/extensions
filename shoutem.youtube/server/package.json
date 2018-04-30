@@ -1,6 +1,6 @@
 {
   "name": "shoutem.youtube",
-  "version": "1.5.2",
+  "version": "1.6.1",
   "description": "Show a video gallery from Youtube channel, user or playlist",
   "scripts": {
     "clean": "rimraf ./build/*",

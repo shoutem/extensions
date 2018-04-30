@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { Linking, Alert } from 'react-native';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../extension';

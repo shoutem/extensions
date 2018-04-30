@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
@@ -29,7 +30,7 @@ import { transactionShape } from './shapes';
 
 const NO_ACTIVITY_ICON = require('../assets/icons/no-activity.png');
 
-const { arrayOf, func } = React.PropTypes;
+const { arrayOf, func } = PropTypes;
 
 const VISIBLE_TRANSACTIONS = 3;
 

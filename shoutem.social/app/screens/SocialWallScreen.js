@@ -1,9 +1,10 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { next, isBusy, isInitialized } from '@shoutem/redux-io';
+import { next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { navigateTo, openInModal, closeModal, navigateBack } from '@shoutem/core/navigation';
 import { NavigationBar } from '@shoutem/ui/navigation';
@@ -16,7 +17,6 @@ import {
   View,
   Divider,
   TouchableOpacity,
-  ListView,
 } from '@shoutem/ui';
 
 import { ListScreen, getExtensionSettings } from 'shoutem.application';
@@ -26,7 +26,7 @@ import { I18n } from 'shoutem.i18n';
 import { getUser, isAuthenticated } from 'shoutem.auth/redux';
 
 import {
-  fetchStatuses,
+  loadStatuses,
   createStatus,
   likeStatus,
   unlikeStatus,
@@ -36,7 +36,7 @@ import {
 import { ext } from '../const';
 import StatusView from '../components/StatusView';
 
-const { object } = React.PropTypes;
+const { object } = PropTypes;
 
 export class SocialWallScreen extends ListScreen {
   static propTypes = {
@@ -163,10 +163,10 @@ export class SocialWallScreen extends ListScreen {
   }
 
   fetchData() {
-    const { fetchStatuses } = this.props;
+    const { loadStatuses } = this.props;
 
     InteractionManager.runAfterInteractions(() => {
-      fetchStatuses();
+      loadStatuses();
     });
   }
 
@@ -257,7 +257,7 @@ const mapDispatchToProps = {
   next,
   openInModal,
   closeModal,
-  fetchStatuses,
+  loadStatuses,
   createStatus,
   likeStatus,
   unlikeStatus,

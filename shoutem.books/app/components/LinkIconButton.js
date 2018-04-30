@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -10,8 +11,8 @@ import { CmsListScreen } from 'shoutem.cms';
 
 class LinkIconButton extends React.Component {
   static propTypes = {
-    book: React.PropTypes.any,
-    openURL: React.PropTypes.func,
+    book: PropTypes.any,
+    openURL: PropTypes.func,
   };
 
   render() {

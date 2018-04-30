@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -27,11 +28,11 @@ import { ext } from '../const';
 
 class MyBooksScreen extends React.Component {
   static propTypes = {
-    navigateTo: React.PropTypes.func,
-    title: React.PropTypes.string,
-    data: React.PropTypes.array.isRequired,
-    favorites: React.PropTypes.object.isRequired,
-    fetchFavoritesData: React.PropTypes.func,
+    navigateTo: PropTypes.func,
+    title: PropTypes.string,
+    data: PropTypes.array.isRequired,
+    favorites: PropTypes.object.isRequired,
+    fetchFavoritesData: PropTypes.func,
   };
 
   constructor(props, context) {

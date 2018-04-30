@@ -2,14 +2,7 @@ import _ from 'lodash';
 import { isNumeric } from 'validator';
 import { getMeta } from '@shoutem/redux-io';
 
-export function getTransactionCount(transactions) {
-  const meta = getMeta(transactions);
-  return _.get(meta, 'count', 0);
-}
-
-export function validateTransaction(transaction) {
-  const { points } = transaction;
-
+function validateTransactionPoints(points) {
   if (_.isEmpty(points)) {
     return { points: 'Points must be provided' };
   }
@@ -19,4 +12,26 @@ export function validateTransaction(transaction) {
   }
 
   return null;
+}
+
+function validateUserId(userId) {
+  if (!userId) {
+    return 'User must be provided';
+  }
+
+  return null;
+}
+
+export function getTransactionCount(transactions) {
+  const meta = getMeta(transactions);
+  return _.get(meta, 'count', 0);
+}
+
+export function validateTransaction(transaction) {
+  const { points, userId } = transaction;
+
+  return {
+    points : validateTransactionPoints(points),
+    userId: validateUserId(userId),
+  };
 }

@@ -83,7 +83,6 @@ export const authenticateMiddleware = setPriority(store => next => (action) => {
   if (action.type === AUTHENTICATE) {
     const state = store.getState();
     const { dispatch } = store;
-    const user = getUser(state);
 
     if (isAuthenticated(state)) {
       action.callback(state[ext()].user);

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -10,7 +11,7 @@ import { connectStyle } from '@shoutem/theme';
 
 import { ext } from '../const';
 
-const { number } = React.PropTypes;
+const { number } = PropTypes;
 
 /**
  * Shows progress towards a reward
@@ -24,24 +25,18 @@ class RewardProgressBar extends Component {
   };
 
   render() {
-    const { points, pointsRequired } = this.props;
+    const { points, pointsRequired, style } = this.props;
     const progressPercentage = 100 * (points / pointsRequired);
 
     return (
       <View
         styleName="horizontal flexible"
-        style={{
-          height: 5,
-          borderRadius: 100,
-          backgroundColor: '#cbcbcb',
-        }}
+        style={style.container}
       >
         <View
           style={{
-            borderRadius: 100,
+            ...style.earnedPoints,
             flex: progressPercentage,
-            height: 5,
-            backgroundColor: '#222222',
           }}
         />
         <View

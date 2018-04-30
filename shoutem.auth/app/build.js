@@ -1,55 +1,124 @@
 const _ = require('lodash');
 const fs = require('fs-extra');
+const path = require('path');
 const plist = require('plist');
-const nearestSync = require('nearest-file-path').nearestSync;
+const { projectPath } = require('@shoutem/build-tools');
+const pack = require('./package.json');
 
-const SHOUTEM_AUTH = 'shoutem.auth';
+const ext = (resourceName) => (resourceName ? `${pack.name}.${resourceName}` : pack.name);
 
-const isAuthExtension = i => i.type === 'shoutem.core.extensions' && i.id === SHOUTEM_AUTH;
+const getExtensionSettings = (appConfiguration) => {
+  const included = _.get(appConfiguration, 'included');
+  const extension = _.find(included,
+    item => item.type === 'shoutem.core.extensions' && item.id === ext()
+  );
 
-const configureFacebookSettingsIOS = (facebookAppId, facebookAppName) => {
+  return _.get(extension, 'attributes.settings');
+};
+
+const defaultSettings = {
+  NSPhotoLibraryUsageDescription: 'App needs access to your image library so you can upload photos',
+};
+
+/**
+ * Resolves ios project settings to be configured for facebook authentication
+ * If authentication is enabled, returns with required keys. Otherwise it's set
+ * to empty.
+ * @param {*} facebookSettings
+ */
+const configureFacebookSettingsIos = (facebookSettings) => {
   console.log('Configuring Facebook login settings for iOS');
 
-  // If extension failed to download by CLI it is placed directly to node_modules.
-  // Read CFBundleURLTypes from global info.plist and save it into
-  // extension once project is configured.
-  const authInfoPlist = {
+  const isFacebookAuthEnabled = _.get(facebookSettings, 'enabled', false);
+  const appId = _.get(facebookSettings, 'appId');
+  const appName = _.get(facebookSettings, 'appName');
+
+  const authInfoPlist = isFacebookAuthEnabled ? {
     CFBundleURLTypes: [{
-      CFBundleURLSchemes: [`fb${facebookAppId}`],
+      CFBundleURLSchemes: [`fb${appId}`],
     }],
-    FacebookAppID: facebookAppId,
-    FacebookDisplayName: facebookAppName,
-  };
+    FacebookAppID: appId,
+    FacebookDisplayName: appName,
+  } : {};
+
+  return authInfoPlist;
+};
+
+const getExistingFacebookAppId = (fileContents) => {
+  const fbAppIdRegex = /<string name="facebook_app_id">([^<]*)<\/string>/;
+  const result = fileContents.match(fbAppIdRegex);
+
+  return result && result[1];
+};
+
+const configureFacebookSettingsAndroid = (facebookSettings) => {
+  console.log('Configuring Facebook login settings for Android');
+
+  const filePath = path.resolve(projectPath, 'android/app/src/main/res/values/strings.xml');
+  let fileContents = '';
+
+  try {
+    fileContents = fs.readFileSync(filePath, { encoding: 'utf8' });
+  } catch (err) {
+    console.log(`${filePath} not found or unreadable!`);
+    throw new Error(err);
+  }
+
+  const facebookAppId = _.get(facebookSettings, 'appId');
+  const isFacebookAuthEnabled = _.get(facebookSettings, 'enabled', false);
+  const existingFacebookAppId = getExistingFacebookAppId(fileContents);
+  const facebookAppIdDiffers = (facebookAppId !== existingFacebookAppId);
+
+  // fbauth is enabled, appId string is present and matches the current appId: no changes needed
+  if (isFacebookAuthEnabled && !facebookAppIdDiffers) {
+    return;
+  }
+
+  const facebookAppIdString = `<string name="facebook_app_id">${facebookAppId}</string>`;
+  const existingFacebookAppIdString = `<string name="facebook_app_id">${existingFacebookAppId}</string>`;
+
+  let searchString = '';
+  let replaceString = '';
+
+  // fbauth is enabled, but appIds differ: replace the old appId with the new one
+  if (isFacebookAuthEnabled && facebookAppIdDiffers) {
+    searchString = existingFacebookAppIdString;
+    replaceString = facebookAppIdString;
+  }
+  // fbauth is enabled, but appId is not present: add the appId string
+  else if (isFacebookAuthEnabled && !existingFacebookAppId) {
+    searchString = '</resources>';
+    replaceString = `${facebookAppIdString}\n</resources>`;
+  }
+  // fbauth is disabled && appId string is not present: add dummy appId
+  else if (!isFacebookAuthEnabled && !existingFacebookAppId) {
+    searchString = '</resources>';
+    replaceString = '<string name="facebook_app_id">112233</string>';
+  }
+
+  fileContents = fileContents.replace(searchString, replaceString);
+  fs.writeFileSync(filePath, fileContents);
+};
+
+const configureSettingsAndroid = (extensionSettings) => {
+  const facebookSettings = _.get(extensionSettings, 'providers.facebook');
+  configureFacebookSettingsAndroid(facebookSettings);
+};
+
+const configureSettingsIos = (extensionSettings) => {
+  const facebookSettings = _.get(extensionSettings, 'providers.facebook');
+
+  const authInfoPlist = Object.assign({},
+    defaultSettings,
+    configureFacebookSettingsIos(facebookSettings)
+  );
 
   fs.writeFileSync('ios/Info.plist', plist.build(authInfoPlist));
 };
 
-const configureFacebookSettingsAndroid = (facebookAppId) => {
-  console.log('Configuring Facebook login settings for Android');
-
-  // After clone extension is placed in ./extensions/shoutem.auth/app where root directory
-  // is directory of clonned app.
-  // If extension failed to download by CLI it is placed directly to node_modules.
-  // TODO(Ivan): Change this to write strings.xml locally,
-  // when strings.xml merging is enabled
-  const stringsXMLPath = nearestSync('android/app/src/main/res/values/strings.xml', __dirname);
-
-  const stringsXML = fs.readFileSync(stringsXMLPath, 'utf8');
-  const newStringsXML = stringsXML.replace(/facebook-app-id/g, facebookAppId);
-
-  fs.writeFileSync(stringsXMLPath, newStringsXML);
-};
-
 exports.preBuild = function preBuild(appConfiguration) {
-  const authExtension = _.get(appConfiguration, 'included').find(isAuthExtension);
-  const facebookSettings = _.get(authExtension, 'attributes.settings.providers.facebook') || {};
+  const extensionSettings = getExtensionSettings(appConfiguration);
 
-  const { appId: facebookAppId, appName: facebookAppName } = facebookSettings;
-
-  if (!(facebookAppId && facebookAppName)) {
-    return;
-  }
-
-  configureFacebookSettingsIOS(facebookAppId, facebookAppName);
-  configureFacebookSettingsAndroid(facebookAppId);
+  configureSettingsAndroid(extensionSettings);
+  configureSettingsIos(extensionSettings);
 };

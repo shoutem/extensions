@@ -75,12 +75,24 @@ const getNextActionLinks = (action) => ({
 
 const hasNextPage = (payload) => !!_.get(payload, 'paging.next');
 
+const resolveNotification = (notification) => {
+  const { imageUrl, audience: { type, groups } } = notification;
+  const isSingleGroupNotification = type === 'group' && groups.length === 1;
+
+  if (isSingleGroupNotification) {
+    notification.imageUrl = _.get(groups, ['0', 'imageUrl'], imageUrl);
+  }
+
+  return notification;
+}
+
 const processNotifications = (state, action) => {
   const { payload } = action;
 
+  const notifications = payload.data.map(resolveNotification);
   const newState = isAppendMode(action) ?
-    { ...state, data: [...state.data, ...payload.data] } :
-    { ...state, data: [...payload.data] };
+    { ...state, data: [...state.data, ...notifications] } :
+    { ...state, data: [...notifications] };
   const params = hasNextPage(payload) ? getNextActionParams(action) : {};
   const links = hasNextPage(payload) ? getNextActionLinks(action) : { next: null };
 

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -14,7 +15,7 @@ import QRCodeScanner from '../components/QRCodeScanner.js';
 
 import { ext } from '../const';
 
-const { func, string } = React.PropTypes;
+const { func, string } = PropTypes;
 
 /**
  * A screen that lets a user scan a QR code

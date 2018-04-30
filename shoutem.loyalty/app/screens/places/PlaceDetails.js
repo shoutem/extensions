@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
@@ -11,7 +12,7 @@ import {
   Html,
   ListView,
   Icon,
-  Image,
+  ImageBackground,
   Row,
   Screen,
   ScrollView,
@@ -30,6 +31,7 @@ import {
 } from '@shoutem/redux-io';
 
 import {
+  InteractionManager,
   Linking,
   Platform,
 } from 'react-native';
@@ -67,16 +69,17 @@ import PlaceRewardListView from '../../components/PlaceRewardListView';
 import PlaceLoyaltyPointsView from '../../components/PlaceLoyaltyPointsView';
 
 import {
+  fetchPlaceRewards,
   getCardStateForPlace,
- } from '../../redux';
+} from '../../redux';
 
- import {
-   refreshTransactions
- } from '../../services';
+import {
+  refreshTransactions,
+} from '../../services';
 
 /* eslint-disable class-methods-use-this */
 
-const { arrayOf, func } = React.PropTypes;
+const { arrayOf, func } = PropTypes;
 
 export class PlaceDetails extends Component {
   static propTypes = {
@@ -90,6 +93,7 @@ export class PlaceDetails extends Component {
     openInModal: func,
     openURL: func,
     navigateTo: func,
+    fetchPlaceRewards: func,
     refreshTransactions: func,
      // Transactions for this place
     transactions: arrayOf(transactionShape),
@@ -110,18 +114,24 @@ export class PlaceDetails extends Component {
     this.openURL = this.openURL.bind(this);
 
     this.renderRewardRow = this.renderRewardRow.bind(this);
+    this.renderLeadImage = this.renderLeadImage.bind(this);
+
+    this.state = {
+      animateLeadImage: false,
+    };
   }
 
   componentWillMount() {
-    const { find, place, refreshTransactions } = this.props;
+    const { place } = this.props;
 
-    find(PLACE_REWARDS_SCHEMA, undefined, {
-      query: {
-        'filter[place.id]': place.id,
-      }
+    this.props.fetchPlaceRewards(place.id);
+    this.props.refreshTransactions();
+  }
+
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ animateLeadImage: true });
     });
-
-    refreshTransactions();
   }
 
   getNavBarProps() {
@@ -135,25 +145,10 @@ export class PlaceDetails extends Component {
     };
   }
 
-  renderRightNavBarComponent() {
-    const { transactions } = this.props;
-
-    return (
-      <View virtual styleName="container">
-        {_.size(transactions) ? (<Button
-          onPress={this.navigateToPointsHistoryScreen}
-          styleName="clear"
-        >
-          <Text>History</Text>
-        </Button>) : null}
-      </View>
-    );
-  }
-
   navigateToPointsHistoryScreen() {
-    const { navigateTo, place } = this.props;
+    const { place } = this.props;
 
-    navigateTo({
+    this.props.navigateTo({
       screen: ext('PointsHistoryScreen'),
       props: {
         place,
@@ -162,10 +157,10 @@ export class PlaceDetails extends Component {
   }
 
   navigateToRewardDetailsScreen(reward) {
-    const { navigateTo, place } = this.props;
+    const { place } = this.props;
     const { placeRewardsParentCategoryId: parentCategoryId } = place;
 
-    navigateTo({
+    this.props.navigateTo({
       screen: ext('RewardDetailsScreen'),
       props: {
         reward: { ...reward, parentCategoryId, location: place.id },
@@ -175,9 +170,9 @@ export class PlaceDetails extends Component {
   }
 
   collectPoints() {
-    const { openInModal, place } = this.props;
+    const { place } = this.props;
 
-    openInModal({
+    this.props.openInModal({
       screen: ext('VerificationScreen'),
       props: {
         place,
@@ -186,13 +181,13 @@ export class PlaceDetails extends Component {
   }
 
   openURL() {
-    const { place: { rsvpLink, name }, openURL } = this.props;
-    openURL(rsvpLink, name);
+    const { place: { rsvpLink, name } } = this.props;
+    this.props.openURL(rsvpLink, name);
   }
 
   openWebLink() {
-    const { place: { url }, openURL } = this.props;
-    openURL(url);
+    const { place: { url } } = this.props;
+    this.props.openURL(url);
   }
 
   openMapLink() {
@@ -219,9 +214,9 @@ export class PlaceDetails extends Component {
   }
 
   openMapScreen() {
-    const { navigateTo, place } = this.props;
+    const { place } = this.props;
 
-    navigateTo({
+    this.props.navigateTo({
       screen: ext('SinglePlaceMap'),
       props: {
         place,
@@ -230,21 +225,37 @@ export class PlaceDetails extends Component {
     });
   }
 
+  renderRightNavBarComponent() {
+    const { transactions } = this.props;
+
+    return (
+      <View virtual styleName="container">
+        {_.size(transactions) ? (<Button
+          onPress={this.navigateToPointsHistoryScreen}
+          styleName="clear"
+        >
+          <Text>{I18n.t(ext('navigationHistoryButton'))}</Text>
+        </Button>) : null}
+      </View>
+    );
+  }
+
   renderLeadImage() {
+    const { animateLeadImage } = this.state;
     const { place: { image, location = {}, name } } = this.props;
     const { formattedAddress = '' } = location;
 
     return (
-      <Image
+      <ImageBackground
         styleName="large"
         source={image && { uri: image.url }}
-        animationName="hero"
+        animationName={animateLeadImage ? "hero" : undefined}
       >
         <Tile>
           <Title>{name.toUpperCase()}</Title>
           <Caption styleName="sm-gutter-top">{formattedAddress}</Caption>
         </Tile>
-      </Image>
+      </ImageBackground>
     );
   }
 
@@ -278,7 +289,7 @@ export class PlaceDetails extends Component {
     const data = isBusy(rewards) ? [] : [...rewards];
 
     return (
-      <View>
+      <View styleName="solid">
         <Divider styleName="section-header">
           <Caption>{I18n.t(ext('storeRewardsListTitle'))}</Caption>
         </Divider>
@@ -353,6 +364,7 @@ export class PlaceDetails extends Component {
         </Tile>
       );
     }
+
     return null;
   }
 
@@ -369,6 +381,7 @@ export class PlaceDetails extends Component {
         </Tile>
       );
     }
+
     return null;
   }
 
@@ -396,6 +409,7 @@ export class PlaceDetails extends Component {
     if (!title) {
       return null;
     }
+
     return (
       <TouchableOpacity onPress={onPressCallback}>
         <Divider styleName="line" />
@@ -415,6 +429,7 @@ export class PlaceDetails extends Component {
   render() {
     const { place } = this.props;
     const { location = {} } = place;
+
     return (
       <Screen styleName="full-screen paper">
         <NavigationBar {...this.getNavBarProps()} />
@@ -426,11 +441,30 @@ export class PlaceDetails extends Component {
           {this.renderButtons()}
           {this.renderInlineMap()}
           {this.renderDescription(place)}
-          {this.renderDisclosureButton(place.url, I18n.t(ext('websiteButton')), 'web', this.openWebLink)}
-          {this.renderDisclosureButton(location.formattedAddress, I18n.t(ext('directionsButton')), 'pin',
-          this.openMapLink)}
-          {this.renderDisclosureButton(place.mail, I18n.t(ext('emailButton')), 'email', this.openEmailLink)}
-          {this.renderDisclosureButton(place.phone, I18n.t(ext('phoneButton')), 'call', this.openPhoneLink)}
+          {this.renderDisclosureButton(
+            place.url,
+            I18n.t(ext('websiteButton')),
+            'web',
+            this.openWebLink,
+          )}
+          {this.renderDisclosureButton(
+            location.formattedAddress,
+            I18n.t('shoutem.cms.directionsButton'),
+            'pin',
+            this.openMapLink
+          )}
+          {this.renderDisclosureButton(
+            place.mail,
+            I18n.t(ext('emailButton')),
+            'email',
+            this.openEmailLink
+          )}
+          {this.renderDisclosureButton(
+            place.phone,
+            I18n.t(ext('phoneButton')),
+            'call',
+            this.openPhoneLink
+          )}
         </ScrollView>
       </Screen>
     );
@@ -462,6 +496,7 @@ export const mapStateToProps = (state, ownProps) => {
 };
 
 export const mapDispatchToProps = {
+  fetchPlaceRewards,
   find,
   navigateTo,
   openInModal,

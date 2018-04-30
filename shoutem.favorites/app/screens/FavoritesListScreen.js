@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { getCollection } from '@shoutem/redux-io';
 import { NavigationBar } from '@shoutem/ui/navigation';
@@ -18,12 +19,12 @@ import { ext } from '../const';
 
 export class FavoritesListScreen extends Component {
   static propTypes = {
-    title: React.PropTypes.string,
-    favorites: React.PropTypes.array,
-    favoriteCollection: React.PropTypes.array,
-    fetchFavoritesData: React.PropTypes.func,
-    itemsLoaded: React.PropTypes.bool,
-    loading: React.PropTypes.bool,
+    title: PropTypes.string,
+    favorites: PropTypes.array,
+    favoriteCollection: PropTypes.array,
+    fetchFavoritesData: PropTypes.func,
+    itemsLoaded: PropTypes.bool,
+    loading: PropTypes.bool,
   };
 
   static createMapStateToProps(schema, getStorage) {

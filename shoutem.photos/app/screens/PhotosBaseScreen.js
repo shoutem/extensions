@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
@@ -32,7 +33,7 @@ export function remapAndFilterPhotos(data) {
 export class PhotosBaseScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    openInModal: React.PropTypes.func.isRequired,
+    openInModal: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {

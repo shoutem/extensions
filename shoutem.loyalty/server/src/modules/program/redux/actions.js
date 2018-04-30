@@ -12,6 +12,8 @@ import {
   USERS,
 } from '../const';
 
+const MAX_PAGE_SIZE = 10000;
+
 function createProgram(scope) {
   const config = {
     schema: PROGRAMS,
@@ -148,14 +150,14 @@ export function loadCards(programId, scope = {}) {
 
 export function loadUsers(appId, scope = {}) {
   const params = {
-    q: { 'page[limit]': 10000 },
+    q: { 'page[limit]': MAX_PAGE_SIZE },
     ...scope,
   };
 
   const config = {
     schema: USERS,
     request: {
-      endpoint: shoutemUrls.buildLegacyUrl(`/v1/apps/${appId}/members{?q*}`),
+      endpoint: shoutemUrls.buildAuthUrl(`/v1/realms/externalReference:${appId}/users{?q*}`),
       headers: {
         Accept: 'application/vnd.api+json',
       },

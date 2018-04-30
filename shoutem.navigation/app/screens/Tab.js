@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import {
   InteractionManager,
@@ -19,10 +20,10 @@ import { getTabNavigationStack, getTabNavigationState } from '../redux';
 
 class Tab extends React.PureComponent {
   static propTypes = {
-    shortcut: React.PropTypes.object.isRequired,
-    navigationState: React.PropTypes.object,
-    executeShortcut: React.PropTypes.func,
-    navigateBack: React.PropTypes.func,
+    shortcut: PropTypes.object.isRequired,
+    navigationState: PropTypes.object,
+    executeShortcut: PropTypes.func,
+    navigateBack: PropTypes.func,
   };
 
   constructor(props) {

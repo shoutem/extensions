@@ -10,6 +10,7 @@ import {
   getTheme,
   defaultThemeVariables as defaultUiThemeVariables,
   dimensionRelativeToIphone,
+  isIphoneX,
 } from '@shoutem/ui';
 
 import {
@@ -17,7 +18,15 @@ import {
   changeColorAlpha,
 } from '@shoutem/theme';
 
-const NAVIGATION_BAR_HEIGHT = NavigationExperimental.Header.HEIGHT;
+const defaultNavBarHeight = NavigationExperimental.Header.HEIGHT;
+
+const IPHONE_X_HOME_INDICATOR_PADDING = isIphoneX ? 20 : 0;
+const IPHONE_X_NOTCH_PADDING = isIphoneX ? 14 : 0;
+
+const TAB_BAR_ITEM_HEIGHT = 60;
+const TAB_BAR_ITEM_MARGIN_BOTTOM = IPHONE_X_HOME_INDICATOR_PADDING;
+const TAB_BAR_HEIGHT = TAB_BAR_ITEM_HEIGHT + IPHONE_X_NOTCH_PADDING;
+const NAVIGATION_BAR_HEIGHT = defaultNavBarHeight + IPHONE_X_NOTCH_PADDING;
 
 export const defaultThemeVariables = {
   ...defaultUiThemeVariables,
@@ -58,6 +67,15 @@ export default (customVariables = {}) => {
     },
 
     clearNavigationBar: {
+      'shoutem.ui.Button': {
+        [INCLUDE]: ['clearButton'],
+        'shoutem.ui.Icon': {
+          color: variables.navBarIconsColor,
+        },
+        'shoutem.ui.Text': {
+          color: variables.navBarText.color,
+        },
+      },
       'shoutem.ui.Title': {
         // We have a problem with animations attaching too late
         // during initial screen render, temporary workaround is to
@@ -167,7 +185,7 @@ export default (customVariables = {}) => {
           left: 0,
           right: 0,
         },
-        paddingBottom: 60, // TabBar height
+        paddingBottom: TAB_BAR_HEIGHT,
       },
     },
     'shoutem.navigation.TabBarItem': {
@@ -200,7 +218,8 @@ export default (customVariables = {}) => {
         },
       },
       item: {
-        height: 60,
+        height: TAB_BAR_ITEM_HEIGHT,
+        marginBottom: TAB_BAR_ITEM_MARGIN_BOTTOM,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -651,6 +670,149 @@ export default (customVariables = {}) => {
         alignSelf: 'center',
         fontSize: 18,
         lineHeight: 20,
+      },
+    },
+
+    // Loyalty
+    'shoutem.loyalty.SmallPointCardView': {
+      container: {
+        borderRadius: 4,
+        shadowColor: variables.shadowColor,
+        shadowOpacity: 1,
+        shadowOffset: { width: 1, height: 1 },
+      },
+      innerContainer: {
+        borderRadius: 4,
+        overflow: 'hidden',
+      },
+      pointsTitle: {
+        marginLeft: 28,
+        textAlign: 'left',
+      },
+      points: {
+        marginLeft: 28,
+        textAlign: 'left',
+        fontSize: 36,
+        lineHeight: 40,
+        color: variables.imageOverlayTextColor,
+      },
+    },
+
+    'shoutem.loyalty.RewardProgressBar': {
+      '.short': {
+        container: {
+          marginTop: -2,
+          marginRight: 12,
+          marginLeft: -12,
+        },
+      },
+
+      container: {
+        height: 5,
+        borderRadius: 100,
+        backgroundColor: variables.backgroundColor,
+      },
+
+      earnedPoints: {
+        borderRadius: 100,
+        height: 5,
+        backgroundColor: variables.featuredColor,
+      },
+    },
+
+    'shoutem.loyalty.RewardsGaugeProgressBar': {
+      '.secondary': {
+        pointsLabel: {
+          position: 'absolute',
+          top: '40%',
+
+          'shoutem.ui.Text': {
+            color: '#ffffff',
+          },
+
+          'shoutem.ui.Title': {
+            color: '#ffffff',
+          },
+        },
+
+        progressBar: {
+          opacity: 0.5,
+          stroke: '#ffffff',
+        },
+
+        progressBarCompleted: {
+          stroke: '#ffffff',
+        },
+      },
+
+      container: {
+        height: 275,
+        width: 275,
+      },
+
+      pointsLabel: {
+        position: 'absolute',
+        top: '40%',
+      },
+
+      progressContainer: {
+        height: 260,
+        width: 260,
+      },
+
+      progressRadius: 120,
+
+      reward: {
+        position: 'absolute',
+        marginLeft: -9,
+        marginTop: -9,
+      },
+    },
+
+    'shoutem.loyalty.GaugeProgressBar': {
+      progressContainer: {
+        transform: [
+          { rotate: '135deg' },
+        ],
+      },
+
+      progressBar: {
+        fill: 'none',
+        stroke: variables.lineColor,
+        strokeLinecap: 'round',
+        strokeWidth: 10,
+      },
+
+      progressBarCompleted: {
+        fill: 'none',
+        stroke: variables.indicatorColor,
+        strokeLinecap: 'round',
+        strokeWidth: 10,
+      },
+    },
+
+    'shoutem.loyalty.PlaceRewardIcon': {
+      reward: {
+        backgroundColor: '#ffffff',
+        borderColor: variables.lineColor,
+        borderRadius: 36,
+        borderWidth: 3,
+        height: 36,
+        padding: 2,
+        width: 36,
+
+        'shoutem.ui.Icon': {
+          color: variables.lineColor,
+        },
+      },
+
+      rewardReached: {
+        backgroundColor: variables.indicatorColor,
+        borderColor: '#ffffff',
+
+        'shoutem.ui.Icon': {
+          color: '#ffffff',
+        },
       },
     },
   });

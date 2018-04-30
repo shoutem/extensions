@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -23,7 +24,7 @@ import { ext } from '../const';
 export class VideoDetails extends Component {
   static propTypes = {
     // The video article to display
-    video: React.PropTypes.object.isRequired,
+    video: PropTypes.object.isRequired,
   };
 
   render() {

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -14,7 +15,7 @@ import Stamp from './Stamp';
 
 const STAMPS_PER_ROW = 7;
 
-const { bool, func, shape, string } = React.PropTypes;
+const { bool, func, shape, string } = PropTypes;
 
 const iconStyleShape = shape({
   color: string,

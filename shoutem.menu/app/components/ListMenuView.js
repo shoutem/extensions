@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
-  Image,
+  ImageBackground,
   Subtitle,
   Overlay,
   Title,
@@ -12,8 +13,8 @@ import {
 
 export default class ListMenuView extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    item: React.PropTypes.object.isRequired,
+    onPress: PropTypes.func,
+    item: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -34,7 +35,7 @@ export default class ListMenuView extends React.Component {
 
     return (
       <TouchableOpacity key={item.id} onPress={this.onPress}>
-        <Image
+        <ImageBackground
           styleName="large-banner placeholder"
           source={{ uri: item.image ? item.image.url : undefined }}
         >
@@ -42,7 +43,7 @@ export default class ListMenuView extends React.Component {
             <Title styleName="md-gutter-bottom">{item.name.toUpperCase()}</Title>
             {price}
           </Tile>
-        </Image>
+        </ImageBackground>
         <Divider styleName="line" />
       </TouchableOpacity>
     );

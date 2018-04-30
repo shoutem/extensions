@@ -1,16 +1,16 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
 
 import { Alert, KeyboardAvoidingView } from 'react-native';
-import _ from 'lodash';
 
 import {
   Screen,
-  TextInput,
   Row,
   Text,
   Image,
+  ImageBackground,
   Button,
   View,
   Divider,
@@ -27,9 +27,10 @@ import { loginRequired } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 
 import { user as userShape } from '../components/shapes';
+import AutoGrowTextInput from '../components/AutoGrowTextInput';
 import { ext } from '../const';
 
-const { string, func, number, object, bool } = React.PropTypes;
+const { string, func, number, bool } = PropTypes;
 
 export class CreateStatusScreen extends Component {
   static propTypes = {
@@ -42,12 +43,12 @@ export class CreateStatusScreen extends Component {
   };
 
   static defaultProps = {
-    placeholder: '',
     enablePhotoAttachments: true,
   };
 
   constructor(props) {
     super(props);
+
     this.renderRightComponent = this.renderRightComponent.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
     this.addNewStatus = this.addNewStatus.bind(this);
@@ -57,14 +58,12 @@ export class CreateStatusScreen extends Component {
     this.renderTextInput = this.renderTextInput.bind(this);
     this.renderAttachedImage = this.renderAttachedImage.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
-    this.handleContentSizeChange = this.handleContentSizeChange.bind(this);
 
     this.state = {
       text: '',
       numOfCharacters: props.statusMaxLength,
       postingDisabled: true,
       imageData: undefined,
-      height: 25,
     };
   }
 
@@ -74,14 +73,14 @@ export class CreateStatusScreen extends Component {
     this.setState({
       text,
       numOfCharacters: statusMaxLength - text.length,
+      postingDisabled: text.length === 0,
     });
-
-    this.setState({ postingDisabled: text.length === 0 });
   }
 
   addNewStatus() {
     const { onStatusCreated } = this.props;
     const { postingDisabled } = this.state;
+
     if (postingDisabled) {
       Alert.alert(I18n.t(ext('blankPostWarning')));
     } else {
@@ -139,26 +138,19 @@ export class CreateStatusScreen extends Component {
     );
   }
 
-  handleContentSizeChange(event) {
-    this.setState({ height: event.nativeEvent.contentSize.height });
-  }
-
   renderTextInput() {
+    const { text } = this.state;
     const { placeholder, statusMaxLength } = this.props;
 
     return (
       <View styleName="flexible">
-        <TextInput
+        <AutoGrowTextInput
           multiline
           maxLength={statusMaxLength}
           placeholder={placeholder}
           autoFocus
-          onContentSizeChange={this.handleContentSizeChange}
-          onChangeText={this.handleTextChange}
-          style={{
-            height: Math.max(25, this.state.height),
-            paddingTop: 0,
-          }}
+          onTextChanged={this.handleTextChange}
+          value={text}
         />
         {this.renderAttachedImage()}
       </View>
@@ -170,7 +162,7 @@ export class CreateStatusScreen extends Component {
 
     return (
       <View>
-        <Image
+        <ImageBackground
           source={{ uri: `data:image/png;base64,${this.state.imageData.data}` }}
           styleName="large-wide"
         >
@@ -179,7 +171,7 @@ export class CreateStatusScreen extends Component {
               <Icon name="close" />
             </Button>
           </View>
-        </Image>
+        </ImageBackground>
       </View>
     );
   }

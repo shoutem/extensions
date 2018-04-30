@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { connect } from 'react-redux';
@@ -19,7 +20,7 @@ import { I18n } from 'shoutem.i18n';
 
 import { ext } from '../const';
 
-const { bool, func, number } = React.PropTypes;
+const { bool, func, number } = PropTypes;
 
 const STAMP_ICON = require('../assets/icons/stamp.png');
 const TROPHY_ICON = require('../assets/icons/trophy.png');

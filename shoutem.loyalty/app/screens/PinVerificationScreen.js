@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert } from 'react-native';
 import { connect } from 'react-redux';
@@ -28,7 +29,7 @@ import {
 } from '../services';
 import { verifyPin } from '../redux';
 
-const { bool, func } = React.PropTypes;
+const { bool, func } = PropTypes;
 
 const onWrongPin = () => {
   Alert.alert(

@@ -22,6 +22,7 @@ export default class FileUploader extends React.Component {
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
     this.handleDeleteFailed = this.handleDeleteFailed.bind(this);
     this.validateFileSize = this.validateFileSize.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
     this.upload = this.upload.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.handleDropRejected = this.handleDropRejected.bind(this);
@@ -44,13 +45,29 @@ export default class FileUploader extends React.Component {
   validateFileSize(file) {
     const { maxFileSize } = this.props;
     if (file.size > maxFileSize) {
-      return `Max allowed image size is ${maxFileSize / 1000000}MB!`;
+      return `Max allowed file size is ${maxFileSize / 1000000}MB!`;
     }
     return null;
   }
 
-  upload(file) {
+  uploadFile(file) {
     const { assetManager, folderName, resolveFilename } = this.props;
+
+    return new Promise((resolve, reject) => {
+      const fileSizeError = this.validateFileSize(file);
+
+      const resolvedFilename = resolveFilename(file);
+      const resolvedFolderPath = folderName ? `${folderName}/` : '';
+      const resolvedPath = resolvedFolderPath + resolvedFilename;
+
+      return assetManager.uploadFile(resolvedPath, file)
+        .then((path) => resolve(path))
+        .catch(() => reject('File upload failed.'));
+    });
+  }
+
+  upload(file) {
+    const { customValidator } = this.props;
 
     return new Promise((resolve, reject) => {
       const fileSizeError = this.validateFileSize(file);
@@ -59,12 +76,17 @@ export default class FileUploader extends React.Component {
         return;
       }
 
-      const resolvedFilename = resolveFilename(file);
-      const resolvedFolderPath = folderName ? `${folderName}/` : '';
-      const resolvedPath = resolvedFolderPath + resolvedFilename;
+      if (customValidator) {
+        return Promise.resolve()
+          .then(() => customValidator(file))
+          .then(() => this.uploadFile(file))
+          .then((resolvedPath) => this.handleUploadSucceeded(resolvedPath))
+          .catch((e) => this.handleUploadFailed(e.message));
+      }
 
-      assetManager.uploadFile(resolvedPath, file)
-        .then(resolve, () => reject('Upload failed.'));
+      return this.uploadFile(file)
+        .then((resolvedPath) => this.handleUploadSucceeded(resolvedPath))
+        .catch((e) => this.handleUploadFailed(e.message));
     });
   }
 
@@ -85,7 +107,8 @@ export default class FileUploader extends React.Component {
     onDrop();
 
     this.upload(files[0])
-      .then(this.handleUploadSucceeded, this.handleUploadFailed);
+      .then(this.handleUploadSucceeded)
+      .catch(this.handleUploadFailed);
   }
 
   handleDropRejected() {
@@ -240,11 +263,17 @@ FileUploader.propTypes = {
    * Max file size allowed to be uploaded
    */
   shallowDelete: React.PropTypes.bool,
+  /**
+   * Provides a way to perform custom file validation before upload.
+   * If you return a promise it will be resolved.
+   */
+  customValidator: React.PropTypes.func,
 };
 
 FileUploader.defaultProps = {
   maxFileSize: 10000000,
   onError: () => {},
+  customValidator: _.noop,
   showValidationError: true,
   canBeDeleted: true,
   autoResize: true,

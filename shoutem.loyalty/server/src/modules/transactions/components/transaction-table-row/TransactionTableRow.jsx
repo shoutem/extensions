@@ -7,6 +7,7 @@ import {
   formatUserLabel,
   formatRewardLabel,
   formatPlaceLabel,
+  formatCashierLabel,
 } from '../../services';
 import './style.scss';
 
@@ -71,7 +72,7 @@ export default class TransactionTableRow extends Component {
           </td>
         }
         <td className="transaction-table-row__cashier">
-          {formatUserLabel(cashier)}
+          {formatCashierLabel(cashier)}
         </td>
         <td className="transaction-table-row__time">
           {formatDateTime(createdAt)}

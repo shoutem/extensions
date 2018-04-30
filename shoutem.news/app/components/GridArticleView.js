@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
 
@@ -19,11 +20,11 @@ import {
  */
 export class GridArticleView extends ArticleView {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    articleId: React.PropTypes.string,
-    title: React.PropTypes.string,
-    imageUrl: React.PropTypes.string,
-    date: React.PropTypes.string,
+    onPress: PropTypes.func,
+    articleId: PropTypes.string,
+    title: PropTypes.string,
+    imageUrl: PropTypes.string,
+    date: PropTypes.string,
   };
 
   render() {

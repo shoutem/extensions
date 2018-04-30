@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
@@ -59,7 +60,7 @@ const ListItem = ({ item, onAddToCart, onPress, shop }) => {
   );
 };
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 ListItem.propTypes = {
   // Product

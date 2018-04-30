@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -11,7 +12,7 @@ import { connectStyle } from '@shoutem/theme';
 
 import { ext } from '../const';
 
-const { bool, func, number, shape, string } = React.PropTypes;
+const { bool, func, number, shape, string } = PropTypes;
 
 const iconStyleShape = shape({
   color: string,

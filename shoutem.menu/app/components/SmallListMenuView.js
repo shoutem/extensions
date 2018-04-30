@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import * as _ from 'lodash';
 
@@ -12,8 +13,8 @@ import {
 
 export default class SmallListMenuView extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    item: React.PropTypes.object.isRequired,
+    onPress: PropTypes.func,
+    item: PropTypes.object.isRequired,
   };
 
   constructor(props) {

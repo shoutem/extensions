@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -11,10 +12,10 @@ import {
  */
 export default class GridPhotoView extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    photo: React.PropTypes.object.isRequired,
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
+    onPress: PropTypes.func,
+    photo: PropTypes.object.isRequired,
+    width: PropTypes.number,
+    height: PropTypes.number,
   };
 
   constructor(props) {

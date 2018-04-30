@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -36,7 +37,7 @@ import ProductsList from '../components/ProductsList';
 import { shop as shopShape } from '../components/shapes';
 import { refreshProducts } from '../redux/actionCreators';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 const renderCancelButton = onPress => (
   <Button

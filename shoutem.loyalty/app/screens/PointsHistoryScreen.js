@@ -1,40 +1,21 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import moment from 'moment';
-
-import {
-  getCollection,
-  next,
- } from '@shoutem/redux-io';
-
-import {
-  ListScreen,
-} from 'shoutem.application';
+import { getCollection } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { Screen } from '@shoutem/ui';
+import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { I18n } from 'shoutem.i18n';
 
 import {
-  Caption,
-  Divider,
-} from '@shoutem/ui';
-
-import { connectStyle } from '@shoutem/theme';
-
-import {
-  ext,
-} from '../const';
-
-import {
-  placeShape,
   transactionShape,
 } from '../components/shapes';
+import TransactionHistoryView from '../components/TransactionHistoryView';
+import { ext } from '../const';
 
-import TransactionItem from '../components/TransactionItem';
-
-import { refreshTransactions } from '../services';
-
-const { arrayOf, func } = React.PropTypes;
+const { arrayOf } = PropTypes;
 
 /* eslint-disable class-methods-use-this */
 
@@ -42,62 +23,29 @@ const { arrayOf, func } = React.PropTypes;
  * Displays the transaction history for a points card.
  * A transaction can be adding points to a card or redeeming a reward.
  */
-export class PointsHistoryScreen extends ListScreen {
+export class PointsHistoryScreen extends React.Component {
   static propTypes = {
-    ...ListScreen.propTypes,
     // Transactions
-    data: arrayOf(transactionShape),
-    // Place to which transactions belong to
-    place: placeShape,
-    next: func,
-    // Refreshes transactions
-    refreshTransactions: func,
+    transactions: arrayOf(transactionShape),
   };
 
-  constructor(props) {
-    super(props);
-
-    this.renderRow = this.renderRow.bind(this);
-  }
-
-  fetchData() {
-    const { refreshTransactions } = this.props;
-
-    refreshTransactions();
-  }
-
-  getSectionId({ createdAt }) {
-    return moment(createdAt).format('YYYY');
-  }
-
-  renderSectionHeader(sectionId) {
-    const currentYear = moment().format('YYYY');
-
-    return (
-      sectionId === currentYear ?
-        null
-        :
-        <Divider styleName="section-header">
-          <Caption>{sectionId}</Caption>
-        </Divider>
-    );
-  }
-
-  renderRow(transaction) {
-    const { place } = this.props;
-    const { transactionData } = transaction;
-
-    if (place && place.id !== transactionData.location) {
-      return null;
-    }
-
-    return <TransactionItem transaction={transaction} />;
-  }
-
-  getNavigationBarProps() {
+  getNavBarProps() {
     return {
       title: I18n.t(ext('pointsHistoryNavBarTitle')),
     };
+  }
+
+  render() {
+    const { transactions } = this.props;
+
+    return (
+      <Screen>
+        <NavigationBar {...this.getNavBarProps()} />
+        <TransactionHistoryView
+          transactions={transactions}
+        />
+      </Screen>
+    );
   }
 }
 
@@ -105,12 +53,10 @@ export const mapStateToProps = (state) => {
   const { allTransactions } = state[ext()];
 
   return {
-    data: getCollection(allTransactions, state),
+    transactions: getCollection(allTransactions, state),
   };
 };
 
-export const mapDispatchToProps = { next, refreshTransactions };
-
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(mapStateToProps, null)(
   connectStyle(ext('PointsHistoryScreen'))(PointsHistoryScreen),
 );

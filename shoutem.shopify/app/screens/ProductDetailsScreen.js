@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -49,7 +50,7 @@ import {
 import { cartItemAdded } from '../redux/actionCreators';
 import { getCartSize } from '../redux/selectors';
 
-const { func, number } = React.PropTypes;
+const { func, number } = PropTypes;
 
 const getDiscount = (price, originalPrice) =>
   Math.round((100 * (parseFloat(price) - parseFloat(originalPrice))) / parseFloat(originalPrice));

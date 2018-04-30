@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -54,10 +55,10 @@ const getEventLocation = event => ({
 
 export class EventDetailsScreen extends React.Component {
   static propTypes = {
-    event: React.PropTypes.object.isRequired,
-    openURL: React.PropTypes.func.isRequired,
-    navigateTo: React.PropTypes.func.isRequired,
-    navigationBarStyle: React.PropTypes.string.isRequired,
+    event: PropTypes.object.isRequired,
+    openURL: PropTypes.func.isRequired,
+    navigateTo: PropTypes.func.isRequired,
+    navigationBarStyle: PropTypes.string.isRequired,
   };
 
   constructor(props, context) {

@@ -23,7 +23,18 @@ export const errorMessages = {
   get UNEXPECTED_ERROR() {
     return I18n.t('shoutem.application.unexpectedErrorMessage');
   },
+  get USERNAME_TAKEN() {
+    return I18n.t(ext('usernameTakenErrorMessage'));
+  },
 };
 
 export const getErrorMessage = errorCode =>
     errorMessages[errorCode] || errorMessages.UNEXPECTED_ERROR;
+
+export const apiCodeToErrorMessage = {
+    auth_user_validation_usernameTaken: 'USERNAME_TAKEN',
+    auth_auth_notAuthorized_userAuthenticationError: 'INVALID_CREDENTIALS',
+};
+
+export const getErrorCode = apiResponseErrorCode =>
+apiCodeToErrorMessage[apiResponseErrorCode] || getErrorMessage(apiResponseErrorCode);

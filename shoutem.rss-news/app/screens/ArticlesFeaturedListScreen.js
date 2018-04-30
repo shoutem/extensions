@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -16,7 +17,7 @@ import { ext } from '../const.js';
 export class ArticlesFeaturedListScreen extends ArticlesListScreen {
   static propTypes = {
     ...ArticlesListScreen.propTypes,
-    onPress: React.PropTypes.func,
+    onPress: PropTypes.func,
   };
 
   constructor(props, context) {

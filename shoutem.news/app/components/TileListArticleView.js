@@ -3,7 +3,7 @@ import moment from 'moment';
 import {
   TouchableOpacity,
   Caption,
-  Image,
+  ImageBackground,
   Tile,
   Title,
   Divider,
@@ -24,12 +24,12 @@ export class TileListArticleView extends ArticleView {
 
     return (
       <TouchableOpacity onPress={this.onPress}>
-        <Image styleName="large-banner placeholder" source={{ uri: imageUrl }}>
+        <ImageBackground styleName="large-banner placeholder" source={{ uri: imageUrl }}>
           <Tile>
             <Title numberOfLines={3}>{title.toUpperCase()}</Title>
             {dateInfo}
           </Tile>
-        </Image>
+        </ImageBackground>
         <Divider styleName="line" />
       </TouchableOpacity>
     );

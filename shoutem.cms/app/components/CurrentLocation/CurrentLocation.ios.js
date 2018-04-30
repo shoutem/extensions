@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Linking } from 'react-native';
 import CurrentLocationBase from './CurrentLocationBase';
-import { I18n } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../../const';
 
 export default function (WrappedComponent) {

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -20,7 +21,7 @@ export function connectPageContext(WrappedComponent) {
   }
 
   PageProvider.contextTypes = {
-    page: React.PropTypes.object,
+    page: PropTypes.object,
   };
 
   return PageProvider;

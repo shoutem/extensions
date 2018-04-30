@@ -1,12 +1,14 @@
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
-import { ListView } from '@shoutem/ui';
+import { ListView, Spinner } from '@shoutem/ui';
 import {
   next,
   isBusy,
   isInitialized,
+  shouldLoad,
 } from '@shoutem/redux-io';
 import { navigateTo } from '@shoutem/core/navigation';
 
@@ -14,14 +16,18 @@ import { getExtensionSettings } from 'shoutem.application';
 import { RssListScreen } from 'shoutem.rss';
 
 import { ext } from '../const';
-import { YOUTUBE_VIDEOS_SCHEMA, getVideosFeed, fetchFeed } from '../redux';
 import LargeYoutubeView from '../components/LargeYoutubeView';
+import {
+  YOUTUBE_VIDEOS_SCHEMA,
+  getVideosFeed,
+  fetchFeed,
+ } from '../redux';
 
 export class YoutubeVideosScreen extends RssListScreen {
   static propTypes = {
     ...RssListScreen.propTypes,
-    fetchFeed: React.PropTypes.func,
-    data: React.PropTypes.array,
+    fetchFeed: PropTypes.func,
+    data: PropTypes.array,
   };
 
   constructor(props, context) {
@@ -36,7 +42,8 @@ export class YoutubeVideosScreen extends RssListScreen {
   }
 
   openDetailsScreen(video) {
-    const { navigateTo, feedUrl } = this.props;
+    const { feedUrl } = this.props;
+
     const route = {
       screen: ext('YoutubeVideoDetailsScreen'),
       props: {
@@ -44,8 +51,13 @@ export class YoutubeVideosScreen extends RssListScreen {
         feedUrl,
       },
     };
+    this.props.navigateTo(route);
+  }
 
-    navigateTo(route);
+  refreshData(nextProps) {
+    if (shouldLoad(nextProps, this.props, 'data')) {
+      this.fetchData();
+    }
   }
 
   fetchData() {
@@ -68,6 +80,16 @@ export class YoutubeVideosScreen extends RssListScreen {
   }
 
   renderData(data) {
+    if (this.shouldRenderPlaceholderView(data)) {
+      return this.renderPlaceholderView(data);
+    }
+
+    if (!isInitialized(data)) {
+      return (
+        <Spinner styleName="xl-gutter-top" />
+      );
+    }
+
     return (
       <ListView
         data={data}

@@ -1,8 +1,8 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "1.5.2",
-  "platform": "1.5.*",
+  "version": "1.6.2",
+  "platform": "1.6.*",
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
   "dependencies": [

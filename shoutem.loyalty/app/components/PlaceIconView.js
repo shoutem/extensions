@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -21,7 +22,7 @@ import { placeShape } from './shapes';
 
 const DEFAULT_IMAGE = require('../assets/data/no_image.png');
 
-const { func, number } = React.PropTypes;
+const { func, number } = PropTypes;
 
 /**
  * Renders a single place in a list.

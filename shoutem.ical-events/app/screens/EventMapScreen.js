@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   PureComponent,
 } from 'react';
@@ -22,8 +23,8 @@ import { ext } from '../extension';
 
 export default class EventMapScreen extends PureComponent {
   static propTypes = {
-    marker: React.PropTypes.object,
-    title: React.PropTypes.string.isRequired,
+    marker: PropTypes.object,
+    title: PropTypes.string.isRequired,
   };
 
   constructor(props) {
@@ -71,7 +72,7 @@ export default class EventMapScreen extends PureComponent {
         />
 
         <MapView
-          initialRegion={marker}
+          region={marker}
           markers={[marker]}
           selectedMarker={marker}
         />

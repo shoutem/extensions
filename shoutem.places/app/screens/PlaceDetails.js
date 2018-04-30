@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
@@ -10,7 +11,7 @@ import {
   Text,
   Title,
   View,
-  Image,
+  ImageBackground,
   Divider,
   Tile,
   Screen,
@@ -32,10 +33,10 @@ import { ext } from '../const';
 
 export class PlaceDetails extends Component {
   static propTypes = {
-    place: React.PropTypes.object.isRequired,
-    openURL: React.PropTypes.func,
-    navigateTo: React.PropTypes.func,
-    hasFavorites: React.PropTypes.bool,
+    place: PropTypes.object.isRequired,
+    openURL: PropTypes.func,
+    navigateTo: PropTypes.func,
+    hasFavorites: PropTypes.bool,
   };
 
   constructor(props) {
@@ -122,7 +123,7 @@ export class PlaceDetails extends Component {
     const { location = {} } = place;
     const { formattedAddress = '' } = location;
     return (
-      <Image
+      <ImageBackground
         styleName="large-portrait"
         source={place.image ? { uri: place.image.url } : undefined}
         animationName="hero"
@@ -131,7 +132,7 @@ export class PlaceDetails extends Component {
           <Title>{place.name.toUpperCase()}</Title>
           <Caption styleName="sm-gutter-top">{formattedAddress}</Caption>
         </Tile>
-      </Image>
+      </ImageBackground>
     );
   }
 

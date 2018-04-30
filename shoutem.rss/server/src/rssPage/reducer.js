@@ -1,8 +1,9 @@
-import { combineReducers } from 'redux';
-import { one, collection, find, update } from '@shoutem/redux-io';
 import _ from 'lodash';
+import URI from 'urijs';
+import { one, collection, find, update } from '@shoutem/redux-io';
 import { url, appId } from 'environment';
 import { ext, data as contextData } from 'context';
+import { combineReducers } from 'redux';
 
 export const SHORTCUTS = 'shoutem.core.shortcuts';
 export const DISCOVERED_FEEDS = 'shoutem.proxy.feeds';
@@ -37,10 +38,18 @@ export function updateShortcutSettings(id, settings) {
 }
 
 export function loadFeed(feedUrl) {
+  // decode url in case someone encoded it in a way incompatible with legacy server
+  const decodedFeedUrl = URI.decode(feedUrl);
+  const endpoint = new URI(`//${url.legacy}/v1/apps/${appId}/proxy/resources/${FEED_ITEMS}`)
+  .setQuery({
+    'filter[url]': decodedFeedUrl,
+  })
+  .toString();
+
   const config = {
     schema: FEED_ITEMS,
     request: {
-      endpoint: `//${url.legacy}/v1/apps/${appId}/proxy/resources/${FEED_ITEMS}?filter[url]=${feedUrl}`,
+      endpoint,
       headers: {
         Accept: 'application/vnd.api+json',
       },

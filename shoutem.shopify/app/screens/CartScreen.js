@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -44,7 +45,7 @@ import {
   startCheckout,
 } from '../redux/actionCreators';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 /**
  * Displays a list of items that the user has added to his cart, the total price, and

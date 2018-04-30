@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -43,7 +44,7 @@ import CartItem from '../../components/CartItem';
 
 import { checkoutCompleted } from '../../redux/actionCreators';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 const GEOCODE_API_KEY = 'AIzaSyAvAszYWg777gS9PNkrhGDR_gglRPiRh0g';
 
@@ -124,7 +125,6 @@ class OrderCompleteScreen extends Component {
     const endpoint =
     `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&sensor=true&key=${GEOCODE_API_KEY}`;
 
-    console.log(endpoint);
     /* eslint-disable no-undef */
     fetch(endpoint)
       .then(response => response.json())
@@ -172,7 +172,7 @@ class OrderCompleteScreen extends Component {
       <InlineMap
         style={{ height: 160 }}
         markers={[coordinateObject]}
-        markerImage={require('../../assets/images/pin-dark@3x.png')}
+        markerImage={require('../../assets/images/pin-dark.png')}
         initialRegion={coordinateObject}
       >
         <Overlay styleName="fill-parent">

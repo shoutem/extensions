@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
-const { bool, number, shape, string } = React.PropTypes;
+const { bool, number, shape, string } = PropTypes;
 
 const notificationShape = shape({
   // Notification ID

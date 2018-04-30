@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
@@ -33,7 +34,7 @@ function hasFeaturedEvent(events) {
 export class EventsScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    navigateTo: React.PropTypes.func,
+    navigateTo: PropTypes.func,
   };
 
 

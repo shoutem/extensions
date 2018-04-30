@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import moment from 'moment';
@@ -8,7 +9,7 @@ import {
   Title,
   Caption,
   View,
-  Image,
+  ImageBackground,
   Overlay,
   Icon,
 } from '@shoutem/ui';
@@ -21,8 +22,8 @@ import getImageSource from '../services/youtube-view';
  */
 export default class LargeYoutubeView extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func.isRequired,
-    video: React.PropTypes.object.isRequired,
+    onPress: PropTypes.func.isRequired,
+    video: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -42,14 +43,14 @@ export default class LargeYoutubeView extends React.Component {
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Tile>
-          <Image
+          <ImageBackground
             styleName="large-wide placeholder"
             source={{ uri: getImageSource(video) }}
           >
             <Overlay styleName="rounded-small">
               <Icon name="play" />
             </Overlay>
-          </Image>
+          </ImageBackground>
 
           <View styleName="content">
             <Title numberOfLines={2}>{titleSource}</Title>

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
 import _ from 'lodash';
@@ -7,7 +8,6 @@ import {
   Image,
   Subtitle,
   Caption,
-  Text,
   Divider,
   TouchableOpacity,
   Lightbox,
@@ -15,13 +15,14 @@ import {
 
 import { I18n } from 'shoutem.i18n';
 
-import LikeButton from '../components/LikeButton';
-import CommentButton from '../components/CommentButton';
-import { post as postShape } from '../components/shapes';
-import { adaptSocialUserForProfileScreen } from '../services/userProfileDataAdapter';
+import LikeButton from './LikeButton';
+import CommentButton from './CommentButton';
+import HtmlTextView from './HtmlTextView'
+import { post as postShape } from './shapes';
+import { adaptSocialUserForProfileScreen, formatLikeText } from '../services';
 import { ext } from '../const';
 
-const { func, bool, object, array } = React.PropTypes;
+const { func, bool } = PropTypes;
 
 export default class StatusView extends React.Component {
   static propTypes = {
@@ -38,7 +39,7 @@ export default class StatusView extends React.Component {
   };
 
   static defaultProps = {
-    openStatusDetails: () => {},
+    openStatusDetails: _.noop,
     enableImageFullScreen: false,
     enableInteractions: true,
     enableComments: true,
@@ -48,22 +49,24 @@ export default class StatusView extends React.Component {
     super(props);
 
     this.handleClickOnStatus = this.handleClickOnStatus.bind(this);
+    this.handleClickOnComments = this.handleClickOnComments.bind(this);
     this.handleClickOnUser = this.handleClickOnUser.bind(this);
     this.handleClickOnLikes = this.handleClickOnLikes.bind(this);
-    this.formatLikeText = this.formatLikeText.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
     this.renderStatusText = this.renderStatusText.bind(this);
     this.renderStatusAttachments = this.renderStatusAttachments.bind(this);
     this.renderLikesAndCommentsInfo = this.renderLikesAndCommentsInfo.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
-    this.interactionsAreEnabled = this.interactionsAreEnabled.bind(this);
-    this.commentsAreEnabled = this.commentsAreEnabled.bind(this);
   }
 
   handleClickOnStatus() {
     const { status, openStatusDetails } = this.props;
 
     openStatusDetails(status.id);
+  }
+
+  handleClickOnComments() {
+    this.handleClickOnStatus();
   }
 
   handleClickOnUser() {
@@ -77,54 +80,6 @@ export default class StatusView extends React.Component {
     const { status, openUserLikes } = this.props;
 
     openUserLikes(status);
-  }
-
-  formatLikeText() {
-    const { status, showUsersWhoLiked } = this.props;
-    const numOfLikes = status.shoutem_favorited_by ? status.shoutem_favorited_by.count : 0;
-
-    let likesText;
-    if (showUsersWhoLiked && numOfLikes >= 1) {
-      const firstNames = _.map(_.get(status, 'shoutem_favorited_by.users'), 'first_name');
-      let othersCount;
-
-      switch (numOfLikes) {
-        case 1:
-          likesText = I18n.t(ext('numberOfLikesMessage'), { 
-            firstUser: firstNames[0],
-            count: numOfLikes || 0,
-          });
-          break;
-        case 2:
-          likesText = I18n.t(ext('numberOfLikesMessage'), { 
-            firstUser: firstNames[0], 
-            secondUser: firstNames[1], 
-            count: numOfLikes || 0,
-          });
-          break;
-        default:
-          othersCount = numOfLikes - 2;
-          likesText = I18n.t(ext('numberOfOtherUserLikesMessage'), { 
-            firstUser: firstNames[0],
-            secondUser: firstNames[1],
-            count: othersCount || 0,
-          });
-      }
-    } else if (numOfLikes >= 1) {
-      likesText = I18n.t(ext('numberOfLikes'), { count: numOfLikes || 0 })
-    }
-
-    return likesText;
-  }
-
-  interactionsAreEnabled() {
-    const { enableInteractions } = this.props;
-    return enableInteractions;
-  }
-
-  commentsAreEnabled() {
-    const { enableComments } = this.props;
-    return enableComments;
   }
 
   renderHeader() {
@@ -149,13 +104,15 @@ export default class StatusView extends React.Component {
   }
 
   renderStatusText() {
-    const { status } = this.props;
-    const { text } = status;
+    const { status: { text } } = this.props;
 
     return (
       <TouchableOpacity onPress={this.handleClickOnStatus}>
         <View>
-          <Text styleName="md-gutter-top multiline">{text}</Text>
+          <HtmlTextView
+            text={text}
+            styleName="md-gutter-top"
+          />
         </View>
       </TouchableOpacity>
     );
@@ -169,6 +126,7 @@ export default class StatusView extends React.Component {
     if (!hasPicture) {
       return null;
     }
+
     if (enableImageFullScreen) {
       return (
         <Lightbox activeProps={{ styleName: 'preview' }}>
@@ -179,6 +137,7 @@ export default class StatusView extends React.Component {
         </Lightbox>
       );
     }
+
     return (
       <Image
         styleName="large-wide"
@@ -188,49 +147,64 @@ export default class StatusView extends React.Component {
   }
 
   renderLikesAndCommentsInfo() {
-    const { status } = this.props;
-    const numOfComments = status.shoutem_reply_count;
+    const {
+      status,
+      enableInteractions,
+      enableComments,
+      showUsersWhoLiked,
+    } = this.props;
 
-    const likeInfo = this.interactionsAreEnabled() ?
-      <TouchableOpacity onPress={this.handleClickOnLikes}>
-        <Caption>{this.formatLikeText()}</Caption>
-      </TouchableOpacity> : null;
+    const likesDisplayLabel = formatLikeText(status, showUsersWhoLiked);
 
-    const commentInfo = this.commentsAreEnabled() ?
-      <TouchableOpacity onPress={this.handleClickOnStatus}>
-        <Caption>{I18n.t(ext('numberOfComments'), { count: numOfComments || 0 })}</Caption>
-      </TouchableOpacity> : null;
+    const numOfComments = _.get(status, 'shoutem_reply_count', 0);
+    const commentsDisplayLabel = I18n.t(ext('numberOfComments'), {
+      count: numOfComments,
+    });
 
-    const likesAndCommentsPlaceholder = likeInfo || commentInfo ?
+    if (!enableInteractions && !enableComments) {
+      return  <View styleName="sm-gutter" />;
+    }
+
+    return (
       <View styleName="horizontal solid space-between md-gutter ">
-        {likeInfo}
-        {commentInfo}
-      </View> :
-      <View styleName="sm-gutter" />;
-
-    return likesAndCommentsPlaceholder;
+        {enableInteractions && (
+          <TouchableOpacity onPress={this.handleClickOnLikes}>
+            <Caption>{likesDisplayLabel}</Caption>
+          </TouchableOpacity>
+        )}
+        {enableComments && (
+          <TouchableOpacity onPress={this.handleClickOnComments}>
+            <Caption>{commentsDisplayLabel}</Caption>
+          </TouchableOpacity>
+        )}
+      </View>
+    )
   }
 
   renderButtons() {
-    const { status, addComment, onLikeAction } = this.props;
-
-    const likeButton = this.interactionsAreEnabled() ?
-      <LikeButton
-        status={status}
-        onLikeAction={onLikeAction}
-      /> : null;
-
-    const commentButton = this.commentsAreEnabled() ?
-      <CommentButton
-        status={status}
-        addComment={addComment}
-      /> : null;
+    const {
+      status,
+      addComment,
+      onLikeAction,
+      enableComments,
+      enableInteractions,
+    } = this.props;
 
     return (
       <View styleName="horizontal flexible">
         <Divider styleName="line" />
-        {likeButton}
-        {commentButton}
+        {enableInteractions && (
+          <LikeButton
+            status={status}
+            onLikeAction={onLikeAction}
+          />
+        )}
+        {enableComments && (
+          <CommentButton
+            status={status}
+            addComment={addComment}
+          />
+        )}
         <Divider styleName="line" />
       </View>
     );

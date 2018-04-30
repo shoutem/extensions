@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
@@ -15,7 +16,7 @@ import {
 import { NO_URL_MESSAGE } from '../const';
 import NavigationToolbar from '../components/NavigationToolbar';
 
-const { bool, shape, string } = React.PropTypes;
+const { bool, shape, string } = PropTypes;
 
 export default class WebViewScreen extends React.Component {
   static propTypes = {
@@ -30,10 +31,12 @@ export default class WebViewScreen extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.goBack = this.goBack.bind(this);
     this.goForward = this.goForward.bind(this);
     this.reload = this.reload.bind(this);
     this.setWebViewRef = this.setWebViewRef.bind(this);
+    this.getNavBarProps = this.getNavBarProps.bind(this);
     this.renderNavigationBar = this.renderNavigationBar.bind(this);
     this.onNavigationStateChange = this.onNavigationStateChange.bind(this);
 
@@ -85,16 +88,16 @@ export default class WebViewScreen extends React.Component {
     return showNavigationToolbar && webNavigation;
   }
 
-  renderNavigationBar() {
-    const { url, title } = this.getSettings();
+  getNavBarProps() {
+    const { title } = this.props;
 
+    return { title };
+  }
+
+  renderNavigationBar() {
     return (
       <NavigationBar
-        title={title}
-        share={{
-          title,
-          link: url,
-        }}
+        {...this.getNavBarProps()}
       />
     );
   }

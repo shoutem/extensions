@@ -26,10 +26,12 @@ function refreshUser(dispatch, getState) {
     .then(session => session && dispatch(restoreSession(session)))
     .then(() => getAccessToken(getState()) && dispatch(fetchUser('me')))
     .then(() => {
-      if(isAuthenticated(getState())) {
-        const settings = getExtensionSettings(getState(), ext());
-        const user = getUser(getState());
-        return dispatch(hideShortcuts(user, settings))
+      const state = getState();
+      if (isAuthenticated(state)) {
+        const settings = getExtensionSettings(state, ext());
+        const user = getUser(state);
+
+        return dispatch(hideShortcuts(user, settings));
       }
     });
 }
@@ -66,7 +68,7 @@ export function appDidMount(app) {
   }
 
   function createAuthApiEndpoint(path, queryStringParams = '') {
-    const endpoint = new URI(`${authApiEndpoint}/v1/realms/externalReference:${getAppId()}/${path}`);
+    const endpoint = new URI(`${authApiEndpoint}/v1/realms/externalReference:${appId}/${path}`);
 
     return endpoint
       .protocol('https')
@@ -79,8 +81,8 @@ export function appDidMount(app) {
     request: {
       endpoint: createAuthApiEndpoint('users/{userId}'),
       headers: {
-        accept: 'application/vnd.api+json'
-      }
+        accept: 'application/vnd.api+json',
+      },
     },
     actions: {
       create: {
@@ -99,7 +101,7 @@ export function appDidMount(app) {
           },
         },
       },
-    }
+    },
   });
 
   rio.registerResource({
@@ -107,8 +109,8 @@ export function appDidMount(app) {
     request: {
       endpoint: createAuthApiEndpoint('tokens'),
       headers: {
-        accept: 'application/vnd.api+json'
-      }
+        accept: 'application/vnd.api+json',
+      },
     },
     actions: {
       create: {
@@ -119,7 +121,7 @@ export function appDidMount(app) {
           },
         },
       },
-    }
+    },
   });
 
   rio.registerResource({

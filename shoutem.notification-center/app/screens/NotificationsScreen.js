@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -13,7 +14,7 @@ import { notificationShape } from '../components/shapes';
 import NotificationView from '../components/NotificationView';
 import { ext } from '../const';
 
-const { arrayOf, func, shape } = React.PropTypes;
+const { arrayOf, func, shape } = PropTypes;
 
 class NotificationsScreen extends ListScreen {
   static propTypes = {
@@ -51,19 +52,19 @@ class NotificationsScreen extends ListScreen {
    * Returns a redux-io find() params object
    */
   getSelectedGroupsAsParams() {
-    const { groups, selectedGroups } = this.props;
+    const { groups = [], selectedGroups = [] } = this.props;
 
-    if (_.isEmpty(selectedGroups)) {
-      return;
-    }
-
-    const groupIds = groups
+    const groupId = groups
       .filter(group => _.includes(selectedGroups, `group.${group.tag}`))
       .map(group => group.id);
 
+    if (_.isEmpty(groupId)) {
+      return;
+    }
+
     return {
       query: {
-        'filter[groupIds]': groupIds.join(),
+        'filter[groupId]': groupId.join(),
       }
     };
   }
@@ -91,8 +92,11 @@ class NotificationsScreen extends ListScreen {
   }
 
   getListProps() {
+    const { data } = this.props;
+    const notifications = _.get(data, 'data', []);
+
     return {
-      data: this.props.data.data || [],
+      data: notifications,
     };
   }
 

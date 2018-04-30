@@ -1,4 +1,4 @@
-import { BackAndroid, ToastAndroid } from 'react-native';
+import { BackHandler, ToastAndroid } from 'react-native';
 import { getActiveNavigationStackState, navigateBack } from '@shoutem/core/navigation';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { getExtensionSettings } from 'shoutem.application';
@@ -12,7 +12,7 @@ let exitAppConfirmationVisible = false;
 
 export const appWillMount = (app) => {
   const store = app.getStore();
-  BackAndroid.addEventListener('hardwareBackPress', () => {
+  BackHandler.addEventListener('hardwareBackPress', () => {
     const state = store.getState();
     const navState = getActiveNavigationStackState(state);
     if (navState && navState.routes && (navState.routes.length > 1)) {

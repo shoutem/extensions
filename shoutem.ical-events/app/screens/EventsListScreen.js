@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { InteractionManager } from 'react-native';
@@ -29,7 +30,7 @@ function hasFeaturedEvent(events) {
 export class EventsListScreen extends RemoteDataListScreen {
   static propTypes = {
     ...RemoteDataListScreen.propTypes,
-    navigateTo: React.PropTypes.func,
+    navigateTo: PropTypes.func,
   };
 
   constructor(props, context) {

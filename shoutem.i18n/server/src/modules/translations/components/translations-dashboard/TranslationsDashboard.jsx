@@ -3,7 +3,7 @@ import {
   Button,
 } from 'react-bootstrap';
 import { IconLabel, ConfirmModal, EditableTable } from '@shoutem/react-web-ui';
-import { prepareTranslations } from '../../services/translations';
+import { prepareTranslations } from '../../services';
 import TranslationsModal from '../translations-modal';
 import './style.scss';
 

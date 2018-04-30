@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Dimensions } from 'react-native';
 import * as _ from 'lodash';
@@ -12,7 +13,7 @@ import {
   Title,
   Caption,
   Icon,
-  Image,
+  ImageBackground,
   ImageGallery,
   Html,
 } from '@shoutem/ui';
@@ -28,19 +29,19 @@ import { ext } from '../const';
 export class ArticleDetailsScreen extends React.PureComponent {
   static propTypes = {
     // The news article to display
-    article: React.PropTypes.object.isRequired,
+    article: PropTypes.object.isRequired,
     // The next article, if this article is defined, the
     // up next view will be displayed on this screen
-    nextArticle: React.PropTypes.object,
+    nextArticle: PropTypes.object,
     // A function that will open the given article, this
     // function is required to show the up next view
-    openArticle: React.PropTypes.func,
+    openArticle: PropTypes.func,
     // Whether the inline gallery should be displayed on the
     // details screen. Inline gallery displays the image
     // attachments that are not directly referenced in the
     // article body.
-    showInlineGallery: React.PropTypes.bool,
-    openNextArticle: React.PropTypes.func,
+    showInlineGallery: PropTypes.bool,
+    openNextArticle: PropTypes.func,
   };
 
   renderUpNext() {
@@ -91,7 +92,7 @@ export class ArticleDetailsScreen extends React.PureComponent {
           }}
         />
         <ScrollView>
-          <Image
+          <ImageBackground
             styleName="large-portrait placeholder"
             source={articleImageUrl ? { uri: articleImageUrl } : undefined}
             animationName="hero"
@@ -104,7 +105,7 @@ export class ArticleDetailsScreen extends React.PureComponent {
               </View>
               <Icon name="down-arrow" styleName="scroll-indicator" />
             </Tile>
-          </Image>
+          </ImageBackground>
           <View styleName="solid">
             <Html body={article.body} renderElement={createRenderAttachment(article, 'image')} />
             {this.renderInlineGallery()}

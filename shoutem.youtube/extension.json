@@ -1,11 +1,13 @@
 {
   "name": "youtube",
   "title": "Youtube",
-  "version": "1.5.2",
+  "version": "1.6.1",
+  "platform": "1.6.*",
   "description": "Show a video gallery from Youtube channel, user or playlist",
-  "categories": ["media"],
-  "icon" : "server/assets/add-videos-youtube-image.png",
-  "platform": "1.5.*",
+  "categories": [
+    "media"
+  ],
+  "icon": "server/assets/add-videos-youtube-image.png",
   "shortcuts": [
     {
       "title": "Youtube",
@@ -13,42 +15,50 @@
       "name": "youtube-shortcut",
       "icon": "theme://play.png",
       "screen": "@.YoutubeVideosScreen",
-      "adminPages": [{
-        "page": "@.YoutubeFeedPage",
-        "title": "Content"
-      }, {
-      "page":"shoutem.layouts.LayoutPage",
-      "title": "Layout"
-      }]
-  }],
-  "settingsPages": [{
-    "page": "@.SettingsPage",
-    "title": "Settings"
-  }],
+      "adminPages": [
+        {
+          "page": "@.YoutubeFeedPage",
+          "title": "Content"
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        }
+      ]
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.SettingsPage",
+      "title": "Settings"
+    }
+  ],
   "pages": [
     {
       "name": "SettingsPage",
       "path": "server/build/index.html?page=SettingsPage",
       "type": "html"
-    }, {
+    },
+    {
       "name": "YoutubeFeedPage",
       "path": "server/build/index.html?page=YoutubeFeedPage",
       "type": "html"
     }
   ],
   "screens": [
-  {
-    "name": "YoutubeVideosScreen",
-    "title": "Big list",
-    "image": "server/assets/screens/big-list.png"
-  },
     {
-    "name": "YoutubeSmallListScreen",
-    "title": "Small list",
-    "image": "server/assets/screens/small-list.png",
-    "extends":"@.YoutubeVideosScreen"
-  },
-  {
-    "name": "YoutubeVideoDetailsScreen"
-  }]
+      "name": "YoutubeVideosScreen",
+      "title": "Big list",
+      "image": "server/assets/screens/big-list.png"
+    },
+    {
+      "name": "YoutubeSmallListScreen",
+      "title": "Small list",
+      "image": "server/assets/screens/small-list.png",
+      "extends": "@.YoutubeVideosScreen"
+    },
+    {
+      "name": "YoutubeVideoDetailsScreen"
+    }
+  ]
 }

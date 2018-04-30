@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
@@ -16,13 +17,13 @@ class CardList extends FolderBase {
   static propTypes = {
     ...FolderBase.propTypes,
     // Text position; Also defines if there shouldn't be text.
-    itemText: React.PropTypes.string,
+    itemText: PropTypes.string,
     // Gutter size key
-    itemGutter: React.PropTypes.string,
+    itemGutter: PropTypes.string,
     // Used to calculate item height
-    cardHeight: React.PropTypes.string,
+    cardHeight: PropTypes.string,
     // Is item full screen width
-    isFullWidth: React.PropTypes.bool,
+    isFullWidth: PropTypes.bool,
   };
 
   resolvePageProps() {

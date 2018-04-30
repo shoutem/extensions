@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import {
   Divider,
-  Image,
+  ImageBackground,
   Tile,
   Title,
   TouchableOpacity,
@@ -65,7 +65,7 @@ export class PunchCardListScreen extends RewardsListScreen {
         key={id}
         onPress={() => this.navigateToRewardDetails(reward)}
       >
-        <Image
+        <ImageBackground
           source={{ uri: image && image.url }}
           styleName="large-banner placeholder"
         >
@@ -76,7 +76,7 @@ export class PunchCardListScreen extends RewardsListScreen {
               reward={reward}
             />
           </Tile>
-        </Image>
+        </ImageBackground>
         <Divider styleName="line" />
       </TouchableOpacity>
     );

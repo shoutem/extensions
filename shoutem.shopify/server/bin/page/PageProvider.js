@@ -1,4 +1,4 @@
-import React, { PropTypes, Component, Children } from 'react';
+import React, { Component, Children, PropTypes } from 'react';
 
 export default class PageProvider extends Component {
   getChildContext() {
@@ -14,10 +14,10 @@ export default class PageProvider extends Component {
 }
 
 PageProvider.propTypes = {
-  page: React.PropTypes.object,
+  page: PropTypes.object,
   children: PropTypes.node,
 };
 
 PageProvider.childContextTypes = {
-  page: React.PropTypes.object,
+  page: PropTypes.object,
 };

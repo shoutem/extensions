@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
-const { shape, string, object } = React.PropTypes;
+const { shape, string, object } = PropTypes;
 
 const user = shape({
   // User's bio

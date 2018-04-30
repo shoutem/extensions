@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
@@ -12,17 +13,17 @@ import {
   Button,
   Image
 } from '@shoutem/ui';
-import { formatDate } from '../services/Calendar';
+import { formatToLocalDate } from '../services/Calendar';
 
 /**
  * Component used to render single list event item
  */
 export default class ListEventView extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    action: React.PropTypes.func,
-    event: React.PropTypes.object.isRequired,
-    style: React.PropTypes.object,
+    onPress: PropTypes.func,
+    action: PropTypes.func,
+    event: PropTypes.object.isRequired,
+    style: PropTypes.object,
   };
 
   constructor(props) {
@@ -57,7 +58,7 @@ export default class ListEventView extends React.Component {
           />
           <View styleName="vertical stretch space-between">
             <Subtitle styleName="">{event.name}</Subtitle>
-            <Caption>{formatDate(event.start)}</Caption>
+            <Caption>{formatToLocalDate(event.start)}</Caption>
           </View>
           <Button
             styleName="tight clear"

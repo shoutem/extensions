@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
@@ -36,12 +37,10 @@ import { fetchRules } from '../redux';
 
 import { authorizationShape } from '../components/shapes';
 
-const CURRENCY_PREFIX = '$ ';
-
 const RULE_VISIT = 'visit';
 const RULE_PURCHASE = 'linearPoint';
 
-const { arrayOf, bool, func, string } = React.PropTypes;
+const { arrayOf, bool, func, string } = PropTypes;
 
 /**
  * Lets the cashier enter details about the user's shop activity and save the transaction.
@@ -111,7 +110,7 @@ export class AssignPointsScreen extends React.Component {
   renderInput(field) {
     const { name, label, keyboardType } = field;
 
-    const prefix = name === 'amount' ? CURRENCY_PREFIX : '';
+    const prefix = name === 'amount' ? I18n.t(ext('currencyPrefix')) : '';
     const value = this.state[name];
 
     return (

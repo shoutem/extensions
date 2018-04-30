@@ -6,7 +6,7 @@ import {
   View,
   Title,
   Caption,
-  Image,
+  ImageBackground,
   Tile,
   Divider,
 } from '@shoutem/ui';
@@ -26,12 +26,12 @@ export default class TileListPhotoView extends BasePhotoView {
     return (
       <View key={photo.id}>
         <TouchableOpacity onPress={this.onPress}>
-          <Image styleName="large-banner" source={source}>
+          <ImageBackground styleName="large-banner" source={source}>
             <Tile>
               <Title>{title.toUpperCase()}</Title>
               <Caption>{moment(photo.timeUpdated).fromNow()}</Caption>
             </Tile>
-          </Image>
+          </ImageBackground>
         </TouchableOpacity>
         <Divider styleName="line" />
       </View>

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
@@ -44,12 +45,12 @@ const defaultResolution = {
  */
 export default class FolderBase extends React.Component {
   static propTypes = {
-    isRootScreen: React.PropTypes.bool,
-    shortcut: React.PropTypes.object.isRequired,
-    style: React.PropTypes.object,
-    executeShortcut: React.PropTypes.func,
-    showText: React.PropTypes.bool,
-    iconSize: React.PropTypes.string,
+    isRootScreen: PropTypes.bool,
+    shortcut: PropTypes.object.isRequired,
+    style: PropTypes.object,
+    executeShortcut: PropTypes.func,
+    showText: PropTypes.bool,
+    iconSize: PropTypes.string,
   };
 
   static mapPropsToStyleNames = (styleNames, props) => {

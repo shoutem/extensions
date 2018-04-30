@@ -1,7 +1,6 @@
 import { AppState } from 'react-native';
-
+import { I18n } from 'shoutem.i18n';
 import { ext } from './const';
-
 import {
   selectPushNotificationGroups,
   userNotified,

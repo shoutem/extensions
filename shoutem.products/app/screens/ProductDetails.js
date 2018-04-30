@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -6,7 +7,7 @@ import {
   View,
   Screen,
   Subtitle,
-  Image,
+  ImageBackground,
   Button,
   Icon,
   Text,
@@ -30,8 +31,8 @@ import { ext } from '../const';
 
 export class ProductDetails extends React.Component {
   static propTypes = {
-    product: React.PropTypes.object.isRequired,
-    openURL: React.PropTypes.func,
+    product: PropTypes.object.isRequired,
+    openURL: PropTypes.func,
   };
 
   constructor(props) {
@@ -96,7 +97,7 @@ export class ProductDetails extends React.Component {
 
     if (product.image) {
       return (
-        <Image
+        <ImageBackground
           animationName="hero"
           styleName="large-square placeholder"
           source={{ uri: _.get(product, 'image.url') }}
@@ -111,10 +112,10 @@ export class ProductDetails extends React.Component {
             {this.renderProductPriceInfo()}
             {this.renderBuyField()}
           </Tile>
-        </Image>);
+        </ImageBackground>);
     }
     return (
-      <Image
+      <ImageBackground
         animationName="hero"
         styleName="large-square placeholder"
       >
@@ -127,7 +128,7 @@ export class ProductDetails extends React.Component {
           {this.renderProductPriceInfo()}
           {this.renderBuyField()}
         </Tile>
-      </Image>
+      </ImageBackground>
     );
   }
 

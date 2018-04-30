@@ -1,9 +1,10 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
-  Image,
+  ImageBackground,
   Divider,
   Subtitle,
   Overlay,
@@ -18,7 +19,7 @@ import { ext } from '../const';
 
 class MenuDetailsScreen extends React.Component {
   static propTypes = {
-    item: React.PropTypes.object.isRequired,
+    item: PropTypes.object.isRequired,
   };
 
   render() {
@@ -37,7 +38,7 @@ class MenuDetailsScreen extends React.Component {
           title={item.name}
         />
         <ScrollView>
-          <Image
+          <ImageBackground
             styleName="large-square placeholder"
             animationName="hero"
             source={{ uri: item.image ? item.image.url : undefined }}
@@ -46,7 +47,7 @@ class MenuDetailsScreen extends React.Component {
               <Title styleName="md-gutter-bottom">{item.name.toUpperCase()}</Title>
               {price}
             </Tile>
-          </Image>
+          </ImageBackground>
           <Divider styleName="line" />
           <View style={{ backgroundColor: 'white' }}>
             <Text styleName="multiline md-gutter-horizontal lg-gutter-vertical">

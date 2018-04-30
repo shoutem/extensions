@@ -1,9 +1,8 @@
 {
   "name": "shoutem.youtube",
-  "version": "1.5.2",
+  "version": "1.6.1",
   "description": "Show a video gallery from Youtube channel, user or playlist",
   "dependencies": {
-    "@shoutem/api": "0.1.7-beta.4",
     "redux-thunk": "^2.2.0",
     "react-redux": "^5.0.3"
   }

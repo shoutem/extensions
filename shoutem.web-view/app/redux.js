@@ -4,7 +4,7 @@ import { getShortcut } from 'shoutem.application';
 import { ext } from './const';
 
 const getWebViewRoute = (url, title, showNavigationToolbar = true) => ({
-  screen: ext('WebViewScreen'),
+  screen: ext('WebViewWithShareScreen'),
   props: {
     url,
     title,

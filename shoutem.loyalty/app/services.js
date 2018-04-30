@@ -77,12 +77,13 @@ export const refreshCardState = () => {
     const cardId = getCardId(getState());
 
     if (!cardId) {
-      dispatch(refreshCard()).then((cardId) => {
-        dispatch(fetchCardState(cardId));
-      });
-      return;
+      return dispatch(refreshCard())
+        .then((cardId) => {
+          dispatch(fetchCardState(cardId));
+        });
     }
-    dispatch(fetchCardState(cardId));
+
+    return dispatch(fetchCardState(cardId));
   };
 };
 
@@ -128,9 +129,27 @@ export const redeemReward = (data, authorization, reward) =>
  * Reward values are encoded in an array to save space.
  */
 const getRewardFromEncodedValues = (rewardData) => {
-  const [id, location, isPunchCard, parentCategoryId, points, pointsRequired, title] = rewardData;
+  const [
+    id,
+    location,
+    isPunchCard,
+    parentCategoryId,
+    points,
+    pointsRequired,
+    title,
+    numberOfRewards,
+  ] = rewardData;
 
-  return { id, location, isPunchCard, parentCategoryId, points, pointsRequired, title };
+  return {
+    id,
+    location,
+    isPunchCard,
+    parentCategoryId,
+    points,
+    pointsRequired,
+    title,
+    numberOfRewards,
+  };
 };
 
 /**

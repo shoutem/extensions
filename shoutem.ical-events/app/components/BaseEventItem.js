@@ -1,11 +1,12 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export class BaseEventItem extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    action: React.PropTypes.func,
-    event: React.PropTypes.object.isRequired,
-    styleName: React.PropTypes.string,
+    onPress: PropTypes.func,
+    action: PropTypes.func,
+    event: PropTypes.object.isRequired,
+    styleName: PropTypes.string,
   };
 
   constructor(props) {

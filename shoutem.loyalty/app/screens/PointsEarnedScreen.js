@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { connect } from 'react-redux';
@@ -19,7 +20,7 @@ import { I18n } from 'shoutem.i18n';
 
 import { ext } from '../const';
 
-const { func, number, shape } = React.PropTypes;
+const { func, number, shape } = PropTypes;
 
 /**
  * Informs the user about his transaction details and how much points he was awarded.

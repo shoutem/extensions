@@ -19,6 +19,9 @@ import modal, {
   openModalMiddleware,
   closeModalMiddleware,
 } from './modal';
+import { 
+  debounceNavigationMiddleware,
+} from './debounceNavigation';
 
 const reducer = combineReducers({
   tabBar,
@@ -50,4 +53,5 @@ export const middleware = [
   openModalMiddleware,
   closeModalMiddleware,
   jumpToInitialTabMiddleware,
+  debounceNavigationMiddleware,
 ];

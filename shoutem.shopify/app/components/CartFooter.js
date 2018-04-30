@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { connect } from 'react-redux';
@@ -52,7 +53,7 @@ const CartFooter = ({ action, cartTotal, shop, onActionButtonClicked }) => (
   </View>
 );
 
-const { func, string } = React.PropTypes;
+const { func, string } = PropTypes;
 
 CartFooter.propTypes = {
   // Action name, e.g. Proceed to checkout

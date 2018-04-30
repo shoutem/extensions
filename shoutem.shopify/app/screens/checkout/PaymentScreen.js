@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -28,7 +29,7 @@ import CartFooter from '../../components/CartFooter';
 import { payment as paymentShape } from '../../components/shapes';
 import { completeCheckout } from '../../redux/actionCreators';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 const renderProcessingPaymentMessage = () => <Spinner styleName="xl-gutter-top" />;
 

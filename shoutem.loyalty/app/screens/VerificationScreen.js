@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -30,15 +31,32 @@ import {
 
 import { placeShape, rewardShape } from '../components/shapes';
 
-const { bool, func, string } = React.PropTypes;
+const { bool, func, string } = PropTypes;
 
 /**
  * Encodes reward values in an array to save space in QR code.
  */
 const getEncodedRewardValues = (reward) => {
-  const { id, location = '', parentCategoryId, points, pointsRequired, title } = reward;
+  const {
+    id,
+    location = '',
+    parentCategoryId,
+    points,
+    pointsRequired,
+    title,
+    numberOfRewards,
+  } = reward;
 
-  return [id, location, isPunchCard(reward), parentCategoryId, points, pointsRequired, title];
+  return [
+    id,
+    location,
+    isPunchCard(reward),
+    parentCategoryId,
+    points,
+    pointsRequired,
+    title,
+    numberOfRewards,
+  ];
 };
 
 /**

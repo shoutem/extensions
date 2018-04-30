@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -23,7 +24,7 @@ const openAppSettings = () => {
   Linking.openURL('app-settings:');
 };
 
-const { func, object, shape } = React.PropTypes;
+const { func, object, shape } = PropTypes;
 
 /**
  * A component that lets a user scan a QR code

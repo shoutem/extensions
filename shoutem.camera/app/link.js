@@ -1,4 +1,9 @@
-const exec = require('child_process').execSync;
+const { reactNativeLink, forceLinkXCodeProject } = require('@shoutem/build-tools');
 
-const rnCli = 'node node_modules/react-native/local-cli/cli.js link';
-exec(`${rnCli} react-native-camera`);
+reactNativeLink('react-native-camera');
+
+forceLinkXCodeProject({
+  xcodeprojFileName: 'RCTCamera.xcodeproj',
+  folderName: 'react-native-camera',
+  podspec: 'react-native-camera',
+});

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -29,7 +30,7 @@ import CartFooter from '../../components/CartFooter';
 import { customer as customerShape } from '../../components/shapes';
 import { updateCustomerInformation } from '../../redux/actionCreators';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 // TODO: Where to put this transformation? We need it because the ListView can reference
 // only first level and not nested properties

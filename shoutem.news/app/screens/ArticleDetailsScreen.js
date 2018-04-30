@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -21,13 +22,13 @@ import { NextArticle } from '../components/NextArticle';
 export class ArticleDetailsScreen extends React.PureComponent {
   static propTypes = {
     // The news article to display
-    article: React.PropTypes.object.isRequired,
+    article: PropTypes.object.isRequired,
     // The next article, if this article is defined, the
     // up next view will be displayed on this screen
-    nextArticle: React.PropTypes.object,
+    nextArticle: PropTypes.object,
     // A function that will open the given article, this
     // function is required to show the up next view
-    openArticle: React.PropTypes.func,
+    openArticle: PropTypes.func,
   };
 
   renderUpNext() {

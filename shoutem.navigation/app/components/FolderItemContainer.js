@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { resolveIconSource } from 'shoutem.theme';
-import { TouchableOpacity, Image } from '@shoutem/ui';
+import { TouchableOpacity, ImageBackground } from '@shoutem/ui';
 
 /**
  * Used to set Folder item background.
@@ -13,7 +14,7 @@ export function FolderItemContainer(props) {
   delete touchableOpacityProps.style.backgroundImage;
 
   const backgroundImageComponent = backgroundImageUrl &&
-    <Image
+    <ImageBackground
       styleName="fill-parent"
       style={style.backgroundImage}
       source={resolveIconSource(backgroundImageUrl)}
@@ -28,12 +29,12 @@ export function FolderItemContainer(props) {
 }
 
 FolderItemContainer.propTypes = {
-  style: React.PropTypes.object,
-  children: React.PropTypes.node,
-  onPress: React.PropTypes.func,
-  styleName: React.PropTypes.string,
-  backgroundImageUrl: React.PropTypes.string,
-  shortcutSettings: React.PropTypes.object,
+  style: PropTypes.object,
+  children: PropTypes.node,
+  onPress: PropTypes.func,
+  styleName: PropTypes.string,
+  backgroundImageUrl: PropTypes.string,
+  shortcutSettings: PropTypes.object,
 };
 
 FolderItemContainer.defaultProps = {

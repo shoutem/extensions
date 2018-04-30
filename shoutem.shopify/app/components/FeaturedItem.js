@@ -5,7 +5,7 @@ import {
   Divider,
   Heading,
   Icon,
-  Image,
+  ImageBackground,
   Overlay,
   Subtitle,
   Text,
@@ -33,7 +33,7 @@ const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <View styleName="sm-gutter featured">
-        <Image
+        <ImageBackground
           styleName="featured"
           source={{ uri: (images[0] || {}).src }}
           defaultSource={require('../assets/images/image-fallback.png')}
@@ -66,7 +66,7 @@ const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
               <Text>{I18n.t(ext('addToCartButton'))}</Text>
             </Button>
           </Tile>
-        </Image>
+        </ImageBackground>
       </View>
       <Divider styleName="line" />
     </TouchableOpacity>

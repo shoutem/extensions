@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -19,8 +20,8 @@ import { MapView } from '@shoutem/ui-addons';
 
 export default class MapScreen extends Component {
   static propTypes = {
-    marker: React.PropTypes.object,
-    title: React.PropTypes.string,
+    marker: PropTypes.object,
+    title: PropTypes.string,
   };
 
   constructor(props) {
@@ -56,7 +57,7 @@ export default class MapScreen extends Component {
   render() {
     const { marker, title } = this.props;
 
-    const initialRegion = {
+    const region = {
       latitude: marker.latitude,
       longitude: marker.longitude,
       latitudeDelta: 0.03,
@@ -72,9 +73,9 @@ export default class MapScreen extends Component {
         />
 
         <MapView
-          initialRegion={initialRegion}
           markers={[marker]}
           selectedMarker={marker}
+          initialRegion={region}
         />
       </Screen>
     );

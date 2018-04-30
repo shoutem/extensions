@@ -1,7 +1,7 @@
 {
   "name": "web-view",
-  "version": "1.5.1",
-  "platform": "1.5.*",
+  "version": "1.6.0",
+  "platform": "1.6.*",
   "title": "Web view",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
@@ -10,35 +10,52 @@
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "shortcuts": [{
-    "name": "web-view",
-    "title": "In-app",
-    "icon": "theme://web.png",
-    "screen": "@.WebViewScreen",
-    "adminPages": [{
-      "page": "@.WebPage",
-      "title": "Content",
-      "parameters": {
-        "hasNavigationToolbar": "true"
-      }
-    }]
-  },
-  {
-    "name": "web-view-external",
-    "title": "External",
-    "icon": "theme://web.png",
-    "action": "@.openUrlInExternalBrowser",
-    "adminPages": [{
-      "page": "@.WebPage",
-      "title": "Content"
-    }]
-  }],
-  "screens": [{
-    "name": "WebViewScreen"
-  }],
-  "pages": [{
-    "name": "WebPage",
-    "path": "dummy.js",
-    "type": "native-component"
-  }]
+  "shortcuts": [
+    {
+      "name": "web-view",
+      "title": "In-app",
+      "icon": "theme://web.png",
+      "screen": "@.WebViewScreen",
+      "adminPages": [
+        {
+          "page": "@.WebPage",
+          "title": "Content"
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        }
+      ]
+    },
+    {
+      "name": "web-view-external",
+      "title": "External",
+      "icon": "theme://web.png",
+      "action": "@.openUrlInExternalBrowser",
+      "adminPages": [{
+        "page": "@.WebPage",
+        "title": "Content"
+      }]
+    }
+  ],
+  "screens": [
+    {
+      "name": "WebViewScreen",
+      "title": "Web view",
+      "image": "./server/assets/screens/web-view-no-share.png"
+    },
+    {
+      "name": "WebViewWithShareScreen",
+      "title": "Web view with share button",
+      "image": "./server/assets/screens/web-view.png",
+      "extends": "@.WebViewScreen"
+    }
+  ],
+  "pages": [
+    {
+      "name": "WebPage",
+      "path": "dummy.js",
+      "type": "native-component"
+    }
+  ]
 }

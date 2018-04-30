@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { resolveIconSource } from 'shoutem.theme';
@@ -9,7 +10,7 @@ import {
 
 const missingIconSource = require('../assets/images/missing_icon.png');
 
-const { bool, func, object } = React.PropTypes;
+const { bool, func, object } = PropTypes;
 
 export class NavigationBaseItem extends React.Component {
   static propTypes = {

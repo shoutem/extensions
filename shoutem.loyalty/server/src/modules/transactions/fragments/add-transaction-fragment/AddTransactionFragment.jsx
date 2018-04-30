@@ -93,7 +93,7 @@ export class AddTransactionFragment extends Component {
           onSubmit={this.handleAddTransaction}
           places={createSelectOptions(places, formatPlaceLabel)}
           rewards={createSelectOptions(rewards, formatRewardLabel)}
-          users={createSelectOptions(users, formatUserLabel)}
+          users={createSelectOptions(users, formatUserLabel, 'legacyId')}
         />
       </InlineModal>
     );

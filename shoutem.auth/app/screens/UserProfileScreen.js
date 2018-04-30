@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import PropTypes from 'prop-types';
+
 import React, {
   Component,
 } from 'react';
@@ -37,7 +39,7 @@ import {
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 export class UserProfileScreen extends Component {
   static propTypes = {
@@ -166,8 +168,8 @@ export class UserProfileScreen extends Component {
     const { profile } = this.props.user;
 
     if (_.isEmpty(profile)) {
-      return null
-    };
+      return null;
+    }
 
     const {
       firstName,
@@ -175,7 +177,7 @@ export class UserProfileScreen extends Component {
       image,
       address,
       website,
-      about
+      about,
     } = profile;
     const name = `${firstName} ${lastName}`;
 
@@ -183,7 +185,7 @@ export class UserProfileScreen extends Component {
       <View styleName="vertical h-center lg-gutter-top">
         <ProfileImage
           onPress={this.toggleImageGallery}
-          uri={image || undefined}
+          uri={image}
         />
         {name ?
           <Title styleName="md-gutter-vertical">{name}</Title>

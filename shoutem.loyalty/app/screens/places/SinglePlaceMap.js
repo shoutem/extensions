@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import {
   View,
@@ -11,7 +12,7 @@ import MapList from '../../components/MapList';
 
 import { placeShape } from '../../components/shapes';
 
-const { string } = React.PropTypes;
+const { string } = PropTypes;
 
 export default class SinglePlaceMap extends PureComponent {
   static propTypes = {

@@ -6,8 +6,6 @@ export {
 export {
   formatRewardLabel,
   formatPlaceLabel,
-} from './services';
-
-export {
   formatUserLabel,
-} from './user';
+  formatCashierLabel,
+} from './services';

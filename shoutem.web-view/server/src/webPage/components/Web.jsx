@@ -59,7 +59,7 @@ export class Web extends Component {
   }
 
   handleUrlInputContinueClick(url) {
-    const normalizedUrl = normalizeUrl(url);
+    const normalizedUrl = normalizeUrl(url, {stripWWW: false});
     this.setShortcutSettings({ url: normalizedUrl });
   }
 

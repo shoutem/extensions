@@ -1,7 +1,10 @@
-import moment from 'moment';
+import momentTimezone from 'moment-timezone';
 import { Alert, Linking } from 'react-native';
 import CalendarManager, { PERMISSION_ERROR } from 'react-native-calendar-manager';
+
 import { I18n } from 'shoutem.i18n';
+import { DeviceInfo } from 'shoutem.application';
+
 import { ext } from '../extension';
 
 const showSuggestionToGrantCalendarAccess = () => {
@@ -15,8 +18,8 @@ const showSuggestionToGrantCalendarAccess = () => {
   );
 };
 
-export function toMoment(date) {
-  return moment(date, 'YYYY-MM-DDThh:mm:ssZ');
+function toMoment(date) {
+  return momentTimezone(date, 'YYYY-MM-DDThh:mm:ssZ');
 }
 
 export function addToCalendar(event) {
@@ -37,10 +40,14 @@ export function addToCalendar(event) {
   });
 }
 
-export function formatDate(date) {
+const DATE_FORMAT = 'MMM D • hh:mm A';
+export function formatToLocalDate(date) {
   if (!date) {
     return '';
   }
 
-  return toMoment(date).format('MMM D • hh:mm A');
+  const localTimezone = DeviceInfo.getTimezone();
+  const momentDate = toMoment(date);
+  
+  return momentDate.tz(localTimezone).format(DATE_FORMAT);
 }

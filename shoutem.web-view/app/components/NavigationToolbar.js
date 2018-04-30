@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { connectStyle } from '@shoutem/theme';
@@ -14,10 +15,10 @@ import {
 
 class NavigationToolbar extends React.Component {
   static PropTypes = {
-    goForward: React.PropTypes.func,
-    goBack: React.PropTypes.func,
-    reload: React.PropTypes.func,
-    webNavigationState: React.PropTypes.object,
+    goForward: PropTypes.func,
+    goBack: PropTypes.func,
+    reload: PropTypes.func,
+    webNavigationState: PropTypes.object,
   };
 
   renderForwardButton() {

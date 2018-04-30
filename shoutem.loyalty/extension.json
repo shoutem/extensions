@@ -1,9 +1,9 @@
 {
   "name": "loyalty",
-  "version": "1.5.8",
+  "version": "1.6.7",
+  "platform": "1.6.*",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "platform": "1.5.*",
   "categories": [
     "commerce"
   ],
@@ -25,6 +25,10 @@
           "parameters": {
             "schema": "@.punch-cards"
           }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
         }
       ]
     },
@@ -37,6 +41,10 @@
         {
           "page": "@.PointsCardSettingsPage",
           "title": "Settings"
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
         }
       ]
     },
@@ -52,6 +60,10 @@
           "parameters": {
             "schema": "@.rewards"
           }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
         }
       ]
     },
@@ -71,6 +83,10 @@
         {
           "page": "@.RewardsSettingsPage",
           "title": "Rewards"
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
         }
       ]
     },
@@ -94,23 +110,69 @@
     },
     {
       "name": "PointsCardScreen",
-      "title": "Points Card",
-      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
+      "title": "Points card",
+      "image": "./server/assets/images/layout-loyaltycard-regular.png"
+    },
+    {
+      "name": "PointsSmallCardScreen",
+      "title": "Points small card",
+      "extends": "@.PointsCardScreen",
+      "image": "./server/assets/images/layout-loyaltycard-card.png"
     },
     {
       "name": "RewardsListScreen",
-      "title": "Rewards",
-      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
+      "title": "Compact list",
+      "image": "./server/assets/images/layout-compact-list.png"
+    },
+    {
+      "name": "RewardsProgressScreen",
+      "title": "Large list",
+      "extends": "@.RewardsListScreen",
+      "image": "./server/assets/images/layout-large-list.png"
     },
     {
       "name": "PlacesListScreen",
       "title": "Stores",
-      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
+      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png",
+      "navigatesTo": [
+        "@.PlaceDetails"
+      ]
     },
     {
       "name": "FavoritesList",
       "title": "Icon List",
       "image": "./server/assets/images/layout_icon.png"
+    },
+    {
+      "name": "PlaceDetails",
+      "title": "Store details",
+      "description": "Store details",
+      "screen": "@.PlaceDetails",
+      "image": "./server/assets/images/details-medium-transparent.png"
+    },
+    {
+      "name": "GaugeRewardsPlaceDetails",
+      "title": "Gauge rewards store details",
+      "description": "Medium photo store details with rewards gauge",
+      "screen": "@.GaugeRewardsPlaceDetails",
+      "extends": "@.PlaceDetails",
+      "image": "./server/assets/images/details-gauge-medium-photo.png"
+    },
+    {
+      "name": "LargeImageGaugeRewardsPlaceDetails",
+      "title": "Large photo store details with rewards gauge",
+      "description": "Large photo store details with rewards gauge",
+      "screen": "@.LargeImageGaugeRewardsPlaceDetails",
+      "extends": "@.PlaceDetails",
+      "image": "./server/assets/images/details-gauge-large-photo.png"
+    },
+    {
+      "name": "NoImageGaugeRewardsPlaceDetails",
+      "title": "No photo store details with rewards gauge",
+      "description": "No photo store details with rewards gauge",
+      "screen": "@.NoImageGaugeRewardsPlaceDetails",
+      "extends": "@.PlaceDetails",
+      "image": "./server/assets/images/details-gauge-no-photo.png"
     }
   ],
   "settingsPages": [
