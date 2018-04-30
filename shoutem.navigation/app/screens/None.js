@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { executeShortcut } from 'shoutem.application';
 import { connect } from 'react-redux';
@@ -10,9 +11,9 @@ import { NO_SCREENS_ROUTE } from '../const';
 
 class None extends React.Component {
   static propTypes = {
-    shortcut: React.PropTypes.object.isRequired,
-    executeShortcut: React.PropTypes.func,
-    replace: React.PropTypes.func,
+    shortcut: PropTypes.object.isRequired,
+    executeShortcut: PropTypes.func,
+    replace: PropTypes.func,
   };
   componentWillMount() {
     const { shortcut, replace, executeShortcut } = this.props;

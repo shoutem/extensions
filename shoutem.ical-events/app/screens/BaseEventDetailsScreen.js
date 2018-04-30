@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
@@ -20,7 +21,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 import { InlineMap } from '@shoutem/ui-addons';
 import { I18n } from 'shoutem.i18n';
 
-import { formatDate, addToCalendar } from '../services/Calendar';
+import { formatToLocalDate, addToCalendar } from '../services/Calendar';
 import { ext } from '../extension';
 import isValidEvent from '../services/isValidEvent';
 
@@ -39,9 +40,9 @@ const getEventLocation = event => ({
 
 export class BaseEventDetailsScreen extends React.Component {
   static propTypes = {
-    event: React.PropTypes.object.isRequired,
-    openURL: React.PropTypes.func.isRequired,
-    navigateTo: React.PropTypes.func.isRequired,
+    event: PropTypes.object.isRequired,
+    openURL: PropTypes.func.isRequired,
+    navigateTo: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {
@@ -119,11 +120,11 @@ export class BaseEventDetailsScreen extends React.Component {
           {event.name.toUpperCase()}
         </Title>
         <Caption styleName={`${textColorStyle} sm-gutter-bottom`}>
-          {formatDate(event.start)}
+          {formatToLocalDate(event.start)}
         </Caption>
         <Divider styleName="line small center" />
         <Caption styleName={`${textColorStyle} md-gutter-bottom`}>
-          {formatDate(event.end)}
+          {formatToLocalDate(event.end)}
         </Caption>
       </View>
     );

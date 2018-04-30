@@ -1,6 +1,6 @@
 import React from 'react';
 import { connectStyle } from '@shoutem/theme';
-import { Tile, Image } from '@shoutem/ui';
+import { Tile, ImageBackground } from '@shoutem/ui';
 import { connect } from 'react-redux';
 
 import { ext } from '../extension';
@@ -11,7 +11,7 @@ import { navigateTo as navigateToAction } from '@shoutem/core/navigation';
 export class EventDetailsScreen extends BaseEventDetailsScreen {
   renderHeader(event) {
     return (
-      <Image animationName="hero" styleName="placeholder large-portrait" source={{ uri: this.props.imageUrl }}>
+      <ImageBackground animationName="hero" styleName="placeholder large-portrait" source={{ uri: this.props.imageUrl }}>
         <Tile
           animationName="hero"
           styleName="text-centric"
@@ -19,7 +19,7 @@ export class EventDetailsScreen extends BaseEventDetailsScreen {
           {this.renderHeadlineDetails(event, false)}
           {this.renderAddToCalendarButton(false)}
         </Tile>
-      </Image>
+      </ImageBackground>
     );
   }
 }

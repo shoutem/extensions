@@ -1,6 +1,6 @@
 {
   "name": "shoutem.rss",
-  "version": "1.5.1",
+  "version": "1.6.1",
   "description": "Shoutem RSS extensions",
   "author": "Shoutem",
   "watch": {
@@ -24,7 +24,8 @@
   "dependencies": {
     "moment": "^2.16.0",
     "normalize-url": "^1.6.0",
-    "validator": "^5.4.0"
+    "validator": "^5.4.0",
+    "urijs": "^1.18.9"
   },
   "devDependencies": {
     "@shoutem/webpack-prepend-append": "^1.0.1",

@@ -1,0 +1,115 @@
+{
+  "name": "deals",
+  "title": "Deals",
+  "version": "1.6.2",
+  "platform": "1.6.*",
+  "description": "Create special deals and redeem them with coupons",
+  "icon": "server/assets/add-deals-image.png",
+  "categories": [
+    "commerce"
+  ],
+  "screens": [
+    {
+      "name": "DealsGridScreen",
+      "title": "Deals grid",
+      "image": "server/assets/fixed-grid.png",
+      "navigatesTo": [
+        "@.LargeDealDetailsScreen"
+      ],
+      "settings": {
+        "listType": "grid-list",
+        "hasFeaturedItem": false
+      }
+    },
+    {
+      "name": "DealsListScreen",
+      "title": "Deals list",
+      "image": "server/assets/compact-list.png",
+      "extends": "@.DealsGridScreen",
+      "navigatesTo": [
+        "@.LargeDealDetailsScreen"
+      ],
+      "settings": {
+        "listType": "compact-list",
+        "hasFeaturedItem": false
+      }
+    },
+    {
+      "name": "LargeDealDetailsScreen",
+      "title": "Large deal details",
+      "image": "server/assets/details-large-transparent.png",
+      "settings": {
+        "navigationBarStyle": "clear"
+      }
+    },
+    {
+      "name": "MediumDealDetailsScreen",
+      "title": "Medium deal details",
+      "extends": "@.LargeDealDetailsScreen",
+      "image": "server/assets/details-medium-transparent.png",
+      "settings": {
+        "navigationBarStyle": "clear"
+      }
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "DealsShortcut",
+      "title": "Deals",
+      "description": "Create and manage your deals",
+      "screen": "@.DealsGridScreen",
+      "icon": "theme://deals.png",
+      "settings": {
+        "favoritesSchemas": [
+          "@.deals"
+        ]
+      },
+      "adminPages": [
+        {
+          "page": "@.DealsCmsPage",
+          "title": "Content",
+          "parameters": {
+            "schema": "@.deals",
+            "placesSchema": "shoutem.places.places"
+          }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        }
+      ]
+    }
+  ],
+  "dataSchemas": [
+    {
+      "name": "deals",
+      "path": "server/data-schemas/deals.json"
+    }
+  ],
+  "pages": [
+    {
+      "name": "DealsStatisticsPage",
+      "type": "react-page"
+    },
+    {
+      "name": "DealsCmsPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.DealsStatisticsPage",
+      "title": "Deals",
+      "parameters": {
+        "schema": "@.deals",
+        "placesSchema": "shoutem.places.places"
+      },
+      "categories": [
+        "analytics"
+      ]
+    }
+  ],
+  "settings": {
+    "dealsEndpoint": "deals.api.shoutem.com"
+  }
+}

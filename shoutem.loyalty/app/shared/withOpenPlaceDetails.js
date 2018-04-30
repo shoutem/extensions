@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { navigateTo } from '@shoutem/core/navigation';
@@ -46,7 +47,7 @@ export default function withOpenPlaceDetails(RowComponent, prop = 'onPress') {
 
   EnhancedComponent.propTypes = {
     place: placeShape.isRequired,
-    navigateTo: React.PropTypes.func,
+    navigateTo: PropTypes.func,
   };
 
   return connect(undefined, { navigateTo })(EnhancedComponent);

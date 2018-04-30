@@ -1,8 +1,9 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
   TouchableOpacity,
   Caption,
-  Image,
+  ImageBackground,
   Divider,
   Tile,
   Title,
@@ -15,8 +16,8 @@ import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
 
 export class PlacePhotoView extends Component {
   static propTypes = {
-    place: React.PropTypes.object.isRequired,
-    onPress: React.PropTypes.func,
+    place: PropTypes.object.isRequired,
+    onPress: PropTypes.func,
   };
 
   constructor(props) {
@@ -39,7 +40,7 @@ export class PlacePhotoView extends Component {
         onPress={onPress}
       >
         <Divider styleName="line" />
-        <Image
+        <ImageBackground
           styleName="large-banner placeholder"
           source={imageSource}
         >
@@ -53,7 +54,7 @@ export class PlacePhotoView extends Component {
             <Title styleName="vertical" numberOfLines={2}>{place.name.toUpperCase()}</Title>
             <Caption styleName="vertical">{formattedAddress}</Caption>
           </Tile>
-        </Image>
+        </ImageBackground>
         <Divider styleName="line" />
       </TouchableOpacity>
     );

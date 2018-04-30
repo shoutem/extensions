@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { isValid } from '@shoutem/redux-io';
 import {
@@ -12,7 +13,7 @@ import { connect } from 'react-redux';
 import { AssetManager } from '@shoutem/assets-sdk';
 import { LanguageSelect } from 'src/components';
 import { TranslationsDashboard } from 'src/modules/translations';
-import { invalidateCurrentBuild } from 'src/redux';
+import { invalidateCurrentBuild, navigateToUrl } from 'src/redux';
 import './style.scss';
 
 const DEFAULT_LANGUAGE_CODE = 'en';
@@ -23,6 +24,7 @@ class LanguagePage extends Component {
     extension: PropTypes.object,
     updateExtensionSettings: PropTypes.func,
     invalidateCurrentBuild: PropTypes.func,
+    navigateToUrl: PropTypes.func,
   };
 
   constructor(props, context) {
@@ -99,7 +101,7 @@ class LanguagePage extends Component {
   }
 
   render() {
-    const { extension } = this.props;
+    const { extension, navigateToUrl } = this.props;
     const { translations } = this.state;
 
     const locale = _.get(extension, 'settings.locale', DEFAULT_LANGUAGE_CODE);
@@ -124,6 +126,18 @@ class LanguagePage extends Component {
           onUpdate={this.handleTranslationChange}
           onDelete={this.handleTranslationDelete}
         />
+        <p>
+          To download the source language file click{' '}
+          <a href="https://shoutem.github.io/static/localization/en.json.zip">
+           here
+          </a>.
+          <br/>
+          <br/>
+          You can find a tutorial on how to translate it{' '}
+          <a onClick={navigateToUrl}>
+           here
+          </a>.
+        </p>
       </div>
     );
   }
@@ -135,6 +149,7 @@ LanguagePage.contextTypes = {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { extension, appId } = ownProps;
+  const url = "https://shoutem.github.io/docs/extensions/tutorials/using-localization";
 
   return {
     updateExtensionSettings: (settingsPatch) => (
@@ -143,6 +158,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     invalidateCurrentBuild: () => (
       dispatch(invalidateCurrentBuild(appId))
     ),
+    navigateToUrl: () => dispatch(navigateToUrl(url)),
   };
 }
 

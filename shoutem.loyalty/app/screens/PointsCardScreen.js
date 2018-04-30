@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { connect } from 'react-redux';
@@ -9,6 +10,7 @@ import {
   getCollection,
   isBusy,
   isInitialized,
+  isValid,
  } from '@shoutem/redux-io';
 
 import {
@@ -32,6 +34,7 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import {
+  getUser,
   loginRequired,
 } from 'shoutem.auth';
 
@@ -66,7 +69,7 @@ import {
   transactionShape,
  } from '../components/shapes';
 
-const { arrayOf, bool, func, number, shape, string } = React.PropTypes;
+const { arrayOf, bool, func, number, shape, string, object } = PropTypes;
 
 /**
  * Shows points card details for a single card loyalty program
@@ -100,6 +103,8 @@ export class PointsCardScreen extends React.Component {
     refreshTransactions: func,
     // Recent transactions
     transactions: arrayOf(transactionShape),
+    // logged in user
+    user: object,
   };
 
   constructor(props) {
@@ -111,10 +116,24 @@ export class PointsCardScreen extends React.Component {
     this.onBarCodeScanned = this.onBarCodeScanned.bind(this);
     this.refreshCardState = this.refreshCardState.bind(this);
     this.scanBarCode = this.scanBarCode.bind(this);
+    this.checkData = this.checkData.bind(this);
   }
 
   componentWillMount() {
-    this.refreshCardState();
+    this.checkData(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.checkData(nextProps, this.props);
+  }
+
+  checkData(nextProps, props = {}) {
+    const { user } = props;
+    const { user: nextUser } = nextProps;
+
+    if (nextUser !== user && isValid(nextUser)) {
+      return this.refreshCardState();
+    }
   }
 
   assignPoints() {
@@ -254,6 +273,8 @@ export const mapStateToProps = (state) => {
   const programId = _.get(extensionSettings, 'program.id');
   const enableBarcodeScan = _.get(extensionSettings, 'enableBarcodeScan');
 
+  const user = getUser(state);
+
   return {
     cardId: getCardId(state),
     cardStates: getCollection(allCardStates, state),
@@ -262,6 +283,7 @@ export const mapStateToProps = (state) => {
     enableBarcodeScan,
     programId,
     transactions: getCollection(allTransactions, state),
+    user,
   };
 };
 

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -39,7 +40,7 @@ import Stamps from '../components/Stamps';
 
 import RewardProgressBar from '../components/RewardProgressBar';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 /**
  * Shows details for a reward or a punch card.

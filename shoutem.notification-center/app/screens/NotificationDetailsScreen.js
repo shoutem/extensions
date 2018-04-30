@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
@@ -21,7 +22,7 @@ import { ext } from '../const';
 
 import { notificationShape } from '../components/shapes';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 export class NotificationDetailsScreen extends Component {
   static propTypes = {

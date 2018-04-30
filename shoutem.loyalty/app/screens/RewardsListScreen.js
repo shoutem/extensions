@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import _ from 'lodash';
@@ -42,7 +43,7 @@ import { refreshCard } from '../services';
 import NoProgramScreen from './NoProgramScreen';
 import RewardListView from '../components/RewardListView';
 
-const { func, number, shape, string } = React.PropTypes;
+const { func, shape, string } = PropTypes;
 
 /**
  * Displays a list of rewards.
@@ -62,7 +63,7 @@ export class RewardsListScreen extends ListScreen {
     programId: string,
     // Currently logged in user
     user: shape({
-      id: number,
+      id: string,
     }),
 
     // Actions
@@ -111,7 +112,7 @@ export class RewardsListScreen extends ListScreen {
       query: {
         'filter[app]': getAppId(),
         'filter[schema]': cmsSchema,
-        'filter[category]': parentCategoryId,
+        'filter[categories]': parentCategoryId,
         'filter[card]': cardId,
       },
     });
@@ -147,11 +148,11 @@ export class RewardsListScreen extends ListScreen {
 
     // If collection doesn't exist (`parentCategoryId` is undefined), notify user to create
     // content and reload app, because `parentCategoryId` is retrieved through app configuration
-    if (_.isUndefined(parentCategoryId)) {
+    if (_.isUndefined(parentCategoryId) || _.isEmpty(data)) {
       return (
         <EmptyStateView
-          icon="error"
-          message={I18n.t('shoutem.application.preview.noContentErrorMessage')}
+          icon="gift"
+          message={I18n.t(ext('noRewardsForStore'))}
         />
       );
     }

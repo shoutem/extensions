@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   PureComponent,
 } from 'react';
@@ -22,8 +23,8 @@ import { ext } from '../const';
 
 export default class SingleEventMapScreen extends PureComponent {
   static propTypes = {
-    marker: React.PropTypes.object,
-    title: React.PropTypes.string.isRequired,
+    marker: PropTypes.object,
+    title: PropTypes.string.isRequired,
   };
 
   constructor(props) {

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -35,7 +36,7 @@ import {
 import { ext, GROUP_PREFIX } from '../const';
 import { pushGroupShape } from '../components/shapes';
 
-const { arrayOf, func, string } = React.PropTypes;
+const { arrayOf, func, string } = PropTypes;
 
 const renderEmptyScreen = () => (
   <EmptyStateView message={I18n.t(ext('noGroupsErrorMessage'))} />

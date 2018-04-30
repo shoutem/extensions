@@ -1,7 +1,7 @@
 {
   "name": "rss-news",
-  "version": "1.5.1",
-  "platform": "1.5.*",
+  "version": "1.6.0",
+  "platform": "1.6.*",
   "title": "News RSS",
   "description": "Show news articles from an RSS feed",
   "icon": "server/assets/extension-icon.png",

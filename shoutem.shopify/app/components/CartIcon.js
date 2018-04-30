@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
@@ -30,7 +31,7 @@ const getBadge = quantity => (
   </View>
 );
 
-const { func, number } = React.PropTypes;
+const { func, number } = PropTypes;
 
 CartIcon.propTypes = {
   // Number of items in the cart - a badge with this number will be shown above the cart

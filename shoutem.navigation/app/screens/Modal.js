@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   PureComponent,
 } from 'react';
@@ -25,16 +26,16 @@ import { ext } from '../const';
 
 class Modal extends PureComponent {
   static propTypes = {
-    closeModal: React.PropTypes.func,
-    navigationState: React.PropTypes.object,
-    style: React.PropTypes.object,
-    navigateBack: React.PropTypes.func,
+    closeModal: PropTypes.func,
+    navigationState: PropTypes.object,
+    style: PropTypes.object,
+    navigateBack: PropTypes.func,
 
     // Our Modal screen automatically adds a left navigation bar
     // component that fires closeModal action. Setting this props allows
     // us to override this, and use the navBar components defined within the 
     // screen/component that is being opened within our Modal screen
-    customNavigationBar: React.PropTypes.bool,
+    customNavigationBar: PropTypes.bool,
   };
 
   constructor(props, context) {

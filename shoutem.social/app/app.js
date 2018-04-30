@@ -1,29 +1,21 @@
 import rio from '@shoutem/redux-io';
 import { getExtensionSettings } from 'shoutem.application';
+import { shoutemApi } from './services';
 
 import {
   STATUSES_SCHEMA,
   USERS_SCHEMA,
-} from './redux';
+} from './const';
 
 const APPLICATION_EXTENSION = 'shoutem.application';
 
 export const apiVersion = '59';
 
-let endPoint = null;
-
-export function getApiEndpoint() {
-  if (!endPoint) {
-    console.log('Api endpoint is not defined yet.');
-  }
-  return endPoint;
-}
-
 export function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
   const apiEndpoint = getExtensionSettings(state, APPLICATION_EXTENSION).legacyApiEndpoint;
-  endPoint = apiEndpoint;
+  shoutemApi.init(apiEndpoint);
 
   const apiRequestOptions = {
     resourceType: 'JSON',

@@ -4,6 +4,8 @@ import { InteractionManager } from 'react-native';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 
+import PropTypes from 'prop-types';
+
 import React, {
   PureComponent,
 } from 'react';
@@ -51,18 +53,18 @@ export class AboutScreen extends PureComponent {
   static propTypes = {
     // The parent category that is used to display
     // the available categories in the drop down menu
-    parentCategoryId: React.PropTypes.any,
+    parentCategoryId: PropTypes.any,
     // Primary CMS data to display
-    data: React.PropTypes.array.isRequired,
+    data: PropTypes.array.isRequired,
     // The shortcut title
-    title: React.PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     // actions
-    find: React.PropTypes.func.isRequired,
-    navigateTo: React.PropTypes.func,
-    openURL: React.PropTypes.func,
+    find: PropTypes.func.isRequired,
+    navigateTo: PropTypes.func,
+    openURL: PropTypes.func,
     // Settings
-    navigationBarStyle: React.PropTypes.string.isRequired,
-    imageSize: React.PropTypes.string.isRequired
+    navigationBarStyle: PropTypes.string.isRequired,
+    imageSize: PropTypes.string.isRequired
   };
 
   constructor(props, context) {
@@ -268,7 +270,7 @@ export class AboutScreen extends PureComponent {
       title: _.get(profile, 'location.formattedAddress'),
     };
 
-    const initialRegion = {
+    const region = {
       longitude: marker.longitude,
       latitude: marker.latitude,
       latitudeDelta: 0.03,
@@ -287,7 +289,7 @@ export class AboutScreen extends PureComponent {
         </Divider>
         <TouchableOpacity onPress={openMap}>
           <InlineMap
-            initialRegion={initialRegion}
+            initialRegion={region}
             markers={[marker]}
             selectedMarker={marker}
             styleName="medium-tall"

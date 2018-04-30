@@ -1,8 +1,7 @@
 import middleware from './middleware';
-import { appDidMount } from './app';
+import { appDidFinishLaunching } from './app';
 
 export {
   middleware,
-  appDidMount,
+  appDidFinishLaunching,
 };
-

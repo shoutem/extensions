@@ -3,6 +3,7 @@ import { Button, FormGroup, ControlLabel, ButtonToolbar, HelpBlock } from 'react
 import { LoaderContainer, InlineModal } from '@shoutem/react-web-ui';
 import { ext } from 'src/const';
 import { FileUploader, LanguageSelect } from 'src/components';
+import { validateJson } from '../../services';
 import './style.scss';
 
 export default class TranslationsModal extends Component {
@@ -17,6 +18,7 @@ export default class TranslationsModal extends Component {
     this.handleTranslationDrop = this.handleTranslationDrop.bind(this);
     this.handleTranslationUploadSuccess = this.handleTranslationUploadSuccess.bind(this);
     this.handleTranslationDeleteSuccess = this.handleTranslationDeleteSuccess.bind(this);
+    this.handleUploadError = this.handleUploadError.bind(this);
     this.resolveTranslationFilename = this.resolveTranslationFilename.bind(this);
     this.validateForm = this.validateForm.bind(this);
 
@@ -106,11 +108,18 @@ export default class TranslationsModal extends Component {
     return `${timestamp}-${translationFile.name}`;
   }
 
+  handleUploadError() {
+    this.setState({
+      inProgress: false,
+      showErrors: true,
+    });
+  }
+
   validateForm() {
     const { languageCode, translationUrl } = this.state;
 
-    const languageCodeError = languageCode ? null : 'Translation language is required.';
-    const translationUrlError = translationUrl ? null : 'Translation file is required.';
+    const languageCodeError = !languageCode ? 'Translation language is required.' : null;
+    const translationUrlError = !translationUrl ? 'Translation file is required.' : null;
 
     this.setState({
       errors: {
@@ -167,7 +176,9 @@ export default class TranslationsModal extends Component {
               onDrop={this.handleTranslationDrop}
               onUploadSuccess={this.handleTranslationUploadSuccess}
               onDeleteSuccess={this.handleTranslationDeleteSuccess}
+              onError={this.handleUploadError}
               resolveFilename={this.resolveTranslationFilename}
+              customValidator={validateJson}
             />
             {showErrors && errors.translationUrl && (
               <HelpBlock className="text-error">{errors.translationUrl}</HelpBlock>

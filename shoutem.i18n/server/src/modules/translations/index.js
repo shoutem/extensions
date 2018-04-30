@@ -3,4 +3,8 @@ export {
   TranslationsDashboard,
 } from './components';
 
-export { prepareTranslations } from './services/translations';
+export {
+  prepareTranslations,
+  readFileAsText,
+  ValidateJson,
+} from './services';

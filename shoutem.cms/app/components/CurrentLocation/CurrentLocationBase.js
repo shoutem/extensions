@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { Alert } from 'react-native';
@@ -15,9 +16,9 @@ import {
 
 export default class CurrentLocationBase extends Component {
   static propTypes = {
-    permissionStatus: React.PropTypes.object,
-    updateLocationPermission: React.PropTypes.func,
-    updateSecondPromptStatus: React.PropTypes.func,
+    permissionStatus: PropTypes.object,
+    updateLocationPermission: PropTypes.func,
+    updateSecondPromptStatus: PropTypes.func,
   };
 
   static mapStateToProps = (state) => ({
@@ -55,7 +56,7 @@ export default class CurrentLocationBase extends Component {
       return;
     }
 
-    if (permission === PermissionStatus.DENIED && !secondPrompt) {
+    if (permission === PermissionStatus.DENIED && newPermission === PermissionStatus.DENIED && !secondPrompt) {
       updateSecondPromptStatus(true);
       this.promptForLocationPermission();
       return;

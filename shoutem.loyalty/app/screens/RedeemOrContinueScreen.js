@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { connect } from 'react-redux';
@@ -21,7 +22,7 @@ import { ext } from '../const';
 import { redeemReward } from '../services';
 import { authorizationShape, rewardShape } from '../components/shapes';
 
-const { func, number } = React.PropTypes;
+const { func, number } = PropTypes;
 
 const STAMP_ICON = require('../assets/icons/stamp.png');
 

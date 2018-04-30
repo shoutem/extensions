@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Linking } from 'react-native';
 import { connect } from 'react-redux';
@@ -18,13 +19,14 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { openURL } from 'shoutem.web-view';
+import { I18n } from 'shoutem.i18n';
 
 import { ext } from '../const';
 
 class PeopleDetailsScreen extends React.Component {
   static propTypes = {
-    person: React.PropTypes.object.isRequired,
-    openURL: React.PropTypes.func,
+    person: PropTypes.object.isRequired,
+    openURL: PropTypes.func,
   };
 
   constructor(props) {

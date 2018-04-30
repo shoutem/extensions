@@ -9,7 +9,7 @@ import {
   Icon,
   Image
 } from '@shoutem/ui';
-import { formatDate } from '../services/Calendar';
+import { formatToLocalDate } from '../services/Calendar';
 import { BaseEventItem } from './BaseEventItem';
 
 /**
@@ -27,7 +27,7 @@ export default class extends BaseEventItem {
             <Subtitle numberOfLines={3}>{event.name}</Subtitle>
             <View styleName="flexible horizontal v-end space-between">
               <Caption styleName="collapsible">
-                {formatDate(event.start)}
+                {formatToLocalDate(event.start)}
               </Caption>
               <Button styleName="tight clear" onPress={this.action}>
                 <Icon name="add-event" />

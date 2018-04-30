@@ -1,9 +1,10 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import * as _ from 'lodash';
 import {
   Screen,
-  Image,
+  ImageBackground,
   Divider,
   Caption,
   Title,
@@ -24,9 +25,9 @@ import { LinkButton } from '../components/LinkButton';
 /* eslint-disable react/prefer-stateless-function */
 class BooksDetailsScreen extends React.Component {
   static propTypes = {
-    book: React.PropTypes.any,
-    openURL: React.PropTypes.func,
-    hasFavoriteButton: React.PropTypes.bool,
+    book: PropTypes.any,
+    openURL: PropTypes.func,
+    hasFavoriteButton: PropTypes.bool,
   };
 
   constructor(props) {
@@ -82,7 +83,7 @@ class BooksDetailsScreen extends React.Component {
       <Screen styleName="full-screen paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
-          <Image
+          <ImageBackground
             styleName="large-square placeholder"
             animationName="hero"
             source={{ uri: _.get(book, 'image.url') }}
@@ -96,7 +97,7 @@ class BooksDetailsScreen extends React.Component {
               <Caption styleName="md-gutter-bottom">{formatBookCaption(book)}</Caption>
               <LinkButton book={book} onPress={openURL} />
             </Tile>
-          </Image>
+          </ImageBackground>
 
           <Divider styleName="line" />
 

@@ -1,7 +1,7 @@
 {
   "name": "places",
-  "version": "1.5.2",
-  "platform": "1.5.*",
+  "version": "1.6.2",
+  "platform": "1.6.*",
   "title": "Places",
   "description": "Show items with location on list or map",
   "icon": "./server/assets/images/add-places-image.png",

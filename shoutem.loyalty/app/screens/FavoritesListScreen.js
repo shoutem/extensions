@@ -17,6 +17,7 @@ import { I18n } from 'shoutem.i18n';
 import MapList from '../components/MapList';
 import PlaceIconView from '../components/PlaceIconView';
 import { ext } from '../const';
+import { refreshCardState } from '../services';
 
 export class FavoritesList extends FavoritesListScreen {
   static propTypes = {
@@ -35,6 +36,23 @@ export class FavoritesList extends FavoritesListScreen {
       schema: ext('places'),
       mapView: false,
     };
+  }
+
+  componentWillMount() {
+    const {
+      refreshCardState,
+      favoriteCollection,
+      itemsLoaded,
+    } = this.props;
+    const { schema } = this.state;
+
+    if (!itemsLoaded) {
+      this.toggleLoading();
+
+      this.props.fetchFavoritesData(schema, favoriteCollection)
+        .then(refreshCardState)
+        .then(this.toggleLoading);
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -69,7 +87,10 @@ export class FavoritesList extends FavoritesListScreen {
     const points = _.get(cardStatesByLocation[placeId], 'points');
 
     return (
-      <PlaceIconView place={place} points={points} />
+      <PlaceIconView
+        place={place}
+        points={points}
+      />
     );
   }
 
@@ -84,7 +105,9 @@ export class FavoritesList extends FavoritesListScreen {
     const { mapView } = this.state;
     const { favorites } = this.props;
 
-    const actionText = mapView ? I18n.t('shoutem.cms.navBarListViewButton') : I18n.t('shoutem.cms.navBarMapViewButton');
+    const actionText = mapView ?
+      I18n.t('shoutem.cms.navBarListViewButton') :
+      I18n.t('shoutem.cms.navBarMapViewButton');
 
     if (_.isEmpty(favorites)) {
       return null;
@@ -110,6 +133,7 @@ export class FavoritesList extends FavoritesListScreen {
         />
       );
     }
+
     return super.renderData(favorites);
   }
 }
@@ -122,7 +146,9 @@ export const mapStateToProps = (state) => {
     cardStatesByLocation: _.keyBy(cardStates, 'location'),
   };
 };
-export const mapDispatchToProps = FavoritesListScreen.createMapDispatchToProps();
+export const mapDispatchToProps = FavoritesListScreen.createMapDispatchToProps({
+  refreshCardState,
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('FavoritesList'), {})(FavoritesList),

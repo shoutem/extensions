@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -21,7 +22,7 @@ import {
   rewardShape,
  } from './shapes';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 /**
  * Renders a single reward, in a list of rewards for places.
@@ -59,7 +60,9 @@ export class RewardListView extends Component {
           />
           <View styleName="vertical stretch space-between">
             <Subtitle>{title}</Subtitle>
-            <Subtitle>{`${pointsRequired}${I18n.t(ext('pointsRequiredRewards'))}`}</Subtitle>
+            <Subtitle>
+              {I18n.t(ext('pointsRequiredRewards'), { count: pointsRequired || 0 })}
+            </Subtitle>
           </View>
         </Row>
         <Divider styleName="line" />

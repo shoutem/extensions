@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { LayoutAnimation } from 'react-native';
 import _ from 'lodash';
@@ -80,10 +81,10 @@ function getMarkersAndRegionFromEvents(data) {
 
 export default class EventsMap extends React.Component {
   static propTypes = {
-    data: React.PropTypes.array.isRequired,
-    style: React.PropTypes.object.isRequired,
-    addToCalendar: React.PropTypes.func.isRequired,
-    openDetailsScreen: React.PropTypes.func.isRequired,
+    data: PropTypes.array.isRequired,
+    style: PropTypes.object.isRequired,
+    addToCalendar: PropTypes.func.isRequired,
+    openDetailsScreen: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {

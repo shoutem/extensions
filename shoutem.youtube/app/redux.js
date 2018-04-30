@@ -10,7 +10,6 @@ import {
 } from '@shoutem/redux-io';
 import Outdated from '@shoutem/redux-io/outdated';
 import {
-  APPEND_MODE,
   isAppendMode,
 } from '@shoutem/redux-io/actions/find';
 import {
@@ -31,6 +30,7 @@ import {
   CHANNEL_REGEX,
   PLAYLIST_REGEX,
   API_ENDPOINT,
+  RESOURCE_TYPES,
 } from './const';
 
 export const YOUTUBE_PLAYLIST_SCHEMA = 'shoutem.youtube.playlist';
@@ -46,16 +46,22 @@ function hasNextPage(payload) {
 }
 
 function getNextActionParams(action) {
+  const actionParams = _.get(action, 'meta.params', {});
+  const { query, ...otherParams } = actionParams;
+
   return {
-    ..._.get(action, 'meta.params'),
+    ...query,
+    ...otherParams,
     pageToken: _.get(action, 'payload.nextPageToken'),
   };
 }
 
 function getNextActionEndpoint(action) {
   const params = getNextActionParams(action);
-  const endpointUri = new URI(API_ENDPOINT.replace(/{type}/g, params.type));
-  const resolvedParams = { ...endpointUri.query(true), ...params.query };
+  const { type, ...otherParams } = params;
+
+  const endpointUri = new URI(API_ENDPOINT.replace(/{type}/g, type));
+  const resolvedParams = { ...endpointUri.query(true), ...otherParams };
 
   return endpointUri.query(resolvedParams).toString();
 }
@@ -130,7 +136,7 @@ export default combineReducers({
 });
 
 export function getVideosFeed(state, feedUrl) {
-  return _.get(state[ext()], ['videos', feedUrl], []);
+  return _.get(state[ext()], ['videos', feedUrl]);
 }
 
 const sharedParams = {
@@ -162,28 +168,30 @@ function fetchUserPlaylistId(feedUrl, apiKey) {
   if (!endpoint) {
     return null;
   }
+
   const config = {
     schema: YOUTUBE_PLAYLIST_SCHEMA,
     request: {
       endpoint,
-      resourceType: 'json',
       headers: {
-        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
+      resourceType: 'json',
     },
   };
+
   return find(config);
 }
 
 function fetchUserUploads(feedUrl, apiKey, playlistIds) {
-  const params = { 
+  const params = {
     query: {
       ...sharedParams,
       playlistId: playlistIds,
       key: apiKey,
       feedUrl,
     },
-    type: 'playlistItems',
+    type: RESOURCE_TYPES.PLAYLIST,
   };
   return find(YOUTUBE_VIDEOS_SCHEMA, undefined, { ...params });
 }
@@ -191,18 +199,22 @@ function fetchUserUploads(feedUrl, apiKey, playlistIds) {
 function buildFeedParams(feedUrl, apiKey) {
   if (/channel/i.test(feedUrl)) {
     return {
-      type: 'search',
+      type: RESOURCE_TYPES.SEARCH,
       query: {
+        ...sharedParams,
         channelId: extractChannelId(feedUrl),
         key: apiKey,
+        feedUrl,
       },
     };
   } else if (/playlist/i.test(feedUrl)) {
     return {
-      type: 'playlistItems',
+      type: RESOURCE_TYPES.PLAYLIST,
       query: {
+        ...sharedParams,
         playlistId: extractPlaylistId(feedUrl),
         key: apiKey,
+        feedUrl,
       },
     };
   }
@@ -218,7 +230,9 @@ function userFeedThunk(feedUrl, apiKey) {
         );
       dispatch(fetchUserUploads(feedUrl, apiKey, playlistIds));
     });
-    return find(YOUTUBE_VIDEOS_SCHEMA, undefined, { ...sharedParams });
+
+    const params = { query: sharedParams };
+    return find(YOUTUBE_VIDEOS_SCHEMA, undefined, params);
   };
 }
 
@@ -228,5 +242,5 @@ export function fetchFeed(feedUrl, apiKey) {
   }
 
   const params = buildFeedParams(feedUrl, apiKey);
-  return find(YOUTUBE_VIDEOS_SCHEMA, undefined, { ...params, ...sharedParams });
+  return find(YOUTUBE_VIDEOS_SCHEMA, undefined, params);
 }

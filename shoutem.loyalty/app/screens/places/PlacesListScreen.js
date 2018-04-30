@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { connect } from 'react-redux';
@@ -33,7 +34,7 @@ import {
   CmsListScreen,
   currentLocation,
  } from 'shoutem.cms';
- import { I18n } from 'shoutem.i18n';
+import { I18n } from 'shoutem.i18n';
 
 import MapList from '../../components/MapList';
 import PlaceIconView from '../../components/PlaceIconView';
@@ -49,7 +50,7 @@ import {
 
 /* eslint-disable class-methods-use-this, no-undef, react/forbid-prop-types */
 
-const { func, object } = React.PropTypes;
+const { func, object } = PropTypes;
 
 /**
  * A base screen for displaying a list of loyalty places.

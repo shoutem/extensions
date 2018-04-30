@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import { connect } from 'react-redux';
@@ -20,7 +21,7 @@ import Stamps from '../components/Stamps';
 import { collectPoints } from '../services';
 import { ext } from '../const';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 /**
  * Lets the cashier stamp a punch card and process the transaction.

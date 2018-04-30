@@ -4,50 +4,63 @@ import { Row, Col } from 'react-bootstrap';
 import { LOYALTY_TYPES } from 'src/const';
 import './style.scss';
 
+function calculatePointsStats(generalStats) {
+  const totalEarnedPoints = _.get(generalStats, 'totalEarnedPoints', 0);
+  const totalRedeemedPoints = _.get(generalStats, 'totalRedeemedPoints', 0);
+  const rewardsRedeemed = _.get(generalStats, 'redeems', 0);
+  const balance = _.round(totalEarnedPoints - totalRedeemedPoints, 2);
+
+  return {
+    balance,
+    rewardsRedeemed,
+    pointsRedeemed: totalRedeemedPoints,
+    pointsEarned: totalEarnedPoints,
+  }
+}
+
+function calculatePunchStats(generalStats) {
+  const totalEarnedPunches = _.get(generalStats, 'totalEarnedPunches', 0);
+  const totalRedeemedPunches = _.get(generalStats, 'totalRedeemedPunches', 0);
+  const rewardsRedeemed = _.get(generalStats, 'redeems', 0);
+  const balance = _.round(totalEarnedPunches - totalRedeemedPunches, 2);
+
+  return {
+    balance,
+    rewardsRedeemed,
+    pointsRedeemed: totalRedeemedPunches,
+    pointsEarned: totalEarnedPunches,
+  }
+}
+
 export default function GeneralStats({ generalStats, loyaltyType }) {
-  const {
-    redeems,
-    totalEarnedPunches,
-    totalRedeemedPunches,
-    totalEarnedPoints,
-    totalRedeemedPoints,
-  } = generalStats;
+  const isPunchType = loyaltyType === LOYALTY_TYPES.PUNCH;
 
-  const pointsEarnedLabel = (loyaltyType === LOYALTY_TYPES.PUNCH) ?
-    'Punches earned' :
-    'Points earned';
+  const pointsEarnedLabel = isPunchType ? 'Punches earned' : 'Points earned';
+  const pointsRedeemedLabel = isPunchType ? 'Punches redeemed' : 'Points redeemed';
 
-  const pointsRedeemedLabel = (loyaltyType === LOYALTY_TYPES.PUNCH) ?
-    'Punches redeemed' :
-    'Points redeemed';
-
-  const pointsEarned = (loyaltyType === LOYALTY_TYPES.PUNCH) ?
-    totalEarnedPunches :
-    totalEarnedPoints;
-
-  const pointsRedeemed = (loyaltyType === LOYALTY_TYPES.PUNCH) ?
-    totalRedeemedPunches :
-    totalRedeemedPoints;
-
-  const balance = _.round(pointsEarned - pointsRedeemed, 2);
+  const stats = (
+    isPunchType ?
+      calculatePunchStats(generalStats) :
+      calculatePointsStats(generalStats)
+  );
 
   return (
     <Row className="general-stats">
       <Col className="general-stats__item" xs={3}>
         <div>{pointsEarnedLabel}</div>
-        <label>{pointsEarned}</label>
+        <label>{stats.pointsEarned}</label>
       </Col>
       <Col className="general-stats__item" xs={3}>
         <div>{pointsRedeemedLabel}</div>
-        <label>{pointsRedeemed}</label>
+        <label>{stats.pointsRedeemed}</label>
       </Col>
       <Col className="general-stats__item" xs={3}>
         <div>Rewards redeemed</div>
-        <label>{redeems}</label>
+        <label>{stats.rewardsRedeemed}</label>
       </Col>
       <Col className="general-stats__item" xs={3}>
         <div>Current balance</div>
-        <label>{balance}</label>
+        <label>{stats.balance}</label>
       </Col>
     </Row>
   );

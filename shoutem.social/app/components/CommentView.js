@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
 import _ from 'lodash';
@@ -7,7 +8,6 @@ import {
   Image,
   Subtitle,
   Caption,
-  Text,
   Row,
   TouchableOpacity,
   Lightbox,
@@ -18,19 +18,21 @@ import { ActionSheet } from '@shoutem/ui-addons';
 
 import { I18n } from 'shoutem.i18n';
 
-import { comment as commentShape } from '../components/shapes';
-import { adaptSocialUserForProfileScreen } from '../services/userProfileDataAdapter';
+import HtmlTextView from './HtmlTextView';
+import { comment as commentShape } from './shapes';
+import { adaptSocialUserForProfileScreen } from '../services';
 import { ext } from '../const';
 
 export default class CommentView extends React.Component {
   static propTypes = {
     comment: commentShape.isRequired,
-    openProfile: React.PropTypes.func.isRequired,
-    deleteComment: React.PropTypes.func.isRequired,
+    openProfile: PropTypes.func.isRequired,
+    deleteComment: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
+
     this.handleClickOnUser = this.handleClickOnUser.bind(this);
     this.renderStatusAttachments = this.renderStatusAttachments.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
@@ -63,26 +65,26 @@ export default class CommentView extends React.Component {
   showActionSheet() {
     const { comment, deleteComment } = this.props;
 
-    function actionSheet() {
-      ActionSheet.showActionSheetWithOptions(
-        {
-          options: [
-            I18n.t(ext('deleteCommentOption')),
-            I18n.t(ext('cancelCommentSelectionOption'))
-          ],
-          destructiveButtonIndex: 0,
-          cancelButtonIndex: 1,
-        },
-        (index) => {
-          switch (index) {
-            case 0:
-              deleteComment(comment);
-          }
-        }
-      );
+    if (_.get(comment, 'deletable') !== 'yes'){
+      return;
     }
 
-    _.get(comment, 'deletable') === 'yes' ? actionSheet() : {}
+    ActionSheet.showActionSheetWithOptions(
+      {
+        options: [
+          I18n.t(ext('deleteCommentOption')),
+          I18n.t(ext('cancelCommentSelectionOption')),
+        ],
+        destructiveButtonIndex: 0,
+        cancelButtonIndex: 1,
+      },
+      (index) => {
+        switch (index) {
+          case 0:
+            deleteComment(comment);
+        }
+      }
+    );
   }
 
   render() {
@@ -104,7 +106,7 @@ export default class CommentView extends React.Component {
               <Subtitle>{`${user.name}`}</Subtitle>
               <Caption>{moment(created_at).fromNow()}</Caption>
             </View>
-            <Text styleName="multiline">{text}</Text>
+            <HtmlTextView text={text}/>
             {this.renderStatusAttachments()}
           </View>
         </Row>

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import moment from 'moment';
@@ -8,7 +9,7 @@ import {
   Title,
   Caption,
   View,
-  Image,
+  ImageBackground,
   Overlay,
   Icon,
 } from '@shoutem/ui';
@@ -19,8 +20,8 @@ import {
  */
 export default class LargeVimeoView extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    video: React.PropTypes.object.isRequired,
+    onPress: PropTypes.func,
+    video: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -38,14 +39,14 @@ export default class LargeVimeoView extends React.Component {
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Tile>
-          <Image
+          <ImageBackground
             styleName="large-wide placeholder"
             source={{ uri: _.get(video, 'videoAttachments[0].thumbnailUrl') }}
           >
             <Overlay styleName="rounded-small">
               <Icon name="play" />
             </Overlay>
-          </Image>
+          </ImageBackground>
 
           <View styleName="content">
             <Title numberOfLines={2}>{video.title}</Title>

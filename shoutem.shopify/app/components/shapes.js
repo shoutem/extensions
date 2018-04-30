@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
-const { arrayOf, bool, number, oneOfType, shape, string } = React.PropTypes;
+const { arrayOf, bool, number, oneOfType, shape, string } = PropTypes;
 
 const variant = shape({
   // Price of this variant of the product, for example Blue Small size shirt

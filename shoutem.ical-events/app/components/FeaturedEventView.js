@@ -9,7 +9,7 @@ import {
   Text,
   Icon,
   Divider,
-  Image
+  ImageBackground,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { BaseEventItem } from './BaseEventItem';
@@ -28,7 +28,7 @@ export default class FeaturedEventView extends BaseEventItem {
     return (
       <TouchableOpacity key={event.id} onPress={this.onPress}>
         <View styleName={containerStyleName}>
-          <Image styleName="placeholder featured" source={{ uri: this.props.imageUrl }}>
+          <ImageBackground styleName="placeholder featured" source={{ uri: this.props.imageUrl }}>
             <Tile>
               <Title styleName="md-gutter-bottom">
                 {(event.name || '').toUpperCase()}
@@ -44,7 +44,7 @@ export default class FeaturedEventView extends BaseEventItem {
                 <Text>{I18n.t(ext('addToCalendarButton'))}</Text>
               </Button>
             </Tile>
-          </Image>
+          </ImageBackground>
         </View>
       </TouchableOpacity>
     );

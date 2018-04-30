@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -13,7 +14,7 @@ import LargeVideoView from '../components/LargeVideoView';
 export class VideosList extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    navigateTo: React.PropTypes.func.isRequired,
+    navigateTo: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {

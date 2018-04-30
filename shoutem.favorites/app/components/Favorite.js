@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { LayoutAnimation } from 'react-native';
@@ -18,14 +19,14 @@ import { ext } from '../const';
 
 export class Favorite extends Component {
   static propTypes = {
-    item: React.PropTypes.any.isRequired,
-    saveFavorite: React.PropTypes.func,
-    deleteFavorite: React.PropTypes.func,
-    isFavorite: React.PropTypes.bool,
-    navBarButton: React.PropTypes.bool,
-    schema: React.PropTypes.string.isRequired,
-    children: React.PropTypes.any,
-    hasFavorites: React.PropTypes.bool,
+    item: PropTypes.any.isRequired,
+    saveFavorite: PropTypes.func,
+    deleteFavorite: PropTypes.func,
+    isFavorite: PropTypes.bool,
+    navBarButton: PropTypes.bool,
+    schema: PropTypes.string.isRequired,
+    children: PropTypes.any,
+    hasFavorites: PropTypes.bool,
   };
 
   constructor(props) {

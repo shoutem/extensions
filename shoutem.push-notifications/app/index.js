@@ -10,11 +10,8 @@ import {
 } from './redux';
 
 import { appDidMount, appWillMount, appWillUnmount } from './app';
-
 import Permissions from './permissions';
-
 import enTranslations from './translations/en.json';
-
 import { showNotification } from './middleware';
 
 export const DEFAULT_PUSH_NOTIFICATION_GROUP = 'broadcast';

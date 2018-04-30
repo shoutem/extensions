@@ -33,7 +33,7 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
       animationName: getLeadImageUrl(article) ? 'solidify' : '',
       share: {
         title: article.title.rendered,
-        link: article.guid.link,
+        link: article.link,
       },
     };
   }

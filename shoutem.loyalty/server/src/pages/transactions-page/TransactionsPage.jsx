@@ -95,8 +95,13 @@ export class TransactionsPage extends Component {
     const { programId, loyaltyType, filter } = this.state;
 
     const { userId, ...otherProps } = filter;
+
+    // If user doesn't have a card, we cannot send empty filter because
+    // loyalty-manager will return transactions for all cards in that case
+    const cardId = userId && _.get(cardsByUserId, [userId, 'id'], 'null');
+
     const loyaltyFilter = {
-      cardId: _.get(cardsByUserId, [userId, 'id']),
+      cardId,
       ...otherProps,
     };
 

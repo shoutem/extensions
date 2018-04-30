@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -63,7 +64,7 @@ const renderEmptyScreen = () => {
   );
 };
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 /**
  * Lets the user select between one of the available shipping methods

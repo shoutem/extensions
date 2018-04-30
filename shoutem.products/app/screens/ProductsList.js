@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -12,7 +13,7 @@ import ListProductView from '../components/ListProductView';
 export class ProductsList extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    navigateTo: React.PropTypes.func,
+    navigateTo: PropTypes.func,
   };
 
   constructor(props, context) {

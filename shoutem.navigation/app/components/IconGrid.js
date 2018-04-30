@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { connectStyle } from '@shoutem/theme';
@@ -23,21 +24,19 @@ const renderPageIndicators = (data, selectedIndex) => (
 export class IconGrid extends FolderBase {
   static propTypes = {
     ...FolderBase.propTypes,
-    rows: React.PropTypes.number.isRequired,
-    cols: React.PropTypes.number.isRequired,
-    // TODO (Braco) - update props
-    scrolling: React.PropTypes.string,
-    gridAlignment: React.PropTypes.string,
-    iconWidth: React.PropTypes.number,
-    iconHeight: React.PropTypes.number,
-    showIcon: React.PropTypes.bool,
-    showText: React.PropTypes.bool,
-    scrollingDirection: React.PropTypes.string,
-    backgroundImage: React.PropTypes.string,
-    resolution: React.PropTypes.shape({
-      // TODO(Braco) - document it, spread word to builder people
-      width: React.PropTypes.number,
-      height: React.PropTypes.number,
+    rows: PropTypes.number.isRequired,
+    cols: PropTypes.number.isRequired,
+    scrolling: PropTypes.string,
+    gridAlignment: PropTypes.string,
+    iconWidth: PropTypes.number,
+    iconHeight: PropTypes.number,
+    showIcon: PropTypes.bool,
+    showText: PropTypes.bool,
+    scrollingDirection: PropTypes.string,
+    backgroundImage: PropTypes.string,
+    resolution: PropTypes.shape({
+      width: PropTypes.number,
+      height: PropTypes.number,
     }),
   };
 

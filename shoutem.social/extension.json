@@ -1,10 +1,10 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "1.5.4",
+  "version": "1.6.2",
+  "platform": "1.6.*",
   "description": "Let members create posts, comment and like them",
   "categories": ["users"],
-  "platform": "1.5.*",
   "icon": "server/assets/add-community-image.png",
   "screens": [
     {

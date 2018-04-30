@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
@@ -10,9 +11,9 @@ import {
   TouchableOpacity,
 } from '@shoutem/ui';
 import { user as userShape } from '../components/shapes';
-import { adaptSocialUserForProfileScreen } from '../services/userProfileDataAdapter';
+import { adaptSocialUserForProfileScreen } from '../services';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 export default class MemberView extends React.Component {
   static propTypes = {
@@ -33,7 +34,7 @@ export default class MemberView extends React.Component {
   }
 
   render() {
-    const { user, openProfile } = this.props;
+    const { user } = this.props;
 
     return (
       <TouchableOpacity

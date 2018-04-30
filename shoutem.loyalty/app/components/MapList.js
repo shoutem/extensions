@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { LayoutAnimation } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
@@ -156,7 +157,7 @@ export class MapList extends Component {
       return (
         <EmptyStateView
           icon="address-full"
-          message={I18n.t(ext('noLocationsProvidedErrorMessage'))}
+          message={I18n.t('shoutem.cms.noLocationsProvidedErrorMessage')}
         />
       );
     }
@@ -167,7 +168,7 @@ export class MapList extends Component {
           <MapView
             markers={markers}
             onMarkerPressed={this.setSelectedMarker}
-            initialRegion={region}
+            region={region}
             selectedMarker={selectedMarker}
           />
         </View>
@@ -179,7 +180,7 @@ export class MapList extends Component {
 
 export default connectStyle(ext('MapList'))(MapList);
 
-const { arrayOf, number, object, shape } = React.PropTypes;
+const { arrayOf, number, object, shape } = PropTypes;
 
 MapList.propTypes = {
   // A dictionary of card states with location as the key

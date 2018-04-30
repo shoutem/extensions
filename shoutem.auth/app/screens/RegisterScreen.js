@@ -1,13 +1,11 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
 
 import {
-  TextInput,
   Screen,
-  Divider,
-  Button,
-  Text,
+  Spinner,
 } from '@shoutem/ui';
 
 import {
@@ -33,89 +31,74 @@ import { ext } from '../const';
 import { loginRequired } from '../loginRequired';
 import { saveSession } from '../session';
 import {
-  errorMessages,
+  getErrorCode,
   getErrorMessage,
 } from '../errorMessages';
+import RegisterForm from '../components/RegisterForm';
 
 export class RegisterScreen extends Component {
   static propTypes = {
-    navigateBack: React.PropTypes.func,
-    register: React.PropTypes.func,
+    navigateBack: PropTypes.func,
+    register: PropTypes.func,
   };
 
   constructor(props, context) {
     super(props, context);
+    
     this.performRegistration = this.performRegistration.bind(this);
+    this.finishRegistration = this.handleRegistrationSuccess.bind(this);
+    this.handleRegistrationFailed = this.handleRegistrationFailed.bind(this);
+    this.handleRegistrationSuccess = this.handleRegistrationSuccess.bind(this);
 
     this.state = {
-      email: undefined,
-      username: undefined,
-      password: undefined,
+      inProgress: false,
     };
   }
 
-  performRegistration() {
-    const { register, navigateBack } = this.props;
-    const { email, username, password } = this.state;
-    if (_.isEmpty(email) || _.isEmpty(username) || _.isEmpty(password)) {
-      Alert.alert(I18n.t('shoutem.application.errorTitle'), errorMessages.EMPTY_FIELDS);
-      return;
-    }
-    register(email, username, password).then(
-      ({ payload }) => {
-        saveSession(JSON.stringify(payload));
-        userRegistered(payload);
-        navigateBack();
-      },
-      ({ payload }) => {
-        const { response } = payload;
-        Alert.alert(I18n.t(ext('registrationFailedErrorTitle')), getErrorMessage(response && response.code));
-      },
-    );
+  handleRegistrationSuccess({ payload }) {
+    saveSession(JSON.stringify(payload));
+    userRegistered(payload);
+
+    this.setState({ inProgress: false });
+    this.props.navigateBack();
+  }
+
+  handleRegistrationFailed({ payload }) {
+    const { response } = payload;
+
+    this.setState({ inProgress: false });
+
+    const code = _.get(response, 'errors[0].code');
+    const errorCode = getErrorCode(code);
+    const errorMessage = getErrorMessage(errorCode);
+
+    Alert.alert(I18n.t(ext('registrationFailedErrorTitle')), errorMessage);
+  }
+
+  performRegistration(email, username, password) {
+    this.setState({ inProgress: true });
+
+    this.props.register(email, username, password)
+      .then(this.handleRegistrationSuccess)
+      .catch(this.handleRegistrationFailed);
   }
 
   render() {
+    const { inProgress } = this.state;
+
+    if (inProgress) {
+      return (
+        <Screen>
+          <NavigationBar title={I18n.t(ext('registerNavBarTitle'))} />
+          <Spinner styleName="xl-gutter-top" />
+        </Screen>
+      );
+    }
+
     return (
       <Screen>
         <NavigationBar title={I18n.t(ext('registerNavBarTitle'))} />
-        <Divider />
-        <Divider styleName="line" />
-        <TextInput
-          placeholder={I18n.t(ext('emailPlaceholder'))}
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardType="email-address"
-          keyboardAppearance="dark"
-          onChangeText={email => this.setState({ email })}
-          returnKeyType="done"
-        />
-        <Divider styleName="line" />
-        <TextInput
-          placeholder={I18n.t(ext('usernamePlaceholder'))}
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardAppearance="dark"
-          onChangeText={username => this.setState({ username })}
-          returnKeyType="done"
-        />
-        <Divider styleName="line" />
-        <TextInput
-          placeholder={I18n.t(ext('passwordPlaceholder'))}
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardAppearance="dark"
-          secureTextEntry
-          onChangeText={password => this.setState({ password })}
-          returnKeyType="done"
-        />
-        <Divider styleName="line" />
-        <Divider />
-        <Button
-          styleName="full-width inflexible"
-          onPress={this.performRegistration}
-        >
-          <Text>{I18n.t(ext('registerButton'))}</Text>
-        </Button>
+        <RegisterForm onSubmit={this.performRegistration} />
       </Screen>
     );
   }

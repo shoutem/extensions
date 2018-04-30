@@ -6,14 +6,20 @@
         "other": "{{count}} points collected.",
         "zero": "No points collected."
       },
+      "pointsLabel": "Points",
       "collectPointsButton": "COLLECT",
       "pointsHistoryButton": "HISTORY",
+      "navigationHistoryButton": "History",
+      "pointsCollected": "Points collected",
       "noPointsCollected": "No points collected.",
       "pointsRequiredStores": {
         "one": "Requires {{count}} point.",
         "other": "Requires {{count}} points."
-        },
-      "pointsRequiredRewards": " points.",
+      },
+      "pointsRequiredRewards": {
+        "one": "{{count}} point.",
+        "other": "{{count}} points."
+      },
       "noHistory": "No activity.",
       "fullHistoryButton": "SHOW ENTIRE HISTORY",
       "pointsHistoryTitle": "POINTS HISTORY",
@@ -31,6 +37,7 @@
       "phoneButton": "Phone",
       "cancelButton": "Cancel",
       "locationPermissionsPrompt": "Grant location access",
+      "currencyPrefix": "$ ",
       "cashierPointAwardNavBarTitle": "ASSIGN POINTS",
       "cashierPointAwardAssigningTitle": "ASSIGN POINTS FOR",
       "cashierPointAwardReceiptSum": "Receipt sum",

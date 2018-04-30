@@ -66,7 +66,8 @@ export const canRedeem = ({ points = 0, pointsRequired }) => points >= pointsReq
  *
  * @returns true if the reward is a punch card, false otherwise
  */
-export const isPunchCard = reward => reward && (reward.isPunchCard || !_.has(reward, 'numberOfRewards'));
+export const isPunchCard = reward =>
+  reward && (reward.isPunchCard || !_.has(reward, 'numberOfRewards'));
 
 /**
  * Gets cashier attributes from state
@@ -147,10 +148,18 @@ export const fetchPointRewards = (cardId, parentCategoryId) =>
     query: {
       'filter[app]': getAppId(),
       'filter[schema]': REWARDS_SCHEMA,
-      'filter[category]': parentCategoryId,
+      'filter[categories]': parentCategoryId,
       'filter[card]': cardId,
     },
   });
+
+export const fetchPlaceRewards = (placeId) => (
+  find(PLACE_REWARDS_SCHEMA, undefined, {
+    query: {
+      'filter[place.id]': placeId,
+    },
+  })
+);
 
 /**
  * Fetches transactions from server to refresh local state.
@@ -166,9 +175,9 @@ export const fetchRules = () => find(RULES_SCHEMA, undefined, {});
  */
 export const fetchTransactions = cardId =>
   find(TRANSACTIONS_SCHEMA, undefined, {
-     query: { 
+     query: {
        'filter[card]': cardId,
-     }, 
+     },
   });
 
 /**

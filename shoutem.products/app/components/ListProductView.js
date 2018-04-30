@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -15,8 +16,8 @@ import {
 
 export default class ListProductView extends Component {
   static propTypes = {
-    product: React.PropTypes.object.isRequired,
-    onPress: React.PropTypes.func.isRequired,
+    product: PropTypes.object.isRequired,
+    onPress: PropTypes.func.isRequired,
   };
 
   constructor(props) {

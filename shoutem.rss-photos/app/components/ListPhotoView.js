@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import moment from 'moment';
@@ -15,8 +16,8 @@ import {
  */
 export default class ListPhotoView extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    photo: React.PropTypes.object.isRequired,
+    onPress: PropTypes.func,
+    photo: PropTypes.object.isRequired,
   };
 
   constructor(props) {

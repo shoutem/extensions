@@ -1,24 +1,25 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import { Image } from '@shoutem/ui';
+import { ImageBackground } from '@shoutem/ui';
 import _ from 'lodash';
 
 function EventImage(props) {
   return (
-    <Image
+    <ImageBackground
       {...props}
       styleName={`placeholder ${props.styleName}`}
       source={{ uri: _.get(props.event, 'image.url') }}
     >
       {props.children}
-    </Image>
+    </ImageBackground>
   );
 }
 
 EventImage.propTypes = {
-  event: React.PropTypes.object,
-  styleName: React.PropTypes.string,
-  animationName: React.PropTypes.string,
-  children: React.PropTypes.node,
+  event: PropTypes.object,
+  styleName: PropTypes.string,
+  animationName: PropTypes.string,
+  children: PropTypes.node,
 };
 
 export default EventImage;

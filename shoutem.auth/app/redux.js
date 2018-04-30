@@ -67,7 +67,7 @@ function setAccessToken(token) {
     type: SET_ACCESS_TOKEN,
     payload: {
       token,
-    }
+    },
   };
 }
 
@@ -91,7 +91,6 @@ export default preventStateRehydration(
   chainReducers([
     sessionReducer,
     resource(USER_CREDENTIALS_SCHEMA),
-    resource(USER_FACEBOOK_CREDENTIALS_SCHEMA),
     userReducer,
   ]),
 );
@@ -118,25 +117,6 @@ export function register(email, username, password) {
     return dispatch(create(schemeConfig, user)).then(() => {
       return dispatch(login(email, password));
     });
-  };
-}
-
-export function login(email, password) {
-  return (dispatch) => dispatch(fetchAccessToken(email, password))
-    .then((action) => {
-      const accessToken = _.get(action, 'payload.data.attributes.token');
-      dispatch(setAccessToken(accessToken));
-      return dispatch(fetchUser('me'));
-    });
-}
-
-export function loginWithFacebook(accessToken) {
-  return (dispatch) => {
-    return dispatch(find(USER_FACEBOOK_CREDENTIALS_SCHEMA, '', { accessToken }))
-      .then((action) => {
-        dispatch(setAccessToken(_.get(action, 'payload.access_token')));
-        return dispatch(fetchUser('me'));
-      });
   };
 }
 
@@ -172,7 +152,7 @@ export function fetchToken(tokenType, authHeader) {
     schema: AUTH_TOKEN_SCHEMA,
     request: {
       headers: {
-        'Authorization': authHeader,
+        Authorization: authHeader,
       },
     },
   };
@@ -197,11 +177,28 @@ export function fetchUser(userId = 'me') {
   return find(USER_SCHEMA, userId, { userId });
 }
 
-// function checks whether or not the user is logged in the application
-// if the user is logged the acces token value in state is set
-export function isAuthenticated(state) {
-  const user = getUser(state);
-  return !_.isEmpty(state[ext()].access_token) && isValid(user);
+export function login(email, password) {
+  return (dispatch) => (
+    dispatch(fetchAccessToken(email, password))
+      .then((action) => {
+        const accessToken = _.get(action, 'payload.data.attributes.token');
+        dispatch(setAccessToken(accessToken));
+
+        return dispatch(fetchUser('me'));
+      })
+  );
+}
+
+export function loginWithFacebook(accessToken) {
+  return (dispatch) => (
+    dispatch(find(USER_FACEBOOK_CREDENTIALS_SCHEMA, '', { accessToken }))
+      .then((action) => {
+        const resolvedAccessToken = _.get(action, 'payload.access_token');
+        dispatch(setAccessToken(resolvedAccessToken));
+
+        return dispatch(fetchUser('me'));
+      })
+    );
 }
 
 // function returns access token
@@ -215,13 +212,29 @@ export const isUserUpdateAction = (action) => {
   return _.includes([USER_PROFILE_SCHEMA, USER_PROFILE_IMAGE_SCHEMA], schema);
 };
 
-// function checks if user exists and if it does returns object with user data
-// if user doesn't exist function returns undefined
+/**
+ * Checks if user exists and if it does returns object with user data
+ * if user doesn't exist function returns undefined
+ * @param {Object} state App state
+ */
 export function getUser(state) {
-  if (!_.isEmpty(state[ext()].user)) {
-    return getOne(state[ext()].user, state);
+  const user = state[ext()].user;
+
+  if (_.isEmpty(user)) {
+    return undefined;
   }
-  return undefined;
+
+  return getOne(user, state);
+}
+
+/**
+ * Checks whether user is logged in the application.
+ * User is considered logged in if access token is in state
+ * @param {Object} state App state
+ */
+export function isAuthenticated(state) {
+  const accessToken = getAccessToken(state);
+  return !!accessToken;
 }
 
 export function getUserGroups(state) {
@@ -251,7 +264,9 @@ export function hideShortcuts(user) {
     const state = getState();
     const { allScreensProtected } = getExtensionSettings(state, ext());
     const shortcuts = getAllShortcuts(state);
-    const userGroups = _.map(user.userGroups, 'id');
+
+    const userGroups = _.get(user, 'userGroups');
+    const userGroupsIds = _.map(userGroups, 'id');
 
     dispatch(showAllShortcuts());
 
@@ -268,7 +283,7 @@ export function hideShortcuts(user) {
       }
 
       const shortcutUserGroupIds = _.map(shortcutUserGroups, 'id');
-      const isShortcutHiddenToUser = _.isEmpty(_.intersection(userGroups, shortcutUserGroupIds));
+      const isShortcutHiddenToUser = _.isEmpty(_.intersection(userGroupsIds, shortcutUserGroupIds));
 
       if (isShortcutHiddenToUser) {
         dispatch(hideShortcut(shortcut.id));

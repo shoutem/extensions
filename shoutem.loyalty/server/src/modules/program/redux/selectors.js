@@ -41,15 +41,16 @@ export function getCards(state) {
 }
 
 export function getUsers(state) {
-  const cards = getProgramState(state).users;
-  return getCollection(cards, state);
+  const users = getProgramState(state).users;
+  return getCollection(users, state);
 }
 
 export const getCardsByUserId = createSelector(
   state => getCards(state),
   cards => {
-    const cardsById = _.keyBy(cards, 'user.id');
-    cloneStatus(cards, cardsById);
-    return cardsById;
+    const cardsWithUser = _.filter(cards, card => _.has(card, 'user'));
+    const cardsByUserId = _.keyBy(cardsWithUser, 'user.id');
+    cloneStatus(cards, cardsByUserId);
+    return cardsByUserId;
   }
 );

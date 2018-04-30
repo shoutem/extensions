@@ -7,7 +7,7 @@ import {
   Caption,
   View,
   Tile,
-  Image,
+  ImageBackground,
   Divider,
 } from '@shoutem/ui';
 
@@ -32,7 +32,7 @@ export class FeaturedArticleView extends ArticleView {
     return (
       <TouchableOpacity onPress={this.onPress}>
         <View styleName="sm-gutter featured">
-          <Image
+          <ImageBackground
             styleName="featured placeholder"
             source={{ uri: imageUrl }}
           >
@@ -43,7 +43,7 @@ export class FeaturedArticleView extends ArticleView {
                 {dateInfo}
               </View>
             </Tile>
-          </Image>
+          </ImageBackground>
         </View>
         <Divider styleName="line" />
       </TouchableOpacity>

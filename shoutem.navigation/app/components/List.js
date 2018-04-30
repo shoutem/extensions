@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connectStyle } from '@shoutem/theme';
 import { LIST } from '../const';
@@ -7,11 +8,10 @@ import FolderBase from './FolderBase';
 class List extends FolderBase {
   static propTypes = {
     ...FolderBase.propTypes,
-    // TODO(Braco) - update props
-    listAlignment: React.PropTypes.string,
-    topOffset: React.PropTypes.number,
-    showText: React.PropTypes.bool,
-    backgroundImage: React.PropTypes.string,
+    listAlignment: PropTypes.string,
+    topOffset: PropTypes.number,
+    showText: PropTypes.bool,
+    backgroundImage: PropTypes.string,
   };
 
   resolvePageProps() {

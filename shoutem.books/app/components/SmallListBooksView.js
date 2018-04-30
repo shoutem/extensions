@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import * as _ from 'lodash';
@@ -20,9 +21,9 @@ import LinkIconButton from './LinkIconButton';
 
 class SmallListBooksView extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    book: React.PropTypes.object.isRequired,
-    hasFavoriteButton: React.PropTypes.bool,
+    onPress: PropTypes.func,
+    book: PropTypes.object.isRequired,
+    hasFavoriteButton: PropTypes.bool,
   };
 
   constructor(props) {

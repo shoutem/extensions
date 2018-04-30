@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -30,21 +31,20 @@ import {
   placeShape,
  } from './shapes';
 
-const { func } = React.PropTypes;
-
 /**
  * A component for place loyalty points layout.
  */
 class PlaceLoyaltyPointsView extends Component {
   static propTypes = {
+    cardStates: PropTypes.array,
     // The place
     place: placeShape.isRequired,
     // Called when collect points is pressed
-    onCollectPointsPress: func,
+    onCollectPointsPress: PropTypes.func,
     // Refreshes card state
-    refreshCardState: func,
+    refreshCardState: PropTypes.func,
     // Refreshes transactions on the loyalty card
-    refreshTransactions: func,
+    refreshTransactions: PropTypes.func,
   };
 
   constructor(props) {
@@ -54,22 +54,21 @@ class PlaceLoyaltyPointsView extends Component {
   }
 
   refreshCardState() {
-    const { refreshCardState, refreshTransactions } = this.props;
-
-    refreshCardState();
-    refreshTransactions();
+    this.props.refreshCardState();
+    this.props.refreshTransactions();
   }
 
   render() {
     const { cardStates, place, onCollectPointsPress } = this.props;
-
     const isRefreshingPoints = isBusy(cardStates);
 
     return (
       <Tile>
         <View styleName="content h-center lg-gutter-vertical vertical">
-          <Caption>Points collected</Caption>
-          <Title styleName="md-gutter-top">{place.points || I18n.t(ext('noPointsCollected'))}</Title>
+          <Caption>{I18n.t(ext('pointsCollected'))}</Caption>
+          <Title styleName="md-gutter-top">
+            {place.points || I18n.t(ext('noPointsCollected'))}
+          </Title>
           <View styleName="horizontal lg-gutter-top">
             <Button
               onPress={onCollectPointsPress}

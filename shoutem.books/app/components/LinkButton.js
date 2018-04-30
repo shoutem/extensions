@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
@@ -21,6 +22,6 @@ export function LinkButton({ book, onPress }) {
 }
 
 LinkButton.propTypes = {
-  book: React.PropTypes.any,
-  onPress: React.PropTypes.func,
+  book: PropTypes.any,
+  onPress: PropTypes.func,
 };

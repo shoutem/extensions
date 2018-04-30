@@ -1,9 +1,9 @@
 {
   "name": "wordpress",
-  "version": "1.5.1",
+  "version": "1.6.1",
+  "platform": "1.6.*",
   "title": "WordPress",
   "description": "Show news articles from WordPress blog.",
-  "platform": "1.5.*",
   "icon": "server/assets/extension-icon.png",
   "categories": [
     "content"

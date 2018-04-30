@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -41,7 +42,7 @@ const defaultCollection = { id: 0, title: 'All' };
 
 const spinnerStyle = { marginTop: 20 };
 
-const { func, number, shape, string } = React.PropTypes;
+const { func, number, shape, string } = PropTypes;
 
 /**
  * This is a base screen that allows users to browse through products and collections

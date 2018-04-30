@@ -1,9 +1,10 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import {
   TouchableOpacity,
   Subtitle,
   Caption,
-  Image,
+  ImageBackground,
   Tile,
 } from '@shoutem/ui';
 
@@ -17,16 +18,16 @@ import { ext } from '../const';
  */
 export class NextArticle extends React.Component {
   static propTypes = {
-    title: React.PropTypes.string,
-    imageUrl: React.PropTypes.string,
-    openArticle: React.PropTypes.func.isRequired,
+    title: PropTypes.string,
+    imageUrl: PropTypes.string,
+    openArticle: PropTypes.func.isRequired,
   };
 
   render() {
     const { title, imageUrl, openArticle } = this.props;
     return (
       <TouchableOpacity onPress={openArticle}>
-        <Image
+        <ImageBackground
           styleName="large-ultra-wide placeholder"
           source={{ uri: imageUrl }}
         >
@@ -36,7 +37,7 @@ export class NextArticle extends React.Component {
             <Caption styleName="bold h-left">{I18n.t(ext('upNext'))}</Caption>
             <Subtitle styleName="h-left" numberOfLines={2}>{title}</Subtitle>
           </Tile>
-        </Image>
+        </ImageBackground>
       </TouchableOpacity>
     );
   }

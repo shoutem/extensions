@@ -1,4 +1,4 @@
-import createSelectOptions from './selectOptions.js';
+import createSelectOptions from './selectOptions';
 
 export {
   createSelectOptions,

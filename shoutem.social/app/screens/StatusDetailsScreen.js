@@ -23,10 +23,9 @@ import {
   Screen,
   View,
   Divider,
-  TextInput,
   Text,
   Icon,
-  Image,
+  ImageBackground,
   Row,
 } from '@shoutem/ui';
 
@@ -35,11 +34,12 @@ import { I18n } from 'shoutem.i18n';
 
 import StatusView from '../components/StatusView';
 import CommentView from '../components/CommentView';
+import AutoGrowTextInput from '../components/AutoGrowTextInput';
 import { user as userShape } from '../components/shapes';
 import { ext } from '../const';
 
 import {
-  fetchComments,
+  loadComments,
   createComment,
   deleteStatus,
   deleteComment,
@@ -58,12 +58,13 @@ export class StatusDetailsScreen extends Component {
     openUserLikes: func.isRequired,
     addComment: func.isRequired,
     onLikeAction: func.isRequired,
-    fetchComments: func.isRequired,
+    loadComments: func.isRequired,
     scrollDownOnOpen: bool.isRequired,
   };
 
   constructor(props) {
     super(props);
+
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleStatusCommentClick = this.handleStatusCommentClick.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -75,8 +76,6 @@ export class StatusDetailsScreen extends Component {
     this.renderStatus = this.renderStatus.bind(this);
     this.focusOnComment = this.focusOnComment.bind(this);
     this.scrollDownOnFocus = this.scrollDownOnFocus.bind(this);
-    this.handleContentSizeChange = this.handleContentSizeChange.bind(this);
-    this.calculateTextInputHight = this.calculateTextInputHight.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.renderLoadComments = this.renderLoadComments.bind(this);
     this.getCommentsLength = this.getCommentsLength.bind(this);
@@ -89,7 +88,6 @@ export class StatusDetailsScreen extends Component {
       text: '',
       numberOfCharacters: 0,
       image64Data: undefined,
-      height: 25,
     };
   }
 
@@ -98,9 +96,9 @@ export class StatusDetailsScreen extends Component {
   }
 
   fetchData() {
-    const { statusId, fetchComments } = this.props;
+    const { statusId, loadComments } = this.props;
 
-    fetchComments(statusId);
+    loadComments(statusId);
   }
 
   onSubmit() {
@@ -122,10 +120,6 @@ export class StatusDetailsScreen extends Component {
       Keyboard.dismiss();
       this.setState({ text: '' });
     });
-  }
-
-  handleContentSizeChange(event) {
-    this.setState({ height: event.nativeEvent.contentSize.height });
   }
 
   captureScrollViewRef(component) {
@@ -175,13 +169,6 @@ export class StatusDetailsScreen extends Component {
         this.scrollView.scrollToEnd({ animated: true });
       }
     }, 800);
-  }
-
-  // TextInput height must be equal to content height,
-  // but not lower then 25, and higher then 100
-  calculateTextInputHight() {
-    const { height } = this.state;
-    return Math.min(Math.max(25, height), 100);
   }
 
   loadMoreComments() {
@@ -300,7 +287,7 @@ export class StatusDetailsScreen extends Component {
     if (!image64Data) return null;
     return (
       <Row>
-        <Image
+        <ImageBackground
           styleName="small md-gutter"
           source={{ uri: `data:image/jpg;base64,${image64Data.data}` }}
         >
@@ -312,27 +299,25 @@ export class StatusDetailsScreen extends Component {
               <Icon name="close" />
             </Button>
           </View>
-        </Image>
+        </ImageBackground>
       </Row>
     );
   }
 
   renderCommentTextInput() {
+    const { text } = this.state;
     const { scrollDownOnOpen } = this.props;
 
     return (
-      <TextInput
+      <AutoGrowTextInput
         autoFocus={scrollDownOnOpen}
         multiline
+        maxHeight={100}
+        onTextChanged={this.handleTextChange}
         placeholder={I18n.t(ext('newCommentPlaceholder'))}
         styleName="flexible"
-        value={this.state.text}
-        onChangeText={this.handleTextChange}
-        onContentSizeChange={this.handleContentSizeChange}
+        value={text}
         returnKeyType="done"
-        style={{
-          height: this.calculateTextInputHight(),
-        }}
       />
     );
   }
@@ -405,7 +390,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = {
-  fetchComments,
+  loadComments,
   openInModal,
   navigateBack,
   createComment,

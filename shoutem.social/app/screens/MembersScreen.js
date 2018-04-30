@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { InteractionManager } from 'react-native';
 import { bindActionCreators } from 'redux';
@@ -7,7 +8,6 @@ import * as _ from 'lodash';
 import { isBusy, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { navigateTo } from '@shoutem/core/navigation';
-import { NavigationBar } from '@shoutem/ui/navigation';
 import { next } from '@shoutem/redux-io';
 import {
   setStatus,
@@ -18,22 +18,15 @@ import {
 
 import {
   ListView,
-  Screen,
   View,
-  Divider,
   Button,
   Icon,
-  Text,
 } from '@shoutem/ui';
 
 import { ListScreen } from 'shoutem.application';
-
-import {
-  fetchUsers,
-} from '../redux';
-
 import { openProfile } from 'shoutem.auth';
 
+import { loadUsers } from '../redux';
 import { ext } from '../const';
 import MemberView from '../components/MemberView';
 import { user as userShape } from '../components/shapes';
@@ -41,9 +34,9 @@ import { user as userShape } from '../components/shapes';
 export class MembersScreen extends ListScreen {
   static propTypes = {
     ...ListScreen.propTypes,
-    title: React.PropTypes.string.isRequired,
-    data: React.PropTypes.shape({
-      data: React.PropTypes.arrayOf(userShape),
+    title: PropTypes.string.isRequired,
+    data: PropTypes.shape({
+      data: PropTypes.arrayOf(userShape),
     }),
   };
 
@@ -66,10 +59,10 @@ export class MembersScreen extends ListScreen {
   }
 
   fetchData() {
-    const { fetchUsers } = this.props;
+    const { loadUsers } = this.props;
 
     InteractionManager.runAfterInteractions(() => {
-      fetchUsers();
+      loadUsers();
     });
   }
 
@@ -109,7 +102,7 @@ export class MembersScreen extends ListScreen {
   }
 
   renderData(data) {
-    const { fetchUsers } = this.props;
+    const { loadUsers } = this.props;
     if (this.shouldRenderPlaceholderView(data)) {
       return this.renderPlaceholderView(data);
     }
@@ -120,7 +113,7 @@ export class MembersScreen extends ListScreen {
         getSectionId={this.getSectionId}
         renderRow={this.renderRow}
         loading={isBusy(data) || !isInitialized(data)}
-        onRefresh={fetchUsers}
+        onRefresh={loadUsers}
         onLoadMore={this.loadMore}
         renderSectionHeader={this.renderSectionHeader}
         style={this.props.style.list}
@@ -146,7 +139,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators({ 
   navigateTo,
-  fetchUsers: ownProps.users ? undefined : fetchUsers,
+  loadUsers: ownProps.users ? undefined : loadUsers,
   next,
   openProfile,
 }, dispatch);

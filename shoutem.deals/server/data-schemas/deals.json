@@ -1,0 +1,272 @@
+{
+  "name": "deals",
+  "title": "Deals",
+  "titleProperty": "title",
+  "type": "object",
+  "formats": {
+    "discountType": {
+      "default": "Percentage",
+      "constraints": {
+        "enum": [
+          "Percentage",
+          "Fixed"
+        ]
+      }
+    },
+    "currency": {
+      "default": "USD"
+    },
+    "timezone": {
+      "default": "UTC"
+    }
+  },
+  "properties": {
+    "title": {
+      "format": "single-line",
+      "title": "Title",
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "format": "html",
+      "title": "Description",
+      "type": "string"
+    },
+    "image1": {
+      "format": "single-line",
+      "title": "Image 1",
+      "type": "string"
+    },
+    "image2": {
+      "format": "single-line",
+      "title": "Image 2",
+      "type": "string"
+    },
+    "image3": {
+      "format": "single-line",
+      "title": "Image 3",
+      "type": "string"
+    },
+    "condition": {
+      "format": "html",
+      "title": "Condition",
+      "type": "string"
+    },
+    "regularPrice": {
+      "format": "number",
+      "title": "Regular price",
+      "type": "number",
+      "required": true
+    },
+    "currency": {
+      "format": "currency",
+      "title": "Currency",
+      "type": "string"
+    },
+    "discountType": {
+      "format": "discountType",
+      "title": "Discount type",
+      "type": "string",
+      "required": true
+    },
+    "discountPrice": {
+      "format": "number",
+      "title": "Discounted price",
+      "type": "number",
+      "required": true
+    },
+    "publishTime": {
+      "type": "object",
+      "format": "date-time",
+      "title": "Start of visibility"
+    },
+    "startTime": {
+      "type": "object",
+      "format": "date-time",
+      "title": "Start of validity",
+      "required": true
+    },
+    "endTime": {
+      "type": "object",
+      "format": "date-time",
+      "title": "End of validity",
+      "required": true
+    },
+    "timezone": {
+      "format": "timezone",
+      "title": "Timezone",
+      "type": "string"
+    },
+    "buyLink": {
+      "format": "uri",
+      "title": "Buy link",
+      "type": "string"
+    },
+    "buyLinkTitle": {
+      "format": "single-line",
+      "title": "Buy link title",
+      "type": "string"
+    },
+    "couponsEnabled": {
+      "type": "boolean",
+      "format": "boolean",
+      "title": "Coupons enabled"
+    },
+    "couponsLimited": {
+      "type": "boolean",
+      "format": "boolean",
+      "title": "Coupons limited"
+    },
+    "totalCoupons": {
+      "format": "integer",
+      "title": "Number of coupons",
+      "type": "integer"
+    },
+    "couponsExpirationTime": {
+      "format": "integer",
+      "title": "Coupon expires in",
+      "type": "integer"
+    },
+    "claimedCoupons": {
+      "format": "integer",
+      "title": "Claimed",
+      "type": "integer"
+    },
+    "redeemedCoupons": {
+      "format": "integer",
+      "title": "Redeemed",
+      "type": "integer"
+    },
+    "remainingCoupons": {
+      "format": "integer",
+      "title": "Remaining",
+      "type": "integer"
+    },
+    "barcode": {
+      "format": "single-line",
+      "title": "Custom barcode",
+      "type": "string"
+    },
+    "place": {
+      "type": "object",
+      "format": "entity-reference",
+      "title": "Place",
+      "referencedSchema": "shoutem.places.places"
+    },
+    "catalog": {
+      "type": "string",
+      "format": "string",
+      "title": "Catalog"
+    },
+    "available": {
+      "type": "boolean",
+      "format": "boolean",
+      "title": "Available"
+    }
+  },
+  "layouts": {
+    "table": {
+      "columns": [
+        {
+          "name": "title",
+          "sortable": true
+        },
+        {
+          "name": "place",
+          "titleProperty": "name"
+        },
+        {
+          "name": "startTime",
+          "title": "Start",
+          "dateFormat": "DD MMM 'YY hh:mm a"
+        },
+        {
+          "name": "endTime",
+          "title": "End",
+          "dateFormat": "DD MMM 'YY hh:mm a"
+        },
+        {
+          "name": "categories"
+        }
+      ]
+    },
+    "editor": {
+      "size": 12,
+      "sections": [
+        {
+          "properties": [
+            "title",
+            "image1",
+            "image2",
+            "image3",
+            "description",
+            "condition",
+            "publishTime",
+            {
+              "name": "startTime",
+              "inline": true,
+              "size": 6
+            },
+            {
+              "name": "endTime",
+              "inline": true,
+              "size": 6
+            },
+            {
+              "name": "regularPrice",
+              "inline": true,
+              "size": 6
+            },
+            {
+              "name": "currency",
+              "inline": true,
+              "size": 6
+            },
+            {
+              "name": "discountType",
+              "displayFormat": "radio"
+            },
+            "discountPrice",
+            "buyLink",
+            "buyLinkTitle"
+          ]
+        },
+        {
+          "title": "Claim/redeem process",
+          "properties": [
+            "couponsEnabled",
+            {
+              "name": "claimedCoupons",
+              "readonly": true
+            },
+            {
+              "name": "redeemedCoupons",
+              "readonly": true
+            },
+            {
+              "name": "totalCoupons",
+              "inline": true,
+              "size": 6,
+              "helpText": "leave empty for unlimited"
+            },
+            {
+              "name": "couponsExpirationTime",
+              "inline": true,
+              "size": 6,
+              "helpText": "eg. 15h or 15m (0 – never expires)"
+            },
+            "barcode"
+          ]
+        }
+      ]
+    },
+    "editorCreate": {
+      "extends": "editor",
+      "title": "Add item"
+    },
+    "editorUpdate": {
+      "extends": "editor",
+      "title": "Edit item"
+    }
+  }
+}

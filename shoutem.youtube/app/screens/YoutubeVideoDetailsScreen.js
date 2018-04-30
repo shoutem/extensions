@@ -1,6 +1,9 @@
-import React, {
-  PropTypes,
-} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import {
+  AppState,
+  Platform,
+} from 'react-native';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -22,35 +25,69 @@ import { ext } from '../const';
 class YoutubeVideoDetailsScreen extends React.Component {
   static propTypes = {
     video: PropTypes.object,
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.handleAppStateChange = this.handleAppStateChange.bind(this);
+
+    this.state = {
+      appState: 'active',
+    };
+  }
+
+  componentDidMount() {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange(appState) {
+    this.setState({
+      appState,
+    });
   }
 
   render() {
     const { video } = this.props;
-    const playlistVideoSource = _.get(video, 'snippet.resourceId.videoId');
+    const { appState } = this.state;
+
     const videoSource = _.get(video, 'id.videoId');
-    const videoUrl = `https://youtube.com/watch?v=${playlistVideoSource || videoSource}`;
     const titleSource = _.get(video, 'snippet.title');
-    const descriptionSource = _.get(video, 'snippet.description');
     const publishedAt = _.get(video, 'snippet.publishedAt');
+    const descriptionSource = _.get(video, 'snippet.description');
+    const playlistVideoSource = _.get(video, 'snippet.resourceId.videoId');
+    const youtubeSource = playlistVideoSource || videoSource;
+    const videoUrl = `https://youtube.com/watch?v=${youtubeSource}`;
+
+    // When an iOS device is locked, the video pauses automatically
+    // on android we have to explicitly remove it from component tree
+    const isAppActive = appState === 'active';
+    const isIos = Platform.OS === 'ios';
+    const shouldRenderVideo = isAppActive || isIos;
 
     return (
       <Screen styleName="paper">
         <NavigationBar
+          animationName="boxing"
           share={{
             title: titleSource,
             link: videoUrl,
           }}
-          animationName="boxing"
           title={titleSource}
         />
 
         <ScrollView>
-          <Video source={{ uri: videoUrl }} />
+          {shouldRenderVideo && (
+            <Video source={{ uri: videoUrl }} />
+          )}
           <Tile styleName="text-centric">
             <Title styleName="md-gutter-bottom">{titleSource}</Title>
             <Caption>{moment(publishedAt).fromNow()}</Caption>
           </Tile>
-
           <View styleName="solid">
             <Html body={descriptionSource} />
           </View>

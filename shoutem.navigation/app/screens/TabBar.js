@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import {
@@ -37,24 +38,24 @@ const TABS_LIMIT = 5;
 export class TabBar extends PureComponent {
   static propTypes = {
     // Server props
-    shortcut: React.PropTypes.object.isRequired,
-    startingScreen: React.PropTypes.string,
-    showText: React.PropTypes.bool,
-    showIcon: React.PropTypes.bool,
+    shortcut: PropTypes.object.isRequired,
+    startingScreen: PropTypes.string,
+    showText: PropTypes.bool,
+    showIcon: PropTypes.bool,
 
     // Props from local state (connect)
 
-    navigationState: React.PropTypes.object,
+    navigationState: PropTypes.object,
     // navigationState.routes contains the specific tab shortcut object
 
-    tabStates: React.PropTypes.object,
-    tabStacks: React.PropTypes.object,
-    executeShortcut: React.PropTypes.func,
-    navigateTo: React.PropTypes.func,
-    navigateBack: React.PropTypes.func,
-    resetToRoute: React.PropTypes.func,
-    jumpToKey: React.PropTypes.func,
-    setActiveNavigationStack: React.PropTypes.func,
+    tabStates: PropTypes.object,
+    tabStacks: PropTypes.object,
+    executeShortcut: PropTypes.func,
+    navigateTo: PropTypes.func,
+    navigateBack: PropTypes.func,
+    resetToRoute: PropTypes.func,
+    jumpToKey: PropTypes.func,
+    setActiveNavigationStack: PropTypes.func,
   };
 
   state = {

@@ -1,8 +1,9 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
 import {
-  Image,
+  ImageBackground,
   Title,
   View,
   Divider,
@@ -21,9 +22,9 @@ import LinkIconButton from './LinkIconButton';
 
 class ListBooksView extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    book: React.PropTypes.object.isRequired,
-    hasFavoriteButton: React.PropTypes.bool,
+    onPress: PropTypes.func,
+    book: PropTypes.object.isRequired,
+    hasFavoriteButton: PropTypes.bool,
   };
 
   constructor(props) {
@@ -43,7 +44,7 @@ class ListBooksView extends React.Component {
 
     return (
       <TouchableOpacity virtual onPress={this.openDetailsScreen}>
-        <Image
+        <ImageBackground
           styleName="large-banner placeholder"
           source={{ uri: book.image ? book.image.url : undefined }}
         >
@@ -55,7 +56,7 @@ class ListBooksView extends React.Component {
 
             <Caption>{formatBookCaption(book)}</Caption>
           </Tile>
-        </Image>
+        </ImageBackground>
 
         <Divider styleName="line" />
       </TouchableOpacity>

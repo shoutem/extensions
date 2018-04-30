@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -37,7 +38,7 @@ import {
   variant as variantShape,
 } from '../components/shapes';
 
-const { func, number, oneOf } = React.PropTypes;
+const { func, number, oneOf } = PropTypes;
 
 /*
  * Action types used to determine the context for which this component is called

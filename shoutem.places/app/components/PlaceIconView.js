@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
   TouchableOpacity,
@@ -17,8 +18,8 @@ const DEFAULT_IMAGE = require('../assets/data/no_image.png');
 
 export class PlaceIconView extends Component {
   static propTypes = {
-    place: React.PropTypes.object.isRequired,
-    onPress: React.PropTypes.func,
+    place: PropTypes.object.isRequired,
+    onPress: PropTypes.func,
   };
 
   constructor(props) {

@@ -1,3 +1,0 @@
-export {
-  validateProviderSetup,
-} from './validation';

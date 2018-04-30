@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
 import _ from 'lodash';
@@ -26,7 +27,7 @@ import {
 
 import { ext } from '../const';
 
-const { array, func, shape, string } = React.PropTypes;
+const { array, func, shape, string } = PropTypes;
 
 /* eslint-disable  class-methods-use-this */
 

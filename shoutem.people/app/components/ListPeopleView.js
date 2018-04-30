@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
@@ -12,8 +13,8 @@ import {
 
 export default class ListPeopleView extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    person: React.PropTypes.object.isRequired,
+    onPress: PropTypes.func,
+    person: PropTypes.object.isRequired,
   };
 
   constructor(props) {

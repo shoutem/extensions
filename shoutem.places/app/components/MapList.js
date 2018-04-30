@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { LayoutAnimation } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
@@ -172,9 +173,9 @@ export class MapList extends Component {
 export default connectStyle(ext('MapList'))(MapList);
 
 MapList.propTypes = {
-  places: React.PropTypes.array.isRequired,
-  selectedPlace: React.PropTypes.object,
-  initialRegion: React.PropTypes.object,
+  places: PropTypes.array.isRequired,
+  selectedPlace: PropTypes.object,
+  initialRegion: PropTypes.object,
 };
 
 MapList.defaultProps = {

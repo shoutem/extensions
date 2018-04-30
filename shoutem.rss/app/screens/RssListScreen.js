@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import _ from 'lodash';
@@ -11,7 +12,7 @@ import { I18n } from 'shoutem.i18n';
 
 import { ext } from '../const';
 
-const { func, string } = React.PropTypes;
+const { func, string } = PropTypes;
 
 export class RssListScreen extends RemoteDataListScreen {
   static propTypes = {

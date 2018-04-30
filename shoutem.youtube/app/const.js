@@ -9,3 +9,8 @@ export const USER_REGEX = /(?:http|https:\/\/|)www.youtube\.com\/user\/([a-zA-Z0
 export const CHANNEL_REGEX = /(?:http|https:\/\/|)www.youtube\.com\/channel\/([a-zA-Z0-9_-]{1,})/i;
 export const PLAYLIST_REGEX =
   /(?:http|https:\/\/|)www\.youtube\.com\/playlist\?list=([a-zA-Z0-9_-]{1,})/i;
+
+export const RESOURCE_TYPES = {
+  PLAYLIST: 'playlistItems',
+  SEARCH: 'search',
+};

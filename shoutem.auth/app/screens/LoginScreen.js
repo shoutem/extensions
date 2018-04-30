@@ -1,52 +1,31 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
-
+import { connect } from 'react-redux';
+import _ from 'lodash';
 import {
   Alert,
   InteractionManager,
 } from 'react-native';
 
 import {
-  AccessToken,
-  LoginManager,
-} from 'react-native-fbsdk';
-
-import { connect } from 'react-redux';
-
-import _ from 'lodash';
-
-import {
-  Icon,
-  TextInput,
   Screen,
   Divider,
-  Button,
-  Text,
-  Caption,
-  View,
   Spinner,
 } from '@shoutem/ui';
-
+import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
-
 import {
   navigateTo,
   isScreenActive,
 } from '@shoutem/core/navigation';
 
-import { isBusy } from '@shoutem/redux-io';
-
 import {
   getAppId,
   getExtensionSettings,
 } from 'shoutem.application';
-
 import { I18n } from 'shoutem.i18n';
-
-import { NavigationBar } from '@shoutem/ui/navigation';
-
-import { ext } from '../const';
 
 import {
   login,
@@ -57,37 +36,32 @@ import {
   getAccessToken,
   hideShortcuts,
 } from '../redux';
-
 import {
-  errorMessages,
+  getErrorCode,
   getErrorMessage,
 } from '../errorMessages';
-
 import { saveSession } from '../session';
-
 import { loginRequired } from '../loginRequired';
+import RegisterButton from '../components/RegisterButton';
+import LoginForm from '../components/LoginForm';
+import FacebookButton from '../components/FacebookButton';
+import { ext } from '../const';
 
-const renderAuthenticatingMessage = () => <Spinner styleName="xl-gutter-top" />;
-
-const handleLoginError = ({ payload }) => {
-  const { response } = payload;
-  Alert.alert(I18n.t(ext('loginFailErrorTitle')), getErrorMessage(response && response.code));
-};
-
-const getFacebookAccessToken = () => AccessToken.refreshCurrentAccessTokenAsync().then(() =>
-  AccessToken.getCurrentAccessToken());
-
-const { bool, func, shape, string } = React.PropTypes;
+const { bool, func, shape, string } = PropTypes;
 
 export class LoginScreen extends Component {
   static propTypes = {
     navigateTo: func,
     login: func,
     loginWithFacebook: func,
-
-    isAuthenticated: bool,
-    isAuthenticating: bool,
+    isUserAuthenticated: bool,
+    inProgress: bool,
     onLoginSuccess: func,
+    hideShortcuts: func,
+    user: shape({
+      id: string,
+    }),
+    access_token: string,
     settings: shape({
       providers: shape({
         email: shape({
@@ -105,218 +79,141 @@ export class LoginScreen extends Component {
     userLoggedIn: func,
   };
 
+  static defaultPropTypes = {
+    onLoginSuccess: _.noop,
+  };
+
   constructor(props, contex) {
     super(props, contex);
 
-    this.finishLogin = this.finishLogin.bind(this);
-    this.loginWithFacebook = this.loginWithFacebook.bind(this);
-    this.loginWithFacebookAccessToken = this.loginWithFacebookAccessToken.bind(this);
-    this.openFacebookLogin = this.openFacebookLogin.bind(this);
-    this.openRegisterScreen = this.openRegisterScreen.bind(this);
     this.performLogin = this.performLogin.bind(this);
-
-    this.renderRegisterButton = this.renderRegisterButton.bind(this);
-    this.renderLoginComponent = this.renderLoginComponent.bind(this);
+    this.handleFacebookLoginSuccess = this.handleFacebookLoginSuccess.bind(this);
+    this.handleLoginSuccess = this.handleLoginSuccess.bind(this);
+    this.handleLoginFailed = this.handleLoginFailed.bind(this);
+    this.openRegisterScreen = this.openRegisterScreen.bind(this);
 
     this.state = {
-      username: null,
-      password: null,
+      inProgress: false,
     };
   }
 
-  componentWillReceiveProps(newProps) {
-    const { isScreenActive, isAuthenticated, onLoginSuccess } = newProps;
+  componentWillReceiveProps(nextProps) {
+    const {
+      isScreenActive,
+      isUserAuthenticated,
+      onLoginSuccess,
+      hideShortcuts,
+    } = nextProps;
+
     // We want to replace the login screen if the user is authenticated
     // but only if it's the currently active screen as we don't want to
     //  replace screens in the background
-    if (isScreenActive && isAuthenticated && _.isFunction(onLoginSuccess)) {
+    const isLoggedIn = isScreenActive && isUserAuthenticated;
+    if (isLoggedIn) {
       // We are running the callback after interactions because of the bug
       // in navigation which prevents us from navigating to other screens
       // while in the middle of a transition
       InteractionManager.runAfterInteractions(() => {
-        const { user, settings } = newProps;
-        const { hideShortcuts } = this.props;
+        const { user, settings } = nextProps;
+
         hideShortcuts(user, settings);
-        onLoginSuccess()
+        onLoginSuccess();
       });
     }
   }
 
-  openRegisterScreen() {
-    const { navigateTo } = this.props;
-    const route = {
-      screen: ext('RegisterScreen'),
-    };
-    navigateTo(route);
-  }
-
-  loginWithFacebook() {
-    getFacebookAccessToken()
-      .then((data) => {
-        if (data && data.accessToken) {
-          this.loginWithFacebookAccessToken(data.accessToken);
-        } else {
-          throw new Error(I18n.t(ext('tokenErrorMessage')));
-        }
-      })
-      .catch(this.openFacebookLogin);
-  }
-
-  openFacebookLogin() {
-    LoginManager.logInWithReadPermissions(['public_profile', 'email'])
-      .then((result) => {
-        if (result.isCancelled) {
-          throw new Error(I18n.t(ext('loginCancelErrorMessage')));
-        }
-        return AccessToken.getCurrentAccessToken();
-      }).then((data) => {
-      if (!(data && data.accessToken)) {
-        throw new Error();
-      }
-      this.loginWithFacebookAccessToken(data.accessToken);
-    }).catch((error) => {
-      Alert.alert(I18n.t(ext('loginFailErrorTitle')), error.message || errorMessages.UNEXPECTED_ERROR);
-    });
-  }
-
-  loginWithFacebookAccessToken(accessToken) {
-    const { loginWithFacebook } = this.props;
-
-    loginWithFacebook(accessToken)
-      .then(response => this.finishLogin(response))
-      .catch(handleLoginError);
-  }
-
-  finishLogin() {
-    const { userLoggedIn, settings, user, access_token } = this.props;
-
-
-    saveSession(JSON.stringify({ access_token }));
-    userLoggedIn({
-      user,
-      access_token,
-    });
-  }
-
-  performLogin() {
-    const { login } = this.props;
-    const { username, password } = this.state;
-
+  performLogin(username, password) {
     if (_.isEmpty(username) || _.isEmpty(password)) {
-      Alert.alert(I18n.t('shoutem.application.errorTitle'), I18n.t(ext('formNotFilledErrorMessage')));
+      Alert.alert(
+        I18n.t('shoutem.application.errorTitle'),
+        I18n.t(ext('formNotFilledErrorMessage'))
+      );
       return;
     }
 
-    login(username, password)
-      .then(this.finishLogin)
-      .catch(handleLoginError);
+    this.setState({ inProgress: true });
+    this.props.login(username, password)
+      .then(this.handleLoginSuccess)
+      .catch(this.handleLoginFailed);
   }
 
-  renderRegisterButton() {
-    const { settings } = this.props;
-    let buttons = null;
-    if (settings.signupEnabled) {
-      buttons = (
-        <View>
-          <Caption styleName="h-center lg-gutter-vertical">
-            {I18n.t(ext('noAccountSectionTitle'))}
-          </Caption>
-          <Button styleName="full-width inflexible" onPress={this.openRegisterScreen}>
-            <Text>{I18n.t(ext('registerButton'))}</Text>
-          </Button>
-        </View>
-      );
-    }
-    return buttons;
+  handleFacebookLoginSuccess(accessToken) {
+    this.setState({ inProgress: true });
+    this.props.loginWithFacebook(accessToken)
+      .then(this.handleLoginSuccess)
+      .catch(this.handleLoginFailed);
   }
 
-  renderLoginComponent() {
-    const { settings } = this.props;
-    const { username } = this.state;
+  handleLoginSuccess() {
+    this.setState({ inProgress: false });
+    const { user, access_token } = this.props;
 
-    let components = null;
-    if (settings.providers.email.enabled) {
-      components = (
-        <View>
-          <Divider />
-          <Divider styleName="line" />
-          <TextInput
-            placeholder={I18n.t(ext('usernameOrEmailPlaceholder'))}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="email-address"
-            keyboardAppearance="dark"
-            onChangeText={username => this.setState({ username })}
-            returnKeyType="done"
-            value={username}
-          />
-          <Divider styleName="line" />
-          <TextInput
-            placeholder={I18n.t(ext('passwordPlaceholder'))}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardAppearance="dark"
-            secureTextEntry
-            onChangeText={password => this.setState({ password })}
-            returnKeyType="done"
-          />
-          <Divider styleName="line" />
-          <Divider />
-          <Button
-            styleName="full-width inflexible"
-            onPress={this.performLogin}
-          >
-            <Text>{I18n.t(ext('logInButton'))}</Text>
-          </Button>
-        </View>
-      );
-    }
-    return components;
+    saveSession(JSON.stringify({ access_token }));
+    this.props.userLoggedIn({ user, access_token });
   }
 
-  renderFacebookLoginButton() {
-    return (
-      <View>
-        <Caption styleName="h-center lg-gutter-vertical">
-          {I18n.t(ext('socialLoginSectionTitle'))}
-        </Caption>
-        <Button
-          onPress={this.loginWithFacebook}
-          styleName="full-width inflexible"
-        >
-          <Icon name="facebook" />
-          <Text>{I18n.t(ext('facebookLogInButton'))}</Text>
-        </Button>
-      </View>
-    );
+  handleLoginFailed({ payload }) {
+    const { response } = payload;
+
+    this.setState({ inProgress: false });
+    
+    const code = _.get(response, 'errors[0].code');
+    const errorCode = getErrorCode(code);
+    const errorMessage = getErrorMessage(errorCode);
+
+    Alert.alert(I18n.t(ext('loginFailedErrorTitle')), errorMessage);
+  }
+
+  openRegisterScreen() {
+    const route = {
+      screen: ext('RegisterScreen'),
+    };
+    this.props.navigateTo(route);
   }
 
   render() {
-    const { isAuthenticating, settings: { providers: { facebook } } } = this.props;
-    let screenContent = null;
-    if (isAuthenticating || this.props.isAuthenticated) {
-      // We want to display the authenticating state if the
-      // auth request is in progress, or if we are already
-      // authenticated. The latter case can happen if the
-      // login screen is left in the navigation stack history,
-      // but the user authenticated successfully in another
-      // part of the app.
-      screenContent = renderAuthenticatingMessage();
-    } else {
-      screenContent = (
-        <View>
+    const { inProgress } = this.state;
+    const { isUserAuthenticated, settings } = this.props;
+
+    const isEmailAuthEnabled = _.get(settings, 'providers.email.enabled');
+    const isFacebookAuthEnabled = _.get(settings, 'providers.facebook.enabled');
+    const isSignupEnabled = _.get(settings, 'signupEnabled');
+
+    // We want to display the authenticating state if the
+    // auth request is in progress, or if we are already
+    // authenticated. The latter case can happen if the
+    // login screen is left in the navigation stack history,
+    // but the user authenticated successfully in another
+    // part of the app. E.g. open one protected tab login screen will
+    // appear, now open a second tab again a loading screen will apear
+    // if you log in on any stack, on other stacks spinner will be shown
+    // instead of login form
+    const isLoading = inProgress || isUserAuthenticated;
+    if (isLoading) {
+      return (
+        <Screen>
           <NavigationBar title={I18n.t(ext('logInNavBarTitle'))} />
-          {this.renderLoginComponent()}
-          {facebook.enabled ? this.renderFacebookLoginButton() : null}
-          {this.renderRegisterButton()}
-          <Divider />
-        </View>
+          <Spinner styleName="xl-gutter-top" />
+        </Screen>
       );
     }
 
     return (
       <Screen>
-        {screenContent}
+        <NavigationBar title={I18n.t(ext('logInNavBarTitle'))} />
+        {isEmailAuthEnabled &&
+          <LoginForm onSubmit={this.performLogin} />
+        }
+        {isFacebookAuthEnabled &&
+          <FacebookButton
+            onLoginSuccess={this.handleFacebookLoginSuccess}
+            onLoginFailed={this.handleLoginFailed}
+          />
+        }
+        {isSignupEnabled &&
+          <RegisterButton onPress={this.openRegisterScreen} />
+        }
+        <Divider />
       </Screen>
     );
   }
@@ -333,8 +230,7 @@ const mapDispatchToProps = {
 function mapStateToProps(state, ownProps) {
   return {
     user: getUser(state),
-    isAuthenticated: isAuthenticated(state),
-    isAuthenticating: isBusy(state[ext()]),
+    isUserAuthenticated: isAuthenticated(state),
     appId: getAppId(),
     settings: getExtensionSettings(state, ext()),
     isScreenActive: isScreenActive(state, ownProps.screenId),

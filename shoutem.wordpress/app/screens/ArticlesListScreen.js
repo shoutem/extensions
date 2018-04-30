@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -20,9 +21,9 @@ import { getLeadImageUrl } from '../services';
 export class ArticlesListScreen extends ListScreen {
   static propTypes = {
     ...ListScreen.propTypes,
-    page: React.PropTypes.number,
-    perPage: React.PropTypes.number,
-    loadFeed: React.PropTypes.func,
+    page: PropTypes.number,
+    perPage: PropTypes.number,
+    loadFeed: PropTypes.func,
   };
 
   constructor(props) {

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
@@ -11,7 +12,7 @@ import { I18n } from 'shoutem.i18n';
 import { post as postShape } from './shapes';
 import { ext } from '../const';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 export default class CommentButton extends React.Component {
   static propTypes = {

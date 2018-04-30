@@ -1,6 +1,6 @@
 {
   "name": "shoutem.ical-events",
-  "version": "1.5.2",
+  "version": "1.6.2",
   "description": "Shoutem extension for managing iCal events",
   "scripts": {
     "clean": "rimraf ./build/*",

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connectStyle } from '@shoutem/theme';
 import { Screen } from '@shoutem/ui';
@@ -18,7 +19,7 @@ function NoContent({ title }) {
 }
 
 NoContent.propTypes = {
-  title: React.PropTypes.string,
+  title: PropTypes.string,
 };
 
 export default connectStyle(ext('NoContent'))(NoContent);

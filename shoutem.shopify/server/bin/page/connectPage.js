@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { getShortcut, getExtension } from '@shoutem/redux-api-sdk';
@@ -20,7 +20,7 @@ export function connectPageContext(WrappedComponent) {
   }
 
   PageProvider.contextTypes = {
-    page: React.PropTypes.object,
+    page: PropTypes.object,
   };
 
   return PageProvider;

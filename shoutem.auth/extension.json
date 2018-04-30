@@ -1,7 +1,7 @@
 {
   "name": "auth",
-  "version": "1.5.10",
-  "platform": "1.5.*",
+  "version": "1.6.7",
+  "platform": "1.6.*",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
   "description": "Show user profile, sign out user",

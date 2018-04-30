@@ -4,7 +4,7 @@ import {
   Title,
   Caption,
   Icon,
-  Image,
+  ImageBackground,
   Tile,
   View,
 } from '@shoutem/ui';
@@ -20,7 +20,7 @@ export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
     const { article } = this.props;
 
     return (
-      <Image
+      <ImageBackground
         styleName="large-portrait placeholder"
         source={{ uri: _.get(article, 'image.url') }}
         animationName="hero"
@@ -36,7 +36,7 @@ export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
           </View>
         </Tile>
         <Icon name="down-arrow" styleName="scroll-indicator" />
-      </Image>
+      </ImageBackground>
     );
   }
 

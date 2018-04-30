@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   PureComponent,
 } from 'react';
@@ -43,6 +44,8 @@ import {
 } from '@shoutem/core/navigation';
 
 import { I18n } from 'shoutem.i18n';
+
+import { ext } from '../const'
 
 import {
   CATEGORIES_SCHEMA,
@@ -99,19 +102,19 @@ function getCategoriesToDisplay(allCategories, visibleCategories) {
 export class CmsListScreen extends PureComponent {
   static propTypes = {
     // A unique id of a screen instance
-    screenId: React.PropTypes.string.isRequired,
+    screenId: PropTypes.string.isRequired,
     // The parent category that is used to display
     // the available categories in the drop down menu
-    parentCategory: React.PropTypes.any,
+    parentCategory: PropTypes.any,
     // CMS categories of the primary data
-    categories: React.PropTypes.array.isRequired,
+    categories: PropTypes.array.isRequired,
     // Primary CMS data to display
-    data: React.PropTypes.array.isRequired,
+    data: PropTypes.array.isRequired,
     // The shortcut title
-    title: React.PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     // The currently selected category on this screen
-    selectedCategory: React.PropTypes.object,
-    style: React.PropTypes.shape({
+    selectedCategory: PropTypes.object,
+    style: PropTypes.shape({
       screen: Screen.propTypes.style,
       list: ListView.propTypes.style,
       emptyState: EmptyStateView.propTypes.style,
@@ -119,10 +122,10 @@ export class CmsListScreen extends PureComponent {
     }),
 
     // actions
-    find: React.PropTypes.func.isRequired,
-    next: React.PropTypes.func.isRequired,
-    clear: React.PropTypes.func.isRequired,
-    setScreenState: React.PropTypes.func.isRequired,
+    find: PropTypes.func.isRequired,
+    next: PropTypes.func.isRequired,
+    clear: PropTypes.func.isRequired,
+    setScreenState: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -528,7 +531,7 @@ export class CmsListScreen extends PureComponent {
         onLoadMore={this.loadMore}
         getSectionId={this.getSectionId}
         renderSectionHeader={this.renderSectionHeader}
-        style={style.list}
+        style={style}
         initialListSize={1}
         {...this.getListProps()}
       />

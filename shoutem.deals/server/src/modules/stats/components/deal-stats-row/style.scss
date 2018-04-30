@@ -1,0 +1,13 @@
+:global {
+  .deals-stats-table-row {
+    cursor: pointer;
+
+    &.is-selected {
+      background-color: rgba(0, 170, 223, 0.1);
+    }
+  }
+
+  .deal-stats-table-row__stat {
+    text-align: right;
+  }
+}

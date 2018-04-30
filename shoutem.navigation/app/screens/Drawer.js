@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
   Dimensions,
@@ -45,19 +46,19 @@ const { width: windowWidth } = Dimensions.get('window');
 export class Drawer extends Component {
   static propTypes = {
     // Server props
-    shortcut: React.PropTypes.object.isRequired,
-    startingScreen: React.PropTypes.string,
-    showText: React.PropTypes.bool,
-    showIcon: React.PropTypes.bool,
+    shortcut: PropTypes.object.isRequired,
+    startingScreen: PropTypes.string,
+    showText: PropTypes.bool,
+    showIcon: PropTypes.bool,
 
     // Props from local state (connect)
-    activeShortcut: React.PropTypes.object,
-    navigationState: React.PropTypes.object,
-    style: React.PropTypes.object,
+    activeShortcut: PropTypes.object,
+    navigationState: PropTypes.object,
+    style: PropTypes.object,
 
-    executeShortcut: React.PropTypes.func,
-    setActiveNavigationStack: React.PropTypes.func,
-    navigateBack: React.PropTypes.func,
+    executeShortcut: PropTypes.func,
+    setActiveNavigationStack: PropTypes.func,
+    navigateBack: PropTypes.func,
   };
 
   constructor(props, context) {

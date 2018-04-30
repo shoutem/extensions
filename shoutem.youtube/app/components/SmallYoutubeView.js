@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import moment from 'moment';
@@ -8,7 +9,7 @@ import {
   Subtitle,
   Caption,
   View,
-  Image,
+  ImageBackground,
   Overlay,
   Icon,
   Divider,
@@ -23,8 +24,8 @@ import getImageSource from '../services/youtube-view';
  */
 export default class SmallYoutubeView extends React.Component {
   static propTypes = {
-    onPress: React.PropTypes.func,
-    video: React.PropTypes.object.isRequired,
+    onPress: PropTypes.func,
+    video: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -44,14 +45,14 @@ export default class SmallYoutubeView extends React.Component {
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Row>
-          <Image
+          <ImageBackground
             styleName="medium rounded-corners placeholder"
             source={{ uri: getImageSource(video) }}
           >
             <Overlay styleName="rounded-small">
               <Icon name="play" />
             </Overlay>
-          </Image>
+          </ImageBackground>
 
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={3}>{titleSource}</Subtitle>

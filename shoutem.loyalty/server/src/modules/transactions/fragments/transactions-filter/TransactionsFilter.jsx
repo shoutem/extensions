@@ -12,6 +12,7 @@ import {
   formatUserLabel,
   formatRewardLabel,
   formatPlaceLabel,
+  formatCashierLabel,
 } from '../../services';
 import './style.scss';
 
@@ -64,7 +65,7 @@ export class TransactionsFilter extends Component {
             autoBlur
             clearable
             onChange={this.handleUserChange}
-            options={createSelectOptions(users, formatUserLabel)}
+            options={createSelectOptions(users, formatUserLabel, 'legacyId')}
             placeholder="Filter by user"
             value={filter.userId}
           />
@@ -98,7 +99,7 @@ export class TransactionsFilter extends Component {
             autoBlur
             clearable
             onChange={this.handleCashierChange}
-            options={createSelectOptions(cashiers, formatUserLabel)}
+            options={createSelectOptions(cashiers, formatCashierLabel)}
             placeholder="Filter by cashier"
             value={filter.cashierId}
           />

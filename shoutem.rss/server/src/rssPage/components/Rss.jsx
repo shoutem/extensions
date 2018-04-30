@@ -71,7 +71,8 @@ export class Rss extends Component {
 
   setFeedUrl(feedUrl) {
     const id = this.props.shortcut.id;
-    const normalizedFeedUrl = normalizeUrl(feedUrl);
+    const normalizedFeedUrl = normalizeUrl(feedUrl, {stripWWW: false});
+
     const settings = { feedUrl: normalizedFeedUrl };
     this.props.updateShortcutSettings(id, settings);
   }

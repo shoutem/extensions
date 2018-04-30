@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -27,9 +28,9 @@ function ShortcutChildrenRequired(props) {
 }
 
 ShortcutChildrenRequired.propTypes = {
-  shortcut: React.PropTypes.object.isRequired,
-  isRootScreen: React.PropTypes.bool,
-  WrappedComponent: React.PropTypes.func,
+  shortcut: PropTypes.object.isRequired,
+  isRootScreen: PropTypes.bool,
+  WrappedComponent: PropTypes.func,
 };
 
 const mapStateToProps = (state, ownProps) => ({

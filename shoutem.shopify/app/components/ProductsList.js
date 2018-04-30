@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -38,7 +39,7 @@ import {
 
 import { getProducts } from '../redux/selectors';
 
-const { arrayOf, bool, func, number, shape, string } = React.PropTypes;
+const { arrayOf, bool, func, number, shape, string } = PropTypes;
 
 /**
  * A component that displays a list of products, used in the main products screen and

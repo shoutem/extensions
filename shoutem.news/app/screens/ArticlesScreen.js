@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -13,9 +14,9 @@ import { FeaturedArticleView } from '../components/FeaturedArticleView';
 export class ArticlesScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    navigateTo: React.PropTypes.func.isRequired,
-    listType: React.PropTypes.string.isRequired,
-    hasFeaturedItem: React.PropTypes.bool.isRequired,
+    navigateTo: PropTypes.func.isRequired,
+    listType: PropTypes.string.isRequired,
+    hasFeaturedItem: PropTypes.bool.isRequired,
   };
 
   constructor(props, context) {

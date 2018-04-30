@@ -8,6 +8,7 @@ import { LOAD_REQUEST } from '@shoutem/redux-io';
 import { Alert } from 'react-native';
 import { I18n } from 'shoutem.i18n';
 import { EXECUTE_SHORTCUT, getShortcut, getActiveShortcut } from './redux';
+import { ext } from './const';
 
 function createExecuteShortcutActionMiddleware(actions) {
   const middleware = store => next => action => {

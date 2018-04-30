@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
@@ -26,7 +27,7 @@ import {
 
 import RewardProgressBar from './RewardProgressBar';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 /**
  * Renders a single reward, in a list of rewards for places.

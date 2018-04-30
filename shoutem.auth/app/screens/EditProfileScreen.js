@@ -1,11 +1,9 @@
+import PropTypes from 'prop-types';
 import React, {
   Component,
 } from 'react';
-
 import { Alert } from 'react-native';
-
 import { connect } from 'react-redux';
-
 import _ from 'lodash';
 
 import {
@@ -20,24 +18,22 @@ import {
   TextInput,
   View,
 } from '@shoutem/ui';
-
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { ImagePicker } from '@shoutem/ui-addons';
 import { connectStyle } from '@shoutem/theme';
 import { isBusy } from '@shoutem/redux-io';
-import { I18n } from 'shoutem.i18n';
-import { ext } from '../const';
 
+import { I18n } from 'shoutem.i18n';
+
+import { ext } from '../const';
 import {
   getUser,
   updateProfile,
-  updateProfileImage,
 } from '../redux';
-
 import { user as userShape } from '../components/shapes';
 import ProfileImage from '../components/ProfileImage';
 
-const { func } = React.PropTypes;
+const { func } = PropTypes;
 
 const renderSavingChangesMessage = () => (
   <View styleName="xl-gutter-top">
@@ -46,7 +42,7 @@ const renderSavingChangesMessage = () => (
 );
 
 /**
- * A component that lets the user edit his profile.
+ * A component that lets the user edit their profile.
  */
 class EditProfileScreen extends Component {
   static propTypes = {
@@ -54,8 +50,6 @@ class EditProfileScreen extends Component {
     onClose: func.isRequired,
     // Dispatched with new user information when updating the profile
     updateProfile: func.isRequired,
-    // Dispatched when the user has updated his profile image
-    updateProfileImage: func.isRequired,
     // User that's editing his profile
     user: userShape,
   };
@@ -78,25 +72,33 @@ class EditProfileScreen extends Component {
 
   onDone() {
     const { onClose, updateProfile, user } = this.props;
+    const { updatedImage } = this.state;
+    const image = _.get(updatedImage, 'data');
 
-    const updates = _.mapValues(this.fields, (value, key) => this.state[key]);
-    const hasChanges = _.some(_.keys(updates), key => user[key] !== updates[key]);
-    const newUser = {
-      ...user,
-      profile: { ...updates }
+    const updates = {
+      ..._.mapValues(this.fields, (value, key) => this.state[key]),
+      image,
     };
 
-    delete newUser.userGroups;
-
+    const hasChanges = _.some(_.keys(updates), key => user[key] !== updates[key]);
     if (!hasChanges) {
       return onClose();
     }
+
+    const newUser = {
+      ...user,
+      profile: { ...updates },
+    };
+    delete newUser.userGroups;
 
     return updateProfile(newUser)
       .then(onClose)
       .catch((error) => {
         console.log(error);
-        Alert.alert(I18n.t(ext('profileUpdatingErrorTitle')), I18n.t(ext('profileUpdatingErrorMessage')));
+        Alert.alert(
+          I18n.t(ext('profileUpdatingErrorTitle')),
+          I18n.t(ext('profileUpdatingErrorMessage'))
+        );
       });
   }
 
@@ -117,8 +119,6 @@ class EditProfileScreen extends Component {
   }
 
   changeProfileImage() {
-    const { updateProfileImage } = this.props;
-
     const options = {
       allowsEditing: true,
       maxHeight: 500,
@@ -127,9 +127,14 @@ class EditProfileScreen extends Component {
 
     ImagePicker.showImagePicker(options, (response) => {
       if (response.error) {
-        Alert.alert(I18n.t(ext('imageSelectError')), response.error);
+        Alert.alert(I18n.t(ext('imageSelectErrorMessage')), response.error);
       } else if (!response.didCancel) {
-        this.setState({ image: response.data });
+        const { data } = response;
+        const updatedImage = {
+          uri: `data:image/jpeg;base64,${data}`,
+          data,
+        };
+        this.setState({ updatedImage });
       }
     });
   }
@@ -163,12 +168,16 @@ class EditProfileScreen extends Component {
 
   renderContent() {
     const { user } = this.props;
-    const { profile, username } = user;
-    const { firstName, lastName, image } = profile;
+    const { updatedImage } = this.state;
 
     if (isBusy(user)) {
       return renderSavingChangesMessage();
     }
+
+    const username = _.get(user, 'username');
+    // updated image takes precedence, it will be set if user is currently
+    // editing profile and changed the image
+    const image = _.get(updatedImage, 'uri') || _.get(user, 'profile.image');
 
     return (
       <View>
@@ -177,7 +186,7 @@ class EditProfileScreen extends Component {
           <ProfileImage
             isEditable
             onPress={this.changeProfileImage}
-            uri={image || ''}
+            uri={image}
           />
           {this.renderForm()}
           <Caption styleName="lg-gutter-vertical h-center">
@@ -201,7 +210,7 @@ export const mapStateToProps = state => ({
   user: getUser(state),
 });
 
-export const mapDispatchToProps = { updateProfile, updateProfileImage };
+export const mapDispatchToProps = { updateProfile };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('EditProfileScreen'))(EditProfileScreen),
