@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>my-coupons</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="3.-Deals-(updated)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Deals---Grid-(featured-+-scroll)" transform="translate(-284.000000, -32.000000)">
+            <g id="my-coupons-copy" transform="translate(284.000000, 32.000000)">
+                <polygon id="Bounds" fill-opacity="0.100000001" fill="#D0021B" opacity="0" points="0 0 24 0 24 24 0 24"></polygon>
+                <path d="M21.3276762,12.4998491 L18.5246697,10.3918952 L18.6602838,9.94828661 L19.5483101,7.04345537 L16.032174,6.98006148 L15.8809099,6.54325281 L14.8849752,3.66726933 L12,5.67538087 L11.6219132,5.41221031 L9.11502514,3.66726643 L7.9678259,6.97930362 L7.50578492,6.98773312 L4.45169025,7.0434518 L5.47533035,10.3911367 L5.10468352,10.6699752 L2.67232264,12.4998457 L5.47528066,14.6085173 L5.3397284,15.0520236 L4.45168867,17.9575534 L7.96775662,18.0209461 L8.11905959,18.4576678 L9.11520656,21.3329518 L12,19.3242116 L12.3781826,19.5875478 L14.8847934,21.3329519 L16.0322434,18.0209461 L16.4943571,18.0126144 L19.5483113,17.957554 L18.5247193,14.6085173 L18.8953165,14.3297163 L21.3276762,12.4998491 Z" id="Shape" stroke="#000000" stroke-width="1.32362674" fill-rule="nonzero"></path>
+                <text id="%" font-family="Rubik-Medium, Rubik" font-size="10" font-weight="400" fill="#000000">
+                    <tspan x="8" y="16">%</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

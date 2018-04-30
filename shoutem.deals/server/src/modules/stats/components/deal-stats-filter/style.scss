@@ -1,0 +1,19 @@
+:global {
+  .deal-stats-filter {
+    display: inline-block;
+    width: 100%;
+    padding-top: 16px;
+
+    .form-group {
+      width: 264px;
+      display: inline-block;
+      padding-right: 16px;
+      padding-bottom: 16px;
+    }
+
+    .btn {
+      height: 48px;
+      margin-top: -2px;
+    }
+  }
+}

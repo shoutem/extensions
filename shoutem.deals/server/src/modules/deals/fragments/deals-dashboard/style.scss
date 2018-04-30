@@ -1,0 +1,45 @@
+:global {
+  .deals-dashboard__delete {
+    position: absolute;
+    top: 100px;
+    left: 100px;
+  }
+
+  .deals-cms-table {
+    margin-top: 24px;
+  }
+
+  .cms-table-row__totalCoupons,
+  .cms-table__totalCoupons-header {
+    width: 64px;
+    text-align: center;
+  }
+
+  .cms-table__startTime-header,
+  .cms-table__endTime-header {
+    width: 120px;
+  }
+
+  .table > tbody > tr > td.cms-table-row__startTime,
+  .table > tbody > tr > td.cms-table-row__endTime {
+    padding-right: 24px;
+  }
+
+  .deals-dashboard__title {
+    padding-bottom: 64px;
+
+    h3 {
+      float: left;
+      margin: 0 0 24px 12px;
+    }
+
+    .btn {
+      text-transform: none;
+      font-weight: normal;
+    }
+  }
+
+  .deals-dashboard .cms-actions-menu__dropdown {
+    margin-top: -8px;
+  }
+}

@@ -1,0 +1,46 @@
+:global {
+  body.extension-sandbox-container {
+    .modal-backdrop {
+      background-color: #ffffff;
+
+      .in {
+        opacity: 0.8;
+      }
+    }
+
+    &.modal-open {
+      height: 1000px;
+    }
+
+    .settings-page {
+      max-width: 552px;
+      margin: auto;
+
+      &.is-wide {
+        max-width: 808px;
+      }
+    }
+
+    .modal.settings-page-modal .modal-dialog:not(.modal-lg) {
+      width: 100%;
+
+      .modal-header,
+      .modal-body {
+        width: 100%;
+        background: #ffffff;
+        margin: auto;
+      }
+    }
+
+    .settings-page-modal-small.modal-dialog,
+    .modal.settings-page-modal-small .modal-dialog {
+      min-width: 518px;
+      max-width: 552px;
+
+      @media (max-width: 553px) {
+        min-width: 400px;
+        max-width: 464px;
+      }
+    }
+  }
+}
