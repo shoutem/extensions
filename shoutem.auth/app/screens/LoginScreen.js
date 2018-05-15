@@ -20,6 +20,7 @@ import {
   navigateTo,
   isScreenActive,
 } from '@shoutem/core/navigation';
+import { isValid } from '@shoutem/redux-io';
 
 import {
   getAppId,
@@ -103,18 +104,24 @@ export class LoginScreen extends Component {
       isUserAuthenticated,
       onLoginSuccess,
       hideShortcuts,
+      user,
     } = nextProps;
 
     // We want to replace the login screen if the user is authenticated
     // but only if it's the currently active screen as we don't want to
     //  replace screens in the background
     const isLoggedIn = isScreenActive && isUserAuthenticated;
-    if (isLoggedIn) {
+
+    // user becomes 'logged in' as soon as his auth token loads,
+    // but this happens before the full user data gets returned, so we wait as
+    // we need user's user groups populated for the hideShortcuts() to know what to hide
+    const isValidUser = isValid(user);
+    if (isLoggedIn && isValidUser) {
       // We are running the callback after interactions because of the bug
       // in navigation which prevents us from navigating to other screens
       // while in the middle of a transition
       InteractionManager.runAfterInteractions(() => {
-        const { user, settings } = nextProps;
+        const { settings } = nextProps;
 
         hideShortcuts(user, settings);
         onLoginSuccess();
@@ -156,7 +163,7 @@ export class LoginScreen extends Component {
     const { response } = payload;
 
     this.setState({ inProgress: false });
-    
+
     const code = _.get(response, 'errors[0].code');
     const errorCode = getErrorCode(code);
     const errorMessage = getErrorMessage(errorCode);
