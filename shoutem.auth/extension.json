@@ -1,6 +1,6 @@
 {
   "name": "auth",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "platform": "1.6.*",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
