@@ -1,7 +1,9 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
-import { storage, collection } from '@shoutem/redux-io';
+import { storage, collection, getCollection } from '@shoutem/redux-io';
+import { mapReducers, TARGET_ALL_REDUCERS } from '@shoutem/redux-composers';
 import adaptEventAttributes from './services/eventAdapter';
+import { ext } from './extension';
 
 export const EVENTS_PROXY_SCHEMA = 'shoutem.proxy.ical.events';
 
@@ -19,7 +21,24 @@ function events(state, action) {
   return storedEvents;
 }
 
+function getIcalUrl(action) {
+  return _.get(action, ['meta', 'params', 'query', 'url']);
+}
+
+const _15min = 15 * 60;
+
+export function icalFeed(schema) {
+  return mapReducers(
+    getIcalUrl,
+    collection(schema, 'urlSpecificEvents', { expirationTime: _15min })
+  );
+}
+
 export default combineReducers({
   events,
-  allEvents: collection(EVENTS_PROXY_SCHEMA, 'allEvents'),
+  urlSpecificEvents: icalFeed(EVENTS_PROXY_SCHEMA),
 });
+
+export function getIcalFeed(state, icalUrl) {
+  return getCollection(state[ext()].urlSpecificEvents[icalUrl], state);
+}

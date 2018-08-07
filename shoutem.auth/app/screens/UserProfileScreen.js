@@ -172,14 +172,12 @@ export class UserProfileScreen extends Component {
     }
 
     const {
-      firstName,
-      lastName,
+      name,
       image,
-      address,
-      website,
-      about,
+      location,
+      url,
+      description,
     } = profile;
-    const name = `${firstName} ${lastName}`;
 
     return (
       <View styleName="vertical h-center lg-gutter-top">
@@ -192,20 +190,20 @@ export class UserProfileScreen extends Component {
           :
           null
         }
-        {address ?
-          <Caption styleName="md-gutter-vertical">{`${address}`}</Caption>
+        {location ?
+          <Caption styleName="md-gutter-vertical">{`${location}`}</Caption>
           :
           null
         }
-        {website ?
-          <Caption styleName="md-gutter-vertical">{`${website}`}</Caption>
+        {url ?
+          <Caption styleName="md-gutter-vertical">{`${url}`}</Caption>
           :
           null
         }
-        {this.renderEditButton()}
         <Text styleName="h-center">
-          {about}
+          {description}
         </Text>
+        {this.renderEditButton()}
       </View>
     );
   }

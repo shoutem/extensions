@@ -1,11 +1,13 @@
 {
   "name": "rss-news",
-  "version": "1.6.0",
-  "platform": "1.6.*",
+  "version": "1.7.0",
+  "platform": "1.7.*",
   "title": "News RSS",
   "description": "Show news articles from an RSS feed",
   "icon": "server/assets/extension-icon.png",
-  "categories": ["content"],
+  "categories": [
+    "content"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -14,49 +16,60 @@
     "shoutem.layouts",
     "shoutem.rss"
   ],
-  "shortcuts": [{
-    "name": "news-shortcut",
-    "title": "News RSS",
-    "icon": "theme://news.png",
-    "screen": "@.ArticlesGridScreen",
-    "adminPages": [{
-      "page": "shoutem.rss.RssPage",
-      "title": "Content",
-      "parameters": {
-        "schema": "shoutem.proxy.news"
-      }
-    }, {
-      "page":"shoutem.layouts.LayoutPage",
-      "title": "Layout"
-    }]
-  }],
-  "screens": [{
-    "name": "ArticlesGridScreen",
-    "title": "Grid",
-    "image": "./server/assets/screens/grid.png",
-    "groupTitle": "Choose List screen layout",
-    "navigatesTo": [
-      "@.ArticleDetailsScreen"
-    ]
-   }, {
-    "name": "ArticlesListScreen",
-    "title": "List",
-    "image": "./server/assets/screens/list.png",
-    "extends": "@.ArticlesGridScreen"
-  }, {
-   "name": "ArticlesFeaturedListScreen",
-   "title": "List with a featured item 2",
-   "image": "./server/assets/screens/featuredlist.png",
-   "extends": "@.ArticlesGridScreen"
-  }, {
-    "name":"ArticleDetailsScreen",
-    "title": "Large photo details",
-    "groupTitle": "Choose Details screen layout",
-    "image": "./server/assets/screens/large-details.png"
-  },{
-    "name":"ArticleMediumDetailsScreen",
-    "title": "Regular details",
-    "image": "./server/assets/screens/medium-details.png",
-    "extends": "@.ArticleDetailsScreen"
-  }]
+  "shortcuts": [
+    {
+      "name": "news-shortcut",
+      "title": "News RSS",
+      "icon": "theme://news.png",
+      "screen": "@.ArticlesGridScreen",
+      "adminPages": [
+        {
+          "page": "shoutem.rss.RssPage",
+          "title": "Content",
+          "parameters": {
+            "schema": "shoutem.proxy.news"
+          }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        }
+      ]
+    }
+  ],
+  "screens": [
+    {
+      "name": "ArticlesGridScreen",
+      "title": "Grid",
+      "image": "./server/assets/screens/grid.png",
+      "groupTitle": "Choose List screen layout",
+      "navigatesTo": [
+        "@.ArticleDetailsScreen"
+      ]
+    },
+    {
+      "name": "ArticlesListScreen",
+      "title": "List",
+      "image": "./server/assets/screens/list.png",
+      "extends": "@.ArticlesGridScreen"
+    },
+    {
+      "name": "ArticlesFeaturedListScreen",
+      "title": "List with a featured item 2",
+      "image": "./server/assets/screens/featuredlist.png",
+      "extends": "@.ArticlesGridScreen"
+    },
+    {
+      "name": "ArticleDetailsScreen",
+      "title": "Large photo details",
+      "groupTitle": "Choose Details screen layout",
+      "image": "./server/assets/screens/large-details.png"
+    },
+    {
+      "name": "ArticleMediumDetailsScreen",
+      "title": "Regular details",
+      "image": "./server/assets/screens/medium-details.png",
+      "extends": "@.ArticleDetailsScreen"
+    }
+  ]
 }

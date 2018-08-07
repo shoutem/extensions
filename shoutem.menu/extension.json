@@ -1,11 +1,13 @@
 {
   "name": "menu",
   "title": "Restaurant menu",
-  "version": "1.6.0",
-  "platform": "1.6.*",
+  "version": "1.7.0",
+  "platform": "1.7.*",
   "icon": "./server/assets/images/add-menu-items-image.png",
   "description": "Show a restaurant menu",
-  "categories": ["content"],
+  "categories": [
+    "content"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -15,7 +17,7 @@
       "title": "Menu",
       "description": "List of menu items with description",
       "name": "openMenuListScreen",
-      "icon":"theme://restaurant-menu.png",
+      "icon": "theme://restaurant-menu.png",
       "screen": "@.MenuListScreen",
       "adminPages": [
         {

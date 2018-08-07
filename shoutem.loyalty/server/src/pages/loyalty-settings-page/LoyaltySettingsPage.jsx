@@ -164,6 +164,7 @@ class LoyaltySettingsPage extends Component {
 
 LoyaltySettingsPage.propTypes = {
   appId: PropTypes.string,
+  appOwnerId: PropTypes.string,
   ownExtension: PropTypes.object,
   updateExtensionSettings: PropTypes.func,
   enableLoyalty: PropTypes.func,
@@ -180,7 +181,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const { ownExtensionName } = ownProps;
+  const { appOwnerId, ownExtensionName } = ownProps;
+
+  const context = { appOwnerId };
   const scope = { extensionName: ownExtensionName };
 
   return {
@@ -188,7 +191,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(updateExtensionSettings(extension, settings))
     ),
     enableLoyalty: (rules, authorizationTypes) => (
-      dispatch(enableLoyalty(rules, authorizationTypes, scope))
+      dispatch(enableLoyalty(rules, authorizationTypes, context, scope))
     ),
     loadPlaces: (appId, categoryId) => (
       dispatch(loadLoyaltyPlaces(appId, categoryId, scope))

@@ -1,7 +1,7 @@
 {
   "name": "page",
-  "version": "1.6.0",
-  "platform": "1.6.*",
+  "version": "1.7.0",
+  "platform": "1.7.*",
   "title": "Page",
   "description": "Show a single screen with info and child items",
   "icon": "server/assets/add-page-image.png",
@@ -126,4 +126,3 @@
     }
   ]
 }
-

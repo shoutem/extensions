@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
+import { Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode';
 
 import { navigateTo } from '@shoutem/core/navigation';
-
 import {
   Button,
   Screen,
@@ -13,7 +13,6 @@ import {
   Text,
   View,
 } from '@shoutem/ui';
-
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 
@@ -103,13 +102,17 @@ export class VerificationScreen extends React.Component {
 
     const transactionData = [cardId, placeId, rewardData, redeem];
 
+    // qr code size is 80% of available screen space
+    const qrCodeWidth =
+      _.min([Dimensions.get('window').width, Dimensions.get('window').height]) * 0.8;
+
     return (
       <Screen>
         <NavigationBar />
         <View styleName="sm-gutter flexible vertical h-center v-center">
           <Subtitle styleName="xl-gutter-bottom">{I18n.t(ext('cashierVerificationMessage'))}</Subtitle>
           <QRCode
-            size={160}
+            size={qrCodeWidth}
             value={JSON.stringify(transactionData)}
           />
           <Button

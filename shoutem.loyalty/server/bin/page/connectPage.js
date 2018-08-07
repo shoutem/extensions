@@ -8,6 +8,7 @@ export function connectPageContext(WrappedComponent) {
     const { page } = context;
     const pageProps = _.pick(page.getPageContext(), [
       'appId',
+      'appOwnerId',
       'extensionName',
       'ownExtensionName',
       'shortcutId',

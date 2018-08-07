@@ -128,6 +128,10 @@ export class DealsCmsPage extends Component {
       onCategoryUpdate,
     } = this.props;
 
+    const categoryActionWhitelist = {
+      [mainCategoryId]: ['rename'],
+    };
+
     return (
       <div className="deals-dashboard">
         <div className="deals-dashboard__title">
@@ -143,6 +147,7 @@ export class DealsCmsPage extends Component {
         </div>
         <CategoryTree
           categories={categories}
+          categoryActionWhitelist={categoryActionWhitelist}
           onCategoryCreate={onCategoryCreate}
           onCategoryDelete={onCategoryDelete}
           onCategorySelected={onCategorySelected}

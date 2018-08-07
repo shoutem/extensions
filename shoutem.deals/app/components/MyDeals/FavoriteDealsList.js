@@ -112,7 +112,7 @@ export class FavoriteDealsList extends Component {
     const { data } = this.props;
 
     const message = isError(data)
-      ? I18n.t('shoutem.application.unexpectedError')
+      ? I18n.t('shoutem.application.unexpectedErrorMessage')
       : I18n.t('shoutem.application.preview.noContentErrorMessage');
 
     return (

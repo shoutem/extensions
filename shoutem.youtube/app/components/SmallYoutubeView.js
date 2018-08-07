@@ -54,7 +54,7 @@ export default class SmallYoutubeView extends React.Component {
             </Overlay>
           </ImageBackground>
 
-          <View styleName="vertical stretch space-between">
+          <View styleName="vertical stretch space-between md-gutter-horizontal">
             <Subtitle numberOfLines={3}>{titleSource}</Subtitle>
             <Caption>{moment(publishedAt).fromNow()}</Caption>
           </View>

@@ -1,7 +1,7 @@
 {
   "name": "loyalty",
-  "version": "1.6.7",
-  "platform": "1.6.*",
+  "version": "1.7.5",
+  "platform": "1.7.*",
   "title": "Loyalty",
   "description": "Reward your returning customers",
   "categories": [
@@ -95,6 +95,7 @@
       "description": "List of favorited stores",
       "name": "FavoritesList",
       "screen": "@.FavoritesListScreen",
+      "icon": "theme://add-to-favorites-full.png",
       "settings": {
         "favoritesSchemas": [
           "@.places"
@@ -106,7 +107,7 @@
     {
       "name": "PunchCardListScreen",
       "title": "Punch Card",
-      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png"
+      "image": "./server/assets/images/layout-punch-card.png"
     },
     {
       "name": "PointsCardScreen",
@@ -133,7 +134,7 @@
     {
       "name": "PlacesListScreen",
       "title": "Stores",
-      "image": "./server/assets/images/layout-news-grid-with-featured-selected.png",
+      "image": "./server/assets/images/layout-compact-list.png",
       "navigatesTo": [
         "@.PlaceDetails"
       ]

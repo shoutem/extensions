@@ -1,6 +1,8 @@
 export {
   getTransactionCount,
-  validateTransaction,
+  validateSingleCardTransaction,
+  validateMultiCardTransaction,
+  validatePunchCardTransaction,
 } from './transactions';
 
 export {

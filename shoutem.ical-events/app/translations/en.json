@@ -5,7 +5,8 @@
       "calendarPermissionsTitle": "Grant calendar access",
       "calendarPermissionsMessage": "You disabled calendar access for this application. Do you want to enable it in settings now?",
       "calendarPermissionsSettings": "Go to Settings",
-      "calendarPermissionsCancel": "Cancel"
+      "calendarPermissionsCancel": "Cancel",
+      "noUrlMessage": "Please specify an iCal URL and reload the app."
     }
   }
 }

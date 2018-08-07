@@ -1,11 +1,13 @@
 {
   "name": "people",
   "title": "People",
-  "version": "1.6.0",
-  "platform": "1.6.*",
+  "version": "1.7.0",
+  "platform": "1.7.*",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
-  "categories": ["content"],
+  "categories": [
+    "content"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -15,14 +17,16 @@
       "title": "People",
       "icon": "theme://members.png",
       "name": "openPeopleListScreen",
-      "screen": "@.PeopleListScreen" ,
-      "adminPages": [{
-      "page": "shoutem.cms.CmsPage",
-      "title": "Content",
-      "parameters": {
-        "schema": "@.People"
-      }
-    }]
+      "screen": "@.PeopleListScreen",
+      "adminPages": [
+        {
+          "page": "shoutem.cms.CmsPage",
+          "title": "Content",
+          "parameters": {
+            "schema": "@.People"
+          }
+        }
+      ]
     }
   ],
   "screens": [

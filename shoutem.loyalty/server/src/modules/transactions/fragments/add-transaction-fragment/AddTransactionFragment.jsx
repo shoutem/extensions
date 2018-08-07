@@ -5,6 +5,7 @@ import { Button } from 'react-bootstrap';
 import { invalidate } from '@shoutem/redux-io';
 import { IconLabel, InlineModal } from '@shoutem/react-web-ui';
 import { createSelectOptions } from 'src/services';
+import { LOYALTY_TYPES } from 'src/const';
 import {
   getLoyaltyPlaces,
   getUsers,
@@ -19,7 +20,11 @@ import {
   formatPlaceLabel,
   formatUserLabel,
 } from '../../services';
-import { TransactionForm } from '../../components';
+import {
+  SingleCardTransactionForm,
+  MultiCardTransactionForm,
+  PunchCardTransactionForm,
+} from '../../components';
 import './style.scss';
 
 export class AddTransactionFragment extends Component {
@@ -86,15 +91,32 @@ export class AddTransactionFragment extends Component {
         onHide={this.handleHideTransactionModal}
         title="Add transaction"
       >
-        <TransactionForm
+      {loyaltyType === LOYALTY_TYPES.POINTS &&
+        <SingleCardTransactionForm
           initialValues={filter}
-          loyaltyType={loyaltyType}
           onCancel={this.handleHideTransactionModal}
           onSubmit={this.handleAddTransaction}
-          places={createSelectOptions(places, formatPlaceLabel)}
+          users={createSelectOptions(users, formatUserLabel, 'legacyId')}
+        />
+      }
+      {loyaltyType === LOYALTY_TYPES.PUNCH &&
+        <PunchCardTransactionForm
+          initialValues={filter}
+          onCancel={this.handleHideTransactionModal}
+          onSubmit={this.handleAddTransaction}
           rewards={createSelectOptions(rewards, formatRewardLabel)}
           users={createSelectOptions(users, formatUserLabel, 'legacyId')}
         />
+      }
+      {loyaltyType === LOYALTY_TYPES.MULTI &&
+        <MultiCardTransactionForm
+          initialValues={filter}
+          onCancel={this.handleHideTransactionModal}
+          onSubmit={this.handleAddTransaction}
+          places={createSelectOptions(places, formatPlaceLabel)}
+          users={createSelectOptions(users, formatUserLabel, 'legacyId')}
+        />
+      }
       </InlineModal>
     );
   }
@@ -112,7 +134,9 @@ export class AddTransactionFragment extends Component {
             Add transaction
           </IconLabel>
         </Button>
-        {showTransactionModal && this.renderModal()}
+        {showTransactionModal &&
+          this.renderModal()
+        }
       </div>
     );
   }

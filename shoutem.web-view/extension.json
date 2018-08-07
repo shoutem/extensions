@@ -1,7 +1,7 @@
 {
   "name": "web-view",
-  "version": "1.6.0",
-  "platform": "1.6.*",
+  "version": "1.7.2",
+  "platform": "1.7.*",
   "title": "Web view",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
@@ -19,7 +19,10 @@
       "adminPages": [
         {
           "page": "@.WebPage",
-          "title": "Content"
+          "title": "Content",
+          "parameters": {
+            "hasNavigationToolbar": "true"
+          }
         },
         {
           "page": "shoutem.layouts.LayoutPage",
@@ -32,10 +35,12 @@
       "title": "External",
       "icon": "theme://web.png",
       "action": "@.openUrlInExternalBrowser",
-      "adminPages": [{
-        "page": "@.WebPage",
-        "title": "Content"
-      }]
+      "adminPages": [
+        {
+          "page": "@.WebPage",
+          "title": "Content"
+        }
+      ]
     }
   ],
   "screens": [

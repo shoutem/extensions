@@ -480,7 +480,7 @@ export class CmsListScreen extends PureComponent {
     }
 
     const message = (isError(categories) || isError(data)) ?
-    I18n.t(ext('unexpectedError')) : I18n.t('shoutem.application.preview.noContentErrorMessage');
+    I18n.t('shoutem.application.unexpectedErrorMessage') : I18n.t('shoutem.application.preview.noContentErrorMessage');
 
     const retryFunction = !this.isCollectionValid(data) ? this.refreshData : this.fetchCategories;
 

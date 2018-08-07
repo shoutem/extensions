@@ -14,7 +14,7 @@ import {
 
 const MAX_PAGE_SIZE = 10000;
 
-function createProgram(scope) {
+function createProgram(context, scope) {
   const config = {
     schema: PROGRAMS,
     request: {
@@ -32,6 +32,9 @@ function createProgram(scope) {
       name: 'My Program',
     },
   };
+
+  const appOwnerId = _.get(context, 'appOwnerId');
+  _.set(newProgram, ['attributes', 'owner', 'id'], appOwnerId);
 
   return create(config, newProgram, scope);
 }
@@ -103,10 +106,11 @@ export function loadAuthorizations(programId, scope = {}) {
 export function enableLoyalty(
   ruleTemplates,
   authorizationTypes = ['pin', 'userId', 'admin'],
+  context,
   scope = {}
 ) {
   return dispatch => (
-    dispatch(createProgram(scope))
+    dispatch(createProgram(context, scope))
       .then(action => {
         const programId = _.get(action, ['payload', 'data', 'id']);
 

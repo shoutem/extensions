@@ -48,6 +48,10 @@ export class StampCardScreen extends React.Component {
   handleDone() {
     const { points } = this.state;
     if (!points) {
+      Alert.alert(
+        I18n.t(ext('noPointsAwardedErrorTitle')),
+        I18n.t(ext('noPointsAwardedErrorMessage'))
+      );
       return;
     }
     this.processTransaction();

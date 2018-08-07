@@ -1,7 +1,7 @@
 {
   "name": "auth",
-  "version": "1.6.7",
-  "platform": "1.6.*",
+  "version": "1.7.1",
+  "platform": "1.7.*",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
   "description": "Show user profile, sign out user",
@@ -34,6 +34,7 @@
       "title": "Logout",
       "description": "Allows user to logout from application",
       "name": "logoutAction",
+      "icon": "theme://exit-to-app.png",
       "action": "@.logoutAction"
     },
     {

@@ -49,8 +49,8 @@ export default class SmallVideoView extends React.Component {
             </Overlay>
           </ImageBackground>
 
-          <View styleName="vertical stretch space-between">
-            <Subtitle numberOfLines={3} styleName="">{video.title}</Subtitle>
+          <View styleName="vertical stretch space-betwee md-gutter-horizontal">
+            <Subtitle numberOfLines={3}>{video.title}</Subtitle>
             <Caption>{moment(video.timeCreated).fromNow()}</Caption>
           </View>
         </Row>

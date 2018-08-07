@@ -48,6 +48,6 @@ export function formatToLocalDate(date) {
 
   const localTimezone = DeviceInfo.getTimezone();
   const momentDate = toMoment(date);
-  
+
   return momentDate.tz(localTimezone).format(DATE_FORMAT);
 }

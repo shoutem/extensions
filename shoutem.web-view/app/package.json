@@ -1,8 +1,17 @@
 {
   "name": "shoutem.web-view",
-  "version": "1.6.0",
+  "version": "1.7.2",
   "main": "index.js",
+  "dependencies": {
+    "react-native-pdf": "shoutem/react-native-pdf#99d40ad932f1c2001453bc019225511398824e8f",
+    "react-native-fetch-blob": "shoutem/react-native-fetch-blob#1caed817c69f0c3b255dd4f65c95d0aa97d0586e"
+  },
   "peerDependencies": {
     "@shoutem/core": "*"
+  },
+  "rnpm": {
+    "commands": {
+      "postlink": "node node_modules/shoutem.web-view/scripts/link.js"
+    }
   }
 }

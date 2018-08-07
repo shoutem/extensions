@@ -1,7 +1,7 @@
 {
   "name": "events",
-  "version": "1.6.2",
-  "platform": "1.6.*",
+  "version": "1.7.1",
+  "platform": "1.7.*",
   "title": "Events",
   "description": "Show items with location and time",
   "categories": [

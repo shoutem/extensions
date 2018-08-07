@@ -35,8 +35,8 @@ export default class ListEventView extends BaseEventItem {
             styleName="small rounded-corners"
             event={event}
           />
-          <View styleName="vertical stretch space-between">
-            <Subtitle styleName="">{event.name}</Subtitle>
+          <View styleName="vertical stretch space-between md-gutter-horizontal">
+            <Subtitle>{event.name}</Subtitle>
             <Caption>{formatDate(event.startTime)}</Caption>
           </View>
           <Button

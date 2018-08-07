@@ -1,6 +1,6 @@
 {
   "name": "shoutem.navigation",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Shoutem navigation extensions",
   "author": "Shoutem",
   "watch": {
@@ -32,7 +32,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "css-loader": "^0.23.1",
     "http-server": "^0.9.0",
-    "node-sass": "^3.7.0",
+    "node-sass": "^4.9.0",
     "npm-run-all": "^2.3.0",
     "npm-watch": "^0.1.5",
     "path": "^0.12.7",

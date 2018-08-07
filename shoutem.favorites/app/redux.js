@@ -69,17 +69,19 @@ function favoriteItems(state = {}, action) {
   switch (action.type) {
     case SAVE_FAVORITE_ITEM:
       if (!state[action.schema]) {
-        newState[action.schema] = {};
+        newState[action.schema] = [];
       }
-      newCollection = _.uniqBy([...newState[action.schema], action.data], 'id');
-      newState[action.schema] = newCollection;
-      saveStateToLocalStorage(action.schema, newCollection);
+      const schemaState = !_.isEmpty(newState[action.schema]) ? newState[action.schema] : [];
+      const favoriteId = action.data;
+
+      newState[action.schema] = _.uniqBy([...schemaState, favoriteId], 'id');
+
+      saveStateToLocalStorage(action.schema, newState[action.schema]);
       return newState;
     case DELETE_FAVORITE_ITEM:
-      newCollection = _.reject(newState[action.schema], ['id', action.id]);
-      newState[action.schema] = newCollection;
+      newState[action.schema] = _.reject(newState[action.schema], ['id', action.id]);
 
-      saveStateToLocalStorage(action.schema, newCollection);
+      saveStateToLocalStorage(action.schema, newState[action.schema]);
       return newState;
     default:
       return state;

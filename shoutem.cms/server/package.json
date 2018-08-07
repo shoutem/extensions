@@ -1,6 +1,6 @@
 {
   "name": "shoutem.cms",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "Shoutem CMS extension",
   "author": "Shoutem",
   "watch": {
@@ -38,7 +38,7 @@
     "eslint": "^0.21.2",
     "eslint-plugin-react": "^2.3.0",
     "http-server": "^0.9.0",
-    "node-sass": "^3.7.0",
+    "node-sass": "^4.9.0",
     "npm-run-all": "^2.3.0",
     "npm-watch": "^0.1.5",
     "path": "^0.12.7",

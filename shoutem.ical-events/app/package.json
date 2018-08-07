@@ -1,8 +1,14 @@
 {
   "name": "shoutem.ical-events",
-  "version": "1.6.2",
+  "version": "1.7.1",
   "description": "Shoutem extension for managing iCal events",
   "dependencies": {
-    "moment-timezone": "^0.5.14"
+    "moment-timezone": "^0.5.14",
+    "react-native-calendar-manager": "shoutem/react-native-calendar-manager#de1aae06e0a17df99cc55fcd5b31b4b5c55f0589"
+  },
+  "rnpm": {
+    "commands": {
+      "postlink": "node node_modules/shoutem.ical-events/scripts/link.js"
+    }
   }
 }

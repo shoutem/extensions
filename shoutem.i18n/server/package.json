@@ -1,6 +1,6 @@
 {
   "name": "shoutem.i18n",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Configure the language and regional settings of your app.",
   "scripts": {
     "clean": "rimraf ./build/*",

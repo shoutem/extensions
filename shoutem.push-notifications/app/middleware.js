@@ -3,6 +3,8 @@ import _ from 'lodash';
 import { I18n } from 'shoutem.i18n';
 import { SHOW_PUSH_NOTIFICATION } from './redux';
 
+import { ext } from './const';
+
 function onNotificationAction(notificationContent, store) {
   const action = _.get(notificationContent, 'action');
 

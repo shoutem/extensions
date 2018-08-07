@@ -1,15 +1,17 @@
 {
   "name": "layouts",
-  "version": "1.6.0",
-  "platform": "1.6.*",
+  "version": "1.7.0",
+  "platform": "1.7.*",
   "type": "system",
   "title": "Layouts",
   "description": "Extension that enables app creator to choose between different layouts of the same screen",
   "icon": "server/assets/add-layouts-image.png",
   "categories": [],
-  "pages": [{
-    "name": "LayoutPage",
-    "type": "native-component",
-    "path": "dummy.js"
-  }]
+  "pages": [
+    {
+      "name": "LayoutPage",
+      "type": "native-component",
+      "path": "dummy.js"
+    }
+  ]
 }

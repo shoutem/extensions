@@ -5,8 +5,17 @@ import { ext } from './const.js';
 /**
  * Checks if screen is protected. We consider a screen protected if a shortcut that's
  * opening it is protected.
- * @param shortcut
- * @param action
+ *
+ * Since different layouts have different screen names, but are the same screen type,
+ * we compare by the screen name and type, since shortcut.screen value actually holds the
+ * type name it will not always be equal to the canonical screen name
+ *
+ * @param {object} shortcut
+ * @param {boolean} shortcut.settings.protected true means this shortcut (screen) requires login
+ * @param {string} shortcut.screen Type name of the shortcut's screen
+ * @param {object} action
+ * @param {string} action.route.screen Canonical screen name
+ * @param {string} action.route.screenType Canonical screen type
  * @returns {boolean}
  */
 function isShortcutScreenProtected(shortcut, action) {
@@ -14,9 +23,11 @@ function isShortcutScreenProtected(shortcut, action) {
     _.get(shortcut, ['settings', _.camelCase(ext()), 'protected'], false);
 
   const shortcutScreen = _.get(shortcut, 'screen');
+  const actionScreenType = _.get(action, 'route.screenType');
   const actionScreen = _.get(action, 'route.screen');
 
-  return isShortcutProtected && shortcutScreen === actionScreen;
+  return isShortcutProtected &&
+    (shortcutScreen === actionScreen || shortcutScreen === actionScreenType);
 }
 
 // function that takes 2 parameters

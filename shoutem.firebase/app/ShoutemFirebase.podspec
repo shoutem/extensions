@@ -20,5 +20,6 @@ Pod::Spec.new do |s|
   s.source_files  = "Classes", "Classes/**/*.{h,m}"
   s.exclude_files = "Classes/Exclude"
 
-  s.dependency "Firebase/Messaging", ">= 4.8.1"
+  s.dependency "Firebase/Core", "4.9.0"
+  s.dependency "Firebase/Messaging", "4.9.0"
 end

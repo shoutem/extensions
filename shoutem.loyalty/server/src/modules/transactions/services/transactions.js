@@ -22,16 +22,52 @@ function validateUserId(userId) {
   return null;
 }
 
+function validatePlaceId(placeId) {
+  if (!placeId) {
+    return 'Place must be provided';
+  }
+
+  return null;
+}
+
+function validateRewardId(rewardId) {
+  if (!rewardId) {
+    return 'Punch card must be provided';
+  }
+
+  return null;
+}
+
 export function getTransactionCount(transactions) {
   const meta = getMeta(transactions);
   return _.get(meta, 'count', 0);
 }
 
-export function validateTransaction(transaction) {
+export function validateSingleCardTransaction(transaction) {
   const { points, userId } = transaction;
 
   return {
-    points : validateTransactionPoints(points),
+    points: validateTransactionPoints(points),
     userId: validateUserId(userId),
+  };
+}
+
+export function validateMultiCardTransaction(transaction) {
+  const { points, userId, placeId } = transaction;
+
+  return {
+    points: validateTransactionPoints(points),
+    userId: validateUserId(userId),
+    placeId: validatePlaceId(placeId),
+  };
+}
+
+export function validatePunchCardTransaction(transaction) {
+  const { points, userId, rewardId } = transaction;
+
+  return {
+    points: validateTransactionPoints(points),
+    userId: validateUserId(userId),
+    rewardId: validateRewardId(rewardId),
   };
 }

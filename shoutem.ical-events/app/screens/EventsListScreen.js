@@ -9,6 +9,7 @@ import moment from 'moment';
 import { navigateTo } from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
 import { View, Button, Text } from '@shoutem/ui';
+import { EmptyStateView } from '@shoutem/ui-addons';
 import { find, next, getCollection, isInitialized } from '@shoutem/redux-io';
 
 // TODO currentLocation should probably be extracted into shoutem.application
@@ -21,7 +22,7 @@ import ListEventView from '../components/ListEventView';
 import { addToCalendar } from '../services/Calendar';
 import EventsMap from '../components/EventsMap';
 import { ext } from '../extension';
-import { EVENTS_PROXY_SCHEMA } from '../redux';
+import { EVENTS_PROXY_SCHEMA, getIcalFeed } from '../redux';
 
 function hasFeaturedEvent(events) {
   return events.some(event => event.featured);
@@ -60,14 +61,17 @@ export class EventsListScreen extends RemoteDataListScreen {
   }
 
   fetchData() {
-    const { shortcut } = this.props;
-    const icalUrl = _.get(shortcut, 'settings.icalUrl');
+    const { icalUrl, find } = this.props;
+
+    if (!icalUrl) {
+      return;
+    }
 
     const now = moment();
     const endDate = now.format('YYYY-MM-DD');
 
     InteractionManager.runAfterInteractions(() =>
-      this.props.find(EVENTS_PROXY_SCHEMA, 'allEvents', {
+      find(EVENTS_PROXY_SCHEMA, 'urlSpecificEvents', {
         query: {
           url: icalUrl,
           'filter[endDate]': endDate, // filtering past events
@@ -75,6 +79,36 @@ export class EventsListScreen extends RemoteDataListScreen {
         },
       }),
     );
+  }
+
+  shouldRenderPlaceholderView(data) {
+    const { icalUrl } = this.props;
+
+    if (!icalUrl) {
+      return true;
+    }
+
+    return super.shouldRenderPlaceholderView(data);
+  }
+
+  renderPlaceholderView(data) {
+    const { icalUrl, style } = this.props;
+
+    if (_.isUndefined(icalUrl)) {
+      // If feed doesn't exist (`icalUrl` is undefined), notify user to specify feed URL
+      // and reload app, because `icalUrl` is retrieved through app configuration (builder)
+      const emptyStateViewProps = {
+        icon: 'error',
+        message: I18n.t(ext('noUrlMessage')),
+        style: style.emptyState,
+      };
+
+      return (
+        <EmptyStateView {...emptyStateViewProps} />
+      );
+    }
+
+    return super.renderPlaceholderView(data);
   }
 
   openDetailsScreen(event) {
@@ -166,6 +200,10 @@ export class EventsListScreen extends RemoteDataListScreen {
       return this.renderEventsMap(data);
     }
 
+    if (this.shouldRenderPlaceholderView(data)) {
+      return this.renderPlaceholderView(data);
+    }
+
     return super.renderData(data);
   }
 }
@@ -179,9 +217,12 @@ export function mapDispatchToProps(dispatch) {
   }, dispatch);
 }
 
-export function mapStateToProps(state) {
+export function mapStateToProps(state, ownProps) {
+  const icalUrl = _.get(ownProps, 'shortcut.settings.icalUrl');
+
   return {
-    data: getCollection(state[ext()].allEvents, state),
+    icalUrl,
+    data: getIcalFeed(state, icalUrl),
   };
 }
 

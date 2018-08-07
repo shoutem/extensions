@@ -7,7 +7,7 @@ import './style.scss';
 function calculatePointsStats(generalStats) {
   const totalEarnedPoints = _.get(generalStats, 'totalEarnedPoints', 0);
   const totalRedeemedPoints = _.get(generalStats, 'totalRedeemedPoints', 0);
-  const rewardsRedeemed = _.get(generalStats, 'redeems', 0);
+  const rewardsRedeemed = _.get(generalStats, 'redeemedPoints', 0);
   const balance = _.round(totalEarnedPoints - totalRedeemedPoints, 2);
 
   return {
@@ -21,7 +21,7 @@ function calculatePointsStats(generalStats) {
 function calculatePunchStats(generalStats) {
   const totalEarnedPunches = _.get(generalStats, 'totalEarnedPunches', 0);
   const totalRedeemedPunches = _.get(generalStats, 'totalRedeemedPunches', 0);
-  const rewardsRedeemed = _.get(generalStats, 'redeems', 0);
+  const rewardsRedeemed = _.get(generalStats, 'redeemedPunches', 0);
   const balance = _.round(totalEarnedPunches - totalRedeemedPunches, 2);
 
   return {

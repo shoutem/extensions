@@ -90,7 +90,9 @@
       "usePinInstead": "USE PIN INSTEAD",
       "numberOfRewardsInvalidErrorMessage": "This reward is currently out of stock.",
       "authDataExpressionInvalidErrorMessage": "The barcode is not valid!",
-      "transactionExistsErrorMessage": "The bar code was already scanned!"
+      "transactionExistsErrorMessage": "The bar code was already scanned!",
+      "noPointsAwardedErrorTitle": "No points selected",
+      "noPointsAwardedErrorMessage": "Please select points to award or cancel"
     }
   }
 }

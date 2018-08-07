@@ -1,10 +1,12 @@
 {
   "name": "products",
-  "version": "1.6.0",
-  "platform": "1.6.*",
+  "version": "1.7.0",
+  "platform": "1.7.*",
   "title": "Products",
   "description": "Show products with purchase link",
-  "categories": ["commerce"],
+  "categories": [
+    "commerce"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -24,7 +26,7 @@
           "page": "shoutem.cms.CmsPage",
           "title": "Content",
           "parameters": {
-            "schema":"@.Products"
+            "schema": "@.Products"
           }
         }
       ]
@@ -32,10 +34,10 @@
   ],
   "screens": [
     {
-    "name": "ProductsList"
+      "name": "ProductsList"
     },
     {
-    "name": "ProductDetails"
+      "name": "ProductDetails"
     }
   ],
   "dataSchemas": [

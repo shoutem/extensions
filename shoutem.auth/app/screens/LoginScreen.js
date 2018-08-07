@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import {
@@ -20,6 +18,7 @@ import {
   navigateTo,
   isScreenActive,
 } from '@shoutem/core/navigation';
+import { isValid } from '@shoutem/redux-io';
 
 import {
   getAppId,
@@ -47,7 +46,12 @@ import LoginForm from '../components/LoginForm';
 import FacebookButton from '../components/FacebookButton';
 import { ext } from '../const';
 
-const { bool, func, shape, string } = PropTypes;
+const {
+  bool,
+  func,
+  shape,
+  string,
+} = PropTypes;
 
 export class LoginScreen extends Component {
   static propTypes = {
@@ -103,18 +107,24 @@ export class LoginScreen extends Component {
       isUserAuthenticated,
       onLoginSuccess,
       hideShortcuts,
+      user,
     } = nextProps;
 
     // We want to replace the login screen if the user is authenticated
     // but only if it's the currently active screen as we don't want to
     //  replace screens in the background
     const isLoggedIn = isScreenActive && isUserAuthenticated;
-    if (isLoggedIn) {
+
+    // user becomes 'logged in' as soon as their auth token loads,
+    // but this happens before the full user data gets returned, so we wait as
+    // we need user's user groups populated for the hideShortcuts() to know what to hide
+    const isValidUser = isValid(user);
+    if (isLoggedIn && isValidUser) {
       // We are running the callback after interactions because of the bug
       // in navigation which prevents us from navigating to other screens
       // while in the middle of a transition
       InteractionManager.runAfterInteractions(() => {
-        const { user, settings } = nextProps;
+        const { settings } = nextProps;
 
         hideShortcuts(user, settings);
         onLoginSuccess();
@@ -126,7 +136,7 @@ export class LoginScreen extends Component {
     if (_.isEmpty(username) || _.isEmpty(password)) {
       Alert.alert(
         I18n.t('shoutem.application.errorTitle'),
-        I18n.t(ext('formNotFilledErrorMessage'))
+        I18n.t(ext('formNotFilledErrorMessage')),
       );
       return;
     }
@@ -156,7 +166,7 @@ export class LoginScreen extends Component {
     const { response } = payload;
 
     this.setState({ inProgress: false });
-    
+
     const code = _.get(response, 'errors[0].code');
     const errorCode = getErrorCode(code);
     const errorMessage = getErrorMessage(errorCode);
@@ -206,8 +216,8 @@ export class LoginScreen extends Component {
         }
         {isFacebookAuthEnabled &&
           <FacebookButton
-            onLoginSuccess={this.handleFacebookLoginSuccess}
             onLoginFailed={this.handleLoginFailed}
+            onLoginSuccess={this.handleFacebookLoginSuccess}
           />
         }
         {isSignupEnabled &&

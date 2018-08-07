@@ -1,6 +1,6 @@
 {
   "name": "shoutem.events",
-  "version": "1.6.2",
+  "version": "1.7.1",
   "private": true,
   "main": "index.js",
   "peerDependencies": {

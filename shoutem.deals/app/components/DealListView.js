@@ -83,10 +83,10 @@ export class DealListView extends Component {
             dealStatus={dealStatus}
             renderTimer={false}
           />
-          <View styleName="vertical stretch space-between">
-            <Subtitle styleName="">{deal.title}</Subtitle>
+          <View styleName="vertical stretch space-between md-gutter-horizontal">
+            <Subtitle>{deal.title}</Subtitle>
             <View styleName="flexible horizontal v-center">
-              <Text styleName="md-gutter-right">
+              <Text>
                 {formatPrice(deal.discountPrice, deal.currency)}
               </Text>
               <Caption styleName="line-through">

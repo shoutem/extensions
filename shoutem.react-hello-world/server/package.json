@@ -1,6 +1,6 @@
 {
   "name": "shoutem.react-hello-world",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Shoutem react app template for settings pages",
   "scripts": {
     "clean": "rimraf ./build/*",

@@ -68,6 +68,12 @@ class EditProfileScreen extends Component {
       url: I18n.t(ext('userWebsite')),
       description: I18n.t(ext('userBioTitle')),
     };
+
+    this.fieldOptions = {
+      url: {
+        autoCapitalize: 'none',
+      },
+    };
   }
 
   onDone() {
@@ -139,7 +145,7 @@ class EditProfileScreen extends Component {
     });
   }
 
-  renderInput(name, label) {
+  renderInput(name, label, options) {
     const isTextArea = name === 'description';
 
     return (
@@ -155,7 +161,9 @@ class EditProfileScreen extends Component {
           maxLength={160}
           multiline={isTextArea}
           numberOfLines={4}
+          textTransform={'none'}
           value={this.state[name] || ''}
+          {...options}
         />
         <Divider styleName="line sm-gutter-bottom" />
       </FormGroup>
@@ -163,7 +171,10 @@ class EditProfileScreen extends Component {
   }
 
   renderForm() {
-    return _.map(_.keys(this.fields), key => this.renderInput(key, this.fields[key]));
+    return _.map(
+      _.keys(this.fields),
+      key => this.renderInput(key, this.fields[key], this.fieldOptions[key]),
+    );
   }
 
   renderContent() {

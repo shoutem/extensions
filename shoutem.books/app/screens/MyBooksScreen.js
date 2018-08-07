@@ -85,7 +85,7 @@ class MyBooksScreen extends React.Component {
     const { data } = this.props;
 
     const message = isError(data) ?
-      I18n.t('shoutem.application.unexpectedError') : I18n.t('shoutem.application.preview.noContentErrorMessage');
+      I18n.t('shoutem.application.unexpectedErrorMessage') : I18n.t('shoutem.application.preview.noContentErrorMessage');
 
     return (
       <EmptyStateView icon="books" message={message} />

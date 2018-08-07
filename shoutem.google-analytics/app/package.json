@@ -1,9 +1,17 @@
 {
   "name": "shoutem.google-analytics",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "private": true,
   "main": "index.js",
+  "dependencies": {
+    "react-native-google-analytics-bridge": "shoutem/react-native-google-analytics-bridge#023b757e59ba46add87ce58e4af83de63eabb1b7"
+  },
   "peerDependencies": {
     "@shoutem/core": "*"
+  },
+  "rnpm": {
+    "commands": {
+      "postlink": "node node_modules/shoutem.google-analytics/link.js"
+    }
   }
 }

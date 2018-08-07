@@ -4,16 +4,19 @@ import React from 'react';
 import {
   WebView,
   InteractionManager,
+  Dimensions,
+  Platform,
 } from 'react-native';
+
+import Pdf from 'react-native-pdf';
 
 import { View, Screen } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
+import { EmptyStateView } from '@shoutem/ui-addons';
 
-import {
-  EmptyStateView,
-} from '@shoutem/ui-addons';
+import { I18n } from 'shoutem.i18n';
 
-import { NO_URL_MESSAGE } from '../const';
+import { ext } from '../const';
 import NavigationToolbar from '../components/NavigationToolbar';
 
 const { bool, shape, string } = PropTypes;
@@ -104,8 +107,15 @@ export default class WebViewScreen extends React.Component {
 
   renderWebView() {
     const { url } = this.getSettings();
-
     if (this.state.isAnimationFinished) {
+      if(url.includes(".pdf") && (Platform.OS === "android")) {
+        return (
+          <Pdf
+            source={{ uri: url }}
+            style={{ flex: 1, width: Dimensions.get('window').width }}
+          />
+        );
+      }
       return (
         <WebView
           ref={this.setWebViewRef}
@@ -148,7 +158,7 @@ export default class WebViewScreen extends React.Component {
 
   renderPlaceholderView() {
     return (
-      <EmptyStateView message={NO_URL_MESSAGE} />
+      <EmptyStateView message={I18n.t(ext('noUrlErrorMessage'))} />
     );
   }
 

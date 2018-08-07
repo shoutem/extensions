@@ -4,62 +4,24 @@ import Select from 'react-select';
 import { reduxForm } from 'redux-form';
 import { LoaderContainer, ReduxFormElement } from '@shoutem/react-web-ui';
 import { getFormState } from 'src/redux';
-import { LOYALTY_TYPES } from 'src/const';
-import { validateTransaction } from '../../services';
+import { validateSingleCardTransaction } from '../../services';
 import './style.scss';
 
-export function TransactionForm({
+export function SingleCardTransactionForm({
   fields,
-  loyaltyType,
   submitting,
   handleSubmit,
   onCancel,
-  rewards,
-  places,
   users,
   error,
 }) {
-  const { userId, placeId, rewardId, points } = fields;
-  const pointsLabel = loyaltyType === LOYALTY_TYPES.PUNCH ?
-    'Add or deduct stamps' :
-    'Add or deduct points';
-
+  const { userId, points } = fields;
+  // error is always undefined
+  console.log("error is:", error);
+  const isDisabled = (!!error || submitting) ? true : false;
+  console.log("isDisabled is:", isDisabled);
   return (
     <form className="transaction-form" onSubmit={handleSubmit}>
-      {loyaltyType === LOYALTY_TYPES.PUNCH &&
-        <Row>
-          <ReduxFormElement
-            disabled={submitting}
-            elementId="rewardId"
-            field={rewardId}
-            name="Punch card"
-          >
-            <Select
-              autoBlur
-              clearable={false}
-              options={rewards}
-              placeholder="Select card"
-            />
-          </ReduxFormElement>
-        </Row>
-      }
-      {loyaltyType === LOYALTY_TYPES.MULTI &&
-        <Row>
-          <ReduxFormElement
-            disabled={submitting}
-            elementId="placeId"
-            field={placeId}
-            name="Place"
-          >
-            <Select
-              autoBlur
-              clearable={false}
-              options={places}
-              placeholder="Select place"
-            />
-          </ReduxFormElement>
-        </Row>
-      }
       <Row>
         <ReduxFormElement
           disabled={submitting}
@@ -80,14 +42,14 @@ export function TransactionForm({
           disabled={submitting}
           elementId="points"
           field={points}
-          name={pointsLabel}
+          name="Add or deduct points"
         />
       </Row>
       <ButtonToolbar>
         <Button
           bsSize="large"
           bsStyle="primary"
-          disabled={submitting}
+          disabled={isDisabled}
           type="submit"
         >
           <LoaderContainer isLoading={submitting}>
@@ -107,26 +69,21 @@ export function TransactionForm({
   );
 }
 
-TransactionForm.propTypes = {
+SingleCardTransactionForm.propTypes = {
   handleSubmit: PropTypes.func,
   onCancel: PropTypes.func,
   submitting: PropTypes.bool,
   fields: PropTypes.object,
-  loyaltyType: PropTypes.string,
   users: PropTypes.array,
-  rewards: PropTypes.array,
-  places: PropTypes.array,
   error: PropTypes.string,
 };
 
 export default reduxForm({
   getFormState,
-  form: 'transactionForm',
+  form: 'singleCardTransactionForm',
   fields: [
     'userId',
-    'placeId',
-    'rewardId',
     'points',
   ],
-  validate: validateTransaction,
-})(TransactionForm);
+  validate: validateSingleCardTransaction,
+})(SingleCardTransactionForm);

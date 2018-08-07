@@ -14,6 +14,7 @@ import {
 import {
   find,
   getCollection,
+  isValid,
   next,
   shouldRefresh,
 } from '@shoutem/redux-io';
@@ -86,14 +87,20 @@ export class RewardsListScreen extends ListScreen {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { card: { id } } = this.props;
-    const { card: { id: nextId }, data } = nextProps;
+  refreshData(nextProps, props = {}) {
+    const { card, user } = props;
+    const { card: nextCard, data, user: nextUser } = nextProps;
 
-    const hasNewCardId = !id && nextId;
+    if (nextUser !== user && isValid(nextUser)) {
+      return this.fetchData();
+    }
 
-    if (hasNewCardId || (nextId && shouldRefresh(data))) {
-      this.fetchData(nextId);
+    const cardId = _.get(card, 'id');
+    const nextCardId = _.get(nextCard, 'id');
+    const hasNewCardId = !cardId && nextCardId;
+
+    if (hasNewCardId || (nextCardId && shouldRefresh(data))) {
+      return this.fetchData(nextCardId);
     }
   }
 

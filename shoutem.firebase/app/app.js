@@ -24,10 +24,18 @@ function resolveNotification(receivedNotification) {
     };
   }
 
+  if (receivedNotification && receivedNotification.body && receivedNotification.title) {
+    return {
+      body: receivedNotification.body,
+      title: receivedNotification.title,
+      openedFromTray,
+    };
+  }
+
   if (aps && aps.alert) {
     return {
-      body: fcm.body,
-      title: receivedNotification['google.c.a.c_l'],
+      body: aps.alert.body,
+      title: aps.alert.title,
       openedFromTray,
     };
   }
@@ -58,16 +66,16 @@ function appDidFinishLaunching(app) {
 
     if (fcm && show_in_foreground) {
       FCM.presentLocalNotification({
-          body: notification.body,
-          title: notification.title,
-          ticker: notification.body,
-          click_action: action,
-          sound: "default",
-          priority: "high",
-          vibrate: 300,
-          ongoing: false,
-          auto_cancel: true,
-          show_in_foreground: true,
+        body: notification.body,
+        title: notification.title,
+        ticker: notification.body,
+        click_action: action,
+        sound: "default",
+        priority: "high",
+        vibrate: 300,
+        ongoing: false,
+        auto_cancel: true,
+        show_in_foreground: true,
       });
     }
 
@@ -84,11 +92,12 @@ function appDidFinishLaunching(app) {
   };
 
   // this shall be called regardless of app state: running, background or not
-  // running. Won't be called when app is killed by user in iOS
+  // running. Previously would not be called when app is killed by user in iOS
+  // but it seems that from firebase core 11.0.2. that is no longer the case
   FCM.on(FCMEvent.Notification, async (notif) => {
     if (notif) {
       dispatchNotificationAction({ ...notif });
-
+      
       // iOS requires developers to call completionHandler to end the
       // notification process.
       // Otherwise, your background remote notifications could be throttled.
@@ -111,19 +120,22 @@ function appDidFinishLaunching(app) {
 
   // The initial notification contains the notification that launches the app.
   // If the user launches the app by clicking the banner, the banner
-  // notification info will be here, rather than available through the
-  // FCM.on event. Sometimes, Android kills activity when an app goes to
+  // notification info will be here, rather than available through the FCM.on event.
+  // Sometimes, Android kills activity when an app goes to
   // background, and when it resumes, Android broadcasts the notification before
   // JS is run.
   // You can use FCM.getInitialNotification() to capture those missed events.
   // The initial notification will be triggered every time, even when
   // the app is open via its icon, so send some action identifier with your
   // notifications
-  FCM.getInitialNotification().then(notif => {
-    if (notif) {
-      dispatchNotificationAction({ ...notif });
-    }
-  });
+
+  // Commented out because it appears that from firebase 11.0.2. FCM.on is called
+  // even when app was killed.
+  // FCM.getInitialNotification().then(notif => {
+  //   if (notif) {
+  //     dispatchNotificationAction({ ...notif, fromInit: true });
+  //   }
+  // });
 }
 
 export {

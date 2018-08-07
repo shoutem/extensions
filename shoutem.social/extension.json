@@ -1,10 +1,12 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "1.6.2",
-  "platform": "1.6.*",
+  "version": "1.7.0",
+  "platform": "1.7.*",
   "description": "Let members create posts, comment and like them",
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "icon": "server/assets/add-community-image.png",
   "screens": [
     {
@@ -28,6 +30,7 @@
       "title": "Wall",
       "name": "wall",
       "screen": "@.SocialWallScreen",
+      "icon": "theme://feed-wall.png",
       "adminPages": [
         {
           "page": "@.ShortcutInfoPage",
@@ -39,6 +42,7 @@
       "title": "Members",
       "name": "members",
       "screen": "@.MembersScreen",
+      "icon": "theme://members.png",
       "adminPages": [
         {
           "page": "@.ShortcutInfoPage",

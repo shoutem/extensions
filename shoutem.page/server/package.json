@@ -1,6 +1,6 @@
 {
   "name": "shoutem.page",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Page",
   "scripts": {
     "clean": "rimraf ./build/*",
@@ -14,7 +14,7 @@
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
     "css-loader": "^0.23.1",
-    "node-sass": "^3.7.0",
+    "node-sass": "^4.9.0",
     "path": "^0.12.7",
     "postcss-loader": "^0.9.1",
     "rimraf": "^2.5.2",

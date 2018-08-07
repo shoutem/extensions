@@ -1,17 +1,21 @@
 {
   "name": "rss",
-  "version": "1.6.1",
-  "platform": "1.6.*",
+  "version": "1.7.0",
+  "platform": "1.7.*",
   "type": "system",
   "title": "RSS",
   "description": "Integrate with RSS feed source",
   "icon": "server/assets/add-rss-image.png",
-  "categories": ["content"],
-  "pages": [{
-    "name": "RssPage",
-    "type": "native-component",
-    "path": "dummy.js"
-  }],
+  "categories": [
+    "content"
+  ],
+  "pages": [
+    {
+      "name": "RssPage",
+      "type": "native-component",
+      "path": "dummy.js"
+    }
+  ],
   "settings": {
     "baseApiEndpoint": "http://api.dev.sauros.hr"
   }

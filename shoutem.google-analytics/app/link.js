@@ -1,3 +1,3 @@
 const { reactNativeLink } = require('@shoutem/build-tools');
 
-reactNativeLink('react-native-fcm');
+reactNativeLink('react-native-google-analytics-bridge');

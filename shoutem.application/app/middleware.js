@@ -67,6 +67,7 @@ const resolveScreenLayout = store => next => action => {
     if (screenLayout) {
       const newAction = { ...action };
       _.set(newAction, [...routeInfo.path, 'screen'], screenLayout.canonicalName);
+      _.set(newAction, [...routeInfo.path, 'screenType'], screenLayout.canonicalType);
       _.set(newAction, [...routeInfo.path, 'props'], {
         // Each screen will get:
         // 1. any props specified directly in the navigation action,

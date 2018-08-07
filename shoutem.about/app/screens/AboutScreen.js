@@ -190,7 +190,7 @@ export class AboutScreen extends PureComponent {
       emptyStateViewProps = {
         icon: 'refresh',
         message: (isError(data)) ?
-        I18n.t('shoutem.application.unexpectedError') : I18n.t('shoutem.application.emptyCollectionMessage'),
+        I18n.t('shoutem.application.unexpectedErrorMessage') : I18n.t('shoutem.application.emptyCollectionErrorMessage'),
         onRetry: this.fetchData,
         retryButtonTitle: I18n.t('shoutem.application.tryAgainButton'),
       };

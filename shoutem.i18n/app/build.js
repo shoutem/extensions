@@ -3,6 +3,7 @@
 const _ = require('lodash');
 
 const buildTools = require('shoutem.application/build');
+
 const { downloadFile, writeFile } = buildTools.files;
 const { getExtensionSettings } = buildTools.configuration;
 
