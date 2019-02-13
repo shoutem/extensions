@@ -21,10 +21,13 @@ import {
 } from './shapes';
 
 import { ext } from '../const';
+import { shopItemHasDiscount } from '../services';
 
 const ListItem = ({ item, onAddToCart, onPress, shop }) => {
   const { images, minimum_price, minimum_compare_at_price, title } = item;
   const { currency = '' } = shop;
+
+  const shouldShowDiscount = shopItemHasDiscount(item);
 
   // TODO: Format currency in locale
   return (
@@ -44,7 +47,7 @@ const ListItem = ({ item, onAddToCart, onPress, shop }) => {
               {`${minimum_price} ${currency}`}
             </Subtitle>
             <Caption styleName="line-through">
-              {minimum_compare_at_price ? `${minimum_compare_at_price} ${currency}` : ''}
+              {shouldShowDiscount ? `${minimum_compare_at_price} ${currency}` : ''}
             </Caption>
           </View>
         </View>

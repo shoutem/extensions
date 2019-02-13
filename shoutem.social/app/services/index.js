@@ -16,4 +16,5 @@ export {
 export {
   adaptUserForSocialActions,
   adaptSocialUserForProfileScreen,
+  openProfileForLegacyUser,
 } from './user';

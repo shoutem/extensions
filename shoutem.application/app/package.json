@@ -1,6 +1,6 @@
 {
   "name": "shoutem.application",
-  "version": "1.7.0",
+  "version": "1.8.1",
   "private": true,
   "main": "index.js",
   "peerDependencies": {
@@ -11,8 +11,7 @@
     "react-native-device-info": "0.21.5",
     "react-native-maps": "shoutem/react-native-maps#aadf00382a01ec9ca0c87cd990084088932eac1d",
     "react-native-restart": "shoutem/react-native-restart#c363a060e5abda09b14b94db186e9f747cac590f",
-    "react-native-splash-screen": "shoutem/react-native-splash-screen#1ea6e2514be0a83e5b7bbc441fa9a7a9c6ebf31b",
-    "react-native-video": "react-native-community/react-native-video#1ba6b062e4ac7a415e4d3602f15965f7bf93c779"
+    "react-native-splash-screen": "shoutem/react-native-splash-screen#1ea6e2514be0a83e5b7bbc441fa9a7a9c6ebf31b"
   },
   "rnpm": {
     "commands": {

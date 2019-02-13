@@ -33,8 +33,7 @@ export class UserForm extends Component {
       pristine,
       fields: {
         id,
-        firstName,
-        lastName,
+        name,
         username,
         password,
         nick,
@@ -66,22 +65,12 @@ export class UserForm extends Component {
         }
         {!passwordOnly &&
           <Row>
-            <Col className="user-form__firstName" xs={6}>
-              <ReduxFormElement
-                disabled={submitting}
-                elementId="firstName"
-                field={firstName}
-                name="First name"
-              />
-            </Col>
-            <Col className="user-form__lastName" xs={6}>
-              <ReduxFormElement
-                disabled={submitting}
-                elementId="lastName"
-                field={lastName}
-                name="Last name"
-              />
-            </Col>
+            <ReduxFormElement
+              disabled={submitting}
+              elementId="name"
+              field={name}
+              name="Name and surname"
+            />
           </Row>
         }
         {!passwordOnly &&
@@ -164,8 +153,7 @@ export default reduxForm({
   fields: [
     'id',
     'nick',
-    'firstName',
-    'lastName',
+    'name',
     'username',
     'password',
     'userGroups',

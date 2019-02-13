@@ -19,6 +19,7 @@ import {
 
 import {
   Button,
+  Icon,
   Caption,
   Screen,
   ScrollView,
@@ -109,6 +110,7 @@ export class PointsCardScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    this.getNavBarProps = this.getNavBarProps.bind(this);
     this.assignPoints = this.assignPoints.bind(this);
     this.handleScanCode = this.handleScanCode.bind(this);
     this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(this);
@@ -116,6 +118,12 @@ export class PointsCardScreen extends React.Component {
     this.refreshCardState = this.refreshCardState.bind(this);
     this.scanBarCode = this.scanBarCode.bind(this);
     this.checkData = this.checkData.bind(this);
+    this.toggleScanner = this.toggleScanner.bind(this);
+    this.renderQRCodeScanner = this.renderQRCodeScanner.bind(this);
+
+    this.state = {
+      isScannerActive: true,
+    };
   }
 
   componentWillMount() {
@@ -135,6 +143,39 @@ export class PointsCardScreen extends React.Component {
     }
   }
 
+  renderCloseScannerButton() {
+    return(
+      <View styleName="container" virtual>
+        <Button onPress={this.toggleScanner}>
+          <Icon name="close" />
+        </Button>
+      </View>
+    );
+  }
+
+  getNavBarProps() {
+    const { isScannerActive } = this.state;
+    const { cashierInfo } = this.props;
+    const isUserACashier = _.has(cashierInfo, 'data');
+
+    if (!isUserACashier) {
+      return {
+        title: I18n.t(ext('myCardScreenNavBarTitle')).toUpperCase(),
+      };
+    }
+    else if (!isScannerActive) {
+      return {
+        title: I18n.t(ext('scanQrTitle')).toUpperCase(),
+        renderRightComponent: () => null,
+      };
+    }
+
+    return {
+      title: I18n.t(ext('scanQrTitle')).toUpperCase(),
+      renderRightComponent: () => this.renderCloseScannerButton(),
+    };
+  }
+
   assignPoints() {
     const { openInModal } = this.props;
 
@@ -146,6 +187,7 @@ export class PointsCardScreen extends React.Component {
   handleScanCode(code) {
     const { authorizeTransactionByQRCode } = this.props;
 
+    this.toggleScanner();
     authorizeTransactionByQRCode(code.data);
   }
 
@@ -189,11 +231,11 @@ export class PointsCardScreen extends React.Component {
       >
         <Text>{I18n.t(ext('scanBarcodeButton'))}</Text>
       </Button>
-  );
+    );
   }
 
   renderPointsCardInfo() {
-    const { cardId, cardState = {}, cardStates, enableBarcodeScan, transactions } = this.props;
+    const { cardId, cardState = {}, cardStates, enableBarcodeScan, transactions, style } = this.props;
     const { points = 0 } = cardState;
 
     const isRefreshingPoints = isBusy(cardStates);
@@ -201,9 +243,11 @@ export class PointsCardScreen extends React.Component {
 
     return (
       <Screen>
-        <NavigationBar title={I18n.t(ext('myCardScreenNavBarTitle'))} />
         <ScrollView>
-          <View styleName="content sm-gutter solid vertical h-center">
+          <View
+            styleName="content sm-gutter solid vertical h-center"
+            style={style.qrBackground}
+          >
             <TouchableOpacity onPress={this.assignPoints}>
               <QRCode
                 size={160}
@@ -230,11 +274,38 @@ export class PointsCardScreen extends React.Component {
     );
   }
 
+  toggleScanner() {
+    const { isScannerActive } = this.state;
+
+    this.setState({ isScannerActive: !isScannerActive });
+  }
+
+  renderScanButton() {
+    return (
+      <View styleName="fill-parent vertical v-center h-center">
+        <Button
+          onPress={this.toggleScanner}
+          styleName="secondary"
+          style={{ width: 160 }}
+        >
+          <Text>{I18n.t(ext('scanQrButton'))}</Text>
+        </Button>
+      </View>
+    );
+  }
+
   renderQRCodeScanner() {
+    const { isScannerActive } = this.state;
+
+    if (!isScannerActive) {
+      return this.renderScanButton();
+    }
+
     return (
       <QRCodeScanner
         onQRCodeScanned={this.handleScanCode}
-      />);
+      />
+    );
   }
 
   renderContent() {
@@ -252,7 +323,7 @@ export class PointsCardScreen extends React.Component {
   renderScreen() {
     return (
       <Screen>
-        <NavigationBar title={I18n.t(ext('myCardScreenNavBarTitle'))} />
+      <NavigationBar {...this.getNavBarProps()} />
         {this.renderContent()}
       </Screen>
     );

@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 
 import {
   Image,
@@ -10,12 +11,12 @@ import {
   Divider,
   TouchableOpacity,
 } from '@shoutem/ui';
-import { user as userShape } from '../components/shapes';
-import { adaptSocialUserForProfileScreen } from '../services';
+
+import { user as userShape } from './shapes';
 
 const { func } = PropTypes;
 
-export default class MemberView extends React.Component {
+export default class MemberView extends PureComponent {
   static propTypes = {
     user: userShape.isRequired,
     openProfile: func.isRequired,
@@ -30,11 +31,13 @@ export default class MemberView extends React.Component {
   openUserProfile() {
     const { user, openProfile } = this.props;
 
-    openProfile(adaptSocialUserForProfileScreen(user));
+    openProfile(user);
   }
 
-  render() {
-    const { user } = this.props;
+  renderLegacyUser(user) {
+    // this is here because Image causes a crash if it receives null as url
+    const imageUrl = _.get(user, 'profile_image_url');
+    const resolvedImageUrl = imageUrl === (null) ? undefined : imageUrl;
 
     return (
       <TouchableOpacity
@@ -45,11 +48,50 @@ export default class MemberView extends React.Component {
           <Row>
             <Image
               styleName="small rounded-corners placeholder"
-              source={{ uri: user.profile_image_url || undefined }}
+              source={{ uri: resolvedImageUrl }}
             />
             <View styleName="vertical stretch space-between">
-              <Subtitle>{user.name}</Subtitle>
-              <Caption>{user.profession}</Caption>
+              <Subtitle>{_.get(user, 'name')}</Subtitle>
+            </View>
+          </Row>
+          <Divider styleName="line" />
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
+  render() {
+    const { user } = this.props;
+
+    if (_.has(user, 'profile_image_url')) {
+      // TODO: remove this once Antonio (TopHatCroat) merges legacy and
+      // member users into one
+      return this.renderLegacyUser(user);
+    }
+
+    // this is here because Image causes a crash if it receives null as url
+    const imageUrl = _.get(user, 'profile.image');
+    const resolvedImageUrl = imageUrl === (null) ? undefined : imageUrl;
+
+    return (
+      <TouchableOpacity
+        key={user.id}
+        onPress={this.openUserProfile}
+      >
+        <View>
+          <Row>
+            <Image
+              styleName="small rounded-corners placeholder"
+              source={{ uri: resolvedImageUrl }}
+            />
+            <View styleName="vertical stretch space-between">
+              <Subtitle>{_.get(user, 'profile.nick')}</Subtitle>
+              <Subtitle
+                style={{ fontStyle: 'italic', color: 'gray' }}
+              >
+                {_.get(user, 'profile.name')}
+              </Subtitle>
+              <Caption>{_.get(user, 'profile.profession')}</Caption>
             </View>
           </Row>
           <Divider styleName="line" />

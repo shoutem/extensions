@@ -39,27 +39,44 @@ export class ArticlesListScreen extends ListScreen {
     this.openArticle = this.openArticle.bind(this);
     this.openArticleWithId = this.openArticleWithId.bind(this);
     this.renderRow = this.renderRow.bind(this);
+    this.fetchPosts = this.fetchPosts.bind(this);
+  }
+
+  fetchPosts() {
+    const { feedUrl, shortcut: { id: shortcutId} } = this.props;
+    const { perPage, page } = this.state;
+
+    this.props.fetchWordpressPosts({
+      feedUrl,
+      shortcutId,
+      page,
+      perPage,
+      appendMode: page > 1,
+    });
   }
 
   fetchData() {
-    const { feedUrl, shortcut } = this.props;
-    const { perPage } = this.state;
+    const { feedUrl } = this.props;
 
     if (_.isEmpty(feedUrl)) {
       return;
     }
 
-    this.setState({ page: 1 });
-    this.props.fetchWordpressPosts({
-      feedUrl,
-      shortcutId: shortcut.id,
-      page: 1,
-      perPage,
-    });
+    this.setState({
+        page: 1,
+      },
+      this.fetchPosts
+    );
   }
 
   loadMore() {
-    this.props.next(this.props.data);
+    const { page } = this.state;
+
+    this.setState( {
+        page: page + 1,
+      },
+      this.fetchPosts
+    );
   }
 
   openArticle(article) {

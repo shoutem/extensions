@@ -1,7 +1,7 @@
 {
   "name": "wordpress",
-  "version": "1.7.0",
-  "platform": "1.7.*",
+  "version": "1.8.0",
+  "platform": "1.8.*",
   "title": "WordPress",
   "description": "Show news articles from WordPress blog.",
   "icon": "server/assets/extension-icon.png",

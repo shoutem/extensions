@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 
 import {
   Button,
@@ -9,12 +9,12 @@ import {
 
 import { I18n } from 'shoutem.i18n';
 
-import { post as postShape } from './shapes';
 import { ext } from '../const';
+import { post as postShape } from './shapes';
 
 const { func } = PropTypes;
 
-export default class CommentButton extends React.Component {
+export default class CommentButton extends PureComponent {
   static propTypes = {
     status: postShape.isRequired,
     addComment: func.isRequired,

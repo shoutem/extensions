@@ -36,12 +36,12 @@ class SmallPointCardView extends Component {
         >
           <View styleName="flexible v-center h-center">
             <Title
-              styleName="h-center light"
+              styleName="h-center"
               style={style.points}
             >
               {points}
             </Title>
-            <Caption 
+            <Caption
               styleName="h-center sm-gutter"
               style={style.pointsTitle}
             >
@@ -50,6 +50,7 @@ class SmallPointCardView extends Component {
           </View>
           <View
             styleName="flexible vertical solid v-center h-center lg-gutter md-gutter-horizontal"
+            style={style.qrBackground}
           >
             <TouchableOpacity onPress={onPress}>
               <QRCode

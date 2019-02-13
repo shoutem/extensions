@@ -11,15 +11,13 @@ import { navigateTo as navigateToAction } from '@shoutem/core/navigation';
 export class EventDetailsScreen extends BaseEventDetailsScreen {
   renderHeader(event) {
     return (
-      <ImageBackground animationName="hero" styleName="placeholder large-portrait" source={{ uri: this.props.imageUrl }}>
-        <Tile
-          animationName="hero"
-          styleName="text-centric"
-        >
-          {this.renderHeadlineDetails(event, false)}
-          {this.renderAddToCalendarButton(false)}
-        </Tile>
-      </ImageBackground>
+      <Tile
+        animationName="hero"
+        styleName="text-centric"
+      >
+        {this.renderHeadlineDetails(event, true, true)}
+        {this.renderAddToCalendarButton(false)}
+      </Tile>
     );
   }
 }

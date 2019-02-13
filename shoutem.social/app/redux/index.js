@@ -9,6 +9,7 @@ export {
   deleteComment,
   createComment,
   loadUsers,
+  loadUser,
 } from './actions';
 
 export {

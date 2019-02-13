@@ -49,6 +49,7 @@ import {
 
 import { cartItemAdded } from '../redux/actionCreators';
 import { getCartSize } from '../redux/selectors';
+import { shopItemHasDiscount } from '../services';
 
 const { func, number } = PropTypes;
 
@@ -213,13 +214,16 @@ class ProductDetailsScreen extends Component {
   }
 
   renderProductHeader() {
-    const { minimum_price, minimum_compare_at_price, title } = this.props.item;
-    const { currency } = this.props.shop;
+    const { shop, item } = this.props;
+    const { minimum_price, minimum_compare_at_price, title } = item;
+    const { currency } = shop;
+
+    const shouldShowDiscount = shopItemHasDiscount(item);
 
     return (
       <Tile>
         <View styleName="content vertical h-center">
-          { minimum_compare_at_price ?
+          { shouldShowDiscount ?
             <Overlay styleName="image-overlay">
               <Heading>
                 {`-${getDiscount(minimum_price, minimum_compare_at_price)}%`}
@@ -229,7 +233,7 @@ class ProductDetailsScreen extends Component {
             null
           }
           <Title styleName="h-center md-gutter-top">{ title }</Title>
-          { minimum_compare_at_price ?
+          { shouldShowDiscount ?
             <Subtitle styleName="line-through md-gutter-top">
               {`${minimum_compare_at_price} ${currency}`}
             </Subtitle>

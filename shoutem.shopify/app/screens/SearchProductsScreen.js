@@ -26,7 +26,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 
 import {
   navigateBack,
- } from '@shoutem/core/navigation';
+} from '@shoutem/core/navigation';
 
 import { connectStyle } from '@shoutem/theme';
 
@@ -44,20 +44,9 @@ const renderCancelButton = onPress => (
     styleName="clear"
     onPress={onPress}
   >
-    <Subtitle>Cancel</Subtitle>
+    <Subtitle>{I18n.t(ext('cancel'))}</Subtitle>
   </Button>
 );
-
-const renderNoTagFound = (tag) => {
-  const message = `${I18n.t(ext('noItemsWithSpecificTag'))}"${tag}"`;
-
-  return (
-    <EmptyStateView
-      icon="search"
-      message={message}
-    />
-  );
-};
 
 class SearchProductsScreen extends Component {
   static propTypes = {
@@ -77,6 +66,8 @@ class SearchProductsScreen extends Component {
     this.onFilterChange = this.onFilterChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.renderTagRow = this.renderTagRow.bind(this);
+    this.renderNoTagFound = this.renderNoTagFound.bind(this);
+    this.handleRetry = this.handleRetry.bind(this);
 
     this.state = {};
   }
@@ -85,10 +76,6 @@ class SearchProductsScreen extends Component {
     const { navigateBack } = this.props;
 
     navigateBack();
-  }
-
-  onFilterChange(text) {
-    this.setState({ tagFilter: text, selectedTag: null, submitted: false });
   }
 
   onSubmit() {
@@ -100,6 +87,40 @@ class SearchProductsScreen extends Component {
     const matchingTag = _.includes(tags, tagFilter) ? tagFilter : null;
 
     this.setState({ selectedTag: matchingTag, submitted: true });
+  }
+
+  onFilterChange(text) {
+    this.setState({ tagFilter: text, selectedTag: null, submitted: false });
+  }
+
+  selectTag(tag) {
+    const newState = { selectedTag: tag, tagFilter: tag, submitted: false };
+
+    this.setState(newState, () => this.loadProducts());
+  }
+
+  loadProducts() {
+    const { refreshProducts } = this.props;
+    const { selectedTag } = this.state;
+
+    refreshProducts(undefined, selectedTag);
+  }
+
+  handleRetry() {
+    this.onFilterChange('');
+  }
+
+  renderNoTagFound(tag) {
+    const message = I18n.t(ext('noItemsWithSpecificTag'), { unmatchedTag: tag });
+
+    return (
+      <EmptyStateView
+        icon="search"
+        message={message}
+        onRetry={this.handleRetry}
+        retryButtonTitle={I18n.t(ext('ok'))}
+      />
+    );
   }
 
   renderSearchField() {
@@ -120,19 +141,6 @@ class SearchProductsScreen extends Component {
         {renderCancelButton(this.onCancel)}
       </View>
     );
-  }
-
-  selectTag(tag) {
-    const newState = { selectedTag: tag, tagFilter: tag, submitted: false };
-
-    this.setState(newState, () => this.loadProducts());
-  }
-
-  loadProducts() {
-    const { refreshProducts } = this.props;
-    const { selectedTag } = this.state;
-
-    refreshProducts(undefined, selectedTag);
   }
 
   renderTagRow(tag) {
@@ -160,7 +168,7 @@ class SearchProductsScreen extends Component {
     const { tagFilter, selectedTag, submitted } = this.state;
 
     if (submitted && !selectedTag) {
-      return renderNoTagFound(tagFilter);
+      return this.renderNoTagFound(tagFilter);
     }
 
     return (

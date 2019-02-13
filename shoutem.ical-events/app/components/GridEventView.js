@@ -22,7 +22,6 @@ export default class extends BaseEventItem {
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Card styleName="flexible">
-          <Image styleName="placeholder medium-wide" source={{ uri: this.props.imageUrl }} />
           <View styleName="content">
             <Subtitle numberOfLines={3}>{event.name}</Subtitle>
             <View styleName="flexible horizontal v-end space-between">

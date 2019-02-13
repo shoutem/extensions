@@ -1,7 +1,7 @@
 {
   "name": "news",
-  "version": "1.7.0",
-  "platform": "1.7.*",
+  "version": "1.8.0",
+  "platform": "1.8.*",
   "title": "News",
   "description": "Show news articles",
   "icon": "server/assets/add-news-image.png",

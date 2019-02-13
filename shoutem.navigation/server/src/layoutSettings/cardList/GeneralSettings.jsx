@@ -16,10 +16,10 @@ const configuration = {
     large: 'Large',
   },
   itemGutter: {
+    noGutter: 'No gutter',
     small: 'Small',
     medium: 'Medium',
     large: 'Large',
-    noGutter: 'No gutter',
   },
   itemText: {
     noText: 'No text',

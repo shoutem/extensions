@@ -56,7 +56,9 @@
       "cartScreenNavBarTitle": "SHOPPING CART",
       "emptyCartMessage": "You haven't added any products yet.",
       "shopTitlePlaceholder": "SHOP",
-      "outOfStockMessage": "Out of stock"
+      "outOfStockMessage": "Out of stock",
+      "cancel": "Cancel",
+      "ok": "OK"
     }
   }
 }

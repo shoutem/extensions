@@ -77,8 +77,8 @@ class IcalPage extends Component {
       <div className="ical-page">
         <form onSubmit={this.handleSubmit}>
           <FormGroup>
-            <h3>Enter your iCal url</h3>
-            <ControlLabel>Url</ControlLabel>
+            <h3>Enter your iCal URL</h3>
+            <ControlLabel>URL:</ControlLabel>
             <FormControl
               type="text"
               className="form-control"

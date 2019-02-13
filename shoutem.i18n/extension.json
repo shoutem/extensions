@@ -1,8 +1,8 @@
 {
   "name": "i18n",
   "title": "Language & Region",
-  "version": "1.7.0",
-  "platform": "1.7.*",
+  "version": "1.8.1",
+  "platform": "1.8.*",
   "description": "Configure the language and regional settings of your app.",
   "icon": "server/assets/add-translation.png",
   "pages": [

@@ -1,15 +1,23 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import _ from 'lodash';
 
 import {
   Image,
   ScrollView,
   View,
+  Device,
 } from '@shoutem/ui';
 
 import {
   Scaler,
 } from '../helpers';
+
+import {
+  NAVIGATION_HEADER_HEIGHT,
+  IPHONE_X_NOTCH_PADDING,
+  IPHONE_X_HOME_INDICATOR_PADDING,
+} from '../const';
 
 const defaultResolution = {
   width: 375,
@@ -43,7 +51,7 @@ const defaultResolution = {
  * Required props
  *  executeShortcut {redux action}
  */
-export default class FolderBase extends React.Component {
+export default class FolderBase extends React.PureComponent {
   static propTypes = {
     isRootScreen: PropTypes.bool,
     shortcut: PropTypes.object.isRequired,
@@ -123,6 +131,7 @@ export default class FolderBase extends React.Component {
    * Refresh dimension related state after updating page dimensions.
    * @param width Layout width
    * @param height Layout height
+   * @param resolvedHeight Layout height after checking for TabBar navigation
    */
   layoutChanged({ nativeEvent: { layout: { width, height } } }) {
     this.scaler.resolveRatioByWidth({ width, height }, defaultResolution);
@@ -165,8 +174,20 @@ export default class FolderBase extends React.Component {
   }
 
   resolveScrollViewProps() {
+    const { navigationBarImage, style } = this.props;
+
+    const navBarPadding = Device.select({
+      iPhoneX: navigationBarImage ? (NAVIGATION_HEADER_HEIGHT + IPHONE_X_NOTCH_PADDING) : 0,
+      default: navigationBarImage ? NAVIGATION_HEADER_HEIGHT : 0,
+    });
+
     return {
-      style: this.props.style.scrollView,
+      style: {
+        ...style.scrollView,
+      },
+      contentContainerStyle: {
+        paddingTop: navBarPadding,
+      }
     };
   }
 
@@ -212,7 +233,10 @@ export default class FolderBase extends React.Component {
    */
   renderPage(page, index = 1) {
     return (
-      <View key={`page_${index}`} {...this.resolvePageProps()}>
+      <View
+        key={`page_${index}`}
+        {...this.resolvePageProps()}
+      >
         {this.renderRows(page)}
       </View>
     );

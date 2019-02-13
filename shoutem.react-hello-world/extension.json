@@ -1,8 +1,8 @@
 {
   "name": "react-hello-world",
   "title": "React Hello World",
-  "version": "1.7.0",
-  "platform": "1.7.*",
+  "version": "1.8.0",
+  "platform": "1.8.*",
   "description": "An example of a simple extension with both app and server functionality",
   "shortcuts": [
     {

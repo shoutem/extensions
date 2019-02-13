@@ -48,6 +48,7 @@ import {
   getFormattedDiscount,
   isDealActive,
   resolveMapScheme,
+  resolveDealBuyDisplayLink,
 } from '../services';
 
 import FooterDealView from '../components/FooterDealView';
@@ -302,6 +303,8 @@ export class DealDetailsScreen extends Component {
       return null;
     }
 
+    const displayedLink = resolveDealBuyDisplayLink(deal.buyLink);
+
     return (
       <TouchableOpacity onPress={this.handleOpenWebsite}>
         <Divider styleName="line" />
@@ -309,7 +312,7 @@ export class DealDetailsScreen extends Component {
           <Icon name="web" />
           <View>
             <Text>{deal.buyLinkTitle || I18n.t(TRANSLATIONS.VISIT_WEBSITE_LABEL)}</Text>
-            <Caption>{deal.buyLink}</Caption>
+            <Caption>{displayedLink}</Caption>
           </View>
           <Icon styleName="disclosure" name="right-arrow" />
         </Row>

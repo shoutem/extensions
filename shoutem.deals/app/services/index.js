@@ -9,7 +9,7 @@ export * from './deals';
 export * from './maps';
 
 export function formatPrice(price, currency) {
-  const roundedPrice = Number(parseFloat(price).toFixed(2));
+  const roundedPrice = Number.parseFloat(price).toFixed(2);
   return currencyFormatter.format(roundedPrice, { code: currency });
 }
 

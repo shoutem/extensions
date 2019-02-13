@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { InteractionManager } from 'react-native';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -8,7 +9,6 @@ import { next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { navigateTo, openInModal, closeModal, navigateBack } from '@shoutem/core/navigation';
 import { NavigationBar } from '@shoutem/ui/navigation';
-
 import {
   Screen,
   Row,
@@ -20,21 +20,20 @@ import {
 } from '@shoutem/ui';
 
 import { ListScreen, getExtensionSettings } from 'shoutem.application';
-import { openProfile, authenticate } from 'shoutem.auth';
+import { authenticate } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 
 import { getUser, isAuthenticated } from 'shoutem.auth/redux';
 
+import StatusView from '../components/StatusView';
 import {
   loadStatuses,
   createStatus,
   likeStatus,
   unlikeStatus,
 } from '../redux';
-
-
+import { openProfileForLegacyUser } from '../services';
 import { ext } from '../const';
-import StatusView from '../components/StatusView';
 
 const { object } = PropTypes;
 
@@ -251,20 +250,22 @@ const mapStateToProps = (state) => {
   }
 };
 
-const mapDispatchToProps = {
-  navigateTo,
-  navigateBack,
-  next,
-  openInModal,
-  closeModal,
-  loadStatuses,
-  createStatus,
-  likeStatus,
-  unlikeStatus,
-  openProfile,
-  authenticate,
-  isAuthenticated,
-};
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    navigateTo,
+    navigateBack,
+    next,
+    openInModal,
+    closeModal,
+    loadStatuses,
+    createStatus,
+    likeStatus,
+    unlikeStatus,
+    authenticate,
+    isAuthenticated,
+  }, dispatch),
+  openProfile: openProfileForLegacyUser(dispatch),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('SocialWallScreen'))(SocialWallScreen),

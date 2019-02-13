@@ -14,12 +14,15 @@ import {
 import { connectStyle } from '@shoutem/theme';
 
 import { ext } from '../const';
+import { shopItemHasDiscount } from '../services';
 
 import ListItem from './ListItem';
 
 const GridItem = ({ item, onAddToCart, onPress, shop }) => {
   const { images, minimum_price, minimum_compare_at_price, title } = item;
   const { currency = '' } = shop;
+
+  const shouldShowDiscount = shopItemHasDiscount(item);
 
   return (
     <TouchableOpacity onPress={onPress}>
@@ -38,7 +41,7 @@ const GridItem = ({ item, onAddToCart, onPress, shop }) => {
               {`${minimum_price} ${currency}`}
             </Subtitle>
             <Caption styleName="line-through">
-              {minimum_compare_at_price ? `${minimum_compare_at_price} ${currency}` : ''}
+              {shouldShowDiscount ? `${minimum_compare_at_price} ${currency}` : ''}
             </Caption>
             <Button
               onPress={onAddToCart}

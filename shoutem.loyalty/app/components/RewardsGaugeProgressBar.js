@@ -89,7 +89,7 @@ export class RewardsGaugeProgressBar extends Component {
           styleName={`${isRefreshingPoints && 'muted'}`}
           onPress={this.handleRefreshCardState}
         >
-          <Text>{I18n.t(ext('pointsHistoryButton'))}</Text>
+          <Text>{I18n.t(ext('refreshButton'))}</Text>
         </Button>
       </View>
     );

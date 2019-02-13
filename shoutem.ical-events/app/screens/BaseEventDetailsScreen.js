@@ -62,7 +62,6 @@ export class BaseEventDetailsScreen extends React.Component {
         link: event.rsvpLink,
       },
       styleName: 'clear',
-      animationName: 'solidify',
       title: event.name,
       ...options,
     };
@@ -111,11 +110,12 @@ export class BaseEventDetailsScreen extends React.Component {
     );
   }
 
-  renderHeadlineDetails(event, darkened = true) {
+  renderHeadlineDetails(event, darkened = true, navBarClear = true) {
     const textColorStyle = darkened ? '' : 'bright';
+    const paddingTop = navBarClear ? 45 : 0;
 
     return (
-      <View virtual>
+      <View virtual style={{ paddingTop: paddingTop }}>
         <Title styleName={`${textColorStyle} md-gutter-bottom`}>
           {event.name.toUpperCase()}
         </Title>

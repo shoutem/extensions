@@ -1,7 +1,7 @@
 {
   "name": "sub-navigation",
-  "version": "1.7.0",
-  "platform": "1.7.*",
+  "version": "1.8.0",
+  "platform": "1.8.*",
   "title": "Navigation",
   "description": "Shows sub-navigation for the nested screen",
   "categories": [
@@ -81,6 +81,21 @@
         "itemGutter": "medium",
         "itemText": "topLeft",
         "isFullWidth": true
+      }
+    },
+    {
+      "name": "TileGrid",
+      "title": "Tile grid",
+      "image": "./server/assets/screens/tile-grid.png",
+      "extends": "@.IconGrid",
+      "settingsPage": {
+        "page": "shoutem.navigation.TileGrid"
+      },
+      "settings": {
+        "backgroundImage": "",
+        "parallaxEffect": "onScroll",
+        "itemGutter": "small",
+        "itemText": "topLeft"
       }
     }
   ]

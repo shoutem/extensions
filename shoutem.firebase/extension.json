@@ -1,7 +1,7 @@
 {
   "name": "firebase",
-  "version": "1.7.1",
-  "platform": "1.7.*",
+  "version": "1.8.0",
+  "platform": "1.8.*",
   "type": "system",
   "title": "Firebase",
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",

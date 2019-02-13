@@ -1,22 +1,21 @@
 // @flow
-import React, {
-  Component,
-} from 'react';
-
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Alert, Platform, Keyboard } from 'react-native';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
-
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import {
+  Alert,
+  Platform,
+  Keyboard,
+  KeyboardAvoidingView,
+} from 'react-native';
 
 import { connectStyle } from '@shoutem/theme';
 import { ImagePicker, ActionSheet } from '@shoutem/ui-addons';
 import { openInModal, navigateBack } from '@shoutem/core/navigation';
 import { NavigationBar } from '@shoutem/ui/navigation';
-
 import { isBusy, isInitialized, next, hasNext } from '@shoutem/redux-io';
-
 import {
   Button,
   ListView,
@@ -27,9 +26,10 @@ import {
   Icon,
   ImageBackground,
   Row,
+  ScrollView,
 } from '@shoutem/ui';
 
-import { openProfile, authenticate } from 'shoutem.auth';
+import { authenticate } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 
 import StatusView from '../components/StatusView';
@@ -37,17 +37,17 @@ import CommentView from '../components/CommentView';
 import AutoGrowTextInput from '../components/AutoGrowTextInput';
 import { user as userShape } from '../components/shapes';
 import { ext } from '../const';
-
 import {
   loadComments,
   createComment,
   deleteStatus,
   deleteComment,
 } from '../redux';
+import { openProfileForLegacyUser } from '../services';
 
 const { array, number, func, bool } = PropTypes;
 
-export class StatusDetailsScreen extends Component {
+export class StatusDetailsScreen extends PureComponent {
   static propTypes = {
     user: userShape.isRequired,
     comments: PropTypes.shape({
@@ -265,7 +265,6 @@ export class StatusDetailsScreen extends Component {
         <Divider styleName="line" />
         <View
           styleName="horizontal v-center"
-          style={{ backgroundColor: 'white' }}
         >
           {addPhotoButton}
           {this.renderCommentTextInput()}
@@ -353,10 +352,11 @@ export class StatusDetailsScreen extends Component {
 
   render() {
     const { enableComments, comments } = this.props;
+
     const addCommentSection = enableComments ? this.renderAddCommentSection() : null;
     const commentsData = _.get(comments, 'data', []);
-
     const areCommentsLoading = isBusy(comments) && !isInitialized(comments);
+    const keyboardViewBehavior = Platform.OS === 'ios' ? 'position' : null;
 
     return (
       <Screen styleName="paper">
@@ -365,20 +365,18 @@ export class StatusDetailsScreen extends Component {
           renderRightComponent={this.renderRightComponent}
         />
         <Divider styleName="line" />
-        <KeyboardAwareScrollView
-          enableAutoAutomaticScroll={(Platform.OS === 'ios')}
-          enableOnAndroid
-          keyboardShouldPersistTaps="always"
-        >
-          <ListView
-            data={[...commentsData]}
-            ref={this.captureScrollViewRef}
-            loading={areCommentsLoading}
-            renderHeader={this.renderStatus}
-            renderRow={this.renderRow}
-          />
-          {areCommentsLoading ? null : addCommentSection}
-        </KeyboardAwareScrollView>
+        <ScrollView>
+          <KeyboardAvoidingView behavior={keyboardViewBehavior}>
+            <ListView
+              data={[...commentsData]}
+              ref={this.captureScrollViewRef}
+              loading={areCommentsLoading}
+              renderHeader={this.renderStatus}
+              renderRow={this.renderRow}
+            />
+            {areCommentsLoading ? null : addCommentSection}
+          </KeyboardAvoidingView>
+        </ScrollView>
       </Screen>
     );
   }
@@ -389,17 +387,19 @@ const mapStateToProps = (state, ownProps) => ({
   comments: _.get(state[ext()], ['comments', ownProps.statusId], {}),
 });
 
-const mapDispatchToProps = {
-  loadComments,
-  openInModal,
-  navigateBack,
-  createComment,
-  openProfile,
-  authenticate,
-  next,
-  deleteStatus,
-  deleteComment,
-};
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators({
+    loadComments,
+    openInModal,
+    navigateBack,
+    createComment,
+    authenticate,
+    next,
+    deleteStatus,
+    deleteComment,
+  }, dispatch),
+  openProfile: openProfileForLegacyUser(dispatch),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('StatusDetailsScreen'))(StatusDetailsScreen),

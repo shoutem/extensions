@@ -1,7 +1,7 @@
 {
   "name": "auth",
-  "version": "1.7.1",
-  "platform": "1.7.*",
+  "version": "1.8.3",
+  "platform": "1.8.*",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
   "description": "Show user profile, sign out user",
@@ -84,6 +84,7 @@
   "settings": {
     "authApiEndpoint": "auth.api.shoutem.com",
     "signupEnabled": true,
+    "manuallyApproveMembers": false,
     "allScreensProtected": false,
     "providers": {
       "email": {

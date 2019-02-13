@@ -97,7 +97,7 @@ function appDidFinishLaunching(app) {
   FCM.on(FCMEvent.Notification, async (notif) => {
     if (notif) {
       dispatchNotificationAction({ ...notif });
-      
+
       // iOS requires developers to call completionHandler to end the
       // notification process.
       // Otherwise, your background remote notifications could be throttled.
@@ -129,13 +129,11 @@ function appDidFinishLaunching(app) {
   // the app is open via its icon, so send some action identifier with your
   // notifications
 
-  // Commented out because it appears that from firebase 11.0.2. FCM.on is called
-  // even when app was killed.
-  // FCM.getInitialNotification().then(notif => {
-  //   if (notif) {
-  //     dispatchNotificationAction({ ...notif, fromInit: true });
-  //   }
-  // });
+  FCM.getInitialNotification().then(notif => {
+    if (notif) {
+      dispatchNotificationAction({ ...notif, fromInit: true });
+    }
+  });
 }
 
 export {

@@ -1,8 +1,8 @@
 {
   "name": "ical-events",
   "title": "iCal Events",
-  "version": "1.7.1",
-  "platform": "1.7.*",
+  "version": "1.8.1",
+  "platform": "1.8.*",
   "description": "Shoutem extension for managing iCal events",
   "icon": "server/assets/add-events-image.png",
   "categories": [
@@ -17,36 +17,42 @@
   ],
   "screens": [
     {
-      "name": "EventsScreen",
-      "title": "Grid",
-      "image": "./server/assets/images/fixed-grid.png",
+      "name": "EventsFeaturedGridScreen",
+      "title": "Grid with featured event",
+      "image": "./server/assets/images/featured-grid-no-image.png",
       "navigatesTo": [
         "@.EventDetailsScreen"
       ]
     },
     {
+      "name": "EventsScreen",
+      "title": "Grid",
+      "image": "./server/assets/images/grid-no-image.png",
+      "extends": "@.EventsFeaturedGridScreen"
+    },
+    {
       "name": "EventsListScreen",
       "title": "List",
-      "image": "./server/assets/images/compact-list.png",
-      "extends": "@.EventsScreen"
+      "image": "./server/assets/images/list-no-image.png",
+      "extends": "@.EventsFeaturedGridScreen"
+    },
+    {
+      "name": "EventsFeaturedListScreen",
+      "title": "List with featured item",
+      "image": "./server/assets/images/featured-list-no-image.png",
+      "extends": "@.EventsFeaturedGridScreen"
     },
     {
       "name": "EventDetailsScreen",
-      "title": "Details screen with large photo",
-      "image": "./server/assets/images/details-large-solid.png"
-    },
-    {
-      "name": "EventDetailsScreenWithMediumPhoto",
-      "title": "Details screen with medium photo",
-      "extends": "@.EventDetailsScreen",
-      "image": "./server/assets/images/details-medium-solid.png"
+      "title": "Details screen",
+      "image": "./server/assets/images/details-no-image.png"
     }
   ],
   "shortcuts": [
     {
       "title": "iCal Events",
       "name": "iCal",
-      "screen": "@.EventsScreen",
+      "screen": "@.EventsFeaturedGridScreen",
       "icon": "theme://events.png",
       "adminPages": [
         {

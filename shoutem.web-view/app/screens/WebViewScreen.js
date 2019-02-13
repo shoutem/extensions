@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-
+import React, { PureComponent } from 'react';
+import _ from 'lodash';
+import { connect } from 'react-redux';
+import Pdf from 'react-native-pdf';
 import {
   WebView,
   InteractionManager,
@@ -8,23 +10,24 @@ import {
   Platform,
 } from 'react-native';
 
-import Pdf from 'react-native-pdf';
-
-import { View, Screen } from '@shoutem/ui';
+import { View, Screen, Spinner } from '@shoutem/ui';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { EmptyStateView } from '@shoutem/ui-addons';
+import { find } from '@shoutem/redux-io';
 
 import { I18n } from 'shoutem.i18n';
+import { currentLocation } from 'shoutem.cms';
 
-import { ext } from '../const';
 import NavigationToolbar from '../components/NavigationToolbar';
+import { ext } from '../const';
 
 const { bool, shape, string } = PropTypes;
 
-export default class WebViewScreen extends React.Component {
+export class WebViewScreen extends PureComponent {
   static propTypes = {
     shortcut: shape({
       settings: shape({
+        requireGeolocationPermission: bool,
         showNavigationToolbar: bool,
         url: string,
         title: string,
@@ -42,17 +45,23 @@ export default class WebViewScreen extends React.Component {
     this.getNavBarProps = this.getNavBarProps.bind(this);
     this.renderNavigationBar = this.renderNavigationBar.bind(this);
     this.onNavigationStateChange = this.onNavigationStateChange.bind(this);
+    this.resolveWebViewProps = this.resolveWebViewProps.bind(this);
 
     this.state = {
       webNavigationState: {},
-      isAnimationFinished: false,
     };
-  }
 
-  componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({ isAnimationFinished: true });
-    });
+    // componentWillReceiveProps() cannot be triggered due to
+    // WebView re-rendering after every change, so there are no
+    // actual prop changes:
+    // https://stackoverflow.com/a/40330289/7920643
+    const { checkPermissionStatus } = props;
+    const { requireGeolocationPermission } = _.get(requireGeolocationPermission, 'props.shortcut.settings', [false]);
+    const isLocationAvailable = !!props.currentLocation;
+
+    if (requireGeolocationPermission && !isLocationAvailable && _.isFunction(checkPermissionStatus)) {
+      checkPermissionStatus();
+    }
   }
 
   onNavigationStateChange(webState) {
@@ -99,34 +108,57 @@ export default class WebViewScreen extends React.Component {
 
   renderNavigationBar() {
     return (
-      <NavigationBar
-        {...this.getNavBarProps()}
-      />
+      <NavigationBar {...this.getNavBarProps()} />
     );
+  }
+
+  renderLoadingSpinner() {
+    return (
+      <View styleName="xl-gutter-top">
+        <Spinner styleName="lg-gutter-top" />
+      </View>
+    );
+  }
+
+  resolveWebViewProps(isAndroid) {
+    const { url, requireGeolocationPermission } = this.getSettings();
+    const defaultWebViewProps = {
+      ref: this.setWebViewRef,
+      startInLoadingState: true,
+      renderLoading: this.renderLoadingSpinner,
+      onNavigationStateChange: this.onNavigationStateChange,
+      source: { uri: url },
+      scalesPageToFit: true,
+    }
+
+    if (isAndroid) {
+      return ({
+        ...defaultWebViewProps,
+        geolocationEnabled: requireGeolocationPermission,
+      });
+    }
+
+    return defaultWebViewProps;
   }
 
   renderWebView() {
     const { url } = this.getSettings();
-    if (this.state.isAnimationFinished) {
-      if(url.includes(".pdf") && (Platform.OS === "android")) {
-        return (
-          <Pdf
-            source={{ uri: url }}
-            style={{ flex: 1, width: Dimensions.get('window').width }}
-          />
-        );
-      }
+    const isAndroid = Platform.OS === 'android';
+
+    if(url.includes(".pdf") && isAndroid) {
       return (
-        <WebView
-          ref={this.setWebViewRef}
+        <Pdf
           source={{ uri: url }}
-          scalesPageToFit
-          onNavigationStateChange={this.onNavigationStateChange}
+          style={{ flex: 1, width: Dimensions.get('window').width }}
         />
       );
     }
 
-    return (<View />);
+    return (
+      <WebView
+        {...this.resolveWebViewProps(isAndroid)}
+      />
+    );
   }
 
   renderWebNavigation() {
@@ -177,3 +209,5 @@ export default class WebViewScreen extends React.Component {
     );
   }
 }
+
+export default connect()(currentLocation(WebViewScreen));

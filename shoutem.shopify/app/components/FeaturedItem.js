@@ -20,6 +20,7 @@ import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
 
 import { ext } from '../const';
+import { shopItemHasDiscount } from '../services';
 
 import ListItem from './ListItem';
 
@@ -30,6 +31,8 @@ const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
   const { images, minimum_price, minimum_compare_at_price, title } = item;
   const { currency = '' } = shop;
 
+  const shouldShowDiscount = shopItemHasDiscount(item);
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View styleName="sm-gutter featured">
@@ -39,7 +42,7 @@ const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
           defaultSource={require('../assets/images/image-fallback.png')}
         >
           <Tile>
-            { minimum_compare_at_price ?
+            { shouldShowDiscount ?
               <Overlay styleName="image-overlay">
                 <Heading>
                   {`-${getDiscount(parseInt(minimum_price, 10),
@@ -50,7 +53,7 @@ const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
               null
             }
             <Title styleName="md-gutter-top">{title}</Title>
-            { minimum_compare_at_price ?
+            { shouldShowDiscount ?
               <Subtitle styleName="line-through sm-gutter-top">
                 {`${minimum_compare_at_price} ${currency}`}
               </Subtitle>

@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  AppState,
-  Platform,
-} from 'react-native';
+import { AppState, Platform } from 'react-native';
 import moment from 'moment';
+import _ from 'lodash';
 
 import {
   ScrollView,
@@ -20,7 +18,7 @@ import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { ext } from '../const';
 
-class VideoDetails extends Component {
+class VideoDetails extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -55,6 +53,10 @@ class VideoDetails extends Component {
     const isIos = Platform.OS === 'ios';
     const shouldRenderVideo = isAppActive || isIos;
 
+    // for some reason we pass an object instead of a string, so another check is necessary
+    const thumbnailUrl = _.get(video, 'video.thumbnailurl');
+    const resolvedThumbnailUrl = (thumbnailUrl === null) ? undefined : thumbnailUrl;
+
     return (
       <Screen styleName="paper">
         <NavigationBar
@@ -67,7 +69,7 @@ class VideoDetails extends Component {
         />
         <ScrollView>
           {shouldRenderVideo &&
-            <Video source={{ uri: video.video.url }} />
+            <Video source={{ uri: video.video.url }} poster={resolvedThumbnailUrl} />
           }
 
           <Tile styleName="text-centric">

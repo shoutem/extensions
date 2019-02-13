@@ -13,11 +13,11 @@ import {
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { BaseEventItem } from './BaseEventItem';
-import { formatDate } from '../services/Calendar';
-import { ext } from '../const';
+import { formatToLocalDate } from '../services/Calendar';
+import { ext } from '../extension';
 
 /**
- * A component used to render events
+ * A component used to render featured events
  */
 export default class FeaturedEventView extends BaseEventItem {
   render() {
@@ -28,23 +28,21 @@ export default class FeaturedEventView extends BaseEventItem {
     return (
       <TouchableOpacity key={event.id} onPress={this.onPress}>
         <View styleName={containerStyleName}>
-          <ImageBackground styleName="placeholder featured" source={{ uri: this.props.imageUrl }}>
-            <Tile>
-              <Title styleName="md-gutter-bottom">
-                {(event.name || '').toUpperCase()}
-              </Title>
-              <Caption>{formatDate(event.start)}</Caption>
-              <Divider styleName="line small center" />
-              <Caption styleName="md-gutter-bottom">{formatDate(event.end)}</Caption>
-              <Button
-                onPress={this.action}
-                styleName="md-gutter-top"
-              >
-                <Icon name="add-event" />
-                <Text>{I18n.t(ext('addToCalendarButton'))}</Text>
-              </Button>
-            </Tile>
-          </ImageBackground>
+          <Tile styleName="text-centric">
+            <Title styleName="md-gutter-vertical">
+              {(event.name || '').toUpperCase()}
+            </Title>
+            <Caption>{formatToLocalDate(event.start)}</Caption>
+            <Divider styleName="line small center" />
+            <Caption styleName="md-gutter-bottom">{formatToLocalDate(event.end)}</Caption>
+            <Button
+              onPress={this.action}
+              styleName="md-gutter-top"
+            >
+              <Icon name="add-event" />
+              <Text>{I18n.t(ext('addToCalendarButton'))}</Text>
+            </Button>
+          </Tile>
         </View>
       </TouchableOpacity>
     );

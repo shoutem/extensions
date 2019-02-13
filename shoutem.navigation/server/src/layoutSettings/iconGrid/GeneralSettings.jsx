@@ -17,6 +17,9 @@ const configuration = {
     medium: 'Medium',
     large: 'Large',
     extraLarge: 'Extra large',
+    xxl: 'XXL',
+    xxxl: 'XXXL',
+    xxxxl: 'XXXXL',
   },
   gridAlignment: {
     topLeft: 'Top left',

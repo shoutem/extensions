@@ -63,7 +63,6 @@ export class PageScreen extends AboutScreen {
   renderImage(profile, styleName) {
     const { imageSize } = this.props;
     return super.renderImage(profile, imageSize || 'large');
-    
   }
 
   renderAboutInfo(profile) {
@@ -84,12 +83,12 @@ export class PageScreen extends AboutScreen {
           {renderNameAndSubtitle(profile)}
           {this.renderInfo(profile)}
           <Divider />
+          <NavigationComponent
+            executeShortcut={executeShortcut}
+            shortcut={shortcut}
+            {...navigationSettings}
+          />
         </View>
-        <NavigationComponent
-          executeShortcut={executeShortcut}
-          shortcut={shortcut}
-          {...navigationSettings}
-        />
       </ScrollView>
     );
   }

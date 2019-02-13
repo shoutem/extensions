@@ -145,7 +145,7 @@ export function updateUser(appId, userId, userPatch, scope = {}) {
     },
   };
 
-  const { firstName, lastName, nick, userGroups, ...otherProps } = userPatch;
+  const { name, nick, userGroups, ...otherProps } = userPatch;
 
   const userGroupRelationship = userGroups ? {
     userGroups: {
@@ -157,7 +157,7 @@ export function updateUser(appId, userId, userPatch, scope = {}) {
     type: USERS,
     id: userId,
     attributes: {
-      profile: { firstName, lastName, nick },
+      profile: { name, nick },
       ...otherProps,
     },
     relationships: userGroupRelationship,
