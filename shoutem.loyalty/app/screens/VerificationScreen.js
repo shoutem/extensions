@@ -95,7 +95,7 @@ export class VerificationScreen extends React.Component {
   }
 
   render() {
-    const { cardId, reward, redeem, place } = this.props;
+    const { cardId, reward, redeem, place, style } = this.props;
 
     const rewardData = reward ? getEncodedRewardValues(reward) : '';
     const placeId = _.get(place, 'id');
@@ -109,12 +109,19 @@ export class VerificationScreen extends React.Component {
     return (
       <Screen>
         <NavigationBar />
-        <View styleName="sm-gutter flexible vertical h-center v-center">
+        <View
+          styleName="sm-gutter flexible vertical h-center v-center"
+        >
           <Subtitle styleName="xl-gutter-bottom">{I18n.t(ext('cashierVerificationMessage'))}</Subtitle>
-          <QRCode
-            size={qrCodeWidth}
-            value={JSON.stringify(transactionData)}
-          />
+          <View
+            style={style.qrBackground}
+            styleName="md-gutter-vertical md-gutter-horizontal"
+          >
+            <QRCode
+              size={qrCodeWidth}
+              value={JSON.stringify(transactionData)}
+            />
+          </View>
           <Button
             styleName="secondary md-gutter-vertical"
             onPress={this.navigateToPinVerificationScreen}

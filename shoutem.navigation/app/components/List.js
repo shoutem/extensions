@@ -1,7 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import _ from 'lodash';
+import { connect } from 'react-redux';
+
+import { dimensionRelativeToIphone, Device } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { LIST } from '../const';
+
+import {
+  LIST,
+  ext,
+  IPHONE_X_HOME_INDICATOR_PADDING,
+  IPHONE_X_NOTCH_PADDING,
+  NAVIGATION_HEADER_HEIGHT,
+  TAB_BAR_ITEM_HEIGHT,
+} from '../const';
+import { isTabBarNavigation, resolveScrollViewProps } from '../helpers';
 import ListItem from './ListItem';
 import FolderBase from './FolderBase';
 
@@ -14,14 +27,18 @@ class List extends FolderBase {
     backgroundImage: PropTypes.string,
   };
 
+  resolveScrollViewProps() {
+    return resolveScrollViewProps(this.props);
+  }
+
   resolvePageProps() {
     const { topOffset, listAlignment } = this.getLayoutSettings();
     const { dimensions: { height } } = this.state;
     const { style } = this.props;
+
     return {
       style: {
-        paddingTop: topOffset,
-        // Min height stretch page so list can be vertically aligned
+        paddingTop: dimensionRelativeToIphone(topOffset),
         minHeight: height,
         ...style.page,
       },
@@ -55,4 +72,10 @@ const mapPropsToStyleNames = (styleNames, props) => {
   return FolderBase.mapPropsToStyleNames(styleNames, props);
 };
 
-export default connectStyle(LIST, undefined, mapPropsToStyleNames)(List);
+const mapStateToProps = (state) => ({
+  isTabBar: isTabBarNavigation(state),
+});
+
+export default connect(mapStateToProps, undefined)(
+  connectStyle(LIST, undefined, mapPropsToStyleNames)(List)
+);

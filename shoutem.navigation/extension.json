@@ -1,7 +1,7 @@
 {
   "name": "navigation",
-  "version": "1.7.0",
-  "platform": "1.7.*",
+  "version": "1.8.3",
+  "platform": "1.8.*",
   "type": "system",
   "title": "Main Navigation",
   "description": "App-level navigation",
@@ -106,6 +106,38 @@
       }
     },
     {
+      "name": "TileGrid",
+      "title": "Tile grid",
+      "image": "./server/assets/screens/tile-grid.png",
+      "extends": "@.TabBar",
+      "settingsPage": {
+        "page": "@.TileGrid"
+      },
+      "settings": {
+        "backgroundImage": "",
+        "parallaxEffect": "onScroll",
+        "itemGutter": "small",
+        "itemText": "topLeft"
+      }
+    },
+    {
+      "name": "CardList",
+      "title": "Card list",
+      "image": "./server/assets/screens/card-list.png",
+      "extends": "@.TabBar",
+      "settingsPage": {
+        "page": "@.CardList"
+      },
+      "settings": {
+        "backgroundImage": "",
+        "parallaxEffect": "onScroll",
+        "cardHeight": "medium",
+        "itemGutter": "medium",
+        "itemText": "topLeft",
+        "isFullWidth": true
+      }
+    },
+    {
       "name": "None",
       "title": "None",
       "image": "./server/assets/screens/none.png",
@@ -140,6 +172,10 @@
     },
     {
       "name": "NavigationBarPage",
+      "type": "native-component"
+    },
+    {
+      "name": "TileGrid",
       "type": "native-component"
     }
   ],

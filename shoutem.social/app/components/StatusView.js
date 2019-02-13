@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -15,16 +15,16 @@ import {
 
 import { I18n } from 'shoutem.i18n';
 
+import { adaptSocialUserForProfileScreen, formatLikeText } from '../services';
+import { ext } from '../const';
 import LikeButton from './LikeButton';
 import CommentButton from './CommentButton';
 import HtmlTextView from './HtmlTextView'
 import { post as postShape } from './shapes';
-import { adaptSocialUserForProfileScreen, formatLikeText } from '../services';
-import { ext } from '../const';
 
 const { func, bool } = PropTypes;
 
-export default class StatusView extends React.Component {
+export default class StatusView extends PureComponent {
   static propTypes = {
     status: postShape.isRequired,
     addComment: func.isRequired,
@@ -166,7 +166,7 @@ export default class StatusView extends React.Component {
     }
 
     return (
-      <View styleName="horizontal solid space-between md-gutter ">
+      <View styleName="horizontal solid space-between md-gutter">
         {enableInteractions && (
           <TouchableOpacity onPress={this.handleClickOnLikes}>
             <Caption>{likesDisplayLabel}</Caption>

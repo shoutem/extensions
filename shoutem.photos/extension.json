@@ -1,7 +1,7 @@
 {
   "name": "photos",
-  "version": "1.7.0",
-  "platform": "1.7.*",
+  "version": "1.8.0",
+  "platform": "1.8.*",
   "title": "Photos",
   "description": "Show a photo gallery",
   "icon": "server/assets/add-photos-image.png",

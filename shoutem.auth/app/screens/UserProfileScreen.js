@@ -1,11 +1,6 @@
 import _ from 'lodash';
-
 import PropTypes from 'prop-types';
-
-import React, {
-  Component,
-} from 'react';
-
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { Modal } from 'react-native';
 
@@ -22,26 +17,23 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
-
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
-
 import { closeModal, openInModal } from '@shoutem/core/navigation';
+
+import { I18n } from 'shoutem.i18n';
 
 import { user as userShape } from '../components/shapes';
 import ProfileImage from '../components/ProfileImage';
-
 import {
   getUser,
   logout,
 } from '../redux';
-
-import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 const { func } = PropTypes;
 
-export class UserProfileScreen extends Component {
+export class UserProfileScreen extends PureComponent {
   static propTypes = {
     // Closes the modal in which the edit profile screen is opened
     closeModal: func,
@@ -164,6 +156,22 @@ export class UserProfileScreen extends Component {
     );
   }
 
+  renderNickName() {
+    const { nickname, nick, name } = _.get(this, ['props', 'user', 'profile']);
+
+    // user nickname is returned under different key on different endpoints
+    // ('nick' on My Profile page, 'nickname' on User Profile page... )
+    const actualName = nickname || nick || name;
+
+    if (_.isEmpty(actualName)) {
+      return null;
+    }
+
+    return (
+      <Title styleName="md-gutter-vertical">{actualName}</Title>
+    );
+  }
+
   renderContent() {
     const { profile } = this.props.user;
 
@@ -173,6 +181,7 @@ export class UserProfileScreen extends Component {
 
     const {
       name,
+      nick,
       image,
       location,
       url,
@@ -185,6 +194,11 @@ export class UserProfileScreen extends Component {
           onPress={this.toggleImageGallery}
           uri={image}
         />
+        {nick ?
+          <Caption styleName="md-gutter-vertical">{`${nick}`}</Caption>
+          :
+          null
+        }
         {name ?
           <Title styleName="md-gutter-vertical">{name}</Title>
           :

@@ -8,6 +8,7 @@ export default class WebEdit extends Component {
     super(props);
 
     this.handleShowNavigationToolbarChange = this.handleShowNavigationToolbarChange.bind(this);
+    this.handleGeolocationPermissionChange = this.handleGeolocationPermissionChange.bind(this);
   }
 
   handleShowNavigationToolbarChange(event) {
@@ -16,11 +17,18 @@ export default class WebEdit extends Component {
     }
   }
 
+  handleGeolocationPermissionChange(event) {
+    if (event.target) {
+      this.props.onRequireGeolocationPermissionChange(event.target.checked);
+    }
+  }
+
   render() {
     const {
       url,
       showNavigationToolbar,
-      hasNavigationToolbarToggle,
+      requireGeolocationPermission,
+      hasWebsiteSettings,
       onRemoveClick,
     } = this.props;
 
@@ -43,15 +51,25 @@ export default class WebEdit extends Component {
                 onClick={onRemoveClick}
               />
             </div>
-            {hasNavigationToolbarToggle && (
+            {hasWebsiteSettings && (
               <div>
-                <ControlLabel>Screen options</ControlLabel>
-                <Checkbox
-                  checked={showNavigationToolbar}
-                  onChange={this.handleShowNavigationToolbarChange}
-                >
-                  Show navigation toolbar
-                </Checkbox>
+                <ControlLabel>Website settings</ControlLabel>
+                <div>
+                  <Checkbox
+                    checked={requireGeolocationPermission}
+                    onChange={this.handleGeolocationPermissionChange}
+                  >
+                    This website requires location permissions
+                  </Checkbox>
+                </div>
+                <div>
+                  <Checkbox
+                    checked={showNavigationToolbar}
+                    onChange={this.handleShowNavigationToolbarChange}
+                  >
+                    Show navigation toolbar
+                  </Checkbox>
+                </div>
               </div>
             )}
           </FormGroup>
@@ -62,9 +80,11 @@ export default class WebEdit extends Component {
 }
 
 WebEdit.propTypes = {
-  hasNavigationToolbarToggle: PropTypes.bool,
+  hasWebsiteSettings: PropTypes.bool,
   url: PropTypes.string,
   showNavigationToolbar: PropTypes.bool,
+  requireGeolocationPermission: PropTypes.bool,
   onRemoveClick: PropTypes.func,
   onShowNavigationToolbarChange: PropTypes.func,
+  onRequireGeolocationPermissionChange: PropTypes.func,
 };

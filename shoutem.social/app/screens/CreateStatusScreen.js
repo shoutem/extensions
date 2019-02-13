@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
-
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import { Alert, KeyboardAvoidingView } from 'react-native';
 
 import {
@@ -19,7 +17,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from '@shoutem/ui';
-
+import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { ImagePicker } from '@shoutem/ui-addons';
 
@@ -32,7 +30,7 @@ import { ext } from '../const';
 
 const { string, func, number, bool } = PropTypes;
 
-export class CreateStatusScreen extends Component {
+export class CreateStatusScreen extends PureComponent {
   static propTypes = {
     user: userShape.isRequired,
     onStatusCreated: func.isRequired,
@@ -177,7 +175,8 @@ export class CreateStatusScreen extends Component {
   }
 
   renderFooter() {
-    const { enablePhotoAttachments } = this.props;
+    const { enablePhotoAttachments, style } = this.props;
+
     const addPhotoButton = enablePhotoAttachments ?
       <TouchableOpacity onPress={this.appendImage}>
         <Icon name="take-a-photo" />
@@ -187,8 +186,8 @@ export class CreateStatusScreen extends Component {
       <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={-64}>
         <Divider styleName="line" />
         <View
-          styleName="sm-gutter-vertical md-gutter-horizontal horizontal v-end space-between"
-          style={{ backgroundColor: 'white' }}
+          styleName="sm-gutter-top md-gutter-horizontal horizontal v-end space-between"
+          style={style.footer}
         >
           {addPhotoButton}
           <Caption>{this.state.numOfCharacters} characters left</Caption>
@@ -217,4 +216,4 @@ export class CreateStatusScreen extends Component {
   }
 }
 
-export default loginRequired(CreateStatusScreen, true);
+export default loginRequired(connectStyle(ext('CreateStatusScreen'))(CreateStatusScreen), true);

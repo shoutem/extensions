@@ -24,26 +24,12 @@ export function formatParams(paramsObject) {
   return params;
 }
 
+export function loadUser(userId) {
+  return find(USERS_SCHEMA, '', { userId });
+}
+
 export function loadUsers() {
-  const params = formatParams({
-    include_shoutem_fields: true,
-    cursor: 0,
-    count: 16,
-  });
-
-  const rioConfig = {
-    schema: USERS_SCHEMA,
-    request: {
-      endpoint: shoutemApi.buildUrl('/api/users/all.json', params),
-      method: 'GET',
-      resourceType: 'JSON',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
-  };
-
-  return find(rioConfig, '');
+  return find(USERS_SCHEMA);
 }
 
 export function loadStatuses() {

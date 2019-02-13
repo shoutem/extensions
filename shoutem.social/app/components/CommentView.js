@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -18,12 +18,12 @@ import { ActionSheet } from '@shoutem/ui-addons';
 
 import { I18n } from 'shoutem.i18n';
 
-import HtmlTextView from './HtmlTextView';
-import { comment as commentShape } from './shapes';
 import { adaptSocialUserForProfileScreen } from '../services';
 import { ext } from '../const';
+import HtmlTextView from './HtmlTextView';
+import { comment as commentShape } from './shapes';
 
-export default class CommentView extends React.Component {
+export default class CommentView extends PureComponent {
   static propTypes = {
     comment: commentShape.isRequired,
     openProfile: PropTypes.func.isRequired,

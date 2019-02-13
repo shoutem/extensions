@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -20,7 +20,7 @@ import { errorMessages } from '../errorMessages';
 
 const { func } = PropTypes;
 
-class RegisterForm extends Component {
+class RegisterForm extends PureComponent {
   static propTypes = {
     onSubmit: func,
   };
@@ -79,7 +79,7 @@ class RegisterForm extends Component {
   handleRegisterButtonPress() {
     const { onSubmit } = this.props;
     const { email, username, password } = this.state;
-    
+
     const validationPassed = this.validateInput();
 
     if (validationPassed && onSubmit) {

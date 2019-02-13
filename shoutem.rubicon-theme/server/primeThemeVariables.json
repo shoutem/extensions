@@ -32,19 +32,19 @@
 
     "featuredColor": {
       "type": "string",
-      "title": "Featured color",
+      "title": "Featured color - main color of the app",
       "format": "color",
       "default": "#222222"
     },
     "backgroundColor": {
       "type": "string",
-      "title": "Background color",
+      "title": "Background color - overall app background color",
       "format": "color",
       "default": "#f2f2f2"
     },
     "paperColor": {
       "type": "string",
-      "title": "Paper color",
+      "title": "Paper background color - most individual screen components and placeholders",
       "format": "color",
       "default": "#FFFFFF"
     },
@@ -125,6 +125,18 @@
     },
 
 
+    "tagOverlayColor": {
+      "type": "string",
+      "title": "Default overlay color",
+      "format": "color",
+      "default": "#FFFFFF"
+    },
+    "tagOverlayTextColor": {
+      "type": "string",
+      "title": "Text and Icon color on default overlays",
+      "format": "color",
+      "default": "#222222"
+    },
     "imageOverlayColor": {
       "type": "string",
       "title": "Image overlay color",
@@ -133,21 +145,9 @@
     },
     "imageOverlayTextColor": {
       "type": "string",
-      "title": "Image overlay text color",
+      "title": "Text and Icon color on images with overlays",
       "format": "color",
       "default": "rgba(255, 255, 255, 0.9)"
-    },
-    "tagOverlayColor": {
-      "type": "string",
-      "title": "Tag overlay color",
-      "format": "color",
-      "default": "#FFFFFF"
-    },
-    "tagOverlayTextColor": {
-      "type": "string",
-      "title": "Tag overlay text color",
-      "format": "color",
-      "default": "#222222"
     },
 
 
@@ -159,7 +159,7 @@
     },
     "navBarBorderColor": {
       "type": "string",
-      "title": "Bottom border color",
+      "title": "Header bottom border color",
       "format": "color",
       "default": "#f2f2f2"
     },
@@ -171,6 +171,12 @@
         "fontSize": 15
       }
     },
+    "statusBarColor": {
+      "type": "string",
+      "title": "Notch status bar color (used when background image is present)",
+      "format": "color",
+      "default": "#000"
+    },
     "navBarIconsColor": {
       "type": "string",
       "title": "Icons color",
@@ -179,13 +185,13 @@
     },
     "featuredNavBarTitleColor": {
       "type": "string",
-      "title": "Featured title color",
+      "title": "Title color for featured layouts",
       "format": "color",
       "default": "#ffffff"
     },
     "featuredNavBarIconsColor": {
       "type": "string",
-      "title": "Featured icons color",
+      "title": "Icons color for featured layouts",
       "format": "color",
       "default": "#ffffff"
     },
@@ -200,7 +206,7 @@
     },
     "mainNavItemColor": {
       "type": "string",
-      "title": "Item text and icon color",
+      "title": "Item text and icons color",
       "format": "color",
       "default": "rgba(34, 34, 34, 0.35)"
     },
@@ -212,7 +218,7 @@
     },
     "mainNavSelectedItemBackground": {
       "type": "string",
-      "title": "Selected item background",
+      "title": "Selected item background color",
       "format": "color",
       "default": "#FFFFFF"
     },
@@ -224,13 +230,13 @@
     },
     "mainNavSelectedItemBorderColor": {
       "type": "string",
-      "title": "Selected item border color",
+      "title": "Tab Bar selected item border color",
       "format": "color",
       "default": "#222222"
     },
     "mainNavBorderColor": {
       "type": "string",
-      "title": "Main navigation border color",
+      "title": "Tab Bar border color",
       "format": "color",
       "default": "#e0e0e0"
     },
@@ -239,7 +245,7 @@
 
     "subNavItemColor": {
       "type": "string",
-      "title": "Item text color",
+      "title": "Item text and icon color",
       "format": "color",
       "default": "#666666"
     },
@@ -251,7 +257,7 @@
     },
     "subNavListBorderColor": {
       "type": "string",
-      "title": "List border color",
+      "title": "List layout border color",
       "format": "color",
       "default": "#e0e0e0"
     },
@@ -260,7 +266,7 @@
 
     "primaryButtonText": {
       "type": "object",
-      "title": "Text",
+      "title": "Primary text",
       "format": "font",
       "default": {
         "fontWeight": "600",
@@ -270,13 +276,13 @@
     },
     "primaryButtonBackgroundColor": {
       "type": "string",
-      "title": "Background color",
+      "title": "Primary background color",
       "format": "color",
       "default": "#FFFFFF"
     },
     "primaryButtonBorderColor": {
       "type": "string",
-      "title": "Button border color",
+      "title": "Primary button border color",
       "format": "color",
       "default": "#FFFFFF"
     },
@@ -303,13 +309,19 @@
 
     "lineColor": {
       "type": "string",
-      "title": "Line color",
+      "title": "Line color - between list items",
       "format": "color",
       "default": "#e5e5e5"
     },
+    "indicatorColor": {
+      "type": "string",
+      "title": "Loyalty horseshoe, notification dots and page indicators",
+      "format": "color",
+      "default": "#222222"
+    },
     "sectionHeaderBackgroundColor": {
       "type": "string",
-      "title": "Section background color",
+      "title": "Section header background color - details screens",
       "format": "color",
       "default": "#F2F2F2"
     }
@@ -329,18 +341,9 @@
         ]
       },
       {
-        "title": "Typography",
+        "title": "Navigation bar (header)",
         "properties": [
-          "heading",
-          "title",
-          "subtitle",
-          "caption",
-          "text"
-        ]
-      },
-      {
-        "title": "Navigation bar",
-        "properties": [
+          "statusBarColor",
           "navBarText",
           "navBarIconsColor",
           "featuredNavBarTitleColor",
@@ -350,32 +353,33 @@
         ]
       },
       {
-        "title": "Overlays",
-        "properties": [
-          "imageOverlayColor",
-          "imageOverlayTextColor",
-          "tagOverlayColor",
-          "tagOverlayTextColor"
-        ]
-      },
-      {
-        "title": "Main navigation",
+        "title": "Tab Bar and Drawer layouts",
         "properties": [
           "mainNavBackground",
-          "mainNavBorderColor",
           "mainNavItemColor",
           "mainNavItemBackground",
+          "mainNavBorderColor",
           "mainNavSelectedItemColor",
           "mainNavSelectedItemBackground",
           "mainNavSelectedItemBorderColor"
         ]
       },
       {
-        "title": "Sub-navigation",
+        "title": "List, Card list, Icon grid and Tile grid layouts",
         "properties": [
           "subNavItemColor",
           "subNavItemBackground",
           "subNavListBorderColor"
+        ]
+      },
+      {
+        "title": "Typography",
+        "properties": [
+          "heading",
+          "title",
+          "subtitle",
+          "caption",
+          "text"
         ]
       },
       {
@@ -390,9 +394,19 @@
         ]
       },
       {
-        "title": "Separators",
+        "title": "Overlays",
+        "properties": [
+          "tagOverlayColor",
+          "tagOverlayTextColor",
+          "imageOverlayColor",
+          "imageOverlayTextColor"
+        ]
+      },
+      {
+        "title": "Miscellaneous",
         "properties": [
           "lineColor",
+          "indicatorColor",
           "sectionHeaderBackgroundColor"
         ]
       }

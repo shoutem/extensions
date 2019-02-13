@@ -64,11 +64,18 @@ export default class GeneralSettings extends Component {
   }
 
   handleAllowMembersChange() {
+    const { onExtensionSettingsUpdate } = this.props;
     const { manuallyApproveMembers } = this.state;
+
+    const settingsPatch = {
+      manuallyApproveMembers: !manuallyApproveMembers,
+    };
 
     this.props.onAppSettingsUpdate({
       manuallyApproveMembers: !manuallyApproveMembers,
     });
+    onExtensionSettingsUpdate(settingsPatch)
+      .then(() => this.setState(settingsPatch))
   }
 
   render() {

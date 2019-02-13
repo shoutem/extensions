@@ -19,7 +19,7 @@ import {
 } from '@shoutem/redux-io/status';
 
 import { STATUSES_SCHEMA, USERS_SCHEMA } from '../const';
-import { formatParams, CREATE, LIKE, UNLIKE, DELETE } from './actions';
+import { CREATE, LIKE, UNLIKE, DELETE } from './actions';
 import {
   increaseNumberOfComments,
   decreaseNumberOfComments,
@@ -27,7 +27,6 @@ import {
   removeStatus,
   updateStatusesAfterLike,
   updateStatusesAfterUnlike,
-  shoutemApi,
 } from '../services';
 
 const DEFAULT_STATE = { data: [] };
@@ -63,26 +62,42 @@ function processStatuses(state, action) {
   return newState;
 }
 
+function unpackUser(user) {
+  return {
+    id: user.id,
+    ...user.relationships,
+    ...user.attributes,
+  };
+}
+
 function processUsers(state, action) {
   const { payload } = action;
 
+  // for now, always refetch single users to avoid unknown incompatibilities between social and auth
+  if (!_.isArray(payload.data)) {
+    // meet the new state, same as the old state
+    const newState = { ...state, data: [...state.data] };
+    setStatus(newState, updateStatus(
+      state[STATUS],
+      {
+        validationStatus: validationStatus.VALID,
+        busyStatus: busyStatus.IDLE,
+        error: false,
+        schema: USERS_SCHEMA,
+      }
+    ));
+
+    return newState;
+  }
+
+  const data = _.map(payload.data, unpackUser);
+
   const newState = isAppendMode(action)
-    ? { ...state, data: [...state.data, ...payload.users] }
-    : { ...state, data: [...payload.users] };
+    ? { ...state, data: [...state.data, ...data] }
+    : { ...state, data: [...data] };
 
-  const cursor = _.get(payload, 'next_cursor');
-  const params = cursor ? {
-    ..._.get(action, 'meta.params'),
-    cursor,
-  } : {};
-
-  // Legacy API endpoint always returns a cursor property, even when there are no more pages.
-  // This results in endless requests.
-  // Since we don't know what the page size is, we end the cycle when the users response is empty.
-  const hasMore = cursor && !_.isEmpty(payload.users);
-
-  const nextPageUrl = shoutemApi.buildUrl('/api/users/all.json', formatParams(params));
-  const links = hasMore ? { next: nextPageUrl } : { next: null };
+  const nextPageUrl = _.get(payload, 'links.next');
+  const links = nextPageUrl ? { next: nextPageUrl } : { next: null };
 
   setStatus(newState, updateStatus(
     state[STATUS],
@@ -91,7 +106,6 @@ function processUsers(state, action) {
       busyStatus: busyStatus.IDLE,
       error: false,
       links,
-      params,
       schema: USERS_SCHEMA,
     }
   ));

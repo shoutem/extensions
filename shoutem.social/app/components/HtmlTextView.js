@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import { Html } from '@shoutem/ui';
 
 import { convertToHtml } from '../services/textConverter';
 
-export default class HtmlTextView extends Component {
+export default class HtmlTextView extends PureComponent {
   static propTypes = {
     text: PropTypes.string,
     styleName: PropTypes.string,

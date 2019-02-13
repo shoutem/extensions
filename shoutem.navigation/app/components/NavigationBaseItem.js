@@ -12,7 +12,7 @@ const missingIconSource = require('../assets/images/missing_icon.png');
 
 const { bool, func, object } = PropTypes;
 
-export class NavigationBaseItem extends React.Component {
+export class NavigationBaseItem extends React.PureComponent {
   static propTypes = {
     /* eslint-disable react/forbid-prop-types */
     shortcut: object.isRequired,

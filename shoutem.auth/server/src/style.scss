@@ -33,6 +33,10 @@
       }
     }
 
+    .settings-page-modal-small {
+      max-height: 500px;
+    }
+
     .settings-page-modal-small.modal-dialog,
     .modal.settings-page-modal-small .modal-dialog {
       min-width: 518px;

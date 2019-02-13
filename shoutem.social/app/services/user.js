@@ -1,5 +1,9 @@
 import _ from 'lodash';
 
+import { openProfile } from 'shoutem.auth';
+
+import { loadUser } from '../redux';
+
 export function adaptSocialUserForProfileScreen(user) {
   const id = _.get(user, 'id', -1);
 
@@ -30,4 +34,17 @@ export function adaptUserForSocialActions(user) {
     first_name,
     last_name,
   };
+}
+
+export function openProfileForLegacyUser(dispatch) {
+  return (legacyUser) => dispatch(loadUser(`legacyUser:${legacyUser.legacyId}`))
+  .then((user) => {
+    const fetchedUser = user.payload.data;
+    const unpackedUser = {
+      id: fetchedUser.id,
+      ...fetchedUser.attributes,
+    };
+
+    return dispatch(openProfile(unpackedUser));
+  });
 }

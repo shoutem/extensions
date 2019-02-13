@@ -52,10 +52,6 @@ export default class ListEventView extends React.Component {
         style={style}
       >
         <Row>
-          <Image
-            styleName="placeholder small rounded-corners"
-            source={{ uri: this.props.imageUrl }}
-          />
           <View styleName="vertical stretch space-between sm-gutter-horizontal">
             <Subtitle>{event.name}</Subtitle>
             <Caption>{formatToLocalDate(event.start)}</Caption>

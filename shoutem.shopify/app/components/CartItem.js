@@ -18,6 +18,7 @@ import {
 } from './shapes';
 
 import { ext } from '../const';
+import { shopItemVariantHasDisount } from '../services';
 
 /**
  * Renders a single cart item, with selected variant and quantity for a product
@@ -28,6 +29,8 @@ const CartItem = ({ cartItem, shop }) => {
   const { price, compare_at_price, title } = variant;
   const { images } = item;
   const { currency } = shop;
+
+  const shouldShowDiscount = shopItemVariantHasDisount(variant);
 
   return (
     <Row>
@@ -49,7 +52,7 @@ const CartItem = ({ cartItem, shop }) => {
       <View styleName="h-end sm-gutter-left vertical" style={{ flex: 3 }}>
         <Subtitle>{`${price} ${currency}`}</Subtitle>
         <Caption styleName="line-through">
-          {compare_at_price ? `${compare_at_price} ${currency}` : ''}
+          {shouldShowDiscount ? `${compare_at_price} ${currency}` : ''}
         </Caption>
       </View>
     </Row>

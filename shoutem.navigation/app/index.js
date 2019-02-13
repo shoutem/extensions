@@ -7,6 +7,7 @@ import CardList from './screens/CardList';
 import None from './screens/None';
 import Tab from './screens/Tab';
 import NoScreens from './screens/NoScreens';
+import TileGrid from './screens/TileGrid';
 
 import reducer, {
   middleware,
@@ -24,6 +25,7 @@ export const screens = {
   List,
   CardList,
   Modal,
+  TileGrid,
 };
 
 export const actions = {};
@@ -46,11 +48,16 @@ export {
   appDidMount,
 } from './app';
 
-export { createSubNavigationScreen } from './helpers';
+export {
+  createSubNavigationScreen,
+  isTabBarNavigation,
+  mapIsRootScreenToProps,
+} from './helpers';
 
 export { default as CardList } from './components/CardList';
 export { default as FolderBase } from './components/FolderBase';
 export { default as IconGrid } from './components/IconGrid';
 export { default as List } from './components/List';
+export { default as TileGrid } from './components/TileGrid';
 
 export { NavigationBaseItem } from './components/NavigationBaseItem';

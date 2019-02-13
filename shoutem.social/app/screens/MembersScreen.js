@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { InteractionManager } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import { isBusy, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
@@ -15,7 +15,6 @@ import {
   updateStatus,
   validationStatus
 } from '@shoutem/redux-io/status';
-
 import {
   ListView,
   View,
@@ -24,12 +23,12 @@ import {
 } from '@shoutem/ui';
 
 import { ListScreen } from 'shoutem.application';
-import { openProfile } from 'shoutem.auth';
 
-import { loadUsers } from '../redux';
-import { ext } from '../const';
 import MemberView from '../components/MemberView';
 import { user as userShape } from '../components/shapes';
+import { loadUsers } from '../redux';
+import { openProfileForLegacyUser } from '../services';
+import { ext } from '../const';
 
 export class MembersScreen extends ListScreen {
   static propTypes = {
@@ -137,12 +136,14 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators({ 
-  navigateTo,
-  loadUsers: ownProps.users ? undefined : loadUsers,
-  next,
-  openProfile,
-}, dispatch);
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  ...bindActionCreators({
+    navigateTo,
+    loadUsers: ownProps.users ? undefined : loadUsers,
+    next,
+  }, dispatch),
+  openProfile: openProfileForLegacyUser(dispatch),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('MembersScreen'))(MembersScreen),

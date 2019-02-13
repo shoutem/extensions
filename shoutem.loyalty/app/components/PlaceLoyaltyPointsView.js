@@ -80,7 +80,7 @@ class PlaceLoyaltyPointsView extends Component {
               styleName={`${isRefreshingPoints && 'muted'}`}
               onPress={this.refreshCardState}
             >
-              <Text>{I18n.t(ext('pointsHistoryButton'))}</Text>
+              <Text>{I18n.t(ext('refreshButton'))}</Text>
             </Button>
           </View>
         </View>

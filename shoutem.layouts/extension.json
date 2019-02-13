@@ -1,7 +1,7 @@
 {
   "name": "layouts",
-  "version": "1.7.0",
-  "platform": "1.7.*",
+  "version": "1.8.0",
+  "platform": "1.8.*",
   "type": "system",
   "title": "Layouts",
   "description": "Extension that enables app creator to choose between different layouts of the same screen",

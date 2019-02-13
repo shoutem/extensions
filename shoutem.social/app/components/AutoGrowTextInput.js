@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import _ from 'lodash';
@@ -7,7 +7,7 @@ import { TextInput } from '@shoutem/ui';
 
 const { func, number } = PropTypes;
 
-export default class AutoGrowTextInput extends Component {
+export default class AutoGrowTextInput extends PureComponent {
   static propTypes = {
     onTextChanged: func.isRequired,
     maxHeight: number,

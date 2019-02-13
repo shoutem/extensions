@@ -1,15 +1,23 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 
 import {
   GridRow,
   HorizontalPager,
   PageIndicators,
+  Device,
 } from '@shoutem/ui';
 
-import { ICON_GRID } from '../const';
+import {
+  ICON_GRID,
+  ext,
+  IPHONE_X_HOME_INDICATOR_PADDING,
+  TAB_BAR_ITEM_HEIGHT,
+} from '../const';
+import { isTabBarNavigation } from '../helpers';
 import IconGridCellItem from './IconGridCellItem';
 import FolderBase from './FolderBase';
 
@@ -83,6 +91,7 @@ export class IconGrid extends FolderBase {
 
   resolveRowProps() {
     const { row } = this.props.style;
+
     return {
       style: this.scale({
         width: this.calculateRowWidth(),
@@ -99,12 +108,15 @@ export class IconGrid extends FolderBase {
    * @returns {{pageStyle: {}, rowStyle: {}, cellStyle: {icon: {}, item: {}}}}
    */
   resolvePageProps() {
-    const { style } = this.props;
+    const { style, isTabBar } = this.props;
     const { dimensions: { width, height } } = this.state;
-
     const { gridAlignment } = this.getLayoutSettings();
 
     const styleNames = [gridAlignment];
+    const resolvedHeight = Device.select({
+      iPhoneX: isTabBar ? height : (height - IPHONE_X_HOME_INDICATOR_PADDING),
+      default: height,
+    });
 
     if (this.hasPager()) {
       styleNames.push('lg-gutter-vertical');
@@ -113,7 +125,7 @@ export class IconGrid extends FolderBase {
     return {
       style: {
         width,
-        height: this.isPagingEnabled() ? height : null,
+        height: this.isPagingEnabled() ? resolvedHeight : null,
         ...this.scale(style.page),
       },
       styleName: styleNames.join(' '),
@@ -121,11 +133,21 @@ export class IconGrid extends FolderBase {
   }
 
   resolveScrollViewProps() {
+    const { style, isTabBar } = this.props;
     const { scrollingDirection } = this.getLayoutSettings();
+
+    const homeIndicatorPadding = Device.select({
+      iPhoneX: isTabBar ? 0 : IPHONE_X_HOME_INDICATOR_PADDING,
+      default: 0,
+    });
+
     return {
       ...super.resolveScrollViewProps(),
       horizontal: scrollingDirection === 'horizontal',
       pagingEnabled: this.isPagingEnabled(),
+      contentContainerStyle: {
+        paddingBottom: homeIndicatorPadding,
+      }
     };
   }
 
@@ -216,4 +238,10 @@ const mapPropsToStyleNames = (styleNames, props) => {
   return FolderBase.mapPropsToStyleNames(styleNames, props);
 };
 
-export default connectStyle(ICON_GRID, undefined, mapPropsToStyleNames)(IconGrid);
+const mapStateToProps = (state) => ({
+  isTabBar: isTabBarNavigation(state),
+});
+
+export default connect(mapStateToProps)(
+  connectStyle(ICON_GRID, undefined, mapPropsToStyleNames)(IconGrid)
+);

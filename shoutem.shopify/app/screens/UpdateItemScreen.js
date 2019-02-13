@@ -32,6 +32,8 @@ import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
 
 import { ext } from '../const';
+import { shopItemVariantHasDisount } from '../services';
+
 import {
   product as productShape,
   shop as shopShape,
@@ -266,6 +268,8 @@ class UpdateItemScreen extends Component {
     const { images, title } = item;
     const { currency } = shop;
 
+    const shouldShowDiscount = shopItemVariantHasDisount(variant);
+
     return (
       <View
         styleName="horizontal solid v-start md-gutter"
@@ -281,7 +285,7 @@ class UpdateItemScreen extends Component {
         <View styleName="h-end sm-gutter-left vertical" style={{ flex: 3 }}>
           <Subtitle>{ `${price} ${currency}` }</Subtitle>
           <Caption styleName="line-through">
-            {compare_at_price ? `${compare_at_price} ${currency}` : ''}
+            {shouldShowDiscount ? `${compare_at_price} ${currency}` : ''}
           </Caption>
         </View>
       </View>

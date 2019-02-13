@@ -26,17 +26,21 @@ import {
   getActionCurrentPage,
   getResponseTotalPages,
 } from './services/pagination';
-import { ext } from './const';
+import {
+  ext,
+  API_ENDPOINT,
+  MEDIA_API_ENDPOINT,
+} from './const';
 
 export const WORDPRESS_NEWS_SCHEMA = 'shoutem.wordpress.news';
 export const WORDPRESS_MEDIA_SCHEMA = 'shoutem.wordpress.media';
 
 export function resolveFeedUrl(feedUrl) {
-  return `${feedUrl}/wp-json/wp/v2/posts?page={page}&per_page={perPage}`;
+  return API_ENDPOINT.replace('{feedUrl}', feedUrl);
 }
 
 export function resolvePostsMediaUrl(feedUrl) {
-  return `${feedUrl}/wp-json/wp/v2/media?include={include}`;
+  return MEDIA_API_ENDPOINT.replace('{feedUrl}', feedUrl);
 }
 
 // ACTION CREATORS
@@ -61,7 +65,12 @@ export function fetchPosts({ feedUrl, page, perPage, appendMode = false }) {
     },
   };
 
-  return find(config, undefined, { page, perPage }, { feedUrl, appendMode });
+  const params = {
+    page,
+    perPage,
+  };
+
+  return find(config, undefined, params, { feedUrl, appendMode });
 }
 
 /**
@@ -72,6 +81,10 @@ export function fetchPosts({ feedUrl, page, perPage, appendMode = false }) {
  * @param {bool} options.appendMode should returned items be appended to existing state
  */
 export function fetchPostsMedia({ feedUrl, posts, appendMode = false }) {
+  const featuredMediaIds = _.map(posts, 'featured_media');
+  const include = featuredMediaIds.join(',');
+  const perPage = featuredMediaIds.length;
+
   const config = {
     schema: WORDPRESS_MEDIA_SCHEMA,
     request: {
@@ -82,8 +95,10 @@ export function fetchPostsMedia({ feedUrl, posts, appendMode = false }) {
       },
     },
   };
+
   const params = {
-    include: _.map(posts, 'featured_media').join(','),
+    include,
+    perPage,
   };
 
   return find(config, undefined, params, { feedUrl, appendMode });
@@ -233,6 +248,7 @@ export default combineReducers({
 export function getFeedItemInfo(item, state, feedUrl) {
   const mediaList = _.get(state, [ext(), 'media', feedUrl]);
   const itemInfo = { ...item };
+
   if (itemInfo.featured_media) {
     itemInfo.featured_media_object = _.find(mediaList, ['id', itemInfo.featured_media]);
   }

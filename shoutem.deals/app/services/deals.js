@@ -37,6 +37,16 @@ export function dealCouponsEnabled(deal) {
 }
 
 /**
+ * This function will return a link with character length of 30, while also
+ * appending ellipsis (...)
+ * Links that are too long will "break" the layout, so they have to be truncated
+ * @param {String} buyLink
+ */
+export function resolveDealBuyDisplayLink(buyLink) {
+  return (_.truncate(buyLink, { 'length': 30 }));
+}
+
+/**
  * This function will check if deal is available for claim/redeem functionality.
  * @param {Object} deal
  */

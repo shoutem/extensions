@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
-import { Alert } from 'react-native';
+import React, { PureComponent } from 'react';
+import { Platform, Alert, KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -10,9 +8,9 @@ import {
   Button,
   Caption,
   Divider,
+  ScrollView,
   FormGroup,
   Screen,
-  ScrollView,
   Spinner,
   Subtitle,
   TextInput,
@@ -44,7 +42,7 @@ const renderSavingChangesMessage = () => (
 /**
  * A component that lets the user edit their profile.
  */
-class EditProfileScreen extends Component {
+class EditProfileScreen extends PureComponent {
   static propTypes = {
     // Called when updating the profile is cancelled or done
     onClose: func.isRequired,
@@ -185,32 +183,33 @@ class EditProfileScreen extends Component {
       return renderSavingChangesMessage();
     }
 
-    const username = _.get(user, 'username');
+    const username = _.get(user, 'profile.nick');
     // updated image takes precedence, it will be set if user is currently
     // editing profile and changed the image
     const image = _.get(updatedImage, 'uri') || _.get(user, 'profile.image');
+    const keyboardViewBehavior = Platform.OS === 'ios' ? 'position' : null;
 
     return (
-      <View>
-        <NavigationBar {...this.getNavbarProps()} />
-        <ScrollView>
+      <ScrollView>
+        <KeyboardAvoidingView behavior={keyboardViewBehavior}>
           <ProfileImage
             isEditable
             onPress={this.changeProfileImage}
             uri={image}
           />
           {this.renderForm()}
-          <Caption styleName="lg-gutter-vertical h-center">
+          <Caption styleName="h-center">
             {I18n.t(ext('loggedInUserInfo'), { username })}
           </Caption>
-        </ScrollView>
-      </View>
+        </KeyboardAvoidingView>
+      </ScrollView>
     );
   }
 
   render() {
     return (
       <Screen>
+        <NavigationBar {...this.getNavbarProps()} />
         {this.renderContent()}
       </Screen>
     );

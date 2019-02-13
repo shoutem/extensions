@@ -24,10 +24,6 @@ import EventsMap from '../components/EventsMap';
 import { ext } from '../extension';
 import { EVENTS_PROXY_SCHEMA, getIcalFeed } from '../redux';
 
-function hasFeaturedEvent(events) {
-  return events.some(event => event.featured);
-}
-
 export class EventsListScreen extends RemoteDataListScreen {
   static propTypes = {
     ...RemoteDataListScreen.propTypes,
@@ -131,15 +127,6 @@ export class EventsListScreen extends RemoteDataListScreen {
     this.setState({ shouldRenderMap: !shouldRenderMap });
   }
 
-  renderCategoriesDropDown(styleName) {
-    const { data } = this.props;
-    let newStyleName = styleName;
-    if (hasFeaturedEvent(data)) {
-      newStyleName = newStyleName ? `${newStyleName} featured` : 'featured';
-    }
-    return super.renderCategoriesDropDown(newStyleName);
-  }
-
   getNavigationBarProps(screenTitle = I18n.t('shoutem.cms.navBarListViewButton')) {
     const { data } = this.props;
     const { shouldRenderMap } = this.state;
@@ -158,10 +145,6 @@ export class EventsListScreen extends RemoteDataListScreen {
         </View>
       );
     };
-
-    if (hasFeaturedEvent(data)) {
-      newNavBarProps.styleName = `${newNavBarProps.styleName || ''} featured`;
-    }
 
     return newNavBarProps;
   }

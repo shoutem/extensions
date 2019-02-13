@@ -1,20 +1,21 @@
 // This file is managed by Shoutem CLI
-// You should not change it
+// It exports screens and themes from extension.json
+// You should not change it manually
 import pack from './package.json';
 
 // screens imports
+import EventsFeaturedGridScreen from './screens/EventsFeaturedGridScreen';
 import EventsScreen from './screens/EventsScreen';
+import EventsFeaturedListScreen from './screens/EventsFeaturedListScreen';
 import EventsListScreen from './screens/EventsListScreen';
 import EventDetailsScreen from './screens/EventDetailsScreen';
-import EventDetailsScreenWithMediumPhoto from './screens/EventDetailsScreenWithMediumPhoto';
-import EventMapScreen from './screens/EventMapScreen';
 
 export const screens = {
+  EventsFeaturedGridScreen,
   EventsScreen,
+  EventsFeaturedListScreen,
   EventsListScreen,
-  EventDetailsScreen,
-  EventDetailsScreenWithMediumPhoto,
-  EventMapScreen,
+  EventDetailsScreen
 };
 
 export const themes = {

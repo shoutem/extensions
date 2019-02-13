@@ -83,7 +83,7 @@ class PeopleDetailsScreen extends React.Component {
     const { openURL, person } = this.props;
     const fullName = `${person.firstName} ${person.lastName}`;
 
-    if (/phone|email/i.test(name)) {
+    if (icon === 'email' || icon === 'call') {
       return (
         <Button styleName="stacked clear tight" onPress={() => Linking.openURL(url)}>
           <Icon name={icon} />

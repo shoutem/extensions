@@ -3,12 +3,13 @@ import { getShortcut } from 'shoutem.application';
 
 import { ext } from './const';
 
-const getWebViewRoute = (url, title, showNavigationToolbar = true) => ({
+const getWebViewRoute = (url, title, showNavigationToolbar = true, requireGeolocationPermission = false) => ({
   screen: ext('WebViewWithShareScreen'),
   props: {
     url,
     title,
     showNavigationToolbar,
+    requireGeolocationPermission,
   },
 });
 
@@ -22,8 +23,8 @@ function openExternalBrowserActionCreator(url) {
 }
 
 // Shoutem specified actions
-export function openURL(url, title, showNavigationToolbar) {
-  return navigateTo(getWebViewRoute(url, title, showNavigationToolbar));
+export function openURL(url, title, showNavigationToolbar, requireGeolocationPermission) {
+  return navigateTo(getWebViewRoute(url, title, showNavigationToolbar, requireGeolocationPermission));
 }
 
 export function openUrlInExternalBrowser(state, action) {

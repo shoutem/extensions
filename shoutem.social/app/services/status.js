@@ -2,6 +2,10 @@ import _ from 'lodash';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
+function truncateUsername(userName, maxLength = 12) {
+  return _.truncate(userName, { 'length': maxLength });
+}
+
 export function formatLikeText(status, showUsersWhoLiked = true) {
   const count = _.get(status, 'shoutem_favorited_by.count', 0);
 
@@ -15,8 +19,7 @@ export function formatLikeText(status, showUsersWhoLiked = true) {
 
   const users = _.get(status, 'shoutem_favorited_by.users');
   const userNames = _.map(users, 'first_name');
-  const firstUser = _.get(userNames, 0);
-  const secondUser = _.get(userNames, 1);
+  const firstUser = truncateUsername(_.get(userNames, 0));
 
   if (count === 1) {
     return I18n.t(ext('numberOfLikesMessage'), {
@@ -25,18 +28,9 @@ export function formatLikeText(status, showUsersWhoLiked = true) {
     });
   }
 
-  if (count === 2) {
-    return I18n.t(ext('numberOfLikesMessage'), {
-      firstUser,
-      secondUser,
-      count,
-    });
-  }
-
-  const remainingCount = count - 2;
+  const remainingCount = count - 1;
   return I18n.t(ext('numberOfOtherUserLikesMessage'), {
     firstUser,
-    secondUser,
     count: remainingCount,
   });
 }

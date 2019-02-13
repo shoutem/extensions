@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import {
@@ -26,6 +26,11 @@ import {
 } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 
+import { saveSession } from '../session';
+import { loginRequired } from '../loginRequired';
+import RegisterButton from '../components/RegisterButton';
+import LoginForm from '../components/LoginForm';
+import FacebookButton from '../components/FacebookButton';
 import {
   login,
   loginWithFacebook,
@@ -39,11 +44,6 @@ import {
   getErrorCode,
   getErrorMessage,
 } from '../errorMessages';
-import { saveSession } from '../session';
-import { loginRequired } from '../loginRequired';
-import RegisterButton from '../components/RegisterButton';
-import LoginForm from '../components/LoginForm';
-import FacebookButton from '../components/FacebookButton';
 import { ext } from '../const';
 
 const {
@@ -53,7 +53,7 @@ const {
   string,
 } = PropTypes;
 
-export class LoginScreen extends Component {
+export class LoginScreen extends PureComponent {
   static propTypes = {
     navigateTo: func,
     login: func,
@@ -175,8 +175,12 @@ export class LoginScreen extends Component {
   }
 
   openRegisterScreen() {
+    const manuallyApproveMembers = _.get(this.props, 'settings.manuallyApproveMembers');
     const route = {
       screen: ext('RegisterScreen'),
+      props: {
+        manualApprovalActive: manuallyApproveMembers,
+      }
     };
     this.props.navigateTo(route);
   }

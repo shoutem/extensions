@@ -6,6 +6,7 @@ import IconGrid from './layoutSettings/iconGrid/IconGrid';
 import Drawer from './layoutSettings/Drawer';
 import TabBar from './layoutSettings/Tabbar';
 import NavigationBarPage from './NavigationBarPage';
+import TileGrid from './layoutSettings/tileGrid/TileGrid';
 
 import reducer from './reducer';
 import { createDenormalizer } from 'denormalizer';
@@ -14,6 +15,7 @@ import { store } from 'context';
 const adminPages = {
   IconsPage,
   List,
+  TileGrid,
   CardList,
   None,
   IconGrid,

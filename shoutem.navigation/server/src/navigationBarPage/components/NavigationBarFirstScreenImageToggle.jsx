@@ -5,11 +5,14 @@ import {
   Dropdown,
   MenuItem,
 } from 'react-bootstrap';
+import { FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
+import '../style.scss';
 
 const BACKGROUND_IMAGE_ENABLED_FIRST_SCREEN_OPTION = 1;
 const BACKGROUND_IMAGE_ALL_SCREENS_OPTION = 0;
-const ALL_SCREENS_LABEL = 'Show on all screens';
-const FIRST_SCREEN_LABEL = 'Show only on the first screen of the app';
+const ALL_SCREENS_LABEL = "Show on all screens";
+const FIRST_SCREEN_LABEL = "Show only on the first navigation screen of the app";
+const FIRST_SCREEN_HELP_TEXT = "The First screen setting only applies to Main or Sub navigation screens, i.e. if your first screen is an About screen, the image will not be shown";
 
 const isBackgroundImageFirstScreenOnly = (selectedValue) =>
   (selectedValue === BACKGROUND_IMAGE_ENABLED_FIRST_SCREEN_OPTION);
@@ -45,9 +48,19 @@ export default class NavigationBarFirstScreenImageToggle extends Component {
       backgroundImageEnabledFirstScreen,
     } = this.props;
 
+
     return (
       <FormGroup className="navigation-bar-page-first-screen-toggle">
         <ControlLabel>Background settings</ControlLabel>
+        <FontIconPopover
+          message={FIRST_SCREEN_HELP_TEXT}
+        >
+          <FontIcon
+            className="icon-popover"
+            name="info"
+            size="24px"
+          />
+        </FontIconPopover>
         <Dropdown
           className="block"
           onSelect={this.handleBackgroundImageToggle}

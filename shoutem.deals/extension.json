@@ -1,8 +1,8 @@
 {
   "name": "deals",
   "title": "Deals",
-  "version": "1.7.2",
-  "platform": "1.7.*",
+  "version": "1.8.0",
+  "platform": "1.8.*",
   "description": "Create special deals and redeem them with coupons",
   "icon": "server/assets/add-deals-image.png",
   "categories": [

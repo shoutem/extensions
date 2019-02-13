@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -19,7 +19,7 @@ import {
  * A component used to render a single list video item as a row
  * in a list with a medium sized thumbnail.
  */
-export default class SmallVideoView extends React.Component {
+export default class SmallVideoView extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     video: PropTypes.object.isRequired,
@@ -37,12 +37,17 @@ export default class SmallVideoView extends React.Component {
   render() {
     const { video } = this.props;
 
+    // For some reason we pass null instead of an empty string, so another check is necessary
+    // for situations when the thumbnail isn't provided
+    const thumbnailUrl = _.get(video, 'video.thumbnailurl');
+    const resolvedThumbnailUrl = (thumbnailUrl === null) ? undefined : thumbnailUrl;
+
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Row>
           <ImageBackground
             styleName="medium rounded-corners placeholder"
-            source={{ uri: _.get(video, 'video.thumbnailurl') }}
+            source={{ uri: resolvedThumbnailUrl }}
           >
             <Overlay styleName="rounded-small">
               <Icon name="play" />

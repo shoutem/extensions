@@ -20,6 +20,7 @@ export class Web extends Component {
     this.handleUrlInputContinueClick = this.handleUrlInputContinueClick.bind(this);
     this.handleUrlRemoveClick = this.handleUrlRemoveClick.bind(this);
     this.handleShowNavigationToolbarChange = this.handleShowNavigationToolbarChange.bind(this);
+    this.handleGeolocationPermissionChange = this.handleGeolocationPermissionChange.bind(this);
   }
 
   getActiveScreen() {
@@ -37,6 +38,7 @@ export class Web extends Component {
     return {
       url: '',
       showNavigationToolbar: false,
+      requireGeolocationPermission: false,
     };
   }
 
@@ -71,11 +73,15 @@ export class Web extends Component {
     this.setShortcutSettings({ showNavigationToolbar: checked });
   }
 
+  handleGeolocationPermissionChange(checked) {
+    this.setShortcutSettings({ requireGeolocationPermission: checked });
+  }
+
   render() {
     const activeScreen = this.getActiveScreen();
-    const { url, showNavigationToolbar } = this.getShortcutSettings();
+    const { url, showNavigationToolbar, requireGeolocationPermission } = this.getShortcutSettings();
 
-    const { hasNavigationToolbar } = data.params;
+    const { hasWebsiteSettings } = data.params;
 
     return (
       <div>
@@ -86,11 +92,13 @@ export class Web extends Component {
         )}
         {(activeScreen === ACTIVE_SCREEN_EDIT) && (
           <WebEdit
-            hasNavigationToolbarToggle={hasNavigationToolbar}
+            hasWebsiteSettings={hasWebsiteSettings}
             url={url}
             showNavigationToolbar={showNavigationToolbar}
+            requireGeolocationPermission={requireGeolocationPermission}
             onRemoveClick={this.handleUrlRemoveClick}
             onShowNavigationToolbarChange={this.handleShowNavigationToolbarChange}
+            onRequireGeolocationPermissionChange={this.handleGeolocationPermissionChange}
           />
         )}
       </div>

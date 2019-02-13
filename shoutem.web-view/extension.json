@@ -1,7 +1,7 @@
 {
   "name": "web-view",
-  "version": "1.7.2",
-  "platform": "1.7.*",
+  "version": "1.8.1",
+  "platform": "1.8.*",
   "title": "Web view",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
@@ -21,7 +21,7 @@
           "page": "@.WebPage",
           "title": "Content",
           "parameters": {
-            "hasNavigationToolbar": "true"
+            "hasWebsiteSettings": "true"
           }
         },
         {

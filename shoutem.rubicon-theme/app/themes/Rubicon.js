@@ -10,7 +10,7 @@ import {
   getTheme,
   defaultThemeVariables as defaultUiThemeVariables,
   dimensionRelativeToIphone,
-  isIphoneX,
+  Device,
 } from '@shoutem/ui';
 
 import {
@@ -18,15 +18,22 @@ import {
   changeColorAlpha,
 } from '@shoutem/theme';
 
-const defaultNavBarHeight = NavigationExperimental.Header.HEIGHT;
+import {
+  IPHONE_X_HOME_INDICATOR_PADDING,
+  IPHONE_X_NOTCH_PADDING,
+  NAVIGATION_HEADER_HEIGHT,
+  TAB_BAR_ITEM_HEIGHT,
+} from '../const';
 
-const IPHONE_X_HOME_INDICATOR_PADDING = isIphoneX ? 20 : 0;
-const IPHONE_X_NOTCH_PADDING = isIphoneX ? 14 : 0;
+const NAVIGATION_BAR_HEIGHT = Device.select({
+  iPhoneX: NAVIGATION_HEADER_HEIGHT + IPHONE_X_NOTCH_PADDING,
+  default: NAVIGATION_HEADER_HEIGHT,
+});
 
-const TAB_BAR_ITEM_HEIGHT = 60;
-const TAB_BAR_ITEM_MARGIN_BOTTOM = IPHONE_X_HOME_INDICATOR_PADDING;
-const TAB_BAR_HEIGHT = TAB_BAR_ITEM_HEIGHT + IPHONE_X_NOTCH_PADDING;
-const NAVIGATION_BAR_HEIGHT = defaultNavBarHeight + IPHONE_X_NOTCH_PADDING;
+const TAB_BAR_HEIGHT = Device.select({
+  iPhoneX: TAB_BAR_ITEM_HEIGHT + IPHONE_X_HOME_INDICATOR_PADDING,
+  default: TAB_BAR_ITEM_HEIGHT,
+});
 
 export const defaultThemeVariables = {
   ...defaultUiThemeVariables,
@@ -64,6 +71,20 @@ export default (customVariables = {}) => {
           },
         },
       },
+    },
+
+    // Lightbox
+    'shoutem.ui.Lightbox': {
+      'shoutem.ui.Image': {
+        '.preview': {
+          flex: 1,
+          resizeMode: 'contain',
+        },
+      },
+    },
+
+    statusBar: {
+      backgroundColor: variables.statusBarColor,
     },
 
     clearNavigationBar: {
@@ -143,6 +164,25 @@ export default (customVariables = {}) => {
           height: 60,
         },
       },
+      '.xxl-icon': {
+        icon: {
+          width: 70,
+          height: 70,
+        },
+      },
+      '.xxxl-icon': {
+        icon: {
+          width: 80,
+          height: 80,
+        },
+      },
+      '.xxxxl-icon': {
+        icon: {
+          width: 90,
+          height: 90,
+        },
+      },
+
 
       page: {
         [INCLUDE]: ['alignmentVariants'],
@@ -213,18 +253,27 @@ export default (customVariables = {}) => {
         },
       },
       '.selected': {
-        item: {
-          borderColor: variables.mainNavSelectedItemBorderColor,
-        },
+        item: Device.select({
+          iPhoneX: {
+            borderTopWidth: 2,
+            borderColor: variables.mainNavSelectedItemBorderColor,
+          },
+          default: {
+            borderBottomWidth: 2,
+            borderColor: variables.mainNavSelectedItemBorderColor,
+          },
+        }),
       },
       item: {
         height: TAB_BAR_ITEM_HEIGHT,
-        marginBottom: TAB_BAR_ITEM_MARGIN_BOTTOM,
+        marginBottom: Device.select({
+          iPhoneX: IPHONE_X_HOME_INDICATOR_PADDING,
+          default: 0,
+        }),
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'space-between',
         borderWidth: 0,
-        borderBottomWidth: 2,
         borderRadius: 0,
         paddingHorizontal: variables.smallGutter,
         borderColor: 'transparent',
@@ -378,12 +427,41 @@ export default (customVariables = {}) => {
             paddingRight: variables.gridItemHorizontalGutter,
           },
         },
-
-        '.extraLarge-icon': {
-          text: {
-            marginBottom: 6,
-            marginTop: 6,
-          },
+      },
+      '.extraLarge-icon': {
+        text: {
+          height: 'auto',
+          marginTop: 6,
+          paddingTop: 4,
+          paddingBottom: 4,
+          fontSize: 11,
+        },
+      },
+      '.xxl-icon': {
+        text: {
+          height: 'auto',
+          marginTop: 8,
+          paddingTop: 6,
+          paddingBottom: 6,
+          fontSize: 12,
+        },
+      },
+      '.xxxl-icon': {
+        text: {
+          height: 'auto',
+          marginTop: 12,
+          paddingTop: 8,
+          paddingBottom: 8,
+          fontSize: 13,
+        },
+      },
+      '.xxxxl-icon': {
+        text: {
+          height: 'auto',
+          marginTop: 16,
+          paddingTop: 8,
+          paddingBottom: 10,
+          fontSize: 14,
         },
       },
 
@@ -515,7 +593,64 @@ export default (customVariables = {}) => {
         color: changeColorAlpha(variables.subNavItemColor, 0.5),
       },
     },
-
+    'shoutem.navigation.TileGrid': {
+      gridRow: {
+        padding: 0,
+        margin: 0,
+        flex: 0,
+      },
+      page: {
+        // Page padding bottom is defined by item marginBottom
+        '.small-gutter': {
+          paddingTop: 2,
+          paddingHorizontal: 2,
+        },
+        '.medium-gutter': {
+          paddingTop: 4,
+          paddingHorizontal: 4,
+        },
+        '.large-gutter': {
+          paddingTop: 8,
+          paddingHorizontal: 8,
+        },
+        '.no-gutter': {
+          padding: 0,
+          margin: 0,
+        },
+      },
+      item: {
+        [INCLUDE]: ['alignmentVariants'],
+        // Related with page gutter
+        '.small-gutter': {
+          margin: 2,
+          height: dimensionRelativeToIphone(179),
+        },
+        '.medium-gutter': {
+          margin: 4,
+          height: dimensionRelativeToIphone(173),
+        },
+        '.large-gutter': {
+          margin: 8,
+          height: dimensionRelativeToIphone(161),
+        },
+        '.no-gutter': {
+          margin: 0,
+          height: dimensionRelativeToIphone(188),
+        },
+        width: dimensionRelativeToIphone(188),
+        backgroundColor: variables.subNavItemBackground,
+      },
+      text: {
+        flex: 0,
+        width: null,
+        fontSize: 15,
+        marginLeft: variables.smallGutter,
+        color: variables.subNavItemColor,
+      },
+      backgroundImage: {
+        resizeMode: 'cover',
+      }
+    },
     'shoutem.navigation.CardList': {
       page: {
         // Page padding bottom is defined by item marginBottom
@@ -674,6 +809,19 @@ export default (customVariables = {}) => {
     },
 
     // Loyalty
+    'shoutem.loyalty.PointsCardScreen': {
+      qrBackground: {
+        backgroundColor: '#ffffff',
+        margin: 10,
+      },
+    },
+
+    'shoutem.loyalty.VerificationScreen': {
+      qrBackground: {
+        backgroundColor: '#ffffff',
+      },
+    },
+
     'shoutem.loyalty.SmallPointCardView': {
       container: {
         borderRadius: 4,
@@ -694,7 +842,9 @@ export default (customVariables = {}) => {
         textAlign: 'left',
         fontSize: 36,
         lineHeight: 40,
-        color: variables.imageOverlayTextColor,
+      },
+      qrBackground: {
+        backgroundColor: '#ffffff',
       },
     },
 
@@ -815,5 +965,13 @@ export default (customVariables = {}) => {
         },
       },
     },
+
+    // Social
+    'shoutem.social.CreateStatusScreen': {
+      footer: {
+        backgroundColor: variables.paperColor,
+        paddingBottom: IPHONE_X_HOME_INDICATOR_PADDING + variables.smallGutter,
+      }
+    }
   });
 };

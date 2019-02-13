@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -17,7 +17,7 @@ import { ext } from '../const';
 
 const { func } = PropTypes;
 
-class LoginForm extends Component {
+class LoginForm extends PureComponent {
   static propTypes = {
     onSubmit: func,
   };

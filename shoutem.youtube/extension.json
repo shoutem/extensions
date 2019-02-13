@@ -1,8 +1,8 @@
 {
   "name": "youtube",
   "title": "Youtube",
-  "version": "1.7.0",
-  "platform": "1.7.*",
+  "version": "1.8.0",
+  "platform": "1.8.*",
   "description": "Show a video gallery from Youtube channel, user or playlist",
   "categories": [
     "media"

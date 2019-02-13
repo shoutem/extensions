@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
 
-import { ext } from '../const';
-
-import { VideosList, mapStateToProps, mapDispatchToProps } from './VideosList';
 import SmallVideoView from '../components/SmallVideoView';
+import { ext } from '../const';
+import { VideosList, mapStateToProps, mapDispatchToProps } from './VideosList';
 
 class SmallVideosList extends VideosList {
   renderRow(video) {

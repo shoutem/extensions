@@ -1,7 +1,4 @@
-import React, {
-  Component,
-} from 'react';
-
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -9,7 +6,6 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from '@shoutem/ui/navigation';
 import { navigateBack } from '@shoutem/core/navigation';
 import { SearchField } from '@shoutem/ui-addons';
-
 import {
   ListView,
   Screen,
@@ -19,14 +15,13 @@ import {
   Subtitle,
 } from '@shoutem/ui';
 
-import { openProfile } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 
-import { ext } from '../const';
 import MemberView from '../components/MemberView';
+import { openProfileForLegacyUser } from '../services';
+import { ext } from '../const';
 
-export class SearchScreen extends Component {
-
+export class SearchScreen extends PureComponent {
   constructor(props) {
     super(props);
     this.renderRightComponent = this.renderRightComponent.bind(this);
@@ -59,10 +54,20 @@ export class SearchScreen extends Component {
   userMeetsSearchCriteria(user) {
     const { text } = this.state;
     const lowerCaseText = text.toLowerCase();
+
+    const userName = _.get(user, 'username', '').toLowerCase();
+    const profile = _.get(user, 'profile');
+    const profileNick = _.get(profile, 'nick', '').toLowerCase();
+    const profileName = _.get(profile, 'name', '').toLowerCase();
+    const profileFirstName = _.get(profile, 'firstName', '').toLowerCase();
+    const profileLastName = _.get(profile, 'lastName', '').toLowerCase();
+
     return (
-      user.name.toLowerCase().includes(lowerCaseText) ||
-      user.first_name.toLowerCase().includes(lowerCaseText) ||
-      user.last_name.toLowerCase().includes(lowerCaseText)
+      userName.includes(lowerCaseText) ||
+      profileNick.includes(lowerCaseText) ||
+      profileName.includes(lowerCaseText) ||
+      profileFirstName.includes(lowerCaseText) ||
+      profileLastName.includes(lowerCaseText)
     );
   }
 
@@ -124,10 +129,10 @@ const mapStateToProps = (state) => ({
   users: state[ext()].users,
 });
 
-const mapDispatchToProps = {
-  navigateBack,
-  openProfile,
-};
+const mapDispatchToProps = (dispatch) => ({
+  navigateBack: () => dispatch(navigateBack()),
+  openProfile: openProfileForLegacyUser(dispatch),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('SearchScreen'))(SearchScreen),

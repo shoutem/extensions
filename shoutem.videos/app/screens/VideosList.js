@@ -7,9 +7,9 @@ import { navigateTo } from '@shoutem/core/navigation';
 
 import { CmsListScreen } from 'shoutem.cms';
 
+import LargeVideoView from '../components/LargeVideoView';
 import { ext } from '../const';
 import { VIDEOS_SCHEMA } from '../redux';
-import LargeVideoView from '../components/LargeVideoView';
 
 export class VideosList extends CmsListScreen {
   static propTypes = {

@@ -1,11 +1,21 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
-import { CARD_LIST } from '../const';
-import CardListItem from './CardListItem';
+import { Device } from '@shoutem/ui';
 
+import {
+  CARD_LIST,
+  ext,
+  IPHONE_X_HOME_INDICATOR_PADDING,
+  IPHONE_X_NOTCH_PADDING,
+  NAVIGATION_HEADER_HEIGHT,
+  TAB_BAR_ITEM_HEIGHT,
+} from '../const';
+import { isTabBarNavigation, resolveScrollViewProps } from '../helpers';
+import CardListItem from './CardListItem';
 import FolderBase from './FolderBase';
 
 const HEIGHT_RATIO_STYLE_KEY = 'heights';
@@ -26,11 +36,16 @@ class CardList extends FolderBase {
     isFullWidth: PropTypes.bool,
   };
 
+  resolveScrollViewProps() {
+    return resolveScrollViewProps(this.props);
+  }
+
   resolvePageProps() {
     const { style } = this.props;
     const { itemGutter, isFullWidth } = this.getLayoutSettings();
     const { dimensions: { height } } = this.state;
     const styleName = `${itemGutter}-gutter ${isFullWidth ? 'full-width' : ''}`;
+
     return {
       style: {
         minHeight: height,
@@ -74,10 +89,13 @@ class CardList extends FolderBase {
 }
 
 const mapPropsToStyleNames = (styleNames, props) => {
-  if (props.itemText !== CardList.NO_TEXT) {
-    styleNames.push('text-hidden');
-  }
   return styleNames;
 };
 
-export default connectStyle(CARD_LIST, undefined, mapPropsToStyleNames)(CardList);
+const mapStateToProps = (state) => ({
+  isTabBar: isTabBarNavigation(state),
+});
+
+export default connect(mapStateToProps)(
+  connectStyle(CARD_LIST, undefined, mapPropsToStyleNames)(CardList)
+);

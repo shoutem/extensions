@@ -1,50 +1,43 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
-
-import {
-  Screen,
-  Spinner,
-} from '@shoutem/ui';
-
+import React, { PureComponent } from 'react';
 import {
   Alert,
 } from 'react-native';
-
 import { connect } from 'react-redux';
-
 import _ from 'lodash';
+
+import { NavigationBar } from '@shoutem/ui/navigation';
+import { navigateBack } from '@shoutem/core/navigation';
+import { Screen, Spinner } from '@shoutem/ui';
 
 import { getAppId } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from '@shoutem/ui/navigation';
-import { navigateBack } from '@shoutem/core/navigation';
 
+import RegisterForm from '../components/RegisterForm';
 import {
   register,
   userRegistered,
 } from '../redux';
-
 import { ext } from '../const';
-
 import { loginRequired } from '../loginRequired';
 import { saveSession } from '../session';
 import {
   getErrorCode,
   getErrorMessage,
 } from '../errorMessages';
-import RegisterForm from '../components/RegisterForm';
 
-export class RegisterScreen extends Component {
+const AUTH_ERROR = 'auth_auth_notAuthorized_userAuthenticationError';
+
+export class RegisterScreen extends PureComponent {
   static propTypes = {
     navigateBack: PropTypes.func,
     register: PropTypes.func,
+    manualApprovalActive: PropTypes.bool,
   };
 
   constructor(props, context) {
     super(props, context);
-    
+
     this.performRegistration = this.performRegistration.bind(this);
     this.finishRegistration = this.handleRegistrationSuccess.bind(this);
     this.handleRegistrationFailed = this.handleRegistrationFailed.bind(this);
@@ -64,6 +57,7 @@ export class RegisterScreen extends Component {
   }
 
   handleRegistrationFailed({ payload }) {
+    const { manualApprovalActive } = this.props;
     const { response } = payload;
 
     this.setState({ inProgress: false });
@@ -72,7 +66,12 @@ export class RegisterScreen extends Component {
     const errorCode = getErrorCode(code);
     const errorMessage = getErrorMessage(errorCode);
 
-    Alert.alert(I18n.t(ext('registrationFailedErrorTitle')), errorMessage);
+    if (code === AUTH_ERROR && manualApprovalActive) {
+      Alert.alert(I18n.t(ext('manualApprovalTitle')), I18n.t(ext('manualApprovalMessage')));
+    }
+    else {
+      Alert.alert(I18n.t(ext('registrationFailedErrorTitle')), errorMessage);
+    }
   }
 
   performRegistration(email, username, password) {
