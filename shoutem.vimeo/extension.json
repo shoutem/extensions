@@ -1,8 +1,8 @@
 {
   "name": "vimeo",
   "title": "Vimeo",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.1",
+  "platform": "2.0.*",
   "description": "Show videos from Vimeo",
   "icon": "server/assets/add-videos-vimeo-image.png",
   "categories": [
@@ -33,7 +33,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "Vimeo",
+        "extensionTitle": "Vimeo"
+      }
     }
   ],
   "screens": [

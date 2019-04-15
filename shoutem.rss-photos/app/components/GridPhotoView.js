@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import {
   TouchableOpacity,
@@ -10,7 +10,7 @@ import {
 /**
  * A component used to render a single grid photo item
  */
-export default class GridPhotoView extends React.Component {
+export default class GridPhotoView extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     photo: PropTypes.object.isRequired,

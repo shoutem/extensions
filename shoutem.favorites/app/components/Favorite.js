@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { LayoutAnimation } from 'react-native';
 import { bindActionCreators } from 'redux';
@@ -17,7 +17,7 @@ import {
 
 import { ext } from '../const';
 
-export class Favorite extends Component {
+export class Favorite extends PureComponent {
   static propTypes = {
     item: PropTypes.any.isRequired,
     saveFavorite: PropTypes.func,

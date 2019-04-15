@@ -1,41 +1,35 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
+
+import { View, Screen } from '@shoutem/ui';
+import { connectStyle } from '@shoutem/theme';
+
+import { executeShortcut } from 'shoutem.application';
+
 import {
-  ScreenStack,
   navigateTo,
   jumpToKey,
   resetToRoute,
   navigateBack,
   setActiveNavigationStack,
   hasRouteWithKey,
-} from '@shoutem/core/navigation';
-import { connectStyle } from '@shoutem/theme';
-import _ from 'lodash';
-import {
-  View,
-  Screen,
-} from '@shoutem/ui';
-import {
-  NavigationBar,
-} from '@shoutem/ui/navigation';
-
-import {
-  executeShortcut,
-} from 'shoutem.application';
-
-import { ext } from '../const';
-import TabBarItem from '../components/TabBarItem';
-import { shortcutChildrenRequired } from '../helpers';
+} from '../redux/core';
 import {
   TAB_BAR_NAVIGATION_STACK,
   getTabNavigationStateFromTabBarState,
   getTabNavigationStack,
 } from '../redux';
+import { NavigationBar } from '../components/ui';
+import { ScreenStack } from '../components/stacks';
+import TabBarItem from '../components/TabBarItem';
+import { shortcutChildrenRequired } from '../helpers';
+import { ext } from '../const';
 
 const TABS_LIMIT = 5;
 
-export class TabBar extends PureComponent {
+export class TabBar extends Component {
   static propTypes = {
     // Server props
     shortcut: PropTypes.object.isRequired,
@@ -44,12 +38,11 @@ export class TabBar extends PureComponent {
     showIcon: PropTypes.bool,
 
     // Props from local state (connect)
-
+    tabStates: PropTypes.object,
     navigationState: PropTypes.object,
     // navigationState.routes contains the specific tab shortcut object
 
-    tabStates: PropTypes.object,
-    tabStacks: PropTypes.object,
+    // Props from mapDispatchToProps
     executeShortcut: PropTypes.func,
     navigateTo: PropTypes.func,
     navigateBack: PropTypes.func,
@@ -70,6 +63,7 @@ export class TabBar extends PureComponent {
     super(props, context);
 
     this.openShortcut = this.openShortcut.bind(this);
+
     // Debounce the reset tab to top to avoid weird issues (e.g., app freezes)
     // when the navigation state is being reset during transitions.
     this.resetTabNavigationStateToTop = _.debounce(this.resetTabNavigationStateToTop, 300, {
@@ -79,12 +73,22 @@ export class TabBar extends PureComponent {
 
   componentWillMount() {
     const startingShortcut = this.getStartingShortcut();
+
     this.openShortcut(startingShortcut);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState !== this.state) {
+      return true;
+    }
+
+    return !_.isEqual(nextProps, this.props);
   }
 
   getStartingShortcut() {
     const { startingScreen, shortcut } = this.props;
-    return _.find(shortcut.children, ['id', startingScreen]) || _.first(shortcut.children);
+
+    return _.find(shortcut.children, ['id', startingScreen]) || _.head(shortcut.children);
   }
 
   getTabRouteForShortcut(shortcut) {
@@ -101,10 +105,13 @@ export class TabBar extends PureComponent {
   }
 
   resetTabNavigationStateToTop(tabId) {
-    const tabNavigationState = getTabNavigationStateFromTabBarState(this.props, tabId);
+    const { tabStates, resetToRoute } = this.props;
+
+    const tabNavigationState = getTabNavigationStateFromTabBarState(tabStates, tabId);
     const tabNavigationStackName = getTabNavigationStack(tabId);
     const firstRoute = _.head(tabNavigationState.routes);
-    this.props.resetToRoute(firstRoute, tabNavigationStackName);
+
+    resetToRoute(firstRoute, tabNavigationStackName);
   }
 
   openShortcut(shortcut) {
@@ -156,28 +163,27 @@ export class TabBar extends PureComponent {
   }
 
   renderTabBarItems() {
-    const {
-      showText,
-      showIcon,
-      shortcut: { children },
-    } = this.props;
-
+    const { showText, showIcon, shortcut } = this.props;
     const { selectedShortcut } = this.state;
 
-    return _.take(children, TABS_LIMIT).map(shortcut => (
+    return _.take(shortcut.children, TABS_LIMIT).map(tabShortcut => (
       <TabBarItem
-        key={`tab-bar-item-${shortcut.id}`}
+        key={`tab-bar-item-${tabShortcut.id}`}
         showText={showText}
         showIcon={showIcon}
-        shortcut={shortcut}
+        shortcut={tabShortcut}
+        selected={tabShortcut === selectedShortcut}
         onPress={this.openShortcut}
-        selected={shortcut === selectedShortcut}
       />
     ));
   }
 
   render() {
-    const { style } = this.props;
+    const {
+      style,
+      navigationState,
+      navigateBack,
+    } = this.props;
 
     return (
       <Screen style={style.screen}>
@@ -187,8 +193,8 @@ export class TabBar extends PureComponent {
           useNativeAnimations={false}
           gestureResponseDistance={0}
           direction="vertical"
-          navigationState={this.props.navigationState}
-          onNavigateBack={this.props.navigateBack}
+          navigationState={navigationState}
+          onNavigateBack={navigateBack}
         />
         <View styleName="horizontal">
           {this.renderTabBarItems()}
@@ -198,9 +204,14 @@ export class TabBar extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => ({
-  ...state[ext()].tabBar,
-});
+const mapStateToProps = (state) => {
+  const { tabStates, navigationState } = state[ext()].tabBar;
+
+  return {
+    tabStates,
+    navigationState,
+  };
+};
 
 const mapDispatchToProps = {
   executeShortcut,
@@ -210,6 +221,7 @@ const mapDispatchToProps = {
   resetToRoute,
   setActiveNavigationStack,
 };
+
 export default shortcutChildrenRequired(
   connect(mapStateToProps, mapDispatchToProps)(connectStyle(ext('TabBar'))(TabBar))
 );

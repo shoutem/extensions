@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { bindActionCreators } from 'redux';
 import { Alert } from 'react-native';
 import { I18n } from 'shoutem.i18n';
@@ -14,7 +14,7 @@ import {
   getLocationPermissionStatus,
 } from '../../redux';
 
-export default class CurrentLocationBase extends Component {
+export default class CurrentLocationBase extends PureComponent {
   static propTypes = {
     permissionStatus: PropTypes.object,
     updateLocationPermission: PropTypes.func,

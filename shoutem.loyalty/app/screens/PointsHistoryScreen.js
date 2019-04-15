@@ -1,17 +1,15 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
-import { getCollection } from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
 import { Screen } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { connectStyle } from '@shoutem/theme';
+import { getCollection } from '@shoutem/redux-io';
 
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
 
-import {
-  transactionShape,
-} from '../components/shapes';
+import { transactionShape } from '../components/shapes';
 import TransactionHistoryView from '../components/TransactionHistoryView';
 import { ext } from '../const';
 
@@ -23,7 +21,7 @@ const { arrayOf } = PropTypes;
  * Displays the transaction history for a points card.
  * A transaction can be adding points to a card or redeeming a reward.
  */
-export class PointsHistoryScreen extends React.Component {
+export class PointsHistoryScreen extends PureComponent {
   static propTypes = {
     // Transactions
     transactions: arrayOf(transactionShape),

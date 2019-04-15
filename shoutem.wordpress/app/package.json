@@ -1,13 +1,14 @@
 {
   "name": "shoutem.wordpress",
-  "version": "1.8.0",
+  "version": "2.0.7",
   "private": true,
   "main": "index.js",
-  "peerDependencies": {
-    "@shoutem/core": "*"
-  },
   "dependencies": {
-    "@shoutem/redux-composers": "^0.1.5",
+    "@shoutem/redux-composers": "0.1.4",
+    "@shoutem/redux-io": "3.0.1-beta.3",
+    "@shoutem/theme": "~0.11.3",
+    "@shoutem/ui": "~0.23.12",
+    "@shoutem/ui-addons": "~0.0.30",
     "react-redux": "^5.0.3",
     "redux-thunk": "^2.2.0"
   }

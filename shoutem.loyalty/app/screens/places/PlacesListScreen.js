@@ -1,18 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-
+import { LayoutAnimation, Alert } from 'react-native';
 import { connect } from 'react-redux';
-
-import { connectStyle } from '@shoutem/theme';
-import { loginRequired } from 'shoutem.auth';
-
 import _ from 'lodash';
 
 import {
-  LayoutAnimation,
-  Alert,
-} from 'react-native';
-
+  find,
+  isBusy,
+  isInitialized,
+  getCollection,
+} from '@shoutem/redux-io';
 import {
   Button,
   ListView,
@@ -20,33 +17,18 @@ import {
   Text,
   View,
 } from '@shoutem/ui';
+import { connectStyle } from '@shoutem/theme';
 
-import { NavigationBar } from '@shoutem/ui/navigation';
-
-import {
-  find,
-  getCollection,
-  isBusy,
-  isInitialized,
-} from '@shoutem/redux-io';
-
-import {
-  CmsListScreen,
-  currentLocation,
- } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
+import { loginRequired } from 'shoutem.auth';
+import { NavigationBar } from 'shoutem.navigation';
+import { CmsListScreen, currentLocation } from 'shoutem.cms';
 
 import MapList from '../../components/MapList';
 import PlaceIconView from '../../components/PlaceIconView';
 
-import {
-  ext,
-} from '../../const';
-
-import {
-  refreshCardState,
-} from '../../services';
-
+import { refreshCardState } from '../../services';
+import { ext } from '../../const';
 
 /* eslint-disable class-methods-use-this, no-undef, react/forbid-prop-types */
 

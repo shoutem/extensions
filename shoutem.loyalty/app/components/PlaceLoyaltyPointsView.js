@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -34,7 +32,7 @@ import {
 /**
  * A component for place loyalty points layout.
  */
-class PlaceLoyaltyPointsView extends Component {
+class PlaceLoyaltyPointsView extends PureComponent {
   static propTypes = {
     cardStates: PropTypes.array,
     // The place

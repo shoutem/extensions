@@ -8,19 +8,18 @@ import {
   View,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
-import { loginRequired } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
+import { loginRequired } from 'shoutem.auth';
+import { NavigationBar } from 'shoutem.navigation';
 
-import { ext } from '../const';
-import SmallPointCardView from '../components/SmallPointCardView';
 import {
   PointsCardScreen,
   mapStateToProps,
   mapDispatchToProps,
 } from './PointsCardScreen';
-
+import SmallPointCardView from '../components/SmallPointCardView';
+import { ext } from '../const';
 
 /**
  * Shows points card details for a single card loyalty program

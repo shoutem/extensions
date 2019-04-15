@@ -1,8 +1,14 @@
+import React from 'react';
 import { BackHandler, ToastAndroid } from 'react-native';
-import { getActiveNavigationStackState, navigateBack } from '@shoutem/core/navigation';
-import { NavigationBar } from '@shoutem/ui/navigation';
-import { getExtensionSettings } from 'shoutem.application';
+
+import { canonicalRenderResource } from 'shoutem-core';
+
 import { I18n } from 'shoutem.i18n';
+import { getExtensionSettings } from 'shoutem.application';
+
+import { getActiveNavigationStackState, navigateBack } from './redux/core';
+import { RootScreenStack } from './components/stacks';
+import { NavigationBar } from './components/ui';
 import { ext } from './const';
 
 // The time duration after the first back button press during
@@ -12,9 +18,11 @@ let exitAppConfirmationVisible = false;
 
 export const appWillMount = (app) => {
   const store = app.getStore();
+
   BackHandler.addEventListener('hardwareBackPress', () => {
     const state = store.getState();
     const navState = getActiveNavigationStackState(state);
+
     if (navState && navState.routes && (navState.routes.length > 1)) {
       // There are routes in the navigation history, we want to go
       // back to the previous screen in this case.
@@ -38,9 +46,7 @@ export const appWillMount = (app) => {
 };
 
 export const appDidMount = (app) => {
-  const store = app.getStore();
-  const state = store.getState();
-
+  const state = app.getState();
   const settings = getExtensionSettings(state, ext());
   const {
     backgroundImage,
@@ -56,3 +62,10 @@ export const appDidMount = (app) => {
   NavigationBar.showTitle = showTitle;
   NavigationBar.fitContainer = fitContainer;
 };
+
+export function render() {
+  const renderKey = canonicalRenderResource(ext(), 'RootScreenStack');
+  return (
+    <RootScreenStack key={renderKey} styleName="root" />
+  );
+}

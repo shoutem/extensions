@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import moment from 'moment';
 
@@ -20,7 +20,7 @@ import { notificationShape } from './shapes';
 
 const { func } = PropTypes;
 
-export class NotificationView extends Component {
+export class NotificationView extends PureComponent {
   static propTypes = {
     // Called when notification is pressed
     onPress: func,

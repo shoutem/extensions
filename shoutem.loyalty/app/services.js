@@ -1,20 +1,14 @@
 import { Alert } from 'react-native';
 import _ from 'lodash';
 
-import {
-  invalidate,
- } from '@shoutem/redux-io';
+import { invalidate } from '@shoutem/redux-io';
 
 import {
   EMPTY_ROUTE,
   navigateTo,
   openInModal,
- } from '@shoutem/core/navigation';
-
-import {
-  getAppId,
-} from 'shoutem.application';
-
+} from 'shoutem.navigation';
+import { getAppId } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 

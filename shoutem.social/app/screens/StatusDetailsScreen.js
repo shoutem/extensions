@@ -13,8 +13,11 @@ import {
 
 import { connectStyle } from '@shoutem/theme';
 import { ImagePicker, ActionSheet } from '@shoutem/ui-addons';
-import { openInModal, navigateBack } from '@shoutem/core/navigation';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import {
+  NavigationBar,
+  openInModal,
+  navigateBack,
+} from 'shoutem.navigation';
 import { isBusy, isInitialized, next, hasNext } from '@shoutem/redux-io';
 import {
   Button,

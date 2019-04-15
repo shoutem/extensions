@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -10,15 +10,14 @@ import {
   Text,
   Title,
 } from '@shoutem/ui';
-
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
 
-import { authorizationShape, rewardShape } from '../components/shapes';
 import Stamps from '../components/Stamps';
 import { collectPoints } from '../services';
+import { authorizationShape, rewardShape } from '../components/shapes';
 import { ext } from '../const';
 
 const { func } = PropTypes;
@@ -26,7 +25,7 @@ const { func } = PropTypes;
 /**
  * Lets the cashier stamp a punch card and process the transaction.
  */
-export class StampCardScreen extends React.Component {
+export class StampCardScreen extends PureComponent {
   static propTypes = {
     // Stamps the card
     collectPoints: func,

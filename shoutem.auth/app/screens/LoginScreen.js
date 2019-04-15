@@ -12,12 +12,12 @@ import {
   Divider,
   Spinner,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
+  NavigationBar,
   navigateTo,
   isScreenActive,
-} from '@shoutem/core/navigation';
+} from 'shoutem.navigation';
 import { isValid } from '@shoutem/redux-io';
 
 import {

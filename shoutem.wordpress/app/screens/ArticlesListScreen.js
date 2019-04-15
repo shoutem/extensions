@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo as navigateToAction } from '@shoutem/core/navigation';
+import { navigateTo as navigateToAction } from 'shoutem.navigation';
 import { find, next } from '@shoutem/redux-io';
 
 import { ListScreen } from 'shoutem.application';
@@ -16,7 +16,7 @@ import {
   fetchWordpressPosts,
   getFeedItems,
 } from '../redux';
-import { getLeadImageUrl } from '../services';
+import { getLeadImageUrl, resolveArticleTitle } from '../services';
 
 export class ArticlesListScreen extends ListScreen {
   static propTypes = {
@@ -83,7 +83,7 @@ export class ArticlesListScreen extends ListScreen {
     const nextArticle = this.getNextArticle(article);
     const route = {
       screen: ext('ArticleDetailsScreen'),
-      title: article.title.rendered,
+      title: resolveArticleTitle(article.title.rendered),
       props: {
         article,
         nextArticle,
@@ -112,7 +112,7 @@ export class ArticlesListScreen extends ListScreen {
       <ListArticleView
         key={article.id}
         articleId={article.id.toString()}
-        title={article.title.rendered}
+        title={resolveArticleTitle(article.title.rendered)}
         imageUrl={getLeadImageUrl(article)}
         date={article.date}
         onPress={this.openArticleWithId}

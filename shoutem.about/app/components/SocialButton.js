@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Linking, Alert } from 'react-native';
 import { I18n } from 'shoutem.i18n';
-import { ext } from '../extension';
 
 import {
   Text,
@@ -10,7 +9,7 @@ import {
   Icon,
 } from '@shoutem/ui';
 
-export default class SocialButton extends Component {
+export default class SocialButton extends PureComponent {
   static propTypes = {
     url: PropTypes.string,
     title: PropTypes.string,

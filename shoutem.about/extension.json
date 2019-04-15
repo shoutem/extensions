@@ -1,7 +1,7 @@
 {
   "name": "about",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.1",
+  "platform": "2.0.*",
   "title": "About",
   "description": "Show info about your app or your business",
   "icon": "server/assets/add-about-image.png",
@@ -30,7 +30,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "extensionTitle": "About",
+        "defaultShortcutTitle": "About"
+      }
     }
   ],
   "screens": [

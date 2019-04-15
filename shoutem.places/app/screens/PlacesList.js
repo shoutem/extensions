@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { LayoutAnimation } from 'react-native';
 import _ from 'lodash';
 
-import { connectStyle } from '@shoutem/theme';
 import {
   View,
   Text,
@@ -11,15 +10,12 @@ import {
   Screen,
   Button,
 } from '@shoutem/ui';
-import {
-  isBusy,
-  find,
-  isInitialized,
-} from '@shoutem/redux-io';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { connectStyle } from '@shoutem/theme';
+import { isBusy, find, isInitialized } from '@shoutem/redux-io';
 
-import { CmsListScreen, currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
+import { CmsListScreen, currentLocation } from 'shoutem.cms';
 
 import MapList from '../components/MapList';
 import PlacePhotoView from '../components/PlacePhotoView';

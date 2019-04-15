@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
@@ -10,7 +10,7 @@ import {
   Title,
   Caption,
   Icon,
-  Html,
+  SimpleHtml,
   View,
   Button,
   Text,
@@ -19,10 +19,9 @@ import {
   Row,
   Subtitle,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
 import { InlineMap } from '@shoutem/ui-addons';
 
-import { navigateTo as navigateToAction } from '@shoutem/core/navigation';
+import { NavigationBar, navigateTo as navigateToAction } from 'shoutem.navigation';
 import { openURL as openUrlAction } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
 
@@ -53,7 +52,7 @@ const getEventLocation = event => ({
   longitudeDelta: 0.01,
 });
 
-export class EventDetailsScreen extends React.Component {
+export class EventDetailsScreen extends PureComponent {
   static propTypes = {
     event: PropTypes.object.isRequired,
     openURL: PropTypes.func.isRequired,
@@ -197,7 +196,7 @@ export class EventDetailsScreen extends React.Component {
         <Divider styleName="section-header">
           <Caption>{I18n.t('shoutem.cms.descriptionTitle')}</Caption>
         </Divider>
-        <Html body={event.description} />
+        <SimpleHtml body={event.description} />
       </View>
     ) : null;
   }

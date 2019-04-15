@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -9,7 +9,7 @@ import {
   Button,
   Caption,
   Divider,
-  Html,
+  SimpleHtml,
   ListView,
   Icon,
   ImageBackground,
@@ -41,13 +41,10 @@ import {
  } from '@shoutem/ui-addons';
 
 import {
+  NavigationBar,
   navigateTo,
   openInModal,
-} from '@shoutem/core/navigation';
-
-import {
-  NavigationBar,
-} from '@shoutem/ui/navigation';
+} from 'shoutem.navigation';
 
 import { connectStyle } from '@shoutem/theme';
 
@@ -81,7 +78,7 @@ import {
 
 const { arrayOf, func } = PropTypes;
 
-export class PlaceDetails extends Component {
+export class PlaceDetails extends PureComponent {
   static propTypes = {
     // The place
     place: placeShape.isRequired,
@@ -358,7 +355,7 @@ export class PlaceDetails extends Component {
             <Caption>{I18n.t(ext('storeDescriptionTitle'))}</Caption>
           </Divider>
           <View styleName="md-gutter">
-            <Html body={description} />
+            <SimpleHtml body={description} />
           </View>
           <Divider styleName="line" />
         </Tile>

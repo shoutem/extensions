@@ -1,15 +1,8 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
-
+import React, { PureComponent } from 'react';
 import { Alert } from 'react-native';
-
 import { connect } from 'react-redux';
 import _ from 'lodash';
-
-import { isProduction } from 'shoutem.application';
-import { Permissions } from 'shoutem.push-notifications';
 
 import {
   Divider,
@@ -20,21 +13,21 @@ import {
   Switch,
   View,
 } from '@shoutem/ui';
-
-import { NavigationBar } from '@shoutem/ui/navigation';
-import { EmptyStateView } from '@shoutem/ui-addons';
 import { connectStyle } from '@shoutem/theme';
+import { EmptyStateView } from '@shoutem/ui-addons';
 
 import { I18n } from 'shoutem.i18n';
+import { isProduction } from 'shoutem.application';
+import { NavigationBar } from 'shoutem.navigation';
+import { Permissions } from 'shoutem.push-notifications';
 
 import {
   fetchGroups,
   selectPushNotificationGroups,
   invalidateNotifications,
 } from '../redux';
-
-import { ext, GROUP_PREFIX } from '../const';
 import { pushGroupShape } from '../components/shapes';
+import { ext, GROUP_PREFIX } from '../const';
 
 const { arrayOf, func, string } = PropTypes;
 
@@ -64,7 +57,7 @@ const showSuggestionToEnableNotifications = () => {
  * Displays a list of push groups for this app and marks those that the user is subscribed to.
  * It also lets the user subscribe or unsubscribe from groups.
  */
-export class PushGroupsScreen extends Component {
+export class PushGroupsScreen extends PureComponent {
   static propTypes = {
     // All push groups for the app
     groups: arrayOf(pushGroupShape).isRequired,
@@ -127,7 +120,7 @@ export class PushGroupsScreen extends Component {
     const { tag, name } = group;
     const { selectedGroups } = this.props;
 
-    const prefixedTag = `${GROUP_PREFIX + tag}`;
+    const prefixedTag = `${GROUP_PREFIX}${tag}`;
 
     return (
       <View>

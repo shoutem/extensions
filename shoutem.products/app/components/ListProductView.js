@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 
 import {
@@ -14,7 +12,7 @@ import {
   Divider,
 } from '@shoutem/ui';
 
-export default class ListProductView extends Component {
+export default class ListProductView extends PureComponent {
   static propTypes = {
     product: PropTypes.object.isRequired,
     onPress: PropTypes.func.isRequired,

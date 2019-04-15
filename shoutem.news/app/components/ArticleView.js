@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import { PureComponent } from 'react';
 
-export class ArticleView extends React.Component {
+export class ArticleView extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     articleId: PropTypes.string,

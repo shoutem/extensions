@@ -3,7 +3,6 @@ import {
   StyleSheet,
   TouchableNativeFeedback,
 } from 'react-native';
-import NavigationExperimental from 'react-native-navigation-experimental-compat';
 import _ from 'lodash';
 
 import {
@@ -21,17 +20,20 @@ import {
 import {
   IPHONE_X_HOME_INDICATOR_PADDING,
   IPHONE_X_NOTCH_PADDING,
+  IPHONE_XR_NOTCH_PADDING,
   NAVIGATION_HEADER_HEIGHT,
   TAB_BAR_ITEM_HEIGHT,
 } from '../const';
 
 const NAVIGATION_BAR_HEIGHT = Device.select({
   iPhoneX: NAVIGATION_HEADER_HEIGHT + IPHONE_X_NOTCH_PADDING,
+  iPhoneXR: NAVIGATION_HEADER_HEIGHT + IPHONE_XR_NOTCH_PADDING,
   default: NAVIGATION_HEADER_HEIGHT,
 });
 
 const TAB_BAR_HEIGHT = Device.select({
   iPhoneX: TAB_BAR_ITEM_HEIGHT + IPHONE_X_HOME_INDICATOR_PADDING,
+  iPhoneXR: TAB_BAR_ITEM_HEIGHT + IPHONE_X_HOME_INDICATOR_PADDING,
   default: TAB_BAR_ITEM_HEIGHT,
 });
 
@@ -56,7 +58,7 @@ export default (customVariables = {}) => {
       a: {
         text: {
           fontWeight: '700',
-          color: customVariables.titleColor,
+          color: variables.title.color,
         },
       },
       'se-attachment': {
@@ -69,6 +71,78 @@ export default (customVariables = {}) => {
           container: {
             width: 300,
           },
+        },
+      },
+    },
+
+    // SimpleHtml
+    'shoutem.ui.SimpleHtml': {
+      container: {
+        padding: variables.mediumGutter,
+      },
+      prefix: {
+        color: variables.text.color,
+        fontFamily: 'Rubik-Regular',
+        fontSize: 15,
+      },
+      tags: {
+        h1: {
+          fontWeight: '700',
+          fontFamily: 'Rubik-Regular',
+          marginBottom: variables.mediumGutter,
+          marginTop: variables.mediumGutter,
+          color: variables.heading.color,
+        },
+        h2: {
+          fontWeight: '700',
+          fontFamily: 'Rubik-Regular',
+          marginBottom: variables.mediumGutter,
+          marginTop: variables.mediumGutter,
+          color: variables.heading.color,
+        },
+        h3: {
+          fontWeight: '700',
+          fontFamily: 'Rubik-Regular',
+          marginTop: variables.mediumGutter,
+          marginBottom: variables.mediumGutter,
+          color: variables.heading.color,
+        },
+        h4: {
+          fontWeight: '700',
+          fontFamily: 'Rubik-Regular',
+          marginTop: variables.mediumGutter,
+          marginBottom: variables.mediumGutter,
+          color: variables.heading.color,
+        },
+        h5: {
+          fontWeight: '700',
+          fontFamily: 'Rubik-Regular',
+          marginTop: variables.mediumGutter,
+          marginBottom: variables.mediumGutter,
+          color: variables.heading.color,
+        },
+        a: {
+          fontWeight: '700',
+          fontFamily: 'Rubik-Regular',
+          fontSize: 15,
+          textDecorationLine: 'none',
+          color: variables.title.color,
+        },
+        p: {
+          fontFamily: 'Rubik-Regular',
+          fontSize: 15,
+          marginTop: variables.mediumGutter,
+          marginBottom: variables.mediumGutter,
+          color: variables.text.color,
+        },
+        li: {
+          fontFamily: 'Rubik-Regular',
+          fontSize: 15,
+          color: variables.text.color,
+        },
+        img: {
+          marginTop: variables.mediumGutter,
+          marginBottom: variables.mediumGutter,
         },
       },
     },
@@ -258,6 +332,10 @@ export default (customVariables = {}) => {
             borderTopWidth: 2,
             borderColor: variables.mainNavSelectedItemBorderColor,
           },
+          iPhoneXR: {
+            borderTopWidth: 2,
+            borderColor: variables.mainNavSelectedItemBorderColor,
+          },
           default: {
             borderBottomWidth: 2,
             borderColor: variables.mainNavSelectedItemBorderColor,
@@ -268,6 +346,7 @@ export default (customVariables = {}) => {
         height: TAB_BAR_ITEM_HEIGHT,
         marginBottom: Device.select({
           iPhoneX: IPHONE_X_HOME_INDICATOR_PADDING,
+          iPhoneXR: IPHONE_X_HOME_INDICATOR_PADDING,
           default: 0,
         }),
         flexDirection: 'column',
@@ -370,7 +449,7 @@ export default (customVariables = {}) => {
       [INCLUDE]: ['subNavigation'],
       '.text-hidden': {
         item: {
-          marginBottom: variables.gridItemVerticalGutter,
+          marginBottom: 44,
         },
       },
 

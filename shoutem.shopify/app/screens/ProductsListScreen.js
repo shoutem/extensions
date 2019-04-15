@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
 import _ from 'lodash';
@@ -15,12 +13,12 @@ import {
   Spinner,
 } from '@shoutem/ui';
 
-import { NavigationBar } from '@shoutem/ui/navigation';
 import {
+  NavigationBar,
   getScreenState,
   navigateTo,
   setScreenState,
-} from '@shoutem/core/navigation';
+} from 'shoutem.navigation';
 
 import { connectStyle } from '@shoutem/theme';
 
@@ -47,7 +45,7 @@ const { func, number, shape, string } = PropTypes;
 /**
  * This is a base screen that allows users to browse through products and collections
  */
-export class ProductsListScreen extends Component {
+export class ProductsListScreen extends PureComponent {
   static propTypes = {
     // Number of items that the user has added to his cart
     cartSize: number.isRequired,

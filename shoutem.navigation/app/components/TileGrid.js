@@ -6,13 +6,7 @@ import { connectStyle } from '@shoutem/theme';
 
 import { GridRow, View, defaultThemeVariables, Device } from '@shoutem/ui';
 
-import {
-  TILE_GRID,
-  TAB_BAR_ITEM_HEIGHT,
-  IPHONE_X_HOME_INDICATOR_PADDING,
-  IPHONE_X_NOTCH_PADDING,
-  NAVIGATION_HEADER_HEIGHT,
-} from '../const';
+import { TILE_GRID } from '../const';
 import { isTabBarNavigation, resolveScrollViewProps } from '../helpers';
 import TileItem from './TileItem';
 import FolderBase from './FolderBase';

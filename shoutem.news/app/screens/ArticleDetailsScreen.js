@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import { connectStyle } from '@shoutem/theme';
+import React, { PureComponent } from 'react';
+import moment from 'moment';
+import _ from 'lodash';
+
 import {
   ScrollView,
   Screen,
@@ -8,18 +10,17 @@ import {
   Caption,
   Image,
   Tile,
-  Html,
+  SimpleHtml,
   View,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { connectStyle } from '@shoutem/theme';
 
-import * as _ from 'lodash';
-import moment from 'moment';
+import { NavigationBar } from 'shoutem.navigation';
 
-import { ext } from '../const';
 import { NextArticle } from '../components/NextArticle';
+import { ext } from '../const';
 
-export class ArticleDetailsScreen extends React.PureComponent {
+export class ArticleDetailsScreen extends PureComponent {
   static propTypes = {
     // The news article to display
     article: PropTypes.object.isRequired,
@@ -33,6 +34,7 @@ export class ArticleDetailsScreen extends React.PureComponent {
 
   renderUpNext() {
     const { nextArticle, openArticle } = this.props;
+
     if (nextArticle && openArticle) {
       return (
         <NextArticle
@@ -47,6 +49,7 @@ export class ArticleDetailsScreen extends React.PureComponent {
 
   isNavigationBarClear() {
     const { navigationBarStyle } = this.props;
+
     return navigationBarStyle === 'clear';
   }
 
@@ -87,6 +90,7 @@ export class ArticleDetailsScreen extends React.PureComponent {
     let styleName = '';
     let animationName = '';
     let screenStyle = 'paper';
+
     if (this.isNavigationBarClear()) {
       if (article.image) {
         // If navigation bar is clear and image exists, navigation bar should be initially clear
@@ -117,7 +121,7 @@ export class ArticleDetailsScreen extends React.PureComponent {
           <View styleName="solid">
             {this.renderHeader()}
             <View styleName="sm-gutter-horizontal md-gutter-vertical">
-              <Html body={article.body} />
+              <SimpleHtml body={article.body} />
             </View>
             {this.renderUpNext()}
           </View>

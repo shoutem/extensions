@@ -1,7 +1,6 @@
 import React from 'react';
 import moment from 'moment';
 
-import { connectStyle } from '@shoutem/theme';
 import {
   ScrollView,
   Screen,
@@ -10,10 +9,11 @@ import {
   Image,
   Tile,
   View,
-  Html,
+  SimpleHtml,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { connectStyle } from '@shoutem/theme';
 
+import { NavigationBar } from 'shoutem.navigation';
 import { getLeadImageUrl, createRenderAttachment } from 'shoutem.rss';
 
 import { ArticleDetailsScreen } from './ArticleDetailsScreen';
@@ -66,11 +66,11 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
               <Title>{article.title.toUpperCase()}</Title>
 
               <View styleName="horizontal md-gutter-top">
-                <Caption numberOfLines={1}>{article.newsAuthor}</Caption>
+                <Caption numberOfLines={1}>{article.author}</Caption>
                 {dateInfo}
               </View>
             </Tile>
-            <Html body={article.body} renderElement={createRenderAttachment(article, 'image')} />
+            <SimpleHtml body={article.body} renderElement={createRenderAttachment(article, 'image')} />
             {this.renderUpNext()}
           </View>
         </ScrollView>

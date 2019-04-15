@@ -1,18 +1,17 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
-import { resolveIconSource } from 'shoutem.theme';
 
-import {
-  Text,
-  Image,
-} from '@shoutem/ui';
+import { Text, Image } from '@shoutem/ui';
+
+import { resolveIconSource } from 'shoutem.theme';
 
 const missingIconSource = require('../assets/images/missing_icon.png');
 
 const { bool, func, object } = PropTypes;
 
-export class NavigationBaseItem extends React.PureComponent {
+
+export class NavigationBaseItem extends PureComponent {
   static propTypes = {
     /* eslint-disable react/forbid-prop-types */
     shortcut: object.isRequired,

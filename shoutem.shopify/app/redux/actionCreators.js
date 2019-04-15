@@ -5,7 +5,7 @@ import Shopify from 'react-native-shopify';
 import {
   navigateTo,
   openInModal,
-} from '@shoutem/core/navigation';
+} from 'shoutem.navigation';
 
 import { I18n } from 'shoutem.i18n';
 

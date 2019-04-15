@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
-
+import React, { PureComponent } from 'react';
 import { Alert } from 'react-native';
 import { connect } from 'react-redux';
+import countryData from 'world-countries';
+import _ from 'lodash';
 
 import {
   Caption,
@@ -15,20 +14,15 @@ import {
   ScrollView,
   TextInput,
 } from '@shoutem/ui';
-
-import _ from 'lodash';
-
-import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
 
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
 
-import countryData from 'world-countries';
-
-import { ext } from '../../const';
 import CartFooter from '../../components/CartFooter';
 import { customer as customerShape } from '../../components/shapes';
 import { updateCustomerInformation } from '../../redux/actionCreators';
+import { ext } from '../../const';
 
 const { func } = PropTypes;
 
@@ -42,7 +36,7 @@ const loadCountries = () => _.sortBy(_.map(countryData, ({ name: { common: name 
  * cart items. If the information he enters is valid, the component forwards him to the
  * next step, usually selecting a shipping method
  */
-class CheckoutScreen extends Component {
+class CheckoutScreen extends PureComponent {
   static propTypes = {
     // The customer performing the checkout
     customer: customerShape,
@@ -97,6 +91,7 @@ class CheckoutScreen extends Component {
   proceedToShippingMethod() {
     const { updateCustomerInformation } = this.props;
     const { countryCode } = this.state;
+
     const values = _.map(this.fields, ({ name }) => this.state[name]);
 
     if (_.some(values, _.isEmpty) || !countryCode) {
@@ -132,9 +127,10 @@ class CheckoutScreen extends Component {
   }
 
   renderCountryPicker() {
+    const { countryCode } = this.state;
+
     const emptyOption = { name: I18n.t(ext('countrySelectionPlaceholder')), cca2: '' };
     const countries = [emptyOption, ...loadCountries()];
-    const { countryCode } = this.state;
     const selectedCountry = _.find(countries, { 'cca2': countryCode });
 
     return (

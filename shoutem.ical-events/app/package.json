@@ -1,10 +1,15 @@
 {
   "name": "shoutem.ical-events",
-  "version": "1.8.1",
+  "version": "2.0.3",
   "description": "Shoutem extension for managing iCal events",
   "dependencies": {
     "moment-timezone": "^0.5.14",
-    "react-native-calendar-manager": "shoutem/react-native-calendar-manager#de1aae06e0a17df99cc55fcd5b31b4b5c55f0589"
+    "react-native-calendar-manager": "shoutem/react-native-calendar-manager#de1aae06e0a17df99cc55fcd5b31b4b5c55f0589",
+    "@shoutem/ui": "~0.23.12",
+    "@shoutem/ui-addons": "~0.0.30",
+    "@shoutem/redux-io": "3.0.1-beta.3",
+    "@shoutem/theme": "~0.11.3",
+    "@shoutem/redux-composers": "0.1.4"
   },
   "rnpm": {
     "commands": {

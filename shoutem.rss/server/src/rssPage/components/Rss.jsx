@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { shouldRefresh, isValid, isBusy, clear } from '@shoutem/redux-io';
+import { ControlLabel } from 'react-bootstrap';
 import { updateShortcutSettings, discoverFeeds, SHORTCUTS, DISCOVERED_FEEDS } from './../reducer';
 import { denormalizeItem, denormalizeCollection } from 'denormalizer';
 import _ from 'lodash';
@@ -69,6 +70,10 @@ export class Rss extends Component {
     return '';
   }
 
+  getFeedType() {
+    return _.get(this.props, 'shortcut.settings.feedType', false);
+  }
+
   setFeedUrl(feedUrl) {
     const id = this.props.shortcut.id;
     const normalizedFeedUrl = normalizeUrl(feedUrl, {stripWWW: false});
@@ -101,9 +106,15 @@ export class Rss extends Component {
   render() {
     const activeScreen = this.getActiveScreen();
     const feedUrl = this.getFeedUrl();
+    const feedType = this.getFeedType();
 
     return (
       <div>
+        {feedType &&
+          <ControlLabel>
+            This is a {feedType} feed.
+          </ControlLabel>
+        }
         {(activeScreen === ACTIVE_SCREEN_INPUT) && (
           <FeedUrlInput
             inProgress={isBusy(this.props.discoveredFeeds)}

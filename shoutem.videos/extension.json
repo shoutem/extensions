@@ -1,8 +1,8 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "1.8.2",
-  "platform": ">=1.8.1",
+  "version": "2.0.1",
+  "platform": "2.0.*",
   "description": "Show a video gallery",
   "icon": "server/assets/add-videos-image.png",
   "categories": [
@@ -30,7 +30,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "Videos",
+        "extensionTitle": "Videos"
+      }
     }
   ],
   "screens": [

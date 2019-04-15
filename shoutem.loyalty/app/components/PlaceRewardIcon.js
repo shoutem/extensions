@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -14,7 +12,7 @@ import { connectStyle } from '@shoutem/theme';
 
 import { ext } from '../const';
 
-export class PlaceRewardIcon extends Component {
+export class PlaceRewardIcon extends PureComponent {
 
   static propTypes = {
     pointsReached: PropTypes.bool,

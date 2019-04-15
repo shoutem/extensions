@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import * as _ from 'lodash';
 
@@ -19,7 +19,7 @@ import { formatBookCaption } from '../shared/formatBookCaption';
 import LinkIconButton from './LinkIconButton';
 
 
-class SmallListBooksView extends React.Component {
+class SmallListBooksView extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     book: PropTypes.object.isRequired,

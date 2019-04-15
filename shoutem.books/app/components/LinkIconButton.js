@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
 import {
@@ -9,7 +9,7 @@ import {
 import { openURL } from 'shoutem.web-view';
 import { CmsListScreen } from 'shoutem.cms';
 
-class LinkIconButton extends React.Component {
+class LinkIconButton extends PureComponent {
   static propTypes = {
     book: PropTypes.any,
     openURL: PropTypes.func,

@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import { resolveIconSource } from 'shoutem.theme';
+
 import { TouchableOpacity, ImageBackground } from '@shoutem/ui';
+
+import { resolveIconSource } from 'shoutem.theme';
 
 /**
  * Used to set Folder item background.

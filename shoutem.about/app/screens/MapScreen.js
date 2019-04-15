@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import {
   Platform,
   Linking,
@@ -9,16 +7,15 @@ import {
 
 import {
   Screen,
-  Text,
   Button,
   Icon,
   View,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
-
 import { MapView } from '@shoutem/ui-addons';
 
-export default class MapScreen extends Component {
+import { NavigationBar } from 'shoutem.navigation';
+
+export default class MapScreen extends PureComponent {
   static propTypes = {
     marker: PropTypes.object,
     title: PropTypes.string,

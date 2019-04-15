@@ -1,5 +1,5 @@
-import reducer from './reducers';
 import * as extension from './extension.js';
+import reducer from './reducers';
 
 import AboutScreen, {
   AboutScreen as AboutScreenComponent,

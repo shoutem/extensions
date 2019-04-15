@@ -1,9 +1,11 @@
 import React from 'react';
 import { LayoutAnimation } from 'react-native';
+
 import { connectStyle } from '@shoutem/theme';
-import { ext } from '../const';
 import { Touchable } from '@shoutem/ui';
+
 import { NavigationBaseItem } from './NavigationBaseItem';
+import { ext } from '../const';
 
 class TabBarItem extends NavigationBaseItem {
   render() {
@@ -36,7 +38,7 @@ const mapPropsToStyleNames = (styleNames, props) => {
     customStyleNames.push('text-only');
   }
 
-  return [...styleNames, ...customStyleNames];
+  return styleNames.concat(customStyleNames);
 };
 
 export default connectStyle(ext('TabBarItem'), undefined, mapPropsToStyleNames)(TabBarItem);

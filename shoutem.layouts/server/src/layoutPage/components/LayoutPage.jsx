@@ -6,6 +6,7 @@ import { updateShortcut, loadHierarchy, HIERARCHY } from './../reducer';
 import { denormalizeItem } from 'denormalizer';
 import ScreenGroup from './ScreenGroup';
 import { LoaderContainer, EmptyResourcePlaceholder } from '@shoutem/react-web-ui';
+import { ControlLabel } from 'react-bootstrap';
 import { ext } from 'context';
 import { getShortcut } from 'environment';
 import './style.scss';
@@ -113,13 +114,49 @@ export class LayoutPage extends Component {
     );
   }
 
+  resolveShortcutTitle(shortcut) {
+    const defaultShortcutTitle = _.get(shortcut, 'settings.defaultShortcutTitle', false);
+    return defaultShortcutTitle;
+  }
+
+  resolveExtensionTitle(shortcut) {
+    const extensionTitle = _.get(shortcut, 'settings.extensionTitle', false);
+    return extensionTitle;
+  }
+
+  resolveExtensionInfo(shortcut) {
+    const defaultShortcutTitle = this.resolveShortcutTitle(shortcut);
+    const extensionTitle = this.resolveExtensionTitle(shortcut);
+
+    if (!defaultShortcutTitle && !extensionTitle) {
+      return false;
+    }
+
+    if (!defaultShortcutTitle && extensionTitle) {
+      return `This is a shortcut from the ${extensionTitle} extension.`;
+    }
+
+    if (defaultShortcutTitle && !extensionTitle) {
+      return `This is the ${defaultShortcutTitle} shortcut of an undefined extension.`;
+    }
+
+    return `This is the ${defaultShortcutTitle} shortcut from the ${extensionTitle} extension.`;
+  }
+
   render() {
-    const { hierarchy } = this.props;
+    const { hierarchy, shortcut } = this.props;
+
     const isHierarchyValid = hierarchy && isValid(hierarchy);
+    const extensionInfo = this.resolveExtensionInfo(shortcut);
 
     return (
       <div className="layout-page">
         <LoaderContainer isLoading={!isHierarchyValid} size="50px">
+          {extensionInfo &&
+            <ControlLabel>
+              {extensionInfo}
+            </ControlLabel>
+          }
           {this.renderScreenHierarchy(hierarchy)}
         </LoaderContainer>
       </div>

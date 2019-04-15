@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import * as _ from 'lodash';
 import {
@@ -9,12 +9,12 @@ import {
   Caption,
   Title,
   Tile,
-  Html,
+  SimpleHtml,
   ScrollView,
   View,
   ShareButton,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { NavigationBar } from 'shoutem.navigation';
 
 import { openURL } from 'shoutem.web-view';
 import { Favorite } from 'shoutem.favorites';
@@ -23,7 +23,7 @@ import { formatBookCaption } from '../shared/formatBookCaption';
 import { LinkButton } from '../components/LinkButton';
 
 /* eslint-disable react/prefer-stateless-function */
-class BooksDetailsScreen extends React.Component {
+class BooksDetailsScreen extends PureComponent {
   static propTypes = {
     book: PropTypes.any,
     openURL: PropTypes.func,
@@ -45,11 +45,10 @@ class BooksDetailsScreen extends React.Component {
         buttonStyle={book.buyUrl ? null : 'md-gutter-right'}
       />) : null;
     const share = book.buyUrl ?
-    (<ShareButton
-      url={book.buyUrl}
-      title={book.title}
-    />
-) : null;
+      (<ShareButton
+        url={book.buyUrl}
+        title={book.title}
+      />) : null;
 
     return {
       renderRightComponent: () => (
@@ -102,7 +101,7 @@ class BooksDetailsScreen extends React.Component {
           <Divider styleName="line" />
 
           <View styleName="solid">
-            <Html body={book.description} />
+            <SimpleHtml body={book.description} />
           </View>
         </ScrollView>
       </Screen>

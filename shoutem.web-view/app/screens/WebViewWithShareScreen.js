@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { NavigationBar } from 'shoutem.navigation';
 import { currentLocation } from 'shoutem.cms';
 import WebViewScreen from './WebViewScreen';
 

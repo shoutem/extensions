@@ -4,7 +4,7 @@
 import {
   RewardsSettingsPage,
   LoyaltySettingsPage,
-  PointsCardSettingsPage,
+  DefaultLoyaltyShortcutSettingsPage,
   TransactionsPage,
 } from './pages';
 import { cmsApi } from './modules/cms';
@@ -16,7 +16,7 @@ import { reducer } from './redux';
 export const pages = {
   RewardsSettingsPage,
   LoyaltySettingsPage,
-  PointsCardSettingsPage,
+  DefaultLoyaltyShortcutSettingsPage,
   TransactionsPage,
 };
 

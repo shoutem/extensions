@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import { Linking, Platform } from 'react-native';
 
@@ -29,7 +27,7 @@ const { func, object, shape } = PropTypes;
 /**
  * A component that lets a user scan a QR code
  */
-class QRCodeScanner extends Component {
+class QRCodeScanner extends PureComponent {
   static propTypes = {
     // Called when a QR code has been successfully scanned
     onQRCodeScanned: func,

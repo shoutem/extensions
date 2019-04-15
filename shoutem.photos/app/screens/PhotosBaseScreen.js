@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import { cloneStatus } from '@shoutem/redux-io';
 
-import { openInModal } from '@shoutem/core/navigation';
+import { openInModal } from 'shoutem.navigation';
 import { CmsListScreen } from 'shoutem.cms';
 
 import { ext } from '../const';

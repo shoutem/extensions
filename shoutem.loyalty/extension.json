@@ -1,7 +1,7 @@
 {
   "name": "loyalty",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.6",
+  "platform": "2.0.*",
   "title": "Loyalty",
   "description": "Reward your returning customers",
   "categories": [
@@ -30,7 +30,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "Punch Card",
+        "extensionTitle": "Loyalty"
+      }
     },
     {
       "screen": "@.PointsCardScreen",
@@ -39,14 +43,18 @@
       "icon": "theme://loyalty-card.png",
       "adminPages": [
         {
-          "page": "@.PointsCardSettingsPage",
+          "page": "@.DefaultLoyaltyShortcutSettingsPage",
           "title": "Settings"
         },
         {
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "My Card",
+        "extensionTitle": "Loyalty"
+      }
     },
     {
       "screen": "@.RewardsListScreen",
@@ -65,7 +73,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "Rewards",
+        "extensionTitle": "Loyalty"
+      }
     },
     {
       "screen": "@.PlacesListScreen",
@@ -88,7 +100,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "Stores",
+        "extensionTitle": "Loyalty"
+      }
     },
     {
       "title": "My Stores",
@@ -96,7 +112,15 @@
       "name": "FavoritesList",
       "screen": "@.FavoritesListScreen",
       "icon": "theme://add-to-favorites-full.png",
+      "adminPages": [
+        {
+          "page": "@.DefaultLoyaltyShortcutSettingsPage",
+          "title": "Settings"
+        }
+      ],
       "settings": {
+        "defaultShortcutTitle": "My Stores",
+        "extensionTitle": "Loyalty",
         "favoritesSchemas": [
           "@.places"
         ]
@@ -211,8 +235,8 @@
       "type": "html"
     },
     {
-      "name": "PointsCardSettingsPage",
-      "path": "server/build/index.html?page=PointsCardSettingsPage",
+      "name": "DefaultLoyaltyShortcutSettingsPage",
+      "path": "server/build/index.html?page=DefaultLoyaltyShortcutSettingsPage",
       "type": "html"
     },
     {

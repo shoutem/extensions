@@ -1,26 +1,16 @@
 import PropTypes from 'prop-types';
+import { Platform, StatusBar } from 'react-native';
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
 
 import {
-  Platform,
-  StatusBar,
-  InteractionManager,
-} from 'react-native';
-
-import {
-  Icon,
-  ImageGallery,
-  Button,
   Screen,
+  ImageGallery,
   ImageGalleryOverlay,
 } from '@shoutem/ui';
-
-import {
-  NavigationBar,
-} from '@shoutem/ui/navigation';
-
 import { connectStyle } from '@shoutem/theme';
-import _ from 'lodash';
+
+import { NavigationBar } from 'shoutem.navigation';
 
 import { ext } from '../const';
 
@@ -33,6 +23,7 @@ class PhotoDetails extends PureComponent {
 
   constructor(props) {
     super(props);
+
     this.onIndexSelected = this.onIndexSelected.bind(this);
     this.onImageGalleryModeChange = this.onImageGalleryModeChange.bind(this);
     this.onBackButton = this.onBackButton.bind(this);

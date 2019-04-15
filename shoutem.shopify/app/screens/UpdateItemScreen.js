@@ -1,10 +1,6 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
-
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-
 import _ from 'lodash';
 
 import {
@@ -20,23 +16,18 @@ import {
   View,
   Text,
 } from '@shoutem/ui';
-
-import {
-  NavigationBar,
-} from '@shoutem/ui/navigation';
-
+import { connectStyle } from '@shoutem/theme';
 import { NumberInput } from '@shoutem/ui-addons';
 
-import { connectStyle } from '@shoutem/theme';
-
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
 
-import { ext } from '../const';
 import { shopItemVariantHasDisount } from '../services';
+import { ext } from '../const';
 
 import {
-  product as productShape,
   shop as shopShape,
+  product as productShape,
   variant as variantShape,
 } from '../components/shapes';
 
@@ -121,7 +112,7 @@ const getInitialStateFromProps = (props) => {
  *
  * This component handles all the logic that lets the user select only available variants.
  */
-class UpdateItemScreen extends Component {
+class UpdateItemScreen extends PureComponent {
   static actionTypes = actionTypes;
 
   /* eslint-disable react/no-unused-prop-types */

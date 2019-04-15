@@ -15,7 +15,7 @@ import {
 } from './ArticlesListScreen';
 
 import { ext } from '../const';
-import { getLeadImageUrl } from '../services';
+import { getLeadImageUrl, resolveArticleTitle } from '../services';
 
 class ArticlesGridScreen extends ArticlesListScreen {
   static propTypes = {
@@ -41,7 +41,7 @@ class ArticlesGridScreen extends ArticlesListScreen {
         <FeaturedArticleView
           key={article.id}
           articleId={article.id.toString()}
-          title={article.title.rendered}
+          title={resolveArticleTitle(article.title.rendered)}
           imageUrl={getLeadImageUrl(article)}
           date={article.modified}
           onPress={this.openArticleWithId}
@@ -54,7 +54,7 @@ class ArticlesGridScreen extends ArticlesListScreen {
         <GridArticleView
           key={article.id}
           articleId={article.id.toString()}
-          title={article.title.rendered}
+          title={resolveArticleTitle(article.title.rendered)}
           imageUrl={getLeadImageUrl(article)}
           date={article.modified}
           onPress={this.openArticleWithId}

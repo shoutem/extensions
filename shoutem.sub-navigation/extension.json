@@ -1,7 +1,7 @@
 {
   "name": "sub-navigation",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.1",
+  "platform": "2.0.*",
   "title": "Navigation",
   "description": "Shows sub-navigation for the nested screen",
   "categories": [

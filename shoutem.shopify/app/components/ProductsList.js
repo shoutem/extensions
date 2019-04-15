@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -19,7 +17,7 @@ import {
   navigateTo,
   closeModal,
   openInModal,
-} from '@shoutem/core/navigation';
+} from 'shoutem.navigation';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -45,7 +43,7 @@ const { arrayOf, bool, func, number, shape, string } = PropTypes;
  * A component that displays a list of products, used in the main products screen and
  * search screen. Lets the user navigate to product details or add a product to cart.
  */
-export class ProductsList extends Component {
+export class ProductsList extends PureComponent {
   static propTypes = {
     // Action dispatched when a product is added to the cart
     cartItemAdded: func.isRequired,

@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -15,7 +13,7 @@ import {
 import DealRedeemTimer from './DealRedeemTimer';
 import { dealStatusShape, getDealImages } from '../services';
 
-export default class DealImage extends Component {
+export default class DealImage extends PureComponent {
 
   static propTypes = {
     activeCoupon: PropTypes.object,

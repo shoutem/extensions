@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import _ from 'lodash';
 
@@ -25,7 +23,7 @@ const iconStyleShape = shape({
  * Displays stamps required to redeem a reward for a punch card.
  * Stamps can be in the default state or punched.
  */
-export class Stamps extends Component {
+export class Stamps extends PureComponent {
   static propTypes = {
     // Punch card reward description, with points and points required
     reward: rewardShape.isRequired,

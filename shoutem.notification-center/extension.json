@@ -1,8 +1,8 @@
 {
   "name": "notification-center",
   "title": "Notifications",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.3",
+  "platform": "2.0.*",
   "description": "View and manage push notifications within the app",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": [
@@ -18,14 +18,22 @@
       "description": "List of received notifications",
       "name": "openNotificationsScreen",
       "icon": "theme://activity.png",
-      "screen": "@.NotificationsScreen"
+      "screen": "@.NotificationsScreen",
+      "settings": {
+        "defaultShortcutTitle": "Notification center",
+        "extensionTitle": "Notifications"
+      }
     },
     {
       "title": "Group settings",
       "description": "List of available push groups",
       "name": "openPushGroupsScreen",
       "icon": "theme://settings.png",
-      "screen": "@.PushGroupsScreen"
+      "screen": "@.PushGroupsScreen",
+      "settings": {
+        "defaultShortcutTitle": "Group settings",
+        "extensionTitle": "Notifications"
+      }
     }
   ],
   "screens": [

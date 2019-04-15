@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -19,17 +19,17 @@ import {
   Divider,
   TouchableOpacity,
   Row,
-  Html,
+  SimpleHtml,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
-import { openURL as openURLAction } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
+import { openURL as openURLAction } from 'shoutem.web-view';
 
 import { ext } from '../const';
 
-export class ProductDetails extends React.Component {
+export class ProductDetails extends PureComponent {
   static propTypes = {
     product: PropTypes.object.isRequired,
     openURL: PropTypes.func,
@@ -37,6 +37,7 @@ export class ProductDetails extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.onBuyPress = this.onBuyPress.bind(this);
     this.getNavBarProps = this.getNavBarProps.bind(this);
     this.renderProductPriceInfo = this.renderProductPriceInfo.bind(this);
@@ -50,6 +51,7 @@ export class ProductDetails extends React.Component {
 
   getNavBarProps() {
     const { product } = this.props;
+
     const share = {
       title: product.name,
       link: product.link,
@@ -65,7 +67,9 @@ export class ProductDetails extends React.Component {
 
   renderProductPriceInfo() {
     const { product } = this.props;
+
     const oldPrice = product.oldPrice;
+
     return (
       oldPrice ?
         <View virtual styleName="vertical h-center">
@@ -85,6 +89,7 @@ export class ProductDetails extends React.Component {
     if (!product.link) {
       return null;
     }
+
     return (
       <Button styleName="md-gutter-top" onPress={this.onBuyPress}>
         <Text>{product.buyTitle}</Text>
@@ -114,6 +119,7 @@ export class ProductDetails extends React.Component {
           </Tile>
         </ImageBackground>);
     }
+
     return (
       <ImageBackground
         animationName="hero"
@@ -138,12 +144,13 @@ export class ProductDetails extends React.Component {
     if (!product.description) {
       return null;
     }
+
     return (
       <Tile>
         <Divider styleName="section-header">
           <Caption>{I18n.t('shoutem.cms.descriptionTitle')}</Caption>
         </Divider>
-        <Html body={product.description} />
+        <SimpleHtml body={product.description} />
       </Tile>
     );
   }
@@ -154,6 +161,7 @@ export class ProductDetails extends React.Component {
     if (!product.link) {
       return null;
     }
+
     return (
       <TouchableOpacity onPress={this.onBuyPress}>
         <Divider styleName="section-header">

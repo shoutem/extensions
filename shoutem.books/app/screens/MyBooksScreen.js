@@ -1,32 +1,28 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
-import * as _ from 'lodash';
+import _ from 'lodash';
 
-import { connectStyle } from '@shoutem/theme';
 import {
   isError,
   getCollection,
   isBusy,
   isInitialized,
 } from '@shoutem/redux-io';
-import { navigateTo } from '@shoutem/core/navigation';
-import {
-  ListView,
-  Screen,
-} from '@shoutem/ui';
+import { connectStyle } from '@shoutem/theme';
+import { ListView, Screen } from '@shoutem/ui';
 import { EmptyStateView } from '@shoutem/ui-addons';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { I18n } from 'shoutem.i18n';
 import { CmsListScreen } from 'shoutem.cms';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
 
 import ListBooksView from '../components/ListBooksView';
 import { ext } from '../const';
 
-class MyBooksScreen extends React.Component {
+class MyBooksScreen extends PureComponent {
   static propTypes = {
     navigateTo: PropTypes.func,
     title: PropTypes.string,

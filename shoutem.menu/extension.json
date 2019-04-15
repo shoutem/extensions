@@ -1,8 +1,8 @@
 {
   "name": "menu",
   "title": "Restaurant menu",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.2",
+  "platform": "2.0.*",
   "icon": "./server/assets/images/add-menu-items-image.png",
   "description": "Show a restaurant menu",
   "categories": [
@@ -31,7 +31,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "Menu",
+        "extensionTitle": "Restaurant menu"
+      }
     }
   ],
   "screens": [

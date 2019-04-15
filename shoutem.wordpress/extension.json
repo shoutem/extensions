@@ -1,7 +1,7 @@
 {
   "name": "wordpress",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.7",
+  "platform": "2.0.*",
   "title": "WordPress",
   "description": "Show news articles from WordPress blog.",
   "icon": "server/assets/extension-icon.png",
@@ -33,7 +33,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "WordPress",
+        "extensionTitle": "WordPress"
+      }
     }
   ],
   "pages": [

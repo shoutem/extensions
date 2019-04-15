@@ -1,13 +1,14 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
+import { priorities, setPriority } from 'shoutem-core';
 import {
   createNavigationAction,
   isNavigationAction,
-} from '@shoutem/core/navigation';
-import { priorities, setPriority } from '@shoutem/core/middlewareUtils';
+} from 'shoutem.navigation';
 import { LOAD_REQUEST } from '@shoutem/redux-io';
 import { Alert } from 'react-native';
 import { I18n } from 'shoutem.i18n';
-import { EXECUTE_SHORTCUT, getShortcut, getActiveShortcut } from './redux';
+import { EXECUTE_SHORTCUT, RESTART_APP, getShortcut, getActiveShortcut } from './redux';
+import { restartApp } from './services';
 import { ext } from './const';
 
 function createExecuteShortcutActionMiddleware(actions) {
@@ -156,10 +157,21 @@ const noInternetMiddleware = store => next => action => {
   return next(action);
 };
 
+const restartAppMiddleware = setPriority(store => next => action => {
+  const actionType = _.get(action, 'type');
+
+  if (actionType === RESTART_APP) {
+    restartApp();
+  }
+
+  return next(action);
+}, priorities.LAST);
+
 export {
   noInternetMiddleware,
   resolveScreenLayout,
   navigateToShortcutScreen,
   createExecuteShortcutActionMiddleware,
   injectShortcutIdToActionRouteContext,
+  restartAppMiddleware,
 };

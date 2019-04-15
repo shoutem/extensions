@@ -1,8 +1,8 @@
-import React from 'react';
+import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-export class BasePhotoView extends React.Component {
+export class BasePhotoView extends PureComponent {
     static propTypes = {
         onPress: PropTypes.func,
         photo: PropTypes.shape({

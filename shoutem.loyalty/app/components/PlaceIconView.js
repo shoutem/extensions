@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import {
   TouchableOpacity,
@@ -27,7 +25,7 @@ const { func, number } = PropTypes;
 /**
  * Renders a single place in a list.
  */
-class PlaceIconView extends Component {
+class PlaceIconView extends PureComponent {
   static propTypes = {
     // The place
     place: placeShape.isRequired,

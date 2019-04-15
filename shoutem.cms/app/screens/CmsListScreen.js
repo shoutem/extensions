@@ -17,7 +17,7 @@ import {
   Screen,
   View,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { NavigationBar } from 'shoutem.navigation';
 
 import {
   EmptyStateView,
@@ -41,7 +41,7 @@ import {
 import {
   getScreenState,
   setScreenState as setScreenStateAction,
-} from '@shoutem/core/navigation';
+} from 'shoutem.navigation';
 
 import { I18n } from 'shoutem.i18n';
 

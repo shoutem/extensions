@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   TouchableOpacity,
   Caption,
@@ -14,7 +14,7 @@ import { Favorite } from 'shoutem.favorites';
 import { ext } from '../const';
 import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
 
-export class PlacePhotoView extends Component {
+export class PlacePhotoView extends PureComponent {
   static propTypes = {
     place: PropTypes.object.isRequired,
     onPress: PropTypes.func,

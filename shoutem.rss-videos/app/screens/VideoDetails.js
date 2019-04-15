@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import moment from 'moment';
 
 import {
@@ -12,16 +10,16 @@ import {
   Caption,
   Tile,
   View,
-  Html,
+  SimpleHtml,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
+import { NavigationBar } from 'shoutem.navigation';
 import { createRenderAttachment } from 'shoutem.rss';
 
 import { ext } from '../const';
 
-export class VideoDetails extends Component {
+export class VideoDetails extends PureComponent {
   static propTypes = {
     // The video article to display
     video: PropTypes.object.isRequired,
@@ -55,7 +53,7 @@ export class VideoDetails extends Component {
           </Tile>
 
           <View styleName="solid">
-            <Html body={video.body} renderElement={createRenderAttachment(video, 'video')} />
+            <SimpleHtml body={video.body} renderElement={createRenderAttachment(video, 'video')} />
           </View>
         </ScrollView>
       </Screen>

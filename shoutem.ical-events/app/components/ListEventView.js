@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 
 import {
@@ -18,7 +18,7 @@ import { formatToLocalDate } from '../services/Calendar';
 /**
  * Component used to render single list event item
  */
-export default class ListEventView extends React.Component {
+export default class ListEventView extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     action: PropTypes.func,

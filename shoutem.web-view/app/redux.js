@@ -1,4 +1,4 @@
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { getShortcut } from 'shoutem.application';
 
 import { ext } from './const';

@@ -1,8 +1,13 @@
 {
   "name": "shoutem.social",
-  "version": "1.8.2",
+  "version": "2.0.1",
   "description": "Social wall",
   "dependencies": {
-    "showdown": "^1.8.6"
+    "showdown": "^1.8.6",
+    "@shoutem/ui": "~0.23.12",
+    "@shoutem/ui-addons": "~0.0.30",
+    "@shoutem/redux-io": "3.0.1-beta.3",
+    "@shoutem/theme": "~0.11.3",
+    "@shoutem/redux-composers": "0.1.4"
   }
 }

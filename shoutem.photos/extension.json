@@ -1,7 +1,7 @@
 {
   "name": "photos",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.1",
+  "platform": "2.0.*",
   "title": "Photos",
   "description": "Show a photo gallery",
   "icon": "server/assets/add-photos-image.png",
@@ -34,7 +34,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "Manual photos",
+        "extensionTitle": "Photos"
+      }
     }
   ],
   "screens": [

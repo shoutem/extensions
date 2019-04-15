@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -20,14 +18,12 @@ import {
   View,
 } from '@shoutem/ui';
 
-import { NavigationBar } from '@shoutem/ui/navigation';
-
 import {
   InlineMap,
 } from '@shoutem/ui-addons';
 
 import { connectStyle } from '@shoutem/theme';
-import { closeModal } from '@shoutem/core/navigation';
+import { NavigationBar, closeModal } from 'shoutem.navigation';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -89,7 +85,7 @@ const renderShippingMethod = method => (
   </Row>
 );
 
-class OrderCompleteScreen extends Component {
+class OrderCompleteScreen extends PureComponent {
   static propTypes = {
     // A list of cart items, where an item is defined by a combination of product, its variant
     // and quantity

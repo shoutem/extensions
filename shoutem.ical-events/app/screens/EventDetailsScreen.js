@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { ext } from '../extension';
 import { BaseEventDetailsScreen } from './BaseEventDetailsScreen';
 import { openURL as openUrlAction } from 'shoutem.web-view';
-import { navigateTo as navigateToAction } from '@shoutem/core/navigation';
+import { navigateTo as navigateToAction } from 'shoutem.navigation';
 
 export class EventDetailsScreen extends BaseEventDetailsScreen {
   renderHeader(event) {

@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { priorities, after, setPriority } from '@shoutem/core/middlewareUtils';
+import { priorities, after, setPriority } from 'shoutem-core';
 import { getAppId, getActiveShortcut } from 'shoutem.application';
-import { getActiveRoute } from '@shoutem/core/navigation';
+import { getActiveRoute } from 'shoutem.navigation';
 import { EVENT, SCREEN_VIEW, isAnalyticsAction } from './redux';
 
 // Use to intercept analytics actions and provide more data to the action

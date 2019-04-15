@@ -7,8 +7,13 @@ import _ from 'lodash';
 
 import { next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo, openInModal, closeModal, navigateBack } from '@shoutem/core/navigation';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import {
+  NavigationBar,
+  navigateTo,
+  openInModal,
+  closeModal,
+  navigateBack,
+} from 'shoutem.navigation';
 import {
   Screen,
   Row,

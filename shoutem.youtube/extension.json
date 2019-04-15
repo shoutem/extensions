@@ -1,17 +1,16 @@
 {
   "name": "youtube",
-  "title": "Youtube",
-  "version": "1.8.0",
-  "platform": "1.8.*",
-  "description": "Show a video gallery from Youtube channel, user or playlist",
+  "title": "YouTube",
+  "version": "2.0.2",
+  "platform": "2.0.*",
+  "description": "Show a video gallery from YouTube channel, user or playlist",
   "categories": [
     "media"
   ],
   "icon": "server/assets/add-videos-youtube-image.png",
   "shortcuts": [
     {
-      "title": "Youtube",
-      "description": "Youtube",
+      "title": "YouTube",
       "name": "youtube-shortcut",
       "icon": "theme://play.png",
       "screen": "@.YoutubeVideosScreen",
@@ -24,7 +23,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "YouTube",
+        "extensionTitle": "YouTube"
+      }
     }
   ],
   "settingsPages": [

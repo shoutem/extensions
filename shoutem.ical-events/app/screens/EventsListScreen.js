@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
 
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { View, Button, Text } from '@shoutem/ui';
 import { EmptyStateView } from '@shoutem/ui-addons';

@@ -4,7 +4,7 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 
 import {

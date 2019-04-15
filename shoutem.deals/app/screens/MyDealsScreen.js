@@ -1,6 +1,4 @@
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
@@ -11,9 +9,8 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo } from '@shoutem/core/navigation';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
 
 import { ext, TRANSLATIONS } from '../const';
@@ -41,7 +38,7 @@ function renderTab(options) {
   );
 }
 
-export class MyDealsScreen extends Component {
+export class MyDealsScreen extends PureComponent {
 
   static propTypes = {
     catalogId: PropTypes.string,

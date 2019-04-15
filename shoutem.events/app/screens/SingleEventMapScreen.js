@@ -7,7 +7,6 @@ import {
   Linking,
 } from 'react-native';
 
-import { I18n } from 'shoutem.i18n';
 
 import {
   Screen,
@@ -15,11 +14,10 @@ import {
   Button,
   View,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
-
 import { MapView } from '@shoutem/ui-addons';
 
-import { ext } from '../const';
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
 
 export default class SingleEventMapScreen extends PureComponent {
   static propTypes = {

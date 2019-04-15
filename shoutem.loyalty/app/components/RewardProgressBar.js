@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import {
   View,
@@ -16,7 +14,7 @@ const { number } = PropTypes;
 /**
  * Shows progress towards a reward
  */
-class RewardProgressBar extends Component {
+class RewardProgressBar extends PureComponent {
   static propTypes = {
     // Number of points
     points: number,

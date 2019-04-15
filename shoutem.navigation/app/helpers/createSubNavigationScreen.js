@@ -1,19 +1,20 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import { Screen } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
-import { actions } from 'shoutem.application';
+import { actions, getFirstShortcut } from 'shoutem.application';
+
+import { NavigationBar } from '../components/ui';
 
 import {
-  mapIsRootScreenToProps,
   mapExtensionSettingsToProps,
   shortcutChildrenRequired,
 } from './index';
 
-const { bool, shape, string } = PropTypes;
+const { bool, string, object } = PropTypes;
 
 const resolveStyleName = (props) => {
   const {
@@ -24,58 +25,54 @@ const resolveStyleName = (props) => {
   if (navigationBarImage) {
     return 'clear';
   }
+
   return (isRootScreen) ? 'clear none' : '';
 };
 
 export default function createSubNavigationScreen(Component) {
-  class FolderBaseScreen extends React.Component {
+  class FolderBaseScreen extends PureComponent {
     static propTypes = {
-      isRootScreen: bool,
-      shortcut: shape({
-        title: string,
-      }),
+      firstShortcut: object,
+      shortcut: object,
       navigationBarImage: string,
       backgroundImageEnabledFirstScreen: bool,
       showTitle: bool,
       fitContainer: bool,
     };
 
+    constructor(props) {
+      super(props);
+
+      this.isRootScreen = props.firstShortcut === props.shortcut;
+    }
+
     resolveNavBarProps() {
       const {
-        backgroundImageEnabledFirstScreen,
+        backgroundImageEnabledFirstScreen: bgImageEnabled,
+        navigationBarImage: navBarImage,
         showTitle,
+        shortcut,
         fitContainer,
-        isRootScreen,
-      } = this.props;
-      let {
-        navigationBarImage,
-        shortcut: { title },
       } = this.props;
 
-      if (!backgroundImageEnabledFirstScreen && !isRootScreen) {
-        navigationBarImage = null;
-      }
-
-      if (navigationBarImage && !showTitle) {
-        title = null;
-      }
+      const navigationBarImage = (!bgImageEnabled && !this.isRootScreen) ? null : navBarImage;
+      const title = (navigationBarImage && !showTitle) ? null : _.get(shortcut, 'title', '');
+      const styleName = (navigationBarImage && 'clear') || (this.isRootScreen && 'clear none') || '';
 
       return {
-        styleName: resolveStyleName(this.props),
-        title,
         navigationBarImage,
+        title,
+        styleName,
         fitContainer,
       };
     }
 
     resolveScreenProps() {
-      const { isRootScreen } = this.props;
-
       return {
         // Main Navigation Screens does not have NavigationBar, so when Folder screen is Main
         // navigation screen (and has no NavigationBar) stretch screen.
         onLayout: this.layoutChanged,
-        styleName: isRootScreen ? 'full-screen' : '',
+        styleName: this.isRootScreen ? 'full-screen' : '',
       };
     }
 
@@ -89,12 +86,16 @@ export default function createSubNavigationScreen(Component) {
     }
   }
 
-  const mapStateToProps = (state, ownProps) => ({
-    ...mapIsRootScreenToProps(state, ownProps),
-    ...mapExtensionSettingsToProps(state, ownProps),
+  const mapStateToProps = (state) => ({
+    firstShortcut: getFirstShortcut(state),
+    ...mapExtensionSettingsToProps(state),
   });
 
+  const mapDispatchToProps = {
+    executeShortcut: actions.executeShortcut,
+  };
+
   return shortcutChildrenRequired(
-    connect(mapStateToProps, { executeShortcut: actions.executeShortcut })(FolderBaseScreen),
+    connect(mapStateToProps, mapDispatchToProps)(FolderBaseScreen)
   );
 }

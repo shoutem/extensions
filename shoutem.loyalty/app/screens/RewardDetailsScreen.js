@@ -1,18 +1,12 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-
-import {
-  closeModal,
-  navigateBack,
-  openInModal,
-} from '@shoutem/core/navigation';
 
 import {
   Button,
   Caption,
   Image,
-  Html,
+  SimpleHtml,
   Screen,
   ScrollView,
   Tile,
@@ -20,25 +14,26 @@ import {
   Text,
   View,
 } from '@shoutem/ui';
-
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
-import { I18n } from 'shoutem.i18n';
-
-import { ext } from '../const';
 import {
-  getCardStateForPlace,
-  isPunchCard,
- } from '../redux';
+  NavigationBar,
+  navigateBack,
+  openInModal,
+} from 'shoutem.navigation';
+import { I18n } from 'shoutem.i18n';
 
 import {
   cardStateShape,
   rewardShape,
 } from '../components/shapes';
 import Stamps from '../components/Stamps';
-
 import RewardProgressBar from '../components/RewardProgressBar';
+import { ext } from '../const';
+import {
+  getCardStateForPlace,
+  isPunchCard,
+ } from '../redux';
 
 const { func } = PropTypes;
 
@@ -47,7 +42,7 @@ const { func } = PropTypes;
  * If the user's loyalty card has enough points, he can see an option to redeem the reward.
  * A reward can belong to a place or to a single card, not related to a place.
  */
-export class RewardDetailsScreen extends React.Component {
+export class RewardDetailsScreen extends PureComponent {
   static propTypes = {
     // User's loyalty card state
     cardState: cardStateShape,
@@ -161,7 +156,7 @@ export class RewardDetailsScreen extends React.Component {
           {this.renderImage()}
           {this.renderSummary()}
           <View styleName="md-gutter-horizontal">
-            {description ? <Html body={description} /> : null}
+            {description ? <SimpleHtml body={description} /> : null}
           </View>
         </ScrollView>
       </Screen>
@@ -178,6 +173,6 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, { closeModal, navigateBack, openInModal })(
+export default connect(mapStateToProps, { navigateBack, openInModal })(
   connectStyle(ext('RewardDetailsScreen'))(RewardDetailsScreen),
 );

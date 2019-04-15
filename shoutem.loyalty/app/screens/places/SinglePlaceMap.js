@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Linking, Platform } from 'react-native';
 import {
   View,
   Screen,
   TouchableOpacity,
   Icon,
 } from '@shoutem/ui';
-import { Linking, Platform } from 'react-native';
-import { NavigationBar } from '@shoutem/ui/navigation';
-import MapList from '../../components/MapList';
 
+import { NavigationBar } from 'shoutem.navigation';
+
+import MapList from '../../components/MapList';
 import { placeShape } from '../../components/shapes';
 
 const { string } = PropTypes;

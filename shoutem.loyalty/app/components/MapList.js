@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { LayoutAnimation } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
 import _ from 'lodash';
@@ -40,7 +40,7 @@ const createMarkersFromPlaces = places => _.reduce(places, (result, place) => {
   return result;
 }, []);
 
-export class MapList extends Component {
+export class MapList extends PureComponent {
 
   constructor(props) {
     super(props);

@@ -8,7 +8,7 @@ import {
   InteractionManager,
 } from 'react-native';
 
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,

@@ -1,17 +1,20 @@
 {
   "name": "shoutem.application",
-  "version": "1.8.1",
+  "version": "2.0.5",
   "private": true,
   "main": "index.js",
-  "peerDependencies": {
-    "@shoutem/core": "*"
-  },
   "dependencies": {
     "react-native-action-sheet": "shoutem/react-native-action-sheet#e69b86c200147acc22c7decbf6f595deebb2a657",
     "react-native-device-info": "0.21.5",
     "react-native-maps": "shoutem/react-native-maps#aadf00382a01ec9ca0c87cd990084088932eac1d",
     "react-native-restart": "shoutem/react-native-restart#c363a060e5abda09b14b94db186e9f747cac590f",
-    "react-native-splash-screen": "shoutem/react-native-splash-screen#1ea6e2514be0a83e5b7bbc441fa9a7a9c6ebf31b"
+    "react-native-splash-screen": "shoutem/react-native-splash-screen#1ea6e2514be0a83e5b7bbc441fa9a7a9c6ebf31b",
+    "react-native-video": "3.2.1",
+    "@shoutem/ui": "~0.23.12",
+    "@shoutem/ui-addons": "~0.0.30",
+    "@shoutem/redux-io": "3.0.1-beta.3",
+    "@shoutem/theme": "~0.11.3",
+    "@shoutem/redux-composers": "0.1.4"
   },
   "rnpm": {
     "commands": {

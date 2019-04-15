@@ -15,8 +15,8 @@ import {
   isValid,
 } from '@shoutem/redux-io';
 import { chainReducers } from '@shoutem/redux-composers';
-import { preventStateRehydration } from '@shoutem/core/preventStateRehydration';
-import { navigateTo } from '@shoutem/core/navigation';
+import { preventStateRehydration } from 'shoutem.redux';
+import { navigateTo } from 'shoutem.navigation';
 
 import {
   getAppId,

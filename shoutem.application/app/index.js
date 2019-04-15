@@ -10,6 +10,7 @@ import {
   createExecuteShortcutActionMiddleware,
   injectShortcutIdToActionRouteContext,
   noInternetMiddleware,
+  restartAppMiddleware,
 } from './middleware';
 import { openInitialScreen } from './shared/openInitialScreen';
 import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
@@ -19,6 +20,7 @@ import { getFirstShortcut } from './shared/getFirstShortcut';
 import {
   CONFIGURATION_SCHEMA,
   EXTENSIONS_SCHEMA,
+  ext,
 } from './const';
 import {
   initializeApp,
@@ -33,6 +35,7 @@ import {
 import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 
 import reducer, {
+  RESTART_APP,
   executeShortcut,
   fetchConfiguration,
   getExtensionSettings,
@@ -44,6 +47,7 @@ import reducer, {
   getAllShortcuts,
   getActiveShortcut,
   isShortcutVisible,
+  restartApp,
 } from './redux';
 
 import enTranslations from './translations/en.json';
@@ -59,6 +63,7 @@ const middleware = [
   resolveScreenLayout,
   injectShortcutIdToActionRouteContext,
   noInternetMiddleware,
+  restartAppMiddleware,
 ];
 
 export const shoutem = {
@@ -73,6 +78,7 @@ initializeApp();
 export {
   CONFIGURATION_SCHEMA,
   EXTENSIONS_SCHEMA,
+  RESTART_APP,
 
   buildConfig,
   configuration,
@@ -111,4 +117,7 @@ export {
   appWillUnmount,
 
   DeviceInfo,
+  restartApp,
+
+  ext,
 };

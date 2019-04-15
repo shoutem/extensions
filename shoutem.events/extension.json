@@ -1,7 +1,7 @@
 {
   "name": "events",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.4",
+  "platform": "2.0.*",
   "title": "Events",
   "description": "Show items with location and time",
   "categories": [
@@ -19,6 +19,8 @@
       "name": "events-shortcut",
       "icon": "theme://events.png",
       "settings": {
+        "defaultShortcutTitle": "Events",
+        "extensionTitle": "Events",
         "sortField": "startTime",
         "sortOrder": "ascending"
       },

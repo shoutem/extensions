@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 import { isBusy, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { next } from '@shoutem/redux-io';
 import {
   setStatus,

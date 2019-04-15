@@ -1,22 +1,20 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import _ from 'lodash';
-import { connect } from 'react-redux';
 import Pdf from 'react-native-pdf';
 import {
   WebView,
-  InteractionManager,
   Dimensions,
   Platform,
 } from 'react-native';
+import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import { View, Screen, Spinner } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
 import { EmptyStateView } from '@shoutem/ui-addons';
-import { find } from '@shoutem/redux-io';
 
 import { I18n } from 'shoutem.i18n';
 import { currentLocation } from 'shoutem.cms';
+import { NavigationBar } from 'shoutem.navigation';
 
 import NavigationToolbar from '../components/NavigationToolbar';
 import { ext } from '../const';
@@ -56,7 +54,7 @@ export class WebViewScreen extends PureComponent {
     // actual prop changes:
     // https://stackoverflow.com/a/40330289/7920643
     const { checkPermissionStatus } = props;
-    const { requireGeolocationPermission } = _.get(requireGeolocationPermission, 'props.shortcut.settings', [false]);
+    const requireGeolocationPermission = _.get(props, 'shortcut.settings.requireGeolocationPermission', false);
     const isLocationAvailable = !!props.currentLocation;
 
     if (requireGeolocationPermission && !isLocationAvailable && _.isFunction(checkPermissionStatus)) {
@@ -120,7 +118,7 @@ export class WebViewScreen extends PureComponent {
     );
   }
 
-  resolveWebViewProps(isAndroid) {
+  resolveWebViewProps() {
     const { url, requireGeolocationPermission } = this.getSettings();
     const defaultWebViewProps = {
       ref: this.setWebViewRef,
@@ -131,7 +129,7 @@ export class WebViewScreen extends PureComponent {
       scalesPageToFit: true,
     }
 
-    if (isAndroid) {
+    if (Platform.OS === 'android') {
       return ({
         ...defaultWebViewProps,
         geolocationEnabled: requireGeolocationPermission,
@@ -143,9 +141,8 @@ export class WebViewScreen extends PureComponent {
 
   renderWebView() {
     const { url } = this.getSettings();
-    const isAndroid = Platform.OS === 'android';
 
-    if(url.includes(".pdf") && isAndroid) {
+    if(url.includes(".pdf")) {
       return (
         <Pdf
           source={{ uri: url }}
@@ -156,7 +153,7 @@ export class WebViewScreen extends PureComponent {
 
     return (
       <WebView
-        {...this.resolveWebViewProps(isAndroid)}
+        {...this.resolveWebViewProps()}
       />
     );
   }

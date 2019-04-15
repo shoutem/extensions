@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -43,7 +41,7 @@ import {
 } from '../../redux';
 import DealGridView from '../DealGridView';
 
-export class MyDealsList extends Component {
+export class MyDealsList extends PureComponent {
 
   static propTypes = {
     authenticate: PropTypes.func,

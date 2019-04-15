@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -11,7 +9,7 @@ import {
 
 import { connect } from 'react-redux';
 
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 
 import {
@@ -24,7 +22,7 @@ import { ext } from '../const';
 import { getMarkersAndRegionFromDeals } from '../services';
 import DealListView from './DealListView';
 
-export class DealsMap extends Component {
+export class DealsMap extends PureComponent {
 
   static propTypes = {
     data: PropTypes.array.isRequired,

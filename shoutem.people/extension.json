@@ -1,8 +1,8 @@
 {
   "name": "people",
   "title": "People",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.1",
+  "platform": "2.0.*",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
   "categories": [
@@ -26,7 +26,11 @@
             "schema": "@.People"
           }
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "People",
+        "extensionTitle": "People"
+      }
     }
   ],
   "screens": [

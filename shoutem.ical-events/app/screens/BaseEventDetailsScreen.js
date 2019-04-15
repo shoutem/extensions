@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 
 import {
@@ -8,7 +8,7 @@ import {
   Title,
   Caption,
   Icon,
-  Html,
+  SimpleHtml,
   View,
   Button,
   Text,
@@ -17,13 +17,14 @@ import {
   Row,
   Subtitle,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
 import { InlineMap } from '@shoutem/ui-addons';
-import { I18n } from 'shoutem.i18n';
 
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation'
+
+import isValidEvent from '../services/isValidEvent';
 import { formatToLocalDate, addToCalendar } from '../services/Calendar';
 import { ext } from '../extension';
-import isValidEvent from '../services/isValidEvent';
 
 /**
  * Extracts location into marker out of event.
@@ -38,7 +39,7 @@ const getEventLocation = event => ({
   longitudeDelta: 0.01,
 });
 
-export class BaseEventDetailsScreen extends React.Component {
+export class BaseEventDetailsScreen extends PureComponent {
   static propTypes = {
     event: PropTypes.object.isRequired,
     openURL: PropTypes.func.isRequired,
@@ -61,7 +62,6 @@ export class BaseEventDetailsScreen extends React.Component {
         title: event.name,
         link: event.rsvpLink,
       },
-      styleName: 'clear',
       title: event.name,
       ...options,
     };
@@ -161,7 +161,7 @@ export class BaseEventDetailsScreen extends React.Component {
         <Divider styleName="section-header">
           <Caption>{I18n.t('shoutem.cms.descriptionTitle')}</Caption>
         </Divider>
-        <Html body={event.description} />
+        <SimpleHtml body={event.description} />
       </View>
     ) : null;
   }

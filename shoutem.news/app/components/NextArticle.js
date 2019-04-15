@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import {
   TouchableOpacity,
   Subtitle,
@@ -16,7 +16,7 @@ import { ext } from '../const';
  * A component used to render the next article info on
  * the article details screen.
  */
-export class NextArticle extends React.Component {
+export class NextArticle extends PureComponent {
   static propTypes = {
     title: PropTypes.string,
     imageUrl: PropTypes.string,

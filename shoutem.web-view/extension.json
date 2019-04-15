@@ -1,7 +1,7 @@
 {
   "name": "web-view",
-  "version": "1.8.1",
-  "platform": "1.8.*",
+  "version": "2.0.6",
+  "platform": "2.0.*",
   "title": "Web view",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
@@ -28,7 +28,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "In-app",
+        "extensionTitle": "Web View"
+      }
     },
     {
       "name": "web-view-external",

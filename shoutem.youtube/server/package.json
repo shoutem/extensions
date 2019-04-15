@@ -1,6 +1,6 @@
 {
   "name": "shoutem.youtube",
-  "version": "1.8.0",
+  "version": "2.0.2",
   "description": "Show a video gallery from Youtube channel, user or playlist",
   "scripts": {
     "clean": "rimraf ./build/*",
@@ -33,7 +33,7 @@
     "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
-    "@shoutem/redux-api-sdk": "^0.1.6",
+    "@shoutem/redux-api-sdk": "^1.1.7",
     "@shoutem/react-web-ui": "^0.6.1",
     "@shoutem/redux-composers": "0.1.5",
     "@shoutem/redux-io": "^2.2.0",

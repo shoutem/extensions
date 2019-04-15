@@ -1,9 +1,6 @@
 {
   "name": "shoutem.application",
-  "version": "1.8.1",
+  "version": "2.0.5",
   "private": true,
-  "main": "index.js",
-  "peerDependencies": {
-    "@shoutem/core": "*"
-  }
+  "main": "index.js"
 }

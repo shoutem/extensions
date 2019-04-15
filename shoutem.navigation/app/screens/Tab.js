@@ -1,27 +1,22 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import {
-  InteractionManager,
-} from 'react-native';
+import React, { PureComponent } from 'react';
+import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
 
-import {
-  ScreenStack,
-  isEmptyNavigationState,
-  navigateBack,
-} from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Screen } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { executeShortcut } from 'shoutem.application';
-import { ext } from '../const';
-import { getTabNavigationStack, getTabNavigationState } from '../redux';
 
-class Tab extends React.PureComponent {
+import { isEmptyNavigationState, navigateBack } from '../redux/core';
+import { ScreenStack } from '../components/stacks';
+import { NavigationBar } from '../components/ui';
+import { getTabNavigationStateFromTabBarState } from '../redux';
+import { ext } from '../const';
+
+class Tab extends PureComponent {
   static propTypes = {
     shortcut: PropTypes.object.isRequired,
-    navigationState: PropTypes.object,
     executeShortcut: PropTypes.func,
     navigateBack: PropTypes.func,
   };
@@ -43,9 +38,18 @@ class Tab extends React.PureComponent {
     });
   }
 
+  getTabNavigationState() {
+    const { tabStates, shortcut } = this.props;
+
+    return getTabNavigationStateFromTabBarState(tabStates, shortcut.id);
+  }
+
   render() {
-    const { navigationState, navigateBack } = this.props;
+    const { navigateBack } = this.props;
+
+    const navigationState = this.getTabNavigationState()
     let screenContent = null;
+
     if (!isEmptyNavigationState(navigationState) && this.state.shouldRenderContent) {
       screenContent = (
         <ScreenStack
@@ -64,9 +68,14 @@ class Tab extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state, { shortcut }) => ({
-  navigationState: getTabNavigationState(state, shortcut.id),
-});
+const mapStateToProps = (state) => {
+  const { tabStates } = state[ext()].tabBar;
+
+  return {
+    tabStates,
+  };
+};
+
 const mapDispatchToProps = { executeShortcut, navigateBack };
 
 export default connect(mapStateToProps, mapDispatchToProps)(connectStyle(ext('Tab'))(Tab));

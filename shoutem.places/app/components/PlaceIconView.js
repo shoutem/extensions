@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   TouchableOpacity,
   Caption,
@@ -16,7 +16,7 @@ import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
 
 const DEFAULT_IMAGE = require('../assets/data/no_image.png');
 
-export class PlaceIconView extends Component {
+export class PlaceIconView extends PureComponent {
   static propTypes = {
     place: PropTypes.object.isRequired,
     onPress: PropTypes.func,

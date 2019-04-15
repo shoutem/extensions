@@ -1,51 +1,81 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import _ from 'lodash';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
-import { navigateTo } from '@shoutem/core/navigation';
-import { isShortcutVisible } from 'shoutem.application';
+import { ext, getFirstShortcut } from 'shoutem.application';
 
+import { navigateTo } from '../redux/core';
 import NoScreens from '../screens/NoScreens';
 import NoContent from '../screens/NoContent';
-import mapIsRootScreenToProps from './mapIsRootScreenToProps';
 import mapExtensionSettingsToProps from './mapExtensionSettingsToProps';
 
 /**
  * Navigation shortcuts, such as Drawer, Folder, TabBar, must have child shortcuts.
  * Use it as a fallback for navigation screen if shortcuts (children) are missing.
  */
-function ShortcutChildrenRequired(props) {
-  const { WrappedComponent, shortcut, isRootScreen } = props;
+class ShortcutChildrenRequired extends PureComponent {
+  constructor(props) {
+    super(props);
 
-  // Folder screen may not be root screen and if it has no children
-  // we present error as there is no content.
-  const fallbackScreen = isRootScreen ? <NoScreens /> : <NoContent title={shortcut.title} />;
+    this.isRootScreen = props.firstShortcut === props.shortcut;
+  }
 
-  return _.isEmpty(shortcut.children) ?
-    fallbackScreen :
-    <WrappedComponent {...props} />;
+  isShortcutVisible(shortcutId) {
+    const { hiddenShortcuts } = this.props;
+
+    return !_.find(hiddenShortcuts, (id) => shortcutId === id);
+  }
+
+  render() {
+    const {
+      WrappedComponent,
+      shortcut,
+    } = this.props;
+
+    // Folder screen may not be root screen and if it has no children
+    // we present error as there is no content.
+    if (_.isEmpty(shortcut.children)) {
+      if (this.isRootScreen) {
+        return <NoScreens />;
+      }
+
+      return <NoContent title={shortcut.title} />;
+    }
+
+    const shortcutWithVisibleChildrenOnly = {
+      ...shortcut,
+      children: _.filter(shortcut.children, (s) => this.isShortcutVisible(s.id)),
+    };
+
+    return (
+      <WrappedComponent
+        {...this.props}
+        shortcut={shortcutWithVisibleChildrenOnly}
+      />
+    );
+  }
 }
 
 ShortcutChildrenRequired.propTypes = {
   shortcut: PropTypes.object.isRequired,
-  isRootScreen: PropTypes.bool,
+  firstShortcut: PropTypes.object,
+  hiddenShortcuts: PropTypes.array,
   WrappedComponent: PropTypes.func,
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  ...mapIsRootScreenToProps(state, ownProps),
-  ...mapExtensionSettingsToProps(state, ownProps),
-  shortcut: {
-    ...ownProps.shortcut,
-    children: _.filter(ownProps.shortcut.children, (s) => isShortcutVisible(state, s.id))
-  },
+const mapStateToProps = (state) => ({
+  firstShortcut: getFirstShortcut(state),
+  hiddenShortcuts: state[ext()].hiddenShortcuts,
+  ...mapExtensionSettingsToProps(state),
 });
 
+const mapDispatchToProps = {
+  navigateTo,
+};
+
 const ConnectedShortcutChildrenRequired =
-  connect(mapStateToProps, { navigateTo })(
-  ShortcutChildrenRequired
-);
+  connect(mapStateToProps, mapDispatchToProps)(ShortcutChildrenRequired);
 
 export default (WrappedComponent) => props =>
   <ConnectedShortcutChildrenRequired {...props} WrappedComponent={WrappedComponent} />;

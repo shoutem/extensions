@@ -9,7 +9,7 @@ import {
   getOne,
   getCollection,
 } from '@shoutem/redux-io';
-import { getActiveRoute } from '@shoutem/core/navigation';
+import { getActiveRoute } from 'shoutem.navigation';
 
 import configuration from './configuration.json';
 import {
@@ -21,7 +21,7 @@ import {
   SCREENS_SCHEMA,
   EXTENSIONS_SCHEMA,
 } from './const';
-import { preventStateRehydration } from '@shoutem/core/preventStateRehydration';
+import { preventStateRehydration } from 'shoutem.redux';
 
 // Because of chrome inspection bug we are exporting function as constants
 // Bug is we can not set breakpoint in files which export function directly
@@ -32,6 +32,14 @@ export const SET_ACTIVE_SHORTCUT = 'shoutem.application.SET_ACTIVE_SHORTCUT';
 export const HIDE_SHORTCUT = 'shoutem.application.HIDE_SHORTCUT';
 export const SHOW_SHORTCUT = 'shoutem.application.SHOW_SHORTCUT';
 export const SHOW_ALL_SHORTCUTS = 'shoutem.application.SHOW_ALL_SHORTCUTS';
+export const RESTART_APP = 'shoutem.application.RESTART_APP';
+
+export function restartApp() {
+  return {
+    type: RESTART_APP,
+  };
+}
+
 
 export function fetchConfiguration(appId) {
   return find(CONFIGURATION_SCHEMA, CONFIGURATION_TAG, { appId });

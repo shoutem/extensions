@@ -6,7 +6,7 @@ import {
   createNavigationReducer,
   setActiveNavigationStack,
   jumpToKey,
-} from '@shoutem/core/navigation';
+} from './core';
 
 import { ext } from '../const';
 
@@ -14,7 +14,7 @@ import { ext } from '../const';
 // Actions
 //
 
-export const JUMP_TO_INITIAL_TAB = 'shoutem.navigation.JUMP_TO_INITIAL_TAB';
+export const JUMP_TO_INITIAL_TAB = ext('JUMP_TO_INITIAL_TAB');
 
 // Jump to initial tab within the TabBar
 export const jumpToInitialTabBarTab = () => ({
@@ -38,18 +38,19 @@ export const getTabNavigationStack = (tabId) => {
   };
 };
 
-export const getTabNavigationStateFromTabBarState = (tabBarState, tabId) =>
-  tabBarState.tabStates[getTabNavigationStack(tabId).name];
+export const getTabNavigationStateFromTabBarState = (tabStates, tabId) => {
+  return tabStates[`${TAB_NAVIGATOR_PREFIX}${tabId}`];
+}
 
 export const getTabNavigationState = (state, tabId) =>
-  getTabNavigationStateFromTabBarState(state[ext()].tabBar, tabId);
+  getTabNavigationStateFromTabBarState(state[ext()].tabBar.tabStates, tabId);
 
 //
 // Middleware
 //
 
 const INITIAL_TAB_SHORTCUT_PATH = [
-  'shoutem.navigation',
+  ext(),
   'tabBar',
   'navigationState',
   'routes',

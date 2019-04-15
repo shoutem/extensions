@@ -1,5 +1,10 @@
 {
   "name": "shoutem.menu",
-  "version": "1.8.0",
-  "description": "List of food menu items with description"
+  "version": "2.0.2",
+  "description": "List of food menu items with description",
+  "dependencies": {
+    "@shoutem/ui": "~0.23.12",
+    "@shoutem/redux-io": "3.0.1-beta.3",
+    "@shoutem/theme": "~0.11.3"
+  }
 }

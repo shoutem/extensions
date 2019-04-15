@@ -1,6 +1,6 @@
 {
   "name": "shoutem.ical-events",
-  "version": "1.8.1",
+  "version": "2.0.3",
   "description": "Shoutem extension for managing iCal events",
   "scripts": {
     "clean": "rimraf ./build/*",
@@ -35,7 +35,7 @@
   "dependencies": {
     "@shoutem/extension-sandbox": "^0.1.4",
     "@shoutem/react-web-ui": "^0.5.1",
-    "@shoutem/redux-api-sdk": "^0.1.6",
+    "@shoutem/redux-api-sdk": "^1.1.7",
     "@shoutem/redux-composers": "^0.1.5",
     "@shoutem/redux-io": "^2.2.0",
     "@shoutem/redux-sync-state-engine": "^0.0.2",

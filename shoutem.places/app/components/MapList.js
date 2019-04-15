@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { LayoutAnimation } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
 import _ from 'lodash';
@@ -11,7 +11,7 @@ import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import PlaceIconView from '../components/PlaceIconView';
 
-export class MapList extends Component {
+export class MapList extends PureComponent {
 
   constructor(props) {
     super(props);

@@ -1,4 +1,4 @@
-import { closeModal, navigateTo, openInModal } from '@shoutem/core/navigation';
+import { closeModal, navigateTo, openInModal } from 'shoutem.navigation';
 
 import {
   ext,

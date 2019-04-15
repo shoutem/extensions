@@ -1,11 +1,8 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
-
-import _ from 'lodash';
-import moment from 'moment';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
+import _ from 'lodash';
 
 import {
   Caption,
@@ -18,17 +15,24 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-
-import { EmptyStateView } from '@shoutem/ui-addons';
-import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
+import { EmptyStateView } from '@shoutem/ui-addons';
 
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
 
-import { ext } from '../../const';
-import { refreshShippingMethods, selectShippingMethod } from '../../redux/actionCreators';
+import {
+  selectShippingMethod,
+  refreshShippingMethods,
+} from '../../redux/actionCreators';
+
+import {
+  shop as shopShape,
+  shippingMethods as shippingMethodsShape,
+} from '../../components/shapes';
+
 import CartFooter from '../../components/CartFooter';
-import { shippingMethods as shippingMethodsShape, shop as shopShape } from '../../components/shapes';
+import { ext } from '../../const';
 
 /*
  * Used to get a user friendly caption for delivery dates.
@@ -69,7 +73,7 @@ const { func } = PropTypes;
 /**
  * Lets the user select between one of the available shipping methods
  */
-class ShippingMethodScreen extends Component {
+class ShippingMethodScreen extends PureComponent {
   static propTypes = {
     // Refreshes available shipping methods each time this screen is loaded
     refreshShippingMethods: func.isRequired,
