@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -8,12 +8,11 @@ import {
   View,
 } from '@shoutem/ui';
 import {
-  connectAnimation,
   FadeIn,
   TimingDriver,
 } from '@shoutem/animation';
 
-class NavigationToolbar extends React.Component {
+class NavigationToolbar extends PureComponent {
   static PropTypes = {
     goForward: PropTypes.func,
     goBack: PropTypes.func,

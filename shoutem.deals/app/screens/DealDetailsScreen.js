@@ -1,9 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
   Linking,
@@ -14,7 +12,7 @@ import {
   Button,
   Caption,
   Divider,
-  Html,
+  SimpleHtml,
   Icon,
   Image,
   Overlay,
@@ -27,8 +25,7 @@ import {
   View,
   ShareButton,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
-import { isScreenActive } from '@shoutem/core/navigation';
+import { NavigationBar, isScreenActive } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
@@ -79,7 +76,7 @@ const formatDealDate = (dealDateStr) => {
   return dealDate.format('MMMM DD  • h:mm a');
 };
 
-export class DealDetailsScreen extends Component {
+export class DealDetailsScreen extends PureComponent {
 
   static propTypes = {
     activeCoupon: PropTypes.object,
@@ -487,7 +484,7 @@ export class DealDetailsScreen extends Component {
             {title}
           </Text>
         </Divider>
-        <Html body={description} />
+        <SimpleHtml body={description} />
       </View>
     );
   }

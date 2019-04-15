@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { LayoutAnimation } from 'react-native';
 import _ from 'lodash';
 
@@ -79,7 +79,7 @@ function getMarkersAndRegionFromEvents(data) {
   };
 }
 
-export default class EventsMap extends React.Component {
+export default class EventsMap extends PureComponent {
   static propTypes = {
     data: PropTypes.array.isRequired,
     style: PropTypes.object.isRequired,

@@ -1,6 +1,4 @@
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { connectStyle } from '@shoutem/theme';
@@ -12,7 +10,7 @@ import {
 
 import { ext } from '../const';
 
-export class DealFeaturedView extends Component {
+export class DealFeaturedView extends PureComponent {
 
   static propTypes = {
     deal: PropTypes.object,

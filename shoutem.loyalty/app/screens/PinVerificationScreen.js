@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import { Alert } from 'react-native';
+import React, { PureComponent } from 'react';
+import { Alert, Keyboard } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -8,26 +8,19 @@ import {
   Button,
   Screen,
   Subtitle,
-  Text,
   TextInput,
+  Text,
   View,
 } from '@shoutem/ui';
-
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
 
-import { ext } from '../const';
-import {
-  rewardShape,
-  placeShape,
-} from '../components/shapes';
-import {
-  authorizePointsByPin,
-  redeemReward,
-} from '../services';
+import { authorizePointsByPin, redeemReward } from '../services';
+import { rewardShape, placeShape } from '../components/shapes';
 import { verifyPin } from '../redux';
+import { ext } from '../const';
 
 const { bool, func } = PropTypes;
 
@@ -47,7 +40,7 @@ const onWrongPin = () => {
  * If the cashier wants to stamp a punch card or assign points to a loyalty card,
  * the screen takes him to the next step.
  */
-export class PinVerificationScreen extends React.Component {
+export class PinVerificationScreen extends PureComponent {
   static propTypes = {
     // Authorizes assigning points by PIN
     authorizePointsByPin: func,
@@ -91,6 +84,9 @@ export class PinVerificationScreen extends React.Component {
     const { pin } = this.state;
 
     const locationId = _.get(place, 'id');
+
+    // Weird Android behavior requires this kind of dismissal
+    Keyboard.dismiss();
 
     verifyPin(pin, locationId)
       .then(() => {

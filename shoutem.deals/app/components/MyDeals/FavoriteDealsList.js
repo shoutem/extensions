@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
@@ -11,10 +11,10 @@ import {
   isError,
   isInitialized,
 } from '@shoutem/redux-io';
-import { navigateTo } from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow, ListView, View } from '@shoutem/ui';
 import { EmptyStateView } from '@shoutem/ui-addons';
+import { navigateTo } from 'shoutem.navigation';
 import { CmsListScreen } from 'shoutem.cms';
 import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
@@ -26,7 +26,7 @@ import {
 } from '../../redux';
 import DealGridView from '../DealGridView';
 
-export class FavoriteDealsList extends Component {
+export class FavoriteDealsList extends PureComponent {
 
   static propTypes = {
     data: PropTypes.array.isRequired,

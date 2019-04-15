@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import {
   TouchableOpacity,
@@ -22,7 +22,7 @@ const { func } = PropTypes;
 /**
  * Renders a single reward, in a list of rewards for places.
  */
-export class RewardMediumListView extends Component {
+export class RewardMediumListView extends PureComponent {
   static propTypes = {
     // The reward
     reward: rewardShape.isRequired,

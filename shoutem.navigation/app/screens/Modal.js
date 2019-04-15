@@ -5,12 +5,6 @@ import React, {
 
 import { connect } from 'react-redux';
 
-import {
-  ScreenStack,
-  navigateBack,
-  closeModal,
-} from '@shoutem/core/navigation';
-
 import { connectStyle } from '@shoutem/theme';
 
 import {
@@ -20,8 +14,13 @@ import {
   Icon,
 } from '@shoutem/ui';
 
-import { ChildNavigationBar } from '@shoutem/ui/navigation';
+import { ChildNavigationBar } from '../components/ui';
 
+import { ScreenStack } from '../components/stacks';
+import {
+  navigateBack,
+  closeModal,
+} from '../redux/core';
 import { ext } from '../const';
 
 class Modal extends PureComponent {
@@ -33,7 +32,7 @@ class Modal extends PureComponent {
 
     // Our Modal screen automatically adds a left navigation bar
     // component that fires closeModal action. Setting this props allows
-    // us to override this, and use the navBar components defined within the 
+    // us to override this, and use the navBar components defined within the
     // screen/component that is being opened within our Modal screen
     customNavigationBar: PropTypes.bool,
   };

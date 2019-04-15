@@ -1,13 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Linking, Platform } from 'react-native';
+
 import {
   View,
   Screen,
   TouchableOpacity,
   Icon,
 } from '@shoutem/ui';
-import { Linking, Platform } from 'react-native';
-import { NavigationBar } from '@shoutem/ui/navigation';
+
+import { NavigationBar } from 'shoutem.navigation';
+
 import MapList from '../components/MapList';
 
 export default class SinglePlaceMap extends PureComponent {
@@ -18,6 +21,7 @@ export default class SinglePlaceMap extends PureComponent {
 
   constructor(props) {
     super(props);
+
     this.openMapLink = this.openMapLink.bind(this);
     this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(this);
   }

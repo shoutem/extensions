@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
@@ -33,7 +31,7 @@ import {
 import PlaceRewardIcon from './PlaceRewardIcon';
 import GaugeProgressBar from './GaugeProgressBar';
 
-export class RewardsGaugeProgressBar extends Component {
+export class RewardsGaugeProgressBar extends PureComponent {
 
   static propTypes = {
     isRefreshingPoints: PropTypes.bool,

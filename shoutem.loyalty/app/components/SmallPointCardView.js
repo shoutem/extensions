@@ -1,6 +1,4 @@
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import QRCode from 'react-native-qrcode';
 
 import {
@@ -17,7 +15,7 @@ import { ext } from '../const';
 /**
  * Renders a small point card
  */
-class SmallPointCardView extends Component {
+class SmallPointCardView extends PureComponent {
   static defaultProps = {
     onPress: () => {},
   };

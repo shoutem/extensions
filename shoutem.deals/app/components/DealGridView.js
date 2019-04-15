@@ -1,6 +1,4 @@
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
@@ -31,7 +29,7 @@ import {
 
 import DealImage from './DealImage';
 
-export class DealGridView extends Component {
+export class DealGridView extends PureComponent {
 
   static propTypes = {
     activeCoupon: PropTypes.object,

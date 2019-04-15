@@ -1,6 +1,4 @@
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import moment from 'moment';
 
@@ -28,7 +26,7 @@ const PLUS_ICON = require('../assets/icons/plus.png');
 /**
  * A points card transaction item, used to display transaction history
  */
-class TransactionItem extends Component {
+class TransactionItem extends PureComponent {
   static propTypes = {
     // The transaction
     transaction: transactionShape.isRequired,

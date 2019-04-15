@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import { Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode';
 
-import { navigateTo } from '@shoutem/core/navigation';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import {
   Button,
   Screen,
@@ -14,7 +14,6 @@ import {
   View,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
 import {
   loginRequired,
@@ -61,7 +60,7 @@ const getEncodedRewardValues = (reward) => {
 /**
  * Shows points card details for a single card loyalty program
  */
-export class VerificationScreen extends React.Component {
+export class VerificationScreen extends PureComponent {
   static propTypes = {
     // User's loyalty card ID
     cardId: string,

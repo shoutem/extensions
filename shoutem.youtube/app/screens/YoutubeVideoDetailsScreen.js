@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
   AppState,
@@ -15,14 +15,14 @@ import {
   Caption,
   Tile,
   View,
-  Html,
+  SimpleHtml,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { NavigationBar } from 'shoutem.navigation';
 
 import { ext } from '../const';
 
-class YoutubeVideoDetailsScreen extends React.Component {
+class YoutubeVideoDetailsScreen extends PureComponent {
   static propTypes = {
     video: PropTypes.object,
   };
@@ -89,7 +89,7 @@ class YoutubeVideoDetailsScreen extends React.Component {
             <Caption>{moment(publishedAt).fromNow()}</Caption>
           </Tile>
           <View styleName="solid">
-            <Html body={descriptionSource} />
+            <SimpleHtml body={descriptionSource} />
           </View>
         </ScrollView>
       </Screen>

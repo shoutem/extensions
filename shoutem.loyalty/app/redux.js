@@ -9,7 +9,7 @@ import {
   storage,
   resource,
  } from '@shoutem/redux-io';
-import { preventStateRehydration } from '@shoutem/core/preventStateRehydration';
+import { preventStateRehydration } from 'shoutem.redux';
 
 import { getAppId } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';

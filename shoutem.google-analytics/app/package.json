@@ -1,13 +1,11 @@
 {
   "name": "shoutem.google-analytics",
-  "version": "1.8.0",
+  "version": "2.0.4",
   "private": true,
   "main": "index.js",
   "dependencies": {
-    "react-native-google-analytics-bridge": "shoutem/react-native-google-analytics-bridge#023b757e59ba46add87ce58e4af83de63eabb1b7"
-  },
-  "peerDependencies": {
-    "@shoutem/core": "*"
+    "react-native-google-analytics-bridge": "shoutem/react-native-google-analytics-bridge#023b757e59ba46add87ce58e4af83de63eabb1b7",
+    "@shoutem/redux-io": "3.0.1-beta.3"
   },
   "rnpm": {
     "commands": {

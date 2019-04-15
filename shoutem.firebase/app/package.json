@@ -1,6 +1,6 @@
 {
   "name": "shoutem.firebase",
-  "version": "1.8.0",
+  "version": "2.0.3",
   "description": "Firebase SDK bridge",
   "dependencies": {
     "request": "2.79.0",
@@ -8,9 +8,6 @@
     "xcode": "0.8.9",
     "lodash": "^4.17.2",
     "urijs": "1.18.5"
-  },
-  "peerDependencies": {
-    "@shoutem/core": "*"
   },
   "rnpm": {
     "commands": {

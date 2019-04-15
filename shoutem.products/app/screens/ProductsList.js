@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { navigateTo as navigateToAction } from '@shoutem/core/navigation';
+import { navigateTo as navigateToAction } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { openURL as openURLAction } from 'shoutem.web-view';
 

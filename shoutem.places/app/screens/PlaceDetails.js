@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import {
   ScrollView,
@@ -16,22 +16,21 @@ import {
   Tile,
   Screen,
   Button,
-  Html,
+  SimpleHtml,
 } from '@shoutem/ui';
 import {
   Linking,
   Platform,
 } from 'react-native';
 import { InlineMap } from '@shoutem/ui-addons';
-import { navigateTo } from '@shoutem/core/navigation';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Favorite } from 'shoutem.favorites';
 import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
-export class PlaceDetails extends Component {
+export class PlaceDetails extends PureComponent {
   static propTypes = {
     place: PropTypes.object.isRequired,
     openURL: PropTypes.func,
@@ -182,7 +181,7 @@ export class PlaceDetails extends Component {
           <Divider styleName="section-header">
             <Caption>{I18n.t('shoutem.cms.descriptionTitle')}</Caption>
           </Divider>
-          <Html body={place.description} />
+          <SimpleHtml body={place.description} />
           <Divider styleName="line" />
         </Tile>
       );

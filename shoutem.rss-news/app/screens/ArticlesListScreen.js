@@ -3,9 +3,9 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo as navigateToAction } from '@shoutem/core/navigation';
 import { find, next } from '@shoutem/redux-io';
 
+import { navigateTo as navigateToAction } from 'shoutem.navigation';
 import { RssListScreen, getLeadImageUrl } from 'shoutem.rss';
 import { ListArticleView } from 'shoutem.news';
 

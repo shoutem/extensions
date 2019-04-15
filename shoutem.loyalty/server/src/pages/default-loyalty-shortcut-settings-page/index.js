@@ -1,0 +1,2 @@
+import DefaultLoyaltyShortcutSettingsPage from './DefaultLoyaltyShortcutSettingsPage';
+export default DefaultLoyaltyShortcutSettingsPage;

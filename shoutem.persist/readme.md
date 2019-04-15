@@ -9,7 +9,7 @@ want to persist data you have to handle `rehydrate` action specifically for the 
 Best way is to either implement `rehydrate` case in reducer or wrap you reducer with HOC
 that will handle it for you. 
 
-For example, you can use `preventStateRehydration` from `@shoutem/core`, to not restore
+For example, you can use `preventStateRehydration` from `shoutem.redux`, to not restore
 data from specific [combineReducer](http://redux.js.org/docs/api/combineReducers.html).
 
 HOC (`preventStateRehydration`) definition

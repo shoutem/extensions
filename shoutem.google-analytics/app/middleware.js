@@ -1,4 +1,4 @@
-import { setPriority } from '@shoutem/core/middlewareUtils';
+import { setPriority } from 'shoutem-core';
 
 import {
   createScreenViewMiddleware,

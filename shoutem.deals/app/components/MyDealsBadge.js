@@ -1,6 +1,4 @@
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { connectStyle } from '@shoutem/theme';
@@ -14,7 +12,7 @@ import { ext } from '../const';
 // Assets
 import myDealsImage from '../assets/images/my-coupons.png';
 
-export class MyDealsBadge extends Component {
+export class MyDealsBadge extends PureComponent {
 
   static propTypes = {
     onPress: PropTypes.func,

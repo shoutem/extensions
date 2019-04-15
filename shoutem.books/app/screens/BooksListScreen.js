@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { navigateTo } from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
+import { navigateTo } from 'shoutem.navigation';
 import { CmsListScreen } from 'shoutem.cms';
 import { isFavoritesSchema, getFavoriteCollection } from 'shoutem.favorites';
 

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 
 import {
   Image,
@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
 } from '@shoutem/ui';
 
-export default class ListPeopleView extends React.Component {
+export default class ListPeopleView extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     person: PropTypes.object.isRequired,

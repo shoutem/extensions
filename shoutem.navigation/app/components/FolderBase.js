@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 
 import {
@@ -9,14 +9,11 @@ import {
   Device,
 } from '@shoutem/ui';
 
-import {
-  Scaler,
-} from '../helpers';
-
+import { Scaler } from '../helpers';
 import {
   NAVIGATION_HEADER_HEIGHT,
   IPHONE_X_NOTCH_PADDING,
-  IPHONE_X_HOME_INDICATOR_PADDING,
+  IPHONE_XR_NOTCH_PADDING,
 } from '../const';
 
 const defaultResolution = {
@@ -51,7 +48,7 @@ const defaultResolution = {
  * Required props
  *  executeShortcut {redux action}
  */
-export default class FolderBase extends React.PureComponent {
+export default class FolderBase extends PureComponent {
   static propTypes = {
     isRootScreen: PropTypes.bool,
     shortcut: PropTypes.object.isRequired,
@@ -178,6 +175,7 @@ export default class FolderBase extends React.PureComponent {
 
     const navBarPadding = Device.select({
       iPhoneX: navigationBarImage ? (NAVIGATION_HEADER_HEIGHT + IPHONE_X_NOTCH_PADDING) : 0,
+      iPhoneXR: navigationBarImage ? (NAVIGATION_HEADER_HEIGHT + IPHONE_XR_NOTCH_PADDING) : 0,
       default: navigationBarImage ? NAVIGATION_HEADER_HEIGHT : 0,
     });
 

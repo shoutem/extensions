@@ -1,23 +1,25 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 
-import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   ImageBackground,
+  ScrollView,
   Divider,
   Subtitle,
   Overlay,
   Title,
   Text,
   Tile,
-  ScrollView,
   View,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { connectStyle } from '@shoutem/theme';
+
+import { NavigationBar } from 'shoutem.navigation';
+
 import { ext } from '../const';
 
-class MenuDetailsScreen extends React.Component {
+class MenuDetailsScreen extends PureComponent {
   static propTypes = {
     item: PropTypes.object.isRequired,
   };
@@ -26,7 +28,7 @@ class MenuDetailsScreen extends React.Component {
     const { item } = this.props;
 
     const price = item.price ? (
-      <Overlay style={{ backgroundColor: 'white' }}>
+      <Overlay>
         <Subtitle styleName="sm-gutter-horizontal">{item.price}</Subtitle>
       </Overlay>) : null;
 
@@ -49,7 +51,7 @@ class MenuDetailsScreen extends React.Component {
             </Tile>
           </ImageBackground>
           <Divider styleName="line" />
-          <View style={{ backgroundColor: 'white' }}>
+          <View>
             <Text styleName="multiline md-gutter-horizontal lg-gutter-vertical">
               {item.description}
             </Text>

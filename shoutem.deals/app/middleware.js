@@ -6,7 +6,7 @@ import {
   RSAA,
 } from 'redux-api-middleware';
 
-import { priorities, setPriority, before } from '@shoutem/core/middlewareUtils';
+import { priorities, setPriority, before } from 'shoutem-core';
 import { getExtensionSettings } from 'shoutem.application';
 import { getAccessToken } from 'shoutem.auth';
 

@@ -1,9 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -13,7 +11,7 @@ import {
 
 import { formatTwoDigitNumber, getTimeLeft } from '../services';
 
-export default class DealRedeemTimer extends Component {
+export default class DealRedeemTimer extends PureComponent {
 
   static propTypes = {
     deal: PropTypes.object,

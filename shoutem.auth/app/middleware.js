@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import URI from 'urijs';
 
 import { UPDATE_SUCCESS } from '@shoutem/redux-io';
-
+import { RESTART_APP } from 'shoutem.application';
 import {
   isEmptyRoute,
   isNavigationAction,
@@ -16,11 +16,9 @@ import {
   navigateBack,
   rewrite,
   REPLACE,
-} from '@shoutem/core/navigation';
+} from 'shoutem.navigation';
 
-import { priorities, setPriority, before } from '@shoutem/core/middlewareUtils';
-
-import { RESTART_APP } from '@shoutem/core/coreRedux';
+import { priorities, setPriority, before } from 'shoutem-core';
 import { getExtensionSettings } from 'shoutem.application';
 
 import { ext } from './const';

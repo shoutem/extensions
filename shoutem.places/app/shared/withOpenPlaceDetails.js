@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { ext } from '../const';
 
 /**
@@ -15,7 +15,7 @@ import { ext } from '../const';
  * @returns {object} Wrapped component
  */
 export default function withOpenPlaceDetails(RowComponent, prop = 'onPress') {
-  class EnhancedComponent extends Component {
+  class EnhancedComponent extends PureComponent {
     constructor(props) {
       super(props);
       this.openPlaceDetailsScreen = this.openPlaceDetailsScreen.bind(this);

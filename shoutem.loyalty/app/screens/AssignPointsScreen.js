@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 
 import { connect } from 'react-redux';
@@ -22,10 +22,9 @@ import {
   invalidate,
 } from '@shoutem/redux-io';
 
-import { navigateTo } from '@shoutem/core/navigation';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { getExtensionSettings } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { getUser } from 'shoutem.auth';
@@ -47,7 +46,7 @@ const { arrayOf, bool, func, string } = PropTypes;
  * The user can get loyalty points for visits or purchases. The server calculates points based
  * on transaction details and rules defined for the program.
  */
-export class AssignPointsScreen extends React.Component {
+export class AssignPointsScreen extends PureComponent {
   static propTypes = {
     // Collects points for activity
     collectPoints: func,

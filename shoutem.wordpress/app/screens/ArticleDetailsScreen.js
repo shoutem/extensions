@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { Dimensions } from 'react-native';
-import * as _ from 'lodash';
 import moment from 'moment';
+import _ from 'lodash';
 
-import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   ScrollView,
@@ -15,20 +14,17 @@ import {
   Icon,
   ImageBackground,
   ImageGallery,
+  SimpleHtml,
 } from '@shoutem/ui';
-import {
-  NavigationBar,
-} from '@shoutem/ui/navigation';
+import { connectStyle } from '@shoutem/theme';
 
-import {
-  RichMedia,
-} from '@shoutem/ui-addons';
 import { NextArticle } from 'shoutem.news';
+import { NavigationBar } from 'shoutem.navigation';
 
+import { getLeadImageUrl, resolveArticleTitle } from '../services';
 import { ext } from '../const';
-import { getLeadImageUrl } from '../services';
 
-export class ArticleDetailsScreen extends React.PureComponent {
+export class ArticleDetailsScreen extends PureComponent {
   static propTypes = {
     // The news article to display
     article: PropTypes.object.isRequired,
@@ -63,10 +59,13 @@ export class ArticleDetailsScreen extends React.PureComponent {
 
   renderInlineGallery() {
     const { article, showInlineGallery } = this.props;
+
     if (!showInlineGallery) {
       return null;
     }
+
     const images = _.map(article.wp.attachments.href, 'url');
+
     return (
       <ImageGallery sources={images} height={300} width={Dimensions.get('window').width} />
     );
@@ -74,13 +73,17 @@ export class ArticleDetailsScreen extends React.PureComponent {
 
   render() {
     const { article } = this.props;
+
     const articleImageUrl = getLeadImageUrl(article);
     const momentDate = moment(article.modified);
+
     const dateInfo = momentDate.isAfter(0) ? (
       <Caption styleName="md-gutter-left">
         {momentDate.fromNow()}
       </Caption>
     ) : null;
+
+    const resolvedTitle = resolveArticleTitle(article.title.rendered);
 
     return (
       <Screen styleName="full-screen paper">
@@ -89,7 +92,7 @@ export class ArticleDetailsScreen extends React.PureComponent {
           animationName="solidify"
           title={article.title.rendered}
           share={{
-            title: article.title.rendered,
+            title: resolvedTitle,
             link: article.link,
           }}
         />
@@ -100,7 +103,7 @@ export class ArticleDetailsScreen extends React.PureComponent {
             animationName="hero"
           >
             <Tile animationName="hero">
-              <Title styleName="centered">{article.title.rendered.toUpperCase()}</Title>
+              <Title styleName="centered">{resolvedTitle.toUpperCase()}</Title>
               <View styleName="horizontal collapsed" virtual>
                 <Caption numberOfLines={1} styleName="collapsible">{article.author}</Caption>
                 {dateInfo}
@@ -109,9 +112,7 @@ export class ArticleDetailsScreen extends React.PureComponent {
             </Tile>
           </ImageBackground>
           <View styleName="solid">
-            <RichMedia
-              body={article.content.rendered}
-            />
+            <SimpleHtml body={article.content.rendered} />
             {this.renderInlineGallery()}
             {this.renderUpNext()}
           </View>

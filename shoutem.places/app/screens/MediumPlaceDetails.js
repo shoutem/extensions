@@ -11,8 +11,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo } from '@shoutem/core/navigation';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { Favorite } from 'shoutem.favorites';
 import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';

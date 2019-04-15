@@ -1,23 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
-import {
-  StatusBar,
-  Platform,
-} from 'react-native';
+import { StatusBar, Platform } from 'react-native';
+import _ from 'lodash';
 
 import {
   ImageGallery,
   Screen,
   ImageGalleryOverlay,
 } from '@shoutem/ui';
-
-import {
-  NavigationBar,
-} from '@shoutem/ui/navigation';
-
 import { connectStyle } from '@shoutem/theme';
-import _ from 'lodash';
+
+import { NavigationBar } from 'shoutem.navigation';
 
 import { ext } from '../const';
 

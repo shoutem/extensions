@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 
 import { CmsListScreen } from 'shoutem.cms';

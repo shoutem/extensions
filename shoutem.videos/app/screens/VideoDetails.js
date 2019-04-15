@@ -10,11 +10,11 @@ import {
   Video,
   Screen,
   Caption,
-  Html,
+  SimpleHtml,
   Tile,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { NavigationBar } from 'shoutem.navigation';
 
 import { ext } from '../const';
 
@@ -79,7 +79,7 @@ class VideoDetails extends PureComponent {
             </Caption>
           </Tile>
 
-          <Html body={video.description} />
+          <SimpleHtml body={video.description} />
         </ScrollView>
       </Screen>
     );

@@ -1,8 +1,8 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "1.8.2",
-  "platform": "1.8.*",
+  "version": "2.0.1",
+  "platform": "2.0.*",
   "description": "Let members create posts, comment and like them",
   "categories": [
     "users"

@@ -1,7 +1,7 @@
 {
   "name": "page",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.1",
+  "platform": "2.0.*",
   "title": "Page",
   "description": "Show a single screen with info and child items",
   "icon": "server/assets/add-page-image.png",
@@ -34,7 +34,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "Page",
+        "extensionTitle": "Page"
+      }
     }
   ],
   "screens": [

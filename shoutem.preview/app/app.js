@@ -1,7 +1,7 @@
 import { Linking } from 'react-native';
-import { RESTART_APP } from '@shoutem/core/coreRedux';
 
 import {
+  RESTART_APP,
   openInitialScreen,
   actions,
   isProduction,

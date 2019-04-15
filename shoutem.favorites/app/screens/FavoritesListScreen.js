@@ -1,23 +1,20 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { getCollection } from '@shoutem/redux-io';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import React, { PureComponent } from 'react';
 import { LayoutAnimation } from 'react-native';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
-import {
-  Screen,
-  ListView,
-  Spinner,
-} from '@shoutem/ui';
+
+import { getCollection } from '@shoutem/redux-io';
 import { EmptyStateView } from '@shoutem/ui-addons';
+import { Screen, ListView, Spinner } from '@shoutem/ui';
+
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation'
 
 import { getFavoriteCollection, fetchFavoritesData } from '../helpers';
-import { I18n } from 'shoutem.i18n';
-
 import { ext } from '../const';
 
-export class FavoritesListScreen extends Component {
+export class FavoritesListScreen extends PureComponent {
   static propTypes = {
     title: PropTypes.string,
     favorites: PropTypes.array,

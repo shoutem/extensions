@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connectStyle } from '@shoutem/theme';
 import { Screen } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { NavigationBar } from '../components/ui';
 import { EmptyStateView } from '@shoutem/ui-addons';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';

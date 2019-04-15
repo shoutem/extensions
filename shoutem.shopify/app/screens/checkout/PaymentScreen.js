@@ -1,11 +1,7 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
-
+import React, { PureComponent } from 'react';
 import { Alert } from 'react-native';
 import { connect } from 'react-redux';
-
 import _ from 'lodash';
 
 import {
@@ -18,16 +14,15 @@ import {
   TextInput,
   View,
 } from '@shoutem/ui';
-
-import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
 
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
 
-import { ext } from '../../const';
 import CartFooter from '../../components/CartFooter';
 import { payment as paymentShape } from '../../components/shapes';
 import { completeCheckout } from '../../redux/actionCreators';
+import { ext } from '../../const';
 
 const { func } = PropTypes;
 
@@ -36,7 +31,7 @@ const renderProcessingPaymentMessage = () => <Spinner styleName="xl-gutter-top" 
 /**
  * Lets the user enter his credit card details and complete the checkout.
  */
-class PaymentScreen extends Component {
+class PaymentScreen extends PureComponent {
   static propTypes = {
     // Dispatched when the user tries to make a payment
     completeCheckout: func,
@@ -46,8 +41,10 @@ class PaymentScreen extends Component {
 
   constructor(props) {
     super(props);
+
     this.completeCheckout = this.completeCheckout.bind(this);
     this.renderInput = this.renderInput.bind(this);
+
     this.fields = [{
       name: 'number',
       label: 'Card number',

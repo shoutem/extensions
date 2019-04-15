@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode';
 
@@ -13,9 +13,10 @@ import {
  } from '@shoutem/redux-io';
 
 import {
+  NavigationBar,
   navigateTo,
   openInModal,
- } from '@shoutem/core/navigation';
+ } from 'shoutem.navigation';
 
 import {
   Button,
@@ -31,7 +32,6 @@ import {
 } from '@shoutem/ui';
 
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
 import {
   getUser,
@@ -74,7 +74,7 @@ const { arrayOf, bool, func, number, shape, string, object } = PropTypes;
 /**
  * Shows points card details for a single card loyalty program
  */
-export class PointsCardScreen extends React.Component {
+export class PointsCardScreen extends PureComponent {
   static propTypes = {
     // Assigns points to card when the user scans a bar code
     authorizeTransactionByBarCode: func.isRequired,

@@ -1,5 +1,4 @@
-import { createNavigationReducer } from '@shoutem/core/navigation';
-
+import { createNavigationReducer } from './core';
 import { ext } from '../const';
 
 export const DRAWER_NAVIGATION_STACK = {

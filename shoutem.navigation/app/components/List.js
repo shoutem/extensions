@@ -9,10 +9,10 @@ import { connectStyle } from '@shoutem/theme';
 import {
   LIST,
   ext,
-  IPHONE_X_HOME_INDICATOR_PADDING,
   IPHONE_X_NOTCH_PADDING,
+  IPHONE_XR_NOTCH_PADDING,
+  IPHONE_X_HOME_INDICATOR_PADDING,
   NAVIGATION_HEADER_HEIGHT,
-  TAB_BAR_ITEM_HEIGHT,
 } from '../const';
 import { isTabBarNavigation, resolveScrollViewProps } from '../helpers';
 import ListItem from './ListItem';
@@ -34,12 +34,23 @@ class List extends FolderBase {
   resolvePageProps() {
     const { topOffset, listAlignment } = this.getLayoutSettings();
     const { dimensions: { height } } = this.state;
-    const { style } = this.props;
+    const { style, navigationBarImage, isTabBar } = this.props;
+
+    const navBarHeight = Device.select({
+      iPhoneX: navigationBarImage ? (NAVIGATION_HEADER_HEIGHT + IPHONE_X_NOTCH_PADDING) : 0,
+      iPhoneXR: navigationBarImage ? (NAVIGATION_HEADER_HEIGHT + IPHONE_XR_NOTCH_PADDING) : 0,
+      default: navigationBarImage ? NAVIGATION_HEADER_HEIGHT : 0,
+    });
+    const homeBarHeight = Device.select({
+      iPhoneX: IPHONE_X_HOME_INDICATOR_PADDING,
+      iPhoneXR: IPHONE_X_HOME_INDICATOR_PADDING,
+      default: 0,
+    });
 
     return {
       style: {
         paddingTop: dimensionRelativeToIphone(topOffset),
-        minHeight: height,
+        minHeight: height - homeBarHeight - navBarHeight,
         ...style.page,
       },
       styleName: listAlignment,

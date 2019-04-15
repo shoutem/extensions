@@ -1,5 +1,10 @@
 {
   "name": "shoutem.rss-videos",
-  "version": "1.8.0",
-  "description": "RSS Videos"
+  "version": "2.0.1",
+  "description": "RSS Videos",
+  "dependencies": {
+    "@shoutem/ui": "~0.23.12",
+    "@shoutem/redux-io": "3.0.1-beta.3",
+    "@shoutem/theme": "~0.11.3"
+  }
 }

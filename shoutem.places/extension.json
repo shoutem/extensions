@@ -1,7 +1,7 @@
 {
   "name": "places",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.2",
+  "platform": "2.0.*",
   "title": "Places",
   "description": "Show items with location on list or map",
   "icon": "./server/assets/images/add-places-image.png",
@@ -17,10 +17,6 @@
       "name": "places-shortcut",
       "title": "Places",
       "screen": "@.PlacesListScreen",
-      "settings": {
-        "sortField": "location",
-        "sortOrder": "ascending"
-      },
       "icon": "theme://address-full.png",
       "adminPages": [
         {
@@ -34,7 +30,13 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "extensionTitle": "Places",
+        "defaultShortcutTitle": "Places",
+        "sortField": "location",
+        "sortOrder": "ascending"
+      }
     },
     {
       "title": "My Places",
@@ -42,17 +44,19 @@
       "name": "FavoritesList",
       "icon": "theme://add-to-favorites-full.png",
       "screen": "@.FavoritesList",
-      "settings": {
-        "favoritesSchemas": [
-          "@.places"
-        ]
-      },
       "adminPages": [
         {
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "extensionTitle": "Places",
+        "defaultShortcutTitle": "My Places",
+        "favoritesSchemas": [
+          "@.places"
+        ]
+      }
     }
   ],
   "screens": [

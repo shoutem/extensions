@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import { Platform } from 'react-native';
 
@@ -22,11 +20,10 @@ import {
 
 import { EmptyStateView, SearchField } from '@shoutem/ui-addons';
 
-import { NavigationBar } from '@shoutem/ui/navigation';
-
 import {
+  NavigationBar,
   navigateBack,
-} from '@shoutem/core/navigation';
+} from 'shoutem.navigation';
 
 import { connectStyle } from '@shoutem/theme';
 
@@ -48,7 +45,7 @@ const renderCancelButton = onPress => (
   </Button>
 );
 
-class SearchProductsScreen extends Component {
+class SearchProductsScreen extends PureComponent {
   static propTypes = {
     // Called when the user cancels the search
     navigateBack: func,

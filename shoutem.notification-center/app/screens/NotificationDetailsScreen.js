@@ -1,30 +1,29 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { connectStyle } from '@shoutem/theme';
 
 import {
   ScrollView,
   Screen,
   Title,
   Caption,
-  Html,
+  SimpleHtml,
   View,
   Button,
   Text,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { connectStyle } from '@shoutem/theme';
 
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
 
 import { formatTimestamp } from '../shared/calendar';
-import { ext } from '../const';
-
 import { notificationShape } from '../components/shapes';
+import { ext } from '../const';
 
 const { func } = PropTypes;
 
-export class NotificationDetailsScreen extends Component {
+export class NotificationDetailsScreen extends PureComponent {
   static propTypes = {
     // The notification
     notification: notificationShape.isRequired,
@@ -69,7 +68,7 @@ export class NotificationDetailsScreen extends Component {
         <Caption styleName="xl-gutter-bottom">
           {formatTimestamp(timestamp)}
         </Caption>
-        <Html body={summary} />
+        <SimpleHtml body={summary} />
         {action && this.renderViewNotificationButton()}
       </View>
     );

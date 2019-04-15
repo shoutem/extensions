@@ -1,6 +1,6 @@
 {
   "name": "shoutem.i18n",
-  "version": "1.8.1",
+  "version": "2.0.1",
   "description": "Configure the language and regional settings of your app.",
   "scripts": {
     "clean": "rimraf ./build/*",
@@ -36,7 +36,7 @@
     "@shoutem/assets-sdk": "0.0.2-beta.1",
     "@shoutem/extension-sandbox": "^0.1.4",
     "@shoutem/react-web-ui": "^0.9.1",
-    "@shoutem/redux-api-sdk": "1.1.2",
+    "@shoutem/redux-api-sdk": "1.1.7",
     "@shoutem/redux-composers": "^0.1.5",
     "@shoutem/redux-io": "^2.3.0",
     "@shoutem/redux-sync-state-engine": "^0.0.2",

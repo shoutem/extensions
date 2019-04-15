@@ -6,14 +6,7 @@ import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { Device } from '@shoutem/ui';
 
-import {
-  CARD_LIST,
-  ext,
-  IPHONE_X_HOME_INDICATOR_PADDING,
-  IPHONE_X_NOTCH_PADDING,
-  NAVIGATION_HEADER_HEIGHT,
-  TAB_BAR_ITEM_HEIGHT,
-} from '../const';
+import { CARD_LIST } from '../const';
 import { isTabBarNavigation, resolveScrollViewProps } from '../helpers';
 import CardListItem from './CardListItem';
 import FolderBase from './FolderBase';

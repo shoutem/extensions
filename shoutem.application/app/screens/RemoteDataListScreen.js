@@ -12,7 +12,7 @@ import {
 
 import {
   NavigationBar,
-} from '@shoutem/ui/navigation';
+} from 'shoutem.navigation';
 
 import {
   EmptyStateView,

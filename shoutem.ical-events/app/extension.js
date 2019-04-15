@@ -9,13 +9,15 @@ import EventsScreen from './screens/EventsScreen';
 import EventsFeaturedListScreen from './screens/EventsFeaturedListScreen';
 import EventsListScreen from './screens/EventsListScreen';
 import EventDetailsScreen from './screens/EventDetailsScreen';
+import EventDetailsScreenWithTransparentNavbar from './screens/EventDetailsScreenWithTransparentNavbar';
 
 export const screens = {
   EventsFeaturedGridScreen,
   EventsScreen,
   EventsFeaturedListScreen,
   EventsListScreen,
-  EventDetailsScreen
+  EventDetailsScreen,
+  EventDetailsScreenWithTransparentNavbar
 };
 
 export const themes = {

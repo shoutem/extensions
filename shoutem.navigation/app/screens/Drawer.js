@@ -1,21 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import {
-  Dimensions,
-  ScrollView,
-  Animated,
-} from 'react-native';
+import React, { PureComponent } from 'react';
+import { Dimensions, ScrollView, Animated } from 'react-native';
 import { connect } from 'react-redux';
+import SideMenu from 'react-native-side-menu';
 import _ from 'lodash';
 
-import {
-  ScreenStack,
-  navigateBack,
-  setActiveNavigationStack,
-  RESET_TO_ROUTE,
-} from '@shoutem/core/navigation';
-
 import { connectStyle } from '@shoutem/theme';
+import { Screen, Button, Icon, View } from '@shoutem/ui';
 
 import {
   executeShortcut,
@@ -23,27 +14,21 @@ import {
   isShortcutVisible,
 } from 'shoutem.application';
 
+import {
+  navigateBack,
+  setActiveNavigationStack,
+  RESET_TO_ROUTE,
+} from '../redux/core';
 import DrawerItem from '../components/DrawerItem';
-import { ext } from '../const';
+import { ScreenStack } from '../components/stacks';
+import { ChildNavigationBar } from '../components/ui';
 import { DRAWER_NAVIGATION_STACK } from '../redux';
-
-import {
-  Screen,
-  Button,
-  Icon,
-  View,
-} from '@shoutem/ui';
-
-import {
-  ChildNavigationBar,
-} from '@shoutem/ui/navigation';
-
-import SideMenu from 'react-native-side-menu';
 import { shortcutChildrenRequired } from '../helpers';
+import { ext } from '../const';
 
 const { width: windowWidth } = Dimensions.get('window');
 
-export class Drawer extends Component {
+export class Drawer extends PureComponent {
   static propTypes = {
     // Server props
     shortcut: PropTypes.object.isRequired,

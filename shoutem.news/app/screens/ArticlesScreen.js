@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { CmsListScreen } from 'shoutem.cms';
 
 import { ext } from '../const';

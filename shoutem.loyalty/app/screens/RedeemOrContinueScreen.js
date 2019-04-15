@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -12,9 +12,8 @@ import {
   View,
 } from '@shoutem/ui';
 
-import { navigateTo } from '@shoutem/core/navigation';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -31,7 +30,7 @@ const STAMP_ICON = require('../assets/icons/stamp.png');
  * This screen is shown when the user was awarded enough points on his punch card
  * to be able to redeem a reward.
  */
-export class RedeemOrContinueScreen extends React.Component {
+export class RedeemOrContinueScreen extends PureComponent {
   static propTypes = {
     // Navigates to transaction processed screen
     navigateTo: func,

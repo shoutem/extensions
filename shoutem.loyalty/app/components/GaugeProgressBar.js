@@ -1,6 +1,4 @@
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
@@ -21,7 +19,7 @@ import {
   getGaugeCircleCircumference,
 } from '../shared';
 
-export class GaugeProgressBar extends Component {
+export class GaugeProgressBar extends PureComponent {
 
   static propTypes = {
     children: PropTypes.object,

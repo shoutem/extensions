@@ -1,5 +1,5 @@
 import { Alert, Linking } from 'react-native';
-import { priorities, setPriority } from '@shoutem/core/middlewareUtils';
+import { priorities, setPriority } from 'shoutem-core';
 
 import { I18n } from 'shoutem.i18n';
 

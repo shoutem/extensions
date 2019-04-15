@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
-import { navigateBack } from '@shoutem/core/navigation';
+import { NavigationBar, navigateBack } from 'shoutem.navigation';
 import { SearchField } from '@shoutem/ui-addons';
 import {
   ListView,

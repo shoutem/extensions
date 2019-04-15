@@ -1,5 +1,6 @@
 import { AppState } from 'react-native';
 import * as _ from 'lodash';
+import SplashScreen from 'react-native-splash-screen';
 
 import rio, { checkExpiration } from '@shoutem/redux-io';
 import { applyToAll } from '@shoutem/redux-composers';
@@ -116,6 +117,7 @@ export function appDidMount(app) {
 export const isDevelopment = () => process.env.NODE_ENV === 'development';
 
 export function appDidFinishLaunching(app) {
+  SplashScreen.hide();
   openInitialScreen(app);
 }
 

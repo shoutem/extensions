@@ -14,7 +14,7 @@ import {
   setActiveNavigationStack,
   navigateBack,
   resetToRoute,
-} from '@shoutem/core/navigation';
+} from './core';
 
 import { ext } from '../const';
 

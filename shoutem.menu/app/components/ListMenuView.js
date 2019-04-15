@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 
 import {
   ImageBackground,
@@ -11,7 +11,7 @@ import {
   Tile,
 } from '@shoutem/ui';
 
-export default class ListMenuView extends React.Component {
+export default class ListMenuView extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     item: PropTypes.object.isRequired,
@@ -29,7 +29,7 @@ export default class ListMenuView extends React.Component {
   render() {
     const { item } = this.props;
     const price = item.price ? (
-      <Overlay style={{ backgroundColor: 'white' }}>
+      <Overlay>
         <Subtitle styleName="sm-gutter-horizontal">{item.price}</Subtitle>
       </Overlay>) : null;
 

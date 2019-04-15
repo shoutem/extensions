@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -18,7 +18,7 @@ import {
  * A component used to render a single list video item with a large
  * video preview thumbnail.
  */
-export default class LargeVideoView extends React.Component {
+export default class LargeVideoView extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     video: PropTypes.object.isRequired,

@@ -10,9 +10,9 @@ import {
   isInitialized,
   shouldLoad,
 } from '@shoutem/redux-io';
-import { navigateTo } from '@shoutem/core/navigation';
 
 import { getExtensionSettings } from 'shoutem.application';
+import { navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
 
 import { ext } from '../const';

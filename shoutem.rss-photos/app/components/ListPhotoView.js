@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 import {
@@ -14,7 +14,7 @@ import {
 /**
  * A component used to render a single list photo item
  */
-export default class ListPhotoView extends React.Component {
+export default class ListPhotoView extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     photo: PropTypes.object.isRequired,

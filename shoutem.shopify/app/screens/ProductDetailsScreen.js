@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import { Modal } from 'react-native';
 import { connect } from 'react-redux';
@@ -16,7 +14,7 @@ import {
   NavigationBar as UINavigationBar,
   Overlay,
   PageIndicators,
-  Html,
+  SimpleHtml,
   Screen,
   ScrollView,
   Subtitle,
@@ -26,13 +24,12 @@ import {
   View,
 } from '@shoutem/ui';
 
-import { NavigationBar } from '@shoutem/ui/navigation';
-
 import {
+  NavigationBar,
   navigateTo,
   closeModal,
   openInModal,
-} from '@shoutem/core/navigation';
+} from 'shoutem.navigation';
 
 import { connectStyle } from '@shoutem/theme';
 
@@ -76,7 +73,7 @@ const renderPageIndicators = (data, selectedIndex) => {
  * detailed description. The user can also add a product to cart from this screen or go to
  * cart.
  */
-class ProductDetailsScreen extends Component {
+class ProductDetailsScreen extends PureComponent {
   static propTypes = {
     // Number of items that the user has added to his cart
     cartSize: number,
@@ -264,7 +261,7 @@ class ProductDetailsScreen extends Component {
             {this.renderGallery()}
           </View>
           {this.renderProductHeader()}
-          {body_html ? <Html body={body_html} /> : null}
+          {body_html ? <SimpleHtml body={body_html} /> : null}
         </ScrollView>
         { this.renderImageGallery() }
       </Screen>

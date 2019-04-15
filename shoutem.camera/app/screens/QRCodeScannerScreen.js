@@ -1,18 +1,12 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
-import {
-  Screen,
-} from '@shoutem/ui';
-
-import { NavigationBar } from '@shoutem/ui/navigation';
-
+import { Screen } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 
-import QRCodeScanner from '../components/QRCodeScanner.js';
+import { NavigationBar } from 'shoutem.navigation';
 
+import QRCodeScanner from '../components/QRCodeScanner.js';
 import { ext } from '../const';
 
 const { func, string } = PropTypes;
@@ -20,7 +14,7 @@ const { func, string } = PropTypes;
 /**
  * A screen that lets a user scan a QR code
  */
-class QRCodeScannerScreen extends Component {
+class QRCodeScannerScreen extends PureComponent {
   static propTypes = {
     // Called when a QR code has been successfully scanned
     onQRCodeScanned: func,

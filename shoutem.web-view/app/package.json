@@ -1,13 +1,15 @@
 {
   "name": "shoutem.web-view",
-  "version": "1.8.1",
+  "version": "2.0.6",
   "main": "index.js",
   "dependencies": {
-    "react-native-pdf": "shoutem/react-native-pdf#99d40ad932f1c2001453bc019225511398824e8f",
-    "react-native-fetch-blob": "shoutem/react-native-fetch-blob#1caed817c69f0c3b255dd4f65c95d0aa97d0586e"
-  },
-  "peerDependencies": {
-    "@shoutem/core": "*"
+    "react-native-pdf": "shoutem/react-native-pdf#d3f29561c5bcce6626bbf5a8a880aa752dbf7f49",
+    "react-native-fetch-blob": "shoutem/react-native-fetch-blob#a6689ac11d642188674be10406c2770c81cd74d5",
+    "@shoutem/ui": "~0.23.12",
+    "@shoutem/ui-addons": "~0.0.30",
+    "@shoutem/redux-io": "3.0.1-beta.3",
+    "@shoutem/theme": "~0.11.3",
+    "@shoutem/animation": "~0.12.3"
   },
   "rnpm": {
     "commands": {

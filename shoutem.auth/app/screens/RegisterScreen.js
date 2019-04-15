@@ -6,8 +6,7 @@ import {
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { NavigationBar } from '@shoutem/ui/navigation';
-import { navigateBack } from '@shoutem/core/navigation';
+import { NavigationBar, navigateBack } from 'shoutem.navigation';
 import { Screen, Spinner } from '@shoutem/ui';
 
 import { getAppId } from 'shoutem.application';

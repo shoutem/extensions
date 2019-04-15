@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import { connect } from 'react-redux';
 import _ from 'lodash';
@@ -20,12 +18,11 @@ import {
 
 import { connectStyle } from '@shoutem/theme';
 
-import { NavigationBar } from '@shoutem/ui/navigation';
-
 import {
+  NavigationBar,
   closeModal,
   openInModal,
-} from '@shoutem/core/navigation';
+} from 'shoutem.navigation';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -51,7 +48,7 @@ const { func } = PropTypes;
  * Displays a list of items that the user has added to his cart, the total price, and
  * a button that lets him proceed to checkout
  */
-class CartScreen extends Component {
+class CartScreen extends PureComponent {
   static propTypes = {
     // A list of cart items, where an item is defined by a combination of product, its variant
     // and quantity

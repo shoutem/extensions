@@ -1,8 +1,8 @@
 {
   "name": "rss-videos",
   "title": "Videos RSS",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.1",
+  "platform": "2.0.*",
   "description": "Show a video gallery from an RSS feed",
   "icon": "server/assets/add-videos-image.png",
   "categories": [
@@ -34,7 +34,12 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "Videos RSS",
+        "extensionTitle": "Videos RSS",
+        "feedType": "Video"
+      }
     }
   ],
   "screens": [

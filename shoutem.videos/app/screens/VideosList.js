@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 
 import { CmsListScreen } from 'shoutem.cms';
 

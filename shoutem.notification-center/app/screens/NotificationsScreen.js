@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { InteractionManager } from 'react-native';
 import { next } from '@shoutem/redux-io';
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { ListScreen } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
@@ -34,6 +34,16 @@ class NotificationsScreen extends ListScreen {
     super(props);
 
     this.handleNotificationPress = this.handleNotificationPress.bind(this);
+  }
+
+  // notifications data does not work with redux-io's
+  // shouldRefresh() function, so we manually refresh
+  // on each mount
+  // TODO: Revise shouldRefresh() more in-depth and
+  // resolve this issue properly to avoid unneccessary
+  // fetching
+  componentDidMount() {
+    this.fetchData();
   }
 
   // @see shoutem.application.RemoteDataListScreen

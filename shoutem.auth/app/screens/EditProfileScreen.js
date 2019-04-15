@@ -16,7 +16,7 @@ import {
   TextInput,
   View,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import { NavigationBar } from 'shoutem.navigation';
 import { ImagePicker } from '@shoutem/ui-addons';
 import { connectStyle } from '@shoutem/theme';
 import { isBusy } from '@shoutem/redux-io';

@@ -1,4 +1,4 @@
-import { getActiveRoute } from '@shoutem/core/navigation';
+import { getActiveRoute } from 'shoutem.navigation';
 import { triggerScreenView } from './redux';
 
 let activeRoute;

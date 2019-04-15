@@ -1,8 +1,8 @@
 {
   "name": "ical-events",
   "title": "iCal Events",
-  "version": "1.8.1",
-  "platform": "1.8.*",
+  "version": "2.0.3",
+  "platform": "2.0.*",
   "description": "Shoutem extension for managing iCal events",
   "icon": "server/assets/add-events-image.png",
   "categories": [
@@ -44,8 +44,14 @@
     },
     {
       "name": "EventDetailsScreen",
-      "title": "Details screen",
-      "image": "./server/assets/images/details-no-image.png"
+      "title": "Details with solid navigation bar",
+      "image": "./server/assets/images/details-no-image-solid-navbar.png"
+    },
+    {
+      "name": "EventDetailsScreenWithTransparentNavbar",
+      "title": "Details with transparent navigation bar",
+      "image": "./server/assets/images/details-no-image-transparent-navbar.png",
+      "extends": "@.EventDetailsScreen"
     }
   ],
   "shortcuts": [
@@ -63,7 +69,11 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "iCal Events",
+        "extensionTitle": "iCal Events"
+      }
     }
   ]
 }

@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
@@ -35,7 +33,7 @@ import {
 import DealImage from './DealImage';
 import DealRedeemTimer from './DealRedeemTimer';
 
-export class FeaturedDealView extends Component {
+export class FeaturedDealView extends PureComponent {
 
   static propTypes = {
     activeCoupon: PropTypes.object,

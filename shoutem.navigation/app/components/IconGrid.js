@@ -115,6 +115,7 @@ export class IconGrid extends FolderBase {
     const styleNames = [gridAlignment];
     const resolvedHeight = Device.select({
       iPhoneX: isTabBar ? height : (height - IPHONE_X_HOME_INDICATOR_PADDING),
+      iPhoneXR: isTabBar ? height : (height - IPHONE_X_HOME_INDICATOR_PADDING),
       default: height,
     });
 
@@ -138,6 +139,7 @@ export class IconGrid extends FolderBase {
 
     const homeIndicatorPadding = Device.select({
       iPhoneX: isTabBar ? 0 : IPHONE_X_HOME_INDICATOR_PADDING,
+      iPhoneXR: isTabBar ? 0 : IPHONE_X_HOME_INDICATOR_PADDING,
       default: 0,
     });
 

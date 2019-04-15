@@ -1,4 +1,4 @@
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { ext } from './const';
 
 // Define your actions here

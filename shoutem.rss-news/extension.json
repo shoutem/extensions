@@ -1,7 +1,7 @@
 {
   "name": "rss-news",
-  "version": "1.8.0",
-  "platform": "1.8.*",
+  "version": "2.0.4",
+  "platform": "2.0.*",
   "title": "News RSS",
   "description": "Show news articles from an RSS feed",
   "icon": "server/assets/extension-icon.png",
@@ -14,7 +14,8 @@
   },
   "dependencies": [
     "shoutem.layouts",
-    "shoutem.rss"
+    "shoutem.rss",
+    "shoutem.news"
   ],
   "shortcuts": [
     {
@@ -34,7 +35,12 @@
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
         }
-      ]
+      ],
+      "settings": {
+        "defaultShortcutTitle": "News RSS",
+        "extensionTitle": "News RSS",
+        "feedType": "News"
+      }
     }
   ],
   "screens": [

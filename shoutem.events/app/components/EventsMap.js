@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { LayoutAnimation } from 'react-native';
 import _ from 'lodash';
 
@@ -36,7 +36,7 @@ function getMarkersFromEvents(events) {
 
 function getCoordinatesDelta(events, coordinateName) {
   return _.maxBy(events, coordinateName)[coordinateName] -
-          _.minBy(events, coordinateName)[coordinateName];
+         _.minBy(events, coordinateName)[coordinateName];
 }
 
 function getInitialRegionFromEvents(events) {
@@ -79,7 +79,7 @@ function getMarkersAndRegionFromEvents(data) {
   };
 }
 
-export default class EventsMap extends React.Component {
+export default class EventsMap extends PureComponent {
   static propTypes = {
     data: PropTypes.array.isRequired,
     style: PropTypes.object.isRequired,

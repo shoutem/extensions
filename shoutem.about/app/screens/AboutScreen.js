@@ -1,19 +1,12 @@
-import { StatusBar } from 'react-native';
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { StatusBar, Dimensions, Linking } from 'react-native';
 import { connect } from 'react-redux';
 import { InteractionManager } from 'react-native';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 
-import PropTypes from 'prop-types';
-
-import React, {
-  PureComponent,
-} from 'react';
-
-import {
-  EmptyStateView,
-} from '@shoutem/ui-addons';
-
+import { EmptyStateView, InlineMap } from '@shoutem/ui-addons';
 import {
   find,
   isBusy,
@@ -22,7 +15,6 @@ import {
   shouldRefresh,
   getCollection,
 } from '@shoutem/redux-io';
-
 import {
   Screen,
   Spinner,
@@ -34,18 +26,14 @@ import {
   Subtitle,
   TouchableOpacity,
   ScrollView,
-  Html,
+  SimpleHtml,
 } from '@shoutem/ui';
-
-import {
-  InlineMap,
-} from '@shoutem/ui-addons';
-
-import { NavigationBar } from '@shoutem/ui/navigation';
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo } from '@shoutem/core/navigation';
+
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
+
 import SocialButton from '../components/SocialButton';
 import { ext } from '../const';
 
@@ -237,7 +225,7 @@ export class AboutScreen extends PureComponent {
 
     return (
       <View styleName={extraSpace}>
-        <Title styleName="xl-gutter-top xl-gutter-bottom h-center">
+        <Title styleName="xl-gutter-top md-gutter-bottom h-center">
           {profile.name.toUpperCase()}
         </Title>
       </View>
@@ -250,10 +238,7 @@ export class AboutScreen extends PureComponent {
     }
 
     return (
-      <View styleName="md-gutter-horizontal md-gutter-bottom">
-        <Html body={profile.info} />
-      </View>
-
+      <SimpleHtml body={profile.info} />
     );
   }
 
@@ -314,9 +299,7 @@ export class AboutScreen extends PureComponent {
         <Divider styleName="section-header">
           <Caption>{I18n.t('shoutem.cms.openHours')}</Caption>
         </Divider>
-        <View styleName="md-gutter-horizontal md-gutter-top">
-          <Html body={profile.hours} />
-        </View>
+        <SimpleHtml body={profile.hours} />
         <Divider />
       </View>
     );

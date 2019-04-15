@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import * as _ from 'lodash';
 
 import {
@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
 } from '@shoutem/ui';
 
-export default class SmallListMenuView extends React.Component {
+export default class SmallListMenuView extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     item: PropTypes.object.isRequired,

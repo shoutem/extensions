@@ -7,7 +7,7 @@ import {
   next,
 } from '@shoutem/redux-io';
 
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
 
 import { RSS_VIDEOS_SCHEMA, getVideosFeed } from '../redux';

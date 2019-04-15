@@ -4,7 +4,7 @@ import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { navigateTo } from '@shoutem/core/navigation';
+import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   View,

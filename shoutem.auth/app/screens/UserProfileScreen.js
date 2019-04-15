@@ -17,9 +17,12 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
-import { NavigationBar } from '@shoutem/ui/navigation';
+import {
+  NavigationBar,
+  closeModal,
+  openInModal,
+} from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-import { closeModal, openInModal } from '@shoutem/core/navigation';
 
 import { I18n } from 'shoutem.i18n';
 

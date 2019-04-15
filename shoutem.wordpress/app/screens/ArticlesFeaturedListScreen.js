@@ -13,7 +13,7 @@ import {
 } from './ArticlesListScreen';
 
 import { ext } from '../const.js';
-import { getLeadImageUrl } from '../services';
+import { getLeadImageUrl, resolveArticleTitle } from '../services';
 
 export class ArticlesFeaturedListScreen extends ArticlesListScreen {
   static propTypes = {
@@ -32,7 +32,7 @@ export class ArticlesFeaturedListScreen extends ArticlesListScreen {
         <FeaturedArticleView
           key={article.id}
           articleId={article.id.toString()}
-          title={article.title.rendered}
+          title={resolveArticleTitle(article.title.rendered)}
           imageUrl={getLeadImageUrl(article)}
           author={article.author.toString()}
           date={article.modified}
@@ -45,7 +45,7 @@ export class ArticlesFeaturedListScreen extends ArticlesListScreen {
       <ListArticleView
         key={article.id}
         articleId={article.id.toString()}
-        title={article.title.rendered}
+        title={resolveArticleTitle(article.title.rendered)}
         imageUrl={getLeadImageUrl(article)}
         date={article.modified}
         onPress={this.openArticleWithId}

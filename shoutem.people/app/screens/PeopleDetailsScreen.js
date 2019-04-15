@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { Linking } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -12,18 +12,18 @@ import {
   Button,
   Icon,
   View,
-  Html,
+  SimpleHtml,
   ScrollView,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
-import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
+import { openURL } from 'shoutem.web-view';
+import { NavigationBar } from 'shoutem.navigation';
 
 import { ext } from '../const';
 
-class PeopleDetailsScreen extends React.Component {
+class PeopleDetailsScreen extends PureComponent {
   static propTypes = {
     person: PropTypes.object.isRequired,
     openURL: PropTypes.func,
@@ -117,7 +117,7 @@ class PeopleDetailsScreen extends React.Component {
               <Caption styleName="h-center">{person.profession}</Caption>
             </View>
 
-            <Html body={person.biography} />
+            <SimpleHtml body={person.biography} />
           </View>
 
           {this.renderFooterButtons()}

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import { PureComponent } from 'react';
 
-export class BaseEventItem extends React.Component {
+export class BaseEventItem extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     action: PropTypes.func,

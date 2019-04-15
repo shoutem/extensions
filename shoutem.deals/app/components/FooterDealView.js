@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { Dimensions } from 'react-native';
@@ -25,7 +23,7 @@ const styles = {
   },
 };
 
-export default class FooterDealView extends Component {
+export default class FooterDealView extends PureComponent {
 
   static propTypes = {
     deal: PropTypes.object,

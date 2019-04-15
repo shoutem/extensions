@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -17,12 +17,11 @@ import {
 
 import getImageSource from '../services/youtube-view';
 
-
 /**
  * A component used to render a single list video item as a row
  * in a list with a medium sized thumbnail.
  */
-export default class SmallYoutubeView extends React.Component {
+export default class SmallYoutubeView extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     video: PropTypes.object.isRequired,

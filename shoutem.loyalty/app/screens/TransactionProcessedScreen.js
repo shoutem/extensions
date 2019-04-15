@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -13,8 +13,7 @@ import {
 } from '@shoutem/ui';
 
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
-import { closeModal } from '@shoutem/core/navigation';
+import { NavigationBar, closeModal } from 'shoutem.navigation';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -34,7 +33,7 @@ const getNavBarProps = () => ({
  * Informs the user about a successfully processed transaction.
  * Tells him how much points he received on his punch card or if he redeemed a reward.
  */
-export class TransactionProcessedScreen extends React.Component {
+export class TransactionProcessedScreen extends PureComponent {
   static propTypes = {
     // Points assigned in transaction
     points: number,

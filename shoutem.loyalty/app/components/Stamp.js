@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import {
   Icon,
@@ -22,7 +20,7 @@ const iconStyleShape = shape({
  * Displays stamps required to redeem a reward for a punch card.
  * Stamps can be in the default state or punched.
  */
-export class Stamp extends Component {
+export class Stamp extends PureComponent {
   static propTypes = {
     // Sets custom style to stamp icon
     iconStyle: iconStyleShape,

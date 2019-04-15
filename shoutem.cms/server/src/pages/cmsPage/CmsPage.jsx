@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { invalidate, shouldLoad, shouldRefresh, isValid } from '@shoutem/redux-io';
 import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
+import { ControlLabel } from 'react-bootstrap';
 import { getShortcut } from 'environment';
 import { getCategories, getSchema, getResources, dataInitialized } from '../../selectors';
 import { updateShortcutSettings } from '../../builder-sdk';
@@ -107,6 +108,35 @@ export class CmsPage extends Component {
     return this.props.navigateToCategory(parentCategoryId);
   }
 
+  resolveShortcutTitle(shortcut) {
+    const defaultShortcutTitle = _.get(shortcut, 'settings.defaultShortcutTitle', false);
+    return defaultShortcutTitle;
+  }
+
+  resolveExtensionTitle(shortcut) {
+    const extensionTitle = _.get(shortcut, 'settings.extensionTitle', false);
+    return extensionTitle;
+  }
+
+  resolveExtensionInfo(shortcut) {
+    const defaultShortcutTitle = this.resolveShortcutTitle(shortcut);
+    const extensionTitle = this.resolveExtensionTitle(shortcut);
+
+    if (!defaultShortcutTitle && !extensionTitle) {
+      return false;
+    }
+
+    if (!defaultShortcutTitle && extensionTitle) {
+      return `This is a shortcut from the ${extensionTitle} extension.`;
+    }
+
+    if (defaultShortcutTitle && !extensionTitle) {
+      return `This is the ${defaultShortcutTitle} shortcut of an undefined extension.`;
+    }
+
+    return `This is the ${defaultShortcutTitle} shortcut from the ${extensionTitle} extension.`;
+  }
+
   render() {
     const {
       resources,
@@ -122,9 +152,15 @@ export class CmsPage extends Component {
     const sortOptions = getSortOptions(shortcut);
     const parentCategoryId = getParentCategoryId(shortcut);
     const visibleCategoryIds = getVisibleCategoryIds(shortcut);
+    const extensionInfo = this.resolveExtensionInfo(shortcut);
 
     return (
       <LoaderContainer className="cms" isLoading={!initialized}>
+        {extensionInfo &&
+          <ControlLabel>
+            {extensionInfo}
+          </ControlLabel>
+        }
         <div className="cms__header">
           <SortOptions
             className="pull-left"

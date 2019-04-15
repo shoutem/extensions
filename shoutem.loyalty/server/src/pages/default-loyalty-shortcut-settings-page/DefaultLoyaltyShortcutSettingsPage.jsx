@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { navigateToSettings } from '../../redux';
 
-export function PointsCardSettingsPage({ navigateToLoyaltySettings }) {
+export function DefaultLoyaltyShortcutSettingsPage({ navigateToLoyaltySettings }) {
   return (
     <p className="points-card-settings-page">
       To configure your Loyalty program, please click{' '}
@@ -11,7 +11,7 @@ export function PointsCardSettingsPage({ navigateToLoyaltySettings }) {
   );
 }
 
-PointsCardSettingsPage.propTypes = {
+DefaultLoyaltyShortcutSettingsPage.propTypes = {
   navigateToLoyaltySettings: PropTypes.func,
 };
 
@@ -25,4 +25,4 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(PointsCardSettingsPage);
+export default connect(null, mapDispatchToProps)(DefaultLoyaltyShortcutSettingsPage);

@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -16,13 +14,13 @@ import {
   Html,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from '@shoutem/ui/navigation';
 
+import { NavigationBar } from 'shoutem.navigation';
 import { createRenderAttachment } from 'shoutem.rss';
 
 import { ext } from '../extension';
 
-export class VimeoDetails extends Component {
+export class VimeoDetails extends PureComponent {
   static propTypes = {
     // The video article to display
     video: PropTypes.object.isRequired,
@@ -30,7 +28,9 @@ export class VimeoDetails extends Component {
 
   render() {
     const { video } = this.props;
+
     const videoAttachment = _.head(video.videoAttachments);
+
     const VideoComponent = videoAttachment ?
       <Video source={{ uri: videoAttachment.src }} /> :
       null;

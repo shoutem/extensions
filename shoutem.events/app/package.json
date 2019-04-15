@@ -1,13 +1,14 @@
 {
   "name": "shoutem.events",
-  "version": "1.8.0",
+  "version": "2.0.4",
   "private": true,
   "main": "index.js",
   "dependencies": {
-    "react-native-calendar-manager": "shoutem/react-native-calendar-manager#de1aae06e0a17df99cc55fcd5b31b4b5c55f0589"
-  },
-  "peerDependencies": {
-    "@shoutem/core": "*"
+    "react-native-calendar-manager": "shoutem/react-native-calendar-manager#de1aae06e0a17df99cc55fcd5b31b4b5c55f0589",
+    "@shoutem/ui": "~0.23.12",
+    "@shoutem/ui-addons": "~0.0.30",
+    "@shoutem/redux-io": "3.0.1-beta.3",
+    "@shoutem/theme": "~0.11.3"
   },
   "rnpm": {
     "commands": {

@@ -1,22 +1,24 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { executeShortcut } from 'shoutem.application';
 import { connect } from 'react-redux';
 import {
   replace,
   REPLACE,
   ROOT_NAVIGATION_STACK,
-} from '@shoutem/core/navigation';
+} from '../redux/core';
 import { NO_SCREENS_ROUTE } from '../const';
 
-class None extends React.Component {
+class None extends PureComponent {
   static propTypes = {
     shortcut: PropTypes.object.isRequired,
     executeShortcut: PropTypes.func,
     replace: PropTypes.func,
   };
+
   componentWillMount() {
     const { shortcut, replace, executeShortcut } = this.props;
+
     const children = shortcut.children || [];
 
     if (!children[0]) {
@@ -33,4 +35,5 @@ class None extends React.Component {
     return null;
   }
 }
+
 export default connect(undefined, { executeShortcut, replace })(None);

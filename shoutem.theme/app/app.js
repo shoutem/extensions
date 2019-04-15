@@ -1,9 +1,12 @@
 import _ from 'lodash';
+import React from 'react';
+
+import { StyleProvider } from '@shoutem/theme';
+import { getConfiguration } from 'shoutem.application';
 import { getActiveTheme } from './redux';
 import { appThemeAssets } from './services/AppThemeAssets';
-import { getConfiguration } from 'shoutem.application';
 
-let activeTheme;
+let appInstance;
 
 /**
  * Resolves given theme style.
@@ -30,21 +33,6 @@ function resolveThemeStyle(theme, app) {
 }
 
 /**
- * Triggers every time activeTheme is changed in the configuration.
- * @param app ShoutEm App instance
- * @param onChange Active theme event listener
- */
-function watchActiveTheme(app, onChange) {
-  const store = app.getStore();
-  store.subscribe(() => {
-    const theme = getActiveTheme(store.getState());
-    if (theme && theme !== activeTheme) {
-      activeTheme = theme;
-      onChange(theme);
-    }
-  });
-}
-/**
  * Update theme assets with configuration default and active theme assets.
  * @param configuration Denormalized configuration
  */
@@ -56,14 +44,25 @@ function updateThemeAssets(configuration) {
 }
 
 export const appWillMount = function (app) {
-  // Active theme can not change without previous configuration change event,
-  // where next active theme is already set in configuration.
-  watchActiveTheme(app, theme => app.setStyle(resolveThemeStyle(theme, app)));
+  appInstance = app;
 };
 
 export const appDidMount = function (app) {
-  const store = app.getStore();
-  const configuration = getConfiguration(store.getState());
+  const state = app.getState();
+  const configuration = getConfiguration(state);
+  const theme = getActiveTheme(state);
+  const themeStyle = resolveThemeStyle(theme, app);
+
+  app.setStyle(themeStyle);
+
   // Active theme is always taken from configuration.activeTheme
   updateThemeAssets(configuration);
 };
+
+export function renderProvider(children) {
+  return (
+    <StyleProvider style={appInstance.getStyle()}>
+      {children}
+    </StyleProvider>
+  );
+}

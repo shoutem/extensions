@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { Dimensions } from 'react-native';
-import * as _ from 'lodash';
 import moment from 'moment';
+import _ from 'lodash';
 
-import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   ScrollView,
@@ -17,16 +16,15 @@ import {
   ImageGallery,
   Html,
 } from '@shoutem/ui';
-import {
-  NavigationBar,
-} from '@shoutem/ui/navigation';
+import { connectStyle } from '@shoutem/theme';
 
-import { getLeadImageUrl, createRenderAttachment } from 'shoutem.rss';
 import { NextArticle } from 'shoutem.news';
+import { NavigationBar } from 'shoutem.navigation';
+import { getLeadImageUrl, createRenderAttachment } from 'shoutem.rss';
 
 import { ext } from '../const';
 
-export class ArticleDetailsScreen extends React.PureComponent {
+export class ArticleDetailsScreen extends PureComponent {
   static propTypes = {
     // The news article to display
     article: PropTypes.object.isRequired,
@@ -46,6 +44,7 @@ export class ArticleDetailsScreen extends React.PureComponent {
 
   renderUpNext() {
     const { nextArticle, openArticle } = this.props;
+
     if (nextArticle && openArticle) {
       return (
         <NextArticle
@@ -61,10 +60,13 @@ export class ArticleDetailsScreen extends React.PureComponent {
 
   renderInlineGallery() {
     const { article, showInlineGallery } = this.props;
+
     if (!showInlineGallery) {
       return null;
     }
+
     const images = _.map(article.imageAttachments, 'url');
+
     return (
       <ImageGallery sources={images} height={300} width={Dimensions.get('window').width} />
     );
@@ -72,8 +74,10 @@ export class ArticleDetailsScreen extends React.PureComponent {
 
   render() {
     const { article } = this.props;
+
     const articleImageUrl = getLeadImageUrl(article);
     const momentDate = moment(article.timeUpdated);
+
     const dateInfo = momentDate.isAfter(0) ? (
       <Caption styleName="md-gutter-left">
         {momentDate.fromNow()}

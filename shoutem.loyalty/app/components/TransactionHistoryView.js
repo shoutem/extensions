@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 
 import {
@@ -39,7 +39,7 @@ const renderTransactionRow = transaction => <TransactionItem transaction={transa
 /**
  * Shows points card details for a single card loyalty program
  */
-export class TransactionHistoryView extends React.Component {
+export class TransactionHistoryView extends PureComponent {
   static propTypes = {
     // Called when the user presses the Show history button
     onShowHistory: func,
