@@ -8,7 +8,7 @@ import {
 
 function getAppIdFromUrl(url) {
   const matches = url.match(/preview:\/\/open-app\/([0-9]*)/);
-  return matches.length >= 2 ? matches[1] : undefined;
+  return matches && matches.length >= 2 ? matches[1] : undefined;
 }
 
 function listenForDeepLinks(dispatch) {
