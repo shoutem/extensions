@@ -2,15 +2,13 @@ import { Linking } from 'react-native';
 
 import {
   RESTART_APP,
-  openInitialScreen,
-  actions,
   isProduction,
   getAppId,
 } from 'shoutem.application';
 
 function getAppIdFromUrl(url) {
   const matches = url.match(/preview:\/\/open-app\/([0-9]*)/);
-  return matches.length ? matches[1] : undefined;
+  return matches && matches.length >= 2 ? matches[1] : undefined;
 }
 
 function listenForDeepLinks(dispatch) {
