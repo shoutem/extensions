@@ -49,7 +49,7 @@
     },
     "rsvpLink": {
       "format": "uri",
-      "title": "RSVP link",
+      "title": "Order Online",
       "type": "string",
       "displayPriority": 3
     },
