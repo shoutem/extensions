@@ -3,7 +3,7 @@ import { storage, getCollection } from '@shoutem/redux-io';
 
 import { rssFeed } from 'shoutem.rss';
 
-import { ext } from './extension';
+import { ext } from './const';
 
 export const VIMEO_SCHEMA = 'shoutem.proxy.videos';
 

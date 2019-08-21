@@ -10,6 +10,7 @@ import {
   DropDownMenu,
   Image,
   ListView,
+  NumberInput,
   Screen,
   ScrollView,
   Subtitle,
@@ -17,7 +18,6 @@ import {
   Text,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NumberInput } from '@shoutem/ui-addons';
 
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';

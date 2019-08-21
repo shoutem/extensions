@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
 import { connect } from 'react-redux';
 
 import {
@@ -17,28 +16,22 @@ import {
   Text,
   View,
 } from '@shoutem/ui';
-
-import {
-  InlineMap,
-} from '@shoutem/ui-addons';
-
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar, closeModal } from 'shoutem.navigation';
 
+import { NavigationBar, closeModal } from 'shoutem.navigation';
+import { InlineMap } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 
-import { ext } from '../../const';
 import {
   cart as cartShape,
   customer as customerShape,
   shippingMethod as shippingMethodShape,
   shop as shopShape,
 } from '../../components/shapes';
-
-import CartFooter from '../../components/CartFooter';
 import CartItem from '../../components/CartItem';
-
+import CartFooter from '../../components/CartFooter';
 import { checkoutCompleted } from '../../redux/actionCreators';
+import { ext } from '../../const';
 
 const { func } = PropTypes;
 

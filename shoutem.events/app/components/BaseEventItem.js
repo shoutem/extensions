@@ -5,7 +5,7 @@ export class BaseEventItem extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
     action: PropTypes.func,
-    event: PropTypes.object.isRequired,
+    event: PropTypes.object,
     styleName: PropTypes.string,
   };
 
@@ -16,10 +16,14 @@ export class BaseEventItem extends PureComponent {
   }
 
   onPress() {
-    this.props.onPress(this.props.event);
+    const { onPress, event } = this.props;
+
+    onPress(event);
   }
 
   action() {
-    this.props.action(this.props.event);
+    const { action, event } = this.props;
+    
+    action(event);
   }
 }

@@ -31,7 +31,7 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
       styleName: getLeadImageUrl(article) ? 'clear' : 'no-border',
       animationName: getLeadImageUrl(article) ? 'solidify' : '',
       share: {
-        title: this.resolveArticleTitle(article.title.rendered),
+        title: resolveArticleTitle(article.title.rendered),
         link: article.link,
       },
     };

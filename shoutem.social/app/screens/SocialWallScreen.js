@@ -24,11 +24,11 @@ import {
   TouchableOpacity,
 } from '@shoutem/ui';
 
-import { ListScreen, getExtensionSettings } from 'shoutem.application';
+import { RemoteDataListScreen } from 'shoutem.application';
+import { getExtensionSettings } from 'shoutem.application/redux';
 import { authenticate } from 'shoutem.auth';
-import { I18n } from 'shoutem.i18n';
-
 import { getUser, isAuthenticated } from 'shoutem.auth/redux';
+import { I18n } from 'shoutem.i18n';
 
 import StatusView from '../components/StatusView';
 import {
@@ -42,20 +42,20 @@ import { ext } from '../const';
 
 const { object } = PropTypes;
 
-export class SocialWallScreen extends ListScreen {
+export class SocialWallScreen extends RemoteDataListScreen {
   static propTypes = {
-    ...ListScreen.propTypes,
+    ...RemoteDataListScreen.propTypes,
     data: object, // overriden because data is object that contains property "data" which is array
   };
 
   constructor(props, context) {
     super(props, context);
+
     this.newStatus = this.newStatus.bind(this);
     this.addComment = this.addComment.bind(this);
     this.openStatusDetails = this.openStatusDetails.bind(this);
     this.openUserLikes = this.openUserLikes.bind(this);
     this.onLikeAction = this.onLikeAction.bind(this);
-    this.captureListViewRef = this.captureListViewRef.bind(this);
     this.openMyProfile = this.openMyProfile.bind(this);
     this.renderRow = this.renderRow.bind(this);
     this.renderData = this.renderData.bind(this);
@@ -73,8 +73,8 @@ export class SocialWallScreen extends ListScreen {
       enableInteractions,
       enablePhotoAttachments,
     } = this.props;
-    const status = _.find(data.data, { id: statusId });
 
+    const status = _.find(data.data, { id: statusId });
     const route = {
       screen: ext('StatusDetailsScreen'),
       title: I18n.t(ext('postDetailsTitle')),
@@ -124,7 +124,6 @@ export class SocialWallScreen extends ListScreen {
         onStatusCreated: (status, attachment) => {
           createStatus(status, attachment)
           .then(navigateBack())
-          .then(this.listView.scrollTo({ y: 0 }));
         },
       },
     };
@@ -163,6 +162,7 @@ export class SocialWallScreen extends ListScreen {
 
   openMyProfile() {
     const { user, openProfile } = this.props;
+
     openProfile(user);
   }
 
@@ -175,11 +175,9 @@ export class SocialWallScreen extends ListScreen {
   }
 
   loadMore() {
-    this.props.next(this.props.data);
-  }
+    const { data, next } = this.props;
 
-  captureListViewRef(component) {
-    this.listView = component;
+    next(data);
   }
 
   renderRow(data) {
@@ -202,14 +200,16 @@ export class SocialWallScreen extends ListScreen {
   }
 
   getListProps() {
+    const { data } = this.props;
+
     return {
       data: this.props.data.data,
-      ref: this.captureListViewRef,
     };
   }
 
   renderAddNewStatusSection() {
     const { user } = this.props;
+
     const { profile_image_url } = user;
 
     return (
@@ -245,6 +245,7 @@ export class SocialWallScreen extends ListScreen {
 
 const mapStateToProps = (state) => {
   const extension = getExtensionSettings(state, ext());
+
   return {
     data: state[ext()].statuses,
     user: getUser(state) || {},

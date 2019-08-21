@@ -67,6 +67,7 @@ class CardList extends FolderBase {
     };
     // Remove non RN style
     delete cardItemStyle.item[HEIGHT_RATIO_STYLE_KEY];
+    
     return (
       <CardListItem
         key={`item_${index}`}

@@ -1,8 +1,8 @@
 {
   "name": "ical-events",
   "title": "iCal Events",
-  "version": "2.0.3",
-  "platform": "2.0.*",
+  "version": "2.1.0",
+  "platform": "2.1.*",
   "description": "Shoutem extension for managing iCal events",
   "icon": "server/assets/add-events-image.png",
   "categories": [
@@ -17,48 +17,70 @@
   ],
   "screens": [
     {
-      "name": "EventsFeaturedGridScreen",
-      "title": "Grid with featured event",
-      "image": "./server/assets/images/featured-grid-no-image.png",
-      "navigatesTo": [
-        "@.EventDetailsScreen"
-      ]
-    },
-    {
-      "name": "EventsScreen",
-      "title": "Grid",
-      "image": "./server/assets/images/grid-no-image.png",
-      "extends": "@.EventsFeaturedGridScreen"
-    },
-    {
       "name": "EventsListScreen",
       "title": "List",
       "image": "./server/assets/images/list-no-image.png",
-      "extends": "@.EventsFeaturedGridScreen"
+      "navigatesTo": [
+        "@.EventDetailsScreen"
+      ],
+      "settings": {
+        "listType": "list",
+        "hasFeaturedItem": false
+      }
     },
     {
       "name": "EventsFeaturedListScreen",
       "title": "List with featured item",
       "image": "./server/assets/images/featured-list-no-image.png",
-      "extends": "@.EventsFeaturedGridScreen"
+      "extends": "@.EventsListScreen",
+      "settings": {
+        "listType": "list",
+        "hasFeaturedItem": true
+      }
+    },
+    {
+      "name": "EventsGridScreen",
+      "title": "Grid",
+      "image": "./server/assets/images/grid-no-image.png",
+      "extends": "@.EventsListScreen",
+      "settings": {
+        "listType": "fixed-grid",
+        "hasFeaturedItem": false
+      }
+    },
+    {
+      "name": "EventsFeaturedGridScreen",
+      "title": "Grid with featured event",
+      "image": "./server/assets/images/featured-grid-no-image.png",
+      "extends": "@.EventsListScreen",
+      "settings": {
+        "listType": "fixed-grid",
+        "hasFeaturedItem": true
+      }
     },
     {
       "name": "EventDetailsScreen",
       "title": "Details with solid navigation bar",
-      "image": "./server/assets/images/details-no-image-solid-navbar.png"
+      "image": "./server/assets/images/details-no-image-solid-navbar.png",
+      "settings": {
+        "navigationBarStyle": "solid"
+      }
     },
     {
       "name": "EventDetailsScreenWithTransparentNavbar",
       "title": "Details with transparent navigation bar",
       "image": "./server/assets/images/details-no-image-transparent-navbar.png",
-      "extends": "@.EventDetailsScreen"
+      "extends": "@.EventDetailsScreen",
+      "settings": {
+        "navigationBarStyle": "clear"
+      }
     }
   ],
   "shortcuts": [
     {
       "title": "iCal Events",
       "name": "iCal",
-      "screen": "@.EventsFeaturedGridScreen",
+      "screen": "@.EventsListScreen",
       "icon": "theme://events.png",
       "adminPages": [
         {

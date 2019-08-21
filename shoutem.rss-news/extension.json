@@ -1,7 +1,7 @@
 {
   "name": "rss-news",
-  "version": "2.0.4",
-  "platform": "2.0.*",
+  "version": "2.1.0",
+  "platform": "2.1.*",
   "title": "News RSS",
   "description": "Show news articles from an RSS feed",
   "icon": "server/assets/extension-icon.png",
@@ -14,15 +14,14 @@
   },
   "dependencies": [
     "shoutem.layouts",
-    "shoutem.rss",
-    "shoutem.news"
+    "shoutem.rss"
   ],
   "shortcuts": [
     {
       "name": "news-shortcut",
       "title": "News RSS",
       "icon": "theme://news.png",
-      "screen": "@.ArticlesGridScreen",
+      "screen": "@.ArticlesFeaturedGridScreen",
       "adminPages": [
         {
           "page": "shoutem.rss.RssPage",
@@ -45,25 +44,48 @@
   ],
   "screens": [
     {
+      "name": "ArticlesFeaturedGridScreen",
+      "title": "Grid with a featured article",
+      "image": "./server/assets/screens/featuredgrid.png",
+      "groupTitle": "Choose List screen layout",
+      "navigatesTo": [
+        "@.ArticleDetailsScreen"
+      ],
+      "settings": {
+        "listType": "fixed-grid",
+        "hasFeaturedItem": true
+      }
+    },
+    {
       "name": "ArticlesGridScreen",
       "title": "Grid",
       "image": "./server/assets/screens/grid.png",
       "groupTitle": "Choose List screen layout",
-      "navigatesTo": [
-        "@.ArticleDetailsScreen"
-      ]
+      "extends": "@.ArticlesFeaturedGridScreen",
+      "settings": {
+        "listType": "fixed-grid",
+        "hasFeaturedItem": false
+      }
     },
     {
       "name": "ArticlesListScreen",
       "title": "List",
       "image": "./server/assets/screens/list.png",
-      "extends": "@.ArticlesGridScreen"
+      "extends": "@.ArticlesFeaturedGridScreen",
+      "settings": {
+        "listType": "list",
+        "hasFeaturedItem": false
+      }
     },
     {
       "name": "ArticlesFeaturedListScreen",
-      "title": "List with a featured item 2",
+      "title": "List with a featured article",
       "image": "./server/assets/screens/featuredlist.png",
-      "extends": "@.ArticlesGridScreen"
+      "extends": "@.ArticlesFeaturedGridScreen",
+      "settings": {
+        "listType": "list",
+        "hasFeaturedItem": true
+      }
     },
     {
       "name": "ArticleDetailsScreen",

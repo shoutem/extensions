@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import {
   Divider,
+  EmptyStateView,
   ListView,
   Row,
   Screen,
@@ -14,19 +15,18 @@ import {
   View,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { EmptyStateView } from '@shoutem/ui-addons';
 
 import { I18n } from 'shoutem.i18n';
 import { isProduction } from 'shoutem.application';
 import { NavigationBar } from 'shoutem.navigation';
 import { Permissions } from 'shoutem.push-notifications';
 
+import { pushGroupShape } from '../components/shapes';
 import {
   fetchGroups,
   selectPushNotificationGroups,
   invalidateNotifications,
 } from '../redux';
-import { pushGroupShape } from '../components/shapes';
 import { ext, GROUP_PREFIX } from '../const';
 
 const { arrayOf, func, string } = PropTypes;

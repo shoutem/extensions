@@ -39,7 +39,7 @@ const codepush = {
         codepushGradle: 'apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"',
         buildTypes: 'buildConfigField "String", "CODE_PUSH_APP_KEY", CUSTOM_CODE_PUSH_APP_KEY',
         codepushKey: 'CUSTOM_CODE_PUSH_APP_KEY="ImWEX3C5l0r1PLXGLlM3VtfB15dfVyQ9naUsl"',
-        dependencies: "compile project(':react-native-code-push')",
+        dependencies: "implementation project(':react-native-code-push')",
       },
       rnHost: mainApplicationRnHost,
       settings: gradleSettings,

@@ -22,10 +22,11 @@ import { BaseEventItem } from './BaseEventItem';
 export default class ListEventView extends BaseEventItem {
 
   render() {
-    const { event, style } = this.props;
+    const { event, style, onPress } = this.props;
+    
     return (
       <TouchableOpacity
-        disabled={!_.isFunction(this.props.onPress)}
+        disabled={!_.isFunction(onPress)}
         onPress={this.onPress}
         key={event.id}
         style={style}

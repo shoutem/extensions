@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import moment from 'moment';
 import _ from 'lodash';
+import ActionSheet from 'react-native-action-sheet';
 
 import {
   View,
@@ -13,8 +14,6 @@ import {
   Lightbox,
   dimensionRelativeToIphone,
 } from '@shoutem/ui';
-
-import { ActionSheet } from '@shoutem/ui-addons';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -47,11 +46,14 @@ export default class CommentView extends PureComponent {
 
   renderStatusAttachments() {
     const { comment } = this.props;
+
     const { shoutem_attachments: attachments } = comment;
     const hasPicture = _.get(attachments, [0, 'type']) === 'picture';
+
     if (!hasPicture) {
       return null;
     }
+
     return (
       <Lightbox activeProps={{ styleName: 'preview' }}>
         <Image
@@ -89,6 +91,7 @@ export default class CommentView extends PureComponent {
 
   render() {
     const { comment } = this.props;
+
     const { user, created_at, text } = comment;
     const profileImageUrl = user.profile_image_url;
 

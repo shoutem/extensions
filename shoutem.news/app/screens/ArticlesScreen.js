@@ -24,6 +24,7 @@ export class ArticlesScreen extends CmsListScreen {
     this.openArticle = this.openArticle.bind(this);
     this.openArticleWithId = this.openArticleWithId.bind(this);
     this.renderRow = this.renderRow.bind(this);
+    this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
 
     this.state = {
       ...this.state,
@@ -57,25 +58,28 @@ export class ArticlesScreen extends CmsListScreen {
 
   openArticleWithId(id) {
     const { data } = this.props;
+
     const article = _.find(data, { id });
+
     this.openArticle(article);
   }
 
   getNextArticle(article) {
     const { data } = this.props;
-    const currentArticleIndex = _.findIndex(data, { id: article.id });
+
+    const currentArticleIndex = data ? _.findIndex(data, { id: article.id }) : 0;
+
     return data[currentArticleIndex + 1];
   }
 
-  renderRow(data, sectionId, index) {
-    const { listType, hasFeaturedItem } = this.props;
-    const isFeaturedItem = hasFeaturedItem && index === '0';
+  renderFeaturedItem(item) {
+    return item ? (
+      <FeaturedArticleView {...getItemProps(item)} onPress={this.openArticleWithId} />
+    ) : null;
+  }
 
-    if (isFeaturedItem) {
-      return (
-        <FeaturedArticleView {...getItemProps(data)} onPress={this.openArticleWithId} />
-      );
-    }
+  renderRow(data) {
+    const { listType } = this.props;
 
     return createListItem(listType, data, this.openArticleWithId);
   }

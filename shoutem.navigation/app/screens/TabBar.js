@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { View, Screen } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 
-import { executeShortcut } from 'shoutem.application';
+import { executeShortcut } from 'shoutem.application/redux';
 
 import {
   navigateTo,
@@ -16,16 +16,16 @@ import {
   setActiveNavigationStack,
   hasRouteWithKey,
 } from '../redux/core';
+import TabBarItem from '../components/TabBarItem';
+import { ScreenStack } from '../components/stacks';
+import { NavigationBar } from '../components/ui';
+import { ext } from '../const';
+import { shortcutChildrenRequired } from '../helpers';
 import {
   TAB_BAR_NAVIGATION_STACK,
   getTabNavigationStateFromTabBarState,
   getTabNavigationStack,
 } from '../redux';
-import { NavigationBar } from '../components/ui';
-import { ScreenStack } from '../components/stacks';
-import TabBarItem from '../components/TabBarItem';
-import { shortcutChildrenRequired } from '../helpers';
-import { ext } from '../const';
 
 const TABS_LIMIT = 5;
 

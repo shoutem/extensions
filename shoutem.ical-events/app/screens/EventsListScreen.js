@@ -8,9 +8,8 @@ import moment from 'moment';
 
 import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-import { View, Button, Text } from '@shoutem/ui';
-import { EmptyStateView } from '@shoutem/ui-addons';
-import { find, next, getCollection, isInitialized } from '@shoutem/redux-io';
+import { View, Button, Text, EmptyStateView } from '@shoutem/ui';
+import { find, next, isInitialized } from '@shoutem/redux-io';
 
 // TODO currentLocation should probably be extracted into shoutem.application
 import { currentLocation } from 'shoutem.cms';
@@ -19,9 +18,10 @@ import { triggerEvent } from 'shoutem.analytics';
 import { I18n } from 'shoutem.i18n';
 
 import ListEventView from '../components/ListEventView';
+import FeaturedEventView from '../components/FeaturedEventView';
 import { addToCalendar } from '../services/Calendar';
 import EventsMap from '../components/EventsMap';
-import { ext } from '../extension';
+import { ext } from '../const';
 import { EVENTS_PROXY_SCHEMA, getIcalFeed } from '../redux';
 
 export class EventsListScreen extends RemoteDataListScreen {
@@ -34,6 +34,7 @@ export class EventsListScreen extends RemoteDataListScreen {
     super(props, context);
     this.fetchData = this.fetchData.bind(this);
     this.renderRow = this.renderRow.bind(this);
+    this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
     this.openDetailsScreen = this.openDetailsScreen.bind(this);
     this.toggleMapMode = this.toggleMapMode.bind(this);
     this.addToCalendar = this.addToCalendar.bind(this);
@@ -158,6 +159,18 @@ export class EventsListScreen extends RemoteDataListScreen {
         style={style}
       />
     );
+  }
+
+  renderFeaturedItem(event) {
+    const { hasFeaturedItem } = this.props;
+
+    return hasFeaturedItem && event ? (
+      <FeaturedEventView
+        event={event}
+        onPress={this.openDetailsScreen}
+        action={this.addToCalendar}
+      />
+    ) : null;
   }
 
   renderRow(event) {

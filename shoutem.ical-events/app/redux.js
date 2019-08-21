@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 import { storage, collection, getCollection } from '@shoutem/redux-io';
 import { mapReducers, TARGET_ALL_REDUCERS } from '@shoutem/redux-composers';
 import adaptEventAttributes from './services/eventAdapter';
-import { ext } from './extension';
+import { ext } from './const';
 
 export const EVENTS_PROXY_SCHEMA = 'shoutem.proxy.ical.events';
 

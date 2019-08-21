@@ -1,7 +1,11 @@
 import URI from 'urijs';
+
 import rio from '@shoutem/redux-io';
-import { getAppId, getExtensionSettings } from 'shoutem.application';
-import { shoutemApi } from './services';
+
+import { getAppId } from 'shoutem.application/app';
+import { getExtensionSettings } from 'shoutem.application/redux';
+
+import { shoutemApi } from './services/shoutemApi';
 
 import {
   ext,

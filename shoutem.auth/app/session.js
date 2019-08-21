@@ -1,7 +1,6 @@
-
 import { getAppId } from 'shoutem.application';
 
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import { ext } from './const';
 

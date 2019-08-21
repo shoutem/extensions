@@ -15,11 +15,11 @@ import {
 
 import { I18n } from 'shoutem.i18n';
 
-import { adaptSocialUserForProfileScreen, formatLikeText } from '../services';
 import { ext } from '../const';
-import LikeButton from './LikeButton';
+import { adaptSocialUserForProfileScreen, formatLikeText } from '../services';
 import CommentButton from './CommentButton';
 import HtmlTextView from './HtmlTextView'
+import LikeButton from './LikeButton';
 import { post as postShape } from './shapes';
 
 const { func, bool } = PropTypes;
@@ -71,6 +71,7 @@ export default class StatusView extends PureComponent {
 
   handleClickOnUser() {
     const { status, openProfile } = this.props;
+
     const { user } = status;
 
     openProfile(adaptSocialUserForProfileScreen(user));
@@ -84,6 +85,7 @@ export default class StatusView extends PureComponent {
 
   renderHeader() {
     const { status } = this.props;
+
     const { user, created_at } = status;
     const userProfileImage = user.profile_image_url || undefined;
 
@@ -120,9 +122,10 @@ export default class StatusView extends PureComponent {
 
   renderStatusAttachments() {
     const { status, enableImageFullScreen } = this.props;
-    const { shoutem_attachments: attachments } = status;
 
+    const { shoutem_attachments: attachments } = status;
     const hasPicture = _.get(attachments, [0, 'type']) === 'picture';
+
     if (!hasPicture) {
       return null;
     }
@@ -155,7 +158,6 @@ export default class StatusView extends PureComponent {
     } = this.props;
 
     const likesDisplayLabel = formatLikeText(status, showUsersWhoLiked);
-
     const numOfComments = _.get(status, 'shoutem_reply_count', 0);
     const commentsDisplayLabel = I18n.t(ext('numberOfComments'), {
       count: numOfComments,

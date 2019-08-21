@@ -3,18 +3,18 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar, navigateBack } from 'shoutem.navigation';
-import { SearchField } from '@shoutem/ui-addons';
 import {
-  ListView,
-  Screen,
-  View,
-  Divider,
   Button,
+  Divider,
+  ListView,
+  SearchField,
+  Screen,
   Subtitle,
+  View,
 } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar, navigateBack } from 'shoutem.navigation';
 
 import MemberView from '../components/MemberView';
 import { openProfileForLegacyUser } from '../services';
@@ -23,6 +23,7 @@ import { ext } from '../const';
 export class SearchScreen extends PureComponent {
   constructor(props) {
     super(props);
+
     this.renderRightComponent = this.renderRightComponent.bind(this);
     this.renderLeftComponent = this.renderLeftComponent.bind(this);
     this.userMeetsSearchCriteria = this.userMeetsSearchCriteria.bind(this);
@@ -39,6 +40,7 @@ export class SearchScreen extends PureComponent {
 
   onCancel() {
     const { navigateBack } = this.props;
+
     navigateBack();
   }
 
@@ -52,6 +54,7 @@ export class SearchScreen extends PureComponent {
 
   userMeetsSearchCriteria(user) {
     const { text } = this.state;
+
     const lowerCaseText = text.toLowerCase();
 
     const userName = _.get(user, 'username', '').toLowerCase();
@@ -93,6 +96,7 @@ export class SearchScreen extends PureComponent {
 
   renderRow(user) {
     const { openProfile } = this.props;
+
     return (
       <MemberView
         openProfile={openProfile}
@@ -104,10 +108,9 @@ export class SearchScreen extends PureComponent {
   render() {
     const { users } = this.props;
 
-    const filteredUsers =
-      this.state.text
-      ? _.get(users, 'data').filter(user => this.userMeetsSearchCriteria(user))
-      : _.get(users, 'data');
+    const usersData = _.get(users, 'data');
+    const filteredUsers = this.state.text ?
+      usersData.filter(this.userMeetsSearchCriteria) : usersData;
 
     return (
       <Screen styleName="paper">

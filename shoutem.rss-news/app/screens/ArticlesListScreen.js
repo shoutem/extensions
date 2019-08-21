@@ -7,10 +7,11 @@ import { find, next } from '@shoutem/redux-io';
 
 import { navigateTo as navigateToAction } from 'shoutem.navigation';
 import { RssListScreen, getLeadImageUrl } from 'shoutem.rss';
-import { ListArticleView } from 'shoutem.news';
 
-import { ext } from '../const.js';
+import { ListArticleView } from '../components/ListArticleView';
+import { FeaturedArticleView } from '../components/FeaturedArticleView';
 import { RSS_NEWS_SCHEMA, getNewsFeed } from '../redux';
+import { ext } from '../const.js';
 
 export class ArticlesListScreen extends RssListScreen {
   static propTypes = {
@@ -27,6 +28,7 @@ export class ArticlesListScreen extends RssListScreen {
     this.openArticle = this.openArticle.bind(this);
     this.openArticleWithId = this.openArticleWithId.bind(this);
     this.renderRow = this.renderRow.bind(this);
+    this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
   }
 
   openArticle(article) {
@@ -56,6 +58,22 @@ export class ArticlesListScreen extends RssListScreen {
     const { data } = this.props;
     const currentArticleIndex = _.findIndex(data, { id: article.id });
     return data[currentArticleIndex + 1];
+  }
+
+  renderFeaturedItem(article) {
+    const { hasFeaturedItem } = this.props;
+
+    return hasFeaturedItem && article ? (
+      <FeaturedArticleView
+        key={article.id}
+        articleId={article.id}
+        title={article.title}
+        imageUrl={getLeadImageUrl(article)}
+        author={article.author}
+        date={article.timeUpdated}
+        onPress={this.openArticleWithId}
+      />
+    ) : null;
   }
 
   renderRow(article) {

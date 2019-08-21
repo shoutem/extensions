@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import { TouchableOpacity, ImageBackground } from '@shoutem/ui';
 
-import { resolveIconSource } from 'shoutem.theme';
+import { resolveIconSource } from 'shoutem.theme/helpers/resolveIconSource';
 
 /**
  * Used to set Folder item background.

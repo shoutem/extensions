@@ -3,8 +3,9 @@ import React, { PureComponent } from 'react';
 import { LayoutAnimation } from 'react-native';
 import _ from 'lodash';
 
-import { MapView } from '@shoutem/ui-addons';
 import { View } from '@shoutem/ui';
+
+import { MapView } from 'shoutem.application';
 
 import ListEventView from '../components/ListEventView';
 import isValidEvent from '../services/isValidEvent';

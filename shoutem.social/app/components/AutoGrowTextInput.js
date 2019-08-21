@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-
 import _ from 'lodash';
 
 import { TextInput } from '@shoutem/ui';
@@ -35,7 +34,6 @@ export default class AutoGrowTextInput extends PureComponent {
     const text = _.get(event, 'nativeEvent.text');
 
     this.handleTextChange(text);
-    this.handleContentSizeChange(event);
   }
 
   handleTextChange(text) {
@@ -69,7 +67,7 @@ export default class AutoGrowTextInput extends PureComponent {
   }
 
   render() {
-    const { height } = this.state;
+    const height = _.get(this.state, 'height', 60);
     const textInputProps = _.omit(this.props, [
       'onTextChanged',
       'maxHeight',
@@ -79,7 +77,7 @@ export default class AutoGrowTextInput extends PureComponent {
     return (
       <TextInput
         onChange={this.handleStatusInputChange}
-        style={{ height }}
+        onContentSizeChange={this.handleContentSizeChange}
         {...textInputProps}
       />
     );

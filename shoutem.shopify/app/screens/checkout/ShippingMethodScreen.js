@@ -7,6 +7,7 @@ import _ from 'lodash';
 import {
   Caption,
   Divider,
+  EmptyStateView,
   Screen,
   ListView,
   Row,
@@ -16,7 +17,6 @@ import {
   View,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { EmptyStateView } from '@shoutem/ui-addons';
 
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';

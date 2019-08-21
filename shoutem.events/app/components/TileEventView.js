@@ -19,6 +19,7 @@ export default class TileEventView extends BaseEventItem {
 
   render() {
     const { event } = this.props;
+    
     return (
       <TouchableOpacity onPress={this.onPress}>
         <EventImage

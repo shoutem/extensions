@@ -1,11 +1,16 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import { combineReducers } from 'redux';
 import _ from 'lodash';
-
-import { saveStateToLocalStorage } from './app';
 
 const LOAD_FAVORITES_SCHEMAS = 'shoutem.favorites.LOAD_FAVORITES_SCHEMAS';
 const SAVE_FAVORITE_ITEM = 'shoutem.favorites.SAVE_FAVORITE_ITEM';
 const DELETE_FAVORITE_ITEM = 'shoutem.favorites.DELETE_FAVORITE_ITEM';
+
+// this was previously imported from './app.js' and was a cyclic dependency
+// it's moved here to prevent issues with require cycles
+function saveStateToLocalStorage(schema, items) {
+  AsyncStorage.setItem(schema, JSON.stringify(items));
+}
 
 /**
  * Action creator used to save favorite items

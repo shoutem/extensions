@@ -12,7 +12,7 @@ import {
   executeShortcut,
   getActiveShortcut,
   isShortcutVisible,
-} from 'shoutem.application';
+} from 'shoutem.application/redux';
 
 import {
   navigateBack,

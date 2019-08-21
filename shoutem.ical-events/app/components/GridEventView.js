@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   TouchableOpacity,
   Button,
@@ -9,6 +10,7 @@ import {
   Icon,
   Image
 } from '@shoutem/ui';
+
 import { formatToLocalDate } from '../services/Calendar';
 import { BaseEventItem } from './BaseEventItem';
 

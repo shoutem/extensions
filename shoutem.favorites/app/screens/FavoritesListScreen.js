@@ -5,8 +5,7 @@ import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 
 import { getCollection } from '@shoutem/redux-io';
-import { EmptyStateView } from '@shoutem/ui-addons';
-import { Screen, ListView, Spinner } from '@shoutem/ui';
+import { Screen, ListView, Spinner, EmptyStateView } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation'

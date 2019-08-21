@@ -1,15 +1,16 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { LayoutAnimation } from 'react-native';
-import { connectStyle } from '@shoutem/theme';
 import _ from 'lodash';
-import {
-  View,
-} from '@shoutem/ui';
-import { MapView, EmptyStateView } from '@shoutem/ui-addons';
+
+import { connectStyle } from '@shoutem/theme';
+import { View, EmptyStateView } from '@shoutem/ui';
+
+import { MapView } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-import { ext } from '../const';
+
 import PlaceIconView from '../components/PlaceIconView';
+import { ext } from '../const';
 
 export class MapList extends PureComponent {
 

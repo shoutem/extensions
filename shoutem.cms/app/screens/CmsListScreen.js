@@ -1,27 +1,18 @@
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import React, {
-  PureComponent,
-} from 'react';
-
-import {
-  AppState,
-  InteractionManager,
-} from 'react-native';
-
 import { bindActionCreators } from 'redux';
+import { AppState, InteractionManager } from 'react-native';
 import _ from 'lodash';
+
+import { NavigationBar } from 'shoutem.navigation';
 
 import {
   DropDownMenu,
+  EmptyStateView,
   ListView,
   Screen,
   View,
 } from '@shoutem/ui';
-import { NavigationBar } from 'shoutem.navigation';
-
-import {
-  EmptyStateView,
-} from '@shoutem/ui-addons';
 
 import {
   find as findAction,
@@ -44,8 +35,6 @@ import {
 } from 'shoutem.navigation';
 
 import { I18n } from 'shoutem.i18n';
-
-import { ext } from '../const'
 
 import {
   CATEGORIES_SCHEMA,
@@ -514,13 +503,16 @@ export class CmsListScreen extends PureComponent {
     );
   }
 
+  renderFeaturedItem() {}
+
   renderData(data) {
+    const { style, hasFeaturedItem } = this.props;
+
     if (this.shouldRenderPlaceholderView()) {
       return this.renderPlaceholderView();
     }
 
     const loading = isBusy(data) || !isInitialized(data);
-    const { style } = this.props;
 
     return (
       <ListView
@@ -531,6 +523,8 @@ export class CmsListScreen extends PureComponent {
         onLoadMore={this.loadMore}
         getSectionId={this.getSectionId}
         renderSectionHeader={this.renderSectionHeader}
+        hasFeaturedItem={hasFeaturedItem}
+        renderFeaturedItem={hasFeaturedItem ? this.renderFeaturedItem : null}
         style={style}
         initialListSize={1}
         {...this.getListProps()}

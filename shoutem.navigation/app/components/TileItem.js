@@ -1,6 +1,7 @@
 import React from 'react';
-import { NavigationBaseItem } from './NavigationBaseItem';
+
 import { FolderItemContainer } from './FolderItemContainer';
+import { NavigationBaseItem } from './NavigationBaseItem';
 
 /**
  * Do not connect to style. Style it trough List screen so dimension related style can be

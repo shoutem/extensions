@@ -21,10 +21,11 @@ import { BaseEventItem } from './BaseEventItem';
 export default class MediumEventView extends BaseEventItem {
 
   render() {
-    const { event } = this.props;
+    const { event, onPress } = this.props;
+
     return (
       <TouchableOpacity
-        disabled={!_.isFunction(this.props.onPress)}
+        disabled={!_.isFunction(onPress)}
         onPress={this.onPress}
         key={event.id}
       >

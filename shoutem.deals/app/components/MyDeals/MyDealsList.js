@@ -1,14 +1,9 @@
-import _ from 'lodash';
-
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-
-import {
-  InteractionManager,
-} from 'react-native';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { InteractionManager } from 'react-native';
+import _ from 'lodash';
 
 import {
   cloneStatus,
@@ -19,13 +14,14 @@ import {
   isValid,
   next,
 } from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
 import {
+  EmptyStateView,
   GridRow,
   ListView,
   View,
 } from '@shoutem/ui';
-import { EmptyStateView } from '@shoutem/ui-addons';
+import { connectStyle } from '@shoutem/theme';
+
 import { authenticate, isAuthenticated } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 

@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import _ from 'lodash';
 
 import { loadFavoritesSchemas, saveFavorite } from './redux';
@@ -37,10 +37,6 @@ function getFavorites(schemas, dispatch) {
       }
     });
   });
-}
-
-export function saveStateToLocalStorage(schema, items) {
-  AsyncStorage.setItem(schema, JSON.stringify(items));
 }
 
 export function appDidMount(app) {

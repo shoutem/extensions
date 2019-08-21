@@ -4,12 +4,11 @@ import _ from 'lodash';
 
 import { Text, Image } from '@shoutem/ui';
 
-import { resolveIconSource } from 'shoutem.theme';
+import { resolveIconSource } from 'shoutem.theme/helpers/resolveIconSource';
 
 const missingIconSource = require('../assets/images/missing_icon.png');
 
 const { bool, func, object } = PropTypes;
-
 
 export class NavigationBaseItem extends PureComponent {
   static propTypes = {

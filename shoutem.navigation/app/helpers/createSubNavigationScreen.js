@@ -5,14 +5,12 @@ import _ from 'lodash';
 
 import { Screen } from '@shoutem/ui';
 
-import { actions, getFirstShortcut } from 'shoutem.application';
+import { getFirstShortcut } from 'shoutem.application/shared/getFirstShortcut';
+import { executeShortcut } from 'shoutem.application/redux';
 
 import { NavigationBar } from '../components/ui';
-
-import {
-  mapExtensionSettingsToProps,
-  shortcutChildrenRequired,
-} from './index';
+import mapExtensionSettingsToProps from './mapExtensionSettingsToProps';
+import shortcutChildrenRequired from './shortcutChildrenRequired';
 
 const { bool, string, object } = PropTypes;
 
@@ -92,7 +90,7 @@ export default function createSubNavigationScreen(Component) {
   });
 
   const mapDispatchToProps = {
-    executeShortcut: actions.executeShortcut,
+    executeShortcut: executeShortcut,
   };
 
   return shortcutChildrenRequired(

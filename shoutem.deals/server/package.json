@@ -1,6 +1,6 @@
 {
   "name": "shoutem.deals",
-  "version": "2.0.4",
+  "version": "2.1.1",
   "description": "Create special deals and redeem them with coupons",
   "scripts": {
     "clean": "rimraf ./build/*",

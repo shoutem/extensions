@@ -9,7 +9,9 @@ import {
   getOne,
   getCollection,
 } from '@shoutem/redux-io';
-import { getActiveRoute } from 'shoutem.navigation';
+
+import { getActiveRoute } from 'shoutem.navigation/redux/core';
+import { preventStateRehydration } from 'shoutem.redux';
 
 import configuration from './configuration.json';
 import {
@@ -21,7 +23,6 @@ import {
   SCREENS_SCHEMA,
   EXTENSIONS_SCHEMA,
 } from './const';
-import { preventStateRehydration } from 'shoutem.redux';
 
 // Because of chrome inspection bug we are exporting function as constants
 // Bug is we can not set breakpoint in files which export function directly

@@ -1,7 +1,7 @@
 {
   "name": "about",
-  "version": "2.0.1",
-  "platform": "2.0.*",
+  "version": "2.1.0",
+  "platform": "2.1.*",
   "title": "About",
   "description": "Show info about your app or your business",
   "icon": "server/assets/add-about-image.png",

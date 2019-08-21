@@ -1,8 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import _ from 'lodash';
-import tinyColor from 'tinycolor2';
-
 import {
   Platform,
   StatusBar,
@@ -10,11 +7,9 @@ import {
   InteractionManager,
 } from 'react-native';
 import { Header as NavigationHeader } from 'react-native-navigation-experimental-compat';
+import _ from 'lodash';
+import tinyColor from 'tinycolor2';
 
-import {
-  Device,
-  LinearGradient,
-} from '@shoutem/ui';
 import {
   connectAnimation,
   isAnimatedStyleValue,
@@ -24,6 +19,10 @@ import {
   TimingDriver,
 } from '@shoutem/animation';
 import { connectStyle } from '@shoutem/theme';
+import {
+  Device,
+  LinearGradient,
+} from '@shoutem/ui';
 
 import composeChildren from './composeChildren';
 
@@ -165,7 +164,7 @@ class NavigationBarView extends PureComponent {
    */
   resolveStatusBarStyle(color, animated) {
     const colorValue = getAnimatedStyleValue(color);
-    const barStyle = tinyColor(colorValue).isDark() ? 'light-content' : 'dark-content';
+    const barStyle = tinyColor(colorValue).isDark() ? 'dark-content' : 'light-content';
 
     StatusBar.setBarStyle(barStyle, animated);
   }

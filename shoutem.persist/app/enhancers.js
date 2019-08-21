@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { toSerializableFormat, fromSerializableFormat } from '@shoutem/redux-io/serialization';
 import { persistStore, createTransform, autoRehydrate } from 'redux-persist';
 

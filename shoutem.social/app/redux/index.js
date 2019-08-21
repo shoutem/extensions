@@ -1,4 +1,5 @@
 export {
+  adaptSocialUserForProfileScreen,
   loadStatuses,
   deleteStatus,
   createStatus,

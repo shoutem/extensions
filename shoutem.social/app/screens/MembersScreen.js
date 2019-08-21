@@ -5,16 +5,14 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { isBusy, isInitialized } from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
-import { navigateTo } from 'shoutem.navigation';
-import { next } from '@shoutem/redux-io';
+import { isBusy, isInitialized, next } from '@shoutem/redux-io';
 import {
   setStatus,
   createStatus,
   updateStatus,
   validationStatus
 } from '@shoutem/redux-io/status';
+import { connectStyle } from '@shoutem/theme';
 import {
   ListView,
   View,
@@ -22,17 +20,18 @@ import {
   Icon,
 } from '@shoutem/ui';
 
-import { ListScreen } from 'shoutem.application';
+import { RemoteDataListScreen } from 'shoutem.application';
+import { navigateTo } from 'shoutem.navigation';
 
 import MemberView from '../components/MemberView';
 import { user as userShape } from '../components/shapes';
+import { ext } from '../const';
 import { loadUsers } from '../redux';
 import { openProfileForLegacyUser } from '../services';
-import { ext } from '../const';
 
-export class MembersScreen extends ListScreen {
+export class MembersScreen extends RemoteDataListScreen {
   static propTypes = {
-    ...ListScreen.propTypes,
+    ...RemoteDataListScreen.propTypes,
     title: PropTypes.string.isRequired,
     data: PropTypes.shape({
       data: PropTypes.arrayOf(userShape),
@@ -41,6 +40,7 @@ export class MembersScreen extends ListScreen {
 
   constructor(props) {
     super(props);
+
     this.renderRightComponent = this.renderRightComponent.bind(this);
     this.openSearchScreen = this.openSearchScreen.bind(this);
     this.renderRow = this.renderRow.bind(this);
@@ -102,6 +102,7 @@ export class MembersScreen extends ListScreen {
 
   renderData(data) {
     const { loadUsers } = this.props;
+
     if (this.shouldRenderPlaceholderView(data)) {
       return this.renderPlaceholderView(data);
     }

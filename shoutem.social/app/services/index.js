@@ -1,7 +1,4 @@
-import ShoutemApi from './shoutemApi';
-const shoutemApi = new ShoutemApi();
-
-export { shoutemApi };
+export ShoutemApi, { shoutemApi } from './shoutemApi';
 
 export {
   increaseNumberOfComments,

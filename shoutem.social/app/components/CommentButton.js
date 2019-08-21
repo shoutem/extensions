@@ -22,11 +22,13 @@ export default class CommentButton extends PureComponent {
 
   constructor(props) {
     super(props);
+
     this.commentStatus = this.commentStatus.bind(this);
   }
 
   commentStatus() {
     const { status, addComment } = this.props;
+
     addComment(status.id);
   }
 

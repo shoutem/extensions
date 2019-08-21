@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import {
   cloneStatus,
@@ -12,18 +11,15 @@ import {
   isInitialized,
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { GridRow, ListView, View } from '@shoutem/ui';
-import { EmptyStateView } from '@shoutem/ui-addons';
-import { navigateTo } from 'shoutem.navigation';
-import { CmsListScreen } from 'shoutem.cms';
-import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
-import { I18n } from 'shoutem.i18n';
+import { GridRow, ListView, View, EmptyStateView } from '@shoutem/ui';
 
+import { I18n } from 'shoutem.i18n';
+import { CmsListScreen } from 'shoutem.cms';
+import { navigateTo } from 'shoutem.navigation';
+import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
+
+import { fetchDealListTransactions, getFavoriteDeals } from '../../redux';
 import { ext, DEALS_SCHEMA } from '../../const';
-import {
-  fetchDealListTransactions,
-  getFavoriteDeals,
-} from '../../redux';
 import DealGridView from '../DealGridView';
 
 export class FavoriteDealsList extends PureComponent {
@@ -52,6 +48,7 @@ export class FavoriteDealsList extends PureComponent {
 
   componentDidMount() {
     const { favorites } = this.props;
+
     this.fetchFavoriteDeals(favorites);
   }
 

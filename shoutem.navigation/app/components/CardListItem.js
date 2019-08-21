@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { NavigationBaseItem } from './NavigationBaseItem';
 import { FolderItemContainer } from './FolderItemContainer';
 
@@ -9,8 +10,10 @@ import { FolderItemContainer } from './FolderItemContainer';
 export default class CardListItem extends NavigationBaseItem {
   render() {
     const { style, styleName, showBackground } = this.props;
+    
     const shortcutSettings = this.getShortcutLayoutSettings('cardList');
     const backgroundImageUrl = showBackground ? shortcutSettings.normalIconUrl : undefined;
+
     return (
       <FolderItemContainer
         onPress={this.onPress}

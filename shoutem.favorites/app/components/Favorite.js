@@ -3,19 +3,19 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { LayoutAnimation } from 'react-native';
 import { bindActionCreators } from 'redux';
-import {
-  Button,
-  Icon,
-} from '@shoutem/ui';
+
+import { Button, Icon } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+
+import { ext } from '../const';
+import {
+  isFavoriteItem,
+  isFavoritesSchema,
+} from '../helpers';
 import {
   saveFavorite,
   deleteFavorite,
-  isFavoriteItem,
-  isFavoritesSchema,
-} from 'shoutem.favorites';
-
-import { ext } from '../const';
+} from '../redux';
 
 export class Favorite extends PureComponent {
   static propTypes = {
@@ -31,6 +31,7 @@ export class Favorite extends PureComponent {
 
   constructor(props) {
     super(props);
+
     this.toggleFavorite = this.toggleFavorite.bind(this);
   }
 
@@ -69,6 +70,7 @@ export class Favorite extends PureComponent {
 
 export const mapStateToProps = (state, ownProps) => {
   const { schema, item } = ownProps;
+
   return {
     isFavorite: isFavoriteItem(state, schema, item.id),
     hasFavorites: isFavoritesSchema(state, schema),

@@ -1,9 +1,11 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
+
 import { FontIcon } from '@shoutem/react-web-ui';
+
 import './style.scss';
 
-export default class ImagePreview extends React.Component {
+export default class ImagePreview extends Component {
   constructor(props) {
     super(props);
 

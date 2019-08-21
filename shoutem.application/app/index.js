@@ -12,16 +12,23 @@ import {
   noInternetMiddleware,
   restartAppMiddleware,
 } from './middleware';
-import { openInitialScreen } from './shared/openInitialScreen';
+
 import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
+import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
+import { openInitialScreen } from './shared/openInitialScreen';
+import { getFirstShortcut } from './shared/getFirstShortcut';
 import { isProduction } from './shared/isProduction';
 import { isRelease } from './shared/isRelease';
-import { getFirstShortcut } from './shared/getFirstShortcut';
+
+import { InlineMap } from './components/InlineMap';
+import { MapView } from './components/MapView';
+
 import {
   CONFIGURATION_SCHEMA,
   EXTENSIONS_SCHEMA,
   ext,
 } from './const';
+
 import {
   initializeApp,
   appWillMount,
@@ -32,7 +39,6 @@ import {
   getAppId,
   isDevelopment,
 } from './app';
-import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 
 import reducer, {
   RESTART_APP,
@@ -100,6 +106,9 @@ export {
   // For backwards compatibility only,
   // remove this when all extensions have been updated.
   RemoteDataListScreen as ListScreen,
+
+  InlineMap,
+  MapView,
 
   executeShortcut,
   openInitialScreen,

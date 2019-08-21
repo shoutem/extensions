@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Platform, Linking } from 'react-native';
 
-import { MapView } from '@shoutem/ui-addons';
 import { Screen, Text, Button, View } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
+import { MapView } from 'shoutem.application';
 import { NavigationBar } from 'shoutem.navigation'
 
 export default class EventMapScreen extends PureComponent {

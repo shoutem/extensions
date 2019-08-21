@@ -3,8 +3,8 @@ import { BackHandler, ToastAndroid } from 'react-native';
 
 import { canonicalRenderResource } from 'shoutem-core';
 
+import { getExtensionSettings } from 'shoutem.application/redux';
 import { I18n } from 'shoutem.i18n';
-import { getExtensionSettings } from 'shoutem.application';
 
 import { getActiveNavigationStackState, navigateBack } from './redux/core';
 import { RootScreenStack } from './components/stacks';

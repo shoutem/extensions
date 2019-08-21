@@ -1,11 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-
 import _ from 'lodash';
 
-import {
-  EmptyStateView,
-} from '@shoutem/ui-addons';
+import { EmptyStateView } from '@shoutem/ui';
 
 import { RemoteDataListScreen } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';

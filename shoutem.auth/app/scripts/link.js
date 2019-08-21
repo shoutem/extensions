@@ -8,5 +8,7 @@ function replaceFbSdkPackageRegistration() {
   replace(mainApplication, 'new FBSDKPackage(),', fbSdk.android.mainApplication.package);
 }
 
+reactNativeLink('@react-native-community/async-storage');
 reactNativeLink('react-native-fbsdk');
+reactNativeLink('react-native-image-picker');
 replaceFbSdkPackageRegistration();

@@ -8,15 +8,12 @@ import { I18n } from 'shoutem.i18n';
 import {
   Screen,
   ListView,
+  EmptyStateView,
 } from '@shoutem/ui';
 
 import {
   NavigationBar,
 } from 'shoutem.navigation';
-
-import {
-  EmptyStateView,
-} from '@shoutem/ui-addons';
 
 import {
   isBusy,
@@ -141,6 +138,12 @@ export default class RemoteDataListScreen extends PureComponent {
     return null;
   }
 
+  // Oveerride this function to render a featured item which differs from default renderRow.
+  // eslint-disable-next-line no-unused-vars
+  renderFeaturedItem(item) {
+    return null;
+  }
+
   // Override this function to render data items
   // eslint-disable-next-line no-unused-vars
   renderRow(item) {
@@ -148,6 +151,8 @@ export default class RemoteDataListScreen extends PureComponent {
   }
 
   renderData(data) {
+    const { hasFeaturedItem } = this.props;
+
     if (this.shouldRenderPlaceholderView(data)) {
       return this.renderPlaceholderView(data);
     }
@@ -161,6 +166,8 @@ export default class RemoteDataListScreen extends PureComponent {
         onRefresh={this.fetchData}
         onLoadMore={this.loadMore}
         renderSectionHeader={this.renderSectionHeader}
+        hasFeaturedItem={hasFeaturedItem}
+        renderFeaturedItem={this.renderFeaturedItem}
         style={this.props.style.list}
         initialListSize={1}
         {...this.getListProps()}

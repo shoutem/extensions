@@ -1,6 +1,10 @@
 import { combineReducers } from 'redux';
+
 import { storage } from '@shoutem/redux-io';
-import { getConfiguration, isConfigurationLoaded } from 'shoutem.application';
+
+import { isConfigurationLoaded } from 'shoutem.application/shared/isConfigurationLoaded';
+import { getConfiguration } from 'shoutem.application/redux';
+
 import { THEMES_SCHEMA } from './const';
 
 /**

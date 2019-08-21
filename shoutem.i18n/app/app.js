@@ -5,7 +5,7 @@ import moment from 'moment';
 // Load locale data into moment
 import 'moment/min/locales';
 
-import { getExtensionSettings } from 'shoutem.application';
+import { getExtensionSettings } from 'shoutem.application/redux';
 
 import { ext } from './const';
 import customTranslations from './translations';

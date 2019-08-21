@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Alert, KeyboardAvoidingView } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   Row,
@@ -16,15 +18,13 @@ import {
   TouchableOpacity,
   ScrollView,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { ImagePicker } from '@shoutem/ui-addons';
 
-import { I18n } from 'shoutem.i18n';
 import { loginRequired } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';
 
-import { user as userShape } from '../components/shapes';
 import AutoGrowTextInput from '../components/AutoGrowTextInput';
+import { user as userShape } from '../components/shapes';
 import { ext } from '../const';
 
 const { string, func, number, bool } = PropTypes;

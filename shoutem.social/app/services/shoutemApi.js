@@ -20,3 +20,5 @@ export default class ShoutemApi {
       .toString();
   }
 }
+
+export const shoutemApi = new ShoutemApi();

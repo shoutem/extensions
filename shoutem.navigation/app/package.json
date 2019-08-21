@@ -1,11 +1,10 @@
 {
   "name": "shoutem.navigation",
-  "version": "2.0.11",
+  "version": "2.1.2",
   "description": "Main navigation",
   "dependencies": {
     "react-native-side-menu": "1.1.3",
-    "@shoutem/ui": "~0.23.16",
-    "@shoutem/ui-addons": "~0.0.30",
+    "@shoutem/ui": "~1.0.0",
     "@shoutem/redux-io": "3.0.1-beta.3",
     "@shoutem/theme": "~0.11.3",
     "@shoutem/redux-composers": "0.1.4",

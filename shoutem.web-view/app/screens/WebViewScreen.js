@@ -1,16 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Pdf from 'react-native-pdf';
-import {
-  WebView,
-  Dimensions,
-  Platform,
-} from 'react-native';
 import { connect } from 'react-redux';
+import { Dimensions, Platform } from 'react-native';
+import WebView from 'react-native-webview';
+import Pdf from 'react-native-pdf';
 import _ from 'lodash';
 
-import { View, Screen, Spinner } from '@shoutem/ui';
-import { EmptyStateView } from '@shoutem/ui-addons';
+import { View, Screen, Spinner, EmptyStateView } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
 import { currentLocation } from 'shoutem.cms';
@@ -31,6 +27,8 @@ export class WebViewScreen extends PureComponent {
         title: string,
       }),
     }),
+    // received via openURL, when other extensions open in-app browsers
+    requireLocationPermission: bool,
   };
 
   constructor(props) {
@@ -53,11 +51,17 @@ export class WebViewScreen extends PureComponent {
     // WebView re-rendering after every change, so there are no
     // actual prop changes:
     // https://stackoverflow.com/a/40330289/7920643
-    const { checkPermissionStatus } = props;
-    const requireGeolocationPermission = _.get(props, 'shortcut.settings.requireGeolocationPermission', false);
+    const { checkPermissionStatus, requireLocationPermission } = props;
+
+    if (!_.isFunction(checkPermissionStatus)) {
+      return;
+    }
+
+    const settingsPath = 'shortcut.settings.requireGeolocationPermission';
+    const requirePermission = _.get(props, settingsPath, false) || requireLocationPermission;
     const isLocationAvailable = !!props.currentLocation;
 
-    if (requireGeolocationPermission && !isLocationAvailable && _.isFunction(checkPermissionStatus)) {
+    if (requirePermission && !isLocationAvailable) {
       checkPermissionStatus();
     }
   }

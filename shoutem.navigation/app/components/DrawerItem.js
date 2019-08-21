@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { connectStyle } from '@shoutem/theme';
 import { Touchable } from '@shoutem/ui';
 

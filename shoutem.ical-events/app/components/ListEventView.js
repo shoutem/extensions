@@ -13,6 +13,7 @@ import {
   Button,
   Image
 } from '@shoutem/ui';
+
 import { formatToLocalDate } from '../services/Calendar';
 
 /**

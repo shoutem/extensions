@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   TouchableOpacity,
   Title,
@@ -11,10 +12,12 @@ import {
   Divider,
   ImageBackground,
 } from '@shoutem/ui';
+
 import { I18n } from 'shoutem.i18n';
-import { BaseEventItem } from './BaseEventItem';
+
 import { formatToLocalDate } from '../services/Calendar';
-import { ext } from '../extension';
+import { ext } from '../const';
+import { BaseEventItem } from './BaseEventItem';
 
 /**
  * A component used to render featured events

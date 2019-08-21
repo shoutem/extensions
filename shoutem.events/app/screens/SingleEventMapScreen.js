@@ -1,22 +1,11 @@
 import PropTypes from 'prop-types';
-import React, {
-  PureComponent,
-} from 'react';
-import {
-  Platform,
-  Linking,
-} from 'react-native';
+import React, { PureComponent } from 'react';
+import { Platform, Linking } from 'react-native';
 
-
-import {
-  Screen,
-  Text,
-  Button,
-  View,
-} from '@shoutem/ui';
-import { MapView } from '@shoutem/ui-addons';
+import { Screen, Text, Button, View } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
+import { MapView } from 'shoutem.application';
 import { NavigationBar } from 'shoutem.navigation';
 
 export default class SingleEventMapScreen extends PureComponent {
@@ -34,6 +23,7 @@ export default class SingleEventMapScreen extends PureComponent {
 
   openMaps() {
     const { marker } = this.props;
+
     const geoURL = `geo:${marker.latitude},${marker.longitude}`;
 
     Linking.canOpenURL(geoURL).then((supported) => {
@@ -55,6 +45,7 @@ export default class SingleEventMapScreen extends PureComponent {
         </View>
       );
     }
+
     return null;
   }
 
@@ -68,7 +59,6 @@ export default class SingleEventMapScreen extends PureComponent {
           title={title.toUpperCase()}
           renderRightComponent={this.renderNavigateButton}
         />
-
         <MapView
           initialRegion={marker}
           markers={[marker]}

@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
 import { connect } from 'react-redux';
-
+import { InteractionManager, Linking, Platform } from 'react-native';
 import _ from 'lodash';
 
 import {
@@ -23,56 +22,24 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-
-import {
-  find,
-  getCollection,
-  isBusy,
-} from '@shoutem/redux-io';
-
-import {
-  InteractionManager,
-  Linking,
-  Platform,
-} from 'react-native';
-
-import {
-  InlineMap,
- } from '@shoutem/ui-addons';
-
-import {
-  NavigationBar,
-  navigateTo,
-  openInModal,
-} from 'shoutem.navigation';
-
+import { find, getCollection, isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 
-import { I18n } from 'shoutem.i18n';
+import { NavigationBar, navigateTo, openInModal } from 'shoutem.navigation';
+import { InlineMap } from 'shoutem.application';
 import { openURL } from 'shoutem.web-view';
-
-import {
-  ext,
-  PLACE_REWARDS_SCHEMA,
-} from '../../const';
+import { I18n } from 'shoutem.i18n';
 
 import {
   placeShape,
   rewardShape,
   transactionShape,
 } from '../../components/shapes';
-
 import PlaceRewardListView from '../../components/PlaceRewardListView';
 import PlaceLoyaltyPointsView from '../../components/PlaceLoyaltyPointsView';
-
-import {
-  fetchPlaceRewards,
-  getCardStateForPlace,
-} from '../../redux';
-
-import {
-  refreshTransactions,
-} from '../../services';
+import { fetchPlaceRewards, getCardStateForPlace } from '../../redux';
+import { refreshTransactions } from '../../services';
+import { ext } from '../../const';
 
 /* eslint-disable class-methods-use-this */
 

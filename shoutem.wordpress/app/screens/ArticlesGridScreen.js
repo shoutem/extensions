@@ -6,16 +6,15 @@ import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
 import { cloneStatus } from '@shoutem/redux-io';
 
-import { FeaturedArticleView, GridArticleView } from 'shoutem.news';
-
+import { GridArticleView } from '../components/GridArticleView';
+import { FeaturedArticleView } from '../components/FeaturedArticleView';
+import { getLeadImageUrl, resolveArticleTitle } from '../services';
+import { ext } from '../const';
 import {
   ArticlesListScreen,
   mapStateToProps,
   mapDispatchToProps,
 } from './ArticlesListScreen';
-
-import { ext } from '../const';
-import { getLeadImageUrl, resolveArticleTitle } from '../services';
 
 class ArticlesGridScreen extends ArticlesListScreen {
   static propTypes = {
@@ -34,21 +33,22 @@ class ArticlesGridScreen extends ArticlesListScreen {
     };
   }
 
-  renderRow(articles, sectionId, index) {
-    if (index === '0') {
-      const article = articles[0];
-      return (
-        <FeaturedArticleView
-          key={article.id}
-          articleId={article.id.toString()}
-          title={resolveArticleTitle(article.title.rendered)}
-          imageUrl={getLeadImageUrl(article)}
-          date={article.modified}
-          onPress={this.openArticleWithId}
-        />
-      );
-    }
+  renderFeaturedItem(article) {
+    const { hasFeaturedItem } = this.props;
 
+    return hasFeaturedItem && article ? (
+      <FeaturedArticleView
+        key={article[0].id}
+        articleId={article[0].id.toString()}
+        title={resolveArticleTitle(article[0].title.rendered)}
+        imageUrl={getLeadImageUrl(article[0])}
+        date={article[0].modified}
+        onPress={this.openArticleWithId}
+      />
+    ) : null;
+  }
+
+  renderRow(articles) {
     const articleViews = _.map(articles, (article) => {
       return (
         <GridArticleView
@@ -70,9 +70,10 @@ class ArticlesGridScreen extends ArticlesListScreen {
   }
 
   renderData(articles) {
+    const { hasFeaturedItem } = this.props;
     // Group the articles into rows with 2 columns, except for the
     // first article. The first article is treated as a featured article
-    let isFirstArticle = true;
+    let isFirstArticle = hasFeaturedItem;
     const groupedArticles = GridRow.groupByRows(articles, 2, () => {
       if (isFirstArticle) {
         isFirstArticle = false;

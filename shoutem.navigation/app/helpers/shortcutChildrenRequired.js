@@ -3,11 +3,12 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { ext, getFirstShortcut } from 'shoutem.application';
+import { getFirstShortcut } from 'shoutem.application/shared/getFirstShortcut';
 
 import { navigateTo } from '../redux/core';
 import NoScreens from '../screens/NoScreens';
 import NoContent from '../screens/NoContent';
+import { ext } from '../const';
 import mapExtensionSettingsToProps from './mapExtensionSettingsToProps';
 
 /**

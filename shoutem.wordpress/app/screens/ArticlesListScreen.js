@@ -7,20 +7,21 @@ import { connectStyle } from '@shoutem/theme';
 import { navigateTo as navigateToAction } from 'shoutem.navigation';
 import { find, next } from '@shoutem/redux-io';
 
-import { ListScreen } from 'shoutem.application';
-import { ListArticleView } from 'shoutem.news';
+import { RemoteDataListScreen } from 'shoutem.application';
 
-import { ext } from '../const';
+import { ListArticleView } from '../components/ListArticleView';
+import { FeaturedArticleView } from '../components/FeaturedArticleView';
+import { getLeadImageUrl, resolveArticleTitle } from '../services';
 import {
   WORDPRESS_NEWS_SCHEMA,
   fetchWordpressPosts,
   getFeedItems,
 } from '../redux';
-import { getLeadImageUrl, resolveArticleTitle } from '../services';
+import { ext } from '../const';
 
-export class ArticlesListScreen extends ListScreen {
+export class ArticlesListScreen extends RemoteDataListScreen {
   static propTypes = {
-    ...ListScreen.propTypes,
+    ...RemoteDataListScreen.propTypes,
     page: PropTypes.number,
     perPage: PropTypes.number,
     loadFeed: PropTypes.func,
@@ -39,6 +40,7 @@ export class ArticlesListScreen extends ListScreen {
     this.openArticle = this.openArticle.bind(this);
     this.openArticleWithId = this.openArticleWithId.bind(this);
     this.renderRow = this.renderRow.bind(this);
+    this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
     this.fetchPosts = this.fetchPosts.bind(this);
   }
 
@@ -107,6 +109,22 @@ export class ArticlesListScreen extends ListScreen {
     return data[currentArticleIndex + 1];
   }
 
+  renderFeaturedItem(article) {
+    const { hasFeaturedItem } = this.props;
+
+    return hasFeaturedItem && article ? (
+      <FeaturedArticleView
+        key={article.id}
+        articleId={article.id.toString()}
+        title={resolveArticleTitle(article.title.rendered)}
+        imageUrl={getLeadImageUrl(article)}
+        author={article.author.toString()}
+        date={article.modified}
+        onPress={this.openArticleWithId}
+      />
+    ) : null;
+  }
+
   renderRow(article) {
     return (
       <ListArticleView
@@ -114,7 +132,7 @@ export class ArticlesListScreen extends ListScreen {
         articleId={article.id.toString()}
         title={resolveArticleTitle(article.title.rendered)}
         imageUrl={getLeadImageUrl(article)}
-        date={article.date}
+        date={article.modified}
         onPress={this.openArticleWithId}
       />
     );

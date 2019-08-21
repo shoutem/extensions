@@ -1,7 +1,7 @@
 {
   "name": "wordpress",
-  "version": "2.0.7",
-  "platform": "2.0.*",
+  "version": "2.1.0",
+  "platform": "2.1.*",
   "title": "WordPress",
   "description": "Show news articles from WordPress blog.",
   "icon": "server/assets/extension-icon.png",
@@ -20,7 +20,7 @@
       "name": "wordpress-shortcut",
       "title": "WordPress",
       "icon": "theme://news.png",
-      "screen": "@.ArticlesGridScreen",
+      "screen": "@.ArticlesFeaturedGridScreen",
       "adminPages": [
         {
           "page": "@.WordPressFeedPage",
@@ -48,25 +48,47 @@
   ],
   "screens": [
     {
-      "name": "ArticlesGridScreen",
-      "title": "Grid",
-      "image": "./server/assets/screens/grid.png",
+      "name": "ArticlesFeaturedGridScreen",
+      "title": "Grid with a featured article",
+      "image": "./server/assets/screens/featuredgrid.png",
       "groupTitle": "Choose List screen layout",
       "navigatesTo": [
         "@.ArticleDetailsScreen"
-      ]
+      ],
+      "settings": {
+        "listType": "fixed-grid",
+        "hasFeaturedItem": true
+      }
+    },
+    {
+      "name": "ArticlesGridScreen",
+      "title": "Grid",
+      "image": "./server/assets/screens/grid.png",
+      "extends": "@.ArticlesFeaturedGridScreen",
+      "settings": {
+        "listType": "fixed-grid",
+        "hasFeaturedItem": false
+      }
     },
     {
       "name": "ArticlesListScreen",
       "title": "List",
       "image": "./server/assets/screens/list.png",
-      "extends": "@.ArticlesGridScreen"
+      "extends": "@.ArticlesFeaturedGridScreen",
+      "settings": {
+        "listType": "list",
+        "hasFeaturedItem": false
+      }
     },
     {
       "name": "ArticlesFeaturedListScreen",
-      "title": "List with a featured item",
+      "title": "List with a featured article",
       "image": "./server/assets/screens/featuredlist.png",
-      "extends": "@.ArticlesGridScreen"
+      "extends": "@.ArticlesFeaturedGridScreen",
+      "settings": {
+        "listType": "list",
+        "hasFeaturedItem": true
+      }
     },
     {
       "name": "ArticleDetailsScreen",

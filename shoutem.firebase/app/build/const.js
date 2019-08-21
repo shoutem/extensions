@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 const androidPlugins = 'apply plugin: "com.google.gms.google-services"';
 const androidDependencies = `
-    compile project(':react-native-fcm')
-    compile "com.google.firebase:firebase-core:\${rootProject.ext.firebaseVersion}"
-    compile "com.google.firebase:firebase-messaging:\${rootProject.ext.firebaseVersion}"
+    implementation project(':react-native-fcm')
+    implementation "com.google.firebase:firebase-core:\${rootProject.ext.firebaseCoreVersion}"
+    implementation "com.google.firebase:firebase-messaging:\${rootProject.ext.firebaseMessagingVersion}"
 `;
 
 const appDelegateHeaderSearch = '@interface AppDelegate : UIResponder <UIApplicationDelegate>';

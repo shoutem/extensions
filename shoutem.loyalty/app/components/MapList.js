@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { LayoutAnimation } from 'react-native';
-import { connectStyle } from '@shoutem/theme';
 import _ from 'lodash';
-import {
-  View,
-} from '@shoutem/ui';
-import { MapView, EmptyStateView } from '@shoutem/ui-addons';
+
+import { View, EmptyStateView } from '@shoutem/ui';
+import { connectStyle } from '@shoutem/theme';
+
+import { MapView } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 import PlaceIconView from './PlaceIconView';
-
 import { placeShape } from './shapes';
 
 const createMarker = (place) => {

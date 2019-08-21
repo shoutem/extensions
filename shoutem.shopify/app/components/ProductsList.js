@@ -1,16 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
 import { connect } from 'react-redux';
-
 import _ from 'lodash';
 
-import {
-  ListView,
-  Screen,
-} from '@shoutem/ui';
-
-import { EmptyStateView } from '@shoutem/ui-addons';
+import { ListView, Screen, EmptyStateView } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 
 import {
@@ -18,24 +11,20 @@ import {
   closeModal,
   openInModal,
 } from 'shoutem.navigation';
-
 import { I18n } from 'shoutem.i18n';
 
 import { ext, PAGE_SIZE } from '../const';
 import ListItem from './ListItem';
 import UpdateItemScreen from '../screens/UpdateItemScreen';
-
-import {
-  product as productShape,
-  shop as shopShape,
-} from './shapes';
-
 import {
   cartItemAdded,
   refreshProducts,
 } from '../redux/actionCreators';
-
 import { getProducts } from '../redux/selectors';
+import {
+  product as productShape,
+  shop as shopShape,
+} from './shapes';
 
 const { arrayOf, bool, func, number, shape, string } = PropTypes;
 

@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {
-  PureComponent,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import { connect } from 'react-redux';
 
@@ -15,7 +13,6 @@ import {
 } from '@shoutem/ui';
 
 import { ChildNavigationBar } from '../components/ui';
-
 import { ScreenStack } from '../components/stacks';
 import {
   navigateBack,
@@ -39,6 +36,7 @@ class Modal extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
+    
     this.closeModal = this.closeModal.bind(this);
   }
 

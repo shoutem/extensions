@@ -10,6 +10,7 @@ import { currentLocation } from 'shoutem.cms';
 
 import { ext } from '../const';
 import GridEventView from '../components/GridEventView';
+import FeaturedEventView from '../components/FeaturedEventView';
 import { mapDispatchToProps, mapStateToProps, EventsScreen } from './EventsScreen';
 
 export class GridEventsScreen extends EventsScreen {
@@ -21,13 +22,18 @@ export class GridEventsScreen extends EventsScreen {
     return super.getNavBarProps('Grid');
   }
 
-  renderRow(events, sectionId, eventId) {
+  renderFeaturedItem(event) {
     const { hasFeaturedItem } = this.props;
 
-    if (hasFeaturedItem && eventId === '0') {
-      return this.renderFeaturedEvent(events[0]);
-    }
+    return event && hasFeaturedItem ? (
+      <FeaturedEventView
+        event={event[0]}
+        onPress={this.openDetailsScreen}
+        action={this.addToCalendar}
+      />) : null;
+  }
 
+  renderRow(events) {
     const eventsViews = _.map(events, event => (
       <GridEventView
         key={event.id}
@@ -38,7 +44,7 @@ export class GridEventsScreen extends EventsScreen {
     ));
 
     return (
-      <View styleName="flexible sm-gutter-bottom">
+      <View styleName="flexible">
         <GridRow columns={2}>
           {eventsViews}
         </GridRow>
@@ -52,15 +58,17 @@ export class GridEventsScreen extends EventsScreen {
    * @returns {*}
    */
   renderData(events) {
-    const { shouldRenderMap } = this.state;
     const { hasFeaturedItem } = this.props;
+    const { shouldRenderMap } = this.state;
+
     if (shouldRenderMap) {
       return this.renderEventsMap(events);
     }
-    let featured = hasFeaturedItem;
+
+    let isItemFeatured = hasFeaturedItem;
     const groupedEvents = GridRow.groupByRows(events, 2, () => {
-      if (featured) {
-        featured = false;
+      if (isItemFeatured) {
+        isItemFeatured = false;
         return 2;
       }
       return 1;

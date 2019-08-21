@@ -47,7 +47,7 @@ export default class DealImageGallery extends PureComponent {
     return (_.size(this.props.images) > 1);
   }
 
-  renderImage() {
+  renderImage(hasAnimation = true) {
     const {
       children,
       deal,
@@ -55,9 +55,11 @@ export default class DealImageGallery extends PureComponent {
       imageStyleName,
     } = this.props;
 
+    const resolvedAnimation = hasAnimation ? animationName : null;
+
     return (
       <DealImage
-        animationName={animationName}
+        animationName={resolvedAnimation}
         deal={deal}
         styleName={imageStyleName}
       >
@@ -116,7 +118,9 @@ export default class DealImageGallery extends PureComponent {
       return this.renderGallery();
     }
 
-    return this.renderImage();
+    // single or no image deals should be rendered without animations
+    // to avoid crash on Android 9 (maybe also higher OS)
+    return this.renderImage(false);
   }
 
 }

@@ -18,10 +18,10 @@ import {
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 
-import { NextArticle } from 'shoutem.news';
 import { NavigationBar } from 'shoutem.navigation';
 import { getLeadImageUrl, createRenderAttachment } from 'shoutem.rss';
 
+import { NextArticle } from '../components/NextArticle';
 import { ext } from '../const';
 
 export class ArticleDetailsScreen extends PureComponent {

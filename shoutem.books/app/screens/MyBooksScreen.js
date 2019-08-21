@@ -11,8 +11,7 @@ import {
   isInitialized,
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { ListView, Screen } from '@shoutem/ui';
-import { EmptyStateView } from '@shoutem/ui-addons';
+import { ListView, Screen, EmptyStateView } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
 import { CmsListScreen } from 'shoutem.cms';

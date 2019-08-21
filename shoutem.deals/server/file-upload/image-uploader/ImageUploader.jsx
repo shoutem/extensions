@@ -1,14 +1,16 @@
-import React from 'react';
-import _ from 'lodash';
+import React, { Component } from 'react';
 import { HelpBlock } from 'react-bootstrap';
-import { LoaderContainer } from '@shoutem/react-web-ui';
 import Dropzone from 'react-dropzone';
 import classNames from 'classnames';
-import ImagePreview from '../image-preview';
+import _ from 'lodash';
+
+import { LoaderContainer } from '@shoutem/react-web-ui';
+
 import ImageUploadPlaceholder from '../image-upload-placeholder';
+import ImagePreview from '../image-preview';
 import './style.scss';
 
-export default class ImageUploader extends React.Component {
+export default class ImageUploader extends Component {
   constructor(props) {
     super(props);
 
@@ -93,9 +95,8 @@ export default class ImageUploader extends React.Component {
   }
 
   handleDeleteFailed() {
-    const error = 'Delete failed.';
     this.setState({
-      error,
+      error: 'Delete failed.',
       inProgress: false,
     });
   }
@@ -123,10 +124,7 @@ export default class ImageUploader extends React.Component {
   }
 
   renderDropzoneContent() {
-    const {
-      src,
-      canBeDeleted,
-    } = this.props;
+    const { src, canBeDeleted } = this.props;
 
     if (!src) {
       return <ImageUploadPlaceholder />;

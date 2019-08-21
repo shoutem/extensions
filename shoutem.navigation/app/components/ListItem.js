@@ -1,7 +1,9 @@
 import React from 'react';
+
+import { Icon, View } from '@shoutem/ui';
+
 import { NavigationBaseItem } from './NavigationBaseItem';
 import { FolderItemContainer } from './FolderItemContainer';
-import { Icon, View } from '@shoutem/ui';
 
 /**
  * Do not connect to style. Style it trough List screen so dimension related style can be
@@ -10,6 +12,7 @@ import { Icon, View } from '@shoutem/ui';
 export default class ListItem extends NavigationBaseItem {
   render() {
     const { style } = this.props;
+    
     return (
       <FolderItemContainer
         onPress={this.onPress}

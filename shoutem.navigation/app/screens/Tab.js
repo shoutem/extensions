@@ -6,11 +6,11 @@ import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { Screen } from '@shoutem/ui';
 
-import { executeShortcut } from 'shoutem.application';
+import { executeShortcut } from 'shoutem.application/redux';
 
-import { isEmptyNavigationState, navigateBack } from '../redux/core';
 import { ScreenStack } from '../components/stacks';
 import { NavigationBar } from '../components/ui';
+import { isEmptyNavigationState, navigateBack } from '../redux/core';
 import { getTabNavigationStateFromTabBarState } from '../redux';
 import { ext } from '../const';
 

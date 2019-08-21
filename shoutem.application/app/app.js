@@ -4,28 +4,31 @@ import SplashScreen from 'react-native-splash-screen';
 
 import rio, { checkExpiration } from '@shoutem/redux-io';
 import { applyToAll } from '@shoutem/redux-composers';
-import { initializeUiAddons } from '@shoutem/ui-addons';
+import { Image, Html } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
 
-import { extractAppActions } from './shared/extractAppActions';
-import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
-import { openInitialScreen } from './shared/openInitialScreen';
 import { isRelease } from './shared/isRelease';
+import { extractAppActions } from './shared/extractAppActions';
+import { openInitialScreen } from './shared/openInitialScreen';
+import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
+import { resizeImageSource } from './services/resizeImageSource';
+import { loadLocalConfiguration, fetchConfiguration } from './redux';
 import { CONFIGURATION_SCHEMA, ACTIVE_APP_STATE, ext } from './const';
+import { SeAttachment } from './html';
 import buildConfig from './buildConfig.json';
-import {
-  loadLocalConfiguration,
-  fetchConfiguration,
-} from './redux';
 
 export const appActions = {};
+
 let appStateChangeHandler; // Dynamically created handler;
 let appState = ACTIVE_APP_STATE;
 
 let application;
 let unsubscribeFromConfigurationLoaded;
+
+Html.registerElement('se-attachment', SeAttachment);
+Html.registerElement('attachment', SeAttachment);
 
 export const getAppId = () => {
   if (_.isEmpty(application)) {
@@ -36,7 +39,7 @@ export const getAppId = () => {
 };
 
 export const initializeApp = () => {
-  initializeUiAddons();
+  Image.setPropsTransformer(resizeImageSource);
 };
 
 function loadConfiguration(app) {

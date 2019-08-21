@@ -5,7 +5,7 @@ import CalendarManager, { PERMISSION_ERROR } from 'react-native-calendar-manager
 import { I18n } from 'shoutem.i18n';
 import { DeviceInfo } from 'shoutem.application';
 
-import { ext } from '../extension';
+import { ext } from '../const';
 
 const showSuggestionToGrantCalendarAccess = () => {
   Alert.alert(

@@ -4,21 +4,13 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  Alert,
-  Platform,
-  Keyboard,
-  KeyboardAvoidingView,
-} from 'react-native';
+import { Alert, Keyboard } from 'react-native';
+import ActionSheet from 'react-native-action-sheet';
+import ImagePicker from 'react-native-image-picker';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 
-import { connectStyle } from '@shoutem/theme';
-import { ImagePicker, ActionSheet } from '@shoutem/ui-addons';
-import {
-  NavigationBar,
-  openInModal,
-  navigateBack,
-} from 'shoutem.navigation';
 import { isBusy, isInitialized, next, hasNext } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   ListView,
@@ -29,16 +21,16 @@ import {
   Icon,
   ImageBackground,
   Row,
-  ScrollView,
 } from '@shoutem/ui';
 
 import { authenticate } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar, openInModal, navigateBack } from 'shoutem.navigation';
 
-import StatusView from '../components/StatusView';
-import CommentView from '../components/CommentView';
 import AutoGrowTextInput from '../components/AutoGrowTextInput';
+import CommentView from '../components/CommentView';
 import { user as userShape } from '../components/shapes';
+import StatusView from '../components/StatusView';
 import { ext } from '../const';
 import {
   loadComments,
@@ -86,6 +78,8 @@ export class StatusDetailsScreen extends PureComponent {
     this.renderRightComponent = this.renderRightComponent.bind(this);
     this.isStatusAuthorOrAppOwner = this.isStatusAuthorOrAppOwner.bind(this);
     this.openActionSheet = this.openActionSheet.bind(this);
+
+    this.textInputRef = React.createRef();
 
     this.state = {
       text: '',
@@ -155,6 +149,7 @@ export class StatusDetailsScreen extends PureComponent {
 
   focusOnComment() {
     const { addComment, statusId, navigateBack } = this.props;
+
     navigateBack();
     addComment(statusId);
   }
@@ -204,6 +199,7 @@ export class StatusDetailsScreen extends PureComponent {
 
   openActionSheet() {
     const { deleteStatus, statuses, statusId, navigateBack } = this.props;
+
     const status = _.find(statuses, { id: statusId });
 
     ActionSheet.showActionSheetWithOptions(
@@ -239,6 +235,7 @@ export class StatusDetailsScreen extends PureComponent {
 
   renderRow(comment, sectionId, index) {
     const { openProfile, deleteComment } = this.props;
+
     const loadMoreText = (parseInt(index) + 1 === this.getCommentsLength()) ?
       this.renderLoadComments() : null;
 
@@ -359,7 +356,6 @@ export class StatusDetailsScreen extends PureComponent {
     const addCommentSection = enableComments ? this.renderAddCommentSection() : null;
     const commentsData = _.get(comments, 'data', []);
     const areCommentsLoading = isBusy(comments) && !isInitialized(comments);
-    const keyboardViewBehavior = Platform.OS === 'ios' ? 'position' : null;
 
     return (
       <Screen styleName="paper">
@@ -368,18 +364,16 @@ export class StatusDetailsScreen extends PureComponent {
           renderRightComponent={this.renderRightComponent}
         />
         <Divider styleName="line" />
-        <ScrollView>
-          <KeyboardAvoidingView behavior={keyboardViewBehavior}>
-            <ListView
-              data={[...commentsData]}
-              ref={this.captureScrollViewRef}
-              loading={areCommentsLoading}
-              renderHeader={this.renderStatus}
-              renderRow={this.renderRow}
-            />
-            {areCommentsLoading ? null : addCommentSection}
-          </KeyboardAvoidingView>
-        </ScrollView>
+        <KeyboardAwareScrollView scrollToBottomOnKBShow>
+          <ListView
+            data={[...commentsData]}
+            ref={this.captureScrollViewRef}
+            loading={areCommentsLoading}
+            renderHeader={this.renderStatus}
+            renderRow={this.renderRow}
+          />
+          {areCommentsLoading ? null : addCommentSection}
+        </KeyboardAwareScrollView>
       </Screen>
     );
   }

@@ -1,15 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import _ from 'lodash';
 import { connect } from 'react-redux';
-
-import { navigateTo } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
-
-import {
-  EmptyStateView,
-} from '@shoutem/ui-addons';
+import _ from 'lodash';
 
 import {
   find,
@@ -18,18 +10,12 @@ import {
   next,
   shouldRefresh,
 } from '@shoutem/redux-io';
+import { EmptyStateView } from '@shoutem/ui';
+import { connectStyle } from '@shoutem/theme';
 
-import {
-  getAppId,
-  getExtensionSettings,
-  ListScreen,
-} from 'shoutem.application';
-
-import {
-  getUser,
-  loginRequired,
-} from 'shoutem.auth';
-
+import { getAppId, getExtensionSettings, ListScreen } from 'shoutem.application';
+import { getUser, loginRequired } from 'shoutem.auth';
+import { navigateTo } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
 
 import {

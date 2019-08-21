@@ -1,38 +1,30 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
-import { Platform } from 'react-native';
-
 import { connect } from 'react-redux';
-
+import { Platform } from 'react-native';
 import _ from 'lodash';
 
 import {
   Button,
+  EmptyStateView,
   ListView,
   Row,
   Text,
   TouchableOpacity,
   Screen,
+  SearchField,
   Subtitle,
   View,
 } from '@shoutem/ui';
-
-import { EmptyStateView, SearchField } from '@shoutem/ui-addons';
-
-import {
-  NavigationBar,
-  navigateBack,
-} from 'shoutem.navigation';
-
 import { connectStyle } from '@shoutem/theme';
 
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar, navigateBack } from 'shoutem.navigation';
 
-import { ext } from '../const';
-import ProductsList from '../components/ProductsList';
-import { shop as shopShape } from '../components/shapes';
 import { refreshProducts } from '../redux/actionCreators';
+import { shop as shopShape } from '../components/shapes';
+import ProductsList from '../components/ProductsList';
+import { ext } from '../const';
 
 const { func } = PropTypes;
 

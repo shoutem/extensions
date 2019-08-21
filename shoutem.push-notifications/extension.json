@@ -1,7 +1,7 @@
 {
   "name": "push-notifications",
-  "version": "2.0.3",
-  "platform": "2.0.*",
+  "version": "2.1.0",
+  "platform": "2.1.*",
   "type": "system",
   "title": "Push Notifications",
   "description": "Base extension for push notifications",

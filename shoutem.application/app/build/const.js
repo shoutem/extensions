@@ -60,7 +60,7 @@ const maps = {
     },
     gradle: {
       app: {
-        dependencies: 'compile project(\':react-native-maps\')',
+        dependencies: 'implementation project(\':react-native-maps\')',
       },
       settings: `include ':react-native-maps'\nproject(':react-native-maps').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-maps/lib/android')`,
     },

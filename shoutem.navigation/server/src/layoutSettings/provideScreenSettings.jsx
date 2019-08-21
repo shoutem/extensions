@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { getShortcut } from 'environment';
@@ -6,7 +6,7 @@ import { data } from 'context';
 import { updateShortcut } from '../reducer';
 
 export function provideScreenSettings(WrappedComponent) {
-  class LayoutSettings extends React.Component {
+  class LayoutSettings extends Component {
     constructor(props) {
       super(props);
 

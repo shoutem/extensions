@@ -4,8 +4,8 @@ import { LayoutAnimation } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
 import { Touchable } from '@shoutem/ui';
 
-import { NavigationBaseItem } from './NavigationBaseItem';
 import { ext } from '../const';
+import { NavigationBaseItem } from './NavigationBaseItem';
 
 class TabBarItem extends NavigationBaseItem {
   render() {

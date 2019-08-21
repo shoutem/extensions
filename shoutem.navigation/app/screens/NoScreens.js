@@ -1,8 +1,10 @@
 import React from 'react';
+
 import { connectStyle } from '@shoutem/theme';
-import { Screen } from '@shoutem/ui';
-import { EmptyStateView } from '@shoutem/ui-addons';
+import { Screen, EmptyStateView } from '@shoutem/ui';
+
 import { I18n } from 'shoutem.i18n';
+
 import { NavigationBar } from '../components/ui';
 import { ext } from '../const';
 

@@ -3,8 +3,9 @@ import React, { PureComponent } from 'react';
 import { LayoutAnimation } from 'react-native';
 import _ from 'lodash';
 
-import { MapView } from '@shoutem/ui-addons';
 import { View } from '@shoutem/ui';
+
+import { MapView } from 'shoutem.application';
 
 import ListEventView from '../components/ListEventView';
 import isValidEvent from '../shared/isValidEvent';
@@ -89,6 +90,7 @@ export default class EventsMap extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
+
     this.handleMapPress = this.handleMapPress.bind(this);
     this.state = {
       selectedEvent: null,
@@ -97,7 +99,9 @@ export default class EventsMap extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.data !== this.props.data) {
+    const { data } = this.props;
+
+    if (nextProps.data !== data) {
       LayoutAnimation.easeInEaseOut();
       this.setState({
         ...getMarkersAndRegionFromEvents(nextProps.data),
@@ -107,6 +111,7 @@ export default class EventsMap extends PureComponent {
 
   handleMapPress(event) {
     const { selectedEvent } = this.state;
+
     if (event.nativeEvent.action !== 'marker-press' && selectedEvent) {
       LayoutAnimation.easeInEaseOut();
       this.setState({ selectedEvent: null });

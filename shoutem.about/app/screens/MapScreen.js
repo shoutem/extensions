@@ -1,18 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import {
-  Platform,
-  Linking,
-} from 'react-native';
+import { Platform, Linking } from 'react-native';
 
-import {
-  Screen,
-  Button,
-  Icon,
-  View,
-} from '@shoutem/ui';
-import { MapView } from '@shoutem/ui-addons';
+import { Screen, Button, Icon, View } from '@shoutem/ui';
 
+import { MapView } from 'shoutem.application';
 import { NavigationBar } from 'shoutem.navigation';
 
 export default class MapScreen extends PureComponent {

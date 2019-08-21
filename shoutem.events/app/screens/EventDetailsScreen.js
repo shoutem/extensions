@@ -19,10 +19,10 @@ import {
   Row,
   Subtitle,
 } from '@shoutem/ui';
-import { InlineMap } from '@shoutem/ui-addons';
 
 import { NavigationBar, navigateTo as navigateToAction } from 'shoutem.navigation';
 import { openURL as openUrlAction } from 'shoutem.web-view';
+import { InlineMap } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 
 import { formatDate, addToCalendar } from '../shared/Calendar';
@@ -70,6 +70,7 @@ export class EventDetailsScreen extends PureComponent {
 
   isNavigationBarClear() {
     const { navigationBarStyle } = this.props;
+
     return navigationBarStyle === 'clear';
   }
 
@@ -104,11 +105,14 @@ export class EventDetailsScreen extends PureComponent {
   }
 
   addToCalendar() {
-    addToCalendar(this.props.event);
+    const { event } = this.props;
+
+    addToCalendar(event);
   }
 
   openMapScreen() {
     const { event, navigateTo } = this.props;
+
     navigateTo({
       screen: ext('SingleEventMapScreen'),
       title: `Map View - ${event.name}`,
@@ -129,7 +133,9 @@ export class EventDetailsScreen extends PureComponent {
     if (!isValidEvent(event)) {
       return null;
     }
+
     const location = getEventLocation(event);
+
     return (
       <TouchableOpacity onPress={this.openMapScreen}>
         <InlineMap
@@ -214,6 +220,7 @@ export class EventDetailsScreen extends PureComponent {
 
   renderScreen() {
     const { event } = this.props;
+
     let screenStyle = '';
     if (this.isNavigationBarClear()) {
       if (event.image) {

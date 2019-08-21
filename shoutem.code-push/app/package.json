@@ -1,8 +1,8 @@
 {
   "name": "shoutem.code-push",
-  "version": "2.0.3",
+  "version": "2.1.1",
   "private": true,
   "dependencies": {
-    "react-native-code-push": "shoutem/react-native-code-push#702a76dd87b898612e37bb85cf8e0abef4b42051"
+    "react-native-code-push": "~5.6.1"
   }
 }

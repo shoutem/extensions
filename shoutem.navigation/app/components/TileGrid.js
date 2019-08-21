@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import _ from 'lodash';
 import { connect } from 'react-redux';
-import { connectStyle } from '@shoutem/theme';
+import _ from 'lodash';
 
+import { connectStyle } from '@shoutem/theme';
 import { GridRow, View, defaultThemeVariables, Device } from '@shoutem/ui';
 
 import { TILE_GRID } from '../const';

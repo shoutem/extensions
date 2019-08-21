@@ -1,3 +1,4 @@
+import { ScreenStack, RootScreenStack } from './components/stacks';
 import Drawer from './screens/Drawer';
 import TabBar from './screens/TabBar';
 import IconGrid from './screens/IconGrid';
@@ -7,10 +8,9 @@ import CardList from './screens/CardList';
 import None from './screens/None';
 import Tab from './screens/Tab';
 import NoScreens from './screens/NoScreens';
-import { ScreenStack, RootScreenStack } from './components/stacks';
 import TileGrid from './screens/TileGrid';
-import reducer, { middleware } from './redux';
 import enTranslations from './translations/en.json';
+import reducer, { middleware } from './redux';
 
 export const screens = {
   TabBar,

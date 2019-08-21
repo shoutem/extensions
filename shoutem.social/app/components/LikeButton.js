@@ -1,11 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
-import {
-  Button,
-  Icon,
-  Text,
-} from '@shoutem/ui';
+import { Button, Icon, Text } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -22,11 +18,13 @@ export default class LikeButton extends PureComponent {
 
   constructor(props) {
     super(props);
+
     this.likeStatus = this.likeStatus.bind(this);
   }
 
   likeStatus() {
     const { status, onLikeAction } = this.props;
+    
     onLikeAction(status);
   }
 

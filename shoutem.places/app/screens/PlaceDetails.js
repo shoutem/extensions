@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Linking, Platform } from 'react-native';
+
 import {
   ScrollView,
   TouchableOpacity,
@@ -18,16 +20,14 @@ import {
   Button,
   SimpleHtml,
 } from '@shoutem/ui';
-import {
-  Linking,
-  Platform,
-} from 'react-native';
-import { InlineMap } from '@shoutem/ui-addons';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
+
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
+import { InlineMap } from 'shoutem.application';
 import { Favorite } from 'shoutem.favorites';
 import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 
 export class PlaceDetails extends PureComponent {

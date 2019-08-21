@@ -34,13 +34,8 @@ class List extends FolderBase {
   resolvePageProps() {
     const { topOffset, listAlignment } = this.getLayoutSettings();
     const { dimensions: { height } } = this.state;
-    const { style, navigationBarImage, isTabBar } = this.props;
+    const { style, isTabBar } = this.props;
 
-    const navBarHeight = Device.select({
-      iPhoneX: navigationBarImage ? (NAVIGATION_HEADER_HEIGHT + IPHONE_X_NOTCH_PADDING) : 0,
-      iPhoneXR: navigationBarImage ? (NAVIGATION_HEADER_HEIGHT + IPHONE_XR_NOTCH_PADDING) : 0,
-      default: navigationBarImage ? NAVIGATION_HEADER_HEIGHT : 0,
-    });
     const homeBarHeight = Device.select({
       iPhoneX: IPHONE_X_HOME_INDICATOR_PADDING,
       iPhoneXR: IPHONE_X_HOME_INDICATOR_PADDING,
@@ -50,7 +45,7 @@ class List extends FolderBase {
     return {
       style: {
         paddingTop: dimensionRelativeToIphone(topOffset),
-        minHeight: height - homeBarHeight - navBarHeight,
+        minHeight: isTabBar ? height : height - homeBarHeight,
         ...style.page,
       },
       styleName: listAlignment,

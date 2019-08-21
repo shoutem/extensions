@@ -9,12 +9,12 @@ import {
   Device,
 } from '@shoutem/ui';
 
-import { Scaler } from '../helpers';
 import {
   NAVIGATION_HEADER_HEIGHT,
   IPHONE_X_NOTCH_PADDING,
   IPHONE_XR_NOTCH_PADDING,
 } from '../const';
+import { Scaler } from '../helpers';
 
 const defaultResolution = {
   width: 375,

@@ -1,4 +1,4 @@
-import { getExtensionSettings } from 'shoutem.application';
+import { getExtensionSettings } from 'shoutem.application/redux';
 import { ext } from '../const';
 
 export default function (state) {

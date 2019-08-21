@@ -17,14 +17,14 @@ import {
   Row,
   Subtitle,
 } from '@shoutem/ui';
-import { InlineMap } from '@shoutem/ui-addons';
 
 import { I18n } from 'shoutem.i18n';
+import { InlineMap } from 'shoutem.application';
 import { NavigationBar } from 'shoutem.navigation'
 
-import isValidEvent from '../services/isValidEvent';
 import { formatToLocalDate, addToCalendar } from '../services/Calendar';
-import { ext } from '../extension';
+import isValidEvent from '../services/isValidEvent';
+import { ext } from '../const';
 
 /**
  * Extracts location into marker out of event.

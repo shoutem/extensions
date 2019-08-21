@@ -27,21 +27,18 @@ import {
   ext,
 } from '../const';
 
-function hasFeaturedEvent(events) {
-  return events.some(event => event.featured);
-}
-
 export class EventsScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
     navigateTo: PropTypes.func,
   };
 
-
   constructor(props, context) {
     super(props, context);
+
     this.fetchData = this.fetchData.bind(this);
     this.renderRow = this.renderRow.bind(this);
+    this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
     this.openDetailsScreen = this.openDetailsScreen.bind(this);
     this.toggleMapMode = this.toggleMapMode.bind(this);
     this.addToCalendar = this.addToCalendar.bind(this);
@@ -78,7 +75,9 @@ export class EventsScreen extends CmsListScreen {
   }
 
   openDetailsScreen(event) {
-    this.props.navigateTo({
+    const { navigateTo } = this.props;
+
+    navigateTo({
       screen: ext('EventDetailsScreen'),
       title: event.name,
       props: {
@@ -88,27 +87,30 @@ export class EventsScreen extends CmsListScreen {
   }
 
   addToCalendar(event) {
+    const { triggerEvent } = this.props;
+
     addToCalendar(event);
-    this.props.triggerEvent('Event', 'Add to calendar', { label: event.name });
+    triggerEvent('Event', 'Add to calendar', { label: event.name });
   }
 
   toggleMapMode() {
     const { shouldRenderMap } = this.state;
+
     this.setState({ shouldRenderMap: !shouldRenderMap });
   }
 
   renderCategoriesDropDown(styleName) {
     const { data } = this.props;
+
     let newStyleName = styleName;
-    if (hasFeaturedEvent(data)) {
-      newStyleName = newStyleName ? `${newStyleName} featured` : 'featured';
-    }
+
     return super.renderCategoriesDropDown(newStyleName);
   }
 
   getNavBarProps(screenTitle = 'List') {
     const { data } = this.props;
     const { shouldRenderMap } = this.state;
+
     const newNavBarProps = super.getNavBarProps();
 
     newNavBarProps.renderRightComponent = () => {
@@ -125,23 +127,18 @@ export class EventsScreen extends CmsListScreen {
       );
     };
 
-    if (hasFeaturedEvent(data)) {
-      newNavBarProps.styleName = `${newNavBarProps.styleName || ''} featured`;
-    }
-
     return newNavBarProps;
   }
 
-  renderFeaturedEvent(event) {
-    const { categories } = this.props;
-    return (
+  renderFeaturedItem(item) {
+    const { hasFeaturedItem } = this.props;
+
+    return hasFeaturedItem ? (
       <FeaturedEventView
-        event={event}
+        event={item}
         onPress={this.openDetailsScreen}
         action={this.addToCalendar}
-        styleName={categories.length > 1 ? 'dimmed' : ''}
-      />
-    );
+      />) : null;
   }
 
   renderEventListItem(event, style = {}) {
@@ -151,17 +148,13 @@ export class EventsScreen extends CmsListScreen {
       this.addToCalendar, style);
   }
 
-  renderRow(event, sectionId, eventId) {
-    const { hasFeaturedItem } = this.props;
-
-    if (hasFeaturedItem && eventId === '0') {
-      return this.renderFeaturedEvent(event);
-    }
+  renderRow(event) {
     return this.renderEventListItem(event);
   }
 
   renderEventsMap(data) {
     const { style } = this.props;
+
     return (
       <EventsMap
         data={data}

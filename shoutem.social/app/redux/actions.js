@@ -1,17 +1,36 @@
 import _ from 'lodash';
+
 import { find, create, invalidate } from '@shoutem/redux-io';
-import { getAppId } from 'shoutem.application';
+
+import { getAppId } from 'shoutem.application/app';
 import { getUser } from 'shoutem.auth';
 
+import { shoutemApi } from '../services/shoutemApi';
 import { apiVersion } from '../app';
 import { STATUSES_SCHEMA, USERS_SCHEMA } from '../const';
-import { shoutemApi, adaptUserForSocialActions } from '../services';
 
 export const CREATE = 'CREATE';
 export const LOAD = 'LOAD';
 export const LIKE = 'LIKE';
 export const UNLIKE = 'UNLIKE';
 export const DELETE = 'DELETE';
+
+// moved here from services/user to avoid cyclic dependencies
+export function adaptUserForSocialActions(user) {
+  const legacyId = _.get(user, 'legacyId', -1);
+  const first_name = _.get(user, 'profile.firstName', '');
+  const last_name = _.get(user, 'profile.lastName', '');
+
+  return {
+    id: parseInt(legacyId, 10),
+    screen_name: _.get(user, 'profile.nickname', ''),
+    email: _.get(user, 'profile.username', ''),
+    profile_image_url: _.get(user, 'profile.image', ''),
+    name: `${first_name} ${last_name}`,
+    first_name,
+    last_name,
+  };
+}
 
 export function formatParams(paramsObject) {
   const appId = getAppId();

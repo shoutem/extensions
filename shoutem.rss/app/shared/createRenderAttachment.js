@@ -1,9 +1,7 @@
 import React from 'react';
-import {
-  SeAttachment,
-} from '@shoutem/ui-addons/html';
 import _ from 'lodash';
 
+import { SeAttachment } from 'shoutem.application/html';
 import { isLeadAttachment } from './resourceSelectors';
 
 export default (resource, leadingAttachmentType) => (element, style, renderElement) => {

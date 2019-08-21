@@ -1,5 +1,8 @@
 {
   "name": "shoutem.hello-world",
-  "version": "1.8.0",
-  "description": "Example of creating plain js shortcut settings page "
+  "version": "2.0.2",
+  "description": "Example of creating plain js shortcut settings page ",
+  "dependencies": {
+    "@shoutem/ui": "~1.0.0"
+  }
 }

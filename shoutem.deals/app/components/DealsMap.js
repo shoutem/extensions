@@ -1,24 +1,16 @@
-import _ from 'lodash';
-
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-
-import {
-  LayoutAnimation,
-} from 'react-native';
-
 import { connect } from 'react-redux';
+import { LayoutAnimation } from 'react-native';
+import _ from 'lodash';
 
-import { navigateTo } from 'shoutem.navigation';
+import { View } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 
-import {
-  View,
-} from '@shoutem/ui';
-import { MapView } from '@shoutem/ui-addons';
+import { navigateTo } from 'shoutem.navigation';
+import { MapView } from 'shoutem.application';
 
 import { ext } from '../const';
-
 import { getMarkersAndRegionFromDeals } from '../services';
 import DealListView from './DealListView';
 

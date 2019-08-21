@@ -16,16 +16,13 @@ import { BaseEventItem } from './BaseEventItem';
 import { formatDate } from '../shared/Calendar';
 import { ext } from '../const';
 
-/**
- * A component used to render featured news articles
- */
-export default class FeaturedArticleView extends BaseEventItem {
+export default class FeaturedEventView extends BaseEventItem {
   render() {
     const { event, styleName } = this.props;
 
     const containerStyleName = `sm-gutter featured ${styleName || ''}`;
 
-    return (
+    return event ? (
       <TouchableOpacity key={event.id} onPress={this.onPress}>
         <View styleName={containerStyleName}>
           <EventImage styleName="featured" event={event}>
@@ -47,6 +44,6 @@ export default class FeaturedArticleView extends BaseEventItem {
           </EventImage>
         </View>
       </TouchableOpacity>
-    );
+    ) : null;
   }
 }

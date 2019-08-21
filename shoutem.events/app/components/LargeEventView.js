@@ -17,6 +17,7 @@ export default class LargeEventView extends BaseEventItem {
 
   render() {
     const { event } = this.props;
+    
     return (
       <TouchableOpacity onPress={this.onPress}>
         <View styleName="md-gutter-bottom">

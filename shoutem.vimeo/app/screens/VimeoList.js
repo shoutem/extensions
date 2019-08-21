@@ -11,7 +11,7 @@ import { navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
 
 import { VIMEO_SCHEMA, getVimeoFeed } from '../redux';
-import { ext } from '../extension';
+import { ext } from '../const';
 
 import LargeVimeoView from '../components/LargeVimeoView';
 

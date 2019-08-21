@@ -1,13 +1,11 @@
-import React, {
-  Component,
-} from 'react';
+import React, { PureComponent } from 'react';
 
 import {
   Heading,
   Tile,
 } from '@shoutem/ui';
 
-export default class HelloWorld extends Component {
+export default class HelloWorld extends PureComponent {
   render() {
     const { shortcut } = this.props;
     const { greeting } = shortcut.settings;

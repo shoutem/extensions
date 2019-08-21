@@ -1,32 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+
 import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { ext } from '../const';
+import { GridRow } from '@shoutem/ui';
 
-import { ArticlesScreen, mapStateToProps, mapDispatchToProps } from './ArticlesScreen';
 import { GridArticleView } from '../components/GridArticleView';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
 import { getItemProps } from '../components/ListItemViewFactory';
-
-import {
-  GridRow,
-} from '@shoutem/ui';
+import { ext } from '../const';
+import { ArticlesScreen, mapStateToProps, mapDispatchToProps } from './ArticlesScreen';
 
 const GRID_ITEMS_PER_ROW = 2;
 
 export class GridArticlesScreen extends ArticlesScreen {
-  renderRow(data, sectionId, index) {
-    const { hasFeaturedItem } = this.props;
-    const isFeaturedItem = hasFeaturedItem && index === '0';
-
-    if (isFeaturedItem) {
-      return (
-        <FeaturedArticleView {...getItemProps(data[0])} onPress={this.openArticleWithId} />
-      );
-    }
-
+  renderRow(data) {
     const articleViews = _.map(data, (article) => {
       return (
         <GridArticleView {...getItemProps(article)} onPress={this.openArticleWithId} />
@@ -38,6 +27,12 @@ export class GridArticlesScreen extends ArticlesScreen {
         {articleViews}
       </GridRow>
     );
+  }
+
+  renderFeaturedItem(item) {
+    return item ? (
+      <FeaturedArticleView {...getItemProps(item[0])} onPress={this.openArticleWithId} />
+    ) : null;
   }
 
   renderData(articles) {
@@ -66,4 +61,3 @@ export class GridArticlesScreen extends ArticlesScreen {
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('ArticlesScreen'))(GridArticlesScreen),
 );
-

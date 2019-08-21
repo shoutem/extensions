@@ -18,9 +18,9 @@ import {
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 
-import { NextArticle } from 'shoutem.news';
 import { NavigationBar } from 'shoutem.navigation';
 
+import { NextArticle } from '../components/NextArticle';
 import { getLeadImageUrl, resolveArticleTitle } from '../services';
 import { ext } from '../const';
 

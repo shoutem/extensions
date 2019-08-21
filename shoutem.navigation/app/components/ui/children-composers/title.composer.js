@@ -1,13 +1,15 @@
 import React from 'react';
 import _ from 'lodash';
+
 import {
   View,
   Title,
 } from '@shoutem/ui';
+
 import { NavigationBar } from '../NavigationBar';
 
 function hasBackgroundImage(navBarProps) {
-  return (NavigationBar.globalNavigationBarImage || navBarProps.navigationBarImage);
+  return (navBarProps.navigationBarImage);
 }
 
 /**
@@ -20,6 +22,7 @@ function canShowTitle(navBarProps) {
   } else if (NavigationBar.showTitle === false) {
     return false;
   }
+  
   return NavigationBar.showTitle;
 }
 

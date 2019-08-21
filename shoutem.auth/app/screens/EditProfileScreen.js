@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Platform, Alert, KeyboardAvoidingView } from 'react-native';
+import { Platform, Alert } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -8,7 +10,6 @@ import {
   Button,
   Caption,
   Divider,
-  ScrollView,
   FormGroup,
   Screen,
   Spinner,
@@ -17,19 +18,15 @@ import {
   View,
 } from '@shoutem/ui';
 import { NavigationBar } from 'shoutem.navigation';
-import { ImagePicker } from '@shoutem/ui-addons';
 import { connectStyle } from '@shoutem/theme';
 import { isBusy } from '@shoutem/redux-io';
 
 import { I18n } from 'shoutem.i18n';
 
-import { ext } from '../const';
-import {
-  getUser,
-  updateProfile,
-} from '../redux';
-import { user as userShape } from '../components/shapes';
 import ProfileImage from '../components/ProfileImage';
+import { user as userShape } from '../components/shapes';
+import { getUser, updateProfile } from '../redux';
+import { ext } from '../const';
 
 const { func } = PropTypes;
 
@@ -190,19 +187,17 @@ class EditProfileScreen extends PureComponent {
     const keyboardViewBehavior = Platform.OS === 'ios' ? 'position' : null;
 
     return (
-      <ScrollView>
-        <KeyboardAvoidingView behavior={keyboardViewBehavior}>
-          <ProfileImage
-            isEditable
-            onPress={this.changeProfileImage}
-            uri={image}
-          />
-          {this.renderForm()}
-          <Caption styleName="h-center">
-            {I18n.t(ext('loggedInUserInfo'), { username })}
-          </Caption>
-        </KeyboardAvoidingView>
-      </ScrollView>
+      <KeyboardAwareScrollView scrollToBottomOnKBShow>
+        <ProfileImage
+          isEditable
+          onPress={this.changeProfileImage}
+          uri={image}
+        />
+        {this.renderForm()}
+        <Caption styleName="h-center">
+          {I18n.t(ext('loggedInUserInfo'), { username })}
+        </Caption>
+      </KeyboardAwareScrollView>
     );
   }
 

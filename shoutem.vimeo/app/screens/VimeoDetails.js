@@ -18,7 +18,7 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from 'shoutem.navigation';
 import { createRenderAttachment } from 'shoutem.rss';
 
-import { ext } from '../extension';
+import { ext } from '../const';
 
 export class VimeoDetails extends PureComponent {
   static propTypes = {

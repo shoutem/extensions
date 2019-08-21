@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { StatusBar, Dimensions, Linking } from 'react-native';
+import { StatusBar } from 'react-native';
 import { connect } from 'react-redux';
 import { InteractionManager } from 'react-native';
-import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 
-import { EmptyStateView, InlineMap } from '@shoutem/ui-addons';
 import {
   find,
   isBusy,
@@ -27,10 +25,12 @@ import {
   TouchableOpacity,
   ScrollView,
   SimpleHtml,
+  EmptyStateView,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 
 import { NavigationBar, navigateTo } from 'shoutem.navigation';
+import { InlineMap } from 'shoutem.application';
 import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
 
