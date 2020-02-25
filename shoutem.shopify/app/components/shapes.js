@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const { arrayOf, bool, number, oneOfType, shape, string } = PropTypes;
 
@@ -8,7 +8,7 @@ const variant = shape({
   price: string,
   // Price of this variant with competitors, set in Shopify store and
   // used to show discounts
-  compare_at_price: string,
+  compare_at_price: number,
 });
 
 const product = shape({
@@ -19,11 +19,11 @@ const product = shape({
     src: string,
   })),
   // Minimum price of all product variants, returned by the SDK
-  minimum_price: string,
+  newPrice: string,
   // Minimum price of all product variants with competitors, returned by the SDK
-  minimum_compare_at_price: string,
+  oldPrice: string,
   // Unique ID of the product
-  product_id: oneOfType([number, string]),
+  id: oneOfType([number, string]),
   // Product title
   title: string,
   // All variants that this product has, where a variant is a combination of options,
@@ -44,7 +44,7 @@ const cart = arrayOf(cartItem);
 
 const collection = shape({
   // Id of a collection, used to group products, from Shopify
-  id: number,
+  id: string,
   // Collection title
   title: string,
 });
@@ -86,27 +86,6 @@ const payment = shape({
   isProcessing: bool,
 });
 
-const shippingMethod = shape({
-  // Estimated range for delivery, which consists of two items: the earliest and latest date,
-  // specified in miliseconds from 1970
-  deliveryRange: arrayOf(number),
-  // Shipping rate's unique identifier on Shopify
-  id: string,
-  // Price for this shipping method in store's currency
-  price: string,
-  // Title, for example: 'Standard shipping'
-  title: string,
-});
-
-const shippingMethods = shape({
-  // Whether there was an error while loading shipping methods
-  error: bool,
-  // Whether we are loading new shipping methods
-  isLoading: bool,
-  // Shipping methods from Shopify
-  methods: arrayOf(shippingMethod),
-});
-
 const shop = shape({
   // Currency code set in store, and used to display product prices and shipping rates
   currency: string,
@@ -116,5 +95,13 @@ const shop = shape({
   tags: arrayOf(string),
 });
 
-export { cart, cartItem, collection, customer, payment, product, shippingMethod,
-    shippingMethods, shop, variant };
+export {
+  cart,
+  cartItem,
+  collection,
+  customer,
+  payment,
+  product,
+  shop,
+  variant
+};

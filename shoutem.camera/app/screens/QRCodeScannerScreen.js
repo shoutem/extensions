@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
-import { Screen } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
 import { NavigationBar } from 'shoutem.navigation';
+
+import { connectStyle } from '@shoutem/theme';
+import { Screen } from '@shoutem/ui';
 
 import QRCodeScanner from '../components/QRCodeScanner.js';
 import { ext } from '../const';

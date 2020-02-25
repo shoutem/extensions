@@ -97,11 +97,13 @@ export function createTransaction(
 ) {
   const {
     cardId,
-    rewardId,
-    placeId,
+    reward,
+    place,
     points,
   } = transactionOptions;
 
+  const rewardId = reward && reward.value;
+  const placeId = place && place.value;
   const config = {
     schema: TRANSACTIONS,
     request: {

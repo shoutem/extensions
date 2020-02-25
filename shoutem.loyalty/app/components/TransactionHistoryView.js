@@ -32,8 +32,6 @@ const NO_ACTIVITY_ICON = require('../assets/icons/no-activity.png');
 
 const { arrayOf, func } = PropTypes;
 
-const VISIBLE_TRANSACTIONS = 3;
-
 const renderTransactionRow = transaction => <TransactionItem transaction={transaction} />;
 
 /**
@@ -47,6 +45,16 @@ export class TransactionHistoryView extends PureComponent {
     transactions: arrayOf(transactionShape),
   };
 
+  constructor(props) {
+    super(props);
+
+    this.showEntireHistory = this.showEntireHistory.bind(this);
+
+    this.state = {
+      numberOfVisibleTransactions: 3,
+    };
+  }
+
   shouldRenderPlaceholderView() {
     const { transactions } = this.props;
 
@@ -56,7 +64,7 @@ export class TransactionHistoryView extends PureComponent {
     }
 
     // We want to render a placeholder in case of errors or if transactions are empty
-    return isError(transactions) || !_.size(transactions);
+    return isError(transactions) || !_.size(transactions) || !transactions;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -72,10 +80,24 @@ export class TransactionHistoryView extends PureComponent {
     );
   }
 
+  showEntireHistory() {
+    const { onShowHistory, transactions } = this.props;
+
+    if (onShowHistory) {
+      onShowHistory();
+      return;
+    }
+
+    this.setState({ numberOfVisibleTransactions: 0 });
+  }
+
   renderHistoryItems() {
     const { transactions } = this.props;
+    const { numberOfVisibleTransactions } = this.state;
 
-    const visibleTransactions = transactions.slice(0, VISIBLE_TRANSACTIONS);
+    const visibleTransactions = numberOfVisibleTransactions ?
+      transactions.slice(0, numberOfVisibleTransactions) :
+      transactions;
 
     if (this.shouldRenderPlaceholderView()) {
       return this.renderPlaceholderView();
@@ -94,16 +116,16 @@ export class TransactionHistoryView extends PureComponent {
   }
 
   renderShowHistoryButton() {
-    const { onShowHistory, transactions } = this.props;
+    const { numberOfVisibleTransactions } = this.state;
 
-    if (_.size(transactions) <= VISIBLE_TRANSACTIONS) {
+    if (!numberOfVisibleTransactions) {
       return null;
     }
 
     return (
       <Button
         styleName="md-gutter-vertical"
-        onPress={onShowHistory}
+        onPress={this.showEntireHistory}
       >
         <Text>{I18n.t(ext('fullHistoryButton'))}</Text>
       </Button>

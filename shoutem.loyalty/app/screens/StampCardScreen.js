@@ -46,6 +46,7 @@ export class StampCardScreen extends PureComponent {
 
   handleDone() {
     const { points } = this.state;
+
     if (!points) {
       Alert.alert(
         I18n.t(ext('noPointsAwardedErrorTitle')),
@@ -53,6 +54,7 @@ export class StampCardScreen extends PureComponent {
       );
       return;
     }
+
     this.processTransaction();
   }
 
@@ -74,15 +76,15 @@ export class StampCardScreen extends PureComponent {
   }
 
   render() {
-    const { reward: original } = this.props;
+    const { reward: originalReward } = this.props;
     const { points } = this.state;
 
-    const reward = { ...original, points: (original.points || 0) + points };
+    const reward = { ...originalReward, points: (originalReward.points || 0) + points };
     const { title } = reward;
 
     return (
       <Screen>
-      <NavigationBar title={I18n.t(ext('punchCardStampingNavBarTitle'))} />
+        <NavigationBar title={I18n.t(ext('punchCardStampingNavBarTitle'))} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <Title styleName="h-center xl-gutter-top md-gutter-bottom">{title}</Title>
           <Stamps

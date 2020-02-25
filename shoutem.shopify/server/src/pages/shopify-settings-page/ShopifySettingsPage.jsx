@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import {
   Button,
   ButtonToolbar,
@@ -10,19 +9,28 @@ import {
   HelpBlock,
 } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
+import {
+  fetchExtension,
+  updateExtensionSettings,
+  getExtension,
+} from '@shoutem/redux-api-sdk';
+import { shouldRefresh } from '@shoutem/redux-io';
+import { connect } from 'react-redux';
 import {
   validateShopifySettings,
   validateShopifyStoreUrl,
   resolveShopifyStoreUrl,
 } from 'src/modules/shopify';
+import './style.scss';
 
 const ERROR_STORE_URL = 'Invalid store URL';
-const ERROR_SHOP = 'We can\'t reach the shop. Please check your store URL and API key.';
+const ERROR_SHOP = 'We can\'t reach the shop. ' +
+  'Please check your store URL and Storefront access token.';
 
 class ShopifySettingsPage extends Component {
   static propTypes = {
-    ownExtension: PropTypes.object,
+    extension: PropTypes.object,
+    fetchExtension: PropTypes.func,
     updateExtensionSettings: PropTypes.func,
     validateShopifySettings: PropTypes.func,
   };
@@ -35,30 +43,35 @@ class ShopifySettingsPage extends Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
-    const settings = _.get(props, 'ownExtension.settings');
+    props.fetchExtension();
 
     this.state = {
       error: '',
-      store: _.get(settings, 'store'),
-      apiKey: _.get(settings, 'apiKey'),
+      store: _.get(props.extension, 'settings.store'),
+      apiKey: _.get(props.extension, 'settings.apiKey'),
       hasChanges: false,
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    const { ownExtension: nextOwnExtension } = nextProps;
-    const { store, apiKey } = this.state;
+    const { extension } = this.props;
+    const { extension: nextExtension } = nextProps;
+    const { store, apiKey} = this.state;
 
     if (_.isEmpty(store)) {
       this.setState({
-        store: _.get(nextOwnExtension, 'settings.store'),
+        store: _.get(nextExtension, 'settings.store'),
       });
     }
 
     if (_.isEmpty(apiKey)) {
       this.setState({
-        apiKey: _.get(nextOwnExtension, 'settings.apiKey'),
+        apiKey: _.get(nextExtension, 'settings.apiKey'),
       });
+    }
+
+    if (extension !== nextExtension && shouldRefresh(nextExtension)) {
+      this.props.fetchExtension();
     }
   }
 
@@ -68,6 +81,7 @@ class ShopifySettingsPage extends Component {
       store: event.target.value,
     });
   }
+
 
   handleApiKeyTextChange(event) {
     this.setState({
@@ -83,6 +97,11 @@ class ShopifySettingsPage extends Component {
 
   handleSave() {
     const { store, apiKey } = this.state;
+    const {
+      extension,
+      validateShopifySettings,
+      updateExtensionSettings,
+    } = this.props;
 
     if (!validateShopifyStoreUrl(store)) {
       this.setState({ error: ERROR_STORE_URL });
@@ -97,12 +116,12 @@ class ShopifySettingsPage extends Component {
       store: resolvedStore,
     });
 
-    this.props.validateShopifySettings(resolvedStore, apiKey).then(() => {
+    validateShopifySettings(resolvedStore, apiKey).then(() => {
       this.setState({
         hasChanges: false,
         inProgress: false,
       });
-      return this.props.updateExtensionSettings({ apiKey, store: resolvedStore });
+      return updateExtensionSettings(extension, { apiKey, store: resolvedStore });
     }).catch(() => {
       this.setState({
         error: ERROR_SHOP,
@@ -114,11 +133,14 @@ class ShopifySettingsPage extends Component {
   render() {
     const { error, hasChanges, inProgress, store, apiKey } = this.state;
 
+    const allShortcutsNote = 'Note: This extension will use the same Shopify '
+    + 'store for all screens in the app.';
+
     return (
-      <div className="shopify-settings-page settings-page">
+      <div className="shopify-settings-page">
         <form onSubmit={this.handleSubmit}>
+          <h3>Store settings</h3>
           <FormGroup>
-            <h3>General settings</h3>
             <ControlLabel>Store URL (e.g. mystore.myshopify.com)</ControlLabel>
             <FormControl
               type="text"
@@ -126,20 +148,18 @@ class ShopifySettingsPage extends Component {
               value={store}
               onChange={this.handleStoreTextChange}
             />
-            <ControlLabel>Your API key for mobile sales channel</ControlLabel>
+            <ControlLabel>Storefront access token</ControlLabel>
             <FormControl
               type="text"
               className="form-control"
               value={apiKey}
               onChange={this.handleApiKeyTextChange}
             />
-            <ControlLabel>
-              This extension will use the same Shopify store for all screens in the app
-            </ControlLabel>
+            <div style={{marginTop: '5px'}}>{allShortcutsNote}</div>
           </FormGroup>
-          <HelpBlock className="text-error">
-            {error}
-          </HelpBlock>
+          {error &&
+            <HelpBlock className="text-error">{error}</HelpBlock>
+          }
         </form>
         <ButtonToolbar>
           <Button
@@ -157,18 +177,32 @@ class ShopifySettingsPage extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const { ownExtensionName, ownExtension } = ownProps;
-  const scope = { extensionName: ownExtensionName };
+function mapStateToProps(state, ownProps) {
+  const { extensionName } = ownProps;
 
   return {
+    extension: getExtension(state, extensionName),
+  };
+}
+
+function mapDispatchToProps(dispatch, ownProps) {
+  const { extensionName } = ownProps;
+
+  return {
+    fetchExtension: () => dispatch(fetchExtension(extensionName)),
     validateShopifySettings: (store, apiKey) => (
-      dispatch(validateShopifySettings(store, apiKey, scope))
+      dispatch(
+        validateShopifySettings(
+          store,
+          apiKey,
+          { extensionName: extensionName }
+        )
+      )
     ),
-    updateExtensionSettings: (settings) => (
-      dispatch(updateExtensionSettings(ownExtension, settings))
+    updateExtensionSettings: (extension, settings) => (
+      dispatch(updateExtensionSettings(extension, settings))
     ),
   };
 }
 
-export default connect(null, mapDispatchToProps)(ShopifySettingsPage);
+export default connect(mapStateToProps, mapDispatchToProps)(ShopifySettingsPage);

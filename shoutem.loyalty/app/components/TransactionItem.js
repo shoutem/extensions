@@ -35,17 +35,20 @@ class TransactionItem extends PureComponent {
   render() {
     const { transaction } = this.props;
     const { createdAt, transactionData } = transaction;
-
-    const { amount, points, purchase, rewardName = '' } = transactionData;
+    const { amount, points, purchase, rewardName = '', visit } = transactionData;
 
     const isRedeemed = points < 0;
-
-    const action = isRedeemed ? I18n.t(ext('rewardRedeemed')) : I18n.t(ext('historyItemPointsGainedTitle'));
-    const activity = purchase ?
-      I18n.t(ext('historyItemWithPurchaseMessage'), { amountSpent: transactionData.amount }) :
-      I18n.t(ext('historyItemNoPurchaseMessage'));
-    const subtitle = isRedeemed ? rewardName : activity;
-
+    const action = isRedeemed ?
+      I18n.t(ext('rewardRedeemed')) :
+      I18n.t(ext('historyItemPointsGainedTitle'));
+    const purchased = purchase ?
+      I18n.t(
+        ext('historyItemAmountSpent'),
+        { amountSpent: transactionData.amount }
+      ) : '';
+    const visited = visit ? I18n.t(ext('historyItemStoreVisited')) : '';
+    const activity = `${visited}${purchased}`
+    const actionSubtitle = isRedeemed ? rewardName : activity;
     const date = moment(createdAt).format(TRANSACTION_DATE_FORMAT);
 
     return (
@@ -62,7 +65,7 @@ class TransactionItem extends PureComponent {
             <Subtitle>{action}</Subtitle>
             <View styleName="horizontal">
               <Caption>
-                {`${date}  ·  ${subtitle}`}
+                {`${date}  ·  ${actionSubtitle}`}
               </Caption>
             </View>
           </View>

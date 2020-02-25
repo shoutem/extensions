@@ -28,10 +28,10 @@ export class GridArticleView extends ArticleView {
   render() {
     const { title, imageUrl, date } = this.props;
 
-    const momentDate = moment(date);
-    const dateInfo = momentDate.isAfter(0) ? (
+    const momentDate = moment.utc(date);
+    const dateInfo = moment.utc(momentDate).isAfter(0) ? (
       <View styleName="horizontal">
-        <Caption>{momentDate.fromNow()}</Caption>
+        <Caption>{moment.utc(momentDate).fromNow()}</Caption>
       </View>
     ) : null;
 

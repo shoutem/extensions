@@ -1,9 +1,9 @@
 import _ from 'lodash';
-
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+
+import { I18n } from 'shoutem.i18n';
 
 import {
   Button,
@@ -13,22 +13,18 @@ import {
   Text,
   View,
 } from '@shoutem/ui';
-import { I18n } from 'shoutem.i18n';
 
 import { TRANSLATIONS } from '../const';
+import { getLastDealStatusTransaction } from '../redux';
 import {
   dealStatusShape,
   getDealActiveCoupon,
   getDealStatus,
   isDealActive,
 } from '../services';
-import {
-  getLastDealStatusTransaction,
-} from '../redux';
 import DealRedeemTimer from './DealRedeemTimer';
 
 export class DealRedeemContentView extends PureComponent {
-
   static propTypes = {
     activeCoupon: PropTypes.object,
     deal: PropTypes.object,
@@ -49,10 +45,10 @@ export class DealRedeemContentView extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      dealStatus: nextProps.dealStatus,
-    });
+  componentDidUpdate() {
+    const { dealStatus } = this.props;
+
+    this.setState({ dealStatus });
   }
 
   handleTimerEnd() {

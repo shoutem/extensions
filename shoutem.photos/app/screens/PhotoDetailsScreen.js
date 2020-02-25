@@ -1,16 +1,16 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { StatusBar, Platform } from 'react-native';
-import _ from 'lodash';
 
+import { NavigationBar } from 'shoutem.navigation';
+
+import { connectStyle } from '@shoutem/theme';
 import {
   ImageGallery,
   Screen,
   ImageGalleryOverlay,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import { NavigationBar } from 'shoutem.navigation';
 
 import { ext } from '../const';
 
@@ -23,6 +23,7 @@ class PhotoDetailsScreen extends PureComponent {
 
   constructor(props) {
     super(props);
+
     this.onIndexSelected = this.onIndexSelected.bind(this);
     this.onImageGalleryModeChange = this.onImageGalleryModeChange.bind(this);
     this.onBackButton = this.onBackButton.bind(this);
@@ -35,7 +36,7 @@ class PhotoDetailsScreen extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { photo, photos } = this.props;
 
     const selectedPhotoIndex = _.findIndex(photos, ['id', photo.id]) || 0;

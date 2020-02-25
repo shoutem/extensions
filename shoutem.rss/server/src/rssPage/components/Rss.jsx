@@ -19,6 +19,7 @@ const ACTIVE_SCREEN_PREVIEW = 2;
 export class Rss extends Component {
   constructor(props) {
     super(props);
+
     this.getActiveScreen = this.getActiveScreen.bind(this);
     this.getFeedUrl = this.getFeedUrl.bind(this);
     this.setFeedUrl = this.setFeedUrl.bind(this);

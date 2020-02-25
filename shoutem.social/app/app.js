@@ -14,6 +14,7 @@ import {
 } from './const';
 
 const APPLICATION_EXTENSION = 'shoutem.application';
+const AUTH_EXTENSION = 'shoutem.auth';
 
 export const apiVersion = '59';
 
@@ -23,7 +24,7 @@ export function appDidMount(app) {
   const apiEndpoint = getExtensionSettings(state, APPLICATION_EXTENSION).legacyApiEndpoint;
   shoutemApi.init(apiEndpoint);
 
-  const { authApiEndpoint } = getExtensionSettings(state, ext());
+  const { authApiEndpoint } = getExtensionSettings(state, AUTH_EXTENSION);
   if (!authApiEndpoint) {
     console.error(`Authentication API endpoint not set in ${ext()} settings.`);
   }

@@ -1,18 +1,13 @@
 import _ from 'lodash';
 import moment from 'moment';
-
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 
-import {
-  Icon,
-  Text,
-} from '@shoutem/ui';
+import { Icon, Text } from '@shoutem/ui';
 
 import { formatTwoDigitNumber, getTimeLeft } from '../services';
 
 export default class DealRedeemTimer extends PureComponent {
-
   static propTypes = {
     deal: PropTypes.object,
     endTime: PropTypes.string,
@@ -42,9 +37,11 @@ export default class DealRedeemTimer extends PureComponent {
     this.initializeTimer();
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate() {
     const { endTime: stateEndTime } = this.state;
-    const endTime = moment(nextProps.endTime);
+    const { endTime: propsEndTime } = this.props;
+
+    const endTime = moment(propsEndTime);
 
     if (stateEndTime.format() !== endTime.format()) {
       this.setState({

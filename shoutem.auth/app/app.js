@@ -52,7 +52,7 @@ export function appDidMount(app) {
   const appId = getAppId();
 
   const apiEndpoint = getExtensionSettings(state, APPLICATION_EXTENSION).legacyApiEndpoint;
-  const authApiEndpoint = getExtensionSettings(state, ext()).authApiEndpoint;
+  const { authApiEndpoint } = getExtensionSettings(state, ext());
 
   if (!authApiEndpoint) {
     console.error(`Authentication API endpoint not set in ${ext()} settings.`);

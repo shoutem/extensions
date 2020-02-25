@@ -5,6 +5,7 @@ const androidDependencies = `
     implementation "com.google.firebase:firebase-core:\${rootProject.ext.firebaseCoreVersion}"
     implementation "com.google.firebase:firebase-messaging:\${rootProject.ext.firebaseMessagingVersion}"
 `;
+const androidRootGradle = 'classpath("com.google.gms:google-services:3.0.0")';
 
 const appDelegateHeaderSearch = '@interface AppDelegate : UIResponder <UIApplicationDelegate>';
 const appDelegateHeaderReplace = '@interface AppDelegate : UIResponder <UIApplicationDelegate, UNUserNotificationCenterDelegate>';
@@ -59,6 +60,7 @@ const firebase = {
         dependencies: androidDependencies,
         plugins: androidPlugins,
       },
+      rootGradle: androidRootGradle,
     },
   },
 };

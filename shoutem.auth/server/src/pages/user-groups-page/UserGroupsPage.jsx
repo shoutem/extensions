@@ -7,17 +7,41 @@ import {
   updateShortcutSettings,
   getShortcuts,
 } from '@shoutem/redux-api-sdk';
-import { LoaderContainer } from '@shoutem/react-web-ui';
+import { LoaderContainer, Paging } from '@shoutem/react-web-ui';
 import { shouldLoad, isInitialized, isBusy } from '@shoutem/redux-io';
 import {
+  DEFAULT_LIMIT,
+  DEFAULT_OFFSET,
   UserGroupsDashboard,
   UserGroupScreenSettings,
   getUserGroups,
+  getAllUserGroups,
   loadUserGroups,
+  loadAllUserGroups,
   createUserGroup,
   deleteUserGroup,
   updateUserGroup,
+  loadNextUserGroupsPage,
+  loadPreviousUserGroupsPage,
+  getUserGroupCount,
 } from 'src/modules/user-groups';
+
+function resolvePaging(currentPagingRef, useDefaultPaging) {
+  const defaultPaging = {
+    limit: DEFAULT_LIMIT,
+    offset: DEFAULT_OFFSET,
+  };
+
+  if (useDefaultPaging) {
+    return defaultPaging;
+  }
+
+  if (!currentPagingRef) {
+    return defaultPaging;
+  }
+
+  return currentPagingRef.getPagingInfo();
+}
 
 export class UserGroupsPage extends Component {
   constructor(props) {
@@ -25,25 +49,30 @@ export class UserGroupsPage extends Component {
 
     this.checkData = this.checkData.bind(this);
     this.loadUserGroups = this.loadUserGroups.bind(this);
-    this.handleUserGroupCreate = this.handleUserGroupCreate.bind(this);
+    this.handleNextPageClick = this.handleNextPageClick.bind(this);
+    this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
 
     this.state = {
       inProgress: false,
-      showLoaderOnRefresh: false,
+      paginationInProgress: false,
     };
   }
 
   componentWillMount() {
-    this.checkData(this.props);
+    this.checkData(this.props, null, true);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.checkData(nextProps, this.props);
+    this.checkData(nextProps, this.props, false);
   }
 
-  checkData(nextProps, props = {}) {
+  checkData(nextProps, props = {}, useDefaultPaging = false) {
     if (shouldLoad(nextProps, props, 'userGroups')) {
-      this.loadUserGroups();
+      this.loadUserGroups(useDefaultPaging);
+    }
+
+    if (shouldLoad(nextProps, props, 'allUserGroups')) {
+      this.props.loadAllUserGroups();
     }
 
     if (shouldLoad(nextProps, props, 'shortcuts')) {
@@ -55,38 +84,49 @@ export class UserGroupsPage extends Component {
     }
   }
 
-  loadUserGroups() {
+  loadUserGroups(useDefaultPaging) {
     this.setState({ inProgress: true });
+    const paging = resolvePaging(this.refs.paging, useDefaultPaging);
 
-    this.props.loadUserGroups().then(() => (
-      this.setState({
-        inProgress: false,
-        showLoaderOnRefresh: false,
-      })
-    ));
+    return this.props.loadUserGroups(paging.limit, paging.offset);
   }
 
-  handleUserGroupCreate(groupName) {
-    this.setState({ showLoaderOnRefresh: true });
-    return this.props.createUserGroup(groupName);
+  handleNextPageClick() {
+    const { userGroups } = this.props;
+    this.setState({ paginationInProgress: true });
+
+    return this.props
+      .loadNextPage(userGroups)
+      .then(() => this.setState({ paginationInProgress: false }));
+  }
+
+  handlePreviousPageClick() {
+    const { userGroups } = this.props;
+    this.setState({ paginationInProgress: true });
+
+    return this.props
+      .loadPreviousPage(userGroups)
+      .then(() => this.setState({ paginationInProgress: false }));
   }
 
   render() {
-    const { inProgress, showLoaderOnRefresh } = this.state;
-    const {
-      userGroups,
-      shortcuts,
-      extension,
-    } = this.props;
+    const { inProgress, paginationInProgress } = this.state;
+    const { userGroups, allUserGroups, shortcuts, extension } = this.props;
 
-    const isLoading = (
-      (showLoaderOnRefresh && inProgress) ||
+    const isLoading =
+      (isBusy(userGroups) && isBusy(allUserGroups)) ||
       !isInitialized(userGroups) ||
+      !isInitialized(allUserGroups) ||
       !isInitialized(shortcuts) ||
-      isBusy(extension)
+      isBusy(extension);
+
+    const allScreensProtected = _.get(
+      extension,
+      'settings.allScreensProtected',
+      false,
     );
 
-    const allScreensProtected = _.get(extension, 'settings.allScreensProtected', false);
+    const paging = resolvePaging(this.refs.paging);
 
     return (
       <LoaderContainer
@@ -94,16 +134,26 @@ export class UserGroupsPage extends Component {
         isLoading={isLoading}
         isOverlay={inProgress || isBusy(extension)}
       >
-        <UserGroupsDashboard
-          userGroups={userGroups}
-          onUserGroupCreate={this.handleUserGroupCreate}
-          onUserGroupDelete={this.props.deleteUserGroup}
-          onUserGroupUpdate={this.props.updateUserGroup}
-        />
+        <LoaderContainer isOverlay isLoading={paginationInProgress}>
+          <UserGroupsDashboard
+            userGroups={userGroups}
+            onUserGroupCreate={this.props.createUserGroup}
+            onUserGroupDelete={this.props.deleteUserGroup}
+            onUserGroupUpdate={this.props.updateUserGroup}
+          />
+          <Paging
+            limit={paging.limit}
+            offset={paging.offset}
+            itemCount={getUserGroupCount(userGroups)}
+            onNextPageClick={this.handleNextPageClick}
+            onPreviousPageClick={this.handlePreviousPageClick}
+            ref="paging"
+          />
+        </LoaderContainer>
         <UserGroupScreenSettings
           disabled={!allScreensProtected}
           shortcuts={shortcuts}
-          userGroups={userGroups}
+          userGroups={allUserGroups}
           onScreenVisibilityUpdate={this.props.updateShortcutSettings}
         />
       </LoaderContainer>
@@ -118,11 +168,15 @@ UserGroupsPage.propTypes = {
   shortcuts: PropTypes.array,
   fetchShortcuts: PropTypes.func,
   userGroups: PropTypes.array,
+  allUserGroups: PropTypes.array,
   loadUserGroups: PropTypes.func,
+  loadAllUserGroups: PropTypes.func,
   createUserGroup: PropTypes.func,
   deleteUserGroup: PropTypes.func,
   updateUserGroup: PropTypes.func,
   updateShortcutSettings: PropTypes.func,
+  loadNextPage: PropTypes.func,
+  loadPreviousPage: PropTypes.func,
 };
 
 UserGroupsPage.contextTypes = {
@@ -132,6 +186,7 @@ UserGroupsPage.contextTypes = {
 function mapStateToProps(state) {
   return {
     userGroups: getUserGroups(state),
+    allUserGroups: getAllUserGroups(state),
     shortcuts: getShortcuts(state),
   };
 }
@@ -141,27 +196,21 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
-    loadUserGroups: () => (
-      dispatch(loadUserGroups(appId, scope))
-    ),
-    createUserGroup: (name) => (
-      dispatch(createUserGroup(appId, name, scope))
-    ),
-    deleteUserGroup: (groupId) => (
-      dispatch(deleteUserGroup(appId, groupId, scope))
-    ),
-    updateUserGroup: (groupId, groupPatch) => (
-      dispatch(updateUserGroup(appId, groupId, groupPatch, scope))
-    ),
-    fetchShortcuts: () => (
-      dispatch(fetchShortcuts())
-    ),
-    updateShortcutSettings: (shortcut, settings) => (
-      dispatch(updateShortcutSettings(shortcut, settings))
-    ),
-    fetchExtension: () => (
-      dispatch(fetchExtension(extensionName))
-    ),
+    loadAllUserGroups: () => dispatch(loadAllUserGroups(appId, scope)),
+    loadUserGroups: (limit, offset) =>
+      dispatch(loadUserGroups(appId, limit, offset, scope)),
+    createUserGroup: name => dispatch(createUserGroup(appId, name, scope)),
+    deleteUserGroup: groupId =>
+      dispatch(deleteUserGroup(appId, groupId, scope)),
+    updateUserGroup: (groupId, groupPatch) =>
+      dispatch(updateUserGroup(appId, groupId, groupPatch, scope)),
+    fetchShortcuts: () => dispatch(fetchShortcuts()),
+    updateShortcutSettings: (shortcut, settings) =>
+      dispatch(updateShortcutSettings(shortcut, settings)),
+    fetchExtension: () => dispatch(fetchExtension(extensionName)),
+    loadNextPage: userGroups => dispatch(loadNextUserGroupsPage(userGroups)),
+    loadPreviousPage: userGroups =>
+      dispatch(loadPreviousUserGroupsPage(userGroups)),
   };
 }
 

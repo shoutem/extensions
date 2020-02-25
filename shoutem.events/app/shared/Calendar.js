@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import moment from 'moment';
 import { Alert, Linking } from 'react-native';
-import CalendarManager, { PERMISSION_ERROR } from 'react-native-calendar-manager';
+import CalendarManager, { PERMISSION_ERROR } from '@shoutem/react-native-calendar-manager';
+import { uses24HourClock } from 'react-native-localize';
 
-import { DeviceInfo } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 
 import { ext } from '../const';
@@ -48,7 +48,7 @@ export function formatDate(date) {
     return '';
   }
 
-  const format = DeviceInfo.is24Hour() ? 'MMM D • HH:mm' : 'MMM D • hh:mm A';
+  const format = uses24HourClock() ? 'MMM D • HH:mm' : 'MMM D • hh:mm A';
 
   return toMoment(date).format(format);
 }

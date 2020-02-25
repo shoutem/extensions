@@ -1,13 +1,8 @@
 {
   "name": "shoutem.push-notifications",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Base extension for push notifications",
   "dependencies": {
     "xcode": "0.8.9"
-  },
-  "rnpm": {
-    "commands": {
-      "postlink": "node node_modules/shoutem.push-notifications/scripts/run.js"
-    }
   }
 }

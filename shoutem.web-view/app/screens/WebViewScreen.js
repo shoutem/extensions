@@ -47,10 +47,8 @@ export class WebViewScreen extends PureComponent {
       webNavigationState: {},
     };
 
-    // componentWillReceiveProps() cannot be triggered due to
-    // WebView re-rendering after every change, so there are no
-    // actual prop changes:
-    // https://stackoverflow.com/a/40330289/7920643
+    // Since WebView rerenders after every change, check for
+    // permission is done in the constructor
     const { checkPermissionStatus, requireLocationPermission } = props;
 
     if (!_.isFunction(checkPermissionStatus)) {

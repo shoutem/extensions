@@ -1,0 +1,8 @@
+{
+  "shoutem": {
+    "camera": {
+      "changePermissionsButton": "Change permissions",
+      "permissionNotGranted": "Camera permission not granted."
+    }
+  }
+}

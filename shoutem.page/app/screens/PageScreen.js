@@ -1,9 +1,23 @@
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { StatusBar, InteractionManager } from 'react-native';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
+import { executeShortcut } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
+import { IconGrid, List, NavigationBar } from 'shoutem.navigation';
+import { shortcutChildrenRequired } from 'shoutem.navigation/helpers';
+
+import {
+  getCollection,
+  find,
+  isBusy,
+  isInitialized,
+  isError,
+  shouldRefresh,
+} from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
   Divider,
@@ -16,19 +30,6 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
-import {
-  getCollection,
-  find,
-  isBusy,
-  isInitialized,
-  isError,
-  shouldRefresh,
-} from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-import { executeShortcut } from 'shoutem.application';
-import { IconGrid, List, NavigationBar } from 'shoutem.navigation';
 
 import { ext, PAGE_SCHEMA } from '../const';
 
@@ -53,7 +54,7 @@ export class PageScreen extends PureComponent {
     // Settings
     navigationLayoutType: PropTypes.string.isRequired,
     navigationBarStyle: PropTypes.string.isRequired,
-    imageSize: PropTypes.string.isRequired
+    imageSize: PropTypes.string.isRequired,
   };
 
   constructor(props, context) {
@@ -66,7 +67,7 @@ export class PageScreen extends PureComponent {
     this.renderImage = this.renderImage.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { data } = this.props;
 
     if (shouldRefresh(data)) {
@@ -81,13 +82,11 @@ export class PageScreen extends PureComponent {
       return;
     }
 
-    InteractionManager.runAfterInteractions(() =>
-      find(schema || PAGE_SCHEMA, undefined, {
-        query: {
-          'filter[categories]': parentCategoryId,
-        },
-      }),
-    );
+    InteractionManager.runAfterInteractions(() => find(schema || PAGE_SCHEMA, undefined, {
+      query: {
+        'filter[categories]': parentCategoryId,
+      },
+    }));
   }
 
   isNavigationBarClear() {
@@ -96,7 +95,9 @@ export class PageScreen extends PureComponent {
   }
 
   getNavBarProps() {
-    const { data, title: shortcutTitle, parentCategoryId, navigationBarStyle } = this.props;
+    const {
+      data, title: shortcutTitle, parentCategoryId, navigationBarStyle,
+    } = this.props;
 
     if (!_.isUndefined(parentCategoryId) && (isBusy(data) || !isInitialized(data))) {
       // Do not show shortcut title in NavigationBar if still loading
@@ -168,7 +169,7 @@ export class PageScreen extends PureComponent {
         <Caption styleName="h-center">{subtitle}</Caption>
       </View>
     );
-  };
+  }
 
   renderImage(profile) {
     const { imageSize } = this.props;
@@ -270,15 +271,15 @@ export class PageScreen extends PureComponent {
     } else {
       emptyStateViewProps = {
         icon: 'refresh',
-        message: (isError(data)) ?
-          I18n.t('shoutem.application.unexpectedErrorMessage') :
-          I18n.t('shoutem.application.emptyCollectionErrorMessage'),
+        message: (isError(data))
+          ? I18n.t('shoutem.application.unexpectedErrorMessage')
+          : I18n.t('shoutem.application.emptyCollectionErrorMessage'),
         onRetry: this.fetchData,
         retryButtonTitle: I18n.t('shoutem.application.tryAgainButton'),
       };
     }
 
-    return <EmptyStateView {...emptyStateViewProps} />;
+    return <EmptyStateView {...emptyStateViewProps} styleName="wide-subtitle" />;
   }
 
   shouldRenderPlaceholderView() {
@@ -292,9 +293,9 @@ export class PageScreen extends PureComponent {
 
     // If no data is available, render placeholder view
     if (this.shouldRenderPlaceholderView()) {
-      return hasNavigationItems ?
-        this.renderNavigationOnly() :
-        this.renderPlaceholderView();
+      return hasNavigationItems
+        ? this.renderNavigationOnly()
+        : this.renderPlaceholderView();
     }
 
     // If data is still loading, render loading spinner
@@ -310,7 +311,7 @@ export class PageScreen extends PureComponent {
 
   render() {
     const { data, navigationBarStyle } = this.props;
-    const fullScreen = this.isNavigationBarClear() ? "full-screen" : "";
+    const fullScreen = this.isNavigationBarClear() ? 'full-screen' : '';
 
     return (
       <Screen styleName={`${fullScreen} paper`}>
@@ -336,5 +337,5 @@ export const mapStateToProps = (state, ownProps) => {
 export const mapDispatchToProps = { executeShortcut, find };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PageScreen'))(PageScreen)
+  connectStyle(ext('PageScreen'))(PageScreen),
 );

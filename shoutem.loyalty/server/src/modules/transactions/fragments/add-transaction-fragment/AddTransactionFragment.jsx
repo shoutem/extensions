@@ -52,9 +52,9 @@ export class AddTransactionFragment extends Component {
 
   handleAddTransaction(transactionOptions) {
     const { programId, cards } = this.props;
-    const { userId, ...otherOptions } = transactionOptions;
+    const { user: { value: legacyUserId }, ...otherOptions } = transactionOptions;
 
-    const cardId = _.get(cards, [userId, 'id']);
+    const cardId = _.get(cards, [legacyUserId, 'id']);
 
     return new Promise((resolve, reject) => {
       if (cardId) {
@@ -62,7 +62,7 @@ export class AddTransactionFragment extends Component {
           .catch(() => reject({ _error: 'Unable to create transaction.' }));
       }
 
-      return this.props.createCard(programId, userId)
+      return this.props.createCard(programId, legacyUserId)
         .then(newCardId => this.createTransaction(newCardId, otherOptions))
         .catch(() => reject({ _error: 'Unable to create transaction.' }));
     });
@@ -72,6 +72,7 @@ export class AddTransactionFragment extends Component {
     const { programId } = this.props;
 
     const transaction = { cardId, ...transactionOptions };
+
     return this.props.createTransaction(programId, transaction)
       .then(this.handleHideTransactionModal);
   }

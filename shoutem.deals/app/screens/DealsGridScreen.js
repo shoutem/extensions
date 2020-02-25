@@ -20,7 +20,6 @@ import {
 import DealGridView from '../components/DealGridView';
 
 export class DealsGridScreen extends DealsScreen {
-
   constructor(props, context) {
     super(props, context);
 
@@ -34,7 +33,8 @@ export class DealsGridScreen extends DealsScreen {
   }
 
   getNavBarProps() {
-    return super.getNavBarProps(I18n.t(TRANSLATIONS.DEALS_GRID_BUTTON));
+    const titleStyle = _.get(this.props, 'style.titleContainer', {});
+    return super.getNavBarProps(I18n.t(TRANSLATIONS.DEALS_GRID_BUTTON), titleStyle);
   }
 
   renderRow(deals, sectionId, dealId) {
@@ -46,8 +46,8 @@ export class DealsGridScreen extends DealsScreen {
 
     const dealsViews = _.map(deals, deal => (
       <DealGridView
-        deal={deal}
         key={deal.id}
+        deal={deal}
         onPress={this.handleOpenDealDetails}
       />
     ));

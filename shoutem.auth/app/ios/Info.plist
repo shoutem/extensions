@@ -3,12 +3,34 @@
 <plist version="1.0">
   <dict>
     <key>NSCameraUsageDescription</key>
-    <string>App needs access to your camera to be able to upload photos from your device</<string>
+    <string>App needs access to your camera to be able to upload photos from your device</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>App would like to use your microphone (for videos)</<string>
+    <string>App would like to use your microphone (for videos)</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>App needs access to your image library to be able to upload photos from your device</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>App needs access to your image library to be able to upload photos from your device</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>fb2194578717506155</string>
+        </array>
+      </dict>
+    </array>
+    <key>FacebookAppID</key>
+    <string>2194578717506155</string>
+    <key>FacebookDisplayName</key>
+    <string>TestMySmokeLogin</string>
+    <key>FacebookAutoLogAppEventsEnabled</key>
+    <false/>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>fbapi</string>
+      <string>fb-messenger-api</string>
+      <string>fbauth2</string>
+      <string>fbshareextension</string>
+    </array>
   </dict>
 </plist>

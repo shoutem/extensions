@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux';
 import _ from 'lodash';
 
+import { storage, collection, find } from '@shoutem/redux-io';
+
+import { ext } from '../const';
 import {
   SHOP_LOADING,
   SHOP_LOADED,
@@ -12,23 +15,23 @@ import {
   PRODUCTS_LOADING,
   PRODUCTS_LOADED,
   CUSTOMER_INFORMATION_UPDATED,
-  SHIPPING_METHODS_LOADING,
-  SHIPPING_METHODS_LOADED,
-  SHIPPING_METHODS_ERROR_LOADING,
-  SHIPPING_METHOD_SELECTED,
-  PAYMENT_PROCESSING,
+  ORDER_NUMBER_LOADED,
   CHECKOUT_COMPLETED,
   APP_MOUNTED,
 } from './actionTypes';
 
 const addItemToCart = (cart, { item, variant, quantity }) => {
-  const variantIndex = _.findIndex(cart, cartItem => cartItem.variant.id === variant.id);
+  const variantIndex =
+    _.findIndex(cart, cartItem => cartItem.variant.id === variant.id);
 
   if (variantIndex > -1) {
     return cart.map((item, index) => {
       if (index === variantIndex) {
         const existingCartItem = cart[index];
-        return { ...existingCartItem, quantity: existingCartItem.quantity + quantity };
+        return {
+          ...existingCartItem,
+          quantity: existingCartItem.quantity + quantity
+        };
       }
       return item;
     });
@@ -37,11 +40,16 @@ const addItemToCart = (cart, { item, variant, quantity }) => {
 };
 
 const removeItemFromCart = (cart, { variant }) => {
-  const variantIndex = _.findIndex(cart, cartItem => cartItem.variant.id === variant.id);
+  const variantIndex =
+    _.findIndex(cart, cartItem => cartItem.variant.id === variant.id);
+
   return cart.filter((item, index) => index !== variantIndex);
 };
 
-const updateCartItem = (cart, { cartItem: originalItem, variant, quantity }) => {
+const updateCartItem = (
+  cart,
+  { cartItem: originalItem, variant, quantity }
+) => {
   const variantIndex = _.findIndex(cart, cartItem =>
     cartItem.variant.id === originalItem.variant.id);
 
@@ -81,19 +89,7 @@ const customer = (state = {}, action) => {
 const products = (state = {}, action) => {
   switch (action.type) {
     case PRODUCTS_LOADED:
-      return { ...state, ...(_.keyBy(action.payload.products, 'product_id')) };
-    default:
-      return state;
-  }
-};
-
-const payment = (state = {}, action) => {
-  switch (action.type) {
-    case PAYMENT_PROCESSING:
-      return {
-        ...state,
-        isProcessing: action.payload.isProcessing,
-      };
+      return { ...state, ...(_.keyBy(action.payload.products, 'id')) };
     default:
       return state;
   }
@@ -101,13 +97,15 @@ const payment = (state = {}, action) => {
 
 const productIdsForKey = (state = {}, { products, page, resetMode }, key) => {
   const existingProductIds = state[key] ? state[key].productIds : [];
-  const newProductIds = _.map(products, 'product_id');
+  const newProductIds = _.map(products, 'id');
 
   return {
     ...state,
     [key]: {
       page,
-      productIds: resetMode ? newProductIds : _.union(existingProductIds, newProductIds),
+      productIds: resetMode ?
+        newProductIds :
+        _.union(existingProductIds, newProductIds),
     },
   };
 };
@@ -151,28 +149,15 @@ const resetPages = (state) => {
   return _.mapValues(state, productsStatus => ({ ...productsStatus, page: 0 }));
 };
 
-const selectedShippingMethod = (state = {}, action) => {
+const checkoutOrder = (state = {}, action) => {
   switch (action.type) {
-    case SHIPPING_METHOD_SELECTED:
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-const shippingMethods = (state = {}, action) => {
-  switch (action.type) {
-    case SHIPPING_METHODS_LOADING:
+    case ORDER_NUMBER_LOADED:
       return {
-        isLoading: true,
+        orderNumber: action.payload
       };
-    case SHIPPING_METHODS_LOADED:
+    case CHECKOUT_COMPLETED:
       return {
-        methods: action.payload,
-      };
-    case SHIPPING_METHODS_ERROR_LOADING:
-      return {
-        error: true,
+        orderNumber: ""
       };
     default:
       return state;
@@ -206,10 +191,10 @@ export default combineReducers({
   cart,
   collections: productsForKey('collectionId'),
   customer,
-  payment,
   products,
-  selectedShippingMethod,
-  shippingMethods,
+  checkoutOrder,
   shop,
+  shopifyAttachments: storage(ext('Shopify')),
+  allShopifyAttachments: collection(ext('Shopify'), 'all'),
   tags: productsForKey('tag'),
 });

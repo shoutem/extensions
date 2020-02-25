@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import QRCode from 'react-native-qrcode';
+import QRCode from 'react-native-qrcode-svg';
 
 import {
   TouchableOpacity,

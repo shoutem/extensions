@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
@@ -13,21 +14,23 @@ import {
   View,
 } from '@shoutem/ui';
 
-import { connectStyle } from '@shoutem/theme';
-
+import images from '../assets/images'
+import { ext } from '../const';
 import {
   product as productShape,
   shop as shopShape,
 } from './shapes';
 
-import { ext } from '../const';
-import { shopItemHasDiscount } from '../services';
-
 const ListItem = ({ item, onAddToCart, onPress, shop }) => {
-  const { images, minimum_price, minimum_compare_at_price, title } = item;
+  const { images, title } = item;
   const { currency = '' } = shop;
 
-  const shouldShowDiscount = shopItemHasDiscount(item);
+  const variant = item.variants[0];
+  const newPrice = parseFloat(variant.price);
+  const oldPrice = parseFloat(variant.compareAtPrice);
+
+  const newPriceString = `${currency}${newPrice}`;
+  const oldPriceString = oldPrice ? `${currency}${oldPrice}` : null;
 
   // TODO: Format currency in locale
   return (
@@ -36,25 +39,22 @@ const ListItem = ({ item, onAddToCart, onPress, shop }) => {
         <Image
           styleName="small"
           source={{ uri: (images[0] || {}).src }}
-          defaultSource={require('../assets/images/image-fallback.png')}
+          defaultSource={images.fallback}
         />
         <View styleName="vertical stretch space-between">
           <Subtitle>{title}</Subtitle>
           <View styleName="horizontal">
-            <Subtitle
-              styleName="md-gutter-right"
-            >
-              {`${minimum_price} ${currency}`}
+            <Subtitle styleName="md-gutter-right">
+              {newPriceString}
             </Subtitle>
-            <Caption styleName="line-through">
-              {shouldShowDiscount ? `${minimum_compare_at_price} ${currency}` : ''}
-            </Caption>
+            {oldPriceString &&
+              <Caption styleName="line-through">
+                {oldPriceString}
+              </Caption>
+            }
           </View>
         </View>
-        <Button
-          onPress={onAddToCart}
-          styleName="right-icon"
-        >
+        <Button onPress={onAddToCart} styleName="right-icon">
           <Icon name="add-to-cart" />
         </Button>
       </Row>

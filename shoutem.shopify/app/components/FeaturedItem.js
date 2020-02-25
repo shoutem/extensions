@@ -1,11 +1,14 @@
 import React from 'react';
 
+import { I18n } from 'shoutem.i18n';
+
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Divider,
   Heading,
   Icon,
-  ImageBackground,
+  Image,
   Overlay,
   Subtitle,
   Text,
@@ -13,25 +16,23 @@ import {
   Title,
   TouchableOpacity,
   View,
+  ImageBackground
 } from '@shoutem/ui';
 
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-
+import images from '../assets/images'
+import { getDiscount } from '../services/getDiscount';
 import { ext } from '../const';
-import { shopItemHasDiscount } from '../services';
-
 import ListItem from './ListItem';
 
-const getDiscount = (price, originalPrice) =>
-    Math.round((100 * (price - originalPrice)) / originalPrice);
-
 const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
-  const { images, minimum_price, minimum_compare_at_price, title } = item;
-  const { currency = '' } = shop;
+  const { images, title } = item;
 
-  const shouldShowDiscount = shopItemHasDiscount(item);
+  const variant = item.variants[0];
+  const newPrice = parseFloat(variant.price);
+  const oldPrice = parseFloat(variant.compareAtPrice);
+  const { currency = '' } = shop;
+  const newPriceString = `${currency}${newPrice}`;
+  const oldPriceString = oldPrice ? `${currency}${oldPrice}` : null;
 
   return (
     <TouchableOpacity onPress={onPress}>
@@ -39,34 +40,28 @@ const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
         <ImageBackground
           styleName="featured"
           source={{ uri: (images[0] || {}).src }}
-          defaultSource={require('../assets/images/image-fallback.png')}
+          defaultSource={images.fallback}
         >
           <Tile>
-            { shouldShowDiscount ?
+            {(!!oldPrice && newPrice < oldPrice) &&
               <Overlay styleName="image-overlay">
                 <Heading>
-                  {`-${getDiscount(parseInt(minimum_price, 10),
-                    parseInt(minimum_compare_at_price, 10))}%`}
+                  {`${getDiscount(newPrice, oldPrice)}%`}
                 </Heading>
               </Overlay>
-              :
-              null
             }
             <Title styleName="md-gutter-top">{title}</Title>
-            { shouldShowDiscount ?
+            {(!!oldPrice && newPrice < oldPrice) &&
               <Subtitle styleName="line-through sm-gutter-top">
-                {`${minimum_compare_at_price} ${currency}`}
+                {oldPriceString}
               </Subtitle>
-              :
-              null
             }
-            <Heading styleName="md-gutter-top">{ `${minimum_price} ${currency}` }</Heading>
-            <Button
-              styleName="md-gutter-top"
-              onPress={onAddToCart}
-            >
+            <Heading styleName="md-gutter-top">
+              {newPriceString}
+            </Heading>
+            <Button styleName="md-gutter-top" onPress={onAddToCart}>
               <Icon name="cart" />
-              <Text>{I18n.t(ext('addToCartButton'))}</Text>
+              <Text>{I18n.t(ext('addToCartNavBarTitle'))}</Text>
             </Button>
           </Tile>
         </ImageBackground>

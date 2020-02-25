@@ -159,6 +159,7 @@ export default (customVariables = {}) => {
 
     statusBar: {
       backgroundColor: variables.statusBarColor,
+      statusBarStyle: variables.statusBarStyle,
     },
 
     clearNavigationBar: {
@@ -170,12 +171,6 @@ export default (customVariables = {}) => {
         'shoutem.ui.Text': {
           color: variables.navBarText.color,
         },
-      },
-      'shoutem.ui.Title': {
-        // We have a problem with animations attaching too late
-        // during initial screen render, temporary workaround is to
-        // hide the title initially.
-        color: 'transparent',
       },
     },
 
@@ -256,7 +251,6 @@ export default (customVariables = {}) => {
           height: 90,
         },
       },
-
 
       page: {
         [INCLUDE]: ['alignmentVariants'],
@@ -362,9 +356,9 @@ export default (customVariables = {}) => {
         touchableNativeFeedback: {
           background: Platform.OS === 'android' && (
             // Ripple effect is not supported on older Android versions and crashes the app
-            Platform.Version >= 21 ?
-              TouchableNativeFeedback.Ripple(changeColorAlpha(variables.mainNavItemColor, 0.3)) :
-              TouchableNativeFeedback.SelectableBackground()
+            Platform.Version >= 21
+              ? TouchableNativeFeedback.Ripple(changeColorAlpha(variables.mainNavItemColor, 0.3))
+              : TouchableNativeFeedback.SelectableBackground()
           ),
         },
       },
@@ -425,9 +419,9 @@ export default (customVariables = {}) => {
         touchableNativeFeedback: {
           background: Platform.OS === 'android' && (
             // Ripple effect is not supported on older Android versions and crashes the app
-            Platform.Version >= 21 ?
-              TouchableNativeFeedback.Ripple(changeColorAlpha(variables.mainNavItemColor, 0.2)) :
-              TouchableNativeFeedback.SelectableBackground()
+            Platform.Version >= 21
+              ? TouchableNativeFeedback.Ripple(changeColorAlpha(variables.mainNavItemColor, 0.2))
+              : TouchableNativeFeedback.SelectableBackground()
           ),
         },
       },
@@ -728,7 +722,7 @@ export default (customVariables = {}) => {
       },
       backgroundImage: {
         resizeMode: 'cover',
-      }
+      },
     },
     'shoutem.navigation.CardList': {
       page: {
@@ -803,6 +797,30 @@ export default (customVariables = {}) => {
             backgroundColor: 'rgba(3, 3, 3, 0.1)',
             borderRadius: 31,
             justifyContent: 'center',
+          },
+        },
+      },
+
+      '.wide-subtitle': {
+        'shoutem.ui.View': {
+          'shoutem.ui.Subtitle': {
+            marginTop: variables.mediumGutter,
+            width: 180,
+          },
+
+          'shoutem.ui.View': {
+            '.anchor-bottom': {
+              position: 'absolute',
+              bottom: 0,
+            },
+
+            '.icon-placeholder': {
+              height: 62,
+              width: 62,
+              backgroundColor: 'rgba(3, 3, 3, 0.1)',
+              borderRadius: 31,
+              justifyContent: 'center',
+            },
           },
         },
       },
@@ -887,6 +905,27 @@ export default (customVariables = {}) => {
       },
     },
 
+    // Deals
+    'shoutem.deals.DealsListScreen': {
+      titleContainer: Platform.OS === 'ios' ? {
+        paddingRight: 50,
+        paddingLeft: 20,
+      } : {
+          paddingRight: 40,
+          paddingLeft: 20,
+        },
+    },
+
+    'shoutem.deals.DealsGridScreen': {
+      titleContainer: Platform.OS === 'ios' ? {
+        paddingRight: 50,
+        paddingLeft: 20,
+      } : {
+          paddingRight: 40,
+          paddingLeft: 20,
+        },
+    },
+
     // Loyalty
     'shoutem.loyalty.PointsCardScreen': {
       qrBackground: {
@@ -924,6 +963,7 @@ export default (customVariables = {}) => {
       },
       qrBackground: {
         backgroundColor: '#ffffff',
+        overflow: 'hidden',
       },
     },
 
@@ -1050,7 +1090,110 @@ export default (customVariables = {}) => {
       footer: {
         backgroundColor: variables.paperColor,
         paddingBottom: IPHONE_X_HOME_INDICATOR_PADDING + variables.smallGutter,
+      },
+    },
+
+    'shoutem.podcast.PodcastPlayer': {
+      container: {
+        paddingBottom: Device.select({
+          iPhoneX: IPHONE_X_NOTCH_PADDING,
+          iPhoneXR: IPHONE_XR_NOTCH_PADDING,
+          default: 0,
+        }),
+      },
+      slider: {
+        height: 30,
+        minimumTrackTintColor: changeColorAlpha(variables.primaryButtonText.color, 0.6),
+        maximumTrackTintColor: changeColorAlpha(variables.primaryButtonText.color, 0.2),
+        thumbTintColor: Platform.select({
+          android: changeColorAlpha(variables.primaryButtonText.color, 0.8),
+        }),
+        marginVertical: 5,
+      },
+      skipButton: {
+        width: 30,
+        height: 30,
+        padding: 0,
+      },
+      skipIcon: {
+        color: variables.primaryButtonText.color,
+      },
+      skipIconSize: 35,
+      timeDisplay: {
+        lineHeight: 15,
+        fontSize: 12,
+      },
+      playbackButtonStyle: {
+        width: 90,
+        height: 90,
+        padding: 0,
+        margin: 0,
+        marginBottom: 15,
+        marginLeft: 15,
+        backgroundColor: 'transparent',
+        borderWidth: 0,
+      },
+      playbackIconStyle: {
+        fontSize: 80,
+        padding: 0,
+        margin: 0,
+      },
+      spinnerStyle: {
+        size: 80,
+        paddingTop: 22,
+      },
+    },
+
+    'shoutem.radio.Radio': {
+      clearRow: {
+        backgroundColor: 'transparent',
+        width: dimensionRelativeToIphone(375),
+        paddingBottom: variables.largeGutter,
+        paddingHorizontal: variables.largeGutter,
+      },
+      nowPlaying: {
+        backgroundColor: 'transparent',
+        position: 'absolute',
+        bottom: 0,
+      },
+      nowPlayingText: {
+        color: variables.imageOverlayTextColor,
+        paddingBottom: variables.smallGutter * 2,
+        fontSize: 15,
+      },
+      streamTitle: {
+        color: variables.imageOverlayTextColor,
+        fontSize: 15,
+      },
+      hiddenImage: {
+        opacity: 0,
       }
-    }
+    },
+
+    'shoutem.radio.RadioPlayer': {
+      playbackButton: {
+        width: dimensionRelativeToIphone(75),
+        height: dimensionRelativeToIphone(75),
+        fontSize: dimensionRelativeToIphone(36),
+        borderRadius: 200,
+        padding: 0,
+      },
+      playbackIcon: {
+        fontSize: dimensionRelativeToIphone(36),
+        marginLeft: 10,
+      },
+      spinner: {
+        marginTop: Platform.select({
+          ios: 5,
+        }),
+        marginLeft: Platform.select({
+          ios: 5,
+        }),
+        size: Platform.select({
+          ios: 0,
+          default: 18,
+        }),
+      }
+    },
   });
 };

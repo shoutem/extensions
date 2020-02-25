@@ -18,8 +18,8 @@ import {
   DEFAULT_OFFSET,
 } from 'src/modules/users';
 import {
-  loadUserGroups,
-  getUserGroups,
+  loadAllUserGroups,
+  getAllUserGroups,
 } from 'src/modules/user-groups';
 import './style.scss';
 
@@ -68,7 +68,7 @@ export class UsersPage extends Component {
     }
 
     if (shouldLoad(nextProps, props, 'userGroups')) {
-      this.props.loadUserGroups(appId);
+      this.props.loadAllUserGroups(appId);
     }
   }
 
@@ -209,7 +209,7 @@ UsersPage.propTypes = {
   loadUsers: PropTypes.func,
   loadNextPage: PropTypes.func,
   loadPreviousPage: PropTypes.func,
-  loadUserGroups: PropTypes.func,
+  loadAllUserGroups: PropTypes.func,
   createUser: PropTypes.func,
   updateUser: PropTypes.func,
   deleteUser: PropTypes.func,
@@ -222,7 +222,7 @@ UsersPage.contextTypes = {
 function mapStateToProps(state) {
   return {
     users: getUsers(state),
-    userGroups: getUserGroups(state),
+    userGroups: getAllUserGroups(state),
   };
 }
 
@@ -240,8 +240,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     loadPreviousPage: (users) => (
       dispatch(loadPreviousUsersPage(users))
     ),
-    loadUserGroups: (appId) => (
-      dispatch(loadUserGroups(appId, scope))
+    loadAllUserGroups: (appId) => (
+      dispatch(loadAllUserGroups(appId, scope))
     ),
     createUser: (appId, user) => (
       dispatch(createUser(appId, user, scope))

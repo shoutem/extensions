@@ -1,12 +1,9 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Dimensions, ScrollView, Animated } from 'react-native';
-import { connect } from 'react-redux';
 import SideMenu from 'react-native-side-menu';
-import _ from 'lodash';
-
-import { connectStyle } from '@shoutem/theme';
-import { Screen, Button, Icon, View } from '@shoutem/ui';
+import { connect } from 'react-redux';
 
 import {
   executeShortcut,
@@ -14,17 +11,20 @@ import {
   isShortcutVisible,
 } from 'shoutem.application/redux';
 
+import { connectStyle } from '@shoutem/theme';
+import { Screen, Button, Icon, View } from '@shoutem/ui';
+
+import DrawerItem from '../components/DrawerItem';
+import { ScreenStack } from '../components/stacks';
+import { ChildNavigationBar } from '../components/ui';
 import {
   navigateBack,
   setActiveNavigationStack,
   RESET_TO_ROUTE,
 } from '../redux/core';
-import DrawerItem from '../components/DrawerItem';
-import { ScreenStack } from '../components/stacks';
-import { ChildNavigationBar } from '../components/ui';
-import { DRAWER_NAVIGATION_STACK } from '../redux';
-import { shortcutChildrenRequired } from '../helpers';
 import { ext } from '../const';
+import { shortcutChildrenRequired } from '../helpers';
+import { DRAWER_NAVIGATION_STACK } from '../redux';
 
 const { width: windowWidth } = Dimensions.get('window');
 
@@ -48,6 +48,7 @@ export class Drawer extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
+
     this.drawerItemPressed = this.drawerItemPressed.bind(this);
     this.renderDrawerItem = this.renderDrawerItem.bind(this);
     this.drawerStatusChanged = this.drawerStatusChanged.bind(this);
@@ -60,7 +61,7 @@ export class Drawer extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.setActiveNavigationStack(DRAWER_NAVIGATION_STACK);
 
     const activeShortcut = this.getStartingShortcut();

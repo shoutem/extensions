@@ -18,13 +18,11 @@ import {
   find as findAction,
   clear,
   next,
-
   shouldRefresh,
   isBusy,
   isInitialized,
   isError,
   cloneStatus,
-
   getCollection,
   getOne,
 } from '@shoutem/redux-io';
@@ -38,17 +36,20 @@ import { I18n } from 'shoutem.i18n';
 
 import {
   CATEGORIES_SCHEMA,
-
   getCategories,
 } from '../redux';
 
-function printChangedProps(props, nextProps) {
-  const screenName = `[CMSListScreen] ${nextProps.title} -`;
-  console.log(`${screenName} componentWillReceiveProps`);
+// Hardcoded page limit to be able to fetch all categories as pagination is not
+// implemented and it is expected that there would be less than 1000 categories
+const CATEGORIES_PAGE_LIMIT = 1000;
+
+function printChangedProps(prevProps, props = this.props) {
+  const screenName = `[CMSListScreen] ${props.title} -`;
+  console.log(`${screenName} componentDidUpdate`);
 
   let firstChange = true;
-  for (const propName of _.keys(nextProps)) {
-    if (props[propName] !== nextProps[propName]) {
+  for (const propName of _.keys(props)) {
+    if (prevProps[propName] !== props[propName]) {
       if (firstChange) {
         console.log(`${screenName} changed props:`);
         firstChange = false;
@@ -193,6 +194,7 @@ export class CmsListScreen extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
+
     this.fetchCategories = this.fetchCategories.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.getFetchDataOptions = this.getFetchDataOptions.bind(this);
@@ -205,7 +207,7 @@ export class CmsListScreen extends PureComponent {
     this.state = {};
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (!this.state.schema) {
       throw Error(
         'Invalid Screen state "schema". Screen that extends CMSListScreen ' +
@@ -213,25 +215,16 @@ export class CmsListScreen extends PureComponent {
       );
     }
     this.refreshInvalidContent(this.props, true);
-  }
-
-  componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     if (process.env.NODE_ENV === 'development') {
-      printChangedProps(this.props, nextProps);
+      printChangedProps(prevProps, this.props);
     }
 
-    this.checkPermissionStatus(nextProps);
-    this.refreshInvalidContent(nextProps);
-  }
-
-  componentDidUpdate() {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`[CMSListScreen] ${this.props.title} - componentDidUpdate`);
-    }
+    this.checkPermissionStatus(this.props);
+    this.refreshInvalidContent(prevProps);
   }
 
   componentWillUnmount() {
@@ -344,11 +337,13 @@ export class CmsListScreen extends PureComponent {
    * Refresh invalid or expired content.
    * Content is invalid when something depending changes.
    * Watch categories, selectedCategory and data.
-   * @param nextProps
+   * prevProps falls back to this.props if called from
+   * componentDidMount, which does not have prevProps.
+   * @param prevProps {object} - Previous props or this.props
    * @param initialization {bool} - Is screen initializing
    */
-  refreshInvalidContent(nextProps, initialization = false) {
-    const { categories, data, selectedCategory } = nextProps;
+  refreshInvalidContent(prevProps = this.props, initialization = false) {
+    const { categories, data, selectedCategory } = this.props;
 
     if (isBusy(categories)) {
       // Do not do anything related to categories until they are loaded.
@@ -371,21 +366,22 @@ export class CmsListScreen extends PureComponent {
     // either selectedCategory or data for selected category.
     if (
       !this.isCategoryValid(selectedCategory) ||
-      (categories !== this.props.categories && !this.isSelectedCategoryValid(nextProps))
+      (categories !== this.props.categories && !this.isSelectedCategoryValid(this.props))
     ) {
       this.onCategorySelected(categories[0]);
     }
 
-    const nextCategory = nextProps.selectedCategory;
+    const category = this.props.selectedCategory;
 
-    const shouldRefreshData = this.isCategoryValid(nextCategory) && shouldRefresh(data);
+    const shouldRefreshData = this.isCategoryValid(category) && shouldRefresh(data);
     const hasOrderingChanged =
-      this.props.sortField !== nextProps.sortField ||
-      this.props.sortOrder !== nextProps.sortOrder;
-    const hasLocationChanged = !_.isEqual(this.props.currentLocation, nextProps.currentLocation);
+      this.props.sortField !== prevProps.sortField ||
+      this.props.sortOrder !== prevProps.sortOrder;
+    const hasLocationChanged =
+      !_.isEqual(this.props.currentLocation, prevProps.currentLocation);
 
     if (shouldRefreshData || hasOrderingChanged || hasLocationChanged) {
-      this.fetchData(this.getFetchDataOptions(nextProps));
+      this.fetchData(this.getFetchDataOptions(this.props));
     }
   }
 
@@ -429,6 +425,7 @@ export class CmsListScreen extends PureComponent {
       find(CATEGORIES_SCHEMA, undefined, {
         query: {
           'filter[parent]': parentCategoryId,
+          'page[limit]': CATEGORIES_PAGE_LIMIT,
         },
       }),
     );

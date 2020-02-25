@@ -8,8 +8,8 @@ import {
   cloneStatus,
 } from '@shoutem/redux-io';
 
-import { RssListScreen } from 'shoutem.rss';
 import { openInModal } from 'shoutem.navigation';
+import { RssListScreen } from 'shoutem.rss';
 
 import { ext } from '../const';
 import {
@@ -44,25 +44,29 @@ export class PhotosBaseScreen extends RssListScreen {
     openInModal: PropTypes.func.isRequired,
   };
 
+  static getDerivedStateFromProps(props, state) {
+    if (props.data !== state.data) {
+      const photos = remapAndFilterPhotos(props.data);
+
+      return { photos };
+    }
+
+    return state;
+  }
+
   constructor(props, context) {
     super(props, context);
+
     this.openDetailsScreen = this.openDetailsScreen.bind(this);
     this.renderRow = this.renderRow.bind(this);
 
     const photos = remapAndFilterPhotos(this.props.data);
 
     this.state = {
-      ...this.state,
-      schema: RSS_PHOTOS_SCHEMA,
+      data: null,
       photos,
+      schema: RSS_PHOTOS_SCHEMA,
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.data !== nextProps.data) {
-      const photos = remapAndFilterPhotos(nextProps.data);
-      this.setState({ photos });
-    }
   }
 
   openDetailsScreen(photo) {

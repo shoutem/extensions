@@ -1,18 +1,19 @@
 import _ from 'lodash';
+
 import { ext } from '../const';
 
 export const getCartSize = (state) => {
   const { cart } = state[ext()];
+
   return _.reduce(cart, (result, item) => result + item.quantity, 0);
 };
 
-export const getCartTotal = (state, withShipping) => {
-  const { cart, selectedShippingMethod: { price: shipping } } = state[ext()];
+export const getCartTotal = (state) => {
+  const { cart } = state[ext()];
 
-  const productsTotal = cart.reduce((total, { quantity, variant }) =>
-    total + (quantity * variant.price), 0);
+  const total = cart.reduce((total, { quantity, variant }) =>
+    total + (quantity * parseFloat(variant.price)), 0);
 
-  const total = withShipping ? productsTotal + parseInt(shipping, 10) : productsTotal;
   return total.toFixed(2);
 };
 

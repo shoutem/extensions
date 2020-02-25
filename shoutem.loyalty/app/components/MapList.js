@@ -44,12 +44,13 @@ export class MapList extends PureComponent {
 
   constructor(props) {
     super(props);
-    const { selectedPlace } = this.props;
 
     this.renderImageRow = this.renderImageRow.bind(this);
     this.findSelectedPlace = this.findSelectedPlace.bind(this);
     this.setSelectedMarker = this.setSelectedMarker.bind(this);
-    this.refreshMarkers = this.refreshMarkers.bind(this);
+
+    const { selectedPlace } = this.props;
+
     this.state = {
       ...this.state,
       schema: ext('places'),
@@ -57,7 +58,7 @@ export class MapList extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { places } = this.props;
 
     const markers = createMarkersFromPlaces(places);
@@ -67,45 +68,28 @@ export class MapList extends PureComponent {
     this.setState({ markers, region });
   }
 
-  componentWillReceiveProps(newProps) {
-    const { places } = newProps;
-    const oldPlaces = this.props.places;
-
-    if (places !== oldPlaces) {
-      this.refreshMarkers(places);
+  static getDerivedStateFromProps(props, state) {
+    if (places === state.places) {
+      return state;
     }
+
+    const { places } = props;
+    const { selectedMarker } = state;
+
+    const markedPlace = findSelectedPlace(places, selectedMarker);
+    const markers = createMarkersFromPlaces(places);
+
+    LayoutAnimation.easeInEaseOut();
+    return {
+      markers,
+      places,
+      selectedMarker: markedPlace ? selectedMarker : undefined,
+    };
   }
 
   setSelectedMarker(selectedMarker) {
     LayoutAnimation.easeInEaseOut();
     this.setState({ selectedMarker });
-  }
-
-  /**
-   * Takes new set of places to render ( after we detect the change via new props),
-   * and creates new markers based on the same. Also, if there was a place selected,
-   * we check if the same place is present in the new set, and if not, we make sure to "reset"
-   * the selected marker
-   *
-   * @param places {array} Array of places to display on map.
-   */
-  refreshMarkers(places) {
-    const { selectedMarker } = this.state;
-
-    // If there was a marker selected, check if the marked place
-    // Is still present in the current data set. Reset the marker export
-    // do nothing accordingly.
-    if (selectedMarker) {
-      const markedPlace = this.findSelectedPlace(places);
-
-      if (!markedPlace) {
-        this.setSelectedMarker(undefined);
-      }
-    }
-    const markers = createMarkersFromPlaces(places);
-
-    LayoutAnimation.easeInEaseOut();
-    this.setState({ markers });
   }
 
   resolveInitialRegion(markers) {

@@ -6,9 +6,12 @@ import {
   Animated,
   InteractionManager,
 } from 'react-native';
+import { connect } from 'react-redux';
 import { Header as NavigationHeader } from 'react-native-navigation-experimental-compat';
 import _ from 'lodash';
 import tinyColor from 'tinycolor2';
+
+import { getExtensionSettings } from 'shoutem.application';
 
 import {
   connectAnimation,
@@ -24,6 +27,7 @@ import {
   LinearGradient,
 } from '@shoutem/ui';
 
+import { ext } from '../../const';
 import composeChildren from './composeChildren';
 
 const navigationHeaderStyle = {
@@ -94,13 +98,15 @@ class NavigationBarView extends PureComponent {
     getNavBarProps: PropTypes.func.isRequired,
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (!_.get(nextProps, 'scene.isActive')) {
+  componentDidUpdate(prevProps) {
+    if (!_.get(this.props, 'scene.isActive')) {
       // Ignore inactive scenes
       return;
     }
 
-    if (this.props.inline || this.props.style !== nextProps.style) {
+    const { inline, style } = this.props;
+
+    if (this.props.inline || prevProps.style !== style) {
       // We need to refresh the status bar style each
       // time the inline navigation bar gets new props.
       // This is because there will be multiple instances
@@ -108,17 +114,13 @@ class NavigationBarView extends PureComponent {
       // when the active instance is swapped out.
       InteractionManager.runAfterInteractions(() => {
         this.cleanupStatusBarStyleListeners();
-        this.setStatusBarStyle(nextProps.style);
+        this.setStatusBarStyling(style);
       });
     }
   }
 
   componentWillUnmount() {
     this.cleanupStatusBarStyleListeners();
-  }
-
-  hasNavigationBarImage(props = this.props) {
-    return !!props.navigationBarImage;
   }
 
   /**
@@ -156,52 +158,32 @@ class NavigationBarView extends PureComponent {
   }
 
   /**
-   * Determine the iOS status bar style based on the backgroundColor
-   * of the navigation bar, or the status bar color if provided.
-   *
-   * @param color The navigation bar background color.
-   * @param animated If the color change should be animated, iOS only
+   * Simple helper that interprets the human readable bar style to the one
+   * used in StatusBar.setBarStyle.
    */
-  resolveStatusBarStyle(color, animated) {
-    const colorValue = getAnimatedStyleValue(color);
-    const barStyle = tinyColor(colorValue).isDark() ? 'dark-content' : 'light-content';
-
-    StatusBar.setBarStyle(barStyle, animated);
+  resolveStatusBarStyle(statusBarStyle) {
+    return statusBarStyle === 'dark' ? 'dark-content' : 'light-content';
   }
 
-  setStatusBarStyleIos(statusBarColor, backgroundColor, hasImage) {
-    if (isAnimatedStyleValue(backgroundColor) && !Device.isIphoneX && !Device.isIphoneXR) {
-      // If the backgroundColor is animated, we want to listen for
-      // color changes, so that we can update the bar style as the
-      // animation runs.
-      this.backgroundListenerId = addAnimatedValueListener(backgroundColor, () => {
-        this.resolveStatusBarStyle(backgroundColor);
-      });
-    }
-
-    // Set the bar style based on the current background color value
-    hasImage ?
-      this.resolveStatusBarStyle(statusBarColor, true) :
-      this.resolveStatusBarStyle(backgroundColor, true);
-  }
-
-  setStatusBarStyleAndroid(containerBackgroundColor, backgroundColor, statusBarStyle = {}) {
+  /**
+   * Sets status bar style for Android devices
+   *
+   * @param barColor background color of the status bar itself
+   * @param navBarColor background color of the overall navigation bar
+   * @param hasImage boolean that determines whether there is an image
+   * background for the navigation bar or not
+   * @param statusBarStyle style used for the text of the status bar (dark or light)
+   */
+  setStatusBarStylingAndroid(barColor, navBarColor, hasImage, statusBarStyle = 'dark-content') {
     // Android cannot resolve interpolated values for animated status bar
     // background colors so we fall back to default Android status bar styling
-    if (isAnimatedStyleValue(containerBackgroundColor)) {
+    if (isAnimatedStyleValue(navBarColor)) {
       StatusBar.setBackgroundColor('rgba(0, 0, 0, 0.2)');
       StatusBar.setBarStyle('default');
     } else {
-      StatusBar.setBackgroundColor(containerBackgroundColor);
+      StatusBar.setBackgroundColor(navBarColor);
+      StatusBar.setBarStyle(this.resolveStatusBarStyle(statusBarStyle))
     }
-
-    if (isAnimatedStyleValue(backgroundColor)) {
-      this.backgroundListenerId = addAnimatedValueListener(backgroundColor, () => {
-        this.resolveStatusBarStyle(backgroundColor);
-      });
-    }
-
-    this.resolveStatusBarStyle(backgroundColor, true);
 
     if (!_.isUndefined(statusBarStyle.transluscent)) {
       StatusBar.setTranslucent(statusBarStyle.transluscent);
@@ -215,12 +197,11 @@ class NavigationBarView extends PureComponent {
    * @param style The component style.
    * @param style.statusBar The status bar style.
    */
-  setStatusBarStyle(style = {}) {
-    const { styleName } = this.props;
+  setStatusBarStyling(style = {}) {
+    const { hasNavigationBarImage, styleName } = this.props;
     const statusBarColor = _.get(style, 'statusBar.backgroundColor', '#000');
-    const statusBarStyle = style.statusBar || {};
+    const statusBarStyle = _.get(style, 'statusBar.statusBarStyle.dropdownValue', 'dark');
     const isTransparent = styleName ? styleName.includes('clear') : false;
-    const hasImage = this.hasNavigationBarImage()
 
     // Determine the bar style based on the background color
     // or status bar color as a fallback if the style is not
@@ -233,8 +214,13 @@ class NavigationBarView extends PureComponent {
       containerBackgroundColor;
 
     Platform.OS === 'ios' ?
-      this.setStatusBarStyleIos(statusBarColor, backgroundColor, hasImage) :
-      this.setStatusBarStyleAndroid(containerBackgroundColor, backgroundColor, statusBarStyle);
+      StatusBar.setBarStyle(this.resolveStatusBarStyle(statusBarStyle)) :
+      this.setStatusBarStylingAndroid(
+        backgroundColor,
+        containerBackgroundColor,
+        hasNavigationBarImage,
+        statusBarStyle
+      );
   }
 
   /**
@@ -245,7 +231,7 @@ class NavigationBarView extends PureComponent {
     if (this.backgroundListenerId) {
       // Stop listening to background color changes on the
       // old style. The listeners will be registered again,
-      // if necessary in `setStatusBarStyle`.
+      // if necessary in `setStatusBarStyling`.
       removeAnimatedValueListener(
         this.props.style.container.backgroundColor,
         this.backgroundListenerId,
@@ -423,7 +409,7 @@ class NavigationBarView extends PureComponent {
     const { style, hidden, child } = this.resolveSceneProps(scene);
 
     if (hidden || child) {
-      // Navigation bar is explicitly hidden, or it just
+      // Navigation bar is explicitly hidden or it just
       // overrides props of a child navigation bar.
       return null;
     }
@@ -448,6 +434,15 @@ const mapPropsToStyleNames = (styleNames, props) => {
   return styleNames;
 };
 
+const mapStateToProps = state => {
+  const navigationSettings = getExtensionSettings(state, ext());
+  const hasNavigationBarImage = _.has(navigationSettings, 'backgroundImage');
+
+  return {
+    hasNavigationBarImage,
+  }
+}
+
 const AnimatedNavigationBarView = connectAnimation(composeChildren(NavigationBarView), undefined, {
   createAnimatedComponent: false,
 });
@@ -458,6 +453,4 @@ const AnimatedNavigationBarView = connectAnimation(composeChildren(NavigationBar
 const StyledNavigationBarView =
   connectStyle(NavigationBarStyleName, undefined, mapPropsToStyleNames)(AnimatedNavigationBarView);
 
-export {
-  StyledNavigationBarView as NavigationBarView,
-};
+export default connect(mapStateToProps)(StyledNavigationBarView)

@@ -1,0 +1,21 @@
+{
+  "title": "Shopify",
+  "properties": {
+    "name": {
+      "format": "single-line",
+      "title": "Name",
+      "type": "string",
+      "displayPriority": 1
+    },
+    "featuredImage": {
+      "format": "attachment",
+      "title": "Featured Image URL",
+      "type": "string",
+      "format": "single-line",
+      "displayPriority": 2,
+      "required": false
+    }
+  },
+  "titleProperty": "name",
+  "type": "object"
+}

@@ -66,13 +66,6 @@ export const PRODUCTS_LOADED = 'shoutem.shopify.PRODUCTS_LOADED';
 export const PRODUCTS_ERROR = 'shoutem.shopify.PRODUCTS_ERROR';
 
 /**
- @typedef CHECKOUT_STARTED
- @type {object}
- @property payload { cart: [{ item: {}, variant: {}, quantity: number }] } Cart
- */
-export const CHECKOUT_STARTED = 'shoutem.shopify.CHECKOUT_STARTED';
-
-/**
  @typedef CUSTOMER_INFORMATION_UPDATED
  @type {object}
  @property payload { customer: { email: string, firstName: string, lastName: string,
@@ -81,37 +74,11 @@ export const CHECKOUT_STARTED = 'shoutem.shopify.CHECKOUT_STARTED';
 export const CUSTOMER_INFORMATION_UPDATED = 'shoutem.shopify.CUSTOMER_INFORMATION_UPDATED';
 
 /**
- @typedef SHIPPING_METHODS_LOADING
+ @typedef ORDER_NUMBER_LOADED
  @type {object}
+ @property payload { orderNumber: {} } The order number
  */
-export const SHIPPING_METHODS_LOADING = 'shoutem.shopify.SHIPPING_METHODS_LOADING';
-
-/**
- @typedef SHIPPING_METHODS_LOADED
- @type {object}
- @property payload [{ title: string, price: string, deliveryRange: [] }] Shipping methods
- */
-export const SHIPPING_METHODS_LOADED = 'shoutem.shopify.SHIPPING_METHODS_LOADED';
-
-/**
- @typedef SHIPPING_METHODS_ERROR_LOADING
- @type {object}
- */
-export const SHIPPING_METHODS_ERROR_LOADING = 'shoutem.shopify.SHIPPING_METHODS_ERROR_LOADING';
-
-/**
- @typedef SHIPPING_METHOD_SELECTED
- @type {object}
- @property payload { title: string, price: string, deliveryRange: [] } Shipping method
- */
-export const SHIPPING_METHOD_SELECTED = 'shoutem.shopify.SHIPPING_METHOD_SELECTED';
-
-/**
- @typedef PAYMENT_PROCESSING
- @type {object}
- @property payload { isProcessing: {} } Is processing payment
- */
-export const PAYMENT_PROCESSING = 'shoutem.shopify.PAYMENT_PROCESSING';
+export const ORDER_NUMBER_LOADED = 'shoutem.shopify.ORDER_NUMBER_LOADED';
 
 /**
  @typedef CHECKOUT_COMPLETED

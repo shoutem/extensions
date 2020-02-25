@@ -15,9 +15,13 @@ import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { Favorite } from 'shoutem.favorites';
 import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
-import { ext } from '../const';
 
+import _ from 'lodash';
+
+import { ext } from '../const';
 import { PlaceDetails } from './PlaceDetails';
+import PlaceImageGallery from '../components/PlaceImageGallery';
+import { getPlaceImages } from '../services/places';
 
 class MediumPlaceDetails extends PlaceDetails {
   static propTypes = {
@@ -27,10 +31,11 @@ class MediumPlaceDetails extends PlaceDetails {
   getNavBarProps() {
     const { place } = this.props;
     const { schema } = this.state;
+    const images = getPlaceImages(place);
 
     return {
       renderRightComponent: () => (
-        <View virtual styleName="container">
+        <View styleName="container" virtual>
           <Favorite
             item={place}
             navBarButton
@@ -38,23 +43,21 @@ class MediumPlaceDetails extends PlaceDetails {
           />
         </View>
       ),
-      styleName: place.image ? 'clear' : 'no-border',
+      styleName: _.size(images) >= 1 ? 'clear' : 'no-border',
       animationName: place.image ? 'solidify' : 'boxing',
       title: place.name,
     };
   }
 
   renderLeadImage(place) {
-    if (place.image) {
-      return (
-        <Image
-          styleName="large"
-          source={{ uri: place.image.url }}
-          animationName="hero"
-        />
-      );
-    }
-    return null;
+    return (
+      <PlaceImageGallery
+        imageAnimationName="hero"
+        images={getPlaceImages(place)}
+        imageStyleName="large"
+        place={place}
+      />
+    );
   }
 
   renderPlaceInfo(place) {
@@ -64,8 +67,8 @@ class MediumPlaceDetails extends PlaceDetails {
     return (
       <Tile styleName="text-centric">
         <Title
-          styleName={`md-gutter-bottom ${place.image ? '' : 'xl-gutter-top'}`}
           numberOfLines={3}
+          styleName={`md-gutter-bottom ${place.image ? '' : 'xl-gutter-top'}`}
         >
           {place.name.toUpperCase()}
         </Title>
@@ -97,5 +100,5 @@ class MediumPlaceDetails extends PlaceDetails {
 }
 
 export default connect(undefined, { navigateTo, openURL })(
-    connectStyle(ext('MediumPlaceDetails'))(MediumPlaceDetails),
-  );
+  connectStyle(ext('MediumPlaceDetails'))(MediumPlaceDetails),
+);

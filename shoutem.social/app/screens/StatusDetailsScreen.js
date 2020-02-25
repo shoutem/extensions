@@ -70,7 +70,6 @@ export class StatusDetailsScreen extends PureComponent {
     this.renderAddCommentSection = this.renderAddCommentSection.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
     this.focusOnComment = this.focusOnComment.bind(this);
-    this.scrollDownOnFocus = this.scrollDownOnFocus.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.renderLoadComments = this.renderLoadComments.bind(this);
     this.getCommentsLength = this.getCommentsLength.bind(this);
@@ -88,7 +87,7 @@ export class StatusDetailsScreen extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchData();
   }
 
@@ -160,15 +159,6 @@ export class StatusDetailsScreen extends PureComponent {
     }
   }
 
-  // scrolls scrollView to the last comment with the delay of 800ms
-  scrollDownOnFocus() {
-    setTimeout(() => {
-      if (this.getCommentsLength() > 1) {
-        this.scrollView.scrollToEnd({ animated: true });
-      }
-    }, 800);
-  }
-
   loadMoreComments() {
     const { next, comments } = this.props;
 
@@ -181,9 +171,9 @@ export class StatusDetailsScreen extends PureComponent {
     }
 
     return (
-      <View>
+      <View styleName="horizontal h-center v-center md-gutter">
         <Text onPress={this.loadMoreComments}>
-          Load more comments...
+          {I18n.t(ext('loadMoreComments'))}
         </Text>
         <Divider styleName="line" />
       </View>
@@ -233,17 +223,13 @@ export class StatusDetailsScreen extends PureComponent {
     );
   }
 
-  renderRow(comment, sectionId, index) {
+  renderRow(comment) {
     const { openProfile, deleteComment } = this.props;
 
-    const loadMoreText = (parseInt(index) + 1 === this.getCommentsLength()) ?
-      this.renderLoadComments() : null;
-
     return (
-      <View key={index}>
+      <View>
         <CommentView openProfile={openProfile} comment={comment} deleteComment={deleteComment} />
         <Divider styleName="line" />
-        {loadMoreText}
       </View>
     );
   }
@@ -356,6 +342,7 @@ export class StatusDetailsScreen extends PureComponent {
     const addCommentSection = enableComments ? this.renderAddCommentSection() : null;
     const commentsData = _.get(comments, 'data', []);
     const areCommentsLoading = isBusy(comments) && !isInitialized(comments);
+    const hasMoreComments = hasNext(comments);
 
     return (
       <Screen styleName="paper">
@@ -372,6 +359,7 @@ export class StatusDetailsScreen extends PureComponent {
             renderHeader={this.renderStatus}
             renderRow={this.renderRow}
           />
+          {hasMoreComments && this.renderLoadComments()}
           {areCommentsLoading ? null : addCommentSection}
         </KeyboardAwareScrollView>
       </Screen>

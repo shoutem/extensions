@@ -1,9 +1,22 @@
-import * as _ from 'lodash';
-import { isProduction } from 'shoutem.application';
+import _ from 'lodash';
+import { Platform } from 'react-native';
 
-import { getApiKeyFromState } from '../redux';
+import { isProduction, getExtensionSettings } from 'shoutem.application';
+
+import { ext } from '../const';
+
+const production = isProduction();
+let platformApiKey = false;
 
 export function isFlurryActive(state) {
-  const apiKey = getApiKeyFromState(state);
-  return isProduction() && !_.isEmpty(apiKey);
+  if (!production) {
+    return false;
+  }
+
+  if (platformApiKey === false) {
+    const extensionSettings = getExtensionSettings(state, ext());
+    platformApiKey = _.get(extensionSettings, [Platform.OS, 'apiKey']);
+  }
+
+  return !_.isEmpty(platformApiKey);
 }

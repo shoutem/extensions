@@ -20,26 +20,29 @@ export class FavoritesList extends FavoritesListScreen {
     ...FavoritesListScreen.PropTypes,
   };
 
+  static getDerivedStateFromProps(props, state) {
+    const { favorites } = props;
+
+    if (_.isEmpty(favorites)) {
+      return { mapView: false };
+    }
+
+    return state;
+  }
+
   constructor(props, context) {
     super(props, context);
+
     this.renderData = this.renderData.bind(this);
     this.getNavBarProps = this.getNavBarProps.bind(this);
     this.toggleMapView = this.toggleMapView.bind(this);
     this.renderFavorite = this.renderFavorite.bind(this);
     this.shouldRenderMap = this.shouldRenderMap.bind(this);
+
     this.state = {
-      ...this.state,
       schema: ext('places'),
       mapView: false,
     };
-  }
-
-  componentWillReceiveProps(newProps) {
-    const { favorites } = newProps;
-
-    if (!this.shouldRenderMap(favorites)) {
-      this.setState({ mapView: false });
-    }
   }
 
   shouldRenderMap(favorites) {

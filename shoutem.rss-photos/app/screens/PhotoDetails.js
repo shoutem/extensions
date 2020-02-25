@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types';
-import { Platform, StatusBar } from 'react-native';
-import React, { PureComponent } from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import { Platform, StatusBar } from 'react-native';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   ImageGallery,
   ImageGalleryOverlay,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 
 import { NavigationBar } from 'shoutem.navigation';
 
@@ -36,7 +36,7 @@ class PhotoDetails extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { photo, photos } = this.props;
 
     const selectedPhotoIndex = _.findIndex(photos, ['id', photo.id]) || 0;

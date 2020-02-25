@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
@@ -11,42 +12,43 @@ import {
   View,
 } from '@shoutem/ui';
 
-import { connectStyle } from '@shoutem/theme';
-
+import images from '../assets/images'
 import { ext } from '../const';
-import { shopItemHasDiscount } from '../services';
-
 import ListItem from './ListItem';
 
-const GridItem = ({ item, onAddToCart, onPress, shop }) => {
-  const { images, minimum_price, minimum_compare_at_price, title } = item;
+const GridItem = ({ item, isTall, onAddToCart, onPress, shop }) => {
+  const { images, title } = item;
+
+  const variant = item.variants[0];
+  const newPrice = parseFloat(variant.price);
+  const oldPrice = parseFloat(variant.compareAtPrice);
   const { currency = '' } = shop;
 
-  const shouldShowDiscount = shopItemHasDiscount(item);
+  const newPriceString = `${currency}${newPrice}`;
+  const oldPriceString = oldPrice ? `${currency}${oldPrice}` : null;
 
   return (
     <TouchableOpacity onPress={onPress}>
       <Card styleName="flexible">
-        <Image
-          styleName="medium-wide"
-          source={{ uri: (images[0] || {}).src }}
-          defaultSource={require('../assets/images/image-fallback.png')}
-        />
+        <View styleName="horizontal h-center v-start">
+          <Image
+            styleName={isTall ? 'medium-square' : 'medium-wide'}
+            source={{ uri: (images[0] || {}).src }}
+            defaultSource={images.fallback}
+          />
+        </View>
         <View styleName="content">
-          <Subtitle numberOfLines={3}>{title}</Subtitle>
+          <Subtitle numberOfLines={2}>{title}</Subtitle>
           <View styleName="horizontal v-center space-between">
-            <Subtitle
-              styleName="md-gutter-right"
-            >
-              {`${minimum_price} ${currency}`}
+            <Subtitle styleName="md-gutter-right bold">
+              {newPriceString}
             </Subtitle>
-            <Caption styleName="line-through">
-              {shouldShowDiscount ? `${minimum_compare_at_price} ${currency}` : ''}
-            </Caption>
-            <Button
-              onPress={onAddToCart}
-              styleName="tight clear"
-            >
+            {oldPriceString &&
+              <Caption styleName="line-through">
+                {oldPriceString}
+              </Caption>
+            }
+            <Button onPress={onAddToCart} styleName="tight clear">
               <Icon name="add-to-cart" />
             </Button>
           </View>

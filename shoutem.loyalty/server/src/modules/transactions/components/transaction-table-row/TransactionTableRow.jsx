@@ -75,7 +75,7 @@ export default class TransactionTableRow extends Component {
           {formatCashierLabel(cashier)}
         </td>
         <td className="transaction-table-row__time">
-          {formatDateTime(createdAt)}
+          {createdAt && formatDateTime(createdAt)}
         </td>
         <td className="transaction-table-row__points">
           {formatPoints(points)}

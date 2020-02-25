@@ -1,7 +1,7 @@
 {
   "name": "code-push",
-  "version": "2.1.1",
-  "platform": "2.1.*",
+  "version": "2.2.0",
+  "platform": "2.2.*",
   "type": "system",
   "title": "CodePush",
   "description": "Provides CodePush support for over the air code updates",

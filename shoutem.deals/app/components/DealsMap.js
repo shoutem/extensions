@@ -1,21 +1,20 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { LayoutAnimation } from 'react-native';
 import _ from 'lodash';
-
-import { View } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import { LayoutAnimation } from 'react-native';
+import { connect } from 'react-redux';
 
 import { navigateTo } from 'shoutem.navigation';
 import { MapView } from 'shoutem.application';
+
+import { View } from '@shoutem/ui';
+import { connectStyle } from '@shoutem/theme';
 
 import { ext } from '../const';
 import { getMarkersAndRegionFromDeals } from '../services';
 import DealListView from './DealListView';
 
 export class DealsMap extends PureComponent {
-
   static propTypes = {
     data: PropTypes.array.isRequired,
     style: PropTypes.object.isRequired,
@@ -36,17 +35,20 @@ export class DealsMap extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.data !== this.props.data) {
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+
+    if (prevProps.data !== data) {
       LayoutAnimation.easeInEaseOut();
       this.setState({
-        ...getMarkersAndRegionFromDeals(nextProps.data),
+        ...getMarkersAndRegionFromDeals(data),
       });
     }
   }
 
   handleMapPress(event) {
     const { selectedDeal } = this.state;
+
     if (event.nativeEvent.action !== 'marker-press' && selectedDeal) {
       LayoutAnimation.easeInEaseOut();
       this.setState({ selectedDeal: null });
@@ -60,7 +62,9 @@ export class DealsMap extends PureComponent {
 
   handleOpenDealDetails() {
     const { selectedDeal } = this.state;
-    this.props.onOpenDealDetails(selectedDeal);
+    const { onOpenDealDetails } = this.props;
+
+    onOpenDealDetails(selectedDeal);
   }
 
   renderSelectedDeal() {

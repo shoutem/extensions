@@ -1,5 +1,4 @@
 import _ from 'lodash';
-
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
@@ -10,11 +9,10 @@ import {
   View,
 } from '@shoutem/ui';
 
-import DealRedeemTimer from './DealRedeemTimer';
 import { dealStatusShape, getDealImages } from '../services';
+import DealRedeemTimer from './DealRedeemTimer';
 
 export default class DealImage extends PureComponent {
-
   static propTypes = {
     activeCoupon: PropTypes.object,
     children: PropTypes.node,
@@ -39,8 +37,8 @@ export default class DealImage extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { dealStatus } = nextProps;
+  componentDidUpdate() {
+    const { dealStatus } = this.props;
 
     this.setState({
       dealStatus,
@@ -106,7 +104,7 @@ export default class DealImage extends PureComponent {
   }
 
   render() {
-    const { deal } = this.props;
+    const { deal, styleName } = this.props;
     const images = getDealImages(deal);
     const leadImage = _.first(images);
 
@@ -114,7 +112,7 @@ export default class DealImage extends PureComponent {
       <ImageBackground
         {...this.props}
         source={{ uri: leadImage }}
-        styleName={`placeholder ${this.props.styleName}`}
+        styleName={`placeholder ${styleName}`}
       >
         {this.renderInnerContent()}
       </ImageBackground>

@@ -1,13 +1,11 @@
-import {
-  isRSAA,
-  RSAA,
-} from 'redux-api-middleware';
-
-import * as _ from 'lodash';
+import _ from 'lodash';
+import { isRSAA, RSAA } from 'redux-api-middleware';
 import URI from 'urijs';
 
 import { UPDATE_SUCCESS } from '@shoutem/redux-io';
-import { RESTART_APP } from 'shoutem.application';
+import { priorities, setPriority, before } from 'shoutem-core';
+
+import { getExtensionSettings, RESTART_APP } from 'shoutem.application';
 import {
   isEmptyRoute,
   isNavigationAction,
@@ -18,10 +16,8 @@ import {
   REPLACE,
 } from 'shoutem.navigation';
 
-import { priorities, setPriority, before } from 'shoutem-core';
-import { getExtensionSettings } from 'shoutem.application';
-
 import { ext } from './const';
+import { isAuthenticationRequired } from './isAuthenticationRequired';
 import {
   isAuthenticated,
   isUserUpdateAction,
@@ -30,18 +26,15 @@ import {
   AUTHENTICATE,
   getAccessToken,
 } from './redux';
-
-import { isAuthenticationRequired } from './isAuthenticationRequired';
-
-function getAuthHeader(state) {
-  return `Bearer ${getAccessToken(state)}`;
-}
-
 import {
   clearSession,
   getSession,
   saveSession,
 } from './session.js';
+
+function getAuthHeader(state) {
+  return `Bearer ${getAccessToken(state)}`;
+}
 
 const APPLICATION_EXTENSION = 'shoutem.application';
 const AUTH_HEADERS = 'headers.Authorization';
@@ -60,6 +53,7 @@ export function createLoginMiddleware(screens) {
           props: {
             action,
             onLoginSuccess: () => store.dispatch(rewrite(action, REPLACE)),
+            interceptedShortcut: _.get(action, 'route.context.shortcutId', null),
           },
         }));
       }

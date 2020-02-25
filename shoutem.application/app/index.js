@@ -1,8 +1,8 @@
 import configuration from './configuration.json';
 import buildConfig from './buildConfig.json';
 
+import SubscriptionMissingScreen from './screens/SubscriptionMissingScreen';
 import RemoteDataListScreen from './screens/RemoteDataListScreen';
-import DeviceInfo from './services/device-info';
 
 import {
   resolveScreenLayout,
@@ -80,15 +80,16 @@ export const shoutem = {
   },
 };
 
+export const screens = { SubscriptionMissingScreen };
+
 initializeApp();
+
 export {
   CONFIGURATION_SCHEMA,
   EXTENSIONS_SCHEMA,
   RESTART_APP,
-
   buildConfig,
   configuration,
-
   getAppId,
   getConfiguration,
   getShortcut,
@@ -101,22 +102,18 @@ export {
   isProduction,
   isDevelopment,
   isRelease,
-
   RemoteDataListScreen,
   // For backwards compatibility only,
   // remove this when all extensions have been updated.
   RemoteDataListScreen as ListScreen,
-
   InlineMap,
   MapView,
-
   executeShortcut,
   openInitialScreen,
   resolveAppEndpoint,
   showAllShortcuts,
   showShortcut,
   hideShortcut,
-
   actions,
   reducer,
   middleware,
@@ -125,8 +122,6 @@ export {
   appDidFinishLaunching,
   appWillUnmount,
 
-  DeviceInfo,
   restartApp,
-
   ext,
 };

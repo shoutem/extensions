@@ -17,6 +17,7 @@ const writeJsonToFile = (filePath, json) => {
   });
 };
 
+// currently not used, but may prove useful in the future
 // eslint-disable-next-line arrow-body-style
 const downloadFile = (url, path) => {
   return new Promise((resolve, reject) => {

@@ -10,6 +10,8 @@ import { connectStyle } from '@shoutem/theme';
 
 import { I18n } from 'shoutem.i18n';
 
+import _ from 'lodash';
+
 import { ext, TRANSLATIONS } from '../const';
 
 // Components
@@ -21,7 +23,6 @@ import {
 import DealListView from '../components/DealListView';
 
 export class DealsListScreen extends DealsScreen {
-
   constructor(props) {
     super(props);
 
@@ -35,7 +36,8 @@ export class DealsListScreen extends DealsScreen {
   }
 
   getNavBarProps() {
-    return super.getNavBarProps(I18n.t(TRANSLATIONS.DEALS_LIST_BUTTON));
+    const titleStyle = _.get(this.props, 'style.titleContainer', {});
+    return super.getNavBarProps(I18n.t(TRANSLATIONS.DEALS_LIST_BUTTON), titleStyle);
   }
 
   renderRow(deal, sectionId, dealId) {
@@ -47,8 +49,8 @@ export class DealsListScreen extends DealsScreen {
 
     return (
       <DealListView
-        deal={deal}
         key={deal.id}
+        deal={deal}
         onPress={this.handleOpenDealDetails}
       />
     );

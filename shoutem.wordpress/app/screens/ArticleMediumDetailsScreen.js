@@ -16,7 +16,7 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from 'shoutem.navigation';
 
 import { ArticleDetailsScreen } from './ArticleDetailsScreen';
-import { getLeadImageUrl, resolveArticleTitle } from '../services';
+import { getLeadImageUrl, resolveArticleTitle, getAuthorName } from '../services';
 import { ext } from '../const';
 
 class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
@@ -41,8 +41,8 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
     return imageUrl ? (
       <Image
         animationName="hero"
-        styleName="large"
         source={{ uri: imageUrl }}
+        styleName="large"
       />
     ) : null;
   }
@@ -70,7 +70,7 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
               <Title>{resolvedTitle.toUpperCase()}</Title>
 
               <View styleName="horizontal md-gutter-top">
-                <Caption numberOfLines={1}>{article.author}</Caption>
+                <Caption numberOfLines={1}>{getAuthorName(article)}</Caption>
                 {dateInfo}
               </View>
             </Tile>

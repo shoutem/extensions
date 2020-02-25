@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
-import { FormGroup } from 'react-bootstrap';
-import { Checkbox } from '@shoutem/react-web-ui';
+import { FormGroup, ControlLabel, FormControl, Pager } from 'react-bootstrap';
+import { Checkbox, LoaderContainer } from '@shoutem/react-web-ui';
 import { connect } from 'react-redux';
 import { updateShortcutSettings } from '@shoutem/redux-api-sdk';
 import {
@@ -11,6 +11,8 @@ import {
 } from 'src/modules/shopify';
 import { navigateToSettings } from 'src/redux';
 import ShopifySettingsPage from '../shopify-settings-page';
+
+import './style.scss';
 
 class ShopifyPage extends Component {
   static propTypes = {
@@ -29,6 +31,8 @@ class ShopifyPage extends Component {
     this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
     this.renderShopifyCollections = this.renderShopifyCollections.bind(this);
     this.checkData = this.checkData.bind(this);
+
+    this.page = 1;
   }
 
   componentDidMount() {
@@ -72,35 +76,77 @@ class ShopifyPage extends Component {
       _.union(selectedCollections, [selectedCollectionId]) :
       _.without(selectedCollections, selectedCollectionId);
 
-    this.props.updateShortcutSettings({ selectedCollections: newSelectedCollections });
+    this.props.updateShortcutSettings({
+      selectedCollections: newSelectedCollections,
+    });
   }
 
   renderShopifyCollections() {
-    const { collections, selectedCollections } = this.props;
+    const {
+      apiKey,
+      collections,
+      selectedCollections,
+      loadShopifyCollections,
+      store,
+    } = this.props;
+
+    if (collections.length == 0) {
+      return (
+        <LoaderContainer size="50px" isLoading />
+      );
+    }
 
     return (
       <div>
         {_.map(collections, (collection) => {
-          const { collection_id: collectionId, title } = collection;
+          const { collection_id, title } = collection;
+
           return (
             <Checkbox
-              id={collectionId}
-              key={collectionId}
-              checked={_.includes(selectedCollections, collectionId)}
+              id={collection_id}
+              key={collection_id}
+              checked={_.includes(selectedCollections, collection_id)}
               onChange={this.handleCollectionSelection}
             >
               {title}
             </Checkbox>
           );
         })}
+        <Pager style={{marginTop: "30px"}}>
+          <Pager.Item
+            previous
+            disabled={this.page == 1}
+            onClick={() => {
+              this.page--;
+              loadShopifyCollections(store, apiKey, this.page);
+            }}>
+            &larr; Previous page
+          </Pager.Item>
+          <Pager.Item
+            next
+            disabled={collections.length < 250}
+            onClick={() => {
+              this.page++;
+              loadShopifyCollections(store, apiKey, this.page);
+            }}>
+            Next page &rarr;
+          </Pager.Item>
+        </Pager>
       </div>
     );
   }
 
   render() {
-    const { apiKey, store, navigateToShopifySettings } = this.props;
+    const {
+      apiKey,
+      store,
+      navigateToShopifySettings,
+      selectedCollections,
+      updateShortcutSettings,
+    } = this.props;
 
     const isConfigured = apiKey && store;
+
     if (!isConfigured) {
       return <ShopifySettingsPage {...this.props} />;
     }
@@ -111,9 +157,10 @@ class ShopifyPage extends Component {
           store={store}
           onNavigateToShopifySettingsClick={navigateToShopifySettings}
         />
-        <form className="voffset4">
+        <form>
+          <h3>Store collections</h3>
+          <h5>Showing pages up to 250 collections</h5>
           <FormGroup>
-            <h4>Store collections</h4>
             {this.renderShopifyCollections()}
           </FormGroup>
         </form>
@@ -145,8 +192,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName: ownExtensionName };
 
   return {
-    loadShopifyCollections: (store, apiKey) => (
-      dispatch(loadShopifyCollections(store, apiKey, scope))
+    loadShopifyCollections: (store, apiKey, page) => (
+      dispatch(loadShopifyCollections(store, apiKey, scope, page ? page : 1))
     ),
     updateShortcutSettings: (settings) => (
       dispatch(updateShortcutSettings(shortcut, settings))
@@ -158,4 +205,3 @@ function mapDispatchToProps(dispatch, ownProps) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopifyPage);
-

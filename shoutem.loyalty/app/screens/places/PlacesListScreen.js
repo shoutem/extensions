@@ -1,8 +1,13 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { LayoutAnimation, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+
+import { loginRequired } from 'shoutem.auth';
+import { CmsListScreen, currentLocation } from 'shoutem.cms';
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
 
 import {
   find,
@@ -10,6 +15,7 @@ import {
   isInitialized,
   getCollection,
 } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   ListView,
@@ -17,16 +23,9 @@ import {
   Text,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-import { loginRequired } from 'shoutem.auth';
-import { NavigationBar } from 'shoutem.navigation';
-import { CmsListScreen, currentLocation } from 'shoutem.cms';
 
 import MapList from '../../components/MapList';
 import PlaceIconView from '../../components/PlaceIconView';
-
 import { refreshCardState } from '../../services';
 import { ext } from '../../const';
 
@@ -48,6 +47,7 @@ export class PlacesList extends CmsListScreen {
 
   constructor(props) {
     super(props);
+
     this.renderRow = this.renderRow.bind(this);
     this.getNavBarProps = this.getNavBarProps.bind(this);
     this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(this);
@@ -61,8 +61,9 @@ export class PlacesList extends CmsListScreen {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { refreshCardState } = this.props;
+
     if (!this.state.schema) {
       throw Error(
         'Invalid Screen state "schema". Screen that extends CMSListScreen ' +

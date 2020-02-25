@@ -18,7 +18,7 @@ class None extends PureComponent {
     replace: PropTypes.func,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const { shortcut, replace, executeShortcut } = this.props;
 
     const children = shortcut.children || [];

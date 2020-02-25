@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { AppState, Platform } from 'react-native';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -26,12 +27,42 @@ export class VimeoDetails extends PureComponent {
     video: PropTypes.object.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+
+    this.handleAppStateChange = this.handleAppStateChange.bind(this);
+
+    this.state = {
+      appState: 'active',
+    };
+  }
+
+  componentDidMount() {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange(appState) {
+    this.setState({ appState });
+  }
+
   render() {
     const { video } = this.props;
+    const { appState } = this.state;
 
     const videoAttachment = _.head(video.videoAttachments);
 
-    const VideoComponent = videoAttachment ?
+    // When an iOS device is locked, the video pauses automatically
+    // on android we have to explicitly remove it from component tree
+    const isAppActive = appState === 'active';
+    const isIos = Platform.OS === 'ios';
+    const shouldRenderVideo = (isAppActive || isIos) && videoAttachment;
+
+
+    const VideoComponent = shouldRenderVideo ?
       <Video source={{ uri: videoAttachment.src }} /> :
       null;
 

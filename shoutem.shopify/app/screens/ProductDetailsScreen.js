@@ -1,20 +1,27 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
 import { Modal } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
+import { I18n } from 'shoutem.i18n';
+import {
+  NavigationBar,
+  navigateTo,
+  closeModal,
+  openInModal,
+} from 'shoutem.navigation';
+
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Heading,
   Icon,
   ImageGallery,
   InlineGallery,
-  NavigationBar as UINavigationBar,
   Overlay,
   PageIndicators,
-  SimpleHtml,
+  Html,
   Screen,
   ScrollView,
   Subtitle,
@@ -24,38 +31,21 @@ import {
   View,
 } from '@shoutem/ui';
 
-import {
-  NavigationBar,
-  navigateTo,
-  closeModal,
-  openInModal,
-} from 'shoutem.navigation';
-
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-
-import { ext } from '../const';
 import CartIcon from '../components/CartIcon';
-import UpdateItemScreen from './UpdateItemScreen';
-
 import {
   product as productShape,
   shop as shopShape,
 } from '../components/shapes';
-
 import { cartItemAdded } from '../redux/actionCreators';
 import { getCartSize } from '../redux/selectors';
-import { shopItemHasDiscount } from '../services';
+import { getDiscount } from '../services/getDiscount';
+import { ext } from '../const';
+import UpdateItemScreen from './UpdateItemScreen';
 
 const { func, number } = PropTypes;
 
-const getDiscount = (price, originalPrice) =>
-  Math.round((100 * (parseFloat(price) - parseFloat(originalPrice))) / parseFloat(originalPrice));
-
 const renderPageIndicators = (data, selectedIndex) => {
-
-  if(_.size(data) < 2) {
+  if (_.size(data) < 2) {
     return null;
   }
 
@@ -69,9 +59,9 @@ const renderPageIndicators = (data, selectedIndex) => {
 };
 
 /**
- * Lets the user view more details about the product, such as a gallery of images and a
- * detailed description. The user can also add a product to cart from this screen or go to
- * cart.
+ * Lets the user view more details about the product, such as a
+ * gallery of images and a detailed description. The user can
+ * also add a product to cart from this screen or go to cart.
  */
 class ProductDetailsScreen extends PureComponent {
   static propTypes = {
@@ -94,9 +84,11 @@ class ProductDetailsScreen extends PureComponent {
   constructor(props) {
     super(props);
 
+    this.closeImageGallery = this.closeImageGallery.bind(this);
+    this.getNavBarProps = this.getNavBarProps.bind(this);
+    this.navigateToCart = this.navigateToCart.bind(this);
     this.onAddToCart = this.onAddToCart.bind(this);
     this.onIndexSelected = this.onIndexSelected.bind(this);
-    this.navigateToCart = this.navigateToCart.bind(this);
 
     this.state = {
       selectedImageIndex: 0,
@@ -124,32 +116,31 @@ class ProductDetailsScreen extends PureComponent {
     this.setState({ selectedImageIndex: index });
   }
 
-  getImageGalleryNavbarProps() {
-    return {
-      styleName: 'clear',
-      leftComponent: (
-        <Button styleName="clear tight" onPress={() => this.setState({ shouldRenderImageGallery: false })}>
-          <Icon name="close" />
-        </Button>
-      ),
-    };
+  closeImageGallery() {
+    this.setState({ shouldRenderImageGallery: false });
   }
 
   getNavBarProps() {
     const { cartSize } = this.props;
+    const { shouldRenderImageGallery } = this.state;
+
+    const closeGalleryButton = (
+      <Button styleName="clear" onPress={this.closeImageGallery}>
+        <Icon name="close" />
+      </Button>
+    );
+
+    const openCartButton = (
+      <View virtual styleName="container">
+        <CartIcon cartSize={cartSize} onPress={this.navigateToCart} />
+      </View>
+    );
 
     return {
       renderRightComponent: () => {
-        return (
-          <View virtual styleName="container">
-            <CartIcon
-              cartSize={cartSize}
-              onPress={this.navigateToCart}
-            />
-          </View>
-        );
-      },
-    };
+        return shouldRenderImageGallery ? closeGalleryButton : openCartButton;
+      }
+    }
   }
 
   addItemToCart(variant, quantity) {
@@ -163,34 +154,30 @@ class ProductDetailsScreen extends PureComponent {
   navigateToCart() {
     const { navigateTo } = this.props;
 
-    navigateTo({
-      screen: ext('CartScreen'),
-    });
+    navigateTo({ screen: ext('CartScreen') });
   }
 
-  renderImageGallery() {
-    const { images } = this.props.item;
+  renderFullScreenGallery() {
+    const { item: { images } } = this.props;
     const { selectedImageIndex, shouldRenderImageGallery } = this.state;
 
-    const data = _.map(images, image => ({ source: { uri: image.src }, title: '' }));
+    const data = _.map(images, image =>
+      ({ source: { uri: image.src }, title: '' })
+    );
 
     return (
-      <Modal
-        visible={shouldRenderImageGallery}
-        onRequestClose={() => this.setState({ shouldRenderImageGallery: false })}
-      >
+      <Screen>
         <ImageGallery
           data={data}
           onIndexSelected={this.onIndexSelected}
           selectedIndex={selectedImageIndex}
         />
-        {<UINavigationBar {...this.getImageGalleryNavbarProps()} />}
-      </Modal>
+      </Screen>
     );
   }
 
   renderGallery() {
-    const { images } = this.props.item;
+    const { item: { images } } = this.props;
     const { selectedImageIndex } = this.state;
 
     const data = _.map(images, image => ({ source: { uri: image.src } }));
@@ -202,42 +189,47 @@ class ProductDetailsScreen extends PureComponent {
         onIndexSelected={this.onIndexSelected}
         selectedIndex={selectedImageIndex}
         renderOverlay={renderPageIndicators}
-        style={{
-          container: { height: 375 },
-          pager: { pageMargin: 20 } }}
-        styleName="large-wide"
+        styleName="large-square"
       />
     );
   }
 
   renderProductHeader() {
-    const { shop, item } = this.props;
-    const { minimum_price, minimum_compare_at_price, title } = item;
-    const { currency } = shop;
+    const {
+      item,
+      item: { title, descriptionHtml },
+      shop: { currency },
+    } = this.props;
 
-    const shouldShowDiscount = shopItemHasDiscount(item);
+    const variant = item.variants[0];
+
+    const newPrice = parseFloat(variant.price);
+    const oldPrice = parseFloat(variant.compareAtPrice);
+    const discount = getDiscount(oldPrice, newPrice);
+    const resolvedDiscount = discount === Infinity ? '-100' : discount;
+
+    const newPriceString = `${currency}${newPrice}`;
+    const oldPriceString = oldPrice ? `${currency}${oldPrice}` : null;
 
     return (
       <Tile>
         <View styleName="content vertical h-center">
-          { shouldShowDiscount ?
+          {(!!discount && (newPrice < oldPrice)) &&
             <Overlay styleName="image-overlay">
               <Heading>
-                {`-${getDiscount(minimum_price, minimum_compare_at_price)}%`}
+                  {`${resolvedDiscount}%`}
               </Heading>
             </Overlay>
-            :
-            null
           }
-          <Title styleName="h-center md-gutter-top">{ title }</Title>
-          { shouldShowDiscount ?
+          <Title styleName="h-center md-gutter-top">{title}</Title>
+          {(!!newPrice && newPrice < oldPrice) ?
             <Subtitle styleName="line-through md-gutter-top">
-              {`${minimum_compare_at_price} ${currency}`}
-            </Subtitle>
-            :
-            null
+              {oldPriceString}
+            </Subtitle> : null
           }
-          <Heading styleName="md-gutter-top">{ `${minimum_price} ${currency}` }</Heading>
+          <Heading styleName="md-gutter-top">
+            {newPriceString}
+          </Heading>
           <Button
             styleName="secondary md-gutter-vertical"
             onPress={this.onAddToCart}
@@ -245,25 +237,28 @@ class ProductDetailsScreen extends PureComponent {
             <Icon name="cart" />
             <Text>{I18n.t(ext('addToCartButton'))}</Text>
           </Button>
+          <Html body={descriptionHtml} />
         </View>
       </Tile>
     );
   }
 
   render() {
-    const { body_html } = this.props.item;
+    const { shouldRenderImageGallery } = this.state;
+    const body_html = _.get(this.props, 'item.body_html');
 
     return (
       <Screen styleName="paper">
         <NavigationBar {...this.getNavBarProps()} />
-        <ScrollView>
-          <View styleName="placeholder">
-            {this.renderGallery()}
-          </View>
-          {this.renderProductHeader()}
-          {body_html ? <SimpleHtml body={body_html} /> : null}
-        </ScrollView>
-        { this.renderImageGallery() }
+        {!shouldRenderImageGallery ?
+          <ScrollView>
+            <View styleName="placeholder">
+              {this.renderGallery()}
+            </View>
+            {this.renderProductHeader()}
+            {!!body_html && <Html body={body_html} />}
+          </ScrollView> : this.renderFullScreenGallery()
+        }
       </Screen>
     );
   }
@@ -280,7 +275,12 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = { cartItemAdded, closeModal, navigateTo, openInModal };
+const mapDispatchToProps = {
+  cartItemAdded,
+  closeModal,
+  navigateTo,
+  openInModal
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('ProductDetailsScreen'))(ProductDetailsScreen),

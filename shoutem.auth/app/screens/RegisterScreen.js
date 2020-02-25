@@ -9,21 +9,15 @@ import _ from 'lodash';
 import { NavigationBar, navigateBack } from 'shoutem.navigation';
 import { Screen, Spinner } from '@shoutem/ui';
 
-import { getAppId } from 'shoutem.application';
+import { executeShortcut, getAppId } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 
 import RegisterForm from '../components/RegisterForm';
-import {
-  register,
-  userRegistered,
-} from '../redux';
 import { ext } from '../const';
+import { getErrorCode, getErrorMessage } from '../errorMessages';
 import { loginRequired } from '../loginRequired';
+import { register, userRegistered, getAccessToken } from '../redux';
 import { saveSession } from '../session';
-import {
-  getErrorCode,
-  getErrorMessage,
-} from '../errorMessages';
 
 const AUTH_ERROR = 'auth_auth_notAuthorized_userAuthenticationError';
 
@@ -32,6 +26,7 @@ export class RegisterScreen extends PureComponent {
     navigateBack: PropTypes.func,
     register: PropTypes.func,
     manualApprovalActive: PropTypes.bool,
+    shortcutToReturnTo: PropTypes.string,
   };
 
   constructor(props, context) {
@@ -48,11 +43,20 @@ export class RegisterScreen extends PureComponent {
   }
 
   handleRegistrationSuccess({ payload }) {
-    saveSession(JSON.stringify(payload));
+    const {
+      access_token,
+      executeShortcut,
+      navigateBack,
+      shortcutToReturnTo,
+      userRegistered,
+    } = this.props;
+
+    saveSession(JSON.stringify({ access_token }));
     userRegistered(payload);
 
     this.setState({ inProgress: false });
-    this.props.navigateBack();
+    navigateBack();
+    executeShortcut(shortcutToReturnTo);
   }
 
   handleRegistrationFailed({ payload }) {
@@ -106,12 +110,14 @@ export const mapDispatchToProps = {
   navigateBack,
   register,
   userRegistered,
+  executeShortcut,
 };
 
 function mapStateToProps(state) {
   return {
     user: state[ext()].user,
     appId: getAppId(),
+    access_token: getAccessToken(state),
   };
 }
 

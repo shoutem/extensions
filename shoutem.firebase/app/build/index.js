@@ -7,6 +7,7 @@ const URI = require('urijs');
 const glob = require('glob');
 const xcode = require('xcode');
 const { projectPath } = require('@shoutem/build-tools');
+const { injectFirebase } = require('../build/injectFirebase');
 
 const extensionPath = `${projectPath}/node_modules/shoutem.firebase`;
 const SHOUTEM_APPLICATION = 'shoutem.application';
@@ -158,5 +159,6 @@ exports.preBuild = function preBuild(appConfiguration, buildConfiguration) {
       copyPlistFileToXcodeProjects();
       copyGoogleServicesConfigToAndroidApp();
       updateGoogleServicesPackageName(buildConfiguration);
+      injectFirebase();
     });
 };

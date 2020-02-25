@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Alert, KeyboardAvoidingView } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
+import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -19,7 +20,7 @@ import {
   ScrollView,
 } from '@shoutem/ui';
 
-import { loginRequired } from 'shoutem.auth';
+import { authenticate } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';
 
@@ -75,13 +76,13 @@ export class CreateStatusScreen extends PureComponent {
   }
 
   addNewStatus() {
-    const { onStatusCreated } = this.props;
-    const { postingDisabled } = this.state;
+    const { authenticate, onStatusCreated } = this.props;
+    const { imageData, postingDisabled, text } = this.state;
 
     if (postingDisabled) {
       Alert.alert(I18n.t(ext('blankPostWarning')));
     } else {
-      onStatusCreated(this.state.text, this.state.imageData);
+      authenticate(() => onStatusCreated(text, imageData));
     }
   }
 
@@ -217,4 +218,6 @@ export class CreateStatusScreen extends PureComponent {
   }
 }
 
-export default loginRequired(connectStyle(ext('CreateStatusScreen'))(CreateStatusScreen), true);
+export default connect(undefined, { authenticate })(
+  connectStyle(ext('CreateStatusScreen'))(CreateStatusScreen),
+);

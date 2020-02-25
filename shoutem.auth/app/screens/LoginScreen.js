@@ -1,36 +1,30 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Alert, InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import {
-  Alert,
-  InteractionManager,
-} from 'react-native';
-
-import {
-  Screen,
-  Divider,
-  Spinner,
-} from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import {
-  NavigationBar,
-  navigateTo,
-  isScreenActive,
-} from 'shoutem.navigation';
-import { isValid } from '@shoutem/redux-io';
 
 import {
   getAppId,
   getExtensionSettings,
 } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
+import {
+  isScreenActive,
+  NavigationBar,
+  navigateTo,
+} from 'shoutem.navigation';
 
-import { saveSession } from '../session';
-import { loginRequired } from '../loginRequired';
-import RegisterButton from '../components/RegisterButton';
-import LoginForm from '../components/LoginForm';
+import { isValid } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { Screen, Divider, Spinner } from '@shoutem/ui';
+
 import FacebookButton from '../components/FacebookButton';
+import LoginForm from '../components/LoginForm';
+import RegisterButton from '../components/RegisterButton';
+import { ext } from '../const';
+import { getErrorCode, getErrorMessage } from '../errorMessages';
+import { loginRequired } from '../loginRequired';
 import {
   login,
   loginWithFacebook,
@@ -40,18 +34,9 @@ import {
   getAccessToken,
   hideShortcuts,
 } from '../redux';
-import {
-  getErrorCode,
-  getErrorMessage,
-} from '../errorMessages';
-import { ext } from '../const';
+import { saveSession } from '../session';
 
-const {
-  bool,
-  func,
-  shape,
-  string,
-} = PropTypes;
+const { bool, func, shape, string } = PropTypes;
 
 export class LoginScreen extends PureComponent {
   static propTypes = {
@@ -61,6 +46,7 @@ export class LoginScreen extends PureComponent {
     isUserAuthenticated: bool,
     inProgress: bool,
     onLoginSuccess: func,
+    interceptedShortcut: string,
     hideShortcuts: func,
     user: shape({
       id: string,
@@ -101,14 +87,14 @@ export class LoginScreen extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate() {
     const {
       isScreenActive,
       isUserAuthenticated,
       onLoginSuccess,
       hideShortcuts,
       user,
-    } = nextProps;
+    } = this.props;
 
     // We want to replace the login screen if the user is authenticated
     // but only if it's the currently active screen as we don't want to
@@ -119,12 +105,13 @@ export class LoginScreen extends PureComponent {
     // but this happens before the full user data gets returned, so we wait as
     // we need user's user groups populated for the hideShortcuts() to know what to hide
     const isValidUser = isValid(user);
+
     if (isLoggedIn && isValidUser) {
       // We are running the callback after interactions because of the bug
       // in navigation which prevents us from navigating to other screens
       // while in the middle of a transition
       InteractionManager.runAfterInteractions(() => {
-        const { settings } = nextProps;
+        const { settings } = this.props;
 
         hideShortcuts(user, settings);
         onLoginSuccess();
@@ -155,34 +142,37 @@ export class LoginScreen extends PureComponent {
   }
 
   handleLoginSuccess() {
-    this.setState({ inProgress: false });
-    const { user, access_token } = this.props;
+    const { access_token, user, userLoggedIn } = this.props;
 
+    this.setState({ inProgress: false });
     saveSession(JSON.stringify({ access_token }));
-    this.props.userLoggedIn({ user, access_token });
+    userLoggedIn({ user, access_token });
   }
 
   handleLoginFailed({ payload }) {
     const { response } = payload;
 
-    this.setState({ inProgress: false });
-
     const code = _.get(response, 'errors[0].code');
     const errorCode = getErrorCode(code);
     const errorMessage = getErrorMessage(errorCode);
 
+    this.setState({ inProgress: false });
     Alert.alert(I18n.t(ext('loginFailedErrorTitle')), errorMessage);
   }
 
   openRegisterScreen() {
+    const { interceptedShortcut, navigateTo } = this.props;
+
     const manuallyApproveMembers = _.get(this.props, 'settings.manuallyApproveMembers');
     const route = {
       screen: ext('RegisterScreen'),
       props: {
         manualApprovalActive: manuallyApproveMembers,
+        shortcutToReturnTo: interceptedShortcut,
       }
     };
-    this.props.navigateTo(route);
+
+    navigateTo(route);
   }
 
   render() {

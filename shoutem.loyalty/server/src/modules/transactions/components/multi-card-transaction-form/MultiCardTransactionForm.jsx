@@ -16,15 +16,15 @@ export function MultiCardTransactionForm({
   users,
   error,
 }) {
-  const { userId, placeId, points } = fields;
+  const { user, place, points } = fields;
 
   return (
     <form className="transaction-form" onSubmit={handleSubmit}>
       <Row>
         <ReduxFormElement
           disabled={submitting}
-          elementId="placeId"
-          field={placeId}
+          elementId="place"
+          field={place}
           name="Place"
         >
           <Select
@@ -38,8 +38,8 @@ export function MultiCardTransactionForm({
       <Row>
         <ReduxFormElement
           disabled={submitting}
-          elementId="userId"
-          field={userId}
+          elementId="user"
+          field={user}
           name="User"
         >
           <Select
@@ -96,8 +96,8 @@ export default reduxForm({
   getFormState,
   form: 'multiCardTransactionForm',
   fields: [
-    'userId',
-    'placeId',
+    'user',
+    'place',
     'points',
   ],
   validate: validateMultiCardTransaction,

@@ -6,21 +6,20 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
 
-import { navigateTo } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
-import { View, Button, Text, EmptyStateView } from '@shoutem/ui';
-import { find, next, isInitialized } from '@shoutem/redux-io';
-
-// TODO currentLocation should probably be extracted into shoutem.application
-import { currentLocation } from 'shoutem.cms';
 import { RemoteDataListScreen } from 'shoutem.application';
 import { triggerEvent } from 'shoutem.analytics';
+import { currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
+import { navigateTo } from 'shoutem.navigation';
+
+import { find, isInitialized, next } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import {  Button, EmptyStateView, Text, View } from '@shoutem/ui';
 
 import ListEventView from '../components/ListEventView';
 import FeaturedEventView from '../components/FeaturedEventView';
-import { addToCalendar } from '../services/Calendar';
 import EventsMap from '../components/EventsMap';
+import { addToCalendar } from '../services/Calendar';
 import { ext } from '../const';
 import { EVENTS_PROXY_SCHEMA, getIcalFeed } from '../redux';
 
@@ -32,25 +31,26 @@ export class EventsListScreen extends RemoteDataListScreen {
 
   constructor(props, context) {
     super(props, context);
+
     this.fetchData = this.fetchData.bind(this);
     this.renderRow = this.renderRow.bind(this);
     this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
     this.openDetailsScreen = this.openDetailsScreen.bind(this);
     this.toggleMapMode = this.toggleMapMode.bind(this);
     this.addToCalendar = this.addToCalendar.bind(this);
+
     this.state = {
-      ...this.state,
       renderCategoriesInline: true,
       shouldRenderMap: false,
     };
   }
 
-  static componentWillReceiveProps(nextProps) {
+  componentDidUpdate() {
     // check if we need user location
-    const { sortField, checkPermissionStatus } = nextProps;
+    const { checkPermissionStatus, currentLocation, sortField } = this.props;
 
     const isSortByLocation = sortField === 'location';
-    const isLocationAvailable = !!nextProps.currentLocation;
+    const isLocationAvailable = !!currentLocation;
 
     if (isSortByLocation && !isLocationAvailable && _.isFunction(checkPermissionStatus)) {
       checkPermissionStatus();
