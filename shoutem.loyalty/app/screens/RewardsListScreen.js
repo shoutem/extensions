@@ -10,25 +10,27 @@ import {
   next,
   shouldRefresh,
 } from '@shoutem/redux-io';
-import { EmptyStateView } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { EmptyStateView } from '@shoutem/ui';
 
-import { getAppId, getExtensionSettings, ListScreen } from 'shoutem.application';
+import {
+  getAppId,
+  getExtensionSettings,
+  RemoteDataListScreen,
+} from 'shoutem.application';
 import { getUser, loginRequired } from 'shoutem.auth';
-import { navigateTo } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
+import { navigateTo } from 'shoutem.navigation';
 
+import RewardListView from '../components/RewardListView';
 import {
   REWARDS_SCHEMA,
   CARD_STATE_SCHEMA,
   POINT_REWARDS_SCHEMA,
   ext,
 } from '../const';
-
 import { refreshCard } from '../services';
-
 import NoProgramScreen from './NoProgramScreen';
-import RewardListView from '../components/RewardListView';
 
 const { func, shape, string } = PropTypes;
 
@@ -36,9 +38,9 @@ const { func, shape, string } = PropTypes;
  * Displays a list of rewards.
  * The user can redeem a reward once he collects the required number of points on his loyalty card.
  */
-export class RewardsListScreen extends ListScreen {
+export class RewardsListScreen extends RemoteDataListScreen {
   static propTypes = {
-    ...ListScreen.propTypes,
+    ...RemoteDataListScreen.propTypes,
     // Loyalty card for user
     card: shape({
       // Card ID
@@ -73,20 +75,23 @@ export class RewardsListScreen extends ListScreen {
     };
   }
 
-  refreshData(nextProps, props = {}) {
-    const { card, user } = props;
-    const { card: nextCard, data, user: nextUser } = nextProps;
+  refreshData(prevProps) {
+    const { card, user } = this.props;
 
-    if (nextUser !== user && isValid(nextUser)) {
+    const prevCard = _.get(prevProps, 'card');
+    const data = _.get(prevProps, 'data');
+    const prevUser = _.get(prevProps, 'user');
+
+    if (prevUser !== user && isValid(user)) {
       return this.fetchData();
     }
 
     const cardId = _.get(card, 'id');
-    const nextCardId = _.get(nextCard, 'id');
-    const hasNewCardId = !cardId && nextCardId;
+    const prevCardId = _.get(prevCard, 'id');
+    const hasNewCardId = cardId !== prevCardId;
 
-    if (hasNewCardId || (nextCardId && shouldRefresh(data))) {
-      return this.fetchData(nextCardId);
+    if (hasNewCardId || (cardId && shouldRefresh(data))) {
+      return this.fetchData(cardId);
     }
   }
 

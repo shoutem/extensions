@@ -11,7 +11,7 @@ import { RemoteDataListScreen } from 'shoutem.application';
 
 import { ListArticleView } from '../components/ListArticleView';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
-import { getLeadImageUrl, resolveArticleTitle } from '../services';
+import { getLeadImageUrl, resolveArticleTitle, getAuthorName } from '../services';
 import {
   WORDPRESS_NEWS_SCHEMA,
   fetchWordpressPosts,
@@ -45,7 +45,7 @@ export class ArticlesListScreen extends RemoteDataListScreen {
   }
 
   fetchPosts() {
-    const { feedUrl, shortcut: { id: shortcutId} } = this.props;
+    const { feedUrl, shortcut: { id: shortcutId } } = this.props;
     const { perPage, page } = this.state;
 
     this.props.fetchWordpressPosts({
@@ -65,20 +65,18 @@ export class ArticlesListScreen extends RemoteDataListScreen {
     }
 
     this.setState({
-        page: 1,
-      },
-      this.fetchPosts
-    );
+      page: 1,
+    },
+      this.fetchPosts);
   }
 
   loadMore() {
     const { page } = this.state;
 
-    this.setState( {
-        page: page + 1,
-      },
-      this.fetchPosts
-    );
+    this.setState({
+      page: page + 1,
+    },
+      this.fetchPosts);
   }
 
   openArticle(article) {
@@ -116,11 +114,11 @@ export class ArticlesListScreen extends RemoteDataListScreen {
       <FeaturedArticleView
         key={article.id}
         articleId={article.id.toString()}
-        title={resolveArticleTitle(article.title.rendered)}
-        imageUrl={getLeadImageUrl(article)}
-        author={article.author.toString()}
+        author={getAuthorName(article)}
         date={article.modified}
+        imageUrl={getLeadImageUrl(article)}
         onPress={this.openArticleWithId}
+        title={resolveArticleTitle(article.title.rendered)}
       />
     ) : null;
   }
@@ -130,10 +128,10 @@ export class ArticlesListScreen extends RemoteDataListScreen {
       <ListArticleView
         key={article.id}
         articleId={article.id.toString()}
-        title={resolveArticleTitle(article.title.rendered)}
-        imageUrl={getLeadImageUrl(article)}
         date={article.modified}
+        imageUrl={getLeadImageUrl(article)}
         onPress={this.openArticleWithId}
+        title={resolveArticleTitle(article.title.rendered)}
       />
     );
   }

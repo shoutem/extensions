@@ -32,6 +32,7 @@ class MyBooksScreen extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
+
     this.openDetailsScreen = this.openDetailsScreen.bind(this);
     this.renderRow = this.renderRow.bind(this);
 
@@ -46,11 +47,11 @@ class MyBooksScreen extends PureComponent {
     fetchFavoritesData(this.state.schema, favorites[this.state.schema]);
   }
 
-  componentWillReceiveProps(newProps) {
+  componentDidUpdate(prevProps) {
     const { fetchFavoritesData, favorites } = this.props;
 
-    if (newProps.favorites !== favorites) {
-      fetchFavoritesData(this.state.schema, newProps.favorites[this.state.schema]);
+    if (prevProps.favorites !== favorites) {
+      fetchFavoritesData(this.state.schema, favorites[this.state.schema]);
     }
   }
 

@@ -48,7 +48,7 @@ export default class MapViewBase extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.resolveInitialRegion();
   }
 
@@ -109,7 +109,7 @@ export default class MapViewBase extends PureComponent {
       );
       return;
     }
-    
+
     if (initialRegion) {
       region = initialRegion;
     } else if (markers.length > 0) {

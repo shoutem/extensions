@@ -1,0 +1,13 @@
+{
+  "name": "shoutem.audio",
+  "version": "2.2.4",
+  "description": "Track player components for other extensions to utilize.",
+  "dependencies": {
+    "@raydeck/xcode": "^2.2.0",
+    "glob": "^7.1.2",
+    "react-native-track-player": "2.0.0-rc13"
+  },
+  "nativeDependencies": [
+    "react-native-track-player"
+  ]
+}

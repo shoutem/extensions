@@ -14,24 +14,24 @@ function validateTransactionPoints(points) {
   return null;
 }
 
-function validateUserId(userId) {
-  if (!userId) {
+function validateUser(user) {
+  if (!user) {
     return 'User must be provided';
   }
 
   return null;
 }
 
-function validatePlaceId(placeId) {
-  if (!placeId) {
+function validatePlace(place) {
+  if (!place) {
     return 'Place must be provided';
   }
 
   return null;
 }
 
-function validateRewardId(rewardId) {
-  if (!rewardId) {
+function validateReward(reward) {
+  if (!reward) {
     return 'Punch card must be provided';
   }
 
@@ -44,30 +44,30 @@ export function getTransactionCount(transactions) {
 }
 
 export function validateSingleCardTransaction(transaction) {
-  const { points, userId } = transaction;
+  const { points, user } = transaction;
 
   return {
     points: validateTransactionPoints(points),
-    userId: validateUserId(userId),
+    user: validateUser(user),
   };
 }
 
 export function validateMultiCardTransaction(transaction) {
-  const { points, userId, placeId } = transaction;
+  const { points, user, place } = transaction;
 
   return {
     points: validateTransactionPoints(points),
-    userId: validateUserId(userId),
-    placeId: validatePlaceId(placeId),
+    user: validateUser(user),
+    place: validatePlace(place),
   };
 }
 
 export function validatePunchCardTransaction(transaction) {
-  const { points, userId, rewardId } = transaction;
+  const { points, user, reward } = transaction;
 
   return {
     points: validateTransactionPoints(points),
-    userId: validateUserId(userId),
-    rewardId: validateRewardId(rewardId),
+    user: validateUser(user),
+    reward: validateReward(reward),
   };
 }

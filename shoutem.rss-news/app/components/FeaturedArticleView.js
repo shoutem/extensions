@@ -22,10 +22,10 @@ export class FeaturedArticleView extends ArticleView {
   render() {
     const { title, imageUrl, date, author } = this.props;
 
-    const momentDate = moment(date);
-    const dateInfo = momentDate.isAfter(0) ? (
+    const momentDate = moment.utc(date);
+    const dateInfo = moment.utc(momentDate).isAfter(0) ? (
       <Caption styleName="md-gutter-left">
-        {momentDate.fromNow()}
+        {moment.utc(momentDate).fromNow()}
       </Caption>
     ) : null;
 

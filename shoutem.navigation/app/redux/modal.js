@@ -60,7 +60,7 @@ export const savePreviousStack = previousStack => ({
  */
 export const openModalMiddleware = store => next => (action) => {
   if (action.type === OPEN_MODAL) {
-    const { route } = action;
+    const { route = {} } = action;
     const previousStack = getActiveNavigationStack(store.getState());
     const { dispatch } = store;
 

@@ -8,9 +8,8 @@ import {
   mapDispatchToProps,
 } from './ProductsListScreen';
 
-import { ext } from '../const';
-
 import ProductsGrid from '../components/ProductsGrid';
+import { ext } from '../const';
 
 /**
  * Allows users to browse through products arranged in a grid view.
@@ -30,8 +29,12 @@ class ProductsGridScreen extends ProductsListScreen {
 
   /* eslint-disable class-methods-use-this */
   renderProducts(collectionId) {
+    const { listType } = this.props;
+
+    const isTallGrid = listType === 'tall-grid';
+
     return (
-      <ProductsGrid collectionId={collectionId} />
+      <ProductsGrid collectionId={collectionId} isTall={isTallGrid} />
     );
   }
 }

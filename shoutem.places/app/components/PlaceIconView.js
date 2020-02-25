@@ -13,6 +13,7 @@ import { connectStyle } from '@shoutem/theme';
 import { Favorite } from 'shoutem.favorites';
 import { ext } from '../const';
 import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
+import { getFirstImage } from '../services/places';
 
 const DEFAULT_IMAGE = require('../assets/data/no_image.png');
 
@@ -35,14 +36,15 @@ export class PlaceIconView extends PureComponent {
     const { schema } = this.state;
     const { location = {} } = place;
     const { formattedAddress = '' } = location;
-    const imageSource = place.image ? { uri: place.image.url } : DEFAULT_IMAGE;
+    const leadImage = getFirstImage(place);
+    const imageSource = leadImage ? { uri: leadImage.url } : DEFAULT_IMAGE;
 
     return (
       <TouchableOpacity onPress={onPress}>
         <Row>
           <Image
-            styleName="small rounded-corners"
             source={imageSource}
+            styleName="small rounded-corners"
           />
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={2}>{place.name}</Subtitle>

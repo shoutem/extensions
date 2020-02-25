@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Icon,
   Text,
   View,
 } from '@shoutem/ui';
-
-import { connectStyle } from '@shoutem/theme';
 
 import { ext } from '../const';
 

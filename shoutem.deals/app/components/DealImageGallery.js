@@ -85,6 +85,7 @@ export default class DealImageGallery extends PureComponent {
       <HorizontalPager
         bounces
         data={this.props.images}
+        selectedIndex={this.state.selectedImageIndex}
         onIndexSelected={this.setSelectedImageIndex}
         renderPage={this.renderGalleryPage}
         renderOverlay={this.renderGalleryOverlay}

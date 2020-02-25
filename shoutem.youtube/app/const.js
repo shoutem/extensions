@@ -1,8 +1,5 @@
+// This file is auto-generated.
 import pack from './package.json';
-
-export function ext(resourceName) {
-  return resourceName ? `${pack.name}.${resourceName}` : pack.name;
-}
 
 export const API_ENDPOINT = 'https://www.googleapis.com/youtube/v3/{type}';
 export const USER_REGEX = /(?:http|https:\/\/|)www.youtube\.com\/user\/([a-zA-Z0-9]{1,})/i;
@@ -14,3 +11,7 @@ export const RESOURCE_TYPES = {
   PLAYLIST: 'playlistItems',
   SEARCH: 'search',
 };
+
+export function ext(resourceName) {
+  return resourceName ? `${pack.name}.${resourceName}` : pack.name;
+}

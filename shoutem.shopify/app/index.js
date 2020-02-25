@@ -9,9 +9,7 @@ import ProductDetailsScreen from './screens/ProductDetailsScreen.js';
 import UpdateItemScreen from './screens/UpdateItemScreen.js';
 
 import CheckoutScreen from './screens/checkout/CheckoutScreen';
-import ShippingMethodScreen from './screens/checkout/ShippingMethodScreen';
-import PaymentScreen from './screens/checkout/PaymentScreen';
-import OrderCompleteScreen from './screens/checkout/OrderCompleteScreen';
+import WebCheckoutScreen from './screens/checkout/WebCheckoutScreen';
 
 import enTranslations from './translations/en.json';
 
@@ -19,15 +17,17 @@ import { actions, reducer } from './redux';
 
 export const screens = {
   CartScreen,
-  ProductsGridScreen,
-  ProductsListScreen,
+  ProductsFeaturedGridScreen: ProductsGridScreen,
+  ProductsGridScreen: ProductsGridScreen,
+  ProductsFeaturedTallGridScreen: ProductsGridScreen,
+  ProductsTallGridScreen: ProductsGridScreen,
+  ProductsFeaturedListScreen: ProductsListScreen,
+  ProductsListScreen: ProductsListScreen,
   SearchProductsScreen,
   ProductDetailsScreen,
   UpdateItemScreen,
   CheckoutScreen,
-  ShippingMethodScreen,
-  PaymentScreen,
-  OrderCompleteScreen,
+  WebCheckoutScreen,
 };
 
 export const shoutem = {

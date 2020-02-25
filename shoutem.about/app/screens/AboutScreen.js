@@ -1,9 +1,8 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { StatusBar } from 'react-native';
-import { connect } from 'react-redux';
-import { InteractionManager } from 'react-native';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import { InteractionManager, StatusBar } from 'react-native';
+import { connect } from 'react-redux';
 
 import {
   find,
@@ -13,6 +12,7 @@ import {
   shouldRefresh,
   getCollection,
 } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   Spinner,
@@ -27,12 +27,11 @@ import {
   SimpleHtml,
   EmptyStateView,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { InlineMap } from 'shoutem.application';
-import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
 
 import SocialButton from '../components/SocialButton';
 import { ext } from '../const';
@@ -57,6 +56,7 @@ export class AboutScreen extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
+
     this.fetchData = this.fetchData.bind(this);
 
     this.state = {
@@ -64,8 +64,9 @@ export class AboutScreen extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { data } = this.props;
+
     if (shouldRefresh(data)) {
       this.fetchData();
     }

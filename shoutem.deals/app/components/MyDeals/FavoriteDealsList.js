@@ -3,6 +3,11 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { CmsListScreen } from 'shoutem.cms';
+import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
+import { I18n } from 'shoutem.i18n';
+import { navigateTo } from 'shoutem.navigation';
+
 import {
   cloneStatus,
   getCollection,
@@ -12,11 +17,6 @@ import {
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow, ListView, View, EmptyStateView } from '@shoutem/ui';
-
-import { I18n } from 'shoutem.i18n';
-import { CmsListScreen } from 'shoutem.cms';
-import { navigateTo } from 'shoutem.navigation';
-import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
 
 import { fetchDealListTransactions, getFavoriteDeals } from '../../redux';
 import { ext, DEALS_SCHEMA } from '../../const';
@@ -39,11 +39,6 @@ export class FavoriteDealsList extends PureComponent {
 
     this.renderData = this.renderData.bind(this);
     this.renderRow = this.renderRow.bind(this);
-
-    this.state = {
-      schema: DEALS_SCHEMA,
-      isLoading: false,
-    };
   }
 
   componentDidMount() {
@@ -52,53 +47,39 @@ export class FavoriteDealsList extends PureComponent {
     this.fetchFavoriteDeals(favorites);
   }
 
-  componentWillReceiveProps(newProps) {
+  componentDidUpdate(prevProps) {
     const { favorites } = this.props;
 
-    if (newProps.favorites !== favorites) {
-      this.fetchFavoriteDeals(newProps.favorites);
+    if (prevProps.favorites !== favorites) {
+      this.fetchFavoriteDeals(favorites);
     }
   }
 
   fetchFavoriteDeals(favorites) {
-    this.setState({
-      isLoading: true,
-    });
+    const { fetchFavoritesData } = this.props;
 
-    this.props.fetchFavoritesData(
-      this.state.schema,
-      favorites[this.state.schema],
+    fetchFavoritesData(
+      DEALS_SCHEMA,
+      favorites[DEALS_SCHEMA],
     ).then(({ payload }) => {
       const data = _.get(payload, 'data', []);
       this.fetchFavoriteDealTransactions(data);
-    }).catch(() => this.setState({ isLoading: false }));
+    });
   }
 
   fetchFavoriteDealTransactions(deals) {
-    const { catalogId } = this.props;
+    const { catalogId, fetchDealListTransactions } = this.props;
     const dealIdList = _.map(deals, 'id');
 
-    this.setState({
-      isLoading: true,
-    });
-
     if (!_.isEmpty(dealIdList)) {
-      this.props.fetchDealListTransactions(catalogId, dealIdList)
-        .then(() => this.setState({ isLoading: false }))
-        .catch(() => this.setState({ isLoading: false }));
+      fetchDealListTransactions(catalogId, dealIdList);
     }
   }
 
   isCollectionValid(collection) {
-    const { isLoading } = this.state;
-
-    if (!isInitialized(collection) || isBusy(collection) || isLoading) {
+    if (!isInitialized(collection) || isBusy(collection)) {
       // The collection is loading, treat it as valid for now
       return true;
-    }
-
-    if (this.state.isLoading) {
-      return false;
     }
 
     // The collection is considered valid if it is not empty
@@ -118,11 +99,13 @@ export class FavoriteDealsList extends PureComponent {
   }
 
   renderRow(deals) {
+    const { onOpenDealDetails } = this.props;
+
     const dealsViews = _.map(deals, deal => (
       <DealGridView
         deal={deal}
         key={deal.id}
-        onPress={this.props.onOpenDealDetails}
+        onPress={onOpenDealDetails}
       />
     ));
 
@@ -136,12 +119,10 @@ export class FavoriteDealsList extends PureComponent {
   }
 
   renderData(deals) {
-    const { isLoading } = this.state;
-
     const groupedDeals = GridRow.groupByRows(deals, 2);
     cloneStatus(deals, groupedDeals);
 
-    const loading = isBusy(groupedDeals) || !isInitialized(groupedDeals) || isLoading;
+    const loading = isBusy(groupedDeals) || !isInitialized(groupedDeals);
 
     return (
       <ListView
@@ -154,13 +135,15 @@ export class FavoriteDealsList extends PureComponent {
   }
 
   render() {
-    if (!this.isCollectionValid(this.props.data)) {
+    const { data } = this.props;
+
+    if (!this.isCollectionValid(data)) {
       return this.renderPlaceholderView();
     }
 
     return (
       <View key="favorite-deals-list">
-        {this.renderData(this.props.data)}
+        {this.renderData(data)}
       </View>
     );
   }

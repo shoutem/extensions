@@ -1,10 +1,14 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Alert } from 'react-native';
+import { Alert, KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 import countryData from 'world-countries';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
+
+import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
   Divider,
@@ -12,29 +16,43 @@ import {
   FormGroup,
   Screen,
   ScrollView,
+  Title,
   TextInput,
+  View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
 
 import CartFooter from '../../components/CartFooter';
 import { customer as customerShape } from '../../components/shapes';
 import { updateCustomerInformation } from '../../redux/actionCreators';
+import { getFieldLabel } from '../../services/getFormFieldLabel';
 import { ext } from '../../const';
 
 const { func } = PropTypes;
 
-// TODO: Where to put this transformation? We need it because the ListView can reference
-// only first level and not nested properties
-const loadCountries = () => _.sortBy(_.map(countryData, ({ name: { common: name }, cca2 }) =>
-({ name, cca2 })), 'name');
+const loadCountries = () =>
+  _.sortBy(_.map(countryData, ({ name: { common: name }, cca2 }) =>
+    ({ name, cca2 })), 'name');
+
+const emptyOption = { name: 'Select', cca2: '' };
+const countries = [emptyOption, ...loadCountries()];
+
+// Move element in array from one index to another
+const arrayMove = function(arr, from, to) {
+  return arr.splice(to, 0, arr.splice(from, 1)[0]);
+};
+
+// Reorder Countries in checkout
+['US', 'CA'].map((country, i) => {
+  const countryIndex = countries.findIndex((c) => c.cca2 === country);
+
+  // Move country after placeholder option
+  arrayMove(countries, countryIndex, 1 + i);
+});
 
 /**
  * Lets the user enter his email and address when performing a checkout with selected
  * cart items. If the information he enters is valid, the component forwards him to the
- * next step, usually selecting a shipping method
+ * next step - the web checkout
  */
 class CheckoutScreen extends PureComponent {
   static propTypes = {
@@ -48,37 +66,38 @@ class CheckoutScreen extends PureComponent {
     super(props);
 
     this.onCountrySelected = this.onCountrySelected.bind(this);
-    this.proceedToShippingMethod = this.proceedToShippingMethod.bind(this);
+    this.proceedToWebCheckout = this.proceedToWebCheckout.bind(this);
     this.renderInput = this.renderInput.bind(this);
+
     this.fields = [{
       autoCapitalize: 'none',
       name: 'email',
-      label: I18n.t(ext('checkoutEmail')),
+      label: getFieldLabel('email'),
       keyboardType: 'email-address',
     },
     {
       name: 'firstName',
-      label: I18n.t(ext('checkoutFirstName')),
+      label: getFieldLabel('firstName'),
     },
     {
       name: 'lastName',
-      label: I18n.t(ext('checkoutLastName')),
+      label: getFieldLabel('lastName'),
     },
     {
       name: 'address1',
-      label: I18n.t(ext('checkoutAddress')),
+      label: getFieldLabel('address1'),
     },
     {
       name: 'city',
-      label: I18n.t(ext('checkoutCity')),
+      label: getFieldLabel('city'),
     },
     {
       name: 'province',
-      label: I18n.t(ext('checkoutProvince')),
+      label: getFieldLabel('province'),
     },
     {
       name: 'zip',
-      label: I18n.t(ext('checkoutPostalCode')),
+      label: getFieldLabel('zip'),
     }];
 
     this.state = { ...props.customer };
@@ -88,21 +107,33 @@ class CheckoutScreen extends PureComponent {
     this.setState({ countryCode: country.cca2, countryName: country.name });
   }
 
-  proceedToShippingMethod() {
-    const { updateCustomerInformation } = this.props;
+  proceedToWebCheckout() {
+    const { updateCustomerInformation, cart } = this.props;
     const { countryCode } = this.state;
 
     const values = _.map(this.fields, ({ name }) => this.state[name]);
 
     if (_.some(values, _.isEmpty) || !countryCode) {
-      Alert.alert(I18n.t(ext('checkoutFormErrorTitle')), I18n.t(ext('checkoutFormErrorMessage')));
+      Alert.alert(
+        I18n.t(ext('checkoutFormErrorTitle')),
+        I18n.t(ext('checkoutFormErrorMessage'))
+      );
+
       return;
     }
-    // TODO: Local state contains only customer info so this is a clean practical way of getting
-    // all of these values. Any other ideas?
+
     const customerInformation = { ...this.state };
 
-    updateCustomerInformation(customerInformation);
+    var cartItems = [];
+    for (var i = 0; i < cart.length; i++) {
+      var item = cart[i];
+      cartItems.push({
+        id: item.variant.id,
+        quantity: item.quantity
+      });
+    }
+
+    updateCustomerInformation(customerInformation, cartItems);
   }
 
   renderInput(field) {
@@ -129,8 +160,6 @@ class CheckoutScreen extends PureComponent {
   renderCountryPicker() {
     const { countryCode } = this.state;
 
-    const emptyOption = { name: I18n.t(ext('countrySelectionPlaceholder')), cca2: '' };
-    const countries = [emptyOption, ...loadCountries()];
     const selectedCountry = _.find(countries, { 'cca2': countryCode });
 
     return (
@@ -150,27 +179,30 @@ class CheckoutScreen extends PureComponent {
 
   render() {
     return (
-      <Screen>
+      <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
         <NavigationBar title={I18n.t(ext('checkoutNavBarTitle'))} />
-        <ScrollView>
-          {_.map(this.fields, this.renderInput)}
-          {this.renderCountryPicker()}
-        </ScrollView>
-        <Divider styleName="line" />
-        <CartFooter
-          action={I18n.t(ext('checkoutContinueButton'))}
-          onActionButtonClicked={this.proceedToShippingMethod}
-        />
-      </Screen>
+        <View>
+          <ScrollView>
+            {_.map(this.fields, this.renderInput)}
+            {this.renderCountryPicker()}
+            <Divider styleName="line" />
+            <CartFooter
+              action={I18n.t(ext('checkoutContinueButton'))}
+              onActionButtonClicked={this.proceedToWebCheckout}
+            />
+          </ScrollView>
+        </View>
+      </KeyboardAvoidingView>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  const { customer } = state[ext()];
+  const { customer, cart } = state[ext()];
 
   return {
     customer,
+    cart,
   };
 };
 

@@ -8,7 +8,13 @@ const protocolRegex = /^https?:\/\//i;
  * Shopify store URL and not just the domain (somestore.myshopify.com)
  */
 export function resolveShopifyStoreUrl(url) {
-  return url.replace(protocolRegex, '');
+  const storeUrl = url.replace(protocolRegex, '');
+
+  if (storeUrl.endsWith('/')) {
+    return storeUrl.slice(0, -1);
+  }
+
+  return storeUrl;
 }
 
 export function validateShopifyStoreUrl(url) {

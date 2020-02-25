@@ -3,6 +3,7 @@ const {
   getAppGradlePath,
   getAppDelegateHeaderPath,
   getAppDelegatePath,
+  getRootGradlePath,
   inject,
   replace,
   ANCHORS,
@@ -31,6 +32,9 @@ function injectAndroid() {
   const appGradlePath = getAppGradlePath({ cwd: projectPath });
   inject(appGradlePath, ANCHORS.ANDROID.GRADLE.APP.PLUGINS, firebase.android.gradle.app.plugins);
   inject(appGradlePath, ANCHORS.ANDROID.GRADLE.APP.DEPENDENCIES, firebase.android.gradle.app.dependencies);
+
+  const rootGradlePath = getRootGradlePath({ cwd: projectPath });
+  inject(rootGradlePath, ANCHORS.ANDROID.GRADLE.ROOT_GRADLE, firebase.android.gradle.rootGradle);
 }
 
 function injectFirebase() {

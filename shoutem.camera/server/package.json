@@ -1,6 +1,6 @@
 {
   "name": "shoutem.camera",
-  "version": "2.1.0",
+  "version": "2.2.3",
   "description": "Shoutem camera extension",
   "scripts": {
     "clean": "rimraf ./build/*",

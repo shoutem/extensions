@@ -53,16 +53,18 @@ export class FavoritesListScreen extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
+
     this.renderData = this.renderData.bind(this);
     this.shouldLoadFavoriteData = this.shouldLoadFavoriteData.bind(this);
     this.toggleLoading = this.toggleLoading.bind(this);
+
     this.state = {
       ...this.state,
       loading: false,
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { favoriteCollection, itemsLoaded } = this.props;
     const { schema } = this.state;
 
@@ -71,10 +73,6 @@ export class FavoritesListScreen extends PureComponent {
       this.props.fetchFavoritesData(schema, favoriteCollection)
       .then(() => this.toggleLoading());
     }
-  }
-
-  componentWillUpdate() {
-    LayoutAnimation.easeInEaseOut();
   }
 
   getNavBarProps() {

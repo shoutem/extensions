@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Linking, Platform } from 'react-native';
+import { Linking } from 'react-native';
 
 import {
   View,
@@ -10,8 +10,8 @@ import {
 } from '@shoutem/ui';
 
 import { NavigationBar } from 'shoutem.navigation';
-
 import MapList from '../components/MapList';
+import { getMapUrl } from '../services/places';
 
 export default class SinglePlaceMap extends PureComponent {
   static propTypes = {
@@ -37,12 +37,8 @@ export default class SinglePlaceMap extends PureComponent {
     const { location = {} } = this.props.place;
     const { latitude, longitude, formattedAddress } = location;
 
-    const resolvedScheme = (Platform.OS === 'ios') ?
-    `http://maps.apple.com/?ll=${latitude},${longitude}&q=${formattedAddress}` :
-    `geo:${latitude},${longitude}?q=${formattedAddress}`;
-
     if (latitude && longitude) {
-      Linking.openURL(resolvedScheme);
+      Linking.openURL(getMapUrl(latitude, longitude, formattedAddress));
     }
   }
 

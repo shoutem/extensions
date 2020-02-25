@@ -1,9 +1,11 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import { InteractionManager, Linking, Platform } from 'react-native';
-import _ from 'lodash';
+import { connect } from 'react-redux';
 
+import { find, getCollection, isBusy } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
@@ -22,13 +24,11 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-import { find, getCollection, isBusy } from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
 
-import { NavigationBar, navigateTo, openInModal } from 'shoutem.navigation';
 import { InlineMap } from 'shoutem.application';
-import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar, navigateTo, openInModal } from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
 
 import {
   placeShape,
@@ -85,17 +85,14 @@ export class PlaceDetails extends PureComponent {
     };
   }
 
-  componentWillMount() {
-    const { place } = this.props;
-
-    this.props.fetchPlaceRewards(place.id);
-    this.props.refreshTransactions();
-  }
-
   componentDidMount() {
+    const { fetchPlaceRewards, place, refreshTransactions } = this.props;
+
     InteractionManager.runAfterInteractions(() => {
       this.setState({ animateLeadImage: true });
     });
+    fetchPlaceRewards(place.id);
+    refreshTransactions();
   }
 
   getNavBarProps() {
@@ -110,9 +107,9 @@ export class PlaceDetails extends PureComponent {
   }
 
   navigateToPointsHistoryScreen() {
-    const { place } = this.props;
+    const { navigateTo, place } = this.props;
 
-    this.props.navigateTo({
+    navigateTo({
       screen: ext('PointsHistoryScreen'),
       props: {
         place,
@@ -134,9 +131,9 @@ export class PlaceDetails extends PureComponent {
   }
 
   collectPoints() {
-    const { place } = this.props;
+    const { openInModal, place } = this.props;
 
-    this.props.openInModal({
+    openInModal({
       screen: ext('VerificationScreen'),
       props: {
         place,
@@ -145,17 +142,17 @@ export class PlaceDetails extends PureComponent {
   }
 
   openURL() {
-    const { place: { rsvpLink, name } } = this.props;
-    this.props.openURL(rsvpLink, name);
+    const { openURL, place: { rsvpLink, name } } = this.props;
+    openURL(rsvpLink, name);
   }
 
   openWebLink() {
-    const { place: { url } } = this.props;
-    this.props.openURL(url);
+    const { openURL, place: { url } } = this.props;
+    openURL(url);
   }
 
   openMapLink() {
-    const { location = {} } = this.props.place;
+    const { place: { location = {} } } = this.props;
     const { latitude, longitude, formattedAddress } = location;
 
     const resolvedScheme = (Platform.OS === 'ios') ? `http://maps.apple.com/?ll=${latitude},${longitude}&q=${formattedAddress}` :
@@ -173,7 +170,6 @@ export class PlaceDetails extends PureComponent {
 
   openPhoneLink() {
     const { place } = this.props;
-
     Linking.openURL(`tel:${place.phone}`);
   }
 
@@ -194,12 +190,14 @@ export class PlaceDetails extends PureComponent {
 
     return (
       <View virtual styleName="container">
-        {_.size(transactions) ? (<Button
-          onPress={this.navigateToPointsHistoryScreen}
-          styleName="clear"
-        >
-          <Text>{I18n.t(ext('navigationHistoryButton'))}</Text>
-        </Button>) : null}
+        {transactions &&
+          <Button
+            onPress={this.navigateToPointsHistoryScreen}
+            styleName="clear"
+          >
+            <Text>{I18n.t(ext('navigationHistoryButton'))}</Text>
+          </Button>
+        }
       </View>
     );
   }
@@ -274,7 +272,6 @@ export class PlaceDetails extends PureComponent {
 
   renderInlineMap() {
     const { place: { location = {}, name } } = this.props;
-
     const { latitude, longitude, formattedAddress } = location;
 
     if (!latitude || !longitude) {

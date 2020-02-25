@@ -76,11 +76,11 @@ export class ArticleDetailsScreen extends PureComponent {
     const { article } = this.props;
 
     const articleImageUrl = getLeadImageUrl(article);
-    const momentDate = moment(article.timeUpdated);
+    const momentDate = moment.utc(article.timeUpdated);
 
-    const dateInfo = momentDate.isAfter(0) ? (
+    const dateInfo = moment.utc(momentDate).isAfter(0) ? (
       <Caption styleName="md-gutter-left">
-        {momentDate.fromNow()}
+        {moment.utc(momentDate).fromNow()}
       </Caption>
     ) : null;
 

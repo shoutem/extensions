@@ -10,6 +10,7 @@ import permissionStatus from './reducers';
 export const CATEGORIES_SCHEMA = 'shoutem.core.categories';
 export const IMAGE_ATTACHMENTS_SCHEMA = 'shoutem.core.image-attachments';
 export const VIDEO_ATTACHMENTS_SCHEMA = 'shoutem.core.video-attachments';
+export const AUDIO_ATTACHMENTS_SCHEMA = 'shoutem.core.audio-attachments';
 
 // 2 hours
 const EXPIRATION_TIME_CATEGORIES = 2 * 60 * 60;
@@ -84,6 +85,7 @@ export default combineReducers({
   categories: storage(CATEGORIES_SCHEMA),
   images: storage(IMAGE_ATTACHMENTS_SCHEMA),
   videos: storage(VIDEO_ATTACHMENTS_SCHEMA),
+  audio: storage(AUDIO_ATTACHMENTS_SCHEMA),
 
   childCategories: childCategories(),
   permissionStatus,

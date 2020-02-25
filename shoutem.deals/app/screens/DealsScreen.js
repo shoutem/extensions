@@ -13,6 +13,7 @@ import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Text,
+  Title,
   View,
 } from '@shoutem/ui';
 
@@ -35,7 +36,6 @@ import DealsMap from '../components/DealsMap';
 import FeaturedDealView from '../components/FeaturedDealView';
 
 export class DealsScreen extends CmsListScreen {
-
   static propTypes = {
     ...CmsListScreen.propTypes,
     navigateTo: PropTypes.func,
@@ -59,27 +59,35 @@ export class DealsScreen extends CmsListScreen {
     this.props.fetchDealTransactions(this.props.catalogId);
   }
 
-  componentWillReceiveProps(nextProps) {
-    super.componentWillReceiveProps(nextProps);
-  }
-
   /**
    * Getter methods
    */
 
-  getNavBarProps(screenTitle = I18n.t(TRANSLATIONS.DEALS_LIST_BUTTON)) {
+  getNavBarProps(screenTitle = I18n.t(TRANSLATIONS.DEALS_LIST_BUTTON), titleStyle = {}) {
     const navBarProps = super.getNavBarProps();
 
     navBarProps.renderRightComponent = () => {
       const { renderMap } = this.state;
 
       return (
-        <View virtual styleName="container">
+        <View styleName="container" virtual>
           <MyDealsBadge onPress={this.handleOpenMyDeals} />
 
-          <Button styleName="clear md-gutter-left" onPress={this.handleToggleMap}>
+          <Button onPress={this.handleToggleMap} styleName="clear">
             <Text>{renderMap ? screenTitle : I18n.t(TRANSLATIONS.DEALS_MAP_BUTTON)}</Text>
           </Button>
+        </View>
+      );
+    };
+
+    navBarProps.renderTitleComponent = () => {
+      const value = navBarProps.title;
+
+      return (
+        <View style={titleStyle} styleName="container" virtual>
+          <Title animationName={navBarProps.animationName} numberOfLines={1} >
+            {value || ''}
+          </Title>
         </View>
       );
     };
@@ -122,26 +130,24 @@ export class DealsScreen extends CmsListScreen {
     } = this.props;
     const { schema } = this.state;
 
-    InteractionManager.runAfterInteractions(() =>
-      find(schema, undefined, {
-        query: { ...this.getQueryParams(options) },
-      }).then(({ payload }) => {
-        if (!payload || !payload.data) {
-          return;
-        }
+    InteractionManager.runAfterInteractions(() => find(schema, undefined, {
+      query: { ...this.getQueryParams(options) },
+    }).then(({ payload }) => {
+      if (!payload || !payload.data) {
+        return;
+      }
 
-        const dealIdList = _.map(payload.data, 'id');
-        if (!_.isEmpty(dealIdList)) {
-          this.props.fetchDealListTransactions(catalogId, dealIdList);
-        }
-      }),
-    );
+      const dealIdList = _.map(payload.data, 'id');
+      if (!_.isEmpty(dealIdList)) {
+        this.props.fetchDealListTransactions(catalogId, dealIdList);
+      }
+    }));
   }
 
   loadMore() {
     const { catalogId } = this.props;
 
-    this.props.next(this.props.data).then(action => {
+    this.props.next(this.props.data).then((action) => {
       if (!action.payload || !action.payload.data) {
         return;
       }
@@ -209,8 +215,8 @@ export class DealsScreen extends CmsListScreen {
     return (
       <DealsMap
         data={this.props.data}
-        style={this.props.style}
         onOpenDealDetails={this.handleOpenDealDetails}
+        style={this.props.style}
       />
     );
   }
@@ -253,3 +259,4 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('DealsScreen', {}))(DealsScreen),
 );
+

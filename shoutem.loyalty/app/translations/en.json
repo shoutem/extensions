@@ -24,8 +24,8 @@
       "pointsHistoryTitle": "POINTS HISTORY",
       "rewardRedeemed": "Reward redeemed",
       "historyItemPointsGainedTitle": "Points gained",
-      "historyItemWithPurchaseMessage": "Store visited · ${{amountSpent}} spent ",
-      "historyItemNoPurchaseMessage": "Store visited",
+      "historyItemAmountSpent": "${{amountSpent}} spent",
+      "historyItemStoreVisited": "Store visited",
       "storeRewardsListTitle": "REWARDS",
       "noRewardsForStore": "Currently, there are no rewards available for this store.",
       "storeDescriptionTitle": "LOCATION INFO",
@@ -93,7 +93,9 @@
       "authDataExpressionInvalidErrorMessage": "The barcode is not valid!",
       "transactionExistsErrorMessage": "The bar code was already scanned!",
       "noPointsAwardedErrorTitle": "No points selected",
-      "noPointsAwardedErrorMessage": "Please select points to award or cancel"
+      "noPointsAwardedErrorMessage": "Please select points to award or cancel",
+      "cardPointCountInvalid": "Card doesn't have enough points.",
+      "processing": "Processing..."
     }
   }
 }

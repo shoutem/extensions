@@ -1,11 +1,14 @@
 {
   "name": "shoutem.notification-center",
-  "version": "2.1.0",
+  "version": "2.2.1",
   "description": "Manage push notification settings within the app",
   "dependencies": {
-    "@shoutem/ui": "~1.0.0",
+    "@shoutem/redux-composers": "0.1.4",
     "@shoutem/redux-io": "3.0.1-beta.3",
-    "@shoutem/theme": "~0.11.3",
-    "@shoutem/redux-composers": "0.1.4"
-  }
+    "@shoutem/theme": "0.11.5",
+    "@shoutem/ui": "2.0.0"
+  },
+  "nativeDependencies": [
+    "@shoutem/ui"
+  ]
 }

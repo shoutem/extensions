@@ -1,20 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
 import { Linking, Platform } from 'react-native';
+import { RNCamera } from 'react-native-camera';
+import _ from 'lodash';
 
-import {
-  Caption,
-  View,
-  Image,
-  Button,
-  Text,
-} from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 
 import { connectStyle } from '@shoutem/theme';
-
-import Camera from 'react-native-camera';
-import _ from 'lodash';
+import { View, Image } from '@shoutem/ui';
 
 import { ext } from '../const';
 
@@ -43,63 +36,27 @@ class QRCodeScanner extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.updateIsAuthorized = this.updateIsAuthorized.bind(this);
-
-    let isAuthorized = true;
-    if (Platform.OS === 'ios') {
-      // Asks for permissions if not defined, returns choice otherwise
-      isAuthorized = undefined;
-      Camera.checkDeviceAuthorizationStatus().then(this.updateIsAuthorized);
-    }
-
-    this.state = { isAuthorized };
-
-    this.onQRCodeScanned = _.debounce(props.onQRCodeScanned, 1000, { leading: true, trailing: false });
+    this.onQRCodeScanned = this.onQRCodeScanned.bind(this);
   }
 
-  updateIsAuthorized(isAuthorized) {
-    this.setState({ isAuthorized });
-  }
+  onQRCodeScanned(data) {
+    const { onQRCodeScanned } = this.props;
 
-  /**
-   * Show the Camera view only when needed permissions are granted.
-   * react-native-camera package crash when camera permissions aren't granted.
-   * @returns {*}
-   */
-  render() {
-    const { isAuthorized } = this.state;
-    const { style } = this.props;
-    const cameraQuality = Camera.constants.CaptureQuality.medium;
-
-    if (_.isUndefined(isAuthorized)) {
-      // Permissions not resolved
+    if (!_.isFunction(onQRCodeScanned)) {
       return null;
     }
 
-    if (!isAuthorized) {
-      // Permissions not granted
-      return (
-        <View style={style.cameraContainer}>
-          <Caption
-            style={style.noPermissionsMessage}
-            styleName="lg-gutter-bottom"
-          >
-            Camera permission not granted.
-          </Caption>
-          <Button onPress={openAppSettings}>
-            <Text>Change permissions</Text>
-          </Button>
-        </View>
-      );
-    }
+    return onQRCodeScanned(data);
+  }
+
+  render() {
+    const { style } = this.props;
 
     return (
       <View style={style.cameraContainer}>
-        <Camera
+        <RNCamera
           onBarCodeRead={this.onQRCodeScanned}
           style={style.cameraView}
-          aspect={Camera.constants.Aspect.fill}
-          captureQuality={cameraQuality}
         />
         <Image
           source={require('../assets/images/focus-frame.png')}

@@ -1,19 +1,9 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
-import _ from 'lodash';
-
 import { I18n } from 'shoutem.i18n';
-
-import {
-  Screen,
-  ListView,
-  EmptyStateView,
-} from '@shoutem/ui';
-
-import {
-  NavigationBar,
-} from 'shoutem.navigation';
+import { NavigationBar } from 'shoutem.navigation';
 
 import {
   isBusy,
@@ -21,6 +11,11 @@ import {
   isError,
   shouldRefresh,
 } from '@shoutem/redux-io';
+import {
+  EmptyStateView,
+  ListView,
+  Screen,
+} from '@shoutem/ui';
 
 import { ext } from '../const';
 
@@ -57,20 +52,21 @@ export default class RemoteDataListScreen extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
+
     this.fetchData = this.fetchData.bind(this);
     this.loadMore = this.loadMore.bind(this);
   }
 
-  componentWillMount() {
-    this.refreshData(this.props);
+  componentDidMount() {
+    this.refreshData();
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.refreshData(nextProps, this.props);
+  componentDidUpdate(prevProps) {
+    this.refreshData(prevProps);
   }
 
-  refreshData(nextProps, props = {}) {
-    const { data } = nextProps;
+  refreshData(prevProps = {}) {
+    const { data } = this.props;
 
     if (shouldRefresh(data, true)) {
       this.fetchData();
@@ -79,6 +75,7 @@ export default class RemoteDataListScreen extends PureComponent {
 
   getNavigationBarProps() {
     const { title } = this.props;
+
     return {
       title: (title || '').toUpperCase(),
     };

@@ -1,16 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
+import { FadeIn, TimingDriver } from '@shoutem/animation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Icon,
   View,
 } from '@shoutem/ui';
-import {
-  FadeIn,
-  TimingDriver,
-} from '@shoutem/animation';
 
 class NavigationToolbar extends PureComponent {
   static PropTypes = {
@@ -61,7 +58,7 @@ class NavigationToolbar extends PureComponent {
     );
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.driver = new TimingDriver({
       duration: 450,
     });

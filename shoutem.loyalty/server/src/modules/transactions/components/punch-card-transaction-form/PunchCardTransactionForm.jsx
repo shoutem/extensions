@@ -16,15 +16,15 @@ export function PunchCardTransactionForm({
   users,
   error,
 }) {
-  const { userId, rewardId, points } = fields;
+  const { user, reward, points } = fields;
 
   return (
     <form className="transaction-form" onSubmit={handleSubmit}>
       <Row>
         <ReduxFormElement
           disabled={submitting}
-          elementId="rewardId"
-          field={rewardId}
+          elementId="reward"
+          field={reward}
           name="Punch card"
         >
           <Select
@@ -38,8 +38,8 @@ export function PunchCardTransactionForm({
       <Row>
         <ReduxFormElement
           disabled={submitting}
-          elementId="userId"
-          field={userId}
+          elementId="user"
+          field={user}
           name="User"
         >
           <Select
@@ -96,8 +96,8 @@ export default reduxForm({
   getFormState,
   form: 'punchCardTransactionForm',
   fields: [
-    'userId',
-    'rewardId',
+    'user',
+    'reward',
     'points',
   ],
   validate: validatePunchCardTransaction,

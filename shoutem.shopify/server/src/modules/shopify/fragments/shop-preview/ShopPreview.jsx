@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { FormGroup, ControlLabel } from 'react-bootstrap';
+import { FormGroup, ControlLabel, FormControl  } from 'react-bootstrap';
 import './style.scss';
 
 export default function ShopPreview({ store, onNavigateToShopifySettingsClick }) {
@@ -8,18 +8,16 @@ export default function ShopPreview({ store, onNavigateToShopifySettingsClick })
       <form>
         <FormGroup>
           <ControlLabel>
-            Store URL (Change it in settings{' '}
-            <a onClick={onNavigateToShopifySettingsClick}>here</a>
-            ).
+            Store URL
+            <span style={{fontWeight: 'normal', paddingLeft: '5px'}}>
+              (You can change this by going to settings or <a href='#' onClick={onNavigateToShopifySettingsClick}>clicking here</a>)
+            </span>
           </ControlLabel>
-          <div className="shop-preview__url-container">
-            <div className="shop-preview__shop-img" />
-            <div className="text-ellipsis">
-              <span className="shop-preview__url">
-                {store}
-              </span>
-            </div>
-          </div>
+          <FormControl
+            type="text"
+            value={store}
+            disabled
+          />
         </FormGroup>
       </form>
     </div>

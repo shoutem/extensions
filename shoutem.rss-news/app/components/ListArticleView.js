@@ -28,9 +28,9 @@ export class ListArticleView extends ArticleView {
   render() {
     const { title, imageUrl, date } = this.props;
 
-    const momentDate = moment(date);
-    const dateInfo = momentDate.isAfter(0) ? (
-      <Caption>{momentDate.fromNow()}</Caption>
+    const momentDate = moment.utc(date);
+    const dateInfo = moment.utc(momentDate).isAfter(0) ? (
+      <Caption>{moment.utc(momentDate).fromNow()}</Caption>
     ) : null;
 
     return (

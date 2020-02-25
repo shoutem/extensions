@@ -56,7 +56,7 @@ export const emptyState = {
  * @param route The original route.
  * @param navigationStack The navigation stack to use.
  */
-const sanitizeRoute = (route, navigationStack) => ({
+export const sanitizeRoute = (route, navigationStack) => ({
   ...route,
   key: _.get(route, 'key', _.uniqueId(_.get(navigationStack, 'name'))),
 });

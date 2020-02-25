@@ -22,6 +22,8 @@ import {
   SHORTCUTS_SCHEMA,
   SCREENS_SCHEMA,
   EXTENSIONS_SCHEMA,
+  APP_SUBSCRIPTION_SCHEMA,
+  APP_SUBSCRIPTION_TAG,
 } from './const';
 
 // Because of chrome inspection bug we are exporting function as constants
@@ -41,6 +43,9 @@ export function restartApp() {
   };
 }
 
+export function fetchAppSubscriptionStatus(appId) {
+  return find(APP_SUBSCRIPTION_SCHEMA, APP_SUBSCRIPTION_TAG, { appId });
+}
 
 export function fetchConfiguration(appId) {
   return find(CONFIGURATION_SCHEMA, CONFIGURATION_TAG, { appId });
@@ -50,12 +55,13 @@ export function loadLocalConfiguration() {
   return loaded(configuration, CONFIGURATION_SCHEMA, CONFIGURATION_TAG);
 }
 
-export const getConfiguration = function (state) {
+export function getConfiguration(state) {
   return getOne(state[ext()].configuration, state);
-};
+}
 
-export const getShortcut = (state, shortcutId) =>
-  getOne(shortcutId, state, 'shoutem.core.shortcuts');
+export function getShortcut(state, shortcutId) {
+  return getOne(shortcutId, state, 'shoutem.core.shortcuts');
+}
 
 export function getActiveShortcut(state, action) {
   const activeRoute = _.get(action, 'route') || getActiveRoute(state);
@@ -69,7 +75,7 @@ export function getActiveShortcut(state, action) {
 }
 
 export function isShortcutVisible(state, shortcutId) {
-  return !_.find(state[ext()].hiddenShortcuts, (id) => shortcutId === id);
+  return !_.find(state[ext()].hiddenShortcuts, id => shortcutId === id);
 }
 
 export function hideShortcut(shortcutId) {
@@ -110,12 +116,17 @@ export function hiddenShortcuts(state = [], action) {
  * Creates a redux action that is used to execute shortcuts provided by configuration
  * @param shortcutId {string} an Id of a shortcut
  * @param navigationAction The navigation action type to use (navigate, replace,
- *  reset to route, open in modal etc.). Shoutem core will resolve the navigation action from this type,
- *  with a sensible default if none is provided.
+ * reset to route, open in modal etc.)
+ * Shoutem core will resolve the navigation action from this type,
+ * with a sensible default if none is provided.
  * @param navigationStack The navigation stack to execute the shortcutId on.
  * @returns {{type: string, shortcutId: *}} a redux action with type EXECUTE_SHORTCUT
  */
-export const executeShortcut = (shortcutId, navigationAction, navigationStack) => ({
+export const executeShortcut = (
+  shortcutId,
+  navigationAction,
+  navigationStack,
+) => ({
   type: EXECUTE_SHORTCUT,
   navigationStack,
   navigationAction,
@@ -130,7 +141,11 @@ export const executeShortcut = (shortcutId, navigationAction, navigationStack) =
  * @returns {*} Settings of application
  */
 export const getExtensionSettings = function (state, extensionName) {
-  return _.get(state[ext()], ['extensions', extensionName, 'attributes', 'settings'], {});
+  return _.get(
+    state[ext()],
+    ['extensions', extensionName, 'attributes', 'settings'],
+    {},
+  );
 };
 
 /**

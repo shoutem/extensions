@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import _ from 'lodash';
+import { connect } from 'react-redux';
 import {
   Button,
   ButtonToolbar,
@@ -8,24 +8,26 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
+import _ from 'lodash';
+
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
-import { connect } from 'react-redux';
+
 import './style.scss';
 
 class ExtensionPage extends Component {
   static propTypes = {
     extension: PropTypes.object,
-    updateExtensionSettings: PropTypes.func,
+    updateSettings: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
 
-    this.handleTextChange = this.handleTextChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.initializeApiKeysFromExtensionSettings = this.initializeApiKeysFromExtensionSettings.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this);
+    this.initializeApiKeys = this.initializeApiKeys.bind(this);
 
     this.state = {
       error: null,
@@ -40,12 +42,20 @@ class ExtensionPage extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { extension: nextExtension } = nextProps;
+
+    this.initializeApiKeys('ios', nextExtension);
+    this.initializeApiKeys('android', nextExtension);
+  }
+
   getDevicePlatformApiKey(platform, extension) {
     return _.get(extension, ['settings', platform, 'apiKey']);
   }
 
-  initializeApiKeysFromExtensionSettings(platform, extension) {
+  initializeApiKeys(platform, extension) {
     const apiKey = _.get(this.state, [platform, 'apiKey']);
+
     if (_.isEmpty(apiKey)) {
       this.setState({
         [platform]: {
@@ -55,17 +65,11 @@ class ExtensionPage extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { extension: nextExtension } = nextProps;
-    this.initializeApiKeysFromExtensionSettings('ios', nextExtension);
-    this.initializeApiKeysFromExtensionSettings('android', nextExtension);
-  }
-
   handleTextChange(event) {
-    const keyName = event.target.name;
-    const newState = _.set({}, keyName, event.target.value);
+    const { name, value } = event.target;
+
     this.setState({
-      ...newState,
+      [name]: value,
       hasChanges: true,
     });
   }
@@ -76,7 +80,7 @@ class ExtensionPage extends Component {
   }
 
   handleSave() {
-    const { extension } = this.props;
+    const { extension, updateSettings } = this.props;
     const { ios, android } = this.state;
     const extensionSettings = {
       ios,
@@ -84,10 +88,12 @@ class ExtensionPage extends Component {
     };
 
     this.setState({ error: '', inProgress: true });
-    this.props.updateExtensionSettings(extension, extensionSettings)
+
+    updateSettings(extension, extensionSettings)
       .then(() => (
         this.setState({ hasChanges: false, inProgress: false })
-      )).catch((err) => {
+      ))
+      .catch((err) => {
         this.setState({ error: err, inProgress: false });
       });
   }
@@ -95,10 +101,10 @@ class ExtensionPage extends Component {
   render() {
     const {
       error,
-      hasChanges,
       inProgress,
+      hasChanges,
+      android,
       ios,
-      android
     } = this.state;
 
     return (
@@ -106,26 +112,26 @@ class ExtensionPage extends Component {
         <form onSubmit={this.handleSubmit}>
           <FormGroup>
             <h3>Flurry API keys</h3>
-            <ControlLabel>iPhone:</ControlLabel>
+            <ControlLabel>iOS:</ControlLabel>
             <FormControl
-              type="text"
               className="form-control"
               name="ios.apiKey"
-              value={ios.apiKey}
               onChange={this.handleTextChange}
+              type="text"
+              value={ios.apiKey}
             />
             <ControlLabel>Android:</ControlLabel>
             <FormControl
-              type="text"
               className="form-control"
               name="android.apiKey"
-              value={android.apiKey}
               onChange={this.handleTextChange}
+              type="text"
+              value={android.apiKey}
             />
           </FormGroup>
-          {error &&
+          {error && (
             <HelpBlock className="text-error">{error}</HelpBlock>
-          }
+          )}
         </form>
         <ButtonToolbar>
           <Button
@@ -143,9 +149,9 @@ class ExtensionPage extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(dispatch) {
   return {
-    updateExtensionSettings: (extension, settings) => (
+    updateSettings: (extension, settings) => (
       dispatch(updateExtensionSettings(extension, settings))
     ),
   };

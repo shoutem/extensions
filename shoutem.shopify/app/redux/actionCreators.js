@@ -1,15 +1,14 @@
 import _ from 'lodash';
-import { Alert } from 'react-native';
-import Shopify from 'react-native-shopify';
+import { Alert, Platform } from 'react-native';
 
 import {
   navigateTo,
   openInModal,
 } from 'shoutem.navigation';
-
 import { I18n } from 'shoutem.i18n';
 
 import { ext, PAGE_SIZE } from '../const';
+import MBBridge from '../MBBridge';
 import { getProducts } from './selectors';
 
 import {
@@ -22,13 +21,8 @@ import {
   PRODUCTS_ERROR,
   PRODUCTS_LOADING,
   PRODUCTS_LOADED,
-  CHECKOUT_STARTED,
   CUSTOMER_INFORMATION_UPDATED,
-  SHIPPING_METHODS_LOADING,
-  SHIPPING_METHODS_LOADED,
-  SHIPPING_METHOD_SELECTED,
-  SHIPPING_METHODS_ERROR_LOADING,
-  PAYMENT_PROCESSING,
+  ORDER_NUMBER_LOADED,
   CHECKOUT_COMPLETED,
   APP_MOUNTED,
 } from './actionTypes';
@@ -186,24 +180,32 @@ export function productsLoaded(products, collectionId, tag, page, resetMode) {
  * they are added at the end
  * @returns {{ type: function }}
  */
-export function refreshProducts(collectionId = 0, tag, resetMode) {
+export function refreshProducts(collectionId, tag, resetMode) {
   return (dispatch, getState) => {
     dispatch(productsLoading(collectionId, tag));
 
     // We get the last loaded page from Shopify, which is 0 if we don't have any products
     // for this combination of tag and collection
-    const { page = 0 } = getProducts(getState(), collectionId, tag);
-    const nextPage = resetMode ? 1 : page + 1;
+    // const { page = 0 } = getProducts(getState(), collectionId, tag);
+    // const nextPage = resetMode ? 1 : page + 1;
 
-    return Shopify.getProducts(nextPage, collectionId, tag && [tag])
-    .then((products) => {
+    if (tag) {
+      return MBBridge.filterProducts(tag)
+      .then((res) => {
+        dispatch(productsLoaded(res, collectionId, tag, 0, resetMode));
+      }).catch((error) => {
+        dispatch(productsError(collectionId, tag));
+      });
+    }
+
+    /* Shopify.getProducts(nextPage, collectionId, tag && [tag]) */
+    return MBBridge.getProductsForCollection(collectionId)
+    .then((res) => {
       // If we got less products than the page size, we need to ask for the same page next time
       // to get recently added products
-      const lastLoadedPage = _.size(products) < PAGE_SIZE ? nextPage - 1 : nextPage;
-
-      dispatch(productsLoaded(products, collectionId, tag, lastLoadedPage, resetMode));
+      // const lastLoadedPage = _.size(products) < PAGE_SIZE ? nextPage - 1 : nextPage;
+      dispatch(productsLoaded(res, collectionId, tag, 0, resetMode));
     }).catch((error) => {
-      console.log(error);
       dispatch(productsError(collectionId, tag));
     });
   };
@@ -216,34 +218,11 @@ export function refreshProducts(collectionId = 0, tag, resetMode) {
  */
 export function startCheckout(cart) {
   return (dispatch) => {
-    dispatch(checkoutStarted(cart));
-
-    Shopify.checkout(_.cloneDeep(cart)).then(() => {
-      const route = {
-        screen: ext('CheckoutScreen'),
-      };
-      dispatch(openInModal(route));
-    }).catch((error) => {
-      Alert.alert(
-        I18n.t(ext('checkoutErrorTitle')),
-        error.message,
-      );
-    });
-  };
-}
-
-/**
- * @see CHECKOUT_STARTED
- * Used to notify that a checkout has started
- * @param cart - Cart items
- * @returns {{ type: String, payload: { cart: [{ item: {}, quantity: number, variant: {} }] }
- */
-export function checkoutStarted(cart) {
-  return {
-    type: CHECKOUT_STARTED,
-    payload: {
-      cart,
-    },
+    dispatch(openInModal({
+      screen: ext('CheckoutScreen'),
+    }));
+    /*
+    */
   };
 }
 
@@ -252,22 +231,56 @@ export function checkoutStarted(cart) {
  * @param customer - Email and address information
  * @returns {{ type: String, payload: { customer: {} }}
  */
-export function updateCustomerInformation(customer) {
+export function updateCustomerInformation(customer, cart) {
   return (dispatch) => {
-    const { email, ...addressInformation } = customer;
-
-    Shopify.setCustomerInformation(email, addressInformation).then(() => {
-      dispatch(customerInformationUpdated(customer));
-
-      dispatch(navigateTo({
-        screen: ext('ShippingMethodScreen'),
-      }));
-    }).catch((error) => {
+    const errorHandler = (error) => {
       Alert.alert(
         I18n.t(ext('checkoutErrorTitle')),
-        error.message,
+        _.map(JSON.parse(error.message), 'message').join('\n'),
       );
-    });
+    };
+
+    MBBridge.createCheckoutWithCartAndClientInfo(cart, customer)
+      .then((resp) => {
+        if (!_.get(resp, 'checkoutCreate.checkout')) {
+          resp.checkoutCreate.checkout = {};
+        }
+
+        if (!_.get(resp, 'checkoutCreate.checkout.availableShippingRates')) {
+          resp.checkoutCreate.checkout.availableShippingRates = {};
+        }
+
+        const {
+          checkoutCreate: {
+            userErrors = [],
+            checkout: {
+              requiresShipping = true,
+              availableShippingRates: {
+                shippingRates = [],
+              } = {},
+              webUrl = '',
+            } = {},
+          } = {},
+        } = resp;
+
+        if (userErrors.length > 0) {
+          const error = userErrors[0];
+
+          return Alert.alert(
+            I18n.t(ext('checkoutErrorTitle')),
+            error.message
+          );
+        }
+
+        dispatch(customerInformationUpdated(customer));
+        dispatch(navigateTo({
+          screen: ext('WebCheckoutScreen'),
+          props: {
+            checkoutUrl: webUrl
+          },
+        }));
+      })
+      .catch(errorHandler);
   };
 }
 
@@ -287,133 +300,10 @@ export function customerInformationUpdated(customer) {
   };
 }
 
-/**
- * Used to fetch new shipping methods, which are a function of selected cart items
- * and customer address.
- * They have to be fetched from Shopify when one of the former is updated.
- * @returns {{ type: function }}
- */
-export function refreshShippingMethods() {
-  return (dispatch) => {
-    dispatch(shippingMethodsLoading());
-
-    return Shopify.getShippingRates().then((shippingMethods) => {
-      dispatch(shippingMethodsLoaded(shippingMethods));
-    }).catch(() => {
-      dispatch(shippingMethodsErrorLoading());
-    });
-  };
-}
-
-/**
- * @see SHIPPING_METHODS_LOADING
- * Used to notify that new shipping methods for active checkout are being loaded from Shopify.
- * @returns {{ type: String }}
- */
-export function shippingMethodsLoading() {
+export function orderNumberLoaded(orderNumber) {
   return {
-    type: SHIPPING_METHODS_LOADING,
-  };
-}
-
-/**
- * @see SHIPPING_METHODS_ERROR_LOADING
- * Used to notify that new shipping methods couldn't be loaded.
- * @returns {{ type: String }}
- */
-export function shippingMethodsErrorLoading() {
-  return {
-    type: SHIPPING_METHODS_ERROR_LOADING,
-  };
-}
-
-/**
- * @see SHIPPING_METHODS_LOADED
- * Used to notify that new shipping methods have been loaded.
- * @returns payload [{ title: string, price: string, deliveryRange: [] }] Shipping methods
- */
-export function shippingMethodsLoaded(shippingMethods) {
-  return {
-    type: SHIPPING_METHODS_LOADED,
-    payload: shippingMethods,
-  };
-}
-
-/**
- * @see SHIPPING_METHOD_SELECTED
- * Used to notify that a shipping method has been selected.
- * @returns payload { title: string, price: string, deliveryRange: [] } Shipping method
- */
-export function shippingMethodSelected(method) {
-  return {
-    type: SHIPPING_METHOD_SELECTED,
-    payload: method,
-  };
-}
-
-/**
- * Selects a new shipping method.
- * @param methodIndex - Selected shipping method index
- * @param methodIndex - Selected shipping method
- * @returns {{ type: function }}
- */
-export function selectShippingMethod(method) {
-  return (dispatch, getState) => {
-    const { shippingMethods: { methods } } = getState()[ext()];
-
-    const selectedMethodIndex = _.findIndex(methods, { 'id': method.id });
-
-    return Shopify.selectShippingRate(selectedMethodIndex).then(() => {
-      dispatch(shippingMethodSelected(method));
-      dispatch(navigateTo({
-        screen: ext('PaymentScreen'),
-      }));
-    }).catch((error) => {
-      console.log(error);
-      Alert.alert(
-        I18n.t(ext('checkoutErrorTitle')),
-        I18n.t(ext('shippingMethodSelectionErrorMessage')),
-      );
-    });
-  };
-}
-
-/**
- * Used to complete a checkout.
- * @param creditCard - Credit card information
- * @returns {{ type: function }}
- */
-export function completeCheckout(creditCard) {
-  return (dispatch) => {
-    dispatch(paymentProcessing(true));
-
-    return Shopify.completeCheckout({ ...creditCard }).then(() => {
-      dispatch(paymentProcessing(false));
-      dispatch(navigateTo({
-        screen: ext('OrderCompleteScreen'),
-      }));
-    })
-    .catch((error) => {
-      dispatch(paymentProcessing(false));
-      Alert.alert(
-        I18n.t(ext('checkoutErrorTitle')),
-        error.message,
-      );
-    });
-  };
-}
-
-/**
- * @see PAYMENT_PROCESSING
- * Used to notify that checkout payment is being processed by the remote gateway.
- * @returns {{ type: String }}
- */
-export function paymentProcessing(isProcessing) {
-  return {
-    type: PAYMENT_PROCESSING,
-    payload: {
-      isProcessing,
-    },
+    type: ORDER_NUMBER_LOADED,
+    payload: orderNumber,
   };
 }
 

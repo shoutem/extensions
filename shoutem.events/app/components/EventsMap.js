@@ -88,25 +88,29 @@ export default class EventsMap extends PureComponent {
     openDetailsScreen: PropTypes.func.isRequired,
   };
 
+  static getDerivedStateFromProps(props, state) {
+    // while storing `data` in state is not a good idea,
+    // it is the lesser of two evils compared to recalculating
+    // markers and region on each component render
+    if (state.data !== props.data) {
+      LayoutAnimation.easeInEaseOut();
+
+      return {
+        data: props.data,
+        ...getMarkersAndRegionFromEvents(props.data),
+      };
+    }
+  }
+
   constructor(props, context) {
     super(props, context);
 
     this.handleMapPress = this.handleMapPress.bind(this);
+
     this.state = {
       selectedEvent: null,
       ...getMarkersAndRegionFromEvents(this.props.data),
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { data } = this.props;
-
-    if (nextProps.data !== data) {
-      LayoutAnimation.easeInEaseOut();
-      this.setState({
-        ...getMarkersAndRegionFromEvents(nextProps.data),
-      });
-    }
   }
 
   handleMapPress(event) {

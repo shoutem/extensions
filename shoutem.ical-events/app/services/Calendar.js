@@ -1,9 +1,9 @@
 import momentTimezone from 'moment-timezone';
 import { Alert, Linking } from 'react-native';
-import CalendarManager, { PERMISSION_ERROR } from 'react-native-calendar-manager';
+import CalendarManager, { PERMISSION_ERROR } from '@shoutem/react-native-calendar-manager';
 
 import { I18n } from 'shoutem.i18n';
-import { DeviceInfo } from 'shoutem.application';
+import { getTimeZone } from 'react-native-localize';
 
 import { ext } from '../const';
 
@@ -46,7 +46,7 @@ export function formatToLocalDate(date) {
     return '';
   }
 
-  const localTimezone = DeviceInfo.getTimezone();
+  const localTimezone = getTimeZone();
   const momentDate = toMoment(date);
 
   return momentDate.tz(localTimezone).format(DATE_FORMAT);

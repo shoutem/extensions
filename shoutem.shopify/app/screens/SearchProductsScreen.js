@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { Platform } from 'react-native';
 import _ from 'lodash';
 
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar, navigateBack } from 'shoutem.navigation';
+
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   EmptyStateView,
@@ -11,29 +14,22 @@ import {
   Row,
   Text,
   TouchableOpacity,
-  Screen,
   SearchField,
+  Screen,
   Subtitle,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateBack } from 'shoutem.navigation';
-
-import { refreshProducts } from '../redux/actionCreators';
-import { shop as shopShape } from '../components/shapes';
 import ProductsList from '../components/ProductsList';
+import { shop as shopShape } from '../components/shapes';
+import { refreshProducts } from '../redux/actionCreators';
 import { ext } from '../const';
 
 const { func } = PropTypes;
 
 const renderCancelButton = onPress => (
-  <Button
-    styleName="clear"
-    onPress={onPress}
-  >
-    <Subtitle>{I18n.t(ext('cancel'))}</Subtitle>
+  <Button styleName="clear" onPress={onPress}>
+    <Subtitle>{I18n.t(ext('cancelSearchButton'))}</Subtitle>
   </Button>
 );
 
@@ -55,10 +51,10 @@ class SearchProductsScreen extends PureComponent {
     this.onFilterChange = this.onFilterChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.renderTagRow = this.renderTagRow.bind(this);
-    this.renderNoTagFound = this.renderNoTagFound.bind(this);
-    this.handleRetry = this.handleRetry.bind(this);
 
-    this.state = {};
+    this.state = {
+      tagFilter: '',
+    }
   }
 
   onCancel() {
@@ -67,19 +63,32 @@ class SearchProductsScreen extends PureComponent {
     navigateBack();
   }
 
-  onSubmit() {
-    const { tags } = this.props.shop;
-    const { tagFilter } = this.state;
-
-    // When the user submits a search without selecting a tag, we
-    // try to find it in the list
-    const matchingTag = _.includes(tags, tagFilter) ? tagFilter : null;
-
-    this.setState({ selectedTag: matchingTag, submitted: true });
-  }
-
   onFilterChange(text) {
     this.setState({ tagFilter: text, selectedTag: null, submitted: false });
+  }
+
+  onSubmit() {
+    const { shop: { tags } } = this.props;
+    const { tagFilter } = this.state;
+
+    const newState = { selectedTag: tagFilter, submitted: false };
+    this.setState(newState, () => this.loadProducts());
+  }
+
+  renderSearchField() {
+    const { tagFilter } = this.state;
+
+    return (
+      <View styleName="horizontal sm-gutter-top sm-gutter-horizontal v-center">
+        <SearchField
+          placeholder={I18n.t(ext('itemSearchPlaceholder'))}
+          onChangeText={this.onFilterChange}
+          onSubmitEditing={this.onSubmit}
+          value={tagFilter}
+        />
+        {renderCancelButton(this.onCancel)}
+      </View>
+    );
   }
 
   selectTag(tag) {
@@ -95,43 +104,6 @@ class SearchProductsScreen extends PureComponent {
     refreshProducts(undefined, selectedTag);
   }
 
-  handleRetry() {
-    this.onFilterChange('');
-  }
-
-  renderNoTagFound(tag) {
-    const message = I18n.t(ext('noItemsWithSpecificTag'), { unmatchedTag: tag });
-
-    return (
-      <EmptyStateView
-        icon="search"
-        message={message}
-        onRetry={this.handleRetry}
-        retryButtonTitle={I18n.t(ext('ok'))}
-      />
-    );
-  }
-
-  renderSearchField() {
-    const { tagFilter } = this.state;
-
-    const topGutter = Platform.OS === 'android' ? 'sm-gutter-top' : 'lg-gutter-top';
-
-    return (
-      <View
-        styleName={`horizontal ${topGutter} md-gutter-left sm-gutter-right v-center`}
-      >
-        <SearchField
-          placeholder={I18n.t(ext('itemSearchPlaceholder'))}
-          onChangeText={this.onFilterChange}
-          onSubmitEditing={this.onSubmit}
-          value={tagFilter}
-        />
-        {renderCancelButton(this.onCancel)}
-      </View>
-    );
-  }
-
   renderTagRow(tag) {
     return (
       <TouchableOpacity onPress={() => this.selectTag(tag)}>
@@ -140,42 +112,57 @@ class SearchProductsScreen extends PureComponent {
     );
   }
 
+  autocompleteTagList(tags, tagFilter) {
+    const tagNames = Object.getOwnPropertyNames(tags);
+    const matchingTags = tagNames.filter(tag => tag.startsWith(tagFilter));
+
+    return matchingTags || [];
+  }
+
   renderTagSuggestions() {
-    const { shop } = this.props;
-    const { tags } = shop;
+    const { tags } = this.props;
     const { tagFilter } = this.state;
 
-    return (
+    return tags ? (
       <ListView
-        data={_.filter(tags, tag => tag.startsWith(tagFilter))}
+        data={this.autocompleteTagList(tags, tagFilter)}
         renderRow={this.renderTagRow}
       />
-    );
+    ) : null;
   }
 
   render() {
     const { tagFilter, selectedTag, submitted } = this.state;
 
     if (submitted && !selectedTag) {
-      return this.renderNoTagFound(tagFilter);
+      const message = `${I18n.t(ext('noItemsWithSpecificTag'))} "${tagFilter}"`;
+
+      return (
+        <Screen styleName="paper">
+          <NavigationBar />
+          {this.renderSearchField()}
+          <EmptyStateView icon="search" message={message} />
+        </Screen>
+      );
     }
 
     return (
       <Screen styleName="paper">
-        <NavigationBar hidden />
+        <NavigationBar />
         {this.renderSearchField()}
-        {tagFilter && !selectedTag ? this.renderTagSuggestions() : null}
-        {selectedTag ? <ProductsList tag={selectedTag} /> : null}
+        {(!!tagFilter && !selectedTag) ? this.renderTagSuggestions() : null}
+        {!!selectedTag && <ProductsList tag={selectedTag} />}
       </Screen>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  const { shop } = state[ext()];
+const mapStateToProps = state => {
+  const { shop, tags } = state[ext()];
 
   return {
     shop,
+    tags,
   };
 };
 

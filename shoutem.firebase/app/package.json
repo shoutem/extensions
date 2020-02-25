@@ -1,17 +1,15 @@
 {
   "name": "shoutem.firebase",
-  "version": "2.1.1",
+  "version": "2.2.3",
   "description": "Firebase SDK bridge",
   "dependencies": {
-    "request": "2.79.0",
-    "react-native-fcm": "^16.0.0",
-    "xcode": "0.8.9",
     "lodash": "^4.17.2",
-    "urijs": "1.18.5"
+    "react-native-fcm": "^16.0.0",
+    "request": "2.79.0",
+    "urijs": "1.18.5",
+    "xcode": "0.8.9"
   },
-  "rnpm": {
-    "commands": {
-      "postlink": "node node_modules/shoutem.firebase/scripts/link.js"
-    }
-  }
+  "nativeDependencies": [
+    "react-native-fcm"
+  ]
 }

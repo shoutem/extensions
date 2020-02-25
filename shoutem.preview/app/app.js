@@ -1,16 +1,23 @@
 import { Linking } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 
 import {
   RESTART_APP,
-  openInitialScreen,
-  actions,
   isProduction,
   getAppId,
 } from 'shoutem.application';
 
+const bundleId = DeviceInfo.getBundleId();
+const previewAppsIds = [
+  'com.shoutem.builder.preview',
+  'com.shoutem.extensions.preview',
+];
+
+export const isPreviewApp = previewAppsIds.includes(bundleId);
+
 function getAppIdFromUrl(url) {
   const matches = url.match(/preview:\/\/open-app\/([0-9]*)/);
-  return matches.length ? matches[1] : undefined;
+  return matches && matches.length ? matches[1] : undefined;
 }
 
 function listenForDeepLinks(dispatch) {
@@ -25,8 +32,8 @@ function listenForDeepLinks(dispatch) {
 }
 
 export const appDidMount = (app) => {
-  const store = app.getStore();
-  const dispatch = store.dispatch;
+  const { dispatch } = app.getStore();
+
   if (!isProduction()) {
     listenForDeepLinks(dispatch);
   }

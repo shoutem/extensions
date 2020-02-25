@@ -1,9 +1,18 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import _ from 'lodash';
-
 import { connect } from 'react-redux';
 
+import { getExtensionSettings } from 'shoutem.application';
+import { getUser } from 'shoutem.auth';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
+import { I18n } from 'shoutem.i18n';
+
+import {
+  getCollection,
+  invalidate,
+} from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
@@ -17,24 +26,10 @@ import {
   TextInput,
 } from '@shoutem/ui';
 
-import {
-  getCollection,
-  invalidate,
-} from '@shoutem/redux-io';
-
-import { connectStyle } from '@shoutem/theme';
-
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
-import { getExtensionSettings } from 'shoutem.application';
-import { I18n } from 'shoutem.i18n';
-import { getUser } from 'shoutem.auth';
-
-import { ext } from '../const';
-
-import { collectPoints } from '../services';
-import { fetchRules } from '../redux';
-
 import { authorizationShape } from '../components/shapes';
+import { ext } from '../const';
+import { fetchRules } from '../redux';
+import { collectPoints } from '../services';
 
 const RULE_VISIT = 'visit';
 const RULE_PURCHASE = 'linearPoint';
@@ -60,6 +55,22 @@ export class AssignPointsScreen extends PureComponent {
     rules: arrayOf(string),
   };
 
+  static getDerivedStateFromProps(props, state) {
+    const { rules } = props;
+
+    if (_.isEmpty(rules)) {
+      return state;
+    }
+
+    if (_.includes(rules, RULE_PURCHASE)) {
+      return { purchase: true };
+    } else if (_.includes(rules, RULE_VISIT)) {
+      return { visit: true };
+    }
+
+    return state;
+  }
+
   constructor(props) {
     super(props);
 
@@ -78,24 +89,10 @@ export class AssignPointsScreen extends PureComponent {
     }];
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { fetchRules } = this.props;
 
     fetchRules();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { rules } = nextProps;
-
-    if (_.isEmpty(rules)) {
-      return;
-    }
-
-    if (_.includes(rules, RULE_PURCHASE)) {
-      this.setState({ purchase: true });
-    } else if (_.includes(rules, RULE_VISIT)) {
-      this.setState({ visit: true });
-    }
   }
 
   processTransaction() {

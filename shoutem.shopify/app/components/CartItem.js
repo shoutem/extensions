@@ -1,5 +1,8 @@
 import React from 'react';
 
+import { I18n } from 'shoutem.i18n';
+
+import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
   Image,
@@ -8,29 +11,43 @@ import {
   View,
 } from '@shoutem/ui';
 
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-
+import { ext } from '../const';
 import {
   cartItem as cartItemShape,
   shop as shopShape,
 } from './shapes';
 
-import { ext } from '../const';
-import { shopItemVariantHasDisount } from '../services';
+/**
+ * Renders caption with variant title and quantity or only quantity if product
+ * does not have any variants
+ */
+const VariantCaption = ({item, variantTitle, quantity}) => {
+  let resolvedVariantTitle = variantTitle;
+  if ((variantTitle === item.title) ||
+    (variantTitle === 'Default Title')) {
+      resolvedVariantTitle = '';
+  }
+
+  const resolvedVariantText = resolvedVariantTitle === '' ?
+    '' : `${resolvedVariantTitle}  ·  `;
+
+  return (
+    <Caption ellipsizeMode="middle" numberOfLines={1}>
+      {resolvedVariantText}{I18n.t(ext('itemQuantity'))}{quantity}
+    </Caption>
+  );
+}
 
 /**
  * Renders a single cart item, with selected variant and quantity for a product
  */
 const CartItem = ({ cartItem, shop }) => {
   const { item, variant, quantity } = cartItem;
-
-  const { price, compare_at_price, title } = variant;
-  const { images } = item;
   const { currency } = shop;
 
-  const shouldShowDiscount = shopItemVariantHasDisount(variant);
+  const { price, compare_at_price: oldPrice, title } = variant;
+  const { images, title: itemTitle } = item;
+  const resolvedVariantTitle = (title === item.title) ? '' : `${title}  ·  `;
 
   return (
     <Row>
@@ -38,22 +55,26 @@ const CartItem = ({ cartItem, shop }) => {
         styleName="small"
         source={{ uri: (images[0] || {}).src }}
       />
-      <View style={{ flex: 7 }}>
-        <Subtitle>{item.title}</Subtitle>
-        <View styleName="horizontal">
-          <Caption
-            ellipsizeMode="middle"
-            numberOfLines={1}
-          >
-            {`${title}  ·  ${I18n.t(ext('itemQuantity'))}${quantity}`}
-          </Caption>
+      <View styleName="horizontal">
+        <View styleName="space-between" style={{ flex: 7 }}>
+          <Subtitle>{itemTitle}</Subtitle>
+          <VariantCaption
+            item={item}
+            variantTitle={title}
+            quantity={quantity}
+          />
         </View>
-      </View>
-      <View styleName="h-end sm-gutter-left vertical" style={{ flex: 3 }}>
-        <Subtitle>{`${price} ${currency}`}</Subtitle>
-        <Caption styleName="line-through">
-          {shouldShowDiscount ? `${compare_at_price} ${currency}` : ''}
-        </Caption>
+        <View
+          styleName="space-between vertical h-end sm-gutter-left"
+          style={{ flex: 3 }}
+        >
+          {(oldPrice && price < oldPrice) &&
+            <Caption styleName="line-through">
+              {`${currency}${oldPrice}`}
+            </Caption>
+          }
+          <Subtitle>{`${currency}${price}`}</Subtitle>
+        </View>
       </View>
     </Row>
   );

@@ -4,7 +4,6 @@ const {
   getSettingsGradlePath,
   getAppDelegatePath,
   getMainApplicationPath,
-  getPodfileTemplatePath,
   replace,
   inject,
   ANCHORS,
@@ -81,9 +80,6 @@ function injectCodePushIos() {
   const appDelegate = getAppDelegatePath({ cwd: projectPath });
   inject(appDelegate, ANCHORS.IOS.APP_DELEGATE.IMPORT, codepush.ios.appDelegate.import);
   replace(appDelegate, codepush.ios.appDelegate.oldBundle, codepush.ios.appDelegate.newBundle);
-
-  const podfileTemplatePath = getPodfileTemplatePath({ cwd: projectPath });
-  inject(podfileTemplatePath, ANCHORS.IOS.PODFILE.EXTENSION_DEPENDENCIES, codepush.ios.podFile.pods);
 }
 
 module.exports = {

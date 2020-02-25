@@ -19,8 +19,8 @@ const getQRCodeScannerRoute = (onQRCodeScanned, title) => ({
 export const scanQRCode = (onQRCodeScanned, title) => (dispatch) => {
   const callback = (code) => {
     if (code.data) {
-      dispatch(closeModal());
       onQRCodeScanned(code.data);
+      dispatch(closeModal());
     }
   };
 

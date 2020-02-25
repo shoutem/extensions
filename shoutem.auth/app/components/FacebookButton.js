@@ -61,7 +61,7 @@ class FacebookButton extends PureComponent {
   }
 
   openFacebookSignup() {
-    LoginManager.logInWithReadPermissions(['public_profile', 'email'])
+    LoginManager.logInWithPermissions(['public_profile', 'email'])
       .then(this.handleSignupResult)
       .then(this.parseAccessToken)
       .catch(this.handleLoginFailed);

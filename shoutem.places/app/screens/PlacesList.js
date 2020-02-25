@@ -58,10 +58,10 @@ export class PlacesList extends CmsListScreen {
     const actionText = mapView ? I18n.t('shoutem.cms.navBarListViewButton') : I18n.t('shoutem.cms.navBarMapViewButton');
 
     return (
-      <View virtual styleName="container md-gutter-right">
+      <View styleName="container md-gutter-right" virtual>
         <Button
-          styleName="tight"
           onPress={this.toggleMapView}
+          styleName="tight"
         >
           <Text>{actionText}</Text>
         </Button>
@@ -95,13 +95,13 @@ export class PlacesList extends CmsListScreen {
     return (
       <ListView
         data={data}
-        loading={loading}
-        renderRow={this.renderRow}
-        onRefresh={this.refreshData}
-        onLoadMore={this.loadMore}
         getSectionId={this.getSectionId}
-        renderSectionHeader={this.renderSectionHeader}
         initialListSize={1}
+        loading={loading}
+        onLoadMore={this.loadMore}
+        onRefresh={this.refreshData}
+        renderRow={this.renderRow}
+        renderSectionHeader={this.renderSectionHeader}
       />
     );
   }

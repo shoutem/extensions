@@ -1,7 +1,7 @@
 {
   "name": "navigation",
-  "version": "2.1.2",
-  "platform": "2.1.*",
+  "version": "2.2.1",
+  "platform": "2.2.*",
   "type": "system",
   "title": "Main Navigation",
   "description": "App-level navigation",

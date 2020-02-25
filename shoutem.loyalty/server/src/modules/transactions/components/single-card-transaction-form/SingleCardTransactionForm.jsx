@@ -15,18 +15,16 @@ export function SingleCardTransactionForm({
   users,
   error,
 }) {
-  const { userId, points } = fields;
-  // error is always undefined
-  console.log("error is:", error);
+  const { user, points } = fields;
   const isDisabled = (!!error || submitting) ? true : false;
-  console.log("isDisabled is:", isDisabled);
+
   return (
     <form className="transaction-form" onSubmit={handleSubmit}>
       <Row>
         <ReduxFormElement
           disabled={submitting}
-          elementId="userId"
-          field={userId}
+          elementId="user"
+          field={user}
           name="User"
         >
           <Select
@@ -82,7 +80,7 @@ export default reduxForm({
   getFormState,
   form: 'singleCardTransactionForm',
   fields: [
-    'userId',
+    'user',
     'points',
   ],
   validate: validateSingleCardTransaction,

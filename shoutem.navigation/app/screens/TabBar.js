@@ -1,13 +1,17 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
-import { View, Screen } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { View, Screen } from '@shoutem/ui';
 
 import { executeShortcut } from 'shoutem.application/redux';
 
+
+import TabBarItem from '../components/TabBarItem';
+import { ScreenStack } from '../components/stacks';
+import { NavigationBar } from '../components/ui';
 import {
   navigateTo,
   jumpToKey,
@@ -16,9 +20,6 @@ import {
   setActiveNavigationStack,
   hasRouteWithKey,
 } from '../redux/core';
-import TabBarItem from '../components/TabBarItem';
-import { ScreenStack } from '../components/stacks';
-import { NavigationBar } from '../components/ui';
 import { ext } from '../const';
 import { shortcutChildrenRequired } from '../helpers';
 import {
@@ -71,7 +72,7 @@ export class TabBar extends Component {
     });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const startingShortcut = this.getStartingShortcut();
 
     this.openShortcut(startingShortcut);

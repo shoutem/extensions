@@ -1,17 +1,17 @@
+navigator.geolocation = require('@react-native-community/geolocation');
 import rio from '@shoutem/redux-io';
+
 import { getAppId, getExtensionSettings } from 'shoutem.application';
 
-import {
-  CATEGORIES_SCHEMA,
-} from './redux';
-
 import { ext } from './const';
+import { CATEGORIES_SCHEMA } from './redux';
 
 export function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
   const appId = getAppId();
   const apiEndpoint = getExtensionSettings(state, ext()).apiEndpoint;
+
   if (!apiEndpoint) {
     console.error(`CMS API endpoint not set in ${ext()} settings.`);
   }

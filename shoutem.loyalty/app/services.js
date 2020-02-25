@@ -3,11 +3,7 @@ import _ from 'lodash';
 
 import { invalidate } from '@shoutem/redux-io';
 
-import {
-  EMPTY_ROUTE,
-  navigateTo,
-  openInModal,
-} from 'shoutem.navigation';
+import { navigateTo, openInModal } from 'shoutem.navigation';
 import { getAppId } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
@@ -52,14 +48,11 @@ export const refreshCard = () => {
     const { legacyId: userId } = getUser(getState());
 
     return dispatch(fetchCard(userId))
-      .catch(() => {
-        return dispatch(createCardForUser(userId));
-      },
-    )
-    .then(({ payload: { data } }) => {
-      dispatch(fetchCashierInfo(userId));
-      return data.id;
-    });
+      .catch(() => dispatch(createCardForUser(userId)))
+      .then(({ payload: { data } }) => {
+        dispatch(fetchCashierInfo(userId));
+        return data.id;
+      });
   };
 };
 
@@ -157,42 +150,41 @@ export const authorizeTransactionByQRCode = (dataString) => {
     const [cardId, placeId, rewardData, redeem] = data;
 
     const reward = rewardData && getRewardFromEncodedValues(rewardData);
-
     const authorization = { authorizationType: 'userId', placeId, cardId };
 
     if (redeem) {
-      dispatch(openInModal(EMPTY_ROUTE));
-      dispatch(redeemReward({ points: -reward.pointsRequired }, authorization, reward));
-      return;
+      const points = -reward.pointsRequired;
+      return dispatch(redeemReward({ points }, authorization, reward));
     }
 
     const cashierInfo = getCashierInfo(getState());
 
     const place = { id: cashierInfo.location };
+    const route = getPostAuthorizationRoute(authorization, place, reward);
 
-    dispatch(openInModal(getPostAuthorizationRoute(authorization, place, reward)));
+    return dispatch(openInModal(route));
   };
 };
 
 /**
  * Authorizes a transaction when a user scans a Barcode to collect points.
  */
-export const authorizeTransactionByBarCode = (expression) => dispatch => {
+export const authorizeTransactionByBarCode = expression => (dispatch) => {
   const authorization = { authorizationType: 'regex', data: { expression } };
 
   dispatch(createTransaction({ transactionData: {} }, authorization))
-  .then(({ points }) => {
-    dispatch(openInModal({
-      screen: ext('PointsEarnedScreen'),
-      props: {
-        data: {},
-        points,
-      },
-    }));
-  }).catch(({ payload }) => {
-    const { errors } = payload.response;
-    showTransactionError(errors[0]);
-  });
+    .then(({ points }) => {
+      dispatch(openInModal({
+        screen: ext('PointsEarnedScreen'),
+        props: {
+          data: {},
+          points,
+        },
+      }));
+    }).catch(({ payload }) => {
+      const { errors } = payload.response;
+      showTransactionError(errors[0]);
+    });
 };
 
 /**
@@ -235,19 +227,22 @@ export const makeTransaction = (data, authorization, reward) => {
       ...data,
     };
 
-    const location = _.get(authorization, 'placeId');
-    const transactionData = !!location ?
+    const location = _.get(authorization, 'placeId', false);
+    const rewardId = _.get(reward, 'id');
+
+    const transactionData = location ?
       { ...defaultTransactionData, location } :
       { ...defaultTransactionData };
-    const rewardId = _.get(reward, 'id');
 
     const attributes = isPunchCard(reward) ?
       { punchReward: rewardId, transactionData } :
       { pointReward: rewardId, transactionData };
 
-    dispatch(createTransaction(attributes, authorization))
+    return dispatch(createTransaction(attributes, authorization))
       .then(({ points: awardedPoints }) => {
-        dispatch(processTransactionResults(data, reward, points, awardedPoints, authorization));
+        return dispatch(processTransactionResults(
+          data, reward, points, awardedPoints, authorization,
+        ));
       })
       .catch(({ payload }) => {
         const { errors } = payload.response;
@@ -297,7 +292,7 @@ const handlePunchCardTransaction = (reward, points, authorization) => {
 
     const { points: originalPoints = 0, pointsRequired } = reward;
 
-    const canRedeem = (points + originalPoints) >= pointsRequired;
+    const canRedeem = (points + originalPoints) === pointsRequired;
 
     if (canRedeem) {
       dispatch(navigateToRedeemOrContinueScreen(reward, points, authorization));

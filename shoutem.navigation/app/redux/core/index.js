@@ -46,6 +46,7 @@ import {
   // Helpers
   hasRouteWithKey,
   isEmptyNavigationState,
+  EMPTY_ROUTE,
   isEmptyRoute,
   isNavigationAction,
   isScreenActive,
@@ -74,6 +75,7 @@ export {
   REPLACE_AT_KEY,
   RESET,
   RESET_TO_ROUTE,
+  EMPTY_ROUTE,
   OPEN_MODAL,
   CLOSE_MODAL,
   SET_SCREEN_STATE,
@@ -113,4 +115,4 @@ export {
   getScreenState,
   setActiveNavigationStackMiddleware,
   getRootNavigationStack,
-}
+};

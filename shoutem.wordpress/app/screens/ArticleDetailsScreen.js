@@ -21,7 +21,7 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from 'shoutem.navigation';
 
 import { NextArticle } from '../components/NextArticle';
-import { getLeadImageUrl, resolveArticleTitle } from '../services';
+import { getLeadImageUrl, resolveArticleTitle, getAuthorName } from '../services';
 import { ext } from '../const';
 
 export class ArticleDetailsScreen extends PureComponent {
@@ -47,9 +47,9 @@ export class ArticleDetailsScreen extends PureComponent {
     if (nextArticle && openArticle) {
       return (
         <NextArticle
-          title={nextArticle.title.rendered}
           imageUrl={getLeadImageUrl(nextArticle)}
           openArticle={() => openArticle(nextArticle)}
+          title={nextArticle.title.rendered}
         />
       );
     }
@@ -59,21 +59,18 @@ export class ArticleDetailsScreen extends PureComponent {
 
   renderInlineGallery() {
     const { article, showInlineGallery } = this.props;
-
     if (!showInlineGallery) {
       return null;
     }
-
     const images = _.map(article.wp.attachments.href, 'url');
 
     return (
-      <ImageGallery sources={images} height={300} width={Dimensions.get('window').width} />
+      <ImageGallery height={300} sources={images} width={Dimensions.get('window').width} />
     );
   }
 
   render() {
     const { article } = this.props;
-
     const articleImageUrl = getLeadImageUrl(article);
     const momentDate = moment(article.modified);
 
@@ -86,26 +83,27 @@ export class ArticleDetailsScreen extends PureComponent {
     const resolvedTitle = resolveArticleTitle(article.title.rendered);
 
     return (
+
       <Screen styleName="full-screen paper">
         <NavigationBar
-          styleName="clear"
           animationName="solidify"
-          title={article.title.rendered}
           share={{
             title: resolvedTitle,
             link: article.link,
           }}
+          styleName="clear"
+          title={article.title.rendered}
         />
         <ScrollView>
           <ImageBackground
-            styleName="large-portrait placeholder"
-            source={articleImageUrl ? { uri: articleImageUrl } : undefined}
             animationName="hero"
+            source={articleImageUrl ? { uri: articleImageUrl } : undefined}
+            styleName="large-portrait placeholder"
           >
             <Tile animationName="hero">
               <Title styleName="centered">{resolvedTitle.toUpperCase()}</Title>
               <View styleName="horizontal collapsed" virtual>
-                <Caption numberOfLines={1} styleName="collapsible">{article.author}</Caption>
+                <Caption numberOfLines={1} styleName="collapsible">{getAuthorName(article)}</Caption>
                 {dateInfo}
               </View>
               <Icon name="down-arrow" styleName="scroll-indicator" />

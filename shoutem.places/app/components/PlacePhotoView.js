@@ -13,6 +13,7 @@ import { connectStyle } from '@shoutem/theme';
 import { Favorite } from 'shoutem.favorites';
 import { ext } from '../const';
 import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
+import { getFirstImage } from '../services/places';
 
 export class PlacePhotoView extends PureComponent {
   static propTypes = {
@@ -33,7 +34,8 @@ export class PlacePhotoView extends PureComponent {
     const { schema } = this.state;
     const { location = {} } = place;
     const { formattedAddress = '' } = location;
-    const imageSource = place.image ? { uri: place.image.url } : undefined;
+    const leadImage = getFirstImage(place);
+    const imageSource = leadImage ? { uri: leadImage.url } : undefined;
 
     return (
       <TouchableOpacity
@@ -41,17 +43,17 @@ export class PlacePhotoView extends PureComponent {
       >
         <Divider styleName="line" />
         <ImageBackground
-          styleName="large-banner placeholder"
           source={imageSource}
+          styleName="large-banner placeholder"
         >
           <Tile>
-            <View virtual styleName="actions">
+            <View styleName="actions" virtual>
               <Favorite
                 item={place}
                 schema={schema}
               />
             </View>
-            <Title styleName="vertical" numberOfLines={2}>{place.name.toUpperCase()}</Title>
+            <Title numberOfLines={2} styleName="vertical">{place.name.toUpperCase()}</Title>
             <Caption styleName="vertical">{formattedAddress}</Caption>
           </Tile>
         </ImageBackground>

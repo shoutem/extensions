@@ -98,6 +98,19 @@ export class DealDetailsScreen extends PureComponent {
     redeemDeal: PropTypes.func,
   };
 
+  static getDerivedStateFromProps(props, state) {
+    const newState = {
+      dealStatus: props.dealStatus,
+    };
+
+    if (props.isScreenActive) {
+      newState.isClaiming = false;
+      newState.isRedeeming = false;
+    }
+
+    return newState;
+  }
+
   constructor(props) {
     super(props);
 
@@ -118,20 +131,13 @@ export class DealDetailsScreen extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.fetchDealTransactions(this.props.catalogId, this.props.deal.id);
-  }
+    const {
+      catalogId,
+      deal: { id },
+      fetchDealTransactions,
+    } = this.props;
 
-  componentWillReceiveProps(nextProps) {
-    const updateState = {
-      dealStatus: nextProps.dealStatus,
-    };
-
-    if (nextProps.isScreenActive && (this.props.isScreenActive !== nextProps.isScreenActive)) {
-      updateState.isClaiming = false;
-      updateState.isRedeeming = false;
-    }
-
-    this.setState(updateState);
+    fetchDealTransactions(catalogId, id);
   }
 
   /**
@@ -193,67 +199,72 @@ export class DealDetailsScreen extends PureComponent {
    */
 
   handleClaimCoupon() {
-    const { deal } = this.props;
+    const { authenticate, claimCoupon, catalogId, deal } = this.props;
 
     this.setState({
       isClaiming: true,
     });
 
-    this.props.authenticate(() => (
-      this.props.claimCoupon(this.props.catalogId, deal.id)
+    authenticate(() => (
+      claimCoupon(catalogId, deal.id)
         .then(() => this.setState({ isClaiming: false }))
         .catch(() => this.setState({ isClaiming: false }))
     ));
   }
 
   handleRedeemCoupon() {
-    if (!this.props.activeCoupon || this.state.dealStatus.couponExpired) {
+    const {
+      authenticate,
+      activeCoupon,
+      catalogId,
+      deal,
+      redeemCoupon,
+    } = this.props;
+    const { dealStatus: { couponExpired } } = this.state;
+
+    if (!activeCoupon || couponExpired) {
       return;
     }
 
-    const { activeCoupon, catalogId, deal } = this.props;
-
-    this.setState({
-      isRedeeming: true,
-    });
-
-    this.props.authenticate(() => (
-      this.props.redeemCoupon(catalogId, deal.id, activeCoupon.id))
+    this.setState({ isRedeeming: true });
+    authenticate(() => (
+      redeemCoupon(catalogId, deal.id, activeCoupon.id))
       .then(() => this.setState({ isRedeeming: false }))
       .catch(() => this.setState({ isRedeeming: false }))
     );
   }
 
   handleRedeemDeal() {
-    const { deal } = this.props;
+    const { authenticate, catalogId, deal, redeemDeal } = this.props;
 
-    this.setState({
-      isRedeeming: true,
-    });
+    this.setState({ isRedeeming: true });
 
-    this.props.authenticate(() => (
-      this.props.redeemDeal(this.props.catalogId, deal.id)
-        .then(() => this.setState({ isRedeeming: false }))
-        .catch(() => this.setState({ isRedeeming: false }))
-    ));
+    authenticate(() => (
+      redeemDeal(catalogId, deal.id))
+      .then(() => this.setState({ isRedeeming: false }))
+      .catch(() => this.setState({ isRedeeming: false }))
+    );
   }
 
   handleOpenDealDetails(deal) {
-    this.props.onOpenDealDetails(deal);
+    const { onOpenDealDetails } = this.props;
+
+    onOpenDealDetails(deal);
   }
 
   handleOpenWebsite() {
-    const { deal } = this.props;
+    const { deal, openURL } = this.props;
 
     if (!deal.buyLink) {
       return;
     }
 
-    this.props.openURL(deal.buyLink, deal.buyLinkTitle);
+    openURL(deal.buyLink, deal.buyLinkTitle);
   }
 
   handleOpenDirections() {
     const { deal } = this.props;
+
     const mapScheme = resolveMapScheme(deal);
 
     if (mapScheme) {
@@ -327,6 +338,7 @@ export class DealDetailsScreen extends PureComponent {
         dealRedeemed,
       },
     } = this.state;
+    const { isDealActive } = this.props;
 
     const remainingCoupons = _.get(deal, 'remainingCoupons');
 
@@ -339,7 +351,7 @@ export class DealDetailsScreen extends PureComponent {
       ? (remainingCoupons > 0)
       : true;
 
-    if (!this.props.isDealActive) {
+    if (!isDealActive) {
       return null;
     }
 
@@ -549,10 +561,13 @@ export class DealDetailsScreen extends PureComponent {
   }
 
   renderRedeemContent() {
+    const { deal } = this.props;
+    const { isRedeeming } = this.state;
+
     return (
       <DealRedeemContentView
-        deal={this.props.deal}
-        isRedeeming={this.state.isRedeeming}
+        deal={deal}
+        isRedeeming={isRedeeming}
         onRedeemCoupon={this.handleRedeemCoupon}
         onTimerEnd={this.handleTimerEnd}
       />

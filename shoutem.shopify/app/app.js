@@ -1,8 +1,12 @@
 import { getExtensionSettings } from 'shoutem.application';
-import Shopify from 'react-native-shopify';
-import _ from 'lodash';
+import Client from 'shopify-buy';
+import gql from 'graphql-tag';
+import axios from 'axios';
 
-import { ext } from './const';
+import { ApolloClient } from 'apollo-client';
+import { createHttpLink } from 'apollo-link-http';
+import { setContext } from 'apollo-link-context';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import {
   refreshProducts,
@@ -11,30 +15,8 @@ import {
   shopErrorLoading,
   appMounted,
 } from './redux/actionCreators';
-
-/*
- * Loads all collections from Shopify recursively since each query is
- * limited to 25 collections by their SDK
- */
-const getAllCollections = (page = 1, allCollections = []) =>
-  Shopify.getCollections(page).then((collections) => {
-    if (_.size(collections)) {
-      return getAllCollections(page + 1, [...allCollections, ...collections]);
-    }
-    return allCollections;
-  });
-
-/*
- * Loads all tags from Shopify recursively since each query is
- * limited to 25 tags by their SDK
- */
-const getAllTags = (page = 1, allTags = []) =>
-  Shopify.getProductTags(page).then((tags) => {
-    if (_.size(tags)) {
-      return getAllTags(page + 1, [...allTags, ...tags]);
-    }
-    return allTags;
-  });
+import { ext } from './const';
+import MBBridge from './MBBridge';
 
 /* eslint-disable consistent-return */
 export function appDidMount(app) {
@@ -50,14 +32,16 @@ export function appDidMount(app) {
 
   dispatch(appMounted());
 
-  Shopify.initialize(shopifyStore, apiKey);
+  MBBridge.initStore(shopifyStore, apiKey);
 
   dispatch(shopLoading());
-
-  Promise.all([getAllCollections(), Shopify.getShop(), getAllTags()])
-  .then(([collections, shop, tags]) => {
-    dispatch(shopLoaded(collections, shop, tags));
-    dispatch(refreshProducts());
+  Promise.all([MBBridge.getCollections(), MBBridge.getShop()])
+  .then(([collections, shop]) => {
+    shop.collections = collections;
+    shop.currency = shop.moneyFormat.replace('{{amount}}', '').replace(/<\/?[^>]+(>|$)/g, '').trim()
+    dispatch(shopLoaded(collections, shop, []));
+    // TODO: Figure out why only the first item of a collection is refreshed
+    dispatch(refreshProducts(collections[0].id));
   })
   .catch(() => {
     dispatch(shopErrorLoading());

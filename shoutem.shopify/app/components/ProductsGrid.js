@@ -1,22 +1,18 @@
 import React from 'react';
-import _ from 'lodash';
 import { connect } from 'react-redux';
+import _ from 'lodash';
+
 import { connectStyle } from '@shoutem/theme';
+import { GridRow } from '@shoutem/ui';
 
-import {
-  GridRow,
-} from '@shoutem/ui';
-
+import FeaturedItem from '../components/FeaturedItem';
+import GridItem from '../components/GridItem';
+import { ext } from '../const';
 import {
   ProductsList,
   mapStateToProps,
   mapDispatchToProps,
 } from './ProductsList';
-
-import GridItem from '../components/GridItem';
-import FeaturedItem from '../components/FeaturedItem';
-
-import { ext } from '../const';
 
 /**
  * A component that displays products in a grid, with the first one featured.
@@ -27,11 +23,8 @@ class ProductsGrid extends ProductsList {
   };
 
   renderProductRow(products, sectionId, index) {
-    if (index === '0') {
-      return this.renderFeaturedProduct(products[0]);
-    }
-
-    const gridProducts = _.map(products, product => this.renderGridProduct(product));
+    const gridProducts =
+      _.map(products, product => this.renderGridProduct(product));
 
     return (
       <GridRow columns={2}>
@@ -41,25 +34,13 @@ class ProductsGrid extends ProductsList {
   }
 
   renderGridProduct(item) {
-    const { shop } = this.props;
+    const { isTall, shop } = this.props;
 
     return (
       <GridItem
         item={item}
-        key={item.product_id}
-        onAddToCart={() => this.onAddToCart(item)}
-        onPress={() => this.navigateToProductDetails(item)}
-        shop={shop}
-      />
-    );
-  }
-
-  renderFeaturedProduct(item) {
-    const { shop } = this.props;
-
-    return (
-      <FeaturedItem
-        item={item}
+        isTall={isTall}
+        key={item.id}
         onAddToCart={() => this.onAddToCart(item)}
         onPress={() => this.navigateToProductDetails(item)}
         shop={shop}
@@ -68,9 +49,11 @@ class ProductsGrid extends ProductsList {
   }
 
   renderProducts(products, isLoading) {
+    const { hasFeaturedItem } = this.props;
+
     // Group the products into rows with 2 columns, except for the
     // first one, which is treated as a featured product
-    let isFirstProduct = true;
+    let isFirstProduct = hasFeaturedItem;
     const groupedProducts = GridRow.groupByRows(products, 2, () => {
       if (isFirstProduct) {
         isFirstProduct = false;

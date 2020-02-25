@@ -1,7 +1,7 @@
 {
   "name": "theme",
-  "version": "2.1.0",
-  "platform": "2.1.*",
+  "version": "2.2.1",
+  "platform": "2.2.*",
   "type": "system",
   "title": "Theme",
   "description": "Resolve and store theme related configuration",

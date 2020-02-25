@@ -24,6 +24,16 @@
           "maximum": 48
         }
       }
+    },
+    "dropdown": {
+      "default": {
+        "dropdownValue": "dark"
+      },
+      "constraints": {
+        "dropdownValue": {
+          "enum": [ "light", "dark" ]
+        }
+      }
     }
   },
   "properties": {
@@ -186,6 +196,14 @@
       "title": "Notch status bar color (used when background image is present)",
       "format": "color",
       "default": "#fff"
+    },
+    "statusBarStyle": {
+      "type": "object",
+      "title": "Status bar text (battery, time, carrier)",
+      "format": "dropdown",
+      "default": {
+        "dropdownValue": "dark"
+      }
     },
     "navBarIconsColor": {
       "type": "string",
@@ -354,6 +372,7 @@
         "title": "Navigation bar (header)",
         "properties": [
           "statusBarColor",
+          "statusBarStyle",
           "navBarText",
           "navBarIconsColor",
           "featuredNavBarTitleColor",

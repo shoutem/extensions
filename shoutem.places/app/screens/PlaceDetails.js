@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Linking, Platform } from 'react-native';
+import { Linking } from 'react-native';
 
 import {
   ScrollView,
@@ -11,9 +11,7 @@ import {
   Subtitle,
   Caption,
   Text,
-  Title,
   View,
-  ImageBackground,
   Divider,
   Tile,
   Screen,
@@ -28,6 +26,10 @@ import { Favorite } from 'shoutem.favorites';
 import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
 
+import _ from 'lodash';
+
+import PlaceImageGallery from '../components/PlaceImageGallery';
+import { getPlaceImages, getMapUrl } from '../services/places';
 import { ext } from '../const';
 
 export class PlaceDetails extends PureComponent {
@@ -57,10 +59,11 @@ export class PlaceDetails extends PureComponent {
   getNavBarProps() {
     const { place } = this.props;
     const { schema } = this.state;
+    const images = getPlaceImages(place);
 
     return {
       renderRightComponent: () => (
-        <View virtual styleName="container">
+        <View styleName="container" virtual>
           <Favorite
             item={place}
             navBarButton
@@ -68,7 +71,7 @@ export class PlaceDetails extends PureComponent {
           />
         </View>
       ),
-      styleName: place.image ? 'clear' : 'no-border',
+      styleName: _.size(images) >= 1 ? 'clear' : 'no-border',
       animationName: 'solidify',
       title: place.name,
     };
@@ -89,11 +92,8 @@ export class PlaceDetails extends PureComponent {
     const { location = {} } = this.props.place;
     const { latitude, longitude, formattedAddress } = location;
 
-    const resolvedScheme = (Platform.OS === 'ios') ? `http://maps.apple.com/?ll=${latitude},${longitude}&q=${formattedAddress}` :
-    `geo:${latitude},${longitude}?q=${formattedAddress}`;
-
     if (latitude && longitude) {
-      Linking.openURL(resolvedScheme);
+      Linking.openURL(getMapUrl(latitude, longitude, formattedAddress));
     }
   }
 
@@ -119,19 +119,13 @@ export class PlaceDetails extends PureComponent {
   }
 
   renderLeadImage(place) {
-    const { location = {} } = place;
-    const { formattedAddress = '' } = location;
     return (
-      <ImageBackground
-        styleName="large-portrait"
-        source={place.image ? { uri: place.image.url } : undefined}
-        animationName="hero"
-      >
-        <Tile>
-          <Title>{place.name.toUpperCase()}</Title>
-          <Caption styleName="sm-gutter-top">{formattedAddress}</Caption>
-        </Tile>
-      </ImageBackground>
+      <PlaceImageGallery
+        imageAnimationName="hero"
+        images={getPlaceImages(place)}
+        imageStyleName="large-portrait"
+        place={place}
+      />
     );
   }
 
@@ -230,12 +224,12 @@ export class PlaceDetails extends PureComponent {
       <TouchableOpacity onPress={onPressCallback}>
         <Divider styleName="line" />
         <Row>
-          <Icon styleName="indicator" name={icon} />
+          <Icon name={icon} styleName="indicator" />
           <View styleName="vertical">
             <Subtitle>{subtitle}</Subtitle>
             <Text numberOfLines={1}>{title}</Text>
           </View>
-          <Icon styleName="indicator disclosure" name="right-arrow" />
+          <Icon name="right-arrow" styleName="indicator disclosure" />
         </Row>
         <Divider styleName="line" />
       </TouchableOpacity>
@@ -265,5 +259,5 @@ export class PlaceDetails extends PureComponent {
 }
 
 export default connect(undefined, { navigateTo, openURL })(
-    connectStyle(ext('PlaceDetails'))(PlaceDetails),
-  );
+  connectStyle(ext('PlaceDetails'))(PlaceDetails),
+);

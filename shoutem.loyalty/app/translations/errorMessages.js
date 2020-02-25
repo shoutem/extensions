@@ -5,11 +5,12 @@ const localizationKeysMap = {
   lm_transaction_validation_numberOfRewardsInvalid: ext('numberOfRewardsInvalidErrorMessage'),
   lm_authorization_forbidden_authDataExpressionInvalid: ext('authDataExpressionInvalidErrorMessage'),
   lm_authorization_forbidden_transactionExists: ext('transactionExistsErrorMessage'),
+  lm_transaction_validation_cardPointCountInvalid: ext('cardPointCountInvalid'),
 };
 
-export const getErrorMessage = errorCode => {
-  const localizationKey = localizationKeysMap[errorCode] ||
-    'shoutem.application.unexpectedErrorMessage';
+export const getErrorMessage = (errorCode) => {
+  const defaultError = 'shoutem.application.unexpectedErrorMessage';
+  const localizationKey = localizationKeysMap[errorCode] || defaultError;
 
   return I18n.t(localizationKey);
 };

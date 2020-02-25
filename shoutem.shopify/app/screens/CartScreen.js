@@ -1,9 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
+import { I18n } from 'shoutem.i18n';
+import {
+  NavigationBar,
+  closeModal,
+  openInModal,
+} from 'shoutem.navigation';
+
+import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
   Divider,
@@ -11,36 +18,25 @@ import {
   ListView,
   Screen,
   ScrollView,
+  Title,
   Subtitle,
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
 
-import { connectStyle } from '@shoutem/theme';
-
-import {
-  NavigationBar,
-  closeModal,
-  openInModal,
-} from 'shoutem.navigation';
-
-import { I18n } from 'shoutem.i18n';
-
-import { ext } from '../const';
 import CartFooter from '../components/CartFooter';
 import CartItem from '../components/CartItem';
-import UpdateItemScreen from './UpdateItemScreen';
-
 import {
   cart as cartShape,
   shop as shopShape,
 } from '../components/shapes';
-
 import {
   cartItemRemoved,
   cartItemUpdated,
   startCheckout,
 } from '../redux/actionCreators';
+import { ext } from '../const';
+import UpdateItemScreen from './UpdateItemScreen';
 
 const { func } = PropTypes;
 
@@ -72,7 +68,10 @@ class CartScreen extends PureComponent {
 
     this.proceedToCheckout = this.proceedToCheckout.bind(this);
     this.renderRow = this.renderRow.bind(this);
-    this.state = { selectedItem: null };
+
+    this.state = {
+      selectedItem: null
+    };
   }
 
   onItemUpdated(actionType, cartItem, updates) {
@@ -83,6 +82,7 @@ class CartScreen extends PureComponent {
       cartItemRemoved(cartItem);
     } else {
       const { variant: newVariant, quantity } = updates;
+
       cartItemUpdated(cartItem, newVariant, quantity);
     }
 
@@ -91,8 +91,8 @@ class CartScreen extends PureComponent {
 
   onEditItem(cartItem) {
     const { openInModal } = this.props;
-    const { item, variant, quantity } = cartItem;
 
+    const { item, variant, quantity } = cartItem;
     const route = {
       screen: ext('UpdateItemScreen'),
       props: {
@@ -127,23 +127,21 @@ class CartScreen extends PureComponent {
     const { cart } = this.props;
 
     return (
-      <Screen>
+      <ScrollView>
         <Divider styleName="section-header">
           <Caption>{I18n.t(ext('cartScreenProductName'))}</Caption>
           <Caption>{I18n.t(ext('cartScreenProductPrice'))}</Caption>
         </Divider>
-        <ScrollView>
-          <ListView
-            data={cart}
-            renderRow={this.renderRow}
-          />
-        </ScrollView>
+        <ListView
+          data={cart}
+          renderRow={this.renderRow}
+        />
         <Divider styleName="line" />
         <CartFooter
           action={I18n.t(ext('proceedToCheckoutButton'))}
           onActionButtonClicked={this.proceedToCheckout}
         />
-      </Screen>
+      </ScrollView>
     );
   }
 
@@ -152,9 +150,7 @@ class CartScreen extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar
-          title={I18n.t(ext('cartScreenNavBarTitle'))}
-        />
+        <NavigationBar title={I18n.t(ext('cartScreenNavBarTitle'))} />
         { _.size(cart) ? this.renderContent() : renderEmptyScreen()}
       </Screen>
     );

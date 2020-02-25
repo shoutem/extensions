@@ -11,31 +11,10 @@ export default class HtmlTextView extends PureComponent {
     styleName: PropTypes.string,
   };
 
-  constructor(props) {
-    super(props);
-
-    const { text } = props;
-    const htmlText = convertToHtml(text);
-
-    this.state = {
-      htmlText,
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { text: nextText } = nextProps;
-    const { text } = this.props;
-
-    if (nextText !== text) {
-      const htmlText = convertToHtml(nextText);
-      this.setState({ htmlText });
-    }
-  }
-
   render() {
-    const { htmlText } = this.state;
-    const { styleName } = this.props;
+    const { styleName, text } = this.props;
 
+    const htmlText = convertToHtml(text);
     const style = `${styleName} multiline`;
 
     return (

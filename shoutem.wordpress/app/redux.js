@@ -30,10 +30,12 @@ import {
   ext,
   API_ENDPOINT,
   MEDIA_API_ENDPOINT,
+  AUTHOR_API_ENDPOINT,
 } from './const';
 
 export const WORDPRESS_NEWS_SCHEMA = 'shoutem.wordpress.news';
 export const WORDPRESS_MEDIA_SCHEMA = 'shoutem.wordpress.media';
+export const WORDPRESS_AUTHOR_SCHEMA = 'shoutem.wordpress.author';
 
 export function resolveFeedUrl(feedUrl) {
   return API_ENDPOINT.replace('{feedUrl}', feedUrl);
@@ -41,6 +43,10 @@ export function resolveFeedUrl(feedUrl) {
 
 export function resolvePostsMediaUrl(feedUrl) {
   return MEDIA_API_ENDPOINT.replace('{feedUrl}', feedUrl);
+}
+
+export function resolvePostsAuthorUrl(feedUrl) {
+  return AUTHOR_API_ENDPOINT.replace('{feedUrl}', feedUrl);
 }
 
 // ACTION CREATORS
@@ -53,7 +59,9 @@ export function resolvePostsMediaUrl(feedUrl) {
  * @param {number} options.perPage number of items in response
  * @param {bool} options.appendMode should returned items be appended to existing state
  */
-export function fetchPosts({ feedUrl, page, perPage, appendMode = false }) {
+export function fetchPosts({
+  feedUrl, page, perPage, appendMode = false,
+}) {
   const config = {
     schema: WORDPRESS_NEWS_SCHEMA,
     request: {
@@ -104,6 +112,30 @@ export function fetchPostsMedia({ feedUrl, posts, appendMode = false }) {
   return find(config, undefined, params, { feedUrl, appendMode });
 }
 
+export function fetchPostsAuthor({ feedUrl, posts, appendMode = false }) {
+  const authorIds = _.map(posts, 'author');
+  const include = authorIds.join(',');
+  const perPage = authorIds.length;
+
+  const config = {
+    schema: WORDPRESS_AUTHOR_SCHEMA,
+    request: {
+      endpoint: resolvePostsAuthorUrl(feedUrl),
+      resourceType: 'json',
+      headers: {
+        'Access-Control-Request-Method': 'application/json',
+      },
+    },
+  };
+
+  const params = {
+    include,
+    perPage,
+  };
+
+  return find(config, undefined, params, { feedUrl, authorIds, appendMode });
+}
+
 /**
  * Redux thunk for fetching posts and media one after other
  * @param {Object} options @see fetchPosts
@@ -113,7 +145,10 @@ export function fetchWordpressPosts(options) {
     dispatch(fetchPosts(options)).then((action) => {
       const { payload: posts } = action;
 
-      return dispatch(fetchPostsMedia({ ...options, posts }));
+      return Promise.all([
+        dispatch(fetchPostsMedia({ ...options, posts })),
+        dispatch(fetchPostsAuthor({ ...options, posts })),
+      ]);
     })
   );
 }
@@ -127,7 +162,7 @@ function createDefaultStatus(schema) {
       schema,
       type: 'resource',
       id: _.uniqueId(),
-    }
+    },
   );
 }
 
@@ -197,7 +232,7 @@ export function wordpressResource(schema, initialState = {}) {
       return state;
     }
     outdated.reportChange(action);
-    const payload = action.payload;
+    const { payload } = action;
 
     switch (action.type) {
       case LOAD_SUCCESS: {
@@ -221,7 +256,7 @@ export function wordpressResource(schema, initialState = {}) {
             error: false,
             links,
             schema,
-          }
+          },
         ));
         return newState;
       }
@@ -232,8 +267,9 @@ export function wordpressResource(schema, initialState = {}) {
 }
 
 export default combineReducers({
-    posts: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_NEWS_SCHEMA)),
-    media: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_MEDIA_SCHEMA)),
+  posts: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_NEWS_SCHEMA)),
+  media: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_MEDIA_SCHEMA)),
+  author: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_AUTHOR_SCHEMA)),
 });
 
 // SELECTORS
@@ -247,10 +283,15 @@ export default combineReducers({
  */
 export function getFeedItemInfo(item, state, feedUrl) {
   const mediaList = _.get(state, [ext(), 'media', feedUrl]);
+  const authorList = _.get(state, [ext(), 'author', feedUrl]);
   const itemInfo = { ...item };
 
   if (itemInfo.featured_media) {
     itemInfo.featured_media_object = _.find(mediaList, ['id', itemInfo.featured_media]);
+  }
+
+  if (itemInfo.author) {
+    itemInfo.author_object = _.find(authorList, ['id', itemInfo.author]);
   }
 
   return itemInfo;

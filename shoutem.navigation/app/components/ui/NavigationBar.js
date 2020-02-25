@@ -5,8 +5,7 @@ import _ from 'lodash';
 import { DriverShape } from '@shoutem/animation';
 import { connectStyle } from '@shoutem/theme';
 
-import { NavigationBarView, NavigationBarStyleName } from './NavigationBarView';
-
+import NavigationBarView, { NavigationBarStyleName } from './NavigationBarView';
 /**
  * A NavigationBar component that can be used to define
  * the global NavigationBar props. This component has no

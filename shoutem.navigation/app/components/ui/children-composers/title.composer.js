@@ -9,7 +9,7 @@ import {
 import { NavigationBar } from '../NavigationBar';
 
 function hasBackgroundImage(navBarProps) {
-  return (navBarProps.navigationBarImage);
+  return (NavigationBar.globalNavigationBarImage || navBarProps.navigationBarImage);
 }
 
 /**

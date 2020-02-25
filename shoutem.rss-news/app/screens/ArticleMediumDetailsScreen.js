@@ -51,9 +51,9 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
     const imageUrl = getLeadImageUrl(article);
     const screenStyle = imageUrl ? 'full-screen paper' : 'paper';
 
-    const momentDate = moment(article.timeUpdated);
-    const dateInfo = momentDate.isAfter(0) ? (
-      <Caption styleName="md-gutter-left">{momentDate.fromNow()}</Caption>
+    const momentDate = moment.utc(article.timeUpdated);
+    const dateInfo = moment.utc(momentDate).isAfter(0) ? (
+      <Caption styleName="md-gutter-left">{moment.utc(momentDate).fromNow()}</Caption>
     ) : null;
 
     return (

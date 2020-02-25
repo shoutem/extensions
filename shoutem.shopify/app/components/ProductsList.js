@@ -3,34 +3,46 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { ListView, Screen, EmptyStateView } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
+import { I18n } from 'shoutem.i18n';
 
+import {
+  find,
+  isBusy,
+  shouldRefresh,
+  getCollection
+} from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { EmptyStateView, ListView, Screen, Text } from '@shoutem/ui';
+
+import { getActiveShortcut } from 'shoutem.application';
 import {
   navigateTo,
   closeModal,
   openInModal,
 } from 'shoutem.navigation';
-import { I18n } from 'shoutem.i18n';
 
-import { ext, PAGE_SIZE } from '../const';
-import ListItem from './ListItem';
-import UpdateItemScreen from '../screens/UpdateItemScreen';
 import {
   cartItemAdded,
   refreshProducts,
 } from '../redux/actionCreators';
 import { getProducts } from '../redux/selectors';
+import UpdateItemScreen from '../screens/UpdateItemScreen';
+import { ext, PAGE_SIZE } from '../const';
+import FeaturedItem from './FeaturedItem';
+import ListItem from './ListItem';
 import {
   product as productShape,
   shop as shopShape,
 } from './shapes';
 
+
 const { arrayOf, bool, func, number, shape, string } = PropTypes;
 
 /**
- * A component that displays a list of products, used in the main products screen and
- * search screen. Lets the user navigate to product details or add a product to cart.
+ * A component that displays a list of products,
+ * used in the main products screen and search
+ * screen. Lets the user navigate to product
+ * details or add a product to cart.
  */
 export class ProductsList extends PureComponent {
   static propTypes = {
@@ -39,8 +51,9 @@ export class ProductsList extends PureComponent {
     // Used to close modal after an item has been added to the cart
     closeModal: func,
     // Collection ID for which products are displayed
-    collectionId: number,
-    // Used to navigate to the product details screen after a product is selected
+    collectionId: string,
+    // Used to navigate to the product details screen after a product
+    // is selected
     navigateTo: func.isRequired,
     // Used to open the add to cart screen in modal
     openInModal: func,
@@ -68,12 +81,13 @@ export class ProductsList extends PureComponent {
     this.onLoadMore = this.onLoadMore.bind(this);
     this.refreshData = this.refreshData.bind(this);
     this.renderProductRow = this.renderProductRow.bind(this);
+    this.renderFeaturedProduct = this.renderFeaturedProduct.bind(this);
 
     this.state = { selectedItem: null };
   }
 
   componentDidMount() {
-    const { error } = this.props.shop;
+    const { shop: { error } } = this.props;
 
     if (error) {
       return;
@@ -85,15 +99,17 @@ export class ProductsList extends PureComponent {
   onAddToCart(item) {
     const { openInModal } = this.props;
 
+    // featured item is received as array, bug with @shoutem/ui
+    const resolvedItem = Array.isArray(item) ? item[0] : item;
     const { add } = UpdateItemScreen.actionTypes;
 
     const route = {
       screen: ext('UpdateItemScreen'),
       props: {
         actionType: add,
-        item,
+        item: resolvedItem,
         onActionButtonClicked: (type, { variant, quantity }) =>
-          this.addItemToCart(item, variant, quantity),
+          this.addItemToCart(resolvedItem, variant, quantity),
       },
     };
 
@@ -124,7 +140,7 @@ export class ProductsList extends PureComponent {
   getNoProductsForTagView() {
     const { tag } = this.props;
 
-    const message = I18n.t(ext('noItemsWithSpecificTag'), { unmatchedTag: tag});
+    const message = `${I18n.t(ext('noItemsWithSpecificTag'))}"${tag}".`;
 
     return (
       <EmptyStateView
@@ -137,19 +153,21 @@ export class ProductsList extends PureComponent {
   navigateToProductDetails(item) {
     const { navigateTo } = this.props;
 
+    // featured item is received as array, bug with @shoutem/ui
+    const resolvedItem = Array.isArray(item) ? item[0] : item;
+
     navigateTo({
       screen: ext('ProductDetailsScreen'),
       props: {
-        productId: item.product_id,
+        productId: resolvedItem.id,
       },
     });
   }
 
-  // Called to load more products when the component is mounted or the list scrolled beyond
-  // visible items
+  // Called to load more products when the component is mounted or
+  // the list scrolled beyond visible items
   refreshData(resetMode) {
     const { collectionId, refreshProducts, tag } = this.props;
-
     refreshProducts(collectionId, tag, resetMode);
   }
 
@@ -160,7 +178,25 @@ export class ProductsList extends PureComponent {
     closeModal();
   }
 
+  renderFeaturedProduct(item) {
+    const { shop } = this.props;
+
+    // featured item is received as array, bug with @shoutem/ui
+    const resolvedItem = Array.isArray(item) ? item[0] : item;
+
+    return resolvedItem ? (
+      <FeaturedItem
+        item={resolvedItem}
+        onAddToCart={() => this.onAddToCart(resolvedItem)}
+        onPress={() => this.navigateToProductDetails(resolvedItem)}
+        shop={shop}
+      />
+    ) : null;
+  }
+
   renderProductRow(item) {
+    if (!item) return null;
+
     const { shop } = this.props;
 
     return (
@@ -180,6 +216,8 @@ export class ProductsList extends PureComponent {
   }
 
   renderProducts(products, isLoading) {
+    const { hasFeaturedItem } = this.props;
+
     return (
       <ListView
         data={products}
@@ -187,6 +225,8 @@ export class ProductsList extends PureComponent {
         onLoadMore={this.onLoadMore}
         onRefresh={() => this.refreshData(true)}
         renderRow={this.renderProductRow}
+        hasFeaturedItem={hasFeaturedItem}
+        renderFeaturedItem={(item) => this.renderFeaturedProduct(item)}
       />
     );
   }
@@ -196,20 +236,20 @@ export class ProductsList extends PureComponent {
     const { isLoading: productsLoading, products } = productsState;
     const { isLoading: shopLoading } = shop;
 
-
     const isLoading = productsLoading || shopLoading;
 
     return isLoading || _.size(products) ?
-      this.renderProducts(products, isLoading)
-      :
+      this.renderProducts(products, isLoading) :
       this.renderEmptyScreen();
   }
 
   render() {
-    const { error } = this.props.shop;
+    const { shop: { error } } = this.props;
 
     if (error) {
-      return <EmptyStateView message={I18n.t(ext('fetchingShopErrorMessage'))} />;
+      const message = I18n.t(ext('fetchingShopErrorMessage'));
+
+      return <EmptyStateView message={message} />;
     }
 
     return (
@@ -225,9 +265,15 @@ export const mapStateToProps = (state, ownProps) => {
   const { collectionId, tag } = ownProps;
 
   const productsState = getProducts(state, collectionId, tag);
+  const activeShortcut = getActiveShortcut(state);
+  const screens = _.get(activeShortcut, 'screens');
+  const activeScreen = screens ? screens[0] : null;
+  const hasFeaturedItem = _.get(activeScreen, 'settings.hasFeaturedItem', false);
+  const listType = _.get(activeScreen, 'settings.listType', 'list');
 
   return {
-    collectionId,
+    hasFeaturedItem,
+    listType,
     productsState,
     shop,
   };
@@ -236,11 +282,12 @@ export const mapStateToProps = (state, ownProps) => {
 export const mapDispatchToProps = {
   cartItemAdded,
   closeModal,
+  find,
   navigateTo,
   openInModal,
   refreshProducts,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    connectStyle(ext('ProductsList'))(ProductsList),
+  connectStyle(ext('ProductsList'))(ProductsList),
 );

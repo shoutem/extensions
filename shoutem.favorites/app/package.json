@@ -1,16 +1,15 @@
 {
   "name": "shoutem.favorites",
-  "version": "2.1.0",
+  "version": "2.2.1",
   "description": "Favorites extension",
   "dependencies": {
+    "@react-native-community/async-storage": "~1.6.3",
     "@shoutem/redux-io": "3.0.1-beta.3",
-    "@shoutem/theme": "~0.11.3",
-    "@shoutem/ui": "~1.0.0",
-    "@react-native-community/async-storage": "1.4.2"
+    "@shoutem/theme": "0.11.5",
+    "@shoutem/ui": "2.0.0"
   },
-  "rnpm": {
-    "commands": {
-      "postlink": "node node_modules/shoutem.favorites/scripts/link.js"
-    }
-  }
+  "nativeDependencies": [
+    "@react-native-community/async-storage",
+    "@shoutem/ui"
+  ]
 }

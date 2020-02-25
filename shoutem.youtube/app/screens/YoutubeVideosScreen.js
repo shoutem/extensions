@@ -54,8 +54,8 @@ export class YoutubeVideosScreen extends RssListScreen {
     this.props.navigateTo(route);
   }
 
-  refreshData(nextProps) {
-    if (shouldLoad(nextProps, this.props, 'data')) {
+  refreshData(prevProps) {
+    if (shouldLoad(this.props, prevProps, 'data')) {
       this.fetchData();
     }
   }

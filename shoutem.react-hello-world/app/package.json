@@ -1,8 +1,0 @@
-{
-  "name": "shoutem.react-hello-world",
-  "version": "2.0.3",
-  "description": "Shoutem react app template for settings pages",
-  "dependencies": {
-    "@shoutem/ui": "~1.0.0"
-  }
-}

@@ -74,23 +74,37 @@ function resolveAttributes(element, resource) {
  * @param style
  */
 export default function SeAttachment(props) {
-  const { renderElement, style, resource } = props;
-  const { type } = props.element.attributes;
+  const {
+    element,
+    renderElement,
+    resource,
+    style,
+  } = props;
+  const { type } = element.attributes;
 
-  const attributes = resolveAttributes(props.element, resource);
-  const element = {
-    ...props.element,
+  const attributes = resolveAttributes(element, resource);
+  const el = {
+    ...element,
     attributes,
   };
 
   if (type === 'gallery') {
-    return <SeGallery {...props} element={element} style={style.gallery} />;
+    return <SeGallery {...props} element={el} style={style.gallery} />;
   }
 
-  if (type === 'video' || type === 'image') {
-    return renderElement({ ...element, tag: type });
+  if (type === 'video') {
+    return renderElement({ ...el, tag: 'video' });
   }
 
+  if (type === 'image') {
+    return renderElement({ ...el, tag: 'img' });
+  }
+
+  if (type === 'audio') {
+    return renderElement({ ...el, tag: 'audio' });
+  }
+
+  // eslint-disable-next-line no-console
   console.error('Unhandled SeAttachment type: ', type);
   return null;
 }

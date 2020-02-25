@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import { Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import QRCode from 'react-native-qrcode';
+import QRCode from 'react-native-qrcode-svg';
 
 import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import {
@@ -15,19 +15,13 @@ import {
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 
-import {
-  loginRequired,
-} from 'shoutem.auth';
+import { loginRequired } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 
-import { ext } from '../const';
-
-import {
-  getCardId,
-  isPunchCard,
-} from '../redux';
-
 import { placeShape, rewardShape } from '../components/shapes';
+import { ext } from '../const';
+import { getCardId, isPunchCard } from '../redux';
+
 
 const { bool, func, string } = PropTypes;
 

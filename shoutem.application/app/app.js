@@ -14,12 +14,23 @@ import { openInitialScreen } from './shared/openInitialScreen';
 import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
 import { resizeImageSource } from './services/resizeImageSource';
-import { loadLocalConfiguration, fetchConfiguration } from './redux';
-import { CONFIGURATION_SCHEMA, ACTIVE_APP_STATE, ext } from './const';
+import {
+  loadLocalConfiguration,
+  fetchConfiguration,
+  fetchAppSubscriptionStatus,
+} from './redux';
+import {
+  CONFIGURATION_SCHEMA,
+  ACTIVE_APP_STATE,
+  APP_SUBSCRIPTION_SCHEMA,
+  ext,
+} from './const';
 import { SeAttachment } from './html';
 import buildConfig from './buildConfig.json';
 
 export const appActions = {};
+
+const AUTH_HEADER = `Bearer ${buildConfig.authorization}`;
 
 let appStateChangeHandler; // Dynamically created handler;
 let appState = ACTIVE_APP_STATE;
@@ -44,7 +55,7 @@ export const initializeApp = () => {
 
 function loadConfiguration(app) {
   const store = app.getStore();
-  const dispatch = store.dispatch;
+  const { dispatch } = store;
   return new Promise((resolve) => {
     // resolve Promise from appWillMount when configuration is available in state
     unsubscribeFromConfigurationLoaded = store.subscribe(() => {
@@ -70,14 +81,31 @@ function registerConfigurationSchema() {
       endpoint: resolveAppEndpoint('configurations/current', '{appId}'),
       headers: {
         Accept: 'application/vnd.api+json',
-        Authorization: `Bearer ${buildConfig.authorization}`,
+        Authorization: AUTH_HEADER,
       },
     },
   });
 }
 
+rio.registerResource({
+  schema: APP_SUBSCRIPTION_SCHEMA,
+  request: {
+    method: 'GET',
+    endpoint: resolveAppEndpoint('subscription-status', '{appId}'),
+    headers: {
+      Authorization: AUTH_HEADER,
+      Accept: 'application/vnd.api+json',
+    },
+  },
+});
+
 function dispatchCheckExpiration(app) {
   app.getStore().dispatch(applyToAll(checkExpiration()));
+}
+
+function dispatchCheckAppSubscription(app) {
+  const appId = getAppId();
+  return app.getStore().dispatch(fetchAppSubscriptionStatus(appId));
 }
 
 function createAppStateChangeHandler(app) {
@@ -112,6 +140,11 @@ export function appDidMount(app) {
     throw new Error(I18n.t(ext('configurationLoadErrorMessage')));
   }
   unsubscribeFromConfigurationLoaded();
+
+  dispatchCheckAppSubscription(app).then((response) => {
+    const isValid = _.get(response, 'payload.data.attributes.valid');
+    openInitialScreen(app, isValid);
+  });
 }
 
 /**
@@ -121,7 +154,6 @@ export const isDevelopment = () => process.env.NODE_ENV === 'development';
 
 export function appDidFinishLaunching(app) {
   SplashScreen.hide();
-  openInitialScreen(app);
 }
 
 export function appWillUnmount() {

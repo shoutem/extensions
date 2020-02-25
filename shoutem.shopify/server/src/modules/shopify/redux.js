@@ -18,14 +18,16 @@ export function getShopifyCollections(state) {
 }
 
 // ACTIONS
-export function loadShopifyCollections(store, apiKey, scope) {
+export function loadShopifyCollections(store, apiKey, scope, page) {
   /* eslint-disable no-undef */
   const authorization = `Basic ${btoa(apiKey)}`;
+
+  if (!page) page = 1;
 
   const config = {
     schema: SHOPIFY_COLLECTIONS_SCHEMA,
     request: {
-      endpoint: `https://${store}/api/apps/8/collection_listings.json`,
+      endpoint: `https://${store}/api/apps/8/collection_listings.json?limit=250&page=${page}`,
       headers: {
         Authorization: authorization,
       },

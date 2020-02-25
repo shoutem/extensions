@@ -1,0 +1,5 @@
+{
+  "name": "shoutem.audio",
+  "version": "2.2.4",
+  "description": "Track player components for other extensions to utilize."
+}

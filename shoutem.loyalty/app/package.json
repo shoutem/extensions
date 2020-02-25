@@ -1,18 +1,18 @@
 {
   "name": "shoutem.loyalty",
-  "version": "2.1.0",
+  "version": "2.2.5",
   "private": true,
   "main": "index.js",
   "dependencies": {
-    "react-native-qrcode": "0.2.7",
-    "react-native-svg": "7.2.1",
-    "@shoutem/ui": "~1.0.0",
     "@shoutem/redux-io": "3.0.1-beta.3",
-    "@shoutem/theme": "~0.11.3"
+    "@shoutem/theme": "0.11.5",
+    "@shoutem/ui": "2.0.0",
+    "react-native-qrcode-svg": "~6.0.0",
+    "react-native-svg": "^9.13.0"
   },
-  "rnpm": {
-    "commands": {
-      "postlink": "node node_modules/shoutem.loyalty/link.js"
-    }
-  }
+  "nativeDependencies": [
+    "@shoutem/ui",
+    "react-native-svg",
+    "react-native-qrcode-svg"
+  ]
 }

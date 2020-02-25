@@ -1,11 +1,11 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import _ from 'lodash';
+
+import { CmsListScreen } from 'shoutem.cms';
+import { openInModal } from 'shoutem.navigation';
 
 import { cloneStatus } from '@shoutem/redux-io';
-
-import { openInModal } from 'shoutem.navigation';
-import { CmsListScreen } from 'shoutem.cms';
 
 import { ext } from '../const';
 
@@ -36,32 +36,34 @@ export class PhotosBaseScreen extends CmsListScreen {
     openInModal: PropTypes.func.isRequired,
   };
 
+  static getDerivedStateFromProps(props, state) {
+    const { data } = props;
+
+    if (data !== state.data) {
+      const photos = remapAndFilterPhotos(data);
+      return { data, photos };
+    }
+  }
+
   constructor(props, context) {
     super(props, context);
+
     this.openDetailsScreen = this.openDetailsScreen.bind(this);
     this.renderRow = this.renderRow.bind(this);
 
     const photos = remapAndFilterPhotos(this.props.data);
 
     this.state = {
-      ...this.state,
-      schema: ext('Photos'),
+      data: null,
       photos,
+      schema: ext('Photos'),
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    super.componentWillReceiveProps(nextProps);
-
-    if (this.props.data !== nextProps.data) {
-      const photos = remapAndFilterPhotos(nextProps.data);
-      this.setState({ photos });
-    }
   }
 
   openDetailsScreen(photo) {
     const { openInModal } = this.props;
     const { photos } = this.state;
+
     const route = {
       screen: ext('PhotoDetailsScreen'),
       props: {
