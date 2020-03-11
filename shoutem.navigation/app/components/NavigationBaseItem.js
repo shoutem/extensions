@@ -48,7 +48,7 @@ export class NavigationBaseItem extends PureComponent {
     const iconStyle = { ...style.icon };
 
     if (icon && icon.split('.').pop() !== 'png') {
-       // If it's not a PNG icon, remove tint color
+      // If it's not a PNG icon, remove tint color
       iconStyle.tintColor = undefined;
     }
 

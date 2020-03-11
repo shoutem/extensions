@@ -9,6 +9,7 @@ const configuration = {
     cardHeight: 'medium',
     itemGutter: 'medium',
     itemText: 'topLeft',
+    textSize: 'small',
   },
   cardHeight: {
     small: 'Small',
@@ -17,6 +18,11 @@ const configuration = {
   },
   itemGutter: {
     noGutter: 'No gutter',
+    small: 'Small',
+    medium: 'Medium',
+    large: 'Large',
+  },
+  textSize: {
     small: 'Small',
     medium: 'Medium',
     large: 'Large',
@@ -55,6 +61,7 @@ export class GeneralSettings extends Component {
       itemGutter,
       itemText,
       isFullWidth,
+      textSize,
     } = fields;
 
     return (
@@ -88,6 +95,16 @@ export class GeneralSettings extends Component {
                 />
               </Col>
             </Row>
+            <Row>
+              <Col md={4}>
+                <ControlLabel>Text size</ControlLabel>
+                <DropdownWrapper
+                  valuesMap={configuration.textSize}
+                  defaultKey={configuration.default.textSize}
+                  field={textSize}
+                />
+              </Col>
+            </Row>
           </FormGroup>
           <FormGroup className="general-settings__checkbox-container">
             <Row>
@@ -113,12 +130,13 @@ GeneralSettings.propTypes = {
 export default form((props) => {
   const { settings } = props;
   return {
-    fields: ['cardHeight', 'itemGutter', 'itemText', 'isFullWidth'],
+    fields: ['cardHeight', 'itemGutter', 'itemText', 'isFullWidth', 'textSize'],
     defaultValues: {
       cardHeight: settings.cardHeight,
       itemGutter: settings.itemGutter,
       itemText: settings.itemText,
       isFullWidth: settings.isFullWidth,
+      textSize: settings.textSize,
     },
     validation: {},
   };

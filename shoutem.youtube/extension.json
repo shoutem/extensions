@@ -1,7 +1,7 @@
 {
   "name": "youtube",
   "title": "YouTube",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "platform": "2.2.*",
   "description": "Show a video gallery from YouTube channel, user or playlist",
   "categories": [

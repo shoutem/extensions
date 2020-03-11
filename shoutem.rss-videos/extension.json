@@ -1,7 +1,7 @@
 {
   "name": "rss-videos",
   "title": "Videos RSS",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "platform": "2.2.*",
   "description": "Show a video gallery from an RSS feed",
   "icon": "server/assets/add-videos-image.png",

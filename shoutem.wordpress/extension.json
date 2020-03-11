@@ -1,6 +1,6 @@
 {
   "name": "wordpress",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "platform": "2.2.*",
   "title": "WordPress",
   "description": "Show news articles from WordPress blog.",

@@ -1,1 +1,0 @@
-Shoutem Products extension

@@ -66,8 +66,8 @@ export class PlacesList extends CmsListScreen {
 
     if (!this.state.schema) {
       throw Error(
-        'Invalid Screen state "schema". Screen that extends CMSListScreen ' +
-        'must define (content) "schema" property in the state.',
+        'Invalid Screen state "schema". Screen that extends CMSListScreen '
+        + 'must define (content) "schema" property in the state.',
       );
     }
 
@@ -97,10 +97,10 @@ export class PlacesList extends CmsListScreen {
     const actionText = mapView ? I18n.t('shoutem.cms.navBarListViewButton') : I18n.t('shoutem.cms.navBarMapViewButton');
 
     return (
-      <View virtual styleName="container md-gutter-right">
+      <View styleName="container md-gutter-right" virtual>
         <Button
-          styleName="tight"
           onPress={this.toggleMapView}
+          styleName="tight"
         >
           <Text>{actionText}</Text>
         </Button>
@@ -162,12 +162,11 @@ export class PlacesList extends CmsListScreen {
     return (
       <ListView
         data={[...data]}
-        loading={loading}
-        renderRow={this.renderRow}
-        onRefresh={this.refreshData}
-        onLoadMore={this.loadMore}
         getSectionId={this.getSectionId}
-        renderSectionHeader={this.renderSectionHeader}
+        loading={loading}
+        onLoadMore={this.loadMore}
+        onRefresh={this.refreshData}
+        renderRow={this.renderRow}
       />
     );
   }

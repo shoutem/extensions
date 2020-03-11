@@ -25,6 +25,7 @@ class List extends FolderBase {
     topOffset: PropTypes.number,
     showText: PropTypes.bool,
     backgroundImage: PropTypes.string,
+    textSize: PropTypes.string,
   };
 
   resolveScrollViewProps() {
@@ -53,8 +54,11 @@ class List extends FolderBase {
   }
 
   renderRow(shortcut, index) {
-    const { showText, showIcon, inItemAlignment } = this.getLayoutSettings();
+    const { showText, showIcon, inItemAlignment, textSize } = this.getLayoutSettings();
     const { style } = this.props;
+
+    const listItemStyle = { ...style, text: { ...style.text, ...style[`${textSize}-text`] } };
+
     return (
       <ListItem
         key={`item_${index}`}
@@ -63,7 +67,7 @@ class List extends FolderBase {
         shortcut={shortcut}
         inItemAlignment={inItemAlignment}
         onPress={this.itemPressed}
-        style={style}
+        style={listItemStyle}
       />
     );
   }

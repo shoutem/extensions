@@ -1,11 +1,11 @@
 {
   "name": "shoutem.page",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Shoutem extension with basic information and links",
   "dependencies": {
     "@shoutem/redux-io": "3.0.1-beta.3",
-    "@shoutem/theme": "0.11.5",
-    "@shoutem/ui": "2.0.0"
+    "@shoutem/theme": "~0.11.5",
+    "@shoutem/ui": "~2.0.0"
   },
   "nativeDependencies": [
     "@shoutem/ui"

@@ -66,10 +66,11 @@ class ExtensionPage extends Component {
   }
 
   handleTextChange(event) {
-    const { name, value } = event.target;
+    const { target: { name: keyName, value }} = event;
+    const newValueForKey = _.set({}, keyName, value);
 
     this.setState({
-      [name]: value,
+      ...newValueForKey,
       hasChanges: true,
     });
   }
@@ -158,4 +159,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(null, mapDispatchToProps)(ExtensionPage);
-

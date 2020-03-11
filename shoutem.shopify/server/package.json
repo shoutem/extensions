@@ -1,6 +1,6 @@
 {
   "name": "shoutem.shopify",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "scripts": {
     "clean": "rimraf ./build/*",
     "build": "npm run clean && cross-env NODE_ENV=production webpack --config ./bin/webpack/webpack.config.js",

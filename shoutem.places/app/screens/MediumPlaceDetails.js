@@ -87,6 +87,7 @@ class MediumPlaceDetails extends PlaceDetails {
           {this.renderLeadImage(place)}
           {this.renderPlaceInfo(place)}
           {this.renderOpeningHours(place)}
+          {this.renderButtons()}
           {this.renderInlineMap(place)}
           {this.renderDescription(place)}
           {this.renderDisclosureButton(place.url, I18n.t('shoutem.cms.websiteButton'), 'web', this.openWebLink)}

@@ -189,10 +189,10 @@ export class IconGrid extends FolderBase {
   }
 
   renderItem(shortcut, index) {
-    const { showText } = this.getLayoutSettings();
+    const { showText, textSize } = this.getLayoutSettings();
     const { style } = this.props;
     const cellStyle = {
-      text: this.scale(style.text),
+      text: this.scale({ ...style.text, ...style[`${textSize}-text`] }),
       icon: this.scale(style.icon),
       iconContainer: this.scale(style.iconContainer),
       item: this.scale(style.item),

@@ -584,12 +584,24 @@ export default (customVariables = {}) => {
       },
 
       text: {
-        fontSize: 10,
         marginBottom: 12,
-        height: 12,
-        lineHeight: 12,
         maxWidth: 72,
         flex: -1,
+      },
+      'small-text': {
+        fontSize: 11,
+        lineHeight: 11,
+        height: 11,
+      },
+      'medium-text': {
+        fontSize: 15,
+        lineHeight: 15,
+        height: 15,
+      },
+      'large-text': {
+        fontSize: 20,
+        lineHeight: 20,
+        height: 20,
       },
     },
     'shoutem.navigation.List': {
@@ -652,7 +664,6 @@ export default (customVariables = {}) => {
         flex: 0,
       },
       text: {
-        fontSize: 15,
         marginLeft: variables.mediumGutter,
       },
       chevronContainer: {
@@ -664,6 +675,18 @@ export default (customVariables = {}) => {
       },
       chevron: {
         color: changeColorAlpha(variables.subNavItemColor, 0.5),
+      },
+      'small-text': {
+        fontSize: 15,
+        lineHeight: 15,
+      },
+      'medium-text': {
+        fontSize: 25,
+        lineHeight: 25,
+      },
+      'large-text': {
+        fontSize: 40,
+        lineHeight: 40,
       },
     },
     'shoutem.navigation.TileGrid': {
@@ -716,9 +739,20 @@ export default (customVariables = {}) => {
       text: {
         flex: 0,
         width: null,
-        fontSize: 15,
         marginLeft: variables.smallGutter,
         color: variables.subNavItemColor,
+      },
+      'small-text': {
+        fontSize: 15,
+        lineHeight: 15,
+      },
+      'medium-text': {
+        fontSize: 25,
+        lineHeight: 25,
+      },
+      'large-text': {
+        fontSize: 40,
+        lineHeight: 40,
       },
       backgroundImage: {
         resizeMode: 'cover',
@@ -769,9 +803,20 @@ export default (customVariables = {}) => {
       text: {
         flex: 0,
         width: null,
-        fontSize: 15,
         marginLeft: variables.mediumGutter,
         color: variables.subNavItemColor,
+      },
+      'small-text': {
+        fontSize: 15,
+        lineHeight: 15,
+      },
+      'medium-text': {
+        fontSize: 25,
+        lineHeight: 25,
+      },
+      'large-text': {
+        fontSize: 40,
+        lineHeight: 40,
       },
     },
 
@@ -1104,9 +1149,9 @@ export default (customVariables = {}) => {
       slider: {
         height: 30,
         minimumTrackTintColor: changeColorAlpha(variables.primaryButtonText.color, 0.6),
-        maximumTrackTintColor: changeColorAlpha(variables.primaryButtonText.color, 0.2),
+        maximumTrackTintColor: changeColorAlpha(variables.primaryButtonText.color, 0.4),
         thumbTintColor: Platform.select({
-          android: changeColorAlpha(variables.primaryButtonText.color, 0.8),
+          android: variables.primaryButtonText.color,
         }),
         marginVertical: 5,
       },
@@ -1128,19 +1173,18 @@ export default (customVariables = {}) => {
         height: 90,
         padding: 0,
         margin: 0,
-        marginBottom: 15,
-        marginLeft: 15,
+        marginBottom: 3,
+        marginLeft: 10,
         backgroundColor: 'transparent',
         borderWidth: 0,
       },
       playbackIconStyle: {
-        fontSize: 80,
+        fontSize: 70,
         padding: 0,
         margin: 0,
       },
       spinnerStyle: {
-        size: 80,
-        paddingTop: 22,
+        size: 40,
       },
     },
 

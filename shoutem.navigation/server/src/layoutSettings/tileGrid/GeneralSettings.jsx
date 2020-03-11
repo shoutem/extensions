@@ -7,9 +7,15 @@ const configuration = {
   default: {
     itemGutter: 'small',
     itemText: 'topLeft',
+    textSize: 'small',
   },
   itemGutter: {
     noGutter: 'No gutter',
+    small: 'Small',
+    medium: 'Medium',
+    large: 'Large',
+  },
+  textSize: {
     small: 'Small',
     medium: 'Medium',
     large: 'Large',
@@ -46,6 +52,7 @@ export class GeneralSettings extends Component {
     const {
       itemGutter,
       itemText,
+      textSize,
     } = fields;
 
     return (
@@ -70,6 +77,14 @@ export class GeneralSettings extends Component {
                   field={itemText}
                 />
               </Col>
+              <Col md={4}>
+                <ControlLabel>Text size</ControlLabel>
+                <DropdownWrapper
+                  valuesMap={configuration.textSize}
+                  defaultKey={configuration.default.textSize}
+                  field={textSize}
+                />
+              </Col>
             </Row>
           </FormGroup>
         </form>
@@ -89,10 +104,11 @@ GeneralSettings.propTypes = {
 export default form((props) => {
   const { settings } = props;
   return {
-    fields: ['itemGutter', 'itemText'],
+    fields: ['itemGutter', 'itemText', 'textSize'],
     defaultValues: {
       itemGutter: settings.itemGutter,
       itemText: settings.itemText,
+      textSize: settings.textSize,
     },
     validation: {},
   };

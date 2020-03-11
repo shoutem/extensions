@@ -1,6 +1,6 @@
 {
   "name": "web-view",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "platform": "2.2.*",
   "title": "Web view",
   "description": "Show a web page in-app or in a browser",

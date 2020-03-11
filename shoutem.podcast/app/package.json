@@ -1,0 +1,14 @@
+{
+  "name": "shoutem.podcast",
+  "version": "2.2.6",
+  "dependencies": {
+    "@react-native-community/slider": "~2.0.0",
+    "@shoutem/ui": "~2.0.0",
+    "@sindresorhus/slugify": "0.9.1",
+    "moment": "2.24.0"
+  },
+  "nativeDependencies": [
+    "@react-native-community/slider",
+    "@shoutem/ui"
+  ]
+}
