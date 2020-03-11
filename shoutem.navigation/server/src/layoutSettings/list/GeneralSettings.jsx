@@ -10,8 +10,14 @@ const configuration = {
     iconSize: 'medium',
     inItemAlignment: 'left',
     listAlignment: 'top',
+    textSize: 'small',
   },
   iconSize: {
+    small: 'Small',
+    medium: 'Medium',
+    large: 'Large',
+  },
+  textSize: {
     small: 'Small',
     medium: 'Medium',
     large: 'Large',
@@ -48,8 +54,10 @@ export class GeneralSettings extends Component {
       listAlignment,
       inItemAlignment,
       iconSize,
+      textSize,
     } = fields;
     const showIcon = _.get(settings, ['showIcon'], true);
+    const showText = _.get(settings, 'showText', true);
 
     return (
       <div>
@@ -57,19 +65,28 @@ export class GeneralSettings extends Component {
         <form>
           <FormGroup>
             <Row>
-              <Col md={6}>
+              <Col md={4}>
                 <IconsAndText
                   settings={settings}
                   onSettingsChanged={onSettingsChanged}
                 />
               </Col>
-              <Col md={6}>
+              <Col md={4}>
                 <ControlLabel>Icon size</ControlLabel>
                 <DropdownWrapper
                   valuesMap={configuration.iconSize}
                   defaultKey={configuration.default.iconSize}
                   field={iconSize}
                   disabled={!showIcon}
+                />
+              </Col>
+              <Col md={4}>
+                <ControlLabel>Text size</ControlLabel>
+                <DropdownWrapper
+                  valuesMap={configuration.textSize}
+                  defaultKey={configuration.default.textSize}
+                  field={textSize}
+                  disabled={!showText}
                 />
               </Col>
             </Row>
@@ -115,12 +132,13 @@ GeneralSettings.propTypes = {
 export default form((props) => {
   const { settings } = props;
   return {
-    fields: ['topOffset', 'listAlignment', 'inItemAlignment', 'iconSize'],
+    fields: ['topOffset', 'listAlignment', 'inItemAlignment', 'iconSize', 'textSize'],
     defaultValues: {
       topOffset: settings.topOffset,
       listAlignment: settings.listAlignment,
       inItemAlignment: settings.inItemAlignment,
       iconSize: settings.iconSize,
+      textSize: settings.textSize,
     },
     validation: {},
   };

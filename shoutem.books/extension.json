@@ -1,6 +1,6 @@
 {
   "name": "books",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "platform": "2.2.*",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",

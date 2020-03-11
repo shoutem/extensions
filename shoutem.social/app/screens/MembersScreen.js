@@ -10,7 +10,7 @@ import {
   setStatus,
   createStatus,
   updateStatus,
-  validationStatus
+  validationStatus,
 } from '@shoutem/redux-io/status';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -93,8 +93,8 @@ export class MembersScreen extends RemoteDataListScreen {
     return (
       <View>
         <MemberView
-          user={user}
           openProfile={openProfile}
+          user={user}
         />
       </View>
     );
@@ -111,13 +111,12 @@ export class MembersScreen extends RemoteDataListScreen {
       <ListView
         {...this.getListProps()}
         getSectionId={this.getSectionId}
-        renderRow={this.renderRow}
-        loading={isBusy(data) || !isInitialized(data)}
-        onRefresh={loadUsers}
-        onLoadMore={this.loadMore}
-        renderSectionHeader={this.renderSectionHeader}
-        style={this.props.style.list}
         initialListSize={1}
+        loading={isBusy(data) || !isInitialized(data)}
+        onLoadMore={this.loadMore}
+        onRefresh={loadUsers}
+        renderRow={this.renderRow}
+        style={this.props.style.list}
       />
     );
   }
@@ -126,9 +125,9 @@ export class MembersScreen extends RemoteDataListScreen {
 const mapStateToProps = (state, ownProps) => {
   const users = { data: ownProps.users };
 
-  //update status to valid to initialize data
+  // update status to valid to initialize data
   const initializedStatus = updateStatus(createStatus(), {
-    validationStatus: validationStatus.VALID
+    validationStatus: validationStatus.VALID,
   });
   setStatus(users, initializedStatus);
 

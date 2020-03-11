@@ -1,7 +1,7 @@
 import React from 'react';
+import { View } from '@shoutem/ui';
 import { FolderItemContainer } from './FolderItemContainer';
 import { NavigationBaseItem } from './NavigationBaseItem';
-import { View } from '@shoutem/ui';
 
 /**
  * Do not connect to style. Style it trough IconGrid screen so dimension related style can be

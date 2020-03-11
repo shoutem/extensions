@@ -1,13 +1,13 @@
 {
   "name": "shoutem.navigation",
-  "version": "2.2.1",
+  "version": "2.2.3",
   "description": "Main navigation",
   "dependencies": {
-    "@shoutem/animation": "0.12.4",
+    "@shoutem/animation": "~0.12.4",
     "@shoutem/redux-composers": "0.1.4",
     "@shoutem/redux-io": "3.0.1-beta.3",
-    "@shoutem/theme": "0.11.5",
-    "@shoutem/ui": "2.0.0",
+    "@shoutem/theme": "~0.11.5",
+    "@shoutem/ui": "~2.0.0",
     "react-native-navigation-experimental-compat": "shoutem/react-native-navigation-experimental-compat#fbce4b9e478f808634a98dac48901ec6ed4ee9fd",
     "react-native-side-menu": "1.1.3"
   },

@@ -4,7 +4,6 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
-import { Device } from '@shoutem/ui';
 
 import { CARD_LIST } from '../const';
 import { isTabBarNavigation, resolveScrollViewProps } from '../helpers';
@@ -27,6 +26,7 @@ class CardList extends FolderBase {
     cardHeight: PropTypes.string,
     // Is item full screen width
     isFullWidth: PropTypes.bool,
+    textSize: PropTypes.string,
   };
 
   resolveScrollViewProps() {
@@ -49,7 +49,7 @@ class CardList extends FolderBase {
   }
 
   renderRow(shortcut, index) {
-    const { itemText, backgroundImagesEnabled, cardHeight, itemGutter } = this.getLayoutSettings();
+    const { itemText, backgroundImagesEnabled, cardHeight, itemGutter, textSize } = this.getLayoutSettings();
     const { style } = this.props;
     const styleName = `${itemText} ${itemGutter}-gutter`;
     const { dimensions: { width } } = this.state;
@@ -63,11 +63,11 @@ class CardList extends FolderBase {
           height: width * heightRatio,
         },
       },
-      text: style.text,
+      text: { ...style.text, ...style[`${textSize}-text`] },
     };
     // Remove non RN style
     delete cardItemStyle.item[HEIGHT_RATIO_STYLE_KEY];
-    
+
     return (
       <CardListItem
         key={`item_${index}`}

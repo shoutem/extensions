@@ -1,7 +1,7 @@
 {
   "name": "deals",
   "title": "Deals",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "platform": "2.2.*",
   "description": "Create special deals and redeem them with coupons",
   "icon": "server/assets/add-deals-image.png",

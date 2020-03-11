@@ -1,6 +1,6 @@
 {
   "name": "shoutem.social",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Social wall",
   "scripts": {
     "clean": "rimraf ./build/*",

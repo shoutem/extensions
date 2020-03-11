@@ -1,0 +1,94 @@
+{
+  "name": "podcast",
+  "version": "2.2.6",
+  "platform": "2.2.*",
+  "title": "Podcast RSS",
+  "description": "Show podcast episodes from an RSS feed",
+  "icon": "server/assets/extension-icon.png",
+  "categories": [
+    "content"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.rss"
+  ],
+  "shortcuts": [
+    {
+      "name": "podcast-shortcut",
+      "title": "Podcast RSS",
+      "icon": "theme://podcasts.png",
+      "screen": "@.EpisodesListScreen",
+      "adminPages": [
+        {
+          "page": "shoutem.rss.RssPage",
+          "title": "Content",
+          "parameters": {
+            "schema": "shoutem.proxy.news"
+          }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        }
+      ],
+      "settings": {
+        "defaultShortcutTitle": "Podcast RSS",
+        "extensionTitle": "Podcast RSS",
+        "feedType": "Podcast"
+      }
+    }
+  ],
+  "screens": [
+    {
+      "name": "EpisodesListScreen",
+      "title": "List",
+      "image": "./server/assets/screens/list.png",
+      "navigatesTo": [
+        "@.EpisodeDetailsScreen"
+      ],
+      "settings": {
+        "listType": "list",
+        "hasFeaturedItem": false
+      }
+    },
+    {
+      "name": "EpisodesFeaturedListScreen",
+      "title": "List with a featured episode",
+      "image": "./server/assets/screens/featuredlist.png",
+      "extends": "@.EpisodesListScreen",
+      "settings": {
+        "listType": "list",
+        "hasFeaturedItem": true
+      }
+    },
+    {
+      "name": "EpisodesGridScreen",
+      "title": "Grid",
+      "image": "./server/assets/screens/grid.png",
+      "extends": "@.EpisodesListScreen",
+      "settings": {
+        "listType": "fixed-grid",
+        "hasFeaturedItem": false
+      }
+    },
+    {
+      "name": "EpisodesFeaturedGridScreen",
+      "title": "Grid with a featured episode",
+      "image": "./server/assets/screens/featuredgrid.png",
+      "extends": "@.EpisodesListScreen",
+      "settings": {
+        "listType": "fixed-grid",
+        "hasFeaturedItem": true
+      }
+    },
+    {
+      "name": "EpisodeDetailsScreen",
+      "title": "Episode details",
+      "image": "./server/assets/screens/large-details.png"
+    }
+  ]
+}

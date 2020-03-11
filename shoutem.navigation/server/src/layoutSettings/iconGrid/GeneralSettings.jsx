@@ -11,6 +11,7 @@ const configuration = {
     gridAlignment: 'topLeft',
     scrolling: 'continuous',
     marginSize: 'compact',
+    textSize: 'small',
   },
   iconSize: {
     small: 'Small',
@@ -20,6 +21,11 @@ const configuration = {
     xxl: 'XXL',
     xxxl: 'XXXL',
     xxxxl: 'XXXXL',
+  },
+  textSize: {
+    small: 'Small',
+    medium: 'Medium',
+    large: 'Large',
   },
   gridAlignment: {
     topLeft: 'Top left',
@@ -69,6 +75,7 @@ export class GeneralSettings extends Component {
       scrolling,
       iconSize,
       marginSize,
+      textSize,
     } = fields;
 
     return (
@@ -129,6 +136,16 @@ export class GeneralSettings extends Component {
                 />
               </Col>
             </Row>
+            <Row>
+              <Col md={4}>
+                <ControlLabel>Text size</ControlLabel>
+                <DropdownWrapper
+                  valuesMap={configuration.textSize}
+                  defaultKey={configuration.default.textSize}
+                  field={textSize}
+                />
+              </Col>
+            </Row>
           </FormGroup>
         </form>
       </div>
@@ -147,7 +164,7 @@ GeneralSettings.propTypes = {
 export default form((props) => {
   const { settings } = props;
   return {
-    fields: ['rows', 'cols', 'gridAlignment', 'scrolling', 'iconSize', 'marginSize'],
+    fields: ['rows', 'cols', 'gridAlignment', 'scrolling', 'iconSize', 'marginSize', 'textSize'],
     defaultValues: {
       rows: settings.rows,
       cols: settings.cols,
@@ -155,6 +172,7 @@ export default form((props) => {
       scrolling: settings.scrolling,
       iconSize: settings.iconSize,
       marginSize: settings.marginSize,
+      textSize: settings.textSize,
     },
     validation: {},
   };

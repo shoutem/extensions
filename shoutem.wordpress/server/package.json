@@ -1,6 +1,6 @@
 {
   "name": "shoutem.wordpress",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Show news articles from WordPress blog.",
   "scripts": {
     "clean": "rimraf ./build/*",

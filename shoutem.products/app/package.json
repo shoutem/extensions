@@ -1,11 +1,11 @@
 {
   "name": "shoutem.products",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "List of products with purchase link.",
   "dependencies": {
     "@shoutem/redux-io": "3.0.1-beta.3",
-    "@shoutem/theme": "0.11.5",
-    "@shoutem/ui": "2.0.0"
+    "@shoutem/theme": "~0.11.5",
+    "@shoutem/ui": "~2.0.0"
   },
   "nativeDependencies": [
     "@shoutem/ui"

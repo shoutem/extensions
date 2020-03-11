@@ -101,7 +101,6 @@ export class PlacesList extends CmsListScreen {
         onLoadMore={this.loadMore}
         onRefresh={this.refreshData}
         renderRow={this.renderRow}
-        renderSectionHeader={this.renderSectionHeader}
       />
     );
   }

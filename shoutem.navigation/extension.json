@@ -1,6 +1,6 @@
 {
   "name": "navigation",
-  "version": "2.2.1",
+  "version": "2.2.3",
   "platform": "2.2.*",
   "type": "system",
   "title": "Main Navigation",
@@ -82,7 +82,8 @@
         "tabletBackgroundImage": "",
         "backgroundImage": "",
         "backgroundWidth": 48,
-        "backgroundHeight": 48
+        "backgroundHeight": 48,
+        "textSize": "small"
       }
     },
     {
@@ -102,7 +103,8 @@
         "topOffset": 120,
         "showText": true,
         "showIcon": false,
-        "itemHeight": 48
+        "itemHeight": 48,
+        "textSize": "small"
       }
     },
     {
@@ -117,7 +119,8 @@
         "backgroundImage": "",
         "parallaxEffect": "onScroll",
         "itemGutter": "small",
-        "itemText": "topLeft"
+        "itemText": "topLeft",
+        "textSize": "small"
       }
     },
     {
@@ -134,7 +137,8 @@
         "cardHeight": "medium",
         "itemGutter": "medium",
         "itemText": "topLeft",
-        "isFullWidth": true
+        "isFullWidth": true,
+        "textSize": "small"
       }
     },
     {

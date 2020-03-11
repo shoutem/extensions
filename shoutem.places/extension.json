@@ -1,6 +1,6 @@
 {
   "name": "places",
-  "version": "2.2.3",
+  "version": "2.2.5",
   "platform": "2.2.*",
   "title": "Places",
   "description": "Show items with location on list or map",

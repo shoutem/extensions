@@ -1,10 +1,10 @@
 {
   "name": "shoutem.camera",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Shoutem camera extension",
   "dependencies": {
-    "@shoutem/theme": "0.11.5",
-    "@shoutem/ui": "2.0.0",
+    "@shoutem/theme": "~0.11.5",
+    "@shoutem/ui": "~2.0.0",
     "react-native-camera": "^3.11.0"
   },
   "nativeDependencies": [

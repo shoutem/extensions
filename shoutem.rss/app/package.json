@@ -1,11 +1,11 @@
 {
   "name": "shoutem.rss",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Shoutem RSS extension",
   "dependencies": {
     "@shoutem/redux-composers": "0.1.4",
     "@shoutem/redux-io": "3.0.1-beta.3",
-    "@shoutem/ui": "2.0.0"
+    "@shoutem/ui": "~2.0.0"
   },
   "nativeDependencies": [
     "@shoutem/ui"

@@ -22,6 +22,7 @@ class TileGrid extends FolderBase {
     itemText: PropTypes.string,
     // Gutter size key
     itemGutter: PropTypes.string,
+    textSize: PropTypes.string,
   };
 
   resolveScrollViewProps() {
@@ -43,8 +44,8 @@ class TileGrid extends FolderBase {
     };
   }
 
-  renderRow(row) {
-    const { itemText, itemGutter, backgroundImagesEnabled } = this.getLayoutSettings();
+  renderRow(row, rowIndex) {
+    const { itemText, itemGutter, backgroundImagesEnabled, textSize } = this.getLayoutSettings();
     const { style } = this.props;
     const styleName = itemGutter === 'noGutter' ? `${itemText} no-gutter` : `${itemText} ${itemGutter}-gutter`;
     const tileItemStyle = {
@@ -52,12 +53,13 @@ class TileGrid extends FolderBase {
         ...style.item,
         marginLeft: itemGutter === 'noGutter' ? 0 : defaultThemeVariables.SmallGutter,
       },
-      text: style.text,
+      text: { ...style.text, ...style[`${textSize}-text`] },
     };
 
-    const shortcutItems = _.map(row, (shortcut) => {
+    const shortcutItems = _.map(row, (shortcut, itemIndex) => {
       return (
         <TileItem
+          key={`tile_item_${itemIndex}`}
           showText={itemText !== TileGrid.NO_TEXT}
           shortcut={shortcut}
           onPress={this.itemPressed}
@@ -69,7 +71,7 @@ class TileGrid extends FolderBase {
     });
 
     return (
-      <GridRow columns={2} style={style.gridRow}>
+      <GridRow key={`tile_row_${rowIndex}`} columns={2} style={style.gridRow}>
         {shortcutItems}
       </GridRow>
     );

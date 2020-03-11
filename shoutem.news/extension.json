@@ -1,6 +1,6 @@
 {
   "name": "news",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "platform": "2.2.*",
   "title": "News",
   "description": "Show news articles",

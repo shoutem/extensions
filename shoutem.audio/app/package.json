@@ -1,6 +1,6 @@
 {
   "name": "shoutem.audio",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "Track player components for other extensions to utilize.",
   "dependencies": {
     "@raydeck/xcode": "^2.2.0",
