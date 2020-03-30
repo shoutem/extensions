@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
 import URI from 'urijs';
-import api from '@shoutem/redux-api-sdk';
+import api, { getExtension } from '@shoutem/redux-api-sdk';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { RioStateSerializer } from '@shoutem/redux-io';
 import { SyncStateEngine } from '@shoutem/redux-sync-state-engine';
@@ -33,6 +33,19 @@ function renderPage() {
   return (<ConnectedPageComponent />);
 }
 
+
+function initializeApi(context, initialState) {
+  const { ownExtensionName } = context;
+  const installation = getExtension(initialState, ownExtensionName);
+  const additionalEndpoints = [_.get(installation, 'settings.apiEndpoint')];
+  const newContext = _.cloneDeep(context);
+  // url.aditionalEndpoints - used to extend endpoints validated against fetch 
+  // token intercept regex
+  _.set(newContext, 'url.additionalEndpoints', additionalEndpoints);
+  // initialize fetchTokenIntercept and register shortcut and extension schemas
+  api.init(newContext);
+}
+
 // handler for Shoutem initialization finished
 function onShoutemReady(event) {
   // config object containing builder extension configuration, can be accessed via event
@@ -54,6 +67,7 @@ function onShoutemReady(event) {
   });
 
   const store = configureStore(context, initialState, syncStateEngine);
+  initializeApi(context, initialState);
 
   // Render it to DOM
   ReactDOM.unmountComponentAtNode(document.getElementById('root'));
