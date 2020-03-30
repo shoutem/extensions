@@ -1,6 +1,6 @@
 {
   "name": "shoutem.deals",
-  "version": "2.2.4",
+  "version": "2.2.6",
   "description": "Create special deals and redeem them with coupons",
   "scripts": {
     "clean": "rimraf ./build/*",
@@ -37,7 +37,7 @@
     "@shoutem/cms-dashboard": "0.0.6",
     "@shoutem/extension-sandbox": "^0.1.4",
     "@shoutem/react-web-ui": "^0.11.0-beta.3",
-    "@shoutem/redux-api-sdk": "^1.1.7",
+    "@shoutem/redux-api-sdk": "^1.1.10",
     "@shoutem/redux-composers": "^0.1.5",
     "@shoutem/redux-io": "^2.3.0",
     "@shoutem/redux-sync-state-engine": "^0.0.2",

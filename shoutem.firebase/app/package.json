@@ -1,6 +1,6 @@
 {
   "name": "shoutem.firebase",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Firebase SDK bridge",
   "dependencies": {
     "lodash": "^4.17.2",
