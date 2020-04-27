@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import _ from 'lodash';
 import { Modal, Button, FormGroup, ControlLabel } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';

@@ -1,15 +1,9 @@
-:global {
-  .general-settings-page {
-    h3 {
-      margin-bottom: 16px;
-    }
+.general-settings-page {
+  h3 {
+    margin-bottom: 16px;
   }
+}
 
-  .general-settings-page__provider-group {
-    box-shadow: inset 0 -1px 0 0 #e4e6e9;
-
-    .form-group {
-      padding: 8px 0;
-    }
-  }
+.apple-container {
+  box-shadow: inset 0 0 0 0 #e4e6e9;
 }

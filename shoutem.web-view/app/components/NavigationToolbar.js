@@ -3,82 +3,53 @@ import React, { PureComponent } from 'react';
 
 import { FadeIn, TimingDriver } from '@shoutem/animation';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Button,
-  Icon,
-  View,
-} from '@shoutem/ui';
+import { Button, Icon, View } from '@shoutem/ui';
+
+import { ext } from '../const';
 
 class NavigationToolbar extends PureComponent {
-  static PropTypes = {
+  static propTypes = {
     goForward: PropTypes.func,
     goBack: PropTypes.func,
     reload: PropTypes.func,
     webNavigationState: PropTypes.object,
   };
 
-  renderForwardButton() {
-    const { goForward, webNavigationState } = this.props;
-    const iconStyle = !webNavigationState.canGoForward ? 'disabled' : null;
+  constructor(props) {
+    super(props);
 
-    return (
-      <Button
-        onPress={goForward}
-        styleName="clear"
-      >
-        <Icon name="right-arrow" styleName={iconStyle} />
-      </Button>
-    );
-  }
-
-  renderBackButton() {
-    const { goBack, webNavigationState } = this.props;
-    const iconStyle = !webNavigationState.canGoBack ? 'disabled' : null;
-
-    return (
-      <Button
-        onPress={goBack}
-        styleName="clear"
-      >
-        <Icon name="left-arrow" styleName={iconStyle} />
-      </Button>
-    );
-  }
-
-  renderRefreshButton() {
-    const { reload } = this.props;
-
-    return (
-      <Button
-        onPress={reload}
-        styleName="clear"
-      >
-        <Icon name="refresh" />
-      </Button>
-    );
-  }
-
-  componentDidMount() {
     this.driver = new TimingDriver({
       duration: 450,
     });
   }
 
   componentDidMount() {
-    this.driver.runTimer(1);
+    this.driver.toValue(1);
   }
 
   render() {
+    const { goBack, goForward, reload, webNavigationState } = this.props;
+
+    const backIconStyle = !webNavigationState.canGoBack ? 'disabled' : null;
+    const forwardIconStyle = !webNavigationState.canGoForward
+      ? 'disabled'
+      : null;
+
     return (
       <FadeIn driver={this.driver}>
         <View styleName="container">
           <View styleName="navigation-buttons">
-            {this.renderBackButton()}
-            {this.renderForwardButton()}
+            <Button onPress={goBack} styleName="clear">
+              <Icon name="left-arrow" styleName={backIconStyle} />
+            </Button>
+            <Button onPress={goForward} styleName="clear">
+              <Icon name="right-arrow" styleName={forwardIconStyle} />
+            </Button>
           </View>
-
           <View styleName="vertical v-center h-center">
-            {this.renderRefreshButton()}
+            <Button onPress={reload} styleName="clear">
+              <Icon name="refresh" />
+            </Button>
           </View>
         </View>
       </FadeIn>
@@ -86,4 +57,4 @@ class NavigationToolbar extends PureComponent {
   }
 }
 
-export default connectStyle('shoutem.webview.NavigationToolbar', {})(NavigationToolbar);
+export default connectStyle(ext('NavigationToolbar'))(NavigationToolbar);

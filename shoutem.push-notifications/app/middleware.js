@@ -1,7 +1,14 @@
 import { Alert } from 'react-native';
 import _ from 'lodash';
+
+import { NAVIGATION_INITIALIZED } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
-import { SHOW_PUSH_NOTIFICATION } from './redux';
+
+import {
+  SHOW_PUSH_NOTIFICATION,
+  displayPushNotificationMessage,
+  getLastNotification,
+} from './redux';
 
 import { ext } from './const';
 
@@ -11,6 +18,21 @@ function onNotificationAction(notificationContent, store) {
   if (!!action) {
     store.dispatch(action);
   }
+}
+
+export const showInitialNotification = store => next => action => {
+  if (action.type !== NAVIGATION_INITIALIZED) {
+    return next(action);
+  }
+
+  const state = store.getState();
+  const lastNotification = getLastNotification(state);
+
+  if (!_.isEmpty(lastNotification)) {
+    store.dispatch(displayPushNotificationMessage(lastNotification.notificationContent));
+  }
+
+  return next(action);
 }
 
 // eslint-disable-next-line no-unused-vars

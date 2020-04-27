@@ -51,6 +51,7 @@ export {
   CLOSE_MODAL,
   SET_SCREEN_STATE,
   CLEAR_SCREEN_STATE,
+  NAVIGATION_INITIALIZED,
   createNavigationAction,
   navigateTo,
   navigateBack,
@@ -65,6 +66,7 @@ export {
   rewrite,
   clearScreenState,
   setActiveNavigationStack,
+  setNavigationInitialized,
   setScreenState,
   hasRouteWithKey,
   isEmptyNavigationState,
@@ -77,12 +79,14 @@ export {
   createNavigationReducer,
   navigationCoreReducer,
   navigationCoreMiddleware,
+  navigationInitializedReducer,
   screenStateReducer,
   coreReducer,
 
   getActiveNavigationStack,
   getActiveNavigationStackState,
   getActiveRoute,
+  getNavigationInitialized,
   getScreenState,
 } from './redux/core';
 

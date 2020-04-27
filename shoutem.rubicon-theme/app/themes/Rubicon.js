@@ -1,8 +1,4 @@
-import {
-  Platform,
-  StyleSheet,
-  TouchableNativeFeedback,
-} from 'react-native';
+import { Platform, StyleSheet, TouchableNativeFeedback } from 'react-native';
 import _ from 'lodash';
 
 import {
@@ -12,11 +8,9 @@ import {
   Device,
 } from '@shoutem/ui';
 
-import {
-  INCLUDE,
-  changeColorAlpha,
-} from '@shoutem/theme';
+import { INCLUDE, changeColorAlpha } from '@shoutem/theme';
 
+import { autoRehydrate } from 'redux-persist';
 import {
   IPHONE_X_HOME_INDICATOR_PADDING,
   IPHONE_X_NOTCH_PADDING,
@@ -52,7 +46,6 @@ export default (customVariables = {}) => {
   };
 
   return _.merge({}, getTheme(variables), {
-
     // Html
     'shoutem.ui.Html': {
       a: {
@@ -187,20 +180,24 @@ export default (customVariables = {}) => {
           backgroundColor: variables.mainNavSelectedItemBackground,
         },
         icon: {
-          tintColor: variables.mainNavSelectedItemColor,
+          tintColor:
+            variables.mainNavSelectedItemIconColor ||
+            variables.mainNavSelectedItemColor,
         },
         text: {
-          color: variables.mainNavSelectedItemColor,
+          color:
+            variables.mainNavSelectedItemTextColor ||
+            variables.mainNavSelectedItemColor,
         },
       },
       item: {
         backgroundColor: variables.mainNavItemBackground,
       },
       icon: {
-        tintColor: variables.mainNavItemColor,
+        tintColor: variables.mainNavItemIconColor || variables.mainNavItemColor,
       },
       text: {
-        color: variables.mainNavItemColor,
+        color: variables.mainNavItemTextColor || variables.mainNavItemColor,
       },
     },
     subNavigation: {
@@ -354,12 +351,18 @@ export default (customVariables = {}) => {
           activeOpacity: 0.5,
         },
         touchableNativeFeedback: {
-          background: Platform.OS === 'android' && (
+          background:
+            Platform.OS === 'android' &&
             // Ripple effect is not supported on older Android versions and crashes the app
-            Platform.Version >= 21
-              ? TouchableNativeFeedback.Ripple(changeColorAlpha(variables.mainNavItemColor, 0.3))
-              : TouchableNativeFeedback.SelectableBackground()
-          ),
+            (Platform.Version >= 21
+              ? TouchableNativeFeedback.Ripple(
+                  changeColorAlpha(
+                    variables.mainNavItemIconColor ||
+                      variables.mainNavItemColor,
+                    0.3,
+                  ),
+                )
+              : TouchableNativeFeedback.SelectableBackground()),
         },
       },
       icon: {
@@ -417,12 +420,18 @@ export default (customVariables = {}) => {
           activeOpacity: 0.5,
         },
         touchableNativeFeedback: {
-          background: Platform.OS === 'android' && (
+          background:
+            Platform.OS === 'android' &&
             // Ripple effect is not supported on older Android versions and crashes the app
-            Platform.Version >= 21
-              ? TouchableNativeFeedback.Ripple(changeColorAlpha(variables.mainNavItemColor, 0.2))
-              : TouchableNativeFeedback.SelectableBackground()
-          ),
+            (Platform.Version >= 21
+              ? TouchableNativeFeedback.Ripple(
+                  changeColorAlpha(
+                    variables.mainNavItemIconColor ||
+                      variables.mainNavItemColor,
+                    0.2,
+                  ),
+                )
+              : TouchableNativeFeedback.SelectableBackground()),
         },
       },
       icon: {
@@ -580,8 +589,7 @@ export default (customVariables = {}) => {
         width: 64,
         height: 64,
       },
-      icon: {
-      },
+      icon: {},
 
       text: {
         marginBottom: 12,
@@ -611,7 +619,10 @@ export default (customVariables = {}) => {
           borderColor: variables.mainNavBorderColor,
         },
         chevron: {
-          color: changeColorAlpha(variables.mainNavItemColor, 0.5),
+          color: changeColorAlpha(
+            variables.mainNavItemIconColor || variables.mainNavItemColor,
+            0.5,
+          ),
         },
       },
       // In item alignments, set on builder
@@ -923,6 +934,210 @@ export default (customVariables = {}) => {
       },
     },
 
+    // Auth Apple Sign In Button
+    'shoutem.auth.AppleSignInButton': {
+      appleButton: {
+        width: '100%',
+        minWidth: 140,
+        height: 44,
+        margin: 10,
+        alignSelf: 'center',
+      },
+    },
+
+    'shoutem.auth.FacebookButton': {
+      facebookButton: {
+        width: '100%',
+        minWidth: 140,
+        height: 44,
+        marginVertical: 10,
+        borderRadius: 6,
+        backgroundColor: '#4267B2',
+        alignSelf: 'center',
+        'shoutem.ui.Text': {
+          color: '#ffffff',
+          fontSize: 16,
+          fontWeight: '600',
+          fontFamily: 'Rubik-Regular',
+        },
+        'shoutem.ui.Icon': {
+          color: '#ffffff',
+          fontSize: 16,
+        },
+      },
+    },
+
+    // Auth HorizontalSeparator
+    'shoutem.auth.HorizontalSeparator': {
+      'shoutem.ui.View': {
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 10,
+        marginBottom: 22,
+        'shoutem.ui.View': {
+          backgroundColor: '#c5c3c3',
+          flex: 5,
+          height: 1,
+          width: '100%',
+        },
+        'shoutem.ui.Text': {
+          fontSize: 14,
+          paddingLeft: 20,
+          paddingRight: 20,
+          color: '#c5c3c3',
+        },
+      },
+    },
+
+    // Auth PasswordTextInput
+    'shoutem.auth.PasswordTextInput': {
+      'shoutem.ui.View': {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        'shoutem.ui.TextInput': {
+          borderRadius: 6,
+          height: 50,
+          flex: 1,
+          marginBottom: 20,
+          paddingHorizontal: 15,
+          paddingVertical: 4,
+        },
+        'shoutem.ui.Button': {
+          position: 'absolute',
+          right: 0,
+          top: 12,
+          padding: 5,
+        },
+      },
+    },
+
+    'shoutem.auth.LoginForm': {
+      usernameContainer: {
+        marginBottom: 20,
+        'shoutem.ui.Text': {
+          fontSize: 15,
+          paddingBottom: 5,
+        },
+        'shoutem.ui.TextInput': {
+          borderRadius: 6,
+          height: 50,
+          paddingHorizontal: 15,
+          paddingVertical: 4,
+        },
+      },
+
+      passwordLabelContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingBottom: 5,
+        'shoutem.ui.Text': {
+          fontSize: 15,
+        },
+        'shoutem.ui.Button': {
+          'shoutem.ui.Text': {
+            color: variables.caption.color,
+            fontSize: 11,
+            fontWeight: '400',
+            margin: 0,
+          },
+        },
+      },
+
+      loginButton: {
+        borderRadius: 6,
+        width: '100%',
+        minWidth: 140,
+        height: 44,
+        marginTop: 32,
+        marginBottom: 20,
+        'shoutem.ui.Text': {
+          margin: 0,
+          fontSize: 16,
+        },
+      },
+    },
+
+    'shoutem.auth.LoginScreen': {
+      loginScreen: {
+        marginHorizontal: 30,
+        marginTop: 40,
+      },
+    },
+
+    'shoutem.auth.RegisterButton': {
+      'shoutem.ui.View': {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        alignItems: 'center',
+        justifySelf: 'flex-end',
+        marginTop: 10,
+        paddingBottom: 20,
+        'shoutem.ui.Caption': {
+          lineHeight: 24,
+          fontSize: 12,
+        },
+        'shoutem.ui.Button': {
+          paddingLeft: 5,
+          'shoutem.ui.Text': {
+            lineHeight: 24,
+            fontSize: 12,
+            margin: 0,
+          },
+        },
+      },
+    },
+
+    // Auth Register form
+    'shoutem.auth.RegisterForm': {
+      'shoutem.ui.View': {
+        'shoutem.ui.Text': {
+          paddingBottom: 5,
+          fontSize: 15,
+        },
+        'shoutem.ui.TextInput': {
+          borderRadius: 6,
+          height: 50,
+          marginBottom: 20,
+          paddingHorizontal: 15,
+          paddingVertical: 4,
+        },
+        'shoutem.ui.View': {
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingBottom: 20,
+          'shoutem.ui.TextInput': {
+            borderRadius: 6,
+            height: 50,
+            flex: 1,
+          },
+        },
+      },
+      registerButton: {
+        borderRadius: 6,
+        width: '100%',
+        minWidth: 140,
+        height: 44,
+        marginVertical: 20,
+        alignSelf: 'center',
+        'shoutem.ui.Text': {
+          fontSize: 16,
+          margin: 0,
+        },
+      },
+    },
+    'shoutem.auth.RegisterScreen': {
+      registerScreenMargin: {
+        marginHorizontal: 30,
+        marginTop: 40,
+      },
+    },
+
     // Camera
     'shoutem.camera.QRCodeScanner': {
       cameraContainer: {
@@ -952,23 +1167,29 @@ export default (customVariables = {}) => {
 
     // Deals
     'shoutem.deals.DealsListScreen': {
-      titleContainer: Platform.OS === 'ios' ? {
-        paddingRight: 50,
-        paddingLeft: 20,
-      } : {
+      titleContainer: Platform.select({
+        android: {
           paddingRight: 40,
           paddingLeft: 20,
         },
+        ios: {
+          paddingRight: 50,
+          paddingLeft: 20,
+        },
+      }),
     },
 
     'shoutem.deals.DealsGridScreen': {
-      titleContainer: Platform.OS === 'ios' ? {
-        paddingRight: 50,
-        paddingLeft: 20,
-      } : {
+      titleContainer: Platform.select({
+        android: {
           paddingRight: 40,
           paddingLeft: 20,
         },
+        ios: {
+          paddingRight: 50,
+          paddingLeft: 20,
+        },
+      }),
     },
 
     // Loyalty
@@ -1085,9 +1306,7 @@ export default (customVariables = {}) => {
 
     'shoutem.loyalty.GaugeProgressBar': {
       progressContainer: {
-        transform: [
-          { rotate: '135deg' },
-        ],
+        transform: [{ rotate: '135deg' }],
       },
 
       progressBar: {
@@ -1138,6 +1357,15 @@ export default (customVariables = {}) => {
       },
     },
 
+    'shoutem.social.StatusView': {
+      reportButton: {
+        fontSize: 16,
+        color: '#C4C4C4',
+        paddingVertical: 10,
+        paddingLeft: 10,
+      },
+    },
+
     'shoutem.podcast.PodcastPlayer': {
       container: {
         paddingBottom: Device.select({
@@ -1148,8 +1376,14 @@ export default (customVariables = {}) => {
       },
       slider: {
         height: 30,
-        minimumTrackTintColor: changeColorAlpha(variables.primaryButtonText.color, 0.6),
-        maximumTrackTintColor: changeColorAlpha(variables.primaryButtonText.color, 0.4),
+        minimumTrackTintColor: changeColorAlpha(
+          variables.primaryButtonText.color,
+          0.6,
+        ),
+        maximumTrackTintColor: changeColorAlpha(
+          variables.primaryButtonText.color,
+          0.4,
+        ),
         thumbTintColor: Platform.select({
           android: variables.primaryButtonText.color,
         }),
@@ -1211,7 +1445,7 @@ export default (customVariables = {}) => {
       },
       hiddenImage: {
         opacity: 0,
-      }
+      },
     },
 
     'shoutem.radio.RadioPlayer': {
@@ -1237,7 +1471,7 @@ export default (customVariables = {}) => {
           ios: 0,
           default: 18,
         }),
-      }
+      },
     },
   });
 };

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   USER_NOTIFIED,
   REQUEST_PUSH_PERMISSION,
@@ -38,6 +39,21 @@ export function selectPushNotificationGroups({ added, removed }) {
       removed,
     },
   };
+}
+
+/**
+ * @see SHOW_PUSH_NOTIFICATION
+ * @see USER_NOTIFIED
+ * Clears lastNotification from global state and shows latest push notification
+ * @param notification - the notification to display
+ */
+export function displayPushNotificationMessage(notification) {
+  return dispatch => {
+    const notificationContent = _.get(notification, 'content');
+
+    dispatch(userNotified());
+    dispatch(showPushNotification(notificationContent));
+  }
 }
 
 /**

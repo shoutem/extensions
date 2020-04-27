@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { shouldRefresh, isValid, isBusy, clear } from '@shoutem/redux-io';
+import { isBusy, clear } from '@shoutem/redux-io';
 import { ControlLabel } from 'react-bootstrap';
-import { updateShortcutSettings, discoverFeeds, SHORTCUTS, DISCOVERED_FEEDS } from './../reducer';
-import { denormalizeItem, denormalizeCollection } from 'denormalizer';
+import { updateShortcutSettings, discoverFeeds, DISCOVERED_FEEDS } from './../reducer';
+import { denormalizeCollection } from 'denormalizer';
 import _ from 'lodash';
 import normalizeUrl from 'normalize-url';
 import FeedUrlInput from './FeedUrlInput';

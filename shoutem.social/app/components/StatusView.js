@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import ActionSheet from 'react-native-action-sheet';
+import { Alert } from 'react-native';
+import autoBind from 'auto-bind';
 import moment from 'moment';
 import _ from 'lodash';
-
 import {
   View,
   Image,
@@ -11,20 +13,48 @@ import {
   Divider,
   TouchableOpacity,
   Lightbox,
+  Button,
+  Icon,
 } from '@shoutem/ui';
-
 import { I18n } from 'shoutem.i18n';
-
+import { connectStyle } from '@shoutem/theme';
 import { ext } from '../const';
 import { adaptSocialUserForProfileScreen, formatLikeText } from '../services';
 import CommentButton from './CommentButton';
-import HtmlTextView from './HtmlTextView'
+import HtmlTextView from './HtmlTextView';
 import LikeButton from './LikeButton';
 import { post as postShape } from './shapes';
 
 const { func, bool } = PropTypes;
 
-export default class StatusView extends PureComponent {
+function handleClickOnReport() {
+  const OPTIONS = [
+    I18n.t(ext('reportOptionSpam')),
+    I18n.t(ext('reportOptionInappropriate')),
+    I18n.t(ext('reportOptionAbuse')),
+    I18n.t(ext('reportOptionCancel')),
+  ];
+
+  ActionSheet.showActionSheetWithOptions(
+    {
+      options: OPTIONS,
+      cancelButtonIndex: 3,
+      title: I18n.t(ext('reportActionSheetTitle')),
+      message: I18n.t(ext('reportActionSheetMessage')),
+      tintColor: 'black',
+    },
+    (index) => {
+      if (index >= 0 && index <= 2) {
+        Alert.alert(
+          I18n.t(ext('reportSuccessTitle')),
+          I18n.t(ext('reportSuccessMessage')),
+        );
+      }
+    },
+  );
+}
+
+class StatusView extends PureComponent {
   static propTypes = {
     status: postShape.isRequired,
     addComment: func.isRequired,
@@ -48,15 +78,7 @@ export default class StatusView extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleClickOnStatus = this.handleClickOnStatus.bind(this);
-    this.handleClickOnComments = this.handleClickOnComments.bind(this);
-    this.handleClickOnUser = this.handleClickOnUser.bind(this);
-    this.handleClickOnLikes = this.handleClickOnLikes.bind(this);
-    this.renderHeader = this.renderHeader.bind(this);
-    this.renderStatusText = this.renderStatusText.bind(this);
-    this.renderStatusAttachments = this.renderStatusAttachments.bind(this);
-    this.renderLikesAndCommentsInfo = this.renderLikesAndCommentsInfo.bind(this);
-    this.renderButtons = this.renderButtons.bind(this);
+    autoBind(this);
   }
 
   handleClickOnStatus() {
@@ -84,23 +106,28 @@ export default class StatusView extends PureComponent {
   }
 
   renderHeader() {
-    const { status } = this.props;
+    const { status, style } = this.props;
 
     const { user, created_at } = status;
     const userProfileImage = user.profile_image_url || undefined;
 
     return (
-      <View styleName="horizontal v-center">
-        <TouchableOpacity onPress={this.handleClickOnUser}>
-          <Image
-            styleName="small-avatar placeholder"
-            source={{ uri: userProfileImage }}
-          />
-        </TouchableOpacity>
-        <View styleName="vertical md-gutter-left">
-          <Subtitle>{`${user.name}`}</Subtitle>
-          <Caption>{moment(created_at).fromNow()}</Caption>
+      <View styleName="horizontal v-center space-between stretch">
+        <View styleName="horizontal v-center">
+          <TouchableOpacity onPress={this.handleClickOnUser}>
+            <Image
+              source={{ uri: userProfileImage }}
+              styleName="small-avatar placeholder"
+            />
+          </TouchableOpacity>
+          <View styleName="vertical md-gutter-left">
+            <Subtitle>{`${user.name}`}</Subtitle>
+            <Caption>{moment(created_at).fromNow()}</Caption>
+          </View>
         </View>
+        <Button onPress={handleClickOnReport} styleName="clear tight">
+          <Icon name="error" style={style.reportButton} />
+        </Button>
       </View>
     );
   }
@@ -112,8 +139,8 @@ export default class StatusView extends PureComponent {
       <TouchableOpacity onPress={this.handleClickOnStatus}>
         <View>
           <HtmlTextView
-            text={text}
             styleName="md-gutter-top"
+            text={text}
           />
         </View>
       </TouchableOpacity>
@@ -134,8 +161,8 @@ export default class StatusView extends PureComponent {
       return (
         <Lightbox activeProps={{ styleName: 'preview' }}>
           <Image
-            styleName="large-wide"
             source={{ uri: attachments[0].url_large }}
+            styleName="large-wide"
           />
         </Lightbox>
       );
@@ -143,8 +170,8 @@ export default class StatusView extends PureComponent {
 
     return (
       <Image
-        styleName="large-wide"
         source={{ uri: attachments[0].url_large }}
+        styleName="large-wide"
       />
     );
   }
@@ -164,7 +191,7 @@ export default class StatusView extends PureComponent {
     });
 
     if (!enableInteractions && !enableComments) {
-      return  <View styleName="sm-gutter" />;
+      return <View styleName="sm-gutter" />;
     }
 
     return (
@@ -180,7 +207,7 @@ export default class StatusView extends PureComponent {
           </TouchableOpacity>
         )}
       </View>
-    )
+    );
   }
 
   renderButtons() {
@@ -197,14 +224,14 @@ export default class StatusView extends PureComponent {
         <Divider styleName="line" />
         {enableInteractions && (
           <LikeButton
-            status={status}
             onLikeAction={onLikeAction}
+            status={status}
           />
         )}
         {enableComments && (
           <CommentButton
-            status={status}
             addComment={addComment}
+            status={status}
           />
         )}
         <Divider styleName="line" />
@@ -228,3 +255,5 @@ export default class StatusView extends PureComponent {
     );
   }
 }
+
+export default connectStyle(ext('StatusView'))(StatusView);

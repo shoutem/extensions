@@ -24,11 +24,15 @@ import {
 } from './debounceNavigation';
 
 import {
+  NAVIGATION_INITIALIZED,
   ROOT_NAVIGATION_STACK,
   createNavigationReducer,
   createActiveNavigationStackReducer,
   screenStateReducer,
   setActiveNavigationStackMiddleware,
+  navigationInitializedReducer,
+  getNavigationInitialized,
+  setNavigationInitialized,
 } from './core';
 
 const reducer = combineReducers({
@@ -38,6 +42,7 @@ const reducer = combineReducers({
   rootStack: createNavigationReducer(ROOT_NAVIGATION_STACK.name),
   activeNavigationStack: createActiveNavigationStackReducer(ROOT_NAVIGATION_STACK),
   screenState: screenStateReducer,
+  navigationInitialized: navigationInitializedReducer,
 });
 
 export default preventStateRehydration(reducer);
@@ -46,12 +51,15 @@ export {
   TAB_BAR_NAVIGATION_STACK,
   MODAL_NAVIGATION_STACK,
   SAVE_PREVIOUS_STACK,
+  NAVIGATION_INITIALIZED,
 
   getTabNavigationStack,
   getTabNavigationStateFromTabBarState,
   getTabNavigationState,
+  getNavigationInitialized,
 
   jumpToInitialTabBarTab,
+  setNavigationInitialized,
 };
 
 export {

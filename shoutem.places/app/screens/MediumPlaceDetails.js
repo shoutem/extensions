@@ -5,7 +5,6 @@ import {
   ScrollView,
   Caption,
   Title,
-  Image,
   Screen,
   Tile,
   View,
@@ -53,6 +52,7 @@ class MediumPlaceDetails extends PlaceDetails {
     return (
       <PlaceImageGallery
         imageAnimationName="hero"
+        imageOverlay={false}
         images={getPlaceImages(place)}
         imageStyleName="large"
         place={place}

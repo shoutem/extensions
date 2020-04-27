@@ -1,8 +1,9 @@
 var path = require('path');
-var webpack = require('webpack');
 var pack = require('../package.json');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 var _ = require('lodash');
 
+var publicPath = '/server/build/';
 var extensionClass = _.kebabCase(pack.name);
 
 var webpackAppendQuery = {
@@ -11,7 +12,8 @@ var webpackAppendQuery = {
 };
 
 module.exports = {
-  entry: './src/index.js',
+  mode: 'production',
+  entry: ['./src/index.js'],
   externals: {
     "@shoutem/redux-io": true,
     "@shoutem/react-web-ui": true,
@@ -31,35 +33,91 @@ module.exports = {
     "validator": true
   },
   module: {
-    loaders: [{
-      test: /\.(js|jsx)$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader',
-    }, {
-      test: /\.css$/,
-      loader: "style-loader!css-loader"
-    }, {
-      test: /\.scss$/,
-      loader: "style-loader!css-loader!postcss-loader!sass-loader!@shoutem/webpack-prepend-append?"+JSON.stringify(webpackAppendQuery)
-    }, {
-      test: /\.(png|jpg)$/,
-      loader: 'url-loader'
-    },{
-      test: /\.svg(\?.*)?$/,
-      loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=image/svg+xml'
-    }]
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: { loader: 'babel-loader' },
+      },
+      {
+        test: /\.css$/,
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+        ],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: [require('cssnano')()],
+            },
+          },
+          { loader: 'sass-loader' },
+          { loader: "@shoutem/webpack-prepend-append?"+JSON.stringify(webpackAppendQuery) },
+        ],
+      },
+      {
+        test: /\.(png|jpg)$/,
+        use: [{ loader: 'url-loader' }],
+      },
+      {
+        test: /\.svg(\?.*)?$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[path][name].[ext]',
+              mimetype: 'image/svg+xml',
+              limit: 10000,
+            },
+          },
+        ],
+      },
+    ]
+  },
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          unused: true,
+          dead_code: true,
+          warnings: false,
+          output: {
+            comments: false,
+          },
+        },
+      }),
+    ],
   },
   output: {
     libraryTarget: 'amd',
     path: path.resolve('./build'),
     filename: 'index.js',
-    publicPath: '/server/build/',
+    publicPath: publicPath,
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
-    root: [
-      path.resolve('./src'),
-      path.resolve('./node_modules')
-    ]
+    modules: [path.resolve('./src'), path.resolve('./node_modules')],
+    extensions: ['*', '.js', '.jsx'],
+  },
+  devServer: {
+    publicPath: publicPath,
+    hot: false,
+    historyApiFallback: true,
+    https: true,
+    port: 4790,
+    stats: {
+      hash: false,
+      version: false,
+      timings: false,
+      assets: false,
+      chunks: false,
+      modules: false,
+      source: false,
+    }
   },
 };

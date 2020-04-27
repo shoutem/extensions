@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import _ from 'lodash';
 import { Button, ControlLabel, FormGroup } from 'react-bootstrap';
 import { Switch, FontIcon, FontIconPopover } from '@shoutem/react-web-ui';

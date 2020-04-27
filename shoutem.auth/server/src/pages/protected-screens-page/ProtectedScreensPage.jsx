@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ControlLabel, FormGroup } from 'react-bootstrap';
 import { LoaderContainer, Switch } from '@shoutem/react-web-ui';

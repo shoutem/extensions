@@ -1,8 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { ControlLabel, FormGroup } from 'react-bootstrap';
+import autoBindReact from 'auto-bind';
 import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
 import { shouldLoad, isInitialized } from '@shoutem/redux-io';
 import {
@@ -12,11 +14,14 @@ import {
 } from '@shoutem/redux-api-sdk';
 import {
   getAppSettings,
+  getAppStoreSettings,
   loadAppSettings,
+  loadAppStoreSettings,
   updateAppSettings,
+  updateAppleClientId,
   GeneralSettings,
   FacebookSetupForm,
-  ProviderFormWrapper,
+  AppleSetupForm,
 } from 'src/modules/general-settings';
 import './style.scss';
 
@@ -24,10 +29,7 @@ export class GeneralSettingsPage extends Component {
   constructor(props) {
     super(props);
 
-    this.checkData = this.checkData.bind(this);
-    this.handleExtensionSettingsUpdate = this.handleExtensionSettingsUpdate.bind(this);
-    this.handleAppSettingsUpdate = this.handleAppSettingsUpdate.bind(this);
-    this.handleEmailEnabledChange = this.handleEmailEnabledChange.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {
@@ -48,6 +50,9 @@ export class GeneralSettingsPage extends Component {
     if (shouldLoad(nextProps, props, 'appSettings')) {
       this.props.loadAppSettings(appId);
     }
+    if (shouldLoad(nextProps, props, 'storeSettings')) {
+      this.props.loadAppStoreSettings(appId);
+    }
   }
 
   handleExtensionSettingsUpdate(settingsPatch) {
@@ -61,6 +66,13 @@ export class GeneralSettingsPage extends Component {
   handleAppSettingsUpdate(settingsPatch) {
     const { appId } = this.props;
     return this.props.updateAppSettings(appId, settingsPatch);
+  }
+
+  changeAppleClientId() {
+    const { appId, storeSettings, updateAppleClientId } = this.props;
+
+    const iPhoneBundleId = _.get(storeSettings, 'iphoneBundleId');
+    return updateAppleClientId(appId, iPhoneBundleId);
   }
 
   handleEmailEnabledChange(event) {
@@ -80,13 +92,16 @@ export class GeneralSettingsPage extends Component {
       extension: { settings: extensionSettings },
     } = this.props;
 
-    const emailEnabled = _.get(extensionSettings, 'providers.email.enabled', false);
-    const facebookSettings = _.get(extensionSettings, 'providers.facebook', {});
-
-    const providerClasses = classNames(
-      'general-settings-page__provider-group',
-      'switch-form-group'
+    const emailEnabled = _.get(
+      extensionSettings,
+      'providers.email.enabled',
+      false,
     );
+    const facebookSettings = _.get(extensionSettings, 'providers.facebook', {});
+    const appleSettings = _.get(extensionSettings, 'providers.apple', {});
+
+    const providerClasses = classNames('general-settings', 'switch-form-group');
+    const appleProviderClasses = classNames(providerClasses, 'apple-container');
 
     return (
       <LoaderContainer
@@ -103,19 +118,22 @@ export class GeneralSettingsPage extends Component {
         <FormGroup className={providerClasses}>
           <ControlLabel>Email and password</ControlLabel>
           <Switch
-            value={emailEnabled}
             onChange={this.handleEmailEnabledChange}
+            value={emailEnabled}
           />
         </FormGroup>
-        <ProviderFormWrapper
+        <FacebookSetupForm
+          changeAppleClientID={this.changeAppleClientId}
           className={providerClasses}
-          providerId="facebook"
-          providerSettings={facebookSettings}
-          title="Facebook"
           onSetupUpdate={this.handleExtensionSettingsUpdate}
-        >
-          <FacebookSetupForm />
-        </ProviderFormWrapper>
+          providerSettings={facebookSettings}
+        />
+        <AppleSetupForm
+          changeAppleClientID={this.changeAppleClientId}
+          className={appleProviderClasses}
+          onSetupUpdate={this.handleExtensionSettingsUpdate}
+          providerSettings={appleSettings}
+        />
       </LoaderContainer>
     );
   }
@@ -126,16 +144,20 @@ GeneralSettingsPage.propTypes = {
   extension: PropTypes.object,
   shortcuts: PropTypes.array,
   appSettings: PropTypes.object,
+  storeSettings: PropTypes.object,
   loadAppSettings: PropTypes.func,
+  loadAppStoreSettings: PropTypes.func,
   updateExtensionSettings: PropTypes.func,
   fetchShortcuts: PropTypes.func,
   updateAppSettings: PropTypes.func,
+  updateAppleClientId: PropTypes.func,
 };
 
 function mapStateToProps(state) {
   return {
     shortcuts: getShortcuts(state),
     appSettings: getAppSettings(state),
+    storeSettings: getAppStoreSettings(state),
   };
 }
 
@@ -144,19 +166,19 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
-    updateExtensionSettings: (extension, settings) => (
-      dispatch(updateExtensionSettings(extension, settings))
-    ),
-    fetchShortcuts: () => (
-      dispatch(fetchShortcuts())
-    ),
-    loadAppSettings: (appId) => (
-      dispatch(loadAppSettings(appId, scope))
-    ),
-    updateAppSettings: (appId, appSettings) => (
-      dispatch(updateAppSettings(appId, appSettings, scope))
-    ),
+    updateExtensionSettings: (extension, settings) =>
+      dispatch(updateExtensionSettings(extension, settings)),
+    fetchShortcuts: () => dispatch(fetchShortcuts()),
+    loadAppSettings: appId => dispatch(loadAppSettings(appId, scope)),
+    loadAppStoreSettings: appId => dispatch(loadAppStoreSettings(appId, scope)),
+    updateAppSettings: (appId, appSettings) =>
+      dispatch(updateAppSettings(appId, appSettings, scope)),
+    updateAppleClientId: (appId, appleClientId) =>
+      dispatch(updateAppleClientId(appId, appleClientId)),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GeneralSettingsPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(GeneralSettingsPage);

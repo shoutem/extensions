@@ -1,7 +1,7 @@
 {
   "name": "preview",
-  "version": "2.2.0",
-  "platform": "2.2.*",
+  "version": "2.3.0",
+  "platform": "2.3.*",
   "type": "system",
   "title": "Builder Preview",
   "description": "Provides the support for app preview in the builder",

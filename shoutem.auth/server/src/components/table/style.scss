@@ -1,12 +1,10 @@
-:global {
-  .table {
-    > tbody > tr.table__empty-row {
-      border-bottom: none;
-      color: #888fa1;
+.table {
+  > tbody > tr.table__empty-row {
+    border-bottom: none;
+    color: #888fa1;
 
-      > td {
-        padding-top: 8px;
-      }
+    > td {
+      padding-top: 8px;
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.shopify",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "dependencies": {
     "@shoutem/redux-io": "3.0.1-beta.3",
     "@shoutem/theme": "~0.11.5",

@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { PasswordBox, ReduxFormElement } from '@shoutem/react-web-ui';
 import { FormGroup, Button } from 'react-bootstrap';
 import passwordGenerator from 'generate-password';

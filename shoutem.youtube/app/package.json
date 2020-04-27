@@ -1,6 +1,6 @@
 {
   "name": "shoutem.youtube",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "Show a video gallery from Youtube channel, user or playlist",
   "dependencies": {
     "@shoutem/redux-composers": "0.1.4",

@@ -1,5 +1,7 @@
-import React, { PropTypes, Component, Children } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component, Children } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import sandbox from '@shoutem/extension-sandbox';
 import ext from '../../src/const';
 
@@ -71,9 +73,9 @@ export class SyncStateEngineProvider extends Component {
 }
 
 SyncStateEngineProvider.propTypes = {
-  state: React.PropTypes.object,
-  syncStateEngine: React.PropTypes.object,
-  syncAction: React.PropTypes.func,
+  state: PropTypes.object,
+  syncStateEngine: PropTypes.object,
+  syncAction: PropTypes.func,
   children: PropTypes.node,
 };
 

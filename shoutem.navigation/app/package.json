@@ -1,6 +1,6 @@
 {
   "name": "shoutem.navigation",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "Main navigation",
   "dependencies": {
     "@shoutem/animation": "~0.12.4",

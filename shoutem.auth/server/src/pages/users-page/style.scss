@@ -1,9 +1,7 @@
-:global {
-  .users-page {
-    min-height: 820px;
+.users-page {
+  min-height: 820px;
 
-    .circular-loader {
-      z-index: 1;
-    }
+  .circular-loader {
+    z-index: 1;
   }
 }

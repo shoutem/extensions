@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import { params } from 'context';
 import rssPageReducer, { DISCOVERED_FEEDS, FEED_ITEMS } from './rssPage/reducer';
 import { storage } from '@shoutem/redux-io';
 

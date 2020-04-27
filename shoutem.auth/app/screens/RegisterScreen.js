@@ -1,23 +1,34 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import {
-  Alert,
-} from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-
+import autoBind from 'auto-bind';
 import { NavigationBar, navigateBack } from 'shoutem.navigation';
-import { Screen, Spinner } from '@shoutem/ui';
+import { Screen, Spinner, View, Text, ScrollView } from '@shoutem/ui';
+import { connectStyle } from '@shoutem/theme';
 
-import { executeShortcut, getAppId } from 'shoutem.application';
+import {
+  executeShortcut,
+  getAppId,
+  getExtensionSettings,
+} from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-
+import { loginRequired } from '../loginRequired';
 import RegisterForm from '../components/RegisterForm';
+import AppleSignInButton from '../components/AppleSignInButton';
+import FacebookButton from '../components/FacebookButton';
+
 import { ext } from '../const';
 import { getErrorCode, getErrorMessage } from '../errorMessages';
-import { loginRequired } from '../loginRequired';
-import { register, userRegistered, getAccessToken } from '../redux';
+import {
+  register,
+  userRegistered,
+  getAccessToken,
+  loginWithFacebook,
+} from '../redux';
 import { saveSession } from '../session';
+import HorizontalSeparator from '../components/HorizontalSeparator';
 
 const AUTH_ERROR = 'auth_auth_notAuthorized_userAuthenticationError';
 
@@ -27,15 +38,13 @@ export class RegisterScreen extends PureComponent {
     register: PropTypes.func,
     manualApprovalActive: PropTypes.bool,
     shortcutToReturnTo: PropTypes.string,
+    loginWithFacebook: PropTypes.func,
   };
 
   constructor(props, context) {
     super(props, context);
 
-    this.performRegistration = this.performRegistration.bind(this);
-    this.finishRegistration = this.handleRegistrationSuccess.bind(this);
-    this.handleRegistrationFailed = this.handleRegistrationFailed.bind(this);
-    this.handleRegistrationSuccess = this.handleRegistrationSuccess.bind(this);
+    autoBind(this);
 
     this.state = {
       inProgress: false,
@@ -70,9 +79,11 @@ export class RegisterScreen extends PureComponent {
     const errorMessage = getErrorMessage(errorCode);
 
     if (code === AUTH_ERROR && manualApprovalActive) {
-      Alert.alert(I18n.t(ext('manualApprovalTitle')), I18n.t(ext('manualApprovalMessage')));
-    }
-    else {
+      Alert.alert(
+        I18n.t(ext('manualApprovalTitle')),
+        I18n.t(ext('manualApprovalMessage')),
+      );
+    } else {
       Alert.alert(I18n.t(ext('registrationFailedErrorTitle')), errorMessage);
     }
   }
@@ -80,13 +91,29 @@ export class RegisterScreen extends PureComponent {
   performRegistration(email, username, password) {
     this.setState({ inProgress: true });
 
-    this.props.register(email, username, password)
+    this.props
+      .register(email, username, password)
+      .then(this.handleRegistrationSuccess)
+      .catch(this.handleRegistrationFailed);
+  }
+
+  handleFacebookLoginSuccess(accessToken) {
+    this.setState({ inProgress: true });
+    this.props
+      .loginWithFacebook(accessToken)
       .then(this.handleRegistrationSuccess)
       .catch(this.handleRegistrationFailed);
   }
 
   render() {
     const { inProgress } = this.state;
+    const { settings, style } = this.props;
+
+    const isFacebookAuthEnabled = _.get(settings, 'providers.facebook.enabled');
+    const isAppleAuthEnabled = _.get(settings, 'providers.apple.enabled');
+    const platformVersion = parseInt(Platform.Version, 10);
+    const isEligibleForAppleSignIn =
+      isAppleAuthEnabled && Platform.OS === 'ios' && platformVersion >= 13;
 
     if (inProgress) {
       return (
@@ -98,9 +125,32 @@ export class RegisterScreen extends PureComponent {
     }
 
     return (
-      <Screen>
-        <NavigationBar title={I18n.t(ext('registerNavBarTitle'))} />
-        <RegisterForm onSubmit={this.performRegistration} />
+      <Screen style={style.registerScreenMargin}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <NavigationBar title={I18n.t(ext('registerNavBarTitle'))} />
+          <RegisterForm onSubmit={this.performRegistration} />
+
+          {(isEligibleForAppleSignIn || isFacebookAuthEnabled) && (
+            <HorizontalSeparator />
+          )}
+
+          {isEligibleForAppleSignIn && (
+            <AppleSignInButton
+              onLoginFailed={this.handleRegistrationFailed}
+              onLoginSuccess={this.handleRegistrationSuccess}
+            />
+          )}
+
+          {isFacebookAuthEnabled && (
+            <FacebookButton
+              onLoginFailed={this.handleRegistrationFailed}
+              onLoginSuccess={this.handleFacebookLoginSuccess}
+            />
+          )}
+        </ScrollView>
       </Screen>
     );
   }
@@ -111,6 +161,7 @@ export const mapDispatchToProps = {
   register,
   userRegistered,
   executeShortcut,
+  loginWithFacebook,
 };
 
 function mapStateToProps(state) {
@@ -118,10 +169,14 @@ function mapStateToProps(state) {
     user: state[ext()].user,
     appId: getAppId(),
     access_token: getAccessToken(state),
+    settings: getExtensionSettings(state, ext()),
   };
 }
 
-export default loginRequired(connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(RegisterScreen), false);
+export default loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('RegisterScreen'))(RegisterScreen)),
+  false,
+);

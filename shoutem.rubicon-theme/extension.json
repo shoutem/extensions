@@ -1,7 +1,7 @@
 {
   "name": "rubicon-theme",
-  "version": "2.2.6",
-  "platform": "2.2.*",
+  "version": "2.3.0",
+  "platform": "2.3.*",
   "type": "system",
   "title": "Rubicon Theme",
   "description": "Rubicon theme",

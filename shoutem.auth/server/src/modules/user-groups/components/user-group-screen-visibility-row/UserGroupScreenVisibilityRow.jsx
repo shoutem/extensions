@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import _ from 'lodash';
 import { IconLabel } from '@shoutem/react-web-ui';
 import { USER_GROUPS, UserGroupsDropdown } from 'src/modules/user-groups';

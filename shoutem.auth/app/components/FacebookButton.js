@@ -1,22 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {
-  AccessToken,
-  LoginManager,
-} from 'react-native-fbsdk';
-
-import {
-  View,
-  Caption,
-  Button,
-  Icon,
-  Text,
-} from '@shoutem/ui';
+import { AccessToken, LoginManager } from 'react-native-fbsdk';
+import { View, Caption, Button, Icon, Text } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-
 import { I18n } from 'shoutem.i18n';
-
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
 
@@ -26,12 +14,12 @@ class FacebookButton extends PureComponent {
   static propTypes = {
     onLoginSuccess: func,
     onLoginFailed: func,
-  }
+  };
 
   static defaultPropTypes = {
     onLoginSuccess: _.noop,
     onLoginFailed: _.noop,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -68,8 +56,9 @@ class FacebookButton extends PureComponent {
   }
 
   refreshFacebookToken() {
-    return AccessToken.refreshCurrentAccessTokenAsync()
-      .then(AccessToken.getCurrentAccessToken);
+    return AccessToken.refreshCurrentAccessTokenAsync().then(
+      AccessToken.getCurrentAccessToken,
+    );
   }
 
   handleSignupResult(result) {
@@ -88,17 +77,19 @@ class FacebookButton extends PureComponent {
   }
 
   render() {
+    const { style } = this.props;
+
     return (
       <View>
-        <Caption styleName="h-center lg-gutter-vertical">
-          {I18n.t(ext('socialLoginSectionTitle'))}
-        </Caption>
         <Button
           onPress={this.loginOrSignup}
+          style={style.facebookButton}
           styleName="full-width inflexible"
         >
-          <Icon name="facebook" />
-          <Text>{I18n.t(ext('facebookLogInButton'))}</Text>
+          <Icon name="facebook-logo" />
+          <Text allowFontScaling={false}>
+            {I18n.t(ext('facebookLogInButton'))}
+          </Text>
         </Button>
       </View>
     );

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.web-view",
-  "version": "2.2.2",
+  "version": "2.3.1",
   "main": "index.js",
   "dependencies": {
     "@shoutem/animation": "~0.12.4",

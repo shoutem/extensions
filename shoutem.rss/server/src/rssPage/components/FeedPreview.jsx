@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { FormGroup, ControlLabel } from 'react-bootstrap';
 import { FontIcon } from '@shoutem/react-web-ui';
 import { isBusy }  from '@shoutem/redux-io';
-import { loadFeed, FEED_ITEMS } from './../reducer';
+import { loadFeed } from './../reducer';
 import { getFeedItems } from './../selectors';
-import { denormalizeCollection } from 'denormalizer';
 import { ext } from 'context';
 import "./style.scss";
 

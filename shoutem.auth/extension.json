@@ -1,7 +1,7 @@
 {
   "name": "auth",
-  "version": "2.2.5",
-  "platform": "2.2.*",
+  "version": "2.3.2",
+  "platform": "2.3.*",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
   "description": "Show user profile, sign out user",
@@ -92,6 +92,10 @@
       },
       "facebook": {
         "enabled": false
+      },
+      "apple": {
+        "enabled": false,
+        "buttonDarkModeStyle": true
       },
       "twitter": {
         "enabled": false

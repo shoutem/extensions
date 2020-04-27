@@ -8,6 +8,10 @@ export {
 } from './actionTypes';
 
 export {
+  getLastNotification,
+} from './selectors';
+
+export {
   default as reducer,
 } from './reducer';
 

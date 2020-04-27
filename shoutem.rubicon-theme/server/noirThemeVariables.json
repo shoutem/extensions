@@ -227,9 +227,15 @@
       "format": "color",
       "default": "#171717"
     },
-    "mainNavItemColor": {
+    "mainNavItemIconColor": {
       "type": "string",
-      "title": "Item text and icons color",
+      "title": "Item icon color",
+      "format": "color",
+      "default": "rgba(255, 255, 255, 0.4)"
+    },
+    "mainNavItemTextColor": {
+      "type": "string",
+      "title": "Item text color",
       "format": "color",
       "default": "rgba(255, 255, 255, 0.4)"
     },
@@ -245,9 +251,15 @@
       "format": "color",
       "default": "#171717"
     },
-    "mainNavSelectedItemColor": {
+    "mainNavSelectedItemIconColor": {
       "type": "string",
-      "title": "Selected item text and icon color",
+      "title": "Selected item icon color",
+      "format": "color",
+      "default": "#ffffff"
+    },
+    "mainNavSelectedItemTextColor": {
+      "type": "string",
+      "title": "Selected item text color",
       "format": "color",
       "default": "#ffffff"
     },
@@ -380,10 +392,12 @@
         "title": "Tab Bar and Drawer layouts",
         "properties": [
           "mainNavBackground",
-          "mainNavItemColor",
+          "mainNavItemIconColor",
+          "mainNavItemTextColor",
           "mainNavItemBackground",
           "mainNavBorderColor",
-          "mainNavSelectedItemColor",
+          "mainNavSelectedItemIconColor",
+          "mainNavSelectedItemTextColor",
           "mainNavSelectedItemBackground",
           "mainNavSelectedItemBorderColor"
         ]

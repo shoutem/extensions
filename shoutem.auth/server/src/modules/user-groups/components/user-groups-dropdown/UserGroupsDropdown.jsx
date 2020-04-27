@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { LoaderContainer, MultiselectDropdown } from '@shoutem/react-web-ui';
 import { createOptions } from 'src/services';
 import './style.scss';
