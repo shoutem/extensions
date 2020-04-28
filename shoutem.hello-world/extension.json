@@ -1,0 +1,36 @@
+{
+  "name": "hello-world",
+  "title": "Hello World",
+  "version": "2.0.2",
+  "platform": "2.0.*",
+  "description": "An example of a simple extension with both app and server functionalities",
+  "shortcuts": [
+    {
+      "title": "Hello World",
+      "description": "Settings for Hello World",
+      "name": "hello-world",
+      "screen": "@.HelloWorld",
+      "settings": {
+        "greeting": "World"
+      },
+      "adminPages": [
+        {
+          "page": "@.HelloWorld",
+          "title": "Hello World"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "HelloWorld",
+      "type": "html",
+      "path": "server/pages/hello-world/helloWorld.html"
+    }
+  ],
+  "screens": [
+    {
+      "name": "HelloWorld"
+    }
+  ]
+}
