@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { Table } from 'src/components';
 import { buildShortcutTree } from 'src/services';
 import ProtectedScreenRow from '../protected-screen-row';

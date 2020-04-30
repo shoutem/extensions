@@ -37,11 +37,11 @@ function renderPage() {
 function initializeApi(context, initialState) {
   const { ownExtensionName } = context;
   const installation = getExtension(initialState, ownExtensionName);
-  const additionalEndpoints = [_.get(installation, 'settings.apiEndpoint')];
+  const additionalApiEndpoints = [_.get(installation, 'settings.apiEndpoint')];
   const newContext = _.cloneDeep(context);
   // url.aditionalEndpoints - used to extend endpoints validated against fetch 
   // token intercept regex
-  _.set(newContext, 'url.additionalEndpoints', additionalEndpoints);
+  _.set(newContext, 'url.additionalApiEndpoints', additionalApiEndpoints);
   // initialize fetchTokenIntercept and register shortcut and extension schemas
   api.init(newContext);
 }

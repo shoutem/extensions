@@ -1,10 +1,14 @@
 import { denormalizeCollection } from 'denormalizer';
 import { cloneStatus }  from '@shoutem/redux-io';
-import moment from 'moment';
 import _ from 'lodash';
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(localizedFormat);
+dayjs.extend(relativeTime);
 
 const RSS_DATE_TIME_FORMAT = 'lll';
-moment.locale('en');
 
 function toLocalDateTime(dateTime) {
   const MAX_DIFFERENCE_IN_HOURS = 12;
@@ -17,8 +21,8 @@ function toLocalDateTime(dateTime) {
     };
   }
 
-  const originalDate = moment(date);
-  const nowDate = moment(new Date());
+  const originalDate = dayjs(date);
+  const nowDate = dayjs(new Date());
   const differenceInHours = nowDate.diff(originalDate, 'hours');
   const dateTimeFormatted = originalDate.format(RSS_DATE_TIME_FORMAT);
   const displayTimeAgo = differenceInHours <= MAX_DIFFERENCE_IN_HOURS;

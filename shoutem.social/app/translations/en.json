@@ -35,7 +35,15 @@
       "cancelStatusSelectionOption": "Cancel",
       "postStatusButton": "Post",
       "newCommentPlaceholder": "Add new comment...",
-      "postDetailsNavBarTitle": "POST DETAILS"
+      "postDetailsNavBarTitle": "POST DETAILS",
+      "reportOptionSpam": "It's a spam",
+      "reportOptionInappropriate": "It's inappropriate",
+      "reportOptionAbuse": "It's abusive",
+      "reportOptionCancel": "Cancel",
+      "reportActionSheetTitle": "Report",
+      "reportActionSheetMessage": "Why are you reporting this post? ",
+      "reportSuccessTitle": "Report sent",
+      "reportSuccessMessage": "Your report has been sent to our administrators."
     }
   }
 }

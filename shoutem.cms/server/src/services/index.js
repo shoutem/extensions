@@ -1,4 +1,4 @@
-export rsaaPromise from './rsaaPromise';
+export { default as rsaaPromise } from './rsaaPromise';
 
 export {
   getSortOptions,

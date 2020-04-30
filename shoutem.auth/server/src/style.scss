@@ -1,55 +1,53 @@
-:global {
-  body.extension-sandbox-container {
-    padding-top: 48px;
+body.extension-sandbox-container {
+  padding-top: 48px;
 
-    .modal-backdrop {
-      background-color: #ffffff;
+  .modal-backdrop {
+    background-color: #ffffff;
 
-      .in {
-        opacity: 0.8;
-      }
+    .in {
+      opacity: 0.8;
+    }
+  }
+
+  .settings-page {
+    max-width: 552px;
+    margin: auto;
+
+    &.is-wide {
+      max-width: 808px;
     }
 
-    .settings-page {
+    > h3:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .modal.settings-page-modal .modal-dialog:not(.modal-lg) {
+    width: 100%;
+
+    .modal-header,
+    .modal-body {
       max-width: 552px;
       margin: auto;
-
-      &.is-wide {
-        max-width: 808px;
-      }
-
-      > h3:first-child {
-        margin-top: 0;
-      }
     }
+  }
 
-    .modal.settings-page-modal .modal-dialog:not(.modal-lg) {
-      width: 100%;
+  .settings-page-modal-small {
+    max-height: 500px;
+  }
 
-      .modal-header,
-      .modal-body {
-        max-width: 552px;
-        margin: auto;
-      }
+  .settings-page-modal-small.modal-dialog,
+  .modal.settings-page-modal-small .modal-dialog {
+    min-width: 518px;
+    max-width: 552px;
+
+    @media (max-width: 553px) {
+      min-width: 400px;
+      max-width: 464px;
     }
+  }
 
-    .settings-page-modal-small {
-      max-height: 500px;
-    }
-
-    .settings-page-modal-small.modal-dialog,
-    .modal.settings-page-modal-small .modal-dialog {
-      min-width: 518px;
-      max-width: 552px;
-
-      @media (max-width: 553px) {
-        min-width: 400px;
-        max-width: 464px;
-      }
-    }
-
-    .general-settings form .btn {
-      margin-top: 24px;
-    }
+  .general-settings form .btn {
+    margin-top: 24px;
   }
 }

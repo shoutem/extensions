@@ -25,6 +25,7 @@ export const CLOSE_MODAL = ext('CLOSE_MODAL');
 
 export const SET_SCREEN_STATE = ext('SET_SCREEN_STATE');
 export const CLEAR_SCREEN_STATE = ext('CLEAR_SCREEN_STATE');
+export const NAVIGATION_INITIALIZED = ext('NAVIGATION_INITIALIZED');
 
 const NAVIGATION_ACTION_TYPES = [
   NAVIGATE,
@@ -328,6 +329,15 @@ export const setActiveNavigationStack = navigationStackInfo => ({
   statePath: navigationStackInfo.statePath,
 });
 
+
+/**
+ * Sets the navigationInitialized flag as true. Needed to make sure any logic
+ * that has to be executed only after initial shortcut is opened is done then.
+ */
+export const setNavigationInitialized = () => ({
+  type: NAVIGATION_INITIALIZED,
+});
+
 /**
  * Sets the screen state for the screen with the given ID.
  *
@@ -335,13 +345,11 @@ export const setActiveNavigationStack = navigationStackInfo => ({
  * @param screenState The screen state to save in the store
  * @returns {{type: string, screenId: *, state: *}} The set screen state action
  */
-export function setScreenState(screenId, screenState) {
-  return {
-    type: SET_SCREEN_STATE,
-    screenId,
-    screenState,
-  };
-}
+export const  setScreenState = (screenId, screenState) => ({
+  type: SET_SCREEN_STATE,
+  screenId,
+  screenState,
+});
 
 /**
  * Clears the screen state for the screen with the given ID.
@@ -349,9 +357,7 @@ export function setScreenState(screenId, screenState) {
  * @param screenId The unique ID of the screen.
  * @returns {{type: string, screenId: *}} The clear screen state action
  */
-export function clearScreenState(screenId) {
-  return {
-    type: CLEAR_SCREEN_STATE,
-    screenId,
-  };
-}
+export const clearScreenState = screenId => ({
+  type: CLEAR_SCREEN_STATE,
+  screenId,
+});

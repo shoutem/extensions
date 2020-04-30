@@ -2,19 +2,12 @@ import React, { PureComponent } from 'react';
 import { Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import autoBind from 'auto-bind';
 import isEmail from 'is-email';
-
-import {
-  View,
-  Divider,
-  TextInput,
-  Button,
-  Text,
-} from '@shoutem/ui';
+import { View, TextInput, Button, Text } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-
 import { I18n } from 'shoutem.i18n';
-
+import PasswordTextInput from './PasswordTextInput';
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
 
@@ -32,11 +25,7 @@ class RegisterForm extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleRegisterButtonPress = this.handleRegisterButtonPress.bind(this);
-    this.handleEmailChangeText = this.handleEmailChangeText.bind(this);
-    this.handleUsernameChangeText = this.handleUsernameChangeText.bind(this);
-    this.handlePasswordChangeText = this.handlePasswordChangeText.bind(this);
-    this.validateInput = this.validateInput.bind(this);
+    autoBind(this);
 
     // minimum 3 characters, starts with letter,
     // contains letters, numbers, dashes and underscores
@@ -53,23 +42,35 @@ class RegisterForm extends PureComponent {
     const { email, username, password } = this.state;
 
     if (_.isEmpty(email) || _.isEmpty(username) || _.isEmpty(password)) {
-      Alert.alert(I18n.t('shoutem.application.errorTitle'), errorMessages.EMPTY_FIELDS);
+      Alert.alert(
+        I18n.t('shoutem.application.errorTitle'),
+        errorMessages.EMPTY_FIELDS,
+      );
       return false;
     }
 
     if (!isEmail(email)) {
-      Alert.alert(I18n.t('shoutem.application.errorTitle'), errorMessages.SIGNUP_EMAIL_INVALID);
+      Alert.alert(
+        I18n.t('shoutem.application.errorTitle'),
+        errorMessages.SIGNUP_EMAIL_INVALID,
+      );
       return false;
     }
 
     if (!password || password.length < 6) {
-      Alert.alert(I18n.t('shoutem.application.errorTitle'), errorMessages.SIGNUP_PASSWORD_INVALID);
+      Alert.alert(
+        I18n.t('shoutem.application.errorTitle'),
+        errorMessages.SIGNUP_PASSWORD_INVALID,
+      );
       return false;
     }
 
     const usernameRegexMatch = username.match(this.usernameRegex);
     if (!username || !usernameRegexMatch) {
-      Alert.alert(I18n.t('shoutem.application.errorTitle'), errorMessages.SIGNUP_USERNAME_INVALID);
+      Alert.alert(
+        I18n.t('shoutem.application.errorTitle'),
+        errorMessages.SIGNUP_USERNAME_INVALID,
+      );
       return false;
     }
 
@@ -100,45 +101,44 @@ class RegisterForm extends PureComponent {
   }
 
   render() {
+    const { style } = this.props;
+    const { password } = this.state;
+
     return (
       <View>
-        <Divider />
-        <Divider styleName="line" />
+        <Text>Email</Text>
         <TextInput
-          placeholder={I18n.t(ext('emailPlaceholder'))}
           autoCapitalize="none"
           autoCorrect={false}
-          keyboardType="email-address"
           keyboardAppearance="dark"
+          keyboardType="email-address"
           onChangeText={this.handleEmailChangeText}
+          placeholder={I18n.t(ext('emailPlaceholder'))}
           returnKeyType="done"
         />
-        <Divider styleName="line" />
+
+        <Text>Username</Text>
         <TextInput
-          placeholder={I18n.t(ext('usernamePlaceholder'))}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardAppearance="dark"
           onChangeText={this.handleUsernameChangeText}
+          placeholder={I18n.t(ext('usernamePlaceholder'))}
           returnKeyType="done"
         />
-        <Divider styleName="line" />
-        <TextInput
-          placeholder={I18n.t(ext('passwordPlaceholder'))}
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardAppearance="dark"
-          secureTextEntry
+
+        <Text>Password</Text>
+        <PasswordTextInput
           onChangeText={this.handlePasswordChangeText}
-          returnKeyType="done"
+          password={password}
         />
-        <Divider styleName="line" />
-        <Divider />
+
         <Button
-          styleName="full-width inflexible"
           onPress={this.handleRegisterButtonPress}
+          style={style.registerButton}
+          styleName="confirmation inflexible"
         >
-          <Text>{I18n.t(ext('registerButton'))}</Text>
+          <Text allowFontScaling={false}>{I18n.t(ext('registerButton'))}</Text>
         </Button>
       </View>
     );

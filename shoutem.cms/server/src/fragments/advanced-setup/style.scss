@@ -21,23 +21,3 @@
     }
   }
 }
-
-.advanced-setup:before {
-  content: "";
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #e4e6e9;
-  position: absolute;
-  right: 16px;
-  top: 100px;
-}
-
-.advanced-setup:after {
-  content: "";
-  border-left: 9px solid transparent;
-  border-right: 9px solid transparent;
-  border-bottom: 9px solid #ffffff;
-  position: absolute;
-  right: 17px;
-  top: 102px;
-}

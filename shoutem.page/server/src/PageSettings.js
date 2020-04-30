@@ -1,15 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-
 import { connect } from 'react-redux';
-
 import _ from 'lodash';
-
 import {
   ControlLabel,
   Dropdown,
   MenuItem,
 } from 'react-bootstrap';
-
 import { getShortcut } from 'environment';
 import { updateShortcutSettings } from './reducer';
 

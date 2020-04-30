@@ -1,6 +1,4 @@
-require('es6-promise').polyfill();
 import 'fetch-everywhere';
-
 import '@shoutem/react-web-ui/lib/styles/index.scss';
 import '@shoutem/extension-sandbox';
 import React from 'react';
@@ -17,6 +15,8 @@ import { PageProvider, connectPage, Page } from './page';
 import { SyncStateEngineProvider } from './syncStateEngine';
 import configureStore from './configureStore';
 
+require('es6-promise').polyfill();
+
 const uri = new URI(window.location.href);
 const pageName = _.get(uri.search(true), 'page', '');
 const PageComponent = _.get(extension, ['pages', pageName]);
@@ -25,7 +25,9 @@ const rioStateSerializer = new RioStateSerializer();
 function renderPage() {
   if (!PageComponent) {
     return (
-      <div>Page not found: {pageName}</div>
+      <div>
+        {`Page not found: ${pageName}`}
+      </div>
     );
   }
 
@@ -77,5 +79,3 @@ ReactDOM.render(
   <LoaderContainer size="50px" isLoading />,
   document.getElementById('root')
 );
-
-

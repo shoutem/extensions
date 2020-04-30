@@ -1,9 +1,3 @@
-import GeneralSettings from './general-settings';
-import FacebookSetupForm from './facebook-setup-form';
-import ProviderFormWrapper from './provider-form-wrapper';
-
-export {
-  GeneralSettings,
-  FacebookSetupForm,
-  ProviderFormWrapper,
-};
+export { default as GeneralSettings } from './general-settings';
+export { default as FacebookSetupForm } from './facebook-setup-form';
+export { default as AppleSetupForm } from './apple-setup-form';

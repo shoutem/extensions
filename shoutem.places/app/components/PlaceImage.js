@@ -16,6 +16,7 @@ export default function PlaceImage(props) {
     source,
     styleName,
     location,
+    imageOverlay,
   } = props;
 
   return (
@@ -24,12 +25,16 @@ export default function PlaceImage(props) {
       source={source}
       styleName={styleName}
     >
+      {imageOverlay
+      && (
       <Tile>
         <Title>{name.toUpperCase()}</Title>
         <Caption styleName="sm-gutter-top">
           {_.get(location, 'formattedAddress')}
         </Caption>
       </Tile>
+      )
+      }
     </ImageBackground>
   );
 }
@@ -40,4 +45,5 @@ PlaceImage.propTypes = {
   animationName: PropTypes.string,
   source: PropTypes.object,
   location: PropTypes.object,
+  imageOverlay: PropTypes.bool,
 };

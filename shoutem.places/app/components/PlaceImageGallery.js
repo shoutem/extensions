@@ -9,11 +9,16 @@ import { getFirstImage } from '../services/places';
 import PlaceImage from './PlaceImage';
 
 export default class PlaceImageGallery extends PureComponent {
+  static defaultProps = {
+    imageOverlay: true,
+  };
+
   static propTypes = {
     place: PropTypes.object,
     images: PropTypes.array,
     imageAnimationName: PropTypes.string,
     imageStyleName: PropTypes.string,
+    imageOverlay: PropTypes.bool,
   };
 
   constructor(props) {
@@ -45,7 +50,7 @@ export default class PlaceImageGallery extends PureComponent {
   }
 
   renderGalleryPage(image) {
-    const { place, imageAnimationName, imageStyleName } = this.props;
+    const { place, imageOverlay, imageStyleName } = this.props;
     const { location } = place;
 
     // The animation is currently null because it flickers when we use HorizontalPager.
@@ -55,6 +60,7 @@ export default class PlaceImageGallery extends PureComponent {
     return (
       <PlaceImage
         animationName={resolvedAnimation}
+        imageOverlay={imageOverlay}
         location={location}
         place={place}
         source={imageSource}

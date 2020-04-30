@@ -152,10 +152,6 @@ export function appDidMount(app) {
  */
 export const isDevelopment = () => process.env.NODE_ENV === 'development';
 
-export function appDidFinishLaunching(app) {
-  SplashScreen.hide();
-}
-
 export function appWillUnmount() {
   AppState.removeEventListener('change', appStateChangeHandler);
 }

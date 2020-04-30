@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import { ConfirmModal, IconLabel } from '@shoutem/react-web-ui';
 import { Table } from 'src/components';

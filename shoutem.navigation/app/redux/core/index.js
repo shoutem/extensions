@@ -1,11 +1,4 @@
-import {
-  createActiveNavigationStackReducer,
-  createNavigationReducer,
-  navigationCoreReducer,
-  screenStateReducer,
-} from './reducers';
-
-import {
+export {
   SET_ACTIVE_NAVIGATION_STACK,
   ROOT_NAVIGATION_STACK,
 
@@ -21,6 +14,7 @@ import {
   RESET_TO_ROUTE,
   OPEN_MODAL,
   CLOSE_MODAL,
+  NAVIGATION_INITIALIZED,
 
   // Navigation action creators
   createNavigationAction,
@@ -35,6 +29,7 @@ import {
   openInModal,
   closeModal,
   rewrite,
+  setNavigationInitialized,
 
   // Screen state actions & action creators
   SET_SCREEN_STATE,
@@ -53,66 +48,21 @@ import {
   sanitizeRoute,
 } from './actions';
 
-import {
-  getActiveNavigationStack,
-  getActiveNavigationStackState,
-  getActiveRoute,
-  getRootNavigationStack,
-  getScreenState,
-} from './selectors';
-
-import {
-  setActiveNavigationStackMiddleware,
-} from './middlewares';
+export { setActiveNavigationStackMiddleware } from './middlewares';
 
 export {
-  NAVIGATE,
-  NAVIGATE_BACK,
-  JUMP_TO_INDEX,
-  JUMP_TO_KEY,
-  REPLACE,
-  REPLACE_AT_INDEX,
-  REPLACE_AT_KEY,
-  RESET,
-  RESET_TO_ROUTE,
-  EMPTY_ROUTE,
-  OPEN_MODAL,
-  CLOSE_MODAL,
-  SET_SCREEN_STATE,
-  CLEAR_SCREEN_STATE,
-  ROOT_NAVIGATION_STACK,
-  SET_ACTIVE_NAVIGATION_STACK,
-  createNavigationAction,
-  navigateTo,
-  navigateBack,
-  redirectTo,
-  jumpToKey,
-  jumpToIndex,
-  replace,
-  reset,
-  resetToRoute,
-  openInModal,
-  closeModal,
-  rewrite,
-  clearScreenState,
-  setActiveNavigationStack,
-  setScreenState,
-  hasRouteWithKey,
-  isEmptyNavigationState,
-  isEmptyRoute,
-  isNavigationAction,
-  isScreenActive,
-  sanitizeRoute,
-
   createActiveNavigationStackReducer,
   createNavigationReducer,
   navigationCoreReducer,
+  navigationInitializedReducer,
   screenStateReducer,
+} from './reducers';
 
+export {
   getActiveNavigationStack,
   getActiveNavigationStackState,
   getActiveRoute,
-  getScreenState,
-  setActiveNavigationStackMiddleware,
+  getNavigationInitialized,
   getRootNavigationStack,
-};
+  getScreenState,
+} from './selectors';

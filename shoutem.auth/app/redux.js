@@ -10,16 +10,12 @@ import {
   storage,
   getOne,
   create,
-  isBusy,
-  isInitialized,
-  isValid,
 } from '@shoutem/redux-io';
 import { chainReducers } from '@shoutem/redux-composers';
 import { preventStateRehydration } from 'shoutem.redux';
 import { navigateTo } from 'shoutem.navigation';
 
 import {
-  getAppId,
   getAllShortcuts,
   getExtensionSettings,
   showAllShortcuts,
@@ -43,7 +39,10 @@ export const USER_PROFILE_SCHEMA = 'shoutem.auth.user-profile';
 export const USER_PROFILE_IMAGE_SCHEMA = 'shoutem.auth.user-profile-image';
 export const USER_CREDENTIALS_SCHEMA = 'shoutem.auth.user-credentials';
 export const AUTH_TOKEN_SCHEMA = 'shoutem.auth.tokens';
-export const USER_FACEBOOK_CREDENTIALS_SCHEMA = 'shoutem.auth.user-facebook-credentials';
+export const USER_FACEBOOK_CREDENTIALS_SCHEMA =
+  'shoutem.auth.user-facebook-credentials';
+export const USER_APPLE_CREDENTIALS_SCHEMA =
+  'shoutem.auth.user-apple-credentials';
 
 export function restoreSession(session) {
   return {
@@ -95,33 +94,9 @@ export default preventStateRehydration(
   ]),
 );
 
-export function register(email, username, password) {
-  return (dispatch) => {
-    const schemeConfig = {
-      schema: USER_SCHEMA,
-      request: {
-        headers: {
-          'Content-Type': 'application/vnd.api+json',
-          'Authorization': 'Basic ' + encodeToBase64(`${email}:${password}`),
-        },
-      },
-    };
-    const user = {
-      type: USER_SCHEMA,
-      appRole: 'user',
-      profile: {
-        nick: username,
-      },
-    };
-
-    return dispatch(create(schemeConfig, user)).then(() => {
-      return dispatch(login(email, password));
-    });
-  };
-}
-
 export function updateProfile(updates) {
-  return (dispatch) => dispatch(update(USER_SCHEMA, updates, { userId: updates.id }));
+  return dispatch =>
+    dispatch(update(USER_SCHEMA, updates, { userId: updates.id }));
 }
 
 export const userLoggedIn = user => ({
@@ -166,11 +141,20 @@ export function fetchToken(tokenType, authHeader) {
 }
 
 export function fetchAccessToken(email, password) {
-  return (dispatch) =>
-    dispatch(fetchToken('refresh-token', 'Basic ' + encodeToBase64(`${email}:${password}`)))
-      .then((action) =>
-        dispatch(fetchToken('access-token', `Bearer ${_.get(action, 'payload.data.attributes.token')}`))
-      );
+  return dispatch =>
+    dispatch(
+      fetchToken(
+        'refresh-token',
+        `Basic ${encodeToBase64(`${email}:${password}`)}`,
+      ),
+    ).then(action =>
+      dispatch(
+        fetchToken(
+          'access-token',
+          `Bearer ${_.get(action, 'payload.data.attributes.token')}`,
+        ),
+      ),
+    );
 }
 
 export function fetchUser(userId = 'me') {
@@ -178,27 +162,89 @@ export function fetchUser(userId = 'me') {
 }
 
 export function login(email, password) {
-  return (dispatch) => (
-    dispatch(fetchAccessToken(email, password))
-      .then((action) => {
-        const accessToken = _.get(action, 'payload.data.attributes.token');
-        dispatch(setAccessToken(accessToken));
+  return dispatch =>
+    dispatch(fetchAccessToken(email, password)).then(action => {
+      const accessToken = _.get(action, 'payload.data.attributes.token');
+      dispatch(setAccessToken(accessToken));
 
-        return dispatch(fetchUser('me'));
-      })
-  );
+      return dispatch(fetchUser('me'));
+    });
+}
+
+export function loginWithApple(idToken) {
+  return dispatch =>
+    dispatch(fetchToken('refresh-token', `apple ${idToken}`)).then(action => {
+      const resolvedAccessToken = _.get(
+        action,
+        'payload.data.attributes.token',
+      );
+      dispatch(setAccessToken(resolvedAccessToken));
+
+      return dispatch(fetchUser('me'));
+    });
 }
 
 export function loginWithFacebook(accessToken) {
-  return (dispatch) => (
-    dispatch(find(USER_FACEBOOK_CREDENTIALS_SCHEMA, '', { accessToken }))
-      .then((action) => {
+  return dispatch =>
+    dispatch(find(USER_FACEBOOK_CREDENTIALS_SCHEMA, '', { accessToken })).then(
+      action => {
         const resolvedAccessToken = _.get(action, 'payload.access_token');
         dispatch(setAccessToken(resolvedAccessToken));
 
         return dispatch(fetchUser('me'));
-      })
+      },
     );
+}
+
+export function register(email, username, password) {
+  return dispatch => {
+    const schemeConfig = {
+      schema: USER_SCHEMA,
+      request: {
+        headers: {
+          'Content-Type': 'application/vnd.api+json',
+          Authorization: `Basic ${encodeToBase64(`${email}:${password}`)}`,
+        },
+      },
+    };
+    const user = {
+      type: USER_SCHEMA,
+      appRole: 'user',
+      profile: {
+        nick: username,
+      },
+    };
+
+    return dispatch(create(schemeConfig, user)).then(() =>
+      dispatch(login(email, password)),
+    );
+  };
+}
+
+export function registerWithApple(idToken, firstName, lastName) {
+  return dispatch => {
+    const schemeConfig = {
+      schema: USER_SCHEMA,
+      request: {
+        headers: {
+          'Content-Type': 'application/vnd.api+json',
+          Authorization: `apple ${idToken}`,
+        },
+      },
+    };
+    const user = {
+      type: USER_SCHEMA,
+      appRole: 'user',
+      profile: {
+        firstName,
+        lastName,
+      },
+    };
+
+    return dispatch(create(schemeConfig, user)).then(() =>
+      dispatch(loginWithApple(idToken)),
+    );
+  };
 }
 
 // function returns access token
@@ -206,7 +252,7 @@ export function getAccessToken(state) {
   return state[ext()].access_token;
 }
 
-export const isUserUpdateAction = (action) => {
+export const isUserUpdateAction = action => {
   const schema = _.get(action, 'meta.schema');
 
   return _.includes([USER_PROFILE_SCHEMA, USER_PROFILE_IMAGE_SCHEMA], schema);
@@ -218,7 +264,7 @@ export const isUserUpdateAction = (action) => {
  * @param {Object} state App state
  */
 export function getUser(state) {
-  const user = state[ext()].user;
+  const { user } = state[ext()];
 
   if (_.isEmpty(user)) {
     return undefined;
@@ -243,7 +289,7 @@ export function getUserGroups(state) {
 }
 
 export function logoutAction() {
-  return (dispatch) => {
+  return dispatch => {
     dispatch(logout());
   };
 }
@@ -274,8 +320,12 @@ export function hideShortcuts(user) {
       return;
     }
 
-    _.forEach(shortcuts, (shortcut) => {
-      const shortcutUserGroups = _.get(shortcut, ['settings', _.camelCase(ext()), 'userGroups']);
+    _.forEach(shortcuts, shortcut => {
+      const shortcutUserGroups = _.get(shortcut, [
+        'settings',
+        _.camelCase(ext()),
+        'userGroups',
+      ]);
       const userGroupsEmpty = _.isEmpty(shortcutUserGroups);
 
       if (userGroupsEmpty) {
@@ -283,7 +333,9 @@ export function hideShortcuts(user) {
       }
 
       const shortcutUserGroupIds = _.map(shortcutUserGroups, 'id');
-      const isShortcutHiddenToUser = _.isEmpty(_.intersection(userGroupsIds, shortcutUserGroupIds));
+      const isShortcutHiddenToUser = _.isEmpty(
+        _.intersection(userGroupsIds, shortcutUserGroupIds),
+      );
 
       if (isShortcutHiddenToUser) {
         dispatch(hideShortcut(shortcut.id));

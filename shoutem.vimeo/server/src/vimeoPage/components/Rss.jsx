@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isBusy, clear } from '@shoutem/redux-io';
 import { updateShortcutSettings, discoverFeeds, DISCOVERED_FEEDS } from './../reducer';

@@ -1,7 +1,9 @@
+import { reducer } from './redux';
+
 export {
   GeneralSettings,
   FacebookSetupForm,
-  ProviderFormWrapper,
+  AppleSetupForm,
 } from './components';
 
 export {
@@ -10,9 +12,11 @@ export {
 
 export {
   getAppSettings,
+  getAppStoreSettings,
   loadAppSettings,
+  loadAppStoreSettings,
   updateAppSettings,
+  updateAppleClientId,
 } from './redux';
 
-import { reducer } from './redux';
 export default reducer;

@@ -1,9 +1,7 @@
 import _ from 'lodash';
 import { ext } from '../../const';
 
-export function getRootNavigationStack(state) {
-  return state[ext()].rootStack;
-}
+export const getRootNavigationStack = state => state[ext()].rootStack;
 
 /**
  * Returns the info about the currently active navigation stack.
@@ -52,6 +50,9 @@ export const getActiveRoute = state => {
  * @param screenId The unique screen ID to get the state for.
  * @returns {{}} The screen state.
  */
-export function getScreenState(state, screenId) {
-  return state[ext()].screenState[screenId] || {};
-}
+export const getScreenState = (state, screenId) => {
+  return state[ext()].screenState[screenId] || {}
+};
+
+export const getNavigationInitialized = state =>
+  state[ext()].navigationInitialized;

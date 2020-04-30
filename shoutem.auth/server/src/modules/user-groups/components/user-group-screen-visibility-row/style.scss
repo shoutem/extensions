@@ -1,10 +1,8 @@
-:global {
-  .user-group-screen-visibility-row {
-    height: 64px;
-    cursor: pointer;
+.user-group-screen-visibility-row {
+  height: 64px;
+  cursor: pointer;
 
-    .checkbox {
-      padding-top: 8px;
-    }
+  .checkbox {
+    padding-top: 8px;
   }
 }

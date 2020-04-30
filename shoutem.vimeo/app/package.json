@@ -1,6 +1,6 @@
 {
   "name": "shoutem.vimeo",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "description": "Vimeo videos",
   "dependencies": {
     "@shoutem/redux-io": "3.0.1-beta.3",

@@ -1,7 +1,7 @@
 {
   "name": "products",
-  "version": "2.2.2",
-  "platform": "2.2.*",
+  "version": "2.3.0",
+  "platform": "2.3.*",
   "title": "Products",
   "description": "Show products with purchase link",
   "categories": [

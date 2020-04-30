@@ -12,7 +12,7 @@ import {
 import { appDidMount, appWillMount, appWillUnmount } from './app';
 import Permissions from './permissions';
 import enTranslations from './translations/en.json';
-import { showNotification } from './middleware';
+import { showInitialNotification, showNotification } from './middleware';
 
 export const DEFAULT_PUSH_NOTIFICATION_GROUP = 'broadcast';
 
@@ -25,6 +25,7 @@ export const shoutem = {
 };
 
 export const middleware = [
+  showInitialNotification,
   showNotification,
 ];
 

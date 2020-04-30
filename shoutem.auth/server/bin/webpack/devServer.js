@@ -12,6 +12,7 @@ function resolveDevServer() {
     port: 4790,
     compress: isProduction,
     inline: !isProduction,
+    disableHostCheck: true,
     hot: !isProduction,
     host: '0.0.0.0',
     https: true,
@@ -24,10 +25,6 @@ function resolveDevServer() {
       publicPath: false,
       timings: true,
       version: false,
-      warnings: true,
-      colors: {
-        green: '\u001b[32m',
-      },
     },
   };
 }

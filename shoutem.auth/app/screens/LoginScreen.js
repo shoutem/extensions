@@ -1,30 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Alert, InteractionManager } from 'react-native';
+import { Alert, InteractionManager, Platform, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-
-import {
-  getAppId,
-  getExtensionSettings,
-} from 'shoutem.application';
+import autoBind from 'auto-bind';
+import { getAppId, getExtensionSettings } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-import {
-  isScreenActive,
-  NavigationBar,
-  navigateTo,
-} from 'shoutem.navigation';
-
+import { isScreenActive, NavigationBar, navigateTo } from 'shoutem.navigation';
 import { isValid } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { Screen, Divider, Spinner } from '@shoutem/ui';
-
+import { Screen, Spinner, View, ScrollView, Device } from '@shoutem/ui';
+import { loginRequired } from '../loginRequired';
 import FacebookButton from '../components/FacebookButton';
+import AppleSignInButton from '../components/AppleSignInButton';
 import LoginForm from '../components/LoginForm';
 import RegisterButton from '../components/RegisterButton';
+import HorizontalSeparator from '../components/HorizontalSeparator';
 import { ext } from '../const';
 import { getErrorCode, getErrorMessage } from '../errorMessages';
-import { loginRequired } from '../loginRequired';
 import {
   login,
   loginWithFacebook,
@@ -36,37 +29,35 @@ import {
 } from '../redux';
 import { saveSession } from '../session';
 
-const { bool, func, shape, string } = PropTypes;
-
 export class LoginScreen extends PureComponent {
   static propTypes = {
-    navigateTo: func,
-    login: func,
-    loginWithFacebook: func,
-    isUserAuthenticated: bool,
-    inProgress: bool,
-    onLoginSuccess: func,
-    interceptedShortcut: string,
-    hideShortcuts: func,
-    user: shape({
-      id: string,
+    navigateTo: PropTypes.func,
+    login: PropTypes.func,
+    loginWithFacebook: PropTypes.func,
+    isUserAuthenticated: PropTypes.bool,
+    inProgress: PropTypes.bool,
+    onLoginSuccess: PropTypes.func,
+    interceptedShortcut: PropTypes.string,
+    hideShortcuts: PropTypes.func,
+    user: PropTypes.shape({
+      id: PropTypes.string,
     }),
-    access_token: string,
-    settings: shape({
-      providers: shape({
-        email: shape({
-          enabled: bool,
+    access_token: PropTypes.string,
+    settings: PropTypes.shape({
+      providers: PropTypes.shape({
+        email: PropTypes.shape({
+          enabled: PropTypes.bool,
         }),
-        facebook: shape({
-          appId: string,
-          appName: string,
-          enabled: bool,
+        facebook: PropTypes.shape({
+          appId: PropTypes.string,
+          appName: PropTypes.string,
+          enabled: PropTypes.bool,
         }),
       }),
-      signupEnabled: bool,
+      signupEnabled: PropTypes.bool,
     }),
     // Dispatched with user data returned from server when user has logged in
-    userLoggedIn: func,
+    userLoggedIn: PropTypes.func,
   };
 
   static defaultPropTypes = {
@@ -76,11 +67,7 @@ export class LoginScreen extends PureComponent {
   constructor(props, contex) {
     super(props, contex);
 
-    this.performLogin = this.performLogin.bind(this);
-    this.handleFacebookLoginSuccess = this.handleFacebookLoginSuccess.bind(this);
-    this.handleLoginSuccess = this.handleLoginSuccess.bind(this);
-    this.handleLoginFailed = this.handleLoginFailed.bind(this);
-    this.openRegisterScreen = this.openRegisterScreen.bind(this);
+    autoBind(this);
 
     this.state = {
       inProgress: false,
@@ -129,21 +116,22 @@ export class LoginScreen extends PureComponent {
     }
 
     this.setState({ inProgress: true });
-    this.props.login(username, password)
+    this.props
+      .login(username, password)
       .then(this.handleLoginSuccess)
       .catch(this.handleLoginFailed);
   }
 
   handleFacebookLoginSuccess(accessToken) {
     this.setState({ inProgress: true });
-    this.props.loginWithFacebook(accessToken)
+    this.props
+      .loginWithFacebook(accessToken)
       .then(this.handleLoginSuccess)
       .catch(this.handleLoginFailed);
   }
 
   handleLoginSuccess() {
     const { access_token, user, userLoggedIn } = this.props;
-
     this.setState({ inProgress: false });
     saveSession(JSON.stringify({ access_token }));
     userLoggedIn({ user, access_token });
@@ -163,13 +151,16 @@ export class LoginScreen extends PureComponent {
   openRegisterScreen() {
     const { interceptedShortcut, navigateTo } = this.props;
 
-    const manuallyApproveMembers = _.get(this.props, 'settings.manuallyApproveMembers');
+    const manuallyApproveMembers = _.get(
+      this.props,
+      'settings.manuallyApproveMembers',
+    );
     const route = {
       screen: ext('RegisterScreen'),
       props: {
         manualApprovalActive: manuallyApproveMembers,
         shortcutToReturnTo: interceptedShortcut,
-      }
+      },
     };
 
     navigateTo(route);
@@ -177,11 +168,16 @@ export class LoginScreen extends PureComponent {
 
   render() {
     const { inProgress } = this.state;
-    const { isUserAuthenticated, settings } = this.props;
+
+    const { isUserAuthenticated, settings, style } = this.props;
+    const platformVersion = parseInt(Platform.Version, 10);
 
     const isEmailAuthEnabled = _.get(settings, 'providers.email.enabled');
     const isFacebookAuthEnabled = _.get(settings, 'providers.facebook.enabled');
+    const isAppleAuthEnabled = _.get(settings, 'providers.apple.enabled');
     const isSignupEnabled = _.get(settings, 'signupEnabled');
+    const isEligibleForAppleSignIn =
+      isAppleAuthEnabled && Platform.OS === 'ios' && platformVersion >= 13;
 
     // We want to display the authenticating state if the
     // auth request is in progress, or if we are already
@@ -193,6 +189,7 @@ export class LoginScreen extends PureComponent {
     // if you log in on any stack, on other stacks spinner will be shown
     // instead of login form
     const isLoading = inProgress || isUserAuthenticated;
+
     if (isLoading) {
       return (
         <Screen>
@@ -203,21 +200,35 @@ export class LoginScreen extends PureComponent {
     }
 
     return (
-      <Screen>
-        <NavigationBar title={I18n.t(ext('logInNavBarTitle'))} />
-        {isEmailAuthEnabled &&
-          <LoginForm onSubmit={this.performLogin} />
-        }
-        {isFacebookAuthEnabled &&
-          <FacebookButton
-            onLoginFailed={this.handleLoginFailed}
-            onLoginSuccess={this.handleFacebookLoginSuccess}
-          />
-        }
-        {isSignupEnabled &&
-          <RegisterButton onPress={this.openRegisterScreen} />
-        }
-        <Divider />
+      <Screen style={style.loginScreen}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <NavigationBar title={I18n.t(ext('logInNavBarTitle'))} />
+          {isEmailAuthEnabled && <LoginForm onSubmit={this.performLogin} />}
+
+          {(isEligibleForAppleSignIn || isFacebookAuthEnabled) && (
+            <HorizontalSeparator />
+          )}
+
+          {isEligibleForAppleSignIn && (
+            <AppleSignInButton
+              onLoginFailed={this.handleLoginFailed}
+              onLoginSuccess={this.handleLoginSuccess}
+            />
+          )}
+          {isFacebookAuthEnabled && (
+            <FacebookButton
+              onLoginFailed={this.handleLoginFailed}
+              onLoginSuccess={this.handleFacebookLoginSuccess}
+            />
+          )}
+
+          {isSignupEnabled && (
+            <RegisterButton onPress={this.openRegisterScreen} />
+          )}
+        </ScrollView>
       </Screen>
     );
   }
@@ -242,7 +253,10 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default loginRequired(connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(connectStyle(ext('LoginScreen'))(LoginScreen)), false);
+export default loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('LoginScreen'))(LoginScreen)),
+  false,
+);

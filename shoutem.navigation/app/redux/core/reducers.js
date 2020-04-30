@@ -7,6 +7,7 @@ import {
   SET_SCREEN_STATE,
   NAVIGATE,
   NAVIGATE_BACK,
+  NAVIGATION_INITIALIZED,
   JUMP_TO_INDEX,
   JUMP_TO_KEY,
   REPLACE,
@@ -138,4 +139,12 @@ export function screenStateReducer(state = {}, action) {
     default:
       return state;
   }
+}
+
+export const navigationInitializedReducer = (state = false, action) => {
+  if (action.type === NAVIGATION_INITIALIZED) {
+    return true;
+  }
+
+  return state;
 }

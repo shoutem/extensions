@@ -1,4 +1,7 @@
-import { navigateTo } from 'shoutem.navigation';
+import SplashScreen from 'react-native-splash-screen';
+
+import { navigateTo, setNavigationInitialized } from 'shoutem.navigation';
+
 import { executeShortcut } from '../redux';
 import { ext } from '../const';
 import { getFirstShortcut } from './getFirstShortcut';
@@ -9,6 +12,7 @@ export const openInitialScreen = (app, subscriptionValid) => {
 
   if (subscriptionValid === false) {
     store.dispatch(navigateTo({ screen: ext('SubscriptionMissingScreen') }));
+    SplashScreen.hide();
     return;
   }
 
@@ -17,5 +21,7 @@ export const openInitialScreen = (app, subscriptionValid) => {
     // Initial navigation action has some constraints on the navigation actions,
     // @see initialNavigationReducer in shoutem-core/navigation
     store.dispatch(executeShortcut(firstShortcut.id));
+    store.dispatch(setNavigationInitialized());
+    SplashScreen.hide();
   }
 };

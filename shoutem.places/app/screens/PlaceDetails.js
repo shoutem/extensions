@@ -169,18 +169,14 @@ export class PlaceDetails extends PureComponent {
   }
 
   renderDescription(place) {
-    if (place.description) {
-      return (
-        <Tile>
-          <Divider styleName="section-header">
-            <Caption>{I18n.t('shoutem.cms.descriptionTitle')}</Caption>
-          </Divider>
-          <SimpleHtml body={place.description} />
-          <Divider styleName="line" />
-        </Tile>
-      );
-    }
-    return null;
+    return place.description ? (
+      <View styleName="solid">
+        <Divider styleName="section-header">
+          <Caption>{I18n.t('shoutem.cms.descriptionTitle')}</Caption>
+        </Divider>
+        <SimpleHtml body={place.description} />
+      </View>
+    ) : null;
   }
 
   renderOpeningHours(place) {

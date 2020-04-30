@@ -1,6 +1,6 @@
 {
   "name": "shoutem.products",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "description": "List of products with purchase link.",
   "dependencies": {
     "@shoutem/redux-io": "3.0.1-beta.3",
