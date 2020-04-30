@@ -1,15 +1,12 @@
 {
   "name": "shoutem.auth",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "Shoutem user authentication",
   "author": "Shoutem",
   "scripts": {
     "clean": "rimraf ./build/*",
-    "build": "npm run clean && webpack --config ./bin/webpack/webpack.config.js",
-    "watch": "npm run clean && webpack --watch --config ./bin/webpack/webpack.config.js",
-    "serve": "webpack-dev-server --config ./bin/webpack/webpack.config.js",
-    "dev-dashboard": "webpack-dashboard -c -- webpack-dev-server --config ./bin/webpack/webpack.config.js",
-    "dev": "run-p watch serve"
+    "build": "npm run clean && cross-env NODE_ENV=production webpack --config ./bin/webpack/webpack.config.js",
+    "dev": "webpack-dev-server --config ./bin/webpack/webpack.config.js"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -18,7 +15,6 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
-    "@shoutem/webpack-prepend-append": "^1.0.1",
     "babel-loader": "^8.0.6",
     "cross-env": "^4.0.0",
     "css-loader": "^3.4.2",
@@ -28,7 +24,6 @@
     "html-webpack-plugin": "^4.0.3",
     "mini-css-extract-plugin": "0.9.0",
     "node-sass": "^4.13.1",
-    "npm-run-all": "~4.1.5",
     "optimize-css-assets-webpack-plugin": "5.0.3",
     "path": "^0.12.7",
     "postcss-loader": "^3.0.0",
