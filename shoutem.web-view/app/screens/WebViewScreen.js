@@ -114,9 +114,18 @@ export class WebViewScreen extends PureComponent {
 
   renderLoadingSpinner() {
     return (
-      <View styleName="xl-gutter-top">
+      <Screen
+        style={{
+          position: 'absolute',
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
+          width: '100%',
+        }}
+      >
         <Spinner styleName="lg-gutter-top" />
-      </View>
+      </Screen>
     );
   }
 
