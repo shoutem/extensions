@@ -1,9 +1,11 @@
 import _ from 'lodash';
+import { Firebase } from 'shoutem.firebase';
 import {
   USER_NOTIFIED,
-  REQUEST_PUSH_PERMISSION,
   SELECT_PUSH_NOTIFICATION_GROUPS,
   SHOW_PUSH_NOTIFICATION,
+  DEVICE_TOKEN_RECEIVED,
+  NOTIFICATION_RECEIVED,
 } from './actionTypes';
 
 /**
@@ -16,12 +18,16 @@ export function userNotified() {
 }
 
 /**
- * @see REQUEST_PUSH_PERMISSION
- * Used for triggering push notification permission request
- * @returns {{type: String}}
+ * @see NOTIFICATION_RECEIVED
+ * Emits the received notification
+ * @param notification
+ * @returns {{type: String, content: Object}}
  */
-export function requestPushPermission() {
-  return { type: REQUEST_PUSH_PERMISSION };
+export function notificationReceived(notification) {
+  return {
+    type: NOTIFICATION_RECEIVED,
+    content: notification,
+  };
 }
 
 /**
@@ -32,6 +38,7 @@ export function requestPushPermission() {
  * @returns {{type: String, payload: {added: [], removed: []}}}
  */
 export function selectPushNotificationGroups({ added, removed }) {
+  Firebase.selectGroups({ added, removed });
   return {
     type: SELECT_PUSH_NOTIFICATION_GROUPS,
     payload: {
@@ -39,21 +46,6 @@ export function selectPushNotificationGroups({ added, removed }) {
       removed,
     },
   };
-}
-
-/**
- * @see SHOW_PUSH_NOTIFICATION
- * @see USER_NOTIFIED
- * Clears lastNotification from global state and shows latest push notification
- * @param notification - the notification to display
- */
-export function displayPushNotificationMessage(notification) {
-  return dispatch => {
-    const notificationContent = _.get(notification, 'content');
-
-    dispatch(userNotified());
-    dispatch(showPushNotification(notificationContent));
-  }
 }
 
 /**
@@ -67,6 +59,28 @@ export function showPushNotification(notification) {
     type: SHOW_PUSH_NOTIFICATION,
     payload: {
       notification,
-    }
+    },
+  };
+}
+
+/**
+ * @see SHOW_PUSH_NOTIFICATION
+ * @see USER_NOTIFIED
+ * Clears lastNotification from global state and shows latest push notification
+ * @param notification - the notification to display
+ */
+export function displayPushNotificationMessage(notification) {
+  return (dispatch) => {
+    const notificationContent = _.get(notification, 'content');
+
+    dispatch(userNotified());
+    dispatch(showPushNotification(notificationContent));
+  };
+}
+
+export function deviceTokenReceived(token) {
+  return {
+    type: DEVICE_TOKEN_RECEIVED,
+    token,
   };
 }

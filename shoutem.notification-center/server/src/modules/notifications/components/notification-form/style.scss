@@ -1,0 +1,27 @@
+.notification-form {
+  max-width: 552px;
+  margin: auto;
+  padding-bottom: 12px;
+
+  .btn-toolbar {
+    margin-top: 48px;
+    margin-bottom: 48px;
+  }
+
+  .notification-form__radio-selector {
+    align-items: center;
+
+    > :last-child {
+      margin-left: 20px;
+      margin-top: 0px;
+    }
+  }
+
+  .notification-form__select {
+    padding-top: 54px;
+  }
+
+  .notification-form__date-select {
+    padding-top: 20px;
+  }
+}

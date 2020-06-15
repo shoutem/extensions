@@ -1,5 +1,7 @@
-export {
-  adaptSocialUserForProfileScreen,
+import reducer from './reducers';
+import { getUsers } from './selectors';
+import * as actions from './actions';
+import {
   loadStatuses,
   deleteStatus,
   createStatus,
@@ -14,8 +16,24 @@ export {
 } from './actions';
 
 export {
-  collectionStatusMiddleware
+  loadStatuses,
+  deleteStatus,
+  createStatus,
+  likeStatus,
+  unlikeStatus,
+  invalidateSocialCollections,
+  loadComments,
+  deleteComment,
+  createComment,
+  loadUsers,
+  loadUser,
+};
+
+export {
+  collectionStatusMiddleware,
 } from './middleware';
 
-import reducer from './reducers';
 export default reducer;
+
+export const selectors = { getUsers };
+export { actions };

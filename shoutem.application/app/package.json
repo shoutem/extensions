@@ -1,6 +1,6 @@
 {
   "name": "shoutem.application",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "private": true,
   "main": "index.js",
   "dependencies": {
@@ -8,7 +8,7 @@
     "@shoutem/redux-io": "3.0.1-beta.3",
     "@shoutem/theme": "~0.11.5",
     "@shoutem/ui": "~2.0.0",
-    "react-native-device-info": "^5.0.0",
+    "react-native-device-info": "~5.4.0",
     "react-native-maps": "~0.26.0",
     "react-native-splash-screen": "^3.2.0"
   },

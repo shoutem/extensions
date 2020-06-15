@@ -1,0 +1,1 @@
+export { resolveNotificationData } from './notifications';

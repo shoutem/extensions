@@ -1,49 +1,25 @@
 import { Platform } from 'react-native';
-import FCM, { FCMEvent } from 'react-native-fcm';
+import PushNotifications from 'react-native-push-notification';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import messaging from '@react-native-firebase/messaging';
 
 import { isProduction } from 'shoutem.application';
-import { handleReceivedToken } from './services/fcm';
-import { notificationReceived } from './actionCreators';
+import {
+  handleReceivedToken,
+  handleNotificationReceivedForeground,
+  handleNotificationReceivedBackground,
+  handleNotificationTapped,
+} from './services';
 
-function resolveNotification(receivedNotification) {
-  const {
-    fcm,
-    aps,
-    opened_from_tray: openedFromTray,
-  } = receivedNotification;
-
-  if (!fcm && !aps) {
-    return false;
-  }
-
-  if (fcm && fcm.body) {
-    return {
-      body: fcm.body,
-      title: fcm.title,
-      openedFromTray,
-    };
-  }
-
-  if (receivedNotification && receivedNotification.body && receivedNotification.title) {
-    return {
-      body: receivedNotification.body,
-      title: receivedNotification.title,
-      openedFromTray,
-    };
-  }
-
-  if (aps && aps.alert) {
-    return {
-      body: aps.alert.body,
-      title: aps.alert.title,
-      openedFromTray,
-    };
-  }
-
-  return false;
+function formatiOSNotificationPayload(message) {
+  return {
+    ...message,
+    title: message.notification.title,
+    text: message.notification.body,
+  };
 }
 
-function appDidFinishLaunching(app) {
+export function appDidFinishLaunching(app) {
   if (!isProduction()) {
     return;
   }
@@ -51,91 +27,37 @@ function appDidFinishLaunching(app) {
   const store = app.getStore();
   const { dispatch } = store;
 
-  const dispatchNotificationAction = (receivedNotification) => {
-    const {
-      fcm,
-      action,
-      show_in_foreground,
-    } = receivedNotification;
+  if (Platform.OS === 'ios') {
+    messaging().onNotificationOpenedApp(message => handleNotificationTapped(formatiOSNotificationPayload(message), dispatch));
+  }
 
-    const notification = resolveNotification(receivedNotification);
+  PushNotifications.configure({
+    onRegister: token => handleReceivedToken(token, dispatch),
+    onNotification: (notif) => {
+      const { foreground, userInteraction } = notif;
 
-    if (!notification) {
-      return;
-    }
-
-    if (fcm && show_in_foreground) {
-      FCM.presentLocalNotification({
-        body: notification.body,
-        title: notification.title,
-        ticker: notification.body,
-        click_action: action,
-        sound: "default",
-        priority: "high",
-        vibrate: 300,
-        ongoing: false,
-        auto_cancel: true,
-        show_in_foreground: true,
-      });
-    }
-
-    if (action) {
-      try {
-        const actionObject = JSON.parse(action);
-        notification.action = actionObject;
-      } catch (e) {
-        console.log('Unable to parse notification action object', e);
-      }
-    }
-
-    dispatch(notificationReceived(notification));
-  };
-
-  // this shall be called regardless of app state: running, background or not
-  // running. Previously would not be called when app is killed by user in iOS
-  // but it seems that from firebase core 11.0.2. that is no longer the case
-  FCM.on(FCMEvent.Notification, async (notif) => {
-    if (notif) {
-      dispatchNotificationAction({ ...notif });
-
-      // iOS requires developers to call completionHandler to end the
-      // notification process.
-      // Otherwise, your background remote notifications could be throttled.
-      // More info: https://developer.apple.com/documentation/uikit
-      // /uiapplicationdelegate/1623013-application.
       if (Platform.OS === 'ios') {
-        notif.finish();
+        notif.finish(PushNotificationIOS.FetchResult.NoData);
       }
-    }
-  });
 
-  // fcm token may not be available on the first load - catch it here
-  FCM.on(FCMEvent.RefreshToken, (token) => {
-    handleReceivedToken(token, dispatch);
-  });
+      if (foreground && !userInteraction) {
+        handleNotificationReceivedForeground(notif, dispatch);
+      }
 
-  FCM.getFCMToken().then((token) => {
-    handleReceivedToken(token, dispatch);
-  });
+      if (!foreground && Platform.OS === 'ios') {
+        handleNotificationReceivedBackground(notif, dispatch);
+      }
 
-  // The initial notification contains the notification that launches the app.
-  // If the user launches the app by clicking the banner, the banner
-  // notification info will be here, rather than available through the FCM.on event.
-  // Sometimes, Android kills activity when an app goes to
-  // background, and when it resumes, Android broadcasts the notification before
-  // JS is run.
-  // You can use FCM.getInitialNotification() to capture those missed events.
-  // The initial notification will be triggered every time, even when
-  // the app is open via its icon, so send some action identifier with your
-  // notifications
-
-  FCM.getInitialNotification().then(notif => {
-    if (notif) {
-      dispatchNotificationAction({ ...notif, fromInit: true });
-    }
+      if ((userInteraction === true && Platform.OS !== 'ios') || (userInteraction === undefined && !foreground)) {
+        handleNotificationTapped(notif, dispatch);
+      }
+    },
+    permissions: {
+      alert: true,
+      badge: true,
+      sound: true,
+    },
+    popInitialNotification: true,
+    requestPermissions: isProduction(),
   });
 }
-
-export {
-  appDidFinishLaunching,
-};

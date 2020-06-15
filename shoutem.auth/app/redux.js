@@ -1,7 +1,5 @@
 import _ from 'lodash';
-
 import { combineReducers } from 'redux';
-
 import {
   find,
   resource,
@@ -14,17 +12,15 @@ import {
 import { chainReducers } from '@shoutem/redux-composers';
 import { preventStateRehydration } from 'shoutem.redux';
 import { navigateTo } from 'shoutem.navigation';
-
 import {
   getAllShortcuts,
   getExtensionSettings,
   showAllShortcuts,
   hideShortcut,
+  getConfiguration,
 } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-
 import { ext } from './const';
-
 import encodeToBase64 from './shared/encodeToBase64';
 
 export const LOGIN = 'shoutem.auth.LOGIN';
@@ -157,6 +153,23 @@ export function fetchAccessToken(email, password) {
     );
 }
 
+export function fetchAppleAccessToken(idToken) {
+  return dispatch =>
+    dispatch(
+      fetchToken(
+        'refresh-token',
+        `apple ${idToken}`,
+      ),
+    ).then(action =>
+      dispatch(
+        fetchToken(
+          'access-token',
+          `Bearer ${_.get(action, 'payload.data.attributes.token')}`,
+        ),
+      ),
+    );
+}
+
 export function fetchUser(userId = 'me') {
   return find(USER_SCHEMA, userId, { userId });
 }
@@ -173,12 +186,9 @@ export function login(email, password) {
 
 export function loginWithApple(idToken) {
   return dispatch =>
-    dispatch(fetchToken('refresh-token', `apple ${idToken}`)).then(action => {
-      const resolvedAccessToken = _.get(
-        action,
-        'payload.data.attributes.token',
-      );
-      dispatch(setAccessToken(resolvedAccessToken));
+    dispatch(fetchAppleAccessToken(idToken)).then(action => {
+      const accessToken = _.get(action, 'payload.data.attributes.token');
+      dispatch(setAccessToken(accessToken));
 
       return dispatch(fetchUser('me'));
     });
@@ -271,6 +281,20 @@ export function getUser(state) {
   }
 
   return getOne(user, state);
+}
+
+/**
+ * Checks whether the SendBird extension is installed and configured.
+ * We check this in order to display or hide the chat button within the user
+ * profile page.
+ * @param {Object} state App state
+ */
+export function isSendBirdConfigured(state) {
+  const config = getConfiguration(state);
+  const extensionInstalled = _.find(_.get(config, 'extensions'), { id: 'shoutem.sendbird' });
+  const apiKeySet = !_.isEmpty(_.get(extensionInstalled, 'settings.appId', ''));
+
+  return extensionInstalled && apiKeySet;
 }
 
 /**

@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
 import moment from 'moment';
-
+import autoBind from 'auto-bind';
 import {
   TouchableOpacity,
   Row,
@@ -12,48 +11,47 @@ import {
   Divider,
   View,
 } from '@shoutem/ui';
-
 import { connectStyle } from '@shoutem/theme';
 import { ext } from '../const';
-
 import { notificationShape } from './shapes';
-
-const { func } = PropTypes;
 
 export class NotificationView extends PureComponent {
   static propTypes = {
-    // Called when notification is pressed
-    onPress: func,
-    // The notification
+    onPress: PropTypes.func,
     notification: notificationShape,
+    style: PropTypes.object,
   };
 
   constructor(props) {
     super(props);
 
-    this.onPress = this.onPress.bind(this);
+    autoBind(this);
   }
 
-  onPress() {
+  handlePress() {
     const { notification, onPress } = this.props;
 
     onPress(notification);
   }
 
   render() {
-    const { notification } = this.props;
-    const { id, imageUrl, read, summary, timestamp } = notification;
+    const {
+      notification: {
+        id, imageUrl, read, summary, timestamp,
+      },
+      style,
+    } = this.props;
 
     return (
-      <TouchableOpacity key={id} onPress={this.onPress}>
+      <TouchableOpacity key={id} onPress={this.handlePress}>
         <Row>
           <Image
-            styleName="small rounded-corners"
             source={{ uri: imageUrl }}
+            styleName="small rounded-corners"
           />
           <View styleName="vertical stretch space-between">
-            <Subtitle numberOfLines={2}>{summary}</Subtitle>
-            <Caption>{moment(timestamp).fromNow()}</Caption>
+            <Subtitle numberOfLines={2} style={style.message}>{summary}</Subtitle>
+            <Caption style={style.timestamp}>{moment(timestamp).fromNow()}</Caption>
           </View>
           {!read && <View styleName="notification-dot" />}
         </Row>

@@ -21,6 +21,7 @@ import {
   NavigationBar,
   closeModal,
   openInModal,
+  navigateTo,
 } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 
@@ -31,19 +32,23 @@ import ProfileImage from '../components/ProfileImage';
 import {
   getUser,
   logout,
+  isSendBirdConfigured,
 } from '../redux';
 import { ext } from '../const';
 
-const { func } = PropTypes;
+const SENDBIRD_SCREEN_ID = 'shoutem.sendbird.ChatWindowScreen';
 
 export class UserProfileScreen extends PureComponent {
   static propTypes = {
+    isProfileOwner: PropTypes.bool,
+    sendBirdConfigured: PropTypes.bool,
+    navigateTo: PropTypes.func,
     // Closes the modal in which the edit profile screen is opened
-    closeModal: func,
+    closeModal: PropTypes.func,
     // Dispatched to log the user out of the application
-    logout: func,
+    logout: PropTypes.func,
     // Opens the modal in which the edit profile screen is opened
-    openInModal: func,
+    openInModal: PropTypes.func,
     // User to which the profile belongs
     user: userShape.isRequired,
   };
@@ -52,6 +57,8 @@ export class UserProfileScreen extends PureComponent {
     super(props);
     this.toggleImageGallery = this.toggleImageGallery.bind(this);
     this.openEditProfileScreen = this.openEditProfileScreen.bind(this);
+    this.handleChatPress = this.handleChatPress.bind(this);
+    this.renderChatButton = this.renderChatButton.bind(this);
 
     this.state = {
       shouldRenderImageGallery: false,
@@ -74,9 +81,9 @@ export class UserProfileScreen extends PureComponent {
               </Button>
             </View>
           );
-        } else {
-          return null;
         }
+
+        return null;
       },
       title: I18n.t(ext('profileNavBarTitle')),
     };
@@ -119,6 +126,15 @@ export class UserProfileScreen extends PureComponent {
     };
 
     openInModal(route);
+  }
+
+  handleChatPress() {
+    const { navigateTo, user } = this.props;
+
+    return navigateTo({
+      screen: SENDBIRD_SCREEN_ID,
+      props: { user },
+    });
   }
 
   renderImageGallery() {
@@ -175,6 +191,21 @@ export class UserProfileScreen extends PureComponent {
     );
   }
 
+  renderChatButton() {
+    const { isProfileOwner, sendBirdConfigured } = this.props;
+
+    if (!sendBirdConfigured || isProfileOwner) {
+      return null;
+    }
+
+    return (
+      <Button onPress={this.handleChatPress} styleName="stacked clear">
+        <Icon name="activity" />
+        <Text>Chat</Text>
+      </Button>
+    );
+  }
+
   renderContent() {
     const { profile } = this.props.user;
 
@@ -221,6 +252,7 @@ export class UserProfileScreen extends PureComponent {
           {description}
         </Text>
         {this.renderEditButton()}
+        {this.renderChatButton()}
       </View>
     );
   }
@@ -240,12 +272,13 @@ export class UserProfileScreen extends PureComponent {
 
 export const mapStateToProps = (state, ownProps) => {
   const me = getUser(state);
-  const isProfileOwner = !_.isEmpty(ownProps.user) ? _.get(ownProps.user, 'id') === _.get(me, 'legacyId') : !_.isEmpty(me);
+  const isProfileOwner = !_.isEmpty(ownProps.user) ? _.get(ownProps.user, 'id') === _.get(me, 'id') : !_.isEmpty(me);
   const user = isProfileOwner ? me : ownProps.user || me;
 
   return {
     user: user || me || {},
     isProfileOwner,
+    sendBirdConfigured: isSendBirdConfigured(state)
   };
 };
 
@@ -253,6 +286,7 @@ export const mapDispatchToProps = {
   closeModal,
   logout,
   openInModal,
+  navigateTo,
 };
 
 export default connect(

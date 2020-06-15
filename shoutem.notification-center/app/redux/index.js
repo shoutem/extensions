@@ -22,7 +22,6 @@ export {
   SELECTED_GROUPS_SCHEMA,
   fetchGroups,
   fetchSelectedGroups,
-  selectPushNotificationGroups,
 } from './groups';
 
 export { middleware };

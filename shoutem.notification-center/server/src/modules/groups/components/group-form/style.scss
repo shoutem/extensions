@@ -1,0 +1,64 @@
+.group-form {
+  max-width: 552px;
+  margin: auto;
+  padding-bottom: 12px;
+
+  .row {
+    margin: 0;
+
+    > :first-child {
+      padding-left: 0;
+    }
+
+    > :last-child {
+      padding-right: 0;
+    }
+  }
+
+  .btn-toolbar {
+    margin: 48px -12px 12px;
+  }
+
+  .image-preview-custom,
+  .image-uploader__custom {
+    background-size: contain;
+    width: 80px;
+    height: 80px;
+
+    .circular-loader {
+      width: 25px;
+      height: 25px;
+      padding-top: 27px;
+    }
+
+    .se-icon {
+      padding-top: 14px;
+      opacity: 0.5;
+      vertical-align: middle;
+    }
+  }
+
+  .image-error {
+    height: 15px;
+    margin-top: 25px;
+  }
+
+  .switch {
+    .form-group .control-label {
+      padding-left: 0;
+      padding-top: 12px;
+      font-size: 18px;
+      color: #444f6c;
+    }
+
+    .switch {
+      float: right;
+    }
+
+    .switch__button {
+      margin-top: 16px;
+      margin-right: 16px;
+      z-index: 1;
+    }
+  }
+}

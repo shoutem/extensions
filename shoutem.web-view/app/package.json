@@ -1,6 +1,6 @@
 {
   "name": "shoutem.web-view",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "main": "index.js",
   "dependencies": {
     "@shoutem/animation": "~0.12.4",
@@ -8,8 +8,9 @@
     "@shoutem/theme": "~0.11.5",
     "@shoutem/ui": "~2.0.0",
     "react-native-pdf": "^6.0.0",
-    "react-native-webview": "^7.5.0",
-    "rn-fetch-blob": "^0.11.0"
+    "react-native-webview": "^9.4.0",
+    "rn-fetch-blob": "^0.11.0",
+    "auto-bind": "4.0.0"
   },
   "nativeDependencies": [
     "@shoutem/ui",

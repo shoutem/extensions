@@ -1,6 +1,6 @@
 {
   "name": "photos",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "platform": "2.3.*",
   "title": "Photos",
   "description": "Show a photo gallery",

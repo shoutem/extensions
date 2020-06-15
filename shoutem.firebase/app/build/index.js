@@ -8,6 +8,7 @@ const glob = require('glob');
 const xcode = require('xcode');
 const { projectPath } = require('@shoutem/build-tools');
 const { injectFirebase } = require('../build/injectFirebase');
+const { injectReactNativePush } = require('../build/injectReactNativePush');
 
 const extensionPath = `${projectPath}/node_modules/shoutem.firebase`;
 const SHOUTEM_APPLICATION = 'shoutem.application';
@@ -35,32 +36,40 @@ function download(url, path, callback) {
 
   request.get(url, (err, res, data) => {
     if (_.isEmpty(data)) {
-      process.exitCode = 1;
-      throw new Error(`Received empty response from\n${url}\n>>> Please check your shoutem.firebase settings! <<<`);
+      console.log(`Received empty response from\n${url}\n>>> Please check your shoutem.firebase settings! <<<`);
+
+      fs.unlinkSync(path);
+      if (callback) {
+        callback(false);
+      }
+
+      return;
     }
+
+    callback(true);
   })
-    .on('error', (err) => {
-      fs.unlink(path);
+    .on('error', () => {
+      fs.unlinkSync(path);
 
       if (callback) {
-        callback(err.message);
+        callback(false);
       }
     })
     .pipe(file)
     .on('finish', () => {
-      file.close(callback);
+      file.close(null);
     });
 }
 
 function downloadConfigurationFile({ endpoint, filename }) {
-  return new Promise(function (resolve, reject) {
-    download(endpoint, filename, (errorMessage) => {
-      if (errorMessage) {
-        throw new Error(errorMessage);
+  return new Promise((resolve, reject) => {
+    download(endpoint, filename, (success) => {
+      if (!success) {
+        return resolve(false);
       }
 
       console.log(`Downloaded ${filename} from ${endpoint}`);
-      resolve();
+      return resolve(true);
     });
   });
 }
@@ -76,9 +85,9 @@ function isApplicationExtension(data) {
   return data.type === 'shoutem.core.extensions' && data.id === SHOUTEM_APPLICATION;
 }
 
-function copyPlistFileToXcodeProjects() {
+function copyPlistFileToXcodeProjects(useDummyProject) {
   const CONFIG_FILE = 'GoogleService-Info.plist';
-  const configFilePath = `${extensionPath}/${CONFIG_FILE}`;
+  const configFilePath = !useDummyProject ? `${extensionPath}/${CONFIG_FILE}` : `${extensionPath}/build/templates/${CONFIG_FILE}`;
 
   const xcodeProjects = glob.sync(`${projectPath}/ios/*.xcodeproj/project.pbxproj`);
 
@@ -100,10 +109,10 @@ function copyPlistFileToXcodeProjects() {
   });
 }
 
-function copyGoogleServicesConfigToAndroidApp() {
+function copyGoogleServicesConfigToAndroidApp(useDummyProject) {
   const CONFIG_FILE = 'google-services.json';
-  const configFilePath = `${extensionPath}/${CONFIG_FILE}`;
-  const configFileDestination = `${projectPath}/android/app/${CONFIG_FILE}`;
+  const configFilePath = useDummyProject ? `${extensionPath}/build/templates/${CONFIG_FILE}` : `${extensionPath}/${CONFIG_FILE}`;
+  const configFileDestination = `${projectPath}/android/app/google-services.json`;
 
   fs.copySync(configFilePath, configFileDestination);
 }
@@ -135,7 +144,6 @@ function updateGoogleServicesPackageName(buildConfiguration) {
 
   if (data === null) {
     console.log(`${relativePath} is invalid or empty - please check your shoutem.firebase configuration!`);
-    resolve();
     return;
   }
 
@@ -146,7 +154,7 @@ function updateGoogleServicesPackageName(buildConfiguration) {
   console.timeEnd(message);
 }
 
-exports.preBuild = function preBuild(appConfiguration, buildConfiguration) {
+exports.preBuild = async function preBuild(appConfiguration, buildConfiguration) {
   const appExtension = _.get(appConfiguration, 'included').find(isApplicationExtension);
   const legacyApi = _.get(appExtension, `attributes.settings.${API_ENDPOINT}`);
 
@@ -154,11 +162,16 @@ exports.preBuild = function preBuild(appConfiguration, buildConfiguration) {
     throw new Error(`${API_ENDPOINT} not set in ${SHOUTEM_APPLICATION} settings`);
   }
 
-  return downloadConfigurationFiles(legacyApi, buildConfiguration.appId)
-    .then(() => {
-      copyPlistFileToXcodeProjects();
-      copyGoogleServicesConfigToAndroidApp();
-      updateGoogleServicesPackageName(buildConfiguration);
-      injectFirebase();
-    });
+  const resolvedFiles = await downloadConfigurationFiles(legacyApi, buildConfiguration.appId);
+
+  const androidConfigResolved = resolvedFiles[0];
+  const iOSConfigResolved = resolvedFiles[1];
+
+  copyGoogleServicesConfigToAndroidApp(!androidConfigResolved);
+  updateGoogleServicesPackageName(buildConfiguration);
+
+  copyPlistFileToXcodeProjects(!iOSConfigResolved);
+
+  injectFirebase();
+  injectReactNativePush();
 };

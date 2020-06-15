@@ -6,15 +6,18 @@ import { loadUser } from '../redux/actions';
 
 export function openProfileForLegacyUser(dispatch) {
   return (legacyUser) => dispatch(loadUser(`legacyUser:${legacyUser.legacyId}`))
-  .then((user) => {
-    const fetchedUser = user.payload.data;
-    const unpackedUser = {
-      id: fetchedUser.id,
-      ...fetchedUser.attributes,
-    };
+    .then((user) => {
+      const fetchedUser = user.payload.data;
+      const unpackedUser = {
+        id: fetchedUser.id,
+        ...fetchedUser.attributes,
+        realm: {
+          ..._.get(fetchedUser, 'relationships.realm.data'),
+        },
+      };
 
-    return dispatch(openProfile(unpackedUser));
-  });
+      return dispatch(openProfile(unpackedUser));
+    });
 }
 
 export function adaptSocialUserForProfileScreen(user) {

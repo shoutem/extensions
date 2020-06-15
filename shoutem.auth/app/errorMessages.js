@@ -49,6 +49,8 @@ export function resolveErrorMessage(errorCode) {
       return I18n.t(ext('usernameTakenErrorMessage'));
     case 'MANUAL_APPROVAL':
       return I18n.t(ext('manualApprovalMessage'));
+    case 'USER_NOT_APPROVED':
+      return I18n.t(ext('manualApprovalMessage'));
     default:
       return I18n.t('shoutem.application.unexpectedErrorMessage');
   }
@@ -59,6 +61,7 @@ export const getErrorMessage = errorCode => resolveErrorMessage(errorCode);
 export const apiCodeToErrorMessage = {
     auth_user_validation_usernameTaken: 'USERNAME_TAKEN',
     auth_auth_notAuthorized_userAuthenticationError: 'UNEXPECTED_ERROR',
+    auth_token_validation_userNotApproved: 'USER_NOT_APPROVED',
 };
 
 export const getErrorCode = apiResponseErrorCode =>

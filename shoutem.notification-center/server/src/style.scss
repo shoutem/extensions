@@ -1,0 +1,19 @@
+body.extension-sandbox-container {
+  &.modal-open {
+    height: 880px;
+  }
+
+  .modal-backdrop {
+    background-color: #ffffff;
+
+    .in {
+      opacity: 0.8;
+    }
+  }
+
+  .settings-page-modal-small.modal-dialog {
+    margin-top: -180px;
+    min-width: 518px;
+    max-width: 552px;
+  }
+}

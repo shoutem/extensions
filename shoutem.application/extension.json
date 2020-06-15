@@ -1,6 +1,6 @@
 {
   "name": "application",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "platform": "2.3.*",
   "type": "system",
   "title": "Application",
