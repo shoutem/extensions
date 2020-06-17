@@ -3,6 +3,7 @@ import _ from 'lodash';
 import {
   DEVICE_TOKEN_RECEIVED,
   SELECT_PUSH_NOTIFICATION_GROUPS,
+  selectPushNotificationGroups,
 } from 'shoutem.push-notifications';
 
 import {
@@ -27,23 +28,6 @@ export function fetchSelectedGroups() {
   return (dispatch, getState) => {
     const deviceToken = getState()[ext()].deviceToken;
     dispatch(find(SELECTED_GROUPS_SCHEMA, '', { deviceToken }));
-  };
-}
-
-/**
- * @see SELECT_PUSH_NOTIFICATION_GROUPS
- * Used for triggering push notification group subscription
- * @param added - notification groups which need to be added to subscribed groups
- * @param removed - notification groups which need to be removed from subscribed groups
- * @returns {{type: String, payload: {added: [], removed: []}}}
- */
-export function selectPushNotificationGroups({ added, removed }) {
-  return {
-    type: SELECT_PUSH_NOTIFICATION_GROUPS,
-    payload: {
-      added,
-      removed,
-    },
   };
 }
 
@@ -119,8 +103,10 @@ const selectGroupsSubscribedToByDefault = store => next => (action) => {
   if (_.size(groupsToSubscribeTo)) {
     const tagsToSubscribeTo = _.map(groupsToSubscribeTo, group => `${GROUP_PREFIX + group.tag}`);
 
-    store.dispatch(selectPushNotificationGroups({ added: tagsToSubscribeTo,
-      removed: [] }));
+    store.dispatch(selectPushNotificationGroups({
+      added: tagsToSubscribeTo,
+      removed: []
+    }));
 
     return next({ ...action, payload: selectedGroups.concat(tagsToSubscribeTo) });
   }

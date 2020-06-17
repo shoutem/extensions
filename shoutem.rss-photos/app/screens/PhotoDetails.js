@@ -2,17 +2,29 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Platform, StatusBar } from 'react-native';
-
+import autoBind from 'auto-bind';
 import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   ImageGallery,
   ImageGalleryOverlay,
 } from '@shoutem/ui';
-
 import { NavigationBar } from 'shoutem.navigation';
-
 import { ext } from '../const';
+
+function calculateStartingIndex(photo, photos) {
+  return _.findIndex(photos, ['id', photo.id]) || 0;
+}
+
+function renderImageOverlay(imageData) {
+  return (
+    <ImageGalleryOverlay
+      description={imageData.description}
+      styleName="full-screen"
+      title={imageData.title}
+    />
+  );
+}
 
 class PhotoDetails extends PureComponent {
   static propTypes = {
@@ -24,49 +36,20 @@ class PhotoDetails extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.onIndexSelected = this.onIndexSelected.bind(this);
-    this.onImageGalleryModeChange = this.onImageGalleryModeChange.bind(this);
-    this.onBackButton = this.onBackButton.bind(this);
-    this.getNavbarProps = this.getNavbarProps.bind(this);
+    autoBind(this);
+
+    const { photo, photos } = props;
 
     this.state = {
       mode: ImageGallery.IMAGE_GALLERY_MODE,
-      selectedPhotoIndex: 0,
-      shouldRenderGallery: false,
+      selectedPhotoIndex: calculateStartingIndex(photo, photos),
     };
-  }
-
-  componentDidMount() {
-    const { photo, photos } = this.props;
-
-    const selectedPhotoIndex = _.findIndex(photos, ['id', photo.id]) || 0;
-
-    this.setState({
-      selectedPhotoIndex,
-    });
   }
 
   onBackButton() {
     const { navigateBack } = this.props;
 
     navigateBack();
-  }
-
-  onIndexSelected(index) {
-    this.setState({ selectedPhotoIndex: index });
-  }
-
-  onImageGalleryModeChange(newMode) {
-    const { mode } = this.state;
-
-    if (Platform.OS === 'ios') {
-      const isHidden = (newMode === ImageGallery.IMAGE_PREVIEW_MODE);
-      StatusBar.setHidden(isHidden, 'fade');
-    }
-
-    if (newMode !== mode) {
-      this.setState({ mode: newMode });
-    }
   }
 
   getNavbarProps() {
@@ -91,14 +74,21 @@ class PhotoDetails extends PureComponent {
     };
   }
 
-  renderImageOverlay(imageData) {
-    return (
-      <ImageGalleryOverlay
-        styleName="full-screen"
-        title={imageData.title}
-        description={imageData.description}
-      />
-    );
+  handleIndexSelected(index) {
+    this.setState({ selectedPhotoIndex: index });
+  }
+
+  handleImageGalleryModeChange(newMode) {
+    const { mode } = this.state;
+
+    if (Platform.OS === 'ios') {
+      const isHidden = (newMode === ImageGallery.IMAGE_PREVIEW_MODE);
+      StatusBar.setHidden(isHidden, 'fade');
+    }
+
+    if (newMode !== mode) {
+      this.setState({ mode: newMode });
+    }
   }
 
   render() {
@@ -110,10 +100,10 @@ class PhotoDetails extends PureComponent {
         <NavigationBar {...this.getNavbarProps()} />
         <ImageGallery
           data={photos}
-          renderImageOverlay={this.renderImageOverlay}
-          onIndexSelected={this.onIndexSelected}
+          onIndexSelected={this.handleIndexSelected}
+          onModeChanged={this.handleImageGalleryModeChange}
+          renderImageOverlay={renderImageOverlay}
           selectedIndex={selectedPhotoIndex}
-          onModeChanged={this.onImageGalleryModeChange}
         />
       </Screen>
     );

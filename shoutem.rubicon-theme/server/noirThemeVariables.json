@@ -11,13 +11,33 @@
       },
       "constraints": {
         "fontFamily": {
-          "enum": [ "Rubik-Regular", "NotoSans", "NotoSerif", "MuktaVaani-Regular"]
+          "enum": [
+            "Rubik-Regular",
+            "NotoSans",
+            "NotoSerif",
+            "MuktaVaani-Regular"
+          ]
         },
         "fontStyle": {
-          "enum": ["normal", "italic"]
+          "enum": [
+            "normal",
+            "italic"
+          ]
         },
         "fontWeight": {
-          "enum": ["normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900"]
+          "enum": [
+            "normal",
+            "bold",
+            "100",
+            "200",
+            "300",
+            "400",
+            "500",
+            "600",
+            "700",
+            "800",
+            "900"
+          ]
         },
         "fontSize": {
           "minimum": 10,
@@ -31,15 +51,15 @@
       },
       "constraints": {
         "dropdownValue": {
-          "enum": [ "light", "dark" ]
+          "enum": [
+            "light",
+            "dark"
+          ]
         }
       }
     }
   },
   "properties": {
-
-
-
     "featuredColor": {
       "type": "string",
       "title": "Featured color - main color of the app",
@@ -64,9 +84,6 @@
       "format": "color",
       "default": "rgba(0, 0, 0, 0)"
     },
-
-
-
     "heading": {
       "type": "object",
       "title": "Heading",
@@ -137,8 +154,6 @@
         }
       }
     },
-
-
     "tagOverlayColor": {
       "type": "string",
       "title": "Default overlay color",
@@ -163,8 +178,6 @@
       "format": "color",
       "default": "#FFFFFF"
     },
-
-
     "navBarBackground": {
       "type": "string",
       "title": "Background color",
@@ -218,9 +231,6 @@
       "format": "color",
       "default": "rgba(255, 255, 255, 0.5)"
     },
-
-
-
     "mainNavBackground": {
       "type": "string",
       "title": "Background color",
@@ -275,9 +285,6 @@
       "format": "color",
       "default": "#111111"
     },
-
-
-
     "subNavItemColor": {
       "type": "string",
       "title": "Item text and icon color",
@@ -296,9 +303,6 @@
       "format": "color",
       "default": "#242424"
     },
-
-
-
     "primaryButtonText": {
       "type": "object",
       "title": "Primary text",
@@ -339,9 +343,24 @@
       "format": "color",
       "default": "rgba(255, 255, 255, 0.6)"
     },
-
-
-
+    "notificationTitleColor": {
+      "type": "string",
+      "title": "Notification title color",
+      "format": "color",
+      "default": "#C6C6C6"
+    },
+    "notificationMessageColor": {
+      "type": "string",
+      "title": "Notification message color",
+      "format": "color",
+      "default": "#C6C6C6"
+    },
+    "notificationTimestampColor": {
+      "type": "string",
+      "title": "Notification timestamp color",
+      "format": "color",
+      "default": "#666666"
+    },
     "lineColor": {
       "type": "string",
       "title": "Line color - between list items",
@@ -360,9 +379,6 @@
       "format": "color",
       "default": "#181818"
     }
-
-
-
   },
   "layout": {
     "sections": [
@@ -438,6 +454,14 @@
           "tagOverlayTextColor",
           "imageOverlayColor",
           "imageOverlayTextColor"
+        ]
+      },
+      {
+        "title": "Notification center",
+        "properties": [
+          "notificationTitleColor",
+          "notificationMessageColor",
+          "notificationTimestampColor"
         ]
       },
       {

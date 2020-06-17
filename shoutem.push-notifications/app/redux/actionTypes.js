@@ -24,12 +24,6 @@ export const NOTIFICATION_RECEIVED = 'shoutem.push-notifications.NOTIFICATION_RE
 export const USER_NOTIFIED = 'shoutem.push-notifications.USER_NOTIFIED';
 
 /**
- @typedef REQUEST_PUSH_PERMISSION
- @type {object}
- */
-export const REQUEST_PUSH_PERMISSION = 'shoutem.push-notifications.REQUEST_PUSH_PERMISSION';
-
-/**
  @typedef DEVICE_TOKEN_RECEIVED
  @type {object}
  @property type String

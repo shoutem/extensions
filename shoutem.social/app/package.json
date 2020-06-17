@@ -1,6 +1,6 @@
 {
   "name": "shoutem.social",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Social wall",
   "dependencies": {
     "@shoutem/redux-composers": "0.1.4",
@@ -9,7 +9,7 @@
     "@shoutem/ui": "~2.0.0",
     "auto-bind": "^4.0.0",
     "react-native-action-sheet": "2.2.0",
-    "react-native-image-picker": "^1.1.0",
+    "react-native-image-picker": "2.3.1",
     "react-native-keyboard-aware-scrollview": "^2.0.0",
     "showdown": "^1.8.6"
   },

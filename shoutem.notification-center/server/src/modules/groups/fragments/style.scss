@@ -1,0 +1,38 @@
+.modal.groups-page-modal .modal-dialog:not(.modal-lg) {
+  width: 100%;
+}
+
+.group-structure {
+  .nested-sortable__node {
+    cursor: default;
+    border-bottom: 1px solid #e4e6ea;
+  }
+
+  .nested-sortable__node-header {
+    height: auto;
+  }
+}
+
+.groups-table__title {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #e4e6ea;
+  padding-bottom: 30px;
+
+  h3 {
+    margin-bottom: 4px;
+  }
+
+  .icon-label {
+    text-transform: none;
+    font-weight: normal;
+    padding-top: 48px;
+  }
+}
+
+.groups-empty-placeholder {
+  padding-top: 5px;
+  font-size: 13px;
+  text-align: left;
+  opacity: .6;
+}

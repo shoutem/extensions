@@ -11,7 +11,6 @@ export {
 } from './status';
 
 export {
-  adaptUserForSocialActions,
   adaptSocialUserForProfileScreen,
   openProfileForLegacyUser,
 } from './user';

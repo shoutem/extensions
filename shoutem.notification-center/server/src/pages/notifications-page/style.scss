@@ -1,0 +1,17 @@
+.publish-alert {
+  margin-top: 10px;
+  margin-bottom: 0px;
+}
+
+.notification-alert {
+  margin-top: 5px;
+  margin-bottom: -35px;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 1s linear, opacity 1s linear;
+}
+
+.notification-alert-show {
+  visibility: visible;
+  opacity: 1;
+}

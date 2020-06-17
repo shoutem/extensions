@@ -2,7 +2,7 @@
 // http://shoutem.github.io/docs/extensions/reference/extension-exports
 
 import * as extension from './extension.js';
-import reducer, { collectionStatusMiddleware } from './redux';
+import reducer, { collectionStatusMiddleware, selectors, actions } from './redux';
 import enTranslations from './translations/en.json';
 
 export const screens = extension.screens;
@@ -22,4 +22,4 @@ export const middleware = [
 
 export { appDidMount } from './app';
 
-export { reducer };
+export { reducer, selectors, actions };

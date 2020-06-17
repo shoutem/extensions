@@ -53,7 +53,7 @@ export function createLoginMiddleware(screens) {
           props: {
             action,
             onLoginSuccess: () => store.dispatch(rewrite(action, REPLACE)),
-            interceptedShortcut: _.get(action, 'route.context.shortcutId', null),
+            interceptedRoute: _.get(action, 'route', null),
           },
         }));
       }
@@ -149,3 +149,4 @@ export const logoutMiddleware = setPriority(store => next => (action) => {
   }
   return next(action);
 }, priorities.AUTH);
+

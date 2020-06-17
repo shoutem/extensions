@@ -4,12 +4,11 @@ import { Alert, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import autoBind from 'auto-bind';
-import { NavigationBar, navigateBack } from 'shoutem.navigation';
-import { Screen, Spinner, View, Text, ScrollView } from '@shoutem/ui';
+import { NavigationBar, navigateBack, getActiveNavigationStackState, reset } from 'shoutem.navigation';
+import { Screen, Spinner, ScrollView } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 
 import {
-  executeShortcut,
   getAppId,
   getExtensionSettings,
 } from 'shoutem.application';
@@ -32,12 +31,21 @@ import HorizontalSeparator from '../components/HorizontalSeparator';
 
 const AUTH_ERROR = 'auth_auth_notAuthorized_userAuthenticationError';
 
+function constructNewRoutes(routes, interceptedRoute) {
+  const cleanedRoutes = _.filter(
+    routes,
+    route => route.screen !== 'shoutem.auth.RegisterScreen' && route.screen !== 'shoutem.auth.LoginScreen',
+  );
+
+  return [...cleanedRoutes, interceptedRoute];
+}
+
 export class RegisterScreen extends PureComponent {
   static propTypes = {
     navigateBack: PropTypes.func,
     register: PropTypes.func,
     manualApprovalActive: PropTypes.bool,
-    shortcutToReturnTo: PropTypes.string,
+    routeToReturnTo: PropTypes.object,
     loginWithFacebook: PropTypes.func,
   };
 
@@ -54,18 +62,21 @@ export class RegisterScreen extends PureComponent {
   handleRegistrationSuccess({ payload }) {
     const {
       access_token,
-      executeShortcut,
-      navigateBack,
-      shortcutToReturnTo,
+      routeToReturnTo,
+      reset,
+      activeNavigationStack,
       userRegistered,
     } = this.props;
+    const { routes } = activeNavigationStack;
 
     saveSession(JSON.stringify({ access_token }));
     userRegistered(payload);
 
     this.setState({ inProgress: false });
-    navigateBack();
-    executeShortcut(shortcutToReturnTo);
+
+    const newRoutes = constructNewRoutes(routes, routeToReturnTo);
+
+    reset(newRoutes, _.size(newRoutes) - 1);
   }
 
   handleRegistrationFailed({ payload }) {
@@ -159,8 +170,8 @@ export class RegisterScreen extends PureComponent {
 export const mapDispatchToProps = {
   navigateBack,
   register,
+  reset,
   userRegistered,
-  executeShortcut,
   loginWithFacebook,
 };
 
@@ -170,6 +181,7 @@ function mapStateToProps(state) {
     appId: getAppId(),
     access_token: getAccessToken(state),
     settings: getExtensionSettings(state, ext()),
+    activeNavigationStack: getActiveNavigationStackState(state),
   };
 }
 
@@ -180,3 +192,4 @@ export default loginRequired(
   )(connectStyle(ext('RegisterScreen'))(RegisterScreen)),
   false,
 );
+

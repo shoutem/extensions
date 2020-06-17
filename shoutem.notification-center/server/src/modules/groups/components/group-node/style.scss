@@ -1,0 +1,36 @@
+.group-node {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.group-image-container {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.group-image {
+  height: 40px;
+  width: 40px;
+}
+
+.group-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 40px;
+}
+
+.group-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .btn-icon {
+    padding-right: 10px;
+  }
+}

@@ -5,43 +5,41 @@ import { Dimensions, Platform } from 'react-native';
 import WebView from 'react-native-webview';
 import Pdf from 'react-native-pdf';
 import _ from 'lodash';
-
-import { View, Screen, Spinner, EmptyStateView } from '@shoutem/ui';
-
+import autoBindReact from 'auto-bind/react';
+import { View, Screen, EmptyStateView } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { currentLocation } from 'shoutem.cms';
 import { NavigationBar } from 'shoutem.navigation';
-
 import NavigationToolbar from '../components/NavigationToolbar';
 import { ext } from '../const';
 
-const { bool, shape, string } = PropTypes;
+function renderPlaceholderView() {
+  return (
+    <EmptyStateView message={I18n.t(ext('noUrlErrorMessage'))} />
+  );
+}
 
 export class WebViewScreen extends PureComponent {
   static propTypes = {
-    shortcut: shape({
-      settings: shape({
-        requireGeolocationPermission: bool,
-        showNavigationToolbar: bool,
-        url: string,
-        title: string,
+    title: PropTypes.string,
+    checkPermissionStatus: PropTypes.func,
+    shortcut: PropTypes.shape({
+      settings: PropTypes.shape({
+        requireGeolocationPermission: PropTypes.bool,
+        showNavigationToolbar: PropTypes.bool,
+        url: PropTypes.string,
+        title: PropTypes.string,
       }),
     }),
     // received via openURL, when other extensions open in-app browsers
-    requireLocationPermission: bool,
+    requireLocationPermission: PropTypes.bool,
+    currentLocation: PropTypes.object,
   };
 
   constructor(props) {
     super(props);
 
-    this.goBack = this.goBack.bind(this);
-    this.goForward = this.goForward.bind(this);
-    this.reload = this.reload.bind(this);
-    this.setWebViewRef = this.setWebViewRef.bind(this);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.renderNavigationBar = this.renderNavigationBar.bind(this);
-    this.onNavigationStateChange = this.onNavigationStateChange.bind(this);
-    this.resolveWebViewProps = this.resolveWebViewProps.bind(this);
+    autoBindReact(this);
 
     this.state = {
       webNavigationState: {},
@@ -80,12 +78,18 @@ export class WebViewScreen extends PureComponent {
     this.webViewRef = ref;
   }
 
-  goBack() {
-    this.webViewRef.goBack();
+  getNavBarProps() {
+    const { title } = this.props;
+
+    return { title };
   }
 
   goForward() {
     this.webViewRef.goForward();
+  }
+
+  goBack() {
+    this.webViewRef.goBack();
   }
 
   reload() {
@@ -100,36 +104,17 @@ export class WebViewScreen extends PureComponent {
     return showNavigationToolbar && webNavigation;
   }
 
-  getNavBarProps() {
-    const { title } = this.props;
-
-    return { title };
-  }
-
-  renderNavigationBar() {
-    return (
-      <NavigationBar {...this.getNavBarProps()} />
-    );
-  }
-
-  renderLoadingSpinner() {
-    return (
-      <View styleName="xl-gutter-top">
-        <Spinner styleName="lg-gutter-top" />
-      </View>
-    );
-  }
-
   resolveWebViewProps() {
     const { url, requireGeolocationPermission } = this.getSettings();
     const defaultWebViewProps = {
       ref: this.setWebViewRef,
       startInLoadingState: true,
-      renderLoading: this.renderLoadingSpinner,
       onNavigationStateChange: this.onNavigationStateChange,
       source: { uri: url },
       scalesPageToFit: true,
-    }
+      allowsInlineMediaPlayback: true,
+      showsVerticalScrollIndicator: false,
+    };
 
     if (Platform.OS === 'android') {
       return ({
@@ -141,10 +126,16 @@ export class WebViewScreen extends PureComponent {
     return defaultWebViewProps;
   }
 
+  renderNavigationBar() {
+    return (
+      <NavigationBar {...this.getNavBarProps()} />
+    );
+  }
+
   renderWebView() {
     const { url } = this.getSettings();
 
-    if(url.includes(".pdf")) {
+    if (url.includes('.pdf')) {
       return (
         <Pdf
           source={{ uri: url }}
@@ -161,16 +152,18 @@ export class WebViewScreen extends PureComponent {
   }
 
   renderWebNavigation() {
+    const { webNavigationState } = this.state;
+
     if (!this.isNavigationEnabled()) {
       return null;
     }
 
     return (
       <NavigationToolbar
-        webNavigationState={this.state.webNavigationState}
         goBack={this.goBack}
         goForward={this.goForward}
         reload={this.reload}
+        webNavigationState={webNavigationState}
       />
     );
   }
@@ -187,17 +180,11 @@ export class WebViewScreen extends PureComponent {
     );
   }
 
-  renderPlaceholderView() {
-    return (
-      <EmptyStateView message={I18n.t(ext('noUrlErrorMessage'))} />
-    );
-  }
-
   render() {
     const { url } = this.getSettings();
 
     if (!url) {
-      return this.renderPlaceholderView();
+      return renderPlaceholderView();
     }
 
     return (

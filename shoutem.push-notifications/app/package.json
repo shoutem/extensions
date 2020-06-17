@@ -1,6 +1,6 @@
 {
   "name": "shoutem.push-notifications",
-  "version": "2.3.0",
+  "version": "2.3.4",
   "description": "Base extension for push notifications",
   "dependencies": {
     "xcode": "0.8.9"

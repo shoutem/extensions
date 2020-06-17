@@ -6,6 +6,7 @@ const localizationKeysMap = {
   lm_authorization_forbidden_authDataExpressionInvalid: ext('authDataExpressionInvalidErrorMessage'),
   lm_authorization_forbidden_transactionExists: ext('transactionExistsErrorMessage'),
   lm_transaction_validation_cardPointCountInvalid: ext('cardPointCountInvalid'),
+  lm_transaction_validation_transactionInProgress: ext('transactionInProgress'),
 };
 
 export const getErrorMessage = (errorCode) => {

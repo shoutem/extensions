@@ -7,7 +7,6 @@ import autoBind from 'auto-bind';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { isScreenActive, NavigationBar, navigateTo } from 'shoutem.navigation';
-import { isValid } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { Screen, Spinner, View, ScrollView, Device } from '@shoutem/ui';
 import { loginRequired } from '../loginRequired';
@@ -37,7 +36,7 @@ export class LoginScreen extends PureComponent {
     isUserAuthenticated: PropTypes.bool,
     inProgress: PropTypes.bool,
     onLoginSuccess: PropTypes.func,
-    interceptedShortcut: PropTypes.string,
+    interceptedRoute: PropTypes.object,
     hideShortcuts: PropTypes.func,
     user: PropTypes.shape({
       id: PropTypes.string,
@@ -60,53 +59,19 @@ export class LoginScreen extends PureComponent {
     userLoggedIn: PropTypes.func,
   };
 
-  static defaultPropTypes = {
-    onLoginSuccess: _.noop,
-  };
+  static defaultPropTypes = { onLoginSuccess: _.noop };
 
   constructor(props, contex) {
     super(props, contex);
 
     autoBind(this);
 
-    this.state = {
-      inProgress: false,
-    };
+    this.state = { inProgress: false };
   }
 
-  componentDidUpdate() {
-    const {
-      isScreenActive,
-      isUserAuthenticated,
-      onLoginSuccess,
-      hideShortcuts,
-      user,
-    } = this.props;
+  handlePerformLogin(username, password) {
+    const { login } = this.props;
 
-    // We want to replace the login screen if the user is authenticated
-    // but only if it's the currently active screen as we don't want to
-    //  replace screens in the background
-    const isLoggedIn = isScreenActive && isUserAuthenticated;
-
-    // user becomes 'logged in' as soon as their auth token loads,
-    // but this happens before the full user data gets returned, so we wait as
-    // we need user's user groups populated for the hideShortcuts() to know what to hide
-    const isValidUser = isValid(user);
-
-    if (isLoggedIn && isValidUser) {
-      // We are running the callback after interactions because of the bug
-      // in navigation which prevents us from navigating to other screens
-      // while in the middle of a transition
-      InteractionManager.runAfterInteractions(() => {
-        const { settings } = this.props;
-
-        hideShortcuts(user, settings);
-        onLoginSuccess();
-      });
-    }
-  }
-
-  performLogin(username, password) {
     if (_.isEmpty(username) || _.isEmpty(password)) {
       Alert.alert(
         I18n.t('shoutem.application.errorTitle'),
@@ -116,25 +81,42 @@ export class LoginScreen extends PureComponent {
     }
 
     this.setState({ inProgress: true });
-    this.props
-      .login(username, password)
+    login(username, password)
       .then(this.handleLoginSuccess)
       .catch(this.handleLoginFailed);
   }
 
   handleFacebookLoginSuccess(accessToken) {
+    const { loginWithFacebook } = this.props;
+
     this.setState({ inProgress: true });
-    this.props
-      .loginWithFacebook(accessToken)
+    loginWithFacebook(accessToken)
       .then(this.handleLoginSuccess)
       .catch(this.handleLoginFailed);
   }
 
   handleLoginSuccess() {
-    const { access_token, user, userLoggedIn } = this.props;
+    const {
+      access_token,
+      user,
+      userLoggedIn,
+      onLoginSuccess,
+      isScreenActive,
+      hideShortcuts,
+    } = this.props;
+
     this.setState({ inProgress: false });
     saveSession(JSON.stringify({ access_token }));
-    userLoggedIn({ user, access_token });
+    userLoggedIn({ user, access_token }).then(() => {
+      if (isScreenActive) {
+        InteractionManager.runAfterInteractions(() => {
+          const { settings } = this.props;
+
+          hideShortcuts(user, settings);
+          onLoginSuccess();
+        });
+      }
+    });
   }
 
   handleLoginFailed({ payload }) {
@@ -148,8 +130,8 @@ export class LoginScreen extends PureComponent {
     Alert.alert(I18n.t(ext('loginFailedErrorTitle')), errorMessage);
   }
 
-  openRegisterScreen() {
-    const { interceptedShortcut, navigateTo } = this.props;
+  handleRegisterPress() {
+    const { interceptedRoute, navigateTo } = this.props;
 
     const manuallyApproveMembers = _.get(
       this.props,
@@ -159,7 +141,7 @@ export class LoginScreen extends PureComponent {
       screen: ext('RegisterScreen'),
       props: {
         manualApprovalActive: manuallyApproveMembers,
-        shortcutToReturnTo: interceptedShortcut,
+        routeToReturnTo: interceptedRoute,
       },
     };
 
@@ -206,7 +188,7 @@ export class LoginScreen extends PureComponent {
           showsVerticalScrollIndicator={false}
         >
           <NavigationBar title={I18n.t(ext('logInNavBarTitle'))} />
-          {isEmailAuthEnabled && <LoginForm onSubmit={this.performLogin} />}
+          {isEmailAuthEnabled && <LoginForm onSubmit={this.handlePerformLogin} />}
 
           {(isEligibleForAppleSignIn || isFacebookAuthEnabled) && (
             <HorizontalSeparator />
@@ -226,7 +208,7 @@ export class LoginScreen extends PureComponent {
           )}
 
           {isSignupEnabled && (
-            <RegisterButton onPress={this.openRegisterScreen} />
+            <RegisterButton onPress={this.handleRegisterPress} />
           )}
         </ScrollView>
       </Screen>

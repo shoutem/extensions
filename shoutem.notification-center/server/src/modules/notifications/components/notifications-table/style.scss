@@ -1,0 +1,89 @@
+.notifications-table {
+  p {
+    margin-top: 0px;
+  }
+
+  .table {
+    margin-top: 4px;
+
+    > thead > tr {
+      > :first-child {
+        width: 100px;
+      }
+    }
+
+    > thead > tr {
+      > :last-child {
+        width: 35px;
+      }
+    }
+
+    > thead > tr {
+      > :nth-child(3) {
+        width: 150px;
+      }
+    }
+
+    > thead > tr {
+      > :nth-child(4) {
+        width: 35px;
+      }
+    }
+
+    > tbody > tr {
+      > :nth-child(2) {
+        p {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          padding-right: 30px;
+        }
+      }
+    }
+
+    > tbody > tr {
+      > :nth-child(4) {
+        .form-control-static {
+          padding-top: 0px;
+        }
+      }
+    }
+
+    > tbody > tr {
+      > :last-child {
+        .form-control-static {
+          padding-top: 0px;
+        }
+      }
+    }
+
+    > tbody > tr {
+      > :first-child {
+        .form-control-static {
+          padding-left: 6px;
+          display: flex;
+        }
+      }
+    }
+
+    > tbody > tr > td {
+      padding-top: 4px;
+      padding-right: 8px;
+      padding-bottom: 4px;
+      padding-left: 0px;
+    }
+  }
+
+  .notifications-table__title {
+    h3 {
+      float: left;
+      margin-bottom: 4px;
+    }
+
+    .icon-label {
+      text-transform: none;
+      font-weight: normal;
+      padding-top: 48px;
+    }
+  }
+}

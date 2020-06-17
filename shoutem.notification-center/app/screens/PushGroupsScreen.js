@@ -19,12 +19,11 @@ import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
 import { isProduction } from 'shoutem.application';
 import { NavigationBar } from 'shoutem.navigation';
-import { Permissions } from 'shoutem.push-notifications';
+import { Permissions, selectPushNotificationGroups } from 'shoutem.push-notifications';
 
 import { pushGroupShape } from '../components/shapes';
 import {
   fetchGroups,
-  selectPushNotificationGroups,
   invalidateNotifications,
 } from '../redux';
 import { ext, GROUP_PREFIX } from '../const';

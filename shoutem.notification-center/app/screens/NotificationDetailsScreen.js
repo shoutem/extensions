@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-
+import autoBind from 'auto-bind';
 import {
   ScrollView,
   Screen,
@@ -13,7 +13,6 @@ import {
   Text,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';
 
@@ -21,20 +20,17 @@ import { formatTimestamp } from '../shared/calendar';
 import { notificationShape } from '../components/shapes';
 import { ext } from '../const';
 
-const { func } = PropTypes;
-
 export class NotificationDetailsScreen extends PureComponent {
   static propTypes = {
-    // The notification
     notification: notificationShape.isRequired,
-    // Dispatches the notification action if it has one
-    viewNotification: func.isRequired,
+    viewNotification: PropTypes.func.isRequired,
+    style: PropTypes.object,
   };
 
   constructor(props) {
     super(props);
 
-    this.handleViewNotification = this.handleViewNotification.bind(this);
+    autoBind(this);
   }
 
   handleViewNotification() {
@@ -55,20 +51,20 @@ export class NotificationDetailsScreen extends PureComponent {
   }
 
   renderContent() {
-    const { notification } = this.props;
+    const { notification, style } = this.props;
     const { action, summary, timestamp, title } = notification;
 
     return (
       <View styleName="vertical h-center v-start">
         {title ? (
-          <Title styleName="xl-gutter-top lg-gutter-bottom">
+          <Title style={style.title} styleName="xl-gutter-top lg-gutter-bottom">
             {title.toUpperCase()}
           </Title>
         ) : null}
-        <Caption styleName="xl-gutter-bottom">
+        <Caption style={style.timestamp} styleName="xl-gutter-bottom">
           {formatTimestamp(timestamp)}
         </Caption>
-        <SimpleHtml body={summary} />
+        <SimpleHtml baseFontStyle={style.message} body={summary} />
         {action && this.renderViewNotificationButton()}
       </View>
     );
@@ -86,7 +82,7 @@ export class NotificationDetailsScreen extends PureComponent {
   }
 }
 
-export const mapDispatchToProps = (dispatch) => ({
+export const mapDispatchToProps = dispatch => ({
   viewNotification: (notification) => {
     dispatch(notification.action);
   },

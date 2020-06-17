@@ -1,13 +1,11 @@
 {
   "name": "notification-center",
-  "title": "Notifications",
-  "version": "2.3.2",
+  "title": "Notification center",
+  "version": "2.3.4",
   "platform": "2.3.*",
   "description": "View and manage push notifications within the app",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -42,6 +40,28 @@
     },
     {
       "name": "PushGroupsScreen"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.NotificationsPage",
+      "title": "Notifications",
+      "categories": ["push"]
+    },
+    {
+      "page": "@.GroupsPage",
+      "title": "Groups",
+      "categories": ["push"]
+    }
+  ],
+  "pages": [
+    {
+      "name": "NotificationsPage",
+      "type": "react-page"
+    },
+    {
+      "name": "GroupsPage",
+      "type": "react-page"
     }
   ]
 }

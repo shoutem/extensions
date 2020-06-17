@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Platform, Linking } from 'react-native';
-
-import { Screen, Text, Button, View } from '@shoutem/ui';
-
-import { I18n } from 'shoutem.i18n';
+import { Screen, Icon, Button, View } from '@shoutem/ui';
 import { MapView } from 'shoutem.application';
 import { NavigationBar } from 'shoutem.navigation';
+import { getMapUrl } from '../shared/getMapUrl';
 
 export default class SingleEventMapScreen extends PureComponent {
   static propTypes = {
@@ -22,31 +20,22 @@ export default class SingleEventMapScreen extends PureComponent {
   }
 
   openMaps() {
-    const { marker } = this.props;
+    const { marker, title } = this.props;
+    const { latitude, longitude } = marker;
 
-    const geoURL = `geo:${marker.latitude},${marker.longitude}`;
-
-    Linking.canOpenURL(geoURL).then((supported) => {
-      if (supported) {
-        Linking.openURL(geoURL);
-      } else {
-        Linking.openURL(`http://maps.apple.com/?ll=${marker.latitude},${marker.longitude}`);
-      }
-    });
+    if (latitude && longitude) {
+      Linking.openURL(getMapUrl(latitude, longitude, title));
+    }
   }
 
   renderNavigateButton() {
-    if (Platform.OS === 'ios') {
-      return (
-        <View virtual styleName="container">
-          <Button onPress={this.openMaps}>
-            <Text>{I18n.t('shoutem.cms.directionsButton')}</Text>
-          </Button>
-        </View>
-      );
-    }
-
-    return null;
+    return (
+      <View styleName="container" virtual>
+        <Button onPress={this.openMaps}>
+          <Icon name="directions" />
+        </Button>
+      </View>
+    );
   }
 
   render() {
@@ -55,9 +44,9 @@ export default class SingleEventMapScreen extends PureComponent {
     return (
       <Screen styleName="full-screen">
         <NavigationBar
+          renderRightComponent={this.renderNavigateButton}
           styleName="no-border"
           title={title.toUpperCase()}
-          renderRightComponent={this.renderNavigateButton}
         />
         <MapView
           initialRegion={marker}

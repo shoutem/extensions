@@ -16,11 +16,13 @@ import reducer, {
   authenticate,
   logoutAction,
   isAuthenticated,
+  isUserUpdateAction,
   openProfile,
   RESTORE_SESSION,
   LOGIN,
   LOGOUT,
   REGISTER,
+  USER_SCHEMA,
 } from './redux';
 
 import {
@@ -83,9 +85,11 @@ export {
   authenticate,
   loginRequired,
   isAuthenticated,
+  isUserUpdateAction,
   openProfile,
   LOGIN,
   LOGOUT,
   REGISTER,
   RESTORE_SESSION,
+  USER_SCHEMA,
 };
