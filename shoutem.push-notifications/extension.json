@@ -1,6 +1,6 @@
 {
   "name": "push-notifications",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "platform": "~2.3.1",
   "type": "system",
   "title": "Push Notifications",

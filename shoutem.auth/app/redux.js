@@ -298,6 +298,20 @@ export function isSendBirdConfigured(state) {
 }
 
 /**
+ * Checks whether the Agora extension is installed and configured.
+ * We check this in order to display or hide the video call button within the user
+ * profile page.
+ * @param {Object} state App state
+ */
+export function isAgoraConfigured(state) {
+  const config = getConfiguration(state);
+  const extensionInstalled = _.find(_.get(config, 'extensions'), {id: 'shoutem.agora'});
+  const apiKeySet = !_.isEmpty(_.get(extensionInstalled, 'settings.appId', ''));
+  
+  return extensionInstalled && apiKeySet;
+}
+
+/**
  * Checks whether user is logged in the application.
  * User is considered logged in if access token is in state
  * @param {Object} state App state

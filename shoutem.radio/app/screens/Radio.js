@@ -36,7 +36,6 @@ import RadioPlayer from '../components/RadioPlayer';
 import { ext } from '../const';
 
 const overlayStyle = { marginBottom: 0 };
-const { object } = PropTypes;
 
 function getResizedImageSource(backgroundImageUrl) {
   if (!backgroundImageUrl) {
@@ -52,9 +51,14 @@ function getResizedImageSource(backgroundImageUrl) {
   };
 }
 
+function renderPlaceholderView() {
+  return <EmptyStateView message={I18n.t(ext('missingStreamUrl'))} />;
+}
+
 export class Radio extends PureComponent {
   static propTypes = {
-    shortcut: object,
+    shortcut: PropTypes.object,
+    style: PropTypes.any,
   };
 
   constructor(props) {
@@ -62,19 +66,15 @@ export class Radio extends PureComponent {
 
     this.resolveStatusText = this.resolveStatusText.bind(this);
     this.shouldResetPlayer = this.shouldResetPlayer.bind(this);
-    this.updatePlaybackState = this.updatePlaybackState.bind(this);
+    this.handleUpdatePlaybackState = this.handleUpdatePlaybackState.bind(this);
 
     this.state = {
       playbackState: STATE_STOPPED,
-    }
+    };
   }
 
-  updatePlaybackState(playbackState) {
+  handleUpdatePlaybackState(playbackState) {
     this.setState({ playbackState });
-  }
-
-  renderPlaceholderView() {
-    return <EmptyStateView message={I18n.t(ext('missingStreamUrl'))} />;
   }
 
   resolveStatusText() {
@@ -94,8 +94,6 @@ export class Radio extends PureComponent {
   }
 
   shouldResetPlayer() {
-    const { shortcut, activeShortcut } = this.props;
-
     const shortcutId = _.get(this.props, 'shortcut.id');
     const activeShortcutId = _.get(this.props, 'activeShortcut.id');
     const activeCanonicalName = _.get(this.props, 'activeShortcut.canonicalName');
@@ -107,16 +105,18 @@ export class Radio extends PureComponent {
   render() {
     const { shortcut, style } = this.props;
     const { playbackState } = this.state;
-    const { id, settings: {
-      backgroundImageUrl,
-      navbarTitle,
-      streamTitle,
-      streamUrl,
-      showSharing,
-    }} = shortcut;
+    const {
+      settings: {
+        backgroundImageUrl,
+        navbarTitle,
+        streamTitle,
+        streamUrl,
+        showSharing,
+      },
+    } = shortcut;
 
     if (!streamUrl) {
-      return this.renderPlaceholderView();
+      return renderPlaceholderView();
     }
 
     const share = showSharing ? {
@@ -135,14 +135,14 @@ export class Radio extends PureComponent {
       <Screen styleName="full-screen">
         <NavigationBar
           share={share}
-          title={navbarTitle.toUpperCase()}
           styleName="clear"
+          title={navbarTitle.toUpperCase()}
         />
         <ImageBackground source={bgImage} styleName="fill-parent">
           <Tile styleName="clear text-centric">
             <Overlay style={overlayStyle} styleName="fill-parent image-overlay">
               <RadioPlayer
-                onPlaybackStateChange={this.updatePlaybackState}
+                onPlaybackStateChange={this.handleUpdatePlaybackState}
                 shouldResetPlayer={this.shouldResetPlayer()}
                 title={streamTitle}
                 url={streamUrl}
@@ -150,8 +150,7 @@ export class Radio extends PureComponent {
             </Overlay>
           </Tile>
           <View style={style.nowPlaying} styleName="vertical h-center">
-            <Subtitle
-              style={style.nowPlayingText}>
+            <Subtitle style={style.nowPlayingText}>
               {statusText}
             </Subtitle>
             <Row style={style.clearRow}>
@@ -171,10 +170,10 @@ export class Radio extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   activeShortcut: getActiveShortcut(state),
 });
 
 export default connect(mapStateToProps)(
-  connectStyle(ext('Radio'))(Radio)
+  connectStyle(ext('Radio'))(Radio),
 );

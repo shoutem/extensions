@@ -1,0 +1,25 @@
+{
+  "name": "questions",
+  "title": "Questions",
+  "titleProperty": "buttonLabel",
+  "type": "object",
+  "properties": {
+    "buttonLabel": {
+      "format": "single-line",
+      "title": "Button label",
+      "type": "string",
+      "required": true
+    },
+    "question": {
+      "format": "string",
+      "title": "Question",
+      "type": "string"
+    },
+    "answer": {
+      "format": "string",
+      "title": "Answer",
+      "type": "string",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "name": "interactive-faq",
+  "title": "Interactive FAQ",
+  "version": "2.3.3",
+  "platform": "2.3.*",
+  "icon": "./server/assets/faq.png",
+  "description": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
+  "dependencies": [
+    "shoutem.layouts"
+  ],
+  "categories": [
+    "users"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
+  "shortcuts": [
+    {
+      "title": "Interactive FAQ",
+      "description": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
+      "icon": "theme://comment.png",
+      "name": "faq-shortcut",
+      "screen": "@.InteractiveFaqScreen",
+      "adminPages": [
+        {
+          "page": "@.FaqSettings",
+          "title": "Settings"
+        },
+        {
+          "page": "shoutem.cms.CmsPage",
+          "title": "Questions",
+          "parameters": {
+            "schema": "@.questions"
+          }
+        }
+      ]
+    }
+  ],
+  "screens": [
+    {
+      "name": "InteractiveFaqScreen",
+      "title": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
+      "image": "./server/assets/faq.png"
+    }
+  ],
+  "dataSchemas": [
+    {
+      "name": "questions",
+      "path": "server/data-schemas/questions.json"
+    }
+  ],
+  "pages": [
+    {
+      "name": "FaqSettings",
+      "path": "dummy.js",
+      "type": "native-component"
+    }
+  ]
+}

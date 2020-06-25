@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Animated } from 'react-native';
+import _ from 'lodash';
 import slugify from '@sindresorhus/slugify';
 
 import {
@@ -9,12 +11,9 @@ import {
   STATE_PLAYING, // 3 playing
   STATE_READY, // undefined ready
   STATE_BUFFERING, // 6 buffering
-  STATE_CONNECTING, // 8 connecting
   TrackPlayer,
   TrackPlayerBase,
 } from 'shoutem.audio';
-
-import { Capability, State } from 'react-native-track-player';
 
 import { connectStyle } from '@shoutem/theme';
 import { Icon, Button, Spinner } from '@shoutem/ui';
@@ -22,6 +21,16 @@ import { Icon, Button, Spinner } from '@shoutem/ui';
 import { ext, trackPlayerOptions } from '../const';
 
 const { bool, func, string } = PropTypes;
+
+const COMMON_BUBBLE_PARAMS = {
+  duration: 200,
+  useNativeDriver: true,
+};
+
+const COMMON_APPEAR_PARAMS = {
+  duration: 500,
+  useNativeDriver: true,
+};
 
 class RadioPlayer extends TrackPlayerBase {
   static propTypes = {
@@ -35,8 +44,20 @@ class RadioPlayer extends TrackPlayerBase {
     super(props);
 
     this.resolveActionIcon = this.resolveActionIcon.bind(this);
+    this.composeBubbleAnimation = this.composeBubbleAnimation.bind(this);
+    this.composeAppearAnimation = this.composeAppearAnimation.bind(this);
 
     this.setTrackPlayerOptions();
+
+    this.appearAnimationMain = new Animated.Value(0);
+    this.appearAnimationOuter = new Animated.Value(0);
+    this.bubbleAnimationMain = new Animated.Value(0);
+    this.bubbleAnimationOuterA = new Animated.Value(1);
+    this.bubbleAnimationOuterB = new Animated.Value(1);
+
+    this.bubbleAnimation = this.composeBubbleAnimation();
+
+    this.state = { ...this.state, appearAnimationActive: false };
   }
 
   async componentDidUpdate() {
@@ -54,6 +75,90 @@ class RadioPlayer extends TrackPlayerBase {
         TrackPlayer.reset();
       }
     }
+  }
+
+  composeBubbleAnimation() {
+    return Animated.loop(Animated.stagger(150, [
+      Animated.sequence([
+        Animated.timing(this.bubbleAnimationOuterA, {
+          toValue: 1.05,
+          ...COMMON_BUBBLE_PARAMS,
+        }),
+        Animated.timing(this.bubbleAnimationOuterA, {
+          toValue: 1,
+          ...COMMON_BUBBLE_PARAMS,
+        }),
+      ]),
+      Animated.sequence([
+        Animated.timing(this.bubbleAnimationMain, {
+          toValue: 0.05,
+          ...COMMON_BUBBLE_PARAMS,
+        }),
+        Animated.timing(this.bubbleAnimationMain, {
+          toValue: 0,
+          ...COMMON_BUBBLE_PARAMS,
+        }),
+      ]),
+      Animated.sequence([
+        Animated.timing(this.bubbleAnimationOuterB, {
+          toValue: 1.05,
+          ...COMMON_BUBBLE_PARAMS,
+        }),
+        Animated.timing(this.bubbleAnimationOuterB, {
+          toValue: 1,
+          ...COMMON_BUBBLE_PARAMS,
+        }),
+      ]),
+    ]));
+  }
+
+  composeAppearAnimation(appear) {
+    const endValue = appear ? 1 : 0;
+
+    const animations = [
+      Animated.spring(this.appearAnimationMain, {
+        toValue: endValue,
+        ...COMMON_APPEAR_PARAMS,
+      }),
+      Animated.timing(this.appearAnimationOuter, {
+        toValue: endValue,
+        ...COMMON_APPEAR_PARAMS,
+      }),
+    ];
+
+    this.appearAnimation = Animated.sequence(appear ? animations : _.reverse(animations));
+  }
+
+  calculateOuterCircleStyle(leadingCircle) {
+    const { style } = this.props;
+
+    const bubbleAnimationValue = leadingCircle ? this.bubbleAnimationOuterA : this.bubbleAnimationOuterB;
+    const translateOutputRange = leadingCircle ? [0, -10] : [0, 10];
+
+    return [
+      style.playbackMainCircle,
+      {
+        opacity: this.appearAnimationOuter.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 0.35],
+        }),
+        transform: [
+          { scale: bubbleAnimationValue },
+          { perspective: 1000 },
+          {
+            translateX: this.appearAnimationOuter.interpolate({
+              inputRange: [0, 1],
+              outputRange: translateOutputRange,
+            }),
+          },
+          {
+            translateY: this.appearAnimationOuter.interpolate({
+              inputRange: [0, 1],
+              outputRange: translateOutputRange,
+            }),
+          },
+        ],
+      }];
   }
 
   setTrackPlayerOptions() {
@@ -86,7 +191,28 @@ class RadioPlayer extends TrackPlayerBase {
   }
 
   handlePlaybackStateChange(data) {
+    const { appearAnimationActive } = this.state;
     const { onPlaybackStateChange } = this.props;
+    const { state } = data;
+
+    if (state === STATE_STOPPED || state === STATE_PLAYING || state === STATE_PAUSED) {
+      if (appearAnimationActive) {
+        this.appearAnimation.reset();
+      }
+
+      const wasPlaying = state === STATE_PAUSED;
+
+      this.composeAppearAnimation(!wasPlaying);
+
+      const callback = wasPlaying ? () => this.bubbleAnimation.reset() : () => this.bubbleAnimation.start();
+
+      this.setState({ appearAnimationActive: true });
+
+      this.appearAnimation.start(() => {
+        this.setState({ appearAnimationActive: false });
+        callback();
+      });
+    }
 
     super.handlePlaybackStateChange(data);
     onPlaybackStateChange(data.state);
@@ -108,7 +234,7 @@ class RadioPlayer extends TrackPlayerBase {
   }
 
   resolveActionIcon() {
-    const { style: { playbackIcon, spinner }} = this.props;
+    const { style: { playbackIcon, spinner } } = this.props;
     const { playbackState } = this.state;
 
     const icons = {
@@ -124,16 +250,28 @@ class RadioPlayer extends TrackPlayerBase {
   }
 
   render() {
-    const { style: { playbackButton }} = this.props;
+    const { style } = this.props;
 
     const ActionIcon = this.resolveActionIcon;
 
     return (
       <Button
         onPress={this.handleActionButtonPress}
-        style={playbackButton}
+        style={style.playbackButton}
       >
         <ActionIcon />
+        <Animated.View style={[
+          style.playbackMainCircle,
+          { opacity: this.appearAnimationMain },
+          {
+            transform: [
+              { scale: Animated.add(this.appearAnimationMain, this.bubbleAnimationMain) },
+              { perspective: 1000 },
+            ],
+          }]}
+        />
+        <Animated.View style={this.calculateOuterCircleStyle(true)} />
+        <Animated.View style={this.calculateOuterCircleStyle(false)} />
       </Button>
     );
   }

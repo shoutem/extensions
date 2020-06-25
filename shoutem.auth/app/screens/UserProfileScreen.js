@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { Modal } from 'react-native';
-
+import autoBind from 'auto-bind';
 import {
   Button,
   Caption,
@@ -33,15 +33,18 @@ import {
   getUser,
   logout,
   isSendBirdConfigured,
+  isAgoraConfigured,
 } from '../redux';
 import { ext } from '../const';
 
 const SENDBIRD_SCREEN_ID = 'shoutem.sendbird.ChatWindowScreen';
+const AGORA_SCREEN_ID = 'shoutem.agora.VideoCallScreen';
 
 export class UserProfileScreen extends PureComponent {
   static propTypes = {
     isProfileOwner: PropTypes.bool,
     sendBirdConfigured: PropTypes.bool,
+    isAgoraConfigured: PropTypes.bool,
     navigateTo: PropTypes.func,
     // Closes the modal in which the edit profile screen is opened
     closeModal: PropTypes.func,
@@ -55,10 +58,8 @@ export class UserProfileScreen extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.toggleImageGallery = this.toggleImageGallery.bind(this);
-    this.openEditProfileScreen = this.openEditProfileScreen.bind(this);
-    this.handleChatPress = this.handleChatPress.bind(this);
-    this.renderChatButton = this.renderChatButton.bind(this);
+    
+    autoBind(this);
 
     this.state = {
       shouldRenderImageGallery: false,
@@ -137,6 +138,20 @@ export class UserProfileScreen extends PureComponent {
     });
   }
 
+  handleAgoraPress() {
+    const { closeModal, openInModal, user } = this.props;
+
+    const route = {
+      screen: AGORA_SCREEN_ID,
+      props: {
+        onClose: closeModal,
+        user,
+      },
+    };
+
+    openInModal(route);
+  }
+
   renderImageGallery() {
     const { profile_image_url: image } = this.props.user;
     const { shouldRenderImageGallery } = this.state;
@@ -206,6 +221,21 @@ export class UserProfileScreen extends PureComponent {
     );
   }
 
+  renderVideoChatButton() {
+    const { isProfileOwner, agoraConfigured } = this.props;
+
+    if (!agoraConfigured || isProfileOwner) {
+      return null;
+    }
+
+    return (
+      <Button onPress={this.handleAgoraPress} styleName="stacked clear">
+        <Icon name="video-chat" />
+        <Text>Video Chat</Text>
+      </Button>
+    );
+  }
+
   renderContent() {
     const { profile } = this.props.user;
 
@@ -252,6 +282,7 @@ export class UserProfileScreen extends PureComponent {
           {description}
         </Text>
         {this.renderEditButton()}
+        {this.renderVideoChatButton()}
         {this.renderChatButton()}
       </View>
     );
@@ -278,7 +309,8 @@ export const mapStateToProps = (state, ownProps) => {
   return {
     user: user || me || {},
     isProfileOwner,
-    sendBirdConfigured: isSendBirdConfigured(state)
+    sendBirdConfigured: isSendBirdConfigured(state),
+    agoraConfigured: isAgoraConfigured(state),
   };
 };
 

@@ -54,6 +54,12 @@ function handleTokenReceived(token, dispatch) {
 
 function createLocalAlert(notification, dispatch) {
   const action = _.get(notification, 'data.action') || _.get(notification, 'action');
+  const message = _.get(notification, 'data.text') || _.get(notification, 'message');
+
+  if (!action && !message) {
+    return;
+  }
+
   const resolvedAction = action && JSON.parse(action);
   const viewAction = {
     text: I18n.t(ext('messageReceivedAlertView')),
@@ -70,7 +76,7 @@ function createLocalAlert(notification, dispatch) {
 
   Alert.alert(
     I18n.t(ext('messageReceivedAlert')),
-    notification.data.text,
+    message,
     alertOptions,
   );
 }
