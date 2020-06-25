@@ -1,10 +1,11 @@
 {
   "name": "firebase",
-  "version": "2.3.6",
+  "version": "2.3.7",
   "platform": "~2.3.1",
   "type": "system",
   "skipClone": false,
   "title": "Firebase",
+  "native": true,
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
   "icon": "server/assets/add-firebase-image.png",
   "settingsPages": [

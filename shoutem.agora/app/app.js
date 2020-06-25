@@ -1,0 +1,3 @@
+function appDidFinishLaunching() {}
+
+export { appDidFinishLaunching };

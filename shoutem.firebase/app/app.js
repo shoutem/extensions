@@ -40,11 +40,11 @@ export function appDidFinishLaunching(app) {
         notif.finish(PushNotificationIOS.FetchResult.NoData);
       }
 
-      if (foreground && !userInteraction) {
+      if (foreground && userInteraction !== true) {
         handleNotificationReceivedForeground(notif, dispatch);
       }
 
-      if (!foreground && Platform.OS === 'ios') {
+      if (foreground === false && Platform.OS === 'ios') {
         handleNotificationReceivedBackground(notif, dispatch);
       }
 

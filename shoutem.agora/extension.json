@@ -1,0 +1,30 @@
+{
+  "name": "agora",
+  "title": "Agora",
+  "version": "2.3.2",
+  "icon": "server/assets/add-videos-image.png",
+  "description": "Connect your users with real-time video chat!",
+  "platform": "2.3.*",
+  "native": true,
+  "dependencies": ["shoutem.auth"],
+  "screens": [
+    {
+      "name": "VideoCallScreen"
+    }
+  ],
+  "pages": [
+    {
+      "name": "AgoraSettingsPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.AgoraSettingsPage",
+      "title": "Settings",
+      "settings": {
+        "appId": ""
+      }
+    }
+  ]
+}
