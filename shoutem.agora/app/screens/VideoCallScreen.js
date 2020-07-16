@@ -14,6 +14,7 @@ import VideoCallView from '../components/VideoCallView';
 import VideoCallStartingView from '../components/VideoCallStartingView';
 import { checkPermissions, requestPermissions } from '../services/permissions';
 import * as Agora from '../services/agora';
+import { images } from '../assets/index';
 import { ext } from '../const';
 
 class VideoCallScreen extends PureComponent {
@@ -22,9 +23,8 @@ class VideoCallScreen extends PureComponent {
 
     autoBind(this);
 
-    const { user, localUser } = props;
+    const { user, localUser, channelName } = props;
     const localUserId = parseInt(_.get(localUser, 'legacyId'));
-    const channelName = Agora.resolveChannelName(localUser, user);
 
     this.state = {
       audioMute: false,
@@ -33,8 +33,8 @@ class VideoCallScreen extends PureComponent {
       peerIds: [],
       stopwatchStart: false,
       stopwatchReset: false,
-      channelName,
-      uid: localUserId,
+      channelName: channelName || Agora.resolveChannelName(localUser, user),
+      uid: localUserId || Math.floor(Math.random() * 100),
       videoMute: false,
       remoteVideoMute: false,
       remoteAudioMute: false,
@@ -63,7 +63,7 @@ class VideoCallScreen extends PureComponent {
 
       this.resetStopwatch();
       this.setState({
-        peerIds: peerIds.filter((uid) => uid !== data.uid),
+        peerIds: peerIds.filter(uid => uid !== data.uid),
         videoMute: false,
         audioMute: false,
       });
@@ -108,7 +108,7 @@ class VideoCallScreen extends PureComponent {
 
     RtcEngine.joinChannel(channelName, uid)
       .then(RtcEngine.enableAudio)
-      .catch((error) => Agora.connectionFailedAlert());
+      .catch(error => Agora.connectionFailedAlert());
   }
 
   handleEndCallPress() {
@@ -140,9 +140,10 @@ class VideoCallScreen extends PureComponent {
   }
 
   handleStartCallPress() {
-    const { isUserAuthenticated } = this.props;
+    const { isUserAuthenticated, localUser } = this.props;
+    const localUserId = parseInt(_.get(localUser, 'legacyId'));
 
-    if (!isUserAuthenticated) {
+    if (!isUserAuthenticated && localUserId) {
       return Agora.authFailedAlert();
     }
 
@@ -197,11 +198,18 @@ class VideoCallScreen extends PureComponent {
       remoteAudioMute,
     } = this.state;
 
-    const { user, style } = this.props;
+    const {
+      user,
+      style,
+      remoteUserFullName,
+      remoteUserProfileImage,
+    } = this.props;
 
-    const profileImage = _.get(user, 'profile.image');
-    const fullName =
-      _.get(user, 'profile.name') || _.get(user, 'profile.nick', '');
+    const profileImageUrl = _.get(user, 'profile.image');
+    const image = profileImageUrl ? { uri: profileImageUrl } : images.emptyUserProfile;
+    const profileImage = remoteUserProfileImage || image;
+    const userProfileName = _.get(user, 'profile.name') || _.get(user, 'profile.nick', '');
+    const fullName = remoteUserFullName || userProfileName;
     const waitingForPeer = connectionSuccess && peerIds.length === 0;
     const videoCallEstablished = connectionSuccess && peerIds.length === 1;
 
@@ -251,6 +259,9 @@ class VideoCallScreen extends PureComponent {
 }
 
 VideoCallScreen.propTypes = {
+  channelName: PropTypes.string,
+  remoteUserFullName: PropTypes.string,
+  image: PropTypes.oneOfType([PropTypes.number, PropTypes.shape({ uri: PropTypes.string })]),
   isUserAuthenticated: PropTypes.bool,
   user: PropTypes.object,
   localUser: PropTypes.object,

@@ -83,7 +83,7 @@ class WebCheckoutScreen extends PureComponent {
   renderDoneButton() {
     return (
       <Button onPress={this.completeTransaction}>
-        <Text>Done</Text>
+        <Text>{I18n.t(ext('doneButton'))}</Text>
       </Button>
     );
   }

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.agora",
-  "version": "2.3.2",
+  "version": "2.3.4",
   "description": "Agora Video Call extension",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

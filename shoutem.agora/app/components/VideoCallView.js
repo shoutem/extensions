@@ -75,7 +75,7 @@ VideoCallView.propTypes = {
   audioMute: PropTypes.bool,
   remoteVideoMute: PropTypes.bool,
   fullName: PropTypes.string,
-  image: PropTypes.string,
+  image: PropTypes.oneOfType([PropTypes.number, PropTypes.shape({ uri: PropTypes.string })]),
   getFormattedTime: PropTypes.func,
   onAudioMutePress: PropTypes.func,
   onEndCallPress: PropTypes.func,

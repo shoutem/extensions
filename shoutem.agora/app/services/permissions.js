@@ -10,11 +10,9 @@ import {
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
-const MIC_PERMISSIONS = 
-Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO;
+const MIC_PERMISSIONS = Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO;
 
-const CAM_PERMISSIONS = 
-Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+const CAM_PERMISSIONS = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
 
 function openSettingsIos() {
   Alert.alert(
@@ -22,11 +20,11 @@ function openSettingsIos() {
     I18n.t(ext('missingPermissionsMessage')),
     [
       {
-        text: 'Cancel',
+        text: I18n.t(ext('cancel')),
         style: 'cancel',
       },
       {
-        text: 'Go to Settings',
+        text: I18n.t(ext('openSettings')),
         onPress: () => openSettings(),
       },
       { cancelable: true },

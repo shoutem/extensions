@@ -147,6 +147,16 @@ export default (customVariables = {}) => {
           marginTop: variables.mediumGutter,
           marginBottom: variables.mediumGutter,
         },
+        strong: Platform.select({
+          android: {
+            fontFamily: 'System',
+          },
+        }),
+        em: Platform.select({
+          android: {
+            fontFamily: 'System',
+          },
+        }),
       },
     },
 
@@ -1785,10 +1795,8 @@ export default (customVariables = {}) => {
       screen: {
         backgroundColor: '#FFFFFF',
       },
-      list: {
-        listContent: {
-          backgroundColor: '#FFFFFF',
-        },
+      spinnerContainer: {
+        paddingVertical: 15,
       },
     },
 
@@ -2016,7 +2024,6 @@ export default (customVariables = {}) => {
         paddingTop: 14,
         paddingBottom: 9,
         paddingRight: 15,
-        height: 60,
         borderColor: 'rgba(130, 130, 130, 0.1)',
         borderTopWidth: 1,
       },
@@ -2031,18 +2038,21 @@ export default (customVariables = {}) => {
       },
       input: {
         flex: 1,
-        height: 37,
+        minHeight: 37,
+        maxHeight: 80,
         borderRadius: 100,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'transparent',
         borderColor: '#333333',
         borderWidth: 2,
         paddingTop: 9,
         paddingBottom: 10,
-        paddingLeft: 12,
+        paddingLeft: 16,
         paddingRight: 44,
         fontSize: 13,
         letterSpacing: -0.17,
+        textAlignVertical: 'center',
         color: '#000000',
+        overflow: 'hidden',
       },
       sendIcon: {
         icon: {
@@ -2051,7 +2061,7 @@ export default (customVariables = {}) => {
         },
         wrapper: {
           position: 'absolute',
-          top: 17,
+          top: '50%',
           right: 20,
         },
       },
@@ -2146,3 +2156,4 @@ export default (customVariables = {}) => {
     },
   });
 };
+

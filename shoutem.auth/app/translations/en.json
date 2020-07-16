@@ -6,6 +6,7 @@
       "appleAuthInvalidResponseError": "The authorization request received an invalid response.",
       "appleAuthNotHandledError": "The authorization request wasn't handled.'",
       "appleAuthUnknownError": "The authorization attempt failed for an unknown reason.",
+      "chat": "Chat",
       "doneNavBarButton": "Done",
       "editProfileButton": "EDIT PROFILE",
       "editProfileNavBarTitle": "EDIT PROFILE",
@@ -13,6 +14,7 @@
       "facebookLogInButton": "Sign in with Facebook",
       "facebookSignUpButton": "Continue with Facebook",
       "formNotFilledErrorMessage": "All form fields are required.",
+      "horizontalSeparatorText": "OR",
       "imageSelectErrorMessage": "Image selection error.",
       "invalidCredentialsErrorMessage": "Wrong username / email or password. Please try again.",
       "invalidEmailFormatErrorMessage": "Wrong email format. Make sure your email format is name@domain.com",
@@ -44,8 +46,8 @@
       "usernameOrEmailPlaceholder": "Enter your username/email",
       "usernamePlaceholder": "Enter your username",
       "usernameTakenErrorMessage": "That email or username is taken. Please choose another one or try to sign in.",
-      "horizontalSeparatorText": "OR",
-      "userWebsite": "Website"
+      "userWebsite": "Website",
+      "videoChat": "Video Chat"
     }
   }
 }

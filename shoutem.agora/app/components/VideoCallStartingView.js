@@ -26,7 +26,7 @@ function VideoCallStartingView({ fullName, onStartCallPress, style, image }) {
 
 VideoCallStartingView.propTypes = {
   fullName: PropTypes.string,
-  image: PropTypes.string,
+  image: PropTypes.oneOfType([PropTypes.number, PropTypes.shape({ uri: PropTypes.string })]),
   onStartCallPress: PropTypes.func,
   style: PropTypes.object,
 };

@@ -166,9 +166,9 @@ class RadioPlayer extends TrackPlayerBase {
   }
 
   getId() {
-    const { title, url } = this.props;
+    const { url } = this.props;
 
-    const id = slugify(`${title}-${url}`);
+    const id = slugify(`${url}`);
 
     return `radio-${id}`;
   }
@@ -216,6 +216,29 @@ class RadioPlayer extends TrackPlayerBase {
 
     super.handlePlaybackStateChange(data);
     onPlaybackStateChange(data.state);
+  }
+
+  handleActionButtonPress() {
+    const { playbackState, appearAnimationActive } = this.state;
+
+    if (appearAnimationActive) {
+      this.appearAnimation.reset();
+    }
+
+    const wasPlaying = playbackState === STATE_PLAYING;
+
+    this.composeAppearAnimation();
+
+    const callback = wasPlaying ? () => this.bubbleAnimation.reset() : () => this.bubbleAnimation.start();
+
+    this.setState({ appearAnimationActive: true });
+
+    this.appearAnimation.start(() => {
+      this.setState({ appearAnimationActive: false });
+      callback();
+    });
+
+    super.handleActionButtonPress();
   }
 
   async handleReturnToPlayer() {

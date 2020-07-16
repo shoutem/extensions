@@ -1,16 +1,18 @@
 {
   "shoutem": {
     "agora": {
+      "cancel": "Cancel",
       "localUserFailsToConnectTitle": "Unable to establish video call",
       "localUserFailsToConnectMessage": "Please try again later or contact the app owner.",
-      "userNotAuthenticatedTitle": "User not logged in",
-      "userNotAuthenticatedMessage": "You must be logged in to use video call feature.",
       "missingPermissionsTitle": "Camera and Microphone Access Required",
       "missingPermissionsMessage": "Please enable access to your camera and microphone in the Settings",
-      "waitingToJoinFirstPart": "Waiting for",
-      "waitingToJoinSecondPart": "to connect...",
       "missingUidErrorTitle": "User ID is missing",
-      "missingUidErrorMessage": "Unable to join the channel. Please try again later."
+      "missingUidErrorMessage": "Unable to join the channel. Please try again later.",
+      "openSettings": "Go to Settings",
+      "userNotAuthenticatedTitle": "User not logged in",
+      "userNotAuthenticatedMessage": "You must be logged in to use video call feature.",
+      "waitingToJoinFirstPart": "Waiting for",
+      "waitingToJoinSecondPart": "to connect..."
     }
   }
 }

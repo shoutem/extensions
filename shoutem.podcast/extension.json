@@ -1,12 +1,12 @@
 {
   "name": "podcast",
-  "version": "2.3.0",
+  "version": "2.3.2",
   "platform": "2.3.*",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
   "icon": "server/assets/extension-icon.png",
   "categories": [
-    "content"
+    "media"
   ],
   "repository": {
     "type": "git",

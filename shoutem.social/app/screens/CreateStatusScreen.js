@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Alert, KeyboardAvoidingView } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 
@@ -17,6 +17,7 @@ import {
   Caption,
   Icon,
   TouchableOpacity,
+  Keyboard,
   ScrollView,
 } from '@shoutem/ui';
 
@@ -146,7 +147,6 @@ export class CreateStatusScreen extends PureComponent {
           multiline
           maxLength={statusMaxLength}
           placeholder={placeholder}
-          autoFocus
           onTextChanged={this.handleTextChange}
           value={text}
         />
@@ -185,7 +185,10 @@ export class CreateStatusScreen extends PureComponent {
       </TouchableOpacity> : null;
 
     return (
-      <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={-64}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'position'}
+        keyboardVerticalOffset={Keyboard.calculateKeyboardOffset()}
+      >
         <Divider styleName="line" />
         <View
           styleName="sm-gutter-top md-gutter-horizontal horizontal v-end space-between"

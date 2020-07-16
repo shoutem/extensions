@@ -27,6 +27,7 @@
       "countrySelectionTitle": "COUNTRY",
       "checkoutNavBarTitle": "CHECKOUT",
       "checkoutContinueButton": "CONTINUE",
+      "doneButton": "Done",
       "addItemConfirmButton": "CONFIRM",
       "cartItemUpdateButton": "UPDATE",
       "cartItemRemoveButton": "REMOVE",

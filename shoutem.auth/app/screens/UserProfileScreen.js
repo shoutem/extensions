@@ -58,7 +58,7 @@ export class UserProfileScreen extends PureComponent {
 
   constructor(props) {
     super(props);
-    
+
     autoBind(this);
 
     this.state = {
@@ -73,7 +73,7 @@ export class UserProfileScreen extends PureComponent {
       renderRightComponent: () => {
         if (isProfileOwner) {
           return (
-            <View virtual styleName="container">
+            <View styleName="container" virtual>
               <Button
                 onPress={logout}
                 styleName="clear"
@@ -101,7 +101,7 @@ export class UserProfileScreen extends PureComponent {
     return {
       styleName: 'clear',
       leftComponent: (
-        <Button styleName="clear tight" onPress={this.toggleImageGallery}>
+        <Button onPress={this.toggleImageGallery} styleName="clear tight">
           <Icon name="close" />
         </Button>
       ),
@@ -160,8 +160,8 @@ export class UserProfileScreen extends PureComponent {
 
     return (
       <Modal
-        visible={shouldRenderImageGallery}
         onRequestClose={this.toggleImageGallery}
+        visible={shouldRenderImageGallery}
       >
         <ImageGallery
           data={data}
@@ -181,8 +181,8 @@ export class UserProfileScreen extends PureComponent {
 
     return (
       <Button
-        styleName="secondary md-gutter-vertical"
         onPress={this.openEditProfileScreen}
+        styleName="secondary md-gutter-vertical"
       >
         <Icon name="edit" />
         <Text>{I18n.t(ext('editProfileButton'))}</Text>
@@ -216,7 +216,7 @@ export class UserProfileScreen extends PureComponent {
     return (
       <Button onPress={this.handleChatPress} styleName="stacked clear">
         <Icon name="activity" />
-        <Text>Chat</Text>
+        <Text>{I18n.t(ext('chat'))}</Text>
       </Button>
     );
   }
@@ -231,7 +231,7 @@ export class UserProfileScreen extends PureComponent {
     return (
       <Button onPress={this.handleAgoraPress} styleName="stacked clear">
         <Icon name="video-chat" />
-        <Text>Video Chat</Text>
+        <Text>{I18n.t(ext('videoChat'))}</Text>
       </Button>
     );
   }
@@ -258,25 +258,13 @@ export class UserProfileScreen extends PureComponent {
           onPress={this.toggleImageGallery}
           uri={image}
         />
-        {nick ?
-          <Caption styleName="md-gutter-vertical">{`${nick}`}</Caption>
-          :
-          null
+        {nick ? <Caption styleName="md-gutter-vertical">{`${nick}`}</Caption> : null
         }
-        {name ?
-          <Title styleName="md-gutter-vertical">{name}</Title>
-          :
-          null
+        {name ? <Title styleName="md-gutter-vertical">{name}</Title> : null
         }
-        {location ?
-          <Caption styleName="md-gutter-vertical">{`${location}`}</Caption>
-          :
-          null
+        {location ? <Caption styleName="md-gutter-vertical">{`${location}`}</Caption> : null
         }
-        {url ?
-          <Caption styleName="md-gutter-vertical">{`${url}`}</Caption>
-          :
-          null
+        {url ? <Caption styleName="md-gutter-vertical">{`${url}`}</Caption> : null
         }
         <Text styleName="h-center">
           {description}

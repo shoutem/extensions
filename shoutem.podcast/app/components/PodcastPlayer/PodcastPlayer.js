@@ -28,7 +28,6 @@ import {
 } from '@shoutem/ui';
 
 import convertSecondsToTimeDisplay from '../../services/time';
-import trimText from '../../services/trim-text';
 import { ext, trackPlayerOptions } from '../../const';
 import { SKIP_BACK_TIME, SKIP_FORWARD_TIME } from './const';
 import { ProgressControl } from './ProgressControl';
@@ -60,10 +59,9 @@ class PodcastPlayer extends TrackPlayerBase {
   }
 
   getId() {
-    const { episode, podcastTitle } = this.props;
-    const { title, artist = podcastTitle, author = '-' } = episode;
+    const { episode } = this.props;
 
-    const id = episode.id || slugify(trimText(`${title}-${artist}-${author}`), 40);
+    const id = episode.id || slugify(`${episode.url}`);
 
     return `podcast-${id}`;
   }
