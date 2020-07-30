@@ -1,0 +1,47 @@
+info:
+  title: node-seed-project Swagger API
+  version: 1.0.0
+host: 'localhost:3000'
+basePath: /
+securityDefinitions:
+  token:
+    type: apiKey
+    in: header
+    name: Authorization
+    description: 'Authorization header with value: "Bearer {token}", where token is provided by auth'
+consumes:
+  - application/vnd.api+json
+produces:
+  - application/vnd.api+json
+schemes:  
+  - https
+  - http
+security:
+  - token: []
+swagger: '2.0'
+
+parameters:
+  query:
+    name: query
+    in: query
+    description: query for text search
+    type: string
+  pagingOffset:
+    name: page[offset]
+    in: query
+    description: paging offset
+    type: integer
+  pagingLimit:
+    name: page[limit]
+    in: query
+    description: paging limit
+    type: integer
+
+definitions:
+  JsonApiPagingLinks:
+    type: object
+    properties:
+      prev:
+        type: string
+      next:
+        type: string

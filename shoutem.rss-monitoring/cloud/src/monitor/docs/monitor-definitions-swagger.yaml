@@ -1,0 +1,57 @@
+definitions:
+  MonitorReference:
+    type: object
+    required:
+    - type
+    - id
+    properties:
+      type:
+        type: string
+        enum: [ shoutem.rss-monitoring.monitors ]
+      id:
+        type: string
+  Monitor:
+    allOf:
+      - $ref: '#/definitions/MonitorReference'
+      - type: object
+        properties:
+          attributes:
+            type: object
+            properties:
+              appId:
+                type: string
+          relationships:
+            type: object
+            properties:
+  MonitorJsonApiDocument:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        $ref: '#/definitions/Monitor'
+  MonitorCollectionJsonApiDocument:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Monitor'
+  MonitorSingleRelationship:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        $ref: '#/definitions/MonitorReference'
+  MonitorCollectionRelationship:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/MonitorReference'

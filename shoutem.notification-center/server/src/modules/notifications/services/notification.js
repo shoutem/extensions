@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import { TARGET_TYPES, DELIVERY_TYPES, AUDIENCE_TYPES } from '../const';
 
 const ACTION_TYPES = {
@@ -58,7 +59,8 @@ export function mapViewToModel(notification) {
   _.set(model, 'delivery', notification.delivery);
 
   if (notification.delivery !== DELIVERY_TYPES.NOW) {
-    _.set(model, 'deliveryTime', notification.deliveryTime);
+    const utcTime = moment.utc(notification.deliveryTime).toISOString();
+    _.set(model, 'deliveryTime', utcTime);
   }
 
   if (notification.target === TARGET_TYPES.URL) {
@@ -118,7 +120,15 @@ export function mapModelToView(notification) {
   _.set(view, 'summary', _.get(notification, 'content.summary'));
   _.set(view, 'iconUrl', _.get(notification, 'content.iconUrl'));
   _.set(view, 'imageUrl', _.get(notification, 'content.imageUrl'));
-  _.set(view, 'deliveryTime', _.get(notification, 'deliveryTime'));
+
+  const deliveryTime = _.get(notification, 'deliveryTime');
+  if (deliveryTime) {
+    const utcTime = moment.utc(deliveryTime).toISOString();
+    _.set(view, 'deliveryTime', utcTime);
+  } else {
+    _.set(view, 'deliveryTime', deliveryTime);
+  }
+
 
   if (notification.active) {
     _.set(view, 'delivery', DELIVERY_TYPES.SCHEDULED);

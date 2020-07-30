@@ -57,7 +57,10 @@ export class NotificationDetailsScreen extends PureComponent {
     return (
       <View styleName="vertical h-center v-start">
         {title ? (
-          <Title style={style.title} styleName="xl-gutter-top lg-gutter-bottom">
+          <Title
+            style={style.title}
+            styleName="xl-gutter-top lg-gutter-bottom md-gutter-horizontal"
+          >
             {title.toUpperCase()}
           </Title>
         ) : null}

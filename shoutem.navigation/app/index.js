@@ -107,6 +107,7 @@ export {
 
 export {
   createSubNavigationScreen,
+  hasModalOpen,
   isTabBarNavigation,
 } from './helpers';
 

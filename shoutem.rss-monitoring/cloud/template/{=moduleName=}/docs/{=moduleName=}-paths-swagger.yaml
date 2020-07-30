@@ -1,0 +1,81 @@
+parameters:
+  {=modelName.camelCase=}Id:
+    name: {=modelName.camelCase=}Id
+    in: path
+    description: {=modelName.camelCase=} identifier
+    required: true
+    type: string
+
+paths:
+  /v1/{=modelName.paramCasePlural=}/all:
+    get:
+      summary: Returns all {=modelName.noCasePlural=}
+      tags:
+      - {=modelName.titleCase=}
+      responses:
+        '200':
+          description: {=modelName.noCase=} array
+          schema:
+            $ref: '#/definitions/{=modelName.pascalCase=}CollectionJsonApiDocument'
+
+  /v1/{=modelName.paramCasePlural=}:
+    get:
+      summary: Returns {=modelName.noCasePlural=} according to provided sort, filter and page options
+      tags:
+      - {=modelName.titleCase=}
+      responses:
+        '200':
+          description: {=modelName.noCase=} array
+          schema:
+            $ref: '#/definitions/{=modelName.pascalCase=}CollectionJsonApiDocument'
+    post:
+      tags:
+      - {=modelName.titleCase=}
+      summary: Creates new {=modelName.noCase=}
+      parameters:
+      - name: {=modelName.camelCase=}Data
+        in: body
+        schema:
+          $ref: '#/definitions/{=modelName.pascalCase=}JsonApiDocument'
+      responses:
+        '201':
+          description: created {=modelName.noCase=} object
+          schema:
+            $ref: '#/definitions/{=modelName.pascalCase=}JsonApiDocument'            
+
+  /v1/{=modelName.paramCasePlural=}/{{=modelName.camelCase=}Id}:
+    get:
+      summary: Returns {=modelName.camelCase=} for given id
+      tags:
+      - {=modelName.titleCase=}
+      parameters:
+      - $ref: '#/parameters/{=modelName.camelCase=}Id'
+      responses:
+        '200':
+          description: {=modelName.noCase=} object
+          schema:
+            $ref: '#/definitions/{=modelName.pascalCase=}JsonApiDocument'
+    patch:
+      tags:
+      - {=modelName.titleCase=}
+      summary: Updates {=modelName.noCase=}
+      parameters:
+      - $ref: '#/parameters/{=modelName.camelCase=}Id'
+      - name: {=modelName.camelCase=}Data
+        in: body
+        schema:
+          $ref: '#/definitions/{=modelName.pascalCase=}JsonApiDocument'
+      responses:
+        '200':
+          description: updated {=modelName.noCase=} object
+          schema:
+            $ref: '#/definitions/{=modelName.pascalCase=}JsonApiDocument'
+    delete:
+      tags:
+      - {=modelName.titleCase=}
+      summary: Deletes {=modelName.noCase=}
+      parameters:
+      - $ref: '#/parameters/{=modelName.camelCase=}Id'
+      responses:
+        '204':
+          description: no content

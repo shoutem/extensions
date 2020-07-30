@@ -1,0 +1,61 @@
+definitions:
+  FeedReference:
+    type: object
+    required:
+    - type
+    - id
+    properties:
+      type:
+        type: string
+        enum: [ shoutem.rss-monitoring.feeds ]
+      id:
+        type: string
+  Feed:
+    allOf:
+      - $ref: '#/definitions/FeedReference'
+      - type: object
+        properties:
+          attributes:
+            type: object
+            properties:
+              feedKey:
+                type: string
+              lastFeedItemHash:
+                type: string
+          relationships:
+            type: object
+            properties:
+              monitor:
+                $ref: '#/definitions/MonitorSingleRelationship'
+  FeedJsonApiDocument:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        $ref: '#/definitions/Feed'
+  FeedCollectionJsonApiDocument:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Feed'
+  FeedSingleRelationship:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        $ref: '#/definitions/FeedReference'
+  FeedCollectionRelationship:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/FeedReference'

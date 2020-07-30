@@ -1,0 +1,81 @@
+parameters:
+  monitorId:
+    name: monitorId
+    in: path
+    description: monitor identifier
+    required: true
+    type: string
+
+paths:
+  /v1/monitors/all:
+    get:
+      summary: Returns all monitors
+      tags:
+      - Monitor
+      responses:
+        '200':
+          description: monitor array
+          schema:
+            $ref: '#/definitions/MonitorCollectionJsonApiDocument'
+
+  /v1/monitors:
+    get:
+      summary: Returns monitors according to provided sort, filter and page options
+      tags:
+      - Monitor
+      responses:
+        '200':
+          description: monitor array
+          schema:
+            $ref: '#/definitions/MonitorCollectionJsonApiDocument'
+    post:
+      tags:
+      - Monitor
+      summary: Creates new monitor
+      parameters:
+      - name: monitorData
+        in: body
+        schema:
+          $ref: '#/definitions/MonitorJsonApiDocument'
+      responses:
+        '201':
+          description: created monitor object
+          schema:
+            $ref: '#/definitions/MonitorJsonApiDocument'            
+
+  /v1/monitors/{monitorId}:
+    get:
+      summary: Returns monitor for given id
+      tags:
+      - Monitor
+      parameters:
+      - $ref: '#/parameters/monitorId'
+      responses:
+        '200':
+          description: monitor object
+          schema:
+            $ref: '#/definitions/MonitorJsonApiDocument'
+    patch:
+      tags:
+      - Monitor
+      summary: Updates monitor
+      parameters:
+      - $ref: '#/parameters/monitorId'
+      - name: monitorData
+        in: body
+        schema:
+          $ref: '#/definitions/MonitorJsonApiDocument'
+      responses:
+        '200':
+          description: updated monitor object
+          schema:
+            $ref: '#/definitions/MonitorJsonApiDocument'
+    delete:
+      tags:
+      - Monitor
+      summary: Deletes monitor
+      parameters:
+      - $ref: '#/parameters/monitorId'
+      responses:
+        '204':
+          description: no content

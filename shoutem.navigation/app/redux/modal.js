@@ -18,7 +18,7 @@ import {
 
 import { ext } from '../const';
 
-const MODAL_SCREEN = 'shoutem.navigation.Modal';
+export const MODAL_SCREEN = 'shoutem.navigation.Modal';
 
 export const MODAL_NAVIGATION_STACK = {
   name: ext('Modal'),

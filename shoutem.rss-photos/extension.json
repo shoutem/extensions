@@ -1,7 +1,7 @@
 {
   "name": "rss-photos",
   "title": "Photos RSS",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "platform": "2.3.*",
   "description": "Show a photo gallery from an RSS feed",
   "icon": "server/assets/add-photos-image.png",
@@ -22,6 +22,9 @@
       "title": "Photos RSS",
       "screen": "@.PhotosList",
       "icon": "theme://photo.png",
+      "capabilities": [
+        "shoutem.rss.feed"
+      ],
       "adminPages": [
         {
           "page": "shoutem.rss.RssPage",

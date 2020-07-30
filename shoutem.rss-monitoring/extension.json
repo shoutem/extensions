@@ -1,0 +1,41 @@
+{
+  "name": "rss-monitoring",
+  "version": "2.3.2",
+  "platform": "2.3.*",
+  "title": "RSS Monitoring",
+  "description": "Monitors RSS feed content and sends push notifications when new content is loaded.",
+  "icon": "./server/assets/images/add-notifications-settings-image.png",
+  "categories": [
+    "content"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
+  "shortcuts": [],
+  "screens": [],
+  "dataSchemas": [],
+  "settingsPages": [
+    {
+      "page": "@.RssPage",
+      "title": "Monitored screens",
+      "categories": [
+        "push"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "RssPage",
+      "type": "react-page"
+    }
+  ],
+  "cloud": [{
+    "type": "api",
+    "script": "npm run migrate:docker && npm run start:server:docker"
+  }, {
+    "type": "job",
+    "script": "npm run migrate:docker && npm run start:scheduler:docker",
+    "scheduleExpression": "cron(0/5 * * * ? *)"
+  }]
+}

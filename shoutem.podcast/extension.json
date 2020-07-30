@@ -1,6 +1,6 @@
 {
   "name": "podcast",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "platform": "2.3.*",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
@@ -22,6 +22,9 @@
       "title": "Podcast RSS",
       "icon": "theme://podcasts.png",
       "screen": "@.EpisodesListScreen",
+      "capabilities": [
+        "shoutem.rss.feed"
+      ],
       "adminPages": [
         {
           "page": "shoutem.rss.RssPage",

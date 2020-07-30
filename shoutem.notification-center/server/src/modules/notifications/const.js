@@ -2,8 +2,8 @@ export const moduleName = 'notifications';
 export const NOTIFICATIONS = 'shoutem.legacy.notifications';
 
 export const DISPLAY_DATE_FORMAT = 'DD MMM YYYY';
-export const DISPLAY_TIME_FORMAT = 'hh:mm';
-export const DISPLAY_DATE_TIME_FORMAT = 'DD MMM YYYY hh:mm';
+export const DISPLAY_TIME_FORMAT = 'HH:mm';
+export const DISPLAY_DATE_TIME_FORMAT = 'DD MMM YYYY HH:mm';
 
 export const TARGET_TYPES = {
   URL: 'url',

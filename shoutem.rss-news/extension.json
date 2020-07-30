@@ -1,6 +1,6 @@
 {
   "name": "rss-news",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "platform": "2.3.*",
   "title": "News RSS",
   "description": "Show news articles from an RSS feed",
@@ -22,6 +22,9 @@
       "title": "News RSS",
       "icon": "theme://news.png",
       "screen": "@.ArticlesFeaturedGridScreen",
+      "capabilities": [
+        "shoutem.rss.feed"
+      ],
       "adminPages": [
         {
           "page": "shoutem.rss.RssPage",

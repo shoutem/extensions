@@ -1,0 +1,63 @@
+definitions:
+  {=modelName.pascalCase=}Reference:
+    type: object
+    required:
+    - type
+    - id
+    properties:
+      type:
+        type: string
+        enum: [ {=modelName.paramCasePlural=} ]
+      id:
+        type: string
+  {=modelName.pascalCase=}:
+    allOf:
+      - $ref: '#/definitions/{=modelName.pascalCase=}Reference'
+      - type: object
+        properties:
+          attributes:
+            type: object
+            properties:
+                {=#properties=}
+              {=name=}:
+                type: {=swaggerType=}
+                {=/properties=}
+          relationships:
+            type: object
+            properties:
+                {=#associations=}
+              {=name=}:
+                $ref: '#/definitions/{=swaggerTypeRelationship=}'
+                {=/associations=}
+  {=modelName.pascalCase=}JsonApiDocument:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        $ref: '#/definitions/{=modelName.pascalCase=}'
+  {=modelName.pascalCase=}CollectionJsonApiDocument:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/{=modelName.pascalCase=}'
+  {=modelName.pascalCase=}SingleRelationship:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        $ref: '#/definitions/{=modelName.pascalCase=}Reference'
+  {=modelName.pascalCase=}CollectionRelationship:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/{=modelName.pascalCase=}Reference'

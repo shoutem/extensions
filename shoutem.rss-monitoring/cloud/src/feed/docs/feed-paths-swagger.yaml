@@ -1,0 +1,81 @@
+parameters:
+  feedId:
+    name: feedId
+    in: path
+    description: feed identifier
+    required: true
+    type: string
+
+paths:
+  /v1/feeds/all:
+    get:
+      summary: Returns all feeds
+      tags:
+      - Feed
+      responses:
+        '200':
+          description: feed array
+          schema:
+            $ref: '#/definitions/FeedCollectionJsonApiDocument'
+
+  /v1/feeds:
+    get:
+      summary: Returns feeds according to provided sort, filter and page options
+      tags:
+      - Feed
+      responses:
+        '200':
+          description: feed array
+          schema:
+            $ref: '#/definitions/FeedCollectionJsonApiDocument'
+    post:
+      tags:
+      - Feed
+      summary: Creates new feed
+      parameters:
+      - name: feedData
+        in: body
+        schema:
+          $ref: '#/definitions/FeedJsonApiDocument'
+      responses:
+        '201':
+          description: created feed object
+          schema:
+            $ref: '#/definitions/FeedJsonApiDocument'            
+
+  /v1/feeds/{feedId}:
+    get:
+      summary: Returns feed for given id
+      tags:
+      - Feed
+      parameters:
+      - $ref: '#/parameters/feedId'
+      responses:
+        '200':
+          description: feed object
+          schema:
+            $ref: '#/definitions/FeedJsonApiDocument'
+    patch:
+      tags:
+      - Feed
+      summary: Updates feed
+      parameters:
+      - $ref: '#/parameters/feedId'
+      - name: feedData
+        in: body
+        schema:
+          $ref: '#/definitions/FeedJsonApiDocument'
+      responses:
+        '200':
+          description: updated feed object
+          schema:
+            $ref: '#/definitions/FeedJsonApiDocument'
+    delete:
+      tags:
+      - Feed
+      summary: Deletes feed
+      parameters:
+      - $ref: '#/parameters/feedId'
+      responses:
+        '204':
+          description: no content
