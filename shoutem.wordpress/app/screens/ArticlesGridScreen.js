@@ -1,14 +1,14 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-
+import he from 'he';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
 import { cloneStatus } from '@shoutem/redux-io';
 
 import { GridArticleView } from '../components/GridArticleView';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
-import { getLeadImageUrl, resolveArticleTitle } from '../services';
+import { getLeadImageUrl } from '../services';
 import { ext } from '../const';
 import {
   ArticlesListScreen,
@@ -40,7 +40,7 @@ class ArticlesGridScreen extends ArticlesListScreen {
       <FeaturedArticleView
         key={article[0].id}
         articleId={article[0].id.toString()}
-        title={resolveArticleTitle(article[0].title.rendered)}
+        title={he.decode(article[0].title.rendered)}
         imageUrl={getLeadImageUrl(article[0])}
         date={article[0].modified}
         onPress={this.openArticleWithId}
@@ -54,7 +54,7 @@ class ArticlesGridScreen extends ArticlesListScreen {
         <GridArticleView
           key={article.id}
           articleId={article.id.toString()}
-          title={resolveArticleTitle(article.title.rendered)}
+          title={he.decode(article.title.rendered)}
           imageUrl={getLeadImageUrl(article)}
           date={article.modified}
           onPress={this.openArticleWithId}

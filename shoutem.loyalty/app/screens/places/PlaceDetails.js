@@ -190,7 +190,7 @@ export class PlaceDetails extends PureComponent {
 
     return (
       <View virtual styleName="container">
-        {transactions &&
+        {_.size(transactions) &&
           <Button
             onPress={this.navigateToPointsHistoryScreen}
             styleName="clear"

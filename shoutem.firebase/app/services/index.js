@@ -4,5 +4,6 @@ export {
   handleNotificationReceivedBackground,
   handleNotificationReceivedForeground,
   handleNotificationTapped,
+  handleFCMTokenReceived,
 } from './handlers';
 export { default as Firebase } from './firebase';

@@ -9,6 +9,7 @@ import {
   handleNotificationReceivedForeground,
   handleNotificationReceivedBackground,
   handleNotificationTapped,
+  handleFCMTokenReceived,
 } from './services';
 
 function formatiOSNotificationPayload(message) {
@@ -30,6 +31,8 @@ export function appDidFinishLaunching(app) {
   if (Platform.OS === 'ios') {
     messaging().onNotificationOpenedApp(message => handleNotificationTapped(formatiOSNotificationPayload(message), dispatch));
   }
+
+  messaging().getToken().then(token => handleFCMTokenReceived(token, dispatch));
 
   PushNotifications.configure({
     onRegister: token => handleReceivedToken(token, dispatch),

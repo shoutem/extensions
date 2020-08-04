@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { Dimensions } from 'react-native';
 import moment from 'moment';
 import _ from 'lodash';
-
+import he from 'he';
 import {
   Screen,
   ScrollView,
@@ -21,7 +21,7 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from 'shoutem.navigation';
 
 import { NextArticle } from '../components/NextArticle';
-import { getLeadImageUrl, resolveArticleTitle, getAuthorName } from '../services';
+import { getLeadImageUrl, getAuthorName } from '../services';
 import { ext } from '../const';
 
 export class ArticleDetailsScreen extends PureComponent {
@@ -80,7 +80,7 @@ export class ArticleDetailsScreen extends PureComponent {
       </Caption>
     ) : null;
 
-    const resolvedTitle = resolveArticleTitle(article.title.rendered);
+    const resolvedTitle = he.decode(article.title.rendered);
 
     return (
 

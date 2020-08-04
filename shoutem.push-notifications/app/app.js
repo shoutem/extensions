@@ -134,7 +134,7 @@ const appDidMount = (app) => {
   Firebase.clearBadge();
   const store = app.getStore();
 
-  NotificationHandlers.registerTokenReceivedHandler({
+  NotificationHandlers.registerFCMTokenReceivedHandler({
     owner: ext(),
     onTokenReceived: handleTokenReceived,
   });

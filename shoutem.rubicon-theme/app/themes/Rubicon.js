@@ -11,6 +11,7 @@ import {
   defaultThemeVariables as defaultUiThemeVariables,
   dimensionRelativeToIphone,
   Device,
+  calculateLineHeight
 } from '@shoutem/ui';
 
 import { INCLUDE, changeColorAlpha } from '@shoutem/theme';
@@ -618,15 +619,15 @@ export default (customVariables = {}) => {
       },
       'small-text': {
         fontSize: 11,
-        lineHeight: 18,
+        lineHeight: calculateLineHeight(11),
       },
       'medium-text': {
         fontSize: 15,
-        lineHeight: 24,
+        lineHeight: calculateLineHeight(15),
       },
       'large-text': {
         fontSize: 20,
-        lineHeight: 32,
+        lineHeight: calculateLineHeight(20),
       },
     },
     'shoutem.navigation.List': {
@@ -706,15 +707,15 @@ export default (customVariables = {}) => {
       },
       'small-text': {
         fontSize: 15,
-        lineHeight: 23,
+        lineHeight: calculateLineHeight(15),
       },
       'medium-text': {
         fontSize: 25,
-        lineHeight: 38,
+        lineHeight: calculateLineHeight(25),
       },
       'large-text': {
         fontSize: 40,
-        lineHeight: 60,
+        lineHeight: calculateLineHeight(40),
       },
     },
     'shoutem.navigation.TileGrid': {
@@ -772,15 +773,15 @@ export default (customVariables = {}) => {
       },
       'small-text': {
         fontSize: 15,
-        lineHeight: 23,
+        lineHeight: calculateLineHeight(15),
       },
       'medium-text': {
         fontSize: 25,
-        lineHeight: 38,
+        lineHeight: calculateLineHeight(25),
       },
       'large-text': {
         fontSize: 40,
-        lineHeight: 60,
+        lineHeight: calculateLineHeight(40),
       },
       backgroundImage: {
         resizeMode: 'cover',
@@ -836,15 +837,15 @@ export default (customVariables = {}) => {
       },
       'small-text': {
         fontSize: 15,
-        lineHeight: 23,
+        lineHeight: calculateLineHeight(15),
       },
       'medium-text': {
         fontSize: 25,
-        lineHeight: 38,
+        lineHeight: calculateLineHeight(25),
       },
       'large-text': {
         fontSize: 40,
-        lineHeight: 60,
+        lineHeight: calculateLineHeight(40),
       },
     },
 
@@ -1918,7 +1919,7 @@ export default (customVariables = {}) => {
         padding: 15,
       },
       secondaryContainer: {
-        marginLeft: 20,
+        marginLeft: 49,
         marginRight: 40,
         backgroundColor: '#F9F9F9',
       },
@@ -1937,6 +1938,9 @@ export default (customVariables = {}) => {
         letterSpacing: -0.17,
         color: '#000000',
       },
+      withProfileImage: {
+        marginLeft: 5,
+      },
       secondaryText: {
         color: '#333333',
       },
@@ -1948,7 +1952,13 @@ export default (customVariables = {}) => {
       },
       dateSecondary: {
         marginRight: 0,
+        marginLeft: 49,
+      },
+      profileImage: {
+        width: 24,
+        height: 24,
         marginLeft: 20,
+        borderRadius: 12,
       },
       docImage: {
         width: 200,

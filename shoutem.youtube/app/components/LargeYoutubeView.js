@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
-
+import he from 'he';
 import {
   TouchableOpacity,
   Tile,
@@ -37,7 +37,7 @@ export default class LargeYoutubeView extends PureComponent {
 
   render() {
     const { video } = this.props;
-    const titleSource = _.get(video, 'snippet.title');
+    const titleSource = he.decode(_.get(video, 'snippet.title'));
     const publishedAt = _.get(video, 'snippet.publishedAt');
 
     return (

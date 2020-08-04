@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-
+import he from 'he';
 import { connectStyle } from '@shoutem/theme';
 import { navigateTo as navigateToAction } from 'shoutem.navigation';
 import { find, next } from '@shoutem/redux-io';
@@ -11,7 +11,7 @@ import { RemoteDataListScreen } from 'shoutem.application';
 
 import { ListArticleView } from '../components/ListArticleView';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
-import { getLeadImageUrl, resolveArticleTitle, getAuthorName } from '../services';
+import { getLeadImageUrl, getAuthorName } from '../services';
 import {
   WORDPRESS_NEWS_SCHEMA,
   fetchWordpressPosts,
@@ -83,7 +83,7 @@ export class ArticlesListScreen extends RemoteDataListScreen {
     const nextArticle = this.getNextArticle(article);
     const route = {
       screen: ext('ArticleDetailsScreen'),
-      title: resolveArticleTitle(article.title.rendered),
+      title: he.decode(article.title.rendered),
       props: {
         article,
         nextArticle,
@@ -118,7 +118,7 @@ export class ArticlesListScreen extends RemoteDataListScreen {
         date={article.modified}
         imageUrl={getLeadImageUrl(article)}
         onPress={this.openArticleWithId}
-        title={resolveArticleTitle(article.title.rendered)}
+        title={he.decode(article.title.rendered)}
       />
     ) : null;
   }
@@ -131,7 +131,7 @@ export class ArticlesListScreen extends RemoteDataListScreen {
         date={article.modified}
         imageUrl={getLeadImageUrl(article)}
         onPress={this.openArticleWithId}
-        title={resolveArticleTitle(article.title.rendered)}
+        title={he.decode(article.title.rendered)}
       />
     );
   }

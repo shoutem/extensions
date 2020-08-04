@@ -1,10 +1,10 @@
 {
   "name": "shoutem.rubicon-theme",
   "description": "Rubicon theme is a...",
-  "version": "2.3.12",
+  "version": "2.3.13",
   "dependencies": {
     "@shoutem/theme": "~0.11.5",
-    "@shoutem/ui": "~2.0.0"
+    "@shoutem/ui": "~2.0.18"
   },
   "nativeDependencies": [
     "@shoutem/ui"

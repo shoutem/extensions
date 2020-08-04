@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-
+import he from 'he';
 import {
   ScrollView,
   Screen,
@@ -16,7 +16,7 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from 'shoutem.navigation';
 
 import { ArticleDetailsScreen } from './ArticleDetailsScreen';
-import { getLeadImageUrl, resolveArticleTitle, getAuthorName } from '../services';
+import { getLeadImageUrl, getAuthorName } from '../services';
 import { ext } from '../const';
 
 class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
@@ -31,7 +31,7 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
       styleName: getLeadImageUrl(article) ? 'clear' : 'no-border',
       animationName: getLeadImageUrl(article) ? 'solidify' : '',
       share: {
-        title: resolveArticleTitle(article.title.rendered),
+        title: he.decode(article.title.rendered),
         link: article.link,
       },
     };
@@ -58,7 +58,7 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
       <Caption styleName="md-gutter-left">{momentDate.fromNow()}</Caption>
     ) : null;
 
-    const resolvedTitle = resolveArticleTitle(article.title.rendered);
+    const resolvedTitle = he.decode(article.title.rendered);
 
     return (
       <Screen styleName={screenStyle}>

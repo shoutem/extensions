@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import _ from 'lodash';
-
+import he from 'he';
 import {
   ScrollView,
   Title,
@@ -56,7 +56,7 @@ class YoutubeVideoDetailsScreen extends PureComponent {
     const { appState } = this.state;
 
     const videoSource = _.get(video, 'id.videoId');
-    const titleSource = _.get(video, 'snippet.title');
+    const titleSource = he.decode(_.get(video, 'snippet.title'));
     const publishedAt = _.get(video, 'snippet.publishedAt');
     const descriptionSource = _.get(video, 'snippet.description');
     const playlistVideoSource = _.get(video, 'snippet.resourceId.videoId');

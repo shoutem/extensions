@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 let tokenReceivedHandlers = {};
+let fcmTokenReceivedhandlers = {};
 let notificationReceivedHandlers = {};
 
 function collectHandlers(targetEvent) {
@@ -24,6 +25,15 @@ function registerTokenReceivedHandler(tokenHandler) {
   }
 }
 
+function registerFCMTokenReceivedHandler(tokenHandler) {
+  const extensionOwner = _.get(tokenHandler, 'owner');
+  const handler = _.get(tokenHandler, 'onTokenReceived');
+
+  if (extensionOwner && handler) {
+    fcmTokenReceivedhandlers[extensionOwner] = handler;
+  }
+}
+
 function registerNotificationReceivedHandlers(notificationHandlers) {
   const extensionOwner = _.get(notificationHandlers, 'owner');
   const handlers = _.get(notificationHandlers, 'notificationHandlers');
@@ -37,6 +47,10 @@ function removeTokenReceivedHandler(owner) {
   if (tokenReceivedHandlers[owner]) {
     _.omit(tokenReceivedHandlers, owner);
   }
+}
+
+export function handleFCMTokenReceived(token, dispatch) {
+  _.forEach(fcmTokenReceivedhandlers, handler => handler(token, dispatch));
 }
 
 export function handleReceivedToken(token, dispatch) {
@@ -64,5 +78,6 @@ export function handleNotificationTapped(notification, dispatch) {
 export default {
   registerTokenReceivedHandler,
   registerNotificationReceivedHandlers,
+  registerFCMTokenReceivedHandler,
   removeTokenReceivedHandler,
 };
