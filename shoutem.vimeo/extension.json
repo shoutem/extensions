@@ -1,8 +1,8 @@
 {
   "name": "vimeo",
   "title": "Vimeo",
-  "version": "2.3.0",
-  "platform": "2.3.*",
+  "version": "2.4.0",
+  "platform": "2.4.*",
   "description": "Show videos from Vimeo",
   "icon": "server/assets/add-videos-vimeo-image.png",
   "categories": [

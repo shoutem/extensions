@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { Alert, KeyboardAvoidingView } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 
@@ -186,8 +186,8 @@ export class CreateStatusScreen extends PureComponent {
 
     return (
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'position'}
-        keyboardVerticalOffset={Keyboard.calculateKeyboardOffset()}
+        behavior="padding"
+        keyboardVerticalOffset={Keyboard.calculateKeyboardOffset(80)}
       >
         <Divider styleName="line" />
         <View

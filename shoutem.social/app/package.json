@@ -1,20 +1,19 @@
 {
   "name": "shoutem.social",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "description": "Social wall",
   "dependencies": {
-    "@shoutem/redux-composers": "0.1.4",
-    "@shoutem/redux-io": "3.0.1-beta.3",
-    "@shoutem/theme": "~0.11.5",
-    "@shoutem/ui": "~2.0.0",
-    "auto-bind": "^4.0.0",
     "react-native-action-sheet": "2.2.0",
     "react-native-image-picker": "2.3.1",
-    "react-native-keyboard-aware-scrollview": "^2.0.0",
     "showdown": "^1.8.6"
   },
+  "peerDependencies": {
+    "@shoutem/redux-composers": "*",
+    "@shoutem/redux-io": "*",
+    "@shoutem/theme": "*",
+    "@shoutem/ui": "*"
+  },
   "nativeDependencies": [
-    "@shoutem/ui",
     "react-native-action-sheet",
     "react-native-image-picker"
   ]

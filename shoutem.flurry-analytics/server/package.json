@@ -1,6 +1,6 @@
 {
   "name": "shoutem.flurry-analytics",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Measure and analyze activity across your app with Flurry analytics",
   "scripts": {
     "clean": "rimraf ./build/*",

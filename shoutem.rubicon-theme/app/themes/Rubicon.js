@@ -618,6 +618,7 @@ export default (customVariables = {}) => {
         flex: -1,
       },
       'small-text': {
+        paddingTop: Platform.isPad && 8,
         fontSize: 11,
         lineHeight: calculateLineHeight(11),
       },

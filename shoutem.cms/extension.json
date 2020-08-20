@@ -1,7 +1,7 @@
 {
   "name": "cms",
-  "version": "2.3.0",
-  "platform": "2.3.*",
+  "version": "2.4.0",
+  "platform": "2.4.*",
   "type": "system",
   "title": "CMS",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",

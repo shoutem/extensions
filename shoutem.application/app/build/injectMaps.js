@@ -12,15 +12,6 @@ const {
 const { maps } = require('./const');
 
 // cwd for build steps is extension/app directory. we want to run this on project directory
-
-function injectIos() {
-  const podfileTemplatePath = getPodfileTemplatePath({ cwd: projectPath });
-
-  // ios/Podfile.template mods
-  // google maps libs don't support frameworks flag so we have to disable it
-  replace(podfileTemplatePath, 'use_frameworks!', '# use_frameworks!');
-}
-
 function injectAndroid() {
   // app/build.gradle mods
   const appGradlePath = getAppGradlePath({ cwd: projectPath });
@@ -47,7 +38,6 @@ function injectAndroid() {
  * This must be run before pod install step
  */
 function injectMaps() {
-  injectIos();
   injectAndroid();
 }
 

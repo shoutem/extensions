@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
 import autoBindReact from 'auto-bind/react';
 import {
   Button,
@@ -19,8 +20,13 @@ import {
 import { shouldRefresh } from '@shoutem/redux-io';
 import { connect } from 'react-redux';
 import './style.scss';
+import MessageWithLink from '../../components/message-with-link';
 
 const ERROR_APP_ID = 'Invalid App ID';
+const LEARN_MORE_TEXT = 'Learn more.';
+const SUPPORT_ARTICLE_LINK = 'https://shoutem.com/support/video-call';
+const AGORA_SETUP_MESSAGE =
+  'Please add Agora App ID to enable video call feature.';
 
 class AgoraSettingsPage extends Component {
   static propTypes = {
@@ -96,9 +102,24 @@ class AgoraSettingsPage extends Component {
     return (
       <div className="agora-settings-page">
         <form onSubmit={this.handleSubmit}>
-          <h3>Agora settings</h3>
+          <div className="agora-title-container">
+            <h3>Agora settings </h3>
+            <FontIconPopover
+              delayHide={2000}
+              hideOnMouseLeave={false}
+              message={
+                <MessageWithLink
+                  message={AGORA_SETUP_MESSAGE}
+                  link={SUPPORT_ARTICLE_LINK}
+                  linkText={LEARN_MORE_TEXT}
+                />
+              }
+            >
+              <FontIcon className="font-icon" name="info" size="24px" />
+            </FontIconPopover>{' '}
+          </div>
           <FormGroup>
-            <ControlLabel>App ID</ControlLabel>
+            <ControlLabel>Agora App ID</ControlLabel>
             <FormControl
               className="form-control"
               onChange={this.handleAppIdTextChange}

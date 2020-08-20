@@ -1,27 +1,28 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Platform, Alert } from 'react-native';
+import { Alert, KeyboardAvoidingView } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
+import { isBusy } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
   Divider,
   FormGroup,
+  Keyboard,
   Screen,
+  ScrollView,
   Spinner,
   Subtitle,
   TextInput,
   View,
 } from '@shoutem/ui';
-import { NavigationBar } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
-import { isBusy } from '@shoutem/redux-io';
 
 import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
 
 import ProfileImage from '../components/ProfileImage';
 import { user as userShape } from '../components/shapes';
@@ -184,20 +185,25 @@ class EditProfileScreen extends PureComponent {
     // updated image takes precedence, it will be set if user is currently
     // editing profile and changed the image
     const image = _.get(updatedImage, 'uri') || _.get(user, 'profile.image');
-    const keyboardViewBehavior = Platform.OS === 'ios' ? 'position' : null;
+    const keyboardOffset = Keyboard.calculateKeyboardOffset();
 
     return (
-      <KeyboardAwareScrollView scrollToBottomOnKBShow>
-        <ProfileImage
-          isEditable
-          onPress={this.changeProfileImage}
-          uri={image}
-        />
-        {this.renderForm()}
-        <Caption styleName="h-center">
-          {I18n.t(ext('loggedInUserInfo'), { username })}
-        </Caption>
-      </KeyboardAwareScrollView>
+      <KeyboardAvoidingView
+        behavior="padding"
+        keyboardVerticalOffset={keyboardOffset}
+      >
+        <ScrollView>
+          <ProfileImage
+            isEditable
+            onPress={this.changeProfileImage}
+            uri={image}
+          />
+          {this.renderForm()}
+          <Caption styleName="h-center">
+            {I18n.t(ext('loggedInUserInfo'), { username })}
+          </Caption>
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
 

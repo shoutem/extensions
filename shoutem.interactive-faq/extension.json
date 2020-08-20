@@ -1,8 +1,8 @@
 {
   "name": "interactive-faq",
   "title": "Interactive FAQ",
-  "version": "2.3.3",
-  "platform": "2.3.*",
+  "version": "2.4.0",
+  "platform": "2.4.*",
   "icon": "./server/assets/faq.png",
   "description": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
   "dependencies": [

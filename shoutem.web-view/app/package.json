@@ -1,19 +1,17 @@
 {
   "name": "shoutem.web-view",
-  "version": "2.3.3",
-  "main": "index.js",
+  "version": "2.4.0",
   "dependencies": {
     "@shoutem/animation": "~0.12.4",
-    "@shoutem/redux-io": "3.0.1-beta.3",
-    "@shoutem/theme": "~0.11.5",
-    "@shoutem/ui": "~2.0.0",
     "react-native-pdf": "~6.1.0",
     "react-native-webview": "^9.4.0",
-    "rn-fetch-blob": "^0.11.0",
-    "auto-bind": "4.0.0"
+    "rn-fetch-blob": "^0.11.0"
+  },
+  "peerDependencies": {
+    "@shoutem/theme": "*",
+    "@shoutem/ui": "*"
   },
   "nativeDependencies": [
-    "@shoutem/ui",
     "react-native-pdf",
     "react-native-webview",
     "rn-fetch-blob"

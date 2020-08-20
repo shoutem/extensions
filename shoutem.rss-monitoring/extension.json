@@ -1,7 +1,7 @@
 {
   "name": "rss-monitoring",
-  "version": "2.3.2",
-  "platform": "2.3.*",
+  "version": "2.4.0",
+  "platform": "2.4.*",
   "title": "RSS Monitoring",
   "description": "Monitors RSS feed content and sends push notifications when new content is loaded.",
   "icon": "./server/assets/images/add-notifications-settings-image.png",

@@ -4,10 +4,9 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Alert, Keyboard } from 'react-native';
+import { Alert, KeyboardAvoidingView } from 'react-native';
 import ActionSheet from 'react-native-action-sheet';
 import ImagePicker from 'react-native-image-picker';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 
 import { isBusy, isInitialized, next, hasNext } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
@@ -20,6 +19,7 @@ import {
   Text,
   Icon,
   ImageBackground,
+  Keyboard,
   Row,
 } from '@shoutem/ui';
 
@@ -351,7 +351,10 @@ export class StatusDetailsScreen extends PureComponent {
           renderRightComponent={this.renderRightComponent}
         />
         <Divider styleName="line" />
-        <KeyboardAwareScrollView scrollToBottomOnKBShow>
+        <KeyboardAvoidingView
+          behavior="padding"
+          keyboardVerticalOffset={Keyboard.calculateKeyboardOffset(80)}
+        >
           <ListView
             data={[...commentsData]}
             ref={this.captureScrollViewRef}
@@ -361,7 +364,7 @@ export class StatusDetailsScreen extends PureComponent {
           />
           {hasMoreComments && this.renderLoadComments()}
           {areCommentsLoading ? null : addCommentSection}
-        </KeyboardAwareScrollView>
+        </KeyboardAvoidingView>
       </Screen>
     );
   }

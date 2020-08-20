@@ -85,9 +85,15 @@ function isApplicationExtension(data) {
   return data.type === 'shoutem.core.extensions' && data.id === SHOUTEM_APPLICATION;
 }
 
-function copyPlistFileToXcodeProjects(useDummyProject) {
+function resolveConfigFilePath(useDownloadedFile, configeFileName) {
+  return useDownloadedFile
+    ? `${extensionPath}/${configeFileName}`
+    : `${extensionPath}/build/templates/${configeFileName}`;
+}
+
+function copyPlistFileToXcodeProjects(useDownloadedFile) {
   const CONFIG_FILE = 'GoogleService-Info.plist';
-  const configFilePath = !useDummyProject ? `${extensionPath}/${CONFIG_FILE}` : `${extensionPath}/build/templates/${CONFIG_FILE}`;
+  const configFilePath = resolveConfigFilePath(useDownloadedFile, CONFIG_FILE);
 
   const xcodeProjects = glob.sync(`${projectPath}/ios/*.xcodeproj/project.pbxproj`);
 
@@ -109,10 +115,10 @@ function copyPlistFileToXcodeProjects(useDummyProject) {
   });
 }
 
-function copyGoogleServicesConfigToAndroidApp(useDummyProject) {
+function copyGoogleServicesConfigToAndroidApp(useDownloadedFile) {
   const CONFIG_FILE = 'google-services.json';
-  const configFilePath = useDummyProject ? `${extensionPath}/build/templates/${CONFIG_FILE}` : `${extensionPath}/${CONFIG_FILE}`;
-  const configFileDestination = `${projectPath}/android/app/google-services.json`;
+  const configFilePath = resolveConfigFilePath(useDownloadedFile, CONFIG_FILE);
+  const configFileDestination = `${projectPath}/android/app/${CONFIG_FILE}`;
 
   fs.copySync(configFilePath, configFileDestination);
 }
@@ -155,6 +161,7 @@ function updateGoogleServicesPackageName(buildConfiguration) {
 }
 
 exports.preBuild = async function preBuild(appConfiguration, buildConfiguration) {
+  const { production, release } = buildConfiguration;
   const appExtension = _.get(appConfiguration, 'included').find(isApplicationExtension);
   const legacyApi = _.get(appExtension, `attributes.settings.${API_ENDPOINT}`);
 
@@ -164,13 +171,14 @@ exports.preBuild = async function preBuild(appConfiguration, buildConfiguration)
 
   const resolvedFiles = await downloadConfigurationFiles(legacyApi, buildConfiguration.appId);
 
-  const androidConfigResolved = resolvedFiles[0];
-  const iOSConfigResolved = resolvedFiles[1];
+  const isProduction = (production || release);
+  const shouldUseDownloadedFileAndroid = isProduction && resolvedFiles[0];
+  const shouldUseDownloadedFileIos = isProduction && resolvedFiles[1];
 
-  copyGoogleServicesConfigToAndroidApp(!androidConfigResolved);
+  copyGoogleServicesConfigToAndroidApp(shouldUseDownloadedFileAndroid);
   updateGoogleServicesPackageName(buildConfiguration);
 
-  copyPlistFileToXcodeProjects(!iOSConfigResolved);
+  copyPlistFileToXcodeProjects(shouldUseDownloadedFileIos, buildConfiguration);
 
   injectFirebase();
   injectReactNativePush();

@@ -1,14 +1,9 @@
 {
   "name": "shoutem.rss-news",
-  "version": "2.3.1",
-  "private": true,
-  "main": "index.js",
-  "dependencies": {
-    "@shoutem/redux-io": "3.0.1-beta.3",
-    "@shoutem/theme": "~0.11.5",
-    "@shoutem/ui": "~2.0.0"
-  },
-  "nativeDependencies": [
-    "@shoutem/ui"
-  ]
+  "version": "2.4.0",
+  "peerDependencies": {
+    "@shoutem/redux-io": "*",
+    "@shoutem/theme": "*",
+    "@shoutem/ui": "*"
+  }
 }

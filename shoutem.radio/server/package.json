@@ -1,6 +1,6 @@
 {
   "name": "shoutem.radio",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "description": "Radio extension",
   "scripts": {
     "clean": "rimraf ./build/*",

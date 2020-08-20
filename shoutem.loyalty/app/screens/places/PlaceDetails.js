@@ -188,16 +188,18 @@ export class PlaceDetails extends PureComponent {
   renderRightNavBarComponent() {
     const { transactions } = this.props;
 
+    const hasTransactions = !!(_.size(transactions));
+
     return (
       <View virtual styleName="container">
-        {_.size(transactions) &&
+        {hasTransactions && (
           <Button
             onPress={this.navigateToPointsHistoryScreen}
             styleName="clear"
           >
             <Text>{I18n.t(ext('navigationHistoryButton'))}</Text>
           </Button>
-        }
+        )}
       </View>
     );
   }

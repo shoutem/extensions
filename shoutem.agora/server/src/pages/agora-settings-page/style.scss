@@ -11,3 +11,16 @@
     padding-top: 16px;
   }
 }
+
+.agora-title-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+
+  .font-icon {
+    vertical-align: middle;
+    margin: 0 8px;
+    color: #bdc0cb;
+  }
+}
