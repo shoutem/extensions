@@ -1,6 +1,6 @@
 {
   "name": "shoutem.agora",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "dependencies": {
     "react-native-agora": "~2.9.1-alpha.4",
     "react-native-stopwatch-timer": "~0.0.21",

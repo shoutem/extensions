@@ -872,6 +872,7 @@ export default (customVariables = {}) => {
             backgroundColor: 'rgba(3, 3, 3, 0.1)',
             borderRadius: 31,
             justifyContent: 'center',
+            alignItems: 'center'
           },
         },
       },
@@ -1103,7 +1104,6 @@ export default (customVariables = {}) => {
       },
       switchCameraIcon: {
         textAlign: 'center',
-        fontSize: 24,
         width: 24,
         height: 24,
         color: 'black',
@@ -1227,7 +1227,8 @@ export default (customVariables = {}) => {
         },
         'shoutem.ui.Icon': {
           color: '#ffffff',
-          fontSize: 16,
+          width: 16,
+          height: 16,
         },
       },
     },
@@ -1624,7 +1625,8 @@ export default (customVariables = {}) => {
 
     'shoutem.social.StatusView': {
       reportButton: {
-        fontSize: 16,
+        width: 16,
+        height: 16,
         color: '#C4C4C4',
         paddingVertical: 10,
         paddingLeft: 10,
@@ -1678,7 +1680,8 @@ export default (customVariables = {}) => {
         borderWidth: 0,
       },
       playbackIconStyle: {
-        fontSize: 70,
+        height: 70,
+        width: 70,
         padding: 0,
         margin: 0,
       },
@@ -1733,7 +1736,8 @@ export default (customVariables = {}) => {
         borderRadius: 200,
       },
       playbackIcon: {
-        fontSize: dimensionRelativeToIphone(36),
+        width: dimensionRelativeToIphone(36),
+        height: dimensionRelativeToIphone(36),
         marginLeft: 10,
       },
       spinner: {

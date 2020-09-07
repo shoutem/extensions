@@ -4,22 +4,23 @@ import _ from 'lodash';
 import Monitor from '../data/monitor-model';
 import { logger } from '../../shared/logging';
 
-function filterShortcutsByMonitoredProperty(shortcuts: [object]): { key: string; feedUrl: string }[] {
-  const resolvedShortcuts: { key: string; feedUrl: string }[] = [];
+function filterShortcutsByMonitoredProperty(shortcuts: [object]): { key: string; feedUrl: string; feedType: string }[] {
+  const resolvedShortcuts: { key: string; feedUrl: string; feedType: string }[] = [];
   shortcuts.forEach(shortcut => {
     if (_.get(shortcut, 'attributes.settings.shoutemRssMonitoring.monitored')) {
       resolvedShortcuts.push({
         key: _.get(shortcut, 'attributes.key'),
         feedUrl: _.get(shortcut, 'attributes.settings.feedUrl'),
+        feedType: _.get(shortcut, 'attributes.settings.feedType'),
       });
     }
   });
   return resolvedShortcuts;
 }
 
-function findMonitoredShortcuts(shortcutsResponse: any): { key: string; feedUrl: string }[] {
+function findMonitoredShortcuts(shortcutsResponse: any): { key: string; feedUrl: string; feedType: string }[] {
   // check in data and in included
-  const monitoredShortcuts: { key: string; feedUrl: string }[] = [];
+  const monitoredShortcuts: { key: string; feedUrl: string; feedType: string }[] = [];
 
   if (shortcutsResponse && shortcutsResponse.data) {
     monitoredShortcuts.push(...filterShortcutsByMonitoredProperty(shortcutsResponse.data));
@@ -32,11 +33,11 @@ function findMonitoredShortcuts(shortcutsResponse: any): { key: string; feedUrl:
 }
 
 export async function getMonitoredShortcuts(): Promise<
-  { monitor: Monitor; shortcuts: { key: string; feedUrl: string }[] }[]
+  { monitor: Monitor; shortcuts: { key: string; feedUrl: string; feedType: string }[] }[]
 > {
   // fetch all appIds from feed table
   const monitors = await monitorRepository.getAll();
-  // for each app find monitored shortcout  
+  // for each app find monitored shortcout
   const promises = monitors.map(async monitor => {
     let shortcutsResponse;
     try {

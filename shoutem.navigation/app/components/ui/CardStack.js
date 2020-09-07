@@ -2,9 +2,11 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { InteractionManager } from 'react-native';
 import _ from 'lodash';
-
+import { AppContextProvider } from 'shoutem-core';
 import { ScrollView, View } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+
+import { MAIN_NAVIGATION_SCREEN_TYPES } from '../../const';
 
 import { SceneProvider } from './SceneProvider';
 import { RNCardStack } from './RNCardStack';
@@ -114,7 +116,9 @@ class CardStack extends PureComponent {
   }
 
   refreshNavBar() {
-    if (this.props.useNativeAnimations) {
+    const { useNativeAnimations } = this.props;
+
+    if (useNativeAnimations) {
       requestAnimationFrame(() => this.forceUpdate());
     } else {
       InteractionManager.runAfterInteractions(() => this.forceUpdate());
@@ -142,7 +146,12 @@ class CardStack extends PureComponent {
   }
 
   renderScene(props) {
-    const { inlineNavigationBar, style = {} } = this.props;
+    const { inlineNavigationBar, renderScene, style = {} } = this.props;
+
+    const showExtraContent = props.scene.route.screenType && !_.includes(
+      MAIN_NAVIGATION_SCREEN_TYPES,
+      props.scene.route.screenType,
+    );
 
     // DriverProvider provides the animation driver from the
     // primary scroll component of the screen to all other
@@ -151,7 +160,15 @@ class CardStack extends PureComponent {
     const scene = (
       <ScrollView.DriverProvider>
         <SceneProvider scene={props.scene}>
-          {this.props.renderScene(props)}
+          <AppContextProvider>
+            {context => (
+              <View styleName="flexible">
+                {showExtraContent && context.renderContentHeader}
+                {renderScene(props)}
+                {showExtraContent && context.renderContentFooter}
+              </View>
+            )}
+          </AppContextProvider>
         </SceneProvider>
       </ScrollView.DriverProvider>
     );
@@ -179,11 +196,11 @@ class CardStack extends PureComponent {
       <RNCardStack
         enableGestures={!useNativeAnimations}
         {...this.props}
-        style={style.cardStack}
         cardStyle={style.card}
+        interpolateCardStyle={style.interpolateCardStyle}
         renderHeader={inlineNavigationBar ? null : this.renderNavBar}
         renderScene={this.renderScene}
-        interpolateCardStyle={style.interpolateCardStyle}
+        style={style.cardStack}
       />
     );
   }

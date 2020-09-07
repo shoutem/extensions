@@ -1,7 +1,10 @@
 {
   "shoutem": {
     "rss": {
-      "noUrlMessage": "Please specify RSS feed URL and reload the app."
+      "noUrlMessage": "Please specify RSS feed URL and reload the app.",
+      "itemNotFoundTitle": "Oops",
+      "itemNotFoundMessage": "That item is no longer available.",
+      "errorMessage": "Something went wrong."
     }
   }
 }

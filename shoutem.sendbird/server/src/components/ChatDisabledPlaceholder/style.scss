@@ -1,0 +1,17 @@
+.chat-disabled-placeholder {
+  margin-top: 64px;
+
+  p {
+      text-align: center;
+  }
+
+  .text-error {
+      font-size: 13px;
+      color: red;
+  }
+
+  .btn {
+      margin-top: 24px;
+      min-width: 128px;
+  }
+}

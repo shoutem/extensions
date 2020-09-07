@@ -14,6 +14,15 @@ export const CARD_LIST = ext('CardList');
 export const ICON_GRID = ext('IconGrid');
 export const TILE_GRID = ext('TileGrid');
 
+export const MAIN_NAVIGATION_SCREEN_TYPES = [
+  TAB_BAR,
+  DRAWER,
+  LIST,
+  CARD_LIST,
+  ICON_GRID,
+  TILE_GRID,
+];
+
 export const TAB_BAR_ITEM_HEIGHT = 60;
 export {
   IPHONE_X_HOME_INDICATOR_PADDING,

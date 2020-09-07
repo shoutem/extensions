@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import VectorIcon from 'react-native-vector-icons/MaterialIcons';
 import slugify from '@sindresorhus/slugify';
@@ -17,17 +17,12 @@ import {
 
 import { connectStyle } from '@shoutem/theme';
 import {
-  Caption,
-  Divider,
   Icon,
   Button,
-  Row,
   Spinner,
   View,
-  Text,
 } from '@shoutem/ui';
 
-import convertSecondsToTimeDisplay from '../../services/time';
 import { ext, trackPlayerOptions } from '../../const';
 import { SKIP_BACK_TIME, SKIP_FORWARD_TIME } from './const';
 import { ProgressControl } from './ProgressControl';
@@ -38,6 +33,10 @@ class PodcastPlayer extends TrackPlayerBase {
 
     this.handleSkipBack = this.handleSkipBack.bind(this);
     this.handleSkipForward = this.handleSkipForward.bind(this);
+
+    this.handleSeekToPosition = this.handleSeekToPosition.bind(this);
+    this.handleJumpBack = this.handleJumpBack.bind(this);
+    this.handleJumpForward = this.handleJumpForward.bind(this);
 
     this.state = {
       playbackState: STATE_PAUSED,
@@ -64,6 +63,48 @@ class PodcastPlayer extends TrackPlayerBase {
     const id = episode.id || slugify(`${episode.url}`);
 
     return `podcast-${id}`;
+  }
+
+  addEventListeners() {
+    this.jumpForwardListener = TrackPlayer.addEventListener('remote-jump-forward', this.handleJumpForward);
+    this.jumpBackwardsListener = TrackPlayer.addEventListener('remote-jump-backward', this.handleJumpBack);
+    this.seekToListener = TrackPlayer.addEventListener('remote-seek', this.handleSeekToPosition);
+
+    super.addEventListeners();
+  }
+
+  handleJumpForward({ interval }) {
+    this.handleSkipForward(interval);
+  }
+
+  handleJumpBack({ interval }) {
+    this.handleSkipBack(interval);
+  }
+
+  handleSeekToPosition({ position }) {
+    const { playbackState } = this.state;
+
+    TrackPlayer.seekTo(position);
+
+    if (playbackState === STATE_PAUSED) {
+      TrackPlayer.play();
+    }
+  }
+
+  removeEventListeners() {
+    if (this.seekToListener) {
+      this.seekToListener.remove();
+    }
+
+    if (this.jumpForwardListener) {
+      this.jumpForwardListener.remove();
+    }
+
+    if (this.jumpBackwardsListener) {
+      this.jumpBackwardsListener.remove();
+    }
+
+    super.removeEventListeners();
   }
 
   async addTrack() {
@@ -111,7 +152,7 @@ class PodcastPlayer extends TrackPlayerBase {
 
   renderSkipIcon(iconName) {
     const { currentlyActiveTrack } = this.state;
-    const { style: { skipIcon, skipIconSize} } = this.props;
+    const { style: { skipIcon, skipIconSize } } = this.props;
 
     const opacity = currentlyActiveTrack ? 1.0 : 0.5;
 
@@ -125,14 +166,14 @@ class PodcastPlayer extends TrackPlayerBase {
   }
 
   renderActionButton() {
-    const { style: { spinnerStyle, playbackIconStyle }} = this.props;
+    const { style: { spinnerStyle, playbackIconStyle } } = this.props;
     const { playbackState } = this.state;
 
     const actionButtons = {
       [STATE_NONE]: <Spinner style={spinnerStyle} />, // idle
       [STATE_STOPPED]: <Spinner style={spinnerStyle} />, // idle
       [STATE_BUFFERING]: <Spinner style={spinnerStyle} />, // loading
-      ['buffering']: <Spinner style={spinnerStyle} />, // no variable defined
+      buffering: <Spinner style={spinnerStyle} />, // no variable defined
       [STATE_READY]: <Spinner style={spinnerStyle} />, // intermediate state
       [STATE_CONNECTING]: <Spinner style={spinnerStyle} />,
       [STATE_PLAYING]: <Icon name="pause" style={playbackIconStyle} />,
@@ -156,8 +197,8 @@ class PodcastPlayer extends TrackPlayerBase {
     return (
       <View style={container} styleName="h-center">
         <ProgressControl
-          style={{slider, timeDisplay}}
           playbackState={playbackState}
+          style={{ slider, timeDisplay }}
         />
         <View styleName="horizontal h-center v-center stretch">
           <Button

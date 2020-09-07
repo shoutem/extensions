@@ -5,6 +5,7 @@ import controller from '../controllers/monitor-controller';
 import { loadMonitorParam } from '../middleware';
 import { MONITOR_TYPE } from '../io/types';
 
+// eslint-disable-next-line new-cap
 const monitorRouter: Router = express.Router();
 
 monitorRouter.param('monitorId', loadMonitorParam());
@@ -51,6 +52,4 @@ monitorRouter.delete(
   jsonapi.generateOutput(MONITOR_TYPE),
 );
 
-export {
-  monitorRouter,
-};
+export { monitorRouter };

@@ -1,6 +1,7 @@
 import RssParser from 'rss-parser';
 import feedRepository from '../../feed/data/feed-repository';
 import md5 from 'md5';
+import _ from 'lodash';
 import { logger } from '../../shared/logging';
 import { createNotification } from '../providers/legacy-push-api';
 import { invalidateLegacyFeed } from '../providers/legacy-feed-api';
@@ -26,6 +27,10 @@ function generateFeedItemHash(item: RssParser.Item): string {
   return md5(`${item.title}${item.description}`);
 }
 
+function getFeedItemId(feed: RssParser.Item): string {
+  return _.toString(feed.guid) || _.toString(feed.id);
+}
+
 function isFeedUpdated(feed: RssParser.Output, savedLastFeedItemHash = ''): boolean {
   const lastFeedItem = getLastFeedItem(feed);
   // generate a unique "hash" of the most recent entry
@@ -36,7 +41,10 @@ function isFeedUpdated(feed: RssParser.Output, savedLastFeedItemHash = ''): bool
   return false;
 }
 
-async function checkForRssFeedUpdate(monitor: Monitor, shortcuts: { key: string; feedUrl: string }[]): Promise<any> {
+async function checkForRssFeedUpdate(
+  monitor: Monitor,
+  shortcuts: { key: string; feedUrl: string; feedType: string }[],
+): Promise<any> {
   const promises = shortcuts.map(async shortcut => {
     const savedFeed = await feedRepository.findOne({ monitorId: monitor.id, feedKey: shortcut.key });
     let fetchedFeed;
@@ -88,7 +96,14 @@ async function checkForRssFeedUpdate(monitor: Monitor, shortcuts: { key: string;
 
         try {
           logger.info('Create push notification.');
-          await createNotification(monitor.appId, savedFeed.feedKey || '', title, summary);
+          await createNotification(
+            monitor.appId,
+            savedFeed.feedKey || '',
+            lastFeedItem ? getFeedItemId(lastFeedItem) : '',
+            shortcut.feedType || '',
+            title,
+            summary,
+          );
         } catch (e) {
           logger.error(`Unable to send push notification for app: ${monitor.appId}. ${e}`);
           return;
@@ -110,7 +125,7 @@ async function checkForRssFeedUpdate(monitor: Monitor, shortcuts: { key: string;
 }
 
 export async function handleRssFeedUpdate(
-  monitoredShortcuts: { monitor: Monitor; shortcuts: { key: string; feedUrl: string }[] }[],
+  monitoredShortcuts: { monitor: Monitor; shortcuts: { key: string; feedUrl: string; feedType: string }[] }[],
 ) {
   const promises = monitoredShortcuts.map(async monitoredShortcut => {
     if (monitoredShortcut.shortcuts && monitoredShortcut.shortcuts.length > 0) {

@@ -1,9 +1,9 @@
 {
   "name": "agora",
-  "title": "Agora",
-  "version": "2.4.0",
+  "title": "Agora video calls",
+  "version": "2.4.1",
   "icon": "server/assets/add-videos-image.png",
-  "description": "Connect your users with real-time video chat!",
+  "description": "Connect your users with real-time video conferencing!",
   "platform": "2.4.*",
   "native": true,
   "dependencies": [
