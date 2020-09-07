@@ -1,6 +1,6 @@
 {
   "name": "rss",
-  "version": "2.4.0",
+  "version": "2.4.2",
   "platform": "2.4.*",
   "type": "system",
   "title": "RSS",
@@ -17,6 +17,6 @@
     }
   ],
   "settings": {
-    "baseApiEndpoint": "http://api.dev.sauros.hr"
+    "baseApiEndpoint": "http://v4.api.shoutem.com"
   }
 }

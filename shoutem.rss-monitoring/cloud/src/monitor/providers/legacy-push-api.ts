@@ -22,6 +22,8 @@ function getCreateNotificationRequest(appId: string, notification: object): obje
 export async function createNotification(
   appId: string,
   shortcutKey: string,
+  itemId: string,
+  itemSchema: string,
   title: string | null,
   summary: string | null,
 ) {
@@ -30,6 +32,8 @@ export async function createNotification(
       type: 'shoutem.application.EXECUTE_SHORTCUT',
       navigationAction: 'shoutem.navigation.OPEN_MODAL',
       shortcutId: `${shortcutKey}`,
+      itemId: `${itemId}`,
+      itemSchema: `${itemSchema}`,
     },
   };
   const notification = {

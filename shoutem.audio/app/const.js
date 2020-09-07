@@ -1,10 +1,14 @@
-import { Platform } from 'react-native';
 import { Capability, State } from 'react-native-track-player';
 import pack from './package.json';
 
 export const CAPABILITY_PLAY = Capability.Play;
 export const CAPABILITY_PAUSE = Capability.Pause;
 export const CAPABILITY_STOP = Capability.Stop;
+export const CAPABILITY_NEXT = Capability.SkipToNext;
+export const CAPABILITY_PREVIOUS = Capability.SkipToPrevious;
+export const CAPABILITY_JUMP_FORWARD = Capability.JumpForward;
+export const CAPABILITY_JUMP_BACKWARD = Capability.JumpBackward;
+export const CAPABILITY_SEEK_TO = Capability.SeekTo;
 
 export const STATE_NONE = State.None;
 export const STATE_STOPPED = State.Stopped;

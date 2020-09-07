@@ -242,7 +242,7 @@ export class CmsListScreen extends PureComponent {
   }
 
   checkPermissionStatus(props = this.props) {
-     // check if we need user location
+    // check if we need user location
     const { sortField, checkPermissionStatus } = props;
 
     const isSortByLocation = sortField === 'location';
@@ -466,7 +466,7 @@ export class CmsListScreen extends PureComponent {
     }
 
     const message = (isError(categories) || isError(data)) ?
-    I18n.t('shoutem.application.unexpectedErrorMessage') : I18n.t('shoutem.application.preview.noContentErrorMessage');
+      I18n.t('shoutem.application.unexpectedErrorMessage') : I18n.t('shoutem.application.preview.noContentErrorMessage');
 
     const retryFunction = !this.isCollectionValid(data) ? this.refreshData : this.fetchCategories;
 
@@ -495,12 +495,14 @@ export class CmsListScreen extends PureComponent {
         valueProperty={"id"}
         onOptionSelected={this.onCategorySelected}
         selectedOption={selectedCategory}
+        showSelectedOption={false}
+        iconName="down-arrow"
         style={style.categories}
       />
     );
   }
 
-  renderFeaturedItem() {}
+  renderFeaturedItem() { }
 
   renderData(data) {
     const { style, hasFeaturedItem } = this.props;

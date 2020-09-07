@@ -1,7 +1,7 @@
 {
   "name": "shoutem.rss-monitoring",
-  "version": "2.4.0",
-  "description": "Manage push notification settings for rss",
+  "version": "2.4.2",
+  "description": "Monitors RSS feed content and sends automated push notifications when new content is loaded.",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
     "clean": "rimraf ./build/*",
