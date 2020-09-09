@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, Alert } from 'react-native';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
-
+import { isBusy, isValid } from '@shoutem/redux-io';
 import {
   Screen,
   ScrollView,
@@ -15,19 +16,23 @@ import {
   ImageBackground,
   ImageGallery,
   Html,
+  Spinner,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-
-import { NavigationBar } from 'shoutem.navigation';
-import { getLeadImageUrl, createRenderAttachment } from 'shoutem.rss';
-
+import { NavigationBar, closeModal } from 'shoutem.navigation';
+import { I18n } from 'shoutem.i18n';
+import {
+  getLeadImageUrl,
+  createRenderAttachment,
+  ext as rssExt,
+} from 'shoutem.rss';
 import { NextArticle } from '../components/NextArticle';
 import { ext } from '../const';
+import { getNewsFeed } from '../redux';
 
 export class ArticleDetailsScreen extends PureComponent {
   static propTypes = {
-    // The news article to display
-    article: PropTypes.object.isRequired,
+    id: PropTypes.string.isRequired,
     // The next article, if this article is defined, the
     // up next view will be displayed on this screen
     nextArticle: PropTypes.object,
@@ -41,6 +46,37 @@ export class ArticleDetailsScreen extends PureComponent {
     showInlineGallery: PropTypes.bool,
     openNextArticle: PropTypes.func,
   };
+
+  componentWillMount() {
+    const { articleNotFound } = this.props;
+
+    if (articleNotFound) {
+      this.handleItemNotFound();
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { articleNotFound: nextarticleNotFound } = nextProps;
+    const { articleNotFound } = this.props;
+
+    if (!articleNotFound && nextarticleNotFound) {
+      this.handleItemNotFound();
+    }
+  }
+
+  handleItemNotFound() {
+    const { closeModal } = this.props;
+
+    const okButton = {
+      onPress: () => closeModal(),
+    };
+
+    return Alert.alert(
+      I18n.t(rssExt('itemNotFoundTitle')),
+      I18n.t(rssExt('itemNotFoundMessage')),
+      [okButton],
+    );
+  }
 
   renderUpNext() {
     const { nextArticle, openArticle } = this.props;
@@ -59,24 +95,46 @@ export class ArticleDetailsScreen extends PureComponent {
   }
 
   renderInlineGallery() {
-    const { article, showInlineGallery } = this.props;
+    const { article } = this.props;
+
+    if (!article) {
+      return null;
+    }
+
+    const { showInlineGallery } = this.props;
+    const { imageAttachments } = article;
 
     if (!showInlineGallery) {
       return null;
     }
 
-    const images = _.map(article.imageAttachments, 'url');
+    const images = _.map(imageAttachments, 'url');
 
-    return (
-      <ImageGallery sources={images} height={300} width={Dimensions.get('window').width} />
-    );
+    if (!_.isEmpty(images)) {
+      return (
+        <ImageGallery
+          sources={images}
+          height={300}
+          width={Dimensions.get('window').width}
+        />
+      );
+    }
+
+    return null;
   }
 
   render() {
-    const { article } = this.props;
+    const { data, article, articleNotFound } = this.props;
 
+    const timeUpdated = _.get(article, 'timeUpdated', '');
+    const title = _.get(article, 'title', '');
+    const link = _.get(article, 'link', '');
+    const author = _.get(article, 'author', '');
+    const body = _.get(article, 'body', '');
+
+    const loading = isBusy(data) || articleNotFound;
     const articleImageUrl = getLeadImageUrl(article);
-    const momentDate = moment.utc(article.timeUpdated);
+    const momentDate = moment.utc(timeUpdated);
 
     const dateInfo = moment.utc(momentDate).isAfter(0) ? (
       <Caption styleName="md-gutter-left">
@@ -89,36 +147,69 @@ export class ArticleDetailsScreen extends PureComponent {
         <NavigationBar
           styleName="clear"
           animationName="solidify"
-          title={article.title}
+          title={title}
           share={{
-            title: article.title,
-            link: article.link,
+            title: title,
+            link: link,
           }}
         />
-        <ScrollView>
-          <ImageBackground
-            styleName="large-portrait placeholder"
-            source={articleImageUrl ? { uri: articleImageUrl } : undefined}
-            animationName="hero"
-          >
-            <Tile animationName="hero">
-              <Title styleName="centered">{article.title.toUpperCase()}</Title>
-              <View styleName="horizontal collapsed" virtual>
-                <Caption numberOfLines={1} styleName="collapsible">{article.author}</Caption>
-                {dateInfo}
-              </View>
-              <Icon name="down-arrow" styleName="scroll-indicator" />
-            </Tile>
-          </ImageBackground>
-          <View styleName="solid">
-            <Html body={article.body} renderElement={createRenderAttachment(article, 'image')} />
-            {this.renderInlineGallery()}
-            {this.renderUpNext()}
+        {loading && (
+          <View styleName="vertical flexible h-center v-center">
+            <Spinner />
           </View>
-        </ScrollView>
+        )}
+        {!loading && (
+          <View styleName="flexible">
+            <ScrollView>
+              <ImageBackground
+                styleName="large-portrait placeholder"
+                source={articleImageUrl ? { uri: articleImageUrl } : undefined}
+                animationName="hero"
+              >
+                <Tile animationName="hero">
+                  <Title styleName="centered">{title.toUpperCase()}</Title>
+                  <View styleName="horizontal collapsed" virtual>
+                    <Caption numberOfLines={1} styleName="collapsible">
+                      {author}
+                    </Caption>
+                    {dateInfo}
+                  </View>
+                  <Icon name="down-arrow" styleName="scroll-indicator" />
+                </Tile>
+              </ImageBackground>
+              <View styleName="solid">
+                <Html
+                  body={body}
+                  renderElement={createRenderAttachment(article, 'image')}
+                />
+                {this.renderInlineGallery()}
+                {this.renderUpNext()}
+              </View>
+            </ScrollView>
+          </View>
+        )}
       </Screen>
     );
   }
 }
 
-export default connectStyle(ext('ArticleDetailsScreen'))(ArticleDetailsScreen);
+export const mapStateToProps = (state, ownProps) => {
+  const { id, feedUrl } = ownProps;
+
+  const data = getNewsFeed(state, feedUrl);
+  const article = _.find(data, { id });
+  const articleNotFound = isValid(data) && !article;
+
+  return {
+    data,
+    article,
+    articleNotFound,
+  };
+};
+
+export const mapDispatchToProps = { closeModal };
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('ArticleDetailsScreen'))(ArticleDetailsScreen));

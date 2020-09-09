@@ -1,17 +1,14 @@
 import React from 'react';
 import _ from 'lodash';
+import autoBind from 'auto-bind';
 import { connect } from 'react-redux';
-
-import { connectStyle } from '@shoutem/theme';
-import { find, next } from '@shoutem/redux-io';
-
+import { find, next, shouldRefresh } from '@shoutem/redux-io';
 import { navigateTo as navigateToAction } from 'shoutem.navigation';
 import { RssListScreen, getLeadImageUrl } from 'shoutem.rss';
-
 import { ListArticleView } from '../components/ListArticleView';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
-import { RSS_NEWS_SCHEMA, getNewsFeed } from '../redux';
-import { ext } from '../const.js';
+import { getNewsFeed, fetchNewsFeed } from '../redux';
+import { ext, RSS_NEWS_SCHEMA } from '../const';
 
 export class ArticlesListScreen extends RssListScreen {
   static propTypes = {
@@ -25,22 +22,25 @@ export class ArticlesListScreen extends RssListScreen {
       schema: RSS_NEWS_SCHEMA,
     };
 
-    this.openArticle = this.openArticle.bind(this);
-    this.openArticleWithId = this.openArticleWithId.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
+    autoBind(this);
   }
 
-  openArticle(article) {
-    const { navigateTo } = this.props;
-    const nextArticle = this.getNextArticle(article);
+  componentDidMount() {
+    const { data, fetchNewsFeed, shortcutId } = this.props;
+
+    if (shouldRefresh(data)) {
+      fetchNewsFeed(shortcutId);
+    }
+  }
+
+  openArticle(id) {
+    const { feedUrl, navigateTo } = this.props;
 
     const route = {
       screen: ext('ArticleDetailsScreen'),
-      title: article.title,
       props: {
-        article,
-        nextArticle,
+        id,
+        feedUrl,
         openArticle: this.openArticle,
       },
     };
@@ -50,8 +50,13 @@ export class ArticlesListScreen extends RssListScreen {
 
   openArticleWithId(id) {
     const { data } = this.props;
+
     const article = _.find(data, { id });
-    this.openArticle(article);
+    const articleId = _.get(article, 'id');
+
+    if (articleId) {
+      this.openArticle(articleId);
+    }
   }
 
   getNextArticle(article) {
@@ -91,15 +96,22 @@ export class ArticlesListScreen extends RssListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => {
+  const shortcutId = _.get(ownProps, 'shortcut.id');
   const feedUrl = _.get(ownProps, 'shortcut.settings.feedUrl');
+  const data = getNewsFeed(state, feedUrl);
+
   return {
+    shortcutId,
     feedUrl,
-    data: getNewsFeed(state, feedUrl),
+    data,
   };
 };
 
-export const mapDispatchToProps = { navigateTo: navigateToAction, find, next };
+export const mapDispatchToProps = {
+  fetchNewsFeed,
+  navigateTo: navigateToAction,
+  find,
+  next,
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ArticlesListScreen'))(ArticlesListScreen),
-);
+export default connect(mapStateToProps, mapDispatchToProps)(ArticlesListScreen);

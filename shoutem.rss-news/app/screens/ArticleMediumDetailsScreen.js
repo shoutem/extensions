@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-
 import {
   ScrollView,
   Screen,
@@ -12,10 +11,8 @@ import {
   SimpleHtml,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-
 import { NavigationBar } from 'shoutem.navigation';
 import { getLeadImageUrl, createRenderAttachment } from 'shoutem.rss';
-
 import { ArticleDetailsScreen } from './ArticleDetailsScreen';
 import { ext } from '../const';
 

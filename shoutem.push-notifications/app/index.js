@@ -6,15 +6,23 @@ import {
   USER_NOTIFIED,
   DEVICE_TOKEN_RECEIVED,
   SHOW_PUSH_NOTIFICATION,
+  clearPendingNotification,
+  setPendingNotification,
 } from './redux';
 
 import { appDidMount, appWillMount, appWillUnmount } from './app';
 import Permissions from './permissions';
 import enTranslations from './translations/en.json';
-import { showInitialNotification, showNotification } from './middleware';
+import {
+  showInitialNotification,
+  showNotification,
+  pendingNotificationMiddleware,
+} from './redux/middleware';
 export { resolveNotificationData } from './services';
 
-export { DEFAULT_PUSH_NOTIFICATION_GROUP } from './const';
+export { DEFAULT_PUSH_NOTIFICATION_GROUP, ext } from './const';
+
+export { displayLocalNotification } from './notificationHandlers';
 
 export const shoutem = {
   i18n: {
@@ -27,6 +35,7 @@ export const shoutem = {
 export const middleware = [
   showInitialNotification,
   showNotification,
+  pendingNotificationMiddleware,
 ];
 
 export {
@@ -41,4 +50,6 @@ export {
   appWillUnmount,
   Permissions,
   SHOW_PUSH_NOTIFICATION,
+  clearPendingNotification,
+  setPendingNotification,
 };

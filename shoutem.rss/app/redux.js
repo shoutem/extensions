@@ -8,9 +8,9 @@ function getFeedUrl(action) {
 
 const _15min = 15 * 60;
 
-export function rssFeed(schema) {
+export function rssFeed(schema, tag) {
   return mapReducers(
     getFeedUrl,
-    collection(schema, undefined, { expirationTime: _15min })
+    collection(schema, tag, { expirationTime: _15min }),
   );
 }

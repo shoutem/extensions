@@ -1,17 +1,12 @@
 {
   "name": "rss-photos",
   "title": "Photos RSS",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "platform": "2.4.*",
   "description": "Show a photo gallery from an RSS feed",
   "icon": "server/assets/add-photos-image.png",
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.rss"
-  ],
-  "categories": [
-    "media"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.rss"],
+  "categories": ["media"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -22,9 +17,7 @@
       "title": "Photos RSS",
       "screen": "@.PhotosList",
       "icon": "theme://photo.png",
-      "capabilities": [
-        "shoutem.rss.feed"
-      ],
+      "capabilities": ["shoutem.rss.feed"],
       "adminPages": [
         {
           "page": "shoutem.rss.RssPage",
@@ -49,9 +42,7 @@
     {
       "name": "PhotosList",
       "title": "List",
-      "navigatesTo": [
-        "@.PhotosList"
-      ],
+      "navigatesTo": ["@.PhotoDetails"],
       "image": "./server/assets/screens/layout-large-list.png"
     },
     {

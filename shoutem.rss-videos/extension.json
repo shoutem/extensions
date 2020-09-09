@@ -1,30 +1,23 @@
 {
   "name": "rss-videos",
   "title": "Videos RSS",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "platform": "2.4.*",
   "description": "Show a video gallery from an RSS feed",
   "icon": "server/assets/add-videos-image.png",
-  "categories": [
-    "media"
-  ],
+  "categories": ["media"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.rss"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.rss"],
   "shortcuts": [
     {
       "name": "videos-shortcut",
       "title": "Videos RSS",
       "screen": "@.VideosList",
       "icon": "theme://play.png",
-      "capabilities": [
-        "shoutem.rss.feed"
-      ],
+      "capabilities": ["shoutem.rss.feed"],
       "adminPages": [
         {
           "page": "shoutem.rss.RssPage",
@@ -49,7 +42,8 @@
     {
       "name": "VideosList",
       "title": "Big list",
-      "image": "server/assets/screens/big-list.png"
+      "image": "server/assets/screens/big-list.png",
+      "navigatesTo": ["@.VideoDetails"]
     },
     {
       "name": "VideosSmallList",
