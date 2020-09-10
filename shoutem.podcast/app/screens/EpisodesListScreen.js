@@ -1,17 +1,15 @@
 import React from 'react';
 import _ from 'lodash';
+import autoBind from 'auto-bind';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
-import { find, next } from '@shoutem/redux-io';
-
+import { find, next, shouldRefresh } from '@shoutem/redux-io';
 import { navigateTo as navigateToAction } from 'shoutem.navigation';
 import { RssListScreen, getLeadImageUrl } from 'shoutem.rss';
-
 import { ListEpisodeView } from '../components/ListEpisodeView';
 import { FeaturedEpisodeView } from '../components/FeaturedEpisodeView';
-import { RSS_PODCAST_SCHEMA, getEpisodesFeed } from '../redux';
-import { ext } from '../const.js';
+import { getEpisodesFeed, fetchEpisodesFeed } from '../redux';
+import { ext, RSS_PODCAST_SCHEMA } from '../const.js';
 
 export class EpisodesListScreen extends RssListScreen {
   static propTypes = {
@@ -25,35 +23,29 @@ export class EpisodesListScreen extends RssListScreen {
       schema: RSS_PODCAST_SCHEMA,
     };
 
-    this.openEpisode = this.openEpisode.bind(this);
-    this.openEpisodeWithId = this.openEpisodeWithId.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
+    autoBind(this);
   }
 
-  openEpisode(episode) {
-    const { navigateTo } = this.props;
-    const nextEpisode = this.getNextEpisode(episode);
+  componentDidMount() {
+    const { data, fetchEpisodesFeed, shortcutId } = this.props;
+
+    if (shouldRefresh(data)) {
+      fetchEpisodesFeed(shortcutId);
+    }
+  }
+
+  openEpisodeWithId(id) {
+    const { navigateTo, feedUrl } = this.props;
 
     const route = {
       screen: ext('EpisodeDetailsScreen'),
-      title: episode.title,
       props: {
-        episode,
-        nextEpisode,
-        openEpisode: this.openEpisode,
+        id,
+        feedUrl,
       },
     };
 
     navigateTo(route);
-  }
-
-  openEpisodeWithId(id) {
-    const { data } = this.props;
-
-    const episode = _.find(data, { id });
-
-    this.openEpisode(episode);
   }
 
   getNextEpisode(episode) {
@@ -95,17 +87,25 @@ export class EpisodesListScreen extends RssListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => {
+  const shortcutId = _.get(ownProps, 'shortcut.id');
   const feedUrl = _.get(ownProps, 'shortcut.settings.feedUrl');
   const data = getEpisodesFeed(state, feedUrl);
 
   return {
+    shortcutId,
     feedUrl,
     data,
   };
 };
 
-export const mapDispatchToProps = { navigateTo: navigateToAction, find, next };
+export const mapDispatchToProps = {
+  fetchEpisodesFeed,
+  navigateTo: navigateToAction,
+  find,
+  next,
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('EpisodesListScreen'))(EpisodesListScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('EpisodesListScreen'))(EpisodesListScreen));

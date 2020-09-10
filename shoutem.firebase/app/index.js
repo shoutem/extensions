@@ -4,10 +4,11 @@ import {
   NotificationHandlers,
   Firebase,
   handleNotificationReceivedBackground,
+  handlePendingNotification,
 } from './services';
 
 export { appDidFinishLaunching } from './app';
-export { NotificationHandlers, Firebase };
+export { NotificationHandlers, Firebase, handlePendingNotification };
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
   if (Platform.OS === 'ios') {

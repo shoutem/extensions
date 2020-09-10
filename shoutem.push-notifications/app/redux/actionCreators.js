@@ -6,6 +6,8 @@ import {
   SHOW_PUSH_NOTIFICATION,
   DEVICE_TOKEN_RECEIVED,
   NOTIFICATION_RECEIVED,
+  SET_PENDING_NOTIFICATION,
+  CLEAR_PENDING_NOTIFICATION,
 } from './actionTypes';
 
 /**
@@ -83,4 +85,12 @@ export function deviceTokenReceived(token) {
     type: DEVICE_TOKEN_RECEIVED,
     token,
   };
+}
+
+export function setPendingNotification(notification) {
+  return { type: SET_PENDING_NOTIFICATION, payload: notification };
+}
+
+export function clearPendingNotification() {
+  return { type: CLEAR_PENDING_NOTIFICATION };
 }

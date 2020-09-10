@@ -12,6 +12,14 @@ export function ext(resourceName) {
   return resourceName ? `${pack.name}.${resourceName}` : pack.name;
 }
 
+// TODO: Currently, backend has no shoutem.proxy.podcast
+// schema defined. We can't use news schema, it's causing
+// problems if we have both, news and podcast, extensions in app
+// (https://fiveminutes.jira.com/browse/SEEXT-8462)
+export const RSS_PODCAST_SCHEMA = 'shoutem.proxy.news';
+export const PODCAST_SCHEMA_ITEM = 'Podcast';
+export const EPISODE_DETAILS_SCREEN = ext('EpisodeDetailsScreen');
+
 export const trackPlayerOptions = {
   stopWithApp: true,
   alwaysPauseOnInterruption: true,

@@ -1,16 +1,22 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Platform, StatusBar } from 'react-native';
+import { Platform, StatusBar, Alert } from 'react-native';
 import autoBind from 'auto-bind';
-import { connectStyle } from '@shoutem/theme';
+import { connect } from 'react-redux';
+import { isBusy, isValid } from '@shoutem/redux-io';
 import {
   Screen,
   ImageGallery,
   ImageGalleryOverlay,
+  View,
+  Spinner,
 } from '@shoutem/ui';
-import { NavigationBar } from 'shoutem.navigation';
-import { ext } from '../const';
+import { NavigationBar, closeModal } from 'shoutem.navigation';
+import { I18n } from 'shoutem.i18n';
+import { ext as rssExt } from 'shoutem.rss';
+import { getPhotosFeed } from '../redux';
+import { remapAndFilterPhotos } from '../services';
 
 function calculateStartingIndex(photo, photos) {
   return _.findIndex(photos, ['id', photo.id]) || 0;
@@ -28,9 +34,8 @@ function renderImageOverlay(imageData) {
 
 class PhotoDetails extends PureComponent {
   static propTypes = {
-    photos: PropTypes.array,
-    photo: PropTypes.object.isRequired,
-    navigateBack: PropTypes.func,
+    id: PropTypes.string.isRequired,
+    closeModal: PropTypes.func,
   };
 
   constructor(props) {
@@ -38,23 +43,67 @@ class PhotoDetails extends PureComponent {
 
     autoBind(this);
 
-    const { photo, photos } = props;
-
     this.state = {
-      mode: ImageGallery.IMAGE_GALLERY_MODE,
-      selectedPhotoIndex: calculateStartingIndex(photo, photos),
+      photos: [],
+      mode: null,
+      selectedPhotoIndex: null,
     };
   }
 
-  onBackButton() {
-    const { navigateBack } = this.props;
+  componentDidMount() {
+    const { photos, photo, photoNotFound } = this.props;
 
-    navigateBack();
+    if (photoNotFound) {
+      this.handleItemNotFound();
+    }
+
+    if (photo) {
+      this.setState({
+        photos,
+        mode: ImageGallery.IMAGE_GALLERY_MODE,
+        selectedPhotoIndex: calculateStartingIndex(photo, photos),
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { data, photoNotFound } = this.props;
+    const {
+      data: nextData,
+      photos: nextPhotos,
+      photo: nextPhoto,
+      photoNotFound: nextPhotoNotFound,
+    } = nextProps;
+
+    if (!photoNotFound && nextPhotoNotFound) {
+      this.handleItemNotFound();
+    }
+
+    if (nextPhoto && nextData !== data) {
+      this.setState({
+        photos: nextPhotos,
+        mode: ImageGallery.IMAGE_GALLERY_MODE,
+        selectedPhotoIndex: calculateStartingIndex(nextPhoto, nextPhotos),
+      });
+    }
+  }
+
+  handleItemNotFound() {
+    const { closeModal } = this.props;
+
+    const okButton = {
+      onPress: () => closeModal(),
+    };
+
+    return Alert.alert(
+      I18n.t(rssExt('itemNotFoundTitle')),
+      I18n.t(rssExt('itemNotFoundMessage')),
+      [okButton],
+    );
   }
 
   getNavbarProps() {
-    const { selectedPhotoIndex, mode } = this.state;
-    const { photos } = this.props;
+    const { selectedPhotoIndex, mode, photos } = this.state;
 
     if (mode === ImageGallery.IMAGE_PREVIEW_MODE) {
       return {
@@ -82,7 +131,7 @@ class PhotoDetails extends PureComponent {
     const { mode } = this.state;
 
     if (Platform.OS === 'ios') {
-      const isHidden = (newMode === ImageGallery.IMAGE_PREVIEW_MODE);
+      const isHidden = newMode === ImageGallery.IMAGE_PREVIEW_MODE;
       StatusBar.setHidden(isHidden, 'fade');
     }
 
@@ -92,22 +141,49 @@ class PhotoDetails extends PureComponent {
   }
 
   render() {
-    const { selectedPhotoIndex } = this.state;
-    const { photos } = this.props;
+    const { data, photoNotFound } = this.props;
+    const { selectedPhotoIndex, photos } = this.state;
+
+    const loading = isBusy(data) || photoNotFound;
 
     return (
       <Screen styleName="paper full-screen">
         <NavigationBar {...this.getNavbarProps()} />
-        <ImageGallery
-          data={photos}
-          onIndexSelected={this.handleIndexSelected}
-          onModeChanged={this.handleImageGalleryModeChange}
-          renderImageOverlay={renderImageOverlay}
-          selectedIndex={selectedPhotoIndex}
-        />
+        {loading && (
+          <View styleName="flexible vertical h-center v-center">
+            <Spinner />
+          </View>
+        )}
+        {!loading && (
+          <ImageGallery
+            data={photos}
+            onIndexSelected={this.handleIndexSelected}
+            onModeChanged={this.handleImageGalleryModeChange}
+            renderImageOverlay={renderImageOverlay}
+            selectedIndex={selectedPhotoIndex}
+          />
+        )}
       </Screen>
     );
   }
 }
 
-export default connectStyle(ext('PhotoDetails'))(PhotoDetails);
+export const mapStateToProps = (state, ownProps) => {
+  const { id, feedUrl } = ownProps;
+
+  const data = getPhotosFeed(state, feedUrl);
+  const photos = remapAndFilterPhotos(data);
+  const photo = _.find(photos, { id });
+  const photoNotFound = isValid(data) && !photo;
+
+  return {
+    data,
+    photos,
+    photo,
+    photoNotFound,
+  };
+};
+
+export const mapDispatchToProps = { closeModal };
+
+export default connect(mapStateToProps, mapDispatchToProps)(PhotoDetails);

@@ -6,12 +6,13 @@ export {
   SHOW_PUSH_NOTIFICATION,
 } from './actionTypes';
 
-export {
-  getLastNotification,
-} from './selectors';
+export { getLastNotification, getQueuedNotification } from './selectors';
 
+export { default as reducer } from './reducer';
 export {
-  default as reducer,
-} from './reducer';
+  pendingNotificationMiddleware,
+  showInitialNotification,
+  showNotification,
+} from './middleware';
 
 export * from './actionCreators';

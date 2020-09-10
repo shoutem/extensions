@@ -3,7 +3,7 @@ import ArticlesListScreen from './screens/ArticlesListScreen';
 import ArticleDetailsScreen from './screens/ArticleDetailsScreen';
 import ArticleMediumDetailsScreen from './screens/ArticleMediumDetailsScreen';
 import enTranslations from './translations/en.json';
-import reducer from './redux';
+import { reducer } from './redux';
 
 const screens = {
   ArticlesListScreen: ArticlesListScreen,
@@ -24,8 +24,4 @@ const shoutem = {
 
 export { appDidMount } from './app';
 
-export {
-  reducer,
-  screens,
-  shoutem,
-};
+export { reducer, screens, shoutem };

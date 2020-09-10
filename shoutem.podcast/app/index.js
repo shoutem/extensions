@@ -2,7 +2,7 @@ import EpisodesGridScreen from './screens/EpisodesGridScreen';
 import EpisodesListScreen from './screens/EpisodesListScreen';
 import EpisodeDetailsScreen from './screens/EpisodeDetailsScreen';
 import enTranslations from './translations/en.json';
-import reducer from './redux';
+import { reducer } from './redux';
 
 const screens = {
   EpisodesListScreen,
@@ -22,8 +22,4 @@ const shoutem = {
 
 export { appDidMount } from './app';
 
-export {
-  reducer,
-  screens,
-  shoutem,
-};
+export { reducer, screens, shoutem };

@@ -13,3 +13,10 @@ export function buildFeedUrl(state, schema) {
 
   return `${baseApiEndpoint}/v1/apps/${appId}/proxy/resources/${schema}{?query*}`;
 }
+
+// Builds the RSS feed proxy URL for the given feed schema and baseApiEndpoint
+export function buildFeedUrlWithEndpoint(baseApiEndpoint, schema) {
+  const appId = getAppId();
+
+  return `${baseApiEndpoint}/v1/apps/${appId}/proxy/resources/${schema}{?query*}`;
+}

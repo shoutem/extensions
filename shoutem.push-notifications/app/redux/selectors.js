@@ -1,3 +1,12 @@
 import { ext } from '../const';
 
-export const getLastNotification = state => state[ext()].lastNotification;
+function getModuleState(state) {
+  return state[ext()];
+}
+
+export const getLastNotification = (state) =>
+  getModuleState(state).lastNotification;
+
+export function getQueuedNotification(state) {
+  return getModuleState(state).pendingNotification;
+}

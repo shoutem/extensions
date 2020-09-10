@@ -29,13 +29,18 @@ export function appDidFinishLaunching(app) {
   const { dispatch } = store;
 
   if (Platform.OS === 'ios') {
-    messaging().onNotificationOpenedApp(message => handleNotificationTapped(formatiOSNotificationPayload(message), dispatch));
+    messaging().onNotificationOpenedApp((message) =>
+      handleNotificationTapped(formatiOSNotificationPayload(message), dispatch),
+    );
   }
 
-  messaging().getToken().then(token => handleFCMTokenReceived(token, dispatch));
+  messaging()
+    .getToken()
+    .then((token) => handleFCMTokenReceived(token, dispatch))
+    .catch(err => console.warn('Fetch Firebase token failed!', err));
 
   PushNotifications.configure({
-    onRegister: token => handleReceivedToken(token, dispatch),
+    onRegister: (token) => handleReceivedToken(token, dispatch),
     onNotification: (notif) => {
       const { foreground, userInteraction } = notif;
 
@@ -51,7 +56,10 @@ export function appDidFinishLaunching(app) {
         handleNotificationReceivedBackground(notif, dispatch);
       }
 
-      if ((userInteraction === true && Platform.OS !== 'ios') || (userInteraction === undefined && !foreground)) {
+      if (
+        (userInteraction === true && Platform.OS !== 'ios') ||
+        (userInteraction === undefined && !foreground)
+      ) {
         handleNotificationTapped(notif, dispatch);
       }
     },
