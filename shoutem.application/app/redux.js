@@ -59,6 +59,12 @@ export function getConfiguration(state) {
   return getOne(state[ext()].configuration, state);
 }
 
+export function getSubscriptionValidState(state) {
+  const subscription = getOne(state[ext()].subscription, state);
+
+  return _.get(subscription, 'valid', false);
+}
+
 export function getShortcut(state, shortcutId) {
   return getOne(shortcutId, state, 'shoutem.core.shortcuts');
 }
@@ -167,6 +173,8 @@ const reducer = combineReducers({
   screens: storage(SCREENS_SCHEMA),
   extensions: storage(EXTENSIONS_SCHEMA),
   shortcuts: storage(SHORTCUTS_SCHEMA),
+  subscriptions: storage(APP_SUBSCRIPTION_SCHEMA),
+  subscription: one(APP_SUBSCRIPTION_SCHEMA, APP_SUBSCRIPTION_TAG, undefined),
   hiddenShortcuts,
 });
 

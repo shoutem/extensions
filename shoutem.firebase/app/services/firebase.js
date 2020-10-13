@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import PushNotifications from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import { handleFCMTokenReceived, handleAPNSTokenReceived } from './handlers';
 
 function requestPermissions() {
   PushNotifications.requestPermissions();
@@ -14,6 +15,20 @@ function subscribeToTopic(topic) {
 
 function unsubscribeFromTopic(topic) {
   messaging().unsubscribeFromTopic(topic);
+}
+
+function obtainFCMToken() {
+  return dispatch => messaging()
+    .getToken()
+    .then(token => handleFCMTokenReceived(token, dispatch))
+    .catch(err => console.warn('Fetch Firebase token failed!', err));
+}
+
+function obtainAPNSToken() {
+  return dispatch => messaging()
+    .getAPNSToken()
+    .then(token => handleAPNSTokenReceived(token, dispatch))
+    .catch(err => console.warn('Fetch APNS token failed!', err));
 }
 
 function clearBadge() {
@@ -39,6 +54,8 @@ export default {
   requestPermissions,
   subscribeToTopic,
   unsubscribeFromTopic,
+  obtainFCMToken,
+  obtainAPNSToken,
   selectGroups,
   presentLocalNotification,
   clearBadge,

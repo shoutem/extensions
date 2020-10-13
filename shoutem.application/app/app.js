@@ -141,7 +141,7 @@ export function appDidMount(app) {
   }
   unsubscribeFromConfigurationLoaded();
 
-  dispatchCheckAppSubscription(app).then((response) => {
+  return dispatchCheckAppSubscription(app).then((response) => {
     const isValid = _.get(response, 'payload.data.attributes.valid');
     openInitialScreen(app, isValid);
   });

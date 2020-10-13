@@ -80,7 +80,7 @@ export function updateAppSettings(appId, appSettings, scope) {
   return update(config, updatedSettings, scope);
 }
 
-export function updateAppleClientId(appId, appleClientId) {
+export function updateAppRealm(appId, realmPatch) {
   const config = {
     schema: AUTH_REALMS,
     request: {
@@ -92,15 +92,13 @@ export function updateAppleClientId(appId, appleClientId) {
     },
   };
 
-  const updatedAppleClientId = {
+  const updatedAppRealm = {
     type: AUTH_REALMS,
     id: appId,
-    attributes: {
-      appleClientId,
-    },
+    attributes: realmPatch
   };
 
-  return update(config, updatedAppleClientId);
+  return update(config, updatedAppRealm);
 }
 
 // REDUCER

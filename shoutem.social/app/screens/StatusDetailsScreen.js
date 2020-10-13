@@ -1,10 +1,16 @@
 // @flow
 import React, { PureComponent } from 'react';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Alert, KeyboardAvoidingView } from 'react-native';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Keyboard as RNKeyboard,
+  TextInput,
+} from 'react-native';
 import ActionSheet from 'react-native-action-sheet';
 import ImagePicker from 'react-native-image-picker';
 
@@ -27,7 +33,6 @@ import { authenticate } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar, openInModal, navigateBack } from 'shoutem.navigation';
 
-import AutoGrowTextInput from '../components/AutoGrowTextInput';
 import CommentView from '../components/CommentView';
 import { user as userShape } from '../components/shapes';
 import StatusView from '../components/StatusView';
@@ -60,25 +65,7 @@ export class StatusDetailsScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.handleStatusCommentClick = this.handleStatusCommentClick.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-    this.captureScrollViewRef = this.captureScrollViewRef.bind(this);
-    this.appendImage = this.appendImage.bind(this);
-    this.discardImage = this.discardImage.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.renderAddCommentSection = this.renderAddCommentSection.bind(this);
-    this.renderStatus = this.renderStatus.bind(this);
-    this.focusOnComment = this.focusOnComment.bind(this);
-    this.fetchData = this.fetchData.bind(this);
-    this.renderLoadComments = this.renderLoadComments.bind(this);
-    this.getCommentsLength = this.getCommentsLength.bind(this);
-    this.loadMoreComments = this.loadMoreComments.bind(this);
-    this.renderRightComponent = this.renderRightComponent.bind(this);
-    this.isStatusAuthorOrAppOwner = this.isStatusAuthorOrAppOwner.bind(this);
-    this.openActionSheet = this.openActionSheet.bind(this);
-
-    this.textInputRef = React.createRef();
+    autoBindReact(this);
 
     this.state = {
       text: '',
@@ -92,9 +79,13 @@ export class StatusDetailsScreen extends PureComponent {
   }
 
   fetchData() {
-    const { statusId, loadComments } = this.props;
+    const { statusId, loadComments, scrollDownOnOpen } = this.props;
 
-    loadComments(statusId);
+    loadComments(statusId).then((res) => {
+      if (scrollDownOnOpen) {
+        this.focusOnComment();
+      }
+    });
   }
 
   onSubmit() {
@@ -113,7 +104,7 @@ export class StatusDetailsScreen extends PureComponent {
       createComment(statusId, text, image64Data)
         .then(this.onSubmit())
         .then(this.scrollDownOnComment());
-      Keyboard.dismiss();
+      RNKeyboard.dismiss();
       this.setState({ text: '' });
     });
   }
@@ -147,10 +138,7 @@ export class StatusDetailsScreen extends PureComponent {
   }
 
   focusOnComment() {
-    const { addComment, statusId, navigateBack } = this.props;
-
-    navigateBack();
-    addComment(statusId);
+    this.textInputRef.focus();
   }
 
   scrollDownOnComment() {
@@ -235,18 +223,24 @@ export class StatusDetailsScreen extends PureComponent {
   }
 
   renderAddCommentSection() {
-    const { enablePhotoAttachments } = this.props;
+    const { enablePhotoAttachments, style } = this.props;
+    const { image64Data } = this.state;
 
-    const addPhotoButton = enablePhotoAttachments ?
-      <Button
-        styleName="clear"
-        onPress={this.appendImage}
-      >
+    const postButtonDisabled = this.state.text.length === 0 && !image64Data;
+    const resolvedBehavior = Platform.OS === 'ios' ? 'padding' : '';
+    const keyboardOffset = Keyboard.calculateKeyboardOffset();
+
+    const addPhotoButton = enablePhotoAttachments && (
+      <Button styleName="clear" onPress={this.appendImage}>
         <Icon name="take-a-photo" />
-      </Button> : null;
+      </Button>
+    );
 
     return (
-      <View>
+      <KeyboardAvoidingView
+        behavior={resolvedBehavior}
+        keyboardVerticalOffset={keyboardOffset}
+      >
         {this.renderAttachedImage()}
         <Divider styleName="line" />
         <View
@@ -256,13 +250,13 @@ export class StatusDetailsScreen extends PureComponent {
           {this.renderCommentTextInput()}
           <Button
             styleName="clear"
-            disabled={this.state.text.length === 0}
+            disabled={postButtonDisabled}
             onPress={this.handleStatusCommentClick}
           >
             <Text>{I18n.t(ext('postStatusButton'))}</Text>
           </Button>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 
@@ -277,7 +271,7 @@ export class StatusDetailsScreen extends PureComponent {
           source={{ uri: `data:image/jpg;base64,${image64Data.data}` }}
         >
           <View styleName="fill-parent horizontal v-start h-end">
-            <Button
+          <Button
               styleName="tight clear"
               onPress={this.discardImage}
             >
@@ -291,18 +285,21 @@ export class StatusDetailsScreen extends PureComponent {
 
   renderCommentTextInput() {
     const { text } = this.state;
-    const { scrollDownOnOpen } = this.props;
+    const { statusMaxLength, style } = this.props;
 
     return (
-      <AutoGrowTextInput
-        autoFocus={scrollDownOnOpen}
+      <TextInput
+        style={style.textInput}
+        maxLength={statusMaxLength}
         multiline
-        maxHeight={100}
-        onTextChanged={this.handleTextChange}
+        onChangeText={this.handleTextChange}
         placeholder={I18n.t(ext('newCommentPlaceholder'))}
         styleName="flexible"
         value={text}
-        returnKeyType="done"
+        returnKeyType="next"
+        ref={(ref) => {
+          this.textInputRef = ref;
+        }}
       />
     );
   }
@@ -338,23 +335,19 @@ export class StatusDetailsScreen extends PureComponent {
 
   render() {
     const { enableComments, comments } = this.props;
-
-    const addCommentSection = enableComments ? this.renderAddCommentSection() : null;
+;
     const commentsData = _.get(comments, 'data', []);
     const areCommentsLoading = isBusy(comments) && !isInitialized(comments);
     const hasMoreComments = hasNext(comments);
+    const showAddCommentSection = !areCommentsLoading && enableComments;
 
     return (
-      <Screen styleName="paper">
+      <Screen styleName="paper with-notch-padding">
         <NavigationBar
           title={I18n.t(ext('postDetailsNavBarTitle'))}
           renderRightComponent={this.renderRightComponent}
         />
         <Divider styleName="line" />
-        <KeyboardAvoidingView
-          behavior="padding"
-          keyboardVerticalOffset={Keyboard.calculateKeyboardOffset(80)}
-        >
           <ListView
             data={[...commentsData]}
             ref={this.captureScrollViewRef}
@@ -363,8 +356,7 @@ export class StatusDetailsScreen extends PureComponent {
             renderRow={this.renderRow}
           />
           {hasMoreComments && this.renderLoadComments()}
-          {areCommentsLoading ? null : addCommentSection}
-        </KeyboardAvoidingView>
+          {showAddCommentSection && this.renderAddCommentSection()}
       </Screen>
     );
   }

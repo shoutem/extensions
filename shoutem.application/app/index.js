@@ -1,9 +1,6 @@
-import configuration from './configuration.json';
-import buildConfig from './buildConfig.json';
-
 import SubscriptionMissingScreen from './screens/SubscriptionMissingScreen';
-import RemoteDataListScreen from './screens/RemoteDataListScreen';
-
+import enTranslations from './translations/en.json';
+import { initializeApp, appActions } from './app';
 import {
   resolveScreenLayout,
   navigateToShortcutScreen,
@@ -12,40 +9,50 @@ import {
   noInternetMiddleware,
   restartAppMiddleware,
 } from './middleware';
+import { executeShortcut, fetchConfiguration } from './redux';
 
-import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
-import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
-import { openInitialScreen } from './shared/openInitialScreen';
-import { getFirstShortcut } from './shared/getFirstShortcut';
-import { isProduction } from './shared/isProduction';
-import { isRelease } from './shared/isRelease';
+export { default as configuration } from './configuration.json';
+export { default as buildConfig } from './buildConfig.json';
 
-import { InlineMap } from './components/InlineMap';
-import { MapView } from './components/MapView';
+export {
+  default as RemoteDataListScreen,
 
-import {
+  // For backwards compatibility only,
+  // remove this when all extensions have been updated.
+  default as ListScreen,
+} from './screens/RemoteDataListScreen';
+
+export { isConfigurationLoaded } from './shared/isConfigurationLoaded';
+export { resolveAppEndpoint } from './shared/resolveAppEndpoint';
+export { openInitialScreen } from './shared/openInitialScreen';
+export { getFirstShortcut } from './shared/getFirstShortcut';
+export { isProduction } from './shared/isProduction';
+export { isRelease } from './shared/isRelease';
+
+export { InlineMap } from './components/InlineMap';
+export { MapView } from './components/MapView';
+
+export {
   CONFIGURATION_SCHEMA,
   EXTENSIONS_SCHEMA,
   ext,
 } from './const';
 
-import {
-  initializeApp,
+export {
   appWillMount,
   appDidMount,
-  appDidFinishLaunching,
   appWillUnmount,
-  appActions,
   getAppId,
   isDevelopment,
 } from './app';
 
-import reducer, {
+export {
+  default as reducer,
   RESTART_APP,
   executeShortcut,
-  fetchConfiguration,
   getExtensionSettings,
   getConfiguration,
+  getSubscriptionValidState,
   showAllShortcuts,
   showShortcut,
   hideShortcut,
@@ -56,14 +63,12 @@ import reducer, {
   restartApp,
 } from './redux';
 
-import enTranslations from './translations/en.json';
-
-const actions = {
+export const actions = {
   executeShortcut,
   fetchConfiguration,
 };
 
-const middleware = [
+export const middleware = [
   createExecuteShortcutActionMiddleware(appActions),
   navigateToShortcutScreen,
   resolveScreenLayout,
@@ -83,45 +88,3 @@ export const shoutem = {
 export const screens = { SubscriptionMissingScreen };
 
 initializeApp();
-
-export {
-  CONFIGURATION_SCHEMA,
-  EXTENSIONS_SCHEMA,
-  RESTART_APP,
-  buildConfig,
-  configuration,
-  getAppId,
-  getConfiguration,
-  getShortcut,
-  getExtensionSettings,
-  getActiveShortcut,
-  getFirstShortcut,
-  getAllShortcuts,
-  isShortcutVisible,
-  isConfigurationLoaded,
-  isProduction,
-  isDevelopment,
-  isRelease,
-  RemoteDataListScreen,
-  // For backwards compatibility only,
-  // remove this when all extensions have been updated.
-  RemoteDataListScreen as ListScreen,
-  InlineMap,
-  MapView,
-  executeShortcut,
-  openInitialScreen,
-  resolveAppEndpoint,
-  showAllShortcuts,
-  showShortcut,
-  hideShortcut,
-  actions,
-  reducer,
-  middleware,
-  appWillMount,
-  appDidMount,
-  appDidFinishLaunching,
-  appWillUnmount,
-
-  restartApp,
-  ext,
-};

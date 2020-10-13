@@ -1,7 +1,7 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "platform": "2.4.*",
   "description": "View and manage push notifications within the app",
   "icon": "./server/assets/images/add-notifications-settings-image.png",

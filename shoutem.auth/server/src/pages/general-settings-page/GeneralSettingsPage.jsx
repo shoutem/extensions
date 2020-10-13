@@ -18,7 +18,7 @@ import {
   loadAppSettings,
   loadAppStoreSettings,
   updateAppSettings,
-  updateAppleClientId,
+  updateAppRealm,
   GeneralSettings,
   FacebookSetupForm,
   AppleSetupForm,
@@ -69,10 +69,15 @@ export class GeneralSettingsPage extends Component {
   }
 
   changeAppleClientId() {
-    const { appId, storeSettings, updateAppleClientId } = this.props;
+    const { appId, storeSettings, updateAppRealm } = this.props;
 
-    const iPhoneBundleId = _.get(storeSettings, 'iphoneBundleId');
-    return updateAppleClientId(appId, iPhoneBundleId);
+    const appleClientId = _.get(storeSettings, 'iphoneBundleId');
+    return updateAppRealm(appId, { appleClientId: appleClientId });
+  }
+
+  changeFacebookAppId(facebookAppId) {
+    const { appId, updateAppRealm } = this.props;
+    return updateAppRealm(appId, { facebookAppId: facebookAppId });
   }
 
   handleEmailEnabledChange(event) {
@@ -124,6 +129,7 @@ export class GeneralSettingsPage extends Component {
         </FormGroup>
         <FacebookSetupForm
           changeAppleClientID={this.changeAppleClientId}
+          changeFacebookAppID={this.changeFacebookAppId}
           className={providerClasses}
           onSetupUpdate={this.handleExtensionSettingsUpdate}
           providerSettings={facebookSettings}
@@ -150,7 +156,7 @@ GeneralSettingsPage.propTypes = {
   updateExtensionSettings: PropTypes.func,
   fetchShortcuts: PropTypes.func,
   updateAppSettings: PropTypes.func,
-  updateAppleClientId: PropTypes.func,
+  updateAppRealm: PropTypes.func,
 };
 
 function mapStateToProps(state) {
@@ -166,15 +172,12 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
-    updateExtensionSettings: (extension, settings) =>
-      dispatch(updateExtensionSettings(extension, settings)),
+    updateExtensionSettings: (extension, settings) => dispatch(updateExtensionSettings(extension, settings)),
     fetchShortcuts: () => dispatch(fetchShortcuts()),
     loadAppSettings: appId => dispatch(loadAppSettings(appId, scope)),
     loadAppStoreSettings: appId => dispatch(loadAppStoreSettings(appId, scope)),
-    updateAppSettings: (appId, appSettings) =>
-      dispatch(updateAppSettings(appId, appSettings, scope)),
-    updateAppleClientId: (appId, appleClientId) =>
-      dispatch(updateAppleClientId(appId, appleClientId)),
+    updateAppSettings: (appId, appSettings) => dispatch(updateAppSettings(appId, appSettings, scope)),
+    updateAppRealm: (appId, realmPatch) => dispatch(updateAppRealm(appId, realmPatch)),
   };
 }
 

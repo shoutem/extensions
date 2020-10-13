@@ -3,6 +3,7 @@ import React from 'react';
 import { InteractionManager } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 
 import { isBusy, isInitialized, next } from '@shoutem/redux-io';
@@ -41,10 +42,7 @@ export class MembersScreen extends RemoteDataListScreen {
   constructor(props) {
     super(props);
 
-    this.renderRightComponent = this.renderRightComponent.bind(this);
-    this.openSearchScreen = this.openSearchScreen.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.renderData = this.renderData.bind(this);
+    autoBindReact(this);
   }
 
   openSearchScreen() {

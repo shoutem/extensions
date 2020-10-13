@@ -3,6 +3,7 @@ import React from 'react';
 import { InteractionManager } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 
 import { next } from '@shoutem/redux-io';
@@ -51,16 +52,7 @@ export class SocialWallScreen extends RemoteDataListScreen {
   constructor(props, context) {
     super(props, context);
 
-    this.newStatus = this.newStatus.bind(this);
-    this.addComment = this.addComment.bind(this);
-    this.openStatusDetails = this.openStatusDetails.bind(this);
-    this.openUserLikes = this.openUserLikes.bind(this);
-    this.onLikeAction = this.onLikeAction.bind(this);
-    this.openMyProfile = this.openMyProfile.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.renderData = this.renderData.bind(this);
-    this.renderAddNewStatusSection = this.renderAddNewStatusSection.bind(this);
-    this.getUsersWhoLiked = this.getUsersWhoLiked.bind(this);
+    autoBindReact(this);
   }
 
   openStatusDetails(statusId, scrollDownOnOpen = false) {

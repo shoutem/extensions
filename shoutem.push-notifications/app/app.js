@@ -1,6 +1,7 @@
 import { AppState } from 'react-native';
 import { Firebase } from 'shoutem.firebase';
 import { getNavigationInitialized } from 'shoutem.navigation';
+import { checkNotifications, requestNotifications, RESULTS } from 'react-native-permissions';
 import { displayPushNotificationMessage, getLastNotification } from './redux';
 import { registerNotificationHandlers } from './notificationHandlers';
 
@@ -9,6 +10,20 @@ function handleAppStateChange(nextState) {
     Firebase.clearBadge();
   }
 }
+
+const appWillMount = () => {
+  /**
+   * Checks if the notification service has status DENIED => available on device but the permission has not been requested yet.
+   * If status is DENIED, we request permissions and obtain FCM token if user grants permissions. 
+   */
+  checkNotifications().then(({ status }) => {
+    if (status === RESULTS.DENIED) {
+      requestNotifications(['alert', 'sound', 'badge']);
+    }
+  }).catch((error) => {
+    console.log('Check push notification permissions failed:', error);
+  });
+};
 
 const appDidMount = (app) => {
   Firebase.clearBadge();
@@ -42,4 +57,4 @@ const appWillUnmount = () => {
   AppState.removeEventListener('change', handleAppStateChange);
 };
 
-export { appDidMount, appWillUnmount };
+export { appWillMount, appDidMount, appWillUnmount };

@@ -18,6 +18,7 @@ import {
   showAllShortcuts,
   hideShortcut,
   getConfiguration,
+  getSubscriptionValidState,
 } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { ext } from './const';
@@ -46,6 +47,9 @@ export function restoreSession(session) {
     payload: JSON.parse(session),
   };
 }
+
+const facebookUserInfoURL = 'https://graph.facebook.com/me?fields=name,email,first_name,last_name&access_token='
+
 const sessionReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case RESTORE_SESSION:
@@ -170,8 +174,33 @@ export function fetchAppleAccessToken(idToken) {
     );
 }
 
+export function fetchFacebookAccessToken(userAccessToken) {
+  return dispatch =>
+    dispatch(
+      fetchToken(
+        'refresh-token',
+        `facebook ${userAccessToken}`,
+      ),
+    ).then(action =>
+      dispatch(
+        fetchToken(
+          'access-token',
+          `Bearer ${_.get(action, 'payload.data.attributes.token')}`,
+        ),
+      ),
+    );
+}
+
 export function fetchUser(userId = 'me') {
   return find(USER_SCHEMA, userId, { userId });
+}
+
+export function fetchFacebookUserInfo(userAccessToken) {
+  const request = `${facebookUserInfoURL}${userAccessToken}`;
+
+  return fetch(request)
+    .then((response) => response.json())
+    .catch((error) => console.log('Fetch Facebook user info failed: ', error));
 }
 
 export function login(email, password) {
@@ -194,16 +223,14 @@ export function loginWithApple(idToken) {
     });
 }
 
-export function loginWithFacebook(accessToken) {
+export function loginWithFacebook(userAccessToken) {
   return dispatch =>
-    dispatch(find(USER_FACEBOOK_CREDENTIALS_SCHEMA, '', { accessToken })).then(
-      action => {
-        const resolvedAccessToken = _.get(action, 'payload.access_token');
-        dispatch(setAccessToken(resolvedAccessToken));
+    dispatch(fetchFacebookAccessToken(userAccessToken)).then(action => {
+      const accessToken = _.get(action, 'payload.data.attributes.token');
+      dispatch(setAccessToken(accessToken));
 
-        return dispatch(fetchUser('me'));
-      },
-    );
+      return dispatch(fetchUser('me'));
+    });
 }
 
 export function register(email, username, password) {
@@ -257,6 +284,32 @@ export function registerWithApple(idToken, firstName, lastName) {
   };
 }
 
+export function registerWithFacebook(userAccessToken, firstName, lastName) {
+  return dispatch => {
+    const schemeConfig = {
+      schema: USER_SCHEMA,
+      request: {
+        headers: {
+          'Content-Type': 'application/vnd.api+json',
+          Authorization: `facebook ${userAccessToken}`,
+        },
+      },
+    };
+    const user = {
+      type: USER_SCHEMA,
+      appRole: 'user',
+      profile: {
+        firstName,
+        lastName,
+      },
+    };
+
+    return dispatch(create(schemeConfig, user)).then(() =>
+      dispatch(loginWithFacebook(userAccessToken)),
+    );
+  };
+}
+
 // function returns access token
 export function getAccessToken(state) {
   return state[ext()].access_token;
@@ -291,10 +344,11 @@ export function getUser(state) {
  */
 export function isSendBirdConfigured(state) {
   const config = getConfiguration(state);
+  const hasValidSubscription = getSubscriptionValidState(state);
   const extensionInstalled = _.find(_.get(config, 'extensions'), { id: 'shoutem.sendbird' });
-  const apiKeySet = !_.isEmpty(_.get(extensionInstalled, 'settings.appId', ''));
+  const featureActive = _.get(extensionInstalled, 'settings.featureActive', false);
 
-  return extensionInstalled && apiKeySet;
+  return extensionInstalled && featureActive && hasValidSubscription;
 }
 
 /**
@@ -305,9 +359,9 @@ export function isSendBirdConfigured(state) {
  */
 export function isAgoraConfigured(state) {
   const config = getConfiguration(state);
-  const extensionInstalled = _.find(_.get(config, 'extensions'), {id: 'shoutem.agora'});
+  const extensionInstalled = _.find(_.get(config, 'extensions'), { id: 'shoutem.agora' });
   const apiKeySet = !_.isEmpty(_.get(extensionInstalled, 'settings.appId', ''));
-  
+
   return extensionInstalled && apiKeySet;
 }
 

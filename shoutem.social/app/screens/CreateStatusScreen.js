@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { Alert, KeyboardAvoidingView } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -48,15 +49,7 @@ export class CreateStatusScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.renderRightComponent = this.renderRightComponent.bind(this);
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.addNewStatus = this.addNewStatus.bind(this);
-    this.appendImage = this.appendImage.bind(this);
-    this.removeImage = this.removeImage.bind(this);
-    this.renderHeader = this.renderHeader.bind(this);
-    this.renderTextInput = this.renderTextInput.bind(this);
-    this.renderAttachedImage = this.renderAttachedImage.bind(this);
-    this.renderFooter = this.renderFooter.bind(this);
+    autoBindReact(this);
 
     this.state = {
       text: '',

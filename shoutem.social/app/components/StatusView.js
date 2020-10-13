@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ActionSheet from 'react-native-action-sheet';
 import { Alert } from 'react-native';
-import autoBind from 'auto-bind';
+import autoBindReact from 'auto-bind/react';
 import moment from 'moment';
 import _ from 'lodash';
 import {
@@ -78,7 +78,7 @@ class StatusView extends PureComponent {
   constructor(props) {
     super(props);
 
-    autoBind(this);
+    autoBindReact(this);
   }
 
   handleClickOnStatus() {

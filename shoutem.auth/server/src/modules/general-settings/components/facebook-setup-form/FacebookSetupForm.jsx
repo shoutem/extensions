@@ -61,12 +61,16 @@ export default class FacebookSetupForm extends Component {
   }
 
   handleSaveClick() {
+    const { appId } = this.state;
+    const { changeFacebookAppID } = this.props;
+
     const formValid = this.validateForm();
     if (!formValid) {
       return;
     }
 
     this.saveFormData();
+    changeFacebookAppID(appId);
   }
 
   validateForm() {
@@ -185,6 +189,7 @@ export default class FacebookSetupForm extends Component {
 
 FacebookSetupForm.propTypes = {
   changeAppleClientID: PropTypes.func,
+  changeFacebookAppID: PropTypes.func,
   className: PropTypes.string,
   onSetupUpdate: PropTypes.func,
   providerSettings: PropTypes.object,

@@ -108,14 +108,6 @@ export class RegisterScreen extends PureComponent {
       .catch(this.handleRegistrationFailed);
   }
 
-  handleFacebookLoginSuccess(accessToken) {
-    this.setState({ inProgress: true });
-    this.props
-      .loginWithFacebook(accessToken)
-      .then(this.handleRegistrationSuccess)
-      .catch(this.handleRegistrationFailed);
-  }
-
   render() {
     const { inProgress } = this.state;
     const { settings, style } = this.props;
@@ -158,7 +150,7 @@ export class RegisterScreen extends PureComponent {
           {isFacebookAuthEnabled && (
             <FacebookButton
               onLoginFailed={this.handleRegistrationFailed}
-              onLoginSuccess={this.handleFacebookLoginSuccess}
+              onLoginSuccess={this.handleRegistrationSuccess}
             />
           )}
         </ScrollView>

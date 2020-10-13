@@ -1,9 +1,9 @@
 {
   "name": "shoutem.auth",
-  "version": "2.4.0",
+  "version": "2.4.3",
   "description": "Authentication extension that uses the Shoutem authentication backend.",
   "dependencies": {
-    "@invertase/react-native-apple-authentication": "0.1.1",
+    "@invertase/react-native-apple-authentication": "~2.0.2",
     "@react-native-community/async-storage": "~1.6.3",
     "auto-bind": "^4.0.0",
     "buffer": "^4.5.1",
