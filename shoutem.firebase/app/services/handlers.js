@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-let tokenReceivedHandlers = {};
-let fcmTokenReceivedhandlers = {};
+let APNSTokenReceivedHandlers = {};
+let FCMTokenReceivedhandlers = {};
 let notificationReceivedHandlers = {};
 
 function collectHandlers(targetEvent) {
@@ -20,12 +20,12 @@ function collectHandlers(targetEvent) {
   );
 }
 
-function registerTokenReceivedHandler(tokenHandler) {
+function registerAPNSTokenReceivedHandler(tokenHandler) {
   const extensionOwner = _.get(tokenHandler, 'owner');
   const handler = _.get(tokenHandler, 'onTokenReceived');
 
   if (extensionOwner && handler) {
-    tokenReceivedHandlers[extensionOwner] = handler;
+    APNSTokenReceivedHandlers[extensionOwner] = handler;
   }
 }
 
@@ -34,7 +34,7 @@ function registerFCMTokenReceivedHandler(tokenHandler) {
   const handler = _.get(tokenHandler, 'onTokenReceived');
 
   if (extensionOwner && handler) {
-    fcmTokenReceivedhandlers[extensionOwner] = handler;
+    FCMTokenReceivedhandlers[extensionOwner] = handler;
   }
 }
 
@@ -47,47 +47,40 @@ function registerNotificationReceivedHandlers(notificationHandlers) {
   }
 }
 
-function removeTokenReceivedHandler(owner) {
-  if (tokenReceivedHandlers[owner]) {
-    _.omit(tokenReceivedHandlers, owner);
-  }
-}
-
 export function handleFCMTokenReceived(token, dispatch) {
-  _.forEach(fcmTokenReceivedhandlers, (handler) => handler(token, dispatch));
+  _.forEach(FCMTokenReceivedhandlers, handler => handler(token, dispatch));
 }
 
-export function handleReceivedToken(token, dispatch) {
-  _.forEach(tokenReceivedHandlers, (handler) => handler(token.token, dispatch));
+export function handleAPNSTokenReceived(token, dispatch) {
+  _.forEach(APNSTokenReceivedHandlers, handler => handler(token, dispatch));
 }
 
 export function handleNotificationReceivedBackground(notification, dispatch) {
   const mappedHandlers = collectHandlers('onNotificationReceivedBackground');
 
-  _.forEach(mappedHandlers, (handler) => handler(notification, dispatch));
+  _.forEach(mappedHandlers, handler => handler(notification, dispatch));
 }
 
 export function handleNotificationReceivedForeground(notification, dispatch) {
   const mappedHandlers = collectHandlers('onNotificationReceivedForeground');
 
-  _.forEach(mappedHandlers, (handler) => handler(notification, dispatch));
+  _.forEach(mappedHandlers, handler => handler(notification, dispatch));
 }
 
 export function handleNotificationTapped(notification, dispatch) {
   const mappedHandlers = collectHandlers('onNotificationTapped');
 
-  _.forEach(mappedHandlers, (handler) => handler(notification, dispatch));
+  _.forEach(mappedHandlers, handler => handler(notification, dispatch));
 }
 
 export function handlePendingNotification(notification, dispatch) {
   const mappedHandlers = collectHandlers('onPendingNotificationDispatched');
 
-  _.forEach(mappedHandlers, (handler) => handler(notification, dispatch));
+  _.forEach(mappedHandlers, handler => handler(notification, dispatch));
 }
 
 export default {
-  registerTokenReceivedHandler,
+  registerAPNSTokenReceivedHandler,
   registerNotificationReceivedHandlers,
   registerFCMTokenReceivedHandler,
-  removeTokenReceivedHandler,
 };

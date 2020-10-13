@@ -1,12 +1,11 @@
 {
   "name": "push-notifications",
-  "version": "2.4.1",
+  "version": "2.4.3",
   "platform": "2.4.*",
   "type": "system",
   "title": "Push Notifications",
   "description": "Base extension for push notifications",
+  "releaseNotes": "* Fix handling push notifications for custom extensions",
   "icon": "server/assets/add-push-notifications-image.png",
-  "categories": [
-    "push"
-  ]
+  "categories": ["push"]
 }

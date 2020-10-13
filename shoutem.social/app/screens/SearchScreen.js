@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 
 import { connectStyle } from '@shoutem/theme';
@@ -24,13 +25,7 @@ export class SearchScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.renderRightComponent = this.renderRightComponent.bind(this);
-    this.renderLeftComponent = this.renderLeftComponent.bind(this);
-    this.userMeetsSearchCriteria = this.userMeetsSearchCriteria.bind(this);
-    this.onHandleText = this.onHandleText.bind(this);
-    this.onCancel = this.onCancel.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+    autoBindReact(this);
 
     this.state = {
       text: '',

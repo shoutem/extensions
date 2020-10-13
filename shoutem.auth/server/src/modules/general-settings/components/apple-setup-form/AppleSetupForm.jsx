@@ -67,8 +67,8 @@ export default class AppleSetupForm extends Component {
           hideOnMouseLeave={false}
           message={
             <MessageWithLink
-              message={darkButtonTooltipMessage}
-              link={appleButtonStyleLink}
+              message={appleSignInMessage}
+              link={supportArticleLink}
               linkText={learnMoreText}
             />
           }

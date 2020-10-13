@@ -4,12 +4,7 @@ import { Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import autoBind from 'auto-bind';
-import appleAuth, {
-  AppleButton,
-  AppleAuthRequestOperation,
-  AppleAuthRequestScope,
-  AppleAuthCredentialState,
-} from '@invertase/react-native-apple-authentication';
+import { appleAuth, AppleButton } from '@invertase/react-native-apple-authentication';
 import { connectStyle } from '@shoutem/theme';
 import { View, Spinner } from '@shoutem/ui';
 import { getExtensionSettings, getAppId } from 'shoutem.application';
@@ -21,10 +16,10 @@ import { getErrorCode, resolveErrorMessage } from '../errorMessages';
 import { ext } from '../const';
 
 const APPLE_AUTH_OPTIONS = {
-  requestedOperation: AppleAuthRequestOperation.LOGIN,
+  requestedOperation: appleAuth.Operation.LOGIN,
   requestedScopes: [
-    AppleAuthRequestScope.EMAIL,
-    AppleAuthRequestScope.FULL_NAME,
+    appleAuth.Scope.EMAIL,
+    appleAuth.Scope.FULL_NAME,
   ],
 };
 const LOGIN_ERROR_TITLE = () => I18n.t(ext('loginFailedErrorTitle'));
@@ -81,7 +76,7 @@ class AppleSignInButton extends PureComponent {
     const { loginWithApple, onLoginSuccess } = this.props;
     const { idToken } = this.state;
 
-    if (results === AppleAuthCredentialState.AUTHORIZED) {
+    if (results === appleAuth.State.AUTHORIZED) {
       return loginWithApple(idToken)
         .then(onLoginSuccess)
         .catch(this.handleAppleLoginFailed);

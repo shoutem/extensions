@@ -1,13 +1,12 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "platform": "2.4.*",
   "skipClone": false,
+  "releaseNotes": "* Fixed Post button ocasionally crashing app\n* Fixed comment section not visible, while keyboard is active, on iOS devices\n* Fixed image attachment only comments",
   "description": "Let members create posts, comment and like them",
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "icon": "server/assets/add-community-image.png",
   "screens": [
     {

@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { NavigationBar } from 'shoutem.navigation';
 import { currentLocation } from 'shoutem.cms';
-import WebViewScreen from './WebViewScreen';
+import { WebViewScreen } from './WebViewScreen';
 
 export class WebViewWithShareScreen extends WebViewScreen {
   static propTypes = {

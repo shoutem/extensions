@@ -6,9 +6,7 @@ export {
   AppleSetupForm,
 } from './components';
 
-export {
-  moduleName,
-} from './const';
+export { moduleName } from './const';
 
 export {
   getAppSettings,
@@ -16,7 +14,7 @@ export {
   loadAppSettings,
   loadAppStoreSettings,
   updateAppSettings,
-  updateAppleClientId,
+  updateAppRealm,
 } from './redux';
 
 export default reducer;

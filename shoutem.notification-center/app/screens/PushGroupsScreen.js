@@ -1,8 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Alert } from 'react-native';
+import { Alert, AppState } from 'react-native';
 import { connect } from 'react-redux';
+import autoBind from 'auto-bind';
 import _ from 'lodash';
+import {
+  checkNotifications,
+  openSettings,
+  RESULTS,
+} from 'react-native-permissions';
 
 import {
   Divider,
@@ -18,8 +24,9 @@ import { connectStyle } from '@shoutem/theme';
 
 import { I18n } from 'shoutem.i18n';
 import { isProduction } from 'shoutem.application';
+import { Firebase } from 'shoutem.firebase'
 import { NavigationBar } from 'shoutem.navigation';
-import { Permissions, selectPushNotificationGroups } from 'shoutem.push-notifications';
+import { selectPushNotificationGroups } from 'shoutem.push-notifications';
 
 import { pushGroupShape } from '../components/shapes';
 import {
@@ -38,17 +45,6 @@ const showPreviewModeNotification = () => {
   Alert.alert(
     I18n.t('shoutem.application.preview.pushGroupsPreviewAlertTitle'),
     I18n.t('shoutem.application.preview.pushGroupsPreviewAlertMessage'),
-  );
-};
-
-const showSuggestionToEnableNotifications = () => {
-  Alert.alert(
-    I18n.t(ext('notificationPermissionsAlertTitle')),
-    I18n.t(ext('notificationPermissionsAlertMessage')),
-    [
-      { text: I18n.t(ext('notificationPermissionsSettings')), onPress: () => Permissions.openSettings() },
-      { text: I18n.t(ext('notificationPermissionsCancel')) },
-    ],
   );
 };
 
@@ -73,10 +69,9 @@ export class PushGroupsScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.onToggleGroupSubscription = this.onToggleGroupSubscription.bind(this);
-    this.renderRow = this.renderRow.bind(this);
+    autoBind(this);
 
-    this.state = { areNotificationsEnabled: false };
+    this.state = { areNotificationsEnabled: true };
   }
 
   componentDidMount() {
@@ -94,6 +89,10 @@ export class PushGroupsScreen extends PureComponent {
     this.checkIfNotificationsAreEnabled();
   }
 
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
   onToggleGroupSubscription(tag, value) {
     const {
       selectPushNotificationGroups,
@@ -107,11 +106,48 @@ export class PushGroupsScreen extends PureComponent {
     invalidateNotifications();
   }
 
+  handleOpenSettingsPress() {
+    AppState.addEventListener('change', this.handleAppStateChange);
+    openSettings();
+  }
+
+  showSuggestionToEnableNotifications() {
+    Alert.alert(
+      I18n.t(ext('notificationPermissionsAlertTitle')),
+      I18n.t(ext('notificationPermissionsAlertMessage')),
+      [
+        { text: I18n.t(ext('notificationPermissionsSettings')), onPress: this.handleOpenSettingsPress },
+        { text: I18n.t(ext('notificationPermissionsCancel')) },
+      ],
+    );
+  }
+
+  handleAppStateChange(appState) {
+    const { areNotificationsEnabled } = this.state;
+
+    /**
+    * When the user, who initially had disabled notifications, pulls the app from background to foreground, 
+    * we check if notifications are enabled in the meantime and if they are - we obtain FCM token.
+    * This covers scenarios when user navigates to device Settings, enables notifications and returns back to the app. 
+    */
+    if (appState === 'active' && !areNotificationsEnabled) {
+      checkNotifications().then(({ status }) => {
+        if (status === RESULTS.GRANTED) {
+          AppState.removeEventListener('change', this.handleAppStateChange);
+        }
+      });
+    }
+  }
+
+  // Checks if notifications are curently disabled and opens "Go to Settings" pop up
   checkIfNotificationsAreEnabled() {
-    Permissions.arePushNotificationsEnabled((result) => {
-      if (!result) {
-        showSuggestionToEnableNotifications();
+    checkNotifications().then(({ status }) => {
+      if (status === RESULTS.BLOCKED) {
+        this.showSuggestionToEnableNotifications();
+        this.setState({ areNotificationsEnabled: false });
       }
+    }).catch((error) => {
+      console.log('Check push notification permissions failed:', error);
     });
   }
 
@@ -162,6 +198,13 @@ export const mapStateToProps = state => ({
   selectedGroups: state[ext()].selectedGroups || [],
 });
 
-export default connect(mapStateToProps, { fetchGroups, invalidateNotifications, selectPushNotificationGroups })(
+const mapDispatchToProps = {
+  fetchGroups,
+  invalidateNotifications,
+  selectPushNotificationGroups,
+  obtainFCMToken: Firebase.obtainFCMToken,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('PushGroupsListScreen'))(PushGroupsScreen),
 );

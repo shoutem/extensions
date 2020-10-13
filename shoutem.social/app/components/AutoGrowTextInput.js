@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 
 import { TextInput } from '@shoutem/ui';
@@ -20,10 +21,7 @@ export default class AutoGrowTextInput extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleStatusInputChange = this.handleStatusInputChange.bind(this);
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.handleContentSizeChange = this.handleContentSizeChange.bind(this);
-    this.calculateHeight = this.calculateHeight.bind(this);
+    autoBindReact(this);
 
     this.state = {
       height: props.minHeight,

@@ -11,7 +11,6 @@ import {
 } from './redux';
 
 import { appDidMount, appWillMount, appWillUnmount } from './app';
-import Permissions from './permissions';
 import enTranslations from './translations/en.json';
 import {
   showInitialNotification,
@@ -48,7 +47,6 @@ export {
   appDidMount,
   appWillMount,
   appWillUnmount,
-  Permissions,
   SHOW_PUSH_NOTIFICATION,
   clearPendingNotification,
   setPendingNotification,

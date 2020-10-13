@@ -70,15 +70,6 @@ export class ArticlesListScreen extends RemoteDataListScreen {
       this.fetchPosts);
   }
 
-  loadMore() {
-    const { page } = this.state;
-
-    this.setState({
-      page: page + 1,
-    },
-      this.fetchPosts);
-  }
-
   openArticle(article) {
     const nextArticle = this.getNextArticle(article);
     const route = {

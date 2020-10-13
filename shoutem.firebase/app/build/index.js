@@ -9,6 +9,7 @@ const xcode = require('xcode');
 const { projectPath } = require('@shoutem/build-tools');
 const { injectFirebase } = require('../build/injectFirebase');
 const { injectReactNativePush } = require('../build/injectReactNativePush');
+const { injectFirebaseSettingsFile } = require('../build/injectFirebaseSettingsFile');
 
 const extensionPath = `${projectPath}/node_modules/shoutem.firebase`;
 const SHOUTEM_APPLICATION = 'shoutem.application';
@@ -182,4 +183,5 @@ exports.preBuild = async function preBuild(appConfiguration, buildConfiguration)
 
   injectFirebase();
   injectReactNativePush();
+  injectFirebaseSettingsFile();
 };

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 
 import {
   Button,
@@ -23,7 +24,7 @@ export default class CommentButton extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.commentStatus = this.commentStatus.bind(this);
+    autoBindReact(this);
   }
 
   commentStatus() {

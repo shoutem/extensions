@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import moment from 'moment';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import ActionSheet from 'react-native-action-sheet';
 
@@ -32,9 +33,7 @@ export default class CommentView extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleClickOnUser = this.handleClickOnUser.bind(this);
-    this.renderStatusAttachments = this.renderStatusAttachments.bind(this);
-    this.showActionSheet = this.showActionSheet.bind(this);
+    autoBindReact(this);
   }
 
   handleClickOnUser() {

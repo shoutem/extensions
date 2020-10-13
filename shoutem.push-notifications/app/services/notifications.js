@@ -26,8 +26,10 @@ export function resolveNotificationData(receivedNotification) {
     return false;
   }
 
+  const hasMessage = !_.isEmpty(message) && _.isString(message);
+
   const resolvedTitle = title || dataTitle;
-  const resolvedText = message || text || dataText;
+  const resolvedText = hasMessage ? message : text || dataText;
   const resolvedAction = action || dataAction;
   const resolvedItemId = itemId || dataItemId;
   const resolvedItemSchema = itemSchema || dataItemSchema;

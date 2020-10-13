@@ -1,34 +1,29 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import autoBind from 'auto-bind';
+import { connect } from 'react-redux';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
-import { View, Caption, Button, Icon, Text } from '@shoutem/ui';
+import { View, Button, Icon, Text } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
-
-const { func } = PropTypes;
+import {
+  fetchFacebookUserInfo,
+  loginWithFacebook,
+  registerWithFacebook,
+} from '../redux';
 
 class FacebookButton extends PureComponent {
-  static propTypes = {
-    onLoginSuccess: func,
-    onLoginFailed: func,
-  };
-
-  static defaultPropTypes = {
-    onLoginSuccess: _.noop,
-    onLoginFailed: _.noop,
-  };
-
   constructor(props) {
     super(props);
 
-    this.loginOrSignup = this.loginOrSignup.bind(this);
-    this.parseAccessToken = this.parseAccessToken.bind(this);
-    this.openFacebookSignup = this.openFacebookSignup.bind(this);
-    this.handleSignupResult = this.handleSignupResult.bind(this);
-    this.handleLoginFailed = this.handleLoginFailed.bind(this);
+    autoBind(this);
+
+    this.state = {
+      accesssToken: null,
+    };
   }
 
   loginOrSignup() {
@@ -38,20 +33,37 @@ class FacebookButton extends PureComponent {
   }
 
   parseAccessToken(result) {
-    const { onLoginSuccess, onLoginFailed } = this.props;
-
     const accessToken = _.get(result, 'accessToken');
+
     if (!accessToken) {
       throw new Error(I18n.t(ext('tokenErrorMessage')));
     }
 
-    onLoginSuccess(accessToken);
+    this.setState({ accessToken });
+    return this.handleFacebookLogin();
+  }
+
+  handleFacebookRegistration(result) {
+    const { onLoginSuccess, registerWithFacebook } = this.props;
+
+    const accessToken = _.get(result, 'accessToken');
+
+    this.setState({ accessToken });
+
+    return fetchFacebookUserInfo(accessToken).then((results) => {
+      const firstName = _.get(results, 'first_name', '');
+      const lastName = _.get(results, 'last_name', '');
+
+      registerWithFacebook(accessToken, firstName, lastName)
+        .then(onLoginSuccess)
+        .catch(this.handleRegistrationFailed);
+    });
   }
 
   openFacebookSignup() {
     LoginManager.logInWithPermissions(['public_profile', 'email'])
       .then(this.handleSignupResult)
-      .then(this.parseAccessToken)
+      .then(this.handleFacebookRegistration)
       .catch(this.handleLoginFailed);
   }
 
@@ -76,6 +88,28 @@ class FacebookButton extends PureComponent {
     onLoginFailed(errorMessage);
   }
 
+  handleFacebookLogin() {
+    const { accessToken } = this.state;
+    const { loginWithFacebook, onLoginSuccess, onLoginFailed } = this.props;
+
+    return loginWithFacebook(accessToken)
+      .then(onLoginSuccess)
+      .catch(onLoginFailed);
+  }
+
+  handleRegistrationFailed(error) {
+    const { onLoginFailed } = this.props;
+
+    const errorStatus = _.get(error, 'payload.status', '');
+
+    /* We want to allow users who were once logged in using Facebook and then deleted/reinstalled the app to be able to log in again. */
+    if (errorStatus === 409) {
+      return this.handleFacebookLogin();
+    }
+
+    return onLoginFailed(error);
+  }
+
   render() {
     const { style } = this.props;
 
@@ -96,4 +130,24 @@ class FacebookButton extends PureComponent {
   }
 }
 
-export default connectStyle(ext('FacebookButton'))(FacebookButton);
+FacebookButton.propTypes = {
+  onLoginSuccess: PropTypes.func,
+  onLoginFailed: PropTypes.func,
+  loginWithFacebook: PropTypes.func,
+  registerWithFacebook: PropTypes.func,
+  style: PropTypes.object,
+};
+
+const mapDispatchToProps = {
+  loginWithFacebook,
+  registerWithFacebook,
+};
+
+function mapStateToProps() {
+  return {};
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('FacebookButton'))(FacebookButton));

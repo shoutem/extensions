@@ -1,6 +1,6 @@
 {
   "name": "shoutem.application",
-  "version": "2.4.0",
+  "version": "2.4.2",
   "dependencies": {
     "react-native-device-info": "~5.4.0",
     "react-native-maps": "~0.26.0",

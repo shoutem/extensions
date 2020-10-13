@@ -1,5 +1,7 @@
 import React from 'react';
 import moment from 'moment';
+import { connect } from 'react-redux';
+
 import {
   ScrollView,
   Screen,
@@ -13,7 +15,7 @@ import {
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from 'shoutem.navigation';
 import { getLeadImageUrl, createRenderAttachment } from 'shoutem.rss';
-import { ArticleDetailsScreen } from './ArticleDetailsScreen';
+import { ArticleDetailsScreen, mapStateToProps, mapDispatchToProps } from './ArticleDetailsScreen';
 import { ext } from '../const';
 
 class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
@@ -76,4 +78,6 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
   }
 }
 
-export default connectStyle(ext('ArticleMediumDetailsScreen'))(ArticleMediumDetailsScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(
+  connectStyle(ext('ArticleMediumDetailsScreen'), {})(ArticleMediumDetailsScreen),
+);

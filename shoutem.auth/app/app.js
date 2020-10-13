@@ -6,7 +6,6 @@ import { getAppId, getExtensionSettings } from 'shoutem.application';
 
 import {
   USER_SCHEMA,
-  USER_FACEBOOK_CREDENTIALS_SCHEMA,
   AUTH_TOKEN_SCHEMA,
   fetchUser,
   restoreSession,
@@ -120,20 +119,6 @@ export function appDidMount(app) {
             'Content-Type': 'application/vnd.api+json',
           },
         },
-      },
-    },
-  });
-
-  rio.registerResource({
-    schema: USER_FACEBOOK_CREDENTIALS_SCHEMA,
-    request: {
-      endpoint: createAccountApiEndpoint(
-        'verify_facebook_credentials.json',
-        'access_token={accessToken}&auto_register=true&update_shoutem_profile=false',
-      ),
-      resourceType: 'JSON',
-      headers: {
-        'Content-Type': 'application/json',
       },
     },
   });

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Alert, InteractionManager, Platform, Dimensions } from 'react-native';
+import { Alert, InteractionManager, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import autoBind from 'auto-bind';
@@ -8,7 +8,7 @@ import { getAppId, getExtensionSettings } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { isScreenActive, NavigationBar, navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-import { Screen, Spinner, View, ScrollView, Device } from '@shoutem/ui';
+import { Screen, Spinner, ScrollView } from '@shoutem/ui';
 import { loginRequired } from '../loginRequired';
 import FacebookButton from '../components/FacebookButton';
 import AppleSignInButton from '../components/AppleSignInButton';
@@ -19,7 +19,6 @@ import { ext } from '../const';
 import { getErrorCode, getErrorMessage } from '../errorMessages';
 import {
   login,
-  loginWithFacebook,
   isAuthenticated,
   userLoggedIn,
   getUser,
@@ -82,15 +81,6 @@ export class LoginScreen extends PureComponent {
 
     this.setState({ inProgress: true });
     login(username, password)
-      .then(this.handleLoginSuccess)
-      .catch(this.handleLoginFailed);
-  }
-
-  handleFacebookLoginSuccess(accessToken) {
-    const { loginWithFacebook } = this.props;
-
-    this.setState({ inProgress: true });
-    loginWithFacebook(accessToken)
       .then(this.handleLoginSuccess)
       .catch(this.handleLoginFailed);
   }
@@ -203,7 +193,7 @@ export class LoginScreen extends PureComponent {
           {isFacebookAuthEnabled && (
             <FacebookButton
               onLoginFailed={this.handleLoginFailed}
-              onLoginSuccess={this.handleFacebookLoginSuccess}
+              onLoginSuccess={this.handleLoginSuccess}
             />
           )}
 
@@ -219,7 +209,6 @@ export class LoginScreen extends PureComponent {
 const mapDispatchToProps = {
   navigateTo,
   login,
-  loginWithFacebook,
   userLoggedIn,
   hideShortcuts,
 };

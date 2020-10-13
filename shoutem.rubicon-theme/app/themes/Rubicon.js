@@ -11,7 +11,7 @@ import {
   defaultThemeVariables as defaultUiThemeVariables,
   dimensionRelativeToIphone,
   Device,
-  calculateLineHeight
+  calculateLineHeight,
 } from '@shoutem/ui';
 
 import { INCLUDE, changeColorAlpha } from '@shoutem/theme';
@@ -377,12 +377,12 @@ export default (customVariables = {}) => {
             // Ripple effect is not supported on older Android versions and crashes the app
             (Platform.Version >= 21
               ? TouchableNativeFeedback.Ripple(
-                changeColorAlpha(
-                  variables.mainNavItemIconColor ||
-                  variables.mainNavItemColor,
-                  0.3,
-                ),
-              )
+                  changeColorAlpha(
+                    variables.mainNavItemIconColor ||
+                      variables.mainNavItemColor,
+                    0.3,
+                  ),
+                )
               : TouchableNativeFeedback.SelectableBackground()),
         },
       },
@@ -446,12 +446,12 @@ export default (customVariables = {}) => {
             // Ripple effect is not supported on older Android versions and crashes the app
             (Platform.Version >= 21
               ? TouchableNativeFeedback.Ripple(
-                changeColorAlpha(
-                  variables.mainNavItemIconColor ||
-                  variables.mainNavItemColor,
-                  0.2,
-                ),
-              )
+                  changeColorAlpha(
+                    variables.mainNavItemIconColor ||
+                      variables.mainNavItemColor,
+                    0.2,
+                  ),
+                )
               : TouchableNativeFeedback.SelectableBackground()),
         },
       },
@@ -1623,6 +1623,10 @@ export default (customVariables = {}) => {
       },
     },
 
+    'shoutem.social.StatusDetailsScreen': {
+      textInput: { flex: 1, margin: 15, maxHeight: 100 },
+    },
+
     'shoutem.social.StatusView': {
       reportButton: {
         width: 16,
@@ -1782,6 +1786,54 @@ export default (customVariables = {}) => {
     'shoutem.sendbird.SectionFooter': {
       height: 15,
       backgroundColor: 'transparent',
+    },
+
+    'shoutem.sendbird.ErrorModal': {
+      outerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+
+      container: {
+        paddingHorizontal: 42,
+        paddingVertical: 68,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF',
+        width: '100%',
+        borderRadius: 10,
+      },
+
+      image: {
+        width: 200,
+        height: 156,
+        marginBottom: 48,
+      },
+
+      title: {
+        marginBottom: 22,
+        fontWeight: '500',
+        fontSize: 21,
+        textAlign: 'center',
+      },
+
+      description: {
+        fontSize: 15,
+        marginBottom: 48,
+        textAlign: 'center',
+      },
+
+      button: {
+        backgroundColor: '#4AA8DA',
+        borderRadius: 2,
+      },
+
+      buttonText: {
+        fontSize: 13,
+        fontWeight: '500',
+        color: '#FFFFFF'
+      }
     },
 
     'shoutem.sendbird.SectionHeader': {
@@ -1948,6 +2000,9 @@ export default (customVariables = {}) => {
       },
       secondaryText: {
         color: '#333333',
+      },
+      linkText: {
+        color: '#0645AD'
       },
       date: {
         opacity: 0.4,
@@ -2171,4 +2226,3 @@ export default (customVariables = {}) => {
     },
   });
 };
-

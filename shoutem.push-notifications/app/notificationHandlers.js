@@ -12,10 +12,17 @@ import {
 } from './redux';
 import { resolveNotificationData } from './services';
 
-function canHandle(notification) {
+function isRssPN(notification) {
   // For now, only rss specific push notifications contain
   // itemSchema property, old notifications don't
-  return _.isEmpty(_.get(notification, 'itemSchema'));
+  return !_.isEmpty(_.get(notification, 'itemSchema'));
+}
+
+function canHandle(notification) {
+  return (
+    !isRssPN(notification) &&
+    (!!notification.action || (!!notification.action && !!notification.body))
+  );
 }
 
 function navigatesToSameShortcut(action, state) {
@@ -81,8 +88,7 @@ export function displayLocalNotification(
 
   const viewAction = {
     text: I18n.t(ext('messageReceivedAlertView')),
-    onPress: () =>
-      handleViewButtonPress(store, navigationAction),
+    onPress: () => handleViewButtonPress(store, navigationAction),
   };
 
   const defaultAction = {
@@ -107,7 +113,7 @@ function handleNotificationTapped(receivedNotification, dispatch, store) {
   // https://fiveminutes.jira.com/browse/SEEXT-8463
   const notification = resolveNotificationData(receivedNotification);
 
-  if (!canHandle(notification) || !notification.action) {
+  if (!canHandle(notification)) {
     return;
   }
 
@@ -129,10 +135,6 @@ function handleForegroundNotification(receivedNotification, dispatch, store) {
   const notification = resolveNotificationData(receivedNotification);
 
   if (!canHandle(notification)) {
-    return;
-  }
-
-  if (!notification.action && !notification.body) {
     return;
   }
 

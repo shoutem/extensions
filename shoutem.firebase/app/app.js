@@ -4,12 +4,11 @@ import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import messaging from '@react-native-firebase/messaging';
 
 import { isProduction } from 'shoutem.application';
+import { Firebase } from 'shoutem.firebase';
 import {
-  handleReceivedToken,
   handleNotificationReceivedForeground,
   handleNotificationReceivedBackground,
   handleNotificationTapped,
-  handleFCMTokenReceived,
 } from './services';
 
 function formatiOSNotificationPayload(message) {
@@ -29,26 +28,28 @@ export function appDidFinishLaunching(app) {
   const { dispatch } = store;
 
   if (Platform.OS === 'ios') {
-    messaging().onNotificationOpenedApp((message) =>
-      handleNotificationTapped(formatiOSNotificationPayload(message), dispatch),
-    );
+    messaging().onNotificationOpenedApp(message => handleNotificationTapped(
+      formatiOSNotificationPayload(message),
+      dispatch,
+    ));
   }
 
-  messaging()
-    .getToken()
-    .then((token) => handleFCMTokenReceived(token, dispatch))
-    .catch(err => console.warn('Fetch Firebase token failed!', err));
+  messaging().registerDeviceForRemoteMessages().then(() => {
+    Firebase.obtainFCMToken()(dispatch);
+    Firebase.obtainAPNSToken()(dispatch);
+  });
 
   PushNotifications.configure({
-    onRegister: (token) => handleReceivedToken(token, dispatch),
     onNotification: (notif) => {
       const { foreground, userInteraction } = notif;
 
-      if (Platform.OS === 'ios') {
+      const isForegroundNotification = foreground && userInteraction !== true;
+
+      if (Platform.OS === 'ios' && !isForegroundNotification) {
         notif.finish(PushNotificationIOS.FetchResult.NoData);
       }
 
-      if (foreground && userInteraction !== true) {
+      if (isForegroundNotification) {
         handleNotificationReceivedForeground(notif, dispatch);
       }
 
@@ -69,6 +70,6 @@ export function appDidFinishLaunching(app) {
       sound: true,
     },
     popInitialNotification: true,
-    requestPermissions: isProduction(),
+    requestPermissions: false,
   });
 }

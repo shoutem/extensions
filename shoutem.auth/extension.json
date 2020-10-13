@@ -1,11 +1,14 @@
 {
   "name": "auth",
-  "version": "2.4.0",
-  "platform": "2.4.*",
+  "version": "2.4.3",
+  "platform": "~2.4.2",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
+  "releaseNotes": "* Migrated Facebook auth service to new endpoint",
   "description": "Show user profile, sign out user",
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
