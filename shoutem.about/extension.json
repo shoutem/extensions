@@ -1,13 +1,12 @@
 {
   "name": "about",
-  "version": "2.4.0",
+  "version": "2.4.2",
   "platform": "2.4.*",
   "title": "About",
   "description": "Show info about your app or your business",
   "icon": "server/assets/add-about-image.png",
-  "categories": [
-    "content"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "categories": ["content"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

@@ -25,10 +25,10 @@ export function getFormState(state) {
 }
 
 export function initializeSpecialDeals(appId, categoryName, scope = {}) {
-  return dispatch => (
+  return dispatch =>
     // create CMS category
-    dispatch(createDealCategory(appId, categoryName, null, scope))
-      .then((categoryResponse) => {
+    dispatch(createDealCategory(appId, categoryName, null, scope)).then(
+      categoryResponse => {
         // create catalog for category
         const categoryId = _.toString(categoryResponse.payload.id);
 
@@ -37,11 +37,11 @@ export function initializeSpecialDeals(appId, categoryName, scope = {}) {
           categoryResponse,
           dispatch(createCatalog(appId, categoryId, scope)),
         ]);
-      })
-  );
+      },
+    );
 }
 
-export default () => (
+export default () =>
   createScopedReducer({
     extension: {
       cms: cmsReducer,
@@ -57,5 +57,4 @@ export default () => (
     shortcut: {
       [deals]: dealsReducer(),
     },
-  })
-);
+  });

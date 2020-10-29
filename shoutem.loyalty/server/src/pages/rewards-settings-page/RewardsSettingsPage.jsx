@@ -1,9 +1,12 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import i18next from 'i18next';
 import { isInitialized } from '@shoutem/redux-io';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import _ from 'lodash';
 import { initializeApiEndpoints } from 'src/services';
 import { PlaceRewards } from 'src/modules/place-rewards';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 const PLACES_DESCRIPTOR = {
@@ -12,30 +15,34 @@ const PLACES_DESCRIPTOR = {
   filterLabelProp: 'name',
 };
 
-const REWARDS_DESCRIPTOR = {
-  categoryIdSelector: 'cmsCategory.id',
-  columns: [
-    {
-      header: 'Title',
-      value: 'title',
-      required: true,
-    },
-    {
-      header: 'Points',
-      value: 'pointsRequired',
-    },
-    {
-      header: 'Store',
-      value: 'place.name',
-    },
-  ],
-};
+function resolveRewardsDescriptor() {
+  return {
+    categoryIdSelector: 'cmsCategory.id',
+    columns: [
+      {
+        header: i18next.t(LOCALIZATION.REWARDS_DESCRIPTION_TITLE),
+        value: 'title',
+        required: true,
+      },
+      {
+        header: i18next.t(LOCALIZATION.REWARDS_DESCRIPTION_POINTS),
+        value: 'pointsRequired',
+      },
+      {
+        header: i18next.t(LOCALIZATION.REWARDS_DESCRIPTION_STORE),
+        value: 'place.name',
+      },
+    ],
+  };
+}
 
 export default class RewardsPage extends Component {
   constructor(props) {
     super(props);
 
-    const { ownExtension: { settings } } = props;
+    const {
+      ownExtension: { settings },
+    } = props;
     initializeApiEndpoints(settings);
 
     this.state = {
@@ -45,16 +52,19 @@ export default class RewardsPage extends Component {
   }
 
   render() {
-    const {
-      appId,
-      shortcut,
-      shortcutId,
-      ownExtensionName,
-    } = this.props;
+    const { appId, shortcut, shortcutId, ownExtensionName } = this.props;
 
+    const rewardsDescriptor = resolveRewardsDescriptor();
     const settings = _.get(shortcut, 'settings');
-    const rewardsCategoryId = _.get(settings, REWARDS_DESCRIPTOR.categoryIdSelector);
-    const placesCategoryId = _.get(settings, PLACES_DESCRIPTOR.categoryIdSelector);
+
+    const rewardsCategoryId = _.get(
+      settings,
+      rewardsDescriptor.categoryIdSelector,
+    );
+    const placesCategoryId = _.get(
+      settings,
+      PLACES_DESCRIPTOR.categoryIdSelector,
+    );
 
     return (
       <LoaderContainer
@@ -64,11 +74,11 @@ export default class RewardsPage extends Component {
         <PlaceRewards
           appId={appId}
           extensionName={ownExtensionName}
-          newCategoryName="Rewards"
+          newCategoryName={i18next.t(LOCALIZATION.NEW_CATEGORY_NAME)}
           placesCategoryId={placesCategoryId}
           placesDescriptor={PLACES_DESCRIPTOR}
           rewardsCategoryId={rewardsCategoryId}
-          rewardsDescriptor={REWARDS_DESCRIPTOR}
+          rewardsDescriptor={rewardsDescriptor}
           shortcut={shortcut}
           shortcutId={shortcutId}
         />

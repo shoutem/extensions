@@ -1,0 +1,18 @@
+{
+  "shoutem": {
+    "vimeo": {
+      "feed-preview.loading-from": "Loading from",
+      "feed-preview.date": "Date",
+      "feed-preview.title": "Title",
+      "feed-preview.loading": "loading content...",
+      "feed-preview.no-content": "No content to show",
+      "feed-preview.choose-from-feeds": "Choose from available feeds",
+      "feed-preview.add-feed": "Add feed",
+      "feed-preview.cancel-button": "Cancel",
+      "feed-preview.invalid-url": "Invalid URL.",
+      "feed-preview.enter-link": "Enter link to the Vimeo profile or channel.",
+      "feed-preview.continue-button": "Continue",
+      "feed-preview.no-valid-feed": "URL does not contain valid RSS feeds."
+    }
+  }
+}

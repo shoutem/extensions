@@ -1,11 +1,14 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Button, FormGroup, ControlLabel } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import i18next from 'i18next';
 import { getExtensionInstallation } from 'environment';
 import {
   getExtensionSettings,
   updateExtensionSettings,
 } from '../../builder-sdk';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 const resolveApiEndpoint = extensionInstallation => {
@@ -44,14 +47,17 @@ export class SettingsPage extends Component {
   render() {
     const { extensionInstallation } = this.props;
     const { apiEndpoint } = this.state;
-    const endpointHasChanged = apiEndpoint !== resolveApiEndpoint(extensionInstallation);
+    const endpointHasChanged =
+      apiEndpoint !== resolveApiEndpoint(extensionInstallation);
 
     return (
       <div className="cms-settings-page">
-        <h3>CMS settings</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <form onSubmit={this.updateApiEndpoint}>
           <FormGroup>
-            <ControlLabel>Api endpoint</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_API_ENDPOINT)}
+            </ControlLabel>
             <input
               defaultValue={this.state.apiEndpoint}
               className="form-control"
@@ -65,7 +71,7 @@ export class SettingsPage extends Component {
             bsStyle="primary"
             onClick={this.updateApiEndpoint}
           >
-            Save
+            {i18next.t(LOCALIZATION.BUTTON_SAVE)}
           </Button>
         </form>
       </div>
@@ -86,7 +92,8 @@ function mapStateToProps() {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateSettings: (extension, settings) => dispatch(updateExtensionSettings(extension, settings)),
+    updateSettings: (extension, settings) =>
+      dispatch(updateExtensionSettings(extension, settings)),
   };
 }
 

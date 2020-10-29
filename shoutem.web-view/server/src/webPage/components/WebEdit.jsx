@@ -1,14 +1,21 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import i18next from 'i18next';
 import { FormGroup, ControlLabel } from 'react-bootstrap';
 import { Checkbox, FontIcon } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class WebEdit extends Component {
   constructor(props) {
     super(props);
 
-    this.handleShowNavigationToolbarChange = this.handleShowNavigationToolbarChange.bind(this);
-    this.handleGeolocationPermissionChange = this.handleGeolocationPermissionChange.bind(this);
+    this.handleShowNavigationToolbarChange = this.handleShowNavigationToolbarChange.bind(
+      this,
+    );
+    this.handleGeolocationPermissionChange = this.handleGeolocationPermissionChange.bind(
+      this,
+    );
   }
 
   handleShowNavigationToolbarChange(event) {
@@ -36,13 +43,13 @@ export default class WebEdit extends Component {
       <div>
         <form>
           <FormGroup>
-            <ControlLabel>Website URL</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_WEBSITE_URL)}
+            </ControlLabel>
             <div className="web-edit__url-container">
               <div className="web-edit__web-img" />
               <div className="text-ellipsis">
-                <span className="web-edit__url">
-                  {url}
-                </span>
+                <span className="web-edit__url">{url}</span>
               </div>
               <FontIcon
                 className="web-edit__remove"
@@ -53,13 +60,15 @@ export default class WebEdit extends Component {
             </div>
             {hasWebsiteSettings && (
               <div>
-                <ControlLabel>Website settings</ControlLabel>
+                <ControlLabel>
+                  {i18next.t(LOCALIZATION.FORM_WEBSITE_SETTINGS)}
+                </ControlLabel>
                 <div>
                   <Checkbox
                     checked={requireGeolocationPermission}
                     onChange={this.handleGeolocationPermissionChange}
                   >
-                    This website requires location permissions
+                    {i18next.t(LOCALIZATION.FORM_LOCATION_PERMISSIONS)}
                   </Checkbox>
                 </div>
                 <div>
@@ -67,7 +76,7 @@ export default class WebEdit extends Component {
                     checked={showNavigationToolbar}
                     onChange={this.handleShowNavigationToolbarChange}
                   >
-                    Show navigation toolbar
+                    {i18next.t(LOCALIZATION.FORM_NAVIGATION_BAR)}
                   </Checkbox>
                 </div>
               </div>

@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import i18next from 'i18next';
 import { ControlLabel, FormGroup } from 'react-bootstrap';
-import autoBindReact from 'auto-bind';
+import autoBindReact from 'auto-bind/react';
 import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
 import { shouldLoad, isInitialized } from '@shoutem/redux-io';
 import {
@@ -23,6 +24,7 @@ import {
   FacebookSetupForm,
   AppleSetupForm,
 } from 'src/modules/general-settings';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export class GeneralSettingsPage extends Component {
@@ -119,9 +121,11 @@ export class GeneralSettingsPage extends Component {
           onAppSettingsUpdate={this.handleAppSettingsUpdate}
           onExtensionSettingsUpdate={this.handleExtensionSettingsUpdate}
         />
-        <h3>Select authentication providers</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <FormGroup className={providerClasses}>
-          <ControlLabel>Email and password</ControlLabel>
+          <ControlLabel>
+            {i18next.t(LOCALIZATION.FORM_EMAIL_PASSWORD_TITLE)}
+          </ControlLabel>
           <Switch
             onChange={this.handleEmailEnabledChange}
             value={emailEnabled}

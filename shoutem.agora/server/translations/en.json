@@ -1,0 +1,12 @@
+{
+  "shoutem": {
+    "agora": {
+      "agora-settings-page.title": "Agora settings",
+      "agora-settings-page.form-agora-app-id-title": "Agora App ID",
+      "agora-settings-page.button-submit-title": "Save",
+      "agora-settings-page.agora-setup-message": "Please add Agora App ID to enable video call feature.",
+      "agora-settings-page.learn-more-message": "Learn more.",
+      "agora-settings-page.error-app-id-message": "Invalid App ID"
+    }
+  }
+}

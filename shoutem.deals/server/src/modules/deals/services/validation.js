@@ -1,11 +1,13 @@
 import { isURL } from 'validator';
 import _ from 'lodash';
 import moment from 'moment';
+import i18next from 'i18next';
 import { isExpirationTimeValid } from './deal';
+import LOCALIZATION from './localization';
 
 function validateRequiredField(fieldValue) {
   if (!fieldValue) {
-    return 'Value is required';
+    return i18next.t(LOCALIZATION.VALUE_REQUIRED_MESSAGE);
   }
 
   return null;
@@ -13,11 +15,11 @@ function validateRequiredField(fieldValue) {
 
 function validateExpirationTime(expirationTime) {
   if (!expirationTime) {
-    return 'Value is required';
+    return i18next.t(LOCALIZATION.VALUE_REQUIRED_MESSAGE);
   }
 
   if (!isExpirationTimeValid(expirationTime)) {
-    return 'Invalid value provided';
+    return i18next.t(LOCALIZATION.INVALID_VALUE_MESSAGE);
   }
 
   return null;
@@ -27,7 +29,7 @@ function validateNumericField(fieldValue) {
   const numberValue = _.toNumber(fieldValue);
 
   if (_.isNaN(numberValue)) {
-    return 'Value must be numeric';
+    return i18next.t(LOCALIZATION.INVALID_NUMBER_MESSAGE);
   }
 
   return null;
@@ -35,7 +37,7 @@ function validateNumericField(fieldValue) {
 
 function validateUrl(urlField) {
   if (urlField && !isURL(urlField)) {
-    return 'Invalid URL provided';
+    return i18next.t(LOCALIZATION.INVALID_URL_MESSAGE);
   }
 
   return null;
@@ -54,8 +56,8 @@ function validateStartEndTime(startTime, endTime) {
 
   if (!momentStartTime.isBefore(momentEndTime)) {
     return {
-      startTime: 'Start time must be before end time',
-      endTime: 'End time must be after start time',
+      startTime: i18next.t(LOCALIZATION.INVALID_START_TIME_MESSAGE),
+      endTime: i18next.t(LOCALIZATION.INVALID_END_TIME_MESSAGE),
     };
   }
 
@@ -78,20 +80,15 @@ export function validateDeal(deal) {
 
   return {
     title: validateRequiredField(title),
-    regularPrice: (
-      validateRequiredField(regularPrice) ||
-      validateNumericField(regularPrice)
-    ),
-    discountPrice: (
+    regularPrice:
+      validateRequiredField(regularPrice) || validateNumericField(regularPrice),
+    discountPrice:
       validateRequiredField(discountPrice) ||
-      validateNumericField(discountPrice)
-    ),
+      validateNumericField(discountPrice),
     discountType: validateRequiredField(discountType),
     currency: validateRequiredField(currency),
-    couponsExpirationTime: (
-      couponsEnabled &&
-      validateExpirationTime(couponsExpirationTime)
-    ),
+    couponsExpirationTime:
+      couponsEnabled && validateExpirationTime(couponsExpirationTime),
     buyLink: validateUrl(buyLink),
     ...validateStartEndTime(startTime, endTime),
   };

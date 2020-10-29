@@ -1,7 +1,2 @@
-export {
-  validateUser,
-} from './user';
-
-export {
-  getErrorMessage,
-} from './errors';
+export { validateUser } from './user';
+export { getErrorMessage } from './errors';

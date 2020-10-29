@@ -1,30 +1,35 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { reduxForm } from 'redux-form';
-import { Row, Col, Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
+import { Row, Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
 import { LoaderContainer, ReduxFormElement } from '@shoutem/react-web-ui';
 import { getFormState } from 'src/redux';
 import { UserGroupsDropdown } from 'src/modules/user-groups';
 import { validateUser } from '../../services';
 import GeneratedPasswordControl from '../generated-password-control';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export class UserForm extends Component {
   constructor(props) {
     super(props);
-
-    this.handlePasswordGenerated = this.handlePasswordGenerated.bind(this);
-    this.handleUserGroupsChange = this.handleUserGroupsChange.bind(this);
+    autoBindReact(this);
   }
 
   handlePasswordGenerated(newPassword) {
-    const { fields: { password } } = this.props;
+    const {
+      fields: { password },
+    } = this.props;
     password.onChange(newPassword);
   }
 
   handleUserGroupsChange(newUserGroups) {
-    const { fields: { userGroups } } = this.props;
+    const {
+      fields: { userGroups },
+    } = this.props;
     userGroups.onChange(newUserGroups);
   }
 
@@ -54,55 +59,55 @@ export class UserForm extends Component {
 
     return (
       <form className="user-form" onSubmit={handleSubmit}>
-        {!passwordOnly &&
+        {!passwordOnly && (
           <Row>
             <ReduxFormElement
               disabled={submitting || !canChangeUsername}
               elementId="nick"
               field={nick}
-              name="Username"
+              name={i18next.t(LOCALIZATION.FORM_USERNAME_TITLE)}
             />
           </Row>
-        }
-        {!passwordOnly &&
+        )}
+        {!passwordOnly && (
           <Row>
             <ReduxFormElement
               disabled={submitting}
               elementId="name"
               field={name}
-              name="Name and surname"
+              name={i18next.t(LOCALIZATION.FORM_NAME_SURNAME_TITLE)}
             />
           </Row>
-        }
-        {!passwordOnly &&
+        )}
+        {!passwordOnly && (
           <Row>
             <ReduxFormElement
               disabled={submitting || inEditMode}
               elementId="username"
               field={username}
-              name="E-mail address"
+              name={i18next.t(LOCALIZATION.FORM_EMAIL_TITLE)}
             />
           </Row>
-        }
+        )}
         {showPasswordField && (
           <Row>
             <GeneratedPasswordControl
               disabled={submitting}
               field={password}
-              name="Password"
+              name={i18next.t(LOCALIZATION.FORM_PASSWORD_TITLE)}
               onPasswordUpdated={this.handlePasswordGenerated}
               password={password}
             />
           </Row>
         )}
-        {showUserGroups &&
+        {showUserGroups && (
           <Row>
             <ReduxFormElement
               className="user-form__groups"
               disabled={submitting || inEditMode}
               elementId="userGroups"
               field={selectedUserGroups}
-              name="User groups"
+              name={i18next.t(LOCALIZATION.FORM_USER_GROUPS_TITLE)}
             >
               <UserGroupsDropdown
                 onSelectionChanged={this.handleUserGroupsChange}
@@ -110,7 +115,7 @@ export class UserForm extends Component {
               />
             </ReduxFormElement>
           </Row>
-        }
+        )}
         <ButtonToolbar>
           <Button
             bsSize="large"
@@ -119,18 +124,20 @@ export class UserForm extends Component {
             type="submit"
           >
             <LoaderContainer isLoading={submitting}>
-              {inEditMode ? 'Save' : 'Add'}
+              {inEditMode
+                ? i18next.t(LOCALIZATION.BUTTON_SAVE_TITLE)
+                : i18next.t(LOCALIZATION.BUTTON_ADD_TITLE)}
             </LoaderContainer>
           </Button>
           <Button bsSize="large" disabled={submitting} onClick={onCancel}>
-            Cancel
+            {i18next.t(LOCALIZATION.BUTTON_CANCEL_TITLE)}
           </Button>
         </ButtonToolbar>
-        {error &&
+        {error && (
           <div className="has-error">
             <HelpBlock>{error}</HelpBlock>
           </div>
-        }
+        )}
       </form>
     );
   }
@@ -151,13 +158,6 @@ UserForm.propTypes = {
 export default reduxForm({
   getFormState,
   form: 'userForm',
-  fields: [
-    'id',
-    'nick',
-    'name',
-    'username',
-    'password',
-    'userGroups',
-  ],
+  fields: ['id', 'nick', 'name', 'username', 'password', 'userGroups'],
   validate: validateUser,
 })(UserForm);

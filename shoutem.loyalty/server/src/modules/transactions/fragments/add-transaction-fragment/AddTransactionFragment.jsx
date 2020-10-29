@@ -1,5 +1,8 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { Button } from 'react-bootstrap';
 import { invalidate } from '@shoutem/redux-io';
@@ -25,17 +28,13 @@ import {
   MultiCardTransactionForm,
   PunchCardTransactionForm,
 } from '../../components';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export class AddTransactionFragment extends Component {
   constructor(props) {
     super(props);
-
-    this.handleShowTransactionModal = this.handleShowTransactionModal.bind(this);
-    this.handleHideTransactionModal = this.handleHideTransactionModal.bind(this);
-    this.handleAddTransaction = this.handleAddTransaction.bind(this);
-    this.createTransaction = this.createTransaction.bind(this);
-    this.renderModal = this.renderModal.bind(this);
+    autoBindReact(this);
 
     this.state = {
       showTransactionModal: false,
@@ -52,19 +51,26 @@ export class AddTransactionFragment extends Component {
 
   handleAddTransaction(transactionOptions) {
     const { programId, cards } = this.props;
-    const { user: { value: legacyUserId }, ...otherOptions } = transactionOptions;
+    const {
+      user: { value: legacyUserId },
+      ...otherOptions
+    } = transactionOptions;
 
     const cardId = _.get(cards, [legacyUserId, 'id']);
 
     return new Promise((resolve, reject) => {
       if (cardId) {
-        return this.createTransaction(cardId, otherOptions)
-          .catch(() => reject({ _error: 'Unable to create transaction.' }));
+        return this.createTransaction(cardId, otherOptions).catch(() =>
+          reject({ _error: i18next.t(LOCALIZATION.UNABLE_TO_CREATE_MESSAGE) }),
+        );
       }
 
-      return this.props.createCard(programId, legacyUserId)
+      return this.props
+        .createCard(programId, legacyUserId)
         .then(newCardId => this.createTransaction(newCardId, otherOptions))
-        .catch(() => reject({ _error: 'Unable to create transaction.' }));
+        .catch(() =>
+          reject({ _error: i18next.t(LOCALIZATION.UNABLE_TO_CREATE_MESSAGE) }),
+        );
     });
   }
 
@@ -73,51 +79,46 @@ export class AddTransactionFragment extends Component {
 
     const transaction = { cardId, ...transactionOptions };
 
-    return this.props.createTransaction(programId, transaction)
+    return this.props
+      .createTransaction(programId, transaction)
       .then(this.handleHideTransactionModal);
   }
 
   renderModal() {
-    const {
-      rewards,
-      places,
-      users,
-      loyaltyType,
-      filter,
-    } = this.props;
+    const { rewards, places, users, loyaltyType, filter } = this.props;
 
     return (
       <InlineModal
         className="add-transaction-modal settings-page-modal"
         onHide={this.handleHideTransactionModal}
-        title="Add transaction"
+        title={i18next.t(LOCALIZATION.TITLE)}
       >
-      {loyaltyType === LOYALTY_TYPES.POINTS &&
-        <SingleCardTransactionForm
-          initialValues={filter}
-          onCancel={this.handleHideTransactionModal}
-          onSubmit={this.handleAddTransaction}
-          users={createSelectOptions(users, formatUserLabel, 'legacyId')}
-        />
-      }
-      {loyaltyType === LOYALTY_TYPES.PUNCH &&
-        <PunchCardTransactionForm
-          initialValues={filter}
-          onCancel={this.handleHideTransactionModal}
-          onSubmit={this.handleAddTransaction}
-          rewards={createSelectOptions(rewards, formatRewardLabel)}
-          users={createSelectOptions(users, formatUserLabel, 'legacyId')}
-        />
-      }
-      {loyaltyType === LOYALTY_TYPES.MULTI &&
-        <MultiCardTransactionForm
-          initialValues={filter}
-          onCancel={this.handleHideTransactionModal}
-          onSubmit={this.handleAddTransaction}
-          places={createSelectOptions(places, formatPlaceLabel)}
-          users={createSelectOptions(users, formatUserLabel, 'legacyId')}
-        />
-      }
+        {loyaltyType === LOYALTY_TYPES.POINTS && (
+          <SingleCardTransactionForm
+            initialValues={filter}
+            onCancel={this.handleHideTransactionModal}
+            onSubmit={this.handleAddTransaction}
+            users={createSelectOptions(users, formatUserLabel, 'legacyId')}
+          />
+        )}
+        {loyaltyType === LOYALTY_TYPES.PUNCH && (
+          <PunchCardTransactionForm
+            initialValues={filter}
+            onCancel={this.handleHideTransactionModal}
+            onSubmit={this.handleAddTransaction}
+            rewards={createSelectOptions(rewards, formatRewardLabel)}
+            users={createSelectOptions(users, formatUserLabel, 'legacyId')}
+          />
+        )}
+        {loyaltyType === LOYALTY_TYPES.MULTI && (
+          <MultiCardTransactionForm
+            initialValues={filter}
+            onCancel={this.handleHideTransactionModal}
+            onSubmit={this.handleAddTransaction}
+            places={createSelectOptions(places, formatPlaceLabel)}
+            users={createSelectOptions(users, formatUserLabel, 'legacyId')}
+          />
+        )}
       </InlineModal>
     );
   }
@@ -132,12 +133,10 @@ export class AddTransactionFragment extends Component {
           onClick={this.handleShowTransactionModal}
         >
           <IconLabel iconName="add">
-            Add transaction
+            {i18next.t(LOCALIZATION.BUTTON_ADD_TITLE)}
           </IconLabel>
         </Button>
-        {showTransactionModal &&
-          this.renderModal()
-        }
+        {showTransactionModal && this.renderModal()}
       </div>
     );
   }
@@ -171,15 +170,18 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
-    createTransaction: (programId, transaction) => (
-      dispatch(createTransaction(programId, transaction, appId, scope))
-        .then(() => dispatch(invalidate(TRANSACTION_STATS)))
-    ),
-    createCard: (programId, userId) => (
-      dispatch(createCard(programId, userId, scope))
-        .then(action => _.get(action, 'payload.data.id'))
-    ),
+    createTransaction: (programId, transaction) =>
+      dispatch(
+        createTransaction(programId, transaction, appId, scope),
+      ).then(() => dispatch(invalidate(TRANSACTION_STATS))),
+    createCard: (programId, userId) =>
+      dispatch(createCard(programId, userId, scope)).then(action =>
+        _.get(action, 'payload.data.id'),
+      ),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddTransactionFragment);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AddTransactionFragment);

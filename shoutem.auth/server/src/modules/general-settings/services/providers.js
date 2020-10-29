@@ -9,8 +9,12 @@ function validateRequiredField(value, name = 'Field') {
 }
 
 export function validateProviderSetup(providerSetup) {
-  return _.reduce(providerSetup, (result, value, key) => ({
-    ...result,
-    [key]: validateRequiredField(value),
-  }), {});
+  return _.reduce(
+    providerSetup,
+    (result, value, key) => ({
+      ...result,
+      [key]: validateRequiredField(value),
+    }),
+    {},
+  );
 }

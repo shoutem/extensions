@@ -1,13 +1,30 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { invalidate, shouldLoad, shouldRefresh, isValid } from '@shoutem/redux-io';
+import {
+  invalidate,
+  shouldLoad,
+  shouldRefresh,
+  isInitialized,
+  isValid,
+  isBusy,
+} from '@shoutem/redux-io';
+import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { ControlLabel } from 'react-bootstrap';
 import { getShortcut } from 'environment';
-import { getCategories, getSchema, getResources, dataInitialized } from '../../selectors';
+import {
+  getCategories,
+  getLanguages,
+  getRawLanguages,
+  getSchema,
+  getResources,
+  dataInitialized,
+} from '../../selectors';
 import { updateShortcutSettings } from '../../builder-sdk';
 import {
+  loadLanguages,
   loadCategories,
   createCategory,
   navigateToCategoryContent,
@@ -26,6 +43,7 @@ import {
   getParentCategoryId,
   getVisibleCategoryIds,
 } from '../../services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export class CmsPage extends Component {
@@ -62,6 +80,10 @@ export class CmsPage extends Component {
       this.props.loadSchema();
     }
 
+    if (shouldLoad(nextProps, props, 'languages')) {
+      this.props.loadLanguages();
+    }
+
     if (shouldLoad(nextProps, props, 'categories')) {
       this.props.loadCategories();
     }
@@ -72,7 +94,11 @@ export class CmsPage extends Component {
       if (parentCategoryId) {
         const sortOptions = getSortOptions(shortcut);
         const visibleCategoryIds = getVisibleCategoryIds(shortcut);
-        this.props.loadResources(parentCategoryId, visibleCategoryIds, sortOptions);
+        this.props.loadResources(
+          parentCategoryId,
+          visibleCategoryIds,
+          sortOptions,
+        );
       }
     }
   }
@@ -80,7 +106,8 @@ export class CmsPage extends Component {
   handleCreateCategory() {
     const { shortcut } = this.props;
 
-    return this.props.createCategory(shortcut)
+    return this.props
+      .createCategory(shortcut)
       .then(this.props.navigateToCategory);
   }
 
@@ -109,7 +136,11 @@ export class CmsPage extends Component {
   }
 
   resolveShortcutTitle(shortcut) {
-    const defaultShortcutTitle = _.get(shortcut, 'settings.defaultShortcutTitle', false);
+    const defaultShortcutTitle = _.get(
+      shortcut,
+      'settings.defaultShortcutTitle',
+      false,
+    );
     return defaultShortcutTitle;
   }
 
@@ -127,19 +158,28 @@ export class CmsPage extends Component {
     }
 
     if (!defaultShortcutTitle && extensionTitle) {
-      return `This is a shortcut from the ${extensionTitle} extension.`;
+      return i18next.t(LOCALIZATION.SHORTCUT_FROM_EXTENSION, {
+        extensionTitle,
+      });
     }
 
     if (defaultShortcutTitle && !extensionTitle) {
-      return `This is the ${defaultShortcutTitle} shortcut of an undefined extension.`;
+      return i18next.t(LOCALIZATION.SHORTCUT_DEFAULT_FROM_UNDEFINED_EXTENSION, {
+        defaultShortcutTitle,
+      });
     }
 
-    return `This is the ${defaultShortcutTitle} shortcut from the ${extensionTitle} extension.`;
+    return i18next.t(LOCALIZATION.SHORTCUT_DEFAULT_FROM_EXTENSION, {
+      defaultShortcutTitle,
+      extensionTitle,
+    });
   }
 
   render() {
     const {
       resources,
+      languages,
+      rawLanguages,
       schema,
       shortcut,
       initialized,
@@ -147,20 +187,21 @@ export class CmsPage extends Component {
     const { showAdvancedSetup } = this.state;
 
     const hasContent = initialized && !_.isEmpty(resources);
-    const cmsButtonLabel = hasContent ? 'Edit items' : 'Create items';
+    const hasLanguages = isInitialized(languages) && !_.isEmpty(languages);
+    const cmsButtonLabel = hasContent
+      ? i18next.t(LOCALIZATION.BUTTON_EDIT_ITEMS)
+      : i18next.t(LOCALIZATION.BUTTON_CREATE_ITEMS);
 
     const sortOptions = getSortOptions(shortcut);
     const parentCategoryId = getParentCategoryId(shortcut);
     const visibleCategoryIds = getVisibleCategoryIds(shortcut);
     const extensionInfo = this.resolveExtensionInfo(shortcut);
 
+    const isLoading = !initialized || isBusy(languages);
+
     return (
-      <LoaderContainer className="cms" isLoading={!initialized}>
-        {extensionInfo &&
-          <ControlLabel>
-            {extensionInfo}
-          </ControlLabel>
-        }
+      <LoaderContainer className="cms" isLoading={isLoading}>
+        {extensionInfo && <ControlLabel>{extensionInfo}</ControlLabel>}
         <div className="cms__header">
           <SortOptions
             className="pull-left"
@@ -177,7 +218,7 @@ export class CmsPage extends Component {
             showAdvancedSetup={showAdvancedSetup}
           />
         </div>
-        {showAdvancedSetup &&
+        {showAdvancedSetup && (
           <AdvancedSetup
             onCreateCategory={this.handleCreateCategory}
             parentCategoryId={parentCategoryId}
@@ -185,9 +226,11 @@ export class CmsPage extends Component {
             shortcut={shortcut}
             visibleCategoryIds={visibleCategoryIds}
           />
-        }
+        )}
         <ContentPreview
           hasContent={hasContent}
+          hasLanguages={hasLanguages}
+          languages={rawLanguages}
           resources={resources}
           titleProp={schema.titleProperty}
         />
@@ -196,18 +239,16 @@ export class CmsPage extends Component {
   }
 }
 
-CmsPage.contextTypes = {
-  extensionContext: PropTypes.object,
-  params: PropTypes.object,
-};
-
 CmsPage.propTypes = {
   shortcut: PropTypes.object,
   resources: PropTypes.array,
   categories: PropTypes.array,
+  languages: PropTypes.array,
+  rawLanguages: PropTypes.array,
   schema: PropTypes.shape({
     titleProperty: PropTypes.string,
   }),
+  loadLanguages: PropTypes.func,
   loadCategories: PropTypes.func,
   createCategory: PropTypes.func,
   navigateToCategory: PropTypes.func,
@@ -225,6 +266,8 @@ function mapStateToProps(state) {
     shortcut,
     initialized,
     categories: getCategories(state),
+    languages: getLanguages(state),
+    rawLanguages: getRawLanguages(state),
     schema: getSchema(state),
     resources: getResources(state),
   };
@@ -232,21 +275,18 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    // if error do nothing, languages are not enabled
+    loadLanguages: () => dispatch(loadLanguages()).catch(() => null),
     loadCategories: () => dispatch(loadCategories()),
     loadSchema: () => dispatch(loadSchema()),
-    loadResources: (categoryId, visibleCategories, sortOptions) => (
-      dispatch(loadResources(categoryId, visibleCategories, sortOptions))
-    ),
-    createCategory: (shortcut) => (
-      dispatch(createCategory(shortcut))
-    ),
-    navigateToCategory: (categoryId) => (
-      navigateToCategoryContent(categoryId)
-    ),
-    updateSortOptions: (shortcut, sortOptions) => (
-      dispatch(updateShortcutSettings(shortcut, sortOptions))
-        .then(() => dispatch(invalidate(CURRENT_SCHEMA)))
-    ),
+    loadResources: (categoryId, visibleCategories, sortOptions) =>
+      dispatch(loadResources(categoryId, visibleCategories, sortOptions)),
+    createCategory: shortcut => dispatch(createCategory(shortcut)),
+    navigateToCategory: categoryId => navigateToCategoryContent(categoryId),
+    updateSortOptions: (shortcut, sortOptions) =>
+      dispatch(updateShortcutSettings(shortcut, sortOptions)).then(() =>
+        dispatch(invalidate(CURRENT_SCHEMA)),
+      ),
   };
 }
 

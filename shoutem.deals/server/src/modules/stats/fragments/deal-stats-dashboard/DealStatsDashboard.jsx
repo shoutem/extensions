@@ -1,58 +1,58 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import i18next from 'i18next';
 import { isBusy, hasNext, hasPrev } from '@shoutem/redux-io';
 import { Paging, LoaderContainer } from '@shoutem/react-web-ui';
 import { Table } from 'src/components';
-import {
-  getDealStats,
-  loadNextPage,
-  loadPreviousPage,
- } from '../../redux';
+import { getDealStats, loadNextPage, loadPreviousPage } from '../../redux';
 import { DealStatsRow } from '../../components';
+import LOCALIZATION from './localization';
 import './style.scss';
 
-const DEAL_STATS_HEADER = [
-  {
-    id: 'deal',
-    value: 'Title',
-    className: 'deal-stats__deal',
-  },
-  {
-    id: 'place',
-    value: 'Place',
-    className: 'deal-stats__place',
-  },
-  {
-    id: 'start',
-    value: 'Start',
-    className: 'deal-stats__start',
-  },
-  {
-    id: 'end',
-    value: 'End',
-    className: 'deal-stats__end',
-  },
-  {
-    id: 'total',
-    value: 'Total coupons',
-    className: 'deal-stats__total',
-  },
-  {
-    id: 'claimed',
-    value: 'Claimed coupons',
-    className: 'deal-stats__stat',
-  },
-  {
-    id: 'remaining',
-    value: 'Remaining coupons',
-    className: 'deal-stats__stat',
-  },
-  {
-    id: 'redeemed',
-    value: 'Redeemed coupons',
-    className: 'deal-stats__stat',
-  },
-];
+function getColumnHeaders() {
+  return [
+    {
+      id: 'deal',
+      value: i18next.t(LOCALIZATION.HEADER_TITLE_TITLE),
+      className: 'deal-stats__deal',
+    },
+    {
+      id: 'place',
+      value: i18next.t(LOCALIZATION.HEADER_PLACE_TITLE),
+      className: 'deal-stats__place',
+    },
+    {
+      id: 'start',
+      value: i18next.t(LOCALIZATION.HEADER_START_TITLE),
+      className: 'deal-stats__start',
+    },
+    {
+      id: 'end',
+      value: i18next.t(LOCALIZATION.HEADER_END_TITLE),
+      className: 'deal-stats__end',
+    },
+    {
+      id: 'total',
+      value: i18next.t(LOCALIZATION.HEADER_TOTAL_COUPONS_TITLE),
+      className: 'deal-stats__total',
+    },
+    {
+      id: 'claimed',
+      value: i18next.t(LOCALIZATION.HEADER_CLAIMED_COUPONS_TITLE),
+      className: 'deal-stats__stat',
+    },
+    {
+      id: 'remaining',
+      value: i18next.t(LOCALIZATION.HEADER_REMAINING_COUPONS_TITLE),
+      className: 'deal-stats__stat',
+    },
+    {
+      id: 'redeemed',
+      value: i18next.t(LOCALIZATION.HEADER_REDEEMED_COUPONS_TITLE),
+      className: 'deal-stats__stat',
+    },
+  ];
+}
 
 export class DealStatsDashboard extends Component {
   static propTypes = {
@@ -106,8 +106,10 @@ export class DealStatsDashboard extends Component {
       >
         <Table
           className="deal-stats-table"
-          columnHeaders={DEAL_STATS_HEADER}
-          emptyPlaceholderText="There are no deals satisfying current filter"
+          columnHeaders={getColumnHeaders()}
+          emptyPlaceholderText={i18next.t(
+            LOCALIZATION.TABLE_EMPTY_PLACEHOLDER_MESSAGE,
+          )}
           items={dealStats}
           renderItem={this.renderDealStatRow}
         />
@@ -130,12 +132,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadNextPage: (dealStats) => (
-      dispatch(loadNextPage(dealStats))
-    ),
-    loadPreviousPage: (dealStats) => (
-      dispatch(loadPreviousPage(dealStats))
-    ),
+    loadNextPage: dealStats => dispatch(loadNextPage(dealStats)),
+    loadPreviousPage: dealStats => dispatch(loadPreviousPage(dealStats)),
   };
 }
 

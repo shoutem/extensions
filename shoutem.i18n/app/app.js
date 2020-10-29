@@ -6,6 +6,7 @@ import moment from 'moment';
 import 'moment/min/locales';
 
 import { getExtensionSettings } from 'shoutem.application/redux';
+import { actions, selectors } from './redux';
 
 import { ext } from './const';
 import customTranslations from './translations';
@@ -42,18 +43,18 @@ const mergeTranslations = (targetTranslations, translationsToAdd) => {
   }
 };
 
-  // Load all translations exported from other extensions, extensions can export
-  // their own translations under the `shoutem.i18n` key, for example:
-  // ```
-  // export const shoutem = {
-  //   i18n: {
-  //     translations: {
-  //       en: { <translations object> }
-  //     }
-  //   }
-  // }
-  // ```
-const getTranslationsFromExtensions = extensions => {
+// Load all translations exported from other extensions, extensions can export
+// their own translations under the `shoutem.i18n` key, for example:
+// ```
+// export const shoutem = {
+//   i18n: {
+//     translations: {
+//       en: { <translations object> }
+//     }
+//   }
+// }
+// ```
+const getTranslationsFromExtensions = (extensions) => {
   const i18nExtension = ext();
 
   const allTranslations = _.reduce(_.values(extensions), (translations, extension) => {
@@ -65,7 +66,7 @@ const getTranslationsFromExtensions = extensions => {
   return allTranslations;
 };
 
-export const appWillMount = app => {
+export const appWillMount = (app) => {
   const extensions = app.getExtensions();
 
   // Load all translations provided by the extensions themselves
@@ -81,16 +82,27 @@ export const appWillMount = app => {
   };
 };
 
-export const appDidMount = app => {
+export const appDidMount = (app) => {
   // Load the current locale from extension settings
   const state = app.getState();
+  const store = app.getStore();
+  const { dispatch } = store;
   const defaultLocale = 'en';
   const { locale = defaultLocale } = getExtensionSettings(state, ext());
+  const currentlySelectedLocale = selectors.getSelectedLocale(state);
+  const activeLocales = selectors.getActiveLocales(state);
+
+  const hasSelectedLocale = !_.isEmpty(currentlySelectedLocale) && _.includes(activeLocales, currentlySelectedLocale);
+  const resolvedLocale = hasSelectedLocale ? currentlySelectedLocale : locale;
+
+  if (!hasSelectedLocale) {
+    dispatch(actions.setLocale(locale));
+  }
 
   I18n.fallbacks = defaultLocale;
   I18n.defaultLocale = defaultLocale;
-  I18n.locale = locale;
+  I18n.locale = resolvedLocale;
 
   // Configure the moment library to use the same locale as the app
-  moment.locale(locale);
+  moment.locale(resolvedLocale);
 };

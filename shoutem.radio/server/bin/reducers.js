@@ -1,7 +1,5 @@
 import { combineReducers } from 'redux';
-import {
-  reducer as coreReducer,
-} from '@shoutem/redux-api-sdk';
+import { reducer as coreReducer } from '@shoutem/redux-api-sdk';
 
 export function createRootReducer(extensionName, reducer) {
   return combineReducers({

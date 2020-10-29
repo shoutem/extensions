@@ -1,9 +1,3 @@
-import {
-  validateCashier,
-  getErrorMessage,
-} from './validation';
+import { validateCashier, getErrorMessage } from './validation';
 
-export {
-  validateCashier,
-  getErrorMessage,
-};
+export { validateCashier, getErrorMessage };

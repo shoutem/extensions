@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { LoaderContainer, Switch, FormInput } from '@shoutem/react-web-ui';
 import {
   Row,
@@ -12,6 +13,7 @@ import {
   FormGroup,
 } from 'react-bootstrap';
 import _ from 'lodash';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class FacebookSetupForm extends Component {
@@ -75,8 +77,10 @@ export default class FacebookSetupForm extends Component {
 
   validateForm() {
     const { appId, appName } = this.state;
-    const appIdError = _.isEmpty(appId) && 'Required field';
-    const appNameError = _.isEmpty(appName) && 'Required field';
+    const appIdError =
+      _.isEmpty(appId) && i18next.t(LOCALIZATION.REQUIRED_FIELD_MESSAGE);
+    const appNameError =
+      _.isEmpty(appName) && i18next.t(LOCALIZATION.REQUIRED_FIELD_MESSAGE);
 
     this.setState({ appIdError, appNameError });
     return !appIdError && !appNameError;
@@ -98,7 +102,7 @@ export default class FacebookSetupForm extends Component {
       .then(() => this.setState({ submitting: false }))
       .catch(() => {
         this.setState({
-          error: 'Something went wrong, please try again',
+          error: i18next.t(LOCALIZATION.ERROR_MESSAGE),
           submitting: false,
         });
       });
@@ -136,21 +140,23 @@ export default class FacebookSetupForm extends Component {
     return (
       <div className={className}>
         <FormGroup>
-          <ControlLabel>Facebook</ControlLabel>
+          <ControlLabel>
+            {' '}
+            {i18next.t(LOCALIZATION.FORM_FACEBOOK_TITLE)}
+          </ControlLabel>
           <Switch onChange={this.handleFacebookSwitchToggle} value={enabled} />
           {enabled && (
             <form className="facebook-setup-form">
-              <h3>Facebook Authentication setup</h3>
+              <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
               <ControlLabel>
-                You will need to setup a Facebook application to enable Facebook
-                login.
+                {i18next.t(LOCALIZATION.FORM_SETUP_FACEBOOK_TITLE)}
               </ControlLabel>
               <Row>
                 <Col xs={6}>
                   <FormInput
                     elementId="facebookAppId"
                     error={appIdError}
-                    name="App ID"
+                    name={i18next.t(LOCALIZATION.FORM_APP_ID_TITLE)}
                     onChange={this.handleAppIdChange}
                     value={appId}
                   />
@@ -159,7 +165,7 @@ export default class FacebookSetupForm extends Component {
                   <FormInput
                     elementId="facebookAppName"
                     error={appNameError}
-                    name="App Name"
+                    name={i18next.t(LOCALIZATION.FORM_APP_NAME_TITLE)}
                     onChange={this.handleAppNameChange}
                     value={appName}
                   />
@@ -171,7 +177,9 @@ export default class FacebookSetupForm extends Component {
                   disabled={this.disableButton()}
                   onClick={this.handleSaveClick}
                 >
-                  <LoaderContainer isLoading={submitting}>Save</LoaderContainer>
+                  <LoaderContainer isLoading={submitting}>
+                    {i18next.t(LOCALIZATION.BUTTON_SUBMIT_TITLE)}
+                  </LoaderContainer>
                 </Button>
               </ButtonToolbar>
               {error && (

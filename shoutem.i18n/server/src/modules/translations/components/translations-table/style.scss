@@ -1,0 +1,142 @@
+.translations-table {
+  p {
+    color: #455069;
+  }
+
+  .inactive {
+    color: #7b8397;
+  }
+
+  .switch-disabled {
+    input[type='checkbox'] ~ label {
+      cursor: not-allowed;
+    }
+  }
+
+  .table {
+    margin-top: 4px;
+
+    > thead > tr > th {
+      .control-label {
+        padding-top: 0px;
+        padding-bottom: 0px;
+        height: 14px;
+      }
+    }
+
+    > thead > tr {
+      > :first-child {
+        width: 80px;
+      }
+    }
+
+    > thead > tr {
+      > :last-child {
+        width: 35px;
+      }
+    }
+
+    > thead > tr {
+      > :nth-child(2) {
+        width: 220px;
+      }
+    }
+
+    > thead > tr {
+      > :nth-child(3) {
+        width: 70px;
+      }
+    }
+
+    > thead > tr {
+      > :nth-child(5) {
+        width: 35px;
+      }
+    }
+
+    > tbody > tr {
+      > :nth-child(2) {
+        p {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          text-align: left;
+          padding-right: 30px;
+        }
+      }
+    }
+
+    > tbody > tr {
+      > :nth-child(3) {
+        p {
+          text-align: left;
+        }
+      }
+    }
+
+    > tbody > tr {
+      > :nth-child(4) {
+        p {
+          float: left;
+        }
+
+        .switch {
+          display: flex;
+
+          .switch__button {
+            width: 25px;
+
+            input[type='checkbox']:checked {
+              ~ .switch__knob {
+                background-color: #4eaada;
+                transform: translateX(100%);
+              }
+              ~ .switch__knob-background {
+                background-color: #4eaada;
+              }
+            }
+
+            .switch__knob {
+              width: 15px;
+              height: 15px;
+              margin-left: -2px;
+              margin-top: 3px;
+            }
+          }
+        }
+      }
+    }
+
+    > tbody > tr {
+      > :nth-child(5) {
+        .form-control-static {
+          padding-top: 0px;
+        }
+      }
+    }
+
+    > tbody > tr {
+      > :last-child {
+        .form-control-static {
+          padding-top: 0px;
+        }
+      }
+    }
+
+    > tbody > tr {
+      > :first-child {
+        .form-control-static {
+          text-align: left;
+          padding-left: 6px;
+        }
+      }
+    }
+
+    > tbody > tr > td {
+      padding-top: 4px;
+      padding-right: 8px;
+      padding-bottom: 4px;
+      padding-left: 0px;
+    }
+  }
+}

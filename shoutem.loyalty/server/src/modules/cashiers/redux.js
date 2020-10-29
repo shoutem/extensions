@@ -42,7 +42,7 @@ export const getCashiersWithPlace = createSelector(
 
     cloneStatus(cashiers, cashiersWithPlace);
     return cashiersWithPlace;
-  }
+  },
 );
 
 // ACTIONS
@@ -94,7 +94,9 @@ export function updateCashier(cashierId, cashierPatch, programId, scope = {}) {
   const config = {
     schema: CASHIERS,
     request: {
-      endpoint: getLoyaltyUrl(`/v1/programs/${programId}/cashiers/${cashierId}`),
+      endpoint: getLoyaltyUrl(
+        `/v1/programs/${programId}/cashiers/${cashierId}`,
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
@@ -115,7 +117,9 @@ export function deleteCashier(cashierId, programId, scope = {}) {
   const config = {
     schema: CASHIERS,
     request: {
-      endpoint: getLoyaltyUrl(`/v1/programs/${programId}/cashiers/${cashierId}`),
+      endpoint: getLoyaltyUrl(
+        `/v1/programs/${programId}/cashiers/${cashierId}`,
+      ),
       headers: {},
     },
   };

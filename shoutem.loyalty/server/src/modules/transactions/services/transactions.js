@@ -1,14 +1,16 @@
 import _ from 'lodash';
+import i18next from 'i18next';
 import { isNumeric } from 'validator';
 import { getMeta } from '@shoutem/redux-io';
+import LOCALIZATION from './localization';
 
 function validateTransactionPoints(points) {
   if (_.isEmpty(points)) {
-    return { points: 'Points must be provided' };
+    return { points: i18next.t(LOCALIZATION.POINTS_MISSING_MESSAGE) };
   }
 
   if (!isNumeric(points)) {
-    return { points: 'Only numbers are allowed' };
+    return { points: i18next.t(LOCALIZATION.ONLY_NUMBER_ALLOWED_MESSAGE) };
   }
 
   return null;
@@ -16,7 +18,7 @@ function validateTransactionPoints(points) {
 
 function validateUser(user) {
   if (!user) {
-    return 'User must be provided';
+    return i18next.t(LOCALIZATION.USER_MISSING_MESSAGE);
   }
 
   return null;
@@ -24,7 +26,7 @@ function validateUser(user) {
 
 function validatePlace(place) {
   if (!place) {
-    return 'Place must be provided';
+    return i18next.t(LOCALIZATION.PLACE_MISSING_MESSAGE);
   }
 
   return null;
@@ -32,7 +34,7 @@ function validatePlace(place) {
 
 function validateReward(reward) {
   if (!reward) {
-    return 'Punch card must be provided';
+    return i18next.t(LOCALIZATION.PUNCH_MISSING_MESSAGE);
   }
 
   return null;

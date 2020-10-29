@@ -1,5 +1,5 @@
 import { denormalizeCollection } from 'denormalizer';
-import { cloneStatus }  from '@shoutem/redux-io';
+import { cloneStatus } from '@shoutem/redux-io';
 import _ from 'lodash';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
@@ -26,7 +26,9 @@ function toLocalDateTime(dateTime) {
   const differenceInHours = nowDate.diff(originalDate, 'hours');
   const dateTimeFormatted = originalDate.format(RSS_DATE_TIME_FORMAT);
   const displayTimeAgo = differenceInHours <= MAX_DIFFERENCE_IN_HOURS;
-  const dateTimeDisplay = displayTimeAgo ? originalDate.from(nowDate) : dateTimeFormatted;
+  const dateTimeDisplay = displayTimeAgo
+    ? originalDate.from(nowDate)
+    : dateTimeFormatted;
 
   return {
     dateTimeFormatted,

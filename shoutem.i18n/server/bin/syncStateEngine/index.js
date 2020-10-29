@@ -1,2 +1,1 @@
-import SyncStateEngineProvider from './SyncStateEngineProvider';
-export { SyncStateEngineProvider };
+export { default as SyncStateEngineProvider } from './SyncStateEngineProvider';

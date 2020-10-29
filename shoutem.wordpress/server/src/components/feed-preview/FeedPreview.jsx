@@ -1,9 +1,14 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { FormGroup, ControlLabel } from 'react-bootstrap';
+import { Trans } from 'react-i18next';
 import _ from 'lodash';
 import { FontIcon } from '@shoutem/react-web-ui';
 import { isFeedUrlInsecure } from 'src/services';
 import FeedPreviewTable from '../feed-preview-table';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 // eslint-disable-next-line max-len
@@ -13,7 +18,7 @@ export default class FeedPreview extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.handleLinkClick = this.handleLinkClick.bind(this);
+    autoBindReact(this);
   }
 
   handleLinkClick(event) {
@@ -24,11 +29,13 @@ export default class FeedPreview extends Component {
   renderInsecureFeedWarning() {
     return (
       <ControlLabel className="feed-preview__insecure-warning">
-        You are trying to load a feed from 'http'. Change feed's protocol to 'https' or learn
-        <button className="btn-textual" onClick={this.handleLinkClick} target="_top">
-          {' '}here{' '}
-        </button>
-        how to allow your browser to load it.
+        <Trans i18nKey={LOCALIZATION.INSECURE_FEED_WARNING}>
+          You are trying to load a feed from 'http'. Change feed's protocol to 'https' or learn
+          <button className="btn-textual" onClick={this.handleLinkClick} target="_top">
+            here
+          </button>
+          how to allow your browser to load it.
+        </Trans>
       </ControlLabel>
     );
   }
@@ -43,7 +50,7 @@ export default class FeedPreview extends Component {
       <div className="feed-preview">
         <form>
           <FormGroup className="feed-preview__container">
-            <ControlLabel>WordPress page URL</ControlLabel>
+            <ControlLabel>{i18next.t(LOCALIZATION.PAGE_URL)}</ControlLabel>
             <div className="feed-preview__feed-url-container">
               <div />
               <div className="feed-preview__feed-url-text-wrapper text-ellipsis">

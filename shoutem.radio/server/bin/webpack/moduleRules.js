@@ -1,48 +1,60 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const isProduction = require('./env');
 
 function resolveModuleRules() {
   const jsRule = {
     test: /\.(js|jsx)$/,
-    exclude: /node_modules/,
-    use: [
-      'babel-loader',
-    ],
+    use: { loader: 'babel-loader' },
   };
 
-  const styleProductionRule = {
-    test: /\.scss$/,
-    use: ExtractTextPlugin.extract({
-      use: [{
-        loader: 'css-loader',
-      }, {
-        loader: 'postcss-loader',
-      }, {
-        loader: 'sass-loader',
-      }],
-      fallback: 'style-loader',
-    }),
-  };
+  const styleRules = [
+    {
+      test: /\.css$/,
+      use: [
+        !isProduction ? 'style-loader' : MiniCssExtractPlugin.loader,
+        { loader: 'css-loader' },
+      ],
+    },
+    {
+      test: /\.scss$/,
+      use: [
+        !isProduction ? 'style-loader' : MiniCssExtractPlugin.loader,
+        {
+          loader: 'css-loader',
+          options: {
+            sourceMap: !isProduction,
+          },
+        },
+        {
+          loader: 'postcss-loader',
+          options: {
+            plugins: [require('cssnano')()],
+            sourceMap: !isProduction,
+          },
+        },
+        {
+          loader: 'sass-loader',
+          options: {
+            sourceMap: !isProduction,
+          },
+        },
+      ],
+    },
+  ];
 
-  const styleDevelopmentRule = {
-    test: /\.scss$/,
-    use: [
-      'style-loader',
-      // Using source maps breaks urls in the CSS loader
-      // https://github.com/webpack/css-loader/issues/232
-      // This comment solves it, but breaks testing from a local network
-      // https://github.com/webpack/css-loader/issues/232#issuecomment-240449998
-      // 'css-loader?sourceMap',
-      'css-loader',
-      'postcss-loader',
-      'sass-loader?sourceMap',
-    ],
-  };
-
-  const imgRule = {
-    test: /\.(png|gif|jpg|svg)$/,
-    use: 'url-loader?limit=8192',
-  };
+  const imgRules = [
+    {
+      test: /\.(png|gif|jpg|svg)$/,
+      use: [
+        {
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+          },
+        },
+      ],
+    },
+  ];
 
   const fontRules = [
     {
@@ -50,7 +62,11 @@ function resolveModuleRules() {
       use: [
         {
           loader: 'url-loader',
-          query: 'prefix=fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=application/font-woff',
+          options: {
+            name: '[path][name].[ext]',
+            mimetype: 'application/font-woff',
+            limit: 10000,
+          },
         },
       ],
     },
@@ -59,8 +75,11 @@ function resolveModuleRules() {
       use: [
         {
           loader: 'url-loader',
-          query:
-            'prefix=fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=application/font-woff2',
+          options: {
+            name: '[path][name].[ext]',
+            mimetype: 'application/font-woff2',
+            limit: 10000,
+          },
         },
       ],
     },
@@ -69,7 +88,11 @@ function resolveModuleRules() {
       use: [
         {
           loader: 'file-loader',
-          query: 'prefix=fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=font/opentype',
+          options: {
+            name: '[path][name].[ext]',
+            mimetype: 'font/opentype',
+            limit: 10000,
+          },
         },
       ],
     },
@@ -78,7 +101,11 @@ function resolveModuleRules() {
       use: [
         {
           loader: 'url-loader',
-          query: 'prefix=fonts/&name=fonts/[name].[ext]&limit=10000&mimetype=application/octet-stream',
+          options: {
+            name: '[path][name].[ext]',
+            mimetype: 'application/octet-stream',
+            limit: 10000,
+          },
         },
       ],
     },
@@ -87,27 +114,15 @@ function resolveModuleRules() {
       use: [
         {
           loader: 'file-loader',
-          query: 'prefix=fonts/&name=fonts/[name].[ext]',
+          options: {
+            name: '[path][name].[ext]',
+          },
         },
       ],
     },
   ];
 
-  if (isProduction) {
-    return [
-      jsRule,
-      styleProductionRule,
-      ...fontRules,
-      imgRule,
-    ];
-  };
-
-  return [
-    jsRule,
-    styleDevelopmentRule,
-    ...fontRules,
-    imgRule,
-  ];
+  return [jsRule, ...styleRules, ...fontRules, ...imgRules];
 }
 
-exports = module.exports = resolveModuleRules;
+module.exports = resolveModuleRules;

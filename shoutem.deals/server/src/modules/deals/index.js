@@ -1,8 +1,8 @@
-export {
-  moduleName,
-  DEFAULT_LIMIT,
-  DEFAULT_OFFSET,
-} from './const';
+import { reducer } from './redux';
+
+import DealsDashboard from './fragments/deals-dashboard';
+
+export { moduleName, DEFAULT_LIMIT, DEFAULT_OFFSET } from './const';
 
 export {
   loadDeals,
@@ -18,11 +18,5 @@ export {
   getDealCategories,
   getPlaces,
 } from './redux';
-
-import { reducer } from './redux';
 export default reducer;
-
-import DealsDashboard from './fragments/deals-dashboard';
-export {
-  DealsDashboard,
-};
+export { DealsDashboard };

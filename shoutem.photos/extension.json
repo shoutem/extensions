@@ -1,17 +1,12 @@
 {
   "name": "photos",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "platform": "2.4.*",
   "title": "Photos",
   "description": "Show a photo gallery",
   "icon": "server/assets/add-photos-image.png",
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.cms"
-  ],
-  "categories": [
-    "media"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "categories": ["media"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -45,9 +40,7 @@
     {
       "name": "PhotosScreen",
       "title": "Large list",
-      "navigatesTo": [
-        "@.PhotoDetailsScreen"
-      ],
+      "navigatesTo": ["@.PhotoDetailsScreen"],
       "image": "./server/assets/screens/layout-photos-large-list.png",
       "settings": {
         "listType": "large-list"

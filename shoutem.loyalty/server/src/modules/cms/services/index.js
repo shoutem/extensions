@@ -3,8 +3,4 @@ import CmsApi from './cmsApi';
 const cmsApi = new CmsApi();
 const getCmsUrl = cmsApi.getUrl;
 
-export {
-  rsaaPromise,
-  cmsApi,
-  getCmsUrl,
-};
+export { rsaaPromise, cmsApi, getCmsUrl };

@@ -2,24 +2,25 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { MenuItem } from 'react-bootstrap';
-import { Dropdown, ActionsMenu, IconLabel } from '@shoutem/react-web-ui';
+import { ActionsMenu, IconLabel } from '@shoutem/react-web-ui';
 import { UserGroupsDropdown } from 'src/modules/user-groups';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class UserTableRow extends Component {
   constructor(props) {
     super(props);
-
-    this.handleStatusChange = this.handleStatusChange.bind(this);
-    this.handleChangePasswordClick = this.handleChangePasswordClick.bind(this);
-    this.handleDeleteClick = this.handleDeleteClick.bind(this);
-    this.handleEditClick = this.handleEditClick.bind(this);
-    this.handleUserGroupsChanged = this.handleUserGroupsChanged.bind(this);
+    autoBindReact(this);
   }
 
   handleStatusChange() {
-    const { user: { id: userId, approved }, onUserUpdate } = this.props;
+    const {
+      user: { id: userId, approved },
+      onUserUpdate,
+    } = this.props;
     onUserUpdate(userId, { approved: !approved });
   }
 
@@ -48,18 +49,9 @@ export default class UserTableRow extends Component {
   }
 
   render() {
-    const {
-      user,
-      ownerId,
-      userGroups,
-    } = this.props;
+    const { user, ownerId, userGroups } = this.props;
 
-    const {
-      id,
-      username,
-      approved,
-      userGroups: selectedGroups,
-    } = user;
+    const { id, username, approved, userGroups: selectedGroups } = user;
 
     const isOwner = id === ownerId;
     const selectedUserGroupIds = _.map(selectedGroups, 'id');
@@ -67,8 +59,12 @@ export default class UserTableRow extends Component {
       blocked: !approved,
     });
 
-    const statusLabel = approved ? 'Approved' : 'Blocked';
-    const approveActionLabel = approved ? 'Block this user' : 'Approve this user';
+    const statusLabel = approved
+      ? i18next.t(LOCALIZATION.STATUS_APPROVED_TITLE)
+      : i18next.t(LOCALIZATION.STATUS_BLOCKED_TITLE);
+    const approveActionLabel = approved
+      ? i18next.t(LOCALIZATION.BUTTON_BLOCK_USER_TITLE)
+      : i18next.t(LOCALIZATION.BUTTON_APPROVED_USER_TITLE);
     const approveActionIcon = approved ? 'block-user' : 'approve-user';
 
     return (
@@ -93,30 +89,30 @@ export default class UserTableRow extends Component {
           >
             <MenuItem onClick={this.handleEditClick}>
               <IconLabel iconName="edit">
-                Edit
+                {i18next.t(LOCALIZATION.BUTTON_EDIT_TITLE)}
               </IconLabel>
             </MenuItem>
-            {!isOwner &&
+            {!isOwner && (
               <MenuItem onClick={this.handleStatusChange}>
                 <IconLabel iconName={approveActionIcon}>
                   {approveActionLabel}
                 </IconLabel>
               </MenuItem>
-            }
-            {!isOwner &&
+            )}
+            {!isOwner && (
               <MenuItem onClick={this.handleChangePasswordClick}>
                 <IconLabel iconName="eyeoff">
-                  Change password
+                  {i18next.t(LOCALIZATION.BUTTON_CHANGE_PASSWORD_TITLE)}
                 </IconLabel>
               </MenuItem>
-            }
-            {!isOwner &&
+            )}
+            {!isOwner && (
               <MenuItem onClick={this.handleDeleteClick}>
                 <IconLabel iconName="delete">
-                  Delete
+                  {i18next.t(LOCALIZATION.BUTTON_DELETE_TITLE)}
                 </IconLabel>
               </MenuItem>
-            }
+            )}
           </ActionsMenu>
         </td>
       </tr>

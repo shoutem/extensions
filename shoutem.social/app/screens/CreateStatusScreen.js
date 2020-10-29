@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Alert, KeyboardAvoidingView } from 'react-native';
+import { Alert, KeyboardAvoidingView, TextInput } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
-
+import _ from 'lodash';
 import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
@@ -26,7 +26,6 @@ import { authenticate } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';
 
-import AutoGrowTextInput from '../components/AutoGrowTextInput';
 import { user as userShape } from '../components/shapes';
 import { ext } from '../const';
 
@@ -115,7 +114,9 @@ export class CreateStatusScreen extends PureComponent {
 
   renderHeader() {
     const { user } = this.props;
-    const { profile_image_url, name } = user;
+
+    const name = _.get(user, 'profile.name');
+    const profile_image_url = _.get(user, 'profile.image');
 
     return (
       <View>
@@ -132,16 +133,18 @@ export class CreateStatusScreen extends PureComponent {
 
   renderTextInput() {
     const { text } = this.state;
-    const { placeholder, statusMaxLength } = this.props;
+    const { placeholder, statusMaxLength, style } = this.props;
 
     return (
       <View styleName="flexible">
-        <AutoGrowTextInput
+        <TextInput
+          style={style.textInput}
           multiline
           maxLength={statusMaxLength}
           placeholder={placeholder}
-          onTextChanged={this.handleTextChange}
+          onChangeText={this.handleTextChange}
           value={text}
+          returnKeyType="next"
         />
         {this.renderAttachedImage()}
       </View>
@@ -149,17 +152,19 @@ export class CreateStatusScreen extends PureComponent {
   }
 
   renderAttachedImage() {
-    if (!this.state.imageData) {
+    const { imageData } = this.state;
+
+    if (!imageData) {
       return null;
     }
 
     return (
-      <View>
+      <View styleName="md-gutter-vertical">
         <ImageBackground
-          source={{ uri: `data:image/png;base64,${this.state.imageData.data}` }}
+          source={{ uri: `data:image/png;base64,${imageData.data}` }}
           styleName="large-wide"
         >
-          <View styleName="fill-parent horizontal v-start h-end">
+          <View styleName="fill-parent horizontal v-start h-end sm-gutter-right sm-gutter-top">
             <Button styleName="tight clear" onPress={this.removeImage}>
               <Icon name="close" />
             </Button>
@@ -171,24 +176,27 @@ export class CreateStatusScreen extends PureComponent {
 
   renderFooter() {
     const { enablePhotoAttachments, style } = this.props;
+    const { numOfCharacters } = this.state;
 
-    const addPhotoButton = enablePhotoAttachments ?
+    const keyboardOffset = Keyboard.calculateKeyboardOffset();
+    const addPhotoButton = enablePhotoAttachments && (
       <TouchableOpacity onPress={this.appendImage}>
         <Icon name="take-a-photo" />
-      </TouchableOpacity> : null;
+      </TouchableOpacity>
+    );
 
     return (
       <KeyboardAvoidingView
-        behavior="padding"
-        keyboardVerticalOffset={Keyboard.calculateKeyboardOffset(80)}
+        behavior='padding'
+        keyboardVerticalOffset={keyboardOffset}
       >
         <Divider styleName="line" />
         <View
-          styleName="sm-gutter-top md-gutter-horizontal horizontal v-end space-between"
+          styleName="horizontal space-between md-gutter"
           style={style.footer}
         >
           {addPhotoButton}
-          <Caption>{this.state.numOfCharacters} characters left</Caption>
+          <Caption>{numOfCharacters} characters left</Caption>
         </View>
       </KeyboardAvoidingView>
     );
@@ -198,7 +206,7 @@ export class CreateStatusScreen extends PureComponent {
     const { title } = this.props;
 
     return (
-      <Screen styleName="paper">
+      <Screen styleName="paper with-notch-padding">
         <NavigationBar
           title={title}
           renderRightComponent={this.renderRightComponent}

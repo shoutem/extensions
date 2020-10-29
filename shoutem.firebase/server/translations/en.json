@@ -1,0 +1,15 @@
+{
+  "shoutem": {
+    "firebase": {
+      "settings-form.form-project-slug": "Project slug",
+      "settings-form.form-server-key": "Server key",
+      "settings-form.form-google-services-json": "google-services.json (Android app)",
+      "settings-form.form-google-services-plist": "GoogleService-Info.plist (iOS app)",
+      "settings-form.button-save": "Save",
+      "settings-services.value-required": "Value is required",
+      "settings-services.google-services-required": "Either google-services.json or GoogleService-Info.plist must be populated",
+      "settings-page.error-message": "Something went wrong, please try again.",
+      "settings-page.title": "Firebase configuration"
+    }
+  }
+}

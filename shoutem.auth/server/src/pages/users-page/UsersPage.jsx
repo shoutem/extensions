@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
 import { Paging, LoaderContainer } from '@shoutem/react-web-ui';
 import { shouldLoad, isInitialized, hasNext, hasPrev } from '@shoutem/redux-io';
 import { getErrorCode } from '@shoutem/redux-api-sdk';
@@ -18,10 +19,7 @@ import {
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,
 } from 'src/modules/users';
-import {
-  loadAllUserGroups,
-  getAllUserGroups,
-} from 'src/modules/user-groups';
+import { loadAllUserGroups, getAllUserGroups } from 'src/modules/user-groups';
 import './style.scss';
 
 const DEFAULT_PAGING = {
@@ -32,15 +30,7 @@ const DEFAULT_PAGING = {
 export class UsersPage extends Component {
   constructor(props, context) {
     super(props);
-
-    this.checkData = this.checkData.bind(this);
-    this.loadUsers = this.loadUsers.bind(this);
-    this.handleNextPageClick = this.handleNextPageClick.bind(this);
-    this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
-    this.handleUserCreate = this.handleUserCreate.bind(this);
-    this.handleUserUpdate = this.handleUserUpdate.bind(this);
-    this.handleUserDelete = this.handleUserDelete.bind(this);
-    this.handleFilterChange = this.handleFilterChange.bind(this);
+    autoBindReact(this);
 
     const { page } = context;
     const ownerId = _.get(page, 'pageContext.currentUserId');
@@ -77,16 +67,19 @@ export class UsersPage extends Component {
     const { appId } = this.props;
     const { filter } = this.state;
 
-    const pagingInfo = defaultPaging ? DEFAULT_PAGING : this.refs.paging.getPagingInfo();
+    const pagingInfo = defaultPaging
+      ? DEFAULT_PAGING
+      : this.refs.paging.getPagingInfo();
     const { limit, offset } = pagingInfo;
 
     this.setState({ inProgress: true });
 
-    this.props.loadUsers(appId, filter, limit, offset)
-      .then(() => this.setState({
+    this.props.loadUsers(appId, filter, limit, offset).then(() =>
+      this.setState({
         inProgress: false,
         showLoaderOnRefresh: false,
-      }));
+      }),
+    );
   }
 
   handleNextPageClick() {
@@ -97,12 +90,12 @@ export class UsersPage extends Component {
       inProgress: true,
     });
 
-    this.props.loadNextPage(users).then(() => (
+    this.props.loadNextPage(users).then(() =>
       this.setState({
         inProgress: false,
         showLoaderOnRefresh: false,
-      })
-    ));
+      }),
+    );
   }
 
   handlePreviousPageClick() {
@@ -113,26 +106,25 @@ export class UsersPage extends Component {
       inProgress: true,
     });
 
-    this.props.loadPreviousPage(users).then(() => (
+    this.props.loadPreviousPage(users).then(() =>
       this.setState({
         inProgress: false,
         showLoaderOnRefresh: false,
-      })
-    ));
+      }),
+    );
   }
 
   handleUserCreate(user) {
     const { appId } = this.props;
     this.setState({ showLoaderOnRefresh: true });
 
-    return new Promise((resolve, reject) => (
-      this.props.createUser(appId, user)
-        .then(resolve, (action) => {
-          this.setState({ showLoaderOnRefresh: false });
-          const errorCode = getErrorCode(action);
-          reject(getErrorMessage(errorCode));
-        })
-    ));
+    return new Promise((resolve, reject) =>
+      this.props.createUser(appId, user).then(resolve, action => {
+        this.setState({ showLoaderOnRefresh: false });
+        const errorCode = getErrorCode(action);
+        reject(getErrorMessage(errorCode));
+      }),
+    );
   }
 
   handleUserUpdate(userId, user) {
@@ -154,26 +146,22 @@ export class UsersPage extends Component {
 
     this.refs.paging.reset();
 
-    this.setState({
-      filter: newFilter,
-      showLoaderOnRefresh: true,
-    }, this.loadUsers);
+    this.setState(
+      {
+        filter: newFilter,
+        showLoaderOnRefresh: true,
+      },
+      this.loadUsers,
+    );
   }
 
   render() {
     const { users, userGroups } = this.props;
 
-    const {
-      inProgress,
-      showLoaderOnRefresh,
-      filter,
-      ownerId,
-    } = this.state;
+    const { inProgress, showLoaderOnRefresh, filter, ownerId } = this.state;
 
-    const isLoading = (
-      (showLoaderOnRefresh && inProgress) ||
-      !isInitialized(users)
-    );
+    const isLoading =
+      (showLoaderOnRefresh && inProgress) || !isInitialized(users);
 
     return (
       <LoaderContainer
@@ -232,27 +220,15 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
-    loadUsers: (appId, filter, limit, offset) => (
-      dispatch(loadUsers(appId, filter, limit, offset, scope))
-    ),
-    loadNextPage: (users) => (
-      dispatch(loadNextUsersPage(users))
-    ),
-    loadPreviousPage: (users) => (
-      dispatch(loadPreviousUsersPage(users))
-    ),
-    loadAllUserGroups: (appId) => (
-      dispatch(loadAllUserGroups(appId, scope))
-    ),
-    createUser: (appId, user) => (
-      dispatch(createUser(appId, user, scope))
-    ),
-    updateUser: (appId, userId, user) => (
-      dispatch(updateUser(appId, userId, user, scope))
-    ),
-    deleteUser: (appId, userId) => (
-      dispatch(deleteUser(appId, userId))
-    ),
+    loadUsers: (appId, filter, limit, offset) =>
+      dispatch(loadUsers(appId, filter, limit, offset, scope)),
+    loadNextPage: users => dispatch(loadNextUsersPage(users)),
+    loadPreviousPage: users => dispatch(loadPreviousUsersPage(users)),
+    loadAllUserGroups: appId => dispatch(loadAllUserGroups(appId, scope)),
+    createUser: (appId, user) => dispatch(createUser(appId, user, scope)),
+    updateUser: (appId, userId, user) =>
+      dispatch(updateUser(appId, userId, user, scope)),
+    deleteUser: (appId, userId) => dispatch(deleteUser(appId, userId)),
   };
 }
 

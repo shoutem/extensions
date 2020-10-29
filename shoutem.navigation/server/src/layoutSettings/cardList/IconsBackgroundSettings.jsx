@@ -1,10 +1,13 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Row, Col, FormGroup } from 'react-bootstrap';
+import i18next from 'i18next';
 import { Switch } from '@shoutem/react-web-ui';
 import form from '../common/form';
 import ShortcutsTable from '../../components/shortcuts-table';
 import ShortcutBackgroundRow from '../../components/shortcut-background-row';
+import LOCALIZATION from './iconBackgroundSettingsLocalization';
 
 export class IconsBackgroundSettings extends Component {
   constructor(props) {
@@ -43,7 +46,7 @@ export class IconsBackgroundSettings extends Component {
         <form>
           <Row>
             <Col md={8}>
-              <h3>Item background settings</h3>
+              <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
             </Col>
             <Col md={4}>
               <div className="icon-backgrounds__switch">
@@ -51,19 +54,22 @@ export class IconsBackgroundSettings extends Component {
               </div>
             </Col>
           </Row>
-          {backgroundImagesEnabled.value &&
+          {backgroundImagesEnabled.value && (
             <Row>
               <Col md={12}>
                 <FormGroup>
                   <ShortcutsTable
                     shortcuts={shortcuts}
-                    headerTitles={['Icon backgrounds', 'Normal']}
+                    headerTitles={[
+                      i18next.t(LOCALIZATION.HEADER_ICON_BACKGROUNDS),
+                      i18next.t(LOCALIZATION.HEADER_NORMAL),
+                    ]}
                     renderRow={this.renderShortcutRow}
                   />
                 </FormGroup>
               </Col>
             </Row>
-          }
+          )}
         </form>
       </div>
     );
@@ -81,7 +87,7 @@ IconsBackgroundSettings.propTypes = {
   normalIconUrl: PropTypes.string,
 };
 
-export default form((props) => {
+export default form(props => {
   const { settings } = props;
   return {
     fields: ['backgroundImagesEnabled'],

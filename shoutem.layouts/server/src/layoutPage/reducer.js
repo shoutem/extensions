@@ -29,7 +29,6 @@ export function updateShortcut(shortcut) {
   });
 }
 
-
 export function loadHierarchy(shortcutId) {
   const config = {
     schema: HIERARCHY,

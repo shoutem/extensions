@@ -8,5 +8,5 @@ import ShopifySettingsPage from './pages/shopify-settings-page';
 
 export const pages = {
   ShopifyPage,
-  ShopifySettingsPage
+  ShopifySettingsPage,
 };

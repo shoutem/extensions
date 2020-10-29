@@ -72,14 +72,12 @@ export function createCategory(shortcut, schema = CURRENT_SCHEMA) {
       },
     };
 
-    return (
-      dispatch(rsaaPromise(createCategoryAction))
-        .then(response => {
-          const categoryId = _.toString(response.payload.id);
-          return dispatch(updateShortcutCategories(shortcut, categoryId))
-            .then(() => categoryId);
-        })
-    );
+    return dispatch(rsaaPromise(createCategoryAction)).then(response => {
+      const categoryId = _.toString(response.payload.id);
+      return dispatch(updateShortcutCategories(shortcut, categoryId)).then(
+        () => categoryId,
+      );
+    });
   };
 }
 

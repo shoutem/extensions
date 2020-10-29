@@ -6,6 +6,7 @@ import { Screen, Button, Icon, View } from '@shoutem/ui';
 
 import { MapView } from 'shoutem.application';
 import { NavigationBar } from 'shoutem.navigation';
+import { getMapUrl } from '../services'
 
 export default class MapScreen extends PureComponent {
   static propTypes = {
@@ -22,15 +23,11 @@ export default class MapScreen extends PureComponent {
 
   openMaps() {
     const { marker } = this.props;
-    const geoURL = `geo:${marker.latitude},${marker.longitude}`;
+    const { latitude, longitude, title } = marker;
 
-    Linking.canOpenURL(geoURL).then((supported) => {
-      if (supported) {
-        Linking.openURL(geoURL);
-      } else if (Platform.OS === 'ios') {
-        Linking.openURL(`http://maps.apple.com/?ll=${marker.latitude},${marker.longitude}`);
-      }
-    });
+    if (latitude && longitude) {
+      Linking.openURL(getMapUrl(latitude, longitude, title));
+    }
   }
 
   renderNavigateButton() {

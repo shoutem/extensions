@@ -2,9 +2,11 @@ const path = require('path');
 const resolvePlugins = require('./plugins');
 const resolveModuleRules = require('./moduleRules');
 const resolveDevServer = require('./devServer');
+const resolveOptimizations = require('./optimizations');
 const isProduction = require('./env');
 
 module.exports = {
+  mode: isProduction ? 'production' : 'development',
   devtool: isProduction ? 'false' : '#source-maps',
   context: path.join(__dirname, '../../'),
   entry: {
@@ -19,12 +21,10 @@ module.exports = {
     rules: resolveModuleRules(),
   },
   plugins: resolvePlugins(),
+  optimization: resolveOptimizations(),
   resolve: {
-    modules: [
-      path.join(__dirname, '../..'),
-      'node_modules',
-    ],
-    extensions: ['.js', '.jsx', '.json', '.css', '.sass', '.scss', '.html']
+    modules: [path.join(__dirname, '../..'), 'node_modules'],
+    extensions: ['.js', '.jsx', '.json', '.css', '.sass', '.scss', '.html'],
   },
   devServer: resolveDevServer(),
 };

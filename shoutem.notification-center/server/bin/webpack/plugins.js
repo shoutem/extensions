@@ -34,11 +34,7 @@ function resolvePlugins() {
     ];
   }
 
-  return [
-    htmlWebpackPlugin,
-    hotModuleReplacementPlugin,
-    occurrenceOrderPlugin,
-  ];
+  return [htmlWebpackPlugin, hotModuleReplacementPlugin, occurrenceOrderPlugin];
 }
 
 module.exports = resolvePlugins;

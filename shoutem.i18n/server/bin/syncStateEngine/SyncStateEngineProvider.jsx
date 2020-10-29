@@ -1,8 +1,8 @@
-import React, { PropTypes, Component, Children } from 'react';
-import _ from 'lodash';
+import React, { Component, Children } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import sandbox from '@shoutem/extension-sandbox';
-import { ext } from '../../src/const';
+import { ext } from 'src/const';
 
 export class SyncStateEngineProvider extends Component {
   constructor(props) {
@@ -72,9 +72,9 @@ export class SyncStateEngineProvider extends Component {
 }
 
 SyncStateEngineProvider.propTypes = {
-  state: React.PropTypes.object,
-  syncStateEngine: React.PropTypes.object,
-  syncAction: React.PropTypes.func,
+  state: PropTypes.object,
+  syncStateEngine: PropTypes.object,
+  syncAction: PropTypes.func,
   children: PropTypes.node,
 };
 
@@ -90,4 +90,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SyncStateEngineProvider);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SyncStateEngineProvider);

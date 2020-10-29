@@ -1,5 +1,8 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { shouldLoad } from '@shoutem/redux-io';
 import { ToggleSwitch } from 'src/components';
@@ -11,29 +14,31 @@ import {
   deleteRules,
   getRulesById,
 } from '../../redux';
+import LOCALIZATION from './localization';
 
 function resolveRules(ruleTemplates, rules) {
-  return _.reduce(ruleTemplates, (result, ruleTemplate) => {
-    const { ruleType } = ruleTemplate;
+  return _.reduce(
+    ruleTemplates,
+    (result, ruleTemplate) => {
+      const { ruleType } = ruleTemplate;
 
-    const rule = _.find(rules, { ruleType });
-    const enabled = !!rule;
-    const resolvedRule = rule || ruleTemplate;
+      const rule = _.find(rules, { ruleType });
+      const enabled = !!rule;
+      const resolvedRule = rule || ruleTemplate;
 
-    return {
-      ...result,
-      [ruleType]: { ...resolvedRule, enabled },
-    };
-  }, {});
+      return {
+        ...result,
+        [ruleType]: { ...resolvedRule, enabled },
+      };
+    },
+    {},
+  );
 }
 
 export class RulesSettings extends Component {
   constructor(props) {
     super(props);
-
-    this.checkData = this.checkData.bind(this);
-    this.handleRulesPlaceToggle = this.handleRulesPlaceToggle.bind(this);
-    this.handleUpdateRules = this.handleUpdateRules.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inError: false,
@@ -76,26 +81,15 @@ export class RulesSettings extends Component {
   }
 
   handleUpdateRules(newRules) {
-    const {
-      programId,
-      rules: initialRules,
-      currentPlaceId,
-    } = this.props;
+    const { programId, rules: initialRules, currentPlaceId } = this.props;
 
-    return this.props.updateRules(
-      initialRules,
-      newRules,
-      programId,
-      currentPlaceId
-    ).then(undefined, () => this.setState({ inError: true }));
+    return this.props
+      .updateRules(initialRules, newRules, programId, currentPlaceId)
+      .then(undefined, () => this.setState({ inError: true }));
   }
 
   render() {
-    const {
-      rules,
-      ruleTemplates,
-      currentPlaceId,
-    } = this.props;
+    const { rules, ruleTemplates, currentPlaceId } = this.props;
 
     const { inError } = this.state;
 
@@ -105,25 +99,23 @@ export class RulesSettings extends Component {
 
     return (
       <div className="rules-settings">
-        <h3>Rules</h3>
-        {currentPlaceId &&
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
+        {currentPlaceId && (
           <ToggleSwitch
             message="Enable custom rules for this place"
             onToggle={this.handleRulesPlaceToggle}
             value={hasRules}
           />
-        }
-        {showRulesForm &&
+        )}
+        {showRulesForm && (
           <RulesForm
             onUpdateRules={this.handleUpdateRules}
             rules={resolvedRules}
           />
-        }
-        {inError &&
-          <p className="text-error">
-            Something went wrong. Please refresh this page and try again.
-          </p>
-        }
+        )}
+        {inError && (
+          <p className="text-error">{i18next.t(LOCALIZATION.ERROR_MESSAGE)}</p>
+        )}
       </div>
     );
   }
@@ -153,18 +145,14 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
-    loadRules: (programId, placeId) => (
-      dispatch(loadRules(programId, placeId, scope))
-    ),
-    createRules: (ruleTemplates, programId, placeId) => (
-      dispatch(createRules(ruleTemplates, programId, placeId, scope))
-    ),
-    updateRules: (initialRules, newRules, programId, placeId) => (
-      dispatch(updateRules(initialRules, newRules, programId, placeId, scope))
-    ),
-    deleteRules: (rules, programId) => (
-      dispatch(deleteRules(rules, programId, scope))
-    ),
+    loadRules: (programId, placeId) =>
+      dispatch(loadRules(programId, placeId, scope)),
+    createRules: (ruleTemplates, programId, placeId) =>
+      dispatch(createRules(ruleTemplates, programId, placeId, scope)),
+    updateRules: (initialRules, newRules, programId, placeId) =>
+      dispatch(updateRules(initialRules, newRules, programId, placeId, scope)),
+    deleteRules: (rules, programId) =>
+      dispatch(deleteRules(rules, programId, scope)),
   };
 }
 

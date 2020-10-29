@@ -1,35 +1,39 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
 import RichTextEditor from 'react-rte';
 import classNames from 'classnames';
 import { fieldInError } from '../services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
-const TOOLBAR_CONFIG = {
-  display: [
-    'INLINE_STYLE_BUTTONS',
-    'BLOCK_TYPE_BUTTONS',
-    'LINK_BUTTONS',
-    'BLOCK_TYPE_DROPDOWN',
-    'HISTORY_BUTTONS',
-  ],
-  INLINE_STYLE_BUTTONS: [
-    { label: 'Bold', style: 'BOLD', className: 'custom-css-class' },
-    { label: 'Italic', style: 'ITALIC' },
-    { label: 'Underline', style: 'UNDERLINE' },
-  ],
-  BLOCK_TYPE_DROPDOWN: [
-    { label: 'Normal', style: 'unstyled' },
-    { label: 'Heading Large', style: 'header-one' },
-    { label: 'Heading Medium', style: 'header-two' },
-    { label: 'Heading Small', style: 'header-three' },
-  ],
-  BLOCK_TYPE_BUTTONS: [
-    { label: 'UL', style: 'unordered-list-item' },
-    { label: 'OL', style: 'ordered-list-item' },
-  ],
-};
+function getToolbarConfig() {
+  return  {
+    display: [
+      'INLINE_STYLE_BUTTONS',
+      'BLOCK_TYPE_BUTTONS',
+      'LINK_BUTTONS',
+      'BLOCK_TYPE_DROPDOWN',
+      'HISTORY_BUTTONS',
+    ],
+    INLINE_STYLE_BUTTONS: [
+      { label: i18next.t(LOCALIZATION.TEXT_STYLE_BOLD_TITLE), style: 'BOLD', className: 'custom-css-class' },
+      { label: i18next.t(LOCALIZATION.TEXT_STYLE_ITALIC_TITLE), style: 'ITALIC' },
+      { label: i18next.t(LOCALIZATION.TEXT_STYLE_UNDERLINE_TITLE), style: 'UNDERLINE' },
+    ],
+    BLOCK_TYPE_DROPDOWN: [
+      { label: i18next.t(LOCALIZATION.HEADING_STYLE_NORMAL_TITLE), style: 'unstyled' },
+      { label: i18next.t(LOCALIZATION.HEADING_STYLE_LARGE_TITLE), style: 'header-one' },
+      { label: i18next.t(LOCALIZATION.HEADING_STYLE_MEDIUM_TITLE), style: 'header-two' },
+      { label: i18next.t(LOCALIZATION.HEADING_STYLE_SMALL_TITLE), style: 'header-three' },
+    ],
+    BLOCK_TYPE_BUTTONS: [
+      { label: i18next.t(LOCALIZATION.UNORDERED_LIST_TITLE), style: 'unordered-list-item' },
+      { label: i18next.t(LOCALIZATION.ORDERED_LIST_TITLE), style: 'ordered-list-item' },
+    ],
+  };
+}
 
 export default class TextEditorReduxFormElement extends Component {
   static propTypes = {
@@ -88,7 +92,7 @@ export default class TextEditorReduxFormElement extends Component {
         <RichTextEditor
           onBlur={this.handleBlur}
           onChange={this.handleChange}
-          toolbarConfig={TOOLBAR_CONFIG}
+          toolbarConfig={getToolbarConfig()}
           value={this.state.value}
           {...otherProps}
         />

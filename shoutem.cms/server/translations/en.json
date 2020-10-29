@@ -1,0 +1,35 @@
+{
+  "shoutem": {
+    "cms": {
+      "child-category-selector.no-filtered-data-title": "Show all categories",
+      "child-category-selector.form-choose-categories-title": "Choose categories to display",
+      "content-preview.header-title": "Title",
+      "content-preview.header-category": "Category",
+      "content-preview.header-language": "Language",
+      "content-preview.empty-placeholder-message": "No content yet.",
+      "parent-category-selector.button-create-title": "Create new collection",
+      "parent-category-selector.form-choose-data-title": "Choose data source to display",
+      "parent-category-selector.no-filtered-data-title": "{{schemaTitle}}/New collection",
+      "sort-options.sort-created-time": "Created time",
+      "sort-options.sort-updated-time": "Sort by {{displayFieldTitle}}",
+      "sort-options.sort-by": "Created time",
+      "sort-options.select-sort-field": "Select sort field",
+      "sort-options.order-ascending": "Ascending",
+      "sort-options.order-descending": "Descending",
+      "advanced-setup.title": "Advanced content setup",
+      "advanced-setup.button-save": "Save",
+      "advanced-setup.button-cancel": "Cancel",
+      "cms-page.shortcut-from-extension": "This is a shortcut from the {{extensionTitle}} extension.",
+      "cms-page.shortcut-default-from-undefined-extension": "This is the {{defaultShortcutTitle}} shortcut of an undefined extension.",
+      "cms-page.shortcut-default-from-extension": "This is the {{defaultShortcutTitle}} shortcut from the {{extensionTitle}} extension.",
+      "cms-page.button-edit-items": "Edit items",
+      "cms-page.button-create-items": "Create items",
+      "settings-page.title": "CMS settings",
+      "settings-page.form-api-endpoint": "Api endpoint",
+      "settings-page.button-save": "Save",
+      "services.all-categories": "All categories",
+      "services.more-categories": "+ {{count}} more",
+      "services.select-data": "Select data.."
+    }
+  }
+}

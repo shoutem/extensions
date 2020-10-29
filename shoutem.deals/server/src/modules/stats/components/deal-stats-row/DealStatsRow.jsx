@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
+import i18next from 'i18next';
 import classNames from 'classnames';
-import { DISPLAY_DATE_FORMAT, DISPLAY_TIME_FORMAT } from 'src/const';
+import { getDisplayDateFormat, getDisplayTimeFormat } from 'src/services';
+import LOCALIZATION from './localization';
 import './style.scss';
-
-const dateFormat = `${DISPLAY_DATE_FORMAT} ${DISPLAY_TIME_FORMAT}`;
 
 function getDealStat(deal, stat, showUnlimited) {
   const { couponsEnabled, couponsLimited } = deal;
@@ -19,7 +19,9 @@ function getDealStat(deal, stat, showUnlimited) {
     return statValue;
   }
 
-  return showUnlimited ? 'unlimited' : statValue;
+  return showUnlimited
+    ? i18next.t(LOCALIZATION.UNLIMITED_VALUE_TITLE)
+    : statValue;
 }
 
 export default class DealStatsRow extends Component {
@@ -48,14 +50,12 @@ export default class DealStatsRow extends Component {
       'is-selected': isSelected,
     });
 
+    const dateFormat = `${getDisplayDateFormat()} ${getDisplayTimeFormat()}`;
     const startLabel = moment(startTime).format(dateFormat);
     const endLabel = moment(endTime).format(dateFormat);
 
     return (
-      <tr
-        className={classes}
-        onClick={this.handleDealSelect}
-      >
+      <tr className={classes} onClick={this.handleDealSelect}>
         <td>{title}</td>
         <td>{_.get(place, 'name')}</td>
         <td>{startLabel}</td>

@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { Button } from 'react-bootstrap';
 import { ConfirmModal, IconLabel } from '@shoutem/react-web-ui';
@@ -11,11 +12,8 @@ import {
 } from '@shoutem/cms-dashboard';
 import { createTransaction, TRANSACTION_ACTIONS } from 'src/modules/stats';
 import DealFormModal from '../../components/deal-form-modal';
-import {
-  createDeal,
-  updateDeal,
-  deleteDeal,
-} from '../../redux';
+import { createDeal, updateDeal, deleteDeal } from '../../redux';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export class DealsCmsPage extends Component {
@@ -66,7 +64,10 @@ export class DealsCmsPage extends Component {
     } = nextProps;
 
     if (!_.isEqual(categories, nextCategories)) {
-      const mainCategoryId = getMainCategoryId(nextParentCategoryId, nextCategories);
+      const mainCategoryId = getMainCategoryId(
+        nextParentCategoryId,
+        nextCategories,
+      );
       this.setState({ mainCategoryId });
     }
   }
@@ -83,10 +84,11 @@ export class DealsCmsPage extends Component {
     const { id, title } = deal;
 
     this.refs.confirm.show({
-      title: 'Delete item',
-      message: `Are you sure you want to delete ${title}?`,
-      confirmLabel: 'Delete',
+      title: i18next.t(LOCALIZATION.DELETE_MODAL_TITLE),
+      message: i18next.t(LOCALIZATION.DELETE_MODAL_MESSAGE, { title }),
+      confirmLabel: i18next.t(LOCALIZATION.DELETE_MODAL_BUTTON_CONFIRM_TITLE),
       confirmBsStyle: 'danger',
+      abortLabel: i18next.t(LOCALIZATION.DELETE_MODAL_BUTTON_ABORT_TITLE),
       onConfirm: () => this.handleDealDelete(id),
     });
   }
@@ -135,13 +137,13 @@ export class DealsCmsPage extends Component {
     return (
       <div className="deals-dashboard">
         <div className="deals-dashboard__title">
-          <h3>Deals</h3>
+          <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
           <Button
             className="btn-icon pull-right"
             onClick={this.handleAddDealClick}
           >
             <IconLabel iconName="add">
-              Add item
+              {i18next.t(LOCALIZATION.BUTTON_ADD_TITLE)}
             </IconLabel>
           </Button>
         </div>
@@ -187,25 +189,44 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { shortcutId, extensionName };
 
   return {
-    deleteDeal: (dealId, catalogId) => (
-      dispatch(deleteDeal(appId, dealId, scope)).then(() => (
-        dispatch(createTransaction(catalogId, dealId, TRANSACTION_ACTIONS.DELETE, scope))
-      ))
-    ),
-    updateDeal: (categoryIds, placeId, deal, catalogId) => (
-      dispatch(updateDeal(appId, categoryIds, placeId, deal, scope)).then(() => (
-        dispatch(createTransaction(catalogId, deal.id, TRANSACTION_ACTIONS.UPDATE, scope))
-      ))
-    ),
-    createDeal: (categoryIds, placeId, deal, catalogId) => (
-      dispatch(createDeal(appId, categoryIds, placeId, deal, scope)).then(action => {
-        const dealId = _.get(action, 'payload.data.id');
-        return dispatch(createTransaction(catalogId, dealId, TRANSACTION_ACTIONS.CREATE, scope));
-      })
-    ),
-    updateResourceCategories: (categoryIds, resource) => (
-      dispatch(updateResourceCategories(appId, categoryIds, resource, scope))
-    ),
+    deleteDeal: (dealId, catalogId) =>
+      dispatch(deleteDeal(appId, dealId, scope)).then(() =>
+        dispatch(
+          createTransaction(
+            catalogId,
+            dealId,
+            TRANSACTION_ACTIONS.DELETE,
+            scope,
+          ),
+        ),
+      ),
+    updateDeal: (categoryIds, placeId, deal, catalogId) =>
+      dispatch(updateDeal(appId, categoryIds, placeId, deal, scope)).then(() =>
+        dispatch(
+          createTransaction(
+            catalogId,
+            deal.id,
+            TRANSACTION_ACTIONS.UPDATE,
+            scope,
+          ),
+        ),
+      ),
+    createDeal: (categoryIds, placeId, deal, catalogId) =>
+      dispatch(createDeal(appId, categoryIds, placeId, deal, scope)).then(
+        action => {
+          const dealId = _.get(action, 'payload.data.id');
+          return dispatch(
+            createTransaction(
+              catalogId,
+              dealId,
+              TRANSACTION_ACTIONS.CREATE,
+              scope,
+            ),
+          );
+        },
+      ),
+    updateResourceCategories: (categoryIds, resource) =>
+      dispatch(updateResourceCategories(appId, categoryIds, resource, scope)),
   };
 }
 

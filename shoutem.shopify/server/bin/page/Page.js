@@ -2,7 +2,6 @@ import { ext } from '../../src/const';
 
 export default class Page {
   constructor(context, parameters) {
-
     this.pageContext = {
       ownExtensionName: ext(),
       ...context,

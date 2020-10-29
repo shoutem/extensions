@@ -7,7 +7,7 @@ const isProduction = require('./env');
 
 module.exports = {
   mode: isProduction ? 'production' : 'development',
-  devtool: isProduction ? 'false' : 'source-map',
+  devtool: isProduction ? 'false' : '#source-maps',
   context: path.join(__dirname, '../../'),
   entry: {
     extension: './bin/main.js',

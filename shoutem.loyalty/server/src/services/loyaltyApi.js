@@ -1,17 +1,18 @@
 import Uri from 'urijs';
+import autoBind from 'auto-bind';
+import i18next from 'i18next';
+import LOCALIZATION from './localization';
 
 export default class LoyaltyApi {
   constructor() {
-    this.init = this.init.bind(this);
-    this.isInitialized = this.isInitialized.bind(this);
-    this.getUrl = this.getUrl.bind(this);
+    autoBind(this);
 
     this.endpoint = null;
   }
 
   init(endpoint) {
     if (!endpoint) {
-      throw new Error('Loyalty endpoint cannot be empty!');
+      throw new Error(i18next.t(LOCALIZATION.LOYALTY_ENDPOINT_MISSING));
     }
 
     this.endpoint = endpoint;

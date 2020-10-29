@@ -153,16 +153,14 @@ export class StatusDetailsScreen extends PureComponent {
     next(comments);
   }
 
-  renderLoadComments() {
+  renderLoadingMoreText() {
     if (!hasNext(this.props.comments)) {
       return null;
     }
 
     return (
       <View styleName="horizontal h-center v-center md-gutter">
-        <Text onPress={this.loadMoreComments}>
-          {I18n.t(ext('loadMoreComments'))}
-        </Text>
+        <Text>{I18n.t(ext('loadingMoreComments'))}</Text>
         <Divider styleName="line" />
       </View>
     );
@@ -193,7 +191,7 @@ export class StatusDetailsScreen extends PureComponent {
         if (index === 0) {
           return deleteStatus(status).then(navigateBack());
         }
-      }
+      },
     );
   }
 
@@ -216,7 +214,11 @@ export class StatusDetailsScreen extends PureComponent {
 
     return (
       <View>
-        <CommentView openProfile={openProfile} comment={comment} deleteComment={deleteComment} />
+        <CommentView
+          openProfile={openProfile}
+          comment={comment}
+          deleteComment={deleteComment}
+        />
         <Divider styleName="line" />
       </View>
     );
@@ -243,9 +245,7 @@ export class StatusDetailsScreen extends PureComponent {
       >
         {this.renderAttachedImage()}
         <Divider styleName="line" />
-        <View
-          styleName="horizontal v-center"
-        >
+        <View styleName="horizontal v-center">
           {addPhotoButton}
           {this.renderCommentTextInput()}
           <Button
@@ -271,10 +271,7 @@ export class StatusDetailsScreen extends PureComponent {
           source={{ uri: `data:image/jpg;base64,${image64Data.data}` }}
         >
           <View styleName="fill-parent horizontal v-start h-end">
-          <Button
-              styleName="tight clear"
-              onPress={this.discardImage}
-            >
+            <Button styleName="tight clear" onPress={this.discardImage}>
               <Icon name="close" />
             </Button>
           </View>
@@ -308,18 +305,19 @@ export class StatusDetailsScreen extends PureComponent {
     const {
       statusId,
       statuses,
-      status,
       openUserLikes,
       onLikeAction,
       openProfile,
       enableComments,
-      enableInteractions
+      enableInteractions,
     } = this.props;
+
+    const status = _.find(statuses, { id: statusId });
 
     return (
       <View>
         <StatusView
-          status={status || _.find(statuses, { id: statusId })}
+          status={status}
           openUserLikes={openUserLikes}
           addComment={this.focusOnComment}
           onLikeAction={onLikeAction}
@@ -335,7 +333,6 @@ export class StatusDetailsScreen extends PureComponent {
 
   render() {
     const { enableComments, comments } = this.props;
-;
     const commentsData = _.get(comments, 'data', []);
     const areCommentsLoading = isBusy(comments) && !isInitialized(comments);
     const hasMoreComments = hasNext(comments);
@@ -348,15 +345,16 @@ export class StatusDetailsScreen extends PureComponent {
           renderRightComponent={this.renderRightComponent}
         />
         <Divider styleName="line" />
-          <ListView
-            data={[...commentsData]}
-            ref={this.captureScrollViewRef}
-            loading={areCommentsLoading}
-            renderHeader={this.renderStatus}
-            renderRow={this.renderRow}
-          />
-          {hasMoreComments && this.renderLoadComments()}
-          {showAddCommentSection && this.renderAddCommentSection()}
+        <ListView
+          data={commentsData}
+          ref={this.captureScrollViewRef}
+          loading={areCommentsLoading}
+          renderHeader={this.renderStatus}
+          renderRow={this.renderRow}
+          renderFooter={this.renderLoadingMoreText}
+          onLoadMore={this.loadMoreComments}
+        />
+        {showAddCommentSection && this.renderAddCommentSection()}
       </Screen>
     );
   }
@@ -368,19 +366,23 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({
-    loadComments,
-    openInModal,
-    navigateBack,
-    createComment,
-    authenticate,
-    next,
-    deleteStatus,
-    deleteComment,
-  }, dispatch),
+  ...bindActionCreators(
+    {
+      loadComments,
+      openInModal,
+      navigateBack,
+      createComment,
+      authenticate,
+      next,
+      deleteStatus,
+      deleteComment,
+    },
+    dispatch,
+  ),
   openProfile: openProfileForLegacyUser(dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('StatusDetailsScreen'))(StatusDetailsScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('StatusDetailsScreen'))(StatusDetailsScreen));

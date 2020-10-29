@@ -2,18 +2,20 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { Button } from 'react-bootstrap';
 import { FontIcon, IconLabel, EditableTable } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 function resolveAudiencDisplayValue(item) {
   const value = _.get(item, 'audience.type');
 
   if (value === 'group') {
-    return 'Group';
+    return i18next.t(LOCALIZATION.AUDIENCE_GROUP_VALUE);
   }
 
-  return 'All';
+  return i18next.t(LOCALIZATION.AUDIENCE_ALL_VALUE);
 }
 
 function renderStatusValue(item) {
@@ -24,7 +26,13 @@ function renderStatusValue(item) {
 }
 
 function getHeaders() {
-  return ['Status', 'Message', 'Audience', '', ''];
+  return [
+    i18next.t(LOCALIZATION.HEADER_STATUS_LABEL),
+    i18next.t(LOCALIZATION.HEADER_MESSAGE_LABEL),
+    i18next.t(LOCALIZATION.HEADER_AUDIENCE_LABEL),
+    '',
+    '',
+  ];
 }
 
 export default class NotificationsTable extends Component {
@@ -108,9 +116,11 @@ export default class NotificationsTable extends Component {
     return (
       <div className="notifications-table">
         <div className="notifications-table__title">
-          <h3>List of notifications</h3>
+          <h3>{i18next.t(LOCALIZATION.TABLE_TITLE)}</h3>
           <Button className="btn-icon pull-right" onClick={onAddClick}>
-            <IconLabel iconName="add">Create new</IconLabel>
+            <IconLabel iconName="add">
+              {i18next.t(LOCALIZATION.BUTTON_CREATE_NEW)}
+            </IconLabel>
           </Button>
         </div>
         <EditableTable
@@ -118,7 +128,7 @@ export default class NotificationsTable extends Component {
           canUpdate={false}
           canDelete={false}
           className="notifications-table"
-          emptyStateText="No notifications yet"
+          emptyStateText={i18next.t(LOCALIZATION.NO_NOTIFICATIONS_TEXT)}
           headers={getHeaders()}
           rowDescriptors={this.getRowDescriptors()}
           rows={notifications}

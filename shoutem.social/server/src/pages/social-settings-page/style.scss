@@ -1,36 +1,34 @@
-:global {
-  .social-settings-page {
-    max-width: 552px;
-    margin: auto;
+.social-settings-page {
+  max-width: 552px;
+  margin: auto;
 
-    .btn-toolbar {
-      margin-top: 24px;
-    }
-
-    .form-control {
-      width: 264px;
-    }
-
-    .form-group .control-label {
-      padding-top: 16px;
-    }
+  .btn-toolbar {
+    margin-top: 24px;
   }
 
-  .social-settings-page__status-length {
-    margin-bottom: 16px;
+  .form-control {
+    width: 264px;
   }
 
-  .social-settings-page__switch {
-    float: right;
-
-    .switch__button {
-      margin: 16px 16px 0 0;
-    }
+  .form-group .control-label {
+    padding-top: 16px;
   }
+}
 
-  .social-settings-page__icon-popover {
-    vertical-align: middle;
-    margin: 0 8px;
-    color: #bdc0cb;
+.social-settings-page__status-length {
+  margin-bottom: 16px;
+}
+
+.social-settings-page__switch {
+  float: right;
+
+  .switch__button {
+    margin: 16px 16px 0 0;
   }
+}
+
+.social-settings-page__icon-popover {
+  vertical-align: middle;
+  margin: 0 8px;
+  color: #bdc0cb;
 }

@@ -1,39 +1,35 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { isValid } from '@shoutem/redux-io';
-import {
-  ControlLabel,
-  FormGroup,
-} from 'react-bootstrap';
-import {
-  updateExtensionSettings,
-} from '@shoutem/redux-api-sdk';
+import autoBindReact from 'auto-bind/react';
+import { ControlLabel, FormGroup } from 'react-bootstrap';
+import { LoaderContainer } from '@shoutem/react-web-ui';
+import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
 import { connect } from 'react-redux';
+import { Trans } from 'react-i18next';
+import i18next from 'i18next';
 import { AssetManager } from '@shoutem/assets-sdk';
 import { LanguageSelect } from 'src/components';
 import { TranslationsDashboard } from 'src/modules/translations';
+import {
+  createChannel,
+  updateChannel,
+  deleteChannel,
+} from 'src/modules/channels';
 import { invalidateCurrentBuild, navigateToUrl } from 'src/redux';
+import {
+  DEFAULT_LANGUAGE_CODE,
+  DEFAULT_LANGUAGE_URL_ZIP,
+  LOCALIZATION_TUTORIAL_URL,
+} from 'src/const';
+import { LANGUAGES, migrateChannels } from 'src/services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
-const DEFAULT_LANGUAGE_CODE = 'en';
-
 class LanguagePage extends Component {
-  static propTypes = {
-    appId: PropTypes.string,
-    extension: PropTypes.object,
-    updateExtensionSettings: PropTypes.func,
-    invalidateCurrentBuild: PropTypes.func,
-    navigateToUrl: PropTypes.func,
-  };
-
   constructor(props, context) {
     super(props, context);
-
-    this.checkData = this.checkData.bind(this);
-    this.handleTranslationChange = this.handleTranslationChange.bind(this);
-    this.handleTranslationDelete = this.handleTranslationDelete.bind(this);
-    this.handleLocaleChange = this.handleLocaleChange.bind(this);
+    autoBindReact(this);
 
     const { appId } = props;
     const { page } = context;
@@ -47,101 +43,200 @@ class LanguagePage extends Component {
     });
 
     this.state = {
-      translations: null,
+      migratingChannels: true,
     };
   }
 
   componentWillMount() {
-    this.checkData(this.props);
-  }
+    const { appId, extension } = this.props;
 
-  componentWillReceiveProps(nextProps) {
-    this.checkData(nextProps, this.props);
-  }
-
-  checkData(nextProps, props = {}) {
-    const { extension } = props;
-    const { extension: nextExtension } = nextProps;
-
-    const nextTranslations = _.get(nextExtension, 'settings.translations');
-
-    if (isValid(nextExtension) && extension !== nextExtension) {
-      this.setState({
-        translations: nextTranslations,
-      });
-    }
+    this.props.migrateChannels(appId, extension).then(() => {
+      this.setState({ migratingChannels: false });
+    });
   }
 
   handleLocaleChange(languageOption) {
+    const { extension } = this.props;
     const { value: locale } = languageOption;
-    this.props.updateExtensionSettings({ locale });
+
+    const translations = _.cloneDeep(_.get(extension, 'settings.translations'));
+
+    const patchSettings = {
+      locale,
+      isMultilanguage: true,
+      translations,
+      disabled: {
+        [locale]: false,
+      },
+    };
+
+    this.props.updateExtensionSettings(patchSettings);
   }
 
   handleTranslationChange(translation) {
     const { languageCode, translationUrl } = translation;
 
-    return this.props.updateExtensionSettings({
-      translations: {
-        [languageCode]: translationUrl,
-      },
-    }).then(this.props.invalidateCurrentBuild);
+    return this.props
+      .updateExtensionSettings({
+        translations: {
+          [languageCode]: translationUrl,
+        },
+      })
+      .then(this.props.invalidateCurrentBuild);
   }
 
-  handleTranslationDelete(languageCode) {
-    const { extension } = this.props;
+  async handleTranslationCreate(translation) {
+    const { appId } = this.props;
+    const { languageCode, translationUrl } = translation;
+
+    const channelData = {
+      name: i18next.t(LANGUAGES[languageCode]),
+      isLanguage: true,
+      disabled: true,
+    };
+
+    const response = await this.props.createChannel(appId, channelData);
+    const channelId = _.get(response, 'payload.id');
+
+    await this.props
+      .updateExtensionSettings({
+        isMultilanguage: true,
+        translations: {
+          [languageCode]: translationUrl,
+        },
+        channels: {
+          [languageCode]: channelId,
+        },
+        disabled: {
+          [languageCode]: true,
+        },
+      })
+      .then(this.props.invalidateCurrentBuild);
+  }
+
+  async handleTranslationDelete(languageCode) {
+    const { appId, extension } = this.props;
     const currentLocale = _.get(extension, 'settings.locale');
     const useDefaultLocale = languageCode === currentLocale;
 
-    return this.props.updateExtensionSettings({
+    const channelId = _.get(extension, `settings.channels.${languageCode}`);
+    try {
+      await this.props.deleteChannel(appId, channelId);
+    } catch (error) {
+      const status = _.get(error, 'payload.status');
+      if (status !== 404) {
+        throw error;
+      }
+    }
+
+    await this.props.updateExtensionSettings({
       locale: useDefaultLocale ? DEFAULT_LANGUAGE_CODE : currentLocale,
       translations: {
         [languageCode]: null,
+      },
+      channels: {
+        [languageCode]: null,
+      },
+      disabled: {
+        [languageCode]: null,
+      },
+    });
+  }
+
+  async handleStatusChange(languageCode, disabled) {
+    const { appId, extension } = this.props;
+
+    const locale = _.get(extension, 'settings.locale');
+    const translations = _.cloneDeep(_.get(extension, 'settings.translations'));
+    const channelId = _.get(extension, `settings.channels.${languageCode}`);
+
+    const data = {
+      name: i18next.t(LANGUAGES[languageCode]),
+      isLanguage: true,
+      disabled,
+    };
+
+    this.props.updateChannel(appId, channelId, data);
+
+    await this.props.updateExtensionSettings({
+      locale,
+      isMultilanguage: true,
+      translations,
+      disabled: {
+        [languageCode]: disabled,
       },
     });
   }
 
   render() {
     const { extension, navigateToUrl } = this.props;
-    const { translations } = this.state;
+    const { migratingChannels } = this.state;
 
+    const translations = _.get(extension, 'settings.translations');
+    const disabledTranslations = _.get(extension, 'settings.disabled');
     const locale = _.get(extension, 'settings.locale', DEFAULT_LANGUAGE_CODE);
-    const translationLanguageCodes = _.union(_.keys(translations), [DEFAULT_LANGUAGE_CODE]);
+    const translationLanguageCodes = _.keys(translations);
 
     return (
       <div className="languages-page settings-page">
-        <h3>Default language</h3>
-        <FormGroup className="languages-page__language">
-          <ControlLabel>Select language</ControlLabel>
-          <LanguageSelect
-            onChange={this.handleLocaleChange}
-            value={locale}
-            availableLanguageCodes={translationLanguageCodes}
+        <LoaderContainer isLoading={migratingChannels}>
+          <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
+          <FormGroup className="languages-page__language">
+            <ControlLabel>{i18next.t(LOCALIZATION.FORM_TITLE)}</ControlLabel>
+            <LanguageSelect
+              onChange={this.handleLocaleChange}
+              value={locale}
+              availableLanguageCodes={translationLanguageCodes}
+            />
+          </FormGroup>
+          <TranslationsDashboard
+            className="language-page__dashboard"
+            translations={translations}
+            disabledTranslations={disabledTranslations}
+            locale={locale}
+            assetManager={this.assetManager}
+            onCreate={this.handleTranslationCreate}
+            onUpdate={this.handleTranslationChange}
+            onDelete={this.handleTranslationDelete}
+            onStatusChange={this.handleStatusChange}
           />
-        </FormGroup>
-        <TranslationsDashboard
-          className="language-page__dashboard"
-          translations={translations}
-          assetManager={this.assetManager}
-          onCreate={this.handleTranslationChange}
-          onUpdate={this.handleTranslationChange}
-          onDelete={this.handleTranslationDelete}
-        />
-        <p>
-          To download the source language file click{' '}
-          <a href="https://shoutem.github.io/static/localization/en.json.zip">
-           here
-          </a>.
-          <br/>
-          <br/>
-          You can find a tutorial on how to translate it{' '}
-          <a onClick={navigateToUrl}>
-           here
-          </a>.
-        </p>
+          <p>
+            <Trans i18nKey={LOCALIZATION.DESCRIPTION}>
+              To download the source language file click{' '}
+              <a
+                href={DEFAULT_LANGUAGE_URL_ZIP}
+                rel="noopener noreferrer"
+                target="_blank"
+                download
+              >
+                here
+              </a>
+              .<br />
+            </Trans>
+          </p>
+          <p>
+            <Trans i18nKey={LOCALIZATION.TUTORIAL_LINK}>
+              You can find a tutorial on how to translate it{' '}
+              <a onClick={navigateToUrl}>here</a>.
+            </Trans>
+          </p>
+        </LoaderContainer>
       </div>
     );
   }
 }
+
+LanguagePage.propTypes = {
+  appId: PropTypes.string,
+  extension: PropTypes.object,
+  migrateChannels: PropTypes.func,
+  createChannel: PropTypes.func,
+  updateChannel: PropTypes.func,
+  deleteChannel: PropTypes.func,
+  updateExtensionSettings: PropTypes.func,
+  invalidateCurrentBuild: PropTypes.func,
+  navigateToUrl: PropTypes.func,
+};
 
 LanguagePage.contextTypes = {
   page: PropTypes.object,
@@ -149,16 +244,19 @@ LanguagePage.contextTypes = {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { extension, appId } = ownProps;
-  const url = "https://shoutem.github.io/docs/extensions/tutorials/using-localization";
 
   return {
-    updateExtensionSettings: (settingsPatch) => (
-      dispatch(updateExtensionSettings(extension, settingsPatch))
-    ),
-    invalidateCurrentBuild: () => (
-      dispatch(invalidateCurrentBuild(appId))
-    ),
-    navigateToUrl: () => dispatch(navigateToUrl(url)),
+    createChannel: (appId, data) => dispatch(createChannel(appId, data)),
+    updateChannel: (appId, channelId, data) =>
+      dispatch(updateChannel(appId, channelId, data)),
+    deleteChannel: (appId, channelId) =>
+      dispatch(deleteChannel(appId, channelId)),
+    migrateChannels: (appId, extension) =>
+      dispatch(migrateChannels(appId, extension)),
+    updateExtensionSettings: settingsPatch =>
+      dispatch(updateExtensionSettings(extension, settingsPatch)),
+    invalidateCurrentBuild: () => dispatch(invalidateCurrentBuild(appId)),
+    navigateToUrl: () => dispatch(navigateToUrl(LOCALIZATION_TUTORIAL_URL)),
   };
 }
 

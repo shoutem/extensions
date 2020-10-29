@@ -1,5 +1,1 @@
-import Table from './table';
-
-export {
-  Table,
-};
+export { default as Table } from './table';

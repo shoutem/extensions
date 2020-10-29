@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { IconLabel } from '@shoutem/react-web-ui';
 import { ImageUploader } from '@shoutem/web-core';
 import { url, appId } from 'environment';
@@ -45,7 +46,11 @@ export default class ShortcutBackgroundRow extends Component {
     return (
       <tr className="shortcut-background-row">
         <td>
-          <IconLabel iconName={iconName} size="24px" className="shortcuts-table__label">
+          <IconLabel
+            iconName={iconName}
+            size="24px"
+            className="shortcuts-table__label"
+          >
             {title}
           </IconLabel>
         </td>

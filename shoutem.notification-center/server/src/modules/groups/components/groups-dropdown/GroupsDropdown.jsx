@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { MultiselectDropdown } from '@shoutem/react-web-ui';
 import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { createOptions } from 'src/services';
+import LOCALIZATION from './localization';
 
 export default class GroupsDropdown extends Component {
   constructor(props) {
@@ -43,8 +45,6 @@ export default class GroupsDropdown extends Component {
   render() {
     const { groupOptions } = this.state;
     const {
-      name,
-      error,
       emptyText,
       selectedGroupIds,
       disabled,
@@ -53,11 +53,14 @@ export default class GroupsDropdown extends Component {
       ...otherProps
     } = this.props;
 
+    const resolvedEmptyText =
+      emptyText || i18next.t(LOCALIZATION.DROPDOWN_PLACEHOLDER);
+
     return (
       <MultiselectDropdown
         disabled={disabled}
         displayLabelMaxSelectedOptions={1}
-        emptyText={emptyText}
+        emptyText={resolvedEmptyText}
         onSelectionChanged={onSelectionChanged}
         options={groupOptions}
         showSelectNoneOption={showSelectNoneOption}
@@ -81,6 +84,5 @@ GroupsDropdown.propTypes = {
 };
 
 GroupsDropdown.defaultProps = {
-  emptyText: 'Select group',
   labelLengthLimit: 40,
 };

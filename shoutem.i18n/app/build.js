@@ -1,5 +1,3 @@
-'use strict';
-
 const _ = require('lodash');
 
 const buildTools = require('shoutem.application/build');
@@ -28,7 +26,7 @@ exports.preBuild = function preBuild(appConfiguration) {
   writeFile('translations/index.js', languagesIndex);
 
   return Promise.all(translationFilePromises)
-    .catch(err => {
+    .catch((err) => {
       process.exitCode = 1;
       throw new Error(`Failed to download language file: ${err}`);
     });

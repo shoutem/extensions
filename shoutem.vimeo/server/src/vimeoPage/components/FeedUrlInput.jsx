@@ -1,5 +1,7 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import i18next from 'i18next';
 import {
   Button,
   ButtonToolbar,
@@ -10,6 +12,7 @@ import {
 } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import validator from 'validator';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 const isValidUrl = url => validator.isURL(url, { require_protocol: false });
@@ -18,13 +21,13 @@ function isValidVimeoUrl(url) {
   if (!isValidUrl(url)) {
     return false;
   }
-  if (!(/vimeo/i.test(url))) {
+  if (!/vimeo/i.test(url)) {
     return false;
   }
   return true;
 }
 
-const resolveFeedUrl = (feedUrl) => {
+const resolveFeedUrl = feedUrl => {
   const trimmedUrl = _.trim(feedUrl);
   return _.trimEnd(trimmedUrl, '/');
 };
@@ -69,7 +72,7 @@ export default class FeedUrlInput extends Component {
     const { feedUrl } = this.state;
     const { onContinueClick } = this.props;
 
-    const feedUrlChannel = resolveFeedUrl(feedUrl) + ('/videos/rss');
+    const feedUrlChannel = `${resolveFeedUrl(feedUrl)}/videos/rss`;
 
     if (isValidVimeoUrl(feedUrlChannel)) {
       onContinueClick(feedUrlChannel);
@@ -82,7 +85,7 @@ export default class FeedUrlInput extends Component {
       onContinueClick(feedUrlUsername);
       return;
     }
-    this.setState({ error: 'Invalid URL.' });
+    this.setState({ error: i18next.t(LOCALIZATION.INVALID_URL) });
   }
 
   render() {
@@ -93,16 +96,13 @@ export default class FeedUrlInput extends Component {
       <div>
         <form onSubmit={this.handleSubmit}>
           <FormGroup validationState={this.getValidationState()}>
-            <ControlLabel>Enter link to the Vimeo profile or channel.
-            </ControlLabel>
+            <ControlLabel>{i18next.t(LOCALIZATION.ENTER_LINK)}</ControlLabel>
             <FormControl
               type="text"
               className="form-control"
               onChange={this.handleTextChange}
             />
-            <HelpBlock className="text-error">
-              {error}
-            </HelpBlock>
+            <HelpBlock className="text-error">{error}</HelpBlock>
           </FormGroup>
         </form>
         <ButtonToolbar>
@@ -112,7 +112,7 @@ export default class FeedUrlInput extends Component {
             onClick={this.handleContinue}
           >
             <LoaderContainer isLoading={inProgress}>
-              Continue
+              {i18next.t(LOCALIZATION.CONTINUE_BUTTON)}
             </LoaderContainer>
           </Button>
         </ButtonToolbar>

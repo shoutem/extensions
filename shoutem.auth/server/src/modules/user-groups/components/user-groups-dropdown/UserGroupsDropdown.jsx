@@ -1,15 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { LoaderContainer, MultiselectDropdown } from '@shoutem/react-web-ui';
+import autoBindReact from 'auto-bind/react';
 import { createOptions } from 'src/services';
 import './style.scss';
 
 export default class UserGroupsDropdown extends Component {
   constructor(props) {
     super(props);
-
-    this.checkData = this.checkData.bind(this);
-    this.handleSelectionChanged = this.handleSelectionChanged.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,

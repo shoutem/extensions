@@ -8,11 +8,9 @@ import { I18n } from 'shoutem.i18n';
 import PasswordTextInput from './PasswordTextInput';
 import { ext } from '../const';
 
-const { func } = PropTypes;
-
 class LoginForm extends PureComponent {
   static propTypes = {
-    onSubmit: func,
+    onSubmit: PropTypes.func,
   };
 
   static defaultProps = {
@@ -54,7 +52,7 @@ class LoginForm extends PureComponent {
     return (
       <View>
         <View style={style.usernameContainer}>
-          <Text>Username or Email</Text>
+          <Text>{I18n.t(ext('usernameOrEmail'))}</Text>
           <TextInput
             autoCapitalize="none"
             autoCorrect={false}

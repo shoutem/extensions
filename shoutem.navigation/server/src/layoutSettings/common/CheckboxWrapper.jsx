@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Checkbox } from '@shoutem/react-web-ui';
 
 export default function CheckboxWrapper(props) {
@@ -6,7 +7,9 @@ export default function CheckboxWrapper(props) {
   const options = value ? { checked: 'checked' } : {};
 
   return (
-    <Checkbox {...options} {...otherProps}>{children}</Checkbox>
+    <Checkbox {...options} {...otherProps}>
+      {children}
+    </Checkbox>
   );
 }
 
@@ -20,4 +23,3 @@ CheckboxWrapper.propTypes = {
    */
   children: PropTypes.node.isRequired,
 };
-

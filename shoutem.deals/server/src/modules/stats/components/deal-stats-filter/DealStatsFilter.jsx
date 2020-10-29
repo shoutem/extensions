@@ -1,7 +1,9 @@
 import React, { PropTypes, Component } from 'react';
+import i18next from 'i18next';
 import { ControlLabel, FormGroup, Button } from 'react-bootstrap';
 import { DateTimePicker } from '@shoutem/react-web-ui';
-import { DISPLAY_DATE_FORMAT, DISPLAY_TIME_FORMAT } from 'src/const';
+import { getDisplayDateFormat, getDisplayTimeFormat } from 'src/services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class DealStatsFilter extends Component {
@@ -46,27 +48,31 @@ export default class DealStatsFilter extends Component {
     return (
       <form className="deal-stats-filter">
         <FormGroup>
-          <ControlLabel>Filter by start date</ControlLabel>
+          <ControlLabel>
+            {i18next.t(LOCALIZATION.FORM_FILTER_BY_START_DATE_TITLE)}
+          </ControlLabel>
           <DateTimePicker
-            dateFormat={DISPLAY_DATE_FORMAT}
+            dateFormat={getDisplayDateFormat()}
             onChange={this.handleStartTimeChange}
-            timeFormat={DISPLAY_TIME_FORMAT}
+            timeFormat={getDisplayTimeFormat()}
             value={startTime}
             utc={false}
           />
         </FormGroup>
         <FormGroup>
-          <ControlLabel>Filter by end date</ControlLabel>
+          <ControlLabel>
+            {i18next.t(LOCALIZATION.FORM_FILTER_BY_END_DATE_TITLE)}
+          </ControlLabel>
           <DateTimePicker
-            dateFormat={DISPLAY_DATE_FORMAT}
+            dateFormat={getDisplayDateFormat()}
             onChange={this.handleEndTimeChange}
-            timeFormat={DISPLAY_TIME_FORMAT}
+            timeFormat={getDisplayTimeFormat()}
             value={endTime}
             utc={false}
           />
         </FormGroup>
         <Button onClick={this.handleFilterApplyClick}>
-          Filter
+          {i18next.t(LOCALIZATION.BUTTON_FILTER_TITLE)}
         </Button>
       </form>
     );

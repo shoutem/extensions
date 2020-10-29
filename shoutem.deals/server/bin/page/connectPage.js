@@ -16,7 +16,7 @@ export function connectPageContext(WrappedComponent) {
 
     const parameters = page.getParameters();
 
-    return (<WrappedComponent {...pageProps} parameters={parameters} />);
+    return <WrappedComponent {...pageProps} parameters={parameters} />;
   }
 
   PageProvider.contextTypes = {
@@ -37,5 +37,6 @@ function mapStateToProps(state, ownProps) {
 }
 
 export default function connectPage() {
-  return wrappedComponent => connectPageContext(connect(mapStateToProps)(wrappedComponent));
+  return wrappedComponent =>
+    connectPageContext(connect(mapStateToProps)(wrappedComponent));
 }

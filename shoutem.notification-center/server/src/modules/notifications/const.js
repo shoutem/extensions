@@ -19,18 +19,3 @@ export const DELIVERY_TYPES = {
   NOW: 'now',
   SCHEDULED: 'scheduled',
 };
-
-export const TARGET_OPTIONS = [
-  { value: TARGET_TYPES.URL, label: 'URL' },
-  { value: TARGET_TYPES.SCREEN, label: 'Screen' },
-];
-
-export const AUDIENCE_OPTIONS = [
-  { value: AUDIENCE_TYPES.ALL, label: 'All' },
-  { value: AUDIENCE_TYPES.GROUP, label: 'Group' },
-];
-
-export const DELIVERY_OPTIONS = [
-  { value: DELIVERY_TYPES.NOW, label: 'Now' },
-  { value: DELIVERY_TYPES.SCHEDULED, label: 'Scheduled' },
-];

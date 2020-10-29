@@ -1,0 +1,15 @@
+{
+  "shoutem": {
+    "radio": {
+      "radio-shortcut-page.background-image-alt-text":"Background preview",
+      "radio-shortcut-page.form-label-note": "NOTE: Radio player's lock screen and notification banner controls will not appear or work in the app preview. These functionalities do work in live applications.",
+      "radio-shortcut-page.form-background-field-title": "Background image URL:",
+      "radio-shortcut-page.form-background-field-popover": "Only static image formats are supported (e.g. PNG, JPEG).",
+      "radio-shortcut-page.form-navbar-field-title": "Navbar title:",
+      "radio-shortcut-page.form-stream-url-field-title": "Stream URL:",
+      "radio-shortcut-page.form-stream-field-title": "Stream title:",
+      "radio-shortcut-page.form-sharing-checkbox-title": "Enable Sharing",
+      "radio-shortcut-page.form-button-save": "Save"
+    }
+  }
+}

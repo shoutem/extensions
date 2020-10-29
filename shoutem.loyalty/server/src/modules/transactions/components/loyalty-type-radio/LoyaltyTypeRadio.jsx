@@ -1,11 +1,12 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Radio } from '@shoutem/react-web-ui';
+import autoBindReact from 'auto-bind/react';
 
 export default class LoyaltyTypeRadio extends Component {
   constructor(props) {
     super(props);
-
-    this.handleRadioClick = this.handleRadioClick.bind(this);
+    autoBindReact(this);
   }
 
   handleRadioClick() {
@@ -14,11 +15,7 @@ export default class LoyaltyTypeRadio extends Component {
   }
 
   render() {
-    const {
-      loyaltyType,
-      currentLoyaltyType,
-      children,
-    } = this.props;
+    const { loyaltyType, currentLoyaltyType, children } = this.props;
 
     return (
       <Radio
@@ -39,4 +36,3 @@ LoyaltyTypeRadio.propTypes = {
   onSelected: PropTypes.func,
   children: PropTypes.node,
 };
-

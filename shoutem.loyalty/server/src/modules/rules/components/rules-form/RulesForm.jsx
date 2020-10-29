@@ -1,18 +1,18 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import _ from 'lodash';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { Button } from 'react-bootstrap';
-import RulesTable from '../../components/rules-table';
+import RulesTable from '../rules-table';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class RulesSettings extends Component {
   constructor(props) {
     super(props);
-
-    this.handleRuleChange = this.handleRuleChange.bind(this);
-    this.handleSaveChangesClick = this.handleSaveChangesClick.bind(this);
-    this.handleRuleEnabledToggle = this.handleRuleEnabledToggle.bind(this);
-    this.calculateHasChanges = this.calculateHasChanges.bind(this);
+    autoBindReact(this);
 
     const { rules } = props;
 
@@ -36,24 +36,30 @@ export default class RulesSettings extends Component {
     const { rules } = this.state;
     const { ruleType } = rule;
 
-    this.setState({
-      rules: {
-        ...rules,
-        [ruleType]: rulePatch,
+    this.setState(
+      {
+        rules: {
+          ...rules,
+          [ruleType]: rulePatch,
+        },
       },
-    }, this.calculateHasChanges);
+      this.calculateHasChanges,
+    );
   }
 
   handleRuleEnabledToggle(rule, enabled = true) {
     const { rules } = this.state;
     const { ruleType } = rule;
 
-    this.setState({
-      rules: {
-        ...rules,
-        [ruleType]: { ...rule, enabled },
+    this.setState(
+      {
+        rules: {
+          ...rules,
+          [ruleType]: { ...rule, enabled },
+        },
       },
-    }, this.calculateHasChanges);
+      this.calculateHasChanges,
+    );
   }
 
   handleSaveChangesClick() {
@@ -61,12 +67,12 @@ export default class RulesSettings extends Component {
 
     this.setState({ inProgress: true });
 
-    this.props.onUpdateRules(rules).then(() => (
+    this.props.onUpdateRules(rules).then(() =>
       this.setState({
         inProgress: false,
         hasChanges: false,
-      })
-    ));
+      }),
+    );
   }
 
   calculateHasChanges() {
@@ -78,11 +84,7 @@ export default class RulesSettings extends Component {
   }
 
   render() {
-    const {
-      rules,
-      inProgress,
-      hasChanges,
-    } = this.state;
+    const { rules, inProgress, hasChanges } = this.state;
 
     return (
       <div className="rules-form">
@@ -97,7 +99,7 @@ export default class RulesSettings extends Component {
           onClick={this.handleSaveChangesClick}
         >
           <LoaderContainer isLoading={inProgress}>
-            Update rules
+            {i18next.t(LOCALIZATION.BUTTON_UPDATE_RULES_TITLE)}
           </LoaderContainer>
         </Button>
       </div>

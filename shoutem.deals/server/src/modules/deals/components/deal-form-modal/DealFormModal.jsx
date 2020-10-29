@@ -1,11 +1,10 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { InlineModal } from '@shoutem/react-web-ui';
 import DealForm from '../deal-form';
-import {
-  mapModelToView,
-  mapViewToModel,
-} from '../../services';
+import { mapModelToView, mapViewToModel } from '../../services';
+import LOCALIZATION from './localization';
 
 export default class DealFormModal extends Component {
   static propTypes = {
@@ -47,20 +46,17 @@ export default class DealFormModal extends Component {
   }
 
   handleFormSubmit(deal) {
-    return new Promise((resolve, reject) => (
-      this.handleSaveDeal(deal)
-        .then(this.handleHide, () => reject({
-          _error: 'Something went wrong, please try again',
-        }))
-    ));
+    return new Promise((resolve, reject) =>
+      this.handleSaveDeal(deal).then(this.handleHide, () =>
+        reject({
+          _error: i18next.t(LOCALIZATION.ERROR_MESSAGE),
+        }),
+      ),
+    );
   }
 
   handleSaveDeal(deal) {
-    const {
-      catalogId,
-      onDealCreate,
-      onDealUpdate,
-    } = this.props;
+    const { catalogId, onDealCreate, onDealUpdate } = this.props;
     const { currentDeal } = this.state;
 
     const dealToSave = mapViewToModel(deal, catalogId);
@@ -78,7 +74,9 @@ export default class DealFormModal extends Component {
     const { assetManager, places } = this.props;
     const { show, currentDeal } = this.state;
 
-    const modalTitle = currentDeal ? 'Edit deal' : 'Add deal';
+    const modalTitle = currentDeal
+      ? i18next.t(LOCALIZATION.MODAL_EDIT_TITLE)
+      : i18next.t(LOCALIZATION.MODAL_ADD_TITLE);
     const displayDeal = currentDeal && mapModelToView(currentDeal);
 
     return (

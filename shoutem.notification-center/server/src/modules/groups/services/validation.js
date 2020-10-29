@@ -1,6 +1,9 @@
+import i18next from 'i18next';
+import LOCALIZATION from './localization';
+
 function validateRequiredField(fieldValue) {
   if (!fieldValue) {
-    return 'Value is required';
+    return i18next.t(LOCALIZATION.VALUE_REQUIRED_TEXT);
   }
 
   return null;

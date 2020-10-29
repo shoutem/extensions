@@ -1,13 +1,24 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
+import i18next from 'i18next';
+import autoBindReact from 'auto-bind/react';
 import { Button, ControlLabel, FormGroup } from 'react-bootstrap';
 import { Switch, FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 function canManuallyApproveMembers(nextAppSettings, appSettings) {
-  const currentApproveMembers = _.get(appSettings, 'manuallyApproveMembers', false);
-  return _.get(nextAppSettings, 'manuallyApproveMembers', currentApproveMembers);
+  const currentApproveMembers = _.get(
+    appSettings,
+    'manuallyApproveMembers',
+    false,
+  );
+  return _.get(
+    nextAppSettings,
+    'manuallyApproveMembers',
+    currentApproveMembers,
+  );
 }
 
 function isSignupEnabled(nextSettings, settings) {
@@ -23,12 +34,7 @@ function resolveAuthApiEndpoint(nextSettings, settings) {
 export default class GeneralSettings extends Component {
   constructor(props) {
     super(props);
-
-    this.checkData = this.checkData.bind(this);
-    this.handleUpdateApiEndpoint = this.handleUpdateApiEndpoint.bind(this);
-    this.handleApiInputChange = this.handleApiInputChange.bind(this);
-    this.handleNewUserRegistrationChange = this.handleNewUserRegistrationChange.bind(this);
-    this.handleAllowMembersChange = this.handleAllowMembersChange.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {
@@ -48,14 +54,23 @@ export default class GeneralSettings extends Component {
 
     if (nextAppSettings !== appSettings) {
       this.setState({
-        manuallyApproveMembers: canManuallyApproveMembers(nextAppSettings, appSettings),
+        manuallyApproveMembers: canManuallyApproveMembers(
+          nextAppSettings,
+          appSettings,
+        ),
       });
     }
 
     if (nextExtensionSettings !== extensionSettings) {
       this.setState({
-        signupEnabled: isSignupEnabled(nextExtensionSettings, extensionSettings),
-        authApiEndpoint: resolveAuthApiEndpoint(nextExtensionSettings, extensionSettings),
+        signupEnabled: isSignupEnabled(
+          nextExtensionSettings,
+          extensionSettings,
+        ),
+        authApiEndpoint: resolveAuthApiEndpoint(
+          nextExtensionSettings,
+          extensionSettings,
+        ),
       });
     }
   }
@@ -70,8 +85,9 @@ export default class GeneralSettings extends Component {
       authApiEndpoint,
     };
 
-    onExtensionSettingsUpdate(settingsPatch)
-      .then(() => this.setState(settingsPatch));
+    onExtensionSettingsUpdate(settingsPatch).then(() =>
+      this.setState(settingsPatch),
+    );
   }
 
   handleApiInputChange(event) {
@@ -87,8 +103,9 @@ export default class GeneralSettings extends Component {
       signupEnabled: !signupEnabled,
     };
 
-    onExtensionSettingsUpdate(settingsPatch)
-      .then(() => this.setState(settingsPatch));
+    onExtensionSettingsUpdate(settingsPatch).then(() =>
+      this.setState(settingsPatch),
+    );
   }
 
   handleAllowMembersChange() {
@@ -102,25 +119,26 @@ export default class GeneralSettings extends Component {
     this.props.onAppSettingsUpdate({
       manuallyApproveMembers: !manuallyApproveMembers,
     });
-    onExtensionSettingsUpdate(settingsPatch)
-      .then(() => this.setState(settingsPatch))
+    onExtensionSettingsUpdate(settingsPatch).then(() =>
+      this.setState(settingsPatch),
+    );
   }
 
   render() {
-    const {
-      signupEnabled,
-      manuallyApproveMembers,
-    } = this.state;
+    const { signupEnabled, manuallyApproveMembers } = this.state;
 
     const { authApiEndpoint } = this.state;
-    const endpointHasChanged = authApiEndpoint !== this.props.extensionSettings.authApiEndpoint;
+    const endpointHasChanged =
+      authApiEndpoint !== this.props.extensionSettings.authApiEndpoint;
 
     return (
       <div className="general-settings">
-        <h3>General settings</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <form onSubmit={this.handleUpdateApiEndpoint}>
           <FormGroup className="switch-form-group">
-            <ControlLabel>Api endpoint</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_API_ENDPOINT_TITLE)}
+            </ControlLabel>
             <input
               defaultValue={authApiEndpoint}
               className="form-control"
@@ -134,24 +152,30 @@ export default class GeneralSettings extends Component {
             bsStyle="primary"
             onClick={this.handleUpdateApiEndpoint}
           >
-            Save
+            {i18next.t(LOCALIZATION.BUTTON_SUBMIT_TITLE)}
           </Button>
         </form>
         <FormGroup className="switch-form-group">
-          <ControlLabel>Allow new user registration</ControlLabel>
+          <ControlLabel>
+            {i18next.t(LOCALIZATION.FORM_ALLOW_NEW_USER_REGISTRATION_TITLE)}
+          </ControlLabel>
           <Switch
             checked={signupEnabled}
             onChange={this.handleNewUserRegistrationChange}
           />
         </FormGroup>
         <FormGroup className="switch-form-group">
-          <ControlLabel>Manually approve new members</ControlLabel>
+          <ControlLabel>
+            {i18next.t(LOCALIZATION.FORM_MANUALLY_APPROVE_NEW_MEMBERS_TITLE)}
+          </ControlLabel>
           <Switch
             checked={manuallyApproveMembers}
             onChange={this.handleAllowMembersChange}
           />
           <FontIconPopover
-            message="New users won't be able to access the app until they are manually approved"
+            message={i18next.t(
+              LOCALIZATION.MANUALLY_APPROVE_MEMBERS_DESCRIPTION,
+            )}
           >
             <FontIcon
               className="general-settings__icon-popover"

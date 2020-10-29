@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { reduxForm } from 'redux-form';
 import {
   Row,
@@ -19,6 +20,7 @@ import {
 import { getFormState } from 'src/redux';
 import ext from 'src/const';
 import { validateGroup } from '../../services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 class GroupForm extends Component {
@@ -72,7 +74,7 @@ class GroupForm extends Component {
         <Row>
           <ReduxFormElement
             elementId="name"
-            name="Name"
+            name={i18next.t(LOCALIZATION.FORM_NAME_INPUT_DESCRIPTION)}
             maxLength={255}
             disabled={submitting}
             field={name}
@@ -83,14 +85,16 @@ class GroupForm extends Component {
             controlId="imageUrl"
             validationState={isImageError ? 'error' : 'success'}
           >
-            <ControlLabel>Image</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_IMAGE_LABEL)}
+            </ControlLabel>
             <ImageUploader
               onUploadSuccess={this.handleImageUploadSuccess}
               onDeleteSuccess={this.handleImageDeleteSuccess}
               resolveFilename={this.resolveFilename}
               src={imageUrl.value}
               elementId="imageUrl"
-              helpText="120x120px"
+              helpText={i18next.t(LOCALIZATION.FORM_IMAGE_HELP_TEXT)}
               previewSize="custom"
               width={120}
               height={120}
@@ -110,7 +114,7 @@ class GroupForm extends Component {
             disabled={submitting}
             elementId="subscribeByDefault"
             field={subscribeByDefault}
-            name="Subscribe by default"
+            name={i18next.t(LOCALIZATION.SUBSCRIBE_TOGGLE_TEXT)}
           >
             <Switch />
           </ReduxFormElement>
@@ -123,11 +127,13 @@ class GroupForm extends Component {
             type="submit"
           >
             <LoaderContainer isLoading={submitting}>
-              {inEditMode ? 'Save' : 'Add'}
+              {inEditMode
+                ? i18next.t(LOCALIZATION.BUTTON_SAVE)
+                : i18next.t(LOCALIZATION.BUTTON_ADD)}
             </LoaderContainer>
           </Button>
           <Button bsSize="large" disabled={submitting} onClick={onCancel}>
-            Cancel
+            {i18next.t(LOCALIZATION.BUTTON_CANCEL)}
           </Button>
         </ButtonToolbar>
         {error && (

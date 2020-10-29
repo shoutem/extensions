@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { isBusy, clear } from '@shoutem/redux-io';
-import { updateShortcutSettings, discoverFeeds, DISCOVERED_FEEDS } from './../reducer';
+import {
+  updateShortcutSettings,
+  discoverFeeds,
+  DISCOVERED_FEEDS,
+} from './../reducer';
 import { denormalizeCollection } from 'denormalizer';
 import _ from 'lodash';
 import normalizeUrl from 'normalize-url';
+import { ext } from 'context';
+import { getShortcut } from 'environment';
 import FeedUrlInput from './FeedUrlInput';
 import FeedSelector from './FeedSelector';
 import FeedPreview from './FeedPreview';
-import { ext } from 'context';
-import { getShortcut } from 'environment';
+import LOCALIZATION from './localization';
 
 const ACTIVE_SCREEN_INPUT = 0;
 const ACTIVE_SCREEN_SELECT = 1;
@@ -21,7 +28,9 @@ export class Rss extends Component {
     this.getActiveScreen = this.getActiveScreen.bind(this);
     this.getFeedUrl = this.getFeedUrl.bind(this);
     this.setFeedUrl = this.setFeedUrl.bind(this);
-    this.onFeedUrlInputContinueClick = this.onFeedUrlInputContinueClick.bind(this);
+    this.onFeedUrlInputContinueClick = this.onFeedUrlInputContinueClick.bind(
+      this,
+    );
     this.onFeedRemoveClick = this.onFeedRemoveClick.bind(this);
     this.onFeedSelectAddClick = this.onFeedSelectAddClick.bind(this);
     this.onFeedSelectCancelClick = this.onFeedSelectCancelClick.bind(this);
@@ -30,8 +39,10 @@ export class Rss extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if ((this.props.discoveredFeeds !== newProps.discoveredFeeds) &&
-        !isBusy(newProps.discoveredFeeds)) {
+    if (
+      this.props.discoveredFeeds !== newProps.discoveredFeeds &&
+      !isBusy(newProps.discoveredFeeds)
+    ) {
       if (newProps.discoveredFeeds.length === 1) {
         this.onFeedSelectAddClick(newProps.discoveredFeeds[0].url);
         this.setState({
@@ -46,7 +57,9 @@ export class Rss extends Component {
       } else {
         this.setState({
           discoverInProgress: false,
-          error: this.state.discoverInProgress ? 'URL does not contain valid RSS feeds.' : '',
+          error: this.state.discoverInProgress
+            ? i18next.t(LOCALIZATION.NO_VALID_FEED)
+            : '',
         });
       }
     }
@@ -102,21 +115,21 @@ export class Rss extends Component {
 
     return (
       <div>
-        {(activeScreen === ACTIVE_SCREEN_INPUT) && (
+        {activeScreen === ACTIVE_SCREEN_INPUT && (
           <FeedUrlInput
             inProgress={isBusy(this.props.discoveredFeeds)}
             error={this.state.error}
             onContinueClick={this.onFeedUrlInputContinueClick}
           />
         )}
-        {(activeScreen === ACTIVE_SCREEN_SELECT) && (
+        {activeScreen === ACTIVE_SCREEN_SELECT && (
           <FeedSelector
             discoveredFeeds={this.props.discoveredFeeds}
             onAddClick={this.onFeedSelectAddClick}
             onCancelClick={this.onFeedSelectCancelClick}
           />
         )}
-        {(activeScreen === ACTIVE_SCREEN_PREVIEW) && (
+        {activeScreen === ACTIVE_SCREEN_PREVIEW && (
           <FeedPreview
             feedUrl={feedUrl}
             onRemoveClick={this.onFeedRemoveClick}
@@ -127,11 +140,19 @@ export class Rss extends Component {
   }
 }
 
+Rss.propTypes = {
+  feedItems: PropTypes.array,
+  shortcut: PropTypes.object,
+  discoveredFeeds: PropTypes.array,
+  discoverFeeds: PropTypes.func,
+  updateShortcutSettings: PropTypes.func,
+  clearDiscoverFeeds: PropTypes.func,
+};
+
 function mapStateToProps(state) {
   return {
     shortcut: getShortcut(),
-    discoveredFeeds:
-    denormalizeCollection(
+    discoveredFeeds: denormalizeCollection(
       state[ext()].VimeoPage.discoveredFeeds,
       undefined,
       DISCOVERED_FEEDS,
@@ -141,9 +162,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateShortcutSettings: (id, settings) => dispatch(updateShortcutSettings(id, settings)),
+    updateShortcutSettings: (id, settings) =>
+      dispatch(updateShortcutSettings(id, settings)),
     discoverFeeds: url => dispatch(discoverFeeds(url)),
-    clearDiscoverFeeds: () => dispatch(clear(DISCOVERED_FEEDS, ext('discoveredFeeds'))),
+    clearDiscoverFeeds: () =>
+      dispatch(clear(DISCOVERED_FEEDS, ext('discoveredFeeds'))),
   };
 }
 

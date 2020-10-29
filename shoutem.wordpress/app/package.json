@@ -1,6 +1,6 @@
 {
   "name": "shoutem.wordpress",
-  "version": "2.4.1",
+  "version": "2.4.3",
   "dependencies": {
     "he": "^1.2.0",
     "react-redux": "^5.0.3",

@@ -1,5 +1,9 @@
 import { combineReducers } from 'redux';
-import layoutPageReducer, { SHORTCUTS, SCREENS, HIERARCHY } from './layoutPage/reducer';
+import layoutPageReducer, {
+  SHORTCUTS,
+  SCREENS,
+  HIERARCHY,
+} from './layoutPage/reducer';
 import { storage } from '@shoutem/redux-io';
 
 const storageReducer = combineReducers({

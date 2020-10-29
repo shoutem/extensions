@@ -1,7 +1,10 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import i18next from 'i18next';
 import { FormGroup, ControlLabel } from 'react-bootstrap';
 import { FontIcon } from '@shoutem/react-web-ui';
 import FeedPreviewTable from '../feed-preview-table';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default function FeedPreview({ feedUrl, onRemoveClick, feedItems }) {
@@ -9,7 +12,7 @@ export default function FeedPreview({ feedUrl, onRemoveClick, feedItems }) {
     <div className="feed-preview">
       <form>
         <FormGroup className="feed-preview__container">
-          <ControlLabel>YouTube source</ControlLabel>
+          <ControlLabel>{i18next.t(LOCALIZATION.YOUTUBE_SOURCE)}</ControlLabel>
           <div className="feed-preview__feed-url-container">
             <div className="feed-preview__play-img" />
             <div className="feed-preview__feed-url-text-wrapper text-ellipsis">

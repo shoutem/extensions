@@ -1,6 +1,6 @@
 {
   "name": "rss-monitoring",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "platform": "2.4.*",
   "title": "RSS Monitoring",
   "description": "Monitors RSS feed content and sends automated push notifications when new content is loaded.",
@@ -8,6 +8,10 @@
   "categories": [
     "content"
   ],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

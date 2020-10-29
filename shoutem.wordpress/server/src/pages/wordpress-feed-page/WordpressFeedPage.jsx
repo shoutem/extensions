@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
 import { updateShortcutSettings } from '@shoutem/redux-api-sdk';
 import { clear, isBusy } from '@shoutem/redux-io';
 import { connect } from 'react-redux';
@@ -18,8 +20,7 @@ class WordPressFeedPage extends Component {
   constructor(props) {
     super(props);
 
-    this.handleSaveUrl = this.handleSaveUrl.bind(this);
-    this.handleFeedPreviewRemoveClick = this.handleFeedPreviewRemoveClick.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {

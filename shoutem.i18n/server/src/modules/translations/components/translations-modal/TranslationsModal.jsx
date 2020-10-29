@@ -1,26 +1,26 @@
-import React, { Component, PropTypes } from 'react';
-import { Button, FormGroup, ControlLabel, ButtonToolbar, HelpBlock } from 'react-bootstrap';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
+import {
+  Button,
+  FormGroup,
+  ControlLabel,
+  ButtonToolbar,
+  HelpBlock,
+} from 'react-bootstrap';
+import i18next from 'i18next';
+import autoBindReact from 'auto-bind/react';
 import { LoaderContainer, InlineModal } from '@shoutem/react-web-ui';
 import { ext } from 'src/const';
 import { FileUploader, LanguageSelect } from 'src/components';
-import { validateJson } from '../../services';
+import { validateJson, LANGUAGES } from 'src/services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class TranslationsModal extends Component {
   constructor(props) {
     super(props);
-
-    this.show = this.show.bind(this);
-    this.handleHide = this.handleHide.bind(this);
-    this.handleSaveClick = this.handleSaveClick.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
-    this.handleLanguageChange = this.handleLanguageChange.bind(this);
-    this.handleTranslationDrop = this.handleTranslationDrop.bind(this);
-    this.handleTranslationUploadSuccess = this.handleTranslationUploadSuccess.bind(this);
-    this.handleTranslationDeleteSuccess = this.handleTranslationDeleteSuccess.bind(this);
-    this.handleUploadError = this.handleUploadError.bind(this);
-    this.resolveTranslationFilename = this.resolveTranslationFilename.bind(this);
-    this.validateForm = this.validateForm.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,
@@ -73,12 +73,10 @@ export default class TranslationsModal extends Component {
 
     this.setState({ inProgress: true });
     if (isUpdate) {
-      return this.props.onUpdate(newTranslation)
-        .then(this.handleHide);
+      return this.props.onUpdate(newTranslation).then(this.handleHide);
     }
 
-    return this.props.onCreate(newTranslation)
-      .then(this.handleHide);
+    return this.props.onCreate(newTranslation).then(this.handleHide);
   }
 
   handleFormSubmit(e) {
@@ -118,8 +116,10 @@ export default class TranslationsModal extends Component {
   validateForm() {
     const { languageCode, translationUrl } = this.state;
 
-    const languageCodeError = !languageCode ? 'Translation language is required.' : null;
-    const translationUrlError = !translationUrl ? 'Translation file is required.' : null;
+    const languageCodeError =
+      !languageCode && i18next.t(LOCALIZATION.ERROR_LANGUAGE_REQUIRED);
+    const translationUrlError =
+      !translationUrl && i18next.t(LOCALIZATION.ERROR_FILE_REQUIRED);
 
     this.setState({
       errors: {
@@ -129,6 +129,24 @@ export default class TranslationsModal extends Component {
     });
 
     return !(languageCodeError || translationUrlError);
+  }
+
+  resolveAvailableLanguageCodes() {
+    const { usedLanguageCodes } = this.props;
+    const { isUpdate } = this.state;
+
+    if (isUpdate) {
+      return [];
+    }
+
+    return _.chain(LANGUAGES)
+      .mapValues((name, code) => code)
+      .values()
+      .filter(
+        code =>
+          _.isEmpty(usedLanguageCodes) || !_.includes(usedLanguageCodes, code),
+      )
+      .value();
   }
 
   render() {
@@ -143,7 +161,10 @@ export default class TranslationsModal extends Component {
       inProgress,
     } = this.state;
 
-    const modalTitle = isUpdate ? 'Update translation' : 'Add translation';
+    const modalTitle = isUpdate
+      ? i18next.t(LOCALIZATION.UPDATE_TITLE)
+      : i18next.t(LOCALIZATION.ADD_TITLE);
+    const availableLanguageCodes = this.resolveAvailableLanguageCodes();
 
     return (
       <InlineModal
@@ -154,18 +175,25 @@ export default class TranslationsModal extends Component {
       >
         <form onSubmit={this.handleFormSubmit}>
           <FormGroup>
-            <ControlLabel>Select language</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.LANGUAGE_FORM_TITLE)}
+            </ControlLabel>
             <LanguageSelect
               onChange={this.handleLanguageChange}
+              availableLanguageCodes={availableLanguageCodes}
               value={languageCode}
               disabled={isUpdate}
             />
             {showErrors && errors.languageCode && (
-              <HelpBlock className="text-error">{errors.languageCode}</HelpBlock>
+              <HelpBlock className="text-error">
+                {errors.languageCode}
+              </HelpBlock>
             )}
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Translation file (.json)</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.UPLOAD_FORM_TITLE)}
+            </ControlLabel>
             <FileUploader
               className="translations-modal__uploader"
               src={translationUrl}
@@ -181,19 +209,23 @@ export default class TranslationsModal extends Component {
               customValidator={validateJson}
             />
             {showErrors && errors.translationUrl && (
-              <HelpBlock className="text-error">{errors.translationUrl}</HelpBlock>
+              <HelpBlock className="text-error">
+                {errors.translationUrl}
+              </HelpBlock>
             )}
           </FormGroup>
         </form>
         <ButtonToolbar>
-          <Button onClick={this.handleHide}>Cancel</Button>
+          <Button onClick={this.handleHide}>
+            {i18next.t(LOCALIZATION.CANCEL_BTN_LABEL)}
+          </Button>
           <Button
             bsStyle="primary"
             disabled={inProgress}
             onClick={this.handleSaveClick}
           >
             <LoaderContainer isLoading={inProgress}>
-              Save
+              {i18next.t(LOCALIZATION.SAVE_BTN_LABEL)}
             </LoaderContainer>
           </Button>
         </ButtonToolbar>
@@ -203,6 +235,7 @@ export default class TranslationsModal extends Component {
 }
 
 TranslationsModal.propTypes = {
+  usedLanguageCodes: PropTypes.array,
   assetManager: PropTypes.func,
   onUpdate: PropTypes.func,
   onCreate: PropTypes.func,

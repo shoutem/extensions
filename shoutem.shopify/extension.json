@@ -1,16 +1,16 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "2.4.0",
+  "version": "2.4.2",
   "platform": "2.4.*",
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "dependencies": [
-    "shoutem.layouts"
-  ],
-  "categories": [
-    "commerce"
-  ],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
+  "dependencies": ["shoutem.layouts"],
+  "categories": ["commerce"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

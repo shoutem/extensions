@@ -1,45 +1,20 @@
-import React, { Component, PropTypes } from 'react';
-import {
-  Button,
-} from 'react-bootstrap';
-import { IconLabel, ConfirmModal, EditableTable } from '@shoutem/react-web-ui';
-import { prepareTranslations } from '../../services';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
+import { Button } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import { IconLabel, ConfirmModal } from '@shoutem/react-web-ui';
+import { resolveTranslationRows } from 'src/services';
 import TranslationsModal from '../translations-modal';
+import { TranslationsTable } from '../translations-table';
+import LOCALIZATION from './localization';
 import './style.scss';
-
-const translationsTableHeaders = ['Code', 'Language', ''];
-const translationsTableRowDescriptions = [{ property: 'code' }, { property: 'name' }];
 
 export default class TranslationsDashboard extends Component {
   constructor(props) {
     super(props);
-
-    this.handleAddTranslationClick = this.handleAddTranslationClick.bind(this);
-    this.handleTranslationTableUpdateClick = this.handleTranslationTableUpdateClick.bind(this);
-    this.handleTranslationTableDeleteClick = this.handleTranslationTableDeleteClick.bind(this);
-
-    this.state = {
-      translations: null,
-    };
-  }
-
-  componentWillMount() {
-    this.checkData(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.checkData(nextProps, this.props);
-  }
-
-  checkData(nextProps, props = {}) {
-    const { translations } = props;
-    const { translations: nextTranslations } = nextProps;
-
-    if (translations !== nextTranslations) {
-      this.setState({
-        translations: prepareTranslations(nextTranslations),
-      });
-    }
+    autoBindReact(this);
   }
 
   handleAddTranslationClick() {
@@ -55,9 +30,10 @@ export default class TranslationsDashboard extends Component {
     const { code, name } = language;
 
     this.refs.confirm.show({
-      title: 'Delete translation',
-      message: `Are you sure you want to delete ${name} translation?`,
-      confirmLabel: 'Delete',
+      title: i18next.t(LOCALIZATION.DELETE_TITLE),
+      message: i18next.t(LOCALIZATION.DELETE_MESSAGE, { name }),
+      confirmLabel: i18next.t(LOCALIZATION.DELETE_BTN_LABEL),
+      abortLabel: i18next.t(LOCALIZATION.CANCEL_BTN_LABEL),
       confirmBsStyle: 'danger',
       onConfirm: () => onDelete(code),
     });
@@ -65,41 +41,44 @@ export default class TranslationsDashboard extends Component {
 
   render() {
     const {
+      translations,
+      disabledTranslations,
+      locale,
       assetManager,
       onCreate,
       onUpdate,
+      onStatusChange,
     } = this.props;
+    const rows = resolveTranslationRows(
+      translations,
+      locale,
+      disabledTranslations,
+    );
 
-    const { translations } = this.state;
+    const translationLanguageCodes = _.keys(translations);
 
     return (
       <div>
         <div className="translations-dashboard__title">
-          <h3>Translations</h3>
+          <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
           <Button
             className="btn-icon translations-dashboard__btn-add pull-right"
             onClick={this.handleAddTranslationClick}
           >
             <IconLabel iconName="add">
-              Add translation
+              {i18next.t(LOCALIZATION.ADD_BTN_LABEL)}
             </IconLabel>
           </Button>
         </div>
-        <EditableTable
-          className="translations-dashboard__table"
-          emptyStateText="No translations yet."
-          headers={translationsTableHeaders}
-          isStatic
-          onRowDeleteClick={this.handleTranslationTableDeleteClick}
-          onRowUpdateClick={this.handleTranslationTableUpdateClick}
-          rowDescriptors={translationsTableRowDescriptions}
-          rows={translations}
+        <TranslationsTable
+          translations={rows}
+          onDeleteClick={this.handleTranslationTableDeleteClick}
+          onEditClick={this.handleTranslationTableUpdateClick}
+          onStatusChange={onStatusChange}
         />
-        <ConfirmModal
-          className="settings-page-modal-small"
-          ref="confirm"
-        />
+        <ConfirmModal className="settings-page-modal-small" ref="confirm" />
         <TranslationsModal
+          usedLanguageCodes={translationLanguageCodes}
           onCreate={onCreate}
           onUpdate={onUpdate}
           assetManager={assetManager}
@@ -112,8 +91,11 @@ export default class TranslationsDashboard extends Component {
 
 TranslationsDashboard.propTypes = {
   translations: PropTypes.array,
+  disabledTranslations: PropTypes.array,
+  locale: PropTypes.func,
   assetManager: PropTypes.object,
   onCreate: PropTypes.func,
   onUpdate: PropTypes.func,
   onDelete: PropTypes.func,
+  onStatusChange: PropTypes.func,
 };

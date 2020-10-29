@@ -1,6 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import {
   Button,
   ButtonToolbar,
@@ -15,8 +18,12 @@ import {
   FontIconPopover,
   FontIcon,
 } from '@shoutem/react-web-ui';
-import { fetchExtension, updateExtensionSettings } from '@shoutem/redux-api-sdk';
+import {
+  fetchExtension,
+  updateExtensionSettings,
+} from '@shoutem/redux-api-sdk';
 import { shouldLoad } from '@shoutem/redux-io';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 class SocialSettingsPage extends Component {
@@ -24,17 +31,12 @@ class SocialSettingsPage extends Component {
     ownExtension: PropTypes.object,
     fetchExtension: PropTypes.func,
     updateExtensionSettings: PropTypes.func,
+    extension: PropTypes.object,
   };
 
   constructor(props) {
     super(props);
-
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.handleTogglePhotoAttachments = this.handleTogglePhotoAttachments.bind(this);
-    this.handleToggleComments = this.handleToggleComments.bind(this);
-    this.handleToggleInteractions = this.handleToggleInteractions.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    autoBindReact(this);
 
     const settings = _.get(this.props, 'ownExtension.settings', {});
     this.state = {
@@ -69,7 +71,7 @@ class SocialSettingsPage extends Component {
       settings: {
         ...settings,
         enablePhotoAttachments: !enablePhotoAttachments,
-      }
+      },
     });
   }
 
@@ -108,12 +110,15 @@ class SocialSettingsPage extends Component {
 
     this.setState({ error: null, inProgress: true });
 
-    this.props.updateExtensionSettings(extension, settings)
+    this.props
+      .updateExtensionSettings(extension, settings)
       .then(() => this.setState({ inProgress: false }))
-      .catch(() => this.setState({
-        error: 'Something went wrong, please try again',
-        inProgress: false,
-      }));
+      .catch(() =>
+        this.setState({
+          error: i18next.t(LOCALIZATION.ERROR_TEXT),
+          inProgress: false,
+        }),
+      );
   }
 
   render() {
@@ -131,9 +136,11 @@ class SocialSettingsPage extends Component {
     return (
       <div className="social-settings-page">
         <form onSubmit={this.handleSubmit}>
-          <h3>General settings</h3>
+          <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
           <FormGroup className="social-settings-page__status-length">
-            <ControlLabel>Max status length:</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_TITLE_STATUS_LENGTH)}
+            </ControlLabel>
             <FormControl
               type="number"
               className="form-control"
@@ -142,7 +149,9 @@ class SocialSettingsPage extends Component {
             />
           </FormGroup>
           <FormGroup className="social-settings-page__photos">
-            <ControlLabel>Enable photo attachments</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_TITLE_ATTACHMENTS)}
+            </ControlLabel>
             <Switch
               className="social-settings-page__switch"
               onChange={this.handleTogglePhotoAttachments}
@@ -150,7 +159,9 @@ class SocialSettingsPage extends Component {
             />
           </FormGroup>
           <FormGroup className="social-settings-page__comments">
-            <ControlLabel>Enable comments</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_TITLE_COMMENTS)}
+            </ControlLabel>
             <Switch
               className="social-settings-page__switch"
               onChange={this.handleToggleComments}
@@ -158,13 +169,17 @@ class SocialSettingsPage extends Component {
             />
           </FormGroup>
           <FormGroup className="social-settings-page__interactions">
-            <ControlLabel>Enable interactions</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_TITLE_INTERACTIONS)}
+            </ControlLabel>
             <Switch
               className="social-settings-page__switch"
               onChange={this.handleToggleInteractions}
               value={enableInteractions}
             />
-            <FontIconPopover message="Enable users to like posts">
+            <FontIconPopover
+              message={i18next.t(LOCALIZATION.POPOVER_ENABLE_LIKE_TEXT)}
+            >
               <FontIcon
                 className="social-settings-page__icon-popover"
                 name="info"
@@ -172,9 +187,7 @@ class SocialSettingsPage extends Component {
               />
             </FontIconPopover>
           </FormGroup>
-          {error &&
-            <HelpBlock className="text-error">{error}</HelpBlock>
-          }
+          {error && <HelpBlock className="text-error">{error}</HelpBlock>}
         </form>
         <ButtonToolbar>
           <Button
@@ -183,7 +196,7 @@ class SocialSettingsPage extends Component {
             onClick={this.handleSave}
           >
             <LoaderContainer isLoading={inProgress}>
-              Save
+              {i18next.t(LOCALIZATION.BUTTON_SAVE)}
             </LoaderContainer>
           </Button>
         </ButtonToolbar>
@@ -197,9 +210,8 @@ function mapDispatchToProps(dispatch, ownProps) {
 
   return {
     fetchExtension: () => dispatch(fetchExtension(ownExtensionName)),
-    updateExtensionSettings: (extension, settings) => (
-      dispatch(updateExtensionSettings(extension, settings))
-    ),
+    updateExtensionSettings: (extension, settings) =>
+      dispatch(updateExtensionSettings(extension, settings)),
   };
 }
 

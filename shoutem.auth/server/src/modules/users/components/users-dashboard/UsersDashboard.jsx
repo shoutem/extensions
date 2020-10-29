@@ -1,43 +1,43 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { ConfirmModal, IconLabel } from '@shoutem/react-web-ui';
 import { Table } from 'src/components';
 import { createOptions } from 'src/services';
 import UserTableRow from '../user-table-row';
 import UserModal from '../user-modal';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 function getUserColumnHeaders(userGroups, filter = {}) {
-  const {
-    userGroups: userGroupsFilter,
-    username: usernameFilter,
-  } = filter;
+  const { userGroups: userGroupsFilter, username: usernameFilter } = filter;
 
   return [
     {
       id: 'username',
       type: 'input',
       value: usernameFilter,
-      placeholder: 'Filter by mail',
-      className: 'table-header__username'
+      placeholder: i18next.t(LOCALIZATION.HEADER_FILTER_BY_EMAIL_TITLE),
+      className: 'table-header__username',
     },
     {
       id: 'userGroups',
       type: 'select',
       value: userGroupsFilter,
       options: createOptions(userGroups),
-      placeholder: 'Filter by group',
-      className: 'table-header__userGroups'
+      placeholder: i18next.t(LOCALIZATION.HEADER_FILTER_BY_GROUP_TITLE),
+      className: 'table-header__userGroups',
     },
     {
       id: 'status',
-      value: 'Status',
-      className: 'table-header__status'
+      value: i18next.t(LOCALIZATION.HEADER_STATUS_TITLE),
+      className: 'table-header__status',
     },
     {
       id: 'actions',
-      className: 'table-header__actions'
+      className: 'table-header__actions',
     },
   ];
 }
@@ -45,12 +45,7 @@ function getUserColumnHeaders(userGroups, filter = {}) {
 export default class UsersDashboard extends Component {
   constructor(props) {
     super(props);
-
-    this.handleShowUserModal = this.handleShowUserModal.bind(this);
-    this.handleAddUserClick = this.handleAddUserClick.bind(this);
-    this.handleDeleteUserClick = this.handleDeleteUserClick.bind(this);
-    this.renderUserRow = this.renderUserRow.bind(this);
-    this.renderUserModal = this.renderUserModal.bind(this);
+    autoBindReact(this);
   }
 
   handleShowUserModal(user, passwordOnly) {
@@ -64,10 +59,13 @@ export default class UsersDashboard extends Component {
   handleDeleteUserClick(user) {
     const { username, id } = user;
     this.refs.confirm.show({
-      title: 'Delete user',
-      message: `Are you sure you want to delete ${username}?`,
-      confirmLabel: 'Delete',
+      title: i18next.t(LOCALIZATION.DELETE_MODAL_USER_TITLE),
+      message: i18next.t(LOCALIZATION.DELETE_USER_MODAL_MESSAGE, { username }),
+      confirmLabel: i18next.t(
+        LOCALIZATION.DELETE_USER_MODAL_BUTTON_CONFIRM_TITLE,
+      ),
       confirmBsStyle: 'danger',
+      abortLabel: i18next.t(LOCALIZATION.DELETE_USER_MODAL_BUTTON_ABORT_TITLE),
       onConfirm: () => this.props.onUserDelete(id),
     });
   }
@@ -89,12 +87,7 @@ export default class UsersDashboard extends Component {
   }
 
   renderUserModal() {
-    const {
-      userGroups,
-      ownerId,
-      onUserUpdate,
-      onUserCreate,
-    } = this.props;
+    const { userGroups, ownerId, onUserUpdate, onUserCreate } = this.props;
 
     return (
       <UserModal
@@ -108,12 +101,7 @@ export default class UsersDashboard extends Component {
   }
 
   render() {
-    const {
-      users,
-      userGroups,
-      filter,
-      onFilterChange,
-    } = this.props;
+    const { users, userGroups, filter, onFilterChange } = this.props;
 
     return (
       <div className="users-dashboard">
@@ -123,22 +111,21 @@ export default class UsersDashboard extends Component {
             onClick={this.handleAddUserClick}
           >
             <IconLabel iconName="add">
-              Add new user
+              {i18next.t(LOCALIZATION.BUTTON_ADD_NEW_USER_TITLE)}
             </IconLabel>
           </Button>
         </div>
         <Table
           className="users-table"
           columnHeaders={getUserColumnHeaders(userGroups, filter)}
-          emptyPlaceholderText="No users yet."
+          emptyPlaceholderText={i18next.t(
+            LOCALIZATION.TABLE_EMPTY_PLACEHOLDER_MESSAGE,
+          )}
           items={users}
           onFilterChange={onFilterChange}
           renderItem={this.renderUserRow}
         />
-        <ConfirmModal
-          className="settings-page-modal-small"
-          ref="confirm"
-        />
+        <ConfirmModal className="settings-page-modal-small" ref="confirm" />
         {this.renderUserModal()}
       </div>
     );

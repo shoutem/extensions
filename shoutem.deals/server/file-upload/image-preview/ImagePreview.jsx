@@ -1,8 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
-
 import { FontIcon } from '@shoutem/react-web-ui';
-
 import './style.scss';
 
 export default class ImagePreview extends Component {

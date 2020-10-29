@@ -1,6 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import Select from 'react-select';
 import { Row, Col } from 'react-bootstrap';
 import { LOYALTY_TYPES } from 'src/const';
@@ -14,16 +17,13 @@ import {
   formatPlaceLabel,
   formatCashierLabel,
 } from '../../services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export class TransactionsFilter extends Component {
   constructor(props) {
     super(props);
-
-    this.handleUserChange = this.handleUserChange.bind(this);
-    this.handlePlaceChange = this.handlePlaceChange.bind(this);
-    this.handleCashierChange = this.handleCashierChange.bind(this);
-    this.handleRewardChange = this.handleRewardChange.bind(this);
+    autoBindReact(this);
   }
 
   handleUserChange(user) {
@@ -66,41 +66,49 @@ export class TransactionsFilter extends Component {
             clearable
             onChange={this.handleUserChange}
             options={createSelectOptions(users, formatUserLabel, 'legacyId')}
-            placeholder="Filter by user"
+            placeholder={i18next.t(
+              LOCALIZATION.FILTER_BY_USER_PLACEHOLDER_MESSAGE,
+            )}
             value={filter.userId}
           />
         </Col>
-        {loyaltyType === LOYALTY_TYPES.PUNCH &&
+        {loyaltyType === LOYALTY_TYPES.PUNCH && (
           <Col xs={colSize}>
             <Select
               autoBlur
               clearable
               onChange={this.handleRewardChange}
               options={createSelectOptions(rewards, formatRewardLabel)}
-              placeholder="Filter by card"
+              placeholder={i18next.t(
+                LOCALIZATION.FILTER_BY_CARD_PLACEHOLDER_MESSAGE,
+              )}
               value={filter.rewardId}
             />
           </Col>
-        }
-        {loyaltyType === LOYALTY_TYPES.MULTI &&
+        )}
+        {loyaltyType === LOYALTY_TYPES.MULTI && (
           <Col xs={colSize}>
             <Select
               autoBlur
               clearable
               onChange={this.handlePlaceChange}
               options={createSelectOptions(places, formatPlaceLabel)}
-              placeholder="Filter by place"
+              placeholder={i18next.t(
+                LOCALIZATION.FILTER_BY_PLACE_PLACEHOLDER_MESSAGE,
+              )}
               value={filter.placeId}
             />
           </Col>
-        }
+        )}
         <Col xs={colSize}>
           <Select
             autoBlur
             clearable
             onChange={this.handleCashierChange}
             options={createSelectOptions(cashiers, formatCashierLabel)}
-            placeholder="Filter by cashier"
+            placeholder={i18next.t(
+              LOCALIZATION.FILTER_BY_CASHIER_PLACEHOLDER_MESSAGE,
+            )}
             value={filter.cashierId}
           />
         </Col>

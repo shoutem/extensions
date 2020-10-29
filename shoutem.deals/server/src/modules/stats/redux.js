@@ -66,7 +66,14 @@ export function loadDealStats(appId, filter = {}, scope = {}) {
     'page[offset]': DEFAULT_OFFSET,
   };
 
-  return loadResources(appId, undefined, types.DEALS, ext('dealStats'), cmsFilter, scope);
+  return loadResources(
+    appId,
+    undefined,
+    types.DEALS,
+    ext('dealStats'),
+    cmsFilter,
+    scope,
+  );
 }
 
 export function loadNextPage(stats) {
@@ -93,7 +100,12 @@ export function loadPreviousPage(stats) {
   return prev(stats, false, config);
 }
 
-export function loadTransactionStats(catalogId, dealId, filter = {}, scope = {}) {
+export function loadTransactionStats(
+  catalogId,
+  dealId,
+  filter = {},
+  scope = {},
+) {
   const { startTime, endTime } = filter;
   const transactionActions = [
     TRANSACTION_ACTIONS.COUPON_CLAIMED,
@@ -116,7 +128,9 @@ export function loadTransactionStats(catalogId, dealId, filter = {}, scope = {})
   const config = {
     schema: types.TRANSACTIONS,
     request: {
-      endpoint: dealsApi.buildUrl(`/v1/catalogs/${catalogId}/transactions{?q*}`),
+      endpoint: dealsApi.buildUrl(
+        `/v1/catalogs/${catalogId}/transactions{?q*}`,
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
       },
@@ -185,15 +199,13 @@ export function createCatalog(appId, categoryId, scope = {}) {
 }
 
 export function invalidateStats() {
-  const actions = [
-    invalidate(types.DEALS),
-    invalidate(types.TRANSACTIONS),
-  ];
+  const actions = [invalidate(types.DEALS), invalidate(types.TRANSACTIONS)];
 
   return batchActions(actions);
 }
 
-export const reducer = () => combineReducers({
-  deals: collection(types.DEALS, ext('dealStats')),
-  transactions: collection(types.TRANSACTIONS, ext('transactionStats')),
-});
+export const reducer = () =>
+  combineReducers({
+    deals: collection(types.DEALS, ext('dealStats')),
+    transactions: collection(types.TRANSACTIONS, ext('transactionStats')),
+  });

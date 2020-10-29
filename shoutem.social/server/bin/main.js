@@ -14,6 +14,7 @@ import { RioStateSerializer } from '@shoutem/redux-io';
 import { SyncStateEngine } from '@shoutem/redux-sync-state-engine';
 import * as extension from '../src/index';
 import { PageProvider, connectPage, Page } from './page';
+import { LocalizationProvider } from './localization';
 import { SyncStateEngineProvider } from './syncStateEngine';
 import configureStore from './configureStore';
 
@@ -24,13 +25,11 @@ const rioStateSerializer = new RioStateSerializer();
 
 function renderPage() {
   if (!PageComponent) {
-    return (
-      <div>Page not found: {pageName}</div>
-    );
+    return <div>Page not found: {pageName}</div>;
   }
 
   const ConnectedPageComponent = connectPage()(PageComponent);
-  return (<ConnectedPageComponent />);
+  return <ConnectedPageComponent />;
 }
 
 // handler for Shoutem initialization finished
@@ -60,12 +59,12 @@ function onShoutemReady(event) {
   ReactDOM.render(
     <Provider store={store}>
       <SyncStateEngineProvider syncStateEngine={syncStateEngine}>
-        <PageProvider page={page}>
-          {renderPage()}
-        </PageProvider>
+        <LocalizationProvider context={context}>
+          <PageProvider page={page}>{renderPage()}</PageProvider>
+        </LocalizationProvider>
       </SyncStateEngineProvider>
     </Provider>,
-    document.getElementById('root')
+    document.getElementById('root'),
   );
 }
 
@@ -75,7 +74,5 @@ document.addEventListener('shoutemready', onShoutemReady, false);
 // Render it to DOM
 ReactDOM.render(
   <LoaderContainer size="50px" isLoading />,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
-
-

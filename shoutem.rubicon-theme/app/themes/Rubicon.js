@@ -377,12 +377,12 @@ export default (customVariables = {}) => {
             // Ripple effect is not supported on older Android versions and crashes the app
             (Platform.Version >= 21
               ? TouchableNativeFeedback.Ripple(
-                  changeColorAlpha(
-                    variables.mainNavItemIconColor ||
-                      variables.mainNavItemColor,
-                    0.3,
-                  ),
-                )
+                changeColorAlpha(
+                  variables.mainNavItemIconColor ||
+                  variables.mainNavItemColor,
+                  0.3,
+                ),
+              )
               : TouchableNativeFeedback.SelectableBackground()),
         },
       },
@@ -446,12 +446,12 @@ export default (customVariables = {}) => {
             // Ripple effect is not supported on older Android versions and crashes the app
             (Platform.Version >= 21
               ? TouchableNativeFeedback.Ripple(
-                  changeColorAlpha(
-                    variables.mainNavItemIconColor ||
-                      variables.mainNavItemColor,
-                    0.2,
-                  ),
-                )
+                changeColorAlpha(
+                  variables.mainNavItemIconColor ||
+                  variables.mainNavItemColor,
+                  0.2,
+                ),
+              )
               : TouchableNativeFeedback.SelectableBackground()),
         },
       },
@@ -1619,12 +1619,15 @@ export default (customVariables = {}) => {
     'shoutem.social.CreateStatusScreen': {
       footer: {
         backgroundColor: variables.paperColor,
-        paddingBottom: IPHONE_X_HOME_INDICATOR_PADDING + variables.smallGutter,
+      },
+      textInput: {
+        ...variables.text,
+        padding: variables.mediumGutter,
       },
     },
 
     'shoutem.social.StatusDetailsScreen': {
-      textInput: { flex: 1, margin: 15, maxHeight: 100 },
+      textInput: { ...variables.text, flex: 1, margin: 15, maxHeight: 100, },
     },
 
     'shoutem.social.StatusView': {
@@ -1778,6 +1781,30 @@ export default (customVariables = {}) => {
       },
       timestamp: {
         color: variables.notificationTimestampColor,
+      },
+    },
+
+    // i18n
+
+    'shoutem.i18n.LanguageListItem': {
+      container: {
+        paddingLeft: 20,
+        paddingRight: 20,
+        borderBottomColor: '#E5E5E5',
+        borderBottomWidth: 1,
+      },
+
+      text: {
+        fontSize: 15,
+        lineHeight: 18,
+        color: '#222222',
+      },
+
+      localisedText: {
+        fontSize: 12,
+        lineHeight: 16,
+        letterSpacing: 0.5,
+        color: '#888888',
       },
     },
 

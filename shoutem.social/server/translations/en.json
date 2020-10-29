@@ -1,0 +1,16 @@
+{
+  "shoutem": {
+    "social": {
+      "shortcut-info-page.configure-settings-text": "You can configure Social settings <1>here</1>.",
+      "shortcut-info-page.manage-app-users-text": "To manage your app users click <1>here</1>.",
+      "shortcut-settings-page.error-text": "Something went wrong, please try again",
+      "shortcut-settings-page.title": "General settings",
+      "shortcut-settings-page.form-title-status-length": "Max status length:",
+      "shortcut-settings-page.form-title-attachments": "Enable photo attachments",
+      "shortcut-settings-page.form-title-comments": "Enable comments",
+      "shortcut-settings-page.form-title-interactions": "Enable interactions",
+      "shortcut-settings-page.popoover-enable-like-text": "Enable users to like posts",
+      "shortcut-settings-page.button-save": "Save"
+    }
+  }
+}

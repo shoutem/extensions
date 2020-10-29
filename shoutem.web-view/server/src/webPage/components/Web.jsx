@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getShortcut } from 'environment';
 import { data } from 'context';
@@ -17,10 +18,16 @@ export class Web extends Component {
     this.getActiveScreen = this.getActiveScreen.bind(this);
     this.getShortcutSettings = this.getShortcutSettings.bind(this);
     this.setShortcutSettings = this.setShortcutSettings.bind(this);
-    this.handleUrlInputContinueClick = this.handleUrlInputContinueClick.bind(this);
+    this.handleUrlInputContinueClick = this.handleUrlInputContinueClick.bind(
+      this,
+    );
     this.handleUrlRemoveClick = this.handleUrlRemoveClick.bind(this);
-    this.handleShowNavigationToolbarChange = this.handleShowNavigationToolbarChange.bind(this);
-    this.handleGeolocationPermissionChange = this.handleGeolocationPermissionChange.bind(this);
+    this.handleShowNavigationToolbarChange = this.handleShowNavigationToolbarChange.bind(
+      this,
+    );
+    this.handleGeolocationPermissionChange = this.handleGeolocationPermissionChange.bind(
+      this,
+    );
   }
 
   getActiveScreen() {
@@ -61,7 +68,7 @@ export class Web extends Component {
   }
 
   handleUrlInputContinueClick(url) {
-    const normalizedUrl = normalizeUrl(url, {stripWWW: false});
+    const normalizedUrl = normalizeUrl(url, { stripWWW: false });
     this.setShortcutSettings({ url: normalizedUrl });
   }
 
@@ -79,26 +86,32 @@ export class Web extends Component {
 
   render() {
     const activeScreen = this.getActiveScreen();
-    const { url, showNavigationToolbar, requireGeolocationPermission } = this.getShortcutSettings();
+    const {
+      url,
+      showNavigationToolbar,
+      requireGeolocationPermission,
+    } = this.getShortcutSettings();
 
     const { hasWebsiteSettings } = data.params;
 
     return (
       <div>
-        {(activeScreen === ACTIVE_SCREEN_INPUT) && (
-          <WebUrlInput
-            onContinueClick={this.handleUrlInputContinueClick}
-          />
+        {activeScreen === ACTIVE_SCREEN_INPUT && (
+          <WebUrlInput onContinueClick={this.handleUrlInputContinueClick} />
         )}
-        {(activeScreen === ACTIVE_SCREEN_EDIT) && (
+        {activeScreen === ACTIVE_SCREEN_EDIT && (
           <WebEdit
             hasWebsiteSettings={hasWebsiteSettings}
             url={url}
             showNavigationToolbar={showNavigationToolbar}
             requireGeolocationPermission={requireGeolocationPermission}
             onRemoveClick={this.handleUrlRemoveClick}
-            onShowNavigationToolbarChange={this.handleShowNavigationToolbarChange}
-            onRequireGeolocationPermissionChange={this.handleGeolocationPermissionChange}
+            onShowNavigationToolbarChange={
+              this.handleShowNavigationToolbarChange
+            }
+            onRequireGeolocationPermissionChange={
+              this.handleGeolocationPermissionChange
+            }
           />
         )}
       </div>

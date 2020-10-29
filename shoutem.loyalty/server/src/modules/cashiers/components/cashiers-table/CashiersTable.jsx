@@ -1,14 +1,28 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
+import i18next from 'i18next';
 import { IconLabel, EditableTable } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 function getHeaders(hasPlaces) {
   if (!hasPlaces) {
-    return ['First Name', 'Last Name', 'PIN', ''];
+    return [
+      i18next.t(LOCALIZATION.HEADER_FIRST_NAME_TITLE),
+      i18next.t(LOCALIZATION.HEADER_LAST_NAME_TITLE),
+      i18next.t(LOCALIZATION.HEADER_PIN_TITLE),
+      '',
+    ];
   }
 
-  return ['First Name', 'Last Name', 'Store', 'PIN', ''];
+  return [
+    i18next.t(LOCALIZATION.HEADER_FIRST_NAME_TITLE),
+    i18next.t(LOCALIZATION.HEADER_LAST_NAME_TITLE),
+    i18next.t(LOCALIZATION.HEADER_STORE_TITLE),
+    i18next.t(LOCALIZATION.HEADER_PIN_TITLE),
+    '',
+  ];
 }
 
 function getRowDescriptors(hasPlaces) {
@@ -33,11 +47,7 @@ function getRowDescriptors(hasPlaces) {
   };
 
   if (!hasPlaces) {
-    return [
-      firstNameDescriptor,
-      lastNameDescriptor,
-      pinDescriptor,
-    ];
+    return [firstNameDescriptor, lastNameDescriptor, pinDescriptor];
   }
 
   return [
@@ -58,19 +68,18 @@ export default function CashiersTable({
   return (
     <div className="cashiers-table">
       <div className="cashiers-table__title">
-        <h3>Cashier settings</h3>
-        <Button
-          className="btn-icon pull-right"
-          onClick={onAddClick}
-        >
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
+        <Button className="btn-icon pull-right" onClick={onAddClick}>
           <IconLabel iconName="add">
-            Add cashier
+            {i18next.t(LOCALIZATION.BUTTON_ADD_CASHIER_TITLE)}
           </IconLabel>
         </Button>
       </div>
       <EditableTable
         className="cashiers-table"
-        emptyStateText="No cashiers yet"
+        emptyStateText={i18next.t(
+          LOCALIZATION.EMPTY_PLACEHOLDER_NO_CASHIERS_MESSAGE,
+        )}
         headers={getHeaders(hasPlaces)}
         isStatic
         onRowDeleted={onDeleteClick}
@@ -89,4 +98,3 @@ CashiersTable.propTypes = {
   onEditClick: PropTypes.func,
   hasPlaces: PropTypes.bool,
 };
-

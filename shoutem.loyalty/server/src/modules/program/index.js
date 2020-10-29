@@ -1,3 +1,7 @@
+import ProgramSettings from './fragments/program-settings';
+
+import { reducer } from './redux';
+
 export {
   moduleName,
   PROGRAMS,
@@ -18,10 +22,5 @@ export {
   getCardsByUserId,
   getUsers,
 } from './redux';
-
-import ProgramSettings from './fragments/program-settings';
 export { ProgramSettings };
-
-import { reducer } from './redux';
 export default reducer;
-

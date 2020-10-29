@@ -1,4 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import { Trans } from 'react-i18next';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import {
@@ -13,6 +17,7 @@ import { LoaderContainer } from '@shoutem/react-web-ui';
 import { fetchExtension, updateExtensionSettings, getExtension } from '@shoutem/redux-api-sdk';
 import { shouldRefresh } from '@shoutem/redux-io';
 import { validateYoutubeSettings } from '../../redux';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 const ERROR_KEY = 'Unable to connect. Check your API key and try again.';
@@ -21,9 +26,7 @@ class SettingsPage extends Component {
   constructor(props) {
     super(props);
 
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    autoBindReact(this);
 
     props.fetchExtension();
 
@@ -89,7 +92,7 @@ class SettingsPage extends Component {
       });
     }).catch(() => {
       this.setState({
-        error: ERROR_KEY,
+        error: i18next.t(LOCALIZATION.ERROR_MESSAGE),
         inProgress: false,
       });
     });
@@ -97,13 +100,15 @@ class SettingsPage extends Component {
 
   render() {
     const { error, hasChanges, inProgress, apiKey, isSaved } = this.state;
-    const buttontext = isSaved ? 'Update' : 'Save';
+    const buttontext = isSaved
+      ? i18next.t(LOCALIZATION.UPDATE_BUTTON)
+      : i18next.t(LOCALIZATION.SAVE_BUTTON);
 
     return (
       <div className="settings-page">
         <form onSubmit={this.handleSubmit}>
           <FormGroup>
-            <ControlLabel>Enter your API key</ControlLabel>
+            <ControlLabel>{i18next.t(LOCALIZATION.ENTER_API_KEY)}</ControlLabel>
             <FormControl
               type="text"
               className="form-control"
@@ -116,14 +121,15 @@ class SettingsPage extends Component {
           }
         </form>
         <ControlLabel>
-          To create your Youtube API key you need to create an app
-          on Google Developer Console.<br />
-          You can find detailed instructions <a
-            href="https://developers.google.com/youtube/v3/getting-started"
-            target="_blank"
-            rel="noopener noreferrer"
-          ><u>here</u>
-          </a>.
+          <Trans i18nKey={LOCALIZATION.TO_CREATE_A_KEY}>
+            To create your Youtube API key you need to create an app
+            on Google Developer Console. You can find detailed instructions <a
+              href="https://developers.google.com/youtube/v3/getting-started"
+              target="_blank"
+              rel="noopener noreferrer"
+            >here
+            </a>.
+          </Trans>
         </ControlLabel>
         <ButtonToolbar>
           <Button

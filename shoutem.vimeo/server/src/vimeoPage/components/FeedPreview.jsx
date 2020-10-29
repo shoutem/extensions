@@ -1,11 +1,14 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { FormGroup, ControlLabel } from 'react-bootstrap';
 import { FontIcon } from '@shoutem/react-web-ui';
-import { isBusy }  from '@shoutem/redux-io';
+import { isBusy } from '@shoutem/redux-io';
 import { loadFeed } from './../reducer';
 import { getFeedItems } from './../selectors';
 import { ext } from 'context';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export class FeedPreview extends Component {
@@ -14,7 +17,7 @@ export class FeedPreview extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const hasUrlChanged = this.props.feedUrl !== newProps.feedUrl
+    const hasUrlChanged = this.props.feedUrl !== newProps.feedUrl;
     if (hasUrlChanged && newProps.feedUrl) {
       this.props.loadFeed(newProps.feedUrl);
     }
@@ -28,13 +31,11 @@ export class FeedPreview extends Component {
       <div>
         <form>
           <FormGroup>
-            <ControlLabel>Loading from</ControlLabel>
+            <ControlLabel>{i18next.t(LOCALIZATION.LOADING_FROM)}</ControlLabel>
             <div className="feed-preview__feed-url-container">
               <div className="feed-preview__play-img" />
               <div className="feed-preview__feed-url-text-wrapper text-ellipsis">
-                <span className="feed-preview__feed-url">
-                  {feedUrl}
-                </span>
+                <span className="feed-preview__feed-url">{feedUrl}</span>
               </div>
               <FontIcon
                 className="feed-preview__remove"
@@ -49,29 +50,36 @@ export class FeedPreview extends Component {
           <table className="table feed-preview__table">
             <thead>
               <tr>
-                <th className="feed-preview__table-date">Date</th>
-                <th className="feed-preview__table-title">Title</th>
+                <th className="feed-preview__table-date">
+                  {i18next.t(LOCALIZATION.DATE)}
+                </th>
+                <th className="feed-preview__table-title">
+                  {i18next.t(LOCALIZATION.TITLE)}
+                </th>
               </tr>
             </thead>
             <tbody>
               {loading && (
-              <tr>
-                <td colSpan="2">loading content...</td>
-              </tr>
-            )}
-              {!loading && (feedItems.length === 0) && (
-              <tr>
-                <td colSpan="2">no content to show</td>
-              </tr>
-            )}
-              {!loading && feedItems.map(item => (
-                <tr key={item.id}>
-                  <td>
-                    <span title={item.dateTimeFormatted}>{item.dateTimeDisplay}</span>
-                  </td>
-                  <td>{item.title}</td>
+                <tr>
+                  <td colSpan="2">{i18next.t(LOCALIZATION.LOADING)}</td>
                 </tr>
-            ))}
+              )}
+              {!loading && feedItems.length === 0 && (
+                <tr>
+                  <td colSpan="2">{i18next.t(LOCALIZATION.NO_CONTENT)}</td>
+                </tr>
+              )}
+              {!loading &&
+                feedItems.map(item => (
+                  <tr key={item.id}>
+                    <td>
+                      <span title={item.dateTimeFormatted}>
+                        {item.dateTimeDisplay}
+                      </span>
+                    </td>
+                    <td>{item.title}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -81,6 +89,7 @@ export class FeedPreview extends Component {
 }
 
 FeedPreview.propTypes = {
+  feedItems: PropTypes.array,
   feedUrl: PropTypes.string,
   onRemoveClick: PropTypes.func,
   loadFeed: PropTypes.func,

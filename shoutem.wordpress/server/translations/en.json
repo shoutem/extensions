@@ -1,0 +1,17 @@
+{
+  "shoutem": {
+    "wordpress": {
+      "feed-preview.insecure-feed-warning": "You are trying to load a feed from 'http'. Change feed's protocol to 'https' or learn <1>here</1> how to allow your browser to load it.",
+      "feed-preview.page-url": "WordPress page URL",
+      "feed-preview-table.no-content": "No content to show",
+      "feed-preview-table.image": "Image",
+      "feed-preview-table.title": "Title",
+      "feed-preview-table.date": "Date",
+      "feed-url-input.not-wordpress-url": "Provided URL is not a valid WordPress URL.",
+      "feed-url-input.invalid-url": "Invalid URL.",
+      "feed-url-input.page-url": "WordPress page URL",
+      "feed-url-input.wordpress-version-warning": "WordPress versions 4.4 or newer. In case your site is using WordPress version 4.4 to 4.7, you will need to install a plugin in order to fetch posts. For WordPress version 4.7 and above it is going to work out of the box. If you are using an older version of WordPress, you will need to update it.",
+      "feed-url-input.continue-button": "Continue"
+    }
+  }
+}

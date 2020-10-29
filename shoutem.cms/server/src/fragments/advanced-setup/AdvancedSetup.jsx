@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { shouldLoad, shouldRefresh } from '@shoutem/redux-io';
 import { LoaderContainer } from '@shoutem/react-web-ui';
@@ -10,7 +12,8 @@ import {
   ChildCategorySelector,
 } from '../../components';
 import { getCategories } from '../../selectors';
-import { ALL_CATEGORIES_OPTION } from '../../services';
+import { ALL_CATEGORIES_OPTION_KEY } from '../../services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 function getVisibleCategoryIds(visibleCategoryIds) {
@@ -18,7 +21,10 @@ function getVisibleCategoryIds(visibleCategoryIds) {
   // to properly display checkbox named 'All categories'.
   // When saving it to settings or using it as category filter on API, we just need to
   // send empty array.
-  const allCategoriesSelected = _.includes(visibleCategoryIds, ALL_CATEGORIES_OPTION.key);
+  const allCategoriesSelected = _.includes(
+    visibleCategoryIds,
+    ALL_CATEGORIES_OPTION_KEY,
+  );
   return allCategoriesSelected ? [] : visibleCategoryIds;
 }
 
@@ -29,8 +35,12 @@ export class AdvancedSetup extends Component {
     this.checkData = this.checkData.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
-    this.handleParentCategoryChange = this.handleParentCategoryChange.bind(this);
-    this.handleVisibleCategoriesChange = this.handleVisibleCategoriesChange.bind(this);
+    this.handleParentCategoryChange = this.handleParentCategoryChange.bind(
+      this,
+    );
+    this.handleVisibleCategoriesChange = this.handleVisibleCategoriesChange.bind(
+      this,
+    );
     this.handleCreateCategory = this.handleCreateCategory.bind(this);
 
     const { parentCategoryId, visibleCategoryIds } = props;
@@ -75,8 +85,11 @@ export class AdvancedSetup extends Component {
     const { parentCategoryId, visibleCategoryIds } = this.state;
     this.setState({ saveInProgress: true });
 
-    const resolvedVisibleCategoryIds = getVisibleCategoryIds(visibleCategoryIds);
-    this.props.updateAdvancedOptions(parentCategoryId, resolvedVisibleCategoryIds)
+    const resolvedVisibleCategoryIds = getVisibleCategoryIds(
+      visibleCategoryIds,
+    );
+    this.props
+      .updateAdvancedOptions(parentCategoryId, resolvedVisibleCategoryIds)
       .then(() => this.setState({ saveInProgress: false }));
   }
 
@@ -107,7 +120,8 @@ export class AdvancedSetup extends Component {
   handleCreateCategory() {
     this.setState({ createCategoryInProgress: true });
 
-    this.props.onCreateCategory()
+    this.props
+      .onCreateCategory()
       .then(() => this.setState({ createCategoryInProgress: false }));
   }
 
@@ -127,10 +141,9 @@ export class AdvancedSetup extends Component {
       saveInProgress,
     } = this.state;
 
-    const actionButtonsDisabled = (
+    const actionButtonsDisabled =
       parentCategoryId === currentParentCategoryId &&
-      _.isEqual(visibleCategoryIds, currentVisibleCategoryIds)
-    );
+      _.isEqual(visibleCategoryIds, currentVisibleCategoryIds);
 
     return (
       <LoaderContainer
@@ -138,7 +151,7 @@ export class AdvancedSetup extends Component {
         isLoading={createCategoryInProgress}
         isOverlay
       >
-        <h3>Advanced content setup</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <form>
           <Row>
             <Col md={6}>
@@ -166,14 +179,14 @@ export class AdvancedSetup extends Component {
               onClick={this.handleSave}
             >
               <LoaderContainer isLoading={saveInProgress}>
-                Save
+                {i18next.t(LOCALIZATION.BUTTON_SAVE)}
               </LoaderContainer>
             </Button>
             <Button
               disabled={actionButtonsDisabled}
               onClick={this.handleCancel}
             >
-              Cancel
+              {i18next.t(LOCALIZATION.BUTTON_CANCEL)}
             </Button>
           </ButtonGroup>
         </form>
@@ -207,15 +220,19 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { canonicalName: schema } = fullSchema;
 
   return {
-    loadRootCategories: () => (
-      dispatch(loadCategories('null', schema, 'parent'))
-    ),
-    loadChildCategories: (parentCategoryId) => (
-      dispatch(loadCategories(parentCategoryId, schema, 'child'))
-    ),
-    updateAdvancedOptions: (parentCategoryId, visibleCategoryIds) => (
-      dispatch(updateShortcutCategories(shortcut, parentCategoryId, visibleCategoryIds, schema))
-    ),
+    loadRootCategories: () =>
+      dispatch(loadCategories('null', schema, 'parent')),
+    loadChildCategories: parentCategoryId =>
+      dispatch(loadCategories(parentCategoryId, schema, 'child')),
+    updateAdvancedOptions: (parentCategoryId, visibleCategoryIds) =>
+      dispatch(
+        updateShortcutCategories(
+          shortcut,
+          parentCategoryId,
+          visibleCategoryIds,
+          schema,
+        ),
+      ),
   };
 }
 

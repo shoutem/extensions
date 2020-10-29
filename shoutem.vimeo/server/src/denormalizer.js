@@ -12,7 +12,10 @@ let denormalizer = null;
 
 export function createDenormalizer(getState) {
   if (denormalizer === null) {
-    denormalizer = new ReduxApiStateDenormalizer(getState, denormalizerMappings);
+    denormalizer = new ReduxApiStateDenormalizer(
+      getState,
+      denormalizerMappings,
+    );
   }
 }
 

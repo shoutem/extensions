@@ -1,14 +1,16 @@
 {
   "name": "rss",
-  "version": "2.4.3",
+  "version": "2.4.5",
   "platform": "2.4.*",
   "type": "system",
   "title": "RSS",
   "description": "Integrate with RSS feed source",
   "icon": "server/assets/add-rss-image.png",
-  "categories": [
-    "content"
-  ],
+  "categories": ["content"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "pages": [
     {
       "name": "RssPage",

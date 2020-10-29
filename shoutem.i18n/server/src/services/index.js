@@ -1,9 +1,9 @@
-import SettingPageAssetManager from './settings-page-asset-manager';
+import ShoutemUrls from './shoutemUrls';
+const shoutemUrls = new ShoutemUrls();
 
-export {
-  SettingPageAssetManager,
-};
-
-export { LANGUAGES } from './languages';
-
-export { shoutemUrls } from './shoutem-urls';
+export { shoutemUrls };
+export { default as LANGUAGES } from './languages';
+export { readFileAsText } from './readFileAsText';
+export { validateJson } from './validateJson';
+export { resolveTranslationRows } from './translations';
+export { migrateChannels } from './migration';

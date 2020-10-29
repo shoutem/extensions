@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { ControlLabel, FormGroup } from 'react-bootstrap';
 import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
 import { shouldLoad, isInitialized } from '@shoutem/redux-io';
@@ -11,13 +13,12 @@ import {
   getShortcuts,
 } from '@shoutem/redux-api-sdk';
 import { ProtectedScreensTable } from './components';
+import LOCALIZATION from './localization';
 
 export class SettingsPage extends Component {
   constructor(props) {
     super(props);
-
-    this.checkData = this.checkData.bind(this);
-    this.handleMakeAllScreensPrivateChange = this.handleMakeAllScreensPrivateChange.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {
@@ -36,7 +37,9 @@ export class SettingsPage extends Component {
 
   handleMakeAllScreensPrivateChange() {
     const { extension } = this.props;
-    const { settings: { allScreensProtected } } = extension;
+    const {
+      settings: { allScreensProtected },
+    } = extension;
 
     const settingsPatch = {
       allScreensProtected: !allScreensProtected,
@@ -55,21 +58,23 @@ export class SettingsPage extends Component {
         isLoading={!isInitialized(shortcuts)}
         className="protected-screens-page settings-page"
       >
-        <h3>Protected screens</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <FormGroup className="switch-form-group">
-          <ControlLabel>Make all screens private</ControlLabel>
+          <ControlLabel>
+            {i18next.t(LOCALIZATION.FORM_MAKE_ALL_SCREENS_PRIVATE_TITLE)}
+          </ControlLabel>
           <Switch
             className="general-settings__switch"
             onChange={this.handleMakeAllScreensPrivateChange}
             value={allScreensProtected}
           />
         </FormGroup>
-        {!allScreensProtected &&
+        {!allScreensProtected && (
           <ProtectedScreensTable
             shortcuts={shortcuts}
             onShortcutSettingsUpdate={this.props.updateShortcutSettings}
           />
-        }
+        )}
       </LoaderContainer>
     );
   }
@@ -94,15 +99,11 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { extension } = ownProps;
 
   return {
-    updateExtensionSettings: (settingsPatch) => (
-      dispatch(updateExtensionSettings(extension, settingsPatch))
-    ),
-    fetchShortcuts: () => (
-      dispatch(fetchShortcuts())
-    ),
-    updateShortcutSettings: (shortcut, settings) => (
-      dispatch(updateShortcutSettings(shortcut, settings))
-    ),
+    updateExtensionSettings: settingsPatch =>
+      dispatch(updateExtensionSettings(extension, settingsPatch)),
+    fetchShortcuts: () => dispatch(fetchShortcuts()),
+    updateShortcutSettings: (shortcut, settings) =>
+      dispatch(updateShortcutSettings(shortcut, settings)),
   };
 }
 

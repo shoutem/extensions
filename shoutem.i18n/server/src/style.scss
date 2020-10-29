@@ -1,42 +1,40 @@
-:global {
-  body.extension-sandbox-container {
-    margin-top: 48px;
+body.extension-sandbox-container {
+  margin-top: 48px;
 
-    p {
-      text-align: center;
+  p {
+    text-align: center;
+  }
+
+  .modal-backdrop {
+    background-color: #ffffff;
+
+    .in {
+      opacity: 0.8;
     }
+  }
 
-    .modal-backdrop {
-      background-color: #ffffff;
+  .settings-page {
+    max-width: 552px;
+    margin: auto;
 
-      .in {
-        opacity: 0.8;
-      }
+    &.is-wide {
+      max-width: 808px;
     }
+  }
 
-    .settings-page {
+  .modal.settings-page-modal .modal-dialog:not(.modal-lg) {
+    width: 100%;
+
+    .modal-header,
+    .modal-body {
       max-width: 552px;
       margin: auto;
-
-      &.is-wide {
-        max-width: 808px;
-      }
     }
+  }
 
-    .modal.settings-page-modal .modal-dialog:not(.modal-lg) {
-      width: 100%;
-
-      .modal-header,
-      .modal-body {
-        max-width: 552px;
-        margin: auto;
-      }
-    }
-
-    .settings-page-modal-small.modal-dialog,
-    .modal.settings-page-modal-small .modal-dialog {
-      min-width: 518px;
-      max-width: 648px;
-    }
+  .settings-page-modal-small.modal-dialog,
+  .modal.settings-page-modal-small .modal-dialog {
+    min-width: 518px;
+    max-width: 648px;
   }
 }

@@ -1,13 +1,12 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "platform": "2.4.*",
   "description": "Show a video gallery",
   "icon": "server/assets/add-videos-image.png",
-  "categories": [
-    "media"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "categories": ["media"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

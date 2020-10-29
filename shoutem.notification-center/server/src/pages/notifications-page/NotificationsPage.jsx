@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { bindActionCreators } from 'redux';
 import { Alert } from 'react-bootstrap';
 import classNames from 'classnames';
@@ -14,6 +15,7 @@ import {
   getApplicationStatus,
   isPublished,
 } from 'src/modules/app';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 class NotificationsPage extends Component {
@@ -83,7 +85,7 @@ class NotificationsPage extends Component {
       <div className="notifications-page">
         {!published && (
           <Alert className="publish-alert">
-            Push notifications can't reach users until your app is published.
+            {i18next.t(LOCALIZATION.PUBLISH_ALERT)}
           </Alert>
         )}
         {this.renderAlert()}

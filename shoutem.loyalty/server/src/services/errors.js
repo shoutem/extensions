@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 function getError(action) {
-  const errors =  _.get(action, ['payload', 'response', 'errors'], []);
+  const errors = _.get(action, ['payload', 'response', 'errors'], []);
   return _.get(errors, '0', {});
 }
 

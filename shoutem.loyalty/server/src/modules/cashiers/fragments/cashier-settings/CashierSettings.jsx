@@ -1,5 +1,8 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { InlineModal } from '@shoutem/react-web-ui';
 import { shouldLoad } from '@shoutem/redux-io';
 import _ from 'lodash';
@@ -13,20 +16,12 @@ import {
   getCashiersWithPlace,
 } from '../../redux';
 import { getErrorMessage } from '../../services';
+import LOCALIZATION from './localization';
 
 export class CashierSettings extends Component {
   constructor(props) {
     super(props);
-
-    this.checkData = this.checkData.bind(this);
-    this.setInitialState = this.setInitialState.bind(this);
-    this.handleAddCashierClick = this.handleAddCashierClick.bind(this);
-    this.handleEditCashierClick = this.handleEditCashierClick.bind(this);
-    this.handleHideCashierModal = this.handleHideCashierModal.bind(this);
-    this.handleCashierCreated = this.handleCashierCreated.bind(this);
-    this.handleCashierUpdated = this.handleCashierUpdated.bind(this);
-    this.handleCashierDeleted = this.handleCashierDeleted.bind(this);
-    this.renderCashierModal = this.renderCashierModal.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {
@@ -84,8 +79,9 @@ export class CashierSettings extends Component {
     const { appId, programId } = this.props;
 
     return new Promise((resolve, reject) => {
-      this.props.createCashier(cashier, programId, appId)
-        .then(this.setInitialState, (action) => {
+      this.props
+        .createCashier(cashier, programId, appId)
+        .then(this.setInitialState, action => {
           const errorCode = getErrorCode(action);
           reject(getErrorMessage(errorCode));
         });
@@ -98,8 +94,9 @@ export class CashierSettings extends Component {
     const { id } = currentCashier;
 
     return new Promise((resolve, reject) => {
-      this.props.updateCashier(id, cashierPatch, programId)
-        .then(this.setInitialState, (action) => {
+      this.props
+        .updateCashier(id, cashierPatch, programId)
+        .then(this.setInitialState, action => {
           const errorCode = getErrorCode(action);
           reject(getErrorMessage(errorCode));
         });
@@ -116,8 +113,12 @@ export class CashierSettings extends Component {
     const { currentCashier } = this.state;
 
     const inEditMode = !!currentCashier;
-    const modalTitle = inEditMode ? 'Edit cashier' : 'Add a cashier';
-    const handleSubmit = inEditMode ? this.handleCashierUpdated : this.handleCashierCreated;
+    const modalTitle = inEditMode
+      ? i18next.t(LOCALIZATION.EDIT_CASHIER_TITLE)
+      : i18next.t(LOCALIZATION.ADD_CASHIER_TITLE);
+    const handleSubmit = inEditMode
+      ? this.handleCashierUpdated
+      : this.handleCashierCreated;
     const placeId = _.get(currentCashier, 'location', currentPlaceId);
 
     return (
@@ -181,18 +182,14 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
-    loadCashiers: (programId, placeId) => (
-      dispatch(loadCashiers(programId, placeId, scope))
-    ),
-    createCashier: (cashier, programId, appId) => (
-      dispatch(createCashier(cashier, programId, appId, scope))
-    ),
-    updateCashier: (cashierId, cashierPatch, programId) => (
-      dispatch(updateCashier(cashierId, cashierPatch, programId, scope))
-    ),
-    deleteCashier: (cashierId, programId) => (
-      dispatch(deleteCashier(cashierId, programId, scope))
-    ),
+    loadCashiers: (programId, placeId) =>
+      dispatch(loadCashiers(programId, placeId, scope)),
+    createCashier: (cashier, programId, appId) =>
+      dispatch(createCashier(cashier, programId, appId, scope)),
+    updateCashier: (cashierId, cashierPatch, programId) =>
+      dispatch(updateCashier(cashierId, cashierPatch, programId, scope)),
+    deleteCashier: (cashierId, programId) =>
+      dispatch(deleteCashier(cashierId, programId, scope)),
   };
 }
 

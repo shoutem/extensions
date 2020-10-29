@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { HelpBlock } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import classNames from 'classnames';
+import i18next from 'i18next';
 import _ from 'lodash';
-
 import { LoaderContainer } from '@shoutem/react-web-ui';
-
 import ImageUploadPlaceholder from '../image-upload-placeholder';
 import ImagePreview from '../image-preview';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class ImageUploader extends Component {
@@ -46,7 +46,9 @@ export default class ImageUploader extends Component {
   validateFileSize(file) {
     const { maxFileSize } = this.props;
     if (file.size > maxFileSize) {
-      return `Max allowed image size is ${maxFileSize / 1000000}MB!`;
+      return i18next.t(LOCALIZATION.MAX_SIZE_MESSAGE, {
+        maxSize: maxFileSize / 1000000,
+      });
     }
     return null;
   }
@@ -65,8 +67,11 @@ export default class ImageUploader extends Component {
       const resolvedFolderPath = folderName ? `${folderName}/` : '';
       const resolvedPath = resolvedFolderPath + resolvedFilename;
 
-      assetManager.uploadFile(resolvedPath, file)
-        .then(resolve, () => reject('Upload failed.'));
+      assetManager
+        .uploadFile(resolvedPath, file)
+        .then(resolve, () =>
+          reject(i18next.t(LOCALIZATION.UPLOAD_FAILED_MESSAGE)),
+        );
     });
   }
 
@@ -86,17 +91,19 @@ export default class ImageUploader extends Component {
 
     onDrop();
 
-    this.upload(files[0])
-      .then(this.handleUploadSucceeded, this.handleUploadFailed);
+    this.upload(files[0]).then(
+      this.handleUploadSucceeded,
+      this.handleUploadFailed,
+    );
   }
 
   handleDropRejected() {
-    this.setState({ error: 'File rejected.' });
+    this.setState({ error: i18next.t(LOCALIZATION.FILE_REJECTED_MESSAGE) });
   }
 
   handleDeleteFailed() {
     this.setState({
-      error: 'Delete failed.',
+      error: i18next.t(LOCALIZATION.DELETE_FAILED_MESSAGE),
       inProgress: false,
     });
   }
@@ -104,23 +111,17 @@ export default class ImageUploader extends Component {
   handleDeleteClick(event) {
     event.stopPropagation();
 
-    const {
-      src,
-      shallowDelete,
-      onDeleteSuccess,
-      assetManager,
-    } = this.props;
+    const { src, shallowDelete, onDeleteSuccess, assetManager } = this.props;
 
     if (shallowDelete) {
       return onDeleteSuccess(src);
     }
 
     this.setState({ inProgress: true });
-    return assetManager.deleteFile(src)
-      .then(() => {
-        this.setState({ inProgress: false });
-        return onDeleteSuccess(src);
-      }, this.handleDeleteFailed);
+    return assetManager.deleteFile(src).then(() => {
+      this.setState({ inProgress: false });
+      return onDeleteSuccess(src);
+    }, this.handleDeleteFailed);
   }
 
   renderDropzoneContent() {
@@ -148,16 +149,10 @@ export default class ImageUploader extends Component {
       disabled,
     } = this.props;
 
-    const classes = classNames(
-      className,
-      'image-uploader',
-    );
+    const classes = classNames(className, 'image-uploader');
 
     return (
-      <LoaderContainer
-        className={classes}
-        isLoading={this.state.inProgress}
-      >
+      <LoaderContainer className={classes} isLoading={this.state.inProgress}>
         <Dropzone
           accept={accept}
           className="image-uploader__dropzone"
@@ -168,12 +163,10 @@ export default class ImageUploader extends Component {
         >
           {dropzoneProps => this.renderDropzoneContent(dropzoneProps)}
         </Dropzone>
-        {showValidationError && this.state.error &&
+        {showValidationError && this.state.error && (
           <div className="text-error">{this.state.error}</div>
-        }
-        {helpText && !this.state.error &&
-          <HelpBlock>{helpText}</HelpBlock>
-        }
+        )}
+        {helpText && !this.state.error && <HelpBlock>{helpText}</HelpBlock>}
       </LoaderContainer>
     );
   }

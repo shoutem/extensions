@@ -1,5 +1,8 @@
 import _ from 'lodash';
+import i18next from 'i18next';
 import { isEmail } from 'validator';
+import CASHIER_FORM_LOCALIZATION from '../components/cashier-form/localization';
+import LOCALIZATION from './localization';
 
 const ERROR_CODES = {
   DUPLICATE_PIN: 'lm_cashier_validation_pinInvalid',
@@ -8,7 +11,7 @@ const ERROR_CODES = {
 
 function validateRequiredField(value, name) {
   if (!value) {
-    return `${name} is required`;
+    return i18next.t(LOCALIZATION.REQUIRED_FIELD_MESSAGE, { name });
   }
 
   return null;
@@ -16,11 +19,11 @@ function validateRequiredField(value, name) {
 
 function validateEmail(email) {
   if (!email) {
-    return 'Email is required';
+    return i18next.t(LOCALIZATION.EMAIL_REQUIRED_MESSAGE);
   }
 
   if (!isEmail(email)) {
-    return 'Email is not valid';
+    return i18next.t(LOCALIZATION.EMAIL_NOT_VALID_MESSAGE);
   }
 
   return null;
@@ -28,23 +31,32 @@ function validateEmail(email) {
 
 function validatePassword(password) {
   if (!password) {
-    return 'Password is required';
+    return i18next.t(LOCALIZATION.PASSWORD_REQUIRED_MESSAGE);
   }
 
   if (password.length < 6) {
-    return 'Password is too short';
+    return i18next.t(LOCALIZATION.PASSWORD_TOO_SHORT_MESSAGE);
   }
 
   return null;
 }
 
 export function validateCashier(cashier) {
-  const { id, firstName, lastName, email, password } = cashier;
+  const { id, firstName, lastName, email, password, pin } = cashier;
   const errors = {};
 
-  errors.firstName = validateRequiredField(firstName, 'First name');
-  errors.lastName = validateRequiredField(lastName, 'Last name');
-  errors.pin = validateRequiredField(firstName, 'Pin');
+  errors.firstName = validateRequiredField(
+    firstName,
+    i18next.t(CASHIER_FORM_LOCALIZATION.FORM_FIRST_NAME_TITLE),
+  );
+  errors.lastName = validateRequiredField(
+    lastName,
+    i18next.t(CASHIER_FORM_LOCALIZATION.FORM_LAST_NAME_TITLE),
+  );
+  errors.pin = validateRequiredField(
+    pin,
+    i18next.t(CASHIER_FORM_LOCALIZATION.FORM_PIN_TITLE),
+  );
 
   // email & password cannot be changed for existing users and don't have to be validated
   errors.email = _.isEmpty(id) ? validateEmail(email) : null;
@@ -55,12 +67,12 @@ export function validateCashier(cashier) {
 
 export function getErrorMessage(errorCode) {
   if (errorCode === ERROR_CODES.DUPLICATE_PIN) {
-    return { pin: 'Pin must be unique.' };
+    return { pin: i18next.t(LOCALIZATION.PIN_UNIQUE_MESSAGE) };
   }
 
   if (errorCode === ERROR_CODES.DUPLICATE_USER) {
-    return { email: 'User with this email already exists.' };
+    return { email: i18next.t(LOCALIZATION.USER_ALREADY_EXISTS_MESSAGE) };
   }
 
-  return { _error: 'Something went wrong, please try again' };
+  return { _error: i18next.t(LOCALIZATION.ERROR_MESSAGE) };
 }

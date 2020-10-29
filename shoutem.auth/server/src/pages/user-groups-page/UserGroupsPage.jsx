@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import {
   fetchExtension,
   fetchShortcuts,
@@ -47,11 +48,7 @@ function resolvePaging(currentPagingRef, useDefaultPaging) {
 export class UserGroupsPage extends Component {
   constructor(props) {
     super(props);
-
-    this.checkData = this.checkData.bind(this);
-    this.loadUserGroups = this.loadUserGroups.bind(this);
-    this.handleNextPageClick = this.handleNextPageClick.bind(this);
-    this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,

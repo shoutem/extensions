@@ -1,17 +1,23 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 
-export default function DropdownWrapper({ valuesMap, defaultKey, field, disabled }) {
+export default function DropdownWrapper({
+  valuesMap,
+  defaultKey,
+  field,
+  disabled,
+}) {
   const selectedValue = field.value || defaultKey;
   return (
     <Dropdown className="block" onSelect={field.onChange} disabled={disabled}>
-      <Dropdown.Toggle>
-        {valuesMap[selectedValue]}
-      </Dropdown.Toggle>
+      <Dropdown.Toggle>{valuesMap[selectedValue]}</Dropdown.Toggle>
       <Dropdown.Menu>
-        {_.keys(valuesMap).map((key) => (
-          <MenuItem key={key} eventKey={key}>{valuesMap[key]}</MenuItem>
+        {_.keys(valuesMap).map(key => (
+          <MenuItem key={key} eventKey={key}>
+            {valuesMap[key]}
+          </MenuItem>
         ))}
       </Dropdown.Menu>
     </Dropdown>

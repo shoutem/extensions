@@ -1,7 +1,10 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { Row, Col } from 'react-bootstrap';
 import { LOYALTY_TYPES } from 'src/const';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 function calculatePointsStats(generalStats) {
@@ -15,7 +18,7 @@ function calculatePointsStats(generalStats) {
     rewardsRedeemed,
     pointsRedeemed: totalRedeemedPoints,
     pointsEarned: totalEarnedPoints,
-  }
+  };
 }
 
 function calculatePunchStats(generalStats) {
@@ -29,20 +32,22 @@ function calculatePunchStats(generalStats) {
     rewardsRedeemed,
     pointsRedeemed: totalRedeemedPunches,
     pointsEarned: totalEarnedPunches,
-  }
+  };
 }
 
 export default function GeneralStats({ generalStats, loyaltyType }) {
   const isPunchType = loyaltyType === LOYALTY_TYPES.PUNCH;
 
-  const pointsEarnedLabel = isPunchType ? 'Punches earned' : 'Points earned';
-  const pointsRedeemedLabel = isPunchType ? 'Punches redeemed' : 'Points redeemed';
+  const pointsEarnedLabel = isPunchType
+    ? i18next.t(LOCALIZATION.PUNCHES_EARNED_TITLE)
+    : i18next.t(LOCALIZATION.POINTS_EARNED_TITLE);
+  const pointsRedeemedLabel = isPunchType
+    ? i18next.t(LOCALIZATION.PUNCHES_REDEEMED_TITLE)
+    : i18next.t(LOCALIZATION.POINTS_REDEEMED_TITLE);
 
-  const stats = (
-    isPunchType ?
-      calculatePunchStats(generalStats) :
-      calculatePointsStats(generalStats)
-  );
+  const stats = isPunchType
+    ? calculatePunchStats(generalStats)
+    : calculatePointsStats(generalStats);
 
   return (
     <Row className="general-stats">
@@ -55,11 +60,11 @@ export default function GeneralStats({ generalStats, loyaltyType }) {
         <label>{stats.pointsRedeemed}</label>
       </Col>
       <Col className="general-stats__item" xs={3}>
-        <div>Rewards redeemed</div>
+        <div>{i18next.t(LOCALIZATION.REWARDS_REDEEMED_TITLE)}</div>
         <label>{stats.rewardsRedeemed}</label>
       </Col>
       <Col className="general-stats__item" xs={3}>
-        <div>Current balance</div>
+        <div>{i18next.t(LOCALIZATION.CURRENT_BALANCE_TITLE)}</div>
         <label>{stats.balance}</label>
       </Col>
     </Row>

@@ -1,12 +1,18 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "2.4.1",
+  "version": "2.4.4",
   "platform": "2.4.*",
   "skipClone": false,
-  "releaseNotes": "* Fixed Post button ocasionally crashing app\n* Fixed comment section not visible, while keyboard is active, on iOS devices\n* Fixed image attachment only comments",
+  "releaseNotes": "* Added infinite load for Post details comments\n* Fixed like status update on Post details screen\n* Fixed 'Create new status' input and header",
   "description": "Let members create posts, comment and like them",
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "icon": "server/assets/add-community-image.png",
   "screens": [
     {

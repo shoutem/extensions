@@ -1,26 +1,18 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 
 /**
  * Tooltip message with the link.
  */
-export default class MessageWithLink extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { message, link, linkText } = this.props;
-
-    return (
-      <span>
-        {message}{' '}
-        <a href={link} target="_blank">
-          {linkText}
-        </a>
-      </span>
-    );
-  }
+export default function MessageWithLink({ message, link, linkText }) {
+  return (
+    <span>
+      {message}{' '}
+      <a href={link} rel="noopener noreferrer" target="_blank">
+        {linkText}
+      </a>
+    </span>
+  );
 }
 
 MessageWithLink.propTypes = {

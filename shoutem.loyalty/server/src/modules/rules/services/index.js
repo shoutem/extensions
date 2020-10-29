@@ -3,5 +3,5 @@ export {
   transformNumericRule,
   getRulesToCreate,
   getRulesToDelete,
-  getRulesToUpdate
+  getRulesToUpdate,
 } from './rules';

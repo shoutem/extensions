@@ -1,42 +1,51 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { ControlLabel, Row, Col, FormGroup } from 'react-bootstrap';
 import form from '../common/form';
 import IconsAndText from '../common/IconsAndText';
 import DropdownWrapper from '../common/DropdownWrapper';
+import LAYOUT_LOCALIZATION from '../localization';
+import LOCALIZATION from './localization';
 
-const configuration = {
-  default: {
-    iconSize: 'medium',
-    inItemAlignment: 'left',
-    listAlignment: 'top',
-    textSize: 'small',
-  },
-  iconSize: {
-    small: 'Small',
-    medium: 'Medium',
-    large: 'Large',
-  },
-  textSize: {
-    small: 'Small',
-    medium: 'Medium',
-    large: 'Large',
-  },
-  inItemAlignment: {
-    left: 'Left',
-    center: 'Center',
-    right: 'Right',
-  },
-  listAlignment: {
-    top: 'Top',
-    middle: 'Middle',
-    bottom: 'Bottom',
-  },
-};
+function getConfiguration() {
+  return {
+    default: {
+      iconSize: 'medium',
+      inItemAlignment: 'left',
+      listAlignment: 'top',
+      textSize: 'small',
+    },
+    iconSize: {
+      small: i18next.t(LOCALIZATION.ICON_SIZE_SMALL),
+      medium: i18next.t(LOCALIZATION.ICON_SIZE_MEDIUM),
+      large: i18next.t(LOCALIZATION.ICON_SIZE_LARGE),
+    },
+    textSize: {
+      small: i18next.t(LAYOUT_LOCALIZATION.TEXT_SIZE_SMALL),
+      medium: i18next.t(LAYOUT_LOCALIZATION.TEXT_SIZE_MEDIUM),
+      large: i18next.t(LAYOUT_LOCALIZATION.TEXT_SIZE_LARGE),
+    },
+    inItemAlignment: {
+      left: i18next.t(LOCALIZATION.IN_ITEM_ALIGNMENT_LEFT),
+      center: i18next.t(LOCALIZATION.IN_ITEM_ALIGNMENT_CENTER),
+      right: i18next.t(LOCALIZATION.IN_ITEM_ALIGNMENT_RIGHT),
+    },
+    listAlignment: {
+      top: i18next.t(LOCALIZATION.LIST_ALIGNMENT_TOP),
+      middle: i18next.t(LOCALIZATION.LIST_ALIGNMENT_MIDDLE),
+      bottom: i18next.t(LOCALIZATION.LIST_ALIGNMENT_BOTTOM),
+    },
+  };
+}
 
 export class GeneralSettings extends Component {
   constructor(props) {
     super(props);
+
+    this.configuration = getConfiguration();
+
     this.saveForm = this.saveForm.bind(this);
 
     props.onFieldChange(this.saveForm);
@@ -61,7 +70,7 @@ export class GeneralSettings extends Component {
 
     return (
       <div>
-        <h3>General settings</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <form>
           <FormGroup>
             <Row>
@@ -72,19 +81,23 @@ export class GeneralSettings extends Component {
                 />
               </Col>
               <Col md={4}>
-                <ControlLabel>Icon size</ControlLabel>
+                <ControlLabel>
+                  {i18next.t(LOCALIZATION.FORM_ICON_SIZE)}
+                </ControlLabel>
                 <DropdownWrapper
-                  valuesMap={configuration.iconSize}
-                  defaultKey={configuration.default.iconSize}
+                  valuesMap={this.configuration.iconSize}
+                  defaultKey={this.configuration.default.iconSize}
                   field={iconSize}
                   disabled={!showIcon}
                 />
               </Col>
               <Col md={4}>
-                <ControlLabel>Text size</ControlLabel>
+                <ControlLabel>
+                  {i18next.t(LAYOUT_LOCALIZATION.FORM_TEXT_SIZE)}
+                </ControlLabel>
                 <DropdownWrapper
-                  valuesMap={configuration.textSize}
-                  defaultKey={configuration.default.textSize}
+                  valuesMap={this.configuration.textSize}
+                  defaultKey={this.configuration.default.textSize}
                   field={textSize}
                   disabled={!showText}
                 />
@@ -94,22 +107,33 @@ export class GeneralSettings extends Component {
           <FormGroup>
             <Row>
               <Col md={4}>
-                <ControlLabel>List alignment</ControlLabel>
+                <ControlLabel>
+                  {i18next.t(LOCALIZATION.FORM_LIST_ALIGNMENT)}
+                </ControlLabel>
                 <DropdownWrapper
-                  valuesMap={configuration.listAlignment}
-                  defaultKey={configuration.default.listAlignment}
+                  valuesMap={this.configuration.listAlignment}
+                  defaultKey={this.configuration.default.listAlignment}
                   field={listAlignment}
                 />
               </Col>
               <Col md={4}>
-                <ControlLabel>Offset from top (px)</ControlLabel>
-                <input name="cols" type="number" className="form-control" {...topOffset} />
+                <ControlLabel>
+                  {i18next.t(LOCALIZATION.FORM_OFFSET_FROM_TOP)}
+                </ControlLabel>
+                <input
+                  name="cols"
+                  type="number"
+                  className="form-control"
+                  {...topOffset}
+                />
               </Col>
               <Col md={4}>
-                <ControlLabel>In-item alignment</ControlLabel>
+                <ControlLabel>
+                  {i18next.t(LOCALIZATION.FORM_IN_ITEM_ALIGNMENT)}
+                </ControlLabel>
                 <DropdownWrapper
-                  valuesMap={configuration.inItemAlignment}
-                  defaultKey={configuration.default.inItemAlignment}
+                  valuesMap={this.configuration.inItemAlignment}
+                  defaultKey={this.configuration.default.inItemAlignment}
                   field={inItemAlignment}
                 />
               </Col>
@@ -129,10 +153,16 @@ GeneralSettings.propTypes = {
   onFieldChange: PropTypes.func,
 };
 
-export default form((props) => {
+export default form(props => {
   const { settings } = props;
   return {
-    fields: ['topOffset', 'listAlignment', 'inItemAlignment', 'iconSize', 'textSize'],
+    fields: [
+      'topOffset',
+      'listAlignment',
+      'inItemAlignment',
+      'iconSize',
+      'textSize',
+    ],
     defaultValues: {
       topOffset: settings.topOffset,
       listAlignment: settings.listAlignment,

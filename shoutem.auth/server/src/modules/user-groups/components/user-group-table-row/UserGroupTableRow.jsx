@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import i18next from 'i18next';
+import autoBindReact from 'auto-bind/react';
 import { Switch, ActionsMenu, IconLabel } from '@shoutem/react-web-ui';
 import { MenuItem } from 'react-bootstrap';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class UserGroupTableRow extends Component {
   constructor(props) {
     super(props);
-
-    this.handleRenameGroupClick = this.handleRenameGroupClick.bind(this);
-    this.handleDeleteGroupClick = this.handleDeleteGroupClick.bind(this);
-    this.handleGroupDefaultToggle = this.handleGroupDefaultToggle.bind(this);
+    autoBindReact(this);
   }
 
   handleRenameGroupClick() {
@@ -25,10 +25,7 @@ export default class UserGroupTableRow extends Component {
 
   handleGroupDefaultToggle() {
     const {
-      userGroup: {
-        id: groupId,
-        isDefault,
-      },
+      userGroup: { id: groupId, isDefault },
     } = this.props;
 
     const groupPatch = { isDefault: !isDefault };
@@ -36,13 +33,13 @@ export default class UserGroupTableRow extends Component {
   }
 
   render() {
-    const { userGroup: { name, isDefault } } = this.props;
+    const {
+      userGroup: { name, isDefault },
+    } = this.props;
 
     return (
       <tr className="user-group-table-row">
-        <td className="text-ellipsis">
-          {name}
-        </td>
+        <td className="text-ellipsis">{name}</td>
         <td className="text-ellipsis">
           <Switch
             checked={isDefault}
@@ -57,12 +54,12 @@ export default class UserGroupTableRow extends Component {
           >
             <MenuItem onClick={this.handleRenameGroupClick}>
               <IconLabel iconName="edit">
-                Rename
+                {i18next.t(LOCALIZATION.BUTTON_EDIT_TITLE)}
               </IconLabel>
             </MenuItem>
             <MenuItem onClick={this.handleDeleteGroupClick}>
               <IconLabel iconName="delete">
-                Delete
+                {i18next.t(LOCALIZATION.BUTTON_DELETE_TITLE)}
               </IconLabel>
             </MenuItem>
           </ActionsMenu>

@@ -1,6 +1,8 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { reduxForm } from 'redux-form';
+import i18next from 'i18next';
 import {
   PasswordBox,
   LoaderContainer,
@@ -10,12 +12,8 @@ import { Row, Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
 import { getFormState } from 'src/redux';
 import { CmsSelect } from 'src/modules/cms';
 import { validateCashier } from '../../services';
+import LOCALIZATION from './localization';
 import './style.scss';
-
-const PASSWORD_HELP_TEXT =
-  'Used by the cashier to login to application. Can contain numbers and/or letters';
-const PIN_HELP_TEXT =
-  'Used by the cashier to confirm customer transaction. Can contain numbers and/or letters';
 
 export function CashierForm({
   submitting,
@@ -44,7 +42,7 @@ export function CashierForm({
           disabled={submitting}
           elementId="firstName"
           field={firstName}
-          name="First name"
+          name={i18next.t(LOCALIZATION.FORM_FIRST_NAME_TITLE)}
         />
       </Row>
       <Row>
@@ -52,7 +50,7 @@ export function CashierForm({
           disabled={submitting}
           elementId="lastName"
           field={lastName}
-          name="Last name"
+          name={i18next.t(LOCALIZATION.FORM_FIRST_NAME_TITLE)}
         />
       </Row>
       <Row>
@@ -60,7 +58,7 @@ export function CashierForm({
           disabled={inEditMode || submitting}
           elementId="email"
           field={email}
-          name="E-mail address"
+          name={i18next.t(LOCALIZATION.FORM_EMAIL_ADDRESS_TITLE)}
         />
       </Row>
       <Row>
@@ -68,8 +66,8 @@ export function CashierForm({
           disabled={inEditMode || submitting}
           elementId="password"
           field={password}
-          helpText={PASSWORD_HELP_TEXT}
-          name="App login password"
+          helpText={i18next.t(LOCALIZATION.PASSWORD_HELP_TEXT)}
+          name={i18next.t(LOCALIZATION.FORM_PASSWORD_TITLE)}
         >
           <PasswordBox />
         </ReduxFormElement>
@@ -79,22 +77,22 @@ export function CashierForm({
           disabled={submitting}
           elementId="pin"
           field={pin}
-          helpText={PIN_HELP_TEXT}
-          name="PIN"
+          helpText={i18next.t(LOCALIZATION.PIN_HELP_TEXT)}
+          name={i18next.t(LOCALIZATION.FORM_PIN_TITLE)}
         />
       </Row>
-      {!_.isEmpty(places) &&
+      {!_.isEmpty(places) && (
         <Row>
           <CmsSelect
-            allItemsLabel="All stores"
+            allItemsLabel={i18next.t(LOCALIZATION.FORM_ALL_STORES_TITLE)}
             defaultValue={currentPlaceId}
             descriptor={placesDescriptor}
-            dropdownLabel="Select a store"
+            dropdownLabel={i18next.t(LOCALIZATION.FORM_SELECT_STORE_TITLE)}
             onFilterChange={onPlaceChange}
             resources={places}
           />
         </Row>
-      }
+      )}
       <ButtonToolbar>
         <Button
           bsSize="large"
@@ -103,18 +101,20 @@ export function CashierForm({
           type="submit"
         >
           <LoaderContainer isLoading={submitting}>
-            {inEditMode ? 'Save' : 'Add'}
+            {inEditMode
+              ? i18next.t(LOCALIZATION.BUTTON_SAVE_TITLE)
+              : i18next.t(LOCALIZATION.BUTTON_ADD_TITLE)}
           </LoaderContainer>
         </Button>
         <Button bsSize="large" disabled={submitting} onClick={onCancel}>
-          Cancel
+          {i18next.t(LOCALIZATION.BUTTON_CANCEL_TITLE)}
         </Button>
       </ButtonToolbar>
-      {error &&
+      {error && (
         <div className="has-error">
           <HelpBlock>{error}</HelpBlock>
         </div>
-      }
+      )}
     </form>
   );
 }
@@ -134,13 +134,6 @@ CashierForm.propTypes = {
 export default reduxForm({
   getFormState,
   form: 'cashierForm',
-  fields: [
-    'id',
-    'firstName',
-    'lastName',
-    'email',
-    'password',
-    'pin',
-  ],
+  fields: ['id', 'firstName', 'lastName', 'email', 'password', 'pin'],
   validate: validateCashier,
 })(CashierForm);

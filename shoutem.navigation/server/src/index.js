@@ -1,12 +1,12 @@
-import IconsPage from './iconsPage/IconsPage';
-import List from './layoutSettings/list/List';
-import CardList from './layoutSettings/cardList/CardList';
+import IconsPage from './iconsPage';
+import List from './layoutSettings/list';
+import CardList from './layoutSettings/cardList';
 import None from './layoutSettings/None';
-import IconGrid from './layoutSettings/iconGrid/IconGrid';
-import Drawer from './layoutSettings/Drawer';
-import TabBar from './layoutSettings/Tabbar';
-import NavigationBarPage from './NavigationBarPage';
-import TileGrid from './layoutSettings/tileGrid/TileGrid';
+import IconGrid from './layoutSettings/iconGrid';
+import TileGrid from './layoutSettings/tileGrid';
+import Drawer from './layoutSettings/drawer';
+import TabBar from './layoutSettings/tabbar';
+import NavigationBarPage from './navigationBarPage';
 
 import reducer from './reducer';
 import { createDenormalizer } from 'denormalizer';
@@ -24,9 +24,6 @@ const adminPages = {
   NavigationBarPage,
 };
 
-export {
-  adminPages,
-  reducer,
-};
+export { adminPages, reducer };
 
 createDenormalizer(store.getState);

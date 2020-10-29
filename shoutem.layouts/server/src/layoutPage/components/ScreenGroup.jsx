@@ -1,14 +1,19 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
+import i18next from 'i18next';
+import {
+  SettingsPageRenderer,
+  ExtensionContextProvider,
+} from '@shoutem/web-core';
 import Screen from './Screen';
-import { SettingsPageRenderer, ExtensionContextProvider } from '@shoutem/web-core';
-
-const DEFAULT_GROUP_TITLE = 'Choose layout';
+import LOCALIZATION from './localization';
 
 export default class ScreenGroup extends Component {
   constructor(props) {
     super(props);
-    this.handleLayoutSettingsPageError = this.handleLayoutSettingsPageError.bind(this);
+    this.handleLayoutSettingsPageError = this.handleLayoutSettingsPageError.bind(
+      this,
+    );
   }
 
   handleLayoutSettingsPageError() {
@@ -25,8 +30,15 @@ export default class ScreenGroup extends Component {
     } = this.props;
     const { alternativeScreens } = originalScreen;
 
-    const title = _.get(originalScreen, 'groupTitle', DEFAULT_GROUP_TITLE);
-    const activeScreenCanonicalName = _.get(activeScreenDescriptor, 'canonicalName');
+    const title = _.get(
+      originalScreen,
+      'groupTitle',
+      i18next.t(LOCALIZATION.DEFAULT_GROUP_TITLE),
+    );
+    const activeScreenCanonicalName = _.get(
+      activeScreenDescriptor,
+      'canonicalName',
+    );
 
     const alternativeScreen = _.find(alternativeScreens, [
       'canonicalName',
@@ -41,9 +53,7 @@ export default class ScreenGroup extends Component {
 
     return (
       <div className="screen_group">
-        <span className="screen_group__title">
-          {title}
-        </span>
+        <span className="screen_group__title">{title}</span>
         <div className="screen_group__screen-list">
           <Screen
             screen={originalScreen}

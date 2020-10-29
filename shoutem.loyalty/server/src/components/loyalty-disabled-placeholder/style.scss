@@ -1,18 +1,16 @@
-:global {
-  .loyalty-disabled-placeholder {
-    margin-top: 64px;
+.loyalty-disabled-placeholder {
+  margin-top: 64px;
 
-    p {
-      text-align: center;
-    }
+  p {
+    text-align: center;
+  }
 
-    .text-error {
-      font-size: 13px;
-    }
+  .text-error {
+    font-size: 13px;
+  }
 
-    .btn {
-      margin-top: 24px;
-      min-width: 128px;
-    }
+  .btn {
+    margin-top: 24px;
+    min-width: 128px;
   }
 }

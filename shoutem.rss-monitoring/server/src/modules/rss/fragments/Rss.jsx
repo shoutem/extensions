@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ControlLabel, FormGroup } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
 import { shouldLoad, isError } from '@shoutem/redux-io';
-import autoBindReact from 'auto-bind/react';
 import { isInitialized, isBusy } from '@shoutem/redux-io/status';
 import {
   updateShortcutSettings,
@@ -19,6 +20,7 @@ import {
   disableMonitoring,
 } from '../redux';
 import { MonitoredScreensTable } from '../components';
+import LOCALIZATION from './localization';
 
 class Rss extends Component {
   constructor(props) {
@@ -77,9 +79,11 @@ class Rss extends Component {
 
     return (
       <LoaderContainer isLoading={isLoading}>
-        <h3>Monitored screens</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <FormGroup className="switch-form-group">
-          <ControlLabel>Enable monitoring</ControlLabel>
+          <ControlLabel>
+            {i18next.t(LOCALIZATION.FORM_SWITCH_LABEL)}
+          </ControlLabel>
           <Switch
             onChange={this.handleToggleMonitoring}
             value={rssMonitoringEnabled}

@@ -1,19 +1,19 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import i18next from 'i18next';
 import { FontIcon } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default function FileUploadPlaceholder({ className }) {
-  const classes = classnames(
-    'file-upload-placeholder',
-    className,
-  );
+  const classes = classnames('file-upload-placeholder', className);
 
   return (
     <div className={classes}>
       <div>
         <FontIcon name="add" />
-        <div>Choose a file or drag it here.</div>
+        <div>{i18next.t(LOCALIZATION.DESCRIPTION)}</div>
       </div>
     </div>
   );

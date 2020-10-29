@@ -1,8 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { MenuItem } from 'react-bootstrap';
 import { FontIcon, IconLabel, Dropdown } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 const UNSUPPORTED_FORMATS = [
@@ -17,14 +20,15 @@ const UNSUPPORTED_FORMATS = [
   'entity-reference-array',
 ];
 
-const ALWAYS_AVAILABLE_SORT_FORMATS = [
-  { name: 'timeCreated', title: 'Created time' },
-  { name: 'timeUpdated', title: 'Updated time' },
-];
+export function getAlwaysAvailableSortFormats() {
+  return [
+    { name: 'timeCreated', title: i18next.t(LOCALIZATION.SORT_CREATED_TIME) },
+    { name: 'timeUpdated', title: i18next.t(LOCALIZATION.SORT_UPDATED_TIME) },
+  ];
+}
 
-const resolveDisplayOrderIcon = (currentOrder) => (
-  currentOrder === 'ascending' ? 'order-ascending' : 'order-descending'
-);
+const resolveDisplayOrderIcon = currentOrder =>
+  currentOrder === 'ascending' ? 'order-ascending' : 'order-descending';
 
 class SortOptions extends Component {
   constructor(props) {
@@ -32,7 +36,9 @@ class SortOptions extends Component {
 
     this.handleFieldChange = this.handleFieldChange.bind(this);
     this.handleOrderingChange = this.handleOrderingChange.bind(this);
-    this.calculateDisplayProperties = this.calculateDisplayProperties.bind(this);
+    this.calculateDisplayProperties = this.calculateDisplayProperties.bind(
+      this,
+    );
 
     this.state = {
       currentField: null,
@@ -88,13 +94,14 @@ class SortOptions extends Component {
       name,
     }));
 
-    const schemaDisplayFields = _.filter(fields, (property) => (
-      !_.includes(UNSUPPORTED_FORMATS, property.format)
-    ));
+    const schemaDisplayFields = _.filter(
+      fields,
+      property => !_.includes(UNSUPPORTED_FORMATS, property.format),
+    );
 
     const displayFields = [
       ...schemaDisplayFields,
-      ...ALWAYS_AVAILABLE_SORT_FORMATS,
+      ...getAlwaysAvailableSortFormats(),
     ];
 
     // resolve field and order or set defaults
@@ -118,9 +125,9 @@ class SortOptions extends Component {
 
     const displayOrder = _.upperFirst(currentOrder);
     const displayFieldTitle = _.get(currentField, 'title');
-    const displayFieldLabel = displayFieldTitle ?
-      `Sort by ${displayFieldTitle}` :
-      'Select sort field';
+    const displayFieldLabel = displayFieldTitle
+      ? i18next.t(LOCALIZATION.SORT_BY_TITLE, { displayFieldTitle })
+      : i18next.t(LOCALIZATION.SELECT_SORT_FIELD);
 
     return (
       <div className={classes}>
@@ -129,24 +136,15 @@ class SortOptions extends Component {
           disabled={disabled}
           onSelect={this.handleFieldChange}
         >
-          <Dropdown.Toggle>
-            {displayFieldLabel}
-          </Dropdown.Toggle>
+          <Dropdown.Toggle>{displayFieldLabel}</Dropdown.Toggle>
           <Dropdown.Menu>
-            {displayFieldTitle &&
-              <MenuItem>
-                {displayFieldTitle}
-              </MenuItem>
-            }
+            {displayFieldTitle && <MenuItem>{displayFieldTitle}</MenuItem>}
             {displayFieldTitle && <MenuItem divider />}
-            {displayFields.map((field) =>
-              <MenuItem
-                eventKey={field.name}
-                key={field.name}
-              >
+            {displayFields.map(field => (
+              <MenuItem eventKey={field.name} key={field.name}>
                 {field.title}
               </MenuItem>
-            )}
+            ))}
           </Dropdown.Menu>
         </Dropdown>
         <Dropdown
@@ -171,19 +169,13 @@ class SortOptions extends Component {
             </MenuItem>
             <MenuItem divider />
             <MenuItem eventKey="ascending">
-              <IconLabel
-                iconName="order-ascending"
-                size="24px"
-              >
-                Ascending
+              <IconLabel iconName="order-ascending" size="24px">
+                {i18next.t(LOCALIZATION.ORDER_ASCENDING)}
               </IconLabel>
             </MenuItem>
             <MenuItem eventKey="descending">
-              <IconLabel
-                iconName="order-descending"
-                size="24px"
-              >
-                Descending
+              <IconLabel iconName="order-descending" size="24px">
+                {i18next.t(LOCALIZATION.ORDER_ASCENDING)}
               </IconLabel>
             </MenuItem>
           </Dropdown.Menu>

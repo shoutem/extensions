@@ -1,27 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ControlLabel, Col, Row } from 'react-bootstrap';
-import autoBindReact from 'auto-bind';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { Switch, FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
 import _ from 'lodash';
 import MessageWithLink from '../../../../components/message-with-link';
+import LOCALIZATION from './localization';
 import './style.scss';
 
-const learnMoreText = 'Learn more.';
 const supportArticleLink =
   'https://www.shoutem.com/support/sign-in-with-apple/';
-const appleSignInMessage =
-  'You need to leave Apple Sign In enabled if you use Social sign in on iOS app.';
-
-const appleButtonStyleMessage = 'Change Apple Sign In button style.';
-const darkButtonTooltipMessage = 'Apple Sign In button can be dark or light';
 const appleButtonStyleLink =
   'https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple/overview/buttons/';
 
 export default class AppleSetupForm extends Component {
   constructor(props) {
     super(props);
-
     autoBindReact(this);
   }
 
@@ -61,15 +56,15 @@ export default class AppleSetupForm extends Component {
 
     return (
       <div className={className}>
-        <ControlLabel>Apple</ControlLabel>
+        <ControlLabel>{i18next.t(LOCALIZATION.FORM_APPLE_TITLE)}</ControlLabel>
         <FontIconPopover
           delayHide={2000}
           hideOnMouseLeave={false}
           message={
             <MessageWithLink
-              message={appleSignInMessage}
               link={supportArticleLink}
-              linkText={learnMoreText}
+              linkText={i18next.t(LOCALIZATION.LEARN_MORE_MESSAGE)}
+              message={i18next.t(LOCALIZATION.APPLE_SIGN_IN_MESSAGE)}
             />
           }
         >
@@ -82,20 +77,24 @@ export default class AppleSetupForm extends Component {
         <Switch onChange={this.handleAppleEnabledToggle} value={enabled} />
         {enabled && (
           <div className="apple-setup-form">
-            <h3>Apple Authentication setup</h3>
-            <ControlLabel>{appleButtonStyleMessage}</ControlLabel>
+            <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_APPLE_BUTTON_STYLE_TITLE)}
+            </ControlLabel>
             <Row>
               <Col xs={6}>
                 <ControlLabel>
-                  Dark Button Style
+                  {i18next.t(LOCALIZATION.FORM_DARK_BUTTON_TITLE)}
                   <FontIconPopover
                     delayHide={2000}
                     hideOnMouseLeave={false}
                     message={
                       <MessageWithLink
-                        message={darkButtonTooltipMessage}
                         link={appleButtonStyleLink}
-                        linkText={learnMoreText}
+                        linkText={i18next.t(LOCALIZATION.LEARN_MORE_MESSAGE)}
+                        message={i18next.t(
+                          LOCALIZATION.DARK_BUTTON_TOOLTIP_MESSAGE,
+                        )}
                       />
                     }
                   >

@@ -3,16 +3,18 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
 import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { Alert } from 'react-bootstrap';
+import i18next from 'i18next';
 import { shouldLoad } from '@shoutem/redux-io';
 import { getExtension } from '@shoutem/redux-api-sdk';
-import { connect } from 'react-redux';
 import {
   loadApplicationStatus,
   getApplicationStatus,
   isPublished,
 } from 'src/modules/app';
 import { Rss } from 'src/modules/rss';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 class RssPage extends Component {
@@ -45,7 +47,7 @@ class RssPage extends Component {
       <div className="rss-page">
         {!published && (
           <Alert className="publish-alert">
-            Push notifications can't reach users until your app is published.
+            {i18next.t(LOCALIZATION.PUSH_ALERT)}
           </Alert>
         )}
         <Rss appId={appId} extensionName={extensionName} />

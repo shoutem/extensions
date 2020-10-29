@@ -12,11 +12,10 @@ export function navigateToSettings(appId, sectionId) {
   };
 }
 
-export default () => (
+export default () =>
   createScopedReducer({
     extension: {
       // Example of custom reducers
       test: () => new Date().getMinutes(),
     },
-  })
-);
+  });

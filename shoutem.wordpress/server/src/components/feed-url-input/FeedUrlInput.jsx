@@ -1,5 +1,8 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import {
   Button,
   ButtonToolbar,
@@ -10,16 +13,14 @@ import {
 } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { validateWordPressUrl } from 'src/services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class FeedUrlInput extends Component {
   constructor(props) {
     super(props);
 
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleContinueClick = this.handleContinueClick.bind(this);
-    this.updateFeedUrl = this.updateFeedUrl.bind(this);
+    autoBindReact(this);
 
     const { feedUrl } = props;
 
@@ -38,7 +39,7 @@ export default class FeedUrlInput extends Component {
       .catch(() => (
         this.setState({
           inProgress: false,
-          error: 'Provided URL is not a valid WordPress URL.',
+          error: i18next.t(LOCALIZATION.NOT_WORDPRESS_URL),
         })
       ));
   }
@@ -48,7 +49,7 @@ export default class FeedUrlInput extends Component {
     const feedUrlValid = validateWordPressUrl(feedUrl);
 
     if (!feedUrlValid) {
-      this.setState({ error: 'Invalid URL.' });
+      this.setState({ error: i18next.t(LOCALIZATION.INVALID_URL) });
       return;
     }
 
@@ -77,7 +78,7 @@ export default class FeedUrlInput extends Component {
         <form onSubmit={this.handleSubmit}>
           <FormGroup validationState={validationState}>
             <ControlLabel>
-              WordPress page URL
+              {i18next.t(LOCALIZATION.PAGE_URL)}
             </ControlLabel>
             <FormControl
               className="form-control"
@@ -93,10 +94,7 @@ export default class FeedUrlInput extends Component {
           </FormGroup>
         </form>
         <ControlLabel>
-          WordPress versions 4.4 or newer. In case your site is using WordPress version 4.4 to 4.7,
-          you will need to install a plugin in order to fetch posts. For WordPress version 4.7 and
-          above it is going to work out of the box.
-          If you are using an older version of WordPress, you will need to update it.
+          {i18next.t(LOCALIZATION.WORDPRESS_VERSION_WARNING)}
         </ControlLabel>
         <ButtonToolbar>
           <Button
@@ -105,7 +103,7 @@ export default class FeedUrlInput extends Component {
             onClick={this.handleContinueClick}
           >
             <LoaderContainer isLoading={inProgress}>
-              Continue
+              {i18next.t(LOCALIZATION.CONTINUE_BUTTON)}
             </LoaderContainer>
           </Button>
         </ButtonToolbar>

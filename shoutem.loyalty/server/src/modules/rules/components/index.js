@@ -1,5 +1,1 @@
-import RulesForm from './rules-form';
-export {
-  RulesForm,
-};
-
+export { default as RulesForm } from './rules-form';

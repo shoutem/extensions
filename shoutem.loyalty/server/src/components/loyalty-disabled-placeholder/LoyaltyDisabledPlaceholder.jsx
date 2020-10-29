@@ -1,14 +1,20 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
-import { LoaderContainer, EmptyResourcePlaceholder } from '@shoutem/react-web-ui';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import {
+  LoaderContainer,
+  EmptyResourcePlaceholder,
+} from '@shoutem/react-web-ui';
 import emptyImage from 'assets/images/empty-state-loyalty.svg';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class LoyaltyDisabledPlaceholder extends Component {
   constructor(props) {
     super(props);
-
-    this.handleEnableLoyaltyClick = this.handleEnableLoyaltyClick.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inError: false,
@@ -20,25 +26,25 @@ export default class LoyaltyDisabledPlaceholder extends Component {
     const { onEnableLoyaltyClick } = this.props;
     this.setState({ inProgress: true });
 
-    onEnableLoyaltyClick()
-      .then(() => this.setState({ inProgress: false }),
-        () => this.setState({ inError: true }));
+    onEnableLoyaltyClick().then(
+      () => this.setState({ inProgress: false }),
+      () => this.setState({ inError: true }),
+    );
   }
 
   render() {
     const { inError, inProgress } = this.state;
-    const displayButtonLabel = inError ? 'Try again' : 'Get started';
+    const displayButtonLabel = inError
+      ? i18next.t(LOCALIZATION.BUTTON_TRY_AGAIN_TITLE)
+      : i18next.t(LOCALIZATION.BUTTON_GET_STARTED_TITLE);
 
     return (
       <EmptyResourcePlaceholder
         className="loyalty-disabled-placeholder"
         imageSrc={emptyImage}
-        title="Loyalty is not configured at the moment"
+        title={i18next.t(LOCALIZATION.TITLE)}
       >
-        <p>
-          Here you will be able to configure your loyalty program settings,
-          add cashiers and define rules.
-        </p>
+        <p>{i18next.t(LOCALIZATION.DESCRIPTION)}</p>
         <Button
           bsSize="large"
           bsStyle="primary"
@@ -48,7 +54,11 @@ export default class LoyaltyDisabledPlaceholder extends Component {
             {displayButtonLabel}
           </LoaderContainer>
         </Button>
-        {inError && <p className="text-error">Failed to enable.</p>}
+        {inError && (
+          <p className="text-error">
+            {i18next.t(LOCALIZATION.FAILED_TO_ENABLE_MESSAGE)}
+          </p>
+        )}
       </EmptyResourcePlaceholder>
     );
   }

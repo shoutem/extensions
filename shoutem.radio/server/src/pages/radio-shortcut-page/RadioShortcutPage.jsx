@@ -1,4 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { connect } from 'react-redux';
 import {
   Button,
@@ -8,14 +12,11 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
-import _ from 'lodash';
-
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { updateShortcutSettings } from '@shoutem/redux-api-sdk';
-
 import SettingField from '../../components/SettingField';
 import getWeServUrl from '../../services/getWeServUrl';
-
+import LOCALIZATION from './localization';
 import './style.scss';
 
 class RadioShortcutPage extends Component {
@@ -26,13 +27,7 @@ class RadioShortcutPage extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleBackgroundImageUrlChange = this.handleBackgroundImageUrlChange.bind(this);
-    this.handleNavbarTitleChange = this.handleNavbarTitleChange.bind(this);
-    this.handleStreamUrlChange = this.handleStreamUrlChange.bind(this);
-    this.handleStreamTitleChange = this.handleStreamTitleChange.bind(this);
-    this.handleToggleCheckbox = this.handleToggleCheckbox.bind(this);
-    this.handleSaveSettings = this.handleSaveSettings.bind(this);
+    autoBindReact(this);
 
     this.state = {
       errorNavbarTitle: null,
@@ -52,7 +47,10 @@ class RadioShortcutPage extends Component {
   componentWillReceiveProps(nextProps) {
     const { shortcut: nextShortcut } = nextProps;
     const {
-      navbarTitle, streamTitle, backgroundImageUrl, streamUrl,
+      navbarTitle,
+      streamTitle,
+      backgroundImageUrl,
+      streamUrl,
     } = this.state;
 
     if (_.isEmpty(navbarTitle)) {
@@ -187,65 +185,71 @@ class RadioShortcutPage extends Component {
     const imageSrc = getWeServUrl(backgroundImageUrl, 200);
 
     return (
-      <img alt="Background preview" src={imageSrc} />
+      <img
+        alt={i18next.t(LOCALIZATION.BACKGROUND_IMAGE_ALT_TEXT)}
+        src={imageSrc}
+      />
     );
   }
 
   render() {
     const {
-      errorBackgroundImageUrl, errorNavbarTitle, errorStreamTitle,
-      errorStreamUrl, errorSharing, navbarTitle, streamTitle,
-      streamUrl, showSharing, isLoading, backgroundImageUrl,
+      errorBackgroundImageUrl,
+      errorNavbarTitle,
+      errorStreamTitle,
+      errorStreamUrl,
+      errorSharing,
+      navbarTitle,
+      streamTitle,
+      streamUrl,
+      showSharing,
+      isLoading,
+      backgroundImageUrl,
     } = this.state;
 
     return (
       <FormGroup>
-        <ControlLabel>
-          NOTE: Radio player's lock screen and notification banner controls will not appear or work in the app preview. These functionalities do work in live applications.
-        </ControlLabel>
+        <ControlLabel>{i18next.t(LOCALIZATION.FORM_LABEL_NOTE)}</ControlLabel>
         {this.renderImage()}
         <SettingField
           errorText={errorBackgroundImageUrl}
           onChange={this.handleBackgroundImageUrlChange}
           textValue={backgroundImageUrl}
-          title="Background image URL:"
-          popoverMessage="Only static image formats are supported (e.g. PNG, JPEG)."
+          title={i18next.t(LOCALIZATION.FORM_BACKGROUND_FIELD_TITLE)}
+          popoverMessage={i18next.t(LOCALIZATION.FORM_BACKGROUND_FIELD_POPOVER)}
         />
         <SettingField
           errorText={errorNavbarTitle}
           onChange={this.handleNavbarTitleChange}
           textValue={navbarTitle}
-          title="Navbar title:"
+          title={i18next.t(LOCALIZATION.FORM_NAVBAR_FIELD_TITLE)}
         />
         <SettingField
           errorText={errorStreamUrl}
           onChange={this.handleStreamUrlChange}
           textValue={streamUrl}
-          title="Stream URL:"
+          title={i18next.t(LOCALIZATION.FORM_STREAM_URL_FIELD_TITLE)}
         />
         <SettingField
           errorText={errorStreamTitle}
           onChange={this.handleStreamTitleChange}
           textValue={streamTitle}
-          title="Stream title:"
+          title={i18next.t(LOCALIZATION.FORM_STREAM_FIELD_TITLE)}
         />
         <Checkbox
           checked={showSharing}
           name="Enable Sharing"
           onChange={this.handleToggleCheckbox}
         >
-          Enable Sharing
+          {i18next.t(LOCALIZATION.FORM_SHARING_CHECKBOX_TITLE)}
         </Checkbox>
         {errorSharing && (
           <HelpBlock className="text-error">{errorSharing}</HelpBlock>
         )}
         <ButtonToolbar>
-          <Button
-            bsStyle="primary"
-            onClick={this.handleSaveSettings}
-          >
+          <Button bsStyle="primary" onClick={this.handleSaveSettings}>
             <LoaderContainer isLoading={isLoading}>
-              Save
+              {i18next.t(LOCALIZATION.BUTTON_SAVE)}
             </LoaderContainer>
           </Button>
         </ButtonToolbar>
@@ -254,4 +258,6 @@ class RadioShortcutPage extends Component {
   }
 }
 
-export default connect(null, { updateSettings: updateShortcutSettings })(RadioShortcutPage);
+export default connect(null, { updateSettings: updateShortcutSettings })(
+  RadioShortcutPage,
+);

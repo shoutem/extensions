@@ -1,33 +1,33 @@
-var pack = require('../package.json');
-var _ = require('lodash');
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-var path = require('path');
+const pack = require('../package.json');
+const _ = require('lodash');
+const path = require('path');
 
-var publicPath = '/server/build/';
-var extensionClass = _.kebabCase(pack.name);
+const publicPath = '/server/build/';
+const extensionClass = _.kebabCase(pack.name);
 
-var webpackAppendQuery = {
+const webpackAppendQuery = {
   prepend: `.${extensionClass} {`,
-  append: "}",
+  append: '}',
 };
 
 module.exports = {
   mode: 'production',
   entry: ['./src/index.js'],
   externals: {
-    "@shoutem/redux-io": true,
-    "@shoutem/react-web-ui": true,
-    "classnames": true,
-    "context": true,
-    "environment": true,
-    "lodash": true,
-    "react": true,
-    "react-bootstrap": true,
-    "react-dom": true,
-    "react-redux": true,
-    "redux": true,
-    "redux-api-middleware": true,
-    "redux-thunk": true
+    '@shoutem/redux-io': true,
+    '@shoutem/react-web-ui': true,
+    classnames: true,
+    context: true,
+    environment: true,
+    lodash: true,
+    react: true,
+    'prop-types': true,
+    'react-bootstrap': true,
+    'react-dom': true,
+    'react-redux': true,
+    redux: true,
+    'redux-api-middleware': true,
+    'redux-thunk': true,
   },
   module: {
     rules: [
@@ -38,10 +38,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' },
-        ],
+        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
       },
       {
         test: /\.scss$/,
@@ -55,7 +52,11 @@ module.exports = {
             },
           },
           { loader: 'sass-loader' },
-          { loader: "@shoutem/webpack-prepend-append?"+JSON.stringify(webpackAppendQuery) },
+          {
+            loader: `@shoutem/webpack-prepend-append?${JSON.stringify(
+              webpackAppendQuery,
+            )}`,
+          },
         ],
       },
       {
@@ -75,34 +76,23 @@ module.exports = {
           },
         ],
       },
-    ]
+    ],
   },
   optimization: {
-    minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          unused: true,
-          dead_code: true,
-          warnings: false,
-          output: {
-            comments: false,
-          },
-        },
-      }),
-    ],
+    minimize: true,
   },
   output: {
     libraryTarget: 'amd',
     path: path.resolve('./build'),
     filename: 'index.js',
-    publicPath: publicPath,
+    publicPath,
   },
   resolve: {
     modules: [path.resolve('./src'), path.resolve('./node_modules')],
     extensions: ['*', '.js', '.jsx'],
   },
   devServer: {
-    publicPath: publicPath,
+    publicPath,
     hot: false,
     historyApiFallback: true,
     https: true,
@@ -115,6 +105,6 @@ module.exports = {
       chunks: false,
       modules: false,
       source: false,
-    }
+    },
   },
 };

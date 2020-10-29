@@ -1,12 +1,14 @@
+import i18next from 'i18next';
 import { isEmail } from 'validator';
+import LOCALIZATION from './localization';
 
 function validateNick(username) {
   if (!username) {
-    return 'Username is required';
+    return i18next.t(LOCALIZATION.USERNAME_REQUIRED_MESSAGE);
   }
 
   if (username.length < 3) {
-    return 'Username is too short';
+    return i18next.t(LOCALIZATION.USERNAME_TOO_SHORT_MESSAGE);
   }
 
   return null;
@@ -14,11 +16,11 @@ function validateNick(username) {
 
 function validateEmail(email) {
   if (!email) {
-    return 'Email is required';
+    return i18next.t(LOCALIZATION.EMAIL_REQUIRED_MESSAGE);
   }
 
   if (!isEmail(email)) {
-    return 'Email is not valid';
+    return i18next.t(LOCALIZATION.EMAIL_INVALID_MESSAGE);
   }
 
   return null;
@@ -26,11 +28,11 @@ function validateEmail(email) {
 
 function validateMemberPassword(password) {
   if (!password) {
-    return 'Password is required';
+    return i18next.t(LOCALIZATION.PASSWORD_REQUIRED_MESSAGE);
   }
 
   if (password.length < 6) {
-    return 'Password is too short';
+    return i18next.t(LOCALIZATION.PASSWORD_TOO_SHORT_MESSAGE);
   }
 
   return null;

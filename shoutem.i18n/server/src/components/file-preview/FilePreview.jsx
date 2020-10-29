@@ -1,14 +1,15 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Uri from 'urijs';
 import classnames from 'classnames';
+import autoBindReact from 'auto-bind/react';
 import { FontIcon } from '@shoutem/react-web-ui';
 import './style.scss';
 
 export default class FilePreview extends React.Component {
   constructor(props) {
     super(props);
-
-    this.handleClick = this.handleClick.bind(this);
+    autoBindReact(this);
   }
 
   handleClick(event) {
@@ -16,22 +17,13 @@ export default class FilePreview extends React.Component {
   }
 
   render() {
-    const {
-      src,
-      className,
-      canBeDeleted,
-      onDeleteClick,
-    } = this.props;
+    const { src, className, canBeDeleted, onDeleteClick } = this.props;
 
     const filename = src ? new Uri(src).filename() : 'No file.';
 
-    const classes = classnames(
-      className,
-      'file-preview',
-      {
-        'is-deletable': canBeDeleted,
-      },
-    );
+    const classes = classnames(className, 'file-preview', {
+      'is-deletable': canBeDeleted,
+    });
 
     return (
       <div className={classes} onClick={this.handleClick}>
@@ -40,7 +32,11 @@ export default class FilePreview extends React.Component {
           <div>{filename}</div>
         </div>
         {canBeDeleted && (
-          <FontIcon name="delete" onClick={onDeleteClick} className="file-preview__delete" />
+          <FontIcon
+            name="delete"
+            onClick={onDeleteClick}
+            className="file-preview__delete"
+          />
         )}
       </div>
     );
