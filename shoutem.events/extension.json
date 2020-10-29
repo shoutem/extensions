@@ -1,12 +1,11 @@
 {
   "name": "events",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "platform": "2.4.*",
   "title": "Events",
   "description": "Show items with location and time",
-  "categories": [
-    "content"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "categories": ["content"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -44,10 +43,7 @@
       "name": "EventsScreen",
       "title": "Fixed grid",
       "image": "./server/assets/images/fixed-grid.png",
-      "navigatesTo": [
-        "@.EventDetailsScreen",
-        "@.SingleEventMapScreen"
-      ],
+      "navigatesTo": ["@.EventDetailsScreen", "@.SingleEventMapScreen"],
       "settings": {
         "listType": "grid-list",
         "hasFeaturedItem": false

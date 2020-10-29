@@ -1,6 +1,14 @@
-import React, { Component, PropTypes } from 'react';
-import { Button, ButtonToolbar, FormGroup, ControlLabel } from 'react-bootstrap';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import i18next from 'i18next';
+import {
+  Button,
+  ButtonToolbar,
+  FormGroup,
+  ControlLabel,
+} from 'react-bootstrap';
 import { Radio } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class FeedSelector extends Component {
@@ -29,7 +37,9 @@ export default class FeedSelector extends Component {
       <div>
         <form>
           <FormGroup>
-            <ControlLabel>Choose from available feeds</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.CHOOSE_FROM_FEEDS)}
+            </ControlLabel>
             <table className="table feed-selector__table">
               <tbody>
                 {discoveredFeeds.map(feed => (
@@ -44,7 +54,7 @@ export default class FeedSelector extends Component {
                       </Radio>
                     </td>
                   </tr>
-              ))}
+                ))}
               </tbody>
             </table>
           </FormGroup>
@@ -55,13 +65,10 @@ export default class FeedSelector extends Component {
             disabled={!this.state.feed}
             onClick={this.onAddClick}
           >
-            Add feed
+            {i18next.t(LOCALIZATION.ADD_FEED)}
           </Button>
-          <Button
-            bsStyle="default"
-            onClick={onCancelClick}
-          >
-            Cancel
+          <Button bsStyle="default" onClick={onCancelClick}>
+            {i18next.t(LOCALIZATION.CANCEL_BUTTON)}
           </Button>
         </ButtonToolbar>
       </div>

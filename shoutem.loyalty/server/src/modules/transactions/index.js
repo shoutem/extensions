@@ -1,7 +1,6 @@
-export {
-  GeneralStats,
-  LoyaltyTypeRadioGroup,
-} from './components';
+import { reducer } from './redux';
+
+export { GeneralStats, LoyaltyTypeRadioGroup } from './components';
 
 export {
   TransactionsDashboard,
@@ -21,9 +20,5 @@ export {
   loadGeneralStats,
 } from './redux';
 
-export {
-  getTransactionCount,
-} from './services';
-
-import { reducer } from './redux';
+export { getTransactionCount } from './services';
 export default reducer;

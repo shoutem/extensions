@@ -1,8 +1,4 @@
-export {
-  getDeals,
-  getDealCategories,
-  getPlaces,
-} from './selectors';
+export { getDeals, getDealCategories, getPlaces } from './selectors';
 
 export {
   loadDeals,

@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
-import {
-  FormGroup,
-  ControlLabel,
-} from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import { FormGroup, ControlLabel } from 'react-bootstrap';
+import i18next from 'i18next';
 import { ImageUploader } from '@shoutem/web-core';
-import {
-  appId,
-  url,
-} from 'environment';
+import { appId, url } from 'environment';
 import { UndeletableS3Uploader } from '../../fileUpload';
+import LOCALIZATION from './localization';
 
 export const MIN_HEIGHT = 135;
 
 export default class NavigationBarBackgroundImage extends Component {
   static propTypes = {
-    backgroundImage: React.PropTypes.string,
-    onBackgroundImageChange: React.PropTypes.func,
+    backgroundImage: PropTypes.string,
+    onBackgroundImageChange: PropTypes.func,
   };
 
   constructor(props) {
@@ -42,18 +39,15 @@ export default class NavigationBarBackgroundImage extends Component {
   }
 
   render() {
-    const {
-      backgroundImage,
-    } = this.props;
-    const {
-      handleBackgroundUpload,
-      handleBackgroundDelete,
-    } = this;
+    const { backgroundImage } = this.props;
+    const { handleBackgroundUpload, handleBackgroundDelete } = this;
 
     return (
       <FormGroup className="navigation-bar-page-background-image background-settings">
         <ControlLabel>
-          {`Background image (min height ${MIN_HEIGHT}px)`}
+          {i18next.t(LOCALIZATION.FORM_BACKGROUND_IMAGE, {
+            minHeight: MIN_HEIGHT,
+          })}
         </ControlLabel>
         <ImageUploader
           previewSize="custom"

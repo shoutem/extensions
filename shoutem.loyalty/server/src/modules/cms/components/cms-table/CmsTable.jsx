@@ -1,8 +1,15 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { isBusy } from '@shoutem/redux-io';
-import { EditableTable, LoaderContainer, IconLabel } from '@shoutem/react-web-ui';
+import {
+  EditableTable,
+  LoaderContainer,
+  IconLabel,
+} from '@shoutem/react-web-ui';
 import { Button } from 'react-bootstrap';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 /**
@@ -11,10 +18,7 @@ import './style.scss';
  * Last column in EditableTable is column with action buttons that has empty string for header.
  */
 function getTableHeaders(columns) {
-  return [
-    ...(_.map(columns, 'header')),
-    '',
-  ];
+  return [..._.map(columns, 'header'), ''];
 }
 
 /**
@@ -72,9 +76,7 @@ export default class CmsTable extends Component {
             disabled={!addItemEnabled}
             onClick={onAddItemBtnClick}
           >
-            <IconLabel iconName="add">
-              {addItemBtnText}
-            </IconLabel>
+            <IconLabel iconName="add">{addItemBtnText}</IconLabel>
           </Button>
         </div>
         <EditableTable
@@ -106,7 +108,7 @@ CmsTable.propTypes = {
 };
 
 CmsTable.defaultProps = {
-  emptyStateText: 'No items in the list yet.',
+  emptyStateText: i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_MESSAGE),
   addItemEnabled: true,
-  addItemBtnText: 'Add item',
+  addItemBtnText: i18next.t(LOCALIZATION.BUTTON_ADD_ITEM_TITLE),
 };

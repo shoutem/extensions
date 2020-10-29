@@ -1,0 +1,9 @@
+{
+  "shoutem": {
+    "ical-events": {
+      "ical-page.title": "Enter your iCal URL",
+      "ical-page.form-url": "URL:",
+      "ical-page.button-save": "Save"
+    }
+  }
+}

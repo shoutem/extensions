@@ -6,5 +6,5 @@
 import RadioShortcutPage from './pages/radio-shortcut-page';
 
 export const pages = {
-  RadioShortcutPage
+  RadioShortcutPage,
 };

@@ -1,12 +1,12 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import CashierForm from './CashierForm';
 
 export default class CashierFormWrapper extends Component {
   constructor(props) {
     super(props);
-
-    this.handleCashierSubmit = this.handleCashierSubmit.bind(this);
-    this.handlePlaceChange = this.handlePlaceChange.bind(this);
+    autoBindReact(this);
 
     this.state = {
       currentPlaceId: props.initialPlaceId,

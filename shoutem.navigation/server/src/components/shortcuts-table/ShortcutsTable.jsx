@@ -1,8 +1,14 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { ControlLabel } from 'react-bootstrap';
 import classNames from 'classnames';
 
-export default function ShortcutsTable({ shortcuts, headerTitles, renderRow, className }) {
+export default function ShortcutsTable({
+  shortcuts,
+  headerTitles,
+  renderRow,
+  className,
+}) {
   const tableClassNames = classNames('shortcuts-table', className);
 
   return (
@@ -11,13 +17,13 @@ export default function ShortcutsTable({ shortcuts, headerTitles, renderRow, cla
         <thead>
           <tr>
             {headerTitles.map(title => (
-              <th><ControlLabel>{title}</ControlLabel></th>
+              <th>
+                <ControlLabel>{title}</ControlLabel>
+              </th>
             ))}
           </tr>
         </thead>
-        <tbody>
-          {shortcuts.map(renderRow)}
-        </tbody>
+        <tbody>{shortcuts.map(renderRow)}</tbody>
       </table>
     </div>
   );

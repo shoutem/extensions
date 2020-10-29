@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { AppState, InteractionManager } from 'react-native';
 import _ from 'lodash';
-
-import { NavigationBar } from 'shoutem.navigation';
-
 import {
   DropDownMenu,
   EmptyStateView,
@@ -29,8 +26,10 @@ import {
 
 import {
   getScreenState,
+  NavigationBar,
   setScreenState as setScreenStateAction,
 } from 'shoutem.navigation';
+import { selectors as i18nSelectors } from 'shoutem.i18n';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -146,6 +145,7 @@ export class CmsListScreen extends PureComponent {
 
       const allCategories = getCategories(state, parentCategoryId);
       const categoriesToDisplay = getCategoriesToDisplay(allCategories, visibleCategories);
+      const channelId = i18nSelectors.getActiveChannelId(state);
 
       const collection = getCmsCollection(state);
       if (!collection) {
@@ -160,6 +160,7 @@ export class CmsListScreen extends PureComponent {
         parentCategoryId,
         sortField,
         sortOrder,
+        ...(channelId && { channelId }),
         data: getCollection(collection[selectedCategoryId], state),
         categories: categoriesToDisplay,
         selectedCategory: getOne(selectedCategoryId, state, CATEGORIES_SCHEMA),
@@ -287,11 +288,14 @@ export class CmsListScreen extends PureComponent {
   }
 
   getQueryParams(options) {
+    const { channelId } = this.props;
+
     const sortField = _.get(options, 'sortField');
     const sortOrder = _.get(options, 'sortOrder');
 
     const params = {
       'filter[categories]': _.get(options, 'category.id'),
+      'filter[channels]': channelId,
     };
 
     if (!sortField) {

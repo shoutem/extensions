@@ -137,10 +137,7 @@ class DealsCmsPage extends Component {
 
   refreshData(nextProps, props = {}, useDefaultPaging = false) {
     const { selectedCategoryId, parentCategoryId } = this.state;
-    const {
-      deals: nextDeals,
-      categories: nextCategories,
-    } = nextProps;
+    const { deals: nextDeals, categories: nextCategories } = nextProps;
 
     if (parentCategoryId && shouldRefresh(nextCategories)) {
       this.props.loadDealCategories(parentCategoryId, useDefaultPaging);
@@ -156,10 +153,13 @@ class DealsCmsPage extends Component {
   }
 
   initializeSpecialDeals() {
-    const { shortcut: { title } } = this.props;
+    const {
+      shortcut: { title },
+    } = this.props;
     this.setState({ inProgress: true });
 
-    this.props.initializeSpecialDeals(title)
+    this.props
+      .initializeSpecialDeals(title)
       .then(({ parentCategoryId, catalogId }) => {
         const settingsPatch = {
           parentCategory: {
@@ -172,14 +172,14 @@ class DealsCmsPage extends Component {
           },
         };
 
-        this.props.updateShortcutSettings(settingsPatch).then(() => (
+        this.props.updateShortcutSettings(settingsPatch).then(() =>
           this.setState({
             catalogId,
             parentCategoryId,
             selectedCategoryId: parentCategoryId,
             inProgress: false,
-          })
-        ));
+          }),
+        );
       });
   }
 
@@ -189,11 +189,14 @@ class DealsCmsPage extends Component {
     const paging = resolvePaging(this.refs.paging, useDefaultPaging);
     this.setState({ inProgress: true });
 
-    this.props.loadDeals(selectedCategoryId, paging.limit, paging.offset)
-      .then(() => this.setState({
-        inProgress: false,
-        showLoaderOnRefresh: false,
-      }));
+    this.props
+      .loadDeals(selectedCategoryId, paging.limit, paging.offset)
+      .then(() =>
+        this.setState({
+          inProgress: false,
+          showLoaderOnRefresh: false,
+        }),
+      );
   }
 
   handleNextPageClick() {
@@ -203,12 +206,12 @@ class DealsCmsPage extends Component {
       showLoaderOnRefresh: true,
     });
 
-    this.props.loadNextPage(deals).then(() => (
+    this.props.loadNextPage(deals).then(() =>
       this.setState({
         inProgress: false,
         showLoaderOnRefresh: false,
-      })
-    ));
+      }),
+    );
   }
 
   handlePreviousPageClick() {
@@ -218,12 +221,12 @@ class DealsCmsPage extends Component {
       showLoaderOnRefresh: true,
     });
 
-    this.props.loadPreviousPage(deals).then(() => (
+    this.props.loadPreviousPage(deals).then(() =>
       this.setState({
         inProgress: false,
         showLoaderOnRefresh: false,
-      })
-    ));
+      }),
+    );
   }
 
   handleCategorySelected(newSelectedCategoryId) {
@@ -232,22 +235,27 @@ class DealsCmsPage extends Component {
       return;
     }
 
-    this.setState({
-      selectedCategoryId: newSelectedCategoryId,
-      showLoaderOnRefresh: true,
-    }, this.loadDeals);
+    this.setState(
+      {
+        selectedCategoryId: newSelectedCategoryId,
+        showLoaderOnRefresh: true,
+      },
+      this.loadDeals,
+    );
   }
 
   handleCategoryCreate(categoryName) {
     const { parentCategoryId } = this.state;
 
-    return this.props.createDealCategory(categoryName, parentCategoryId)
+    return this.props
+      .createDealCategory(categoryName, parentCategoryId)
       .then(() => this.props.loadDealCategories(parentCategoryId));
   }
 
   handleCategoryRename(categoryId, categoryName) {
     const { parentCategoryId } = this.state;
-    return this.props.renameDealCategory(categoryId, categoryName, parentCategoryId)
+    return this.props
+      .renameDealCategory(categoryId, categoryName, parentCategoryId)
       .then(() => this.props.loadDealCategories(parentCategoryId));
   }
 
@@ -268,10 +276,8 @@ class DealsCmsPage extends Component {
       selectedCategoryId,
     } = this.state;
 
-    const isLoading = (
-      (showLoaderOnRefresh && inProgress) ||
-      !isInitialized(deals)
-    );
+    const isLoading =
+      (showLoaderOnRefresh && inProgress) || !isInitialized(deals);
 
     return (
       <LoaderContainer
@@ -318,49 +324,42 @@ function mapStateToProps(state, ownProps) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const {
-    shortcut,
-    appId,
-    shortcutId,
-    extensionName,
-  } = ownProps;
+  const { shortcut, appId, shortcutId, extensionName } = ownProps;
   const scope = { shortcutId, extensionName };
 
   return {
-    updateShortcutSettings: (settings) => (
-      dispatch(updateShortcutSettings(shortcut, settings))
-    ),
-    loadDeals: (categoryId, limit, offset) => (
-      dispatch(loadDeals(appId, categoryId, limit, offset, scope))
-    ),
-    loadNextPage: (deals) => (
-      dispatch(loadNextDealsPage(deals))
-    ),
-    loadPreviousPage: (deals) => (
-      dispatch(loadPreviousDealsPage(deals))
-    ),
-    loadDealCategories: (parentCategoryId) => (
-      dispatch(loadDealCategories(appId, parentCategoryId, scope))
-    ),
-    createDealCategory: (categoryName, parentCategoryId) => (
-      dispatch(createDealCategory(appId, categoryName, parentCategoryId, scope))
-    ),
-    deleteDealCategory: (categoryId) => (
-      dispatch(deleteCategory(appId, categoryId, scope))
-    ),
-    renameDealCategory: (categoryId, categoryName, parentCategoryId) => (
-      dispatch(renameCategory(appId, parentCategoryId, categoryId, categoryName, scope))
-    ),
-    loadPlaces: () => (
-      dispatch(loadPlaces(appId, scope))
-    ),
-    initializeSpecialDeals: (categoryName) => (
-      dispatch(initializeSpecialDeals(appId, categoryName, scope))
-        .then(([category, catalog]) => ({
+    updateShortcutSettings: settings =>
+      dispatch(updateShortcutSettings(shortcut, settings)),
+    loadDeals: (categoryId, limit, offset) =>
+      dispatch(loadDeals(appId, categoryId, limit, offset, scope)),
+    loadNextPage: deals => dispatch(loadNextDealsPage(deals)),
+    loadPreviousPage: deals => dispatch(loadPreviousDealsPage(deals)),
+    loadDealCategories: parentCategoryId =>
+      dispatch(loadDealCategories(appId, parentCategoryId, scope)),
+    createDealCategory: (categoryName, parentCategoryId) =>
+      dispatch(
+        createDealCategory(appId, categoryName, parentCategoryId, scope),
+      ),
+    deleteDealCategory: categoryId =>
+      dispatch(deleteCategory(appId, categoryId, scope)),
+    renameDealCategory: (categoryId, categoryName, parentCategoryId) =>
+      dispatch(
+        renameCategory(
+          appId,
+          parentCategoryId,
+          categoryId,
+          categoryName,
+          scope,
+        ),
+      ),
+    loadPlaces: () => dispatch(loadPlaces(appId, scope)),
+    initializeSpecialDeals: categoryName =>
+      dispatch(initializeSpecialDeals(appId, categoryName, scope)).then(
+        ([category, catalog]) => ({
           parentCategoryId: _.toString(category.payload.id),
           catalogId: _.get(catalog, 'payload.data.id'),
-        }))
-    ),
+        }),
+      ),
   };
 }
 

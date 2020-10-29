@@ -1,5 +1,8 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import {
   Button,
   ButtonToolbar,
@@ -9,19 +12,14 @@ import {
 } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { validateYoutubeUrl } from '../../services/youtube';
+import LOCALIZATION from './localization';
 import './style.scss';
-
-const TOOLTIP_LABEL = 'Enter link to the YouTube profile, channel or a playlist.';
 
 export default class FeedUrlInput extends Component {
   constructor(props) {
     super(props);
 
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleContinueClick = this.handleContinueClick.bind(this);
-    this.getValidationState = this.getValidationState.bind(this);
-    this.handleTextChangeError = this.handleTextChangeError.bind(this);
+    autoBindReact(this);
 
     this.state = {
       feedUrl: '',
@@ -37,7 +35,7 @@ export default class FeedUrlInput extends Component {
     const feedUrl = _.trim(this.state.feedUrl);
     if (!validateYoutubeUrl(feedUrl)) {
       this.setState({
-        error: TOOLTIP_LABEL,
+        error: i18next.t(LOCALIZATION.TOOLTIP_LABEL),
       });
     } else {
       this.props.onContinueClick(feedUrl);
@@ -62,7 +60,7 @@ export default class FeedUrlInput extends Component {
     if (!error) {
       return (
         <ControlLabel>
-          {TOOLTIP_LABEL}
+          {i18next.t(LOCALIZATION.TOOLTIP_LABEL)}
         </ControlLabel>
       );
     }
@@ -76,7 +74,7 @@ export default class FeedUrlInput extends Component {
       <div className="feed-url-input">
         <form onSubmit={this.handleSubmit}>
           <FormGroup validationState={this.getValidationState()}>
-            <ControlLabel>YouTube source</ControlLabel>
+            <ControlLabel>{i18next.t(LOCALIZATION.INPUT_TITLE)}</ControlLabel>
             <FormControl
               type="text"
               className="form-control"
@@ -93,7 +91,7 @@ export default class FeedUrlInput extends Component {
             onClick={this.handleContinueClick}
           >
             <LoaderContainer isLoading={this.props.inProgress}>
-              Continue
+              {i18next.t(LOCALIZATION.CONTINUE_BUTTON)}
             </LoaderContainer>
           </Button>
         </ButtonToolbar>

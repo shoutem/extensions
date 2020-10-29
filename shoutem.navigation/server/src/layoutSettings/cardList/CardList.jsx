@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import BackgroundSettings from '../common/background-settings';
 import provideScreenSettings from '../provideScreenSettings';
 import IconsBackgroundSettings from './IconsBackgroundSettings';

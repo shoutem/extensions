@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { combineReducers } from 'redux';
 
 import { mapReducers } from '@shoutem/redux-composers';
-import { storage, collection, getCollection } from '@shoutem/redux-io';
+import { storage, collection, getCollection, invalidate } from '@shoutem/redux-io';
 
 import { ext } from './const';
 import permissionStatus from './reducers';
@@ -24,6 +24,26 @@ function getCategoryIds(action) {
 
 function getParentCategoryId(action) {
   return _.get(action, ['meta', 'params', 'query', 'filter[parent]']);
+}
+
+/**
+ * Invalidate any CMS schema that was previously
+ * fetched via category ID ( Most of CmsListScreen components )
+ */
+export function invalidateLoadedCollections() {
+  return (dispatch, getState) => {
+    const state = getState();
+    const categories = state[ext()].categories;
+
+    const schemas = _.map(categories, category => {
+      return _.get(category, 'relationships.schema.data.id');
+    });
+
+    const uniqueSchemas = _.compact(_.uniq(schemas));
+    const actions = _.map(uniqueSchemas, schema => dispatch(invalidate(schema)));
+
+    return Promise.all(actions);
+  }
 }
 
 /**

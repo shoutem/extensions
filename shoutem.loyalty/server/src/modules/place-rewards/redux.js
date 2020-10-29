@@ -38,7 +38,7 @@ export function loadShortcutRewards(appId, categoryId, placeId, scope) {
     PLACE_REWARDS,
     filter,
     ext('placeRewards'),
-    scope
+    scope,
   );
 }
 
@@ -47,9 +47,9 @@ export function deleteReward(appId, resourceId, scope) {
 }
 
 export function createRewardsCategory(appId, categoryName, shortcut, scope) {
-  return dispatch => (
-    dispatch(createCategory(appId, PLACE_REWARDS, categoryName, scope))
-      .then(categoryId => {
+  return dispatch =>
+    dispatch(createCategory(appId, PLACE_REWARDS, categoryName, scope)).then(
+      categoryId => {
         const rewardsCategoryId = _.toString(categoryId);
         const settingsPatch = {
           cmsCategory: {
@@ -58,10 +58,11 @@ export function createRewardsCategory(appId, categoryName, shortcut, scope) {
           },
         };
 
-        return dispatch(updateShortcutSettings(shortcut, settingsPatch))
-          .then(() => rewardsCategoryId);
-      })
-  );
+        return dispatch(updateShortcutSettings(shortcut, settingsPatch)).then(
+          () => rewardsCategoryId,
+        );
+      },
+    );
 }
 
 export function openRewardsCmsEditor(appId, categoryId) {

@@ -1,7 +1,2 @@
-import TranslationsModal from './translations-modal';
-import TranslationsDashboard from './translations-dashboard';
-
-export {
-  TranslationsModal,
-  TranslationsDashboard,
-};
+export { default as TranslationsModal } from './translations-modal';
+export { default as TranslationsDashboard } from './translations-dashboard';

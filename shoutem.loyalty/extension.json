@@ -1,12 +1,15 @@
 {
   "name": "loyalty",
-  "version": "2.4.0",
+  "version": "2.4.2",
   "platform": "2.4.*",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "categories": [
-    "commerce"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "categories": ["commerce"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -121,9 +124,7 @@
       "settings": {
         "defaultShortcutTitle": "My Stores",
         "extensionTitle": "Loyalty",
-        "favoritesSchemas": [
-          "@.places"
-        ]
+        "favoritesSchemas": ["@.places"]
       }
     }
   ],
@@ -159,9 +160,7 @@
       "name": "PlacesListScreen",
       "title": "Stores",
       "image": "./server/assets/images/layout-compact-list.png",
-      "navigatesTo": [
-        "@.PlaceDetails"
-      ]
+      "navigatesTo": ["@.PlaceDetails"]
     },
     {
       "name": "FavoritesList",

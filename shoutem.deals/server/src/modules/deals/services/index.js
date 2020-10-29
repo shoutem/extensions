@@ -1,8 +1,3 @@
-export {
-  validateDeal,
-} from './validation';
+export { validateDeal } from './validation';
 
-export {
-  mapModelToView,
-  mapViewToModel,
-} from './deal';
+export { mapModelToView, mapViewToModel } from './deal';

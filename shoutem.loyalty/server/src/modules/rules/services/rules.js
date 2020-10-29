@@ -36,7 +36,8 @@ export function getRulesToUpdate(initialRules, newRules) {
     const initialRule = _.find(initialRules, { id });
 
     return (
-      initialRule && !_.isEqual(initialRule.implementationData, implementationData)
+      initialRule &&
+      !_.isEqual(initialRule.implementationData, implementationData)
     );
   });
 }

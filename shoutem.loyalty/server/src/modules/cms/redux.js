@@ -20,9 +20,11 @@ export function loadResources(
   tag = ext('resources'),
   scope = {},
 ) {
-  const categoryQuery = categoryId ? {
-    'filter[categories]': categoryId,
-  } : {};
+  const categoryQuery = categoryId
+    ? {
+        'filter[categories]': categoryId,
+      }
+    : {};
 
   const params = {
     q: {
@@ -51,7 +53,9 @@ export function deleteResource(appId, resourceId, schema, scope = {}) {
   const config = {
     schema,
     request: {
-      endpoint: getCmsUrl(`/v1/apps/${appId}/resources/${schema}/${resourceId}`),
+      endpoint: getCmsUrl(
+        `/v1/apps/${appId}/resources/${schema}/${resourceId}`,
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
       },
@@ -101,9 +105,8 @@ export function createCategory(appId, schema, categoryName, scope = {}) {
       setShortcutScope(createCategoryAction, shortcutId);
     }
 
-    return (
-      dispatch(rsaaPromise(createCategoryAction))
-        .then(response => _.get(response, 'payload.id'))
+    return dispatch(rsaaPromise(createCategoryAction)).then(response =>
+      _.get(response, 'payload.id'),
     );
   };
 }

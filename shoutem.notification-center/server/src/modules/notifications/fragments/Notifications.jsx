@@ -12,6 +12,7 @@ import { fetchShortcuts, getShortcuts } from '@shoutem/redux-api-sdk';
 import { shouldLoad } from '@shoutem/redux-io';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { isInitialized, isBusy } from '@shoutem/redux-io/status';
 import { loadGroups, getGroups, getRawGroups } from '../../groups';
 import { TARGET_TYPES, AUDIENCE_TYPES, DELIVERY_TYPES } from '../const';
@@ -29,6 +30,7 @@ import {
   NotificationForm,
   NotificationInfoForm,
 } from '../components';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 const DEFAULT_NOTIFICATION = {
@@ -156,9 +158,10 @@ class Notifications extends Component {
     const notificationId = _.get(notification, 'id');
 
     this.confirmModal.current.show({
-      title: 'Delete notification',
-      message: 'Are you sure you want to delete this notification?',
-      confirmLabel: 'Delete',
+      title: i18next.t(LOCALIZATION.CONFIRM_MODAL_TITLE),
+      message: i18next.t(LOCALIZATION.CONFIRM_MODAL_MESSAGE),
+      confirmLabel: i18next.t(LOCALIZATION.CONFIRM_MODAL_CONFIRM_LABEL),
+      abortLabel: i18next.t(LOCALIZATION.CONFIRM_MODAL_ABORT_LABEL),
       confirmBsStyle: 'danger',
       onConfirm: () => deleteNotification(appId, notificationId),
     });
@@ -179,11 +182,11 @@ class Notifications extends Component {
     const delivery = _.get(notification, 'delivery');
 
     if (delivery === DELIVERY_TYPES.SCHEDULED) {
-      showAlert('Notification scheduled');
+      showAlert(i18next.t(LOCALIZATION.ALERT_SCHEDULED_TEXT));
       return;
     }
 
-    showAlert('Notification sent');
+    showAlert(i18next.t(LOCALIZATION.ALERT_SENT_TEXT));
   }
 
   async handleFormSubmit(notification) {
@@ -231,9 +234,9 @@ class Notifications extends Component {
 
     const initialValues = currentNotification || DEFAULT_NOTIFICATION;
     const isEdit = !!_.get(currentNotification, 'id');
-
-    const action = isEdit ? 'Edit' : 'New';
-    const title = `${action} push notification`;
+    const title = isEdit
+      ? i18next.t(LOCALIZATION.TITLE_EDIT_PUSH_NOTIFICATION_TEXT)
+      : i18next.t(LOCALIZATION.TITLE_NEW_PUSH_NOTIFICATION_TEXT);
 
     return (
       <InlineModal
@@ -260,7 +263,7 @@ class Notifications extends Component {
       <InlineModal
         className="notifications-page-modal"
         onHide={this.handleHideNotificationModal}
-        title="Sent notification info"
+        title={i18next.t(LOCALIZATION.INLINE_MODAL_TITLE)}
       >
         <NotificationInfoForm
           shortcuts={shortcuts}

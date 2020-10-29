@@ -1,13 +1,12 @@
 {
   "name": "places",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "platform": "2.4.*",
   "title": "Places",
   "description": "Show items with location on list or map",
   "icon": "./server/assets/images/add-places-image.png",
-  "categories": [
-    "content"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "categories": ["content"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -53,9 +52,7 @@
       "settings": {
         "extensionTitle": "Places",
         "defaultShortcutTitle": "My Places",
-        "favoritesSchemas": [
-          "@.places"
-        ]
+        "favoritesSchemas": ["@.places"]
       }
     }
   ],
@@ -70,9 +67,7 @@
       "name": "PlacesListScreen",
       "title": "Photo List",
       "image": "./server/assets/images/layout_photo.png",
-      "navigatesTo": [
-        "@.PlaceDetails"
-      ]
+      "navigatesTo": ["@.PlaceDetails"]
     },
     {
       "name": "PlaceDetails",
@@ -83,9 +78,7 @@
       "name": "FavoritesList",
       "title": "Photo list",
       "image": "./server/assets/images/layout_photo.png",
-      "navigatesTo": [
-        "@.PlaceDetails"
-      ]
+      "navigatesTo": ["@.PlaceDetails"]
     },
     {
       "name": "FavoritesListWithIcons",
@@ -102,9 +95,7 @@
     {
       "name": "SinglePlaceMap",
       "title": "Map View",
-      "navigatesTo": [
-        "@.PlaceDetails"
-      ]
+      "navigatesTo": ["@.PlaceDetails"]
     }
   ],
   "dataSchemas": [

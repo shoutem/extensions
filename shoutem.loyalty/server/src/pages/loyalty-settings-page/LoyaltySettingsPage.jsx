@@ -1,6 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
 import { shouldLoad } from '@shoutem/redux-io';
 import {
@@ -15,6 +18,7 @@ import { getProgramId, initializeApiEndpoints } from 'src/services';
 import { CashierSettings } from 'src/modules/cashiers';
 import { RulesSettings } from 'src/modules/rules';
 import { CmsSelect } from 'src/modules/cms';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 const PLACES_DESCRIPTOR = {
@@ -25,21 +29,14 @@ const PLACES_DESCRIPTOR = {
 class LoyaltySettingsPage extends Component {
   constructor(props) {
     super(props);
-
-    this.checkData = this.checkData.bind(this);
-    this.handleUpdateExtension = this.handleUpdateExtension.bind(this);
-    this.handlePlaceChange = this.handlePlaceChange.bind(this);
-    this.handleEnableLoyalty = this.handleEnableLoyalty.bind(this);
-    this.renderLoyaltySettings = this.renderLoyaltySettings.bind(this);
-
-    const { ownExtension: { settings } } = props;
-    initializeApiEndpoints(settings);
+    autoBindReact(this);
 
     const {
-      rules,
-      requireReceiptCode,
-      enableBarcodeScan,
-    } = settings;
+      ownExtension: { settings },
+    } = props;
+    initializeApiEndpoints(settings);
+
+    const { rules, requireReceiptCode, enableBarcodeScan } = settings;
     const programId = getProgramId(settings);
 
     this.state = {
@@ -79,15 +76,20 @@ class LoyaltySettingsPage extends Component {
   handleEnableLoyalty() {
     const { rules } = this.state;
 
-    return this.props.enableLoyalty(rules)
+    return this.props
+      .enableLoyalty(rules)
       .then(programId => {
         const program = {
           type: PROGRAMS,
           id: programId,
         };
 
-        return Promise.all([programId, this.handleUpdateExtension({ program })]);
-      }).then(([programId]) => this.setState({ programId }));
+        return Promise.all([
+          programId,
+          this.handleUpdateExtension({ program }),
+        ]);
+      })
+      .then(([programId]) => this.setState({ programId }));
   }
 
   renderLoyaltySettings() {
@@ -108,16 +110,16 @@ class LoyaltySettingsPage extends Component {
 
     return (
       <div>
-        {showPlaceSelect &&
+        {showPlaceSelect && (
           <CmsSelect
-            allItemsLabel="All stores"
+            allItemsLabel={i18next.t(LOCALIZATION.FORM_ALL_STORES_TITLE)}
             descriptor={PLACES_DESCRIPTOR}
-            dropdownLabel="Select a store"
+            dropdownLabel={i18next.t(LOCALIZATION.FORM_SELECT_STORE_TITLE)}
             onFilterChange={this.handlePlaceChange}
             resources={places}
           />
-        }
-        {showProgramSettings &&
+        )}
+        {showProgramSettings && (
           <ProgramSettings
             enableBarcodeScan={enableBarcodeScan}
             extensionName={ownExtensionName}
@@ -125,7 +127,7 @@ class LoyaltySettingsPage extends Component {
             programId={programId}
             requireReceiptCode={requireReceiptCode}
           />
-        }
+        )}
         <RulesSettings
           currentPlaceId={currentPlaceId}
           extensionName={ownExtensionName}
@@ -151,11 +153,11 @@ class LoyaltySettingsPage extends Component {
 
     return (
       <div className="loyalty-settings-page settings-page">
-        {!programId &&
+        {!programId && (
           <LoyaltyDisabledPlaceholder
             onEnableLoyaltyClick={this.handleEnableLoyalty}
           />
-        }
+        )}
         {programId && this.renderLoyaltySettings()}
       </div>
     );
@@ -187,16 +189,16 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName: ownExtensionName };
 
   return {
-    updateExtensionSettings: (extension, settings) => (
-      dispatch(updateExtensionSettings(extension, settings))
-    ),
-    enableLoyalty: (rules, authorizationTypes) => (
-      dispatch(enableLoyalty(rules, authorizationTypes, context, scope))
-    ),
-    loadPlaces: (appId, categoryId) => (
-      dispatch(loadLoyaltyPlaces(appId, categoryId, scope))
-    ),
+    updateExtensionSettings: (extension, settings) =>
+      dispatch(updateExtensionSettings(extension, settings)),
+    enableLoyalty: (rules, authorizationTypes) =>
+      dispatch(enableLoyalty(rules, authorizationTypes, context, scope)),
+    loadPlaces: (appId, categoryId) =>
+      dispatch(loadLoyaltyPlaces(appId, categoryId, scope)),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoyaltySettingsPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(LoyaltySettingsPage);

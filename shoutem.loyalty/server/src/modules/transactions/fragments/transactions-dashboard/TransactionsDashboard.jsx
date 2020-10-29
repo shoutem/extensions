@@ -1,10 +1,9 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  ConfirmModal,
-  LoaderContainer,
-  Paging,
-} from '@shoutem/react-web-ui';
+import { ConfirmModal, LoaderContainer, Paging } from '@shoutem/react-web-ui';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { isBusy, invalidate } from '@shoutem/redux-io';
 import { GeneralStats, TransactionsTable } from '../../components';
 import { getTransactionCount } from '../../services';
@@ -17,25 +16,25 @@ import {
   loadPreviousTransactionsPage,
   TRANSACTION_STATS,
 } from '../../redux';
+import LOCALIZATION from './localization';
 
 export class TransactionsDashboard extends Component {
   constructor(props) {
     super(props);
-
-    this.handleDeleteTransactionClick = this.handleDeleteTransactionClick.bind(this);
-    this.handleConfirmDeleteTransaction = this.handleConfirmDeleteTransaction.bind(this);
-    this.handleNextPageClick = this.handleNextPageClick.bind(this);
-    this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
-    this.renderTable = this.renderTable.bind(this);
+    autoBindReact(this);
   }
 
   handleDeleteTransactionClick(currentTransactionId) {
     this.refs.confirm.show({
-      title: 'Delete transaction',
-      message: 'This will erase the points added or deducted during the transaction. Are you sure?',
-      confirmLabel: 'Delete',
+      title: i18next.t(LOCALIZATION.DELETE_TRANSACTION_TITLE),
+      message: i18next.t(LOCALIZATION.DELETE_TRANSACTION_MESSAGE),
+      confirmLabel: i18next.t(
+        LOCALIZATION.DELETE_TRANSACTION_BUTTON_CONFIRM_TITLE,
+      ),
       confirmBsStyle: 'danger',
-      onConfirm: () => this.handleConfirmDeleteTransaction(currentTransactionId),
+      abortLabel: i18next.t(LOCALIZATION.DELETE_TRANSACTION_BUTTON_ABORT_TITLE),
+      onConfirm: () =>
+        this.handleConfirmDeleteTransaction(currentTransactionId),
     });
   }
 
@@ -68,16 +67,10 @@ export class TransactionsDashboard extends Component {
     const transactionCount = getTransactionCount(transactionInfos);
 
     return (
-      <LoaderContainer
-        isLoading={isBusy(transactionInfos)}
-        isOverlay
-      >
-        <h4>Overall statistics</h4>
-        <GeneralStats
-          generalStats={generalStats}
-          loyaltyType={loyaltyType}
-        />
-        <h4>Transactions</h4>
+      <LoaderContainer isLoading={isBusy(transactionInfos)} isOverlay>
+        <h4>{i18next.t(LOCALIZATION.OVERALL_STATISTICS_TITLE)}</h4>
+        <GeneralStats generalStats={generalStats} loyaltyType={loyaltyType} />
+        <h4>{i18next.t(LOCALIZATION.TITLE)}</h4>
         <AddTransactionFragment
           appId={appId}
           extensionName={extensionName}
@@ -136,17 +129,18 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
-    deleteTransaction: (transactionId, programId) => (
-      dispatch(deleteTransaction(transactionId, programId, scope))
-        .then(() => dispatch(invalidate(TRANSACTION_STATS)))
-    ),
-    loadNextPage: (transactions) => (
-      dispatch(loadNextTransactionsPage(transactions))
-    ),
-    loadPreviousPage: (transactions) => (
-      dispatch(loadPreviousTransactionsPage(transactions))
-    ),
+    deleteTransaction: (transactionId, programId) =>
+      dispatch(deleteTransaction(transactionId, programId, scope)).then(() =>
+        dispatch(invalidate(TRANSACTION_STATS)),
+      ),
+    loadNextPage: transactions =>
+      dispatch(loadNextTransactionsPage(transactions)),
+    loadPreviousPage: transactions =>
+      dispatch(loadPreviousTransactionsPage(transactions)),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TransactionsDashboard);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TransactionsDashboard);

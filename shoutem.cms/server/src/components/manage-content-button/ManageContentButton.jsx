@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Button, ButtonGroup } from 'react-bootstrap';
 import { FontIcon, LoaderContainer } from '@shoutem/react-web-ui';
@@ -32,7 +33,9 @@ export default class ManageContentButton extends Component {
       onToggleAdvancedSetup,
     } = this.props;
 
-    const toggleButtonIcon = showAdvancedSetup ? 'arrow-drop-up' : 'arrow-drop-down';
+    const toggleButtonIcon = showAdvancedSetup
+      ? 'arrow-drop-up'
+      : 'arrow-drop-down';
     const toggleButtonClass = showAdvancedSetup ? 'primary' : 'default';
     const classes = classNames('manage-content-button', className);
 
@@ -53,10 +56,7 @@ export default class ManageContentButton extends Component {
           className="manage-content-button__advanced-setup"
           onClick={onToggleAdvancedSetup}
         >
-          <FontIcon
-            name={toggleButtonIcon}
-            size="24px"
-          />
+          <FontIcon name={toggleButtonIcon} size="24px" />
         </Button>
       </ButtonGroup>
     );

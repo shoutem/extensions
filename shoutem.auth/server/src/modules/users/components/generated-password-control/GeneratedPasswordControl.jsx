@@ -1,15 +1,19 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import i18next from 'i18next';
 import { PasswordBox, ReduxFormElement } from '@shoutem/react-web-ui';
 import { FormGroup, Button } from 'react-bootstrap';
 import passwordGenerator from 'generate-password';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class GeneratedPasswordControl extends Component {
   constructor(props) {
     super(props);
 
-    this.handleGeneratePasswordClick = this.handleGeneratePasswordClick.bind(this);
+    this.handleGeneratePasswordClick = this.handleGeneratePasswordClick.bind(
+      this,
+    );
   }
 
   handleGeneratePasswordClick() {
@@ -27,17 +31,14 @@ export default class GeneratedPasswordControl extends Component {
 
     return (
       <FormGroup className="generated-password-control">
-        <ReduxFormElement
-          field={password}
-          {...otherProps}
-        >
+        <ReduxFormElement field={password} {...otherProps}>
           <PasswordBox />
         </ReduxFormElement>
         <Button
           className="btn-textual"
           onClick={this.handleGeneratePasswordClick}
         >
-          Generate password
+          {i18next.t(LOCALIZATION.BUTTON_GENERATE_PASSWORD_TITLE)}
         </Button>
       </FormGroup>
     );

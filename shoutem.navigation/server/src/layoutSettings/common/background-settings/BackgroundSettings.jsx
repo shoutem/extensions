@@ -1,10 +1,13 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { ControlLabel, Row, Col, FormGroup } from 'react-bootstrap';
 import { ImageUploader } from '@shoutem/web-core';
 import { url, appId, getAppPublishSettings } from 'environment';
 import { UndeletableS3Uploader } from '../../../fileUpload';
 import form from '../form';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 const TABLET_BACKGROUND_SCREEN_MIN_WIDTH = 1536;
@@ -22,10 +25,16 @@ export class BackgroundSettings extends Component {
     super(props);
 
     this.saveForm = this.saveForm.bind(this);
-    this.handleBackgroundDeleteSuccess = this.handleBackgroundDeleteSuccess.bind(this);
-    this.handleTabletBackgroundDeleteSuccess = this.handleTabletBackgroundDeleteSuccess.bind(this);
+    this.handleBackgroundDeleteSuccess = this.handleBackgroundDeleteSuccess.bind(
+      this,
+    );
+    this.handleTabletBackgroundDeleteSuccess = this.handleTabletBackgroundDeleteSuccess.bind(
+      this,
+    );
     this.renderBackgroundImage = this.renderBackgroundImage.bind(this);
-    this.renderTabletBackgroundImage = this.renderTabletBackgroundImage.bind(this);
+    this.renderTabletBackgroundImage = this.renderTabletBackgroundImage.bind(
+      this,
+    );
 
     props.onFieldChange(this.saveForm);
     this.uploader = new UndeletableS3Uploader({
@@ -65,16 +74,16 @@ export class BackgroundSettings extends Component {
 
   renderTabletBackgroundImage() {
     const {
-      fields: {
-        tabletBackgroundImage,
-      },
+      fields: { tabletBackgroundImage },
     } = this.props;
 
     return (
       <Col md={6}>
         <ControlLabel>
-          {`Tablet screen background
-           (min ${TABLET_BACKGROUND_SCREEN_MIN_WIDTH}x${TABLET_BACKGROUND_SCREEN_MIN_HEIGHT}px)`}
+          {i18next.t(LOCALIZATION.TABLET_SCREEN_BACKGROUND, {
+            minWidth: TABLET_BACKGROUND_SCREEN_MIN_WIDTH,
+            minHeight: TABLET_BACKGROUND_SCREEN_MIN_HEIGHT,
+          })}
         </ControlLabel>
         <ImageUploader
           previewSize="tablet"
@@ -92,16 +101,16 @@ export class BackgroundSettings extends Component {
 
   renderBackgroundImage() {
     const {
-      fields: {
-        backgroundImage,
-      },
+      fields: { backgroundImage },
     } = this.props;
 
     return (
       <Col md={6}>
         <ControlLabel>
-          {`Screen background
-                   (min ${BACKGROUND_SCREEN_MIN_WIDTH}x${BACKGROUND_SCREEN_MIN_HEIGHT}px)`}
+          {i18next.t(LOCALIZATION.SCREEN_BACKGROUND, {
+            minWidth: BACKGROUND_SCREEN_MIN_WIDTH,
+            minHeight: BACKGROUND_SCREEN_MIN_HEIGHT,
+          })}
         </ControlLabel>
         <ImageUploader
           previewSize="custom"
@@ -122,7 +131,7 @@ export class BackgroundSettings extends Component {
 
     return (
       <div className="background-settings">
-        <h3>Background settings</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}Background settings</h3>
         <form>
           <FormGroup>
             <Row>
@@ -144,14 +153,10 @@ BackgroundSettings.propTypes = {
   fields: PropTypes.arrayOf(PropTypes.string),
 };
 
-export default form((props) => {
+export default form(props => {
   const { settings } = props;
   return {
-    fields: [
-      'parallaxEffect',
-      'backgroundImage',
-      'tabletBackgroundImage',
-    ],
+    fields: ['parallaxEffect', 'backgroundImage', 'tabletBackgroundImage'],
     defaultValues: {
       parallaxEffect: settings.parallaxEffect,
       backgroundImage: settings.backgroundImage,

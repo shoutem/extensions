@@ -1,6 +1,8 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import classNames from 'classnames';
+import autoBindReact from 'auto-bind/react';
 import { FormGroup } from 'react-bootstrap';
 import { Switch } from '@shoutem/react-web-ui';
 import './style.scss';
@@ -16,10 +18,7 @@ function getValueFromRule(rule, valueKey) {
 export default class RuleTableRow extends Component {
   constructor(props) {
     super(props);
-
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleRuleChanged = this.handleRuleChanged.bind(this);
-    this.handleToggleRule = this.handleToggleRule.bind(this);
+    autoBindReact(this);
 
     const { rule, valueKey } = props;
     const { enabled } = rule;
@@ -91,10 +90,7 @@ export default class RuleTableRow extends Component {
           </FormGroup>
         </td>
         <td>
-          <Switch
-            onChange={this.handleToggleRule}
-            value={enabled}
-          />
+          <Switch onChange={this.handleToggleRule} value={enabled} />
         </td>
       </tr>
     );

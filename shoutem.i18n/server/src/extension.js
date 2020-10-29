@@ -6,5 +6,5 @@
 import LanguagePage from './pages/language-page';
 
 export const pages = {
-  LanguagePage
+  LanguagePage,
 };

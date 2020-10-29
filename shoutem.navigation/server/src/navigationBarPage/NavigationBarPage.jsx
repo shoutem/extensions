@@ -1,25 +1,9 @@
-import
-  React,
-  {
-    PropTypes,
-    Component,
-  } from 'react';
-
-import {
-  getExtensionInstallation,
-} from 'environment';
-
-import {
-  Row,
-  Col,
-} from 'react-bootstrap';
-
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { getExtensionInstallation } from 'environment';
+import { Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
-
-import {
-  updateExtensionSettings,
-} from '../builder-sdk';
-
+import { updateExtensionSettings } from '../builder-sdk';
 import NavigationBarBackgroundImage from './components/NavigationBarBackgroundImage';
 import NavigationBarFirstScreenImageToggle from './components/NavigationBarFirstScreenImageToggle';
 import NavigationBarTitleToggle from './components/NavigationBarTitleToggle';
@@ -29,7 +13,8 @@ import NavigationBarBackgroundSize from './components/NavigationBarBackgroundSiz
 import './style.scss';
 
 const BACKGROUND_IMAGE = 'backgroundImage';
-const BACKGROUND_IMAGE_ENABLED_FIRST_SCREEN = 'backgroundImageEnabledFirstScreen';
+const BACKGROUND_IMAGE_ENABLED_FIRST_SCREEN =
+  'backgroundImageEnabledFirstScreen';
 const SHOW_TITLE = 'showTitle';
 const FIT_CONTAINER = 'fitContainer';
 
@@ -38,9 +23,15 @@ export class NavigationBarPage extends Component {
     super(props);
 
     // Bind handler methods to preserve real "this" reference
-    this.handleBackgroundImageChange = this.handleBackgroundImageChange.bind(this);
-    this.handleBackgroundImageToggle = this.handleBackgroundImageToggle.bind(this);
-    this.handleBackgroundSizeToggle = this.handleBackgroundSizeToggle.bind(this);
+    this.handleBackgroundImageChange = this.handleBackgroundImageChange.bind(
+      this,
+    );
+    this.handleBackgroundImageToggle = this.handleBackgroundImageToggle.bind(
+      this,
+    );
+    this.handleBackgroundSizeToggle = this.handleBackgroundSizeToggle.bind(
+      this,
+    );
     this.handleTitleToggle = this.handleTitleToggle.bind(this);
   }
 
@@ -98,7 +89,9 @@ export class NavigationBarPage extends Component {
   }
 
   render() {
-    const { extensionInstallation: { settings } } = this.props;
+    const {
+      extensionInstallation: { settings },
+    } = this.props;
     const {
       backgroundImage,
       backgroundImageEnabledFirstScreen,
@@ -120,7 +113,9 @@ export class NavigationBarPage extends Component {
           <Row>
             <Col md={6}>
               <NavigationBarFirstScreenImageToggle
-                backgroundImageEnabledFirstScreen={backgroundImageEnabledFirstScreen}
+                backgroundImageEnabledFirstScreen={
+                  backgroundImageEnabledFirstScreen
+                }
                 onBackgroundImageToggle={this.handleBackgroundImageToggle}
               />
             </Col>

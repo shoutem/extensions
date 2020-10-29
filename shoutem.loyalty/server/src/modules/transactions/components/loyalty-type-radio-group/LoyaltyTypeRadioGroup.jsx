@@ -1,36 +1,42 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { FormGroup, ControlLabel } from 'react-bootstrap';
 import { LOYALTY_TYPES } from 'src/const';
 import LoyaltyTypeRadio from '../loyalty-type-radio';
+import LOCALIZATION from './localization';
 import './style.scss';
 
-export default function LoyaltyTypeRadioGroup({ loyaltyType, onLoyaltyTypeChanged }) {
+export default function LoyaltyTypeRadioGroup({
+  loyaltyType,
+  onLoyaltyTypeChanged,
+}) {
   return (
     <FormGroup className="loyalty-type-radio-group">
       <ControlLabel>
-        Type of loyalty
+        {i18next.t(LOCALIZATION.TYPE_OF_LOYALTY_TITLE)}
       </ControlLabel>
       <LoyaltyTypeRadio
         currentLoyaltyType={loyaltyType}
         loyaltyType={LOYALTY_TYPES.POINTS}
         onSelected={onLoyaltyTypeChanged}
       >
-        Points card
+        {i18next.t(LOCALIZATION.POINTS_CARD_TITLE)}
       </LoyaltyTypeRadio>
       <LoyaltyTypeRadio
         currentLoyaltyType={loyaltyType}
         loyaltyType={LOYALTY_TYPES.PUNCH}
         onSelected={onLoyaltyTypeChanged}
       >
-        Punch card
+        {i18next.t(LOCALIZATION.PUNCH_CARD_TITLE)}
       </LoyaltyTypeRadio>
       <LoyaltyTypeRadio
         currentLoyaltyType={loyaltyType}
         loyaltyType={LOYALTY_TYPES.MULTI}
         onSelected={onLoyaltyTypeChanged}
       >
-        Multicard
+        {i18next.t(LOCALIZATION.MULTICARD_TITLE)}
       </LoyaltyTypeRadio>
     </FormGroup>
   );

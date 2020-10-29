@@ -1,11 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { IconLabel, Dropdown } from '@shoutem/react-web-ui';
 import { FormGroup, ControlLabel, MenuItem } from 'react-bootstrap';
-import {
-  getDropdownOptions,
-  getSelectedOptionLabel,
-} from '../../services';
+import { getDropdownOptions, getSelectedOptionLabel } from '../../services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class ParentCategorySelector extends Component {
@@ -30,10 +30,7 @@ export default class ParentCategorySelector extends Component {
       parentCategoryId: nextParentCategoryId,
     } = nextProps;
 
-    const {
-      categories,
-      parentCategoryId,
-    } = props;
+    const { categories, parentCategoryId } = props;
 
     if (nextCategories !== categories) {
       this.setState({ options: getDropdownOptions(nextCategories) });
@@ -50,9 +47,7 @@ export default class ParentCategorySelector extends Component {
 
     return (
       <Dropdown.Menu>
-        <MenuItem>
-          {selectedOptionLabel}
-        </MenuItem>
+        <MenuItem>{selectedOptionLabel}</MenuItem>
         <MenuItem divider />
         {_.map(options, option => (
           <MenuItem eventKey={option.key} key={option.key}>
@@ -62,7 +57,7 @@ export default class ParentCategorySelector extends Component {
         {!_.isEmpty(options) && <MenuItem divider />}
         <MenuItem onSelect={onCreateCategorySelected}>
           <IconLabel iconName="add">
-            Create new collection
+            {i18next.t(LOCALIZATION.BUTTON_CREATE_TITLE)}
           </IconLabel>
         </MenuItem>
       </Dropdown.Menu>
@@ -73,26 +68,26 @@ export default class ParentCategorySelector extends Component {
     const { options, selectedOptionKey } = this.state;
     const { onCategorySelected, schemaTitle } = this.props;
 
-    const noFilteredDataLabel = `${schemaTitle}/New collection`;
+    const noFilteredDataLabel = i18next.t(LOCALIZATION.NO_FILTERED_DATA_TITLE, {
+      schemaTitle,
+    });
     const selectedOptionLabel = getSelectedOptionLabel(
       options,
       selectedOptionKey,
-      noFilteredDataLabel
+      noFilteredDataLabel,
     );
 
     return (
       <FormGroup className="parent-category-selector">
         <ControlLabel>
-          Choose data source to display
+          {i18next.t(LOCALIZATION.FORM_CHOOSE_DATA_TITLE)}
         </ControlLabel>
         <Dropdown
           className="parent-category-selector__dropdown block"
           id="parent-category-selector__dropdown"
           onSelect={onCategorySelected}
         >
-          <Dropdown.Toggle>
-            {selectedOptionLabel}
-          </Dropdown.Toggle>
+          <Dropdown.Toggle>{selectedOptionLabel}</Dropdown.Toggle>
           {this.renderDropdownMenu(selectedOptionLabel)}
         </Dropdown>
       </FormGroup>

@@ -1,32 +1,29 @@
 import React, { Component } from 'react';
-import {
-  FormGroup,
-  ControlLabel,
-  Dropdown,
-  MenuItem,
-} from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import { FormGroup, ControlLabel, Dropdown, MenuItem } from 'react-bootstrap';
+import i18next from 'i18next';
+import LOCALIZATION from './localization';
 
 const ORIGINAL_SIZE_OPTION = 0;
 const FIT_CONTAINER_OPTION = 1;
-const FIT_CONTAINER_LABEL = 'Fill background';
-const ORIGINAL_SIZE_LABEL = 'Original size';
 
-const shouldBackgroundImageFitContainer = selectedValue => (
-  selectedValue === FIT_CONTAINER_OPTION
-);
+const shouldBackgroundImageFitContainer = selectedValue =>
+  selectedValue === FIT_CONTAINER_OPTION;
 
-const resolveBackgroundSizeMenuLabel = (fitContainer) => {
+const resolveBackgroundSizeMenuLabel = fitContainer => {
   if (fitContainer) {
-    return FIT_CONTAINER_LABEL;
+    return i18next.t(LOCALIZATION.FIT_CONTAINER_LABEL);
   }
-  return ORIGINAL_SIZE_LABEL;
+  return i18next.t(LOCALIZATION.ORIGINAL_SIZE_LABEL);
 };
 
 export default class NavigationBarBackgroundSize extends Component {
   constructor(props) {
     super(props);
 
-    this.handleBackgroundSizeToggle = this.handleBackgroundSizeToggle.bind(this);
+    this.handleBackgroundSizeToggle = this.handleBackgroundSizeToggle.bind(
+      this,
+    );
   }
 
   /**
@@ -39,26 +36,29 @@ export default class NavigationBarBackgroundSize extends Component {
   }
 
   render() {
-    const {
-      fitContainer,
-    } = this.props;
+    const { fitContainer } = this.props;
 
     return (
       <FormGroup className="navigation-bar-page-background-size">
-        <ControlLabel>Background size</ControlLabel>
-        <Dropdown
-          className="block"
-          onSelect={this.handleBackgroundSizeToggle}
-        >
+        <ControlLabel>
+          {i18next.t(LOCALIZATION.FORM_BACKGROUND_SIZE)}
+        </ControlLabel>
+        <Dropdown className="block" onSelect={this.handleBackgroundSizeToggle}>
           <Dropdown.Toggle>
             {resolveBackgroundSizeMenuLabel(fitContainer)}
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            <MenuItem key={ORIGINAL_SIZE_OPTION} eventKey={ORIGINAL_SIZE_OPTION}>
-              {ORIGINAL_SIZE_LABEL}
+            <MenuItem
+              key={ORIGINAL_SIZE_OPTION}
+              eventKey={ORIGINAL_SIZE_OPTION}
+            >
+              {i18next.t(LOCALIZATION.ORIGINAL_SIZE_LABEL)}
             </MenuItem>
-            <MenuItem key={FIT_CONTAINER_OPTION} eventKey={FIT_CONTAINER_OPTION}>
-              {FIT_CONTAINER_LABEL}
+            <MenuItem
+              key={FIT_CONTAINER_OPTION}
+              eventKey={FIT_CONTAINER_OPTION}
+            >
+              {i18next.t(LOCALIZATION.FIT_CONTAINER_LABEL)}
             </MenuItem>
           </Dropdown.Menu>
         </Dropdown>
@@ -68,6 +68,6 @@ export default class NavigationBarBackgroundSize extends Component {
 }
 
 NavigationBarBackgroundSize.propTypes = {
-  fitContainer: React.PropTypes.bool,
-  onBackgroundSizeToggle: React.PropTypes.func,
+  fitContainer: PropTypes.bool,
+  onBackgroundSizeToggle: PropTypes.func,
 };

@@ -1,5 +1,1 @@
-import UndeletableS3Uploader from './UndeletableS3Uploader';
-
-export {
-  UndeletableS3Uploader,
-};
+export { default as UndeletableS3Uploader } from './UndeletableS3Uploader';

@@ -1,10 +1,13 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import i18next from 'i18next';
 import { Row, Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
 import Select from 'react-select';
 import { reduxForm } from 'redux-form';
 import { LoaderContainer, ReduxFormElement } from '@shoutem/react-web-ui';
 import { getFormState } from 'src/redux';
 import { validatePunchCardTransaction } from '../../services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export function PunchCardTransactionForm({
@@ -25,13 +28,13 @@ export function PunchCardTransactionForm({
           disabled={submitting}
           elementId="reward"
           field={reward}
-          name="Punch card"
+          name={i18next.t(LOCALIZATION.FORM_REWARD_TITLE)}
         >
           <Select
             autoBlur
             clearable={false}
             options={rewards}
-            placeholder="Select card"
+            placeholder={i18next.t(LOCALIZATION.FORM_SELECT_CARD_TITLE)}
           />
         </ReduxFormElement>
       </Row>
@@ -40,13 +43,13 @@ export function PunchCardTransactionForm({
           disabled={submitting}
           elementId="user"
           field={user}
-          name="User"
+          name={i18next.t(LOCALIZATION.FORM_USER_TITLE)}
         >
           <Select
             autoBlur
             clearable={false}
             options={users}
-            placeholder="Select user"
+            placeholder={i18next.t(LOCALIZATION.FORM_SELECT_USER_TITLE)}
           />
         </ReduxFormElement>
       </Row>
@@ -55,7 +58,7 @@ export function PunchCardTransactionForm({
           disabled={submitting}
           elementId="points"
           field={points}
-          name="Add or deduct stamps"
+          name={i18next.t(LOCALIZATION.FORM_POINTS_TITLE)}
         />
       </Row>
       <ButtonToolbar>
@@ -66,18 +69,18 @@ export function PunchCardTransactionForm({
           type="submit"
         >
           <LoaderContainer isLoading={submitting}>
-            Add
+            {i18next.t(LOCALIZATION.BUTTON_SUBMIT_TITLE)}
           </LoaderContainer>
         </Button>
         <Button bsSize="large" disabled={submitting} onClick={onCancel}>
-          Cancel
+          {i18next.t(LOCALIZATION.BUTTON_CANCEL_TITLE)}
         </Button>
       </ButtonToolbar>
-      {error &&
+      {error && (
         <div className="has-error transaction-form__general-error">
           <HelpBlock>{error}</HelpBlock>
         </div>
-      }
+      )}
     </form>
   );
 }
@@ -95,10 +98,6 @@ PunchCardTransactionForm.propTypes = {
 export default reduxForm({
   getFormState,
   form: 'punchCardTransactionForm',
-  fields: [
-    'user',
-    'reward',
-    'points',
-  ],
+  fields: ['user', 'reward', 'points'],
   validate: validatePunchCardTransaction,
 })(PunchCardTransactionForm);

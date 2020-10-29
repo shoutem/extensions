@@ -1,19 +1,16 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import i18next from 'i18next';
 import { ControlLabel } from 'react-bootstrap';
 import { Switch } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default function RulesToggleSwitch({ value, onToggle }) {
   return (
     <div className="rules-toggle-switch">
-      <ControlLabel>
-        Enable custom rules for this place
-      </ControlLabel>
-      <Switch
-        className="pull-right"
-        onChange={onToggle}
-        value={value}
-      />
+      <ControlLabel>{i18next.t(LOCALIZATION.TITLE)}</ControlLabel>
+      <Switch className="pull-right" onChange={onToggle} value={value} />
     </div>
   );
 }

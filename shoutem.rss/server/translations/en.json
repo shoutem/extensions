@@ -1,0 +1,19 @@
+{
+  "shoutem": {
+    "rss": {
+      "rss-page.form-loading-form": "Loading from",
+      "rss-page.header-date": "Date",
+      "rss-page.header-title": "Title",
+      "rss-page.loading-content": "loading content...",
+      "rss-page.form-available-feeds": "Choose from available feeds",
+      "rss-page.button-add-feed": "Add feed",
+      "rss-page.button-cancel": "Cancel",
+      "rss-page.no-content": "no content to show",
+      "rss-page.invalid-url": "Invalid URL.",
+      "rss-page.form-feed": "Website URL or RSS feed",
+      "rss-page.button-continue": "Continue",
+      "rss-page.invalid-rss-feed": "URL does not contain valid RSS feeds.",
+      "rss-page.form-show-feed": "This is a {{feedType}} feed."
+    }
+  }
+}

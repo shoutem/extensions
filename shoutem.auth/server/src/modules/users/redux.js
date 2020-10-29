@@ -14,12 +14,7 @@ import {
 import { shoutemUrls } from 'src/services';
 import ext from 'src/const';
 import { USER_GROUPS } from 'src/modules/user-groups';
-import {
-  moduleName,
-  USERS,
-  DEFAULT_LIMIT,
-  DEFAULT_OFFSET,
-} from './const';
+import { moduleName, USERS, DEFAULT_LIMIT, DEFAULT_OFFSET } from './const';
 
 // SELECTORS
 function getUsersState(state) {
@@ -41,7 +36,7 @@ export function loadUsers(
   filter = {},
   limit = DEFAULT_LIMIT,
   offset = DEFAULT_OFFSET,
-  scope = {}
+  scope = {},
 ) {
   const params = {
     q: {
@@ -56,7 +51,9 @@ export function loadUsers(
   const config = {
     schema: USERS,
     request: {
-      endpoint: shoutemUrls.buildAuthUrl(`/v1/realms/externalReference:${appId}/users{?q*}`),
+      endpoint: shoutemUrls.buildAuthUrl(
+        `/v1/realms/externalReference:${appId}/users{?q*}`,
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
       },
@@ -94,7 +91,9 @@ export function createUser(appId, user, scope = {}) {
   const config = {
     schema: USERS,
     request: {
-      endpoint: shoutemUrls.buildAuthUrl(`/v1/realms/externalReference:${appId}/users`),
+      endpoint: shoutemUrls.buildAuthUrl(
+        `/v1/realms/externalReference:${appId}/users`,
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
@@ -124,7 +123,9 @@ export function deleteUser(appId, userId, scope = {}) {
   const config = {
     schema: USERS,
     request: {
-      endpoint: shoutemUrls.buildAuthUrl(`/v1/realms/externalReference:${appId}/users/${userId}`),
+      endpoint: shoutemUrls.buildAuthUrl(
+        `/v1/realms/externalReference:${appId}/users/${userId}`,
+      ),
       headers: {},
     },
   };
@@ -137,7 +138,9 @@ export function updateUser(appId, userId, userPatch, scope = {}) {
   const config = {
     schema: USERS,
     request: {
-      endpoint: shoutemUrls.buildAuthUrl(`/v1/realms/externalReference:${appId}/users/${userId}`),
+      endpoint: shoutemUrls.buildAuthUrl(
+        `/v1/realms/externalReference:${appId}/users/${userId}`,
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
@@ -147,11 +150,13 @@ export function updateUser(appId, userId, userPatch, scope = {}) {
 
   const { name, nick, userGroups, ...otherProps } = userPatch;
 
-  const userGroupRelationship = userGroups ? {
-    userGroups: {
-      data: _.map(userGroups, group => ({ id: group, type: USER_GROUPS })),
-    },
-  } : null;
+  const userGroupRelationship = userGroups
+    ? {
+        userGroups: {
+          data: _.map(userGroups, group => ({ id: group, type: USER_GROUPS })),
+        },
+      }
+    : null;
 
   const updatedUser = {
     type: USERS,

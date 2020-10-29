@@ -34,7 +34,10 @@ export function getExtensionSettings(extensionInstallation) {
 export function updateExtensionSettings(extensionInstallation, settingsPatch) {
   const currentSettings = getExtensionSettings(extensionInstallation);
   const settings = mergeSettings(currentSettings, settingsPatch);
-  return updateExtensionInstallationSettings(extensionInstallation.id, settings);
+  return updateExtensionInstallationSettings(
+    extensionInstallation.id,
+    settings,
+  );
 }
 
 export function getShortcutSettings(shortcut) {

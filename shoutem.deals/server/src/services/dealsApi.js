@@ -1,4 +1,6 @@
 import Uri from 'urijs';
+import i18next from 'i18next';
+import LOCALIZATION from './localization';
 
 export default class DealsApi {
   constructor() {
@@ -11,7 +13,7 @@ export default class DealsApi {
 
   init(endpoint) {
     if (!endpoint) {
-      throw new Error('Deals endpoint cannot be empty!');
+      throw new Error(i18next.t(LOCALIZATION.EMPTY_DEALS_ENDPOINT_TITLE));
     }
 
     this.endpoint = endpoint;

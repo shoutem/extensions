@@ -1,11 +1,16 @@
 {
   "name": "navigation",
-  "version": "2.4.1",
+  "version": "2.4.3",
   "platform": "~2.4.1",
   "type": "system",
   "title": "Main Navigation",
   "description": "App-level navigation",
+  "dependencies": ["shoutem.layouts"],
   "categories": [],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

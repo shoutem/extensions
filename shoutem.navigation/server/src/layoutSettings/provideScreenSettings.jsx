@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { getShortcut } from 'environment';
@@ -33,7 +34,10 @@ export function provideScreenSettings(WrappedComponent) {
       // by merging existing settings with modified settings
       const screens = _.get(shortcut, 'screens', []);
       const newScreens = _.map(screens, screen => {
-        if (screen.canonicalName === canonicalName && screen.canonicalType === canonicalType) {
+        if (
+          screen.canonicalName === canonicalName &&
+          screen.canonicalType === canonicalType
+        ) {
           return {
             ...screen,
             settings: _.merge({}, screen.settings, newSettings),
@@ -90,7 +94,7 @@ export function provideScreenSettings(WrappedComponent) {
   return LayoutSettings;
 }
 
-export default function (WrappedComponent) {
+export default function(WrappedComponent) {
   function mapStateToProps() {
     return {
       shortcut: getShortcut(),
@@ -98,8 +102,11 @@ export default function (WrappedComponent) {
   }
   function mapDispatchToProps(dispatch) {
     return {
-      updateShortcut: (shortcut) => dispatch(updateShortcut(shortcut)),
+      updateShortcut: shortcut => dispatch(updateShortcut(shortcut)),
     };
   }
-  return connect(mapStateToProps, mapDispatchToProps)(provideScreenSettings(WrappedComponent));
+  return connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(provideScreenSettings(WrappedComponent));
 }

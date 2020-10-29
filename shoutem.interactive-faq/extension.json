@@ -1,16 +1,16 @@
 {
   "name": "interactive-faq",
   "title": "Interactive FAQ",
-  "version": "2.4.0",
+  "version": "2.4.2",
   "platform": "2.4.*",
   "icon": "./server/assets/faq.png",
   "description": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
-  "dependencies": [
-    "shoutem.layouts"
-  ],
-  "categories": [
-    "users"
-  ],
+  "dependencies": ["shoutem.cms"],
+  "categories": ["users"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

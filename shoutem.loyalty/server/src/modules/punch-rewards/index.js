@@ -1,3 +1,5 @@
+import { reducer } from './redux';
+
 export {
   moduleName,
   PUNCH_CARDS,
@@ -5,6 +7,4 @@ export {
   loadPunchRewards,
   getPunchRewards,
 } from './redux';
-
-import { reducer } from './redux';
 export default reducer;

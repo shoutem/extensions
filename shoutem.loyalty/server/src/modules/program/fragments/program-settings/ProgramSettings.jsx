@@ -1,7 +1,10 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { shouldLoad, isInitialized } from '@shoutem/redux-io';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import _ from 'lodash';
 import { ToggleSwitch } from 'src/components';
 import { navigateToUrl } from 'src/redux';
@@ -12,21 +15,16 @@ import {
   updateAuthorization,
   getAuthorizationByType,
 } from '../../redux';
+import LOCALIZATION from './localization';
 
 const BARCODE_AUTH_TYPE = 'regex';
 
 export class ProgramSettings extends Component {
   constructor(props) {
     super(props);
+    autoBindReact(this);
 
-    this.handleRequireReceiptToggle = this.handleRequireReceiptToggle.bind(this);
-    this.handleEnableBarcodeScanToggle = this.handleEnableBarcodeScanToggle.bind(this);
-    this.handleBarcodeFormSubmit = this.handleBarcodeFormSubmit.bind(this);
-
-    const {
-      requireReceiptCode,
-      enableBarcodeScan,
-    } = props;
+    const { requireReceiptCode, enableBarcodeScan } = props;
 
     this.state = {
       requireReceiptCode,
@@ -55,11 +53,12 @@ export class ProgramSettings extends Component {
     this.setState({ inProgress: true });
     const settingsPatch = { requireReceiptCode: !requireReceiptCode };
 
-    this.props.onUpdateExtension(settingsPatch)
-      .then(() => this.setState({
+    this.props.onUpdateExtension(settingsPatch).then(() =>
+      this.setState({
         inProgress: false,
         requireReceiptCode: !requireReceiptCode,
-      }));
+      }),
+    );
   }
 
   handleEnableBarcodeScanToggle() {
@@ -67,15 +66,20 @@ export class ProgramSettings extends Component {
 
     this.setState({ inProgress: true });
 
-    this.props.onUpdateExtension({ enableBarcodeScan: !enableBarcodeScan })
-      .then(() => this.setState({
-        inProgress: false,
-        enableBarcodeScan: !enableBarcodeScan,
-      }));
+    this.props
+      .onUpdateExtension({ enableBarcodeScan: !enableBarcodeScan })
+      .then(() =>
+        this.setState({
+          inProgress: false,
+          enableBarcodeScan: !enableBarcodeScan,
+        }),
+      );
   }
 
   handleBarcodeFormSubmit(values) {
-    const { authorization: { id: authorizationId } } = this.props;
+    const {
+      authorization: { id: authorizationId },
+    } = this.props;
 
     const authorization = {
       authorizationType: BARCODE_AUTH_TYPE,
@@ -91,11 +95,7 @@ export class ProgramSettings extends Component {
 
   render() {
     const { authorization } = this.props;
-    const {
-      requireReceiptCode,
-      enableBarcodeScan,
-      inProgress,
-    } = this.state;
+    const { requireReceiptCode, enableBarcodeScan, inProgress } = this.state;
 
     const regex = _.get(authorization, 'implementationData.regex');
 
@@ -105,28 +105,25 @@ export class ProgramSettings extends Component {
         isLoading={!isInitialized(authorization)}
         isOverlay
       >
-        <h3>Program settings</h3>
-        <LoaderContainer
-          isLoading={inProgress}
-          isOverlay
-        >
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
+        <LoaderContainer isLoading={inProgress} isOverlay>
           <ToggleSwitch
-            message="Require receipt code for purchase validation"
+            message={i18next.t(LOCALIZATION.REQUIRE_RECEIPT)}
             onToggle={this.handleRequireReceiptToggle}
             value={requireReceiptCode}
           />
           <ToggleSwitch
-            message="Enable receipt barcode scanning"
+            message={i18next.t(LOCALIZATION.ENABLE_BARCODE_SCANNING)}
             onToggle={this.handleEnableBarcodeScanToggle}
             value={enableBarcodeScan}
           />
-          {enableBarcodeScan &&
+          {enableBarcodeScan && (
             <BarcodeRegexForm
               initialValues={{ regex }}
               navigateToUrl={this.props.navigateToUrl}
               onSubmit={this.handleBarcodeFormSubmit}
             />
-          }
+          )}
         </LoaderContainer>
       </LoaderContainer>
     );
@@ -156,18 +153,19 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
-    loadAuthorizations: () => (
-      dispatch(loadAuthorizations(programId, scope))
-    ),
-    updateAuthorization: (authorizationId, authorizationPatch) => (
-      dispatch(updateAuthorization(programId, authorizationId, authorizationPatch, scope))
-    ),
-    createAuthorization: (authorization) => (
-      dispatch(createAuthorization(programId, authorization, scope))
-    ),
-    navigateToUrl: (url) => (
-      dispatch(navigateToUrl(url))
-    ),
+    loadAuthorizations: () => dispatch(loadAuthorizations(programId, scope)),
+    updateAuthorization: (authorizationId, authorizationPatch) =>
+      dispatch(
+        updateAuthorization(
+          programId,
+          authorizationId,
+          authorizationPatch,
+          scope,
+        ),
+      ),
+    createAuthorization: authorization =>
+      dispatch(createAuthorization(programId, authorization, scope)),
+    navigateToUrl: url => dispatch(navigateToUrl(url)),
   };
 }
 

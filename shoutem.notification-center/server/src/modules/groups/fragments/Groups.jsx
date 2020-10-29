@@ -13,6 +13,7 @@ import {
 import { shouldLoad } from '@shoutem/redux-io';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { isInitialized, isBusy } from '@shoutem/redux-io/status';
 import { GroupNode, GroupForm } from '../components';
 import {
@@ -22,6 +23,7 @@ import {
   updateGroup,
   deleteGroup,
 } from '../redux';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 class Groups extends Component {
@@ -82,7 +84,7 @@ class Groups extends Component {
     this.setState({ showGroupModal: false, currentGroup: null });
   }
 
-  handleOnSelect(groupId) {
+  handleOnSelect() {
     // do nothing
   }
 
@@ -97,11 +99,13 @@ class Groups extends Component {
     const { appId, deleteGroup } = this.props;
     const { groups } = this.state;
     const group = _.find(groups, { id: groupId });
+    const groupName = _.get(group, 'name');
 
     this.confirmModal.current.show({
-      title: 'Delete group',
-      message: `Are you sure you want to delete "${group.name}"? You will lose all users from that group already selected in the settings category.`,
-      confirmLabel: 'Delete',
+      title: i18next.t(LOCALIZATION.DELETE_MODAL_TITLE),
+      message: i18next.t(LOCALIZATION.DELETE_MODAL_MESSAGE, { groupName }),
+      confirmLabel: i18next.t(LOCALIZATION.DELETE_MODAL_CONFIRM_LABEL),
+      abortLabel: i18next.t(LOCALIZATION.CONFIRM_MODAL_ABORT_LABEL),
       confirmBsStyle: 'danger',
       onConfirm: () => deleteGroup(appId, groupId),
     });
@@ -159,16 +163,20 @@ class Groups extends Component {
       <div className="groups">
         <LoaderContainer isOverlay isLoading={isLoading}>
           <div className="groups-table__title">
-            <h3>List of notification groups</h3>
+            <h3>{i18next.t(LOCALIZATION.LIST_TITLE)}</h3>
             <Button
               className="btn-icon pull-right"
               onClick={this.handleCreateGroupClick}
             >
-              <IconLabel iconName="add">Add group</IconLabel>
+              <IconLabel iconName="add">
+                {i18next.t(LOCALIZATION.ADD_GROUP_LABEL)}
+              </IconLabel>
             </Button>
           </div>
           {noGroups && (
-            <div className="groups-empty-placeholder">No groups yet</div>
+            <div className="groups-empty-placeholder">
+              {i18next.t(LOCALIZATION.GROUPS_EMPTY_TEXT)}
+            </div>
           )}
           <NestedSortable
             showDragHandle
@@ -182,7 +190,7 @@ class Groups extends Component {
             <InlineModal
               className="groups-page-modal"
               onHide={this.handleHide}
-              title="Add group"
+              title={i18next.t(LOCALIZATION.ADD_GROUP_MODAL_TITLE)}
             >
               <GroupForm
                 assetManager={assetManager}

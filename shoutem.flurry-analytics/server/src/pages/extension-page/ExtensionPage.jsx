@@ -1,5 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import {
   Button,
   ButtonToolbar,
@@ -9,10 +12,9 @@ import {
   HelpBlock,
 } from 'react-bootstrap';
 import _ from 'lodash';
-
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
-
+import LOCALIZATION from './localization';
 import './style.scss';
 
 class ExtensionPage extends Component {
@@ -23,11 +25,7 @@ class ExtensionPage extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleSave = this.handleSave.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.initializeApiKeys = this.initializeApiKeys.bind(this);
+    autoBindReact(this);
 
     this.state = {
       error: null,
@@ -66,7 +64,9 @@ class ExtensionPage extends Component {
   }
 
   handleTextChange(event) {
-    const { target: { name: keyName, value }} = event;
+    const {
+      target: { name: keyName, value },
+    } = event;
     const newValueForKey = _.set({}, keyName, value);
 
     this.setState({
@@ -91,29 +91,21 @@ class ExtensionPage extends Component {
     this.setState({ error: '', inProgress: true });
 
     updateSettings(extension, extensionSettings)
-      .then(() => (
-        this.setState({ hasChanges: false, inProgress: false })
-      ))
-      .catch((err) => {
+      .then(() => this.setState({ hasChanges: false, inProgress: false }))
+      .catch(err => {
         this.setState({ error: err, inProgress: false });
       });
   }
 
   render() {
-    const {
-      error,
-      inProgress,
-      hasChanges,
-      android,
-      ios,
-    } = this.state;
+    const { error, inProgress, hasChanges, android, ios } = this.state;
 
     return (
       <div className="flurry-extension-page">
         <form onSubmit={this.handleSubmit}>
           <FormGroup>
-            <h3>Flurry API keys</h3>
-            <ControlLabel>iOS:</ControlLabel>
+            <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
+            <ControlLabel>{i18next.t(LOCALIZATION.FORM_IOS)}</ControlLabel>
             <FormControl
               className="form-control"
               name="ios.apiKey"
@@ -121,7 +113,7 @@ class ExtensionPage extends Component {
               type="text"
               value={ios.apiKey}
             />
-            <ControlLabel>Android:</ControlLabel>
+            <ControlLabel>{i18next.t(LOCALIZATION.FORM_ANDROID)}</ControlLabel>
             <FormControl
               className="form-control"
               name="android.apiKey"
@@ -130,9 +122,7 @@ class ExtensionPage extends Component {
               value={android.apiKey}
             />
           </FormGroup>
-          {error && (
-            <HelpBlock className="text-error">{error}</HelpBlock>
-          )}
+          {error && <HelpBlock className="text-error">{error}</HelpBlock>}
         </form>
         <ButtonToolbar>
           <Button
@@ -141,7 +131,7 @@ class ExtensionPage extends Component {
             onClick={this.handleSave}
           >
             <LoaderContainer isLoading={inProgress}>
-              Save
+              {i18next.t(LOCALIZATION.BUTTON_SAVE)}
             </LoaderContainer>
           </Button>
         </ButtonToolbar>
@@ -152,9 +142,8 @@ class ExtensionPage extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateSettings: (extension, settings) => (
-      dispatch(updateExtensionSettings(extension, settings))
-    ),
+    updateSettings: (extension, settings) =>
+      dispatch(updateExtensionSettings(extension, settings)),
   };
 }
 

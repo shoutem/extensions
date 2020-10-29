@@ -2,30 +2,26 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import { Alert } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import { Trans } from 'react-i18next';
 import { Table } from 'src/components';
 import { buildShortcutTree } from 'src/services';
 import UserGroupScreenVisibilityRow from '../user-group-screen-visibility-row';
+import LOCALIZATION from './localization';
 import './style.scss';
 
-const SHORTCUT_COLUMN_HEADERS = [
-  { id: 'name', value: 'Screen' },
-  { id: 'group', value: 'Visible to' },
-];
-
-// eslint-disable-next-line max-len
-const SCREEN_VISIBILITY_HELP_TEXT = (
-  <div>
-    Hiding screens option is available only when <i>Make all screens private </i>
-    option is enabled under <i>Protected Screens</i>.
-  </div>
-);
+function getColumnHeaders() {
+  return [
+    { id: 'name', value: i18next.t(LOCALIZATION.HEADER_SCREEN_TITLE) },
+    { id: 'group', value: i18next.t(LOCALIZATION.HEADER_VISIBLTE_TO_TITLE) },
+  ];
+}
 
 export default class UserGroupScreenSettings extends Component {
   constructor(props) {
     super(props);
-
-    this.checkData = this.checkData.bind(this);
-    this.renderShortcutVisibilityRow = this.renderShortcutVisibilityRow.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {
@@ -67,21 +63,26 @@ export default class UserGroupScreenSettings extends Component {
     const { disabled } = this.props;
     const { shortcutTree } = this.state;
 
-    const tableClasses = classNames(
-      'user-group-screen-settings__table',
-      { 'is-disabled': disabled }
-    );
+    const tableClasses = classNames('user-group-screen-settings__table', {
+      'is-disabled': disabled,
+    });
 
     return (
       <div className="user-group-screen-settings">
-        <h3>Screen visibility</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <Alert className="user-group-screen-settings__alert">
-          {SCREEN_VISIBILITY_HELP_TEXT}
+          <div>
+            <Trans i18nKey={LOCALIZATION.SCREEN_VISIBILITY_HELP_MESSAGE}>
+              Hiding screens option is available only when
+              <i>Make all screens private </i>
+              option is enabled under <i>Protected Screens</i>.
+            </Trans>
+          </div>
         </Alert>
         <Table
           className={tableClasses}
           emptyPlaceholderText="0 screens defined."
-          columnHeaders={SHORTCUT_COLUMN_HEADERS}
+          columnHeaders={getColumnHeaders()}
           renderItem={this.renderShortcutVisibilityRow}
           items={shortcutTree}
         />

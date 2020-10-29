@@ -1,10 +1,14 @@
 {
   "name": "i18n",
   "title": "Language & Region",
-  "version": "2.4.0",
+  "version": "2.4.3",
   "platform": "2.4.*",
   "description": "Configure the language and regional settings of your app.",
   "icon": "server/assets/add-translation.png",
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "pages": [
     {
       "name": "LanguagePage",
@@ -15,6 +19,21 @@
     {
       "page": "@.LanguagePage",
       "title": "Language"
+    }
+  ],
+  "shortcuts": [
+    {
+      "title": "Languages",
+      "description": "Provide your users with means of direct interaction",
+      "name": "SelectLanguageScreen",
+      "screen": "@.SelectLanguageScreen",
+      "icon": "theme://languages.png"
+    }
+  ],
+  "screens": [
+    {
+      "name": "SelectLanguageScreen",
+      "title": "Select app language"
     }
   ]
 }

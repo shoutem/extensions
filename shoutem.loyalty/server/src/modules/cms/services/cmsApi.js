@@ -1,12 +1,12 @@
 import Uri from 'urijs';
 import _ from 'lodash';
+import autoBind from 'auto-bind';
+import i18next from 'i18next';
+import LOCALIZATION from './localization';
 
 export default class CmsApi {
   constructor() {
-    this.init = this.init.bind(this);
-    this.initSession = this.initSession.bind(this);
-    this.isInitialized = this.isInitialized.bind(this);
-    this.getUrl = this.getUrl.bind(this);
+    autoBind(this);
 
     this.endpoint = null;
     this.sessionId = null;
@@ -14,7 +14,7 @@ export default class CmsApi {
 
   init(endpoint) {
     if (!endpoint) {
-      throw new Error('Cms endpoint cannot be empty!');
+      throw new Error(i18next.t(LOCALIZATION.ENDPOINT_REQUIRED_MESSAGE));
     }
 
     this.endpoint = endpoint;
@@ -24,7 +24,7 @@ export default class CmsApi {
     const sessionId = _.get(page, 'pageContext.auth.session');
 
     if (!sessionId) {
-      throw new Error('Cannot connect to cms: `session` is missing from `pageContext.auth`');
+      throw new Error(i18next.t(LOCALIZATION.CANNOT_CONNECT_MESSAGE));
     }
 
     this.sessionId = sessionId;

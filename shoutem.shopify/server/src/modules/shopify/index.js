@@ -1,7 +1,5 @@
 import ShopPreview from './fragments/shop-preview';
-export {
-  ShopPreview,
-};
+export { ShopPreview };
 
 export {
   resolveShopifyStoreUrl,

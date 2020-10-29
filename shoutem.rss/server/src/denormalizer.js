@@ -1,5 +1,5 @@
 import { ReduxApiStateDenormalizer } from '@shoutem/redux-io';
-import { DISCOVERED_FEEDS, FEED_ITEMS } from './rssPage/reducer';
+import { DISCOVERED_FEEDS, FEED_ITEMS } from './pages/rssPage/reducer';
 import { ext } from 'context';
 
 // define your storage mappings here
@@ -12,7 +12,10 @@ let denormalizer = null;
 
 export function createDenormalizer(getState) {
   if (denormalizer === null) {
-    denormalizer = new ReduxApiStateDenormalizer(getState, denormalizerMappings);
+    denormalizer = new ReduxApiStateDenormalizer(
+      getState,
+      denormalizerMappings,
+    );
   }
 }
 

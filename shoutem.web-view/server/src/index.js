@@ -1,15 +1,12 @@
-import WebPage from './webPage/components/Web';
+import WebPage from './webPage';
 import reducer from './reducer';
 import { createDenormalizer } from 'denormalizer';
 
 const adminPages = {
-  WebPage
+  WebPage,
 };
 
-export {
-  adminPages,
-  reducer
-};
+export { adminPages, reducer };
 
 export function extensionDidLoad(builder) {
   const getState = builder.getStore().getState;

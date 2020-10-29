@@ -10,7 +10,7 @@
   vertical-align: top;
 
   &:last-child {
-    margin-right:0;
+    margin-right: 0;
   }
 
   &:hover {
@@ -23,7 +23,7 @@
     cursor: default;
 
     .screen_group__screen-bezel::before {
-      opacity: 1.0;
+      opacity: 1;
     }
   }
 }
@@ -37,7 +37,7 @@
   background-position: center;
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     z-index: -1;
     top: 0;
@@ -87,7 +87,7 @@
   font-size: 13px;
   text-align: center;
   padding-top: 10px;
-  width:80px;
+  width: 80px;
   overflow: hidden;
-  text-overflow: ellipsis;;
+  text-overflow: ellipsis;
 }

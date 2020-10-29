@@ -1,8 +1,6 @@
-export {
-  moduleName,
-  DEFAULT_LIMIT,
-  DEFAULT_OFFSET,
-} from './const';
+import { reducer } from './redux';
+
+export { moduleName, DEFAULT_LIMIT, DEFAULT_OFFSET } from './const';
 
 export {
   getUsers,
@@ -14,13 +12,7 @@ export {
   updateUser,
 } from './redux';
 
-export {
-  UsersDashboard,
-} from './components';
+export { UsersDashboard } from './components';
 
-export {
-  getErrorMessage,
-} from './services';
-
-import { reducer } from './redux';
+export { getErrorMessage } from './services';
 export default reducer;

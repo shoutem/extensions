@@ -1,12 +1,8 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { IconLabel } from '@shoutem/react-web-ui';
 import { IconPicker } from '@shoutem/web-core';
-import {
-  url,
-  appId,
-  getActiveTheme,
-  getDefaultTheme,
-} from 'environment';
+import { url, appId, getActiveTheme, getDefaultTheme } from 'environment';
 import { UndeletableS3Uploader } from '../../fileUpload';
 
 function getLabelIcon(shortcutType) {
@@ -44,7 +40,11 @@ export default class ShortcutIconRow extends Component {
     return (
       <tr>
         <td>
-          <IconLabel iconName={iconName} size="24px" className="shortcuts-table__label">
+          <IconLabel
+            iconName={iconName}
+            size="24px"
+            className="shortcuts-table__label"
+          >
             {title}
           </IconLabel>
         </td>

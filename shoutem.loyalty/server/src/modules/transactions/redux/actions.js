@@ -1,45 +1,33 @@
 import _ from 'lodash';
-import {
-  find,
-  next,
-  prev,
-  create,
-  remove,
-} from '@shoutem/redux-io';
+import { find, next, prev, create, remove } from '@shoutem/redux-io';
 import { getLoyaltyUrl } from 'src/services';
 import ext, { LOYALTY_TYPES } from 'src/const';
 import { PUNCH_CARDS } from 'src/modules/punch-rewards';
-import {
-  CARD_TYPES,
-  TRANSACTIONS,
-  TRANSACTION_STATS,
-} from '../const';
+import { CARD_TYPES, TRANSACTIONS, TRANSACTION_STATS } from '../const';
 
 function generateTransactionsFilter(loyaltyType, filter) {
   const { cardId, rewardId, cashierId, placeId } = filter;
 
-  const cardType = loyaltyType === LOYALTY_TYPES.PUNCH
-    ? CARD_TYPES.PUNCH
-    : CARD_TYPES.POINTS;
+  const cardType =
+    loyaltyType === LOYALTY_TYPES.PUNCH ? CARD_TYPES.PUNCH : CARD_TYPES.POINTS;
 
-  const locationFilter = loyaltyType === LOYALTY_TYPES.POINTS
-    ? 'null'
-    : placeId;
+  const locationFilter =
+    loyaltyType === LOYALTY_TYPES.POINTS ? 'null' : placeId;
 
-  return ({
+  return {
     'filter[card]': cardId,
     'filter[punchReward]': rewardId,
     'filter[location]': locationFilter,
     'filter[cashier]': cashierId,
     'filter[cardType]': cardType,
-  });
+  };
 }
 
 export function loadTransactions(
   programId,
   loyaltyType,
   filter = {},
-  scope = {}
+  scope = {},
 ) {
   const transactionFilter = generateTransactionsFilter(loyaltyType, filter);
 
@@ -93,14 +81,9 @@ export function createTransaction(
   programId,
   transactionOptions,
   appId,
-  scope = {}
+  scope = {},
 ) {
-  const {
-    cardId,
-    reward,
-    place,
-    points,
-  } = transactionOptions;
+  const { cardId, reward, place, points } = transactionOptions;
 
   const rewardId = reward && reward.value;
   const placeId = place && place.value;
@@ -140,7 +123,9 @@ export function deleteTransaction(transactionId, programId, scope = {}) {
   const config = {
     schema: TRANSACTIONS,
     request: {
-      endpoint: getLoyaltyUrl(`/v1/programs/${programId}/transactions/${transactionId}`),
+      endpoint: getLoyaltyUrl(
+        `/v1/programs/${programId}/transactions/${transactionId}`,
+      ),
       headers: {},
     },
   };
@@ -157,7 +142,7 @@ export function loadGeneralStats(
   programId,
   loyaltyType,
   filter = {},
-  scope = {}
+  scope = {},
 ) {
   const transactionFilter = generateTransactionsFilter(loyaltyType, filter);
 
@@ -169,7 +154,9 @@ export function loadGeneralStats(
   const config = {
     schema: TRANSACTION_STATS,
     request: {
-      endpoint: getLoyaltyUrl(`/v1/programs/${programId}/reporting/general-stats{?q*}`),
+      endpoint: getLoyaltyUrl(
+        `/v1/programs/${programId}/reporting/general-stats{?q*}`,
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
       },

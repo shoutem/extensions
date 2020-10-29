@@ -1,5 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { reduxForm } from 'redux-form';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import { Trans } from 'react-i18next';
 import {
   LoaderContainer,
   ReduxFormElement,
@@ -8,6 +12,7 @@ import {
 } from '@shoutem/react-web-ui';
 import { Row, Col, Button, ButtonToolbar } from 'react-bootstrap';
 import { getFormState } from 'src/redux';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 const BARCODE_HELP_EXAMPLE = 'https://regex101.com/r/rtg3cg/4';
@@ -15,10 +20,7 @@ const BARCODE_HELP_EXAMPLE = 'https://regex101.com/r/rtg3cg/4';
 export class BarcodeRegexForm extends Component {
   constructor(props) {
     super(props);
-
-    this.handleBarcodeExampleClick = this.handleBarcodeExampleClick.bind(this);
-    this.renderBarcodeHelpText = this.renderBarcodeHelpText.bind(this);
-    this.renderBarcodeControlLabel = this.renderBarcodeControlLabel.bind(this);
+    autoBindReact(this);
   }
 
   handleBarcodeExampleClick() {
@@ -28,18 +30,25 @@ export class BarcodeRegexForm extends Component {
   renderBarcodeHelpText() {
     return (
       <div>
-        Regular expression used to validate the barcode.<br />
-        Use following markers within regular expression<br />
-        - <strong>amount</strong>: specifies the placement of amount (with decimal places)<br />
-        - <strong>mod13</strong>: specifies the placement of control digits. '13' indicates{' '}
-        that sum of all digits can be divided by 13.<br />
-        Example:<br />
+        <Trans i18nKey={LOCALIZATION.HELP_MESSAGE}>
+          Regular expression used to validate the barcode.
+          <br />
+          Use following markers within regular expression
+          <br />- <strong>amount</strong>: specifies the placement of amount
+          (with decimal places)
+          <br />- <strong>mod13</strong>: specifies the placement of control
+          digits. '13' indicates that sum of all digits can be divided by 13.
+          <br />
+          Example:
+          <br />
+        </Trans>
         <a
           className="barcode-regex-form__link"
           onClick={this.handleBarcodeExampleClick}
         >
-          {'^(.{6})(?<amount>.{5})(?<mod13>.{2})$'}
-        </a>.
+          {i18next.t(LOCALIZATION.REGEX_EXAMPLE)}
+        </a>
+        .
       </div>
     );
   }
@@ -47,11 +56,8 @@ export class BarcodeRegexForm extends Component {
   renderBarcodeControlLabel() {
     return (
       <div>
-        <span>Barcode regular expression</span>
-        <FontIconPopover
-          message={this.renderBarcodeHelpText()}
-          trigger="click"
-        >
+        <span>{i18next.t(LOCALIZATION.REGULAR_EXPRESSION_TITLE)}</span>
+        <FontIconPopover message={this.renderBarcodeHelpText()} trigger="click">
           <FontIcon
             className="barcode-regex-form__icon-popover"
             name="info"
@@ -88,7 +94,7 @@ export class BarcodeRegexForm extends Component {
         <ButtonToolbar>
           <Button bsStyle="primary" disabled={actionsDisabled} type="submit">
             <LoaderContainer isLoading={submitting}>
-              Save
+              {i18next.t(LOCALIZATION.BUTTON_SAVE_TITLE)}
             </LoaderContainer>
           </Button>
         </ButtonToolbar>
@@ -108,7 +114,5 @@ BarcodeRegexForm.propTypes = {
 export default reduxForm({
   getFormState,
   form: 'barcodeRegexForm',
-  fields: [
-    'regex',
-  ],
+  fields: ['regex'],
 })(BarcodeRegexForm);

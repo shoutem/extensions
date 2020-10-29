@@ -1,5 +1,8 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { shouldLoad, isInitialized } from '@shoutem/redux-io';
@@ -14,10 +17,7 @@ import {
   loadTransactions,
   loadGeneralStats,
 } from 'src/modules/transactions';
-import {
-  getPunchRewards,
-  loadPunchRewards,
-} from 'src/modules/punch-rewards';
+import { getPunchRewards, loadPunchRewards } from 'src/modules/punch-rewards';
 import {
   getLoyaltyPlaces,
   getCardsByUserId,
@@ -27,18 +27,17 @@ import {
   loadUsers,
 } from 'src/modules/program';
 import { LOYALTY_TYPES } from 'src/const';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export class TransactionsPage extends Component {
   constructor(props) {
     super(props);
+    autoBindReact(this);
 
-    this.checkData = this.checkData.bind(this);
-    this.loadTransactionStats = this.loadTransactionStats.bind(this);
-    this.handleLoyaltyTypeChange = this.handleLoyaltyTypeChange.bind(this);
-    this.handleFilterChange = this.handleFilterChange.bind(this);
-
-    const { extension: { settings } } = props;
+    const {
+      extension: { settings },
+    } = props;
     initializeApiEndpoints(settings);
 
     const programId = getProgramId(settings);
@@ -114,7 +113,10 @@ export class TransactionsPage extends Component {
 
     // We want to save common filter props that are shared through all loyalty types
     const newFilter = _.pick(filter, ['userId', 'cashierId']);
-    this.setState({ loyaltyType, filter: newFilter }, this.loadTransactionStats);
+    this.setState(
+      { loyaltyType, filter: newFilter },
+      this.loadTransactionStats,
+    );
   }
 
   handleFilterChange(filterPatch) {
@@ -133,17 +135,12 @@ export class TransactionsPage extends Component {
       users,
     } = this.props;
 
-    const {
-      programId,
-      loyaltyType,
-      filter,
-    } = this.state;
+    const { programId, loyaltyType, filter } = this.state;
 
-    const dataInitialized = (
+    const dataInitialized =
       isInitialized(transactions) &&
       isInitialized(generalStats) &&
-      isInitialized(users)
-    );
+      isInitialized(users);
 
     return (
       <LoaderContainer
@@ -154,7 +151,7 @@ export class TransactionsPage extends Component {
           loyaltyType={loyaltyType}
           onLoyaltyTypeChanged={this.handleLoyaltyTypeChange}
         />
-        <h3>Transactions</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <TransactionsFilter
           filter={filter}
           loyaltyType={loyaltyType}
@@ -210,27 +207,18 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName: ownExtensionName };
 
   return {
-    loadTransactions: (programId, loyaltyType, filter) => (
-      dispatch(loadTransactions(programId, loyaltyType, filter, scope))
-    ),
-    loadGeneralStats: (programId, loyaltyType, filter) => (
-      dispatch(loadGeneralStats(programId, loyaltyType, filter, scope))
-    ),
-    loadCashiers: (programId, placeId) => (
-      dispatch(loadCashiers(programId, placeId, scope))
-    ),
-    loadPlaces: (appId, categoryId) => (
-      dispatch(loadLoyaltyPlaces(appId, categoryId, scope))
-    ),
-    loadCards: (programId) => (
-      dispatch(loadCards(programId, scope))
-    ),
-    loadPunchRewards: (programId, appId) => (
-      dispatch(loadPunchRewards(programId, appId, scope))
-    ),
-    loadUsers: (appId) => (
-      dispatch(loadUsers(appId, scope))
-    ),
+    loadTransactions: (programId, loyaltyType, filter) =>
+      dispatch(loadTransactions(programId, loyaltyType, filter, scope)),
+    loadGeneralStats: (programId, loyaltyType, filter) =>
+      dispatch(loadGeneralStats(programId, loyaltyType, filter, scope)),
+    loadCashiers: (programId, placeId) =>
+      dispatch(loadCashiers(programId, placeId, scope)),
+    loadPlaces: (appId, categoryId) =>
+      dispatch(loadLoyaltyPlaces(appId, categoryId, scope)),
+    loadCards: programId => dispatch(loadCards(programId, scope)),
+    loadPunchRewards: (programId, appId) =>
+      dispatch(loadPunchRewards(programId, appId, scope)),
+    loadUsers: appId => dispatch(loadUsers(appId, scope)),
   };
 }
 

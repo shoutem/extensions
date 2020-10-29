@@ -1,16 +1,21 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import i18next from 'i18next';
 import { shouldRefresh, isValid } from '@shoutem/redux-io';
-import { updateShortcut, loadHierarchy, HIERARCHY } from './../reducer';
 import { denormalizeItem } from 'denormalizer';
-import ScreenGroup from './ScreenGroup';
-import { LoaderContainer, EmptyResourcePlaceholder } from '@shoutem/react-web-ui';
+import {
+  LoaderContainer,
+  EmptyResourcePlaceholder,
+} from '@shoutem/react-web-ui';
 import { ControlLabel } from 'react-bootstrap';
 import { ext } from 'context';
 import { getShortcut } from 'environment';
-import './style.scss';
 import layoutImage from './../assets/layout.png';
+import { updateShortcut, loadHierarchy, HIERARCHY } from './../reducer';
+import ScreenGroup from './ScreenGroup';
+import LOCALIZATION from './localization';
+import './style.scss';
 
 export class LayoutPage extends Component {
   constructor(props) {
@@ -29,20 +34,22 @@ export class LayoutPage extends Component {
     this.checkData(newProps);
   }
 
+  getScreenMappings(shortcut) {
+    const screens = _.get(shortcut, 'screens', []);
+    return _.zipObject(
+      _.map(screens, 'canonicalType'),
+      _.map(screens, screen =>
+        _.pick(screen, ['canonicalName', 'canonicalType']),
+      ),
+    );
+  }
+
   checkData(props) {
     const { hierarchy, shortcut, loadHierarchy } = props;
 
     if (shouldRefresh(hierarchy)) {
       loadHierarchy(shortcut.id);
     }
-  }
-
-  getScreenMappings(shortcut) {
-    const screens = _.get(shortcut, 'screens', []);
-    return _.zipObject(
-      _.map(screens, 'canonicalType'),
-      _.map(screens, screen => _.pick(screen, ['canonicalName', 'canonicalType']))
-    );
   }
 
   handleScreenSelected(event) {
@@ -81,6 +88,44 @@ export class LayoutPage extends Component {
     });
   }
 
+  resolveShortcutTitle(shortcut) {
+    const defaultShortcutTitle = _.get(
+      shortcut,
+      'settings.defaultShortcutTitle',
+      false,
+    );
+    return defaultShortcutTitle;
+  }
+
+  resolveExtensionTitle(shortcut) {
+    const extensionTitle = _.get(shortcut, 'settings.extensionTitle', false);
+    return extensionTitle;
+  }
+
+  resolveExtensionInfo(shortcut) {
+    const defaultShortcutTitle = this.resolveShortcutTitle(shortcut);
+    const extensionTitle = this.resolveExtensionTitle(shortcut);
+
+    if (!defaultShortcutTitle && !extensionTitle) {
+      return false;
+    }
+
+    if (!defaultShortcutTitle && extensionTitle) {
+      return i18next.t(LOCALIZATION.EXTENSION_TITLE, { extensionTitle });
+    }
+
+    if (defaultShortcutTitle && !extensionTitle) {
+      return i18next.t(LOCALIZATION.EXTENSION_UNDEFINED_TITLE, {
+        defaultShortcutTitle,
+      });
+    }
+
+    return i18next.t(LOCALIZATION.EXTENSION_DEFAULT_TITLE, {
+      defaultShortcutTitle,
+      extensionTitle,
+    });
+  }
+
   renderScreenHierarchy(hierarchy) {
     const screens = _.get(hierarchy, 'originalScreens', []);
 
@@ -89,9 +134,11 @@ export class LayoutPage extends Component {
         <EmptyResourcePlaceholder
           className="layout-page__empty-placeholder"
           imageSrc={layoutImage}
-          title="No layouts available"
+          title={i18next.t(LOCALIZATION.EMPTY_LAYOUTS_PLACEHOLDER_TITLE)}
         >
-          <span>Screens should expose the list of available layouts or disable this tab.</span>
+          <span>
+            {i18next.t(LOCALIZATION.EMPTY_LAYOUTS_PLACEHOLDER_MESSAGE)}
+          </span>
         </EmptyResourcePlaceholder>
       );
     }
@@ -114,35 +161,6 @@ export class LayoutPage extends Component {
     );
   }
 
-  resolveShortcutTitle(shortcut) {
-    const defaultShortcutTitle = _.get(shortcut, 'settings.defaultShortcutTitle', false);
-    return defaultShortcutTitle;
-  }
-
-  resolveExtensionTitle(shortcut) {
-    const extensionTitle = _.get(shortcut, 'settings.extensionTitle', false);
-    return extensionTitle;
-  }
-
-  resolveExtensionInfo(shortcut) {
-    const defaultShortcutTitle = this.resolveShortcutTitle(shortcut);
-    const extensionTitle = this.resolveExtensionTitle(shortcut);
-
-    if (!defaultShortcutTitle && !extensionTitle) {
-      return false;
-    }
-
-    if (!defaultShortcutTitle && extensionTitle) {
-      return `This is a shortcut from the ${extensionTitle} extension.`;
-    }
-
-    if (defaultShortcutTitle && !extensionTitle) {
-      return `This is the ${defaultShortcutTitle} shortcut of an undefined extension.`;
-    }
-
-    return `This is the ${defaultShortcutTitle} shortcut from the ${extensionTitle} extension.`;
-  }
-
   render() {
     const { hierarchy, shortcut } = this.props;
 
@@ -152,11 +170,7 @@ export class LayoutPage extends Component {
     return (
       <div className="layout-page">
         <LoaderContainer isLoading={!isHierarchyValid} size="50px">
-          {extensionInfo &&
-            <ControlLabel>
-              {extensionInfo}
-            </ControlLabel>
-          }
+          {extensionInfo && <ControlLabel>{extensionInfo}</ControlLabel>}
           {this.renderScreenHierarchy(hierarchy)}
         </LoaderContainer>
       </div>
@@ -174,14 +188,18 @@ LayoutPage.propTypes = {
 function mapStateToProps(state) {
   return {
     shortcut: getShortcut(),
-    hierarchy: denormalizeItem(state[ext()].layoutPage.hierarchy, undefined, HIERARCHY),
+    hierarchy: denormalizeItem(
+      state[ext()].layoutPage.hierarchy,
+      undefined,
+      HIERARCHY,
+    ),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateShortcut: (shortcut) => dispatch(updateShortcut(shortcut)),
-    loadHierarchy: (shortcutId) => dispatch(loadHierarchy(shortcutId)),
+    updateShortcut: shortcut => dispatch(updateShortcut(shortcut)),
+    loadHierarchy: shortcutId => dispatch(loadHierarchy(shortcutId)),
   };
 }
 

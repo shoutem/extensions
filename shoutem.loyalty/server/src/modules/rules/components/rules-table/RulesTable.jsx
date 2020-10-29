@@ -1,37 +1,39 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { ControlLabel } from 'react-bootstrap';
-import {
-  validateNumericRule,
-  transformNumericRule,
-} from '../../services';
+import { validateNumericRule, transformNumericRule } from '../../services';
 import RuleTableRow from '../rule-table-row';
+import LOCALIZATION from './localization';
 import './style.scss';
 
-export const RULES_TO_DISPLAY = {
-  VISIT: {
-    type: 'visit',
-    customerAction: 'Visit (QR or PIN verification)',
-    unit: 'points',
-    valueKey: 'pointsPerVisit',
-    valueTransformer: transformNumericRule,
-    validateRule: validateNumericRule,
-  },
-  LINEAR_POINT: {
-    type: 'linearPoint',
-    customerAction: 'Purchase (PIN, QR or receipt scanning)',
-    unit: 'points per currency unit',
-    valueKey: 'coefficient',
-    valueTransformer: transformNumericRule,
-    validateRule: validateNumericRule,
-  },
-};
+function resolveDisplayRules() {
+  return {
+    VISIT: {
+      type: 'visit',
+      customerAction: i18next.t(LOCALIZATION.VISIT_ACTION_TITLE),
+      unit: i18next.t(LOCALIZATION.VISIT_UNIT_TITLE),
+      valueKey: 'pointsPerVisit',
+      valueTransformer: transformNumericRule,
+      validateRule: validateNumericRule,
+    },
+    LINEAR_POINT: {
+      type: 'linearPoint',
+      customerAction: i18next.t(LOCALIZATION.LINEAR_POINT_ACTION_TITLE),
+      unit: i18next.t(LOCALIZATION.LINEAR_POINT_UNIT_TITLE),
+      valueKey: 'coefficient',
+      valueTransformer: transformNumericRule,
+      validateRule: validateNumericRule,
+    },
+  };
+}
 
 export default class RulesTable extends Component {
   constructor(props) {
     super(props);
-
-    this.renderRuleTableRow = this.renderRuleTableRow.bind(this);
+    autoBindReact(this);
   }
 
   renderRuleTableRow(ruleType) {
@@ -54,24 +56,30 @@ export default class RulesTable extends Component {
   }
 
   render() {
+    const rules = resolveDisplayRules();
+
     return (
       <table className="table rules-table">
         <thead>
           <tr>
             <th className="rules-table__action-col">
-              <ControlLabel>Customer’s action</ControlLabel>
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.HEADER_CUSTOM_ACTION_TITLE)}
+              </ControlLabel>
             </th>
             <th className="rules-table__value-col">
-              <ControlLabel>Value</ControlLabel>
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.HEADER_VALUE_TITLE)}
+              </ControlLabel>
             </th>
             <th className="rules-table__enabled-col">
-              <ControlLabel>Rule enabled</ControlLabel>
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.HEADER_RULE_ENABLED_TITLE)}
+              </ControlLabel>
             </th>
           </tr>
         </thead>
-        <tbody>
-          {_.map(RULES_TO_DISPLAY, this.renderRuleTableRow)}
-        </tbody>
+        <tbody>{_.map(rules, this.renderRuleTableRow)}</tbody>
       </table>
     );
   }

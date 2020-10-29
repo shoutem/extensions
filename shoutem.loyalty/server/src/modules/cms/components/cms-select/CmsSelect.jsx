@@ -1,11 +1,15 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import Select from 'react-select';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { isBusy } from '@shoutem/redux-io';
 import { FormGroup, ControlLabel } from 'react-bootstrap';
+import LOCALIZATION from './localization';
 
-const getDefaultFilerItem = (allItemsLabel) => ({
+const getDefaultFilerItem = allItemsLabel => ({
   value: 'all',
   label: allItemsLabel,
 });
@@ -13,9 +17,7 @@ const getDefaultFilerItem = (allItemsLabel) => ({
 export default class CmsSelect extends Component {
   constructor(props) {
     super(props);
-
-    this.handleFilterChange = this.handleFilterChange.bind(this);
-    this.resolveStateFromProps = this.resolveStateFromProps.bind(this);
+    autoBindReact(this);
 
     const { allItemsLabel, defaultValue } = props;
     const defaultFilterItem = getDefaultFilerItem(allItemsLabel);
@@ -42,16 +44,20 @@ export default class CmsSelect extends Component {
     const keyProp = _.get(descriptor, 'filterKeyProp', 'id');
     const labelProp = _.get(descriptor, 'filterLabelProp', 'name');
 
-    const filterItems = _.reduce(resources, (result, resource) => {
-      const value = _.get(resource, keyProp);
-      const label = _.get(resource, labelProp);
+    const filterItems = _.reduce(
+      resources,
+      (result, resource) => {
+        const value = _.get(resource, keyProp);
+        const label = _.get(resource, labelProp);
 
-      if (!value || !label) {
-        return result;
-      }
+        if (!value || !label) {
+          return result;
+        }
 
-      return [...result, { value, label }];
-    }, [defaultFilterItem]);
+        return [...result, { value, label }];
+      },
+      [defaultFilterItem],
+    );
 
     const sortedFilterItems = sortItems(filterItems);
 
@@ -107,8 +113,8 @@ CmsSelect.propTypes = {
 };
 
 CmsSelect.defaultProps = {
-  dropdownLabel: 'Select item',
-  allItemsLabel: 'All',
+  dropdownLabel: i18next.t(LOCALIZATION.DROPDOWN_TITLE),
+  allItemsLabel: i18next.t(LOCALIZATION.ALL_ITEMS_TITLE),
   sortItems: items => _.sortBy(items, 'label'),
   disabled: false,
 };

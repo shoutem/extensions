@@ -27,11 +27,11 @@ export default class Screen extends Component {
     return (
       <div className={screenClasses} onClick={this.handleClick}>
         <div className="screen_group__screen-bezel">
-          {screen.image && <img className="screen_group__screen-image" src={screen.image} />}
+          {screen.image && (
+            <img className="screen_group__screen-image" src={screen.image} />
+          )}
         </div>
-        <div className="screen_group__screen_name">
-          {screen.title}
-        </div>
+        <div className="screen_group__screen_name">{screen.title}</div>
       </div>
     );
   }

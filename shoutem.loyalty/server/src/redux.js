@@ -1,18 +1,10 @@
 import { createScopedReducer } from '@shoutem/redux-api-sdk';
 import { reducer as formReducer } from 'redux-form';
 import ext from 'src/const';
-import programReducer, {
-  moduleName as program,
-} from 'src/modules/program';
-import rulesReducer, {
-  moduleName as rules,
-} from 'src/modules/rules';
-import cashiersReducer, {
-  moduleName as cashiers,
-} from 'src/modules/cashiers';
-import cmsReducer, {
-  moduleName as cms,
-} from 'src/modules/cms';
+import programReducer, { moduleName as program } from 'src/modules/program';
+import rulesReducer, { moduleName as rules } from 'src/modules/rules';
+import cashiersReducer, { moduleName as cashiers } from 'src/modules/cashiers';
+import cmsReducer, { moduleName as cms } from 'src/modules/cms';
 import punchRewardsReducer, {
   moduleName as punchRewards,
 } from 'src/modules/punch-rewards';
@@ -54,7 +46,7 @@ export function navigateToUrl(url) {
 }
 
 // REDUCER
-export const reducer = () => (
+export const reducer = () =>
   createScopedReducer({
     extension: {
       form: formReducer,
@@ -69,5 +61,4 @@ export const reducer = () => (
     shortcut: {
       [placeRewards]: placeRewardsShortcutReducer,
     },
-  })
-);
+  });

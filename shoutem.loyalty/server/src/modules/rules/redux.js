@@ -33,14 +33,11 @@ export function getRules(state) {
   return getCollection(rules, state);
 }
 
-export const getRulesById = createSelector(
-  getRules,
-  rules => {
-    const keyedById = _.keyBy(rules, 'id');
-    cloneStatus(rules, keyedById);
-    return keyedById;
-  }
-);
+export const getRulesById = createSelector(getRules, rules => {
+  const keyedById = _.keyBy(rules, 'id');
+  cloneStatus(rules, keyedById);
+  return keyedById;
+});
 
 // ACTIONS
 export function loadRules(programId, placeId, scope = {}) {
@@ -89,9 +86,9 @@ export function createRule(rule, programId, placeId, scope = {}) {
 
 export function createRules(ruleTemplates, programId, placeId, scope) {
   return dispatch => {
-    const actions = _.map(ruleTemplates, rule => (
-      createRule(rule, programId, placeId, scope)
-    ));
+    const actions = _.map(ruleTemplates, rule =>
+      createRule(rule, programId, placeId, scope),
+    );
 
     return Promise.all(_.map(actions, dispatch));
   };
@@ -135,33 +132,28 @@ export function deleteRule(ruleId, programId, scope = {}) {
 
 export function deleteRules(rules, programId, scope) {
   return dispatch => {
-    const actions = _.map(rules, rule => (
-      deleteRule(rule.id, programId, scope)
-    ));
+    const actions = _.map(rules, rule => deleteRule(rule.id, programId, scope));
 
     return Promise.all(_.map(actions, dispatch));
   };
 }
 
 export function updateRules(initialRules, newRules, programId, placeId, scope) {
-  return (dispatch) => {
-    const deleteActions = _.map(getRulesToDelete(newRules), rule => (
-      dispatch(deleteRule(rule.id, programId, scope))
-    ));
+  return dispatch => {
+    const deleteActions = _.map(getRulesToDelete(newRules), rule =>
+      dispatch(deleteRule(rule.id, programId, scope)),
+    );
 
-    const updateActions = _.map(getRulesToUpdate(initialRules, newRules), rule => (
-      dispatch(updateRule(rule.id, rule, programId, scope))
-    ));
+    const updateActions = _.map(
+      getRulesToUpdate(initialRules, newRules),
+      rule => dispatch(updateRule(rule.id, rule, programId, scope)),
+    );
 
-    const createActions = _.map(getRulesToCreate(newRules), rule => (
-      dispatch(createRule(rule, programId, placeId, scope))
-    ));
+    const createActions = _.map(getRulesToCreate(newRules), rule =>
+      dispatch(createRule(rule, programId, placeId, scope)),
+    );
 
-    return Promise.all([
-      ...deleteActions,
-      ...updateActions,
-      ...createActions,
-    ]);
+    return Promise.all([...deleteActions, ...updateActions, ...createActions]);
   };
 }
 

@@ -1,6 +1,9 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { ControlLabel, Dropdown, MenuItem } from 'react-bootstrap';
+import LOCALIZATION from './localization';
 
 const SHOW_TEXT = 1;
 const SHOW_ICON = 2;
@@ -8,13 +11,13 @@ const SHOW_TEXT_AND_ICON = SHOW_TEXT | SHOW_ICON;
 
 const getDisplayOptionsText = (showText, showIcon) => {
   if (showText && showIcon) {
-    return 'Show text and icons';
+    return i18next.t(LOCALIZATION.OPTIONS_SHOW_TEXT_AND_ICONS);
   }
   if (showText) {
-    return 'Show text only';
+    return i18next.t(LOCALIZATION.OPTIONS_SHOW_TEXT_ONLY);
   }
   if (showIcon) {
-    return 'Show icons only';
+    return i18next.t(LOCALIZATION.OPTIONS_SHOW_ICONS_ONLY);
   }
   return '';
 };
@@ -24,7 +27,9 @@ export default class IconsAndText extends Component {
     super(props);
 
     this.resolveCurrentOptions = this.resolveCurrentOptions.bind(this);
-    this.handleDisplayOptionsSelected = this.handleDisplayOptionsSelected.bind(this);
+    this.handleDisplayOptionsSelected = this.handleDisplayOptionsSelected.bind(
+      this,
+    );
   }
 
   componentDidMount() {
@@ -68,22 +73,27 @@ export default class IconsAndText extends Component {
 
     return (
       <div>
-        <ControlLabel>Icons and text</ControlLabel>
-        <Dropdown onSelect={this.handleDisplayOptionsSelected} className="block">
+        <ControlLabel>
+          {i18next.t(LOCALIZATION.FORM_ICONS_AND_TEXT)}
+        </ControlLabel>
+        <Dropdown
+          onSelect={this.handleDisplayOptionsSelected}
+          className="block"
+        >
           <Dropdown.Toggle>
             {getDisplayOptionsText(showText, showIcon)}
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            {textOnlySupported &&
+            {textOnlySupported && (
               <MenuItem key={SHOW_TEXT} eventKey={SHOW_TEXT}>
                 {getDisplayOptionsText(true, false)}
               </MenuItem>
-            }
-            {iconsOnlySupported &&
+            )}
+            {iconsOnlySupported && (
               <MenuItem key={SHOW_ICON} eventKey={SHOW_ICON}>
                 {getDisplayOptionsText(false, true)}
               </MenuItem>
-            }
+            )}
             <MenuItem key={SHOW_TEXT_AND_ICON} eventKey={SHOW_TEXT_AND_ICON}>
               {getDisplayOptionsText(true, true)}
             </MenuItem>

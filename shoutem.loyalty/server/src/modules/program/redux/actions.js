@@ -4,13 +4,7 @@ import { createRule } from 'src/modules/rules';
 import { loadResources } from 'src/modules/cms';
 import { getLoyaltyUrl, shoutemUrls } from 'src/services';
 import ext from 'src/const';
-import {
-  PROGRAMS,
-  PLACES,
-  AUTHORIZATIONS,
-  CARDS,
-  USERS,
-} from '../const';
+import { PROGRAMS, PLACES, AUTHORIZATIONS, CARDS, USERS } from '../const';
 
 const MAX_PAGE_SIZE = 10000;
 
@@ -39,11 +33,7 @@ function createProgram(context, scope) {
   return create(config, newProgram, scope);
 }
 
-export function createAuthorization(
-  programId,
-  authorizationData,
-  scope = {}
-) {
+export function createAuthorization(programId, authorizationData, scope = {}) {
   const config = {
     schema: AUTHORIZATIONS,
     request: {
@@ -72,7 +62,9 @@ export function updateAuthorization(
   const config = {
     schema: AUTHORIZATIONS,
     request: {
-      endpoint: getLoyaltyUrl(`/v1/programs/${programId}/authorizations/${authorizationId}`),
+      endpoint: getLoyaltyUrl(
+        `/v1/programs/${programId}/authorizations/${authorizationId}`,
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
@@ -107,31 +99,28 @@ export function enableLoyalty(
   ruleTemplates,
   authorizationTypes = ['pin', 'userId', 'admin'],
   context,
-  scope = {}
+  scope = {},
 ) {
-  return dispatch => (
-    dispatch(createProgram(context, scope))
-      .then(action => {
-        const programId = _.get(action, ['payload', 'data', 'id']);
+  return dispatch =>
+    dispatch(createProgram(context, scope)).then(action => {
+      const programId = _.get(action, ['payload', 'data', 'id']);
 
-        const ruleActions = _.map(ruleTemplates, rule => (
-          dispatch(createRule(rule, programId, null, scope))
-        ));
+      const ruleActions = _.map(ruleTemplates, rule =>
+        dispatch(createRule(rule, programId, null, scope)),
+      );
 
-        const authActions = _.map(authorizationTypes, authorizationType => {
-          const authorization = {
-            authorizationType,
-            implementationData: {},
-          };
-          return dispatch(createAuthorization(programId, authorization, scope));
-        });
+      const authActions = _.map(authorizationTypes, authorizationType => {
+        const authorization = {
+          authorizationType,
+          implementationData: {},
+        };
+        return dispatch(createAuthorization(programId, authorization, scope));
+      });
 
-        return Promise.all([
-          ...authActions,
-          ...ruleActions,
-        ]).then(() => programId);
-      })
-  );
+      return Promise.all([...authActions, ...ruleActions]).then(
+        () => programId,
+      );
+    });
 }
 
 export function loadLoyaltyPlaces(appId, categoryId, scope) {
@@ -161,7 +150,9 @@ export function loadUsers(appId, scope = {}) {
   const config = {
     schema: USERS,
     request: {
-      endpoint: shoutemUrls.buildAuthUrl(`/v1/realms/externalReference:${appId}/users{?q*}`),
+      endpoint: shoutemUrls.buildAuthUrl(
+        `/v1/realms/externalReference:${appId}/users{?q*}`,
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
       },

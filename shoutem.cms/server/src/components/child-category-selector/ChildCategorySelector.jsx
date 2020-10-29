@@ -1,28 +1,30 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { isBusy } from '@shoutem/redux-io';
 import { LoaderContainer, Dropdown } from '@shoutem/react-web-ui';
 import { FormGroup, ControlLabel, MenuItem } from 'react-bootstrap';
 import {
   getDropdownOptions,
   getSelectedOptionLabel,
-  ALL_CATEGORIES_OPTION,
+  ALL_CATEGORIES_OPTION_KEY,
+  getAllCategoriesOption,
   isAllCategoriesSelected,
 } from '../../services';
 import CheckboxMenuItem from '../checkbox-menu-item';
+import LOCALIZATION from './localization';
 import './style.scss';
-
-const NO_FILTERED_DATA_LABEL = 'Show all categories';
 
 function getDisplayLabel(options, selectedOptions = []) {
   if (isAllCategoriesSelected(selectedOptions)) {
-    return NO_FILTERED_DATA_LABEL;
+    return i18next.t(LOCALIZATION.NO_FILTERED_DATA_TITLE);
   }
 
   return getSelectedOptionLabel(
     options,
     selectedOptions,
-    NO_FILTERED_DATA_LABEL
+    i18next.t(LOCALIZATION.NO_FILTERED_DATA_TITLE),
   );
 }
 
@@ -44,15 +46,9 @@ export default class ChildCategorySelector extends Component {
   }
 
   checkData(nextProps, props = {}) {
-    const {
-      categories: nextCategories,
-      visibleCategoryIds: nextVisibleCategoryIds,
-    } = nextProps;
+    const { categories: nextCategories } = nextProps;
 
-    const {
-      categories,
-      visibleCategoryIds,
-    } = props;
+    const { categories } = props;
 
     if (nextCategories !== categories) {
       this.setState({ options: getDropdownOptions(nextCategories) });
@@ -62,9 +58,9 @@ export default class ChildCategorySelector extends Component {
   handleToggleCategory(categoryId, selected) {
     const { visibleCategoryIds } = this.props;
 
-    const newVisibleCategoryIds = selected ?
-      [...visibleCategoryIds, categoryId].sort() :
-      _.filter(visibleCategoryIds, category => category !== categoryId);
+    const newVisibleCategoryIds = selected
+      ? [...visibleCategoryIds, categoryId].sort()
+      : _.filter(visibleCategoryIds, category => category !== categoryId);
 
     this.props.onVisibleCategoriesChange(newVisibleCategoryIds);
   }
@@ -75,10 +71,9 @@ export default class ChildCategorySelector extends Component {
     const { key, label } = categoryOption;
     const isChecked = _.includes(visibleCategoryIds, key);
 
-    const disabled = (
-      key !== ALL_CATEGORIES_OPTION.key &&
-      isAllCategoriesSelected(visibleCategoryIds)
-    );
+    const disabled =
+      key !== ALL_CATEGORIES_OPTION_KEY &&
+      isAllCategoriesSelected(visibleCategoryIds);
 
     return (
       <CheckboxMenuItem
@@ -94,11 +89,7 @@ export default class ChildCategorySelector extends Component {
 
   render() {
     const { options } = this.state;
-    const {
-      visibleCategoryIds,
-      categories,
-      disabled,
-    } = this.props;
+    const { visibleCategoryIds, categories, disabled } = this.props;
 
     const selectedOptionLabel = getDisplayLabel(options, visibleCategoryIds);
     const categoriesLoading = isBusy(categories);
@@ -111,22 +102,18 @@ export default class ChildCategorySelector extends Component {
       >
         <FormGroup className="child-category-selector">
           <ControlLabel>
-            Choose categories to display
+            {i18next.t(LOCALIZATION.FORM_CHOOSE_CATEGORIES_TITLE)}
           </ControlLabel>
           <Dropdown
             className="child-category-selector__dropdown block"
             disabled={disabled}
             id="child-category-selector__dropdown"
           >
-            <Dropdown.Toggle>
-              {selectedOptionLabel}
-            </Dropdown.Toggle>
+            <Dropdown.Toggle>{selectedOptionLabel}</Dropdown.Toggle>
             <Dropdown.Menu>
-              <MenuItem>
-                {selectedOptionLabel}
-              </MenuItem>
+              <MenuItem>{selectedOptionLabel}</MenuItem>
               <MenuItem divider />
-              {this.renderCategoryMenuItem(ALL_CATEGORIES_OPTION)}
+              {this.renderCategoryMenuItem(getAllCategoriesOption())}
               <MenuItem divider />
               <div className="child-category-selector__items">
                 {_.map(options, this.renderCategoryMenuItem)}

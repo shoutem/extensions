@@ -1,3 +1,1 @@
-export {
-  validateProviderSetup,
-} from './providers';
+export { validateProviderSetup } from './providers';

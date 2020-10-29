@@ -1,0 +1,10 @@
+{
+  "shoutem": {
+    "flurry-analytics": {
+      "extension-page.title": "Flurry API keys",
+      "extension-page.form-ios": "iOS:",
+      "extension-page.form-android": "Android:",
+      "extension-page.button-save": "Save"
+    }
+  }
+}

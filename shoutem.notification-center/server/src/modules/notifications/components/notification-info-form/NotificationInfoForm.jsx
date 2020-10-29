@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
+import i18next from 'i18next';
 import {
   Row,
   Col,
@@ -18,6 +19,7 @@ import {
   AUDIENCE_TYPES,
   TARGET_TYPES,
 } from '../../const';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class NotificationInfoForm extends Component {
@@ -42,10 +44,10 @@ export default class NotificationInfoForm extends Component {
       onCancel,
     } = this.props;
 
-    let targetTitle = 'URL to open';
+    let targetTitle = i18next.t(LOCALIZATION.URL_INPUT_LABEL);
     let url = contentUrl;
     if (target === TARGET_TYPES.SCREEN) {
-      targetTitle = 'Screen to open';
+      targetTitle = i18next.t(LOCALIZATION.SCREEN_INPUT_LABEL);
 
       const shortcutTree = buildShortcutTree(shortcuts);
       const shortcutOptions = createOptions(
@@ -58,7 +60,7 @@ export default class NotificationInfoForm extends Component {
       url = _.get(shortcut, 'label');
     }
 
-    let audienceValue = 'All';
+    let audienceValue = i18next.t(LOCALIZATION.AUDIENCE_ALL_VALUE);
     if (audience === AUDIENCE_TYPES.GROUP) {
       const groupNames = _.map(audienceGroups, group => _.truncate(group.name));
       audienceValue = _.join(groupNames, ', ');
@@ -79,7 +81,9 @@ export default class NotificationInfoForm extends Component {
         <Row>
           <Col xs={12}>
             <FormGroup controlId="audience">
-              <ControlLabel>Audience</ControlLabel>
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.AUDIENCE_LABEL)}
+              </ControlLabel>
               <FormControl value={audienceValue} />
             </FormGroup>
           </Col>
@@ -87,7 +91,9 @@ export default class NotificationInfoForm extends Component {
         <Row>
           <Col xs={12}>
             <FormGroup controlId="deliveryTime">
-              <ControlLabel>Send date</ControlLabel>
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.DELIVERY_LABEL)}
+              </ControlLabel>
               <FormControl value={sendDate} />
             </FormGroup>
           </Col>
@@ -95,7 +101,7 @@ export default class NotificationInfoForm extends Component {
         <Row>
           <Col xs={12}>
             <FormGroup controlId="title">
-              <ControlLabel>Title</ControlLabel>
+              <ControlLabel>{i18next.t(LOCALIZATION.TITLE_LABEL)}</ControlLabel>
               <FormControl value={title} />
             </FormGroup>
           </Col>
@@ -103,14 +109,16 @@ export default class NotificationInfoForm extends Component {
         <Row>
           <Col xs={12}>
             <FormGroup controlId="summary">
-              <ControlLabel>Message</ControlLabel>
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.MESSAGE_LABEL)}
+              </ControlLabel>
               <FormControl componentClass="textarea" value={summary} />
             </FormGroup>
           </Col>
         </Row>
         <ButtonToolbar>
           <Button bsSize="large" onClick={onCancel}>
-            Cancel
+            {i18next.t(LOCALIZATION.BUTTON_CANCEL)}
           </Button>
         </ButtonToolbar>
       </form>

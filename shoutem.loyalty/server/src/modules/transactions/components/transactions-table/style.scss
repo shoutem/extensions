@@ -1,45 +1,43 @@
-:global {
-  .transactions-table {
-    &.table {
-      table-layout: initial;
-      margin-top: 36px;
+.transactions-table {
+  &.table {
+    table-layout: initial;
+    margin-top: 36px;
 
-      > thead > tr > th {
-        padding: 8px;
-        vertical-align: middle;
+    > thead > tr > th {
+      padding: 8px;
+      vertical-align: middle;
 
-        .se-icon::before {
-          padding-left: 8px;
-          margin-top: 8px;
-        }
+      .se-icon::before {
+        padding-left: 8px;
+        margin-top: 8px;
+      }
+    }
+
+    > tbody > tr {
+      &.transactions-table__empty-row {
+        border-bottom: none;
+        color: #888fa1;
+        margin-top: 8px;
       }
 
-      > tbody > tr {
-        &.transactions-table__empty-row {
-          border-bottom: none;
-          color: #888fa1;
-          margin-top: 8px;
-        }
-
-        > td {
-          padding: 10px 12px;
-        }
+      > td {
+        padding: 10px 12px;
       }
     }
   }
+}
 
-  .transactions-table__time,
-  .transactions-table__transaction,
-  .transactions-table__actions {
-    text-align: right;
-  }
+.transactions-table__time,
+.transactions-table__transaction,
+.transactions-table__actions {
+  text-align: right;
+}
 
-  .transactions-table__transaction,
-  .transactions-table__time {
-    width: 100px;
-  }
+.transactions-table__transaction,
+.transactions-table__time {
+  width: 100px;
+}
 
-  .transactions-table__actions {
-    width: 80px;
-  }
+.transactions-table__actions {
+  width: 80px;
 }

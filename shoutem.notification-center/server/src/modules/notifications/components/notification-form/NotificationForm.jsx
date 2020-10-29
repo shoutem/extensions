@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import { reduxForm } from 'redux-form';
 import _ from 'lodash';
+import i18next from 'i18next';
 import {
   Row,
   Col,
@@ -28,18 +29,47 @@ import {
   DISPLAY_TIME_FORMAT,
   AUDIENCE_TYPES,
   DELIVERY_TYPES,
-  TARGET_OPTIONS,
-  AUDIENCE_OPTIONS,
-  DELIVERY_OPTIONS,
   TARGET_TYPES,
 } from '../../const';
 import { ShortcutsDropdown } from '../shortcuts-dropdown';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 class NotificationForm extends Component {
   constructor(props) {
     super(props);
     autoBindReact(this);
+
+    this.TARGET_OPTIONS = [
+      {
+        value: TARGET_TYPES.URL,
+        label: i18next.t(LOCALIZATION.TARGET_URL_LABEL),
+      },
+      {
+        value: TARGET_TYPES.SCREEN,
+        label: i18next.t(LOCALIZATION.TARGET_SCREEN_LABEL),
+      },
+    ];
+    this.AUDIENCE_OPTIONS = [
+      {
+        value: AUDIENCE_TYPES.ALL,
+        label: i18next.t(LOCALIZATION.AUDIENCE_ALL_LABEL),
+      },
+      {
+        value: AUDIENCE_TYPES.GROUP,
+        label: i18next.t(LOCALIZATION.AUDIENCE_GROUP_LABEL),
+      },
+    ];
+    this.DELIVERY_OPTIONS = [
+      {
+        value: DELIVERY_TYPES.NOW,
+        label: i18next.t(LOCALIZATION.DELIVERY_NOW_LABEL),
+      },
+      {
+        value: DELIVERY_TYPES.SCHEDULED,
+        label: i18next.t(LOCALIZATION.DELIVERY_SCHEDULED_LABEL),
+      },
+    ];
   }
 
   handleTargetChanged(item) {
@@ -115,13 +145,15 @@ class NotificationForm extends Component {
         <Row>
           <Col xs={5}>
             <FormGroup controlId="target">
-              <ControlLabel>Select what to open</ControlLabel>
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.TARGET_LABEL)}
+              </ControlLabel>
               <Select
                 name="target"
                 elementId="target"
                 clearable={false}
                 onChange={this.handleTargetChanged}
-                options={TARGET_OPTIONS}
+                options={this.TARGET_OPTIONS}
                 value={target.value}
               />
             </FormGroup>
@@ -130,7 +162,7 @@ class NotificationForm extends Component {
             {!showShortcuts && (
               <ReduxFormElement
                 elementId="contentUrl"
-                name="URL to open"
+                name={i18next.t(LOCALIZATION.CONTENT_URL_INPUT_LABEL)}
                 disabled={submitting}
                 field={contentUrl}
               />
@@ -139,7 +171,7 @@ class NotificationForm extends Component {
               <ReduxFormElement
                 disabled={submitting}
                 elementId="shortcutId"
-                name="Screen to open"
+                name={i18next.t(LOCALIZATION.SCREEN_INPUT_LABEL)}
                 field={shortcutId}
               >
                 <ShortcutsDropdown
@@ -153,11 +185,13 @@ class NotificationForm extends Component {
         <Row>
           <Col xs={5}>
             <FormGroup controlId="audience">
-              <ControlLabel>Audience</ControlLabel>
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.AUDIENCE_LABEL)}
+              </ControlLabel>
               <RadioSelector
                 className="notification-form__radio-selector"
                 groupName="audience"
-                options={AUDIENCE_OPTIONS}
+                options={this.AUDIENCE_OPTIONS}
                 activeValue={audience.value}
                 onSelect={this.handleAudienceSelect}
               />
@@ -182,11 +216,13 @@ class NotificationForm extends Component {
         <Row>
           <Col xs={5}>
             <FormGroup controlId="delivery">
-              <ControlLabel>Delivery date and time</ControlLabel>
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.DELIVERY_LABEL)}
+              </ControlLabel>
               <RadioSelector
                 className="notification-form__radio-selector"
                 groupName="delivery"
-                options={DELIVERY_OPTIONS}
+                options={this.DELIVERY_OPTIONS}
                 activeValue={delivery.value}
                 onSelect={this.handleDeliverySelect}
               />
@@ -202,7 +238,7 @@ class NotificationForm extends Component {
                 clearable={false}
                 utc={false}
                 inputProps={{
-                  placeholder: 'Select date and time',
+                  placeholder: i18next.t(LOCALIZATION.DATE_PICKER_LABEL),
                   disabled: submitting || deliveryTimeDisabled,
                 }}
                 dateFormat={DISPLAY_DATE_FORMAT}
@@ -215,7 +251,7 @@ class NotificationForm extends Component {
           <Col xs={12}>
             <ReduxFormElement
               elementId="title"
-              name="Title"
+              name={i18next.t(LOCALIZATION.TITLE_INPUT_LABEL)}
               maxLength={255}
               disabled={submitting}
               field={title}
@@ -227,7 +263,7 @@ class NotificationForm extends Component {
             <ReduxFormElement
               disabled={submitting}
               elementId="summary"
-              name="Message"
+              name={i18next.t(LOCALIZATION.SUMMARY_INPUT_LABEL)}
               field={summary}
             >
               <FormControl
@@ -246,11 +282,13 @@ class NotificationForm extends Component {
             type="submit"
           >
             <LoaderContainer isLoading={submitting}>
-              {inEditMode ? 'Save' : 'Create'}
+              {inEditMode
+                ? i18next.t(LOCALIZATION.BUTTON_SAVE)
+                : i18next.t(LOCALIZATION.BUTTON_CREATE)}
             </LoaderContainer>
           </Button>
           <Button bsSize="large" disabled={submitting} onClick={onCancel}>
-            Cancel
+            {i18next.t(LOCALIZATION.BUTTON_CANCEL)}
           </Button>
         </ButtonToolbar>
         {error && (

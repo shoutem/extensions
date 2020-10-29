@@ -1,5 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import {
   Button,
   ButtonToolbar,
@@ -21,11 +24,8 @@ import {
   validateShopifyStoreUrl,
   resolveShopifyStoreUrl,
 } from 'src/modules/shopify';
+import LOCALIZATION from './localization';
 import './style.scss';
-
-const ERROR_STORE_URL = 'Invalid store URL';
-const ERROR_SHOP = 'We can\'t reach the shop. ' +
-  'Please check your store URL and Storefront access token.';
 
 class ShopifySettingsPage extends Component {
   static propTypes = {
@@ -37,11 +37,10 @@ class ShopifySettingsPage extends Component {
 
   constructor(props) {
     super(props);
+    autoBindReact(this);
 
-    this.handleApiKeyTextChange = this.handleApiKeyTextChange.bind(this);
-    this.handleStoreTextChange = this.handleStoreTextChange.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.ERROR_STORE_URL = i18next.t(LOCALIZATION.ERROR_STORE_URL);
+    this.ERROR_SHOP = i18next.t(LOCALIZATION.ERROR_SHOP);
 
     props.fetchExtension();
 
@@ -56,7 +55,7 @@ class ShopifySettingsPage extends Component {
   componentWillReceiveProps(nextProps) {
     const { extension } = this.props;
     const { extension: nextExtension } = nextProps;
-    const { store, apiKey} = this.state;
+    const { store, apiKey } = this.state;
 
     if (_.isEmpty(store)) {
       this.setState({
@@ -82,7 +81,6 @@ class ShopifySettingsPage extends Component {
     });
   }
 
-
   handleApiKeyTextChange(event) {
     this.setState({
       apiKey: event.target.value,
@@ -104,7 +102,7 @@ class ShopifySettingsPage extends Component {
     } = this.props;
 
     if (!validateShopifyStoreUrl(store)) {
-      this.setState({ error: ERROR_STORE_URL });
+      this.setState({ error: this.ERROR_STORE_URL });
       return;
     }
 
@@ -116,50 +114,56 @@ class ShopifySettingsPage extends Component {
       store: resolvedStore,
     });
 
-    validateShopifySettings(resolvedStore, apiKey).then(() => {
-      this.setState({
-        hasChanges: false,
-        inProgress: false,
+    validateShopifySettings(resolvedStore, apiKey)
+      .then(() => {
+        this.setState({
+          hasChanges: false,
+          inProgress: false,
+        });
+        return updateExtensionSettings(extension, {
+          apiKey,
+          store: resolvedStore,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          error: this.ERROR_SHOP,
+          inProgress: false,
+        });
       });
-      return updateExtensionSettings(extension, { apiKey, store: resolvedStore });
-    }).catch(() => {
-      this.setState({
-        error: ERROR_SHOP,
-        inProgress: false,
-      });
-    });
   }
 
   render() {
     const { error, hasChanges, inProgress, store, apiKey } = this.state;
 
-    const allShortcutsNote = 'Note: This extension will use the same Shopify '
-    + 'store for all screens in the app.';
+    const allShortcutsNote = i18next.t(LOCALIZATION.ALL_SHORTCUTS_NOTE);
 
     return (
       <div className="shopify-settings-page">
         <form onSubmit={this.handleSubmit}>
-          <h3>Store settings</h3>
+          <h3>{i18next.t(LOCALIZATION.FORM_TITLE)}</h3>
           <FormGroup>
-            <ControlLabel>Store URL (e.g. mystore.myshopify.com)</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.STORE_URL_LABEL)}
+            </ControlLabel>
             <FormControl
               type="text"
               className="form-control"
               value={store}
               onChange={this.handleStoreTextChange}
             />
-            <ControlLabel>Storefront access token</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.STORE_ACCESS_TOKEN)}
+            </ControlLabel>
             <FormControl
               type="text"
               className="form-control"
               value={apiKey}
               onChange={this.handleApiKeyTextChange}
             />
-            <div style={{marginTop: '5px'}}>{allShortcutsNote}</div>
+            <div style={{ marginTop: '5px' }}>{allShortcutsNote}</div>
           </FormGroup>
-          {error &&
-            <HelpBlock className="text-error">{error}</HelpBlock>
-          }
+          {error && <HelpBlock className="text-error">{error}</HelpBlock>}
         </form>
         <ButtonToolbar>
           <Button
@@ -168,7 +172,7 @@ class ShopifySettingsPage extends Component {
             onClick={this.handleSave}
           >
             <LoaderContainer isLoading={inProgress}>
-              Save
+              {i18next.t(LOCALIZATION.BUTTON_SAVE)}
             </LoaderContainer>
           </Button>
         </ButtonToolbar>
@@ -190,19 +194,18 @@ function mapDispatchToProps(dispatch, ownProps) {
 
   return {
     fetchExtension: () => dispatch(fetchExtension(extensionName)),
-    validateShopifySettings: (store, apiKey) => (
+    validateShopifySettings: (store, apiKey) =>
       dispatch(
-        validateShopifySettings(
-          store,
-          apiKey,
-          { extensionName: extensionName }
-        )
-      )
-    ),
-    updateExtensionSettings: (extension, settings) => (
-      dispatch(updateExtensionSettings(extension, settings))
-    ),
+        validateShopifySettings(store, apiKey, {
+          extensionName,
+        }),
+      ),
+    updateExtensionSettings: (extension, settings) =>
+      dispatch(updateExtensionSettings(extension, settings)),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShopifySettingsPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ShopifySettingsPage);

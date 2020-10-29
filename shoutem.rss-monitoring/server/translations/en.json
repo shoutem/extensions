@@ -1,0 +1,12 @@
+{
+  "shoutem": {
+    "rss-monitoring": {
+      "monitored-screens-table.title": "Select screens for monitoring",
+      "monitored-screens-table.table-empty-text": "0 screens defined.",
+      "monitored-screens-table.table-header-screen": "Screen",
+      "rss-fragment.title": "Monitored screens",
+      "rss-fragment.form-switch-label": "Enable monitoring",
+      "rss-page.push-alert": "Push notifications can't reach users until your app is published."
+    }
+  }
+}

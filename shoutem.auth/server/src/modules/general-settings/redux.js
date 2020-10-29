@@ -1,12 +1,6 @@
 import { combineReducers } from 'redux';
 import _ from 'lodash';
-import {
-  find,
-  update,
-  getOne,
-  storage,
-  one,
-} from '@shoutem/redux-io';
+import { find, update, getOne, storage, one } from '@shoutem/redux-io';
 import { shoutemUrls } from 'src/services';
 import ext from 'src/const';
 import {
@@ -48,7 +42,9 @@ export function loadAppStoreSettings(appId, scope = {}) {
   const config = {
     schema: APPLICATION_STORE_SETTINGS,
     request: {
-      endpoint: shoutemUrls.buildLegacyUrl(`/v1/apps/${appId}/legacy-store-settings`),
+      endpoint: shoutemUrls.buildLegacyUrl(
+        `/v1/apps/${appId}/legacy-store-settings`,
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
@@ -84,7 +80,9 @@ export function updateAppRealm(appId, realmPatch) {
   const config = {
     schema: AUTH_REALMS,
     request: {
-      endpoint: shoutemUrls.buildAuthUrl(`/v1/realms/externalReference:${appId}`),
+      endpoint: shoutemUrls.buildAuthUrl(
+        `/v1/realms/externalReference:${appId}`,
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',

@@ -10,6 +10,7 @@ export const pages = {
   RssPage,
 };
 
+// eslint-disable-next-line import/no-mutable-exports
 let pageReducer = null;
 
 export function pageWillMount(page) {

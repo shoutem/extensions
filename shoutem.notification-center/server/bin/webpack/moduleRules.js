@@ -45,12 +45,14 @@ function resolveModuleRules() {
   const imgRules = [
     {
       test: /\.(png|gif|jpg|svg)$/,
-      use: [{
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
+      use: [
+        {
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+          },
         },
-      }],
+      ],
     },
   ];
 
@@ -120,12 +122,7 @@ function resolveModuleRules() {
     },
   ];
 
-  return [
-    jsRule,
-    ...styleRules,
-    ...fontRules,
-    ...imgRules,
-  ];
+  return [jsRule, ...styleRules, ...fontRules, ...imgRules];
 }
 
 module.exports = resolveModuleRules;

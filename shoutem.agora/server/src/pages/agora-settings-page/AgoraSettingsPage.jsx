@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
+import {
+  FontIcon,
+  FontIconPopover,
+  LoaderContainer,
+} from '@shoutem/react-web-ui';
 import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import {
   Button,
   ButtonToolbar,
@@ -11,7 +16,6 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
-import { LoaderContainer } from '@shoutem/react-web-ui';
 import {
   fetchExtension,
   updateExtensionSettings,
@@ -19,14 +23,11 @@ import {
 } from '@shoutem/redux-api-sdk';
 import { shouldRefresh } from '@shoutem/redux-io';
 import { connect } from 'react-redux';
-import './style.scss';
 import MessageWithLink from '../../components/message-with-link';
+import LOCALIZATION from './localization';
+import './style.scss';
 
-const ERROR_APP_ID = 'Invalid App ID';
-const LEARN_MORE_TEXT = 'Learn more.';
 const SUPPORT_ARTICLE_LINK = 'https://shoutem.com/support/video-call';
-const AGORA_SETUP_MESSAGE =
-  'Please add Agora App ID to enable video call feature.';
 
 class AgoraSettingsPage extends Component {
   static propTypes = {
@@ -88,7 +89,7 @@ class AgoraSettingsPage extends Component {
       .then(() => this.setState({ hasChanges: false, inProgress: false }))
       .catch(() => {
         this.setState({
-          error: ERROR_APP_ID,
+          error: i18next.t(LOCALIZATION.ERROR_APP_ID_MESSAGE),
           inProgress: false,
         });
       });
@@ -103,23 +104,25 @@ class AgoraSettingsPage extends Component {
       <div className="agora-settings-page">
         <form onSubmit={this.handleSubmit}>
           <div className="agora-title-container">
-            <h3>Agora settings </h3>
+            <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
             <FontIconPopover
               delayHide={2000}
               hideOnMouseLeave={false}
               message={
                 <MessageWithLink
-                  message={AGORA_SETUP_MESSAGE}
+                  message={i18next.t(LOCALIZATION.AGORA_SETUP_MESSAGE)}
                   link={SUPPORT_ARTICLE_LINK}
-                  linkText={LEARN_MORE_TEXT}
+                  linkText={i18next.t(LOCALIZATION.LEARN_MORE_MESSAGE)}
                 />
               }
             >
               <FontIcon className="font-icon" name="info" size="24px" />
-            </FontIconPopover>{' '}
+            </FontIconPopover>
           </div>
           <FormGroup>
-            <ControlLabel>Agora App ID</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_AGORA_APP_ID_TITLE)}
+            </ControlLabel>
             <FormControl
               className="form-control"
               onChange={this.handleAppIdTextChange}
@@ -135,7 +138,9 @@ class AgoraSettingsPage extends Component {
             disabled={saveDisabled}
             onClick={this.handleSave}
           >
-            <LoaderContainer isLoading={inProgress}>Save</LoaderContainer>
+            <LoaderContainer isLoading={inProgress}>
+              {i18next.t(LOCALIZATION.BUTTON_SUBMIT_TITLE)}
+            </LoaderContainer>
           </Button>
         </ButtonToolbar>
       </div>

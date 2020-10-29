@@ -1,4 +1,6 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import i18next from 'i18next';
 import { Button } from 'react-bootstrap';
 import { FontIcon } from '@shoutem/react-web-ui';
 import moment from 'moment';
@@ -9,13 +11,11 @@ import {
   formatPlaceLabel,
   formatCashierLabel,
 } from '../../services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
-// example: 28 Sep 2017 @ 10:26 AM
-const DATE_FORMAT = 'D MMM YYYY @ LT';
-
 function formatDateTime(dateTime) {
-  return moment(dateTime).format(DATE_FORMAT);
+  return moment(dateTime).format(i18next.t(LOCALIZATION.DATE_FORMAT));
 }
 
 function formatPoints(points) {
@@ -26,16 +26,16 @@ export default class TransactionTableRow extends Component {
   constructor(props) {
     super(props);
 
-    this.handleDeleteTransactionClick = this.handleDeleteTransactionClick.bind(this);
+    this.handleDeleteTransactionClick = this.handleDeleteTransactionClick.bind(
+      this,
+    );
   }
 
   handleDeleteTransactionClick() {
     const {
       onDeleteClick,
       transactionInfo: {
-        transaction: {
-          id: transactionId,
-        },
+        transaction: { id: transactionId },
       },
     } = this.props;
 
@@ -58,19 +58,17 @@ export default class TransactionTableRow extends Component {
 
     return (
       <tr className="transaction-table-row">
-        <td className="transaction-table-row__user">
-          {formatUserLabel(user)}
-        </td>
-        {loyaltyType === LOYALTY_TYPES.PUNCH &&
+        <td className="transaction-table-row__user">{formatUserLabel(user)}</td>
+        {loyaltyType === LOYALTY_TYPES.PUNCH && (
           <td className="transaction-table-row__reward">
             {formatRewardLabel(reward)}
           </td>
-        }
-        {loyaltyType === LOYALTY_TYPES.MULTI &&
+        )}
+        {loyaltyType === LOYALTY_TYPES.MULTI && (
           <td className="transaction-table-row__place">
             {formatPlaceLabel(place)}
           </td>
-        }
+        )}
         <td className="transaction-table-row__cashier">
           {formatCashierLabel(cashier)}
         </td>

@@ -1,13 +1,11 @@
-:global {
-  .transactions-page {
-    min-height: 600px;
+.transactions-page {
+  min-height: 600px;
 
-    h4 {
-      margin-top: 36px;
-    }
+  h4 {
+    margin-top: 36px;
   }
+}
 
-  .transactions-page__content h3 {
-    margin-top: 64px;
-  }
+.transactions-page__content h3 {
+  margin-top: 64px;
 }

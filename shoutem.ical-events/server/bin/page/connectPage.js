@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { getShortcut, getExtension } from '@shoutem/redux-api-sdk';
 
@@ -8,6 +9,7 @@ export function connectPageContext(WrappedComponent) {
     const { page } = context;
     const pageProps = _.pick(page.getPageContext(), [
       'appId',
+      'appOwnerId',
       'extensionName',
       'ownExtensionName',
       'shortcutId',
@@ -16,7 +18,7 @@ export function connectPageContext(WrappedComponent) {
 
     const parameters = page.getParameters();
 
-    return (<WrappedComponent {...pageProps} parameters={parameters} />);
+    return <WrappedComponent {...pageProps} parameters={parameters} />;
   }
 
   PageProvider.contextTypes = {
@@ -37,5 +39,6 @@ function mapStateToProps(state, ownProps) {
 }
 
 export default function connectPage() {
-  return wrappedComponent => connectPageContext(connect(mapStateToProps)(wrappedComponent));
+  return wrappedComponent =>
+    connectPageContext(connect(mapStateToProps)(wrappedComponent));
 }

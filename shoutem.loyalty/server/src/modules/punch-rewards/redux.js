@@ -1,11 +1,6 @@
 import ext from 'src/const';
 import { combineReducers } from 'redux';
-import {
-  find,
-  storage,
-  collection,
-  getCollection,
-} from '@shoutem/redux-io';
+import { find, storage, collection, getCollection } from '@shoutem/redux-io';
 import { getLoyaltyUrl } from 'src/services';
 
 // CONST

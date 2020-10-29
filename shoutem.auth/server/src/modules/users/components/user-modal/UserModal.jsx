@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { InlineModal } from '@shoutem/react-web-ui';
 import UserForm from '../user-form';
+import LOCALIZATION from './localization';
 
 export default class UserModal extends Component {
   constructor(props) {
     super(props);
-
-    this.show = this.show.bind(this);
-    this.handleHide = this.handleHide.bind(this);
-    this.handleUserFormSubmit = this.handleUserFormSubmit.bind(this);
+    autoBindReact(this);
 
     this.state = {
       show: false,
@@ -38,12 +38,12 @@ export default class UserModal extends Component {
   handleUserFormSubmit(user) {
     const { currentUser } = this.state;
     if (currentUser) {
-      return this.props.onUserUpdate(currentUser.id, user)
+      return this.props
+        .onUserUpdate(currentUser.id, user)
         .then(this.handleHide);
     }
 
-    return this.props.onUserCreate(user)
-      .then(this.handleHide);
+    return this.props.onUserCreate(user).then(this.handleHide);
   }
 
   render() {
@@ -55,7 +55,9 @@ export default class UserModal extends Component {
     const currentUsername = _.get(currentUser, 'username');
     const currentUserGroups = _.get(currentUser, 'userGroups', []);
 
-    const modalTitle = currentUserId ? 'Edit app user' : 'Add app user';
+    const modalTitle = currentUserId
+      ? i18next.t(LOCALIZATION.EDIT_APP_USER_TITLE)
+      : i18next.t(LOCALIZATION.ADD_APP_USER_TITLE);
     const isOwner = currentUser && currentUserId === ownerId;
 
     const initialValues = {

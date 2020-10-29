@@ -1,21 +1,16 @@
 {
   "name": "news",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "platform": "2.4.*",
   "title": "News",
   "description": "Show news articles",
   "icon": "server/assets/add-news-image.png",
-  "categories": [
-    "content"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "categories": ["content"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.cms"
-  ],
   "shortcuts": [
     {
       "name": "news-shortcut",
@@ -46,9 +41,7 @@
       "name": "ArticlesScreen",
       "title": "Fixed grid with a featured item",
       "image": "./server/assets/screens/grid.png",
-      "navigatesTo": [
-        "@.ArticleDetailsScreen"
-      ],
+      "navigatesTo": ["@.ArticleDetailsScreen"],
       "settings": {
         "listType": "fixed-grid",
         "hasFeaturedItem": true

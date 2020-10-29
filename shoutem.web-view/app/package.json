@@ -1,6 +1,6 @@
 {
   "name": "shoutem.web-view",
-  "version": "2.4.1",
+  "version": "2.4.3",
   "dependencies": {
     "@shoutem/animation": "~0.12.4",
     "react-native-pdf": "~6.1.0",

@@ -1,23 +1,29 @@
-import React, { PropTypes } from 'react';
-import { FormGroup, ControlLabel, FormControl  } from 'react-bootstrap';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
+import i18next from 'i18next';
+import LOCALIZATION from './localization';
 import './style.scss';
 
-export default function ShopPreview({ store, onNavigateToShopifySettingsClick }) {
+export default function ShopPreview({
+  store,
+  onNavigateToShopifySettingsClick,
+}) {
   return (
     <div className="shop-preview">
       <form>
         <FormGroup>
           <ControlLabel>
-            Store URL
-            <span style={{fontWeight: 'normal', paddingLeft: '5px'}}>
-              (You can change this by going to settings or <a href='#' onClick={onNavigateToShopifySettingsClick}>clicking here</a>)
+            {i18next.t(LOCALIZATION.STORE_URL_LABEL)}
+            <span style={{ fontWeight: 'normal', paddingLeft: '5px' }}>
+              {i18next.t(LOCALIZATION.STORE_URL_CHANGE_TEXT_PART_ONE)}{' '}
+              <a href="#" onClick={onNavigateToShopifySettingsClick}>
+                {i18next.t(LOCALIZATION.STORE_URL_CHANGE_TEXT_PART_TWO)}
+              </a>
+              {i18next.t(LOCALIZATION.STORE_URL_CHANGE_TEXT_PART_THREE)}
             </span>
           </ControlLabel>
-          <FormControl
-            type="text"
-            value={store}
-            disabled
-          />
+          <FormControl type="text" value={store} disabled />
         </FormGroup>
       </form>
     </div>

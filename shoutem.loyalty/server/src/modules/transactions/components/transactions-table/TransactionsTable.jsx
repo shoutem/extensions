@@ -1,8 +1,12 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import { FontIcon } from '@shoutem/react-web-ui';
 import { LOYALTY_TYPES } from 'src/const';
 import TransactionTableRow from '../transaction-table-row';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 function renderEmptyTableRow(loyaltyType) {
@@ -14,7 +18,7 @@ function renderEmptyTableRow(loyaltyType) {
   return (
     <tr className="transactions-table__empty-row">
       <td colSpan={colSpan}>
-        No transactions for chosen filter.
+        {i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_TITLE)}
       </td>
     </tr>
   );
@@ -23,9 +27,7 @@ function renderEmptyTableRow(loyaltyType) {
 export default class TransactionsTable extends Component {
   constructor(props) {
     super(props);
-
-    this.renderData = this.renderData.bind(this);
-    this.renderHeader = this.renderHeader.bind(this);
+    autoBindReact(this);
 
     this.state = {
       filter: {},
@@ -46,22 +48,16 @@ export default class TransactionsTable extends Component {
   }
 
   renderData() {
-    const {
-      loyaltyType,
-      transactionInfos,
-      onDeleteClick,
-    } = this.props;
+    const { loyaltyType, transactionInfos, onDeleteClick } = this.props;
 
-    return (
-      _.map(transactionInfos, transactionInfo => (
-        <TransactionTableRow
-          key={transactionInfo.id}
-          loyaltyType={loyaltyType}
-          onDeleteClick={onDeleteClick}
-          transactionInfo={transactionInfo}
-        />
-      ))
-    );
+    return _.map(transactionInfos, transactionInfo => (
+      <TransactionTableRow
+        key={transactionInfo.id}
+        loyaltyType={loyaltyType}
+        onDeleteClick={onDeleteClick}
+        transactionInfo={transactionInfo}
+      />
+    ));
   }
 
   renderHeader() {
@@ -70,27 +66,27 @@ export default class TransactionsTable extends Component {
     return (
       <tr>
         <th className="transactions-table__user">
-          User
+          {i18next.t(LOCALIZATION.HEADER_USER_TITLE)}
         </th>
-        {loyaltyType === LOYALTY_TYPES.PUNCH &&
+        {loyaltyType === LOYALTY_TYPES.PUNCH && (
           <th className="transactions-table__card">
-            Card
+            {i18next.t(LOCALIZATION.HEADER_CARD_TITLE)}
           </th>
-        }
-        {loyaltyType === LOYALTY_TYPES.MULTI &&
+        )}
+        {loyaltyType === LOYALTY_TYPES.MULTI && (
           <th className="transactions-table__place">
-            Place
+            {i18next.t(LOCALIZATION.HEADER_PLACE_TITLE)}
           </th>
-        }
+        )}
         <th className="transactions-table__cashier">
-          Cashier
+          {i18next.t(LOCALIZATION.HEADER_CASHIER_TITLE)}
         </th>
         <th className="transactions-table__time">
-          Time
+          {i18next.t(LOCALIZATION.HEADER_TIME_TITLE)}
           <FontIcon name="sortdescending" />
         </th>
         <th className="transactions-table__transaction">
-          Transaction
+          {i18next.t(LOCALIZATION.HEADER_TRANSACTION_TITLE)}
         </th>
         <th className="transactions-table__actions" />
       </tr>
@@ -103,9 +99,7 @@ export default class TransactionsTable extends Component {
 
     return (
       <table className="transactions-table table">
-        <thead>
-          {this.renderHeader()}
-        </thead>
+        <thead>{this.renderHeader()}</thead>
         <tbody>
           {dataEmpty && renderEmptyTableRow(loyaltyType)}
           {!dataEmpty && this.renderData()}

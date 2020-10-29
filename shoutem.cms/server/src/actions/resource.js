@@ -3,7 +3,6 @@ import { find } from '@shoutem/redux-io';
 import { url, appId } from 'environment';
 import { ext } from 'context';
 import { CURRENT_SCHEMA } from '../types';
-import { isAllCategoriesSelected } from '../services';
 
 function resolveSortParam(sortOptions) {
   if (!sortOptions) {
@@ -19,15 +18,13 @@ function resolveSortParam(sortOptions) {
     return { sort: 'name' };
   }
 
-  return order === 'ascending' ?
-    { sort: field } :
-    { sort: `-${field}` };
+  return order === 'ascending' ? { sort: field } : { sort: `-${field}` };
 }
 
 function resolveCategoryParam(parentCategoryId, visibleCategoryIds = []) {
-  const categoryFilter = _.isEmpty(visibleCategoryIds) ?
-    parentCategoryId :
-    _.join(visibleCategoryIds);
+  const categoryFilter = _.isEmpty(visibleCategoryIds)
+    ? parentCategoryId
+    : _.join(visibleCategoryIds);
 
   return {
     'filter[categories]': categoryFilter,
@@ -38,7 +35,7 @@ export function loadResources(
   parentCategoryId,
   visibleCategoryIds,
   sortOptions,
-  schema = CURRENT_SCHEMA
+  schema = CURRENT_SCHEMA,
 ) {
   const queryParams = {
     ...resolveCategoryParam(parentCategoryId, visibleCategoryIds),

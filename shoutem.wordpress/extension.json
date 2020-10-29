@@ -1,20 +1,20 @@
 {
   "name": "wordpress",
-  "version": "2.4.1",
+  "version": "2.4.3",
   "platform": "2.4.*",
   "title": "WordPress",
   "description": "Show news articles from WordPress blog.",
   "icon": "server/assets/extension-icon.png",
-  "categories": [
-    "content"
-  ],
+  "dependencies": ["shoutem.layouts"],
+  "categories": ["content"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": [
-    "shoutem.layouts"
-  ],
   "shortcuts": [
     {
       "name": "wordpress-shortcut",
@@ -52,9 +52,7 @@
       "title": "Grid with a featured article",
       "image": "./server/assets/screens/featuredgrid.png",
       "groupTitle": "Choose List screen layout",
-      "navigatesTo": [
-        "@.ArticleDetailsScreen"
-      ],
+      "navigatesTo": ["@.ArticleDetailsScreen"],
       "settings": {
         "listType": "fixed-grid",
         "hasFeaturedItem": true

@@ -4,7 +4,7 @@
       "commentButton": "COMMENT",
       "deleteCommentOption": "Delete",
       "cancelCommentSelectionOption": "Cancel",
-      "loadMoreComments": "Load more comments...",
+      "loadingMoreComments": "Loading more comments...",
       "likeButton": "LIKE",
       "unlikeButton": "UNLIKE",
       "numberOfLikesMessage": {

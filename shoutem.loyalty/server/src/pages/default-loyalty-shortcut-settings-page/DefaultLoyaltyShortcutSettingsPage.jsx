@@ -1,12 +1,19 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Trans } from 'react-i18next';
 import { connect } from 'react-redux';
 import { navigateToSettings } from '../../redux';
+import LOCALIZATION from './localization';
 
-export function DefaultLoyaltyShortcutSettingsPage({ navigateToLoyaltySettings }) {
+export function DefaultLoyaltyShortcutSettingsPage({
+  navigateToLoyaltySettings,
+}) {
   return (
     <p className="points-card-settings-page">
-      To configure your Loyalty program, please click{' '}
-      <a onClick={navigateToLoyaltySettings}>here</a>.
+      <Trans i18nKey={LOCALIZATION.DESCRIPTION}>
+        To configure your Loyalty program, please click
+        <a onClick={navigateToLoyaltySettings}>here</a>.
+      </Trans>
     </p>
   );
 }
@@ -19,10 +26,12 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { appId, ownExtensionName } = ownProps;
 
   return {
-    navigateToLoyaltySettings: () => (
-      dispatch(navigateToSettings(appId, ownExtensionName))
-    ),
+    navigateToLoyaltySettings: () =>
+      dispatch(navigateToSettings(appId, ownExtensionName)),
   };
 }
 
-export default connect(null, mapDispatchToProps)(DefaultLoyaltyShortcutSettingsPage);
+export default connect(
+  null,
+  mapDispatchToProps,
+)(DefaultLoyaltyShortcutSettingsPage);

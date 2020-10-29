@@ -1,13 +1,16 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import i18next from 'i18next';
+import autoBindReact from 'auto-bind/react';
 import Select from 'react-select';
 import { LANGUAGES } from 'src/services';
+import LOCALIZATION from './localization';
 
 export default class LanguageSelect extends Component {
   constructor(props) {
     super(props);
-
-    this.refreshData = this.refreshData.bind(this);
+    autoBindReact(this);
 
     this.state = {
       languageOptions: [],
@@ -30,12 +33,13 @@ export default class LanguageSelect extends Component {
 
     if (availableLanguageCodes !== nextAvailableLanguageCodes) {
       const languageOptions = _.chain(LANGUAGES)
-        .mapValues((name, code) => ({ value: code, label: name }))
+        .mapValues((name, code) => ({ value: code, label: i18next.t(name) }))
         .values()
-        .filter( languageOption => (
-          _.isEmpty(nextAvailableLanguageCodes) ||
-          _.includes(nextAvailableLanguageCodes, languageOption.value)
-        ))
+        .filter(
+          languageOption =>
+            _.isEmpty(nextAvailableLanguageCodes) ||
+            _.includes(nextAvailableLanguageCodes, languageOption.value),
+        )
         .sortBy(['label'])
         .value();
 
@@ -51,7 +55,7 @@ export default class LanguageSelect extends Component {
         autoBlur
         clearable={false}
         options={languageOptions}
-        placeholder={'Select language'}
+        placeholder={i18next.t(LOCALIZATION.PLACEHOLDER)}
         {...this.props}
       />
     );

@@ -1,20 +1,16 @@
 {
   "name": "products",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "platform": "2.4.*",
   "title": "Products",
   "description": "Show products with purchase link",
-  "categories": [
-    "commerce"
-  ],
+  "categories": ["commerce"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
   "icon": "server/assets/add-products-image.png",
-  "dependencies": [
-    "shoutem.cms"
-  ],
+  "dependencies": ["shoutem.cms"],
   "shortcuts": [
     {
       "name": "openProductsList",

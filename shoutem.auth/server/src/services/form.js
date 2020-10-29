@@ -5,14 +5,18 @@ export function createOptions(items, valueProp = 'id', labelProp = 'name') {
     return [];
   }
 
-  return _.reduce(items, (result, item) => {
-    const value = _.get(item, valueProp);
-    const label = _.get(item, labelProp);
+  return _.reduce(
+    items,
+    (result, item) => {
+      const value = _.get(item, valueProp);
+      const label = _.get(item, labelProp);
 
-    if (value && label) {
-      result.push({ value, label });
-    }
+      if (value && label) {
+        result.push({ value, label });
+      }
 
-    return result;
-  }, []);
+      return result;
+    },
+    [],
+  );
 }

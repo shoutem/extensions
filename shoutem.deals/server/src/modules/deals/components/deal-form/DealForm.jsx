@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import { reduxForm } from 'redux-form';
+import i18next from 'i18next';
 import currencies from 'currency-formatter/currencies.json';
 import timezones from 'timezones.json';
 import { Row, Col, Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
@@ -17,26 +18,29 @@ import {
   SelectReduxFormElement,
   TextEditorReduxFormElement,
 } from '@shoutem/form-builder';
-import {
-  ext,
-  DISPLAY_DATE_FORMAT,
-  DISPLAY_TIME_FORMAT,
-} from 'src/const';
+import { ext } from 'src/const';
+import { getDisplayDateFormat, getDisplayTimeFormat } from 'src/services';
 import { getFormState } from 'src/redux';
 import { validateDeal } from '../../services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
-// eslint-disable-next-line
-const COUPONS_HELP_TEXT = 'If enabled, all other properties below are taken into consideration. If disabled, none of the properties will affect the deal, even if set.';
-
-const DISCOUNT_TYPES = [
-  { value: 'percentage', label: 'Percentage' },
-  { value: 'fixed', label: 'Fixed' },
-];
+function getDiscountType() {
+  return [
+    {
+      value: 'percentage',
+      label: i18next.t(LOCALIZATION.DISCOUNT_TYPE_PERCENTAGE_TITLE),
+    },
+    {
+      value: 'fixed',
+      label: i18next.t(LOCALIZATION.DISCOUNT_TYPE_FIXED_TITLE),
+    },
+  ];
+}
 
 const CURRENCY_OPTIONS = _.map(currencies, currency => ({
   value: currency.code,
-  label: `${currency.code} (${currency.symbol})`
+  label: `${currency.code} (${currency.symbol})`,
 }));
 
 const TIMEZONE_OPTIONS = _.map(timezones, timezone => ({
@@ -45,39 +49,39 @@ const TIMEZONE_OPTIONS = _.map(timezones, timezone => ({
 }));
 
 export function DealForm({
- assetManager,
- submitting,
- pristine,
- fields: {
-   id,
-   title,
-   description,
-   image1,
-   image2,
-   image3,
-   condition,
-   regularPrice,
-   currency,
-   discountType,
-   discountPrice,
-   publishTime,
-   startTime,
-   endTime,
-   timezone,
-   buyLink,
-   buyLinkTitle,
-   couponsEnabled,
-   couponsExpirationTime,
-   claimedCoupons,
-   redeemedCoupons,
-   remainingCoupons,
-   barcode,
-   place,
- },
- onCancel,
- handleSubmit,
- error,
- places,
+  assetManager,
+  submitting,
+  pristine,
+  fields: {
+    id,
+    title,
+    description,
+    image1,
+    image2,
+    image3,
+    condition,
+    regularPrice,
+    currency,
+    discountType,
+    discountPrice,
+    publishTime,
+    startTime,
+    endTime,
+    timezone,
+    buyLink,
+    buyLinkTitle,
+    couponsEnabled,
+    couponsExpirationTime,
+    claimedCoupons,
+    redeemedCoupons,
+    remainingCoupons,
+    barcode,
+    place,
+  },
+  onCancel,
+  handleSubmit,
+  error,
+  places,
 }) {
   const inEditMode = !_.isEmpty(id.value);
   const displayCoupons = !!couponsEnabled.value;
@@ -89,7 +93,7 @@ export function DealForm({
           disabled={submitting}
           elementId="title"
           field={title}
-          name="Title"
+          name={i18next.t(LOCALIZATION.FORM_TITLE_TITLE)}
         />
       </Row>
       <Row>
@@ -100,7 +104,7 @@ export function DealForm({
             elementId="image1"
             field={image1}
             folderName={ext()}
-            name="Image 1"
+            name={i18next.t(LOCALIZATION.FORM_IMAGE_1_TITLE)}
           />
         </Col>
         <Col className="deal-form__image" xs={4}>
@@ -110,7 +114,7 @@ export function DealForm({
             elementId="image2"
             field={image2}
             folderName={ext()}
-            name="Image 2"
+            name={i18next.t(LOCALIZATION.FORM_IMAGE_2_TITLE)}
           />
         </Col>
         <Col className="deal-form__image" xs={4}>
@@ -120,7 +124,7 @@ export function DealForm({
             elementId="image3"
             field={image3}
             folderName={ext()}
-            name="Image 3"
+            name={i18next.t(LOCALIZATION.FORM_IMAGE_3_TITLE)}
           />
         </Col>
       </Row>
@@ -129,7 +133,7 @@ export function DealForm({
           disabled={submitting}
           elementId="description"
           field={description}
-          name="Description"
+          name={i18next.t(LOCALIZATION.FORM_DESCRIPTION_TITLE)}
         />
       </Row>
       <Row>
@@ -137,7 +141,7 @@ export function DealForm({
           disabled={submitting}
           elementId="condition"
           field={condition}
-          name="Condition"
+          name={i18next.t(LOCALIZATION.FORM_CONDITION_TITLE)}
         />
       </Row>
       <Row>
@@ -146,11 +150,11 @@ export function DealForm({
             disabled={submitting}
             elementId="startTime"
             field={startTime}
-            name="Start time"
+            name={i18next.t(LOCALIZATION.FORM_START_TIME_TITLE)}
           >
             <DateTimePicker
-              dateFormat={DISPLAY_DATE_FORMAT}
-              timeFormat={DISPLAY_TIME_FORMAT}
+              dateFormat={getDisplayDateFormat()}
+              timeFormat={getDisplayTimeFormat()}
               utc={false}
             />
           </ReduxFormElement>
@@ -160,11 +164,11 @@ export function DealForm({
             disabled={submitting}
             elementId="endTime"
             field={endTime}
-            name="End time"
+            name={i18next.t(LOCALIZATION.FORM_END_TIME_TITLE)}
           >
             <DateTimePicker
-              dateFormat={DISPLAY_DATE_FORMAT}
-              timeFormat={DISPLAY_TIME_FORMAT}
+              dateFormat={getDisplayDateFormat()}
+              timeFormat={getDisplayTimeFormat()}
               utc={false}
             />
           </ReduxFormElement>
@@ -176,11 +180,11 @@ export function DealForm({
             disabled={submitting}
             elementId="publishTime"
             field={publishTime}
-            name="Publish time"
+            name={i18next.t(LOCALIZATION.FORM_PUBLISH_TIME_TITLE)}
           >
             <DateTimePicker
-              dateFormat={DISPLAY_DATE_FORMAT}
-              timeFormat={DISPLAY_TIME_FORMAT}
+              dateFormat={getDisplayDateFormat()}
+              timeFormat={getDisplayTimeFormat()}
               utc={false}
             />
           </ReduxFormElement>
@@ -191,9 +195,11 @@ export function DealForm({
           disabled={submitting}
           elementId="timezone"
           field={timezone}
-          name="Timezone"
+          name={i18next.t(LOCALIZATION.FORM_TIMEZONE_TITLE)}
           options={TIMEZONE_OPTIONS}
-          placeholder="Select timezone"
+          placeholder={i18next.t(
+            LOCALIZATION.FORM_TIMEZONE_PLACEHOLDER_MESSAGE,
+          )}
         />
       </Row>
       <Row>
@@ -202,7 +208,7 @@ export function DealForm({
             disabled={submitting}
             elementId="regularPrice"
             field={regularPrice}
-            name="Regular price"
+            name={i18next.t(LOCALIZATION.FORM_REGULAR_PRICE_TITLE)}
           />
         </Col>
         <Col xs={6}>
@@ -210,9 +216,11 @@ export function DealForm({
             disabled={submitting}
             elementId="currency"
             field={currency}
-            name="Currency"
+            name={i18next.t(LOCALIZATION.FORM_CURRENCY_TITLE)}
             options={CURRENCY_OPTIONS}
-            placeholder="Select currency"
+            placeholder={i18next.t(
+              LOCALIZATION.FORM_CURRENCY_PLACEHOLDER_MESSAGE,
+            )}
           />
         </Col>
       </Row>
@@ -221,7 +229,7 @@ export function DealForm({
           disabled={submitting}
           elementId="discountPrice"
           field={discountPrice}
-          name="Discounted price"
+          name={i18next.t(LOCALIZATION.FORM_DISCOUNTED_PRICE_TITLE)}
         />
       </Row>
       <Row>
@@ -229,9 +237,11 @@ export function DealForm({
           disabled={submitting}
           elementId="discountType"
           field={discountType}
-          name="Discount type"
-          options={DISCOUNT_TYPES}
-          placeholder="Select discount type"
+          name={i18next.t(LOCALIZATION.FORM_DISCOUNTED_TYPE_TITLE)}
+          options={getDiscountType()}
+          placeholder={i18next.t(
+            LOCALIZATION.FORM_DISCOUNTED_TYPE_PLACEHOLDER_MESSAGE,
+          )}
         />
       </Row>
       <Row>
@@ -239,7 +249,7 @@ export function DealForm({
           disabled={submitting}
           elementId="buyLink"
           field={buyLink}
-          name="Buy URL"
+          name={i18next.t(LOCALIZATION.FORM_BUY_URL_TITLE)}
         />
       </Row>
       <Row>
@@ -247,7 +257,7 @@ export function DealForm({
           disabled={submitting}
           elementId="buyLinkTitle"
           field={buyLinkTitle}
-          name="Buy link title"
+          name={i18next.t(LOCALIZATION.FORM_BUY_LINK_TITLE)}
         />
       </Row>
       <Row>
@@ -256,9 +266,9 @@ export function DealForm({
           elementId="place"
           field={place}
           labelKey="name"
-          name="Place"
+          name={i18next.t(LOCALIZATION.FORM_PLACE_TITLE)}
           options={places}
-          placeholder="Select place"
+          placeholder={i18next.t(LOCALIZATION.FORM_PLACE_PLACEHOLDER_MESSAGE)}
           valueKey="id"
         />
       </Row>
@@ -267,8 +277,8 @@ export function DealForm({
           disabled={submitting}
           elementId="couponsEnabled"
           field={couponsEnabled}
-          helpText={COUPONS_HELP_TEXT}
-          name="Claim/redeem process"
+          helpText={i18next.t(LOCALIZATION.FORM_CLAIM_REDEEM_HELP_MESSAGE)}
+          name={i18next.t(LOCALIZATION.FORM_CLAIM_REDEEM_TITLE)}
         >
           <Switch />
         </ReduxFormElement>
@@ -277,14 +287,22 @@ export function DealForm({
         <div>
           <Row className="deal-form__stats">
             <label>
-              Claimed: {claimedCoupons.value || 0}
-              <FontIconPopover message="Number of coupons claimed by users, but not yet used">
+              {i18next.t(LOCALIZATION.FORM_CLAIMED_TITLE, {
+                value: claimedCoupons.value || 0,
+              })}
+              <FontIconPopover
+                message={i18next.t(LOCALIZATION.FORM_CLAIMED_MESSAGE)}
+              >
                 <FontIcon name="info" size="24px" />
               </FontIconPopover>
             </label>
             <label>
-              Redeemed: {redeemedCoupons.value || 0}
-              <FontIconPopover message="Number of coupons that were claimed and used">
+              {i18next.t(LOCALIZATION.FORM_REDEEMED_TITLE, {
+                value: redeemedCoupons.value || 0,
+              })}
+              <FontIconPopover
+                message={i18next.t(LOCALIZATION.FORM_REDEEMED_MESSAGE)}
+              >
                 <FontIcon name="info" size="24px" />
               </FontIconPopover>
             </label>
@@ -295,8 +313,10 @@ export function DealForm({
                 disabled={submitting}
                 elementId="remainingCoupons"
                 field={remainingCoupons}
-                helpText="leave empty for unlimited"
-                name="Number of coupons"
+                helpText={i18next.t(
+                  LOCALIZATION.FORM_NUMBER_OF_COUPONS_HELP_MESSAGE,
+                )}
+                name={i18next.t(LOCALIZATION.FORM_NUMBER_OF_COUPONS_TITLE)}
               />
             </Col>
             <Col xs={6}>
@@ -304,8 +324,10 @@ export function DealForm({
                 disabled={submitting}
                 elementId="couponsExpirationTime"
                 field={couponsExpirationTime}
-                helpText="eg. 15h or 15min (0 – never expires)"
-                name="Coupon expires in"
+                helpText={i18next.t(
+                  LOCALIZATION.FORM_COUPON_EXPIRES_IN_HELP_MESSAGE,
+                )}
+                name={i18next.t(LOCALIZATION.FORM_COUPON_EXPIRES_IN_TITLE)}
               />
             </Col>
           </Row>
@@ -316,7 +338,7 @@ export function DealForm({
               elementId="barcode"
               field={barcode}
               folderName={ext()}
-              name="Custom barcode"
+              name={i18next.t(LOCALIZATION.FORM_CUSTOM_BARCODE_TITLE)}
             />
           </Row>
         </div>
@@ -329,18 +351,20 @@ export function DealForm({
           type="submit"
         >
           <LoaderContainer isLoading={submitting}>
-            {inEditMode ? 'Save' : 'Add'}
+            {inEditMode
+              ? i18next.t(LOCALIZATION.BUTTON_SAVE_TITLE)
+              : i18next.t(LOCALIZATION.BUTTON_ADD_TITLE)}
           </LoaderContainer>
         </Button>
         <Button bsSize="large" disabled={submitting} onClick={onCancel}>
-          Cancel
+          {i18next.t(LOCALIZATION.BUTTON_CANCEL_TITLE)}
         </Button>
       </ButtonToolbar>
-      {error &&
+      {error && (
         <div className="has-error">
           <HelpBlock>{error}</HelpBlock>
         </div>
-      }
+      )}
     </form>
   );
 }

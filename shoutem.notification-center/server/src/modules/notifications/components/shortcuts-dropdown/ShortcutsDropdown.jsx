@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import Select from 'react-select';
 import { createOptions, buildShortcutTree } from 'src/services';
+import LOCALIZATION from './localization';
 
 export default class ShortcutsDropdown extends Component {
   constructor(props) {
@@ -74,7 +76,7 @@ export default class ShortcutsDropdown extends Component {
         {...otherProps}
         name="shortcut"
         clearable={false}
-        placeholder="Screen to open"
+        placeholder={i18next.t(LOCALIZATION.DROPDOWN_PLACEHOLDER)}
         value={shortcut}
         options={shortcutOptions}
         onBlur={this.handleBlur}

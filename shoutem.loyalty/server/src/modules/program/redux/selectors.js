@@ -27,7 +27,7 @@ export function makeGetAuthorizationByType(authorizationType) {
 
       cloneStatus(authorizations, authorization);
       return authorization;
-    }
+    },
   );
 }
 
@@ -52,5 +52,5 @@ export const getCardsByUserId = createSelector(
     const cardsByUserId = _.keyBy(cardsWithUser, 'user.id');
     cloneStatus(cards, cardsByUserId);
     return cardsByUserId;
-  }
+  },
 );

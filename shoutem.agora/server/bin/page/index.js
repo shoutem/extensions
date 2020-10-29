@@ -1,8 +1,3 @@
-import connectPage from './connectPage';
-
-import Page from './Page';
-
-import PageProvider from './PageProvider';
-export { connectPage };
-export { Page };
-export { PageProvider };
+export { default as connectPage } from './connectPage';
+export { default as Page } from './Page';
+export { default as PageProvider } from './PageProvider';

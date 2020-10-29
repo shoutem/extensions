@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
+import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { SearchInput, LoaderContainer } from '@shoutem/react-web-ui';
 import { shouldLoad, shouldRefresh, isInitialized } from '@shoutem/redux-io';
@@ -13,7 +14,8 @@ import {
   DealStatsDashboard,
   TransactionStatsDashboard,
   DealStatsFilter,
- } from 'src/modules/stats';
+} from 'src/modules/stats';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export class DealsStatisticsPage extends Component {
@@ -77,24 +79,30 @@ export class DealsStatisticsPage extends Component {
 
   handleSearchTermChange(searchTerm) {
     const { filter } = this.state;
-    this.setState({
-      selectedDeal: null,
-      filter: {
-        ...filter,
-        searchTerm: searchTerm.value,
+    this.setState(
+      {
+        selectedDeal: null,
+        filter: {
+          ...filter,
+          searchTerm: searchTerm.value,
+        },
       },
-    }, this.props.invalidateStats);
+      this.props.invalidateStats,
+    );
   }
 
   handleDateFilterChange(startTime, endTime) {
     const { filter } = this.state;
-    this.setState({
-      filter: {
-        ...filter,
-        startTime,
-        endTime,
+    this.setState(
+      {
+        filter: {
+          ...filter,
+          startTime,
+          endTime,
+        },
       },
-    }, this.props.invalidateStats);
+      this.props.invalidateStats,
+    );
   }
 
   handleSelectedDealChange(selectedDeal) {
@@ -117,11 +125,11 @@ export class DealsStatisticsPage extends Component {
         className="deal-stats-page settings-page is-wide"
         isLoading={!isInitialized(dealStats)}
       >
-        <h3>Deal stats</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <SearchInput
           className="deal-stats-page__search"
           onChange={this.handleSearchTermChange}
-          placeholder="Search deals"
+          placeholder={i18next.t(LOCALIZATION.SEARCH_PLACEHOLDER_MESSAGE)}
           ref="dealsSearchInput"
           type="text"
         />
@@ -157,16 +165,14 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
-    loadDealStats: (filter) => (
-      dispatch(loadDealStats(appId, filter, scope))
-    ),
-    loadTransactionStats: (catalogId, dealId, filter) => (
-      dispatch(loadTransactionStats(catalogId, dealId, filter, scope))
-    ),
-    invalidateStats: () => (
-      dispatch(invalidateStats())
-    ),
+    loadDealStats: filter => dispatch(loadDealStats(appId, filter, scope)),
+    loadTransactionStats: (catalogId, dealId, filter) =>
+      dispatch(loadTransactionStats(catalogId, dealId, filter, scope)),
+    invalidateStats: () => dispatch(invalidateStats()),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DealsStatisticsPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(DealsStatisticsPage);

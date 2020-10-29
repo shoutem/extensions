@@ -1,6 +1,6 @@
 {
   "name": "shoutem.social",
-  "version": "2.4.1",
+  "version": "2.4.4",
   "description": "Social wall",
   "dependencies": {
     "react-native-action-sheet": "2.2.0",

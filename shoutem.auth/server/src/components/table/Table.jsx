@@ -2,18 +2,18 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import TextTableHeader from '../text-table-header';
 import InputTableHeader from '../input-table-header';
 import SelectTableHeader from '../select-table-header';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class Table extends Component {
   constructor(props) {
     super(props);
-
-    this.handleTableFilterChange = this.handleTableFilterChange.bind(this);
-    this.renderEmptyTableRow = this.renderEmptyTableRow.bind(this);
-    this.renderTableHeader = this.renderTableHeader.bind(this);
+    autoBindReact(this);
   }
 
   handleTableFilterChange(filterId, value) {
@@ -62,21 +62,12 @@ export default class Table extends Component {
     }
 
     return (
-      <TextTableHeader
-        className={className}
-        header={columnHeader}
-        key={id}
-      />
+      <TextTableHeader className={className} header={columnHeader} key={id} />
     );
   }
 
   render() {
-    const {
-      className,
-      items,
-      renderItem,
-      columnHeaders,
-    } = this.props;
+    const { className, items, renderItem, columnHeaders } = this.props;
 
     const classes = classNames('table', className);
     const isEmpty = _.isEmpty(items);
@@ -84,9 +75,7 @@ export default class Table extends Component {
     return (
       <table className={classes}>
         <thead>
-          <tr>
-            {_.map(columnHeaders, this.renderTableHeader)}
-          </tr>
+          <tr>{_.map(columnHeaders, this.renderTableHeader)}</tr>
         </thead>
         <tbody>
           {isEmpty && this.renderEmptyTableRow()}
@@ -106,12 +95,14 @@ Table.propTypes = {
   /**
    * Array of column header descriptors.
    */
-  columnHeaders: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    value: PropTypes.string,
-    helpText: PropTypes.string,
-    type: PropTypes.oneOf(['text', 'input', 'select'])
-  })).isRequired,
+  columnHeaders: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      value: PropTypes.string,
+      helpText: PropTypes.string,
+      type: PropTypes.oneOf(['text', 'input', 'select']),
+    }),
+  ).isRequired,
   /**
    * Array of items to display in table
    */
@@ -127,5 +118,5 @@ Table.propTypes = {
 };
 
 Table.defaultProps = {
-  emptyPlaceholderText: 'No data to display',
+  emptyPlaceholderText: i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_MESSAGE),
 };

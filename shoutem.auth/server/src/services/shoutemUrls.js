@@ -1,12 +1,10 @@
 import _ from 'lodash';
 import Uri from 'urijs';
+import autoBind from 'auto-bind';
 
 export default class ShoutemUrls {
   constructor() {
-    this.init = this.init.bind(this);
-
-    this.buildLegacyUrl = this.buildLegacyUrl.bind(this);
-    this.buildAuthUrl = this.buildAuthUrl.bind(this);
+    autoBind(this);
 
     this.legacyHost = null;
     this.authHost = null;

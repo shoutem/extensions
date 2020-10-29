@@ -1,20 +1,20 @@
 {
   "name": "vimeo",
   "title": "Vimeo",
-  "version": "2.4.0",
+  "version": "2.4.2",
   "platform": "2.4.*",
   "description": "Show videos from Vimeo",
   "icon": "server/assets/add-videos-vimeo-image.png",
-  "categories": [
-    "media"
-  ],
+  "dependencies": ["shoutem.layouts"],
+  "categories": ["media"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": [
-    "shoutem.layouts"
-  ],
   "shortcuts": [
     {
       "name": "vimeo-shortcut",

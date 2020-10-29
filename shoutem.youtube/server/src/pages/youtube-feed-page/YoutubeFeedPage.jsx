@@ -1,4 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
 import { isBusy, clear, isInitialized } from '@shoutem/redux-io';
 import _ from 'lodash';
@@ -27,10 +29,7 @@ export class YoutubeFeedPage extends Component {
   constructor(props) {
     super(props);
 
-    this.getActiveScreen = this.getActiveScreen.bind(this);
-    this.saveFeedUrl = this.saveFeedUrl.bind(this);
-    this.handleFeedUrlInputContinueClick = this.handleFeedUrlInputContinueClick.bind(this);
-    this.handleFeedPreviewRemoveClick = this.handleFeedPreviewRemoveClick.bind(this);
+    autoBindReact(this);
 
     const feedUrl = _.get(props.shortcut, 'settings.feedUrl');
     const apiKey = _.get(props.extension, 'settings.apiKey');

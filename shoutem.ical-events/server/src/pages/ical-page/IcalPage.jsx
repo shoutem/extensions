@@ -1,4 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
 import {
   Button,
   ButtonToolbar,
@@ -7,11 +9,13 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
+import i18next from 'i18next';
+import autoBindReact from 'auto-bind/react';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { updateShortcutSettings } from '@shoutem/redux-api-sdk';
 import { connect } from 'react-redux';
+import LOCALIZATION from './localization';
 import './style.scss';
-import _ from 'lodash';
 
 class IcalPage extends Component {
   static propTypes = {
@@ -21,10 +25,7 @@ class IcalPage extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    autoBindReact(this);
 
     this.state = {
       error: null,
@@ -62,10 +63,10 @@ class IcalPage extends Component {
     const { icalUrl } = this.state;
 
     this.setState({ error: '', inProgress: true });
-    this.props.updateShortcutSettings(shortcut, { icalUrl })
-      .then(() => (
-        this.setState({ hasChanges: false, inProgress: false })
-      )).catch((err) => {
+    this.props
+      .updateShortcutSettings(shortcut, { icalUrl })
+      .then(() => this.setState({ hasChanges: false, inProgress: false }))
+      .catch(err => {
         this.setState({ error: err, inProgress: false });
       });
   }
@@ -77,8 +78,8 @@ class IcalPage extends Component {
       <div className="ical-page">
         <form onSubmit={this.handleSubmit}>
           <FormGroup>
-            <h3>Enter your iCal URL</h3>
-            <ControlLabel>URL:</ControlLabel>
+            <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
+            <ControlLabel>{i18next.t(LOCALIZATION.FORM_URL)}</ControlLabel>
             <FormControl
               type="text"
               className="form-control"
@@ -86,9 +87,7 @@ class IcalPage extends Component {
               onChange={this.handleTextChange}
             />
           </FormGroup>
-          {error &&
-            <HelpBlock className="text-error">{error}</HelpBlock>
-          }
+          {error && <HelpBlock className="text-error">{error}</HelpBlock>}
         </form>
         <ButtonToolbar>
           <Button
@@ -97,7 +96,7 @@ class IcalPage extends Component {
             onClick={this.handleSave}
           >
             <LoaderContainer isLoading={inProgress}>
-              Save
+              {i18next.t(LOCALIZATION.BUTTON_SAVE)}
             </LoaderContainer>
           </Button>
         </ButtonToolbar>

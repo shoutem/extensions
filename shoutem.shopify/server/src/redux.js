@@ -1,7 +1,5 @@
 import { createScopedReducer } from '@shoutem/redux-api-sdk';
-import shopifyReducer, {
-  moduleName as shopify,
-} from 'src/modules/shopify';
+import shopifyReducer, { moduleName as shopify } from 'src/modules/shopify';
 
 export function navigateToSettings(appId, sectionId) {
   const options = { appId, sectionId };

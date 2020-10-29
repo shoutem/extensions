@@ -1,0 +1,12 @@
+{
+  "shoutem": {
+    "layouts": {
+      "layout-page.empty-layouts-placeholder-title": "No layouts available",
+      "layout-page.empty-layouts-placeholder-message": "Screens should expose the list of available layouts or disable this tab.",
+      "layout-page.extension-title": "This is a shortcut from the {{extensionTitle}} extension.",
+      "layout-page.extension-undefined-title": "This is the {{defaultShortcutTitle}} shortcut of an undefined extension.",
+      "layout-page.extension-default-title": "This is the {{defaultShortcutTitle}} shortcut from the {{extensionTitle}} extension.",
+      "layout-page.default-group-title": "Choose layout"
+    }
+  }
+}

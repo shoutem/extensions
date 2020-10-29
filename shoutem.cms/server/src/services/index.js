@@ -6,14 +6,12 @@ export {
   getVisibleCategoryIds,
 } from './shortcut';
 
-export {
-  getDropdownOptions,
-  getSelectedOptionLabel,
-} from './dropdown';
+export { getDropdownOptions, getSelectedOptionLabel } from './dropdown';
 
 export {
-  ALL_CATEGORIES_OPTION,
+  ALL_CATEGORIES_OPTION_KEY,
+  getAllCategoriesOption,
   isAllCategoriesSelected,
-  getCategoriesDisplayLabel,
 } from './categories';
 
+export { getArrayDisplayLabel } from './array';

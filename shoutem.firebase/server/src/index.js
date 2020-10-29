@@ -1,11 +1,8 @@
-import Settings from './settingsPage';
+import Settings from './pages/settingsPage';
 import reducer from './reducer';
 
 const adminPages = {
   Settings,
 };
 
-export {
-  adminPages,
-  reducer,
-};
+export { adminPages, reducer };

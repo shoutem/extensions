@@ -1,12 +1,16 @@
 {
   "name": "layouts",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "platform": "2.4.*",
   "type": "system",
   "title": "Layouts",
   "description": "Extension that enables app creator to choose between different layouts of the same screen",
   "icon": "server/assets/add-layouts-image.png",
   "categories": [],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "pages": [
     {
       "name": "LayoutPage",

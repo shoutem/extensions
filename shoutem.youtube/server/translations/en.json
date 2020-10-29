@@ -1,0 +1,19 @@
+{
+  "shoutem": {
+    "youtube": {
+      "settings-page.update-button": "Update",
+      "settings-page.save-button": "Save",
+      "settings-page.enter-api-key": "Enter your API key",
+      "settings-page.to-create-a-key": "To create your Youtube API key you need to create an app on Google Developer Console. You can find detailed instructions <1>here</1>.",
+      "settings-page.error-message": "Unable to connect. Check your API key and try again.",
+      "feed-url-input.tooltip-label": "Enter link to the YouTube profile, channel or a playlist.",
+      "feed-url-input.input-title": "YouTube source",
+      "feed-url-input.continue-button": "Continue",
+      "feed-preview-table.title": "Title",
+      "feed-preview-table.duration": "Duration",
+      "feed-preview-table.loading": "loading content...",
+      "feed-preview-table.no-content-message": "No content to show",
+      "feed-preview.youtube-source": "YouTube source"
+    }
+  }
+}

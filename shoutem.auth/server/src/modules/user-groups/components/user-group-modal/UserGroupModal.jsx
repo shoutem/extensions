@@ -1,19 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
+import i18next from 'i18next';
+import autoBindReact from 'auto-bind/react';
 import { Modal, Button, FormGroup, ControlLabel } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 
 export default class UserGroupModal extends Component {
   constructor(props) {
     super(props);
-
-    this.show = this.show.bind(this);
-    this.handleHide = this.handleHide.bind(this);
-    this.handleModalEnter = this.handleModalEnter.bind(this);
-    this.handleSaveClick = this.handleSaveClick.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
-    this.handleUserGroupNameChange = this.handleUserGroupNameChange.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,
@@ -48,12 +45,12 @@ export default class UserGroupModal extends Component {
     this.setState({ inProgress: true });
 
     if (currentUserGroup) {
-      return onUserGroupUpdate(currentUserGroup.id, { name })
-        .then(this.handleHide);
+      return onUserGroupUpdate(currentUserGroup.id, { name }).then(
+        this.handleHide,
+      );
     }
 
-    return onUserGroupCreate(name)
-      .then(this.handleHide);
+    return onUserGroupCreate(name).then(this.handleHide);
   }
 
   handleFormSubmit(e) {
@@ -67,16 +64,13 @@ export default class UserGroupModal extends Component {
   }
 
   render() {
-    const {
-      inProgress,
-      groupName,
-      show,
-      currentUserGroup,
-    } = this.state;
+    const { inProgress, groupName, show, currentUserGroup } = this.state;
 
     const initialGroupName = _.get(currentUserGroup, 'name');
     const hasChanges = groupName && initialGroupName !== groupName;
-    const modalTitle = initialGroupName ? 'Rename group' : 'Create group';
+    const modalTitle = initialGroupName
+      ? i18next.t(LOCALIZATION.RENAME_GROUP_TITLE)
+      : i18next.t(LOCALIZATION.CREATE_GROUP_TITLE);
 
     return (
       <Modal
@@ -91,7 +85,9 @@ export default class UserGroupModal extends Component {
         <Modal.Body>
           <form onSubmit={this.handleFormSubmit}>
             <FormGroup>
-              <ControlLabel>Enter group name</ControlLabel>
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.FORM_GROUP_NAME_TITLE)}
+              </ControlLabel>
               <input
                 autoFocus
                 className="form-control"
@@ -104,14 +100,16 @@ export default class UserGroupModal extends Component {
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.handleHide}>Cancel</Button>
+          <Button onClick={this.handleHide}>
+            {i18next.t(LOCALIZATION.BUTTON_CANCEL_TITLE)}
+          </Button>
           <Button
             bsStyle="primary"
             disabled={!hasChanges}
             onClick={this.handleSaveClick}
           >
             <LoaderContainer isLoading={inProgress}>
-              Save
+              {i18next.t(LOCALIZATION.BUTTON_SUBMIT_TITLE)}
             </LoaderContainer>
           </Button>
         </Modal.Footer>

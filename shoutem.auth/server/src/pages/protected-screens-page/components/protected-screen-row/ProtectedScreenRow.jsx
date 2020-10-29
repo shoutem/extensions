@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
 import { Checkbox } from '@shoutem/react-web-ui';
 import './style.scss';
 
@@ -11,8 +12,7 @@ function isShortcutProtected(shortcut) {
 export default class ProtectedScreenRow extends Component {
   constructor(props) {
     super(props);
-
-    this.handleShortcutSelected = this.handleShortcutSelected.bind(this);
+    autoBindReact(this);
   }
 
   handleShortcutSelected(event) {
@@ -34,7 +34,7 @@ export default class ProtectedScreenRow extends Component {
     const { shortcut, level } = this.props;
 
     const isProtected = isShortcutProtected(shortcut);
-    const indentation = (level * 32) + 8;
+    const indentation = level * 32 + 8;
     const indentationStyle = {
       paddingLeft: `${indentation}px`,
     };
@@ -45,9 +45,7 @@ export default class ProtectedScreenRow extends Component {
         onClick={this.handleShortcutSelected}
       >
         <td style={indentationStyle}>
-          <Checkbox checked={isProtected}>
-            {shortcut.title}
-          </Checkbox>
+          <Checkbox checked={isProtected}>{shortcut.title}</Checkbox>
         </td>
       </tr>
     );

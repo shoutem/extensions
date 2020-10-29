@@ -1,10 +1,10 @@
+import i18next from 'i18next';
 import { TARGET_TYPES, AUDIENCE_TYPES, DELIVERY_TYPES } from '../const';
-
-const VALUE_REQUIRED = 'Value is required';
+import LOCALIZATION from './localization';
 
 function validateRequiredField(fieldValue) {
   if (!fieldValue) {
-    return VALUE_REQUIRED;
+    return i18next.t(LOCALIZATION.VALUE_REQUIRED_TEXT);
   }
 
   return null;
@@ -18,7 +18,7 @@ function validateShortcut(notification) {
   }
 
   if (!shortcutId) {
-    return VALUE_REQUIRED;
+    return i18next.t(LOCALIZATION.VALUE_REQUIRED_TEXT);
   }
 
   return null;
@@ -32,7 +32,7 @@ function validateGroup(notification) {
   }
 
   if (!audienceGroupIds) {
-    return VALUE_REQUIRED;
+    return i18next.t(LOCALIZATION.VALUE_REQUIRED_TEXT);
   }
 
   return null;
@@ -46,7 +46,7 @@ function validateDelivery(notification) {
   }
 
   if (!deliveryTime) {
-    return VALUE_REQUIRED;
+    return i18next.t(LOCALIZATION.VALUE_REQUIRED_TEXT);
   }
 
   return null;

@@ -1,10 +1,6 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
-import {
-  getCollection,
-  getOne,
-  cloneStatus,
-} from '@shoutem/redux-io';
+import { getCollection, getOne, cloneStatus } from '@shoutem/redux-io';
 import ext from 'src/const';
 import { getCashiers } from 'src/modules/cashiers';
 import { getPunchRewards } from 'src/modules/punch-rewards';
@@ -39,31 +35,35 @@ export const getTransactionInfos = createSelector(
     const cashiersById = _.keyBy(cashiers, 'id');
     const placesById = _.keyBy(places, 'id');
 
-    const transactionInfos = _.reduce(transactions, (result, transaction) => {
-      const { id, card, punchReward, transactionData } = transaction;
+    const transactionInfos = _.reduce(
+      transactions,
+      (result, transaction) => {
+        const { id, card, punchReward, transactionData } = transaction;
 
-      // transaction data contains information about points that were added/removed
-      // through that transaction, without it, no point in rendering transaction
-      if (!transactionData) {
+        // transaction data contains information about points that were added/removed
+        // through that transaction, without it, no point in rendering transaction
+        if (!transactionData) {
+          return result;
+        }
+
+        const { location, cashier } = transactionData;
+        const userId = _.get(cardsById[card], 'user.id');
+
+        result.push({
+          id,
+          transaction,
+          cashier: cashiersById[cashier],
+          place: placesById[location],
+          user: usersById[userId],
+          reward: punchRewardsById[punchReward],
+        });
+
         return result;
-      }
-
-      const { location, cashier } = transactionData;
-      const userId = _.get(cardsById[card], 'user.id');
-
-      result.push({
-        id,
-        transaction,
-        cashier: cashiersById[cashier],
-        place: placesById[location],
-        user: usersById[userId],
-        reward: punchRewardsById[punchReward],
-      });
-
-      return result;
-    }, []);
+      },
+      [],
+    );
 
     cloneStatus(transactions, transactionInfos);
     return transactionInfos;
-  }
+  },
 );
