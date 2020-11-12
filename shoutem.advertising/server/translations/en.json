@@ -1,0 +1,28 @@
+{
+  "shoutem": {
+    "advertising": {
+      "ad-settings-page.configuration-title": "Main Configuration",
+      "ad-settings-page.form-ios-admob-app-id-title": "iOS AdMob App ID",
+      "ad-settings-page.form-android-admob-app-id-title": "Android AdMob App ID",
+      "ad-settings-page.form-ios-banner-ad-unit-id-title": "iOS Banner Ad Unit ID",
+      "ad-settings-page.form-android-banner-ad-unit-id-title": "Android Banner Ad Unit ID",
+      "ad-settings-page.form-ios-interstitial-ad-unit-id-title": "iOS Interstitial Ad Unit ID",
+      "ad-settings-page.form-android-interstitial-ad-unit-id-title": "Android Interstitial Ad Unit ID",
+      "ad-settings-page.form-interstitial-keywords": "Keywords ( comma separated i.e 'fashion,clothing' )",
+      "ad-settings-page.settings-title": "Settings",
+      "ad-settings-page.banner-ads-title": "Banner Ads",
+      "ad-settings-page.interstitial-ads-title": "Interstitial Ads",
+      "ad-settings-page.form-banner-placement-title": "Banner placement",
+      "ad-settings-page.form-max-ad-content-rating-title": "Max Ad content rating",
+      "ad-settings-page.form-child-direct-treatment-title": "Child directed treatment",
+      "ad-settings-page.form-under-age-content-title": "Under age of consent content",
+      "ad-settings-page.button-submit-title": "Save",
+      "services.banner-placement-top-title": "Top",
+      "services.banner-placement-bottom-title": "Bottom",
+      "services.ad-content-rating-general-audiences-title": "G - General audiences",
+      "services.ad-content-rating-mature-audiences-title": "MA - Mature audiences.",
+      "services.ad-content-rating-parental-guidance-title": "PG - Parental guidance.",
+      "services.ad-content-rating-teen-title": "T - Teen"
+    }
+  }
+}

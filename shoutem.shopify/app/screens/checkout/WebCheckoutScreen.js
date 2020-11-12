@@ -1,15 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import WebView from 'react-native-webview'
+import autoBindReact from 'auto-bind/react';
+import WebView from 'react-native-webview';
 import { connect } from 'react-redux';
 
 import { I18n } from 'shoutem.i18n';
-
-import {
-  jumpToIndex,
-  NavigationBar,
-  closeModal,
-} from 'shoutem.navigation';
+import { jumpToIndex, NavigationBar, closeModal } from 'shoutem.navigation';
 
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -37,21 +33,25 @@ class WebCheckoutScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.completeTransaction = this.completeTransaction.bind(this);
-    this.getWebViewProps = this.getWebViewProps.bind(this);
-    this.handleNavigationStateChange = this.handleNavigationStateChange.bind(this);
-    this.updateCheckoutStatus = this.updateCheckoutStatus.bind(this);
-    this.renderDoneButton = this.renderDoneButton.bind(this);
-    this.renderCloseButton = this.renderCloseButton.bind(this);
-    this.returnToCart = this.returnToCart.bind(this);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
+    autoBindReact(this);
 
     this.state = {
       transactionCompleted: false,
+      shouldStopLoading: false,
     }
   }
 
+  stopLoading() {
+    this.setState({ shouldStopLoading: true });
+  }
+
   renderLoadingSpinner() {
+    const { shouldStopLoading } = this.state;
+
+    if (shouldStopLoading) {
+      return null;
+    }
+
     return (
       <View styleName="vertical v-center h-center fill-parent">
         <Spinner />
@@ -105,6 +105,7 @@ class WebCheckoutScreen extends PureComponent {
 
     return {
       renderLoading: this.renderLoadingSpinner,
+      onLoadEnd: () => this.stopLoading(),
       source: { uri: checkoutUrl },
       startInLoadingState: true,
     }

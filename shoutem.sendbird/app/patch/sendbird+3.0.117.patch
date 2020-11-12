@@ -1,0 +1,24 @@
+diff --git a/node_modules/react-native/Libraries/Network/RCTNetworkTask.mm b/node_modules/react-native/Libraries/Network/RCTNetworkTask.mm
+index 1cc6252..ce4c2cc 100644
+--- a/node_modules/react-native/Libraries/Network/RCTNetworkTask.mm
++++ b/node_modules/react-native/Libraries/Network/RCTNetworkTask.mm
+@@ -101,9 +101,9 @@ - (BOOL)validateRequestToken:(id)requestToken
+   if (_requestToken == nil) {
+     if (requestToken == nil) {
+       if (RCT_DEBUG) {
+-        RCTLogError(@"Missing request token for request: %@", _request);
++//        RCTLogError(@"Missing request token for request: %@", _request);
+       }
+-      valid = NO;
++      valid = YES;
+     }
+     _requestToken = requestToken;
+   } else if (![requestToken isEqual:_requestToken]) {
+@@ -123,6 +123,7 @@ - (BOOL)validateRequestToken:(id)requestToken
+     }
+     [self invalidate];
+   }
++
+   return valid;
+ }
+ 

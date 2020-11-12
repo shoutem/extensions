@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import { Alert, KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 import countryData from 'world-countries';
@@ -65,9 +66,7 @@ class CheckoutScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.onCountrySelected = this.onCountrySelected.bind(this);
-    this.proceedToWebCheckout = this.proceedToWebCheckout.bind(this);
-    this.renderInput = this.renderInput.bind(this);
+    autoBindReact(this);
 
     this.fields = [{
       autoCapitalize: 'none',

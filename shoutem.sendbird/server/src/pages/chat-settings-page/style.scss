@@ -1,0 +1,29 @@
+.chat-settings-page {
+  padding-left: 48px;
+  padding-right: 48px;
+  margin: auto;
+
+  .btn-toolbar {
+    margin-top: 48px;
+  }
+
+  .form-group .control-label {
+    padding-top: 16px;
+  }
+}
+
+.error-text {
+  margin-top: 24px;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: 0.1px;
+  color: #D05C5C;
+}
+
+.invitation-alert {
+  margin-top: 32px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 17px;
+  color: #7C8395;
+}

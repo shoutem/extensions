@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import i18next from 'i18next';
@@ -10,7 +11,8 @@ import {
 } from '@shoutem/react-web-ui';
 import { ControlLabel } from 'react-bootstrap';
 import { ext } from 'context';
-import { getShortcut } from 'environment';
+import { getShortcut, getExtensionInstallation } from 'environment';
+import { translateExt18n } from '../../services';
 import layoutImage from './../assets/layout.png';
 import { updateShortcut, loadHierarchy, HIERARCHY } from './../reducer';
 import ScreenGroup from './ScreenGroup';
@@ -103,6 +105,7 @@ export class LayoutPage extends Component {
   }
 
   resolveExtensionInfo(shortcut) {
+    const { extensionName } = this.props;
     const defaultShortcutTitle = this.resolveShortcutTitle(shortcut);
     const extensionTitle = this.resolveExtensionTitle(shortcut);
 
@@ -111,7 +114,9 @@ export class LayoutPage extends Component {
     }
 
     if (!defaultShortcutTitle && extensionTitle) {
-      return i18next.t(LOCALIZATION.EXTENSION_TITLE, { extensionTitle });
+      return i18next.t(LOCALIZATION.EXTENSION_TITLE, {
+        extensionTitle: translateExt18n(extensionName, extensionTitle),
+      });
     }
 
     if (defaultShortcutTitle && !extensionTitle) {
@@ -122,7 +127,7 @@ export class LayoutPage extends Component {
 
     return i18next.t(LOCALIZATION.EXTENSION_DEFAULT_TITLE, {
       defaultShortcutTitle,
-      extensionTitle,
+      extensionTitle: translateExt18n(extensionName, extensionTitle),
     });
   }
 
@@ -143,7 +148,7 @@ export class LayoutPage extends Component {
       );
     }
 
-    const { shortcut } = this.props;
+    const { shortcut, extensionName } = this.props;
     const screenMapping = this.getScreenMappings(shortcut);
 
     return (
@@ -151,6 +156,7 @@ export class LayoutPage extends Component {
         {screens.map(screen => (
           <ScreenGroup
             key={screen.id}
+            extensionName={extensionName}
             originalScreen={screen}
             activeScreenDescriptor={screenMapping[screen.canonicalName]}
             onScreenSelected={this.handleScreenSelected}
@@ -179,6 +185,7 @@ export class LayoutPage extends Component {
 }
 
 LayoutPage.propTypes = {
+  extensionName: PropTypes.string,
   shortcut: PropTypes.object,
   hierarchy: PropTypes.object,
   updateShortcut: PropTypes.func,
@@ -186,7 +193,11 @@ LayoutPage.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const extensionInstallation = getExtensionInstallation();
+  const extensionName = _.get(extensionInstallation, 'canonicalName');
+
   return {
+    extensionName,
     shortcut: getShortcut(),
     hierarchy: denormalizeItem(
       state[ext()].layoutPage.hierarchy,

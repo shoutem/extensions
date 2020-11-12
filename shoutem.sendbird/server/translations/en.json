@@ -1,0 +1,27 @@
+{
+  "shoutem": {
+    "sendbird": {
+      "fair-policy-description.learn-more": "Learn more.",
+      "fair-policy-description.popover": "In case you need HIPAA compliance or enterprise account for your chat or your app have more than 100 users, please obtain your own Sendbird API key. Go to Sendbird for more details. ",
+      "fair-policy-description.description": "Within the “fair use” policy, the use of the chat will be limited to 100 users per app. After that you will need to either buy more user space or upgrade to Sendbird. Please <1>contact us</1> if you have more questions about this.",
+      "chat-disabled-placeholder.title": "Please enable SendBird",
+      "chat-disabled-placeholder.feature-enable-message": "This feature needs to be enabled and configured before using it in app. \nActivating this feature may move you to a higher <1>pricing plan</1>.",
+      "chat-disabled-placeholder.error": "Something went wrong.",
+      "chat-disabled-placeholder.button-label-error": "Try again",
+      "chat-disabled-placeholder.button-label-start": "Get started",
+      "modal-dialog.confirm-label": "OK",
+      "modal-dialog.decline-label": "CANCEL",
+      "chat-settings-page.title": "SendBird Subscription Settings",
+      "chat-settings-page.app-id": "App ID",
+      "chat-settings-page.save": "Save",
+      "chat-settings-page.error-app-id": "Invalid App ID",
+      "chat-settings-page.error-subscription-invalid": "Chat feature won't be available until this app has a valid subscription.",
+      "chat-settings-page.subscription-option-shoutem": "Use Shoutem fair use",
+      "chat-settings-page.subscription-option-sendbird": "Your SendBird Account",
+      "chat-settings-page.new-key-warning-title": "SendBird API Key",
+      "chat-settings-page.new-key-warning-description": "Inserting new API keys will delete all existing chat conversations from the app. This action is irreversible.",
+      "chat-settings-page.custom-key-warning-title": "Change Settings",
+      "chat-settings-page.custom-key-warning-description": "Changing SendBird subscription settings will delete all existing chat conversations. This action is irreversible."
+    }
+  }
+}

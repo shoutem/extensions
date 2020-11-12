@@ -1,10 +1,12 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import i18next from 'i18next';
 import {
   SettingsPageRenderer,
   ExtensionContextProvider,
 } from '@shoutem/web-core';
+import { translateExt18n } from '../../services';
 import Screen from './Screen';
 import LOCALIZATION from './localization';
 
@@ -23,6 +25,7 @@ export default class ScreenGroup extends Component {
 
   render() {
     const {
+      extensionName,
       originalScreen,
       activeScreenDescriptor,
       onScreenSelected,
@@ -30,11 +33,10 @@ export default class ScreenGroup extends Component {
     } = this.props;
     const { alternativeScreens } = originalScreen;
 
-    const title = _.get(
-      originalScreen,
-      'groupTitle',
-      i18next.t(LOCALIZATION.DEFAULT_GROUP_TITLE),
-    );
+    const title =
+      translateExt18n(extensionName, _.get(originalScreen, 'groupTitle')) ||
+      i18next.t(LOCALIZATION.DEFAULT_GROUP_TITLE);
+
     const activeScreenCanonicalName = _.get(
       activeScreenDescriptor,
       'canonicalName',
@@ -56,6 +58,7 @@ export default class ScreenGroup extends Component {
         <span className="screen_group__title">{title}</span>
         <div className="screen_group__screen-list">
           <Screen
+            extensionName={extensionName}
             screen={originalScreen}
             isActive={originalScreen === activeScreen}
             onClick={onScreenSelected}
@@ -63,6 +66,7 @@ export default class ScreenGroup extends Component {
           {alternativeScreens.map(screen => (
             <Screen
               key={screen.id}
+              extensionName={extensionName}
               screen={screen}
               isActive={screen === activeScreen}
               onClick={onScreenSelected}
@@ -91,6 +95,7 @@ export default class ScreenGroup extends Component {
 }
 
 ScreenGroup.propTypes = {
+  extensionName: PropTypes.string,
   originalScreen: PropTypes.object,
   activeScreenDescriptor: PropTypes.object,
   shortcutId: PropTypes.string,

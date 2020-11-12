@@ -1,6 +1,6 @@
 {
   "name": "shoutem.social",
-  "version": "2.4.4",
+  "version": "2.4.5",
   "description": "Social wall",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

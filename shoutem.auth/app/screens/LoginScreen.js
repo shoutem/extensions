@@ -79,8 +79,9 @@ export class LoginScreen extends PureComponent {
       return;
     }
 
+    const resolvedUsername = username.toLowerCase();
     this.setState({ inProgress: true });
-    login(username, password)
+    login(resolvedUsername, password)
       .then(this.handleLoginSuccess)
       .catch(this.handleLoginFailed);
   }

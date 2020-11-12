@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { translateExt18n } from '../../services';
 
 export default class Screen extends Component {
   constructor(props) {
@@ -19,7 +21,7 @@ export default class Screen extends Component {
   }
 
   render() {
-    const { screen, isActive } = this.props;
+    const { extensionName, screen, isActive } = this.props;
     const screenClasses = classNames('screen_group__screen', {
       'is-active': isActive,
     });
@@ -31,13 +33,16 @@ export default class Screen extends Component {
             <img className="screen_group__screen-image" src={screen.image} />
           )}
         </div>
-        <div className="screen_group__screen_name">{screen.title}</div>
+        <div className="screen_group__screen_name">
+          {translateExt18n(extensionName, screen.title)}
+        </div>
       </div>
     );
   }
 }
 
 Screen.propTypes = {
+  extensionName: PropTypes.string,
   screen: PropTypes.object,
   isActive: PropTypes.bool,
   onClick: PropTypes.func,

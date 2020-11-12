@@ -12,6 +12,9 @@ import {
   dimensionRelativeToIphone,
   Device,
   calculateLineHeight,
+  resolveFontFamily,
+  resolveFontStyle,
+  resolveFontWeight,
 } from '@shoutem/ui';
 
 import { INCLUDE, changeColorAlpha } from '@shoutem/theme';
@@ -58,7 +61,7 @@ export default (customVariables = {}) => {
     'shoutem.ui.Html': {
       a: {
         text: {
-          fontWeight: '700',
+          fontWeight: resolveFontWeight('700'),
           color: variables.title.color,
         },
       },
@@ -88,59 +91,108 @@ export default (customVariables = {}) => {
       },
       baseFont: {
         ...variables.text,
+        fontFamily: resolveFontFamily(
+          variables.text.fontFamily,
+          variables.text.fontWeight,
+          variables.text.fontStyle,
+        ),
+        fontWeight: resolveFontWeight(variables.text.fontWeight),
+        fontStyle: resolveFontStyle(variables.text.fontStyle),
       },
       tags: {
         h1: {
-          fontWeight: '700',
-          fontFamily: 'Rubik-Regular',
+          fontFamily: resolveFontFamily(
+            variables.heading.fontFamily,
+            '700',
+            variables.heading.fontStyle,
+          ),
+          fontWeight: resolveFontWeight('700'),
+          fontStyle: resolveFontStyle(variables.heading.fontStyle),
           marginBottom: variables.mediumGutter,
           marginTop: variables.mediumGutter,
           color: variables.heading.color,
         },
         h2: {
-          fontWeight: '700',
-          fontFamily: 'Rubik-Regular',
+          fontFamily: resolveFontFamily(
+            variables.heading.fontFamily,
+            '700',
+            variables.heading.fontStyle,
+          ),
+          fontWeight: resolveFontWeight('700'),
+          fontStyle: resolveFontStyle(variables.heading.fontStyle),
           marginBottom: variables.mediumGutter,
           marginTop: variables.mediumGutter,
           color: variables.heading.color,
         },
         h3: {
-          fontWeight: '700',
-          fontFamily: 'Rubik-Regular',
+          fontFamily: resolveFontFamily(
+            variables.heading.fontFamily,
+            '700',
+            variables.heading.fontStyle,
+          ),
+          fontWeight: resolveFontWeight('700'),
+          fontStyle: resolveFontStyle(variables.heading.fontStyle),
           marginTop: variables.mediumGutter,
           marginBottom: variables.mediumGutter,
           color: variables.heading.color,
         },
         h4: {
-          fontWeight: '700',
-          fontFamily: 'Rubik-Regular',
+          fontFamily: resolveFontFamily(
+            variables.heading.fontFamily,
+            '700',
+            variables.heading.fontStyle,
+          ),
+          fontWeight: resolveFontWeight('700'),
+          fontStyle: resolveFontStyle(variables.heading.fontStyle),
           marginTop: variables.mediumGutter,
           marginBottom: variables.mediumGutter,
           color: variables.heading.color,
         },
         h5: {
-          fontWeight: '700',
-          fontFamily: 'Rubik-Regular',
+          fontFamily: resolveFontFamily(
+            variables.heading.fontFamily,
+            '700',
+            variables.heading.fontStyle,
+          ),
+          fontWeight: resolveFontWeight('700'),
+          fontStyle: resolveFontStyle(variables.heading.fontStyle),
           marginTop: variables.mediumGutter,
           marginBottom: variables.mediumGutter,
           color: variables.heading.color,
         },
         a: {
-          fontWeight: '700',
-          fontFamily: 'Rubik-Regular',
+          fontFamily: resolveFontFamily(
+            variables.title.fontFamily,
+            '700',
+            variables.title.fontStyle,
+          ),
+          fontWeight: resolveFontWeight('700'),
+          fontStyle: resolveFontStyle(variables.title.fontStyle),
           fontSize: 15,
           textDecorationLine: 'none',
           color: variables.title.color,
         },
         p: {
-          fontFamily: 'Rubik-Regular',
+          fontFamily: resolveFontFamily(
+            variables.text.fontFamily,
+            variables.text.fontWeight,
+            variables.text.fontStyle,
+          ),
+          fontWeight: resolveFontWeight(variables.text.fontWeight),
+          fontStyle: resolveFontStyle(variables.text.fontStyle),
           fontSize: 15,
           marginTop: variables.mediumGutter,
           marginBottom: variables.mediumGutter,
           color: variables.text.color,
         },
         li: {
-          fontFamily: 'Rubik-Regular',
+          fontFamily: resolveFontFamily(
+            variables.text.fontFamily,
+            variables.text.fontWeight,
+            variables.text.fontStyle,
+          ),
+          fontWeight: resolveFontWeight(variables.text.fontWeight),
+          fontStyle: resolveFontStyle(variables.text.fontStyle),
           fontSize: 15,
           color: variables.text.color,
         },
@@ -394,7 +446,7 @@ export default (customVariables = {}) => {
         resizeMode: 'contain',
       },
       text: {
-        fontWeight: 'normal',
+        fontWeight: resolveFontWeight('normal'),
         flex: -1,
         margin: 0,
       },
@@ -1222,7 +1274,7 @@ export default (customVariables = {}) => {
         'shoutem.ui.Text': {
           color: '#ffffff',
           fontSize: 16,
-          fontWeight: '600',
+          fontWeight: resolveFontWeight('600'),
           fontFamily: 'Rubik-Regular',
         },
         'shoutem.ui.Icon': {
@@ -1259,14 +1311,11 @@ export default (customVariables = {}) => {
     // Auth PasswordTextInput
     'shoutem.auth.PasswordTextInput': {
       'shoutem.ui.View': {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
         'shoutem.ui.TextInput': {
+          borderColor: variables.text.color,
           borderRadius: 6,
           height: 50,
           flex: 1,
-          marginBottom: 20,
           paddingHorizontal: 15,
           paddingVertical: 4,
         },
@@ -1281,12 +1330,12 @@ export default (customVariables = {}) => {
 
     'shoutem.auth.LoginForm': {
       usernameContainer: {
-        marginBottom: 20,
         'shoutem.ui.Text': {
           fontSize: 15,
           paddingBottom: 5,
         },
         'shoutem.ui.TextInput': {
+          borderColor: variables.text.color,
           borderRadius: 6,
           height: 50,
           paddingHorizontal: 15,
@@ -1306,7 +1355,7 @@ export default (customVariables = {}) => {
           'shoutem.ui.Text': {
             color: variables.caption.color,
             fontSize: 11,
-            fontWeight: '400',
+            fontWeight: resolveFontWeight('400'),
             margin: 0,
           },
         },
@@ -1365,9 +1414,9 @@ export default (customVariables = {}) => {
           fontSize: 15,
         },
         'shoutem.ui.TextInput': {
+          borderColor: variables.text.color,
           borderRadius: 6,
           height: 50,
-          marginBottom: 20,
           paddingHorizontal: 15,
           paddingVertical: 4,
         },
@@ -1376,7 +1425,6 @@ export default (customVariables = {}) => {
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          paddingBottom: 20,
           'shoutem.ui.TextInput': {
             borderRadius: 6,
             height: 50,
@@ -1389,7 +1437,7 @@ export default (customVariables = {}) => {
         width: '100%',
         minWidth: 140,
         height: 44,
-        marginVertical: 20,
+        marginTop: 40,
         alignSelf: 'center',
         'shoutem.ui.Text': {
           fontSize: 16,
@@ -1622,12 +1670,31 @@ export default (customVariables = {}) => {
       },
       textInput: {
         ...variables.text,
+        fontFamily: resolveFontFamily(
+          variables.text.fontFamily,
+          variables.text.fontWeight,
+          variables.text.fontStyle,
+        ),
+        fontWeight: resolveFontWeight(variables.text.fontWeight),
+        fontStyle: resolveFontStyle(variables.text.fontStyle),
         padding: variables.mediumGutter,
       },
     },
 
     'shoutem.social.StatusDetailsScreen': {
-      textInput: { ...variables.text, flex: 1, margin: 15, maxHeight: 100, },
+      textInput: {
+        ...variables.text,
+        fontFamily: resolveFontFamily(
+          variables.text.fontFamily,
+          variables.text.fontWeight,
+          variables.text.fontStyle,
+        ),
+        fontWeight: resolveFontWeight(variables.text.fontWeight),
+        fontStyle: resolveFontStyle(variables.text.fontStyle),
+        flex: 1,
+        margin: 15,
+        maxHeight: 100,
+      },
     },
 
     'shoutem.social.StatusView': {
@@ -1840,7 +1907,7 @@ export default (customVariables = {}) => {
 
       title: {
         marginBottom: 22,
-        fontWeight: '500',
+        fontWeight: resolveFontWeight('500'),
         fontSize: 21,
         textAlign: 'center',
       },
@@ -1858,7 +1925,7 @@ export default (customVariables = {}) => {
 
       buttonText: {
         fontSize: 13,
-        fontWeight: '500',
+        fontWeight: resolveFontWeight('500'),
         color: '#FFFFFF'
       }
     },
@@ -1930,7 +1997,7 @@ export default (customVariables = {}) => {
         fontSize: 10,
       },
       unreadText: {
-        fontWeight: '600',
+        fontWeight: resolveFontWeight('600'),
       },
     },
 
@@ -1978,7 +2045,7 @@ export default (customVariables = {}) => {
         width: window.width - 80,
       },
       title: {
-        fontWeight: '500',
+        fontWeight: resolveFontWeight('500'),
         fontSize: 21,
         lineHeight: 25,
         marginBottom: 20,
@@ -2052,7 +2119,7 @@ export default (customVariables = {}) => {
         height: 200,
       },
       fileNameText: {
-        fontWeight: '500',
+        fontWeight: resolveFontWeight('500'),
         fontSize: 13,
         lineHeight: 16,
         color: '#000000',

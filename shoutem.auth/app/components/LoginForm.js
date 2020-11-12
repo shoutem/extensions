@@ -23,6 +23,7 @@ class LoginForm extends PureComponent {
     autoBind(this);
 
     this.state = {
+      isUsernameFocused: false,
       username: '',
       password: '',
     };
@@ -47,18 +48,26 @@ class LoginForm extends PureComponent {
 
   render() {
     const { style } = this.props;
-    const { visibility, username, password } = this.state;
+    const {
+      isUsernameFocused,
+      visibility,
+      username,
+      password,
+    } = this.state;
 
     return (
       <View>
-        <View style={style.usernameContainer}>
+        <View style={style.usernameContainer} styleName="lg-gutter-bottom">
           <Text>{I18n.t(ext('usernameOrEmail'))}</Text>
           <TextInput
             autoCapitalize="none"
             autoCorrect={false}
+            highlightOnFocus
             keyboardAppearance="dark"
             keyboardType="email-address"
+            onBlur={this.handleUsernameBlur}
             onChangeText={this.handleUsernameChange}
+            onFocus={this.handleUsernameFocus}
             placeholder={I18n.t(ext('usernameOrEmailPlaceholder'))}
             returnKeyType="done"
             value={username}

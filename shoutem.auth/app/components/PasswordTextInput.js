@@ -1,18 +1,29 @@
 import React, { PureComponent } from 'react';
-import autoBind from 'auto-bind';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
+
 import { View, TextInput, Button, Icon } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+
 import { I18n } from 'shoutem.i18n';
+
 import { ext } from '../const';
 
 class PasswordTextInput extends PureComponent {
+  static propTypes = {
+    errorMessage: PropTypes.string,
+    onChangeText: PropTypes.func,
+    password: PropTypes.string,
+  };
+
   constructor(props) {
     super(props);
 
-    autoBind(this);
+    autoBindReact(this);
 
     this.state = {
-      password: '',
+      isFocused: false,
+      password: props.password || '',
       visibility: false,
     };
   }
@@ -23,15 +34,18 @@ class PasswordTextInput extends PureComponent {
   }
 
   render() {
-    const { password } = this.props;
+    const { errorMessage, onChangeText, password } = this.props;
     const { visibility } = this.state;
+
     return (
       <View>
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
+          errorMessage={errorMessage}
+          highlightOnFocus
           keyboardAppearance="dark"
-          onChangeText={this.props.onChangeText}
+          onChangeText={onChangeText}
           placeholder={I18n.t(ext('passwordPlaceholder'))}
           returnKeyType="done"
           secureTextEntry={!visibility}

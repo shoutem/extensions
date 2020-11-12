@@ -358,6 +358,21 @@
       "format": "color",
       "default": "#666666"
     },
+    "errorText": {
+      "type": "object",
+      "title": "Error text",
+      "format": "font",
+      "default": {
+        "fontSize": 12,
+        "color": "#FF0000"
+      },
+      "constraints": {
+        "fontSize": {
+          "minimum": 12,
+          "maximum": 25
+        }
+      }
+    },
     "lineColor": {
       "type": "string",
       "title": "Line color - between list items",
@@ -464,6 +479,7 @@
       {
         "title": "Miscellaneous",
         "properties": [
+          "errorText",
           "lineColor",
           "indicatorColor",
           "sectionHeaderBackgroundColor"

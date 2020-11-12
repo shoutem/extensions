@@ -10,6 +10,7 @@
     "axios": "^0.18.0",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.1",
+    "react-native-webview": "^9.4.0",
     "shopify-buy": "1.4.0",
     "world-countries": "^1.8.1"
   },
@@ -17,5 +18,8 @@
     "@shoutem/redux-io": "*",
     "@shoutem/theme": "*",
     "@shoutem/ui": "*"
-  }
+  },
+  "nativeDependencies": [
+    "react-native-webview"
+  ]
 }

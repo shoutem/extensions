@@ -1,6 +1,7 @@
 {
   "shoutem": {
     "social": {
+      "shortcut-info-page.empty-placeholder-title": "No settings",
       "shortcut-info-page.configure-settings-text": "You can configure Social settings <1>here</1>.",
       "shortcut-info-page.manage-app-users-text": "To manage your app users click <1>here</1>.",
       "shortcut-settings-page.error-text": "Something went wrong, please try again",

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import i18next from 'i18next';
 import { Trans } from 'react-i18next';
 import { EmptyResourcePlaceholder } from '@shoutem/react-web-ui';
 import { navigateToSettings } from 'src/redux';
@@ -18,16 +19,16 @@ export function ShortcutInfoPage({
     <EmptyResourcePlaceholder
       className="shortcut-info-page"
       imageSrc={emptyImage}
-      title="No settings"
+      title={i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_TITLE)}
     >
       <p>
         <Trans i18nKey={LOCALIZATION.CONFIGURE_SETTINGS_TEXT}>
-          You can configure Social settings{' '}
+          You can configure Social settings
           <a onClick={navigateToSocialSettings}>here</a>.
         </Trans>
         <br />
         <Trans i18nKey={LOCALIZATION.MANAGE_APP_USERS_TEXT}>
-          To manage your app users click{' '}
+          To manage your app users click
           <a onClick={navigateToAuthSettings}>here</a>.
         </Trans>
       </p>

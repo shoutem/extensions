@@ -1,0 +1,37 @@
+{
+  "name": "advertising",
+  "title": "Advertising",
+  "version": "2.4.3",
+  "description": "Integrate AdMob and embed ads to your application",
+  "icon": "server/assets/add-advertising-image.png",
+  "platform": "~2.4.1",
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
+  "settings": {
+    "iOSBannerAdId": null,
+    "iOSAdAppId": null,
+    "AndroidAdAppId": null,
+    "AndroidBannerAdId": null,
+    "maxAdContentRating": "G",
+    "tagForChildDirectedTreatment": true,
+    "tagForUnderAgeOfConsent": true,
+    "bannerPlacement": "Top",
+    "keywords": "",
+    "iOSInterstitialAdId": null,
+    "AndroidInterstitialAdId": null
+  },
+  "pages": [
+    {
+      "name": "AdSettingsPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.AdSettingsPage",
+      "title": "Settings"
+    }
+  ]
+}

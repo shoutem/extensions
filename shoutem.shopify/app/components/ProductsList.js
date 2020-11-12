@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -77,11 +78,7 @@ export class ProductsList extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.onAddToCart = this.onAddToCart.bind(this);
-    this.onLoadMore = this.onLoadMore.bind(this);
-    this.refreshData = this.refreshData.bind(this);
-    this.renderProductRow = this.renderProductRow.bind(this);
-    this.renderFeaturedProduct = this.renderFeaturedProduct.bind(this);
+    autoBindReact(this);
 
     this.state = { selectedItem: null };
   }

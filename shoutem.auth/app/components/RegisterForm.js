@@ -1,21 +1,29 @@
 import React, { PureComponent } from 'react';
-import { Alert } from 'react-native';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBind from 'auto-bind';
+import autoBindReact from 'auto-bind/react';
 import isEmail from 'is-email';
-import { View, TextInput, Button, Text } from '@shoutem/ui';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { Alert } from 'react-native';
+
 import { connectStyle } from '@shoutem/theme';
+import {
+  Caption,
+  Button,
+  Text,
+  TextInput,
+  View,
+} from '@shoutem/ui';
+
 import { I18n } from 'shoutem.i18n';
-import PasswordTextInput from './PasswordTextInput';
+
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
-
-const { func } = PropTypes;
+import PasswordTextInput from './PasswordTextInput';
 
 class RegisterForm extends PureComponent {
   static propTypes = {
-    onSubmit: func,
+    onSubmit: PropTypes.func,
+    style: PropTypes.object,
   };
 
   static defaultProps = {
@@ -25,7 +33,7 @@ class RegisterForm extends PureComponent {
   constructor(props) {
     super(props);
 
-    autoBind(this);
+    autoBindReact(this);
 
     // minimum 3 characters, starts with letter,
     // contains letters, numbers, dashes and underscores
@@ -33,48 +41,56 @@ class RegisterForm extends PureComponent {
 
     this.state = {
       email: '',
+      emailError: null,
+      isEmailFocused: false,
+      isUsernameFocused: false,
       username: '',
+      usernameError: null,
       password: '',
+      passwordError: null,
     };
   }
 
   validateInput() {
     const { email, username, password } = this.state;
 
+    let isValid = true;
     if (_.isEmpty(email) || _.isEmpty(username) || _.isEmpty(password)) {
       Alert.alert(
         I18n.t('shoutem.application.errorTitle'),
         errorMessages.EMPTY_FIELDS,
       );
-      return false;
+
+      isValid = false;
     }
 
     if (!isEmail(email)) {
-      Alert.alert(
-        I18n.t('shoutem.application.errorTitle'),
-        errorMessages.SIGNUP_EMAIL_INVALID,
-      );
-      return false;
+      this.setState({ emailError: errorMessages.SIGNUP_EMAIL_INVALID });
+
+      isValid = false;
+    } else {
+      this.setState({ emailError: null });
     }
 
     if (!password || password.length < 6) {
-      Alert.alert(
-        I18n.t('shoutem.application.errorTitle'),
-        errorMessages.SIGNUP_PASSWORD_INVALID,
-      );
-      return false;
+      this.setState({ passwordError: errorMessages.SIGNUP_PASSWORD_INVALID });
+
+      isValid = false;
+    } else {
+      this.setState({ passwordError: null });
     }
 
     const usernameRegexMatch = username.match(this.usernameRegex);
-    if (!username || !usernameRegexMatch) {
-      Alert.alert(
-        I18n.t('shoutem.application.errorTitle'),
-        errorMessages.SIGNUP_USERNAME_INVALID,
-      );
-      return false;
+    if (!username || !usernameRegexMatch || username.toLowerCase() !== username) {
+      this.setState({ usernameError: errorMessages.SIGNUP_USERNAME_INVALID });
+
+      isValid = false;
+    } else {
+      this.setState({ usernameError: null });
+
     }
 
-    return true;
+    return isValid;
   }
 
   handleRegisterButtonPress() {
@@ -102,7 +118,14 @@ class RegisterForm extends PureComponent {
 
   render() {
     const { style } = this.props;
-    const { password } = this.state;
+    const {
+      emailError,
+      isEmailFocused,
+      isUsernameFocused,
+      password,
+      passwordError,
+      usernameError,
+    } = this.state;
 
     return (
       <View>
@@ -110,6 +133,8 @@ class RegisterForm extends PureComponent {
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
+          errorMessage={emailError}
+          highlightOnFocus
           keyboardAppearance="dark"
           keyboardType="email-address"
           onChangeText={this.handleEmailChangeText}
@@ -117,20 +142,23 @@ class RegisterForm extends PureComponent {
           returnKeyType="done"
         />
 
-        <Text>Username</Text>
+        <Text styleName="lg-gutter-top">Username</Text>
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
+          errorMessage={usernameError}
+          highlightOnFocus
           keyboardAppearance="dark"
           onChangeText={this.handleUsernameChangeText}
           placeholder={I18n.t(ext('usernamePlaceholder'))}
           returnKeyType="done"
         />
 
-        <Text>Password</Text>
+        <Text styleName="lg-gutter-top">Password</Text>
         <PasswordTextInput
           onChangeText={this.handlePasswordChangeText}
           password={password}
+          errorMessage={passwordError}
         />
 
         <Button
