@@ -1,12 +1,8 @@
-import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-
-import { CmsListScreen } from 'shoutem.cms';
-import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
-import { I18n } from 'shoutem.i18n';
-import { navigateTo } from 'shoutem.navigation';
+import { connect } from 'react-redux';
 
 import {
   cloneStatus,
@@ -18,12 +14,16 @@ import {
 import { connectStyle } from '@shoutem/theme';
 import { GridRow, ListView, View, EmptyStateView } from '@shoutem/ui';
 
+import { CmsListScreen } from 'shoutem.cms';
+import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
+import { I18n } from 'shoutem.i18n';
+import { navigateTo } from 'shoutem.navigation';
+
 import { fetchDealListTransactions, getFavoriteDeals } from '../../redux';
 import { ext, DEALS_SCHEMA } from '../../const';
 import DealGridView from '../DealGridView';
 
 export class FavoriteDealsList extends PureComponent {
-
   static propTypes = {
     data: PropTypes.array.isRequired,
     catalogId: PropTypes.string,
@@ -37,8 +37,7 @@ export class FavoriteDealsList extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.renderData = this.renderData.bind(this);
-    this.renderRow = this.renderRow.bind(this);
+    autoBindReact(this);
   }
 
   componentDidMount() {

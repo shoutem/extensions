@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { LayoutAnimation } from 'react-native';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 
 import { View } from '@shoutem/ui';
@@ -105,7 +106,7 @@ export default class EventsMap extends PureComponent {
   constructor(props, context) {
     super(props, context);
 
-    this.handleMapPress = this.handleMapPress.bind(this);
+    autoBindReact(this);
 
     this.state = {
       selectedEvent: null,

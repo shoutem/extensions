@@ -8,9 +8,9 @@ import { GridRow, View } from '@shoutem/ui';
 
 import { currentLocation } from 'shoutem.cms';
 
-import { ext } from '../const';
 import GridEventView from '../components/GridEventView';
 import FeaturedEventView from '../components/FeaturedEventView';
+import { ext } from '../const';
 import { mapDispatchToProps, mapStateToProps, EventsScreen } from './EventsScreen';
 
 export class GridEventsScreen extends EventsScreen {

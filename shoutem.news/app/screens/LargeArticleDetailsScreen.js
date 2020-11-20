@@ -1,4 +1,7 @@
 import React from 'react';
+import _ from 'lodash';
+import moment from 'moment';
+
 import { connectStyle } from '@shoutem/theme';
 import {
   Title,
@@ -8,9 +11,6 @@ import {
   Tile,
   View,
 } from '@shoutem/ui';
-
-import * as _ from 'lodash';
-import moment from 'moment';
 
 import { ext } from '../const';
 import { ArticleDetailsScreen } from './ArticleDetailsScreen';

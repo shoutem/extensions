@@ -1,11 +1,11 @@
-import _ from 'lodash';
-
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import { cloneStatus } from '@shoutem/redux-io';
-import { GridRow, View } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { GridRow, View } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -23,8 +23,7 @@ export class DealsGridScreen extends DealsScreen {
   constructor(props, context) {
     super(props, context);
 
-    this.handleOpenDealDetails = this.handleOpenDealDetails.bind(this);
-    this.renderRow = this.renderRow.bind(this);
+    autoBindReact(this);
 
     this.state = {
       ...this.state,

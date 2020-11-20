@@ -1,7 +1,8 @@
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 
 import { Icon, Text } from '@shoutem/ui';
 
@@ -19,10 +20,7 @@ export default class DealRedeemTimer extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.canContinueTimer = this.canContinueTimer.bind(this);
-    this.destroyTimer = this.destroyTimer.bind(this);
-    this.initializeTimer = this.initializeTimer.bind(this);
-    this.updateTimer = this.updateTimer.bind(this);
+    autoBindReact(this);
 
     const endTime = moment(props.endTime);
 

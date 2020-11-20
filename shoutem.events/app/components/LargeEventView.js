@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   TouchableOpacity,
   Title,
@@ -10,14 +11,14 @@ import {
 } from '@shoutem/ui';
 
 import { formatDate } from '../shared/Calendar';
-import EventImage from './EventImage';
 import { BaseEventItem } from './BaseEventItem';
+import EventImage from './EventImage';
 
 export default class LargeEventView extends BaseEventItem {
 
   render() {
     const { event } = this.props;
-    
+
     return (
       <TouchableOpacity onPress={this.onPress}>
         <View styleName="md-gutter-bottom">

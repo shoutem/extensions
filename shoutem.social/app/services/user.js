@@ -1,23 +1,28 @@
 import _ from 'lodash';
-
 import { openProfile } from 'shoutem.auth';
-
 import { loadUser } from '../redux/actions';
 
 export function openProfileForLegacyUser(dispatch) {
-  return (legacyUser) => dispatch(loadUser(`legacyUser:${legacyUser.legacyId}`))
-    .then((user) => {
-      const fetchedUser = user.payload.data;
-      const unpackedUser = {
-        id: fetchedUser.id,
-        ...fetchedUser.attributes,
-        realm: {
-          ..._.get(fetchedUser, 'relationships.realm.data'),
-        },
-      };
 
-      return dispatch(openProfile(unpackedUser));
-    });
+  return (legacyUser) => {
+    // This function is called either from auth or social. 
+    // If it's called from auth we use legacyId and if it's called from social we use id. 
+    const id = legacyUser.legacyId || legacyUser.id;
+
+    return dispatch(loadUser(`legacyUser:${id}`))
+      .then((user) => {
+        const fetchedUser = user.payload.data;
+        const unpackedUser = {
+          id: fetchedUser.id,
+          ...fetchedUser.attributes,
+          realm: {
+            ..._.get(fetchedUser, 'relationships.realm.data'),
+          },
+        };
+
+        return dispatch(openProfile(unpackedUser));
+      });
+  }
 }
 
 export function adaptSocialUserForProfileScreen(user) {

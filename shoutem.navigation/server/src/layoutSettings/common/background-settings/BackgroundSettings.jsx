@@ -131,7 +131,7 @@ export class BackgroundSettings extends Component {
 
     return (
       <div className="background-settings">
-        <h3>{i18next.t(LOCALIZATION.TITLE)}Background settings</h3>
+        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <form>
           <FormGroup>
             <Row>

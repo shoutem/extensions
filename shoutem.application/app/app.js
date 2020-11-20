@@ -1,7 +1,5 @@
 import { AppState } from 'react-native';
 import * as _ from 'lodash';
-import SplashScreen from 'react-native-splash-screen';
-
 import rio, { checkExpiration } from '@shoutem/redux-io';
 import { applyToAll } from '@shoutem/redux-composers';
 import { Image, Html } from '@shoutem/ui';
@@ -10,7 +8,6 @@ import { I18n } from 'shoutem.i18n';
 
 import { isRelease } from './shared/isRelease';
 import { extractAppActions } from './shared/extractAppActions';
-import { openInitialScreen } from './shared/openInitialScreen';
 import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
 import { resizeImageSource } from './services/resizeImageSource';
@@ -18,6 +15,7 @@ import {
   loadLocalConfiguration,
   fetchConfiguration,
   fetchAppSubscriptionStatus,
+  setQueueTargetComplete,
 } from './redux';
 import {
   CONFIGURATION_SCHEMA,
@@ -25,10 +23,13 @@ import {
   APP_SUBSCRIPTION_SCHEMA,
   ext,
 } from './const';
+import { AppInitQueue } from './services';
 import { SeAttachment } from './html';
 import buildConfig from './buildConfig.json';
 
 export const appActions = {};
+
+AppInitQueue.addExtension(ext());
 
 const AUTH_HEADER = `Bearer ${buildConfig.authorization}`;
 
@@ -103,11 +104,6 @@ function dispatchCheckExpiration(app) {
   app.getStore().dispatch(applyToAll(checkExpiration()));
 }
 
-function dispatchCheckAppSubscription(app) {
-  const appId = getAppId();
-  return app.getStore().dispatch(fetchAppSubscriptionStatus(appId));
-}
-
 function createAppStateChangeHandler(app) {
   return (newAppState) => {
     if (appState !== newAppState && newAppState === ACTIVE_APP_STATE) {
@@ -136,15 +132,14 @@ export function appWillMount(app) {
 export function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
+  const appId = getAppId();
   if (!isConfigurationLoaded(state)) {
     throw new Error(I18n.t(ext('configurationLoadErrorMessage')));
   }
   unsubscribeFromConfigurationLoaded();
 
-  return dispatchCheckAppSubscription(app).then((response) => {
-    const isValid = _.get(response, 'payload.data.attributes.valid');
-    openInitialScreen(app, isValid);
-  });
+  return store.dispatch(fetchAppSubscriptionStatus(appId))
+    .then(() => store.dispatch(setQueueTargetComplete(ext())));
 }
 
 /**

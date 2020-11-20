@@ -4,7 +4,7 @@ import { Alert, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import autoBind from 'auto-bind';
-import { NavigationBar, navigateBack, getActiveNavigationStackState, reset } from 'shoutem.navigation';
+import { NavigationBar } from 'shoutem.navigation';
 import { Screen, Spinner, ScrollView } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 
@@ -31,21 +31,10 @@ import HorizontalSeparator from '../components/HorizontalSeparator';
 
 const AUTH_ERROR = 'auth_auth_notAuthorized_userAuthenticationError';
 
-function constructNewRoutes(routes, interceptedRoute) {
-  const cleanedRoutes = _.filter(
-    routes,
-    route => route.screen !== 'shoutem.auth.RegisterScreen' && route.screen !== 'shoutem.auth.LoginScreen',
-  );
-
-  return [...cleanedRoutes, interceptedRoute];
-}
-
 export class RegisterScreen extends PureComponent {
   static propTypes = {
-    navigateBack: PropTypes.func,
     register: PropTypes.func,
     manualApprovalActive: PropTypes.bool,
-    routeToReturnTo: PropTypes.object,
     loginWithFacebook: PropTypes.func,
   };
 
@@ -62,21 +51,13 @@ export class RegisterScreen extends PureComponent {
   handleRegistrationSuccess({ payload }) {
     const {
       access_token,
-      routeToReturnTo,
-      reset,
-      activeNavigationStack,
       userRegistered,
     } = this.props;
-    const { routes } = activeNavigationStack;
 
     saveSession(JSON.stringify({ access_token }));
     userRegistered(payload);
 
     this.setState({ inProgress: false });
-
-    const newRoutes = constructNewRoutes(routes, routeToReturnTo);
-
-    reset(newRoutes, _.size(newRoutes) - 1);
   }
 
   handleRegistrationFailed({ payload }) {
@@ -160,9 +141,7 @@ export class RegisterScreen extends PureComponent {
 }
 
 export const mapDispatchToProps = {
-  navigateBack,
   register,
-  reset,
   userRegistered,
   loginWithFacebook,
 };
@@ -173,7 +152,6 @@ function mapStateToProps(state) {
     appId: getAppId(),
     access_token: getAccessToken(state),
     settings: getExtensionSettings(state, ext()),
-    activeNavigationStack: getActiveNavigationStackState(state),
   };
 }
 

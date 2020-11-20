@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
+import PropTypes from 'prop-types';
+
 import {
   TouchableOpacity,
   Subtitle,
@@ -11,9 +12,7 @@ import {
   Divider,
 } from '@shoutem/ui';
 
-import {
-  ArticleView,
-} from './ArticleView';
+import { ArticleView } from './ArticleView';
 
 /**
  * A component used to render a single list article item

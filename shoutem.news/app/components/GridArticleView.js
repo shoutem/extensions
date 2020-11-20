@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 
 import {
   TouchableOpacity,
@@ -11,9 +11,7 @@ import {
   Image,
 } from '@shoutem/ui';
 
-import {
-  ArticleView,
-} from './ArticleView';
+import { ArticleView } from './ArticleView';
 
 /**
  * A component used to render a single grid article item

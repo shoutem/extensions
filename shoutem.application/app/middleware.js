@@ -7,8 +7,17 @@ import {
 import { LOAD_REQUEST } from '@shoutem/redux-io';
 import { Alert } from 'react-native';
 import { I18n } from 'shoutem.i18n';
-import { EXECUTE_SHORTCUT, RESTART_APP, getShortcut, getActiveShortcut } from './redux';
+import {
+  EXECUTE_SHORTCUT,
+  RESTART_APP,
+  getShortcut,
+  getActiveShortcut,
+  QUEUE_TARGET_COMPLETED,
+  getSubscriptionValidState,
+  getAppInitQueue,
+} from './redux';
 import { restartApp } from './services';
+import { openInitialScreen } from './shared/openInitialScreen';
 import { ext } from './const';
 
 function createExecuteShortcutActionMiddleware(actions) {
@@ -48,9 +57,9 @@ const resolveScreenLayout = store => next => action => {
       route: action.route,
       path: ['route'],
     } : {
-      route: _.last(action.routes),
-      path: ['routes', `${_.indexOf(action.routes, _.last(action.routes))}`],
-    };
+        route: _.last(action.routes),
+        path: ['routes', `${_.indexOf(action.routes, _.last(action.routes))}`],
+      };
   }
 
   if (isNavigationAction(action) && routeInfo.route) {
@@ -167,6 +176,24 @@ const restartAppMiddleware = setPriority(store => next => action => {
   return next(action);
 }, priorities.LAST);
 
+const appInitQueueMiddleware = store => next => action => {
+  const actionType = _.get(action, 'type');
+
+  if (actionType === QUEUE_TARGET_COMPLETED) {
+    const state = store.getState();
+    const subscriptionValid = getSubscriptionValidState(state);
+    const appInitQueue = getAppInitQueue(state);
+    const hasMatchingTarget = _.has(appInitQueue, action.payload) && appInitQueue[action.payload] === false;
+    const isLastQueuedTarget = _.size(_.filter(appInitQueue, target => target === false)) < 2;
+
+    if (hasMatchingTarget && isLastQueuedTarget) {
+      store.dispatch(openInitialScreen(subscriptionValid));
+    }
+  }
+
+  return next(action);
+}
+
 export {
   noInternetMiddleware,
   resolveScreenLayout,
@@ -174,4 +201,5 @@ export {
   createExecuteShortcutActionMiddleware,
   injectShortcutIdToActionRouteContext,
   restartAppMiddleware,
+  appInitQueueMiddleware,
 };

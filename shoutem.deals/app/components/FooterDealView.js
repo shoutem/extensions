@@ -1,8 +1,7 @@
-import _ from 'lodash';
-
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-
 import { Dimensions } from 'react-native';
 
 import {
@@ -24,7 +23,6 @@ const styles = {
 };
 
 export default class FooterDealView extends PureComponent {
-
   static propTypes = {
     deal: PropTypes.object,
     label: PropTypes.string,
@@ -34,7 +32,7 @@ export default class FooterDealView extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handlePress = this.handlePress.bind(this);
+    autoBindReact(this);
   }
 
   handlePress() {

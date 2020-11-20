@@ -1,8 +1,6 @@
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
-import React, {
-  PureComponent,
-} from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -16,7 +14,6 @@ import {
 import DealImage from './DealImage';
 
 export default class DealImageGallery extends PureComponent {
-
   static propTypes = {
     children: PropTypes.object,
     deal: PropTypes.object,
@@ -28,9 +25,7 @@ export default class DealImageGallery extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.renderGalleryOverlay = this.renderGalleryOverlay.bind(this);
-    this.renderGalleryPage = this.renderGalleryPage.bind(this);
-    this.setSelectedImageIndex = this.setSelectedImageIndex.bind(this);
+    autoBindReact(this);
 
     this.state = {
       selectedImageIndex: 0,

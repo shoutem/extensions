@@ -94,7 +94,32 @@
       "deals-statistics-page.search-placeholder-message": "Search deals",
       "services.empty-deals-endpoint-title": "Deals endpoint cannot be empty!",
       "services.display-date-format": "DD MMM 'YY",
-      "services.display-time-format": "hh:mm a"
+      "services.display-time-format": "hh:mm a",
+      "deals-cms-page.page-label": "Page {{pageNumber}}",
+      "Categories": "Categories",
+      "Title": "Title",
+      "Place": "Place",
+      "Start": "Start",
+      "End": "End",
+      "Create category": "Create category",
+      "Rename category": "Rename category",
+      "Enter category name": "Enter category name",
+      "Delete category": "Delete category",
+      "Are you sure you want to delete this category?": "Are you sure you want to delete this category?",
+      "Cancel": "Cancel",
+      "Save": "Save",
+      "All": "All",
+      "Rename": "Rename",
+      "Delete": "Delete",
+      "No data to display": "No data to display",
+      "Edit": "Edit",
+      "None": "None",
+      "Created time": "Created time",
+      "Updated time": "Updated time",
+      "Sort by": "Sort by {{displayFieldTitle}}",
+      "Select sort field": "Select sort field",
+      "Ascending": "Ascending",
+      "Descending": "Descending"
     }
   }
 }

@@ -4,14 +4,10 @@ import rio from '@shoutem/redux-io';
 
 import { getAppId } from 'shoutem.application/app';
 import { getExtensionSettings } from 'shoutem.application/redux';
-
+import { USER_SCHEMA } from 'shoutem.auth';
 import { shoutemApi } from './services/shoutemApi';
 
-import {
-  ext,
-  STATUSES_SCHEMA,
-  USERS_SCHEMA,
-} from './const';
+import { ext, STATUSES_SCHEMA } from './const';
 
 const APPLICATION_EXTENSION = 'shoutem.application';
 const AUTH_EXTENSION = 'shoutem.auth';
@@ -22,7 +18,6 @@ export function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
   const apiEndpoint = getExtensionSettings(state, APPLICATION_EXTENSION).legacyApiEndpoint;
-  shoutemApi.init(apiEndpoint);
 
   const { authApiEndpoint } = getExtensionSettings(state, AUTH_EXTENSION);
   if (!authApiEndpoint) {
@@ -30,14 +25,7 @@ export function appDidMount(app) {
   }
 
   const appId = getAppId();
-  function createAuthApiEndpoint(path, queryStringParams = '') {
-    const endpoint = new URI(`${authApiEndpoint}/v1/realms/externalReference:${appId}/${path}`);
-
-    return endpoint
-      .protocol('https')
-      .query(`${queryStringParams}`)
-      .readable();
-  }
+  shoutemApi.init(apiEndpoint, authApiEndpoint, appId);
 
   const apiRequestOptions = {
     resourceType: 'JSON',
@@ -57,14 +45,6 @@ export function appDidMount(app) {
     request: {
       endpoint: '',
       ...apiRequestOptions,
-    },
-  });
-
-  rio.registerResource({
-    schema: USERS_SCHEMA,
-    request: {
-      endpoint: createAuthApiEndpoint('users/{userId}'),
-      ...jsonApiRequestOptions,
     },
   });
 }

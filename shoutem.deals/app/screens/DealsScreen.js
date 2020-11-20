@@ -1,14 +1,10 @@
-import _ from 'lodash';
-
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { InteractionManager } from 'react-native';
 
-import {
-  InteractionManager,
-} from 'react-native';
-
-import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -20,20 +16,18 @@ import {
 import { CmsListScreen } from 'shoutem.cms';
 import { isFavoritesSchema } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
+import { navigateTo } from 'shoutem.navigation';
 
+import DealGridView from '../components/DealGridView';
+import DealsMap from '../components/DealsMap';
+import FeaturedDealView from '../components/FeaturedDealView';
+import MyDealsBadge from '../components/MyDealsBadge';
 import { ext, DEALS_SCHEMA, DEALS_TAG, TRANSLATIONS } from '../const';
-
 import {
   fetchDealTransactions,
   fetchDealListTransactions,
   getCatalogId,
 } from '../redux';
-
-// Components
-import DealGridView from '../components/DealGridView';
-import MyDealsBadge from '../components/MyDealsBadge';
-import DealsMap from '../components/DealsMap';
-import FeaturedDealView from '../components/FeaturedDealView';
 
 export class DealsScreen extends CmsListScreen {
   static propTypes = {
@@ -45,10 +39,7 @@ export class DealsScreen extends CmsListScreen {
   constructor(props) {
     super(props);
 
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.handleOpenDealDetails = this.handleOpenDealDetails.bind(this);
-    this.handleOpenMyDeals = this.handleOpenMyDeals.bind(this);
-    this.handleToggleMap = this.handleToggleMap.bind(this);
+    autoBindReact(this);
 
     this.state = {
       ...this.state,
@@ -259,4 +250,3 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
 export default connect(mapStateToProps, mapDispatchToProps)(
   connectStyle(ext('DealsScreen', {}))(DealsScreen),
 );
-

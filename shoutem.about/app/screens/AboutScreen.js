@@ -1,6 +1,7 @@
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 import { InteractionManager, StatusBar } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -390,11 +391,10 @@ export class AboutScreen extends PureComponent {
   }
 
   render() {
-    const { data, navigationBarStyle } = this.props;
-    const fullScreen = this.isNavigationBarClear() ? "full-screen" : "";
+    const { data } = this.props;
 
     return (
-      <Screen styleName={`${fullScreen} paper`}>
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavBarProps()} />
         {this.renderData(data)}
       </Screen>

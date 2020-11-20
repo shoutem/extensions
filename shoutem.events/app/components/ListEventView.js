@@ -13,8 +13,8 @@ import {
 } from '@shoutem/ui';
 
 import { formatDate } from '../shared/Calendar';
-import EventImage from './EventImage';
 import { BaseEventItem } from './BaseEventItem';
+import EventImage from './EventImage';
 
 /**
  * Component used to render single list event item
@@ -23,7 +23,7 @@ export default class ListEventView extends BaseEventItem {
 
   render() {
     const { event, style, onPress } = this.props;
-    
+
     return (
       <TouchableOpacity
         disabled={!_.isFunction(onPress)}

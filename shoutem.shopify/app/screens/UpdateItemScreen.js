@@ -183,7 +183,7 @@ class UpdateItemScreen extends PureComponent {
         const valuesForVariant = getValuesForVariant(variant);
 
         return _.every(optionValuesToSelect, option =>
-              option.value === valuesForVariant[option.name]);
+          option.value === valuesForVariant[option.name]);
       });
     }
     this.setState({ variant: newVariant || product.variants[0] });
@@ -384,11 +384,6 @@ class UpdateItemScreen extends PureComponent {
 
   render() {
     const { actionType } = this.props;
-
-    console.log("UpdateItemScreen");
-    console.log("this.props:", this.props);
-    console.log("this.state:", this.state);
-
     const { add } = actionTypes;
 
     return (
@@ -400,6 +395,7 @@ class UpdateItemScreen extends PureComponent {
           <ListView
             data={this.getAvailableOptions()}
             renderRow={this.renderOptionRow}
+            ListEmptyComponent={() => null}
           />
           {this.renderQuantityPicker()}
         </ScrollView>

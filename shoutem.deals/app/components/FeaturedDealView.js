@@ -1,11 +1,10 @@
-import _ from 'lodash';
-
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
-import { connectStyle } from '@shoutem/theme';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   Icon,
   Overlay,
@@ -16,7 +15,11 @@ import {
   View,
 } from '@shoutem/ui';
 
-import { ext } from '../const';
+import {
+  getLastDealAction,
+  getLastDealTransaction,
+  getLastDealStatusTransaction,
+} from '../redux';
 import {
   dealStatusShape,
   formatPrice,
@@ -24,17 +27,11 @@ import {
   getDealStatus,
   getFormattedDiscount,
 } from '../services';
-import {
-  getLastDealAction,
-  getLastDealTransaction,
-  getLastDealStatusTransaction,
-} from '../redux';
-
+import { ext } from '../const';
 import DealImage from './DealImage';
 import DealRedeemTimer from './DealRedeemTimer';
 
 export class FeaturedDealView extends PureComponent {
-
   static propTypes = {
     activeCoupon: PropTypes.object,
     dealId: PropTypes.string,
@@ -51,7 +48,7 @@ export class FeaturedDealView extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handlePress = this.handlePress.bind(this);
+    autoBindReact(this);
   }
 
   handlePress() {

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { getExtensionSettings } from 'shoutem.application';
 
 import { ext } from '../const';
 
@@ -16,6 +17,12 @@ export const getCartTotal = (state) => {
 
   return total.toFixed(2);
 };
+
+export function getDiscountCode(state) {
+  const settings = getExtensionSettings(state, ext());
+
+  return _.get(settings, 'discountCode');
+}
 
 /**
  * Gets already fetched products for tag or collection, saved in local state.

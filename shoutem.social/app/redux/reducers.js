@@ -8,6 +8,8 @@ import {
   LOAD_SUCCESS,
   CREATE_SUCCESS,
   REFERENCE_STATUS,
+  collection,
+  storage,
 } from '@shoutem/redux-io';
 
 import {
@@ -18,7 +20,7 @@ import {
   STATUS,
 } from '@shoutem/redux-io/status';
 
-import { STATUSES_SCHEMA, USERS_SCHEMA } from '../const';
+import { STATUSES_SCHEMA } from '../const';
 import { CREATE, LIKE, UNLIKE, DELETE } from './actions';
 import {
   increaseNumberOfComments,
@@ -28,6 +30,7 @@ import {
   updateStatusesAfterLike,
   updateStatusesAfterUnlike,
 } from '../services';
+import { USER_SCHEMA } from 'shoutem.auth';
 
 const DEFAULT_STATE = { data: [] };
 
@@ -56,57 +59,6 @@ function processStatuses(state, action) {
       links: { next },
       params,
       schema: STATUSES_SCHEMA,
-    }
-  ));
-
-  return newState;
-}
-
-function unpackUser(user) {
-  return {
-    id: user.id,
-    ...user.relationships,
-    ...user.attributes,
-  };
-}
-
-function processUsers(state, action) {
-  const { payload } = action;
-
-  // for now, always refetch single users to avoid unknown incompatibilities between social and auth
-  if (!_.isArray(payload.data)) {
-    // meet the new state, same as the old state
-    const newState = { ...state, data: [...state.data] };
-    setStatus(newState, updateStatus(
-      state[STATUS],
-      {
-        validationStatus: validationStatus.VALID,
-        busyStatus: busyStatus.IDLE,
-        error: false,
-        schema: USERS_SCHEMA,
-      }
-    ));
-
-    return newState;
-  }
-
-  const data = _.map(payload.data, unpackUser);
-
-  const newState = isAppendMode(action)
-    ? { ...state, data: [...state.data, ...data] }
-    : { ...state, data: [...data] };
-
-  const nextPageUrl = _.get(payload, 'links.next');
-  const links = nextPageUrl ? { next: nextPageUrl } : { next: null };
-
-  setStatus(newState, updateStatus(
-    state[STATUS],
-    {
-      validationStatus: validationStatus.VALID,
-      busyStatus: busyStatus.IDLE,
-      error: false,
-      links,
-      schema: USERS_SCHEMA,
     }
   ));
 
@@ -265,30 +217,12 @@ function commentsReducer() {
   };
 }
 
-function usersReducer() {
-  const defaultResourceReducer = resource(USERS_SCHEMA, DEFAULT_STATE);
-
-  return (state = DEFAULT_STATE, action) => {
-    const schema = _.get(action, 'meta.schema');
-
-    switch (action.type) {
-      case LOAD_SUCCESS:
-        if (schema === USERS_SCHEMA) {
-          return processUsers(state, action);
-        }
-
-        return state;
-      default:
-        return defaultResourceReducer(state, action);
-    }
-  };
-}
-
 export default combineReducers({
   statuses: wallReducer(),
   comments: mapReducers(
     'meta.params.in_reply_to_status_id',
     commentsReducer()
   ),
-  users: usersReducer(),
+  users: collection(USER_SCHEMA, 'users'),
+  searchUsers: collection(USER_SCHEMA, 'searchUsers'),
 });

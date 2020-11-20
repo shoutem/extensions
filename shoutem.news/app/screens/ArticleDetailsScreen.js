@@ -1,8 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import moment from 'moment';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   ScrollView,
   Screen,
@@ -13,7 +14,6 @@ import {
   SimpleHtml,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 
 import { NavigationBar } from 'shoutem.navigation';
 
@@ -89,14 +89,12 @@ export class ArticleDetailsScreen extends PureComponent {
 
     let styleName = '';
     let animationName = '';
-    let screenStyle = 'paper';
 
     if (this.isNavigationBarClear()) {
       if (article.image) {
         // If navigation bar is clear and image exists, navigation bar should be initially clear
         // but after scrolling down navigation bar should appear (solidify animation)
         styleName = 'clear';
-        screenStyle += ' full-screen';
         animationName = 'solidify';
       } else {
         // If navigation bar is clear, but there is no image, navigation bar should be set to solid,
@@ -106,7 +104,7 @@ export class ArticleDetailsScreen extends PureComponent {
     }
 
     return (
-      <Screen styleName={screenStyle}>
+      <Screen styleName="paper">
         <NavigationBar
           styleName={styleName}
           animationName={animationName}

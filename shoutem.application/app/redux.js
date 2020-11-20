@@ -13,6 +13,7 @@ import {
 import { getActiveRoute } from 'shoutem.navigation/redux/core';
 import { preventStateRehydration } from 'shoutem.redux';
 
+import { AppInitQueue } from './services'
 import configuration from './configuration.json';
 import {
   ext,
@@ -36,6 +37,7 @@ export const HIDE_SHORTCUT = 'shoutem.application.HIDE_SHORTCUT';
 export const SHOW_SHORTCUT = 'shoutem.application.SHOW_SHORTCUT';
 export const SHOW_ALL_SHORTCUTS = 'shoutem.application.SHOW_ALL_SHORTCUTS';
 export const RESTART_APP = 'shoutem.application.RESTART_APP';
+export const QUEUE_TARGET_COMPLETED = 'shoutem.application.QUEUE_TARGET_COMPLETED';
 
 export function restartApp() {
   return {
@@ -104,6 +106,17 @@ export function showAllShortcuts() {
   };
 }
 
+export function setQueueTargetComplete(targetName) {
+  return {
+    type: QUEUE_TARGET_COMPLETED,
+    payload: targetName,
+  }
+}
+
+export function getAppInitQueue(state) {
+  return state[ext()].appInitQueue;
+}
+
 export function hiddenShortcuts(state = [], action) {
   const { type, shortcutId } = action;
   switch (type) {
@@ -113,6 +126,21 @@ export function hiddenShortcuts(state = [], action) {
       return _.without(state, shortcutId);
     case SHOW_ALL_SHORTCUTS:
       return [];
+    default:
+      return state;
+  }
+}
+
+export function appInitQueue(
+  state = AppInitQueue.formatInitialReducerState(),
+  action,
+) {
+  switch (action.type) {
+    case QUEUE_TARGET_COMPLETED:
+      return {
+        ...state,
+        [action.payload]: true,
+      };
     default:
       return state;
   }
@@ -176,6 +204,7 @@ const reducer = combineReducers({
   subscriptions: storage(APP_SUBSCRIPTION_SCHEMA),
   subscription: one(APP_SUBSCRIPTION_SCHEMA, APP_SUBSCRIPTION_TAG, undefined),
   hiddenShortcuts,
+  appInitQueue,
 });
 
 export default preventStateRehydration(reducer);

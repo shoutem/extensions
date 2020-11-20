@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { InteractionManager } from 'react-native';
-import _ from 'lodash';
+import { bindActionCreators } from 'redux';
 
 import {
   cloneStatus,
@@ -14,13 +15,13 @@ import {
   isValid,
   next,
 } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import {
   EmptyStateView,
   GridRow,
   ListView,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 
 import { authenticate, isAuthenticated } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
@@ -38,7 +39,6 @@ import {
 import DealGridView from '../DealGridView';
 
 export class MyDealsList extends PureComponent {
-
   static propTypes = {
     authenticate: PropTypes.func,
     catalogId: PropTypes.string,
@@ -54,11 +54,7 @@ export class MyDealsList extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.fetchData = this.fetchData.bind(this);
-    this.handleAuthenticateUser = this.handleAuthenticateUser.bind(this);
-    this.loadMore = this.loadMore.bind(this);
-    this.renderData = this.renderData.bind(this);
-    this.renderRow = this.renderRow.bind(this);
+    autoBindReact(this);
 
     this.state = {
       schema: DEAL_TRANSACTIONS_SCHEMA,

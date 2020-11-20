@@ -1,6 +1,7 @@
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 import { StatusBar, InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -60,11 +61,7 @@ export class PageScreen extends PureComponent {
   constructor(props, context) {
     super(props, context);
 
-    this.fetchData = this.fetchData.bind(this);
-    this.renderAboutInfo = this.renderAboutInfo.bind(this);
-    this.isNavigationBarClear = this.isNavigationBarClear.bind(this);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.renderImage = this.renderImage.bind(this);
+    autoBindReact(this);
   }
 
   componentDidMount() {
@@ -310,11 +307,10 @@ export class PageScreen extends PureComponent {
   }
 
   render() {
-    const { data, navigationBarStyle } = this.props;
-    const fullScreen = this.isNavigationBarClear() ? 'full-screen' : '';
+    const { data } = this.props;
 
     return (
-      <Screen styleName={`${fullScreen} paper`}>
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavBarProps()} />
         {this.renderData(data)}
       </Screen>

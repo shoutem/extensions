@@ -94,8 +94,11 @@ LocalizationProvider.propTypes = {
 
 function mapStateToProps() {
   const ownExtensionName = pack.name;
-  const locale = _.get(i18n, 'locale');
-  const translationUrl = _.get(i18n, 'translationUrl');
+
+  const dependency = _.get(i18n, `dependencies.${ownExtensionName}`);
+  const locale = _.get(dependency, 'locale') || _.get(i18n, 'locale');
+  const translationUrl =
+    _.get(dependency, 'translationUrl') || _.get(i18n, 'translationUrl');
 
   return {
     ownExtensionName,

@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+
 import {
   TouchableOpacity,
   Subtitle,
@@ -9,9 +10,7 @@ import {
   Card,
 } from '@shoutem/ui';
 
-import {
-  ArticleView,
-} from './ArticleView';
+import { ArticleView } from './ArticleView';
 
 export class MediumListArticleView extends ArticleView {
   render() {

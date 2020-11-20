@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+
 import {
   TouchableOpacity,
   Subtitle,
@@ -25,6 +26,7 @@ export class NextArticle extends PureComponent {
 
   render() {
     const { title, imageUrl, openArticle } = this.props;
+
     return (
       <TouchableOpacity onPress={openArticle}>
         <ImageBackground

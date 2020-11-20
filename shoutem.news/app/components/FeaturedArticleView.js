@@ -1,4 +1,5 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import moment from 'moment';
 
 import {
@@ -11,9 +12,7 @@ import {
   Divider,
 } from '@shoutem/ui';
 
-import {
-  ArticleView,
-} from './ArticleView';
+import { ArticleView } from './ArticleView';
 
 /**
  * A component used to render featured news articles

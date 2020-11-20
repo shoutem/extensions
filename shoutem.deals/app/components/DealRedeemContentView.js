@@ -1,6 +1,7 @@
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
 import { I18n } from 'shoutem.i18n';
@@ -14,7 +15,6 @@ import {
   View,
 } from '@shoutem/ui';
 
-import { TRANSLATIONS } from '../const';
 import { getLastDealStatusTransaction } from '../redux';
 import {
   dealStatusShape,
@@ -22,6 +22,7 @@ import {
   getDealStatus,
   isDealActive,
 } from '../services';
+import { TRANSLATIONS } from '../const';
 import DealRedeemTimer from './DealRedeemTimer';
 
 export class DealRedeemContentView extends PureComponent {
@@ -38,7 +39,7 @@ export class DealRedeemContentView extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleTimerEnd = this.handleTimerEnd.bind(this);
+    autoBindReact(this);
 
     this.state = {
       dealStatus: props.dealStatus,

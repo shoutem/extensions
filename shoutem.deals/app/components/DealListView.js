@@ -1,11 +1,10 @@
-import _ from 'lodash';
-
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
-import { connectStyle } from '@shoutem/theme';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
   Divider,
@@ -19,22 +18,20 @@ import {
 
 import { ext } from '../const';
 import {
-  dealStatusShape,
-  formatPrice,
-  getDealActiveCoupon,
-  getDealStatus,
-} from '../services';
-import {
   getDeal,
   getLastDealAction,
   getLastDealTransaction,
   getLastDealStatusTransaction,
 } from '../redux';
-
+import {
+  dealStatusShape,
+  formatPrice,
+  getDealActiveCoupon,
+  getDealStatus,
+} from '../services';
 import DealImage from './DealImage';
 
 export class DealListView extends PureComponent {
-
   static propTypes = {
     activeCoupon: PropTypes.object,
     deal: PropTypes.object,
@@ -50,7 +47,7 @@ export class DealListView extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handlePress = this.handlePress.bind(this);
+    autoBindReact(this);
   }
 
   handlePress() {

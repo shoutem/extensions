@@ -1,0 +1,17 @@
+.protected-screen-row,
+.protected-screen-row-disabled {
+  height: 64px;
+  cursor: pointer;
+
+  .checkbox {
+    padding-top: 6px;
+  }
+}
+
+.protected-screen-row-disabled {
+  opacity: 0.5;
+}
+
+.table > tbody > tr > td {
+  padding: 0;
+}

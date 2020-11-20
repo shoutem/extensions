@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ImageBackground } from '@shoutem/ui';
 import _ from 'lodash';
+
+import { ImageBackground } from '@shoutem/ui';
 
 function EventImage(props) {
   return (

@@ -1,0 +1,32 @@
+{
+  "shoutem": {
+    "in-app-purchases": {
+      "restoreButtonTitle": "Restore",
+      "restoreNoProductsTitle": "Restore complete",
+      "restoreNoProductsDescription": "We couldn't find any purchases to restore per your account",
+      "subscriptionTrialDuration": "days free trial",
+      "subscribeButtonPrefix": "Subscribe for",
+      "subscribeButtonDurationMonth": "month",
+      "subscribeButtonDurationMonths": "months",
+      "termsOfService": "Terms of Service",
+      "termsAndPolicyConjuction": "and",
+      "privacyPolicy": "Privacy Policy",
+      "startExploringButton": "Start exploring",
+      "subscribeSuccessModalTitle": "You have successfully subscribed!",
+      "errorProductOwnedTitle": "Product already owned",
+      "errorProductOwnedDescription": "Please restore your purchases to reactivate product",
+      "errorDeferredPaymentTitle": "Purchase awaiting approval",
+      "errorDeferredPaymentDescription": "Your purchase is awaiting approval from the parental control",
+      "errorReceiptValidationTitle": "We're having trouble validating your transaction",
+      "errorReceiptValidationDescription": "Give us some time, we'll retry to validate your transaction as soon as possible",
+      "errorReceiptInvalidTitle": "Purchase error",
+      "errorReceiptInvalidDescription": "We were not able to process your purchase, if you've been charged please contact the support",
+      "errorReceiptRequestTitle": "We're having trouble validating your transaction",
+      "errorReceiptRequestDescription": "Please try to restore your purchases later or contact the support",
+      "errorGenericPurchaseTitle": "Purchase error",
+      "errorGenericPurchaseDescription": "We were not able to process your purchase, please try again later or contact the support",
+      "errorGenericRestoreTitle": "Restore error",
+      "errorGenericRestoreDescription": "We were not able to restore your purchases, please try again later or contact the support"
+    }
+  }
+}

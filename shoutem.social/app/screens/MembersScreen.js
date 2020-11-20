@@ -29,14 +29,13 @@ import { user as userShape } from '../components/shapes';
 import { ext } from '../const';
 import { loadUsers } from '../redux';
 import { openProfileForLegacyUser } from '../services';
+import { getUsers } from '../redux/selectors';
 
 export class MembersScreen extends RemoteDataListScreen {
   static propTypes = {
     ...RemoteDataListScreen.propTypes,
     title: PropTypes.string.isRequired,
-    data: PropTypes.shape({
-      data: PropTypes.arrayOf(userShape),
-    }),
+    data: PropTypes.arrayOf(userShape),
   };
 
   constructor(props) {
@@ -72,12 +71,6 @@ export class MembersScreen extends RemoteDataListScreen {
     };
   }
 
-  getListProps() {
-    return {
-      data: this.props.data.data,
-    };
-  }
-
   renderRightComponent() {
     return (
       <Button onPress={() => this.openSearchScreen()}>
@@ -107,7 +100,7 @@ export class MembersScreen extends RemoteDataListScreen {
 
     return (
       <ListView
-        {...this.getListProps()}
+        data={data}
         getSectionId={this.getSectionId}
         initialListSize={1}
         loading={isBusy(data) || !isInitialized(data)}
@@ -121,7 +114,11 @@ export class MembersScreen extends RemoteDataListScreen {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const users = { data: ownProps.users };
+  const users = ownProps.users;
+  
+  if (_.isEmpty(users)) {
+    return { data: getUsers(state) };
+  }
 
   // update status to valid to initialize data
   const initializedStatus = updateStatus(createStatus(), {
@@ -130,7 +127,7 @@ const mapStateToProps = (state, ownProps) => {
   setStatus(users, initializedStatus);
 
   return {
-    data: _.isEmpty(users.data) ? state[ext()].users : users,
+    data: users,
   };
 };
 

@@ -1,19 +1,6 @@
 import reducer from './reducers';
-import { getUsers } from './selectors';
+import * as selectors from './selectors';
 import * as actions from './actions';
-import {
-  loadStatuses,
-  deleteStatus,
-  createStatus,
-  likeStatus,
-  unlikeStatus,
-  invalidateSocialCollections,
-  loadComments,
-  deleteComment,
-  createComment,
-  loadUsers,
-  loadUser,
-} from './actions';
 
 export {
   loadStatuses,
@@ -27,13 +14,14 @@ export {
   createComment,
   loadUsers,
   loadUser,
-};
+  searchUsers,
+  searchUsersNextPage
+} from './actions';
 
 export {
   collectionStatusMiddleware,
 } from './middleware';
 
-export default reducer;
+export { actions, selectors }
 
-export const selectors = { getUsers };
-export { actions };
+export default reducer;
