@@ -24,6 +24,7 @@ import {
   validateShopifyStoreUrl,
   resolveShopifyStoreUrl,
 } from 'src/modules/shopify';
+import { DEFAULT_EXTENSION_SETTINGS } from '../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -46,46 +47,27 @@ class ShopifySettingsPage extends Component {
 
     this.state = {
       error: '',
-      store: _.get(props.extension, 'settings.store'),
-      apiKey: _.get(props.extension, 'settings.apiKey'),
-      hasChanges: false,
+      inProgress: false,
+      ...DEFAULT_EXTENSION_SETTINGS,
+      ...props.extension.settings,
     };
   }
 
   componentWillReceiveProps(nextProps) {
     const { extension } = this.props;
     const { extension: nextExtension } = nextProps;
-    const { store, apiKey } = this.state;
-
-    if (_.isEmpty(store)) {
-      this.setState({
-        store: _.get(nextExtension, 'settings.store'),
-      });
-    }
-
-    if (_.isEmpty(apiKey)) {
-      this.setState({
-        apiKey: _.get(nextExtension, 'settings.apiKey'),
-      });
-    }
 
     if (extension !== nextExtension && shouldRefresh(nextExtension)) {
       this.props.fetchExtension();
     }
   }
 
-  handleStoreTextChange(event) {
-    this.setState({
-      hasChanges: true,
-      store: event.target.value,
-    });
-  }
+  handleTextSettingChange(fieldName) {
+    return event => {
+      const newText = event.target.value;
 
-  handleApiKeyTextChange(event) {
-    this.setState({
-      apiKey: event.target.value,
-      hasChanges: true,
-    });
+      this.setState({ [fieldName]: newText });
+    };
   }
 
   handleSubmit(event) {
@@ -94,7 +76,7 @@ class ShopifySettingsPage extends Component {
   }
 
   handleSave() {
-    const { store, apiKey } = this.state;
+    const { store, apiKey, discountCode } = this.state;
     const {
       extension,
       validateShopifySettings,
@@ -115,16 +97,14 @@ class ShopifySettingsPage extends Component {
     });
 
     validateShopifySettings(resolvedStore, apiKey)
-      .then(() => {
-        this.setState({
-          hasChanges: false,
-          inProgress: false,
-        });
-        return updateExtensionSettings(extension, {
-          apiKey,
-          store: resolvedStore,
-        });
-      })
+      .then(() => updateExtensionSettings(extension, {
+        apiKey,
+        store: resolvedStore,
+        discountCode,
+      }))
+      .then(() => this.setState({
+        inProgress: false,
+      }))
       .catch(() => {
         this.setState({
           error: this.ERROR_SHOP,
@@ -134,9 +114,21 @@ class ShopifySettingsPage extends Component {
   }
 
   render() {
-    const { error, hasChanges, inProgress, store, apiKey } = this.state;
+    const {
+      error,
+      inProgress,
+      store,
+      apiKey,
+      discountCode,
+    } = this.state;
+    const { extension: { settings } } = this.props;
+
+    const newSettings = _.omit(this.state, ['inProgress', 'error']);
+    const oldSettings = { ...DEFAULT_EXTENSION_SETTINGS, ...settings };
+    const hasMandatoryFields = !_.isEmpty(store) && !_.isEmpty(apiKey);
 
     const allShortcutsNote = i18next.t(LOCALIZATION.ALL_SHORTCUTS_NOTE);
+    const saveDisabled = _.isEqual(newSettings, oldSettings) || inProgress || !hasMandatoryFields;
 
     return (
       <div className="shopify-settings-page">
@@ -150,7 +142,7 @@ class ShopifySettingsPage extends Component {
               type="text"
               className="form-control"
               value={store}
-              onChange={this.handleStoreTextChange}
+              onChange={this.handleTextSettingChange('store')}
             />
             <ControlLabel>
               {i18next.t(LOCALIZATION.STORE_ACCESS_TOKEN)}
@@ -159,16 +151,25 @@ class ShopifySettingsPage extends Component {
               type="text"
               className="form-control"
               value={apiKey}
-              onChange={this.handleApiKeyTextChange}
+              onChange={this.handleTextSettingChange('apiKey')}
             />
-            <div style={{ marginTop: '5px' }}>{allShortcutsNote}</div>
+            <div styleName="note">{allShortcutsNote}</div>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.DISCOUNT_CODE_LABEL)}
+            </ControlLabel>
+            <FormControl
+              type="text"
+              className="form-control"
+              value={discountCode}
+              onChange={this.handleTextSettingChange('discountCode')}
+            />
           </FormGroup>
           {error && <HelpBlock className="text-error">{error}</HelpBlock>}
         </form>
         <ButtonToolbar>
           <Button
             bsStyle="primary"
-            disabled={!hasChanges}
+            disabled={saveDisabled}
             onClick={this.handleSave}
           >
             <LoaderContainer isLoading={inProgress}>

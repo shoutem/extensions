@@ -1,0 +1,21 @@
+{
+  "name": "shoutem.in-app-purchases",
+  "version": "1.0.0",
+  "description": "Add Apple/Google Play subscriptions to your app",
+  "dependencies": {
+    "react-native-iap": "4.6.3",
+    "react-native-iaphub": "5.1.0",
+    "react-native-device-info": "~5.4.0",
+    "react-native-modal": "11.5.6"
+  },
+  "nativeDependencies": [
+    "react-native-iap",
+    "react-native-iaphub",
+    "react-native-device-info"
+  ],
+  "peerDependencies": {
+    "@shoutem/redux-io": "*",
+    "@shoutem/theme": "*",
+    "@shoutem/ui": "*"
+  }
+}

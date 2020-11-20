@@ -1,11 +1,13 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { Platform, Linking } from 'react-native';
 
 import { Screen, Button, Icon, View } from '@shoutem/ui';
 
 import { MapView } from 'shoutem.application';
 import { NavigationBar } from 'shoutem.navigation';
+
 import { getMapUrl } from '../services'
 
 export default class MapScreen extends PureComponent {
@@ -17,8 +19,7 @@ export default class MapScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.renderNavigateButton = this.renderNavigateButton.bind(this);
-    this.openMaps = this.openMaps.bind(this);
+    autoBindReact(this);
   }
 
   openMaps() {

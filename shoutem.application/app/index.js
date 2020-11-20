@@ -8,9 +8,11 @@ import {
   injectShortcutIdToActionRouteContext,
   noInternetMiddleware,
   restartAppMiddleware,
+  appInitQueueMiddleware,
 } from './middleware';
 import { executeShortcut, fetchConfiguration } from './redux';
 
+export { AppInitQueue } from './services';
 export { default as configuration } from './configuration.json';
 export { default as buildConfig } from './buildConfig.json';
 
@@ -61,6 +63,7 @@ export {
   getActiveShortcut,
   isShortcutVisible,
   restartApp,
+  setQueueTargetComplete,
 } from './redux';
 
 export const actions = {
@@ -75,6 +78,7 @@ export const middleware = [
   injectShortcutIdToActionRouteContext,
   noInternetMiddleware,
   restartAppMiddleware,
+  appInitQueueMiddleware,
 ];
 
 export const shoutem = {

@@ -1,15 +1,17 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo } from 'shoutem.navigation';
-import { CmsListScreen } from 'shoutem.cms';
 
-import { ext } from '../const';
-import { createListItem, getItemProps } from '../components/ListItemViewFactory';
+import { CmsListScreen } from 'shoutem.cms';
+import { navigateTo } from 'shoutem.navigation';
+
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
+import { createListItem, getItemProps } from '../components/ListItemViewFactory';
+import { ext } from '../const';
 
 export class ArticlesScreen extends CmsListScreen {
   static propTypes = {
@@ -21,10 +23,8 @@ export class ArticlesScreen extends CmsListScreen {
 
   constructor(props, context) {
     super(props, context);
-    this.openArticle = this.openArticle.bind(this);
-    this.openArticleWithId = this.openArticleWithId.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
+
+    autoBindReact(this);
 
     this.state = {
       ...this.state,

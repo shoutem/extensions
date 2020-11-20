@@ -6,6 +6,7 @@ const ALL_SHORTCUTS_NOTE = `${key}.all-shortcuts-note`;
 const FORM_TITLE = `${key}.form-title`;
 const STORE_URL_LABEL = `${key}.store-url-label`;
 const STORE_ACCESS_TOKEN = `${key}.store-access-token`;
+const DISCOUNT_CODE_LABEL = `${key}.discount-code-label`;
 const BUTTON_SAVE = `${key}.buton-save`;
 
 export default {
@@ -16,4 +17,5 @@ export default {
   STORE_URL_LABEL,
   STORE_ACCESS_TOKEN,
   BUTTON_SAVE,
+  DISCOUNT_CODE_LABEL,
 };

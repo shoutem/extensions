@@ -8,8 +8,9 @@ import {
 import { I18n } from 'shoutem.i18n';
 
 import { ext, PAGE_SIZE } from '../const';
+import { ShopifyClient } from '../app';
 import MBBridge from '../MBBridge';
-import { getProducts } from './selectors';
+import { getProducts, getDiscountCode } from './selectors';
 
 import {
   SHOP_LOADING,
@@ -191,23 +192,23 @@ export function refreshProducts(collectionId, tag, resetMode) {
 
     if (tag) {
       return MBBridge.filterProducts(tag)
-      .then((res) => {
-        dispatch(productsLoaded(res, collectionId, tag, 0, resetMode));
-      }).catch((error) => {
-        dispatch(productsError(collectionId, tag));
-      });
+        .then((res) => {
+          dispatch(productsLoaded(res, collectionId, tag, 0, resetMode));
+        }).catch((error) => {
+          dispatch(productsError(collectionId, tag));
+        });
     }
 
     /* Shopify.getProducts(nextPage, collectionId, tag && [tag]) */
     return MBBridge.getProductsForCollection(collectionId)
-    .then((res) => {
-      // If we got less products than the page size, we need to ask for the same page next time
-      // to get recently added products
-      // const lastLoadedPage = _.size(products) < PAGE_SIZE ? nextPage - 1 : nextPage;
-      dispatch(productsLoaded(res, collectionId, tag, 0, resetMode));
-    }).catch((error) => {
-      dispatch(productsError(collectionId, tag));
-    });
+      .then((res) => {
+        // If we got less products than the page size, we need to ask for the same page next time
+        // to get recently added products
+        // const lastLoadedPage = _.size(products) < PAGE_SIZE ? nextPage - 1 : nextPage;
+        dispatch(productsLoaded(res, collectionId, tag, 0, resetMode));
+      }).catch((error) => {
+        dispatch(productsError(collectionId, tag));
+      });
   };
 }
 
@@ -232,7 +233,7 @@ export function startCheckout(cart) {
  * @returns {{ type: String, payload: { customer: {} }}
  */
 export function updateCustomerInformation(customer, cart) {
-  return (dispatch) => {
+  return async (dispatch, getState) => {
     const errorHandler = (error) => {
       Alert.alert(
         I18n.t(ext('checkoutErrorTitle')),
@@ -240,47 +241,56 @@ export function updateCustomerInformation(customer, cart) {
       );
     };
 
-    MBBridge.createCheckoutWithCartAndClientInfo(cart, customer)
-      .then((resp) => {
-        if (!_.get(resp, 'checkoutCreate.checkout')) {
-          resp.checkoutCreate.checkout = {};
-        }
+    const state = getState();
+    const discountCode = getDiscountCode(state);
 
-        if (!_.get(resp, 'checkoutCreate.checkout.availableShippingRates')) {
-          resp.checkoutCreate.checkout.availableShippingRates = {};
-        }
+    try {
+      const resp = await MBBridge.createCheckoutWithCartAndClientInfo(cart, customer);
 
-        const {
-          checkoutCreate: {
-            userErrors = [],
-            checkout: {
-              requiresShipping = true,
-              availableShippingRates: {
-                shippingRates = [],
-              } = {},
-              webUrl = '',
+      if (!_.get(resp, 'checkoutCreate.checkout')) {
+        resp.checkoutCreate.checkout = {};
+      }
+
+      if (!_.get(resp, 'checkoutCreate.checkout.availableShippingRates')) {
+        resp.checkoutCreate.checkout.availableShippingRates = {};
+      }
+
+      if (!_.isEmpty(discountCode)) {
+        await ShopifyClient.checkout.addDiscount(_.get(resp, 'checkoutCreate.checkout.id'), discountCode);
+      }
+
+      const {
+        checkoutCreate: {
+          userErrors = [],
+          checkout: {
+            requiresShipping = true,
+            availableShippingRates: {
+              shippingRates = [],
             } = {},
+            webUrl = '',
           } = {},
-        } = resp;
+        } = {},
+      } = resp;
 
-        if (userErrors.length > 0) {
-          const error = userErrors[0];
+      if (userErrors.length > 0) {
+        const error = userErrors[0];
 
-          return Alert.alert(
-            I18n.t(ext('checkoutErrorTitle')),
-            error.message
-          );
-        }
+        return Alert.alert(
+          I18n.t(ext('checkoutErrorTitle')),
+          error.message
+        );
+      }
 
-        dispatch(customerInformationUpdated(customer));
-        dispatch(navigateTo({
-          screen: ext('WebCheckoutScreen'),
-          props: {
-            checkoutUrl: webUrl
-          },
-        }));
-      })
-      .catch(errorHandler);
+      dispatch(customerInformationUpdated(customer));
+      dispatch(navigateTo({
+        screen: ext('WebCheckoutScreen'),
+        props: {
+          checkoutUrl: webUrl
+        },
+      }));
+    } catch (e) {
+      errorHandler(e);
+    }
   };
 }
 

@@ -1,16 +1,12 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import { connect } from 'react-redux';
-
-import {
-  Text,
-  View,
-} from 'react-native';
+import { Text, View } from 'react-native';
 
 import { connectStyle } from '@shoutem/theme';
 
 import { I18n } from 'shoutem.i18n';
-
-import _ from 'lodash';
 
 import { ext, TRANSLATIONS } from '../const';
 
@@ -26,8 +22,7 @@ export class DealsListScreen extends DealsScreen {
   constructor(props) {
     super(props);
 
-    this.handleOpenDealDetails = this.handleOpenDealDetails.bind(this);
-    this.renderRow = this.renderRow.bind(this);
+    autoBindReact(this);
 
     this.state = {
       ...this.state,

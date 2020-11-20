@@ -1,5 +1,6 @@
-import _ from 'lodash';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 
 import {
@@ -30,7 +31,7 @@ export default class DealImage extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleTimerEnd = this.handleTimerEnd.bind(this);
+    autoBindReact(this);
 
     this.state = {
       dealStatus: props.dealStatus,

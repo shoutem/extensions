@@ -1,31 +1,24 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-import {
-  View,
-  Button,
-  Text,
-} from '@shoutem/ui';
+import { View, Button, Text } from '@shoutem/ui';
 import { isInitialized } from '@shoutem/redux-io';
 
+import { triggerEvent } from 'shoutem.analytics';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
-import { triggerEvent } from 'shoutem.analytics';
-import FeaturedEventView from '../components/FeaturedEventView';
+import { navigateTo } from 'shoutem.navigation';
+
 import { addToCalendar } from '../shared/Calendar';
 import EventsMap from '../components/EventsMap';
+import FeaturedEventView from '../components/FeaturedEventView';
 import { createListItem } from '../components/ListItemViewFactory';
-
-import {
-  EVENTS_SCHEME,
-  EVENTS_TAG,
-  ext,
-} from '../const';
+import { EVENTS_SCHEME, EVENTS_TAG, ext } from '../const';
 
 export class EventsScreen extends CmsListScreen {
   static propTypes = {
@@ -36,12 +29,8 @@ export class EventsScreen extends CmsListScreen {
   constructor(props, context) {
     super(props, context);
 
-    this.fetchData = this.fetchData.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
-    this.openDetailsScreen = this.openDetailsScreen.bind(this);
-    this.toggleMapMode = this.toggleMapMode.bind(this);
-    this.addToCalendar = this.addToCalendar.bind(this);
+    autoBindReact(this);
+
     this.state = {
       ...this.state,
       schema: EVENTS_SCHEME,

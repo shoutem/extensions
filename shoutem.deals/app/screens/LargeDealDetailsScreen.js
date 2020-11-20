@@ -1,20 +1,16 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
 
-import {
-  Overlay,
-  View,
-} from '@shoutem/ui';
+import { Overlay, View } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 
-import { ext } from '../const';
-import { getDealImages, isDealImageGallery } from '../services';
-
-import { DealDetailsScreen, mapStateToProps, mapDispatchToProps } from './DealDetailsScreen';
 import DealImageGallery from '../components/DealImageGallery';
+import { getDealImages, isDealImageGallery } from '../services';
+import { ext } from '../const';
+import { DealDetailsScreen, mapStateToProps, mapDispatchToProps } from './DealDetailsScreen';
 
 export class LargeDealDetailsScreen extends DealDetailsScreen {
-
   static propTypes = {
     ...DealDetailsScreen.propTypes,
   }
@@ -22,9 +18,7 @@ export class LargeDealDetailsScreen extends DealDetailsScreen {
   constructor(props) {
     super(props);
 
-    this.renderDealDetails = this.renderDealDetails.bind(this);
-    this.renderDealImage = this.renderDealImage.bind(this);
-    this.renderHeader = this.renderHeader.bind(this);
+    autoBindReact(this);
   }
 
   renderDealImage() {

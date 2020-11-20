@@ -2,16 +2,11 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import { connectStyle } from '@shoutem/theme';
-
-import {
-  Text,
-  View,
-} from '@shoutem/ui';
+import { Text, View } from '@shoutem/ui';
 
 import { ext } from '../const';
 
 export class DealFeaturedView extends PureComponent {
-
   static propTypes = {
     deal: PropTypes.object,
     onPress: PropTypes.func,

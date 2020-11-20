@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
-import { connectStyle } from '@shoutem/theme';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
   Card,
@@ -15,22 +15,20 @@ import {
 
 import { ext } from '../const';
 import {
-  dealStatusShape,
-  formatPrice,
-  getDealActiveCoupon,
-  getDealStatus,
-} from '../services';
-import {
   getDeal,
   getLastDealAction,
   getLastDealTransaction,
   getLastDealStatusTransaction,
 } from '../redux';
-
+import {
+  dealStatusShape,
+  formatPrice,
+  getDealActiveCoupon,
+  getDealStatus,
+} from '../services';
 import DealImage from './DealImage';
 
 export class DealGridView extends PureComponent {
-
   static propTypes = {
     activeCoupon: PropTypes.object,
     dealId: PropTypes.string,
@@ -46,7 +44,7 @@ export class DealGridView extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handlePress = this.handlePress.bind(this);
+    autoBindReact(this);
   }
 
   handlePress() {

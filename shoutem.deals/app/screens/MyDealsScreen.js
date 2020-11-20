@@ -1,22 +1,22 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   Text,
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
-import { I18n } from 'shoutem.i18n';
 
-import { ext, TRANSLATIONS } from '../const';
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
 
 import MyDealsList from '../components/MyDeals/MyDealsList';
 import FavoriteDealsList from '../components/MyDeals/FavoriteDealsList';
+import { ext, TRANSLATIONS } from '../const';
 
 const MY_DEALS_TAB = 'myDealsTab';
 const FAVORITE_DEALS_TAB = 'favoriteDealsTab';
@@ -39,7 +39,6 @@ function renderTab(options) {
 }
 
 export class MyDealsScreen extends PureComponent {
-
   static propTypes = {
     catalogId: PropTypes.string,
     onOpenDealDetails: PropTypes.func,
@@ -50,9 +49,7 @@ export class MyDealsScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleActivateTab = this.handleActivateTab.bind(this);
-    this.handleActivateMyDealsTab = this.handleActivateMyDealsTab.bind(this);
-    this.handleActivateFavoritesTab = this.handleActivateFavoritesTab.bind(this);
+    autoBindReact(this);
 
     this.state = {
       activeTab: FAVORITE_DEALS_TAB,

@@ -1,13 +1,12 @@
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
-
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Linking,
-} from 'react-native';
+import { Linking } from 'react-native';
 import { connect } from 'react-redux';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
@@ -19,35 +18,20 @@ import {
   Row,
   Screen,
   ScrollView,
+  ShareButton,
   Text,
   Title,
   TouchableOpacity,
   View,
-  ShareButton,
 } from '@shoutem/ui';
+
 import { NavigationBar, isScreenActive } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
 import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
 import { authenticate } from 'shoutem.auth';
 import { Favorite } from 'shoutem.favorites';
 
-import {
-  ext,
-  TRANSLATIONS,
-} from '../const';
-
-import {
-  dealStatusShape,
-  formatPrice,
-  getDealActiveCoupon,
-  getDealStatus,
-  getFormattedDiscount,
-  isDealActive,
-  resolveMapScheme,
-  resolveDealBuyDisplayLink,
-} from '../services';
-
+import DealRedeemContentView from '../components/DealRedeemContentView';
 import FooterDealView from '../components/FooterDealView';
 import {
   claimCoupon,
@@ -59,7 +43,17 @@ import {
   redeemDeal,
   getDeal,
 } from '../redux';
-import DealRedeemContentView from '../components/DealRedeemContentView';
+import {
+  dealStatusShape,
+  formatPrice,
+  getDealActiveCoupon,
+  getDealStatus,
+  getFormattedDiscount,
+  isDealActive,
+  resolveMapScheme,
+  resolveDealBuyDisplayLink,
+} from '../services';
+import { ext, TRANSLATIONS } from '../const';
 
 const styles = {
   dealCoupons: {
@@ -77,7 +71,6 @@ const formatDealDate = (dealDateStr) => {
 };
 
 export class DealDetailsScreen extends PureComponent {
-
   static propTypes = {
     activeCoupon: PropTypes.object,
     authenticate: PropTypes.func,
@@ -114,13 +107,7 @@ export class DealDetailsScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleClaimCoupon = this.handleClaimCoupon.bind(this);
-    this.handleOpenDealDetails = this.handleOpenDealDetails.bind(this);
-    this.handleOpenDirections = this.handleOpenDirections.bind(this);
-    this.handleOpenWebsite = this.handleOpenWebsite.bind(this);
-    this.handleRedeemCoupon = this.handleRedeemCoupon.bind(this);
-    this.handleRedeemDeal = this.handleRedeemDeal.bind(this);
-    this.handleTimerEnd = this.handleTimerEnd.bind(this);
+    autoBindReact(this);
 
     this.state = {
       currentGalleryImageIndex: 0,
@@ -587,17 +574,8 @@ export class DealDetailsScreen extends PureComponent {
   render() {
     const { deal } = this.props;
 
-    let screenStyle = '';
-    if (this.isNavigationBarClear()) {
-      if (deal.image1) {
-        screenStyle = 'full-screen';
-      }
-    }
-
-    const screenStyleName = `${screenStyle}`;
-
     return (
-      <Screen styleName={screenStyleName}>
+      <Screen>
         <NavigationBar {...this.getNavBarProps()} />
         {this.renderScreen()}
       </Screen>

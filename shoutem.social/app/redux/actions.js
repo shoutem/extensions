@@ -1,13 +1,13 @@
 import _ from 'lodash';
 
-import { find, create, invalidate } from '@shoutem/redux-io';
+import { find, create, invalidate, next } from '@shoutem/redux-io';
 
 import { getAppId } from 'shoutem.application/app';
-import { getUser } from 'shoutem.auth';
+import { getUser, USER_SCHEMA } from 'shoutem.auth';
 
 import { shoutemApi } from '../services/shoutemApi';
 import { apiVersion } from '../app';
-import { STATUSES_SCHEMA, USERS_SCHEMA } from '../const';
+import { STATUSES_SCHEMA, USERS_SEARCH_SCHEMA } from '../const';
 
 export const CREATE = 'CREATE';
 export const LOAD = 'LOAD';
@@ -44,11 +44,61 @@ export function formatParams(paramsObject) {
 }
 
 export function loadUser(userId) {
-  return find(USERS_SCHEMA, '', { userId });
+  return find(USER_SCHEMA, '', { userId });
 }
 
 export function loadUsers() {
-  return find(USERS_SCHEMA);
+  return find(USER_SCHEMA, 'users');
+}
+
+export function searchUsers(searchTerm) {
+  const body = {
+    data: {
+      type: USERS_SEARCH_SCHEMA,
+      attributes: {
+        query: `%${searchTerm}%`
+      }
+    }
+  }
+
+  const config = {
+    schema: USER_SCHEMA,
+    request: {
+      method: 'POST',
+      endpoint: shoutemApi.buildAuthUrl("users/actions/search"),
+      body: JSON.stringify(body),
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
+    }
+  }
+
+  return find(config, 'searchUsers');
+}
+
+export function searchUsersNextPage(searchTerm, currentData) {
+  const body = {
+    data: {
+      type: USERS_SEARCH_SCHEMA,
+      attributes: {
+        query: `%${searchTerm}%`
+      }
+    }
+  }
+
+  const config = {
+    request: {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
+    }
+  }
+
+  return next(currentData, true, config);
 }
 
 export function loadStatuses() {

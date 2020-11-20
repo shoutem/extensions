@@ -1,17 +1,18 @@
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 
 import { navigateTo } from 'shoutem.navigation';
 import { MapView } from 'shoutem.application';
 
-import { View } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { View } from '@shoutem/ui';
 
-import { ext } from '../const';
 import { getMarkersAndRegionFromDeals } from '../services';
+import { ext } from '../const';
 import DealListView from './DealListView';
 
 export class DealsMap extends PureComponent {
@@ -25,9 +26,7 @@ export class DealsMap extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleMapPress = this.handleMapPress.bind(this);
-    this.handleMarkerPressed = this.handleMarkerPressed.bind(this);
-    this.handleOpenDealDetails = this.handleOpenDealDetails.bind(this);
+    autoBindReact(this);
 
     this.state = {
       ...getMarkersAndRegionFromDeals(this.props.data),

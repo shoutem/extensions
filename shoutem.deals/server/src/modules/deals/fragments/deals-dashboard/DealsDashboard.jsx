@@ -5,11 +5,10 @@ import { connect } from 'react-redux';
 import { Button } from 'react-bootstrap';
 import { ConfirmModal, IconLabel } from '@shoutem/react-web-ui';
 import {
-  CategoryTree,
-  CmsTable,
   getMainCategoryId,
   updateResourceCategories,
 } from '@shoutem/cms-dashboard';
+import { CategoryTree, CmsTable } from 'cms-dashboard';
 import { createTransaction, TRANSACTION_ACTIONS } from 'src/modules/stats';
 import DealFormModal from '../../components/deal-form-modal';
 import { createDeal, updateDeal, deleteDeal } from '../../redux';

@@ -1,12 +1,10 @@
 import React from 'react';
-import _ from 'lodash';
-import {
-  Image,
-  View,
-  Tile,
-} from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 import { connect } from 'react-redux';
+import _ from 'lodash';
+
+import { connectStyle } from '@shoutem/theme';
+import { Image, View, Tile } from '@shoutem/ui';
+
 import { ext } from '../const';
 import { EventDetailsScreen, mapDispatchToProps } from './EventDetailsScreen';
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+
 import {
   TouchableOpacity,
   Title,
@@ -9,9 +10,7 @@ import {
   Row,
 } from '@shoutem/ui';
 
-import {
-  ArticleView,
-} from './ArticleView';
+import { ArticleView } from './ArticleView';
 
 export class LargeListArticleView extends ArticleView {
   render() {

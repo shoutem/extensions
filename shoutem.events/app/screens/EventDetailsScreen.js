@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { connectStyle } from '@shoutem/theme';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   ScrollView,
   Screen,
@@ -62,10 +63,8 @@ export class EventDetailsScreen extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
-    this.addToCalendar = this.addToCalendar.bind(this);
-    this.openMapScreen = this.openMapScreen.bind(this);
-    this.renderRsvpButton = this.renderRsvpButton.bind(this);
-    this.openURL = this.openURL.bind(this);
+
+    autoBindReact(this);
   }
 
   isNavigationBarClear() {
@@ -221,17 +220,8 @@ export class EventDetailsScreen extends PureComponent {
   renderScreen() {
     const { event } = this.props;
 
-    let screenStyle = '';
-    if (this.isNavigationBarClear()) {
-      if (event.image) {
-        screenStyle = 'full-screen';
-      }
-    }
-
-    const screenStyleName = `${screenStyle} paper`;
-
     return (
-      <Screen styleName={screenStyleName}>
+      <Screen styleName="paper">
         <NavigationBar {...this.resolveNavBarProps()} />
         {this.renderData(event)}
       </Screen>

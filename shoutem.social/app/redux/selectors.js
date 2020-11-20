@@ -1,5 +1,13 @@
+import { getCollection } from '@shoutem/redux-io'
 import { ext } from '../const';
 
 export function getUsers(state) {
-  return state[ext()].users;
+  const userState = state[ext()].users;
+
+  return getCollection(userState, state);
+}
+export function getSearchUsers(state) {
+  const searchState = state[ext()].searchUsers;
+
+  return getCollection(searchState, state);
 }

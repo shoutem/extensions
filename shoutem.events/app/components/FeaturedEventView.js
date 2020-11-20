@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   TouchableOpacity,
   Title,
@@ -10,11 +11,13 @@ import {
   Icon,
   Divider,
 } from '@shoutem/ui';
+
 import { I18n } from 'shoutem.i18n';
-import EventImage from './EventImage';
-import { BaseEventItem } from './BaseEventItem';
+
 import { formatDate } from '../shared/Calendar';
 import { ext } from '../const';
+import { BaseEventItem } from './BaseEventItem';
+import EventImage from './EventImage';
 
 export default class FeaturedEventView extends BaseEventItem {
   render() {

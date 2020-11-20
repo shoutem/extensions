@@ -1,7 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 import { connectStyle } from '@shoutem/theme';
 import { Tile } from '@shoutem/ui';
-import { connect } from 'react-redux';
+
 import EventImage from '../components/EventImage';
 import { ext } from '../const';
 import { EventDetailsScreen, mapDispatchToProps } from './EventDetailsScreen';

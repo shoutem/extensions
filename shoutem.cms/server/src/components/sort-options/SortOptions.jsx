@@ -126,7 +126,7 @@ class SortOptions extends Component {
     const displayOrder = _.upperFirst(currentOrder);
     const displayFieldTitle = _.get(currentField, 'title');
     const displayFieldLabel = displayFieldTitle
-      ? i18next.t(LOCALIZATION.SORT_BY_TITLE, { displayFieldTitle })
+      ? i18next.t(LOCALIZATION.SORT_BY, { displayFieldTitle })
       : i18next.t(LOCALIZATION.SELECT_SORT_FIELD);
 
     return (

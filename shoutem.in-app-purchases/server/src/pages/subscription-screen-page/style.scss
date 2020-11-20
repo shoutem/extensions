@@ -1,0 +1,42 @@
+.subscription-screen-page {
+  padding-left: 24px;
+  padding-right: 24px;
+  margin: auto;
+
+  .btn-toolbar {
+    margin-top: 48px;
+    margin-bottom: 24px;
+  }
+
+  .form-group .control-label {
+    padding-top: 16px;
+  }
+
+  .form-group textarea.form-control {
+    padding: 12px;
+    resize: vertical;
+
+    &[cols='5'] {
+      height: 144px;
+    }
+  }
+
+  .image-preview-custom,
+  .image-uploader__custom {
+    background-size: contain;
+    width: 375px;
+    height: 191px;
+
+    .circular-loader {
+      width: 25px;
+      height: 25px;
+      padding-top: 70.5px;
+    }
+
+    .se-icon {
+      padding-top: 70.5px;
+      opacity: 0.5;
+      vertical-align: middle;
+    }
+  }
+}

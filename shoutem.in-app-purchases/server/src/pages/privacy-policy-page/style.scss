@@ -1,0 +1,31 @@
+.privacy-policy-page {
+  padding-left: 24px;
+  padding-right: 24px;
+  margin: auto;
+
+  .btn-toolbar {
+    margin-top: 48px;
+    margin-bottom: 24px;
+  }
+
+  .form-group .control-label {
+    padding-top: 16px;
+  }
+}
+
+.privacy-policy-alert-container {
+  padding: 24px;
+  margin-top: 16px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color: #7C8395;
+
+  .alert-title {
+    margin-bottom: 16px;
+    font-weight: 700;
+    color: #46506A;
+    font-style: normal;
+  }
+}

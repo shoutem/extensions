@@ -1,6 +1,6 @@
 {
   "name": "events",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "platform": "2.4.*",
   "title": "Events",
   "description": "Show items with location and time",

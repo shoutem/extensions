@@ -1,6 +1,6 @@
 {
   "name": "page",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "platform": "2.4.*",
   "title": "Page",
   "description": "Show a single screen with info and child items",

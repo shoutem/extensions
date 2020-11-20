@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   TouchableOpacity,
   Button,
@@ -8,9 +9,10 @@ import {
   View,
   Icon,
 } from '@shoutem/ui';
+
 import { formatDate } from '../shared/Calendar';
-import EventImage from './EventImage';
 import { BaseEventItem } from './BaseEventItem';
+import EventImage from './EventImage';
 
 /**
  * A component used to render a single grid event item

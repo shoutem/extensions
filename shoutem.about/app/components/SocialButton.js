@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import { Linking, Alert } from 'react-native';
-import { I18n } from 'shoutem.i18n';
 
-import {
-  Text,
-  Button,
-  Icon,
-} from '@shoutem/ui';
+import { Button, Icon, Text } from '@shoutem/ui';
+
+import { I18n } from 'shoutem.i18n';
 
 export default class SocialButton extends PureComponent {
   static propTypes = {
@@ -19,7 +17,8 @@ export default class SocialButton extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.buttonPressHandle = this.buttonPressHandle.bind(this);
+
+    autoBindReact(this);
   }
 
   buttonPressHandle() {

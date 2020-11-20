@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+
 import {
   TouchableOpacity,
   Caption,
@@ -9,9 +10,7 @@ import {
   Divider,
 } from '@shoutem/ui';
 
-import {
-  ArticleView,
-} from './ArticleView';
+import { ArticleView } from './ArticleView';
 
 export class TileListArticleView extends ArticleView {
   render() {

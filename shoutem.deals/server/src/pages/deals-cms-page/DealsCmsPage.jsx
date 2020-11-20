@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import i18next from 'i18next';
 import {
   getShortcutState,
   updateShortcutSettings,
@@ -36,6 +37,7 @@ import {
   DEFAULT_OFFSET,
 } from 'src/modules/deals';
 import dealsSchema from '../../../data-schemas/deals.json';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 function resolvePaging(currentPagingRef, useDefaultPaging) {
@@ -306,6 +308,9 @@ class DealsCmsPage extends Component {
           onNextPageClick={this.handleNextPageClick}
           onPreviousPageClick={this.handlePreviousPageClick}
           ref="paging"
+          resolvePageLabel={pageNumber =>
+            i18next.t(LOCALIZATION.PAGE_LABEL, { pageNumber })
+          }
         />
       </LoaderContainer>
     );

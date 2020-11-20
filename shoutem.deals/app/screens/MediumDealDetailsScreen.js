@@ -1,21 +1,16 @@
 import React from 'react';
-
+import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
 
-import {
-  ScrollView,
-  View,
-} from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { ScrollView, View } from '@shoutem/ui';
 
+import DealImageGallery from '../components/DealImageGallery';
 import { ext } from '../const';
 import { getDealImages } from '../services';
-
 import { DealDetailsScreen, mapStateToProps, mapDispatchToProps } from './DealDetailsScreen';
-import DealImageGallery from '../components/DealImageGallery';
 
 export class MediumDealDetailsScreen extends DealDetailsScreen {
-
   static propTypes = {
     ...DealDetailsScreen.propTypes,
   };
@@ -23,9 +18,7 @@ export class MediumDealDetailsScreen extends DealDetailsScreen {
   constructor(props) {
     super(props);
 
-    this.renderDealDetails = this.renderDealDetails.bind(this);
-    this.renderDealImage = this.renderDealImage.bind(this);
-    this.renderScreen = this.renderScreen.bind(this);
+    autoBindReact(this);
   }
 
   renderDealImage() {

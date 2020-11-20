@@ -2,8 +2,12 @@
   "shoutem": {
     "social": {
       "commentButton": "COMMENT",
-      "deleteCommentOption": "Delete",
       "cancelCommentSelectionOption": "Cancel",
+      "deleteCommentOption": "Delete",
+      "emptySearchListTitle": "It’s empty in here",
+      "emptyStartSearchListTitle": "Search user profiles",
+      "emptySearchListMessage": "Your search '{{text}}' did not match any profiles.",
+      "emptyStartSearchListMessage": "You can find user profiles by typing their name.",
       "loadingMoreComments": "Loading more comments...",
       "likeButton": "LIKE",
       "unlikeButton": "UNLIKE",
