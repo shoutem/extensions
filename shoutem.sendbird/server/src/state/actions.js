@@ -6,6 +6,7 @@ import {
   SHOUTEM_PLANS,
 } from '../const';
 import { shoutemUrls } from '../services';
+import { getChatModule } from './selectors';
 
 const CHAT_MODULE = {
   data: {
@@ -102,4 +103,22 @@ export function activateChatModule(appId) {
   };
 
   return find(config, 'activate-module');
+}
+
+export function deactivateChatModule(appId) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const chatModule = getChatModule(state);
+
+    const config = {
+      schema: SHOUTEM_MODULES,
+      request: {
+        method: 'DELETE',
+        endpoint: shoutemUrls.appsApi(`v1/apps/${appId}/modules/${chatModule.id}`),
+        headers: { Accept: 'application/vnd.api+json' },
+      },
+    };
+
+    return dispatch(find(config, 'activate-module'));
+  }
 }

@@ -1,0 +1,14 @@
+{
+  "shoutem": {
+    "products": {
+      "Products": "Products",
+      "Name": "Name",
+      "Current price": "Current price",
+      "Old price": "Old price",
+      "Buy title": "Buy title",
+      "Buy link": "Buy link",
+      "Description": "Description",
+      "Image": "Image"
+    }
+  }
+}

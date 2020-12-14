@@ -1681,6 +1681,11 @@ export default (customVariables = {}) => {
       },
     },
 
+    'shoutem.social.SearchScreen': {
+      contentContainerStyle: {
+        flexGrow: 1,
+      },
+    },
     'shoutem.social.StatusDetailsScreen': {
       textInput: {
         ...variables.text,
@@ -1696,7 +1701,6 @@ export default (customVariables = {}) => {
         maxHeight: 100,
       },
     },
-
     'shoutem.social.StatusView': {
       reportButton: {
         width: 16,
@@ -1877,6 +1881,16 @@ export default (customVariables = {}) => {
 
     // SendBird Extension
 
+    'shoutem.sendbird.MessageListScreen': {
+      sectionContainer: {
+        backgroundColor: variables.backgroundColor
+      },
+      sectionTitle: {
+        fontWeight: '500',
+        margin: 20
+      }
+    },
+
     'shoutem.sendbird.SectionFooter': {
       height: 15,
       backgroundColor: 'transparent',
@@ -2001,12 +2015,34 @@ export default (customVariables = {}) => {
       },
     },
 
+    'shoutem.sendbird.MemberListItem': {
+      row: {
+        height: 80,
+        borderColor: 'rgba(130, 130, 130, 0.1)',
+        borderBottomWidth: 1,
+      },
+      image: {
+        height: 50,
+        width: 50,
+        borderRadius: 25,
+        marginRight: 10,
+      },
+      text: {
+        letterSpacing: -0.17,
+        color: '#333333',
+        fontSize: 13,
+      },
+      nickname: {
+        fontSize: 15,
+      },
+    },
+
     'shoutem.sendbird.SearchBar': {
       placeholderTextColor: 'rgba(0, 0, 0, 0.3)',
       container: {
         padding: 20,
         height: 80,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: variables.backgroundColor,
         borderColor: 'rgba(130, 130, 130, 0.1)',
         borderBottomWidth: 1,
       },
@@ -2241,6 +2277,137 @@ export default (customVariables = {}) => {
       progress: {
         backgroundColor: '#39FF14',
         height: '100%',
+      },
+    },
+
+    // In-App Purchases
+
+    'shoutem.in-app-purchases.SuccessModal': {
+      container: {
+        flex: 1,
+        paddingBottom: 56,
+        paddingHorizontal: 40,
+        paddingTop: 80,
+        justifyContent: 'space-between',
+        backgroundColor: variables.paperColor,
+      },
+
+      modal: {
+        margin: 0,
+      },
+
+      button: {
+        height: 48,
+        borderRadius: 0,
+        borderColor: variables.primaryButtonBorderColor,
+        backgroundColor: variables.primaryButtonBackgroundColor,
+      },
+
+      buttonText: {
+        fontSize: 17,
+        lineHeight: 24,
+        color: variables.primaryButtonText.color,
+        fontWeight: '400',
+      },
+
+      description: {
+        fontSize: 14,
+        lineHeight: 20,
+        textAlign: 'center',
+        marginVertical: 16,
+      },
+
+      title: {
+        color: variables.title.color,
+        fontWeight: '500',
+        fontSize: 24,
+        lineHeight: 32,
+        textAlign: 'center',
+        letterSpacing: -0.408,
+        marginVertical: 16,
+      }
+    },
+
+    'shoutem.in-app-purchases.SubscriptionsScreen': {
+      container: {
+        flex: 1,
+        justifyContent: 'space-between',
+      },
+
+      buttonContainer: {
+        paddingHorizontal: 16,
+        marginTop: 32,
+        marginBottom: 16,
+      },
+
+      button: {
+        height: 48,
+        borderRadius: 6,
+        borderColor: variables.primaryButtonBorderColor,
+        backgroundColor: variables.primaryButtonBackgroundColor,
+      },
+
+      buttonSecondary: {
+        marginTop: 16,
+        backgroundColor: variables.secondaryButtonBackgroundColor,
+        borderColor: variables.secondaryButtonBorderColor,
+      },
+
+      buttonText: {
+        fontSize: 17,
+        lineHeight: 24,
+        color: variables.primaryButtonText.color,
+        fontWeight: '400',
+      },
+
+      buttonTextSecondary: {
+        color: variables.secondaryButtonTextColor,
+      },
+
+      trialText: {
+        fontSize: 14,
+        lineHeight: 24,
+        marginTop: 8,
+        textAlign: 'center',
+      },
+
+      leadingText: {
+        fontSize: 14,
+        lineHeight: 20,
+        textAlign: 'center',
+        padding: 16,
+      },
+
+      image: {
+        flex: 1,
+        width: '100%',
+      },
+
+      spinner: {
+        color: variables.primaryButtonText.color,
+        size: 20,
+      },
+
+      spinnerSecondary: {
+        color: variables.secondaryButtonTextColor,
+      }
+    },
+
+    'shoutem.in-app-purchases.TermsAndPolicy': {
+      mainText: {
+        textAlign: 'center',
+        marginBottom: 16,
+      },
+
+      linkText: {
+        ...variables.links,
+        fontFamily: resolveFontFamily(
+          variables.links.fontFamily,
+          variables.links.fontWeight,
+          variables.links.fontStyle,
+        ),
+        fontWeight: resolveFontWeight(variables.links.fontWeight),
+        fontStyle: resolveFontStyle(variables.links.fontStyle),
       },
     },
 

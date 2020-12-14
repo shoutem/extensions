@@ -4,7 +4,13 @@
       "page-settings.title": "Settings",
       "page-settings.form-choose-layout": "Choose layout",
       "page-settings.layout-type-icon-grid": "Icon grid",
-      "page-settings.layout-type-list": "List"
+      "page-settings.layout-type-list": "List",
+      "Page": "Page",
+      "Title": "Title",
+      "Subtitle": "Subtitle",
+      "Image": "Image",
+      "Description": "Description",
+      "Website": "Website"
     }
   }
 }

@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
 
-import { ext } from '../const';
-
-import { VimeoList, mapStateToProps, mapDispatchToProps } from './VimeoList';
 import SmallVimeoView from '../components/SmallVimeoView';
+import { ext } from '../const';
+import { VimeoList, mapStateToProps, mapDispatchToProps } from './VimeoList';
 
 class SmallVimeoList extends VimeoList {
   renderRow(video) {

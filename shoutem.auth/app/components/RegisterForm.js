@@ -42,8 +42,6 @@ class RegisterForm extends PureComponent {
     this.state = {
       email: '',
       emailError: null,
-      isEmailFocused: false,
-      isUsernameFocused: false,
       username: '',
       usernameError: null,
       password: '',
@@ -120,8 +118,6 @@ class RegisterForm extends PureComponent {
     const { style } = this.props;
     const {
       emailError,
-      isEmailFocused,
-      isUsernameFocused,
       password,
       passwordError,
       usernameError,
@@ -129,7 +125,7 @@ class RegisterForm extends PureComponent {
 
     return (
       <View>
-        <Text>Email</Text>
+        <Text>{I18n.t(ext('email'))}</Text>
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
@@ -142,7 +138,7 @@ class RegisterForm extends PureComponent {
           returnKeyType="done"
         />
 
-        <Text styleName="lg-gutter-top">Username</Text>
+        <Text>{I18n.t(ext('username'))}</Text>
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
@@ -154,7 +150,7 @@ class RegisterForm extends PureComponent {
           returnKeyType="done"
         />
 
-        <Text styleName="lg-gutter-top">Password</Text>
+        <Text>{I18n.t(ext('password'))}</Text>
         <PasswordTextInput
           onChangeText={this.handlePasswordChangeText}
           password={password}

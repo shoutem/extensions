@@ -1,12 +1,17 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "2.4.1",
+  "version": "2.4.2-rc.2",
   "platform": "2.4.*",
   "description": "Show a video gallery",
+  "releaseNotes": "* Added detauls screen layout without share button",
   "icon": "server/assets/add-videos-image.png",
-  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
   "categories": ["media"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -46,10 +51,25 @@
     {
       "name": "VideosList",
       "title": "Big list",
-      "image": "server/assets/screens/big-list.png"
+      "image": "server/assets/screens/big-list.png",
+      "navigatesTo": ["@.VideoDetails"]
     },
     {
-      "name": "VideoDetails"
+      "name": "VideoDetails",
+      "title": "Details",
+      "image": "server/assets/screens/details.png",
+      "settings": {
+        "shareable": true
+      }
+    },
+    {
+      "name": "VideoDetailsWithoutShare",
+      "title": "Details without share button",
+      "image": "server/assets/screens/details-without-share.png",
+      "extends": "@.VideoDetails",
+      "settings": {
+        "shareable": false
+      }
     }
   ],
   "dataSchemas": [

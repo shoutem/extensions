@@ -116,7 +116,7 @@ function getUserChatList(groupChannelListQuery) {
   });
 }
 
-function searchConversationsPerNickname(nickname) {
+function searchConversationsPerNickname(nickname, limit = 100) {
   return new Promise((resolve, reject) => {
     if (!SendBirdInstance) {
       reject(SENDBIRD_NOT_INITIALIZED_ERROR);
@@ -124,7 +124,7 @@ function searchConversationsPerNickname(nickname) {
 
     this.searchChannelsListQuerry = SendBirdInstance.GroupChannel.createMyGroupChannelListQuery();
     this.searchChannelsListQuerry.order = 'latest_last_message';
-    this.searchChannelsListQuerry.limit = 100;
+    this.searchChannelsListQuerry.limit = limit;
     this.searchChannelsListQuerry.nicknameContainsFilter = nickname;
 
     if (this.searchChannelsListQuerry.hasNext) {

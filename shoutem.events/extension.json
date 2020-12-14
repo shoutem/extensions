@@ -1,11 +1,15 @@
 {
   "name": "events",
-  "version": "2.4.2",
+  "version": "2.4.3-rc.1",
   "platform": "2.4.*",
   "title": "Events",
   "description": "Show items with location and time",
   "dependencies": ["shoutem.layouts", "shoutem.cms"],
   "categories": ["content"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

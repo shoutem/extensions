@@ -2,8 +2,13 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 
-import { View, TextInput, Button, Icon } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import {
+  Button,
+  Icon,
+  TextInput,
+  View,
+} from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -22,7 +27,6 @@ class PasswordTextInput extends PureComponent {
     autoBindReact(this);
 
     this.state = {
-      isFocused: false,
       password: props.password || '',
       visibility: false,
     };

@@ -25,7 +25,7 @@ export function loadChannelMessages(channel, messageQuery, append = false) {
 }
 
 export function searchChannelsPerNickname(nickname) {
-  return dispatch => SendBird.searchConversationsPerNickname(nickname).then(channels => dispatch({
+  return dispatch => SendBird.searchConversationsPerNickname(nickname, 3).then(channels => dispatch({
     type: CHANNELS_SEARCH_LOADED,
     payload: channels,
   }));

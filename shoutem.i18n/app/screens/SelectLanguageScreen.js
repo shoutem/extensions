@@ -1,18 +1,18 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
 import { connectStyle } from '@shoutem/theme';
-import {
-  Screen,
-  ListView,
-} from '@shoutem/ui';
+import { ListView, Screen } from '@shoutem/ui';
+
 import { invalidateLoadedCollections } from 'shoutem.cms';
 import { NavigationBar } from 'shoutem.navigation';
+
+import { LanguageListItem } from '../components';
 import { ext } from '../const';
 import { actions, selectors } from '../redux';
-import { LanguageListItem } from '../components';
 
 export class SelectLanguageScreen extends PureComponent {
   static propTypes = {

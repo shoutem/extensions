@@ -1,0 +1,14 @@
+{
+  "shoutem": {
+    "events": {
+      "Events": "Events",
+      "Name": "Name",
+      "Description": "Description",
+      "Image": "Image",
+      "Start time": "Start time",
+      "End time": "End time",
+      "RSVP link": "RSVP link",
+      "Location": "Location"
+    }
+  }
+}

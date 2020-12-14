@@ -2,7 +2,11 @@
   "shoutem": {
     "interactive-faq": {
       "settings-page.form-starting-message": "Starting Message",
-      "settings-page.button-save": "Save"
+      "settings-page.button-save": "Save",
+      "Questions": "Questions",
+      "Button label": "Button label",
+      "Question": "Question",
+      "Answer": "Answer"
     }
   }
 }

@@ -1,14 +1,16 @@
-import reducer from './redux';
 import { appDidMount } from './app';
+import reducer from './redux';
 
-import VimeoList from './screens/VimeoList';
 import SmallVimeoList from './screens/SmallVimeoList';
 import VimeoDetails from './screens/VimeoDetails';
+import VimeoDetailsWithoutShare from './screens/VimeoDetailsWithoutShare';
+import VimeoList from './screens/VimeoList';
 
 const screens = {
-  VimeoList,
   SmallVimeoList,
   VimeoDetails,
+  VimeoDetailsWithoutShare,
+  VimeoList,
 };
 
 export { reducer };

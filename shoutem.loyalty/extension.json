@@ -1,6 +1,6 @@
 {
   "name": "loyalty",
-  "version": "2.4.2",
+  "version": "2.4.3-rc.0",
   "platform": "2.4.*",
   "title": "Loyalty",
   "description": "Reward your returning customers",

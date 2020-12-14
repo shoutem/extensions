@@ -145,7 +145,7 @@ class SubscriptionsScreen extends PureComponent {
       : subscriptionMetadata.confirmationMessageRegular;
 
     return (
-      <Screen styleName="paper">
+      <Screen styleName="paper with-notch-padding">
         <NavigationBar title={subscriptionMetadata.subscriptionScreenTitle} />
         <Text style={style.leadingText}>
           {subscriptionMetadata.subscriptionScreenDescription}

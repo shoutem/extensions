@@ -107,9 +107,10 @@ export class LocalizationProvider extends Component {
       }
     }
 
-    await Promise.all(promises);
-
-    this.setState({ inProgress: false });
+    if (promises.length > 0) {
+      await Promise.all(promises);
+      this.setState({ inProgress: false });
+    }
   }
 
   async handleOwnInjection(canonicalName, locale, translationUrl) {

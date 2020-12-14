@@ -16,7 +16,10 @@
       "shopify-settings-page.store-url-label": "Store URL (e.g. mystore.myshopify.com)",
       "shopify-settings-page.store-access-token": "Storefront access token",
       "shopify-settings-page.buton-save": "Save",
-      "shopify-settings-page.discount-code-label": "Discount code (percentage based)"
+      "shopify-settings-page.discount-code-label": "Discount code (percentage based)",
+      "Shopify": "Shopify",
+      "Name": "Name",
+      "Featured Image URL": "Featured Image URL"
     }
   }
 }

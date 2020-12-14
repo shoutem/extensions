@@ -1,12 +1,16 @@
 {
   "name": "people",
   "title": "People",
-  "version": "2.4.1",
+  "version": "2.4.2-rc.1",
   "platform": "2.4.*",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
   "dependencies": ["shoutem.cms"],
   "categories": ["content"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

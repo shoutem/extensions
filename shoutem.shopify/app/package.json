@@ -1,6 +1,6 @@
 {
   "name": "shoutem.shopify",
-  "version": "2.4.2",
+  "version": "2.4.5-rc.0",
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
     "apollo-client": "^2.2.8",
@@ -11,7 +11,7 @@
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.1",
     "react-native-webview": "^9.4.0",
-    "shopify-buy": "1.4.0",
+    "shopify-buy": "2.11.0",
     "world-countries": "^1.8.1"
   },
   "peerDependencies": {

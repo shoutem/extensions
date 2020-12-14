@@ -1,19 +1,18 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
-
+import React, { PureComponent } from 'react';
 import {
-  TouchableOpacity,
-  Tile,
-  Title,
   Caption,
-  View,
+  Icon,
   ImageBackground,
   Overlay,
-  Icon,
+  Tile,
+  Title,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
-
 import { ext } from '../const';
 
 /**
@@ -28,11 +27,14 @@ export default class LargeVideoView extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.onPress = this.onPress.bind(this);
+
+    autoBindReact(this);
   }
 
   onPress() {
-    this.props.onPress(this.props.video);
+    const { onPress, video } = this.props;
+
+    onPress(video);
   }
 
   render() {

@@ -175,7 +175,7 @@ class SortOptions extends Component {
             </MenuItem>
             <MenuItem eventKey="descending">
               <IconLabel iconName="order-descending" size="24px">
-                {i18next.t(LOCALIZATION.ORDER_ASCENDING)}
+                {i18next.t(LOCALIZATION.ORDER_DESCENDING)}
               </IconLabel>
             </MenuItem>
           </Dropdown.Menu>

@@ -1,12 +1,17 @@
 {
   "name": "sendbird",
   "title": "SendBird Chat",
-  "version": "2.4.6",
+  "version": "2.4.8",
   "platform": "~2.4.*",
   "icon": "./server/assets/chat.png",
   "description": "Connect your users with real-time chat!",
-  "dependencies": ["shoutem.layouts", "shoutem.auth"],
-  "categories": ["users"],
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.auth"
+  ],
+  "categories": [
+    "users"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

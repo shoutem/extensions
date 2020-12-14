@@ -1,11 +1,11 @@
 import _ from 'lodash';
-import { url, appId, auth, navigateTo } from 'environment';
+import { url, appId, auth } from 'environment';
 import Uri from 'urijs';
 import { RSAA } from 'redux-api-middleware';
-import { find } from '@shoutem/redux-io';
+import { find, invalidate } from '@shoutem/redux-io';
 import { ext } from 'context';
 import { CATEGORIES, CURRENT_SCHEMA } from '../types';
-import { rsaaPromise } from '../services';
+import { rsaaPromise, getAllCategoryName } from '../services';
 import { updateShortcutCategories } from './shortcut';
 
 const CREATE_CATEGORY_REQUEST = '@@cms/CREATE_CATEGORY_REQUEST';
@@ -51,14 +51,17 @@ export function createCategory(shortcut, schema = CURRENT_SCHEMA) {
       })
       .toString();
 
-    const categoryName = shortcut.title;
+    const groupName = shortcut.title;
+    const allCategoryName = getAllCategoryName();
+
     const createCategoryAction = {
       [RSAA]: {
         endpoint,
         method: 'POST',
         body: JSON.stringify({
           schema,
-          name: categoryName,
+          name: groupName,
+          categoryName: allCategoryName,
         }),
         headers: {
           Accept: 'application/vnd.api+json',
@@ -74,21 +77,13 @@ export function createCategory(shortcut, schema = CURRENT_SCHEMA) {
 
     return dispatch(rsaaPromise(createCategoryAction)).then(response => {
       const categoryId = _.toString(response.payload.id);
+
       return dispatch(updateShortcutCategories(shortcut, categoryId)).then(
-        () => categoryId,
+        () => {
+          dispatch(invalidate(CATEGORIES));
+          return categoryId;
+        },
       );
     });
   };
-}
-
-export function navigateToCategoryContent(categoryId, schema = CURRENT_SCHEMA) {
-  const options = {
-    categoryId,
-    appId,
-    schema,
-    source: ext(),
-    isModal: true,
-  };
-
-  return navigateTo('CMS', options);
 }

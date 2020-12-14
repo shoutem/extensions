@@ -1,12 +1,16 @@
 {
   "name": "news",
-  "version": "2.4.2",
+  "version": "2.4.3-rc.1",
   "platform": "2.4.*",
   "title": "News",
   "description": "Show news articles",
   "icon": "server/assets/add-news-image.png",
   "dependencies": ["shoutem.layouts", "shoutem.cms"],
   "categories": ["content"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

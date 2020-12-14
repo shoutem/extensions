@@ -7,7 +7,7 @@ export const screens = {
   VideosList,
   VideosSmallList,
   VideoDetails,
+  VideoDetailsWithoutShare: VideoDetails,
 };
 
 export { reducer };
-

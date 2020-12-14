@@ -14,3 +14,7 @@ export function getAllCategoriesOption() {
 export function isAllCategoriesSelected(selectedCategories) {
   return _.includes(selectedCategories, ALL_CATEGORIES_OPTION_KEY);
 }
+
+export function getAllCategoryName() {
+  return i18next.t(LOCALIZATION.ALL_CATEGORY);
+}

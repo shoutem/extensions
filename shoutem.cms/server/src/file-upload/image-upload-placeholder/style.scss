@@ -1,0 +1,22 @@
+.image-upload-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 4px;
+  text-align: center;
+  transition: background-color 0.1s;
+
+  border: 1px dashed #c6cad2;
+  background-color: transparent;
+
+  .se-icon {
+    font-size: 24px;
+    color: #444f6c;
+  }
+
+  &:hover {
+    background-color: #ecf9fd;
+  }
+}

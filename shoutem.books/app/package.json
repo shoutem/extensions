@@ -1,6 +1,6 @@
 {
   "name": "shoutem.books",
-  "version": "2.4.1",
+  "version": "2.4.2-rc.1",
   "description": "List of books for sale",
   "peerDependencies": {
     "@shoutem/redux-io": "*",

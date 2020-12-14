@@ -1,6 +1,6 @@
 {
   "name": "shoutem.places",
-  "version": "2.4.1",
+  "version": "2.4.2-rc.1",
   "description": "Interactive list of POIs",
   "peerDependencies": {
     "@shoutem/redux-io": "*",

@@ -1,0 +1,12 @@
+{
+  "shoutem": {
+    "news": {
+      "News Articles": "News Articles",
+      "Title": "Title",
+      "Body": "Body",
+      "Author": "Author",
+      "Image": "Image",
+      "Article URL": "Article URL"
+    }
+  }
+}

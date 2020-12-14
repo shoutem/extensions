@@ -10,7 +10,7 @@ import {
   Image,
   Tile,
   View,
-  SimpleHtml,
+  Html,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from 'shoutem.navigation';
@@ -69,7 +69,7 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
                 {dateInfo}
               </View>
             </Tile>
-            <SimpleHtml body={article.body} renderElement={createRenderAttachment(article, 'image')} />
+            <Html body={article.body} renderElement={createRenderAttachment(article, 'image')} />
             {this.renderUpNext()}
           </View>
         </ScrollView>

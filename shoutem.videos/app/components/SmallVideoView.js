@@ -1,18 +1,18 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
-
+import PropTypes from 'prop-types';
 import {
-  TouchableOpacity,
-  Row,
-  Subtitle,
   Caption,
-  View,
+  Divider,
+  Icon,
   ImageBackground,
   Overlay,
-  Icon,
-  Divider,
+  Row,
+  Subtitle,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
 
 /**
@@ -27,11 +27,14 @@ export default class SmallVideoView extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.onPress = this.onPress.bind(this);
+
+    autoBindReact(this);
   }
 
   onPress() {
-    this.props.onPress(this.props.video);
+    const { onPress, video } = this.props;
+
+    onPress(video);
   }
 
   render() {

@@ -1,20 +1,21 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { AppState, Platform } from 'react-native';
-import moment from 'moment';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import { AppState, Platform } from 'react-native';
 
+import { connectStyle } from '@shoutem/theme';
 import {
+  Caption,
+  Html,
+  Screen,
   ScrollView,
+  Tile,
   Title,
   Video,
-  Screen,
-  Caption,
-  Tile,
   View,
-  Html,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 
 import { NavigationBar } from 'shoutem.navigation';
 import { createRenderAttachment } from 'shoutem.rss';
@@ -30,7 +31,7 @@ export class VimeoDetails extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleAppStateChange = this.handleAppStateChange.bind(this);
+    autoBindReact(this);
 
     this.state = {
       appState: 'active',
@@ -47,6 +48,17 @@ export class VimeoDetails extends PureComponent {
 
   handleAppStateChange(appState) {
     this.setState({ appState });
+  }
+
+  getNavBarProps(video, videoAttachment) {
+    return {
+      share: {
+        title: video.title,
+        link: videoAttachment ? _.get(videoAttachment, 'src') : undefined,
+      },
+      animationName: 'boxing',
+      title: video.title,
+    };
   }
 
   render() {
@@ -68,15 +80,7 @@ export class VimeoDetails extends PureComponent {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar
-          share={{
-            title: video.title,
-            link: videoAttachment ? _.get(videoAttachment, 'src') : undefined,
-          }}
-          animationName="boxing"
-          title={video.title}
-        />
-
+        <NavigationBar {...this.getNavBarProps(video, videoAttachment)} />
         <ScrollView>
           {VideoComponent}
 

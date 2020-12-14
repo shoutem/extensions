@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+
 import { storage, getCollection } from '@shoutem/redux-io';
 
 import { rssFeed } from 'shoutem.rss';

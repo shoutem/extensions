@@ -1,6 +1,6 @@
 {
   "name": "rss-news",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "platform": "2.4.*",
   "title": "News RSS",
   "description": "Show news articles from an RSS feed",

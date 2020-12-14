@@ -1,0 +1,34 @@
+.category-tree-item {
+  max-width: 140px;
+  min-width: 100px;
+  text-align: center;
+
+  &.has-actions {
+    .category-tree-item__name {
+      padding-top: 14px;
+      padding-left: 8px;
+    }
+
+    .se-icon {
+      padding-right: 0;
+      margin-top: 3px;
+    }
+  }
+
+  .se-icon {
+    vertical-align: middle;
+    padding-right: 8px;
+    margin-top: -12px;
+  }
+}
+
+.category-tree-item__name {
+  display: inline-block;
+  max-width: 90px;
+}
+
+.category-tree__create-category {
+  padding-left: 16px;
+  padding-top: 8px;
+  min-width: 48px;
+}

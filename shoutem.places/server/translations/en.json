@@ -1,0 +1,20 @@
+{
+  "shoutem": {
+    "places": {
+      "Places": "Places",
+      "Place name": "Place name",
+      "Description": "Description",
+      "Website": "Website",
+      "Image 1": "Image 1",
+      "Image 2": "Image 2",
+      "Image 3": "Image 3",
+      "Image 4": "Image 4",
+      "Image 5": "Image 5",
+      "E-mail": "E-mail",
+      "Open Hours": "Open Hours",
+      "Phone": "Phone",
+      "RSVP link": "RSVP link",
+      "Location": "Location"
+    }
+  }
+}

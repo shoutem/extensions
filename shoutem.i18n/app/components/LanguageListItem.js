@@ -1,15 +1,17 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
-import { connectStyle } from '@shoutem/theme';
 import ISO6391 from 'iso-639-1';
+import PropTypes from 'prop-types';
+
+import { connectStyle } from '@shoutem/theme';
 import {
-  Row,
   Icon,
+  Row,
   Text,
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+
 import { ext } from '../const';
 import { Languages } from '../services';
 
@@ -46,7 +48,9 @@ export class LanguageListItem extends PureComponent {
         <Row style={style.container} styleName="small">
           <View styleName="vertical">
             <Text style={style.text}>{languageName}</Text>
-            {localisedLanguageName && <Text style={style.localisedText}>{localisedLanguageName}</Text>}
+            {!!localisedLanguageName &&
+              <Text style={style.localisedText}>{localisedLanguageName}</Text>
+            }
           </View>
           <Icon name={iconName} />
         </Row>

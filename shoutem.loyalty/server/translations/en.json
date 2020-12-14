@@ -130,7 +130,25 @@
       "rewards-settings-page.rewards-descriptor-store": "Store",
       "rewards-settings-page.new-category-name": "Rewards",
       "transactions-page.title": "Transactions",
-      "services.loyalty-endpoint-missing": "Loyalty endpoint cannot be empty!"
+      "services.loyalty-endpoint-missing": "Loyalty endpoint cannot be empty!",
+      "Place Rewards": "Place Rewards",
+      "Title": "Title",
+      "Image": "Image",
+      "Start of validity": "Start of validity",
+      "End of validity": "End of validity",
+      "Points required": "Points required",
+      "Number of rewards": "Number of rewards",
+      "Store": "Store",
+      "Places": "Places",
+      "Place name": "Place name",
+      "Website": "Website",
+      "E-mail": "E-mail",
+      "Open Hours": "Open Hours",
+      "Phone": "Phone",
+      "Location": "Location",
+      "Punch cards": "Punch cards",
+      "Stamps required": "Stamps required",
+      "Rewards": "Rewards"
     }
   }
 }

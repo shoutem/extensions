@@ -1,4 +1,5 @@
 import rio from '@shoutem/redux-io';
+
 import { buildFeedUrl } from 'shoutem.rss';
 
 import { VIMEO_SCHEMA } from './redux';

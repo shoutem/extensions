@@ -1,6 +1,6 @@
 {
   "name": "in-app-purchases",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "platform": "2.4.*",
   "title": "In App Purchases",
   "description": "Add Apple/Google Play subscriptions to your app",

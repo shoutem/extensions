@@ -12,6 +12,8 @@
       "modal-dialog.confirm-label": "OK",
       "modal-dialog.decline-label": "CANCEL",
       "chat-settings-page.title": "SendBird Subscription Settings",
+      "chat-settings-page.disable-title": "Disable feature",
+      "chat-settings-page.disable-button": "Disable",
       "chat-settings-page.app-id": "App ID",
       "chat-settings-page.save": "Save",
       "chat-settings-page.error-app-id": "Invalid App ID",

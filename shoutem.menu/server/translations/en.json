@@ -1,0 +1,11 @@
+{
+  "shoutem": {
+    "menu": {
+      "Menu": "Menu",
+      "Name": "Name",
+      "Description": "Description",
+      "Price": "Price",
+      "Image": "Image"
+    }
+  }
+}

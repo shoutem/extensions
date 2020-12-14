@@ -1,0 +1,18 @@
+{
+  "shoutem": {
+    "about": {
+      "About": "About",
+      "Name": "Name",
+      "Information": "Information",
+      "Location": "Location",
+      "Opening hours": "Opening hours",
+      "Website": "Website",
+      "Phone": "Phone",
+      "Twitter": "Twitter",
+      "E-mail": "E-mail",
+      "Linkedin": "Linkedin",
+      "Facebook": "Facebook",
+      "Image": "Image"
+    }
+  }
+}

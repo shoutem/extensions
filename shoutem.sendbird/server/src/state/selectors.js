@@ -12,11 +12,14 @@ export function getInstalledModules(state) {
   return getCollection(collection, state);
 }
 
+export function getChatModule(state) {
+  const modules = getInstalledModules(state);
+
+  return _.find(modules, module => module.name === ext());
+}
+
 export function isChatModuleActive(state) {
-  const chatModule = _.find(
-    getInstalledModules(state),
-    module => module.name === ext(),
-  );
+  const chatModule = getChatModule(state);
 
   if (chatModule) {
     return true;

@@ -1,12 +1,18 @@
 {
   "name": "vimeo",
   "title": "Vimeo",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "platform": "2.4.*",
   "description": "Show videos from Vimeo",
   "icon": "server/assets/add-videos-vimeo-image.png",
-  "dependencies": ["shoutem.layouts"],
-  "categories": ["media"],
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.rss"
+  ],
+  "categories": [
+    "media"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -44,7 +50,9 @@
     {
       "name": "VimeoList",
       "title": "Big list",
-      "image": "server/assets/screens/big-list.png"
+      "image": "server/assets/screens/big-list.png",
+      "navigatesTo": ["@.VimeoDetails"],
+      "groupTitle": "Choose List screen layout"
     },
     {
       "name": "SmallVimeoList",
@@ -53,7 +61,16 @@
       "extends": "@.VimeoList"
     },
     {
-      "name": "VimeoDetails"
+      "name": "VimeoDetails",
+      "title": "Details",
+      "image": "server/assets/screens/details.png",
+      "groupTitle": "Choose Details screen layout"
+    },
+    {
+      "name": "VimeoDetailsWithoutShare",
+      "title": "Details without share button",
+      "image": "server/assets/screens/details-without-share.png",
+      "extends": "@.VimeoDetails"
     }
   ],
   "pages": [

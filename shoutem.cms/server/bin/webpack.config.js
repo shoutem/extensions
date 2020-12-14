@@ -28,6 +28,7 @@ module.exports = {
     'react-redux': true,
     redux: true,
     'redux-api-middleware': true,
+    'redux-form': true,
     'redux-thunk': true,
   },
   module: {
@@ -91,6 +92,11 @@ module.exports = {
   resolve: {
     modules: [path.resolve('./src'), path.resolve('./node_modules')],
     extensions: ['*', '.js', '.jsx'],
+    alias: {
+      '@shoutem/file-upload': path.resolve('./src/file-upload'),
+      '@shoutem/form-builder': path.resolve('./src/form-builder'),
+      '@shoutem/cms-dashboard': path.resolve('./src/cms-dashboard'),
+    },
   },
   devServer: {
     publicPath,

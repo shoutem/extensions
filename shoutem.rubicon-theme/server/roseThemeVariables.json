@@ -159,6 +159,21 @@
         }
       }
     },
+    "links": {
+      "type": "object",
+      "title": "Links",
+      "format": "font",
+      "default": {
+        "fontSize": 16,
+        "color": "#5a5a5a"
+      },
+      "constraints": {
+        "fontSize": {
+          "minimum": 12,
+          "maximum": 25
+        }
+      }
+    },
     "tagOverlayColor": {
       "type": "string",
       "title": "Default overlay color",
@@ -453,7 +468,8 @@
           "title",
           "subtitle",
           "caption",
-          "text"
+          "text",
+          "links"
         ]
       },
       {

@@ -1,0 +1,11 @@
+{
+  "shoutem": {
+    "videos": {
+      "Videos": "Videos",
+      "Name": "Name",
+      "Description": "Description",
+      "Video URL": "Video URL",
+      "Duration": "Duration"
+    }
+  }
+}

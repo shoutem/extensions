@@ -1,10 +1,14 @@
 {
   "name": "products",
-  "version": "2.4.1",
+  "version": "2.4.2-rc.1",
   "platform": "2.4.*",
   "title": "Products",
   "description": "Show products with purchase link",
   "categories": ["commerce"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

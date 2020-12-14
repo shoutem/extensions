@@ -6,7 +6,7 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { loginRequired, getUser } from 'shoutem.auth';
-import { isSendBirdConfigured } from 'shoutem.auth/redux';
+import { isSendBirdConfigured, USER_SCHEMA } from 'shoutem.auth/redux';
 import { I18n } from 'shoutem.i18n';
 import {
   selectors as socialSelectors,
@@ -16,18 +16,22 @@ import {
   Screen,
   ListView,
   EmptyStateView,
+  EmptyListImage,
+  Title,
+  View
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { clear } from '@shoutem/redux-io';
+
 import { ext } from '../const';
 import {
   NewChannelListItem,
   ExistingChannelListItem,
-  SearchBar,
-  EmptyChannelListComponent,
+  MemberListItem,
+  SearchBar
 } from '../components';
 import { selectors, actions } from '../redux';
 import { SendBird, composeSendBirdId } from '../services';
-
 export class MessageListScreen extends PureComponent {
   static propTypes = {
     loadChannels: PropTypes.func,
@@ -39,6 +43,8 @@ export class MessageListScreen extends PureComponent {
     currentUser: PropTypes.object,
     users: PropTypes.object,
     navigateTo: PropTypes.func,
+    isConnected: PropTypes.bool,
+    isConnecting: PropTypes.bool,
     isSendBirdConfigured: PropTypes.bool,
     loadUsers: PropTypes.func,
     style: PropTypes.shape({
@@ -54,16 +60,27 @@ export class MessageListScreen extends PureComponent {
     autoBindReact(this);
 
     this.searchChannels = _.debounce(this.searchChannels, 250);
+    this.handleSearchTextChange = _.debounce(this.handleSearchTextChange, 500);
 
     this.state = {
       channelsLoading: true,
-      searching: false,
+      membersLoading: false,
       searchQuery: '',
+      sectionData: [
+        {
+          title: I18n.t(ext('chatsTitle')),
+          data: props.channels
+        },
+        {
+          title: I18n.t(ext('otherContactsTitle')),
+          data: [],
+        }
+      ]
     };
   }
 
   componentDidMount() {
-    const { currentUser, isSendBirdConfigured, loadChannels, loadUsers } = this.props;
+    const { isSendBirdConfigured, isConnected, loadUsers } = this.props;
 
     if (!isSendBirdConfigured) {
       Alert.alert(
@@ -73,11 +90,29 @@ export class MessageListScreen extends PureComponent {
       return;
     }
 
+    if (isConnected) {
+      this.loadInitialChannels();
+    }
+
     InteractionManager.runAfterInteractions(() => {
       loadUsers();
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isConnected, channels } = this.props;
+    const { isConnected: prevIsConnected } = prevProps;
+
+    if (!prevIsConnected && isConnected && _.isEmpty(channels)) {
+      this.loadInitialChannels();
+    }
+  }
+
+  loadInitialChannels() {
+    const { currentUser, loadChannels } = this.props;
 
     const userId = composeSendBirdId(currentUser);
+
     if (!SendBird.getInstance()) {
       this.setState({ channelsLoading: false });
       return;
@@ -92,7 +127,7 @@ export class MessageListScreen extends PureComponent {
     this.setState({ groupChannelListQuery });
 
     loadChannels(groupChannelListQuery, false)
-      .then(() => this.setState({ channelsLoading: false }))
+      .then(this.handleSearchLoaded)
       .catch(() => this.setState({ channelsLoading: false }));
   }
 
@@ -112,24 +147,7 @@ export class MessageListScreen extends PureComponent {
       return;
     }
 
-    searchChannels(searchTerm)
-      .then(() => this.setState({ searching: false }))
-      .catch(() => this.setState({ searching: false }));
-  }
-
-  handleLoadMore() {
-    const { channelsLoading, groupChannelListQuery } = this.state;
-    const { loadChannels } = this.props;
-
-    if (channelsLoading || !groupChannelListQuery || !groupChannelListQuery.hasNext) {
-      return;
-    }
-
-    this.setState({ channelsLoading: true });
-
-    loadChannels(groupChannelListQuery, true)
-      .then(() => this.setState({ channelsLoading: false }))
-      .catch(() => this.setState({ channelsLoading: false }));
+    return searchChannels(searchTerm);
   }
 
   handleItemPress(channelId) {
@@ -143,7 +161,7 @@ export class MessageListScreen extends PureComponent {
 
   handleSearchTextChange(newSearchQuery) {
     const { searchQuery } = this.state;
-    const { clearSearch } = this.props;
+    const { searchUsers } = this.props;
     const wasEmpty = _.isEmpty(searchQuery);
     const isEmpty = _.isEmpty(newSearchQuery);
 
@@ -152,15 +170,74 @@ export class MessageListScreen extends PureComponent {
     }
 
     if (!wasEmpty && isEmpty) {
-      clearSearch();
+      this.handleResetSearch();
     }
 
     this.setState({ searchQuery: newSearchQuery });
 
     if (!isEmpty) {
-      this.setState({ searching: true });
-      this.searchChannels(newSearchQuery);
+      this.setState({ membersLoading: true });
+
+      return Promise.all([
+        this.props.searchChannels(newSearchQuery),
+        searchUsers(newSearchQuery),
+      ])
+        .then(this.handleSearchLoaded)
+        .catch((error) => {
+          console.warn("Error while trying to perform search", error)
+          this.setState({ membersLoading: false })
+        });
     }
+  }
+
+  filterSearchedUsers() {
+    const { searchedChannels, searchedUsers, currentUser } = this.props;
+
+    if (_.isEmpty(searchedUsers)) {
+      return [];
+    }
+
+    const channelUserIds = _.map(searchedChannels, (channel) => {
+      const member = SendBird.getChannelPartner(channel.channel, currentUser);
+
+      return _.split(member.userId, '-', 2)[1];
+    })
+
+    return _.filter(searchedUsers, (user) => !_.includes(channelUserIds, user.id))
+  }
+
+  handleResetSearch() {
+    const { clearSearch } = this.props;
+
+    Promise.all([
+      clearSearch(),
+      clear(USER_SCHEMA, 'searchUsers')
+    ])
+      .then(this.handleSearchLoaded);
+  }
+
+  handleSearchLoaded() {
+    const { channels, searchedChannels } = this.props;
+    const { searchQuery } = this.state;
+
+
+    const resolvedChannels = _.isEmpty(searchQuery) ? channels : searchedChannels;
+    const resolvedMembers = !_.isEmpty(searchQuery) ? this.filterSearchedUsers() : [];
+
+    this.setState({
+      sectionData: [
+        {
+          title: I18n.t(ext('chatsTitle')),
+          data: resolvedChannels
+        },
+        {
+          title: I18n.t(ext('otherContactsTitle')),
+          data: resolvedMembers,
+        }
+      ],
+      membersLoading: false,
+      channelsLoading: false,
+    })
   }
 
   renderNewChannel(item) {
@@ -168,58 +245,76 @@ export class MessageListScreen extends PureComponent {
   }
 
   renderEmptyListComponent() {
-    const { channelsLoading, searching } = this.state;
+    const { searchQuery, channelsLoading, membersLoading } = this.state;
 
-    if (channelsLoading || searching) {
+    if (channelsLoading || membersLoading) {
       return null;
     }
 
-    LayoutAnimation.easeInEaseOut();
-    return <EmptyChannelListComponent />;
+    if (_.isEmpty(searchQuery)) {
+      return (
+        <EmptyListImage
+          title={I18n.t(ext('emptyChatListTitle'))}
+          message={I18n.t(ext('emptyChatListMessage'))}
+        />
+      )
+    }
+
+    return <EmptyListImage />
   }
 
-  renderExistingChannel(item) {
+  renderRow(item) {
     const { currentUser } = this.props;
+    const isExistingChannel = _.get(item, 'channel')
+
+    if (isExistingChannel) {
+      return (
+        <ExistingChannelListItem
+          channel={item}
+          currentUser={currentUser}
+          onPress={this.handleItemPress}
+        />
+      );
+    }
+
+    return <MemberListItem user={item}></MemberListItem>
+  }
+
+  renderSectionHeader(section) {
+    const { style } = this.props;
+    const title = _.get(section, 'title', '');
+    const sectionData = _.get(section, 'data', '')
+
+    if (_.isEmpty(sectionData)) {
+      return null;
+    }
 
     return (
-      <ExistingChannelListItem
-        channel={item}
-        currentUser={currentUser}
-        onPress={this.handleItemPress}
-      />
+      <View styleName="section-header" style={style.sectionContainer}>
+        <Title style={style.sectionTitle}>{title}</Title>
+      </View>
     );
   }
 
   render() {
-    const { style, channels, searchedChannels } = this.props;
-    const { channelsLoading, searchQuery, searching } = this.state;
+    const { style, channels } = this.props;
+    const { membersLoading, sectionData, channelsLoading } = this.state;
 
-    const showSearchList = !_.isEmpty(searchQuery);
     const navigationBarProps = this.getNavigationBarProps();
 
     return (
       <Screen style={style.screen}>
         <NavigationBar {...navigationBarProps} />
         <SearchBar onChangeText={this.handleSearchTextChange} />
-        {!showSearchList && (
-          <ListView
-            data={channels}
-            keyboardShouldPersistTaps="handled"
-            ListEmptyComponent={this.renderEmptyListComponent}
-            loading={channelsLoading}
-            onLoadMore={this.handleLoadMore}
-            renderRow={this.renderExistingChannel}
-          />
-        )}
-        {showSearchList && (
-          <ListView
-            data={searchedChannels}
-            keyboardShouldPersistTaps="handled"
-            ListEmptyComponent={this.renderEmptyListComponent}
-            loading={searching}
-            renderRow={this.renderExistingChannel}
-          />
-        )}
+        <ListView
+          sections={sectionData}
+          keyboardShouldPersistTaps="handled"
+          extraData={channels}
+          ListEmptyComponent={this.renderEmptyListComponent}
+          loading={membersLoading || channelsLoading}
+          renderRow={this.renderRow}
+          renderSectionHeader={this.renderSectionHeader}
+        />
       </Screen>
     );
   }
@@ -230,7 +325,11 @@ const mapStateToProps = state => ({
   currentUser: getUser(state),
   channels: selectors.getChannels(state),
   searchedChannels: selectors.getSearchedChannels(state),
+  searchedUsers: socialSelectors.getSearchUsers(state),
   isSendBirdConfigured: isSendBirdConfigured(state),
+  isConnected: selectors.isConnected(state),
+  isConnecting: selectors.isConnecting(state),
+
 });
 
 const mapDispatchToProps = {
@@ -238,7 +337,9 @@ const mapDispatchToProps = {
   loadChannels: actions.loadChannels,
   searchChannels: actions.searchChannelsPerNickname,
   clearSearch: actions.clearChannelSearch,
+  searchUsers: socialActions.searchUsers,
   loadUsers: socialActions.loadUsers,
+  clear,
 };
 
 export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(

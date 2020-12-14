@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
-
 import SmallVideoView from '../components/SmallVideoView';
 import { ext } from '../const';
 import { VideosList, mapStateToProps, mapDispatchToProps } from './VideosList';

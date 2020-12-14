@@ -1,12 +1,20 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import autoBind from 'auto-bind';
-import { Button, Text, TextInput, View } from '@shoutem/ui';
+import PropTypes from 'prop-types';
+
 import { connectStyle } from '@shoutem/theme';
+import {
+  Button,
+  Text,
+  TextInput,
+  View,
+} from '@shoutem/ui';
+
 import { I18n } from 'shoutem.i18n';
-import PasswordTextInput from './PasswordTextInput';
+
 import { ext } from '../const';
+import PasswordTextInput from './PasswordTextInput';
 
 class LoginForm extends PureComponent {
   static propTypes = {
@@ -20,10 +28,9 @@ class LoginForm extends PureComponent {
   constructor(props) {
     super(props);
 
-    autoBind(this);
+    autoBindReact(this);
 
     this.state = {
-      isUsernameFocused: false,
       username: '',
       password: '',
     };
@@ -48,12 +55,7 @@ class LoginForm extends PureComponent {
 
   render() {
     const { style } = this.props;
-    const {
-      isUsernameFocused,
-      visibility,
-      username,
-      password,
-    } = this.state;
+    const { visibility, username, password } = this.state;
 
     return (
       <View>
@@ -65,16 +67,14 @@ class LoginForm extends PureComponent {
             highlightOnFocus
             keyboardAppearance="dark"
             keyboardType="email-address"
-            onBlur={this.handleUsernameBlur}
             onChangeText={this.handleUsernameChange}
-            onFocus={this.handleUsernameFocus}
             placeholder={I18n.t(ext('usernameOrEmailPlaceholder'))}
             returnKeyType="done"
             value={username}
           />
         </View>
         <View style={style.passwordLabelContainer}>
-          <Text>Password</Text>
+          <Text>{I18n.t(ext('password'))}</Text>
 
           {/* A placeholder for "Forgot Password" feature
           <Button styleName="clear">

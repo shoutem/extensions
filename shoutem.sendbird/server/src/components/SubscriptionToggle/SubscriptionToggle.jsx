@@ -15,6 +15,7 @@ export default class SubscriptionToggle extends PureComponent {
             active={option === selectedOption}
             onToggle={onOptionSelected}
             title={option}
+            key={option}
           />
         ))}
       </div>

@@ -3,7 +3,13 @@ import { ext } from 'context';
 import { denormalizeCollection, denormalizeItem } from 'denormalizer';
 import { isInitialized } from '@shoutem/redux-io';
 import { createSelector } from 'reselect';
-import { CATEGORIES, CHANNELS, SCHEMAS, CURRENT_SCHEMA } from './types';
+import {
+  CATEGORIES,
+  CHANNELS,
+  SCHEMAS,
+  CURRENT_SCHEMA,
+  LANGUAGE_MODULE_STATUS,
+} from './types';
 
 export function getCmsState(state) {
   return state[ext()].cmsPage;
@@ -13,6 +19,27 @@ export function getCategories(state, tag = 'all') {
   const cmsState = getCmsState(state);
   const categories = _.get(cmsState, ['categories', tag]);
   return denormalizeCollection(categories, undefined, CATEGORIES);
+}
+
+export function getChildCategories(state) {
+  return getCategories(state, 'child');
+}
+
+export function getLanguageModuleStatus(state) {
+  const cmsState = getCmsState(state);
+  const rawLanguageModule = _.get(cmsState, 'rawLanguageModule');
+  const enabled = _.get(rawLanguageModule, 'data.enabled');
+
+  const languageModule = denormalizeItem(
+    cmsState.languageModule,
+    undefined,
+    LANGUAGE_MODULE_STATUS,
+  );
+  if (isInitialized(languageModule)) {
+    _.set(languageModule, 'enabled', enabled);
+  }
+
+  return languageModule;
 }
 
 export function getLanguages(state) {
@@ -51,9 +78,10 @@ export function getResources(state) {
 export const dataInitialized = shortcut =>
   createSelector(
     getCategories,
+    getChildCategories,
     getSchema,
     getResources,
-    (categories, schema, resources) => {
+    (categories, childCategories, schema, resources) => {
       const shortcutSettings = shortcut.settings || {};
       const { parentCategory } = shortcutSettings;
 
@@ -61,6 +89,7 @@ export const dataInitialized = shortcut =>
       return (
         resourcesInitialized &&
         isInitialized(categories) &&
+        isInitialized(childCategories) &&
         isInitialized(schema)
       );
     },

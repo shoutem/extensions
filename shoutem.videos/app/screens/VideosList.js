@@ -1,12 +1,10 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo } from 'shoutem.navigation';
-
 import { CmsListScreen } from 'shoutem.cms';
-
+import { navigateTo } from 'shoutem.navigation';
 import LargeVideoView from '../components/LargeVideoView';
 import { ext } from '../const';
 import { VIDEOS_SCHEMA } from '../redux';
@@ -17,10 +15,10 @@ export class VideosList extends CmsListScreen {
     navigateTo: PropTypes.func.isRequired,
   };
 
-  constructor(props, context) {
-    super(props, context);
-    this.openDetailsScreen = this.openDetailsScreen.bind(this);
-    this.renderRow = this.renderRow.bind(this);
+  constructor(props) {
+    super(props);
+
+    autoBindReact(this);
 
     this.state = {
       ...this.state,
@@ -29,12 +27,14 @@ export class VideosList extends CmsListScreen {
   }
 
   openDetailsScreen(video) {
+    const { navigateTo } = this.props;
+
     const route = {
       screen: ext('VideoDetails'),
       props: { video },
     };
 
-    this.props.navigateTo(route);
+    navigateTo(route);
   }
 
   renderRow(video) {

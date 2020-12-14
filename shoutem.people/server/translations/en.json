@@ -1,0 +1,18 @@
+{
+  "shoutem": {
+    "people": {
+      "People": "People",
+      "First name": "First name",
+      "Last name": "Last name",
+      "Title": "Title",
+      "Biography": "Biography",
+      "Image": "Image",
+      "Phone": "Phone",
+      "Email": "Email",
+      "LinkedIn profile URL": "LinkedIn profile URL",
+      "Facebook profile URL": "Facebook profile URL",
+      "Twitter page URL": "Twitter page URL",
+      "Website URL": "Website URL"
+    }
+  }
+}

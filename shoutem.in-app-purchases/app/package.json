@@ -1,6 +1,6 @@
 {
   "name": "shoutem.in-app-purchases",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Add Apple/Google Play subscriptions to your app",
   "dependencies": {
     "react-native-iap": "4.6.3",

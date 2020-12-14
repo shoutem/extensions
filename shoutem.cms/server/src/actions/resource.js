@@ -31,15 +31,25 @@ function resolveCategoryParam(parentCategoryId, visibleCategoryIds = []) {
   };
 }
 
+function resolveIncludeParam(include = {}) {
+  if (_.isEmpty(include)) {
+    return {};
+  }
+
+  return { include: include };
+}
+
 export function loadResources(
+  schema = CURRENT_SCHEMA,
   parentCategoryId,
   visibleCategoryIds,
   sortOptions,
-  schema = CURRENT_SCHEMA,
+  include,
 ) {
   const queryParams = {
     ...resolveCategoryParam(parentCategoryId, visibleCategoryIds),
     ...resolveSortParam(sortOptions),
+    ...resolveIncludeParam(include),
   };
 
   const config = {

@@ -40,6 +40,7 @@ class ChatSettingsPage extends Component {
     fetchExtensionAction: PropTypes.func,
     updateExtensionSettingsAction: PropTypes.func,
     activateChatModule: PropTypes.func,
+    deactivateChatModule: PropTypes.func,
     validateSubscriptionStatus: PropTypes.func,
   };
 
@@ -74,6 +75,7 @@ class ChatSettingsPage extends Component {
       selectedOption: this.SUBSCRIPTION_OPTIONS.SHOUTEM,
       subscriptionValid: false,
       modalActive: false,
+      disabling: false,
       onCancel: this.handleModalCancellation,
     };
   }
@@ -172,6 +174,26 @@ class ChatSettingsPage extends Component {
     });
   }
 
+  handleChatDisable() {
+    const {
+      deactivateChatModule,
+      shoutemAppId,
+      loadAppModules,
+      updateExtensionSettingsAction,
+      extension,
+    } = this.props;
+
+    this.setState({ disabling: true });
+
+    return deactivateChatModule(shoutemAppId)
+      .then(() => loadAppModules(shoutemAppId))
+      .then(() => {
+        this.setState({ disabling: false });
+        updateExtensionSettingsAction(extension, { featureActive: false });
+      })
+      .catch(() => this.setState({ disabling: false }));
+  }
+
   handleSubmit(event) {
     event.preventDefault();
     this.handleSave();
@@ -235,6 +257,7 @@ class ChatSettingsPage extends Component {
     const {
       error,
       inProgress,
+      disabling,
       appId,
       initialLoading,
       selectedOption,
@@ -262,6 +285,18 @@ class ChatSettingsPage extends Component {
       <div>
         <div className="chat-settings-page">
           <form onSubmit={this.handleSubmit}>
+            <h3>{i18next.t(LOCALIZATION.DISABLE_TITLE)}</h3>
+            <ButtonToolbar>
+              <Button
+                bsStyle="primary"
+                disabled={disabling}
+                onClick={this.handleChatDisable}
+              >
+                <LoaderContainer isLoading={disabling}>
+                  {i18next.t(LOCALIZATION.DISABLE_BUTTON)}
+                </LoaderContainer>
+              </Button>
+            </ButtonToolbar>
             <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
             <SubscriptionToggle
               onOptionSelected={this.handleSubscriptionChange}
@@ -334,6 +369,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(actions.validateSubscriptionStatus(appId)),
     loadAppModules: appId => dispatch(actions.loadAppModules(appId)),
     activateChatModule: appId => dispatch(actions.activateChatModule(appId)),
+    deactivateChatModule: appId => dispatch(actions.deactivateChatModule(appId)),
   };
 }
 

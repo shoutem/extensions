@@ -6,6 +6,8 @@
       "chatUnavailableErrorTitle": "Chat unavailable",
       "chatEncryptionMessage": "Messages in this chat are private and encrypted.",
       "chatNotConfiguredMessage": "Chat feature is not available due to invalid configuration.",
+      "chatsTitle": "Chats",
+      "otherContactsTitle": "Other Contacts",
       "isTypingSuffix": " is typing...",
       "textInputPlaceholder": "Type a message...",
       "emptyChatListTitle": "It’s empty in here",

@@ -1,11 +1,15 @@
 {
   "name": "books",
-  "version": "2.4.1",
+  "version": "2.4.2-rc.1",
   "platform": "2.4.*",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",
   "description": "Show books and authors",
   "categories": ["content"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

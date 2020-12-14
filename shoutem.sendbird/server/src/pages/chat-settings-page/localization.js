@@ -1,5 +1,7 @@
 const key = 'chat-settings-page';
 
+const DISABLE_TITLE = `${key}.disable-title`;
+const DISABLE_BUTTON = `${key}.disable-button`;
 const TITLE = `${key}.title`;
 const APP_ID = `${key}.app-id`;
 const SAVE = `${key}.save`;
@@ -16,6 +18,8 @@ export default {
   TITLE,
   APP_ID,
   SAVE,
+  DISABLE_TITLE,
+  DISABLE_BUTTON,
   ERROR_APP_ID,
   ERROR_SUBSRIPTION_INVALID,
   SUBSCRIPTION_OPTION_SHOUTEM,

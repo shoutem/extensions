@@ -1,12 +1,16 @@
 {
   "name": "menu",
   "title": "Restaurant menu",
-  "version": "2.4.1",
+  "version": "2.4.2-rc.1",
   "platform": "2.4.*",
   "icon": "./server/assets/images/add-menu-items-image.png",
   "description": "Show a restaurant menu",
   "dependencies": ["shoutem.layouts", "shoutem.cms"],
   "categories": ["content"],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

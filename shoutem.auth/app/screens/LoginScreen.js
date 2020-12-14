@@ -35,6 +35,7 @@ export class LoginScreen extends PureComponent {
     isUserAuthenticated: PropTypes.bool,
     inProgress: PropTypes.bool,
     onLoginSuccess: PropTypes.func,
+    isAuthenticated: PropTypes.bool,
     interceptedRoute: PropTypes.object,
     hideShortcuts: PropTypes.func,
     user: PropTypes.shape({
@@ -66,6 +67,15 @@ export class LoginScreen extends PureComponent {
     autoBind(this);
 
     this.state = { inProgress: false };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isAuthenticated, onLoginSuccess, isScreenActive } = this.props;
+    const { isAuthenticated: prevIsAuthenticated } = prevProps;
+
+    if (!prevIsAuthenticated && isAuthenticated && !isScreenActive) {
+      onLoginSuccess();
+    }
   }
 
   handlePerformLogin(username, password) {
@@ -222,6 +232,7 @@ function mapStateToProps(state, ownProps) {
     settings: getExtensionSettings(state, ext()),
     isScreenActive: isScreenActive(state, ownProps.screenId),
     access_token: getAccessToken(state),
+    isAuthenticated: isAuthenticated(state),
   };
 }
 

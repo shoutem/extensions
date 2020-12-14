@@ -1,0 +1,14 @@
+{
+  "shoutem": {
+    "books": {
+      "Books": "Books",
+      "Title": "Title",
+      "Author": "Author",
+      "Price": "Price",
+      "Description": "Description",
+      "Image": "Image",
+      "Buy link title": "Buy link title",
+      "Buy URL": "Buy URL"
+    }
+  }
+}

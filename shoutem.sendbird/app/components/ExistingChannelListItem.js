@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Keyboard } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import {
@@ -38,6 +39,7 @@ class ExistingChannelListItem extends PureComponent {
     const { onPress, channel } = this.props;
 
     if (onPress) {
+      Keyboard.dismiss();
       onPress(channel.channel.url);
     }
   }
