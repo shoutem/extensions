@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import Uri from 'urijs';
 import {
-  invalidate,
   shouldLoad,
   shouldRefresh,
   isBusy,
+  isInitialized,
 } from '@shoutem/redux-io';
 import { AssetManager } from '@shoutem/assets-sdk';
 import { url, appId, googleApiKey } from 'environment';
@@ -18,33 +18,34 @@ import { getShortcut } from 'environment';
 import {
   getCategories,
   getChildCategories,
+  getImporters,
   getLanguages,
   getRawLanguages,
   getSchema,
-  getResources,
   dataInitialized,
   getLanguageModuleStatus,
 } from '../../selectors';
-import { updateShortcutSettings } from '../../builder-sdk';
+import { addSchemasToDenormalizer } from '../../denormalizer';
 import {
   shoutemUrls,
-  createResource,
-  updateResource,
+  createResourceWithRelationships,
+  updateResourceWithRelationships,
   getMainCategoryId,
-  getIncludeProperties,
-  getReferencedSchema,
   ResourceFormModal,
 } from '@shoutem/cms-dashboard';
 import {
   loadLanguageModuleStatus,
+  loadImporters,
   loadLanguages,
   loadCategories,
   createCategory,
-  loadResources,
+  loadReferenceResources,
   loadSchema,
+  updateShortcutSortOptions,
 } from '../../actions';
 import { ManageContentButton, SortOptions } from '../../components';
 import AdvancedSetup from '../../fragments/advanced-setup';
+import ImporterDashboard from '../../fragments/importer-dashboard';
 import ResourceDashboard from '../../fragments/resource-dashboard';
 import { CURRENT_SCHEMA } from '../../types';
 import {
@@ -54,10 +55,12 @@ import {
   getSortOptions,
   getParentCategoryId,
   getVisibleCategoryIds,
-  calculateDifferenceObject,
+  checkStatusOfImporters,
+  getImporterCapabilities,
 } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';
+import { getReferencedSchemas } from '../../cms-dashboard';
 
 export class CmsPage extends Component {
   constructor(props, context) {
@@ -65,7 +68,15 @@ export class CmsPage extends Component {
 
     shoutemUrls.init(url);
 
-    const appsUrl = new Uri().host(_.get(url, 'apps')).toString();
+    const legacyApiUrl = new Uri(`//${_.get(url, 'legacy')}`)
+      .protocol(location.protocol)
+      .segment('api')
+      .toString();
+
+    const appsUrl = new Uri(`//${_.get(url, 'apps')}`)
+      .protocol(location.protocol)
+      .toString();
+
     this.assetManager = new AssetManager({
       scopeType: 'application',
       scopeId: appId,
@@ -73,25 +84,24 @@ export class CmsPage extends Component {
     });
 
     this.checkData = this.checkData.bind(this);
-    this.handleLoadResources = this.handleLoadResources.bind(this);
     this.handleCreateCategory = this.handleCreateCategory.bind(this);
     this.handleSortOptionsChange = this.handleSortOptionsChange.bind(this);
-    this.handleToggleAdvancedSetup = this.handleToggleAdvancedSetup.bind(this);
-    this.handleToggleAdvancedSetup = this.handleToggleAdvancedSetup.bind(this);
+    this.handleToggleAdditionalOptions = this.handleToggleAdditionalOptions.bind(
+      this,
+    );
     this.handleResourceAddClick = this.handleResourceAddClick.bind(this);
     this.handleResourceEditClick = this.handleResourceEditClick.bind(this);
     this.handleResourceModalHide = this.handleResourceModalHide.bind(this);
     this.handleCategorySelected = this.handleCategorySelected.bind(this);
     this.handleCreateResource = this.handleCreateResource.bind(this);
     this.handleUpdateResource = this.handleUpdateResource.bind(this);
-    this.handleUpdateResourceRelationships = this.handleUpdateResourceRelationships.bind(
-      this,
-    );
     this.renderBody = this.renderBody.bind(this);
     this.renderModal = this.renderModal.bind(this);
 
     const { shortcut, createCategory } = props;
 
+    const importerCapabilites = getImporterCapabilities(shortcut);
+    const showImporters = !_.isEmpty(importerCapabilites);
     const visibleCategoryIds = getVisibleCategoryIds(shortcut);
     const showAdvancedSetup = !_.isEmpty(visibleCategoryIds);
 
@@ -102,9 +112,13 @@ export class CmsPage extends Component {
     }
 
     this.state = {
+      legacyApiUrl,
+      showImporters,
       showAdvancedSetup,
+      showAdditionalOptions: false,
       showResourceModal: false,
       currentResource: null,
+      parentCategoryId: parentCategoryId,
       selectedCategoryId: null,
     };
   }
@@ -119,15 +133,24 @@ export class CmsPage extends Component {
 
   checkData(nextProps, props = {}) {
     const {
-      categories,
-      resources,
-      shortcut,
-      childCategories,
-      languageModuleStatus,
-      languages,
+      schema: nextSchema,
+      categories: nextCategories,
+      shortcut: nextShortcut,
+      childCategories: nextChildCategories,
+      languageModuleStatus: nextLanguageModuleStatus,
+      languages: nextLanguages,
+      importers: nextImporters,
     } = nextProps;
-    const { selectedCategoryId } = this.state;
-    const parentCategoryId = getParentCategoryId(shortcut);
+    const { schema } = props;
+    const { showImporters, selectedCategoryId, parentCategoryId } = this.state;
+
+    const nextParentCategoryId = getParentCategoryId(nextShortcut);
+    if (parentCategoryId !== nextParentCategoryId && nextParentCategoryId) {
+      this.setState({
+        parentCategoryId: nextParentCategoryId,
+        selectedCategoryId: null,
+      });
+    }
 
     if (shouldLoad(nextProps, props, 'schema')) {
       this.props.loadSchema();
@@ -138,47 +161,57 @@ export class CmsPage extends Component {
     }
 
     if (
-      isLanguageModuleEnabled(languageModuleStatus) &&
-      shouldRefresh(languages)
+      isLanguageModuleEnabled(nextLanguageModuleStatus) &&
+      shouldRefresh(nextLanguages)
     ) {
       this.props.loadLanguages();
     }
 
-    if (parentCategoryId && shouldLoad(nextProps, props, 'categories')) {
+    if (nextParentCategoryId && shouldLoad(nextProps, props, 'categories')) {
       this.props.loadCategories();
     }
 
-    if (selectedCategoryId && shouldRefresh(resources)) {
-      this.handleLoadResources(shortcut, selectedCategoryId);
+    if (nextParentCategoryId && shouldRefresh(nextChildCategories)) {
+      this.props.loadChildCategories(nextParentCategoryId);
     }
 
-    if (parentCategoryId && shouldRefresh(childCategories)) {
-      this.props.loadChildCategories(parentCategoryId);
+    if (
+      showImporters &&
+      nextParentCategoryId &&
+      shouldLoad(nextProps, props, 'importers')
+    ) {
+      this.props.loadImporters(nextParentCategoryId);
+    }
+
+    // check if some importer is in progress
+    if (showImporters) {
+      this.props.checkStatusOfImporters(nextImporters);
+    }
+
+    // do not load resources if schema is not initialized
+    // we need first to add referenced schemas to storage and denormalizer
+    if (!isInitialized(nextSchema)) {
+      return;
+    }
+
+    // add referenced schemas to denormalizer
+    const nextSchemaId = _.get(nextSchema, 'id');
+    const schemaId = _.get(schema, 'id');
+    if (nextSchemaId !== schemaId) {
+      const referencedSchemas = getReferencedSchemas(nextSchema);
+      addSchemasToDenormalizer(referencedSchemas);
     }
 
     // we want that main category ("All") is selected by default
-    if (parentCategoryId) {
-      const mainCategoryId = getMainCategoryId(parentCategoryId, categories);
+    if (nextParentCategoryId) {
+      const mainCategoryId = getMainCategoryId(
+        nextParentCategoryId,
+        nextCategories,
+      );
       if (selectedCategoryId === null && mainCategoryId) {
-        this.handleLoadResources(shortcut, mainCategoryId);
         this.setState({ selectedCategoryId: mainCategoryId });
       }
     }
-  }
-
-  handleLoadResources(shortcut, categoryId) {
-    const { schema } = this.props;
-
-    const sortOptions = getSortOptions(shortcut);
-    const visibleCategoryIds = getVisibleCategoryIds(shortcut);
-    const include = getIncludeProperties(schema);
-
-    this.props.loadResources(
-      categoryId,
-      visibleCategoryIds,
-      sortOptions,
-      include,
-    );
   }
 
   handleCreateCategory() {
@@ -191,9 +224,9 @@ export class CmsPage extends Component {
     this.props.updateSortOptions(shortcut, options);
   }
 
-  handleToggleAdvancedSetup() {
-    const { showAdvancedSetup } = this.state;
-    this.setState({ showAdvancedSetup: !showAdvancedSetup });
+  handleToggleAdditionalOptions() {
+    const { showAdditionalOptions } = this.state;
+    this.setState({ showAdditionalOptions: !showAdditionalOptions });
   }
 
   handleResourceAddClick() {
@@ -209,7 +242,6 @@ export class CmsPage extends Component {
   }
 
   handleCategorySelected(newSelectedCategoryId) {
-    const { shortcut } = this.props;
     const { selectedCategoryId } = this.state;
 
     if (selectedCategoryId === newSelectedCategoryId) {
@@ -217,112 +249,29 @@ export class CmsPage extends Component {
     }
 
     this.setState({ selectedCategoryId: newSelectedCategoryId });
-    this.handleLoadResources(shortcut, newSelectedCategoryId);
   }
 
-  async handleCreateResourceRelationship(schema, key, value) {
-    const response = await this.props.createResource(schema, null, value);
-
-    const resourceId = _.get(response, 'payload.data.id');
-    const relationships = {
-      [key]: {
-        data: {
-          id: resourceId,
-          type: schema,
-        },
-      },
-    };
-
-    return relationships;
-  }
-
-  async handleUpdateResourceRelationship(schema, key, value) {
-    const response = await this.props.updateResource(schema, value);
-
-    const resourceId = _.get(response, 'payload.data.id');
-    const relationships = {
-      [key]: {
-        data: {
-          id: resourceId,
-          type: schema,
-        },
-      },
-    };
-
-    return relationships;
-  }
-
-  async handleUpdateResourceRelationships(resource, initialResource) {
+  handleCreateResource(resource) {
     const { schema } = this.props;
-    let relationships = {};
-    const promises = [];
-
-    const include = getIncludeProperties(schema);
-
-    _.forEach(include, key => {
-      const referencedSchema = getReferencedSchema(schema, key);
-
-      // TODO: support multiple relationshsips, check if value is an array
-      const value = _.get(resource, key);
-      const initialValue = _.get(initialResource, key);
-      const id = _.get(value, 'id');
-
-      // if id exist that means that relationship already exist
-      // no need for creating a new resource relationship
-      if (id) {
-        const changes = calculateDifferenceObject(value, initialValue);
-
-        // if changes update relationship resource
-        if (!_.isEmpty(changes)) {
-          promises.push(
-            this.handleUpdateResourceRelationship(referencedSchema, key, value),
-          );
-        } else {
-          const relationship = { data: { id, type: referencedSchema } };
-          _.set(relationships, key, relationship);
-        }
-      } else {
-        if (!_.isEmpty(value)) {
-          promises.push(
-            this.handleCreateResourceRelationship(referencedSchema, key, value),
-          );
-        }
-      }
-
-      // remove referenced item from attributes
-      _.unset(resource, key);
-    });
-
-    const values = await Promise.all(promises);
-    _.forEach(values, relationship => {
-      relationships = _.merge(relationships, relationship);
-    });
-
-    return relationships;
-  }
-
-  async handleCreateResource(resource) {
     const { selectedCategoryId } = this.state;
 
-    const relationships = await this.handleUpdateResourceRelationships(
-      resource,
-    );
-
-    await this.props.createResource(
-      CURRENT_SCHEMA,
+    return this.props.createResourceWithRelationships(
       [selectedCategoryId],
+      CURRENT_SCHEMA,
+      schema,
       resource,
-      relationships,
     );
   }
 
-  async handleUpdateResource(resource, initialResource) {
-    const relationships = await this.handleUpdateResourceRelationships(
+  handleUpdateResource(resource, initialResource) {
+    const { schema } = this.props;
+
+    return this.props.updateResourceWithRelationships(
+      CURRENT_SCHEMA,
+      schema,
       resource,
       initialResource,
     );
-
-    await this.props.updateResource(CURRENT_SCHEMA, resource, relationships);
   }
 
   resolveShortcutTitle(shortcut) {
@@ -370,16 +319,19 @@ export class CmsPage extends Component {
       appId,
       canonicalName,
       childCategories,
-      resources,
       languages,
       languageModuleStatus,
       rawLanguages,
+      importers,
       shortcut,
-      initialized,
     } = this.props;
-    const { showAdvancedSetup, selectedCategoryId } = this.state;
+    const {
+      legacyApiUrl,
+      showAdditionalOptions,
+      showImporters,
+      selectedCategoryId,
+    } = this.state;
 
-    const hasContent = initialized && !_.isEmpty(resources);
     const hasLanguages = resolveHasLanguages(languageModuleStatus, languages);
 
     const resolvedLanguages = hasLanguages ? rawLanguages : [];
@@ -394,7 +346,6 @@ export class CmsPage extends Component {
         <div className="cms__header">
           <SortOptions
             className="pull-left"
-            disabled={!hasContent}
             onSortOptionsChange={this.handleSortOptionsChange}
             schema={schema}
             sortOptions={sortOptions}
@@ -403,36 +354,55 @@ export class CmsPage extends Component {
             className="pull-right"
             cmsButtonLabel={i18next.t(LOCALIZATION.BUTTON_ADD_ITEM)}
             onNavigateToCmsClick={this.handleResourceAddClick}
-            onToggleAdvancedSetup={this.handleToggleAdvancedSetup}
-            showAdvancedSetup={showAdvancedSetup}
+            onToggleAdditionalOptions={this.handleToggleAdditionalOptions}
+            showAdditionalOptions={showAdditionalOptions}
           />
         </div>
-        {showAdvancedSetup && (
-          <AdvancedSetup
-            onCreateCategory={this.handleCreateCategory}
-            parentCategoryId={parentCategoryId}
+        {showAdditionalOptions && (
+          <div className="additional-options">
+            <AdvancedSetup
+              onCreateCategory={this.handleCreateCategory}
+              parentCategoryId={parentCategoryId}
+              schema={schema}
+              shortcut={shortcut}
+              visibleCategoryIds={visibleCategoryIds}
+              showImporters={showImporters}
+            />
+            {showImporters && (
+              <ImporterDashboard
+                appId={appId}
+                legacyApiUrl={legacyApiUrl}
+                assetManager={this.assetManager}
+                languages={resolvedLanguages}
+                canonicalName={canonicalName}
+                parentCategoryId={parentCategoryId}
+                schema={schema}
+                shortcut={shortcut}
+                importers={importers}
+              />
+            )}
+          </div>
+        )}
+        {selectedCategoryId && (
+          <ResourceDashboard
+            appId={appId}
+            canonicalName={canonicalName}
             schema={schema}
-            shortcut={shortcut}
-            visibleCategoryIds={visibleCategoryIds}
+            parentCategoryId={parentCategoryId}
+            languages={resolvedLanguages}
+            categories={childCategories}
+            selectedCategoryId={selectedCategoryId}
+            sortOptions={sortOptions}
+            onCategorySelected={this.handleCategorySelected}
+            onResourceEditClick={this.handleResourceEditClick}
           />
         )}
-        <ResourceDashboard
-          appId={appId}
-          canonicalName={canonicalName}
-          schema={schema}
-          parentCategoryId={parentCategoryId}
-          languages={resolvedLanguages}
-          categories={childCategories}
-          resources={resources}
-          selectedCategoryId={selectedCategoryId}
-          onCategorySelected={this.handleCategorySelected}
-          onResourceEditClick={this.handleResourceEditClick}
-        />
       </div>
     );
   }
 
   renderModal(schema) {
+    const { loadReferenceSchema, loadReferenceResources } = this.props;
     const { currentResource } = this.state;
 
     return (
@@ -442,6 +412,8 @@ export class CmsPage extends Component {
         googleApiKey={googleApiKey}
         canonicalName={CURRENT_SCHEMA}
         assetManager={this.assetManager}
+        loadSchema={loadReferenceSchema}
+        loadResources={loadReferenceResources}
         onHide={this.handleResourceModalHide}
         onResourceCreate={this.handleCreateResource}
         onResourceUpdate={this.handleUpdateResource}
@@ -450,27 +422,19 @@ export class CmsPage extends Component {
   }
 
   render() {
-    const {
-      schema,
-      resources,
-      languages,
-      languageModuleStatus,
-      initialized,
-    } = this.props;
-    const { showResourceModal } = this.state;
+    const { schema, languages, languageModuleStatus, initialized } = this.props;
+    const { showResourceModal, selectedCategoryId } = this.state;
 
     const isLoading =
-      !initialized || isBusy(languageModuleStatus) || isBusy(languages);
-    const inProgress = initialized && isBusy(resources);
+      !initialized ||
+      !selectedCategoryId ||
+      isBusy(languageModuleStatus) ||
+      isBusy(languages);
 
     const translatedSchema = translateSchema(schema);
 
     return (
-      <LoaderContainer
-        className="cms"
-        isLoading={isLoading || inProgress}
-        isOverlay={inProgress}
-      >
+      <LoaderContainer className="cms" isLoading={isLoading} isOverlay>
         {!showResourceModal && this.renderBody(translatedSchema)}
         {showResourceModal && this.renderModal(translatedSchema)}
       </LoaderContainer>
@@ -481,28 +445,31 @@ export class CmsPage extends Component {
 CmsPage.propTypes = {
   initialized: PropTypes.bool,
   shortcut: PropTypes.object,
-  resources: PropTypes.array,
   categories: PropTypes.array,
   languageModuleStatus: PropTypes.object,
   languages: PropTypes.array,
   rawLanguages: PropTypes.array,
+  importers: PropTypes.array,
   schema: PropTypes.shape({
     titleProperty: PropTypes.string,
   }),
   loadLanguageModuleStatus: PropTypes.func,
+  loadImporters: PropTypes.func,
+  checkStatusOfImporters: PropTypes.func,
   loadLanguages: PropTypes.func,
   loadCategories: PropTypes.func,
   createCategory: PropTypes.func,
-  loadResources: PropTypes.func,
   loadSchema: PropTypes.func,
   updateSortOptions: PropTypes.func,
-  createResource: PropTypes.func,
-  updateResource: PropTypes.func,
+  createResourceWithRelationships: PropTypes.func,
+  updateResourceWithRelationships: PropTypes.func,
+  loadReferenceSchema: PropTypes.func,
+  loadReferenceResources: PropTypes.func,
 };
 
 function mapStateToProps(state) {
   const shortcut = getShortcut();
-  const initialized = dataInitialized(shortcut)(state);
+  const initialized = dataInitialized()(state);
 
   return {
     appId,
@@ -514,41 +481,68 @@ function mapStateToProps(state) {
     languageModuleStatus: getLanguageModuleStatus(state),
     languages: getLanguages(state),
     rawLanguages: getRawLanguages(state),
+    importers: getImporters(state),
     schema: getSchema(state),
-    resources: getResources(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    createResource: (schema, categoryIds, resource, relationships) =>
+    createResourceWithRelationships: (
+      categoryIds,
+      canonicalName,
+      schema,
+      resource,
+    ) =>
       dispatch(
-        createResource(appId, categoryIds, schema, resource, relationships),
+        createResourceWithRelationships(
+          appId,
+          categoryIds,
+          canonicalName,
+          schema,
+          resource,
+        ),
       ),
-    updateResource: (schema, resource, relationships) =>
-      dispatch(updateResource(appId, null, schema, resource, relationships)),
+    updateResourceWithRelationships: (
+      canonicalName,
+      schema,
+      resource,
+      initialResource,
+    ) =>
+      dispatch(
+        updateResourceWithRelationships(
+          appId,
+          null,
+          canonicalName,
+          schema,
+          resource,
+          initialResource,
+        ),
+      ),
     // if error do nothing, languages are not enabled
     loadLanguageModuleStatus: () => dispatch(loadLanguageModuleStatus()),
+    loadImporters: parentCategoryId =>
+      dispatch(loadImporters(appId, parentCategoryId)).catch(() => null),
+    checkStatusOfImporters: (importers, parentCategoryId) =>
+      dispatch(
+        checkStatusOfImporters(
+          appId,
+          parentCategoryId,
+          CURRENT_SCHEMA,
+          importers,
+        ),
+      ),
     loadLanguages: () => dispatch(loadLanguages()).catch(() => null),
     loadCategories: () => dispatch(loadCategories()),
     loadChildCategories: (parentCategoryId, schema) =>
       dispatch(loadCategories(parentCategoryId, schema, 'child')),
     loadSchema: () => dispatch(loadSchema()),
-    loadResources: (categoryId, visibleCategories, sortOptions, include) =>
-      dispatch(
-        loadResources(
-          CURRENT_SCHEMA,
-          categoryId,
-          visibleCategories,
-          sortOptions,
-          include,
-        ),
-      ),
+    loadReferenceSchema: schema =>
+      dispatch(loadSchema(schema, 'reference-schema')),
+    loadReferenceResources: schema => dispatch(loadReferenceResources(schema)),
     createCategory: shortcut => dispatch(createCategory(shortcut)),
     updateSortOptions: (shortcut, sortOptions) =>
-      dispatch(updateShortcutSettings(shortcut, sortOptions)).then(() =>
-        dispatch(invalidate(CURRENT_SCHEMA)),
-      ),
+      dispatch(updateShortcutSortOptions(shortcut, sortOptions)),
   };
 }
 

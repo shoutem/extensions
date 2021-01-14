@@ -1,12 +1,20 @@
 {
   "name": "page",
-  "version": "2.4.4-rc.0",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "title": "Page",
   "description": "Show a single screen with info and child items",
   "icon": "server/assets/add-page-image.png",
-  "dependencies": ["shoutem.layouts", "shoutem.cms"],
-  "categories": ["content"],
+  "releaseNotes": "* Fix no-content issue when there are no shortcut children",
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.cms",
+    "shoutem.layouts",
+    "shoutem.navigation"
+  ],
+  "categories": [
+    "content"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -22,6 +30,9 @@
       "icon": "theme://folder.png",
       "screen": "@.ClearNavbarLargePageScreen",
       "type": "navigation",
+      "capabilities": [
+        "shoutem.cms.import-csv"
+      ],
       "settings": {
         "navigationLayoutType": "iconGrid"
       },

@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
+import { LocalizationContext } from 'shoutem.i18n';
 import { isEmptyNavigationState, isEmptyRoute, navigateBack } from '../../redux/core';
 import { CardStack, NavigationBar } from '../ui';
 
@@ -18,9 +19,7 @@ export class ScreenStack extends PureComponent {
   constructor(props, context) {
     super(props, context);
 
-    this.renderNavBar = this.renderNavBar.bind(this);
-    this.renderScene = this.renderScene.bind(this);
-    this.handleNavigateBack = this.handleNavigateBack.bind(this);
+    autoBindReact(this);
   }
 
   getScreen(screenName) {
@@ -75,7 +74,23 @@ export class ScreenStack extends PureComponent {
     // style from the parent component in case the screen is
     // connected to the theme, see `shoutem.ui.CardStack.sceneContainer`.
     return (
-      <Screen virtual {...route.props} screenId={route.key} />
+      <LocalizationContext.Consumer>
+      {selectedLocale => {
+        return (
+          <Screen
+            virtual
+            {...route.props}
+            screenId={route.key}
+            // We need to handle rerendering of screens on language change better than this
+            // (screens mounted before language change). Wrapping <Screen /> inside
+            // LocalizationContext  wasn't enough, <Screen /> wasn't rerendered on context
+            // change, so we passed this prop down to force rerender of whole Screen
+            // https://fiveminutes.jira.com/browse/SEEXT-8930
+            selectedLocale={selectedLocale}
+          />
+        );
+      }}
+    </LocalizationContext.Consumer>
     );
   }
 

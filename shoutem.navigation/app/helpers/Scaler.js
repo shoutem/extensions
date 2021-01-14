@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-
 function calculateSizeRatio(size, refSize) {
   return _.round(size / refSize, 2);
 }
@@ -111,4 +110,3 @@ export default class Scaler {
     return _.round(value * this.resizeRatio, 2);
   }
 }
-

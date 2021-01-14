@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { find } from '@shoutem/redux-io';
+import { find, next, prev } from '@shoutem/redux-io';
 import { url, appId } from 'environment';
 import { ext } from 'context';
 import { CURRENT_SCHEMA } from '../types';
@@ -21,16 +21,6 @@ function resolveSortParam(sortOptions) {
   return order === 'ascending' ? { sort: field } : { sort: `-${field}` };
 }
 
-function resolveCategoryParam(parentCategoryId, visibleCategoryIds = []) {
-  const categoryFilter = _.isEmpty(visibleCategoryIds)
-    ? parentCategoryId
-    : _.join(visibleCategoryIds);
-
-  return {
-    'filter[categories]': categoryFilter,
-  };
-}
-
 function resolveIncludeParam(include = {}) {
   if (_.isEmpty(include)) {
     return {};
@@ -42,14 +32,17 @@ function resolveIncludeParam(include = {}) {
 export function loadResources(
   schema = CURRENT_SCHEMA,
   parentCategoryId,
-  visibleCategoryIds,
   sortOptions,
   include,
+  limit,
+  offset,
 ) {
   const queryParams = {
-    ...resolveCategoryParam(parentCategoryId, visibleCategoryIds),
     ...resolveSortParam(sortOptions),
     ...resolveIncludeParam(include),
+    'filter[categories]': parentCategoryId,
+    'page[limit]': limit,
+    'page[offset]': offset,
   };
 
   const config = {
@@ -63,4 +56,46 @@ export function loadResources(
   };
 
   return find(config, ext('all'), queryParams);
+}
+
+export function loadReferenceResources(schema) {
+  const queryParams = {
+    'page[limit]': 10000,
+  };
+
+  const config = {
+    schema,
+    request: {
+      endpoint: `//${url.legacy}/v1/apps/${appId}/resources/${schema}`,
+      headers: {
+        Accept: 'application/vnd.api+json',
+      },
+    },
+  };
+
+  return find(config, ext('reference-resources'), queryParams);
+}
+
+export function loadNextResourcesPage(resources) {
+  const config = {
+    request: {
+      headers: {
+        Accept: 'application/vnd.api+json',
+      },
+    },
+  };
+
+  return next(resources, false, config);
+}
+
+export function loadPreviousResourcesPage(resources) {
+  const config = {
+    request: {
+      headers: {
+        Accept: 'application/vnd.api+json',
+      },
+    },
+  };
+
+  return prev(resources, false, config);
 }

@@ -18,6 +18,7 @@ export const PROPERTY_FORMATS = {
   INTEGER: 'integer',
   GEOLOCATION: 'geolocation',
   DATE_TIME: 'date-time',
+  ENTITY_REFERENCE: 'entity-reference',
 };
 
 export const PROPERTY_REFERENCED_SCHEMAS = {

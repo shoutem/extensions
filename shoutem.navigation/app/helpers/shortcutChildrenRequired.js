@@ -1,14 +1,12 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { ext as applicationExt } from 'shoutem.application';
 import { getFirstShortcut } from 'shoutem.application/shared/getFirstShortcut';
-
 import { navigateTo } from '../redux/core';
-import NoScreens from '../screens/NoScreens';
 import NoContent from '../screens/NoContent';
+import NoScreens from '../screens/NoScreens';
 import mapExtensionSettingsToProps from './mapExtensionSettingsToProps';
 
 /**
@@ -29,14 +27,14 @@ class ShortcutChildrenRequired extends PureComponent {
   }
 
   render() {
-    const {
-      WrappedComponent,
-      shortcut,
-    } = this.props;
+    const { WrappedComponent, shortcut } = this.props;
 
     // Folder screen may not be root screen and if it has no children
     // we present error as there is no content.
-    if (_.isEmpty(shortcut.children)) {
+    // Page screen will have a parentCategory, and should handle its
+    // own no-content state, so it should be rendered.
+    const hasParentCategory = _.get(shortcut, 'settings.parentCategory');
+    if (_.isEmpty(shortcut.children) && !hasParentCategory) {
       if (this.isRootScreen) {
         return <NoScreens />;
       }
@@ -71,9 +69,7 @@ const mapStateToProps = (state) => ({
   ...mapExtensionSettingsToProps(state),
 });
 
-const mapDispatchToProps = {
-  navigateTo,
-};
+const mapDispatchToProps = { navigateTo };
 
 const ConnectedShortcutChildrenRequired =
   connect(mapStateToProps, mapDispatchToProps)(ShortcutChildrenRequired);

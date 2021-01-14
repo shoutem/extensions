@@ -1,13 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
 import { Screen } from '@shoutem/ui';
-
 import { executeShortcut } from 'shoutem.application/redux';
-
 import { ScreenStack } from '../components/stacks';
 import { NavigationBar } from '../components/ui';
 import { isEmptyNavigationState, navigateBack } from '../redux/core';

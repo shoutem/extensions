@@ -14,6 +14,22 @@ export function getReferencedSchema(schema, key) {
   return _.get(schema, `properties.${key}.referencedSchema`);
 }
 
+export function getReferencedSchemas(schema) {
+  const properties = getSchemaProperties(schema);
+  const schemas = [];
+
+  const values = _.values(properties);
+  _.forEach(values, value => {
+    const schema = _.get(value, 'referencedSchema');
+
+    if (schema) {
+      schemas.push(schema);
+    }
+  });
+
+  return schemas;
+}
+
 export function getIncludeProperties(schema) {
   const properties = getSchemaProperties(schema);
   const include = [];

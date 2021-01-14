@@ -4,7 +4,7 @@ import _ from 'lodash';
 import i18next from 'i18next';
 import autoBindReact from 'auto-bind/react';
 import Select from 'react-select';
-import { LANGUAGES } from 'src/services';
+import { createLanguageOptions } from '../../services';
 import LOCALIZATION from './localization';
 
 export default class LanguageSelect extends Component {
@@ -28,22 +28,13 @@ export default class LanguageSelect extends Component {
   }
 
   refreshData(nextProps, props = {}) {
-    const { availableLanguageCodes } = props;
-    const { availableLanguageCodes: nextAvailableLanguageCodes } = nextProps;
+    const { availableLanguageCodes, translateFrom } = props;
+    const { availableLanguageCodes: nextAvailableLanguageCodes, translateFrom: nextTranslateFrom } = nextProps;
 
     if (availableLanguageCodes !== nextAvailableLanguageCodes) {
-      const languageOptions = _.chain(LANGUAGES)
-        .mapValues((name, code) => ({ value: code, label: i18next.t(name) }))
-        .values()
-        .filter(
-          languageOption =>
-            _.isEmpty(nextAvailableLanguageCodes) ||
-            _.includes(nextAvailableLanguageCodes, languageOption.value),
-        )
-        .sortBy(['label'])
-        .value();
+        const languageOptions = createLanguageOptions(nextAvailableLanguageCodes);
 
-      this.setState({ languageOptions });
+        this.setState({ languageOptions });
     }
   }
 

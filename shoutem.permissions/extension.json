@@ -1,0 +1,10 @@
+{
+  "name": "permissions",
+  "title": "Permissions",
+  "version": "1.0.0",
+  "type": "system",
+  "description": "Extension for app permission management. ",
+  "icon": "server/assets/permissions-icon.png",
+  "platform": "~2.5.1",
+  "releaseNotes": "* New system extension that handles device permissions."
+}

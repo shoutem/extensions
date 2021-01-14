@@ -1,23 +1,30 @@
 {
   "name": "podcast",
-  "version": "2.4.3",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
   "icon": "server/assets/extension-icon.png",
-  "categories": ["media"],
+  "categories": [
+    "media"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": ["shoutem.layouts", "shoutem.rss"],
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.rss"
+  ],
   "shortcuts": [
     {
       "name": "podcast-shortcut",
       "title": "Podcast RSS",
       "icon": "theme://podcasts.png",
       "screen": "@.EpisodesListScreen",
-      "capabilities": ["shoutem.rss.feed"],
+      "capabilities": [
+        "shoutem.rss.feed"
+      ],
       "adminPages": [
         {
           "page": "shoutem.rss.RssPage",
@@ -43,7 +50,9 @@
       "name": "EpisodesListScreen",
       "title": "List",
       "image": "./server/assets/screens/list.png",
-      "navigatesTo": ["@.EpisodeDetailsScreen"],
+      "navigatesTo": [
+        "@.EpisodeDetailsScreen"
+      ],
       "settings": {
         "listType": "list",
         "hasFeaturedItem": false

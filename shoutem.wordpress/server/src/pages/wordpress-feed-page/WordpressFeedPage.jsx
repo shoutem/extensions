@@ -8,9 +8,10 @@ import { connect } from 'react-redux';
 import {
   FEED_ITEMS,
   navigateToUrl,
+  getCategories,
   getFeedItems,
   fetchWordPressPosts,
-  validateWordPressUrl,
+  loadPosts,
 } from 'src/redux';
 import { FeedUrlInput, FeedPreview } from 'src/components';
 import { isFeedUrlInsecure } from 'src/services';
@@ -47,20 +48,28 @@ class WordPressFeedPage extends Component {
   }
 
   handleSaveUrl(feedUrl) {
-    const { shortcut } = this.props;
+    const {
+      getCategories,
+      loadPosts,
+      shortcut,
+      updateShortcutSettings,
+    } = this.props;
     const { id: shortcutId } = shortcut;
 
     if (feedUrl && !isFeedUrlInsecure(feedUrl)) {
-      return this.props.validateWordPressUrl({ feedUrl, shortcutId })
-        .then(() => this.props.updateShortcutSettings(shortcut, { feedUrl }));
+      return getCategories({ feedUrl, shortcutId })
+        .then(categories => loadPosts({ feedUrl, shortcutId, categories }))
+        .then(() => updateShortcutSettings(shortcut, { feedUrl }));
     }
 
-    return this.props.updateShortcutSettings(shortcut, { feedUrl });
+    return updateShortcutSettings(shortcut, { feedUrl });
   }
 
   handleFeedPreviewRemoveClick() {
+    const { clearFeedItems } = this.props;
+
     this.handleSaveUrl('');
-    this.props.clearFeedItems();
+    clearFeedItems();
   }
 
   render() {
@@ -94,8 +103,7 @@ WordPressFeedPage.propTypes = {
   shortcut: PropTypes.object,
   feedItems: PropTypes.array,
   updateShortcutSettings: PropTypes.func,
-  validateWordPressUrl: PropTypes.func,
-  loadFeed: PropTypes.func,
+  loadPosts: PropTypes.func,
   clearFeedItems: PropTypes.func,
   fetchWordPressPosts: PropTypes.func,
   navigateToUrl: PropTypes.func,
@@ -105,9 +113,7 @@ function mapStateToProps(state, ownProps) {
   const { extensionName, shortcutId } = ownProps;
   const feedItems = getFeedItems(state, extensionName, shortcutId);
 
-  return {
-    feedItems,
-  };
+  return { feedItems };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -117,8 +123,9 @@ function mapDispatchToProps(dispatch) {
     ),
     clearFeedItems: () => dispatch(clear(FEED_ITEMS, 'feedItems')),
     fetchWordPressPosts: (params) => dispatch(fetchWordPressPosts(params)),
-    validateWordPressUrl: (params) => dispatch(validateWordPressUrl(params)),
+    loadPosts: (params) => dispatch(loadPosts(params)),
     navigateToUrl: (url) => dispatch(navigateToUrl(url)),
+    getCategories: (params) => dispatch(getCategories(params)),
   };
 }
 

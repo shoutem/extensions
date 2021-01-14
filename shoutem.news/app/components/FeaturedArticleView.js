@@ -1,17 +1,14 @@
 import React from 'react';
-import autoBindReact from 'auto-bind/react';
 import moment from 'moment';
-
 import {
-  TouchableOpacity,
-  Title,
   Caption,
-  View,
-  Tile,
-  ImageBackground,
   Divider,
+  ImageBackground,
+  Tile,
+  Title,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
-
 import { ArticleView } from './ArticleView';
 
 /**
@@ -23,9 +20,7 @@ export class FeaturedArticleView extends ArticleView {
 
     const momentDate = moment(date);
     const dateInfo = momentDate.isAfter(0) ? (
-      <Caption styleName="md-gutter-left">
-        {momentDate.fromNow()}
-      </Caption>
+      <Caption styleName="md-gutter-left">{momentDate.fromNow()}</Caption>
     ) : null;
 
     return (
@@ -38,7 +33,9 @@ export class FeaturedArticleView extends ArticleView {
             <Tile>
               <Title>{(title || '').toUpperCase()}</Title>
               <View styleName="horizontal md-gutter-top" virtual>
-                <Caption styleName="collapsible" numberOfLines={1}>{author}</Caption>
+                <Caption styleName="collapsible" numberOfLines={1}>
+                  {author}
+                </Caption>
                 {dateInfo}
               </View>
             </Tile>

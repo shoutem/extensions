@@ -1,4 +1,4 @@
-import { CmsSelect, CmsTable } from './components';
+import { CmsSelect } from './components';
 import { cmsApi } from './services';
 
 import {
@@ -21,7 +21,6 @@ export {
   createCategory,
   deleteResource,
   navigateToCms,
-  CmsTable,
   CmsSelect,
 };
 

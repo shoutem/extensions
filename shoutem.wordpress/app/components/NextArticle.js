@@ -1,11 +1,12 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+
 import {
-  TouchableOpacity,
-  Subtitle,
   Caption,
   ImageBackground,
+  Subtitle,
   Tile,
+  TouchableOpacity,
 } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';

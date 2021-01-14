@@ -48,15 +48,15 @@ class LanguagePage extends Component {
   }
 
   componentWillMount() {
-    const { appId, extension } = this.props;
+    const { appId, extension, migrateChannels } = this.props;
 
-    this.props.migrateChannels(appId, extension).then(() => {
+    migrateChannels(appId, extension).then(() => {
       this.setState({ migratingChannels: false });
     });
   }
 
   handleLocaleChange(languageOption) {
-    const { extension } = this.props;
+    const { updateExtensionSettings, extension } = this.props;
     const { value: locale } = languageOption;
 
     const translations = _.cloneDeep(_.get(extension, 'settings.translations'));
@@ -70,23 +70,27 @@ class LanguagePage extends Component {
       },
     };
 
-    this.props.updateExtensionSettings(patchSettings);
+    updateExtensionSettings(patchSettings);
   }
 
   handleTranslationChange(translation) {
+    const { updateExtensionSettings, invalidateCurrentBuild } = this.props;
     const { languageCode, translationUrl } = translation;
 
-    return this.props
-      .updateExtensionSettings({
-        translations: {
-          [languageCode]: translationUrl,
-        },
-      })
-      .then(this.props.invalidateCurrentBuild);
+    return updateExtensionSettings({
+      translations: {
+        [languageCode]: translationUrl,
+      },
+    }).then(invalidateCurrentBuild);
   }
 
   async handleTranslationCreate(translation) {
-    const { appId } = this.props;
+    const {
+      appId,
+      createChannel,
+      updateExtensionSettings,
+      invalidateCurrentBuild,
+    } = this.props;
     const { languageCode, translationUrl } = translation;
 
     const channelData = {
@@ -95,33 +99,36 @@ class LanguagePage extends Component {
       disabled: true,
     };
 
-    const response = await this.props.createChannel(appId, channelData);
+    const response = await createChannel(appId, channelData);
     const channelId = _.get(response, 'payload.id');
 
-    await this.props
-      .updateExtensionSettings({
-        isMultilanguage: true,
-        translations: {
-          [languageCode]: translationUrl,
-        },
-        channels: {
-          [languageCode]: channelId,
-        },
-        disabled: {
-          [languageCode]: true,
-        },
-      })
-      .then(this.props.invalidateCurrentBuild);
+    await updateExtensionSettings({
+      isMultilanguage: true,
+      translations: {
+        [languageCode]: translationUrl,
+      },
+      channels: {
+        [languageCode]: channelId,
+      },
+      disabled: {
+        [languageCode]: true,
+      },
+    }).then(invalidateCurrentBuild);
   }
 
   async handleTranslationDelete(languageCode) {
-    const { appId, extension } = this.props;
+    const {
+      appId,
+      extension,
+      deleteChannel,
+      updateExtensionSettings,
+    } = this.props;
     const currentLocale = _.get(extension, 'settings.locale');
     const useDefaultLocale = languageCode === currentLocale;
 
     const channelId = _.get(extension, `settings.channels.${languageCode}`);
     try {
-      await this.props.deleteChannel(appId, channelId);
+      await deleteChannel(appId, channelId);
     } catch (error) {
       const status = _.get(error, 'payload.status');
       if (status !== 404) {
@@ -129,7 +136,7 @@ class LanguagePage extends Component {
       }
     }
 
-    await this.props.updateExtensionSettings({
+    await updateExtensionSettings({
       locale: useDefaultLocale ? DEFAULT_LANGUAGE_CODE : currentLocale,
       translations: {
         [languageCode]: null,
@@ -144,7 +151,12 @@ class LanguagePage extends Component {
   }
 
   async handleStatusChange(languageCode, disabled) {
-    const { appId, extension } = this.props;
+    const {
+      appId,
+      extension,
+      updateChannel,
+      updateExtensionSettings,
+    } = this.props;
 
     const locale = _.get(extension, 'settings.locale');
     const translations = _.cloneDeep(_.get(extension, 'settings.translations'));
@@ -156,9 +168,9 @@ class LanguagePage extends Component {
       disabled,
     };
 
-    this.props.updateChannel(appId, channelId, data);
+    updateChannel(appId, channelId, data);
 
-    await this.props.updateExtensionSettings({
+    await updateExtensionSettings({
       locale,
       isMultilanguage: true,
       translations,

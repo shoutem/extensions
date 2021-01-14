@@ -1,10 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
-
 import { CARD_LIST } from '../const';
 import { isTabBarNavigation, resolveScrollViewProps } from '../helpers';
 import CardListItem from './CardListItem';

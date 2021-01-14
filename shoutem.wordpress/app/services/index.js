@@ -1,4 +1,11 @@
-import getLeadImageUrl from './getLeadImageUrl';
+import createCategoryFilter from './createCategoryFilter';
+import extractBaseUrl from './extractBaseUrl';
 import getAuthorName from './getAuthorName';
+import getLeadImageUrl from './getLeadImageUrl';
 
-export { getLeadImageUrl, getAuthorName };
+export {
+  createCategoryFilter,
+  extractBaseUrl,
+  getLeadImageUrl,
+  getAuthorName,
+};

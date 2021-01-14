@@ -1,7 +1,7 @@
 {
   "name": "firebase",
-  "version": "2.4.4",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "type": "system",
   "skipClone": false,
   "title": "Firebase",

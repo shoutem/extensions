@@ -1,28 +1,29 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Dimensions } from 'react-native';
-import moment from 'moment';
-import _ from 'lodash';
 import he from 'he';
+import _ from 'lodash';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import { Dimensions } from 'react-native';
+
+import { connectStyle } from '@shoutem/theme';
 import {
-  Screen,
-  ScrollView,
-  View,
-  Tile,
-  Title,
   Caption,
   Icon,
   ImageBackground,
   ImageGallery,
+  Screen,
+  ScrollView,
   SimpleHtml,
+  Tile,
+  Title,
+  View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 
 import { NavigationBar } from 'shoutem.navigation';
 
 import { NextArticle } from '../components/NextArticle';
-import { getLeadImageUrl, getAuthorName } from '../services';
 import { ext } from '../const';
+import { getLeadImageUrl, getAuthorName } from '../services';
 
 export class ArticleDetailsScreen extends PureComponent {
   static propTypes = {
@@ -44,24 +45,27 @@ export class ArticleDetailsScreen extends PureComponent {
 
   renderUpNext() {
     const { nextArticle, openArticle } = this.props;
-    if (nextArticle && openArticle) {
-      return (
-        <NextArticle
-          imageUrl={getLeadImageUrl(nextArticle)}
-          openArticle={() => openArticle(nextArticle)}
-          title={nextArticle.title.rendered}
-        />
-      );
+
+    if (!nextArticle || !openArticle) {
+      return null;
     }
 
-    return null;
+    return (
+      <NextArticle
+        imageUrl={getLeadImageUrl(nextArticle)}
+        openArticle={() => openArticle(nextArticle)}
+        title={nextArticle.title.rendered}
+      />
+    );
   }
 
   renderInlineGallery() {
     const { article, showInlineGallery } = this.props;
+
     if (!showInlineGallery) {
       return null;
     }
+
     const images = _.map(article.wp.attachments.href, 'url');
 
     return (
@@ -71,7 +75,9 @@ export class ArticleDetailsScreen extends PureComponent {
 
   render() {
     const { article } = this.props;
+
     const articleImageUrl = getLeadImageUrl(article);
+    const resolvedTitle = he.decode(article.title.rendered);
     const momentDate = moment(article.modified);
 
     const dateInfo = momentDate.isAfter(0) ? (
@@ -80,10 +86,7 @@ export class ArticleDetailsScreen extends PureComponent {
       </Caption>
     ) : null;
 
-    const resolvedTitle = he.decode(article.title.rendered);
-
     return (
-
       <Screen styleName="full-screen paper">
         <NavigationBar
           animationName="solidify"

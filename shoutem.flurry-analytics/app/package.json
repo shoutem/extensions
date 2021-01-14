@@ -1,6 +1,6 @@
 {
   "name": "shoutem.flurry-analytics",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "description": "Measure and analyze activity across your app with Flurry analytics",
   "dependencies": {
     "react-native-flurry-sdk": "~5.1.0"

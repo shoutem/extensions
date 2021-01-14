@@ -1,6 +1,6 @@
 {
   "name": "shoutem.deals",
-  "version": "2.4.5-rc.1",
+  "version": "2.5.0",
   "description": "Create special deals and redeem them with coupons",
   "dependencies": {
     "currency-formatter": "^1.3.1",

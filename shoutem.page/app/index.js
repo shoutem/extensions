@@ -8,7 +8,7 @@ export const screens = {
   ClearNavbarLargePageScreen: PageScreen,
   SolidNavbarLargePageScreen: PageScreen,
   ClearNavbarMediumPageScreen: PageScreen,
-  SolidNavbarMediumPageScreen: PageScreen
+  SolidNavbarMediumPageScreen: PageScreen,
 };
 
 export const themes = extension.themes;

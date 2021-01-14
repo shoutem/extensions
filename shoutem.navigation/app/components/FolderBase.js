@@ -1,14 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
-import {
-  Image,
-  ScrollView,
-  View,
-  Device,
-} from '@shoutem/ui';
-
+import PropTypes from 'prop-types';
+import { Device, Image, ScrollView, View } from '@shoutem/ui';
 import {
   NAVIGATION_HEADER_HEIGHT,
   IPHONE_X_NOTCH_PADDING,
@@ -81,11 +75,7 @@ export default class FolderBase extends PureComponent {
   constructor(props, context) {
     super(props, context);
 
-    this.itemPressed = this.itemPressed.bind(this);
-    this.layoutChanged = this.layoutChanged.bind(this);
-    this.renderPage = this.renderPage.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.renderItem = this.renderItem.bind(this);
+    autoBindReact(this);
 
     this.state = {
       dimensions: {

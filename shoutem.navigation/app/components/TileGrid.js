@@ -1,11 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow, View, defaultThemeVariables, Device } from '@shoutem/ui';
-
 import { TILE_GRID } from '../const';
 import { isTabBarNavigation, resolveScrollViewProps } from '../helpers';
 import TileItem from './TileItem';

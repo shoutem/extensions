@@ -1,0 +1,27 @@
+{
+  "shoutem": {
+    "onboarding": {
+      "onboarding-page.add-page-button": "+ Add",
+      "onboarding-page.onboarding-settings-title": "Configure your onboarding pages here",
+      "onboarding-page.save-page-button": "Save",
+      "onboarding-page.text-position-label-top": "Top",
+      "onboarding-page.text-position-label-middle": "Middle",
+      "onboarding-page.text-position-label-bottom": "Bottom",
+      "onboarding-page.empty-fields-error": "Could not be saved! All fields must be populated, including background image.",
+      "onboarding-components-page.delete-title": "Delete page",
+      "onboarding-components-page.delete-message": "Are you sure you want to delete this page?",
+      "onboarding-components-page.delete-btn-label": "Delete",
+      "onboarding-components-page.delete-btn-message": "Delete page.",
+      "onboarding-components-page.cancel-btn-label": "Cancel",
+      "onboarding-components-page.page-description": "Page Description",
+      "onboarding-components-page.page-image": "Background image (1080x1920px)",
+      "onboarding-components-page.page-title": "Page Title",
+      "onboarding-components-page.text-position-label": "Text position",
+      "onboarding-components-page.upload-fail-message": "Upload failed! Please make sure you're using correct format and size.",
+      "onboarding-components-empty-state-settings-page.title": "Improve UX with Onboarding",
+      "onboarding-components-empty-state-settings-page.message": "Onboarding pages are displayed on first app launch and can help you make a good first impression. So, put yourself in your users’ shoes and demonstrate all the amazing features your app has to offer.",
+      "onboarding-components-empty-state-settings-page.button-label": "Enable",
+      "onboarding-components-empty-state-settings-page.error-message": "Ooops, something went wrong!"
+    }
+  }
+}

@@ -1,11 +1,8 @@
 import React from 'react';
 import { BackHandler, ToastAndroid } from 'react-native';
-
 import { canonicalRenderResource } from 'shoutem-core';
-
 import { getExtensionSettings } from 'shoutem.application/redux';
 import { I18n } from 'shoutem.i18n';
-
 import { getActiveNavigationStackState, navigateBack } from './redux/core';
 import { RootScreenStack } from './components/stacks';
 import { NavigationBar } from './components/ui';
@@ -65,7 +62,8 @@ export const appDidMount = (app) => {
 
 export function render() {
   const renderKey = canonicalRenderResource(ext(), 'RootScreenStack');
+
   return (
-    <RootScreenStack key={renderKey} styleName="root" />
+      <RootScreenStack key={renderKey} styleName="root" />
   );
 }

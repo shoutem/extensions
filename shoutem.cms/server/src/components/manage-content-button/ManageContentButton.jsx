@@ -29,14 +29,14 @@ export default class ManageContentButton extends Component {
       className,
       cmsButtonLabel,
       onNavigateToCmsClick,
-      showAdvancedSetup,
-      onToggleAdvancedSetup,
+      showAdditionalOptions,
+      onToggleAdditionalOptions,
     } = this.props;
 
-    const toggleButtonIcon = showAdvancedSetup
+    const toggleButtonIcon = showAdditionalOptions
       ? 'arrow-drop-up'
       : 'arrow-drop-down';
-    const toggleButtonClass = showAdvancedSetup ? 'primary' : 'default';
+    const toggleButtonClass = showAdditionalOptions ? 'primary' : 'default';
     const classes = classNames('manage-content-button', className);
 
     return (
@@ -54,7 +54,7 @@ export default class ManageContentButton extends Component {
           bsSize="large"
           bsStyle={toggleButtonClass}
           className="manage-content-button__advanced-setup"
-          onClick={onToggleAdvancedSetup}
+          onClick={onToggleAdditionalOptions}
         >
           <FontIcon name={toggleButtonIcon} size="24px" />
         </Button>
@@ -67,6 +67,6 @@ ManageContentButton.propTypes = {
   className: PropTypes.string,
   cmsButtonLabel: PropTypes.string,
   onNavigateToCmsClick: PropTypes.func,
-  showAdvancedSetup: PropTypes.bool,
-  onToggleAdvancedSetup: PropTypes.func,
+  showAdditionalOptions: PropTypes.bool,
+  onToggleAdditionalOptions: PropTypes.func,
 };

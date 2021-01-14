@@ -1,16 +1,14 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
 import {
+  Device,
   GridRow,
   HorizontalPager,
   PageIndicators,
-  Device,
 } from '@shoutem/ui';
-
 import {
   ICON_GRID,
   ext,
@@ -18,8 +16,8 @@ import {
   TAB_BAR_ITEM_HEIGHT,
 } from '../const';
 import { isTabBarNavigation } from '../helpers';
-import IconGridCellItem from './IconGridCellItem';
 import FolderBase from './FolderBase';
+import IconGridCellItem from './IconGridCellItem';
 
 const renderPageIndicators = (data, selectedIndex) => (
   <PageIndicators

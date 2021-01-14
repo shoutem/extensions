@@ -1,14 +1,15 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
+import PropTypes from 'prop-types';
+
 import {
-  TouchableOpacity,
-  Subtitle,
   Caption,
-  View,
+  Divider,
   Image,
   Row,
-  Divider,
+  Subtitle,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
 
 import { ArticleView } from './ArticleView';

@@ -1,10 +1,10 @@
 {
   "name": "auth",
-  "version": "2.4.8",
-  "platform": "~2.4.2",
+  "version": "2.5.1",
+  "platform": "2.5.*",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Migrated Facebook auth service to new endpoint",
+  "releaseNotes": "* Fixed empty members list when pulling the app from the background.",
   "description": "Show user profile, sign out user",
   "categories": [
     "users"

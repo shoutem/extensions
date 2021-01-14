@@ -1,3 +1,4 @@
+import React from 'react';
 import _ from 'lodash';
 import I18n from 'i18n-js';
 
@@ -10,6 +11,7 @@ import { actions, selectors } from './redux';
 
 import { ext } from './const';
 import customTranslations from './translations';
+import { LocalizationProvider } from './providers';
 
 /**
  * Merges all translations found in `translationsToAdd` into
@@ -106,3 +108,11 @@ export const appDidMount = (app) => {
   // Configure the moment library to use the same locale as the app
   moment.locale(resolvedLocale);
 };
+
+export function renderProvider(children) {
+  return (
+    <LocalizationProvider>
+      {children}
+    </LocalizationProvider>
+  );
+}

@@ -1,11 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { dimensionRelativeToIphone, Device } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-
+import { dimensionRelativeToIphone, Device } from '@shoutem/ui';
 import {
   LIST,
   ext,

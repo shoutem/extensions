@@ -1,6 +1,6 @@
 {
   "name": "shoutem.preview",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "description": "Shoutem preview extension",
   "license": "ISC",
   "dependencies": {

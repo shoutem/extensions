@@ -1,13 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { InteractionManager } from 'react-native';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { InteractionManager } from 'react-native';
 import { AppContextProvider } from 'shoutem-core';
 import { ScrollView, View } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-
 import { MAIN_NAVIGATION_SCREEN_TYPES } from '../../const';
-
 import { SceneProvider } from './SceneProvider';
 import { RNCardStack } from './RNCardStack';
 

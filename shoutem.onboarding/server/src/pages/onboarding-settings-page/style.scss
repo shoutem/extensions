@@ -1,0 +1,28 @@
+.main-container {
+  max-width: 552px;
+  margin: auto;
+
+  &.is-wide {
+    max-width: 808px;
+  }
+}
+
+.modal-backdrop {
+  background-color: #ffffff;
+
+  .in {
+    opacity: 0.8;
+  }
+}
+
+.button-group {
+  width: 100%;
+  position: relative;
+  padding-bottom: 20px;
+  padding-top: 20px;
+
+  Button:nth-child(2) {
+    position: absolute;
+    right: 0px;
+  }
+}

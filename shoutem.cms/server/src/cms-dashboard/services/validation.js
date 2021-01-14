@@ -106,6 +106,15 @@ function validateProperty(schemaProperty, field) {
           return error;
         }
       }
+
+      if (schemaProperty.format === PROPERTY_FORMATS.ENTITY_REFERENCE) {
+        const id = _.get(field, 'id');
+        const error = validateRequiredField(id);
+
+        if (error) {
+          return error;
+        }
+      }
     }
 
     const error = validateRequiredField(field);

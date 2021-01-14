@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { FolderItemContainer } from './FolderItemContainer';
 import { NavigationBaseItem } from './NavigationBaseItem';
 

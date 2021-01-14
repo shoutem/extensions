@@ -1,10 +1,6 @@
 export { default as rsaaPromise } from './rsaaPromise';
 
-export {
-  getSortOptions,
-  getParentCategoryId,
-  getVisibleCategoryIds,
-} from './shortcut';
+export * from './shortcut';
 
 export { getDropdownOptions, getSelectedOptionLabel } from './dropdown';
 
@@ -18,5 +14,6 @@ export {
 export { resolveHasLanguages, isLanguageModuleEnabled } from './language';
 
 export { getArrayDisplayLabel } from './array';
-export { calculateDifferenceObject } from './form';
 export { translateSchema } from './schema';
+export * from './importer';
+export * from './pagination';

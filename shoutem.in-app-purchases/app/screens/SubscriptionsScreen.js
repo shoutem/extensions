@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Alert } from 'react-native';
+import { Alert, ScrollView } from 'react-native';
 import _ from 'lodash';
 import autoBind from 'auto-bind';
 import { connect } from 'react-redux';
@@ -11,6 +11,7 @@ import {
   Image,
   View,
   Spinner,
+  LinearGradient,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 import { NavigationBar, isScreenActive } from 'shoutem.navigation';
@@ -37,7 +38,10 @@ class SubscriptionsScreen extends PureComponent {
     privacyPolicyUrl: PropTypes.string,
     termsOfServiceUrl: PropTypes.string,
     subscriptionMetadata: PropTypes.object,
+    productId: PropTypes.string,
     isScreenActive: PropTypes.bool,
+    style: PropTypes.any,
+    openURL: PropTypes.func,
   };
 
   constructor(props, contex) {
@@ -69,16 +73,8 @@ class SubscriptionsScreen extends PureComponent {
     }
   }
 
-  handlePrivacyPolicyPress() {
-    const { privacyPolicyUrl, openURL } = this.props;
-
-    openURL(privacyPolicyUrl);
-  }
-
-  handleTermsPress() {
-    const { termsOfServiceUrl, openURL } = this.props;
-
-    openURL(termsOfServiceUrl);
+  setLoadingState(loading) {
+    this.setState({ loading });
   }
 
   handleSuccessModalConfirm() {
@@ -95,7 +91,7 @@ class SubscriptionsScreen extends PureComponent {
 
     buyProduct(productId)
       .then(() => this.setLoadingState(false))
-      .catch(err => {
+      .catch((err) => {
         this.setLoadingState(false);
         formatPurchaseError(err);
       });
@@ -121,8 +117,16 @@ class SubscriptionsScreen extends PureComponent {
       });
   }
 
-  setLoadingState(loading) {
-    this.setState({ loading });
+  handleTermsPress() {
+    const { termsOfServiceUrl, openURL } = this.props;
+
+    openURL(termsOfServiceUrl);
+  }
+
+  handlePrivacyPolicyPress() {
+    const { privacyPolicyUrl, openURL } = this.props;
+
+    openURL(privacyPolicyUrl);
   }
 
   render() {
@@ -147,55 +151,61 @@ class SubscriptionsScreen extends PureComponent {
     return (
       <Screen styleName="paper with-notch-padding">
         <NavigationBar title={subscriptionMetadata.subscriptionScreenTitle} />
-        <Text style={style.leadingText}>
-          {subscriptionMetadata.subscriptionScreenDescription}
-        </Text>
-        <View style={style.container}>
-          <Image
-            resizeMode='contain'
-            style={style.image}
-            source={{ uri: subscriptionMetadata.subscriptionScreenImageUrl }}
-          />
-          <View style={style.buttonContainer}>
-            <Button
-              disabled={loading || isPreviewApp}
-              onPress={this.handleBuyPress}
-              style={style.button}
-            >
-              {!loading && (
-                <Text style={style.buttonText}>
-                  {formatSubscribeMessage(subscriptionProduct)}
-                </Text>
-              )}
-              {loading && <Spinner style={style.spinner} />}
-            </Button>
-            {trialDuration && <Text style={style.trialText}>{trialDuration}</Text>}
-            <Button
-              disabled={loading || isPreviewApp}
-              style={[style.button, style.buttonSecondary]}
-              onPress={this.handleRestorePress}
-            >
-              {!loading && (
-                <Text style={[style.buttonText, style.buttonTextSecondary]}>
-                  {I18n.t(ext('restoreButtonTitle'))}
-                </Text>
-              )}
-              {loading && <Spinner style={style.spinnerSecondary} />}
-            </Button>
-          </View>
-          <TermsAndPolicy
-            privacyPolicyUrl={privacyPolicyUrl}
-            termsOfServiceUrl={termsOfServiceUrl}
-            onPrivacyPolicyPress={this.handlePrivacyPolicyPress}
-            onTermsPress={this.handleTermsPress}
+        <View styleName="flexible">
+          <ScrollView contentContainerStyle={style.scrollContainer}>
+            <Text style={style.leadingText}>
+              {subscriptionMetadata.subscriptionScreenDescription}
+            </Text>
+            <Image
+              resizeMode="contain"
+              source={{ uri: subscriptionMetadata.subscriptionScreenImageUrl }}
+              style={style.image}
+            />
+          </ScrollView>
+          <LinearGradient
+            pointerEvents="box-none"
+            style={style.scrollGradient}
           />
         </View>
+        <View style={style.buttonContainer}>
+          <Button
+            disabled={loading || isPreviewApp}
+            onPress={this.handleBuyPress}
+            style={style.button}
+          >
+            {!loading && (
+              <Text style={style.buttonText}>
+                {formatSubscribeMessage(subscriptionProduct)}
+              </Text>
+            )}
+            {loading && <Spinner style={style.spinner} />}
+          </Button>
+          {trialDuration && <Text style={style.trialText}>{trialDuration}</Text>}
+          <Button
+            disabled={loading || isPreviewApp}
+            onPress={this.handleRestorePress}
+            style={[style.button, style.buttonSecondary]}
+          >
+            {!loading && (
+              <Text style={[style.buttonText, style.buttonTextSecondary]}>
+                {I18n.t(ext('restoreButtonTitle'))}
+              </Text>
+            )}
+            {loading && <Spinner style={style.spinnerSecondary} />}
+          </Button>
+        </View>
+        <TermsAndPolicy
+          onPrivacyPolicyPress={this.handlePrivacyPolicyPress}
+          onTermsPress={this.handleTermsPress}
+          privacyPolicyUrl={privacyPolicyUrl}
+          termsOfServiceUrl={termsOfServiceUrl}
+        />
         <SuccessModal
-          visible={modalActive}
-          title={I18n.t(ext('subscribeSuccessModalTitle'))}
-          description={purchaseSuccessDescription}
           buttonText={I18n.t(ext('startExploringButton'))}
+          description={purchaseSuccessDescription}
           onButtonPress={this.handleSuccessModalConfirm}
+          title={I18n.t(ext('subscribeSuccessModalTitle'))}
+          visible={modalActive}
         />
       </Screen>
     );
@@ -213,7 +223,7 @@ const mapStateToProps = (state, ownProps) => {
     termsOfServiceUrl: selectors.getTermsOfServiceLink(state),
     subscriptionMetadata: selectors.getSubscriptionMetadata(state),
     isScreenActive: isScreenActive(state, ownProps.screenId),
-  }
+  };
 };
 
 const mapDispatchToProps = {

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.audio",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "description": "Track player components for other extensions to utilize.",
   "dependencies": {
     "react-native-track-player": "2.0.0-rc13",

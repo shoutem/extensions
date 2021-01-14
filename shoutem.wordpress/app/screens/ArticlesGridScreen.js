@@ -1,34 +1,35 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
+import he from 'he';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import he from 'he';
+
+import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
-import { cloneStatus } from '@shoutem/redux-io';
 
-import { GridArticleView } from '../components/GridArticleView';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
+import { GridArticleView } from '../components/GridArticleView';
 import { getLeadImageUrl } from '../services';
 import { ext } from '../const';
-import {
-  ArticlesListScreen,
-  mapStateToProps,
-  mapDispatchToProps,
-} from './ArticlesListScreen';
+import { ArticlesListScreen, mapStateToProps, mapDispatchToProps } from './ArticlesListScreen';
 
 class ArticlesGridScreen extends ArticlesListScreen {
   static propTypes = {
     ...ArticlesListScreen.propTypes,
   };
 
-  constructor(props, context) {
-    super(props, context);
-    this.renderRow = this.renderRow.bind(this);
+  constructor(props) {
+    super(props);
+
+    autoBindReact(this);
   }
 
   getNavigationBarProps() {
+    const navBarTitle = _.get(this.props, 'title', '');
+
     return {
-      title: this.props.title || '',
+      title: navBarTitle,
       styleName: 'featured',
     };
   }

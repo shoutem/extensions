@@ -3,7 +3,7 @@ import { url, appId } from 'environment';
 import { ext } from 'context';
 import { SCHEMAS, CURRENT_SCHEMA } from '../types';
 
-export function loadSchema(schema = CURRENT_SCHEMA) {
+export function loadSchema(schema = CURRENT_SCHEMA, tag = 'schema') {
   const config = {
     schema: SCHEMAS,
     request: {
@@ -14,5 +14,5 @@ export function loadSchema(schema = CURRENT_SCHEMA) {
     },
   };
 
-  return find(config, ext('schema'));
+  return find(config, ext(tag));
 }

@@ -7,3 +7,4 @@ export { readFileAsText } from './readFileAsText';
 export { validateJson } from './validateJson';
 export { resolveTranslationRows } from './translations';
 export { migrateChannels } from './migration';
+export { createLanguageOptions } from './languageOptions';

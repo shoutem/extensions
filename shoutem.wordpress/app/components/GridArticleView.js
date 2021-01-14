@@ -3,12 +3,12 @@ import React from 'react';
 import moment from 'moment';
 
 import {
-  TouchableOpacity,
-  Subtitle,
   Caption,
   Card,
-  View,
   Image,
+  Subtitle,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
 
 import { ArticleView } from './ArticleView';

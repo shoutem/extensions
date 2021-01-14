@@ -1,9 +1,9 @@
 {
   "name": "audio",
   "title": "Audio",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "description": "Track player components for other extensions to utilize. NOTE: Lock screen controls will not be visible in the preview.",
-  "platform": "2.4.*",
+  "platform": "2.5.*",
   "icon": "server/assets/add-audio-image.png",
   "type": "system"
 }

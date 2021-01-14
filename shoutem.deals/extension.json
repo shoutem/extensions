@@ -1,12 +1,16 @@
 {
   "name": "deals",
   "title": "Deals",
-  "version": "2.4.5-rc.1",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "description": "Create special deals and redeem them with coupons",
   "icon": "server/assets/add-deals-image.png",
-  "dependencies": ["shoutem.layouts"],
-  "categories": ["commerce"],
+  "dependencies": [
+    "shoutem.layouts"
+  ],
+  "categories": [
+    "commerce"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -16,7 +20,9 @@
       "name": "DealsGridScreen",
       "title": "Deals grid",
       "image": "server/assets/fixed-grid.png",
-      "navigatesTo": ["@.LargeDealDetailsScreen"],
+      "navigatesTo": [
+        "@.LargeDealDetailsScreen"
+      ],
       "settings": {
         "listType": "grid-list",
         "hasFeaturedItem": false
@@ -27,7 +33,9 @@
       "title": "Deals list",
       "image": "server/assets/compact-list.png",
       "extends": "@.DealsGridScreen",
-      "navigatesTo": ["@.LargeDealDetailsScreen"],
+      "navigatesTo": [
+        "@.LargeDealDetailsScreen"
+      ],
       "settings": {
         "listType": "compact-list",
         "hasFeaturedItem": false
@@ -59,7 +67,9 @@
       "screen": "@.DealsGridScreen",
       "icon": "theme://deals.png",
       "settings": {
-        "favoritesSchemas": ["@.deals"]
+        "favoritesSchemas": [
+          "@.deals"
+        ]
       },
       "adminPages": [
         {
@@ -101,7 +111,9 @@
         "schema": "@.deals",
         "placesSchema": "shoutem.places.places"
       },
-      "categories": ["analytics"]
+      "categories": [
+        "analytics"
+      ]
     }
   ],
   "settings": {

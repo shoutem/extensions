@@ -15,6 +15,7 @@ module.exports = {
   entry: ['./src/index.js'],
   externals: {
     '@shoutem/redux-io': true,
+    '@shoutem/redux-composers': true,
     '@shoutem/react-web-ui': true,
     '@shoutem/web-core': true,
     classnames: true,

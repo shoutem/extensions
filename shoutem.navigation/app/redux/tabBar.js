@@ -1,13 +1,11 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { mapReducers } from '@shoutem/redux-composers';
-
 import {
   createNavigationReducer,
   setActiveNavigationStack,
   jumpToKey,
 } from './core';
-
 import { ext } from '../const';
 
 //

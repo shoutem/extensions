@@ -48,6 +48,7 @@ export function createCategory(shortcut, schema = CURRENT_SCHEMA) {
         nid: appId,
         session_id: auth.session,
         version: 58,
+        schema,
       })
       .toString();
 

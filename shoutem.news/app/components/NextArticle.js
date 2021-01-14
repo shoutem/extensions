@@ -1,16 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-
 import {
-  TouchableOpacity,
-  Subtitle,
   Caption,
   ImageBackground,
   Tile,
+  TouchableOpacity,
+  Subtitle,
 } from '@shoutem/ui';
-
 import { I18n } from 'shoutem.i18n';
-
 import { ext } from '../const';
 
 /**
@@ -33,11 +30,11 @@ export class NextArticle extends PureComponent {
           styleName="large-ultra-wide placeholder"
           source={{ uri: imageUrl }}
         >
-          <Tile
-            styleName="fill-parent md-gutter space-between"
-          >
+          <Tile styleName="fill-parent md-gutter space-between">
             <Caption styleName="bold h-left">{I18n.t(ext('upNext'))}</Caption>
-            <Subtitle styleName="h-left" numberOfLines={2}>{title}</Subtitle>
+            <Subtitle styleName="h-left" numberOfLines={2}>
+              {title}
+            </Subtitle>
           </Tile>
         </ImageBackground>
       </TouchableOpacity>

@@ -2,7 +2,6 @@
 // It is important to use those exact names
 
 import {
-  RewardsSettingsPage,
   LoyaltySettingsPage,
   DefaultLoyaltyShortcutSettingsPage,
   TransactionsPage,
@@ -14,7 +13,6 @@ import './style.scss';
 import { reducer } from './redux';
 
 export const pages = {
-  RewardsSettingsPage,
   LoyaltySettingsPage,
   DefaultLoyaltyShortcutSettingsPage,
   TransactionsPage,

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.camera",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Shoutem camera extension",
   "dependencies": {
     "react-native-camera": "^3.11.0"

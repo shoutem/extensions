@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import {
   Platform,
   StatusBar,
@@ -10,9 +10,7 @@ import { connect } from 'react-redux';
 import { Header as NavigationHeader } from 'react-native-navigation-experimental-compat';
 import _ from 'lodash';
 import tinyColor from 'tinycolor2';
-
 import { getExtensionSettings } from 'shoutem.application';
-
 import {
   connectAnimation,
   isAnimatedStyleValue,
@@ -22,11 +20,7 @@ import {
   TimingDriver,
 } from '@shoutem/animation';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Device,
-  LinearGradient,
-} from '@shoutem/ui';
-
+import { Device, LinearGradient } from '@shoutem/ui';
 import { ext } from '../../const';
 import composeChildren from './composeChildren';
 

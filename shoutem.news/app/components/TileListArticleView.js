@@ -1,15 +1,13 @@
 import React from 'react';
 import moment from 'moment';
-
 import {
-  TouchableOpacity,
   Caption,
+  Divider,
   ImageBackground,
   Tile,
   Title,
-  Divider,
+  TouchableOpacity,
 } from '@shoutem/ui';
-
 import { ArticleView } from './ArticleView';
 
 export class TileListArticleView extends ArticleView {
@@ -23,7 +21,10 @@ export class TileListArticleView extends ArticleView {
 
     return (
       <TouchableOpacity onPress={this.onPress}>
-        <ImageBackground styleName="large-banner placeholder" source={{ uri: imageUrl }}>
+        <ImageBackground
+          styleName="large-banner placeholder"
+          source={{ uri: imageUrl }}
+        >
           <Tile>
             <Title numberOfLines={3}>{title.toUpperCase()}</Title>
             {dateInfo}

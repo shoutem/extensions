@@ -1,10 +1,10 @@
 {
   "name": "rubicon-theme",
-  "version": "2.4.10",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "type": "system",
   "title": "Rubicon Theme",
-  "releaseNotes": "Added styling for Social's Status details screen",
+  "releaseNotes": "* Adjusted styling for in-app-purchases extension",
   "description": "Rubicon theme",
   "icon": "server/assets/add-rubicon-theme-image.png",
   "categories": [],

@@ -1,9 +1,10 @@
 import { createScopedReducer, getShortcutState } from '@shoutem/redux-api-sdk';
 import { resource, find, cloneStatus, RESOLVED_ENDPOINT } from '@shoutem/redux-io';
 import _ from 'lodash';
-import { toLocalDateTime } from './services';
+import { createCategoryFilter, extractBaseUrl, toLocalDateTime } from './services';
 import ext from './const';
 
+export const CATEGORIES_SCHEMA = 'shoutem.wordpress.categories';
 export const FEED_ITEMS = 'shoutem.wordpress.feedItems';
 export const WORD_PRESS_MEDIA_SCHEMA = 'shoutem.wordpress.media';
 
@@ -24,11 +25,33 @@ export function getPostsMediaParams(posts) {
   };
 }
 
-export function loadPosts({ feedUrl, shortcutId }) {
+export function getCategories({ feedUrl, shortcutId }) {
+  const baseUrl = extractBaseUrl(feedUrl);
+  const endpoint = `${baseUrl}/wp-json/wp/v2/categories`;
+
+  const config = {
+    schema: CATEGORIES_SCHEMA,
+    request: {
+      endpoint,
+      resourceType: 'json',
+      headers: {
+        'Access-Control-Request-Method': 'application/json',
+      },
+    },
+  };
+
+  return find(config, undefined, { shortcutId }, resolvedEndpointOptions);
+}
+
+export function loadPosts({ feedUrl, shortcutId, categories = [] }) {
+  const baseUrl = extractBaseUrl(feedUrl);
+  const categoriesFilter = createCategoryFilter(feedUrl, categories);
+  const endpoint = `${baseUrl}/wp-json/wp/v2/posts${categoriesFilter}`;
+
   const config = {
     schema: FEED_ITEMS,
     request: {
-      endpoint: `${feedUrl}/wp-json/wp/v2/posts`,
+      endpoint,
       resourceType: 'json',
       headers: {
         'Access-Control-Request-Method': 'application/json',
@@ -40,10 +63,12 @@ export function loadPosts({ feedUrl, shortcutId }) {
 }
 
 function loadPostsMedia({ feedUrl, posts, per_page, appendMode = false }) {
+  const baseUrl = extractBaseUrl(feedUrl);
+
   const config = {
     schema: WORD_PRESS_MEDIA_SCHEMA,
     request: {
-      endpoint: `${feedUrl}/wp-json/wp/v2/media`,
+      endpoint: `${baseUrl}/wp-json/wp/v2/media`,
       resourceType: 'json',
       headers: {
         'Access-Control-Request-Method': 'application/json',
@@ -58,20 +83,14 @@ function loadPostsMedia({ feedUrl, posts, per_page, appendMode = false }) {
 
 export function fetchWordPressPosts(params) {
   return dispatch => (
-    dispatch(loadPosts(params))
+    dispatch(getCategories(params))
+      .then(({ payload }) => dispatch(loadPosts({ ...params, categories: payload })))
       .then((action) => {
         const { payload: posts } = action;
+
         return dispatch(loadPostsMedia({ ...params, posts })).then(() => action);
       })
   );
-}
-
-/**
- * Used only for WordPressUrl validation: if URL is valid, request will return 200 OK,
- * otherwise it will fail.
- */
-export function validateWordPressUrl(params) {
-  return loadPosts(params);
 }
 
 export function navigateToUrl(url) {

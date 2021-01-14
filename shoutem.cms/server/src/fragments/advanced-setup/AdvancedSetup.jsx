@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import i18next from 'i18next';
+import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { shouldLoad, shouldRefresh } from '@shoutem/redux-io';
 import { LoaderContainer } from '@shoutem/react-web-ui';
@@ -10,6 +11,7 @@ import { loadCategories, updateShortcutCategories } from '../../actions';
 import {
   ParentCategorySelector,
   ChildCategorySelector,
+  ToggleContent,
 } from '../../components';
 import { getCategories } from '../../selectors';
 import { ALL_CATEGORIES_OPTION_KEY } from '../../services';
@@ -132,6 +134,7 @@ export class AdvancedSetup extends Component {
       parentCategoryId,
       visibleCategoryIds,
       schema,
+      showImporters,
     } = this.props;
 
     const {
@@ -145,52 +148,58 @@ export class AdvancedSetup extends Component {
       parentCategoryId === currentParentCategoryId &&
       _.isEqual(visibleCategoryIds, currentVisibleCategoryIds);
 
+    const formClasses = classNames({
+      form: showImporters,
+    });
+
     return (
-      <LoaderContainer
-        className="advanced-setup"
-        isLoading={createCategoryInProgress}
-        isOverlay
-      >
-        <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
-        <form>
-          <Row>
-            <Col md={6}>
-              <ParentCategorySelector
-                categories={rootCategories}
-                onCategorySelected={this.handleParentCategoryChange}
-                onCreateCategorySelected={this.handleCreateCategory}
-                parentCategoryId={currentParentCategoryId}
-                schemaTitle={schema.title}
-              />
-            </Col>
-            <Col md={6}>
-              <ChildCategorySelector
-                categories={childCategories}
-                disabled={!currentParentCategoryId}
-                onVisibleCategoriesChange={this.handleVisibleCategoriesChange}
-                visibleCategoryIds={currentVisibleCategoryIds}
-              />
-            </Col>
-          </Row>
-          <ButtonGroup className="advanced-setup__btns">
-            <Button
-              bsStyle="primary"
-              disabled={actionButtonsDisabled}
-              onClick={this.handleSave}
-            >
-              <LoaderContainer isLoading={saveInProgress}>
-                {i18next.t(LOCALIZATION.BUTTON_SAVE)}
-              </LoaderContainer>
-            </Button>
-            <Button
-              disabled={actionButtonsDisabled}
-              onClick={this.handleCancel}
-            >
-              {i18next.t(LOCALIZATION.BUTTON_CANCEL)}
-            </Button>
-          </ButtonGroup>
-        </form>
-      </LoaderContainer>
+      <ToggleContent title={i18next.t(LOCALIZATION.TITLE)}>
+        <LoaderContainer
+          className="advanced-setup"
+          isLoading={createCategoryInProgress}
+          isOverlay
+        >
+          <form className={formClasses}>
+            <Row>
+              <Col md={6}>
+                <ParentCategorySelector
+                  categories={rootCategories}
+                  onCategorySelected={this.handleParentCategoryChange}
+                  onCreateCategorySelected={this.handleCreateCategory}
+                  parentCategoryId={currentParentCategoryId}
+                  schemaTitle={schema.title}
+                />
+              </Col>
+              <Col md={6}>
+                <ChildCategorySelector
+                  categories={childCategories}
+                  disabled={!currentParentCategoryId}
+                  onVisibleCategoriesChange={this.handleVisibleCategoriesChange}
+                  visibleCategoryIds={currentVisibleCategoryIds}
+                />
+              </Col>
+            </Row>
+            <ButtonGroup className="advanced-setup__btns">
+              <Button
+                bsStyle="primary"
+                disabled={actionButtonsDisabled}
+                onClick={this.handleSave}
+              >
+                <LoaderContainer isLoading={saveInProgress}>
+                  {i18next.t(LOCALIZATION.BUTTON_SAVE)}
+                </LoaderContainer>
+              </Button>
+              <Button
+                disabled={actionButtonsDisabled}
+                onClick={this.handleCancel}
+              >
+                {i18next.t(LOCALIZATION.BUTTON_CANCEL)}
+              </Button>
+            </ButtonGroup>
+          </form>
+          {showImporters && <div className="divider" />}
+        </LoaderContainer>
+      </ToggleContent>
     );
   }
 }
@@ -202,6 +211,7 @@ AdvancedSetup.propTypes = {
   childCategories: PropTypes.array,
   parentCategoryId: PropTypes.string,
   visibleCategoryIds: PropTypes.array,
+  showImporters: PropTypes.bool,
   loadRootCategories: PropTypes.func,
   loadChildCategories: PropTypes.func,
   onCreateCategory: PropTypes.func,
@@ -210,8 +220,8 @@ AdvancedSetup.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    rootCategories: getCategories(state, 'parent'),
-    childCategories: getCategories(state, 'child'),
+    rootCategories: getCategories(state, 'advancedParent'),
+    childCategories: getCategories(state, 'advancedChild'),
   };
 }
 
@@ -221,9 +231,9 @@ function mapDispatchToProps(dispatch, ownProps) {
 
   return {
     loadRootCategories: () =>
-      dispatch(loadCategories('null', schema, 'parent')),
+      dispatch(loadCategories('null', schema, 'advancedParent')),
     loadChildCategories: parentCategoryId =>
-      dispatch(loadCategories(parentCategoryId, schema, 'child')),
+      dispatch(loadCategories(parentCategoryId, schema, 'advancedChild')),
     updateAdvancedOptions: (parentCategoryId, visibleCategoryIds) =>
       dispatch(
         updateShortcutCategories(

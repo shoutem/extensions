@@ -1,12 +1,16 @@
 {
   "name": "interactive-faq",
   "title": "Interactive FAQ",
-  "version": "2.4.3-rc.0",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "icon": "./server/assets/faq.png",
   "description": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
-  "dependencies": ["shoutem.cms"],
-  "categories": ["users"],
+  "dependencies": [
+    "shoutem.cms"
+  ],
+  "categories": [
+    "users"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -22,6 +26,9 @@
       "icon": "theme://comment.png",
       "name": "faq-shortcut",
       "screen": "@.InteractiveFaqScreen",
+      "capabilities": [
+        "shoutem.cms.import-csv"
+      ],
       "adminPages": [
         {
           "page": "@.FaqSettings",

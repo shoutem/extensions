@@ -1,18 +1,13 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Screen } from '@shoutem/ui';
-
 import { getFirstShortcut } from 'shoutem.application/shared/getFirstShortcut';
 import { executeShortcut } from 'shoutem.application/redux';
-
 import { NavigationBar } from '../components/ui';
 import mapExtensionSettingsToProps from './mapExtensionSettingsToProps';
 import shortcutChildrenRequired from './shortcutChildrenRequired';
-
-const { bool, string, object } = PropTypes;
 
 const resolveStyleName = (props) => {
   const {
@@ -30,12 +25,12 @@ const resolveStyleName = (props) => {
 export default function createSubNavigationScreen(Component) {
   class FolderBaseScreen extends PureComponent {
     static propTypes = {
-      firstShortcut: object,
-      shortcut: object,
-      navigationBarImage: string,
-      backgroundImageEnabledFirstScreen: bool,
-      showTitle: bool,
-      fitContainer: bool,
+      firstShortcut: PropTypes.object,
+      shortcut: PropTypes.object,
+      navigationBarImage: PropTypes.string,
+      backgroundImageEnabledFirstScreen: PropTypes.bool,
+      showTitle: PropTypes.bool,
+      fitContainer: PropTypes.bool,
     };
 
     constructor(props) {

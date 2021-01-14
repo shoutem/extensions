@@ -1,7 +1,7 @@
 {
   "name": "redux",
-  "version": "2.4.0",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "title": "Redux",
   "description": "Redux integration",
   "icon": "server/assets/add-redux-image.png",

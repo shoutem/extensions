@@ -25,18 +25,6 @@
     }
 
     > thead > tr {
-      > :first-child {
-        width: 80px;
-      }
-    }
-
-    > thead > tr {
-      > :last-child {
-        width: 35px;
-      }
-    }
-
-    > thead > tr {
       > :nth-child(2) {
         width: 220px;
       }
@@ -49,10 +37,17 @@
     }
 
     > thead > tr {
-      > :nth-child(5) {
+      > :nth-child(5), :nth-child(6), :last-child {
         width: 35px;
       }
     }
+
+    .link { 
+      display: flex;
+      border-bottom: none;
+      padding: 0 7px;
+    }
+    
 
     > tbody > tr {
       > :nth-child(2) {
@@ -103,22 +98,6 @@
               margin-top: 3px;
             }
           }
-        }
-      }
-    }
-
-    > tbody > tr {
-      > :nth-child(5) {
-        .form-control-static {
-          padding-top: 0px;
-        }
-      }
-    }
-
-    > tbody > tr {
-      > :last-child {
-        .form-control-static {
-          padding-top: 0px;
         }
       }
     }

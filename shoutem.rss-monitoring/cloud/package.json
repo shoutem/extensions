@@ -1,6 +1,6 @@
 {
   "name": "shoutem.rss-monitoring",
-  "version": "2.4.3",
+  "version": "2.5.1",
   "private": true,
   "scripts": {
     "@comment init": "Generates env files for all workflow types - should work out of the box",
@@ -74,7 +74,7 @@
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
-    "rss-parser": "^3.8.0",
+    "rss-parser": "3.8.1",
     "scaffander": "1.0.6",
     "sequelize": "^5.19.0",
     "sequelize-cli": "^5.5.0",

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.notification-center",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "description": "Manage push notification settings within the app",
   "dependencies": {
     "react-native-permissions": "~2.2.1"

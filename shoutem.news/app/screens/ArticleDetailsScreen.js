@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import moment from 'moment';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   ScrollView,
@@ -14,9 +13,7 @@ import {
   SimpleHtml,
   View,
 } from '@shoutem/ui';
-
 import { NavigationBar } from 'shoutem.navigation';
-
 import { NextArticle } from '../components/NextArticle';
 import { ext } from '../const';
 
@@ -123,7 +120,6 @@ export class ArticleDetailsScreen extends PureComponent {
             </View>
             {this.renderUpNext()}
           </View>
-
         </ScrollView>
       </Screen>
     );

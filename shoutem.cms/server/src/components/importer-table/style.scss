@@ -1,0 +1,68 @@
+.importer-table {
+  .table {
+    margin-top: 10px;
+    margin-bottom: 0px;
+
+    > tbody > tr.table__empty-row {
+      border-bottom: none;
+      color: #888fa1;
+
+      > td {
+        padding-top: 8px;
+      }
+    }
+
+    > thead > tr > th:first-child,
+    > tbody > tr > td:first-child {
+      padding-left: 12px;
+    }
+
+    > thead > tr > th,
+    > tbody > tr > td {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    > thead > tr > th {
+      label {
+        padding-top: 0px;
+        padding-bottom: 0px;
+        height: auto;
+      }
+    }
+
+    > thead > tr > th:nth-child(4),
+    > tbody > tr > td:nth-child(4) {
+      width: 30px;
+    }
+
+    > thead > tr > th:last-child,
+    > tbody > tr > td:last-child {
+      width: 50px;
+    }
+
+    .editable-table-cell {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+
+    .editable-table-actions-cell {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+  }
+
+  .importer-table__title {
+    float: right;
+
+    .icon-label {
+      text-transform: none;
+      font-weight: normal;
+    }
+  }
+
+  .import-info-icon-popover {
+    color: #444f6c;
+    padding-top: 1px;
+  }
+}

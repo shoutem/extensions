@@ -1,13 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
-
-import {
-  View,
-  ShareButton,
-} from '@shoutem/ui';
+import { ShareButton, View } from '@shoutem/ui';
 
 const createShareButton = navBarProps => () => {
   const { title, text, link } = navBarProps.share;
+
   return (
     <View virtual styleName="container">
       <ShareButton

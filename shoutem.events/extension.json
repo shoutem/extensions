@@ -1,11 +1,16 @@
 {
   "name": "events",
-  "version": "2.4.3-rc.1",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "title": "Events",
   "description": "Show items with location and time",
-  "dependencies": ["shoutem.layouts", "shoutem.cms"],
-  "categories": ["content"],
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.cms"
+  ],
+  "categories": [
+    "content"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -21,6 +26,9 @@
       "title": "Events",
       "name": "events-shortcut",
       "icon": "theme://events.png",
+      "capabilities": [
+        "shoutem.cms.import-csv"
+      ],
       "settings": {
         "defaultShortcutTitle": "Events",
         "extensionTitle": "Events",
@@ -47,7 +55,10 @@
       "name": "EventsScreen",
       "title": "Fixed grid",
       "image": "./server/assets/images/fixed-grid.png",
-      "navigatesTo": ["@.EventDetailsScreen", "@.SingleEventMapScreen"],
+      "navigatesTo": [
+        "@.EventDetailsScreen",
+        "@.SingleEventMapScreen"
+      ],
       "settings": {
         "listType": "grid-list",
         "hasFeaturedItem": false

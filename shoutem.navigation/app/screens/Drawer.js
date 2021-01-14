@@ -1,19 +1,16 @@
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 import { Dimensions, ScrollView, Animated } from 'react-native';
 import SideMenu from 'react-native-side-menu';
 import { connect } from 'react-redux';
-
 import {
   executeShortcut,
   getActiveShortcut,
   isShortcutVisible,
 } from 'shoutem.application/redux';
-
 import { connectStyle } from '@shoutem/theme';
 import { Screen, Button, Icon, View } from '@shoutem/ui';
-
 import DrawerItem from '../components/DrawerItem';
 import { ScreenStack } from '../components/stacks';
 import { ChildNavigationBar } from '../components/ui';

@@ -1,10 +1,10 @@
 {
   "name": "advertising",
   "title": "Advertising",
-  "version": "2.4.3",
+  "version": "2.5.0",
   "description": "Integrate AdMob and embed ads to your application",
   "icon": "server/assets/add-advertising-image.png",
-  "platform": "~2.4.1",
+  "platform": "2.5.*",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
