@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { View } from 'react-native';
 import Modal from 'react-native-modal';
-import _ from 'lodash';
 import { connectStyle } from '@shoutem/theme';
 import {
   Text,
@@ -18,6 +17,7 @@ class SuccessModal extends PureComponent {
     buttonText: PropTypes.string,
     onButtonPress: PropTypes.func,
     onModalHide: PropTypes.func,
+    style: PropTypes.any,
   };
 
   static defaultProps = { buttonText: 'OK' };
@@ -35,11 +35,11 @@ class SuccessModal extends PureComponent {
 
     return (
       <Modal
+        hasBackdrop={false}
         isVisible={visible}
         onModalHide={onModalHide}
-        hasBackdrop={false}
-        useNativeDriver
         style={style.modal}
+        useNativeDriver
       >
         <View style={style.container}>
           {title && <Text style={style.title}>{title}</Text>}

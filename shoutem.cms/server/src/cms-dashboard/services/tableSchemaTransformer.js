@@ -3,7 +3,7 @@ import i18next from 'i18next';
 import { getLayoutsTable } from './schema';
 import LOCALIZATION from './localization';
 
-const HEADER_TYPES = {
+export const HEADER_TYPES = {
   TEXT: 'text',
   INPUT: 'input',
   SELECT: 'select',
@@ -60,6 +60,7 @@ function getTableHeader(column, properties, categories, languages) {
       id: 'categories',
       value: i18next.t(LOCALIZATION.CATEGORY_SELECTOR_TITLE),
       title: i18next.t(LOCALIZATION.CATEGORY_SELECTOR_TITLE),
+      type: HEADER_TYPES.TEXT,
       component: 'CategorySelector',
       format: 'categories',
     };
@@ -75,6 +76,7 @@ function getTableHeader(column, properties, categories, languages) {
       id: 'channels',
       value: i18next.t(LOCALIZATION.LANGUAGE_SELECTOR_TITLE),
       title: i18next.t(LOCALIZATION.LANGUAGE_SELECTOR_TITLE),
+      type: HEADER_TYPES.TEXT,
       component: 'LanguageSelector',
       format: 'languages',
     };
@@ -101,9 +103,14 @@ export function getTableHeaders(schema, categories, languages) {
   const { properties } = schema;
   const { columns } = tableLayout;
 
-  return _.compact(
+  const tableHeaders = _.compact(
     _.map(columns, column =>
       getTableHeader(column, properties, categories, languages),
     ),
   );
+
+  // added one extra empty table header for cms actions
+  tableHeaders.push({ id: 'actions', format: 'actions' });
+
+  return tableHeaders;
 }

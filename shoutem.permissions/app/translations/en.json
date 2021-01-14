@@ -1,0 +1,10 @@
+{
+  "shoutem": {
+    "permissions": {
+      "cancel": "Cancel",
+      "missingPermissionsTitle": "Missing Permissions",
+      "missingPermissionsMessage": "Please enable necessary permissions in device settings",
+      "openSettings": "Go to Settings"
+    }
+  }
+}

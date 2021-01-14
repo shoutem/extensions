@@ -1,58 +1,56 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import _ from 'lodash';
-import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import he from 'he';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import { find, next, shouldRefresh } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { navigateTo as navigateToAction } from 'shoutem.navigation';
-import { find, next } from '@shoutem/redux-io';
 
 import { RemoteDataListScreen } from 'shoutem.application';
+import { navigateTo as navigateToAction } from 'shoutem.navigation';
 
 import { ListArticleView } from '../components/ListArticleView';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
 import { getLeadImageUrl, getAuthorName } from '../services';
-import {
-  WORDPRESS_NEWS_SCHEMA,
-  fetchWordpressPosts,
-  getFeedItems,
-} from '../redux';
-import { ext } from '../const';
+import { fetchWordpressPosts, getFeedCategories, getFeedItems } from '../redux';
+import { ext, POSTS_PER_PAGE } from '../const';
 
 export class ArticlesListScreen extends RemoteDataListScreen {
   static propTypes = {
     ...RemoteDataListScreen.propTypes,
     page: PropTypes.number,
-    perPage: PropTypes.number,
     loadFeed: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      ...this.state,
-      schema: WORDPRESS_NEWS_SCHEMA,
-      page: 1,
-      nextPage: null,
-      perPage: 20,
-    };
 
-    this.openArticle = this.openArticle.bind(this);
-    this.openArticleWithId = this.openArticleWithId.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
-    this.fetchPosts = this.fetchPosts.bind(this);
+    autoBindReact(this);
+
+    this.state = {
+      page: 1,
+    };
+  }
+
+  refreshData(prevProps = {}) {
+    const { categories, data } = this.props;
+
+    if (shouldRefresh(data, true) && shouldRefresh(categories, true)) {
+      this.fetchData();
+    }
   }
 
   fetchPosts() {
-    const { feedUrl, shortcut: { id: shortcutId } } = this.props;
-    const { perPage, page } = this.state;
+    const { feedUrl, fetchWordpressPosts, shortcut: { id: shortcutId } } = this.props;
+    const { page } = this.state;
 
-    this.props.fetchWordpressPosts({
+    fetchWordpressPosts({
       feedUrl,
       shortcutId,
       page,
-      perPage,
+      perPage: POSTS_PER_PAGE,
       appendMode: page > 1,
     });
   }
@@ -64,10 +62,7 @@ export class ArticlesListScreen extends RemoteDataListScreen {
       return;
     }
 
-    this.setState({
-      page: 1,
-    },
-      this.fetchPosts);
+    this.setState({ page: 1 }, this.fetchPosts);
   }
 
   openArticle(article) {
@@ -87,15 +82,17 @@ export class ArticlesListScreen extends RemoteDataListScreen {
 
   openArticleWithId(articleId) {
     const { data } = this.props;
+
     const article = _.find(data, _.matchesProperty('id', parseInt(articleId, 10)));
     this.openArticle(article);
   }
 
   getNextArticle(article) {
     const { data } = this.props;
+
     const currentArticleIndex = _.findIndex(data, { id: article.id });
-    if (currentArticleIndex < 0) return null;
-    return data[currentArticleIndex + 1];
+
+    return currentArticleIndex < 0 ? null : data[currentArticleIndex + 1];
   }
 
   renderFeaturedItem(article) {
@@ -136,6 +133,7 @@ export const mapStateToProps = (state, ownProps) => {
     feedUrl,
     shortcut,
     data: getFeedItems(state, feedUrl),
+    categories: getFeedCategories(state, feedUrl),
   };
 };
 

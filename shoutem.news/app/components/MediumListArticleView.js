@@ -1,15 +1,13 @@
 import React from 'react';
 import moment from 'moment';
-
 import {
-  TouchableOpacity,
-  Subtitle,
   Caption,
-  View,
-  Image,
   Card,
+  Image,
+  Subtitle,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
-
 import { ArticleView } from './ArticleView';
 
 export class MediumListArticleView extends ArticleView {
@@ -22,9 +20,7 @@ export class MediumListArticleView extends ArticleView {
     ) : null;
 
     return (
-      <TouchableOpacity
-        onPress={this.onPress}
-      >
+      <TouchableOpacity onPress={this.onPress}>
         <Card styleName="horizontal">
           <Image
             styleName="medium-portrait rounded-corners placeholder"
@@ -38,6 +34,6 @@ export class MediumListArticleView extends ArticleView {
           </View>
         </Card>
       </TouchableOpacity>
-   );
+    );
   }
 }

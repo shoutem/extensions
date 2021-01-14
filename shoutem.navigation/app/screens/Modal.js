@@ -1,23 +1,12 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
-
-import {
-  View,
-  Screen,
-  Button,
-  Icon,
-} from '@shoutem/ui';
-
+import { Button, Icon, Screen, View } from '@shoutem/ui';
 import { ChildNavigationBar } from '../components/ui';
 import { ScreenStack } from '../components/stacks';
-import {
-  navigateBack,
-  closeModal,
-} from '../redux/core';
+import { navigateBack, closeModal } from '../redux/core';
 import { ext } from '../const';
 
 class Modal extends PureComponent {
@@ -36,8 +25,8 @@ class Modal extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
-    
-    this.closeModal = this.closeModal.bind(this);
+
+    autoBindReact(this);
   }
 
   closeModal() {

@@ -2,10 +2,12 @@ import _ from 'lodash';
 import { ext } from 'context';
 import { denormalizeCollection, denormalizeItem } from 'denormalizer';
 import { isInitialized } from '@shoutem/redux-io';
+import { getStatus, setStatus } from '@shoutem/redux-io/status';
 import { createSelector } from 'reselect';
 import {
   CATEGORIES,
   CHANNELS,
+  IMPORTERS,
   SCHEMAS,
   CURRENT_SCHEMA,
   LANGUAGE_MODULE_STATUS,
@@ -42,6 +44,25 @@ export function getLanguageModuleStatus(state) {
   return languageModule;
 }
 
+export function getImporters(state) {
+  const cmsState = getCmsState(state);
+  const importers = _.get(cmsState, 'importers');
+  const collection = denormalizeCollection(importers, undefined, IMPORTERS);
+
+  const rawImporters = _.get(cmsState, 'rawImporters.data');
+  const filteredImporters = _.filter(rawImporters, rawImporter => {
+    const id = _.get(rawImporter, 'id');
+
+    if (_.find(collection, { id })) {
+      return rawImporter;
+    }
+  });
+
+  setStatus(filteredImporters, getStatus(collection));
+
+  return filteredImporters;
+}
+
 export function getLanguages(state) {
   const cmsState = getCmsState(state);
   const languages = _.get(cmsState, 'languages');
@@ -70,24 +91,20 @@ export function getSchema(state) {
   return denormalizeItem(cmsState.schema, undefined, SCHEMAS);
 }
 
-export function getResources(state) {
+export function getResources(state, categoryId) {
   const cmsState = getCmsState(state);
-  return denormalizeCollection(cmsState.resources, undefined, CURRENT_SCHEMA);
+  const currentResources = _.get(cmsState.resources, categoryId);
+
+  return denormalizeCollection(currentResources, undefined, CURRENT_SCHEMA);
 }
 
-export const dataInitialized = shortcut =>
+export const dataInitialized = () =>
   createSelector(
     getCategories,
     getChildCategories,
     getSchema,
-    getResources,
-    (categories, childCategories, schema, resources) => {
-      const shortcutSettings = shortcut.settings || {};
-      const { parentCategory } = shortcutSettings;
-
-      const resourcesInitialized = !parentCategory || isInitialized(resources);
+    (categories, childCategories, schema) => {
       return (
-        resourcesInitialized &&
         isInitialized(categories) &&
         isInitialized(childCategories) &&
         isInitialized(schema)

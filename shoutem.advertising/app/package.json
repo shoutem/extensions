@@ -1,6 +1,6 @@
 {
   "name": "shoutem.advertising",
-  "version": "2.4.3",
+  "version": "2.5.0",
   "description": "Integrate AdMob and embed ads to your application",
   "dependencies": {
     "@react-native-firebase/app": "7.1.0",

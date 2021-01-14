@@ -1,0 +1,32 @@
+{
+  "name": "onboarding",
+  "title": "Onboarding",
+  "version": "2.5.0",
+  "description": "Shows a quick tour on the first app launch.",
+  "icon": "server/assets/onboarding-icon.png",
+  "platform": "2.5.*",
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
+  "screens": [
+    {
+      "name": "OnboardingScreen"
+    }
+  ],
+  "pages": [
+    {
+      "name": "OnboardingSettingsPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.OnboardingSettingsPage",
+      "title": "Settings"
+    }
+  ],
+  "settings": {
+    "pageSettings": []
+  }
+}

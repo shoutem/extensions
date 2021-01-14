@@ -1,0 +1,14 @@
+.translate-table__row {
+  height: 64px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  border-bottom: 1px solid rgba(49, 60, 89, 0.13);
+}
+
+.translate-table__row-item {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}

@@ -1,12 +1,14 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "2.4.6",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "skipClone": false,
   "releaseNotes": "* Added infinite load for Post details comments\n* Fixed like status update on Post details screen\n* Fixed 'Create new status' input and header",
   "description": "Let members create posts, comment and like them",
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

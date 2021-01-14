@@ -1,7 +1,5 @@
 import React from 'react';
-
 import { Icon, View } from '@shoutem/ui';
-
 import { NavigationBaseItem } from './NavigationBaseItem';
 import { FolderItemContainer } from './FolderItemContainer';
 
@@ -12,7 +10,7 @@ import { FolderItemContainer } from './FolderItemContainer';
 export default class ListItem extends NavigationBaseItem {
   render() {
     const { style } = this.props;
-    
+
     return (
       <FolderItemContainer
         onPress={this.onPress}

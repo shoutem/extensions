@@ -1,7 +1,7 @@
 {
   "name": "in-app-purchases",
-  "version": "1.0.1",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "title": "In App Purchases",
   "description": "Add Apple/Google Play subscriptions to your app",
   "icon": "server/assets/iap.png",

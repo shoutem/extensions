@@ -5,6 +5,7 @@ import VideoUploaderReduxFormElement from './components/video-uploader-redux-for
 import GeolocationReduxFormElement from './components/geolocation-redux-form-element';
 import DateTimeReduxFormElement from './components/date-time-redux-form-element';
 import TextAreaReduxFormElement from './components/text-area-redux-from-element';
+import EntityReferenceReduxFormElement from './components/entity-reference-redux-form-element'
 
 export {
   ImageUploaderReduxFormElement,
@@ -14,4 +15,5 @@ export {
   GeolocationReduxFormElement,
   DateTimeReduxFormElement,
   TextAreaReduxFormElement,
+  EntityReferenceReduxFormElement,
 };

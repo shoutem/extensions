@@ -1,10 +1,12 @@
 {
   "name": "products",
-  "version": "2.4.2-rc.1",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "title": "Products",
   "description": "Show products with purchase link",
-  "categories": ["commerce"],
+  "categories": [
+    "commerce"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -14,13 +16,18 @@
     "url": "https://github.com/shoutem/extensions"
   },
   "icon": "server/assets/add-products-image.png",
-  "dependencies": ["shoutem.cms"],
+  "dependencies": [
+    "shoutem.cms"
+  ],
   "shortcuts": [
     {
       "name": "openProductsList",
       "title": "Products",
       "screen": "@.ProductsList",
       "icon": "theme://cart.png",
+      "capabilities": [
+        "shoutem.cms.import-csv"
+      ],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",

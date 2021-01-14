@@ -1,6 +1,6 @@
 {
   "name": "shoutem.youtube",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "description": "Show a video gallery from Youtube channel, user or playlist",
   "dependencies": {
     "he": "^1.2.0",

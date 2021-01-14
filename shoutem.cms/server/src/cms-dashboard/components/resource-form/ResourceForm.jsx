@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { reduxForm } from 'redux-form';
 import { Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
@@ -24,6 +25,8 @@ function ResourceForm({
   fields,
   onCancel,
   touch,
+  loadSchema,
+  loadResources,
   googleApiKey,
   handleSubmit,
   values,
@@ -39,8 +42,10 @@ function ResourceForm({
   const options = {
     assetManager,
     canonicalName,
-    touch,
     googleApiKey,
+    touch,
+    loadSchema,
+    loadResources,
   };
   const elements = resolveSchemaElements(schema, fields, options);
 

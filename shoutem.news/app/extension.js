@@ -14,6 +14,4 @@ export const screens = {
   LargeArticleDetailsScreen,
 };
 
-export const themes = {
-
-};
+export const themes = {};

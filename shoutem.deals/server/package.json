@@ -1,6 +1,6 @@
 {
   "name": "shoutem.deals",
-  "version": "2.4.5-rc.1",
+  "version": "2.5.0",
   "description": "Create special deals and redeem them with coupons",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
@@ -41,7 +41,7 @@
     "url-loader": "^0.5.8",
     "webpack": "^2.2.1",
     "webpack-dashboard": "^0.3.0",
-    "webpack-dev-server": "^2.4.2"
+    "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
     "@shoutem/assets-sdk": "1.0.0",

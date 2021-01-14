@@ -4,7 +4,9 @@
 
 // screens imports
 import LanguagePage from './pages/language-page';
+import ScreensPage from './pages/screens-page';
 
 export const pages = {
   LanguagePage,
+  ScreensPage
 };

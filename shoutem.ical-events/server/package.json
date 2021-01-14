@@ -1,6 +1,6 @@
 {
   "name": "shoutem.ical-events",
-  "version": "2.4.2",
+  "version": "2.5.0",
   "description": "Shoutem extension for managing iCal events",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

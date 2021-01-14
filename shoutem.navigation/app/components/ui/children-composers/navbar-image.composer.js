@@ -1,12 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-
-import {
-  View,
-  Image,
-  Device,
-} from '@shoutem/ui';
-
+import { Device, Image, View } from '@shoutem/ui';
 import { NavigationBar } from '../NavigationBar';
 
 const imageFitContainer = navBarProps => (NavigationBar.fitContainer || navBarProps.fitContainer);

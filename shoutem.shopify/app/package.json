@@ -1,6 +1,6 @@
 {
   "name": "shoutem.shopify",
-  "version": "2.4.5-rc.0",
+  "version": "2.5.1",
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
     "apollo-client": "^2.2.8",

@@ -4,6 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import CategorySelector from '../category-selector';
 import LanguageSelector from '../language-selector';
+import TextTableColumn from '../text-table-column';
 
 const DEFAULT_DATE_TIME_FORMAT = 'DD MMM YYYY @ hh:mm a';
 
@@ -40,7 +41,7 @@ export default class CmsTableRow extends Component {
   }
 
   formatValue(header, value) {
-    const { languages, categories, mainCategoryId } = this.props;
+    const { languages, categories, mainCategoryId, actionsMenu } = this.props;
     const { format } = header;
 
     if (format === 'date-time') {
@@ -55,6 +56,7 @@ export default class CmsTableRow extends Component {
 
     if (format === 'categories') {
       const categoryIds = _.map(value, 'id');
+
       return (
         <CategorySelector
           categories={categories}
@@ -76,7 +78,11 @@ export default class CmsTableRow extends Component {
       );
     }
 
-    return value;
+    if (format === 'actions') {
+      return actionsMenu;
+    }
+
+    return <TextTableColumn value={value} />;
   }
 
   renderTableCell(header) {
@@ -94,13 +100,10 @@ export default class CmsTableRow extends Component {
   }
 
   render() {
-    const { headers, actionsMenu } = this.props;
+    const { headers } = this.props;
 
     return (
-      <tr className="cms-table-row">
-        {_.map(headers, this.renderTableCell)}
-        {actionsMenu}
-      </tr>
+      <tr className="cms-table-row">{_.map(headers, this.renderTableCell)}</tr>
     );
   }
 }

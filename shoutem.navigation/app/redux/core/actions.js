@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { StateUtils } from 'react-native-navigation-experimental-compat';
-
 import { getActiveRoute } from './selectors';
 import { ext } from '../../const';
 

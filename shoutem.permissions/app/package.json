@@ -1,0 +1,11 @@
+{
+  "name": "shoutem.permissions",
+  "version": "1.0.0",
+  "description": "Extension for app permission management. ",
+  "dependencies": {
+    "react-native-permissions": "~2.2.0"
+  },
+  "nativeDependencies": [
+    "react-native-permissions"
+  ]
+}

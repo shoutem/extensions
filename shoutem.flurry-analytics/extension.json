@@ -1,8 +1,8 @@
 {
   "name": "flurry-analytics",
   "title": "Flurry analytics",
-  "version": "2.4.1",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "description": "Measure and analyze activity across your app with Flurry analytics",
   "icon": "server/assets/add-analytics-image.png",
   "categories": [

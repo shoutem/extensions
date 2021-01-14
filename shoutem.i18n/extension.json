@@ -1,8 +1,9 @@
 {
   "name": "i18n",
   "title": "Language & Region",
-  "version": "2.4.5",
-  "platform": "2.4.*",
+  "version": "2.5.1",
+  "platform": "2.5.*",
+  "releaseNotes": "* Converted to system extension",
   "description": "Configure the language and regional settings of your app.",
   "icon": "server/assets/add-translation.png",
   "i18n": {
@@ -13,12 +14,20 @@
     {
       "name": "LanguagePage",
       "type": "react-page"
+    },
+    {
+      "name": "ScreensPage",
+      "type": "react-page"
     }
   ],
   "settingsPages": [
     {
       "page": "@.LanguagePage",
       "title": "Language"
+    },
+    {
+      "page": "@.ScreensPage",
+      "title": "Screens"
     }
   ],
   "shortcuts": [

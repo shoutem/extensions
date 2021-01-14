@@ -9,6 +9,7 @@ import {
   DateTimeReduxFormElement,
   TextEditorReduxFormElement,
   TextAreaReduxFormElement,
+  EntityReferenceReduxFormElement,
 } from '@shoutem/form-builder';
 import SectionForm from '../components/section-form';
 import FormContainer from '../components/form-container';
@@ -232,6 +233,23 @@ export function resolveFormElement(sectionProperty, schema, fields, options) {
     return resolveReactComponent(ReduxFormElement, props);
   }
 
+  if (
+    schemaProperty.type === PROPERTY_TYPES.OBJECT &&
+    schemaProperty.format === PROPERTY_FORMATS.ENTITY_REFERENCE
+  ) {
+    const props = {
+      elementId: propertyKey,
+      field: propertyField,
+      name: schemaProperty.title,
+      canonicalName: schemaProperty.referencedSchema,
+      loadSchema: options.loadSchema,
+      loadResources: options.loadResources,
+      placeholder: i18next.t(LOCALIZATION.ENTITY_REFERENCE_PLACEHOLDER_LABEL),
+      touch: options.touch,
+    };
+    return resolveReactComponent(EntityReferenceReduxFormElement, props);
+  }
+
   return null;
 }
 
@@ -281,4 +299,30 @@ export function resolveSchemaElements(schema, fields, options) {
 
     return resolveReactComponent(SectionForm, sectionProps);
   });
+}
+
+function calculateChanges(newObject, object) {
+  return _.transform(newObject, (result, newValue, key) => {
+    const value = object[key];
+
+    if (_.isEqual(newValue, value)) {
+      return;
+    }
+
+    if (_.isObject(newValue) && _.isObject(value)) {
+      // eslint-disable-next-line no-param-reassign
+      result[key] = calculateChanges(newValue, value);
+    }
+
+    // eslint-disable-next-line no-param-reassign
+    result[key] = newValue;
+  });
+}
+
+export function calculateDifferenceObject(newObject, object) {
+  if (!object) {
+    return newObject;
+  }
+
+  return calculateChanges(newObject, object);
 }

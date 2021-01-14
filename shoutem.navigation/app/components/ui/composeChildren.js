@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
-
 import ChildrenComposers from './children-composers';
 
 // eslint-disable-next-line react/prefer-stateless-function

@@ -1,9 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { executeShortcut } from 'shoutem.application/redux';
-
 import {
   replace,
   REPLACE,

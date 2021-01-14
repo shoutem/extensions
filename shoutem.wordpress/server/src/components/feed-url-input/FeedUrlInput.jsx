@@ -36,12 +36,13 @@ export default class FeedUrlInput extends Component {
 
     this.props.onContinueClick(feedUrl)
       .then(() => this.setState({ inProgress: false }))
-      .catch(() => (
+      .catch((error) => {
+        console.error('Failed to update feed URL:\n', error);
         this.setState({
           inProgress: false,
           error: i18next.t(LOCALIZATION.NOT_WORDPRESS_URL),
         })
-      ));
+      });
   }
 
   handleContinueClick() {

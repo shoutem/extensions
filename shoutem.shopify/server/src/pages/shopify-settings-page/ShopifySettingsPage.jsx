@@ -153,7 +153,7 @@ class ShopifySettingsPage extends Component {
               value={apiKey}
               onChange={this.handleTextSettingChange('apiKey')}
             />
-            <div styleName="note">{allShortcutsNote}</div>
+            <div className="note">{allShortcutsNote}</div>
             <ControlLabel>
               {i18next.t(LOCALIZATION.DISCOUNT_CODE_LABEL)}
             </ControlLabel>

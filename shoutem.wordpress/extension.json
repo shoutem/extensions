@@ -1,12 +1,17 @@
 {
   "name": "wordpress",
-  "version": "2.4.3",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "title": "WordPress",
   "description": "Show news articles from WordPress blog.",
+  "releaseNotes": "* Allow URL's with '/category/' and filter only those categories",
   "icon": "server/assets/extension-icon.png",
-  "dependencies": ["shoutem.layouts"],
-  "categories": ["content"],
+  "dependencies": [
+    "shoutem.layouts"
+  ],
+  "categories": [
+    "content"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -52,7 +57,9 @@
       "title": "Grid with a featured article",
       "image": "./server/assets/screens/featuredgrid.png",
       "groupTitle": "Choose List screen layout",
-      "navigatesTo": ["@.ArticleDetailsScreen"],
+      "navigatesTo": [
+        "@.ArticleDetailsScreen"
+      ],
       "settings": {
         "listType": "fixed-grid",
         "hasFeaturedItem": true

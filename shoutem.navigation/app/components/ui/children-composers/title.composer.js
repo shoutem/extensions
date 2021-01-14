@@ -1,11 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
-
-import {
-  View,
-  Title,
-} from '@shoutem/ui';
-
+import { I18n, LocalizationContext } from 'shoutem.i18n';
+import { Title, View } from '@shoutem/ui';
 import { NavigationBar } from '../NavigationBar';
 
 function hasBackgroundImage(navBarProps) {
@@ -22,19 +18,27 @@ function canShowTitle(navBarProps) {
   } else if (NavigationBar.showTitle === false) {
     return false;
   }
-  
+
   return NavigationBar.showTitle;
 }
 
 const createTitle = navBarProps => () => {
-  const value = navBarProps.title;
-  return (
-    <View virtual styleName="container">
-      <Title animationName={navBarProps.animationName} numberOfLines={1}>
-        {value || ''}
-      </Title>
-    </View>
-  );
+  return <LocalizationContext.Consumer>
+    {() => {
+      const shortcutId = _.get(navBarProps, 'scene.route.props.shortcut.id');
+      const title = I18n.t(`shoutem.navigation.shortcuts.${shortcutId}`, {
+        defaultValue: navBarProps.title,
+      });
+
+      return (
+        <View virtual styleName="container">
+          <Title animationName={navBarProps.animationName} numberOfLines={1}>
+            {title}
+          </Title>
+        </View>
+      );
+    }}
+  </LocalizationContext.Consumer>
 };
 
 const TitleComposer = {

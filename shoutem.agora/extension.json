@@ -1,15 +1,19 @@
 {
   "name": "agora",
   "title": "Agora video calls",
-  "version": "2.4.4",
+  "version": "2.5.1",
   "icon": "server/assets/add-videos-image.png",
   "description": "Connect your users with real-time video conferencing!",
-  "platform": "2.4.*",
+  "platform": "~2.5.1",
+  "releaseNotes": "* Handled device permissions using the shoutem.permissions extension",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
   },
-  "dependencies": ["shoutem.auth"],
+  "dependencies": [
+    "shoutem.auth",
+    "shoutem.permissions"
+  ],
   "screens": [
     {
       "name": "VideoCallScreen"

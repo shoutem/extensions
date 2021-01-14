@@ -11,11 +11,6 @@ import punchRewardsReducer, {
 import transactionsReducer, {
   moduleName as transactions,
 } from 'src/modules/transactions';
-import {
-  moduleName as placeRewards,
-  extensionReducer as placeRewardsExtensionReducer,
-  shortcutReducer as placeRewardsShortcutReducer,
-} from 'src/modules/place-rewards';
 
 // SELECTORS
 export function getFormState(state) {
@@ -56,9 +51,5 @@ export const reducer = () =>
       [cms]: cmsReducer,
       [transactions]: transactionsReducer,
       [punchRewards]: punchRewardsReducer,
-      [placeRewards]: placeRewardsExtensionReducer,
-    },
-    shortcut: {
-      [placeRewards]: placeRewardsShortcutReducer,
     },
   });

@@ -3,14 +3,14 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
-
 import { CmsListScreen } from 'shoutem.cms';
 import { navigateTo } from 'shoutem.navigation';
-
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
-import { createListItem, getItemProps } from '../components/ListItemViewFactory';
+import {
+  createListItem,
+  getItemProps,
+} from '../components/ListItemViewFactory';
 import { ext } from '../const';
 
 export class ArticlesScreen extends CmsListScreen {
@@ -67,14 +67,19 @@ export class ArticlesScreen extends CmsListScreen {
   getNextArticle(article) {
     const { data } = this.props;
 
-    const currentArticleIndex = data ? _.findIndex(data, { id: article.id }) : 0;
+    const currentArticleIndex = data
+      ? _.findIndex(data, { id: article.id })
+      : 0;
 
     return data[currentArticleIndex + 1];
   }
 
   renderFeaturedItem(item) {
     return item ? (
-      <FeaturedArticleView {...getItemProps(item)} onPress={this.openArticleWithId} />
+      <FeaturedArticleView
+        {...getItemProps(item)}
+        onPress={this.openArticleWithId}
+      />
     ) : null;
   }
 
@@ -93,6 +98,7 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   navigateTo,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ArticlesScreen'))(ArticlesScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('ArticlesScreen'))(ArticlesScreen));

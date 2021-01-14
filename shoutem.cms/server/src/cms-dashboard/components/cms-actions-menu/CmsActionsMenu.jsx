@@ -119,10 +119,10 @@ export default class CmsActionsMenu extends Component {
     }
 
     return (
-      <td className="cms-actions-menu">
+      <div className="cms-actions-menu">
         {inline && this.renderAsInline(actions)}
         {!inline && this.renderAsDropdown(actions)}
-      </td>
+      </div>
     );
   }
 }

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import _ from 'lodash';
 import i18next from 'i18next';
+import { HEADER_TYPES } from '../../services';
 import TextTableHeader from '../text-table-header';
 import InputTableHeader from '../input-table-header';
 import SelectTableHeader from '../select-table-header';
@@ -44,7 +45,7 @@ export default class Table extends Component {
   renderTableHeader(columnHeader) {
     const { type, className, id } = columnHeader;
 
-    if (type === 'input') {
+    if (type === HEADER_TYPES.INPUT) {
       return (
         <InputTableHeader
           className={className}
@@ -55,7 +56,7 @@ export default class Table extends Component {
       );
     }
 
-    if (type === 'select') {
+    if (type === HEADER_TYPES.SELECT) {
       return (
         <SelectTableHeader
           className={className}
@@ -66,9 +67,13 @@ export default class Table extends Component {
       );
     }
 
-    return (
-      <TextTableHeader className={className} header={columnHeader} key={id} />
-    );
+    if (type === HEADER_TYPES.TEXT) {
+      return (
+        <TextTableHeader className={className} header={columnHeader} key={id} />
+      );
+    }
+
+    return <th></th>;
   }
 
   render() {

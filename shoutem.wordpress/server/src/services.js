@@ -35,6 +35,41 @@ function validateUrl(url) {
   return validator.isURL(url, { require_protocol: false });
 }
 
+export function extractBaseUrl(feedUrl) {
+  return feedUrl.includes('/category/')
+    ? feedUrl.substr(0, feedUrl.indexOf('/category/'))
+    : feedUrl;
+}
+
+export function extractCategoriesFromUrl(feedUrl) {
+  const hasCategories = feedUrl.includes('/category/');
+
+  const categoriesString = feedUrl.slice(feedUrl.lastIndexOf('/category/') + 10);
+  const categories = categoriesString.split('/');
+
+  return hasCategories ? categories : [];
+}
+
+export function createCategoryFilter(feedUrl, categories) {
+  // 'slug' is the actual string name of the category in the URL, e.g. 'latest-news'.
+  const categorySlugs = extractCategoriesFromUrl(feedUrl);
+
+  if (!categorySlugs.length) {
+    return '';
+  }
+
+  const categoryIds = [];
+  _.forEach(categorySlugs, slug => {
+    const category = _.find(categories, { slug }, false);
+
+    if (category) {
+      categoryIds.push(category.id);
+    }
+  });
+
+  return categoryIds.length ? `?categories=${categoryIds.join(',')}` : '';
+}
+
 export function validateWordPressUrl(url) {
   return url && validateUrl(url);
 }

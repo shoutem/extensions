@@ -1,23 +1,24 @@
 import React from 'react';
 import moment from 'moment';
 import he from 'he';
+
+import { connectStyle } from '@shoutem/theme';
 import {
-  ScrollView,
-  Screen,
-  Title,
   Caption,
   Image,
-  Tile,
-  View,
+  Screen,
+  ScrollView,
   SimpleHtml,
+  Tile,
+  Title,
+  View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 
 import { NavigationBar } from 'shoutem.navigation';
 
-import { ArticleDetailsScreen } from './ArticleDetailsScreen';
-import { getLeadImageUrl, getAuthorName } from '../services';
 import { ext } from '../const';
+import { getLeadImageUrl, getAuthorName } from '../services';
+import { ArticleDetailsScreen } from './ArticleDetailsScreen';
 
 class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
   static propTypes = {
@@ -50,6 +51,7 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
   render() {
     const { article } = this.props;
 
+    const resolvedTitle = he.decode(article.title.rendered);
     const imageUrl = getLeadImageUrl(article);
     const screenStyle = imageUrl ? 'full-screen paper' : 'paper';
     const momentDate = moment(article.modified);
@@ -57,8 +59,6 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
     const dateInfo = momentDate.isAfter(0) ? (
       <Caption styleName="md-gutter-left">{momentDate.fromNow()}</Caption>
     ) : null;
-
-    const resolvedTitle = he.decode(article.title.rendered);
 
     return (
       <Screen styleName={screenStyle}>

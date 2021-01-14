@@ -1,6 +1,5 @@
 import { InteractionManager } from 'react-native';
 import { combineReducers } from 'redux';
-
 import {
   ROOT_NAVIGATION_STACK,
   EMPTY_ROUTE,
@@ -15,7 +14,6 @@ import {
   navigateBack,
   resetToRoute,
 } from './core';
-
 import { ext } from '../const';
 
 export const MODAL_SCREEN = 'shoutem.navigation.Modal';

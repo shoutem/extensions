@@ -1,10 +1,5 @@
 import React from 'react';
-
-import {
-  View,
-  Button,
-  Icon,
-} from '@shoutem/ui';
+import { Button, Icon, View } from '@shoutem/ui';
 
 const createBackButton = navBarProps => sceneProps => {
   if (sceneProps.scene.index === 0 || !sceneProps.onNavigateBack) {

@@ -1,13 +1,19 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "2.4.2-rc.2",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "description": "Show a video gallery",
   "releaseNotes": "* Added detauls screen layout without share button",
   "icon": "server/assets/add-videos-image.png",
-  "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
-  "categories": ["media"],
+  "dependencies": [
+    "shoutem.cms",
+    "shoutem.layouts",
+    "shoutem.navigation"
+  ],
+  "categories": [
+    "media"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -22,6 +28,9 @@
       "title": "Videos",
       "icon": "theme://play.png",
       "screen": "@.VideosList",
+      "capabilities": [
+        "shoutem.cms.import-csv"
+      ],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
@@ -52,7 +61,9 @@
       "name": "VideosList",
       "title": "Big list",
       "image": "server/assets/screens/big-list.png",
-      "navigatesTo": ["@.VideoDetails"]
+      "navigatesTo": [
+        "@.VideoDetails"
+      ]
     },
     {
       "name": "VideoDetails",

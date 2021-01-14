@@ -1,16 +1,13 @@
+import React, { Component } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
 import { View, Screen } from '@shoutem/ui';
-
 import { executeShortcut } from 'shoutem.application/redux';
-
-
-import TabBarItem from '../components/TabBarItem';
 import { ScreenStack } from '../components/stacks';
+import TabBarItem from '../components/TabBarItem';
 import { NavigationBar } from '../components/ui';
 import {
   navigateTo,
@@ -63,7 +60,7 @@ export class TabBar extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.openShortcut = this.openShortcut.bind(this);
+    autoBindReact(this);
 
     // Debounce the reset tab to top to avoid weird issues (e.g., app freezes)
     // when the navigation state is being reset during transitions.

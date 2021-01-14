@@ -18,8 +18,6 @@ import {
 } from '@shoutem/ui';
 
 import { INCLUDE, changeColorAlpha } from '@shoutem/theme';
-
-import { autoRehydrate } from 'redux-persist';
 import {
   IPHONE_X_HOME_INDICATOR_PADDING,
   IPHONE_X_NOTCH_PADDING,
@@ -924,7 +922,7 @@ export default (customVariables = {}) => {
             backgroundColor: 'rgba(3, 3, 3, 0.1)',
             borderRadius: 31,
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
           },
         },
       },
@@ -1855,6 +1853,44 @@ export default (customVariables = {}) => {
       },
     },
 
+    // Onboarding
+
+    'shoutem.onboarding.OnboardingScreen': {
+      imageBackground: {
+        width: '100%',
+        height: '100%',
+      },
+      textContainerTop: {
+        justifyContent: 'flex-start',
+        paddingTop: NAVIGATION_BAR_HEIGHT,
+      },
+      textContainerMiddle: {
+        justifyContent: 'center',
+      },
+      textContainerBottom: {
+        justifyContent: 'flex-end',
+        paddingBottom: TAB_BAR_HEIGHT,
+      },
+      pageIndicators: {
+        container: {
+          paddingVertical: Device.select({
+            iPhoneX: 10 + IPHONE_X_HOME_INDICATOR_PADDING,
+            iPhoneXR: 10 + IPHONE_X_HOME_INDICATOR_PADDING,
+            default: 20,
+          }),
+        },
+        indicatorContainer: {
+          'shoutem.ui.View': {
+            backgroundColor: variables.imageOverlayTextColor,
+
+            '.selected': {
+              backgroundColor: changeColorAlpha(variables.imageOverlayTextColor, 0.7),
+            },
+          },
+        },
+      },
+    },
+
     // i18n
 
     'shoutem.i18n.LanguageListItem': {
@@ -1940,8 +1976,8 @@ export default (customVariables = {}) => {
       buttonText: {
         fontSize: 13,
         fontWeight: resolveFontWeight('500'),
-        color: '#FFFFFF'
-      }
+        color: '#FFFFFF',
+      },
     },
 
     'shoutem.sendbird.SectionHeader': {
@@ -2132,7 +2168,7 @@ export default (customVariables = {}) => {
         color: '#333333',
       },
       linkText: {
-        color: '#0645AD'
+        color: '#0645AD',
       },
       date: {
         opacity: 0.4,
@@ -2325,19 +2361,32 @@ export default (customVariables = {}) => {
         textAlign: 'center',
         letterSpacing: -0.408,
         marginVertical: 16,
-      }
+      },
     },
 
     'shoutem.in-app-purchases.SubscriptionsScreen': {
-      container: {
-        flex: 1,
-        justifyContent: 'space-between',
+      scrollContainer: {
+        paddingBottom: 16,
+      },
+
+      scrollGradient: {
+        locations: [0, 0.8, 1],
+        colors: [
+          changeColorAlpha(variables.paperColor, 0),
+          changeColorAlpha(variables.paperColor, 0),
+          changeColorAlpha(variables.paperColor, 0.5),
+        ],
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
       },
 
       buttonContainer: {
         paddingHorizontal: 16,
-        marginTop: 32,
         marginBottom: 16,
+        marginTop: 16,
       },
 
       button: {
@@ -2379,8 +2428,9 @@ export default (customVariables = {}) => {
       },
 
       image: {
-        flex: 1,
-        width: '100%',
+        marginTop: 16,
+        width: window.width,
+        height: window.width * 0.5,
       },
 
       spinner: {
@@ -2390,7 +2440,7 @@ export default (customVariables = {}) => {
 
       spinnerSecondary: {
         color: variables.secondaryButtonTextColor,
-      }
+      },
     },
 
     'shoutem.in-app-purchases.TermsAndPolicy': {

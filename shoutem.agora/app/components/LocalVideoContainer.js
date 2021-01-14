@@ -21,7 +21,7 @@ function LocalVideoContainer({ onCameraSwitchPress, style }) {
         styleName="clear"
       >
         <Icon
-          name="cam-switch"
+          name="camSwitch"
           style={style.switchCameraIcon}
           styleName="clear"
         />

@@ -1,23 +1,21 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
+import { I18n, LocalizationContext } from 'shoutem.i18n';
+import { resolveIconSource } from 'shoutem.theme/helpers/resolveIconSource';
 import { Text, Image } from '@shoutem/ui';
 
-import { resolveIconSource } from 'shoutem.theme/helpers/resolveIconSource';
-
 const missingIconSource = require('../assets/images/missing_icon.png');
-
-const { bool, func, object } = PropTypes;
 
 export class NavigationBaseItem extends PureComponent {
   static propTypes = {
     /* eslint-disable react/forbid-prop-types */
-    shortcut: object.isRequired,
-    style: object,
-    showText: bool,
-    showIcon: bool,
-    onPress: func,
+    shortcut: PropTypes.object.isRequired,
+    style: PropTypes.object,
+    showText: PropTypes.bool,
+    showIcon: PropTypes.bool,
+    onPress: PropTypes.func,
   };
 
   static defaultProps = {
@@ -26,7 +24,8 @@ export class NavigationBaseItem extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.onPress = this.onPress.bind(this);
+
+    autoBindReact(this);
   }
 
   onPress() {
@@ -43,7 +42,10 @@ export class NavigationBaseItem extends PureComponent {
   }
 
   resolveIconProps() {
-    const { style, shortcut: { icon } } = this.props;
+    const {
+      style,
+      shortcut: { icon },
+    } = this.props;
 
     const iconStyle = { ...style.icon };
 
@@ -81,13 +83,20 @@ export class NavigationBaseItem extends PureComponent {
 
   renderText() {
     const { shortcut, showText } = this.props;
+
     if (!showText) {
       return null;
     }
+
     return (
-      <Text {...this.resolveTextProps()}>
-        {shortcut.title}
-      </Text>
+      <LocalizationContext.Consumer>
+        {() => {
+          const title = I18n.t(`shoutem.navigation.shortcuts.${shortcut.id}`, {
+            defaultValue: shortcut.title,
+          });
+          return <Text {...this.resolveTextProps()}>{title}</Text>;
+        }}
+      </LocalizationContext.Consumer>
     );
   }
 }

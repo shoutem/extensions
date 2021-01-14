@@ -16,6 +16,7 @@ function getHeaders() {
     '',
     '',
     '',
+    '',
   ];
 }
 
@@ -57,6 +58,11 @@ export default class TranslationsTable extends Component {
       isRequired: false,
     };
 
+    const downloadDescriptor = {
+      getDisplayValue: this.renderDownloadValue,
+      isRequired: false,
+    };
+
     return [
       codeDescriptor,
       languageDescriptor,
@@ -64,6 +70,7 @@ export default class TranslationsTable extends Component {
       switchDescriptor,
       editDescriptor,
       deleteDescriptor,
+      downloadDescriptor,
     ];
   }
 
@@ -100,7 +107,7 @@ export default class TranslationsTable extends Component {
     const { onEditClick } = this.props;
 
     return (
-      <Button className="btn-icon pull-right" onClick={() => onEditClick(item)}>
+      <Button className="btn-icon" onClick={() => onEditClick(item)}>
         <FontIcon name="edit" size="24px" />
       </Button>
     );
@@ -112,7 +119,7 @@ export default class TranslationsTable extends Component {
 
     return (
       <Button
-        className="btn-icon pull-right"
+        className="btn-icon"
         disabled={disabled}
         onClick={event => {
           event.stopPropagation();
@@ -121,6 +128,20 @@ export default class TranslationsTable extends Component {
       >
         <FontIcon name="delete" size="24px" />
       </Button>
+    );
+  }
+
+  renderDownloadValue(item) {
+    return (
+      <a
+        className="link"
+        href={item.url}
+        rel="noopener noreferrer"
+        target="_blank"
+        download
+      >
+        <FontIcon name="download" size="24px" />
+      </a>
     );
   }
 

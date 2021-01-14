@@ -1,8 +1,8 @@
 {
   "name": "vimeo",
   "title": "Vimeo",
-  "version": "2.4.3",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "description": "Show videos from Vimeo",
   "icon": "server/assets/add-videos-vimeo-image.png",
   "dependencies": [
@@ -51,7 +51,9 @@
       "name": "VimeoList",
       "title": "Big list",
       "image": "server/assets/screens/big-list.png",
-      "navigatesTo": ["@.VimeoDetails"],
+      "navigatesTo": [
+        "@.VimeoDetails"
+      ],
       "groupTitle": "Choose List screen layout"
     },
     {

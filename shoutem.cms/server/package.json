@@ -1,6 +1,6 @@
 {
   "name": "shoutem.cms",
-  "version": "2.4.6-rc.7",
+  "version": "2.5.2",
   "description": "Shoutem CMS extension",
   "author": "Shoutem",
   "scripts": {
@@ -14,7 +14,6 @@
   "dependencies": {
     "@shoutem/assets-sdk": "^1.0.1",
     "@shoutem/redux-api-sdk": "^1.1.7",
-    "@shoutem/redux-composers": "^0.1.5",
     "i18next": "^19.8.2",
     "moment": "^2.16.0",
     "moment-timezone": "^0.5.32",

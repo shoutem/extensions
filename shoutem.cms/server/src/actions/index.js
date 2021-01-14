@@ -1,5 +1,19 @@
 export { loadCategories, createCategory } from './category';
-export { loadResources } from './resource';
+export {
+  loadResources,
+  loadReferenceResources,
+  loadPreviousResourcesPage,
+  loadNextResourcesPage,
+} from './resource';
 export { loadSchema } from './schema';
-export { updateShortcutCategories } from './shortcut';
+export {
+  updateShortcutCategories,
+  updateShortcutSortOptions,
+} from './shortcut';
 export { loadLanguages, loadLanguageModuleStatus } from './language';
+export {
+  loadImporters,
+  deleteImporter,
+  loadCsvColumns,
+  createImporter,
+} from './importer';

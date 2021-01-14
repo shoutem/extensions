@@ -1,17 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
 import moment from 'moment';
-
 import { connectStyle } from '@shoutem/theme';
-import {
-  Title,
-  Caption,
-  Icon,
-  ImageBackground,
-  Tile,
-  View,
-} from '@shoutem/ui';
-
+import { Caption, Icon, ImageBackground, Tile, Title, View } from '@shoutem/ui';
 import { ext } from '../const';
 import { ArticleDetailsScreen } from './ArticleDetailsScreen';
 
@@ -27,9 +18,11 @@ export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
       >
         <Tile animationName="hero">
           <Title styleName="centered">{article.title.toUpperCase()}</Title>
-            {/* Virtual prop makes View pass Tile color style to Caption */}
+          {/* Virtual prop makes View pass Tile color style to Caption */}
           <View styleName="horizontal md-gutter-top" virtual>
-            <Caption styleName="collapsible" numberOfLines={1}>{article.newsAuthor}</Caption>
+            <Caption styleName="collapsible" numberOfLines={1}>
+              {article.newsAuthor}
+            </Caption>
             <Caption styleName="md-gutter-left">
               {moment(article.timeUpdated).fromNow()}
             </Caption>
@@ -45,4 +38,6 @@ export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
   }
 }
 
-export default connectStyle(ext('ArticleDetailsScreen'))(LargeArticleDetailsScreen);
+export default connectStyle(ext('ArticleDetailsScreen'))(
+  LargeArticleDetailsScreen,
+);

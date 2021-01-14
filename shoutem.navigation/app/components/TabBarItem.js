@@ -1,9 +1,7 @@
 import React from 'react';
 import { LayoutAnimation } from 'react-native';
-
 import { connectStyle } from '@shoutem/theme';
 import { Touchable } from '@shoutem/ui';
-
 import { ext } from '../const';
 import { NavigationBaseItem } from './NavigationBaseItem';
 

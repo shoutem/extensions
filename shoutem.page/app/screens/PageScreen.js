@@ -4,18 +4,16 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { StatusBar, InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
-
 import { executeShortcut } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { IconGrid, List, NavigationBar } from 'shoutem.navigation';
 import { shortcutChildrenRequired } from 'shoutem.navigation/helpers';
-
 import {
-  getCollection,
   find,
+  getCollection,
   isBusy,
-  isInitialized,
   isError,
+  isInitialized,
   shouldRefresh,
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
@@ -31,7 +29,6 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
-
 import { ext, PAGE_SCHEMA } from '../const';
 
 const defaultImage = require('../assets/images/image-fallback.png');
@@ -58,8 +55,8 @@ export class PageScreen extends PureComponent {
     imageSize: PropTypes.string.isRequired,
   };
 
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
 
     autoBindReact(this);
   }
@@ -88,12 +85,16 @@ export class PageScreen extends PureComponent {
 
   isNavigationBarClear() {
     const { navigationBarStyle } = this.props;
+
     return navigationBarStyle === 'clear';
   }
 
   getNavBarProps() {
     const {
-      data, title: shortcutTitle, parentCategoryId, navigationBarStyle,
+      data,
+      title: shortcutTitle,
+      parentCategoryId,
+      navigationBarStyle,
     } = this.props;
 
     if (!_.isUndefined(parentCategoryId) && (isBusy(data) || !isInitialized(data))) {
@@ -103,9 +104,7 @@ export class PageScreen extends PureComponent {
 
     if (!data || _.isEmpty(data)) {
       // Show shortcut title if `EmptyStateView` is rendered (no collection or empty collection)
-      return {
-        shortcutTitle,
-      };
+      return { shortcutTitle };
     }
 
     const profile = _.first(data);
@@ -332,6 +331,6 @@ export const mapStateToProps = (state, ownProps) => {
 
 export const mapDispatchToProps = { executeShortcut, find };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PageScreen'))(PageScreen),
+export default shortcutChildrenRequired(
+  connect(mapStateToProps, mapDispatchToProps)(connectStyle(ext('PageScreen'))(PageScreen)),
 );

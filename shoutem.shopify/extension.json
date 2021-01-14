@@ -1,10 +1,11 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "2.4.5-rc.0",
-  "platform": "2.4.*",
+  "version": "2.5.1",
+  "platform": "2.5.*",
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
+  "releaseNotes": "* Fix settings page note styling",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

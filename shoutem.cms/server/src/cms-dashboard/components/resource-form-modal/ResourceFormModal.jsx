@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Button } from 'react-bootstrap';
 import { FontIcon } from '@shoutem/react-web-ui';
@@ -18,6 +19,8 @@ export default class ResourceFormModal extends Component {
     assetManager: PropTypes.object,
     resource: PropTypes.object,
     googleApiKey: PropTypes.string,
+    loadSchema: PropTypes.func,
+    loadResources: PropTypes.func,
     onHide: PropTypes.func,
     onResourceCreate: PropTypes.func,
     onResourceUpdate: PropTypes.func,
@@ -80,6 +83,8 @@ export default class ResourceFormModal extends Component {
       googleApiKey,
       assetManager,
       canonicalName,
+      loadSchema,
+      loadResources,
     } = this.props;
     const { resourceForm: ResourceForm, initialValues } = this.state;
 
@@ -103,6 +108,8 @@ export default class ResourceFormModal extends Component {
           assetManager={assetManager}
           initialValues={initialValues}
           googleApiKey={googleApiKey}
+          loadSchema={loadSchema}
+          loadResources={loadResources}
           onCancel={this.handleHide}
           onSubmit={this.handleFormSubmit}
         />

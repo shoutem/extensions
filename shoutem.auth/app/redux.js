@@ -53,7 +53,7 @@ const facebookUserInfoURL = 'https://graph.facebook.com/me?fields=name,email,fir
 const sessionReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case RESTORE_SESSION:
-      return payload;
+      return { ...state, ...payload };
     case LOGOUT:
       return {};
     default:

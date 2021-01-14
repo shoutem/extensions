@@ -1,11 +1,17 @@
 {
   "name": "navigation",
-  "version": "2.4.4",
-  "platform": "~2.4.1",
+  "version": "2.5.1",
+  "platform": "2.5.*",
   "type": "system",
   "title": "Main Navigation",
+  "releaseNotes": "* Introduced code-linted package.",
   "description": "App-level navigation",
-  "dependencies": ["shoutem.layouts"],
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.theme"
+  ],
   "categories": [],
   "i18n": {
     "locale": "en",

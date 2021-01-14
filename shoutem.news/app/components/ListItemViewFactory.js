@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'lodash';
-
 import { ListArticleView } from './ListArticleView';
 import { MediumListArticleView } from './MediumListArticleView';
 import { LargeListArticleView } from './LargeListArticleView';
@@ -32,10 +31,11 @@ export const getItemProps = item => ({
  */
 export const createListItem = (layoutName, article, onPress) => {
   if (!layoutItems[layoutName]) {
+    // eslint-disable-next-line no-console
     console.error(`List item not registered for layout ${layoutName}`);
     return null;
   }
 
   const ListItem = layoutItems[layoutName];
-  return (<ListItem {...getItemProps(article)} onPress={onPress} />);
+  return <ListItem {...getItemProps(article)} onPress={onPress} />;
 };

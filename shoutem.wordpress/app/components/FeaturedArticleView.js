@@ -2,18 +2,16 @@ import React from 'react';
 import moment from 'moment';
 
 import {
-  TouchableOpacity,
-  Title,
   Caption,
-  View,
-  Tile,
-  ImageBackground,
   Divider,
+  ImageBackground,
+  Tile,
+  Title,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
 
-import {
-  ArticleView,
-} from './ArticleView';
+import { ArticleView } from './ArticleView';
 
 /**
  * A component used to render featured news articles

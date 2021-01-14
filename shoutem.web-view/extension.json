@@ -1,12 +1,14 @@
 {
   "name": "web-view",
-  "version": "2.4.3",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "title": "Web view",
   "releaseNotes": "* Fixed share button not showing on 'Web view with share button' layout",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
-  "dependencies": ["shoutem.layouts"],
+  "dependencies": [
+    "shoutem.layouts"
+  ],
   "categories": [],
   "i18n": {
     "locale": "en",

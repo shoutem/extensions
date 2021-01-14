@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 
 export class ArticleView extends PureComponent {
   static propTypes = {
@@ -14,7 +15,7 @@ export class ArticleView extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.onPress = this.onPress.bind(this);
+    autoBindReact(this);
   }
 
   onPress() {

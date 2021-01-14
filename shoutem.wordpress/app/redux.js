@@ -1,55 +1,85 @@
 import _ from 'lodash';
+import { combineReducers } from 'redux';
 import URI from 'urijs';
 
-import { combineReducers } from 'redux';
 import { mapReducers } from '@shoutem/redux-composers';
 import {
-  find,
-  resource,
   cloneStatus,
+  find,
   LOAD_SUCCESS,
+  RESOLVED_ENDPOINT,
+  resource,
   STATUS,
 } from '@shoutem/redux-io';
+import { APPEND_MODE } from '@shoutem/redux-io/actions/find';
 import Outdated from '@shoutem/redux-io/outdated';
 import {
-  APPEND_MODE,
-} from '@shoutem/redux-io/actions/find';
-import {
-  validationStatus,
   busyStatus,
   createStatus,
-  updateStatus,
   setStatus,
+  updateStatus,
+  validationStatus,
 } from '@shoutem/redux-io/status';
 
-import {
-  getActionCurrentPage,
-  getResponseTotalPages,
-} from './services/pagination';
-import {
-  ext,
-  API_ENDPOINT,
-  MEDIA_API_ENDPOINT,
-  AUTHOR_API_ENDPOINT,
-} from './const';
+import { getActionCurrentPage, getResponseTotalPages } from './services/pagination';
+import { CATEGORIES_PER_PAGE, ext, POSTS_PER_PAGE } from './const';
+import { createCategoryFilter, extractBaseUrl } from './services';
 
+export const CATEGORIES_ENDPOINT = '{feedUrl}/wp-json/wp/v2/categories';
+export const API_ENDPOINT = '{feedUrl}/wp-json/wp/v2/posts?page={page}&per_page={perPage}';
+export const MEDIA_API_ENDPOINT = '{feedUrl}/wp-json/wp/v2/media?include={include}&per_page={perPage}';
+export const AUTHOR_API_ENDPOINT = '{feedUrl}/wp-json/wp/v2/users?include={include}&per_page={perPage}';
+
+export const WORDPRESS_CATEGORIES_SCHEMA = 'shoutem.wordpress.categories';
 export const WORDPRESS_NEWS_SCHEMA = 'shoutem.wordpress.news';
 export const WORDPRESS_MEDIA_SCHEMA = 'shoutem.wordpress.media';
 export const WORDPRESS_AUTHOR_SCHEMA = 'shoutem.wordpress.author';
 
-export function resolveFeedUrl(feedUrl) {
-  return API_ENDPOINT.replace('{feedUrl}', feedUrl);
+export function resolveCategoriesUrl(feedUrl) {
+  const baseUrl = extractBaseUrl(feedUrl);
+
+  return CATEGORIES_ENDPOINT.replace('{feedUrl}', baseUrl);
+}
+
+export function resolvePostsUrl(feedUrl) {
+  const baseUrl = extractBaseUrl(feedUrl);
+
+  return API_ENDPOINT.replace('{feedUrl}', baseUrl);
 }
 
 export function resolvePostsMediaUrl(feedUrl) {
-  return MEDIA_API_ENDPOINT.replace('{feedUrl}', feedUrl);
+  const baseUrl = extractBaseUrl(feedUrl);
+
+  return MEDIA_API_ENDPOINT.replace('{feedUrl}', baseUrl);
 }
 
 export function resolvePostsAuthorUrl(feedUrl) {
-  return AUTHOR_API_ENDPOINT.replace('{feedUrl}', feedUrl);
+  const baseUrl = extractBaseUrl(feedUrl);
+
+  return AUTHOR_API_ENDPOINT.replace('{feedUrl}', baseUrl);
 }
 
 // ACTION CREATORS
+
+export function fetchCategories({ feedUrl, page, appendMode = false }) {
+  const config = {
+    schema: WORDPRESS_CATEGORIES_SCHEMA,
+    request: {
+      endpoint: resolveCategoriesUrl(feedUrl),
+      resourceType: 'json',
+      headers: {
+        'Access-Control-Request-Method': 'application/json',
+      },
+    },
+  };
+
+  return find(
+    config,
+    undefined,
+    {},
+    { feedUrl, appendMode },
+  );
+}
 
 /**
  * Action creator for fetching posts from WordPress v2 API
@@ -58,14 +88,24 @@ export function resolvePostsAuthorUrl(feedUrl) {
  * @param {number} options.page page index
  * @param {number} options.perPage number of items in response
  * @param {bool} options.appendMode should returned items be appended to existing state
+ * @param {array} options.categories array of category IDs (integer) for given WordPress blog
  */
 export function fetchPosts({
-  feedUrl, page, perPage, appendMode = false,
+  feedUrl,
+  page,
+  perPage = POSTS_PER_PAGE,
+  appendMode = false,
+  categories = [],
 }) {
+  const resolvedUrl = resolvePostsUrl(feedUrl);
+  const endpoint = categories.length
+    ? `${resolvedUrl}${createCategoryFilter(feedUrl, categories)}`
+    : resolvedUrl;
+
   const config = {
     schema: WORDPRESS_NEWS_SCHEMA,
     request: {
-      endpoint: resolveFeedUrl(feedUrl),
+      endpoint,
       resourceType: 'json',
       headers: {
         'Access-Control-Request-Method': 'application/json',
@@ -73,12 +113,14 @@ export function fetchPosts({
     },
   };
 
-  const params = {
-    page,
-    perPage,
-  };
+  const params = { page, perPage };
 
-  return find(config, undefined, params, { feedUrl, appendMode });
+  return find(
+    config,
+    undefined,
+    params,
+    { feedUrl, appendMode },
+  );
 }
 
 /**
@@ -104,10 +146,7 @@ export function fetchPostsMedia({ feedUrl, posts, appendMode = false }) {
     },
   };
 
-  const params = {
-    include,
-    perPage,
-  };
+  const params = { include, perPage };
 
   return find(config, undefined, params, { feedUrl, appendMode });
 }
@@ -128,12 +167,14 @@ export function fetchPostsAuthor({ feedUrl, posts, appendMode = false }) {
     },
   };
 
-  const params = {
-    include,
-    perPage,
-  };
+  const params = { include, perPage };
 
-  return find(config, undefined, params, { feedUrl, authorIds, appendMode });
+  return find(
+    config,
+    undefined,
+    params,
+    { feedUrl, authorIds, appendMode },
+  );
 }
 
 /**
@@ -142,14 +183,16 @@ export function fetchPostsAuthor({ feedUrl, posts, appendMode = false }) {
  */
 export function fetchWordpressPosts(options) {
   return dispatch => (
-    dispatch(fetchPosts(options)).then((action) => {
-      const { payload: posts } = action;
+    dispatch(fetchCategories(options))
+      .then(({ payload }) => dispatch(fetchPosts({ ...options, categories: payload })))
+      .then((action) => {
+        const { payload: posts } = action;
 
-      return Promise.all([
-        dispatch(fetchPostsMedia({ ...options, posts })),
-        dispatch(fetchPostsAuthor({ ...options, posts })),
-      ]);
-    })
+        return Promise.all([
+          dispatch(fetchPostsMedia({ ...options, posts })),
+          dispatch(fetchPostsAuthor({ ...options, posts })),
+        ]);
+      })
   );
 }
 
@@ -269,6 +312,7 @@ export function wordpressResource(schema, initialState = {}) {
 export default combineReducers({
   posts: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_NEWS_SCHEMA)),
   media: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_MEDIA_SCHEMA)),
+  categories: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_CATEGORIES_SCHEMA)),
   author: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_AUTHOR_SCHEMA)),
 });
 
@@ -311,4 +355,10 @@ export function getFeedItems(state, feedUrl) {
   cloneStatus(feedItems, feedItemsInfo);
 
   return feedItemsInfo;
+}
+
+export function getFeedCategories(state, feedUrl) {
+  const feedCategories = _.get(state, [ext(), 'categories', feedUrl], []);
+
+  return feedCategories;
 }

@@ -9,13 +9,22 @@ import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from 'shoutem.navigation';
 import { getUser, isAuthenticated } from 'shoutem.auth';
 import { getExtensionSettings } from 'shoutem.application/redux';
+import {
+  checkPermissions,
+  openDeviceSettings,
+  PERMISSION_RESULT_TYPES,
+  PERMISSION_TYPES,
+  requestPermissions,
+} from 'shoutem.permissions';
 import WaitingForPeerView from '../components/WaitingForPeerView';
 import VideoCallView from '../components/VideoCallView';
 import VideoCallStartingView from '../components/VideoCallStartingView';
-import { checkPermissions, requestPermissions } from '../services/permissions';
 import * as Agora from '../services/agora';
 import { images } from '../assets/index';
 import { ext } from '../const';
+
+const { CAMERA, MICROPHONE } = PERMISSION_TYPES;
+const { GRANTED } = PERMISSION_RESULT_TYPES;
 
 class VideoCallScreen extends PureComponent {
   constructor(props) {
@@ -43,7 +52,7 @@ class VideoCallScreen extends PureComponent {
 
   componentDidMount() {
     // Requesting Mic and Camera permissions
-    requestPermissions();
+    requestPermissions(CAMERA, MICROPHONE);
 
     // If new user has joined
     RtcEngine.on(Agora.EVENTS.REMOTE_USER_JOINED, (data) => {
@@ -147,7 +156,23 @@ class VideoCallScreen extends PureComponent {
       return Agora.authFailedAlert();
     }
 
-    checkPermissions()
+    /* this function checks camera and microphone status and opens Settings Page
+    if permissions have not been granted */
+    checkPermissions(CAMERA, MICROPHONE)
+      .then((statuses) => {
+        const camera = statuses[CAMERA];
+        const microphone = statuses[MICROPHONE];
+
+        if (microphone === GRANTED && camera === GRANTED) {
+          return true;
+        }
+
+        openDeviceSettings();
+        return false;
+      })
+      .catch((error) => {
+        console.log('Check permissions failed:', error);
+      })
       .then((permissionsGranted) => {
         if (permissionsGranted) {
           return this.startCall();

@@ -1,11 +1,13 @@
 {
   "name": "books",
-  "version": "2.4.2-rc.1",
-  "platform": "2.4.*",
+  "version": "2.5.0",
+  "platform": "2.5.*",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",
   "description": "Show books and authors",
-  "categories": ["content"],
+  "categories": [
+    "content"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -14,13 +16,19 @@
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.cms"
+  ],
   "shortcuts": [
     {
       "title": "Books",
       "screen": "@.BooksListScreen",
       "icon": "theme://books.png",
       "name": "openBooksListScreen",
+      "capabilities": [
+        "shoutem.cms.import-csv"
+      ],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
@@ -45,7 +53,9 @@
       "icon": "theme://add-to-favorites-full.png",
       "name": "openMyBooksScreen",
       "settings": {
-        "favoritesSchemas": ["@.Books"]
+        "favoritesSchemas": [
+          "@.Books"
+        ]
       }
     }
   ],
