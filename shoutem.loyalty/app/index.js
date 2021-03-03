@@ -27,9 +27,7 @@ import enTranslations from './translations/en.json';
 
 import reducer from './redux';
 
-export {
-  reducer,
-};
+export { reducer };
 
 export const screens = {
   PointsCardScreen,
@@ -64,13 +62,8 @@ export const shoutem = {
   },
 };
 
-export {
-  refreshCard,
-  refreshCardState,
-} from './services';
+export { refreshCard, refreshCardState } from './services';
 
-export {
-  CARD_SCHEMA,
-} from './const';
+export { CARD_SCHEMA } from './const';
 
 export { appDidMount } from './app';

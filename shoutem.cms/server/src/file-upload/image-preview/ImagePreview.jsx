@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import { FontIcon } from '@shoutem/react-web-ui';
 import './style.scss';
@@ -7,8 +8,7 @@ import './style.scss';
 export default class ImagePreview extends Component {
   constructor(props) {
     super(props);
-
-    this.handleClick = this.handleClick.bind(this);
+    autoBindReact(this);
   }
 
   handleClick(event) {
@@ -22,11 +22,14 @@ export default class ImagePreview extends Component {
       height,
       className,
       canBeDeleted,
+      canBePreviewed,
       onDeleteClick,
+      onPreviewClick,
     } = this.props;
 
     const classes = classNames(className, 'image-preview', {
       'is-deletable': canBeDeleted,
+      'is-previewable': canBePreviewed,
     });
 
     const style = { width, height };
@@ -37,11 +40,17 @@ export default class ImagePreview extends Component {
     return (
       <div className={classes} onClick={this.handleClick} style={style}>
         {canBeDeleted && (
-          <FontIcon
-            className="file-preview__delete"
-            name="delete"
-            onClick={onDeleteClick}
-          />
+          <div className="file-preview__delete" onClick={onDeleteClick}>
+            <FontIcon className="file-preview__delete-icon" name="close" />
+          </div>
+        )}
+        {canBePreviewed && (
+          <div className="file-preview__preview" onClick={onPreviewClick}>
+            <FontIcon
+              className="file-preview__preview-icon"
+              name="visibility-on"
+            />
+          </div>
         )}
       </div>
     );
@@ -62,9 +71,17 @@ ImagePreview.propTypes = {
    */
   onDeleteClick: PropTypes.func,
   /**
+   * Click handler for preview icon
+   */
+  onPreviewClick: PropTypes.func,
+  /**
    * Flag indicating whether file can be deleted
    */
   canBeDeleted: PropTypes.bool,
+  /**
+   * Flag indicating whether file can be previewed
+   */
+  canBePreviewed: PropTypes.bool,
   /**
    * Preview width
    */

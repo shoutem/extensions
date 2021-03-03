@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
+import PropTypes from 'prop-types';
+import { I18n } from 'shoutem.i18n';
+import { connectStyle } from '@shoutem/theme';
 import {
   TouchableOpacity,
   Image,
@@ -9,16 +10,8 @@ import {
   Subtitle,
   View,
 } from '@shoutem/ui';
-
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-
 import { ext } from '../const';
-
-import {
-  rewardShape,
- } from './shapes';
+import { rewardShape } from './shapes';
 
 const { func } = PropTypes;
 
@@ -47,10 +40,7 @@ export class RewardListView extends PureComponent {
     const { id, image, pointsRequired, title } = reward;
 
     return (
-      <TouchableOpacity
-        key={id}
-        onPress={this.onPress}
-      >
+      <TouchableOpacity key={id} onPress={this.onPress}>
         <Row>
           <Image
             styleName="small placeholder"
@@ -59,7 +49,9 @@ export class RewardListView extends PureComponent {
           <View styleName="vertical stretch space-between">
             <Subtitle>{title}</Subtitle>
             <Subtitle>
-              {I18n.t(ext('pointsRequiredRewards'), { count: pointsRequired || 0 })}
+              {I18n.t(ext('pointsRequiredRewards'), {
+                count: pointsRequired || 0,
+              })}
             </Subtitle>
           </View>
         </Row>

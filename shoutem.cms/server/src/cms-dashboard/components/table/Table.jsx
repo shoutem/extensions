@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import _ from 'lodash';
 import i18next from 'i18next';
@@ -13,10 +14,7 @@ import './style.scss';
 export default class Table extends Component {
   constructor(props) {
     super(props);
-
-    this.handleTableFilterChange = this.handleTableFilterChange.bind(this);
-    this.renderEmptyTableRow = this.renderEmptyTableRow.bind(this);
-    this.renderTableHeader = this.renderTableHeader.bind(this);
+    autoBindReact(this);
   }
 
   handleTableFilterChange(filterId, value) {

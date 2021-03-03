@@ -1,9 +1,10 @@
 {
   "name": "podcast",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "platform": "2.5.*",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
+  "releaseNotes": "* Fixed navigation header overlapping screen content on 'Episode details' screen",
   "icon": "server/assets/extension-icon.png",
   "categories": [
     "media"

@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 import {
   TouchableOpacity,
   View,
@@ -44,13 +44,12 @@ export default class ListPhotoView extends PureComponent {
       <View key={photo.id}>
         <TouchableOpacity onPress={this.onPress}>
           <Tile>
-            <Image
-              styleName="large-banner"
-              source={source}
-            />
+            <Image styleName="large-banner" source={source} />
             <View styleName="content md-gutter">
               <Title numberOfLines={2}>{title.toUpperCase()}</Title>
-              <Caption>{timeUpdated && moment(photo.timeUpdated).fromNow()}</Caption>
+              <Caption>
+                {timeUpdated && moment(photo.timeUpdated).fromNow()}
+              </Caption>
             </View>
           </Tile>
         </TouchableOpacity>

@@ -6,6 +6,7 @@ import ImporterTable from './importer-table';
 import ImporterModal from './importer-modal';
 import ImporterCsvForm from './importer-csv-form';
 import ToggleContent from './toggle-content';
+import ExportCmsButton from './export-cms-button';
 
 export {
   ChildCategorySelector,
@@ -16,4 +17,5 @@ export {
   ImporterModal,
   ImporterCsvForm,
   ToggleContent,
+  ExportCmsButton,
 };

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import SelectReduxFormElement from '../select-redux-form-element';
 
 export default class EntityReferenceReduxFormElement extends Component {
@@ -15,10 +16,7 @@ export default class EntityReferenceReduxFormElement extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleInit = this.handleInit.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleSelectionChanged = this.handleSelectionChanged.bind(this);
+    autoBindReact(this);
 
     this.state = {
       loading: true,

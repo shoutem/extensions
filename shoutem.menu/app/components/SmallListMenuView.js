@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import * as _ from 'lodash';
-
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
   Image,
   Subtitle,
@@ -30,10 +29,7 @@ export default class SmallListMenuView extends PureComponent {
     const { item } = this.props;
 
     return (
-      <TouchableOpacity
-        onPress={this.onPress}
-        key={item.id}
-      >
+      <TouchableOpacity onPress={this.onPress} key={item.id}>
         <Row>
           <Image
             styleName="small placeholder"

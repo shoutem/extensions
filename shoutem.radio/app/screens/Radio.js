@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Dimensions, PixelRatio } from 'react-native';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { Dimensions, PixelRatio } from 'react-native';
+import { connect } from 'react-redux';
 
 import {
   STATE_NONE, // 0 idle
@@ -44,7 +44,9 @@ function getResizedImageSource(backgroundImageUrl) {
 
   const { width, height } = Dimensions.get('window');
   const imageWidth = PixelRatio.getPixelSizeForLayoutSize(width);
-  const imageHeight = PixelRatio.getPixelSizeForLayoutSize(height - NAVIGATION_HEADER_HEIGHT);
+  const imageHeight = PixelRatio.getPixelSizeForLayoutSize(
+    height - NAVIGATION_HEADER_HEIGHT,
+  );
 
   return {
     uri: getWeServUrl(backgroundImageUrl, imageWidth, imageHeight),
@@ -96,10 +98,13 @@ export class Radio extends PureComponent {
   shouldResetPlayer() {
     const shortcutId = _.get(this.props, 'shortcut.id');
     const activeShortcutId = _.get(this.props, 'activeShortcut.id');
-    const activeCanonicalName = _.get(this.props, 'activeShortcut.canonicalName');
+    const activeCanonicalName = _.get(
+      this.props,
+      'activeShortcut.canonicalName',
+    );
     const isActiveShortcutRadio = activeCanonicalName === ext('Radio');
 
-    return (isActiveShortcutRadio && shortcutId !== activeShortcutId);
+    return isActiveShortcutRadio && shortcutId !== activeShortcutId;
   }
 
   render() {
@@ -119,20 +124,23 @@ export class Radio extends PureComponent {
       return renderPlaceholderView();
     }
 
-    const share = showSharing ? {
-      link: 'streamUrl',
-      text: `Stream address: ${streamUrl}`,
-      title: `Currently listening to ${streamTitle}`,
-    } : null;
+    const share = showSharing
+      ? {
+          link: 'streamUrl',
+          text: `Stream address: ${streamUrl}`,
+          title: `Currently listening to ${streamTitle}`,
+        }
+      : null;
 
     const statusText = this.resolveStatusText();
     const isPlaying = playbackState === STATE_PLAYING;
     const bgImage = getResizedImageSource(backgroundImageUrl);
+    // eslint-disable-next-line global-require
     const musicImage = require('../assets/music.png');
     const musicImageStyle = isPlaying ? {} : style.hiddenImage;
 
     return (
-      <Screen styleName="full-screen">
+      <Screen>
         <NavigationBar
           share={share}
           styleName="clear"
@@ -150,9 +158,7 @@ export class Radio extends PureComponent {
             </Overlay>
           </Tile>
           <View style={style.nowPlaying} styleName="vertical h-center">
-            <Subtitle style={style.nowPlayingText}>
-              {statusText}
-            </Subtitle>
+            <Subtitle style={style.nowPlayingText}>{statusText}</Subtitle>
             <Row style={style.clearRow}>
               <Image
                 source={musicImage}
@@ -160,7 +166,9 @@ export class Radio extends PureComponent {
                 styleName="small"
               />
               <View styleName="vertical stretch v-center">
-                {isPlaying && <Subtitle style={style.streamTitle}>{streamTitle}</Subtitle>}
+                {isPlaying && (
+                  <Subtitle style={style.streamTitle}>{streamTitle}</Subtitle>
+                )}
               </View>
             </Row>
           </View>
@@ -174,6 +182,4 @@ const mapStateToProps = state => ({
   activeShortcut: getActiveShortcut(state),
 });
 
-export default connect(mapStateToProps)(
-  connectStyle(ext('Radio'))(Radio),
-);
+export default connect(mapStateToProps)(connectStyle(ext('Radio'))(Radio));

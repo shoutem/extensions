@@ -1,68 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import i18next from 'i18next';
 import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
-import RichTextEditor from 'react-rte';
+import { RichTextEditor } from '@shoutem/react-web-ui';
 import classNames from 'classnames';
 import { fieldInError } from '../services';
-import LOCALIZATION from './localization';
 import './style.scss';
-
-function getToolbarConfig() {
-  return {
-    display: [
-      'INLINE_STYLE_BUTTONS',
-      'BLOCK_TYPE_BUTTONS',
-      'LINK_BUTTONS',
-      'BLOCK_TYPE_DROPDOWN',
-      'HISTORY_BUTTONS',
-    ],
-    INLINE_STYLE_BUTTONS: [
-      {
-        label: i18next.t(LOCALIZATION.TEXT_STYLE_BOLD_TITLE),
-        style: 'BOLD',
-        className: 'custom-css-class',
-      },
-      {
-        label: i18next.t(LOCALIZATION.TEXT_STYLE_ITALIC_TITLE),
-        style: 'ITALIC',
-      },
-      {
-        label: i18next.t(LOCALIZATION.TEXT_STYLE_UNDERLINE_TITLE),
-        style: 'UNDERLINE',
-      },
-    ],
-    BLOCK_TYPE_DROPDOWN: [
-      {
-        label: i18next.t(LOCALIZATION.HEADING_STYLE_NORMAL_TITLE),
-        style: 'unstyled',
-      },
-      {
-        label: i18next.t(LOCALIZATION.HEADING_STYLE_LARGE_TITLE),
-        style: 'header-one',
-      },
-      {
-        label: i18next.t(LOCALIZATION.HEADING_STYLE_MEDIUM_TITLE),
-        style: 'header-two',
-      },
-      {
-        label: i18next.t(LOCALIZATION.HEADING_STYLE_SMALL_TITLE),
-        style: 'header-three',
-      },
-    ],
-    BLOCK_TYPE_BUTTONS: [
-      {
-        label: i18next.t(LOCALIZATION.UNORDERED_LIST_TITLE),
-        style: 'unordered-list-item',
-      },
-      {
-        label: i18next.t(LOCALIZATION.ORDERED_LIST_TITLE),
-        style: 'ordered-list-item',
-      },
-    ],
-  };
-}
 
 export default class TextEditorReduxFormElement extends Component {
   static propTypes = {
@@ -75,25 +19,20 @@ export default class TextEditorReduxFormElement extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
+    autoBindReact(this);
 
     const { field } = props;
     const initialValue = _.get(field, 'value', '');
 
     this.state = {
-      value: RichTextEditor.createValueFromString(initialValue, 'html'),
+      value: initialValue,
     };
   }
 
   handleChange(value) {
-    this.setState({ value });
-  }
-
-  handleBlur() {
-    const { value } = this.state;
     const { field } = this.props;
+
+    this.setState({ value });
     field.onChange(value.toString('html'));
   }
 
@@ -119,9 +58,7 @@ export default class TextEditorReduxFormElement extends Component {
       >
         <ControlLabel>{name}</ControlLabel>
         <RichTextEditor
-          onBlur={this.handleBlur}
           onChange={this.handleChange}
-          toolbarConfig={getToolbarConfig()}
           value={this.state.value}
           {...otherProps}
         />

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { MenuItem } from 'react-bootstrap';
 import classNames from 'classnames';
 import i18next from 'i18next';
@@ -17,12 +18,7 @@ export default class CategoryTreeItem extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleCategoryRenameClick = this.handleCategoryRenameClick.bind(this);
-    this.handleCategoryDeleteClick = this.handleCategoryDeleteClick.bind(this);
-    this.renderMenuOptions = this.renderMenuOptions.bind(this);
-    this.renderRenameOption = this.renderRenameOption.bind(this);
-    this.renderDeleteOption = this.renderDeleteOption.bind(this);
+    autoBindReact(this);
   }
 
   handleCategoryRenameClick() {

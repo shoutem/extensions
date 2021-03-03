@@ -1,0 +1,16 @@
+.export-button {
+  min-width: 48px;
+  width: 48px;
+  height: 48px;
+  margin-right: 12px;
+
+  .export-loader {
+    margin-top: -1px;
+  }
+
+  .export-icon {
+    color: #444f6c;
+    margin-left: -1px;
+    margin-top: -3px;
+  }
+}

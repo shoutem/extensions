@@ -1,10 +1,10 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "platform": "2.5.*",
   "description": "Show a video gallery",
-  "releaseNotes": "* Added detauls screen layout without share button",
+  "releaseNotes": "* Added CMS search feature",
   "icon": "server/assets/add-videos-image.png",
   "dependencies": [
     "shoutem.cms",
@@ -29,6 +29,7 @@
       "icon": "theme://play.png",
       "screen": "@.VideosList",
       "capabilities": [
+        "shoutem.cms.search",
         "shoutem.cms.import-csv"
       ],
       "adminPages": [

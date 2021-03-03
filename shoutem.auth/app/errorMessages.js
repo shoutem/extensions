@@ -28,11 +28,14 @@ export const errorMessages = {
   },
   get MANUAL_APPROVAL() {
     return I18n.t(ext('manualApprovalMessage'));
-  }
+  },
+  get CONSENT_REQUIRED() {
+    return I18n.t(ext('consentRequiredError'));
+  },
 };
 
 export function resolveErrorMessage(errorCode) {
-  switch(errorCode) {
+  switch (errorCode) {
     case 'EMAIL_UNKNOWN':
       return I18n.t(ext('unknownEmailErrorMessage'));
     case 'INVALID_CREDENTIALS':
@@ -59,10 +62,11 @@ export function resolveErrorMessage(errorCode) {
 export const getErrorMessage = errorCode => resolveErrorMessage(errorCode);
 
 export const apiCodeToErrorMessage = {
-    auth_user_validation_usernameTaken: 'USERNAME_TAKEN',
-    auth_auth_notAuthorized_userAuthenticationError: 'UNEXPECTED_ERROR',
-    auth_token_validation_userNotApproved: 'USER_NOT_APPROVED',
+  auth_auth_validation_usernameTaken: 'USERNAME_TAKEN',
+  auth_auth_notAuthorized_userAuthenticationError: 'UNEXPECTED_ERROR',
+  auth_token_validation_userNotApproved: 'USER_NOT_APPROVED',
 };
 
 export const getErrorCode = apiResponseErrorCode =>
-apiCodeToErrorMessage[apiResponseErrorCode] || getErrorMessage(apiResponseErrorCode);
+  apiCodeToErrorMessage[apiResponseErrorCode] ||
+  getErrorMessage(apiResponseErrorCode);

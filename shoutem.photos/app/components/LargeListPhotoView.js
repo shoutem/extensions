@@ -9,7 +9,6 @@ import {
   Image,
   Tile,
 } from '@shoutem/ui';
-
 import { BasePhotoView } from './BasePhotoView';
 
 /**
@@ -26,10 +25,7 @@ export default class LargeListPhotoView extends BasePhotoView {
       <View key={photo.id}>
         <TouchableOpacity onPress={this.onPress}>
           <Tile>
-            <Image
-              styleName="large-banner"
-              source={source}
-            />
+            <Image styleName="large-banner" source={source} />
             <View styleName="content md-gutter">
               <Title numberOfLines={2}>{title.toUpperCase()}</Title>
               <Caption>{moment(photo.timeUpdated).fromNow()}</Caption>

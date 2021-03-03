@@ -1,6 +1,17 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 import {
+  getAllShortcuts,
+  getExtensionSettings,
+  showAllShortcuts,
+  hideShortcut,
+  getConfiguration,
+  getSubscriptionValidState,
+} from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
+import { createResetToCurrentRoute, navigateTo } from 'shoutem.navigation';
+import { preventStateRehydration } from 'shoutem.redux';
+import {
   find,
   resource,
   update,
@@ -10,19 +21,9 @@ import {
   create,
 } from '@shoutem/redux-io';
 import { chainReducers } from '@shoutem/redux-composers';
-import { preventStateRehydration } from 'shoutem.redux';
-import { navigateTo } from 'shoutem.navigation';
-import {
-  getAllShortcuts,
-  getExtensionSettings,
-  showAllShortcuts,
-  hideShortcut,
-  getConfiguration,
-  getSubscriptionValidState,
-} from 'shoutem.application';
-import { I18n } from 'shoutem.i18n';
 import { ext } from './const';
 import encodeToBase64 from './shared/encodeToBase64';
+import { shoutemApi } from './services/shoutemApi';
 
 export const LOGIN = 'shoutem.auth.LOGIN';
 export const LOGOUT = 'shoutem.auth.LOGOUT';
@@ -35,6 +36,10 @@ export const USER_SCHEMA = 'shoutem.core.users';
 export const USER_PROFILE_SCHEMA = 'shoutem.auth.user-profile';
 export const USER_PROFILE_IMAGE_SCHEMA = 'shoutem.auth.user-profile-image';
 export const USER_CREDENTIALS_SCHEMA = 'shoutem.auth.user-credentials';
+export const USER_FORGOT_PASSWORD_ACTIONS_SCHEMA =
+  'shoutem.auth.user-forgot-password-actions';
+export const USER_RESET_PASSWORD_ACTIONS_SCHEMA =
+  'shoutem.auth.user-reset-password-actions';
 export const AUTH_TOKEN_SCHEMA = 'shoutem.auth.tokens';
 export const USER_FACEBOOK_CREDENTIALS_SCHEMA =
   'shoutem.auth.user-facebook-credentials';
@@ -48,7 +53,8 @@ export function restoreSession(session) {
   };
 }
 
-const facebookUserInfoURL = 'https://graph.facebook.com/me?fields=name,email,first_name,last_name&access_token='
+const facebookUserInfoURL =
+  'https://graph.facebook.com/me?fields=name,email,first_name,last_name&access_token=';
 
 const sessionReducer = (state = {}, { type, payload }) => {
   switch (type) {
@@ -95,8 +101,10 @@ export default preventStateRehydration(
 );
 
 export function updateProfile(updates) {
+  const newUser = { ...updates, type: USER_SCHEMA };
+
   return dispatch =>
-    dispatch(update(USER_SCHEMA, updates, { userId: updates.id }));
+    dispatch(update(USER_SCHEMA, newUser, { userId: updates.id }));
 }
 
 export const userLoggedIn = user => ({
@@ -159,12 +167,7 @@ export function fetchAccessToken(email, password) {
 
 export function fetchAppleAccessToken(idToken) {
   return dispatch =>
-    dispatch(
-      fetchToken(
-        'refresh-token',
-        `apple ${idToken}`,
-      ),
-    ).then(action =>
+    dispatch(fetchToken('refresh-token', `apple ${idToken}`)).then(action =>
       dispatch(
         fetchToken(
           'access-token',
@@ -177,10 +180,7 @@ export function fetchAppleAccessToken(idToken) {
 export function fetchFacebookAccessToken(userAccessToken) {
   return dispatch =>
     dispatch(
-      fetchToken(
-        'refresh-token',
-        `facebook ${userAccessToken}`,
-      ),
+      fetchToken('refresh-token', `facebook ${userAccessToken}`),
     ).then(action =>
       dispatch(
         fetchToken(
@@ -199,8 +199,8 @@ export function fetchFacebookUserInfo(userAccessToken) {
   const request = `${facebookUserInfoURL}${userAccessToken}`;
 
   return fetch(request)
-    .then((response) => response.json())
-    .catch((error) => console.log('Fetch Facebook user info failed: ', error));
+    .then(response => response.json())
+    .catch(error => console.log('Fetch Facebook user info failed: ', error));
 }
 
 export function login(email, password) {
@@ -233,7 +233,13 @@ export function loginWithFacebook(userAccessToken) {
     });
 }
 
-export function register(email, username, password) {
+export function register(
+  email,
+  username,
+  password,
+  gdprConsentGiven = false,
+  newsletterConsentGiven = false,
+) {
   return dispatch => {
     const schemeConfig = {
       schema: USER_SCHEMA,
@@ -249,6 +255,8 @@ export function register(email, username, password) {
       appRole: 'user',
       profile: {
         nick: username,
+        gdprConsentGiven,
+        newsletterConsentGiven,
       },
     };
 
@@ -345,8 +353,14 @@ export function getUser(state) {
 export function isSendBirdConfigured(state) {
   const config = getConfiguration(state);
   const hasValidSubscription = getSubscriptionValidState(state);
-  const extensionInstalled = _.find(_.get(config, 'extensions'), { id: 'shoutem.sendbird' });
-  const featureActive = _.get(extensionInstalled, 'settings.featureActive', false);
+  const extensionInstalled = _.find(_.get(config, 'extensions'), {
+    id: 'shoutem.sendbird',
+  });
+  const featureActive = _.get(
+    extensionInstalled,
+    'settings.featureActive',
+    false,
+  );
 
   return extensionInstalled && featureActive && hasValidSubscription;
 }
@@ -359,7 +373,9 @@ export function isSendBirdConfigured(state) {
  */
 export function isAgoraConfigured(state) {
   const config = getConfiguration(state);
-  const extensionInstalled = _.find(_.get(config, 'extensions'), { id: 'shoutem.agora' });
+  const extensionInstalled = _.find(_.get(config, 'extensions'), {
+    id: 'shoutem.agora',
+  });
   const apiKeySet = !_.isEmpty(_.get(extensionInstalled, 'settings.appId', ''));
 
   return extensionInstalled && apiKeySet;
@@ -434,4 +450,60 @@ export function hideShortcuts(user) {
       }
     });
   };
+}
+
+export function createResetToLoginScreen() {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    return createResetToCurrentRoute(state, dispatch);
+  };
+}
+
+export function sendVerificationCodeEmail(email) {
+  const config = {
+    schema: USER_FORGOT_PASSWORD_ACTIONS_SCHEMA,
+    request: {
+      endpoint: shoutemApi.buildAuthUrl('users/actions/forgot-password'),
+      body: JSON.stringify({
+        data: {
+          type: USER_FORGOT_PASSWORD_ACTIONS_SCHEMA,
+          attributes: {
+            email,
+          },
+        },
+      }),
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
+    },
+  };
+
+  return create(config);
+}
+
+export function resetPassword(code, email, newPassword) {
+  const config = {
+    schema: USER_RESET_PASSWORD_ACTIONS_SCHEMA,
+    request: {
+      endpoint: shoutemApi.buildAuthUrl('users/actions/reset-password'),
+      body: JSON.stringify({
+        data: {
+          type: USER_RESET_PASSWORD_ACTIONS_SCHEMA,
+          attributes: {
+            email,
+            code,
+            newPassword,
+          },
+        },
+      }),
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
+    },
+  };
+
+  return create(config);
 }

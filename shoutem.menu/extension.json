@@ -1,12 +1,18 @@
 {
   "name": "menu",
   "title": "Restaurant menu",
-  "version": "2.4.2-rc.1",
-  "platform": "2.4.*",
+  "version": "2.5.2",
+  "platform": "2.5.*",
   "icon": "./server/assets/images/add-menu-items-image.png",
   "description": "Show a restaurant menu",
-  "dependencies": ["shoutem.layouts", "shoutem.cms"],
-  "categories": ["content"],
+  "releaseNotes": "* Added CMS search feature",
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.cms"
+  ],
+  "categories": [
+    "content"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -22,6 +28,10 @@
       "name": "openMenuListScreen",
       "icon": "theme://restaurant-menu.png",
       "screen": "@.MenuListScreen",
+      "capabilities": [
+        "shoutem.cms.search",
+        "shoutem.cms.import-csv"
+      ],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",

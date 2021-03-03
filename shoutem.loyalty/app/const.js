@@ -1,6 +1,10 @@
 // This file is auto-generated.
 import pack from './package.json';
 
+export function ext(resourceName) {
+  return resourceName ? `${pack.name}.${resourceName}` : pack.name;
+}
+
 export const AUTHORIZATIONS_SCHEMA = 'shoutem.loyalty.authorizations';
 export const CARD_SCHEMA = 'shoutem.loyalty.cards';
 export const CARD_STATE_SCHEMA = 'shoutem.loyalty.card-states';
@@ -14,7 +18,3 @@ export const CMS_PUNCHCARDS_SCHEMA = ext('punch-cards');
 export const REWARDS_SCHEMA = ext('rewards');
 export const PLACE_REWARDS_SCHEMA = ext('place-rewards');
 export const PLACES_SCHEMA = ext('places');
-
-export function ext(resourceName) {
-  return resourceName ? `${pack.name}.${resourceName}` : pack.name;
-}

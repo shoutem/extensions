@@ -1,10 +1,11 @@
 {
   "name": "books",
-  "version": "2.5.0",
+  "version": "2.5.2",
   "platform": "2.5.*",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",
   "description": "Show books and authors",
+  "releaseNotes": "* Added CMS search feature",
   "categories": [
     "content"
   ],
@@ -27,6 +28,7 @@
       "icon": "theme://books.png",
       "name": "openBooksListScreen",
       "capabilities": [
+        "shoutem.cms.search",
         "shoutem.cms.import-csv"
       ],
       "adminPages": [

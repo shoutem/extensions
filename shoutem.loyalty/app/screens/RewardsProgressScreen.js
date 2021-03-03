@@ -1,20 +1,17 @@
 import React from 'react';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { connect } from 'react-redux';
-
-import { connectStyle } from '@shoutem/theme';
-import { getCollection } from '@shoutem/redux-io';
-
 import { getExtensionSettings } from 'shoutem.application';
-import {
-  getUser,
-  loginRequired,
-} from 'shoutem.auth';
-
+import { getUser, loginRequired } from 'shoutem.auth';
+import { CmsListScreen } from 'shoutem.cms';
+import { navigateTo } from 'shoutem.navigation';
+import { find, next } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import RewardMediumListView from '../components/RewardMediumListView';
 import { ext } from '../const';
 import { getCardStateForPlace } from '../redux';
-import { RewardsListScreen, mapDispatchToProps } from './RewardsListScreen';
-import RewardMediumListView from '../components/RewardMediumListView';
+import { refreshCard } from '../services';
+import { RewardsListScreen } from './RewardsListScreen';
 
 /**
  * Displays a list of rewards.
@@ -22,38 +19,46 @@ import RewardMediumListView from '../components/RewardMediumListView';
  */
 export class RewardsProgressScreen extends RewardsListScreen {
   renderRow(reward) {
-    const { cardState } = this.props;
+    const points = _.get(this.props, 'cardState.points', 0);
 
     return (
       <RewardMediumListView
         key={reward.id}
         onPress={this.navigateToRewardDetails}
         reward={reward}
-        points={cardState.points || 0}
+        points={points}
       />
     );
   }
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const parentCategoryId = _.get(ownProps, 'shortcut.settings.parentCategory.id');
-  const { allPointRewards, card: { data = {} } } = state[ext()];
-  const { place } = ownProps;
-  const placeId = place ? place.id : null;
-
   const extensionSettings = getExtensionSettings(state, ext());
   const programId = _.get(extensionSettings, 'program.id');
+  const card = _.get(state[ext()], 'card.data', {});
+  const placeId = _.get(ownProps, 'place.id', null);
 
   return {
-    card: data,
+    ...CmsListScreen.createMapStateToProps(
+      state => state[ext()].allPointRewards,
+    )(state, ownProps),
+    card,
     cardState: getCardStateForPlace(state, placeId) || {},
-    parentCategoryId,
     programId,
-    data: getCollection(allPointRewards, state),
     user: getUser(state),
   };
 };
 
-export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('RewardsListScreen'))(RewardsProgressScreen),
-));
+export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
+  find,
+  navigateTo,
+  next,
+  refreshCard,
+});
+
+export default loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('RewardsListScreen'))(RewardsProgressScreen)),
+);

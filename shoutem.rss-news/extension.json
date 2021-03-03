@@ -1,9 +1,10 @@
 {
   "name": "rss-news",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "platform": "2.5.*",
   "title": "News RSS",
   "description": "Show news articles from an RSS feed",
+  "releaseNotes": "UI improvements on article details screens",
   "icon": "server/assets/extension-icon.png",
   "categories": [
     "content"

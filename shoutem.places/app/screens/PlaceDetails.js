@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Linking } from 'react-native';
+import { connect } from 'react-redux';
 
+import { connectStyle } from '@shoutem/theme';
 import {
   ScrollView,
   TouchableOpacity,
@@ -18,19 +20,14 @@ import {
   Button,
   SimpleHtml,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { InlineMap } from 'shoutem.application';
 import { Favorite } from 'shoutem.favorites';
-import { openURL } from 'shoutem.web-view';
 import { I18n } from 'shoutem.i18n';
-
-import _ from 'lodash';
-
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
 import PlaceImageGallery from '../components/PlaceImageGallery';
-import { getPlaceImages, getMapUrl } from '../services/places';
 import { ext } from '../const';
+import { getPlaceImages, getMapUrl } from '../services/places';
 
 export class PlaceDetails extends PureComponent {
   static propTypes = {
@@ -64,11 +61,7 @@ export class PlaceDetails extends PureComponent {
     return {
       renderRightComponent: () => (
         <View styleName="container" virtual>
-          <Favorite
-            item={place}
-            navBarButton
-            schema={schema}
-          />
+          <Favorite item={place} navBarButton schema={schema} />
         </View>
       ),
       styleName: _.size(images) >= 1 ? 'clear' : 'no-border',
@@ -149,9 +142,7 @@ export class PlaceDetails extends PureComponent {
 
     return (
       <View styleName="solid">
-        <TouchableOpacity
-          onPress={this.openMapScreen}
-        >
+        <TouchableOpacity onPress={this.openMapScreen}>
           <InlineMap
             initialRegion={region}
             markers={[marker]}
@@ -159,8 +150,8 @@ export class PlaceDetails extends PureComponent {
             styleName="medium-tall"
           >
             <View styleName="fill-parent overlay vertical v-center h-center">
-              <Subtitle numberOfLines={1} >{item.name}</Subtitle>
-              <Caption numberOfLines={2} >{formattedAddress}</Caption>
+              <Subtitle numberOfLines={1}>{item.name}</Subtitle>
+              <Caption numberOfLines={2}>{formattedAddress}</Caption>
             </View>
           </InlineMap>
         </TouchableOpacity>
@@ -236,7 +227,7 @@ export class PlaceDetails extends PureComponent {
     const { place } = this.props;
     const { location = {} } = this.props.place;
     return (
-      <Screen styleName="full-screen paper">
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderLeadImage(place)}
@@ -244,10 +235,30 @@ export class PlaceDetails extends PureComponent {
           {this.renderButtons()}
           {this.renderInlineMap(place)}
           {this.renderDescription(place)}
-          {this.renderDisclosureButton(place.url, I18n.t('shoutem.cms.websiteButton'), 'web', this.openWebLink)}
-          {this.renderDisclosureButton(location.formattedAddress, I18n.t('shoutem.cms.directionsButton'), 'pin', this.openMapLink)}
-          {this.renderDisclosureButton(place.mail, I18n.t('shoutem.cms.emailButton'), 'email', this.openEmailLink)}
-          {this.renderDisclosureButton(place.phone, I18n.t('shoutem.cms.phoneButton'), 'call', this.openPhoneLink)}
+          {this.renderDisclosureButton(
+            place.url,
+            I18n.t('shoutem.cms.websiteButton'),
+            'web',
+            this.openWebLink,
+          )}
+          {this.renderDisclosureButton(
+            location.formattedAddress,
+            I18n.t('shoutem.cms.directionsButton'),
+            'pin',
+            this.openMapLink,
+          )}
+          {this.renderDisclosureButton(
+            place.mail,
+            I18n.t('shoutem.cms.emailButton'),
+            'email',
+            this.openEmailLink,
+          )}
+          {this.renderDisclosureButton(
+            place.phone,
+            I18n.t('shoutem.cms.phoneButton'),
+            'call',
+            this.openPhoneLink,
+          )}
         </ScrollView>
       </Screen>
     );

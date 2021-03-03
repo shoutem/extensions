@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import _ from 'lodash';
 import i18next from 'i18next';
@@ -33,12 +34,7 @@ const resolveDisplayOrderIcon = currentOrder =>
 class SortOptions extends Component {
   constructor(props) {
     super(props);
-
-    this.handleFieldChange = this.handleFieldChange.bind(this);
-    this.handleOrderingChange = this.handleOrderingChange.bind(this);
-    this.calculateDisplayProperties = this.calculateDisplayProperties.bind(
-      this,
-    );
+    autoBindReact(this);
 
     this.state = {
       currentField: null,
@@ -134,10 +130,11 @@ class SortOptions extends Component {
         <Dropdown
           className="sort-options__field-selector"
           disabled={disabled}
+          dropup={false}
           onSelect={this.handleFieldChange}
         >
           <Dropdown.Toggle>{displayFieldLabel}</Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu className="sort-options__field-menu">
             {displayFieldTitle && <MenuItem>{displayFieldTitle}</MenuItem>}
             {displayFieldTitle && <MenuItem divider />}
             {displayFields.map(field => (

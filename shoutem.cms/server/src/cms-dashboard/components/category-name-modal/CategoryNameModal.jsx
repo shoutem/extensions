@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import i18next from 'i18next';
+import autoBindReact from 'auto-bind/react';
 import { Modal, Button, FormGroup, ControlLabel } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
@@ -14,13 +15,7 @@ export default class CategoryNameModal extends Component {
 
   constructor(props) {
     super(props);
-
-    this.show = this.show.bind(this);
-    this.handleHide = this.handleHide.bind(this);
-    this.handleModalEnter = this.handleModalEnter.bind(this);
-    this.handleSaveClick = this.handleSaveClick.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
-    this.handleCategoryNameChange = this.handleCategoryNameChange.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,

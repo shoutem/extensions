@@ -1,22 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { LayoutAnimation } from 'react-native';
-import _ from 'lodash';
-
-import {
-  View,
-  Text,
-  ListView,
-  Screen,
-  Button,
-} from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { isBusy, find, isInitialized } from '@shoutem/redux-io';
-
+import { connect } from 'react-redux';
+import { CmsListScreen, currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';
-import { CmsListScreen, currentLocation } from 'shoutem.cms';
-
+import { isBusy, find, isInitialized } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { View, Text, ListView, Screen, Button } from '@shoutem/ui';
 import MapList from '../components/MapList';
 import PlacePhotoView from '../components/PlacePhotoView';
 import { ext } from '../const';
@@ -30,7 +20,9 @@ export class PlacesList extends CmsListScreen {
     super(props);
     this.renderRow = this.renderRow.bind(this);
     this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(this);
+    this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(
+      this,
+    );
     this.toggleMapView = this.toggleMapView.bind(this);
 
     this.state = {
@@ -55,14 +47,13 @@ export class PlacesList extends CmsListScreen {
 
   renderRightNavBarComponent() {
     const { mapView } = this.state;
-    const actionText = mapView ? I18n.t('shoutem.cms.navBarListViewButton') : I18n.t('shoutem.cms.navBarMapViewButton');
+    const actionText = mapView
+      ? I18n.t('shoutem.cms.navBarListViewButton')
+      : I18n.t('shoutem.cms.navBarMapViewButton');
 
     return (
       <View styleName="container md-gutter-right" virtual>
-        <Button
-          onPress={this.toggleMapView}
-          styleName="tight"
-        >
+        <Button onPress={this.toggleMapView} styleName="tight">
           <Text>{actionText}</Text>
         </Button>
       </View>
@@ -112,7 +103,9 @@ export class PlacesList extends CmsListScreen {
     return (
       <Screen>
         <NavigationBar {...this.getNavBarProps()} />
-        {renderCategoriesInline ? this.renderCategoriesDropDown('horizontal') : null}
+        {renderCategoriesInline
+          ? this.renderCategoriesDropDown('horizontal')
+          : null}
         {this.renderData(data)}
       </Screen>
     );
@@ -120,17 +113,19 @@ export class PlacesList extends CmsListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => ({
-  ...CmsListScreen.createMapStateToProps(state => state[ext()].allPlaces)(state, ownProps),
+  ...CmsListScreen.createMapStateToProps(state => state[ext()].allPlaces)(
+    state,
+    ownProps,
+  ),
 });
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   find,
 });
 
-const StyledPlacesList = connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PlacesList'))(currentLocation(PlacesList)),
-);
+const StyledPlacesList = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('PlacesList'))(currentLocation(PlacesList)));
 
-export {
-  StyledPlacesList as PlacesListScreen,
-};
+export { StyledPlacesList as PlacesListScreen };

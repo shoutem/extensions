@@ -1,0 +1,81 @@
+parameters:
+  actionsId:
+    name: actionsId
+    in: path
+    description: actions identifier
+    required: true
+    type: string
+
+paths:
+  /v1/actions/all:
+    get:
+      summary: Returns all actions
+      tags:
+      - Actions
+      responses:
+        '200':
+          description: actions array
+          schema:
+            $ref: '#/definitions/ActionsCollectionJsonApiDocument'
+
+  /v1/actions:
+    get:
+      summary: Returns actions according to provided sort, filter and page options
+      tags:
+      - Actions
+      responses:
+        '200':
+          description: actions array
+          schema:
+            $ref: '#/definitions/ActionsCollectionJsonApiDocument'
+    post:
+      tags:
+      - Actions
+      summary: Creates new actions
+      parameters:
+      - name: actionsData
+        in: body
+        schema:
+          $ref: '#/definitions/ActionsJsonApiDocument'
+      responses:
+        '201':
+          description: created actions object
+          schema:
+            $ref: '#/definitions/ActionsJsonApiDocument'            
+
+  /v1/actions/{actionsId}:
+    get:
+      summary: Returns actions for given id
+      tags:
+      - Actions
+      parameters:
+      - $ref: '#/parameters/actionsId'
+      responses:
+        '200':
+          description: actions object
+          schema:
+            $ref: '#/definitions/ActionsJsonApiDocument'
+    patch:
+      tags:
+      - Actions
+      summary: Updates actions
+      parameters:
+      - $ref: '#/parameters/actionsId'
+      - name: actionsData
+        in: body
+        schema:
+          $ref: '#/definitions/ActionsJsonApiDocument'
+      responses:
+        '200':
+          description: updated actions object
+          schema:
+            $ref: '#/definitions/ActionsJsonApiDocument'
+    delete:
+      tags:
+      - Actions
+      summary: Deletes actions
+      parameters:
+      - $ref: '#/parameters/actionsId'
+      responses:
+        '204':
+          description: no content

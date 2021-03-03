@@ -1,15 +1,11 @@
+import React, { PureComponent } from 'react';
+import autoBind from 'auto-bind';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 import { StatusBar, Platform } from 'react-native';
-import autoBind from 'auto-bind';
 import { NavigationBar } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-import {
-  ImageGallery,
-  Screen,
-  ImageGalleryOverlay,
-} from '@shoutem/ui';
+import { ImageGallery, Screen, ImageGalleryOverlay } from '@shoutem/ui';
 import { ext } from '../const';
 
 function calculateStartingIndex(photo, photos) {
@@ -51,6 +47,7 @@ class PhotoDetailsScreen extends PureComponent {
 
     const selectedPhotoIndex = _.findIndex(photos, ['id', photo.id]) || 0;
 
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       selectedPhotoIndex,
     });
@@ -92,7 +89,7 @@ class PhotoDetailsScreen extends PureComponent {
     const { mode } = this.state;
 
     if (Platform.OS === 'ios') {
-      const isHidden = (newMode === ImageGallery.IMAGE_PREVIEW_MODE);
+      const isHidden = newMode === ImageGallery.IMAGE_PREVIEW_MODE;
       StatusBar.setHidden(isHidden, 'fade');
     }
 
@@ -106,7 +103,7 @@ class PhotoDetailsScreen extends PureComponent {
     const { photos } = this.props;
 
     return (
-      <Screen styleName="paper full-screen">
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavbarProps()} />
         <ImageGallery
           data={photos}

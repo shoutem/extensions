@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import Select from 'react-select';
 import LOCALIZATION from './localization';
@@ -7,8 +8,7 @@ import LOCALIZATION from './localization';
 export default class ImporterCsvMappingItem extends Component {
   constructor(props) {
     super(props);
-
-    this.handleChange = this.handleChange.bind(this);
+    autoBindReact(this);
 
     const { cmsOption } = props;
     const key = _.get(cmsOption, 'value');

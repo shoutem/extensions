@@ -8,6 +8,8 @@ import RegisterScreen from './screens/RegisterScreen';
 import UserProfileScreen from './screens/UserProfileScreen';
 import EditProfileScreen from './screens/EditProfileScreen';
 import MyProfileScreen from './screens/MyProfileScreen';
+import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
+import ChangePasswordScreen from './screens/ChangePasswordScreen';
 
 import reducer, {
   getUser,
@@ -40,7 +42,9 @@ import enTranslations from './translations/en.json';
 const appScreens = {};
 
 function appWillMount(app) {
-  _.each(app.getScreens(), (Screen, screenName) => { appScreens[screenName] = Screen; });
+  _.each(app.getScreens(), (Screen, screenName) => {
+    appScreens[screenName] = Screen;
+  });
 }
 
 export const screens = {
@@ -49,6 +53,8 @@ export const screens = {
   UserProfileScreen,
   EditProfileScreen,
   MyProfileScreen,
+  PasswordRecoveryScreen,
+  ChangePasswordScreen,
 };
 
 export { reducer };

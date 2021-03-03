@@ -1,27 +1,17 @@
 import React from 'react';
-import { Dimensions } from 'react-native';
 import _ from 'lodash';
+import { Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { cloneStatus } from '@shoutem/redux-io';
-import {
-  connectStyle,
-  getSizeRelativeToReference,
-} from '@shoutem/theme';
-
-import {
-  GridRow,
-  View,
-} from '@shoutem/ui';
-
+import { connectStyle, getSizeRelativeToReference } from '@shoutem/theme';
+import { GridRow, View } from '@shoutem/ui';
 import { ext } from '../const';
-
+import CompactGridPhotoView from '../components/CompactGridPhotoView';
 import {
   PhotosBaseScreen,
   mapStateToProps,
   mapDispatchToProps,
 } from './PhotosBaseScreen';
-
-import CompactGridPhotoView from '../components/CompactGridPhotoView';
 
 const window = Dimensions.get('window');
 
@@ -68,10 +58,7 @@ class CompactGridPhotosScreen extends PhotosBaseScreen {
   renderRow(photos) {
     const photoViews = this.remapPhotosToCells(photos);
     return (
-      <GridRow
-        columns={NUMBER_OF_COLUMNS}
-        key={photos[0].id}
-      >
+      <GridRow columns={NUMBER_OF_COLUMNS} key={photos[0].id}>
         {photoViews}
       </GridRow>
     );
@@ -87,6 +74,7 @@ class CompactGridPhotosScreen extends PhotosBaseScreen {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('CompactGridPhotosScreen'))(CompactGridPhotosScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('CompactGridPhotosScreen'))(CompactGridPhotosScreen));

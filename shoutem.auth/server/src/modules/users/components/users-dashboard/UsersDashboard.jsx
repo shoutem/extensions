@@ -2,8 +2,15 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
+import classNames from 'classnames';
 import i18next from 'i18next';
-import { ConfirmModal, IconLabel } from '@shoutem/react-web-ui';
+import {
+  ConfirmModal,
+  IconLabel,
+  FontIcon,
+  FontIconPopover,
+  LoaderContainer,
+} from '@shoutem/react-web-ui';
 import { Table } from 'src/components';
 import { createOptions } from 'src/services';
 import UserTableRow from '../user-table-row';
@@ -46,6 +53,10 @@ export default class UsersDashboard extends Component {
   constructor(props) {
     super(props);
     autoBindReact(this);
+
+    this.state = {
+      downloading: false,
+    };
   }
 
   handleShowUserModal(user, passwordOnly) {
@@ -68,6 +79,36 @@ export default class UsersDashboard extends Component {
       abortLabel: i18next.t(LOCALIZATION.DELETE_USER_MODAL_BUTTON_ABORT_TITLE),
       onConfirm: () => this.props.onUserDelete(id),
     });
+  }
+
+  handleDownloadUserData() {
+    const { onUserDataDownload, appId } = this.props;
+
+    this.setState({ downloading: true });
+
+    onUserDataDownload()
+      .then(response => response.blob())
+      .then(usersDataBlob => {
+        setTimeout(() => {
+          this.setState({ downloading: false });
+        }, 500);
+
+        const blobUrl = URL.createObjectURL(usersDataBlob);
+        const fileName = `${appId}-users-${Date.now()}`;
+
+        const link = document.createElement('a');
+        link.setAttribute('href', blobUrl);
+        link.setAttribute('download', fileName);
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        // Remove references
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+      })
+      .catch(() => this.setState({ downloading: false }));
   }
 
   renderUserRow(user) {
@@ -101,11 +142,29 @@ export default class UsersDashboard extends Component {
   }
 
   render() {
+    const { downloading } = this.state;
     const { users, userGroups, filter, onFilterChange } = this.props;
+
+    const classes = classNames('download-button', {
+      'button-cursor': !downloading,
+    });
 
     return (
       <div className="users-dashboard">
-        <div className="users-dashboard__title">
+        <div className="users-dashboard__header">
+          <div className="users-dashboard__title_container">
+            <span className="users-dashboard__title">List of users</span>
+            <LoaderContainer className={classes} isLoading={downloading}>
+              <FontIconPopover
+                onClick={this.handleDownloadUserData}
+                hideOnMouseLeave
+                message={i18next.t(LOCALIZATION.EXPORT_POPOVER_MESSAGE)}
+              >
+                <FontIcon name="download" size="24px" />
+              </FontIconPopover>
+            </LoaderContainer>
+          </div>
+
           <Button
             className="btn-icon pull-right"
             onClick={this.handleAddUserClick}
@@ -133,6 +192,7 @@ export default class UsersDashboard extends Component {
 }
 
 UsersDashboard.propTypes = {
+  appId: PropTypes.string,
   users: PropTypes.array,
   userGroups: PropTypes.array,
   filter: PropTypes.object,
@@ -140,5 +200,6 @@ UsersDashboard.propTypes = {
   onUserCreate: PropTypes.func,
   onUserUpdate: PropTypes.func,
   onUserDelete: PropTypes.func,
+  onUserDataDownload: PropTypes.func,
   ownerId: PropTypes.string,
 };

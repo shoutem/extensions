@@ -1,14 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { Screen } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { getCollection } from '@shoutem/redux-io';
-
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';
-
+import { getCollection } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { Screen } from '@shoutem/ui';
 import { transactionShape } from '../components/shapes';
 import TransactionHistoryView from '../components/TransactionHistoryView';
 import { ext } from '../const';
@@ -39,15 +36,13 @@ export class PointsHistoryScreen extends PureComponent {
     return (
       <Screen>
         <NavigationBar {...this.getNavBarProps()} />
-        <TransactionHistoryView
-          transactions={transactions}
-        />
+        <TransactionHistoryView transactions={transactions} />
       </Screen>
     );
   }
 }
 
-export const mapStateToProps = (state) => {
+export const mapStateToProps = state => {
   const { allTransactions } = state[ext()];
 
   return {
@@ -55,6 +50,7 @@ export const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, null)(
-  connectStyle(ext('PointsHistoryScreen'))(PointsHistoryScreen),
-);
+export default connect(
+  mapStateToProps,
+  null,
+)(connectStyle(ext('PointsHistoryScreen'))(PointsHistoryScreen));

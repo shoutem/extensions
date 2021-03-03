@@ -1,7 +1,6 @@
 import React from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-
 import {
   Caption,
   Divider,
@@ -11,7 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-
 import { ArticleView } from './ArticleView';
 
 /**

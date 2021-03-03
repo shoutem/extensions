@@ -1,9 +1,12 @@
+import React, { PureComponent } from 'react';
+import autoBind from 'auto-bind';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 import { Platform, StatusBar, Alert } from 'react-native';
-import autoBind from 'auto-bind';
 import { connect } from 'react-redux';
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar, closeModal } from 'shoutem.navigation';
+import { ext as rssExt } from 'shoutem.rss';
 import { isBusy, isValid } from '@shoutem/redux-io';
 import {
   Screen,
@@ -12,9 +15,6 @@ import {
   View,
   Spinner,
 } from '@shoutem/ui';
-import { NavigationBar, closeModal } from 'shoutem.navigation';
-import { I18n } from 'shoutem.i18n';
-import { ext as rssExt } from 'shoutem.rss';
 import { getPhotosFeed } from '../redux';
 import { remapAndFilterPhotos } from '../services';
 
@@ -147,7 +147,7 @@ class PhotoDetails extends PureComponent {
     const loading = isBusy(data) || photoNotFound;
 
     return (
-      <Screen styleName="paper full-screen">
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavbarProps()} />
         {loading && (
           <View styleName="flexible vertical h-center v-center">

@@ -14,6 +14,4 @@ export const screens = {
   PhotoDetailsScreen,
 };
 
-export const themes = {
-
-};
+export const themes = {};

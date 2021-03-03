@@ -1,7 +1,7 @@
 {
   "name": "permissions",
   "title": "Permissions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "system",
   "description": "Extension for app permission management. ",
   "icon": "server/assets/permissions-icon.png",

@@ -1,10 +1,11 @@
 {
   "name": "application",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "platform": "2.5.*",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
+  "releaseNotes": "* Added a script for calling and debugging prebuild script",
   "icon": "server/assets/add-application-image.png",
   "categories": [],
   "native": true,

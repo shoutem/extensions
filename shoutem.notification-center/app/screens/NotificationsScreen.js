@@ -3,6 +3,7 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { InteractionManager } from 'react-native';
+import autoBindReact from 'auto-bind/react';
 import { next } from '@shoutem/redux-io';
 import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
@@ -33,7 +34,7 @@ class NotificationsScreen extends ListScreen {
   constructor(props) {
     super(props);
 
-    this.handleNotificationPress = this.handleNotificationPress.bind(this);
+    autoBindReact(this);
   }
 
   // notifications data does not work with redux-io's
@@ -81,7 +82,7 @@ class NotificationsScreen extends ListScreen {
 
   getNavigationBarProps() {
     return {
-      title: I18n.t(ext('notificationListNavBarTitle')),
+      title: I18n.t(ext('notificationListNavBarTitle'))
     };
   }
 

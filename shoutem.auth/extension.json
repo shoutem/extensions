@@ -1,10 +1,10 @@
 {
   "name": "auth",
-  "version": "2.5.1",
+  "version": "2.7.1",
   "platform": "2.5.*",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Fixed empty members list when pulling the app from the background.",
+  "releaseNotes": "* Added reset password feature",
   "description": "Show user profile, sign out user",
   "categories": [
     "users"
@@ -32,6 +32,12 @@
     },
     {
       "name": "MyProfileScreen"
+    },
+    {
+      "name": "PasswordRecoveryScreen"
+    },
+    {
+      "name": "ChangePasswordScreen"
     }
   ],
   "shortcuts": [
@@ -66,6 +72,10 @@
     {
       "page": "@.GeneralSettingsPage",
       "title": "General"
+    },
+    {
+      "page": "@.GdprSettingsPage",
+      "title": "GDPR"
     }
   ],
   "pages": [
@@ -84,6 +94,10 @@
     {
       "name": "UserGroupsPage",
       "type": "react-page"
+    },
+    {
+      "name": "GdprSettingsPage",
+      "type": "react-page"
     }
   ],
   "settings": {
@@ -91,6 +105,15 @@
     "signupEnabled": true,
     "manuallyApproveMembers": false,
     "allScreensProtected": false,
+    "gdpr": {
+      "privacyPolicyLink": null,
+      "termsOfServiceLink": null,
+      "consentToggleActive": true,
+      "consentRequired": true
+    },
+    "newsletter": {
+      "consentToggleActive": false
+    },
     "providers": {
       "email": {
         "enabled": true

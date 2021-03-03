@@ -1,6 +1,11 @@
 const { injectShopifyAndroid, injectShopifyIos } = require('./injectShopify');
 
-exports.preBuild = function preBuild() {
+function preBuild() {
   injectShopifyAndroid();
   injectShopifyIos();
 }
+
+module.exports = {
+  preBuild,
+  runPreBuild: () => preBuild(),
+};

@@ -1,9 +1,9 @@
 const path = require('path');
-const resolvePlugins = require('./plugins');
-const resolveModuleRules = require('./moduleRules');
 const resolveDevServer = require('./devServer');
-const resolveOptimizations = require('./optimizations');
 const isProduction = require('./env');
+const resolveModuleRules = require('./moduleRules');
+const resolveOptimizations = require('./optimizations');
+const resolvePlugins = require('./plugins');
 
 module.exports = {
   mode: isProduction ? 'production' : 'development',

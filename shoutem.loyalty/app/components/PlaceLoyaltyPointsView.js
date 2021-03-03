@@ -1,33 +1,13 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import {
-  getCollection,
-  isBusy,
- } from '@shoutem/redux-io';
-
-import {
-  Button,
-  Caption,
-  Text,
-  Tile,
-  Title,
-  View,
-} from '@shoutem/ui';
-
-import { connectStyle } from '@shoutem/theme';
-
 import { I18n } from 'shoutem.i18n';
-
+import { getCollection, isBusy } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { Button, Caption, Text, Tile, Title, View } from '@shoutem/ui';
 import { ext } from '../const';
-
 import { refreshCardState, refreshTransactions } from '../services';
-
-import {
-  placeShape,
- } from './shapes';
+import { placeShape } from './shapes';
 
 /**
  * A component for place loyalty points layout.
@@ -87,7 +67,7 @@ class PlaceLoyaltyPointsView extends PureComponent {
   }
 }
 
-export const mapStateToProps = (state) => {
+export const mapStateToProps = state => {
   const { allCardStates } = state[ext()];
 
   return {
@@ -95,6 +75,7 @@ export const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { refreshCardState, refreshTransactions })(
-  connectStyle(ext('PlaceLoyaltyPointsView'))(PlaceLoyaltyPointsView),
-);
+export default connect(mapStateToProps, {
+  refreshCardState,
+  refreshTransactions,
+})(connectStyle(ext('PlaceLoyaltyPointsView'))(PlaceLoyaltyPointsView));

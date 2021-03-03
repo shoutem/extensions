@@ -1,22 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import {
-  Button,
-  Screen,
-  Subtitle,
-  Text,
-  Title,
-  View,
-} from '@shoutem/ui';
-
-import { connectStyle } from '@shoutem/theme';
-import { NavigationBar, closeModal } from 'shoutem.navigation';
-
 import { I18n } from 'shoutem.i18n';
-
+import { NavigationBar, closeModal } from 'shoutem.navigation';
+import { connectStyle } from '@shoutem/theme';
+import { Button, Screen, Subtitle, Text, Title, View } from '@shoutem/ui';
 import { ext } from '../const';
 
 const { func, number, shape } = PropTypes;
@@ -66,7 +54,9 @@ export class PointsEarnedScreen extends PureComponent {
         <NavigationBar {...this.getNavBarProps()} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <Subtitle styleName="oval-highlight">
-            {amount ? I18n.t(ext('pointsEarnedAmountSpent'), { amountSpent: amount }) : ''}
+            {amount
+              ? I18n.t(ext('pointsEarnedAmountSpent'), { amountSpent: amount })
+              : ''}
           </Subtitle>
           <Title
             style={{
@@ -78,7 +68,9 @@ export class PointsEarnedScreen extends PureComponent {
           >
             {`+${points}`}
           </Title>
-          <Title styleName="h-center">{I18n.t(ext('pointsEarnedCongratulations'))}</Title>
+          <Title styleName="h-center">
+            {I18n.t(ext('pointsEarnedCongratulations'))}
+          </Title>
           <Subtitle styleName="h-center md-gutter">
             {I18n.t(ext('pointsEarnedMessage'), { count: points || 0 })}
           </Subtitle>

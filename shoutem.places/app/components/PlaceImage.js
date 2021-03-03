@@ -1,13 +1,7 @@
-
 import React from 'react';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {
-  Caption,
-  ImageBackground,
-  Tile,
-  Title,
-} from '@shoutem/ui';
+import PropTypes from 'prop-types';
+import { Caption, ImageBackground, Tile, Title } from '@shoutem/ui';
 
 export default function PlaceImage(props) {
   const {
@@ -25,16 +19,14 @@ export default function PlaceImage(props) {
       source={source}
       styleName={styleName}
     >
-      {imageOverlay
-      && (
-      <Tile>
-        <Title>{name.toUpperCase()}</Title>
-        <Caption styleName="sm-gutter-top">
-          {_.get(location, 'formattedAddress')}
-        </Caption>
-      </Tile>
-      )
-      }
+      {imageOverlay && (
+        <Tile>
+          <Title>{name.toUpperCase()}</Title>
+          <Caption styleName="sm-gutter-top">
+            {_.get(location, 'formattedAddress')}
+          </Caption>
+        </Tile>
+      )}
     </ImageBackground>
   );
 }

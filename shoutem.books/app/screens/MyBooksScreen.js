@@ -1,9 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { CmsListScreen } from 'shoutem.cms';
+import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import {
   isError,
   getCollection,
@@ -12,12 +14,6 @@ import {
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { ListView, Screen, EmptyStateView } from '@shoutem/ui';
-
-import { I18n } from 'shoutem.i18n';
-import { CmsListScreen } from 'shoutem.cms';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
-import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
-
 import ListBooksView from '../components/ListBooksView';
 import { ext } from '../const';
 
@@ -80,12 +76,11 @@ class MyBooksScreen extends PureComponent {
   renderPlaceholderView() {
     const { data } = this.props;
 
-    const message = isError(data) ?
-      I18n.t('shoutem.application.unexpectedErrorMessage') : I18n.t('shoutem.application.preview.noContentErrorMessage');
+    const message = isError(data)
+      ? I18n.t('shoutem.application.unexpectedErrorMessage')
+      : I18n.t('shoutem.application.preview.noContentErrorMessage');
 
-    return (
-      <EmptyStateView icon="books" message={message} />
-    );
+    return <EmptyStateView icon="books" message={message} />;
   }
 
   renderRow(book) {
@@ -107,11 +102,7 @@ class MyBooksScreen extends PureComponent {
     const loading = isBusy(data) || !isInitialized(data);
 
     return (
-      <ListView
-        data={data}
-        renderRow={this.renderRow}
-        loading={loading}
-      />
+      <ListView data={data} renderRow={this.renderRow} loading={loading} />
     );
   }
 
@@ -119,9 +110,7 @@ class MyBooksScreen extends PureComponent {
     const { title, data } = this.props;
     return (
       <Screen>
-        <NavigationBar
-          title={title}
-        />
+        <NavigationBar title={title} />
         {this.renderData(data)}
       </Screen>
     );
@@ -138,6 +127,7 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   fetchFavoritesData,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('MyBooksScreen'), {})(MyBooksScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('MyBooksScreen'), {})(MyBooksScreen));

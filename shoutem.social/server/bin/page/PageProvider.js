@@ -1,9 +1,10 @@
-import React, { Component, Children } from 'react';
+import { PureComponent, Children } from 'react';
 import PropTypes from 'prop-types';
 
-export default class PageProvider extends Component {
+export default class PageProvider extends PureComponent {
   getChildContext() {
     const { page } = this.props;
+
     return { page };
   }
 

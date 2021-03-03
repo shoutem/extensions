@@ -1,5 +1,1 @@
-export {
-  PlacesListScreen,
-  PlacesList,
-} from './PlacesListScreen';
-
+export { PlacesListScreen, PlacesList } from './PlacesListScreen';

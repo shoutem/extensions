@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-
 import {
   TouchableOpacity,
   Title,
@@ -10,10 +9,7 @@ import {
   ImageBackground,
   Divider,
 } from '@shoutem/ui';
-
-import {
-  ArticleView,
-} from './ArticleView';
+import { ArticleView } from './ArticleView';
 
 /**
  * A component used to render featured news articles
@@ -39,7 +35,9 @@ export class FeaturedArticleView extends ArticleView {
             <Tile>
               <Title>{(title || '').toUpperCase()}</Title>
               <View styleName="horizontal md-gutter-top" virtual>
-                <Caption styleName="collapsible" numberOfLines={1}>{author}</Caption>
+                <Caption styleName="collapsible" numberOfLines={1}>
+                  {author}
+                </Caption>
                 {dateInfo}
               </View>
             </Tile>

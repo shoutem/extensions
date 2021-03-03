@@ -2,6 +2,9 @@
   "name": "shoutem.camera",
   "version": "2.5.0",
   "description": "Shoutem camera extension",
+  "scripts": {
+    "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
+  },
   "dependencies": {
     "react-native-camera": "^3.11.0"
   },

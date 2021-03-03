@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import { getTableHeaders } from '../../services';
 import Table from '../table';
@@ -26,9 +27,7 @@ export default class CmsTable extends Component {
 
   constructor(props) {
     super(props);
-
-    this.renderItem = this.renderItem.bind(this);
-    this.renderActionsMenu = this.renderActionsMenu.bind(this);
+    autoBindReact(this);
   }
 
   renderActionsMenu(item) {

@@ -1,25 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
-import {
-  Button,
-  Subtitle,
-  Text,
-  View,
-} from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
 import { loginRequired } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';
-
+import { connectStyle } from '@shoutem/theme';
+import { Button, Subtitle, Text, View } from '@shoutem/ui';
+import SmallPointCardView from '../components/SmallPointCardView';
+import { ext } from '../const';
 import {
   PointsCardScreen,
   mapStateToProps,
   mapDispatchToProps,
 } from './PointsCardScreen';
-import SmallPointCardView from '../components/SmallPointCardView';
-import { ext } from '../const';
 
 /**
  * Shows points card details for a single card loyalty program
@@ -30,7 +22,9 @@ export class PointsSmallCardScreen extends PointsCardScreen {
 
     this.assignPoints = this.assignPoints.bind(this);
     this.handleScanCode = this.handleScanCode.bind(this);
-    this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(this);
+    this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(
+      this,
+    );
     this.onBarCodeScanned = this.onBarCodeScanned.bind(this);
     this.refreshCardState = this.refreshCardState.bind(this);
     this.scanBarCode = this.scanBarCode.bind(this);
@@ -89,6 +83,9 @@ export class PointsSmallCardScreen extends PointsCardScreen {
   }
 }
 
-export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PointsSmallCardScreen'))(PointsSmallCardScreen),
-));
+export default loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('PointsSmallCardScreen'))(PointsSmallCardScreen)),
+);

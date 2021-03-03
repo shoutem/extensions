@@ -1,5 +1,10 @@
 const { injectPermissionHandlerIos } = require('./injectPermissions');
 
-exports.preBuild = function preBuild() {
+function preBuild() {
   injectPermissionHandlerIos();
+}
+
+module.exports = {
+  preBuild,
+  runPreBuild: () => preBuild(),
 };

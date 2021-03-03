@@ -1,9 +1,7 @@
 import { AppState } from 'react-native';
-import URI from 'urijs';
-
 import rio from '@shoutem/redux-io';
-import { getAppId, getExtensionSettings } from 'shoutem.application';
-
+import { shoutemApi } from './services/shoutemApi';
+import { ext } from './const';
 import {
   USER_SCHEMA,
   AUTH_TOKEN_SCHEMA,
@@ -14,11 +12,9 @@ import {
   getUser,
   hideShortcuts,
 } from './redux';
-
 import { getSession } from './session';
-import { ext } from './const';
 
-const APPLICATION_EXTENSION = 'shoutem.application';
+import { getAppId, getExtensionSettings } from 'shoutem.application';
 
 function refreshUser(dispatch, getState) {
   return getSession()
@@ -32,10 +28,12 @@ function refreshUser(dispatch, getState) {
 
         return dispatch(hideShortcuts(user, settings));
       }
+
+      return null;
     });
 }
 
-const createHandleAppStateChange = (dispatch, getState) => (appState) => {
+const createHandleAppStateChange = (dispatch, getState) => appState => {
   if (appState === 'active') {
     refreshUser(dispatch, getState);
   }
@@ -50,35 +48,18 @@ export function appDidMount(app) {
 
   const appId = getAppId();
 
-  const apiEndpoint = getExtensionSettings(state, APPLICATION_EXTENSION).legacyApiEndpoint;
   const { authApiEndpoint } = getExtensionSettings(state, ext());
 
   if (!authApiEndpoint) {
     console.error(`Authentication API endpoint not set in ${ext()} settings.`);
   }
 
-  function createAccountApiEndpoint(path, queryStringParams) {
-    const endpoint = new URI(`${apiEndpoint}/api/account/${path}`);
-
-    return endpoint
-      .protocol('https')
-      .query(`${queryStringParams}&nid=${appId}`)
-      .readable();
-  }
-
-  function createAuthApiEndpoint(path, queryStringParams = '') {
-    const endpoint = new URI(`${authApiEndpoint}/v1/realms/externalReference:${appId}/${path}`);
-
-    return endpoint
-      .protocol('https')
-      .query(`${queryStringParams}`)
-      .readable();
-  }
+  shoutemApi.init(authApiEndpoint, appId);
 
   rio.registerResource({
     schema: USER_SCHEMA,
     request: {
-      endpoint: createAuthApiEndpoint('users/{userId}'),
+      endpoint: shoutemApi.buildAuthUrl('users/{userId}'),
       headers: {
         accept: 'application/vnd.api+json',
       },
@@ -86,7 +67,7 @@ export function appDidMount(app) {
     actions: {
       create: {
         request: {
-          endpoint: createAuthApiEndpoint('users'),
+          endpoint: shoutemApi.buildAuthUrl('users'),
           headers: {
             'Content-Type': 'application/vnd.api+json',
           },
@@ -94,7 +75,7 @@ export function appDidMount(app) {
       },
       update: {
         request: {
-          endpoint: createAuthApiEndpoint('users/{userId}'),
+          endpoint: shoutemApi.buildAuthUrl('users/{userId}'),
           headers: {
             'Content-Type': 'application/vnd.api+json',
           },
@@ -106,7 +87,7 @@ export function appDidMount(app) {
   rio.registerResource({
     schema: AUTH_TOKEN_SCHEMA,
     request: {
-      endpoint: createAuthApiEndpoint('tokens'),
+      endpoint: shoutemApi.buildAuthUrl('tokens'),
       headers: {
         accept: 'application/vnd.api+json',
       },
@@ -114,7 +95,7 @@ export function appDidMount(app) {
     actions: {
       create: {
         request: {
-          endpoint: createAuthApiEndpoint('tokens'),
+          endpoint: shoutemApi.buildAuthUrl('tokens'),
           headers: {
             'Content-Type': 'application/vnd.api+json',
           },

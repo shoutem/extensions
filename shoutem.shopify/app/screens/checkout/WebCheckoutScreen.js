@@ -1,12 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
+import DeviceInfo from 'react-native-device-info';
 import WebView from 'react-native-webview';
 import { connect } from 'react-redux';
-
 import { I18n } from 'shoutem.i18n';
 import { jumpToIndex, NavigationBar, closeModal } from 'shoutem.navigation';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -16,18 +15,15 @@ import {
   Text,
   View,
 } from '@shoutem/ui';
-
 import { checkoutCompleted } from '../../redux/actionCreators';
 import { ext } from '../../const';
-
-const { func, string } = PropTypes;
 
 class WebCheckoutScreen extends PureComponent {
   static propTypes = {
     // Web checkout URL generated via Storefront API
-    checkoutUrl: string,
+    checkoutUrl: PropTypes.string,
     // Redux action - empties cart in redux store
-    checkoutCompleted: func,
+    checkoutCompleted: PropTypes.func,
   }
 
   constructor(props) {
@@ -36,9 +32,20 @@ class WebCheckoutScreen extends PureComponent {
     autoBindReact(this);
 
     this.state = {
-      transactionCompleted: false,
       shouldStopLoading: false,
+      transactionCompleted: false,
+      userAgent: null,
     }
+  }
+
+  componentDidMount() {
+    DeviceInfo.getUserAgent()
+      .then(userAgent => { this.setState({ userAgent }) })
+      .catch(error => {
+        // no other action taken, as `null` user agent will result with default behavior which is
+        // not an issue
+        console.error('Failed to get user agent from device info.\n', error);
+      });
   }
 
   stopLoading() {
@@ -102,8 +109,10 @@ class WebCheckoutScreen extends PureComponent {
 
   getWebViewProps() {
     const { checkoutUrl } = this.props;
+    const { userAgent } = this.state;
 
     return {
+      userAgent,
       renderLoading: this.renderLoadingSpinner,
       onLoadEnd: () => this.stopLoading(),
       source: { uri: checkoutUrl },

@@ -16,6 +16,7 @@ import {
   deleteUser,
   updateUser,
   getErrorMessage,
+  downloadUserData,
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,
 } from 'src/modules/users';
@@ -132,6 +133,12 @@ export class UsersPage extends Component {
     return this.props.updateUser(appId, userId, user);
   }
 
+  handleDownloadUserData() {
+    const { appId } = this.props;
+
+    return downloadUserData(appId);
+  }
+
   handleUserDelete(userId) {
     const { appId } = this.props;
     return this.props.deleteUser(appId, userId);
@@ -156,7 +163,7 @@ export class UsersPage extends Component {
   }
 
   render() {
-    const { users, userGroups } = this.props;
+    const { users, userGroups, appId } = this.props;
 
     const { inProgress, showLoaderOnRefresh, filter, ownerId } = this.state;
 
@@ -170,6 +177,7 @@ export class UsersPage extends Component {
         isOverlay={inProgress}
       >
         <UsersDashboard
+          appId={appId}
           users={users}
           userGroups={userGroups}
           filter={filter}
@@ -178,6 +186,7 @@ export class UsersPage extends Component {
           onUserCreate={this.handleUserCreate}
           onUserDelete={this.handleUserDelete}
           onUserUpdate={this.handleUserUpdate}
+          onUserDataDownload={this.handleDownloadUserData}
         />
         <Paging
           ref="paging"
@@ -202,6 +211,7 @@ UsersPage.propTypes = {
   createUser: PropTypes.func,
   updateUser: PropTypes.func,
   deleteUser: PropTypes.func,
+  downloadUserData: PropTypes.func,
 };
 
 UsersPage.contextTypes = {

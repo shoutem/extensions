@@ -4,18 +4,15 @@ import he from 'he';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { find, next, shouldRefresh } from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
-
 import { RemoteDataListScreen } from 'shoutem.application';
 import { navigateTo as navigateToAction } from 'shoutem.navigation';
-
-import { ListArticleView } from '../components/ListArticleView';
+import { find, next, shouldRefresh } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
-import { getLeadImageUrl, getAuthorName } from '../services';
-import { fetchWordpressPosts, getFeedCategories, getFeedItems } from '../redux';
+import { ListArticleView } from '../components/ListArticleView';
 import { ext, POSTS_PER_PAGE } from '../const';
+import { fetchWordpressPosts, getFeedCategories, getFeedItems } from '../redux';
+import { getLeadImageUrl, getAuthorName } from '../services';
 
 export class ArticlesListScreen extends RemoteDataListScreen {
   static propTypes = {
@@ -34,6 +31,7 @@ export class ArticlesListScreen extends RemoteDataListScreen {
     };
   }
 
+  // eslint-disable-next-line no-unused-vars
   refreshData(prevProps = {}) {
     const { categories, data } = this.props;
 
@@ -43,7 +41,11 @@ export class ArticlesListScreen extends RemoteDataListScreen {
   }
 
   fetchPosts() {
-    const { feedUrl, fetchWordpressPosts, shortcut: { id: shortcutId } } = this.props;
+    const {
+      feedUrl,
+      fetchWordpressPosts,
+      shortcut: { id: shortcutId },
+    } = this.props;
     const { page } = this.state;
 
     fetchWordpressPosts({
@@ -83,7 +85,10 @@ export class ArticlesListScreen extends RemoteDataListScreen {
   openArticleWithId(articleId) {
     const { data } = this.props;
 
-    const article = _.find(data, _.matchesProperty('id', parseInt(articleId, 10)));
+    const article = _.find(
+      data,
+      _.matchesProperty('id', parseInt(articleId, 10)),
+    );
     this.openArticle(article);
   }
 
@@ -144,6 +149,7 @@ export const mapDispatchToProps = {
   next,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ArticlesListScreen'))(ArticlesListScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('ArticlesListScreen'))(ArticlesListScreen));

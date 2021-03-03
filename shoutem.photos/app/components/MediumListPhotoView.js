@@ -4,13 +4,11 @@ import moment from 'moment';
 import {
   TouchableOpacity,
   View,
-  Title,
   Caption,
   Image,
   Card,
   Subtitle,
 } from '@shoutem/ui';
-
 import { BasePhotoView } from './BasePhotoView';
 
 /**
@@ -32,16 +30,19 @@ export default class MediumListPhotoView extends BasePhotoView {
 
     return (
       <TouchableOpacity onPress={this.onPress}>
-          <Card styleName="horizontal">
-            <Image styleName="medium-portrait rounded-corners placeholder" source={source} />
-            <View styleName="content pull-left space-between rounded-corners">
-              <Subtitle numberOfLines={3}>{title}</Subtitle>
-              <View styleName="horizontal stretch space-between v-center">
-                {dateInfo}
-              </View>
+        <Card styleName="horizontal">
+          <Image
+            styleName="medium-portrait rounded-corners placeholder"
+            source={source}
+          />
+          <View styleName="content pull-left space-between rounded-corners">
+            <Subtitle numberOfLines={3}>{title}</Subtitle>
+            <View styleName="horizontal stretch space-between v-center">
+              {dateInfo}
             </View>
-          </Card>
-        </TouchableOpacity>
+          </View>
+        </Card>
+      </TouchableOpacity>
     );
   }
 }

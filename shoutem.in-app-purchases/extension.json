@@ -1,9 +1,10 @@
 {
   "name": "in-app-purchases",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "platform": "2.5.*",
   "title": "In App Purchases",
   "description": "Add Apple/Google Play subscriptions to your app",
+  "releaseNotes": "* Added a script for calling and debugging prebuild script",
   "icon": "server/assets/iap.png",
   "repository": {
     "type": "git",

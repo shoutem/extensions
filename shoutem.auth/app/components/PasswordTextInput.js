@@ -3,12 +3,7 @@ import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 
 import { connectStyle } from '@shoutem/theme';
-import {
-  Button,
-  Icon,
-  TextInput,
-  View,
-} from '@shoutem/ui';
+import { Button, Icon, TextInput, View } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -55,7 +50,10 @@ class PasswordTextInput extends PureComponent {
           secureTextEntry={!visibility}
           value={password}
         />
-        <Button onPress={this.handleVisibilityChange} styleName="clear">
+        <Button
+          onPress={this.handleVisibilityChange}
+          styleName="clear sm-gutter-horizontal"
+        >
           <Icon name={visibility ? 'eye' : 'eye-crossed'} />
         </Button>
       </View>

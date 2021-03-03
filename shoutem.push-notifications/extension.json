@@ -5,7 +5,7 @@
   "type": "system",
   "title": "Push Notifications",
   "description": "Base extension for push notifications",
-  "releaseNotes": "* Fix handling push notifications for custom extensions",
+  "releaseNotes": "* Added a script for calling and debugging prebuild script",
   "icon": "server/assets/add-push-notifications-image.png",
   "categories": [
     "push"

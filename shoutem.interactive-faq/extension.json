@@ -1,10 +1,11 @@
 {
   "name": "interactive-faq",
   "title": "Interactive FAQ",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "platform": "2.5.*",
   "icon": "./server/assets/faq.png",
   "description": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
+  "releaseNotes": "* Added CMS search feature",
   "dependencies": [
     "shoutem.cms"
   ],
@@ -27,6 +28,7 @@
       "name": "faq-shortcut",
       "screen": "@.InteractiveFaqScreen",
       "capabilities": [
+        "shoutem.cms.search",
         "shoutem.cms.import-csv"
       ],
       "adminPages": [

@@ -1,17 +1,12 @@
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-
 import { getExtensionSettings } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
-
-import {
-  getCollection,
-  invalidate,
-} from '@shoutem/redux-io';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
+import { getCollection, invalidate } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -25,7 +20,6 @@ import {
   Text,
   TextInput,
 } from '@shoutem/ui';
-
 import { authorizationShape } from '../components/shapes';
 import { ext } from '../const';
 import { fetchRules } from '../redux';
@@ -79,14 +73,17 @@ export class AssignPointsScreen extends PureComponent {
 
     this.state = { purchase: false, rules: {}, visit: false };
 
-    this.fields = [{
-      name: 'amount',
-      label: I18n.t(ext('cashierPointAwardReceiptSum')),
-      keyboardType: 'numeric',
-    }, {
-      name: 'receiptCode',
-      label: I18n.t(ext('cashierPointAwardReceiptCode')),
-    }];
+    this.fields = [
+      {
+        name: 'amount',
+        label: I18n.t(ext('cashierPointAwardReceiptSum')),
+        keyboardType: 'numeric',
+      },
+      {
+        name: 'receiptCode',
+        label: I18n.t(ext('cashierPointAwardReceiptCode')),
+      },
+    ];
   }
 
   componentDidMount() {
@@ -116,7 +113,9 @@ export class AssignPointsScreen extends PureComponent {
           autoFocus
           placeholder={label}
           keyboardType={keyboardType || 'default'}
-          onChangeText={text => this.setState({ [name]: text.slice(prefix.length) })}
+          onChangeText={text =>
+            this.setState({ [name]: text.slice(prefix.length) })
+          }
           returnKeyType="done"
           value={`${prefix}${value || ''}`}
         />
@@ -170,7 +169,9 @@ export class AssignPointsScreen extends PureComponent {
   renderPurchaseDetails() {
     const { requireReceiptCode } = this.props;
 
-    const visibleFields = requireReceiptCode ? this.fields : this.fields.slice(0, 1);
+    const visibleFields = requireReceiptCode
+      ? this.fields
+      : this.fields.slice(0, 1);
 
     return (
       <View>
@@ -202,7 +203,7 @@ export class AssignPointsScreen extends PureComponent {
 
     return (
       <Screen>
-      <NavigationBar title={I18n.t(ext('cashierPointAwardNavBarTitle'))} />
+        <NavigationBar title={I18n.t(ext('cashierPointAwardNavBarTitle'))} />
         <ScrollView>
           {this.renderActivityDetails()}
           {purchase ? this.renderPurchaseDetails() : null}
@@ -240,6 +241,9 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, { collectPoints, fetchRules, invalidate, navigateTo })(
-  connectStyle(ext('AssignPointsScreen'))(AssignPointsScreen),
-);
+export default connect(mapStateToProps, {
+  collectPoints,
+  fetchRules,
+  invalidate,
+  navigateTo,
+})(connectStyle(ext('AssignPointsScreen'))(AssignPointsScreen));

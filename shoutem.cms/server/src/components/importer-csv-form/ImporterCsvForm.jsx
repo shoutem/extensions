@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import {
   Modal,
   Button,
@@ -7,6 +8,7 @@ import {
   ControlLabel,
   HelpBlock,
 } from 'react-bootstrap';
+import _ from 'lodash';
 import i18next from 'i18next';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { FileUploader } from '../../file-upload';
@@ -21,14 +23,7 @@ const FILE_UPLOAD_STYLE = {
 export default class ImporterCsvForm extends Component {
   constructor(props) {
     super(props);
-
-    this.handleNextClick = this.handleNextClick.bind(this);
-    this.handleFileDrop = this.handleFileDrop.bind(this);
-    this.handleFileUploadSuccess = this.handleFileUploadSuccess.bind(this);
-    this.handleFileDeleteSuccess = this.handleFileDeleteSuccess.bind(this);
-    this.handleUploadError = this.handleUploadError.bind(this);
-    this.handleLanguagesChanged = this.handleLanguagesChanged.bind(this);
-    this.handleResolveFileName = this.handleResolveFileName.bind(this);
+    autoBindReact(this);
 
     this.state = {
       fileUrl: null,
@@ -105,7 +100,7 @@ export default class ImporterCsvForm extends Component {
 
     // using heigth 100 !!! as class is not working
     return (
-      <>
+      <React.Fragment>
         <Modal.Body>
           <FormGroup>
             <ControlLabel>
@@ -149,7 +144,7 @@ export default class ImporterCsvForm extends Component {
             </LoaderContainer>
           </Button>
         </Modal.Footer>
-      </>
+      </React.Fragment>
     );
   }
 }

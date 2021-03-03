@@ -6,10 +6,15 @@ const request = require('request');
 const URI = require('urijs');
 const glob = require('glob');
 const xcode = require('xcode');
+require('colors');
 const { projectPath } = require('@shoutem/build-tools');
-const { injectFirebase } = require('../build/injectFirebase');
-const { injectReactNativePush } = require('../build/injectReactNativePush');
-const { injectFirebaseSettingsFile } = require('../build/injectFirebaseSettingsFile');
+const {
+  getAppConfiguration,
+  getBuildConfiguration,
+} = require('@shoutem/build-tools');
+const { injectFirebase } = require('./injectFirebase');
+const { injectReactNativePush } = require('./injectReactNativePush');
+const { injectFirebaseSettingsFile } = require('./injectFirebaseSettingsFile');
 
 const extensionPath = `${projectPath}/node_modules/shoutem.firebase`;
 const SHOUTEM_APPLICATION = 'shoutem.application';
@@ -35,20 +40,23 @@ function resolveFcmFiles(uri, appId) {
 function download(url, path, callback) {
   const file = fs.createWriteStream(path);
 
-  request.get(url, (err, res, data) => {
-    if (_.isEmpty(data)) {
-      console.log(`Received empty response from\n${url}\n>>> Please check your shoutem.firebase settings! <<<`);
+  request
+    .get(url, (err, res, data) => {
+      if (_.isEmpty(data)) {
+        console.log(
+          `Received empty response from\n${url}\n>>> Please check your shoutem.firebase settings! <<<`,
+        );
 
-      fs.unlinkSync(path);
-      if (callback) {
-        callback(false);
+        fs.unlinkSync(path);
+        if (callback) {
+          callback(false);
+        }
+
+        return;
       }
 
-      return;
-    }
-
-    callback(true);
-  })
+      callback(true);
+    })
     .on('error', () => {
       fs.unlinkSync(path);
 
@@ -63,8 +71,8 @@ function download(url, path, callback) {
 }
 
 function downloadConfigurationFile({ endpoint, filename }) {
-  return new Promise((resolve, reject) => {
-    download(endpoint, filename, (success) => {
+  return new Promise(resolve => {
+    download(endpoint, filename, success => {
       if (!success) {
         return resolve(false);
       }
@@ -83,7 +91,9 @@ function downloadConfigurationFiles(legacyApi, appId) {
 }
 
 function isApplicationExtension(data) {
-  return data.type === 'shoutem.core.extensions' && data.id === SHOUTEM_APPLICATION;
+  return (
+    data.type === 'shoutem.core.extensions' && data.id === SHOUTEM_APPLICATION
+  );
 }
 
 function resolveConfigFilePath(useDownloadedFile, configeFileName) {
@@ -96,16 +106,22 @@ function copyPlistFileToXcodeProjects(useDownloadedFile) {
   const CONFIG_FILE = 'GoogleService-Info.plist';
   const configFilePath = resolveConfigFilePath(useDownloadedFile, CONFIG_FILE);
 
-  const xcodeProjects = glob.sync(`${projectPath}/ios/*.xcodeproj/project.pbxproj`);
+  const xcodeProjects = glob.sync(
+    `${projectPath}/ios/*.xcodeproj/project.pbxproj`,
+  );
 
   if (xcodeProjects && xcodeProjects.length > 1) {
-    console.warn(`WARNING! More than one XCode project found. The ${configFilePath} file will be added to each project`);
+    console.warn(
+      `WARNING! More than one XCode project found. The ${configFilePath} file will be added to each project`,
+    );
   } else if (_.isEmpty(xcodeProjects)) {
-    console.error('Are you sure you are in a React Native project directory? Xcode project file could not be found.');
+    console.error(
+      'Are you sure you are in a React Native project directory? Xcode project file could not be found.',
+    );
     process.exit(1);
   }
 
-  xcodeProjects.forEach((xcodeprojPath) => {
+  xcodeProjects.forEach(xcodeprojPath => {
     const xcodeProject = xcode.project(xcodeprojPath).parseSync();
     const projectUuid = xcodeProject.getFirstTarget().uuid;
 
@@ -142,6 +158,7 @@ function updateGoogleServicesPackageName(buildConfiguration) {
   }
 
   const pkgName = 'com.shoutemapp';
+  // eslint-disable-next-line prettier/prettier
   const message = `Updating ${relativePath} package_name to ${pkgName}`.bold.green;
 
   console.time(message);
@@ -150,7 +167,9 @@ function updateGoogleServicesPackageName(buildConfiguration) {
   const data = fs.readJsonSync(filePath, { throws: false });
 
   if (data === null) {
-    console.log(`${relativePath} is invalid or empty - please check your shoutem.firebase configuration!`);
+    console.log(
+      `${relativePath} is invalid or empty - please check your shoutem.firebase configuration!`,
+    );
     return;
   }
 
@@ -161,18 +180,25 @@ function updateGoogleServicesPackageName(buildConfiguration) {
   console.timeEnd(message);
 }
 
-exports.preBuild = async function preBuild(appConfiguration, buildConfiguration) {
+async function preBuild(appConfiguration, buildConfiguration) {
   const { production, release } = buildConfiguration;
-  const appExtension = _.get(appConfiguration, 'included').find(isApplicationExtension);
+  const appExtension = _.get(appConfiguration, 'included').find(
+    isApplicationExtension,
+  );
   const legacyApi = _.get(appExtension, `attributes.settings.${API_ENDPOINT}`);
 
   if (!legacyApi) {
-    throw new Error(`${API_ENDPOINT} not set in ${SHOUTEM_APPLICATION} settings`);
+    throw new Error(
+      `${API_ENDPOINT} not set in ${SHOUTEM_APPLICATION} settings`,
+    );
   }
 
-  const resolvedFiles = await downloadConfigurationFiles(legacyApi, buildConfiguration.appId);
+  const resolvedFiles = await downloadConfigurationFiles(
+    legacyApi,
+    buildConfiguration.appId,
+  );
 
-  const isProduction = (production || release);
+  const isProduction = production || release;
   const shouldUseDownloadedFileAndroid = isProduction && resolvedFiles[0];
   const shouldUseDownloadedFileIos = isProduction && resolvedFiles[1];
 
@@ -184,4 +210,15 @@ exports.preBuild = async function preBuild(appConfiguration, buildConfiguration)
   injectFirebase();
   injectReactNativePush();
   injectFirebaseSettingsFile();
+}
+
+function runPreBuild() {
+  const appConfiguration = getAppConfiguration();
+  const buildConfiguration = getBuildConfiguration();
+  preBuild(appConfiguration, buildConfiguration);
+}
+
+module.exports = {
+  preBuild,
+  runPreBuild,
 };

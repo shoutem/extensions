@@ -1,19 +1,73 @@
 import _ from 'lodash';
-
-import { find, create, invalidate, next } from '@shoutem/redux-io';
-
+import {
+  find,
+  create,
+  update,
+  invalidate,
+  next,
+  REFERENCE_FETCHED,
+} from '@shoutem/redux-io';
 import { getAppId } from 'shoutem.application/app';
 import { getUser, USER_SCHEMA } from 'shoutem.auth';
-
 import { shoutemApi } from '../services/shoutemApi';
 import { apiVersion } from '../app';
-import { STATUSES_SCHEMA, USERS_SEARCH_SCHEMA } from '../const';
+import {
+  ext,
+  STATUSES_SCHEMA,
+  USERS_SEARCH_SCHEMA,
+  SOCIAL_SETTINGS_SCHEMA,
+  DEFAULT_USER_SETTINGS,
+} from '../const';
+import { getStatus } from './selectors';
 
 export const CREATE = 'CREATE';
 export const LOAD = 'LOAD';
 export const LIKE = 'LIKE';
 export const UNLIKE = 'UNLIKE';
 export const DELETE = 'DELETE';
+
+function resolveUsername(user) {
+  return _.get(user, 'profile.nick') || _.get(user, 'profile.firstName') || 'someone';
+}
+
+export function loadSocialSettings(legacyId) {
+  return find(SOCIAL_SETTINGS_SCHEMA, 'settings', { userId: legacyId });
+}
+
+export function createSocialSettings(settings, legacyId) {
+  return create(SOCIAL_SETTINGS_SCHEMA, settings, { userId: legacyId });
+}
+
+// Create default user settings if there are none present. Also,
+// load the one collection with the newly created set of settings for
+// the current user.
+export function initUserSettings(legacyId) {
+  return (dispatch, getState) => {
+    return dispatch(loadSocialSettings(legacyId)).catch((error) => {
+      const errorCode = _.get(error, 'payload.response.errors[0].code');
+
+      if (errorCode === 'settings_notFound_settingsNotFound') {
+        return dispatch(createSocialSettings(DEFAULT_USER_SETTINGS, legacyId))
+          .then(res => dispatch({
+            payload: [res.payload.data],
+            type: REFERENCE_FETCHED,
+            meta: {
+              schema: SOCIAL_SETTINGS_SCHEMA,
+              tag: 'settings',
+            },
+          }));
+      }
+    });
+  };
+}
+
+export function updateSocialSettings(patch, settingsId, legacyId) {
+  return update(
+    SOCIAL_SETTINGS_SCHEMA,
+    { attributes: patch, type: SOCIAL_SETTINGS_SCHEMA, id: settingsId },
+    { userId: legacyId, settingsId },
+  );
+}
 
 // moved here from services/user to avoid cyclic dependencies
 export function adaptUserForSocialActions(user) {
@@ -51,6 +105,21 @@ export function loadUsers() {
   return find(USER_SCHEMA, 'users');
 }
 
+export function loadUsersInGroups(visibleGroups) {
+  const queryParam = `filter[userGroups]=${visibleGroups.join(',')}`;
+  const config = {
+    schema: USER_SCHEMA,
+    request: {
+      endpoint: shoutemApi.buildAuthUrl('users', queryParam),
+      headers: {
+        Accept: 'application/vnd.api+json',
+      },
+    },
+  }
+
+  return find(config, 'usersInGroups');
+}
+
 export function searchUsers(searchTerm) {
   const body = {
     data: {
@@ -65,7 +134,7 @@ export function searchUsers(searchTerm) {
     schema: USER_SCHEMA,
     request: {
       method: 'POST',
-      endpoint: shoutemApi.buildAuthUrl("users/actions/search"),
+      endpoint: shoutemApi.buildAuthUrl('users/actions/search'),
       body: JSON.stringify(body),
       headers: {
         Accept: 'application/vnd.api+json',
@@ -158,7 +227,6 @@ export function createStatus(text, imageData) {
     request: {
       body: formatParams(body),
       endpoint: shoutemApi.buildUrl('/api/statuses/update.json'),
-      method: 'POST',
       resourceType: 'JSON',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -170,35 +238,40 @@ export function createStatus(text, imageData) {
 }
 
 export function likeStatus(statusId) {
-  const params = formatParams({
-    design_mode: true,
-  });
-
-  const rioConfig = {
-    schema: STATUSES_SCHEMA,
-    request: {
-      endpoint: shoutemApi.buildUrl(`/api/favorites/create/${statusId}.json`, params),
-      body: formatParams(),
-      method: 'POST',
-      resourceType: 'JSON',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    },
-  };
-
   return (dispatch, getState) => {
+    const state = getState();
+    const user = getUser(state);
+    const authorId = getStatus(state, statusId).user.id;
+    const userId = user.legacyId;
+    const body = {
+      data: {
+        appId: getAppId(),
+        authorId,
+        username: resolveUsername(user),
+      },
+    };
+
+    const rioConfig = {
+      schema: STATUSES_SCHEMA,
+      request: {
+        endpoint: shoutemApi.buildCloudUrl(`/v1/users/legacyId:${userId}/actions/like/${statusId}`),
+        body: JSON.stringify(body),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/vnd.api+json',
+        },
+      },
+    };
+
     dispatch(create(rioConfig, null, null, {
       operation: LIKE,
-      user: adaptUserForSocialActions(getUser(getState())),
+      user: adaptUserForSocialActions(user),
     }));
   };
 }
 
 export function unlikeStatus(statusId) {
-  const body = formatParams({
-    design_mode: true,
-  });
+  const body = formatParams({ design_mode: true });
 
   const rioConfig = {
     schema: STATUSES_SCHEMA,
@@ -249,14 +322,13 @@ export function loadComments(statusId) {
       },
     },
   };
+
   return find(rioConfig, '', params, { operation: LOAD });
 }
 
 export function deleteComment(comment) {
   const { id, in_reply_to_status_id } = comment;
-  const params = formatParams({
-    in_reply_to_status_id,
-  });
+  const params = formatParams({ in_reply_to_status_id });
 
   const rioConfig = {
     schema: STATUSES_SCHEMA,
@@ -274,31 +346,39 @@ export function deleteComment(comment) {
 }
 
 export function createComment(statusId, text, imageData) {
-  const params = {
-    in_reply_to_status_id: statusId,
-  };
-
-  const body = {
-    status: text,
-    include_shoutem_fields: true,
-    source: 'Mobile',
-  };
-
-  if (imageData) {
-    body.file_attachment = imageData.data;
-  }
-
-  const rioConfig = {
-    schema: STATUSES_SCHEMA,
-    request: {
-      body: formatParams(body),
-      endpoint: shoutemApi.buildUrl('/api/statuses/update.json', formatParams(params)),
-      method: 'POST',
-      resourceType: 'JSON',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+  return (dispatch, getState) => {
+    const state = getState();
+    const user = getUser(state);
+    const authorId = getStatus(state, statusId).user.id;
+    const params = { in_reply_to_status_id: statusId };
+    const userId = user.legacyId;
+    const body = {
+      data: {
+        appId: getAppId(),
+        authorId,
+        text,
+        username: resolveUsername(user),
       },
-    },
+    };
+
+    if (imageData) {
+      body.imageData = imageData.data;
+    }
+
+    const rioConfig = {
+      schema: STATUSES_SCHEMA,
+      request: {
+        endpoint: shoutemApi.buildCloudUrl(`/v1/users/legacyId:${userId}/actions/comment/${statusId}`),
+        body: JSON.stringify(body),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/vnd.api+json',
+        },
+      },
+    };
+
+    return dispatch(create(rioConfig, null, params, {
+      operation: CREATE,
+    }));
   };
-  return create(rioConfig, null, params, { operation: CREATE });
 }

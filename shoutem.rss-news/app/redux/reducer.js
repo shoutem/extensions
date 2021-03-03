@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import { storage } from '@shoutem/redux-io';
 import { rssFeed } from 'shoutem.rss';
+import { storage } from '@shoutem/redux-io';
 import { RSS_NEWS_SCHEMA } from '../const';
 
 export default combineReducers({

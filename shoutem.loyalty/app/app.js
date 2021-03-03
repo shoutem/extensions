@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import rio from '@shoutem/redux-io';
 import { getExtensionSettings } from 'shoutem.application';
-
+import rio from '@shoutem/redux-io';
 import {
   ext,
   AUTHORIZATIONS_SCHEMA,

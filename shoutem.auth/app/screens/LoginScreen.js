@@ -24,6 +24,7 @@ import {
   getUser,
   getAccessToken,
   hideShortcuts,
+  createResetToLoginScreen,
 } from '../redux';
 import { saveSession } from '../session';
 
@@ -69,15 +70,6 @@ export class LoginScreen extends PureComponent {
     this.state = { inProgress: false };
   }
 
-  componentDidUpdate(prevProps) {
-    const { isAuthenticated, onLoginSuccess, isScreenActive } = this.props;
-    const { isAuthenticated: prevIsAuthenticated } = prevProps;
-
-    if (!prevIsAuthenticated && isAuthenticated && !isScreenActive) {
-      onLoginSuccess();
-    }
-  }
-
   handlePerformLogin(username, password) {
     const { login } = this.props;
 
@@ -96,8 +88,22 @@ export class LoginScreen extends PureComponent {
       .catch(this.handleLoginFailed);
   }
 
+  handleForgotPasswordPress() {
+    const { navigateTo, createResetToLoginScreen } = this.props;
+
+    const route = {
+      screen: ext('PasswordRecoveryScreen'),
+      props: {
+        navigateToLoginScreen: createResetToLoginScreen(),
+      },
+    };
+
+    navigateTo(route);
+  }
+
   handleLoginSuccess() {
     const {
+      // eslint-disable-next-line camelcase
       access_token,
       user,
       userLoggedIn,
@@ -114,7 +120,7 @@ export class LoginScreen extends PureComponent {
           const { settings } = this.props;
 
           hideShortcuts(user, settings);
-          onLoginSuccess();
+          onLoginSuccess(user);
         });
       }
     });
@@ -132,17 +138,25 @@ export class LoginScreen extends PureComponent {
   }
 
   handleRegisterPress() {
-    const { interceptedRoute, navigateTo } = this.props;
+    const {
+      interceptedRoute,
+      navigateTo,
+      onLoginSuccess,
+      createResetToLoginScreen,
+    } = this.props;
 
     const manuallyApproveMembers = _.get(
       this.props,
       'settings.manuallyApproveMembers',
     );
+
     const route = {
       screen: ext('RegisterScreen'),
       props: {
         manualApprovalActive: manuallyApproveMembers,
         routeToReturnTo: interceptedRoute,
+        onRegisterSuccess: onLoginSuccess,
+        navigateToLoginScreen: createResetToLoginScreen(),
       },
     };
 
@@ -189,7 +203,12 @@ export class LoginScreen extends PureComponent {
           showsVerticalScrollIndicator={false}
         >
           <NavigationBar title={I18n.t(ext('logInNavBarTitle'))} />
-          {isEmailAuthEnabled && <LoginForm onSubmit={this.handlePerformLogin} />}
+          {isEmailAuthEnabled && (
+            <LoginForm
+              onSubmit={this.handlePerformLogin}
+              onForgotPasswordPress={this.handleForgotPasswordPress}
+            />
+          )}
 
           {(isEligibleForAppleSignIn || isFacebookAuthEnabled) && (
             <HorizontalSeparator />
@@ -222,6 +241,7 @@ const mapDispatchToProps = {
   login,
   userLoggedIn,
   hideShortcuts,
+  createResetToLoginScreen,
 };
 
 function mapStateToProps(state, ownProps) {

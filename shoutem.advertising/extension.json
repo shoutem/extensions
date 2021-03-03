@@ -3,6 +3,7 @@
   "title": "Advertising",
   "version": "2.5.0",
   "description": "Integrate AdMob and embed ads to your application",
+  "releaseNotes": "* Added a script for calling and debugging prebuild script",
   "icon": "server/assets/add-advertising-image.png",
   "platform": "2.5.*",
   "i18n": {

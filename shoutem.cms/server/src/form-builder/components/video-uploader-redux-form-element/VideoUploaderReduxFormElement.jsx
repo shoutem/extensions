@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { Row, ControlLabel, FormGroup } from 'react-bootstrap';
 import { ImageUploader } from '@shoutem/file-upload';
 import { ReduxFormElement } from '@shoutem/react-web-ui';
@@ -54,11 +55,7 @@ export default class VideoUploaderReduxFormElement extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleVideoUrlChange = this.handleVideoUrlChange.bind(this);
-    this.handleImageDrop = this.handleImageDrop.bind(this);
-    this.handleImageUploadSuccess = this.handleImageUploadSuccess.bind(this);
-    this.handleImageDeleteSuccess = this.handleImageDeleteSuccess.bind(this);
+    autoBindReact(this);
 
     const { elementId } = props;
     const imageElementId = `${elementId}-thumbnailurl`;
@@ -111,6 +108,12 @@ export default class VideoUploaderReduxFormElement extends Component {
     field.onChange(value);
   }
 
+  handlePreviewClick(link) {
+    if (link) {
+      window.open(link, '_blank');
+    }
+  }
+
   render() {
     const {
       assetManager,
@@ -151,6 +154,7 @@ export default class VideoUploaderReduxFormElement extends Component {
             onDrop={this.handleImageDrop}
             onUploadSuccess={this.handleImageUploadSuccess}
             resolveFilename={resolveFilename}
+            onPreviewClick={this.handlePreviewClick}
             shallowDelete
             src={imageUrl}
           />

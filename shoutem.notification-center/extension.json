@@ -1,13 +1,12 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "2.5.0",
+  "version": "2.5.3",
   "platform": "2.5.*",
   "description": "View and manage push notifications within the app",
+  "releaseNotes": "* Fixed navigation header overlapping screen content on 'Notification details' screen",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -52,16 +51,12 @@
     {
       "page": "@.NotificationsPage",
       "title": "Notifications",
-      "categories": [
-        "push"
-      ]
+      "categories": ["push"]
     },
     {
       "page": "@.GroupsPage",
       "title": "Groups",
-      "categories": [
-        "push"
-      ]
+      "categories": ["push"]
     }
   ],
   "pages": [

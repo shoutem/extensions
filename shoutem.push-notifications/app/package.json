@@ -2,6 +2,9 @@
   "name": "shoutem.push-notifications",
   "version": "2.5.0",
   "description": "Base extension for push notifications",
+  "scripts": {
+    "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
+  },
   "dependencies": {
     "xcode": "~3.0.0",
     "react-native-permissions": "~2.2.1"

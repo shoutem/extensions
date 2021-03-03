@@ -1,8 +1,7 @@
-require('es6-promise').polyfill();
 import 'fetch-everywhere';
-
 import '@shoutem/react-web-ui/lib/styles/index.scss';
 import '@shoutem/extension-sandbox';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -17,6 +16,7 @@ import { PageProvider, connectPage, Page } from './page';
 import { LocalizationProvider } from './localization';
 import { SyncStateEngineProvider } from './syncStateEngine';
 import configureStore from './configureStore';
+require('es6-promise').polyfill();
 
 const uri = new URI(window.location.href);
 const pageName = _.get(uri.search(true), 'page', '');
@@ -29,6 +29,7 @@ function renderPage() {
   }
 
   const ConnectedPageComponent = connectPage()(PageComponent);
+
   return <ConnectedPageComponent />;
 }
 

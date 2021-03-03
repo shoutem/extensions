@@ -1,7 +1,9 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-
+import { NavigationBar } from 'shoutem.navigation';
+import { getLeadImageUrl, createRenderAttachment } from 'shoutem.rss';
+import { connectStyle } from '@shoutem/theme';
 import {
   ScrollView,
   Screen,
@@ -12,11 +14,12 @@ import {
   View,
   Html,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from 'shoutem.navigation';
-import { getLeadImageUrl, createRenderAttachment } from 'shoutem.rss';
-import { ArticleDetailsScreen, mapStateToProps, mapDispatchToProps } from './ArticleDetailsScreen';
 import { ext } from '../const';
+import {
+  ArticleDetailsScreen,
+  mapStateToProps,
+  mapDispatchToProps,
+} from './ArticleDetailsScreen';
 
 class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
   static propTypes = {
@@ -48,15 +51,16 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
   render() {
     const { article } = this.props;
     const imageUrl = getLeadImageUrl(article);
-    const screenStyle = imageUrl ? 'full-screen paper' : 'paper';
 
     const momentDate = moment.utc(article.timeUpdated);
     const dateInfo = moment.utc(momentDate).isAfter(0) ? (
-      <Caption styleName="md-gutter-left">{moment.utc(momentDate).fromNow()}</Caption>
+      <Caption styleName="md-gutter-left">
+        {moment.utc(momentDate).fromNow()}
+      </Caption>
     ) : null;
 
     return (
-      <Screen styleName={screenStyle}>
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderImage(imageUrl)}
@@ -69,7 +73,10 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
                 {dateInfo}
               </View>
             </Tile>
-            <Html body={article.body} renderElement={createRenderAttachment(article, 'image')} />
+            <Html
+              body={article.body}
+              renderElement={createRenderAttachment(article, 'image')}
+            />
             {this.renderUpNext()}
           </View>
         </ScrollView>
@@ -78,6 +85,12 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ArticleMediumDetailsScreen'), {})(ArticleMediumDetailsScreen),
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(
+  connectStyle(
+    ext('ArticleMediumDetailsScreen'),
+    {},
+  )(ArticleMediumDetailsScreen),
 );

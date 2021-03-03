@@ -1,11 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
-import {
-  TouchableOpacity,
-  View,
-  Image,
-} from '@shoutem/ui';
+import PropTypes from 'prop-types';
+import { TouchableOpacity, View, Image } from '@shoutem/ui';
 
 /**
  * A component used to render a single grid photo item

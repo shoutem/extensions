@@ -1,12 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
-
-import {
-  isBusy,
-  isError,
-  isInitialized,
- } from '@shoutem/redux-io';
+import PropTypes from 'prop-types';
+import { isBusy, isError, isInitialized } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 
 import {
   Button,
@@ -18,13 +14,8 @@ import {
   Text,
   View,
 } from '@shoutem/ui';
-
-import { connectStyle } from '@shoutem/theme';
-
 import { I18n } from 'shoutem.i18n';
-
 import { ext } from '../const';
-
 import TransactionItem from './TransactionItem';
 import { transactionShape } from './shapes';
 
@@ -32,7 +23,9 @@ const NO_ACTIVITY_ICON = require('../assets/icons/no-activity.png');
 
 const { arrayOf, func } = PropTypes;
 
-const renderTransactionRow = transaction => <TransactionItem transaction={transaction} />;
+const renderTransactionRow = transaction => (
+  <TransactionItem transaction={transaction} />
+);
 
 /**
  * Shows points card details for a single card loyalty program
@@ -71,17 +64,14 @@ export class TransactionHistoryView extends PureComponent {
   renderPlaceholderView() {
     return (
       <Row styleName="small">
-        <Image
-          source={NO_ACTIVITY_ICON}
-          styleName="small-avatar"
-        />
+        <Image source={NO_ACTIVITY_ICON} styleName="small-avatar" />
         <Text styleName="h-start">{I18n.t(ext('noHistory'))}</Text>
       </Row>
     );
   }
 
   showEntireHistory() {
-    const { onShowHistory, transactions } = this.props;
+    const { onShowHistory } = this.props;
 
     if (onShowHistory) {
       onShowHistory();
@@ -95,9 +85,9 @@ export class TransactionHistoryView extends PureComponent {
     const { transactions } = this.props;
     const { numberOfVisibleTransactions } = this.state;
 
-    const visibleTransactions = numberOfVisibleTransactions ?
-      transactions.slice(0, numberOfVisibleTransactions) :
-      transactions;
+    const visibleTransactions = numberOfVisibleTransactions
+      ? transactions.slice(0, numberOfVisibleTransactions)
+      : transactions;
 
     if (this.shouldRenderPlaceholderView()) {
       return this.renderPlaceholderView();
@@ -123,10 +113,7 @@ export class TransactionHistoryView extends PureComponent {
     }
 
     return (
-      <Button
-        styleName="md-gutter-vertical"
-        onPress={this.showEntireHistory}
-      >
+      <Button styleName="md-gutter-vertical" onPress={this.showEntireHistory}>
         <Text>{I18n.t(ext('fullHistoryButton'))}</Text>
       </Button>
     );
@@ -144,4 +131,6 @@ export class TransactionHistoryView extends PureComponent {
   }
 }
 
-export default connectStyle(ext('TransactionHistoryView'))(TransactionHistoryView);
+export default connectStyle(ext('TransactionHistoryView'))(
+  TransactionHistoryView,
+);

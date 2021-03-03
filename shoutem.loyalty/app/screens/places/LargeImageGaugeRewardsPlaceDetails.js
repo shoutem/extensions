@@ -1,33 +1,20 @@
 import React from 'react';
-
 import { connect } from 'react-redux';
-
-import {
-  ImageBackground,
-  Tile,
-  Title,
-  View,
-} from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-
-import {
-  ext,
-} from '../../const';
-
+import { ImageBackground, Tile, Title, View } from '@shoutem/ui';
+import RewardsGaugeProgressBar from '../../components/RewardsGaugeProgressBar';
+import PlacePointsRewardListView from '../../components/PlacePointsRewardListView';
+import { ext } from '../../const';
 import {
   PlaceDetails,
   mapStateToProps,
   mapDispatchToProps,
 } from './PlaceDetails';
 
-import RewardsGaugeProgressBar from '../../components/RewardsGaugeProgressBar';
-import PlacePointsRewardListView from '../../components/PlacePointsRewardListView';
-
 const gaugeContainerStyleNames =
   'flexible vertical h-center v-center md-gutter-horizontal lg-gutter-vertical';
 
 export class LargeImageGaugeRewardsPlaceDetails extends PlaceDetails {
-
   static propTypes = {
     ...PlaceDetails.propTypes,
   };
@@ -91,9 +78,13 @@ export class LargeImageGaugeRewardsPlaceDetails extends PlaceDetails {
       />
     );
   }
-
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('LargeImageGaugeRewardsPlaceDetails'))(LargeImageGaugeRewardsPlaceDetails)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(
+  connectStyle(ext('LargeImageGaugeRewardsPlaceDetails'))(
+    LargeImageGaugeRewardsPlaceDetails,
+  ),
 );

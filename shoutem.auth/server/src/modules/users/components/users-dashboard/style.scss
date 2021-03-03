@@ -30,10 +30,49 @@
   }
 }
 
-.users-dashboard__title {
+.users-dashboard__header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
   .btn {
     text-transform: none;
     font-weight: normal;
-    padding-bottom: 24px;
   }
+}
+
+.users-dashboard__title_container {
+  display: flex;
+  flex-direction: row;
+
+  .users-dashboard__title {
+    font-size: 18px;
+    line-height: 24px;
+    margin: 0px 16px 0px 0px;
+  }
+}
+
+.download-button {
+  display: flex;
+  font-size: 24px;
+  margin-right: 16px;
+  color: #BDC0CB;
+
+  &:hover {
+    color: #444f6c;
+  }
+
+  .circular-loader {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.font-icon-popover__popover {
+  color: #444f6c;
+}
+
+.button-cursor {
+  cursor: pointer;
 }

@@ -1,15 +1,13 @@
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 import QRCode from 'react-native-qrcode-svg';
 import { connect } from 'react-redux';
-
 import { getExtensionSettings } from 'shoutem.application';
 import { getUser, loginRequired } from 'shoutem.auth';
 import { QRCodeScanner, navigateToQRCodeScannerScreen } from 'shoutem.camera';
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar, navigateTo, openInModal } from 'shoutem.navigation';
-
 import {
   getCollection,
   isBusy,
@@ -29,18 +27,10 @@ import {
   View,
   TouchableOpacity,
 } from '@shoutem/ui';
-
-import {
-  cashierShape,
-  transactionShape,
-} from '../components/shapes';
+import { cashierShape, transactionShape } from '../components/shapes';
 import TransactionHistoryView from '../components/TransactionHistoryView';
 import { ext } from '../const';
-import {
-  fetchCashierInfo,
-  getCardId,
-  getSingleCardState,
-} from '../redux';
+import { fetchCashierInfo, getCardId, getSingleCardState } from '../redux';
 import {
   authorizeTransactionByBarCode,
   authorizeTransactionByQRCode,
@@ -98,7 +88,9 @@ export class PointsCardScreen extends PureComponent {
     this.getNavBarProps = this.getNavBarProps.bind(this);
     this.assignPoints = this.assignPoints.bind(this);
     this.handleScanCode = this.handleScanCode.bind(this);
-    this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(this);
+    this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(
+      this,
+    );
     this.onBarCodeScanned = this.onBarCodeScanned.bind(this);
     this.refreshCardState = this.refreshCardState.bind(this);
     this.scanBarCode = this.scanBarCode.bind(this);
@@ -212,7 +204,10 @@ export class PointsCardScreen extends PureComponent {
   scanBarCode() {
     const { navigateToQRCodeScannerScreen } = this.props;
 
-    navigateToQRCodeScannerScreen(this.onBarCodeScanned, I18n.t(ext('scanBarcodeNavBarTitle')));
+    navigateToQRCodeScannerScreen(
+      this.onBarCodeScanned,
+      I18n.t(ext('scanBarcodeNavBarTitle')),
+    );
   }
 
   onBarCodeScanned(code) {
@@ -245,11 +240,19 @@ export class PointsCardScreen extends PureComponent {
   }
 
   renderPointsCardInfo() {
-    const { cardId, cardState = {}, cardStates, enableBarcodeScan, transactions, style } = this.props;
+    const {
+      cardId,
+      cardState = {},
+      cardStates,
+      enableBarcodeScan,
+      transactions,
+      style,
+    } = this.props;
     const { points = 0 } = cardState;
 
     const isRefreshingPoints = isBusy(cardStates);
-    const pointsButtonStyleName = `secondary md-gutter-vertical ${isRefreshingPoints && 'muted'}`;
+    const pointsButtonStyleName = `secondary md-gutter-vertical ${isRefreshingPoints &&
+      'muted'}`;
 
     return (
       <Screen>
@@ -259,12 +262,11 @@ export class PointsCardScreen extends PureComponent {
             style={style.qrBackground}
           >
             <TouchableOpacity onPress={this.assignPoints}>
-              <QRCode
-                size={160}
-                value={JSON.stringify([cardId])}
-              />
+              <QRCode size={160} value={JSON.stringify([cardId])} />
             </TouchableOpacity>
-            <Caption styleName="h-center sm-gutter">{I18n.t(ext('myCardScreenPointsTitle'))}</Caption>
+            <Caption styleName="h-center sm-gutter">
+              {I18n.t(ext('myCardScreenPointsTitle'))}
+            </Caption>
             <Title styleName="h-center">{points}</Title>
             <Button
               styleName={pointsButtonStyleName}
@@ -322,11 +324,7 @@ export class PointsCardScreen extends PureComponent {
       return this.renderScanButton();
     }
 
-    return (
-      <QRCodeScanner
-        onQRCodeScanned={this.handleScanCode}
-      />
-    );
+    return <QRCodeScanner onQRCodeScanned={this.handleScanCode} />;
   }
 
   renderContent() {
@@ -338,7 +336,9 @@ export class PointsCardScreen extends PureComponent {
 
     const isUserACashier = _.has(cashierInfo, 'data');
 
-    return isUserACashier ? this.renderQRCodeScanner() : this.renderPointsCardInfo();
+    return isUserACashier
+      ? this.renderQRCodeScanner()
+      : this.renderPointsCardInfo();
   }
 
   renderScreen() {
@@ -353,11 +353,11 @@ export class PointsCardScreen extends PureComponent {
   render() {
     const { programId } = this.props;
 
-    return programId ? this.renderScreen() : (<NoProgramScreen />);
+    return programId ? this.renderScreen() : <NoProgramScreen />;
   }
 }
 
-export const mapStateToProps = (state) => {
+export const mapStateToProps = state => {
   const { allCardStates, allTransactions, cashierInfo } = state[ext()];
 
   const extensionSettings = getExtensionSettings(state, ext());
@@ -389,6 +389,9 @@ export const mapDispatchToProps = {
   openInModal,
 };
 
-export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PointsCardScreen'))(PointsCardScreen),
-));
+export default loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('PointsCardScreen'))(PointsCardScreen)),
+);

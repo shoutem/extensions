@@ -1,6 +1,10 @@
 import _ from 'lodash';
 import { StateUtils } from 'react-native-navigation-experimental-compat';
-import { getActiveRoute } from './selectors';
+import {
+  getActiveRoute,
+  getActiveNavigationStack,
+  getActiveNavigationStackState,
+} from './selectors';
 import { ext } from '../../const';
 
 export const SET_ACTIVE_NAVIGATION_STACK = ext('SET_ACTIVE_NAVIGATION_STACK');
@@ -66,7 +70,8 @@ export const sanitizeRoute = (route, navigationStack) => ({
  *
  * @param action The action to examine.
  */
-export const isNavigationAction = action => _.includes(NAVIGATION_ACTION_TYPES, action.type);
+export const isNavigationAction = action =>
+  _.includes(NAVIGATION_ACTION_TYPES, action.type);
 
 /**
  * Returns `true` if the navigation state is the initial
@@ -91,8 +96,9 @@ export const isEmptyRoute = route => route && route.key === EMPTY_ROUTE.key;
  * @param state The global redux state.
  * @param screenId Id of the screen to check.
  * @returns {Boolean}
-*/
-export const isScreenActive = (state, screenId) => _.get(getActiveRoute(state), 'key') === screenId;
+ */
+export const isScreenActive = (state, screenId) =>
+  _.get(getActiveRoute(state), 'key') === screenId;
 
 /**
  * Returns `true` if the route with a given key exists in the navigation state.
@@ -143,7 +149,8 @@ export const replace = (route, navigationStack) => ({
  * @param srcValue Property value in the source object
  * @returns {*} Property value from source object if not undefined, original value otherwise
  */
-const skipUndefined = (objValue, srcValue) => (_.isUndefined(srcValue) ? objValue : srcValue);
+const skipUndefined = (objValue, srcValue) =>
+  _.isUndefined(srcValue) ? objValue : srcValue;
 
 /**
  * Modifies an existing navigation action
@@ -217,7 +224,9 @@ export const resetToRoute = (route, navigationStack) => {
  * @return {*} The action.
  */
 export const reset = (routes, index, navigationStack) => {
-  const sanitizedRoutes = _.map(routes, route => sanitizeRoute(route, navigationStack));
+  const sanitizedRoutes = _.map(routes, route =>
+    sanitizeRoute(route, navigationStack),
+  );
 
   return {
     type: RESET,
@@ -285,7 +294,6 @@ export const closeModal = () => ({
   type: CLOSE_MODAL,
 });
 
-
 /**
  * Returns a navigation action for given type.
  *
@@ -328,7 +336,6 @@ export const setActiveNavigationStack = navigationStackInfo => ({
   statePath: navigationStackInfo.statePath,
 });
 
-
 /**
  * Sets the navigationInitialized flag as true. Needed to make sure any logic
  * that has to be executed only after initial shortcut is opened is done then.
@@ -344,7 +351,7 @@ export const setNavigationInitialized = () => ({
  * @param screenState The screen state to save in the store
  * @returns {{type: string, screenId: *, state: *}} The set screen state action
  */
-export const  setScreenState = (screenId, screenState) => ({
+export const setScreenState = (screenId, screenState) => ({
   type: SET_SCREEN_STATE,
   screenId,
   screenState,
@@ -360,3 +367,22 @@ export const clearScreenState = screenId => ({
   type: CLEAR_SCREEN_STATE,
   screenId,
 });
+
+export function createResetToCurrentRoute(state, dispatch, interceptedRoute) {
+  const activeNavigationState = getActiveNavigationStackState(state);
+  const activenavigationStack = getActiveNavigationStack(state);
+
+  const resolvedIndex = !!interceptedRoute
+    ? _.get(activeNavigationState, 'index', -1) + 1
+    : _.get(activeNavigationState, 'index', 0);
+  const currentRoutes = _.get(activeNavigationState, 'routes', []);
+
+  return () =>
+    dispatch(
+      reset(
+        _.compact([...currentRoutes, interceptedRoute]),
+        resolvedIndex,
+        activenavigationStack,
+      ),
+    );
+}

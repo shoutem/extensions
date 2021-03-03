@@ -1,6 +1,6 @@
 {
   "name": "shoutem.photos",
-  "version": "2.5.0",
+  "version": "2.5.2",
   "description": "Shoutem photos extension",
   "peerDependencies": {
     "@shoutem/redux-io": "*",

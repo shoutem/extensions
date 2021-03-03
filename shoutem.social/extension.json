@@ -1,14 +1,12 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "2.5.0",
+  "version": "2.5.2",
   "platform": "2.5.*",
   "skipClone": false,
-  "releaseNotes": "* Added infinite load for Post details comments\n* Fixed like status update on Post details screen\n* Fixed 'Create new status' input and header",
+  "releaseNotes": "* Added user notification preferences screen\n* Added social based push notifications (likes, comments…)",
   "description": "Let members create posts, comment and like them",
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -29,6 +27,9 @@
     },
     {
       "name": "SearchScreen"
+    },
+    {
+      "name": "NotificationSettingsScreen"
     }
   ],
   "shortcuts": [
@@ -51,10 +52,17 @@
       "icon": "theme://members.png",
       "adminPages": [
         {
+          "page": "@.UserGroupsVisibilityPage",
+          "title": "User Groups Filtering"
+        },
+        {
           "page": "@.ShortcutInfoPage",
           "title": "Info"
         }
-      ]
+      ],
+      "settings": {
+        "showAllUsers": true
+      }
     }
   ],
   "settingsPages": [
@@ -73,6 +81,10 @@
       "name": "ShortcutInfoPage",
       "path": "server/build/index.html?page=ShortcutInfoPage",
       "type": "html"
+    },
+    {
+      "name": "UserGroupsVisibilityPage",
+      "type": "react-page"
     }
   ],
   "settings": {
@@ -81,5 +93,11 @@
     "enablePhotoAttachments": true,
     "enableComments": true,
     "enableInteractions": true
-  }
+  },
+  "cloud": [
+    {
+      "type": "api",
+      "script": "npm run migrate:docker && npm run start:server:docker"
+    }
+  ]
 }

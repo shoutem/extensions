@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
 import { ConfirmModal, NestedSortable } from '@shoutem/react-web-ui';
@@ -40,12 +41,7 @@ export default class CategoryTree extends Component {
 
   constructor(props) {
     super(props);
-
-    this.refreshData = this.refreshData.bind(this);
-    this.handleCategorySelected = this.handleCategorySelected.bind(this);
-    this.handleCategoryRenameClick = this.handleCategoryRenameClick.bind(this);
-    this.handleCategoryDeleteClick = this.handleCategoryDeleteClick.bind(this);
-    this.renderCategoryItem = this.renderCategoryItem.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {

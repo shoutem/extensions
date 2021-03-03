@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import * as _ from 'lodash';
-
+import { Favorite } from 'shoutem.favorites';
 import {
   Image,
   Subtitle,
@@ -12,12 +12,8 @@ import {
   TouchableOpacity,
   Caption,
 } from '@shoutem/ui';
-
-import { Favorite } from 'shoutem.favorites';
-
 import { formatBookCaption } from '../shared/formatBookCaption';
 import LinkIconButton from './LinkIconButton';
-
 
 class SmallListBooksView extends PureComponent {
   static propTypes = {
@@ -37,7 +33,9 @@ class SmallListBooksView extends PureComponent {
 
   render() {
     const { book, hasFavoriteButton } = this.props;
-    const favorites = hasFavoriteButton ? <Favorite item={book} schema={book.type} /> : null;
+    const favorites = hasFavoriteButton ? (
+      <Favorite item={book} schema={book.type} />
+    ) : null;
     const addToCartButton = <LinkIconButton book={book} />;
 
     return (
@@ -53,7 +51,8 @@ class SmallListBooksView extends PureComponent {
             <Caption>{formatBookCaption(book)}</Caption>
           </View>
 
-          {favorites}{addToCartButton}
+          {favorites}
+          {addToCartButton}
         </Row>
 
         <Divider styleName="line" />
@@ -62,7 +61,4 @@ class SmallListBooksView extends PureComponent {
   }
 }
 
-export default connect(
-  undefined,
-  {},
-)(SmallListBooksView);
+export default connect(undefined, {})(SmallListBooksView);

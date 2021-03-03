@@ -1,36 +1,24 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { Alert, Keyboard } from 'react-native';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-
-import {
-  Button,
-  Screen,
-  Subtitle,
-  TextInput,
-  Text,
-  View,
-} from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';
-
-import { authorizePointsByPin, redeemReward } from '../services';
+import { connectStyle } from '@shoutem/theme';
+import { Button, Screen, Subtitle, TextInput, Text, View } from '@shoutem/ui';
 import { rewardShape, placeShape } from '../components/shapes';
-import { verifyPin } from '../redux';
 import { ext } from '../const';
+import { verifyPin } from '../redux';
+import { authorizePointsByPin, redeemReward } from '../services';
 
 const { bool, func } = PropTypes;
 
 const onWrongPin = () => {
   Alert.alert(
-  I18n.t(ext('wrongPinErrorTitle')),
-  I18n.t(ext('wrongPinErrorMessage')),
-    [
-      { text: I18n.t('shoutem.application.tryAgainButton') },
-    ],
+    I18n.t(ext('wrongPinErrorTitle')),
+    I18n.t(ext('wrongPinErrorMessage')),
+    [{ text: I18n.t('shoutem.application.tryAgainButton') }],
   );
 };
 
@@ -121,7 +109,9 @@ export class PinVerificationScreen extends PureComponent {
       <Screen>
         <NavigationBar title={I18n.t(ext('pinVerificationNavBarTitle'))} />
         <View styleName="lg-gutter-top vertical">
-          <Subtitle styleName="h-center md-gutter-bottom">{I18n.t(ext('cashierVerificationMessage'))}</Subtitle>
+          <Subtitle styleName="h-center md-gutter-bottom">
+            {I18n.t(ext('cashierVerificationMessage'))}
+          </Subtitle>
           {this.renderPinComponent()}
           <Button
             styleName="full-width inflexible lg-gutter-vertical"
@@ -135,6 +125,8 @@ export class PinVerificationScreen extends PureComponent {
   }
 }
 
-export default connect(undefined, { authorizePointsByPin, redeemReward, verifyPin })(
-  connectStyle(ext('PinVerificationScreen'))(PinVerificationScreen),
-);
+export default connect(undefined, {
+  authorizePointsByPin,
+  redeemReward,
+  verifyPin,
+})(connectStyle(ext('PinVerificationScreen'))(PinVerificationScreen));

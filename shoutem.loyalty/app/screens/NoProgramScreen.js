@@ -1,11 +1,8 @@
 import React, { PureComponent } from 'react';
-
-import { Screen, EmptyStateView } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';
-
+import { Screen, EmptyStateView } from '@shoutem/ui';
+import { connectStyle } from '@shoutem/theme';
 import { ext } from '../const';
 
 /**

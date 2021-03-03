@@ -1,2 +1,1 @@
-import GeolocationReduxFormElement from './GeolocationReduxFormElement';
-export default GeolocationReduxFormElement;
+export { default } from './GeolocationReduxFormElement';

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { Row, Col } from 'react-bootstrap';
 import timezones from 'timezones.json';
 import moment from 'moment-timezone';
@@ -58,9 +59,7 @@ export default class DateTimeReduxFormElement extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleSelectionChanged = this.handleSelectionChanged.bind(this);
-    this.handleDatetimeChanged = this.handleDatetimeChanged.bind(this);
+    autoBindReact(this);
 
     const { elementId, field } = props;
     const timezoneElementId = `${elementId}-timezone`;

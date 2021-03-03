@@ -1,0 +1,81 @@
+parameters:
+  settingsId:
+    name: settingsId
+    in: path
+    description: settings identifier
+    required: true
+    type: string
+
+paths:
+  /v1/settings/all:
+    get:
+      summary: Returns all settings
+      tags:
+      - Settings
+      responses:
+        '200':
+          description: settings array
+          schema:
+            $ref: '#/definitions/SettingsCollectionJsonApiDocument'
+
+  /v1/settings:
+    get:
+      summary: Returns settings according to provided sort, filter and page options
+      tags:
+      - Settings
+      responses:
+        '200':
+          description: settings array
+          schema:
+            $ref: '#/definitions/SettingsCollectionJsonApiDocument'
+    post:
+      tags:
+      - Settings
+      summary: Creates new settings
+      parameters:
+      - name: settingsData
+        in: body
+        schema:
+          $ref: '#/definitions/SettingsJsonApiDocument'
+      responses:
+        '201':
+          description: created settings object
+          schema:
+            $ref: '#/definitions/SettingsJsonApiDocument'            
+
+  /v1/settings/{settingsId}:
+    get:
+      summary: Returns settings for given id
+      tags:
+      - Settings
+      parameters:
+      - $ref: '#/parameters/settingsId'
+      responses:
+        '200':
+          description: settings object
+          schema:
+            $ref: '#/definitions/SettingsJsonApiDocument'
+    patch:
+      tags:
+      - Settings
+      summary: Updates settings
+      parameters:
+      - $ref: '#/parameters/settingsId'
+      - name: settingsData
+        in: body
+        schema:
+          $ref: '#/definitions/SettingsJsonApiDocument'
+      responses:
+        '200':
+          description: updated settings object
+          schema:
+            $ref: '#/definitions/SettingsJsonApiDocument'
+    delete:
+      tags:
+      - Settings
+      summary: Deletes settings
+      parameters:
+      - $ref: '#/parameters/settingsId'
+      responses:
+        '204':
+          description: no content

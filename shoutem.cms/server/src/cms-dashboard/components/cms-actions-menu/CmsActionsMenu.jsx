@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
 import { MenuItem, Button } from 'react-bootstrap';
@@ -33,10 +34,7 @@ export default class CmsActionsMenu extends Component {
 
   constructor(props) {
     super(props);
-
-    this.renderAsDropdown = this.renderAsDropdown.bind(this);
-    this.renderAsInline = this.renderAsInline.bind(this);
-    this.resolveActions = this.resolveActions.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {

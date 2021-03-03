@@ -1,34 +1,24 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
-
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
-import {
-  Button,
-  Screen,
-  Subtitle,
-  Text,
-  View,
-} from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
 import { loginRequired } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
-
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
+import { connectStyle } from '@shoutem/theme';
+import { Button, Screen, Subtitle, Text, View } from '@shoutem/ui';
 import { placeShape, rewardShape } from '../components/shapes';
 import { ext } from '../const';
 import { getCardId, isPunchCard } from '../redux';
-
 
 const { bool, func, string } = PropTypes;
 
 /**
  * Encodes reward values in an array to save space in QR code.
  */
-const getEncodedRewardValues = (reward) => {
+const getEncodedRewardValues = reward => {
   const {
     id,
     location = '',
@@ -71,7 +61,9 @@ export class VerificationScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.navigateToPinVerificationScreen = this.navigateToPinVerificationScreen.bind(this);
+    this.navigateToPinVerificationScreen = this.navigateToPinVerificationScreen.bind(
+      this,
+    );
   }
 
   navigateToPinVerificationScreen() {
@@ -97,15 +89,16 @@ export class VerificationScreen extends PureComponent {
 
     // qr code size is 80% of available screen space
     const qrCodeWidth =
-      _.min([Dimensions.get('window').width, Dimensions.get('window').height]) * 0.8;
+      _.min([Dimensions.get('window').width, Dimensions.get('window').height]) *
+      0.8;
 
     return (
       <Screen>
         <NavigationBar />
-        <View
-          styleName="sm-gutter flexible vertical h-center v-center"
-        >
-          <Subtitle styleName="xl-gutter-bottom">{I18n.t(ext('cashierVerificationMessage'))}</Subtitle>
+        <View styleName="sm-gutter flexible vertical h-center v-center">
+          <Subtitle styleName="xl-gutter-bottom">
+            {I18n.t(ext('cashierVerificationMessage'))}
+          </Subtitle>
           <View
             style={style.qrBackground}
             styleName="md-gutter-vertical md-gutter-horizontal"
@@ -127,12 +120,14 @@ export class VerificationScreen extends PureComponent {
   }
 }
 
-export const mapStateToProps = (state) => {
+export const mapStateToProps = state => {
   return {
     cardId: getCardId(state),
   };
 };
 
-export default loginRequired(connect(mapStateToProps, { navigateTo })(
-  connectStyle(ext('VerificationScreen'))(VerificationScreen),
-));
+export default loginRequired(
+  connect(mapStateToProps, { navigateTo })(
+    connectStyle(ext('VerificationScreen'))(VerificationScreen),
+  ),
+);

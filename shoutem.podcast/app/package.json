@@ -1,6 +1,6 @@
 {
   "name": "shoutem.podcast",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "dependencies": {
     "@react-native-community/slider": "~2.0.0",
     "@sindresorhus/slugify": "0.9.1",

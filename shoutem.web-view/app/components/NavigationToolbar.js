@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
 import { FadeIn, TimingDriver } from '@shoutem/animation';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Icon, View } from '@shoutem/ui';
-
 import { ext } from '../const';
 
 class NavigationToolbar extends PureComponent {

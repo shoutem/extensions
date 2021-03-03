@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
 import { ImageUploader } from '@shoutem/file-upload';
 import { fieldInError } from '../services';
@@ -24,10 +25,7 @@ export default class ImageUploaderReduxFormElement extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleImageDrop = this.handleImageDrop.bind(this);
-    this.handleImageUploadSuccess = this.handleImageUploadSuccess.bind(this);
-    this.handleImageDeleteSuccess = this.handleImageDeleteSuccess.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,
@@ -52,6 +50,12 @@ export default class ImageUploaderReduxFormElement extends Component {
     field.onChange(null);
   }
 
+  handlePreviewClick(link) {
+    if (link) {
+      window.open(link, '_blank');
+    }
+  }
+
   render() {
     const {
       assetManager,
@@ -74,7 +78,7 @@ export default class ImageUploaderReduxFormElement extends Component {
         controlId={elementId}
         validationState={isError ? 'error' : 'success'}
       >
-        <ControlLabel>{name}</ControlLabel>
+        {name && <ControlLabel>{name}</ControlLabel>}
         <ImageUploader
           accept="image/*"
           assetManager={assetManager}
@@ -83,6 +87,7 @@ export default class ImageUploaderReduxFormElement extends Component {
           onDrop={this.handleImageDrop}
           onUploadSuccess={this.handleImageUploadSuccess}
           resolveFilename={resolveFilename}
+          onPreviewClick={this.handlePreviewClick}
           shallowDelete
           src={imageUrl}
           {...otherProps}

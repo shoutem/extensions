@@ -132,16 +132,18 @@ export default class TranslationsTable extends Component {
   }
 
   renderDownloadValue(item) {
+    const { onDownloadClick } = this.props;
+
     return (
-      <a
-        className="link"
-        href={item.url}
-        rel="noopener noreferrer"
-        target="_blank"
-        download
+      <Button
+        className="btn-icon"
+        onClick={event => {
+          event.stopPropagation();
+          onDownloadClick(item);
+        }}
       >
         <FontIcon name="download" size="24px" />
-      </a>
+      </Button>
     );
   }
 
@@ -167,5 +169,6 @@ TranslationsTable.propTypes = {
   translations: PropTypes.array,
   onDeleteClick: PropTypes.func,
   onEditClick: PropTypes.func,
+  onDownloadClick: PropTypes.func,
   onStatusChange: PropTypes.func,
 };

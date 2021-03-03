@@ -1,9 +1,12 @@
+import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 import { InteractionManager, Linking, Platform } from 'react-native';
 import { connect } from 'react-redux';
-
+import { InlineMap } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar, navigateTo, openInModal } from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
 import { find, getCollection, isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -24,22 +27,16 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-
-import { InlineMap } from 'shoutem.application';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateTo, openInModal } from 'shoutem.navigation';
-import { openURL } from 'shoutem.web-view';
-
+import PlaceRewardListView from '../../components/PlaceRewardListView';
+import PlaceLoyaltyPointsView from '../../components/PlaceLoyaltyPointsView';
 import {
   placeShape,
   rewardShape,
   transactionShape,
 } from '../../components/shapes';
-import PlaceRewardListView from '../../components/PlaceRewardListView';
-import PlaceLoyaltyPointsView from '../../components/PlaceLoyaltyPointsView';
+import { ext } from '../../const';
 import { fetchPlaceRewards, getCardStateForPlace } from '../../redux';
 import { refreshTransactions } from '../../services';
-import { ext } from '../../const';
 
 /* eslint-disable class-methods-use-this */
 
@@ -59,7 +56,7 @@ export class PlaceDetails extends PureComponent {
     navigateTo: func,
     fetchPlaceRewards: func,
     refreshTransactions: func,
-     // Transactions for this place
+    // Transactions for this place
     transactions: arrayOf(transactionShape),
   };
 
@@ -68,8 +65,12 @@ export class PlaceDetails extends PureComponent {
 
     this.collectPoints = this.collectPoints.bind(this);
     this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(this);
-    this.navigateToRewardDetailsScreen = this.navigateToRewardDetailsScreen.bind(this);
+    this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(
+      this,
+    );
+    this.navigateToRewardDetailsScreen = this.navigateToRewardDetailsScreen.bind(
+      this,
+    );
     this.openWebLink = this.openWebLink.bind(this);
     this.openMapLink = this.openMapLink.bind(this);
     this.openEmailLink = this.openEmailLink.bind(this);
@@ -96,7 +97,9 @@ export class PlaceDetails extends PureComponent {
   }
 
   getNavBarProps() {
-    const { place: { image, name = '' } } = this.props;
+    const {
+      place: { image, name = '' },
+    } = this.props;
 
     return {
       styleName: image ? 'clear' : 'no-border',
@@ -142,21 +145,31 @@ export class PlaceDetails extends PureComponent {
   }
 
   openURL() {
-    const { openURL, place: { rsvpLink, name } } = this.props;
+    const {
+      openURL,
+      place: { rsvpLink, name },
+    } = this.props;
     openURL(rsvpLink, name);
   }
 
   openWebLink() {
-    const { openURL, place: { url } } = this.props;
+    const {
+      openURL,
+      place: { url },
+    } = this.props;
     openURL(url);
   }
 
   openMapLink() {
-    const { place: { location = {} } } = this.props;
+    const {
+      place: { location = {} },
+    } = this.props;
     const { latitude, longitude, formattedAddress } = location;
 
-    const resolvedScheme = (Platform.OS === 'ios') ? `http://maps.apple.com/?ll=${latitude},${longitude}&q=${formattedAddress}` :
-    `geo:${latitude},${longitude}?q=${formattedAddress}`;
+    const resolvedScheme =
+      Platform.OS === 'ios'
+        ? `http://maps.apple.com/?ll=${latitude},${longitude}&q=${formattedAddress}`
+        : `geo:${latitude},${longitude}?q=${formattedAddress}`;
 
     if (latitude && longitude) {
       Linking.openURL(resolvedScheme);
@@ -188,7 +201,7 @@ export class PlaceDetails extends PureComponent {
   renderRightNavBarComponent() {
     const { transactions } = this.props;
 
-    const hasTransactions = !!(_.size(transactions));
+    const hasTransactions = !!_.size(transactions);
 
     return (
       <View virtual styleName="container">
@@ -206,14 +219,16 @@ export class PlaceDetails extends PureComponent {
 
   renderLeadImage() {
     const { animateLeadImage } = this.state;
-    const { place: { image, location = {}, name } } = this.props;
+    const {
+      place: { image, location = {}, name },
+    } = this.props;
     const { formattedAddress = '' } = location;
 
     return (
       <ImageBackground
         styleName="large"
         source={image && { uri: image.url }}
-        animationName={animateLeadImage ? "hero" : undefined}
+        animationName={animateLeadImage ? 'hero' : undefined}
       >
         <Tile>
           <Title>{name.toUpperCase()}</Title>
@@ -257,23 +272,25 @@ export class PlaceDetails extends PureComponent {
         <Divider styleName="section-header">
           <Caption>{I18n.t(ext('storeRewardsListTitle'))}</Caption>
         </Divider>
-        {!isBusy(rewards) && _.isEmpty(rewards) ?
+        {!isBusy(rewards) && _.isEmpty(rewards) ? (
           <Caption styleName="h-center md-gutter-top xl-gutter-horizontal">
             {I18n.t(ext('noRewardsForStore'))}
           </Caption>
-          :
+        ) : (
           <ListView
             data={data}
             loading={isBusy(rewards)}
             renderRow={this.renderRewardRow}
           />
-        }
+        )}
       </View>
     );
   }
 
   renderInlineMap() {
-    const { place: { location = {}, name } } = this.props;
+    const {
+      place: { location = {}, name },
+    } = this.props;
     const { latitude, longitude, formattedAddress } = location;
 
     if (!latitude || !longitude) {
@@ -292,9 +309,7 @@ export class PlaceDetails extends PureComponent {
 
     return (
       <View styleName="solid">
-        <TouchableOpacity
-          onPress={this.openMapScreen}
-        >
+        <TouchableOpacity onPress={this.openMapScreen}>
           <InlineMap
             initialRegion={region}
             markers={[marker]}
@@ -302,8 +317,8 @@ export class PlaceDetails extends PureComponent {
             styleName="medium-tall"
           >
             <View styleName="fill-parent overlay vertical v-center h-center">
-              <Subtitle numberOfLines={1} >{name}</Subtitle>
-              <Caption numberOfLines={2} >{formattedAddress}</Caption>
+              <Subtitle numberOfLines={1}>{name}</Subtitle>
+              <Caption numberOfLines={2}>{formattedAddress}</Caption>
             </View>
           </InlineMap>
         </TouchableOpacity>
@@ -312,7 +327,9 @@ export class PlaceDetails extends PureComponent {
   }
 
   renderDescription() {
-    const { place: { description } } = this.props;
+    const {
+      place: { description },
+    } = this.props;
 
     if (description) {
       return (
@@ -332,7 +349,9 @@ export class PlaceDetails extends PureComponent {
   }
 
   renderOpeningHours() {
-    const { place: { openingHours } } = this.props;
+    const {
+      place: { openingHours },
+    } = this.props;
 
     if (openingHours) {
       return (
@@ -349,7 +368,9 @@ export class PlaceDetails extends PureComponent {
   }
 
   renderRsvpButton() {
-    const { place: { rsvpLink } } = this.props;
+    const {
+      place: { rsvpLink },
+    } = this.props;
 
     return rsvpLink ? (
       <Button onPress={this.openURL}>
@@ -361,9 +382,7 @@ export class PlaceDetails extends PureComponent {
   renderButtons() {
     return (
       <Row>
-        <View styleName="horizontal h-center">
-          {this.renderRsvpButton()}
-        </View>
+        <View styleName="horizontal h-center">{this.renderRsvpButton()}</View>
       </Row>
     );
   }
@@ -394,7 +413,7 @@ export class PlaceDetails extends PureComponent {
     const { location = {} } = place;
 
     return (
-      <Screen styleName="full-screen paper">
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderLeadImage()}
@@ -414,19 +433,19 @@ export class PlaceDetails extends PureComponent {
             location.formattedAddress,
             I18n.t('shoutem.cms.directionsButton'),
             'pin',
-            this.openMapLink
+            this.openMapLink,
           )}
           {this.renderDisclosureButton(
             place.mail,
             I18n.t(ext('emailButton')),
             'email',
-            this.openEmailLink
+            this.openEmailLink,
           )}
           {this.renderDisclosureButton(
             place.phone,
             I18n.t(ext('phoneButton')),
             'call',
-            this.openPhoneLink
+            this.openPhoneLink,
           )}
         </ScrollView>
       </Screen>
@@ -435,7 +454,7 @@ export class PlaceDetails extends PureComponent {
 }
 
 const getTransactionsForPlace = (transactions, place) =>
-  _.filter(transactions, (transaction) => {
+  _.filter(transactions, transaction => {
     const { transactionData } = transaction;
 
     return place.id === transactionData.location;
@@ -467,5 +486,7 @@ export const mapDispatchToProps = {
   refreshTransactions,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-connectStyle(ext('PlaceDetails'))(PlaceDetails));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('PlaceDetails'))(PlaceDetails));

@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
-
 import { APPEND_MODE } from '@shoutem/redux-io/actions/find';
 import { mapReducers } from '@shoutem/redux-composers';
 import {
@@ -10,8 +9,8 @@ import {
   REFERENCE_STATUS,
   collection,
   storage,
+  one,
 } from '@shoutem/redux-io';
-
 import {
   setStatus,
   updateStatus,
@@ -19,8 +18,11 @@ import {
   busyStatus,
   STATUS,
 } from '@shoutem/redux-io/status';
-
-import { STATUSES_SCHEMA } from '../const';
+import {
+  ext,
+  STATUSES_SCHEMA,
+  SOCIAL_SETTINGS_SCHEMA,
+} from '../const';
 import { CREATE, LIKE, UNLIKE, DELETE } from './actions';
 import {
   increaseNumberOfComments,
@@ -209,6 +211,7 @@ function commentsReducer() {
 
   return (state = DEFAULT_STATE, action) => {
     const actionIsStatus = !_.get(action, 'meta.params.in_reply_to_status_id');
+
     if (actionIsStatus) {
       return state;
     }
@@ -221,8 +224,11 @@ export default combineReducers({
   statuses: wallReducer(),
   comments: mapReducers(
     'meta.params.in_reply_to_status_id',
-    commentsReducer()
+    commentsReducer(),
   ),
   users: collection(USER_SCHEMA, 'users'),
+  usersInGroups: collection(USER_SCHEMA, 'usersInGroups'),
   searchUsers: collection(USER_SCHEMA, 'searchUsers'),
+  settings: storage(SOCIAL_SETTINGS_SCHEMA),
+  userSettings: one(SOCIAL_SETTINGS_SCHEMA, 'settings'),
 });

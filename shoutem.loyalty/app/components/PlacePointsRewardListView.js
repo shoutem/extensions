@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { I18n } from 'shoutem.i18n';
+import { connectStyle } from '@shoutem/theme';
 import {
   TouchableOpacity,
   Caption,
@@ -10,24 +11,12 @@ import {
   Subtitle,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-
-import {
-  placeShape,
-  rewardShape,
-} from './shapes';
-
-import {
-  ext,
-} from '../const';
-
-import { PlaceRewardListView } from './PlaceRewardListView';
+import { ext } from '../const';
 import PlaceRewardIcon from './PlaceRewardIcon';
+import { PlaceRewardListView } from './PlaceRewardListView';
+import { placeShape, rewardShape } from './shapes';
 
 export class PlacePointsRewardListView extends PlaceRewardListView {
-
   static propTypes = {
     available: PropTypes.bool,
     // The place to which this reward belongs
@@ -53,11 +42,13 @@ export class PlacePointsRewardListView extends PlaceRewardListView {
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={2}>{title}</Subtitle>
             <Caption>
-              {I18n.t(ext('pointsRequiredRewards'), { count: pointsRequired || 0 })}
+              {I18n.t(ext('pointsRequiredRewards'), {
+                count: pointsRequired || 0,
+              })}
             </Caption>
           </View>
 
-          <PlaceRewardIcon pointsReached={(pointsRequired <= points)} />
+          <PlaceRewardIcon pointsReached={pointsRequired <= points} />
         </Row>
         <Divider styleName="line" />
       </TouchableOpacity>
@@ -65,4 +56,6 @@ export class PlacePointsRewardListView extends PlaceRewardListView {
   }
 }
 
-export default connectStyle(ext('PlacePointsRewardListView'))(PlacePointsRewardListView);
+export default connectStyle(ext('PlacePointsRewardListView'))(
+  PlacePointsRewardListView,
+);

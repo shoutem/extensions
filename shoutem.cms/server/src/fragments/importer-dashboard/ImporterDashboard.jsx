@@ -1,5 +1,6 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
 import { connect } from 'react-redux';
@@ -14,12 +15,10 @@ import './style.scss';
 export class ImporterDashboard extends Component {
   constructor(props) {
     super(props);
+    autoBindReact(this);
 
     this.importerDeleteModal = createRef();
     this.importerModal = createRef();
-
-    this.handleAddImporterClick = this.handleAddImporterClick.bind(this);
-    this.handleDeleteImporterClick = this.handleDeleteImporterClick.bind(this);
   }
 
   handleAddImporterClick() {

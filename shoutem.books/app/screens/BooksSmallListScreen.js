@@ -1,15 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import SmallListBooksView from '../components/SmallListBooksView';
 import {
   BooksListScreen,
   mapStateToProps,
   mapDispatchToProps,
 } from './BooksListScreen';
-import SmallListBooksView from '../components/SmallListBooksView';
 
 class BooksSmallListScreen extends BooksListScreen {
-
   constructor(props, context) {
     super(props, context);
     this.renderRow = this.renderRow.bind(this);

@@ -1,8 +1,6 @@
-import React from 'react';
-
 import { connectStyle } from '@shoutem/theme';
 import { connect } from 'react-redux';
-
+import { createListItem } from '../components/ListItemViewFactory';
 import { ext } from '../const';
 import {
   PhotosBaseScreen,
@@ -10,15 +8,13 @@ import {
   mapDispatchToProps,
 } from './PhotosBaseScreen';
 
-import { createListItem } from '../components/ListItemViewFactory';
-
 export class PhotosScreen extends PhotosBaseScreen {
   static propTypes = {
     ...PhotosBaseScreen.propTypes,
   };
 
   renderRow(photo) {
-    const { listType } = this.props;             
+    const { listType } = this.props;
 
     return createListItem(listType, photo, this.openDetailsScreen);
   }
@@ -31,6 +27,7 @@ export class PhotosScreen extends PhotosBaseScreen {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PhotosScreen'))(PhotosScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('PhotosScreen'))(PhotosScreen));

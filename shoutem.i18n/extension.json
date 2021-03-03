@@ -1,9 +1,9 @@
 {
   "name": "i18n",
   "title": "Language & Region",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "platform": "2.5.*",
-  "releaseNotes": "* Converted to system extension",
+  "releaseNotes": "* Added a script for calling and debugging prebuild script",
   "description": "Configure the language and regional settings of your app.",
   "icon": "server/assets/add-translation.png",
   "i18n": {

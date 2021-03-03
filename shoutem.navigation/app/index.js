@@ -74,7 +74,6 @@ export {
   isNavigationAction,
   isScreenActive,
   sanitizeRoute,
-
   createActiveNavigationStackReducer,
   createNavigationReducer,
   navigationCoreReducer,
@@ -82,28 +81,19 @@ export {
   navigationInitializedReducer,
   screenStateReducer,
   coreReducer,
-
   getActiveNavigationStack,
   getActiveNavigationStackState,
   getActiveRoute,
   getNavigationInitialized,
   getScreenState,
+  createResetToCurrentRoute,
 } from './redux/core';
 
 export * from './components/ui';
 
-export {
-  reducer,
-  middleware,
-  ScreenStack,
-  RootScreenStack,
-};
+export { reducer, middleware, ScreenStack, RootScreenStack };
 
-export {
-  appWillMount,
-  appDidMount,
-  render,
-} from './app';
+export { appWillMount, appDidMount, render } from './app';
 
 export {
   createSubNavigationScreen,

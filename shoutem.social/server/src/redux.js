@@ -1,4 +1,7 @@
 import { createScopedReducer } from '@shoutem/redux-api-sdk';
+import userGroupsReducer, {
+  moduleName as userGroups,
+} from './modules/user-groups';
 
 export function navigateToSettings(appId, sectionId) {
   const options = { appId, sectionId };
@@ -15,7 +18,6 @@ export function navigateToSettings(appId, sectionId) {
 export default () =>
   createScopedReducer({
     extension: {
-      // Example of custom reducers
-      test: () => new Date().getMinutes(),
+      [userGroups]: userGroupsReducer,
     },
   });

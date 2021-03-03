@@ -1,0 +1,55 @@
+definitions:
+  ActionsReference:
+    type: object
+    required:
+    - type
+    - id
+    properties:
+      type:
+        type: string
+        enum: [ actions ]
+      id:
+        type: string
+  Actions:
+    allOf:
+      - $ref: '#/definitions/ActionsReference'
+      - type: object
+        properties:
+          attributes:
+            type: object
+            properties:
+          relationships:
+            type: object
+            properties:
+  ActionsJsonApiDocument:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        $ref: '#/definitions/Actions'
+  ActionsCollectionJsonApiDocument:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Actions'
+  ActionsSingleRelationship:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        $ref: '#/definitions/ActionsReference'
+  ActionsCollectionRelationship:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/ActionsReference'

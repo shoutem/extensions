@@ -1,7 +1,7 @@
-import _ from 'lodash';
 import React from 'react';
-import PropTypes from 'prop-types';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { isInitialized } from '@shoutem/redux-io';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import FeedPreviewTableRow from '../feed-preview-table-row';
@@ -27,19 +27,23 @@ export default function FeedPreviewTable({ feedItems }) {
       <table className="table feed-preview-table">
         <thead>
           <tr>
-            <th className="feed-preview-table__image">{i18next.t(LOCALIZATION.IMAGE)}</th>
-            <th className="feed-preview-table__title">{i18next.t(LOCALIZATION.TITLE)}</th>
-            <th className="feed-preview-table__date">{i18next.t(LOCALIZATION.DATE)}</th>
+            <th className="feed-preview-table__image">
+              {i18next.t(LOCALIZATION.IMAGE)}
+            </th>
+            <th className="feed-preview-table__title">
+              {i18next.t(LOCALIZATION.TITLE)}
+            </th>
+            <th className="feed-preview-table__date">
+              {i18next.t(LOCALIZATION.DATE)}
+            </th>
           </tr>
         </thead>
         <tbody>
           {isFeedEmpty && renderEmptyRow()}
-          {!isFeedEmpty && _.map(feedItems, feedItem =>
-            <FeedPreviewTableRow
-              feedItem={feedItem}
-              key={feedItem.id}
-            />
-          )}
+          {!isFeedEmpty &&
+            _.map(feedItems, feedItem => (
+              <FeedPreviewTableRow feedItem={feedItem} key={feedItem.id} />
+            ))}
         </tbody>
       </table>
     </LoaderContainer>

@@ -5,7 +5,7 @@
   "icon": "server/assets/add-videos-image.png",
   "description": "Connect your users with real-time video conferencing!",
   "platform": "~2.5.1",
-  "releaseNotes": "* Handled device permissions using the shoutem.permissions extension",
+  "releaseNotes": "* Added a script for calling and debugging prebuild script",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

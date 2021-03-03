@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { connect } from 'react-redux';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
   Button,
   ButtonToolbar,
@@ -12,6 +11,7 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { updateShortcutSettings } from '@shoutem/redux-api-sdk';
 import SettingField from '../../components/SettingField';

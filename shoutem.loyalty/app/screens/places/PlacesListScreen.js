@@ -1,29 +1,15 @@
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import React from 'react';
 import { LayoutAnimation, Alert } from 'react-native';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { loginRequired } from 'shoutem.auth';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';
-
-import {
-  find,
-  isBusy,
-  isInitialized,
-  getCollection,
-} from '@shoutem/redux-io';
+import { find, isBusy, isInitialized, getCollection } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Button,
-  ListView,
-  Screen,
-  Text,
-  View,
-} from '@shoutem/ui';
-
+import { Button, ListView, Screen, Text, View } from '@shoutem/ui';
 import MapList from '../../components/MapList';
 import PlaceIconView from '../../components/PlaceIconView';
 import { refreshCardState } from '../../services';
@@ -43,14 +29,16 @@ export class PlacesList extends CmsListScreen {
     cardStatesByLocation: object,
     // Refreshes card state when it changes after a transaction
     refreshCardState: func,
-  }
+  };
 
   constructor(props) {
     super(props);
 
     this.renderRow = this.renderRow.bind(this);
     this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(this);
+    this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(
+      this,
+    );
     this.toggleMapView = this.toggleMapView.bind(this);
 
     this.state = {
@@ -66,8 +54,8 @@ export class PlacesList extends CmsListScreen {
 
     if (!this.state.schema) {
       throw Error(
-        'Invalid Screen state "schema". Screen that extends CMSListScreen '
-        + 'must define (content) "schema" property in the state.',
+        'Invalid Screen state "schema". Screen that extends CMSListScreen ' +
+          'must define (content) "schema" property in the state.',
       );
     }
 
@@ -94,14 +82,13 @@ export class PlacesList extends CmsListScreen {
 
   renderRightNavBarComponent() {
     const { mapView } = this.state;
-    const actionText = mapView ? I18n.t('shoutem.cms.navBarListViewButton') : I18n.t('shoutem.cms.navBarMapViewButton');
+    const actionText = mapView
+      ? I18n.t('shoutem.cms.navBarListViewButton')
+      : I18n.t('shoutem.cms.navBarMapViewButton');
 
     return (
       <View styleName="container md-gutter-right" virtual>
-        <Button
-          onPress={this.toggleMapView}
-          styleName="tight"
-        >
+        <Button onPress={this.toggleMapView} styleName="tight">
           <Text>{actionText}</Text>
         </Button>
       </View>
@@ -109,7 +96,10 @@ export class PlacesList extends CmsListScreen {
   }
 
   promptForLocationPermission(message, confirmationMessage, onConfirmation) {
-    const confirmOption = { text: confirmationMessage, onPress: onConfirmation };
+    const confirmOption = {
+      text: confirmationMessage,
+      onPress: onConfirmation,
+    };
     const cancelOption = { text: I18n.t(ext('cancelButton')) };
     const alertOptions = [confirmOption, cancelOption];
 
@@ -152,10 +142,7 @@ export class PlacesList extends CmsListScreen {
 
     if (mapView) {
       return (
-        <MapList
-          cardStatesByLocation={cardStatesByLocation}
-          places={data}
-        />
+        <MapList cardStatesByLocation={cardStatesByLocation} places={data} />
       );
     }
 
@@ -178,7 +165,9 @@ export class PlacesList extends CmsListScreen {
     return (
       <Screen>
         <NavigationBar {...this.getNavBarProps()} />
-        {renderCategoriesInline ? this.renderCategoriesDropDown('horizontal') : null}
+        {renderCategoriesInline
+          ? this.renderCategoriesDropDown('horizontal')
+          : null}
         {this.renderData(data)}
       </Screen>
     );
@@ -187,7 +176,10 @@ export class PlacesList extends CmsListScreen {
 
 export const mapStateToProps = (state, ownProps) => {
   const { allCardStates, allLocations, permissionStatus } = state[ext()];
-  const placeRewardsParentCategoryId = _.get(ownProps, 'shortcut.settings.cmsCategory.id');
+  const placeRewardsParentCategoryId = _.get(
+    ownProps,
+    'shortcut.settings.cmsCategory.id',
+  );
 
   const cardStates = getCollection(allCardStates, state);
 
@@ -205,10 +197,11 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   refreshCardState,
 });
 
-const StyledPlacesList = loginRequired(connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PlacesList'))(currentLocation(PlacesList)),
-));
+const StyledPlacesList = loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('PlacesList'))(currentLocation(PlacesList))),
+);
 
-export {
-  StyledPlacesList as PlacesListScreen,
-};
+export { StyledPlacesList as PlacesListScreen };

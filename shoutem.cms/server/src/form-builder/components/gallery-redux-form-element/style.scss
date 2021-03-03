@@ -1,0 +1,12 @@
+.gallery-form {
+  .fields-container {
+    display: flex;
+    justify-content: flex-start;
+    flex-flow: row wrap;
+  }
+
+  .fields-container > .form-group {
+    padding-right: 25px;
+    padding-bottom: 25px;
+  }
+}

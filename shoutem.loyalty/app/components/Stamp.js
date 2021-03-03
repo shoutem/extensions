@@ -1,13 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
-import {
-  Icon,
-  TouchableOpacity,
-} from '@shoutem/ui';
-
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-
+import { Icon, TouchableOpacity } from '@shoutem/ui';
 import { ext } from '../const';
 
 const { bool, func, number, shape, string } = PropTypes;
@@ -59,14 +53,13 @@ export class Stamp extends PureComponent {
   render() {
     const { onPress } = this.props;
 
-    return onPress ?
-      <TouchableOpacity
-        onPress={this.handlePress}
-      >
+    return onPress ? (
+      <TouchableOpacity onPress={this.handlePress}>
         {this.renderStampIcon()}
       </TouchableOpacity>
-      :
-      this.renderStampIcon();
+    ) : (
+      this.renderStampIcon()
+    );
   }
 }
 

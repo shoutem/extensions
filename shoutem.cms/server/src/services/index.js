@@ -16,4 +16,6 @@ export { resolveHasLanguages, isLanguageModuleEnabled } from './language';
 export { getArrayDisplayLabel } from './array';
 export { translateSchema } from './schema';
 export * from './importer';
+export * from './export';
 export * from './pagination';
+export * from './search';

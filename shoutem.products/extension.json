@@ -1,9 +1,10 @@
 {
   "name": "products",
-  "version": "2.5.0",
+  "version": "2.5.2",
   "platform": "2.5.*",
   "title": "Products",
   "description": "Show products with purchase link",
+  "releaseNotes": "* Added CMS search feature",
   "categories": [
     "commerce"
   ],
@@ -26,6 +27,7 @@
       "screen": "@.ProductsList",
       "icon": "theme://cart.png",
       "capabilities": [
+        "shoutem.cms.search",
         "shoutem.cms.import-csv"
       ],
       "adminPages": [

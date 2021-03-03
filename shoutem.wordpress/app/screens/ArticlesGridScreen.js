@@ -3,16 +3,18 @@ import autoBindReact from 'auto-bind/react';
 import he from 'he';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-
 import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
-
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
 import { GridArticleView } from '../components/GridArticleView';
-import { getLeadImageUrl } from '../services';
 import { ext } from '../const';
-import { ArticlesListScreen, mapStateToProps, mapDispatchToProps } from './ArticlesListScreen';
+import { getLeadImageUrl } from '../services';
+import {
+  ArticlesListScreen,
+  mapStateToProps,
+  mapDispatchToProps,
+} from './ArticlesListScreen';
 
 class ArticlesGridScreen extends ArticlesListScreen {
   static propTypes = {
@@ -50,7 +52,7 @@ class ArticlesGridScreen extends ArticlesListScreen {
   }
 
   renderRow(articles) {
-    const articleViews = _.map(articles, (article) => {
+    const articleViews = _.map(articles, article => {
       return (
         <GridArticleView
           key={article.id}
@@ -63,11 +65,7 @@ class ArticlesGridScreen extends ArticlesListScreen {
       );
     });
 
-    return (
-      <GridRow columns={2}>
-        {articleViews}
-      </GridRow>
-    );
+    return <GridRow columns={2}>{articleViews}</GridRow>;
   }
 
   renderData(articles) {
@@ -91,6 +89,7 @@ class ArticlesGridScreen extends ArticlesListScreen {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ArticlesGridScreen'), {})(ArticlesGridScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('ArticlesGridScreen'), {})(ArticlesGridScreen));

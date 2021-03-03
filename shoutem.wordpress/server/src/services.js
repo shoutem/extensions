@@ -1,6 +1,7 @@
-import validator from 'validator';
+import _ from 'lodash';
 import moment from 'moment';
 import Uri from 'urijs';
+import validator from 'validator';
 
 const HTTPS_PROTOCOL = 'https';
 
@@ -23,7 +24,9 @@ export function toLocalDateTime(dateTime) {
   const differenceInHours = nowDate.diff(originalDate, 'hours');
   const dateTimeFormatted = originalDate.format(RSS_DATE_TIME_FORMAT);
   const displayTimeAgo = differenceInHours <= MAX_DIFFERENCE_IN_HOURS;
-  const dateTimeDisplay = displayTimeAgo ? originalDate.from(nowDate) : dateTimeFormatted;
+  const dateTimeDisplay = displayTimeAgo
+    ? originalDate.from(nowDate)
+    : dateTimeFormatted;
 
   return {
     dateTimeFormatted,
@@ -44,7 +47,9 @@ export function extractBaseUrl(feedUrl) {
 export function extractCategoriesFromUrl(feedUrl) {
   const hasCategories = feedUrl.includes('/category/');
 
-  const categoriesString = feedUrl.slice(feedUrl.lastIndexOf('/category/') + 10);
+  const categoriesString = feedUrl.slice(
+    feedUrl.lastIndexOf('/category/') + 10,
+  );
   const categories = categoriesString.split('/');
 
   return hasCategories ? categories : [];

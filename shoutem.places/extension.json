@@ -1,17 +1,13 @@
 {
   "name": "places",
-  "version": "2.5.0",
+  "version": "2.5.3",
   "platform": "2.5.*",
   "title": "Places",
   "description": "Show items with location on list or map",
+  "releaseNotes": "* Added CMS search feature",
   "icon": "./server/assets/images/add-places-image.png",
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.cms"
-  ],
-  "categories": [
-    "content"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -27,7 +23,9 @@
       "screen": "@.PlacesListScreen",
       "icon": "theme://address-full.png",
       "capabilities": [
-        "shoutem.cms.import-csv"
+        "shoutem.cms.search",
+        "shoutem.cms.import-csv",
+        "shoutem.cms.export-csv"
       ],
       "adminPages": [
         {
@@ -64,9 +62,7 @@
       "settings": {
         "extensionTitle": "Places",
         "defaultShortcutTitle": "My Places",
-        "favoritesSchemas": [
-          "@.places"
-        ]
+        "favoritesSchemas": ["@.places"]
       }
     }
   ],
@@ -81,9 +77,7 @@
       "name": "PlacesListScreen",
       "title": "Photo List",
       "image": "./server/assets/images/layout_photo.png",
-      "navigatesTo": [
-        "@.PlaceDetails"
-      ]
+      "navigatesTo": ["@.PlaceDetails"]
     },
     {
       "name": "PlaceDetails",
@@ -94,9 +88,7 @@
       "name": "FavoritesList",
       "title": "Photo list",
       "image": "./server/assets/images/layout_photo.png",
-      "navigatesTo": [
-        "@.PlaceDetails"
-      ]
+      "navigatesTo": ["@.PlaceDetails"]
     },
     {
       "name": "FavoritesListWithIcons",
@@ -113,9 +105,7 @@
     {
       "name": "SinglePlaceMap",
       "title": "Map View",
-      "navigatesTo": [
-        "@.PlaceDetails"
-      ]
+      "navigatesTo": ["@.PlaceDetails"]
     }
   ],
   "dataSchemas": [

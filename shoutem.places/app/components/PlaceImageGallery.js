@@ -1,10 +1,7 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
 import { HorizontalPager, PageIndicators } from '@shoutem/ui';
-
 import { getFirstImage } from '../services/places';
 import PlaceImage from './PlaceImage';
 
@@ -85,11 +82,7 @@ export default class PlaceImageGallery extends PureComponent {
       );
     }
 
-    const {
-      place,
-      imageAnimationName,
-      imageStyleName,
-    } = this.props;
+    const { place, imageAnimationName, imageStyleName } = this.props;
     const { location } = place;
     const leadImage = getFirstImage(place);
     const resolvedAnimation = imageAnimationName || null;

@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import { find } from '@shoutem/redux-io';
-import { buildFeedUrlWithEndpoint, ext as rssExt } from 'shoutem.rss';
 import { getExtensionSettings, getShortcut } from 'shoutem.application';
+import { buildFeedUrlWithEndpoint, ext as rssExt } from 'shoutem.rss';
+import { find } from '@shoutem/redux-io';
 import { RSS_PHOTOS_SCHEMA } from '../const';
 
 export function fetchPhotosFeed(shortcutId) {
   return (dispatch, getState) => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const state = getState();
       const settings = getExtensionSettings(state, rssExt());
       const baseApiEndpoint = _.get(settings, 'baseApiEndpoint');

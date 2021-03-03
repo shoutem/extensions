@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { Row, Col } from 'react-bootstrap';
 import { ReduxFormElement } from '@shoutem/react-web-ui';
 import SelectReduxFormElement from '../select-redux-form-element';
@@ -37,15 +38,10 @@ export default class GeolocationReduxFormElement extends Component {
 
   constructor(props) {
     super(props);
+    autoBindReact(this);
 
     this.autocompleteService = null;
     this.geocoderService = null;
-    this.handleScriptLoad = this.handleScriptLoad.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleSelectionChanged = this.handleSelectionChanged.bind(this);
-    this.handleLatitudeChanged = this.handleLatitudeChanged.bind(this);
-    this.handleLongitudeChanged = this.handleLongitudeChanged.bind(this);
 
     const { elementId, field, googleApiKey } = props;
 

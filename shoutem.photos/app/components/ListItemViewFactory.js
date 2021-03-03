@@ -1,9 +1,7 @@
 import React from 'react';
-import _ from 'lodash';
-
 import CompactListPhotoView from './CompactListPhotoView';
-import MediumListPhotoView from './MediumListPhotoView';
 import LargeListPhotoView from './LargeListPhotoView';
+import MediumListPhotoView from './MediumListPhotoView';
 import TileListPhotoView from './TileListPhotoView';
 
 const layoutItems = {
@@ -28,5 +26,5 @@ export const createListItem = (layoutName, photo, onPress) => {
   }
 
   const ListItem = layoutItems[layoutName];
-  return (<ListItem photo={photo} onPress={onPress} />);
+  return <ListItem photo={photo} onPress={onPress} />;
 };

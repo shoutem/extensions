@@ -1,19 +1,11 @@
-import _ from 'lodash';
-
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-
-import {
-  Icon,
-  View,
-} from '@shoutem/ui';
-
 import { connectStyle } from '@shoutem/theme';
-
+import { Icon, View } from '@shoutem/ui';
 import { ext } from '../const';
 
 export class PlaceRewardIcon extends PureComponent {
-
   static propTypes = {
     pointsReached: PropTypes.bool,
     style: PropTypes.object,

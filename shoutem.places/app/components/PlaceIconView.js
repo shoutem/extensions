@@ -1,5 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { Favorite } from 'shoutem.favorites';
+import { connectStyle } from '@shoutem/theme';
 import {
   TouchableOpacity,
   Caption,
@@ -9,11 +11,9 @@ import {
   Subtitle,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { Favorite } from 'shoutem.favorites';
-import { ext } from '../const';
 import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
 import { getFirstImage } from '../services/places';
+import { ext } from '../const';
 
 const DEFAULT_IMAGE = require('../assets/data/no_image.png');
 
@@ -42,20 +42,14 @@ export class PlaceIconView extends PureComponent {
     return (
       <TouchableOpacity onPress={onPress}>
         <Row>
-          <Image
-            source={imageSource}
-            styleName="small rounded-corners"
-          />
+          <Image source={imageSource} styleName="small rounded-corners" />
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={2}>{place.name}</Subtitle>
             <View styleName="horizontal">
               <Caption>{formattedAddress}</Caption>
             </View>
           </View>
-          <Favorite
-            item={place}
-            schema={schema}
-          />
+          <Favorite item={place} schema={schema} />
         </Row>
         <Divider styleName="line" />
       </TouchableOpacity>

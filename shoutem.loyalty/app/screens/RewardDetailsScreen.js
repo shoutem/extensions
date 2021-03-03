@@ -1,7 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar, navigateBack, openInModal } from 'shoutem.navigation';
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
@@ -14,26 +16,11 @@ import {
   Text,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import {
-  NavigationBar,
-  navigateBack,
-  openInModal,
-} from 'shoutem.navigation';
-import { I18n } from 'shoutem.i18n';
-
-import {
-  cardStateShape,
-  rewardShape,
-} from '../components/shapes';
-import Stamps from '../components/Stamps';
 import RewardProgressBar from '../components/RewardProgressBar';
+import { cardStateShape, rewardShape } from '../components/shapes';
+import Stamps from '../components/Stamps';
 import { ext } from '../const';
-import {
-  getCardStateForPlace,
-  isPunchCard,
- } from '../redux';
+import { getCardStateForPlace, isPunchCard } from '../redux';
 
 const { func } = PropTypes;
 
@@ -95,28 +82,36 @@ export class RewardDetailsScreen extends PureComponent {
   }
 
   renderSummary() {
-    const { cardState: { points = 0 }, reward } = this.props;
+    const {
+      cardState: { points = 0 },
+      reward,
+    } = this.props;
     const { pointsRequired, title } = reward;
 
     return (
       <Tile>
         <View styleName="content vertical">
-          <Title styleName="h-center xl-gutter-top md-gutter-bottom">{title}</Title>
-          {isPunchCard(reward) ?
+          <Title styleName="h-center xl-gutter-top md-gutter-bottom">
+            {title}
+          </Title>
+          {isPunchCard(reward) && (
             <View styleName="vertical h-center">
               <Stamps reward={reward} />
             </View>
-            :
+          )}
+          {!isPunchCard(reward) && (
             <View>
               <Caption styleName="h-center md-gutter-bottom">
-                {I18n.t(ext('rewardPointRequirement'), { count: pointsRequired || 0 })}
+                {I18n.t(ext('rewardPointRequirement'), {
+                  count: pointsRequired || 0,
+                })}
               </Caption>
               <RewardProgressBar
                 points={points}
                 pointsRequired={pointsRequired}
               />
             </View>
-          }
+          )}
           {this.renderActionButton()}
         </View>
       </Tile>
@@ -124,7 +119,10 @@ export class RewardDetailsScreen extends PureComponent {
   }
 
   renderActionButton() {
-    const { cardState: { points: cardPoints = 0 }, reward } = this.props;
+    const {
+      cardState: { points: cardPoints = 0 },
+      reward,
+    } = this.props;
     const { points = 0, pointsRequired } = reward;
 
     if (!isPunchCard(reward) && cardPoints < pointsRequired) {
@@ -139,7 +137,11 @@ export class RewardDetailsScreen extends PureComponent {
           styleName="secondary md-gutter"
           onPress={() => this.handleAction(shouldRedeem)}
         >
-          <Text>{shouldRedeem ? I18n.t(ext('punchCardRedeemButton')) : I18n.t(ext('punchCardStampButton'))}</Text>
+          <Text>
+            {shouldRedeem
+              ? I18n.t(ext('punchCardRedeemButton'))
+              : I18n.t(ext('punchCardStampButton'))}
+          </Text>
         </Button>
       </View>
     );
@@ -150,7 +152,7 @@ export class RewardDetailsScreen extends PureComponent {
     const { description } = reward;
 
     return (
-      <Screen styleName="full-screen paper">
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderImage()}

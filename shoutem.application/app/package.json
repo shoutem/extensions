@@ -1,6 +1,9 @@
 {
   "name": "shoutem.application",
-  "version": "2.5.0",
+  "version": "2.5.1",
+  "scripts": {
+    "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
+  },
   "dependencies": {
     "react-native-device-info": "~5.4.0",
     "react-native-maps": "~0.26.0",

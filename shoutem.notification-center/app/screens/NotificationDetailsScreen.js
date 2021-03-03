@@ -75,7 +75,7 @@ export class NotificationDetailsScreen extends PureComponent {
 
   render() {
     return (
-      <Screen styleName="full-screen paper">
+      <Screen styleName="paper">
         <NavigationBar styleName="no-border" />
         <ScrollView>
           {this.renderContent()}

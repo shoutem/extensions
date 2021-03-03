@@ -1,2 +1,1 @@
-import EntityReferenceReduxFormElement from './EntityReferenceReduxFormElement';
-export default EntityReferenceReduxFormElement;
+export { default } from './EntityReferenceReduxFormElement';

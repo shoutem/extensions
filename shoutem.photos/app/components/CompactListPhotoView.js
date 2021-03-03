@@ -4,14 +4,12 @@ import moment from 'moment';
 import {
   TouchableOpacity,
   View,
-  Title,
   Caption,
   Image,
   Row,
   Subtitle,
   Divider,
 } from '@shoutem/ui';
-
 import { BasePhotoView } from './BasePhotoView';
 
 /**

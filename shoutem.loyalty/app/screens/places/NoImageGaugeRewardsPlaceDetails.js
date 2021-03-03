@@ -1,20 +1,10 @@
-import _ from 'lodash';
-
 import React from 'react';
-
+import _ from 'lodash';
 import { connect } from 'react-redux';
-
-import {
-  Button,
-  View,
-  Text,
-} from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
-
-import {
-  ext,
-} from '../../const';
+import { connectStyle } from '@shoutem/theme';
+import { Button, View, Text } from '@shoutem/ui';
+import { ext } from '../../const';
 
 import {
   PlaceDetails,
@@ -29,7 +19,6 @@ const gaugeContainerStyleNames =
   'flexible vertical h-center v-center md-gutter-horizontal lg-gutter-vertical';
 
 export class NoImageGaugeRewardsPlaceDetails extends PlaceDetails {
-
   static propTypes = {
     ...PlaceDetails.propTypes,
   };
@@ -41,7 +30,9 @@ export class NoImageGaugeRewardsPlaceDetails extends PlaceDetails {
     this.renderLeadImage = this.renderLeadImage.bind(this);
     this.renderPoints = this.renderPoints.bind(this);
     this.renderRewardRow = this.renderRewardRow.bind(this);
-    this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(this);
+    this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(
+      this,
+    );
   }
 
   getNavBarProps() {
@@ -59,11 +50,11 @@ export class NoImageGaugeRewardsPlaceDetails extends PlaceDetails {
 
     return (
       <View virtual styleName="container">
-        {_.size(transactions) ? (<Button
-          onPress={this.navigateToPointsHistoryScreen}
-        >
-          <Text>{I18n.t(ext('navigationHistoryButton'))}</Text>
-        </Button>) : null}
+        {_.size(transactions) ? (
+          <Button onPress={this.navigateToPointsHistoryScreen}>
+            <Text>{I18n.t(ext('navigationHistoryButton'))}</Text>
+          </Button>
+        ) : null}
       </View>
     );
   }
@@ -100,9 +91,13 @@ export class NoImageGaugeRewardsPlaceDetails extends PlaceDetails {
       />
     );
   }
-
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('NoImageGaugeRewardsPlaceDetails'))(NoImageGaugeRewardsPlaceDetails)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(
+  connectStyle(ext('NoImageGaugeRewardsPlaceDetails'))(
+    NoImageGaugeRewardsPlaceDetails,
+  ),
 );

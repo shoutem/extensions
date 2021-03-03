@@ -1,6 +1,9 @@
 {
   "name": "shoutem.shopify",
-  "version": "2.5.1",
+  "version": "2.5.2",
+  "scripts": {
+    "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
+  },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.12",
     "apollo-client": "^2.2.8",
@@ -10,7 +13,7 @@
     "axios": "^0.18.0",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.1",
-    "react-native-webview": "^9.4.0",
+    "react-native-webview": "~11.0.0",
     "shopify-buy": "2.11.0",
     "world-countries": "^1.8.1"
   },

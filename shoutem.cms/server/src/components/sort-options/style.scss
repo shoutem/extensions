@@ -1,10 +1,15 @@
 .sort-options__field-selector {
   min-width: 144px;
-  margin-right: 24px;
+  margin-right: 12px;
 
   .divider {
     margin: inherit;
   }
+}
+
+.sort-options__field-menu {
+  max-height: 270px !important;
+  overflow-y: auto;
 }
 
 .sort-options__order-selector {

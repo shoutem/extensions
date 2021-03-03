@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { Modal, Button, FormGroup, ControlLabel } from 'react-bootstrap';
+import _ from 'lodash';
 import classNames from 'classnames';
 import i18next from 'i18next';
 import Select from 'react-select';
@@ -46,17 +48,7 @@ function resolveSourceOptions(shortcut) {
 export default class ImporterModal extends Component {
   constructor(props) {
     super(props);
-
-    this.show = this.show.bind(this);
-    this.hide = this.hide.bind(this);
-    this.handleAbort = this.handleAbort.bind(this);
-    this.handleSourceChanged = this.handleSourceChanged.bind(this);
-    this.handleSourceNext = this.handleSourceNext.bind(this);
-    this.handleCsvFormNext = this.handleCsvFormNext.bind(this);
-    this.renderSource = this.renderSource.bind(this);
-    this.renderCsvForm = this.renderCsvForm.bind(this);
-    this.renderCsvMappingForm = this.renderCsvMappingForm.bind(this);
-    this.renderRssForm = this.renderRssForm.bind(this);
+    autoBindReact(this);
 
     this.state = {
       show: false,
@@ -195,7 +187,7 @@ export default class ImporterModal extends Component {
     const options = resolveSourceOptions(shortcut);
 
     return (
-      <>
+      <React.Fragment>
         <Modal.Body>
           <FormGroup controlId="select-source">
             <ControlLabel>
@@ -223,7 +215,7 @@ export default class ImporterModal extends Component {
             {i18next.t(LOCALIZATION.BUTTON_NEXT_LABEL)}
           </Button>
         </Modal.Footer>
-      </>
+      </React.Fragment>
     );
   }
 
@@ -257,4 +249,5 @@ ImporterModal.propTypes = {
   languages: PropTypes.array,
   loadCsvColumns: PropTypes.func,
   createImporter: PropTypes.func,
+  className: PropTypes.string,
 };

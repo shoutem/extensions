@@ -19,15 +19,20 @@ import { ext } from './const.js';
  * @returns {boolean}
  */
 function isShortcutScreenProtected(shortcut, action) {
-  const isShortcutProtected =
-    _.get(shortcut, ['settings', _.camelCase(ext()), 'protected'], false);
+  const isShortcutProtected = _.get(
+    shortcut,
+    ['settings', _.camelCase(ext()), 'protected'],
+    false,
+  );
 
   const shortcutScreen = _.get(shortcut, 'screen');
   const actionScreenType = _.get(action, 'route.screenType');
   const actionScreen = _.get(action, 'route.screen');
 
-  return isShortcutProtected &&
-    (shortcutScreen === actionScreen || shortcutScreen === actionScreenType);
+  return (
+    isShortcutProtected &&
+    (shortcutScreen === actionScreen || shortcutScreen === actionScreenType)
+  );
 }
 
 // function that takes 2 parameters
@@ -53,8 +58,10 @@ export function isAuthenticationRequired(screens = {}, action, state) {
     const screenName = action.route.screen;
     const screen = screens[screenName];
     if (!screen) {
-      console.warn('Attempting to determine the authentication requirements ' +
-        `for an invalid screen: ${screenName}`);
+      console.warn(
+        'Attempting to determine the authentication requirements ' +
+          `for an invalid screen: ${screenName}`,
+      );
       return false;
     }
 
@@ -64,7 +71,6 @@ export function isAuthenticationRequired(screens = {}, action, state) {
     if (screen.loginRequired === false) {
       return false;
     }
-
 
     return screen.loginRequired || isActiveShortcutProtected(state, action);
   }

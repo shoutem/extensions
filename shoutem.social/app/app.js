@@ -1,13 +1,14 @@
-import URI from 'urijs';
-
 import rio from '@shoutem/redux-io';
-
+import { getUser, isAuthenticated } from 'shoutem.auth';
 import { getAppId } from 'shoutem.application/app';
-import { getExtensionSettings } from 'shoutem.application/redux';
-import { USER_SCHEMA } from 'shoutem.auth';
+import {
+  getExtensionSettings,
+  getExtensionCloudUrl,
+} from 'shoutem.application/redux';
+import { Firebase } from 'shoutem.firebase';
 import { shoutemApi } from './services/shoutemApi';
-
-import { ext, STATUSES_SCHEMA } from './const';
+import { ext, SOCIAL_SETTINGS_SCHEMA, STATUSES_SCHEMA } from './const';
+import { initUserSettings } from './redux';
 
 const APPLICATION_EXTENSION = 'shoutem.application';
 const AUTH_EXTENSION = 'shoutem.auth';
@@ -18,6 +19,7 @@ export function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
   const apiEndpoint = getExtensionSettings(state, APPLICATION_EXTENSION).legacyApiEndpoint;
+  const cloudHost = getExtensionCloudUrl(state, ext());
 
   const { authApiEndpoint } = getExtensionSettings(state, AUTH_EXTENSION);
   if (!authApiEndpoint) {
@@ -25,18 +27,12 @@ export function appDidMount(app) {
   }
 
   const appId = getAppId();
-  shoutemApi.init(apiEndpoint, authApiEndpoint, appId);
+  shoutemApi.init(apiEndpoint, authApiEndpoint, cloudHost, appId);
 
   const apiRequestOptions = {
     resourceType: 'JSON',
     headers: {
       'Content-Type': 'application/json',
-    },
-  };
-
-  const jsonApiRequestOptions = {
-    headers: {
-      'Accept': 'application/vnd.api+json',
     },
   };
 
@@ -47,4 +43,44 @@ export function appDidMount(app) {
       ...apiRequestOptions,
     },
   });
+
+  rio.registerResource({
+    schema: SOCIAL_SETTINGS_SCHEMA,
+    request: {
+      endpoint: shoutemApi.buildCloudUrl('/v1/users/legacyId:{userId}/settings/{settingsId}'),
+      headers: {
+        Accept: 'application/vnd.api+json',
+      },
+    },
+    actions: {
+      create: {
+        request: {
+          headers: {
+            'Content-Type': 'application/vnd.api+json',
+          },
+        },
+      },
+      update: {
+        request: {
+          headers: {
+            'Content-Type': 'application/vnd.api+json',
+          },
+        },
+      },
+    },
+  });
+}
+
+export function appDidFinishLaunching(app) {
+  const store = app.getStore();
+  const state = store.getState();
+  const isLoggedIn = isAuthenticated(state);
+  const user = getUser(state);
+
+  if (isLoggedIn) {
+    const firebaseTopic = `user.${user.legacyId}`;
+
+    Firebase.subscribeToTopic(firebaseTopic);
+    store.dispatch(initUserSettings(user.legacyId));
+  }
 }

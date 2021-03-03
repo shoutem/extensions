@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { cloneStatus } from '@shoutem/redux-io';
 
 export function remapAndFilterPhotos(data) {
-  const filteredPhotos = _.filter(data, (photo) =>
+  const filteredPhotos = _.filter(data, photo =>
     _.get(_.head(photo.imageAttachments), 'src'),
   );
 

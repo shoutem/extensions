@@ -1,7 +1,7 @@
 {
   "name": "sendbird",
   "title": "SendBird Chat",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "platform": "~2.5.*",
   "icon": "./server/assets/chat.png",
   "description": "Connect your users with real-time chat!",

@@ -1,7 +1,10 @@
-'use strict';
-
 const injectReactNativeCamera = require('./injectCamera');
 
-exports.preBuild = function preBuild(appConfiguration, buildConfiguration) {
+function preBuild() {
   injectReactNativeCamera();
+}
+
+module.exports = {
+  preBuild,
+  runPreBuild: () => preBuild(),
 };
