@@ -8,7 +8,7 @@ trim_trailing_whitespace = true
 charset = utf-8
 
 # JS files
-[*{.js,.jsx}]
+[*.js]
 indent_style = space
 indent_size = 2
 
