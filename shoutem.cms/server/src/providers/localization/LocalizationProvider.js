@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -11,8 +12,7 @@ import pack from '../../../package.json';
 export class LocalizationProvider extends Component {
   constructor(props) {
     super(props);
-
-    this.handleInjection = this.handleInjection.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: true,

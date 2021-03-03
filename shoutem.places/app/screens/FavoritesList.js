@@ -1,16 +1,11 @@
-import { connectStyle } from '@shoutem/theme';
 import React from 'react';
+import _ from 'lodash';
 import { LayoutAnimation } from 'react-native';
+import { connect } from 'react-redux';
 import { FavoritesListScreen } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
-import { connect } from 'react-redux';
-import _ from 'lodash';
-import {
-  Button,
-  View,
-  Text,
-} from '@shoutem/ui';
-
+import { connectStyle } from '@shoutem/theme';
+import { Button, View, Text } from '@shoutem/ui';
 import MapList from '../components/MapList';
 import PlacePhotoView from '../components/PlacePhotoView';
 import { ext } from '../const';
@@ -48,7 +43,7 @@ export class FavoritesList extends FavoritesListScreen {
   shouldRenderMap(favorites) {
     const { mapView } = this.state;
 
-    return (!_.isEmpty(favorites) && mapView);
+    return !_.isEmpty(favorites) && mapView;
   }
 
   getNavBarProps() {
@@ -75,7 +70,9 @@ export class FavoritesList extends FavoritesListScreen {
     const { mapView } = this.state;
     const { favorites } = this.props;
 
-    const actionText = mapView ? I18n.t('shoutem.cms.navBarListViewButton') : I18n.t('shoutem.cms.navBarMapViewButton');
+    const actionText = mapView
+      ? I18n.t('shoutem.cms.navBarListViewButton')
+      : I18n.t('shoutem.cms.navBarMapViewButton');
 
     if (_.isEmpty(favorites)) {
       return null;
@@ -83,10 +80,7 @@ export class FavoritesList extends FavoritesListScreen {
 
     return (
       <View virtual styleName="container md-gutter-right">
-        <Button
-          styleName="tight"
-          onPress={this.toggleMapView}
-        >
+        <Button styleName="tight" onPress={this.toggleMapView}>
           <Text>{actionText}</Text>
         </Button>
       </View>
@@ -95,11 +89,7 @@ export class FavoritesList extends FavoritesListScreen {
 
   renderData(favorites) {
     if (this.shouldRenderMap(favorites)) {
-      return (
-        <MapList
-          places={favorites}
-        />
-      );
+      return <MapList places={favorites} />;
     }
     return super.renderData(favorites);
   }
@@ -107,11 +97,12 @@ export class FavoritesList extends FavoritesListScreen {
 
 export const mapStateToProps = FavoritesListScreen.createMapStateToProps(
   ext('places'),
-  (state) => state[ext()].allPlaces,
+  state => state[ext()].allPlaces,
 );
 
 export const mapDispatchToProps = FavoritesListScreen.createMapDispatchToProps();
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('FavoritesList'), {})(FavoritesList)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('FavoritesList'), {})(FavoritesList));

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { Modal, Button, FormGroup, ControlLabel } from 'react-bootstrap';
+import _ from 'lodash';
 import i18next from 'i18next';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { getMappedCmsToCsvProperties, Table } from '@shoutem/cms-dashboard';
@@ -34,10 +36,7 @@ function resolveOptions(csvColumns) {
 export default class ImporterCsvMappingForm extends Component {
   constructor(props) {
     super(props);
-
-    this.handleSaveClick = this.handleSaveClick.bind(this);
-    this.handleMappingChange = this.handleMappingChange.bind(this);
-    this.renderItem = this.renderItem.bind(this);
+    autoBindReact(this);
 
     const { schema, values } = props;
 
@@ -118,7 +117,7 @@ export default class ImporterCsvMappingForm extends Component {
     const { headers, cmsOptions, inProgress } = this.state;
 
     return (
-      <>
+      <React.Fragment>
         <Modal.Body>
           <FormGroup style={CVS_MAPPING_FORM_STYLE}>
             <ControlLabel>{i18next.t(LOCALIZATION.FORM_TITLE)}</ControlLabel>
@@ -141,7 +140,7 @@ export default class ImporterCsvMappingForm extends Component {
             </LoaderContainer>
           </Button>
         </Modal.Footer>
-      </>
+      </React.Fragment>
     );
   }
 }

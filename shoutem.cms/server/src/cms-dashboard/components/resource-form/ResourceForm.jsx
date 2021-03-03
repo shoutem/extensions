@@ -6,9 +6,10 @@ import { Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { getFormState } from '../../redux';
 import {
+  resolveIsArrayPropertiesChanged,
   resolveSchemaElements,
   validateResourceForm,
-  getSchemaPropertyKeys,
+  getFormPropertyKeys,
   getEditorCreateConfirmButtonLabel,
   getEditorUpdateConfirmButtonLabel,
   getEditorCreateAbortButtonLabel,
@@ -29,6 +30,7 @@ function ResourceForm({
   loadResources,
   googleApiKey,
   handleSubmit,
+  ownInitialValues,
   values,
   error,
 }) {
@@ -38,6 +40,17 @@ function ResourceForm({
   // needs to be calculated again, as error prop is not returing validation errors
   // fixed in v6 redux-form, but we are using v5
   const validationErrors = validateResourceForm(schema, values);
+
+  let disabled = submitting || pristine || !_.isEmpty(validationErrors);
+  if (disabled) {
+    // needs to be calculated manually, as touch or pristine don't work for arrays
+    // fixed in v6 redux-form, but we are using v5
+    disabled = !resolveIsArrayPropertiesChanged(
+      schema,
+      values,
+      ownInitialValues,
+    );
+  }
 
   const options = {
     assetManager,
@@ -56,7 +69,7 @@ function ResourceForm({
         <Button
           bsSize="large"
           bsStyle="primary"
-          disabled={submitting || pristine || !_.isEmpty(validationErrors)}
+          disabled={disabled}
           type="submit"
         >
           <LoaderContainer isLoading={submitting}>
@@ -95,7 +108,7 @@ ResourceForm.propTypes = {
 
 export function resolveResourceForm(schema) {
   const formKey = _.get(schema, 'name', 'resource');
-  const propertyKeys = getSchemaPropertyKeys(schema);
+  const propertyKeys = getFormPropertyKeys(schema);
 
   return reduxForm({
     getFormState,

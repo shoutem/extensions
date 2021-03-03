@@ -1,14 +1,14 @@
 import React from 'react';
-import _ from 'lodash';
 import autoBind from 'auto-bind';
+import _ from 'lodash';
 import { connect } from 'react-redux';
-import { find, next, shouldRefresh } from '@shoutem/redux-io';
 import { navigateTo as navigateToAction } from 'shoutem.navigation';
 import { RssListScreen, getLeadImageUrl } from 'shoutem.rss';
-import { ListArticleView } from '../components/ListArticleView';
+import { find, next, shouldRefresh } from '@shoutem/redux-io';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
-import { getNewsFeed, fetchNewsFeed } from '../redux';
+import { ListArticleView } from '../components/ListArticleView';
 import { ext, RSS_NEWS_SCHEMA } from '../const';
+import { getNewsFeed, fetchNewsFeed } from '../redux';
 
 export class ArticlesListScreen extends RssListScreen {
   static propTypes = {

@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
 import {
   TouchableOpacity,
   Image,
@@ -38,10 +37,12 @@ export default class ListProductView extends PureComponent {
             source={{ uri: _.get(product, 'image.url') }}
           />
           <View styleName="vertical stretch space-between">
-            <Subtitle>{product.name}</Subtitle>
+            <Subtitle numberOfLines={2}>{product.name}</Subtitle>
             <View styleName="horizontal">
               <Subtitle>{product.currentPrice}</Subtitle>
-              <Caption styleName="line-through sm-gutter-left">{product.oldPrice}</Caption>
+              <Caption styleName="line-through sm-gutter-left">
+                {product.oldPrice}
+              </Caption>
             </View>
           </View>
         </Row>

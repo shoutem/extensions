@@ -42,23 +42,6 @@ import {
 // implemented and it is expected that there would be less than 1000 categories
 const CATEGORIES_PAGE_LIMIT = 1000;
 
-function printChangedProps(prevProps, props = this.props) {
-  const screenName = `[CMSListScreen] ${props.title} -`;
-  console.log(`${screenName} componentDidUpdate`);
-
-  let firstChange = true;
-  for (const propName of _.keys(props)) {
-    if (prevProps[propName] !== props[propName]) {
-      if (firstChange) {
-        console.log(`${screenName} changed props:`);
-        firstChange = false;
-      }
-
-      console.log(` -> ${propName}`);
-    }
-  }
-}
-
 /**
  * Returns the categories that should be displayed in the app
  * based on the shortcut settings configured in the builder.
@@ -220,10 +203,6 @@ export class CmsListScreen extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (process.env.NODE_ENV === 'development') {
-      printChangedProps(prevProps, this.props);
-    }
-
     this.checkPermissionStatus(this.props);
     this.refreshInvalidContent(prevProps);
   }

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { Checkbox } from 'react-bootstrap';
 import './style.scss';
 
 export default class CheckboxMenuItem extends Component {
   constructor(props) {
     super(props);
-
-    this.handleToggle = this.handleToggle.bind(this);
+    autoBindReact(this);
   }
 
   handleToggle() {

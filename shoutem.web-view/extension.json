@@ -1,9 +1,9 @@
 {
   "name": "web-view",
-  "version": "2.5.0",
-  "platform": "2.5.*",
+  "version": "2.5.1",
+  "platform": "~2.5.2",
   "title": "Web view",
-  "releaseNotes": "* Fixed share button not showing on 'Web view with share button' layout",
+  "releaseNotes": "* Updated react-native-webview dependency",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "dependencies": [

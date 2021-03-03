@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
 import Select from 'react-select';
@@ -23,8 +24,7 @@ export default class SelectReduxFormElement extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleSelectionChanged = this.handleSelectionChanged.bind(this);
+    autoBindReact(this);
   }
 
   handleSelectionChanged(newSelectedItem) {
@@ -54,7 +54,7 @@ export default class SelectReduxFormElement extends Component {
         controlId={elementId}
         validationState={isError ? 'error' : 'success'}
       >
-        <ControlLabel>{name}</ControlLabel>
+        {name && <ControlLabel>{name}</ControlLabel>}
         <Select
           onChange={this.handleSelectionChanged}
           options={options}

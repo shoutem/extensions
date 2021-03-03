@@ -1,17 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-
+import Svg, { Circle } from 'react-native-svg';
 import { connect } from 'react-redux';
-
-import Svg, {
-  Circle,
-} from 'react-native-svg';
-
-import {
-  View,
-} from '@shoutem/ui';
+import { View } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-
 import { ext } from '../const';
 import {
   getProgressCircleCircumference,
@@ -20,7 +12,6 @@ import {
 } from '../shared';
 
 export class GaugeProgressBar extends PureComponent {
-
   static propTypes = {
     children: PropTypes.object,
     height: PropTypes.number,
@@ -72,20 +63,23 @@ export class GaugeProgressBar extends PureComponent {
     ];
 
     return (
-      <Svg
-        style={style.progressContainer}
-        viewBox={viewBox}
-      >
+      <Svg style={style.progressContainer} viewBox={viewBox}>
         <Circle
-          cx={cx} cy={cy} r={radius}
-          strokeDasharray={gaugeStrokeDasharray} strokeDashoffset={0}
+          cx={cx}
+          cy={cy}
+          r={radius}
+          strokeDasharray={gaugeStrokeDasharray}
+          strokeDashoffset={0}
           {...style.progressBar}
         />
 
-        {(progressCircleCircumference > 0) && (
+        {progressCircleCircumference > 0 && (
           <Circle
-            cx={cx} cy={cy} r={radius}
-            strokeDasharray={progressStrokeDasharray} strokeDashoffset={'100%'}
+            cx={cx}
+            cy={cy}
+            r={radius}
+            strokeDasharray={progressStrokeDasharray}
+            strokeDashoffset={'100%'}
             {...style.progressBarCompleted}
           />
         )}
@@ -106,16 +100,15 @@ export class GaugeProgressBar extends PureComponent {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const {
-    maxValue,
-    progressValue,
-    radius,
-  } = ownProps;
+  const { maxValue, progressValue, radius } = ownProps;
 
   const fullCircleCircumference = getFullCircleCircumference(radius);
   const gaugeCircleCircumference = getGaugeCircleCircumference(radius);
-  const progressCircleCircumference =
-    getProgressCircleCircumference(progressValue, maxValue, gaugeCircleCircumference);
+  const progressCircleCircumference = getProgressCircleCircumference(
+    progressValue,
+    maxValue,
+    gaugeCircleCircumference,
+  );
 
   return {
     progressCircleCircumference,
@@ -125,5 +118,5 @@ export const mapStateToProps = (state, ownProps) => {
 };
 
 export default connect(mapStateToProps)(
-  connectStyle(ext('GaugeProgressBar', {}))(GaugeProgressBar)
+  connectStyle(ext('GaugeProgressBar', {}))(GaugeProgressBar),
 );

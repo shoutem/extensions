@@ -1,13 +1,13 @@
-import '@shoutem/react-web-ui/lib/styles/index.scss';
-import { createStore, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
+import _ from 'lodash';
 import { apiMiddleware } from 'redux-api-middleware';
+import thunk from 'redux-thunk';
+import { createStore, applyMiddleware, compose } from 'redux';
+import '@shoutem/react-web-ui/lib/styles/index.scss';
 import { apiStateMiddleware, enableRio } from '@shoutem/redux-io';
 import {
   syncStateEngineMiddleware,
   enableStateSync,
 } from '@shoutem/redux-sync-state-engine';
-import _ from 'lodash';
 import * as extension from '../src/index';
 import { createRootReducer } from './reducers';
 

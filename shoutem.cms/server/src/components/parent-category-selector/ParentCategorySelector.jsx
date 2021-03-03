@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
 import { IconLabel, Dropdown } from '@shoutem/react-web-ui';
@@ -11,9 +12,7 @@ import './style.scss';
 export default class ParentCategorySelector extends Component {
   constructor(props) {
     super(props);
-
-    this.renderDropdownMenu = this.renderDropdownMenu.bind(this);
-    this.checkData = this.checkData.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {

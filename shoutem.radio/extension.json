@@ -1,8 +1,9 @@
 {
   "name": "radio",
   "title": "Radio",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Play live stream radio stations in your app. NOTE: Lock screen controls will not be visible in the preview.",
+  "releaseNotes": "UI improvements on radio screen",
   "platform": "2.5.*",
   "icon": "server/assets/add-radio-image.png",
   "categories": [

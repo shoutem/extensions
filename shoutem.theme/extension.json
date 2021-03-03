@@ -1,11 +1,11 @@
 {
   "name": "theme",
-  "version": "2.5.1",
-  "platform": "2.5.*",
+  "version": "2.5.3",
+  "platform": "~2.5.2",
   "type": "system",
   "title": "Theme",
   "description": "Resolve and store theme related configuration",
-  "releaseNotes": "* Introduced code-linted UI toolkit package",
+  "releaseNotes": "* Updated @shoutem/ui package minor version",
   "icon": "server/assets/add-theme-image.png",
   "categories": []
 }

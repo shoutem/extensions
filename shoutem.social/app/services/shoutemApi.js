@@ -7,19 +7,29 @@ export default class ShoutemApi {
 
     this.legacyHost = null;
     this.authHost = null;
+    this.cloudHost = null;
     this.appId = null;
   }
 
-  init(legacyEndpoint, authApiEndpoint, appId) {
+  init(legacyEndpoint, authApiEndpoint, cloudHost, appId) {
     this.legacyHost = new Uri(legacyEndpoint).host();
     this.authHost = authApiEndpoint;
     this.appId = appId;
+    this.cloudHost = cloudHost;
   }
 
   buildUrl(path = '', queryStringParams = '') {
     return new Uri(path)
       .protocol('https')
       .host(this.legacyHost)
+      .query(`${queryStringParams}`)
+      .toString();
+  }
+
+  buildCloudUrl(path = '', queryStringParams = '') {
+    const endpoint = `${this.cloudHost}${path}`;
+
+    return new Uri(endpoint)
       .query(`${queryStringParams}`)
       .toString();
   }

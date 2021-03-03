@@ -113,12 +113,14 @@ export function checkStatusOfImporters(
       const status = getImporterStatus(importer);
 
       if (
-        status == IMPORTER_STATUSES.QUEUED ||
+        status === IMPORTER_STATUSES.QUEUED ||
         status === IMPORTER_STATUSES.RUNNING
       ) {
         inProgress = true;
         return false;
       }
+
+      return true;
     });
 
     if (!inProgress) {

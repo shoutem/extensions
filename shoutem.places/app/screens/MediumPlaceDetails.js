@@ -1,26 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
-import {
-  ScrollView,
-  Caption,
-  Title,
-  Screen,
-  Tile,
-  View,
-} from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
-import { Favorite } from 'shoutem.favorites';
-import { openURL } from 'shoutem.web-view';
-import { I18n } from 'shoutem.i18n';
-
 import _ from 'lodash';
-
-import { ext } from '../const';
-import { PlaceDetails } from './PlaceDetails';
+import { connect } from 'react-redux';
+import { Favorite } from 'shoutem.favorites';
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar, navigateTo } from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
+import { connectStyle } from '@shoutem/theme';
+import { ScrollView, Caption, Title, Screen, Tile, View } from '@shoutem/ui';
 import PlaceImageGallery from '../components/PlaceImageGallery';
 import { getPlaceImages } from '../services/places';
+import { ext } from '../const';
+import { PlaceDetails } from './PlaceDetails';
 
 class MediumPlaceDetails extends PlaceDetails {
   static propTypes = {
@@ -35,11 +25,7 @@ class MediumPlaceDetails extends PlaceDetails {
     return {
       renderRightComponent: () => (
         <View styleName="container" virtual>
-          <Favorite
-            item={place}
-            navBarButton
-            schema={schema}
-          />
+          <Favorite item={place} navBarButton schema={schema} />
         </View>
       ),
       styleName: _.size(images) >= 1 ? 'clear' : 'no-border',
@@ -72,7 +58,9 @@ class MediumPlaceDetails extends PlaceDetails {
         >
           {place.name.toUpperCase()}
         </Title>
-        <Caption styleName="centered sm-gutter-top lg-gutter-bottom">{formattedAddress}</Caption>
+        <Caption styleName="centered sm-gutter-top lg-gutter-bottom">
+          {formattedAddress}
+        </Caption>
       </Tile>
     );
   }
@@ -81,7 +69,7 @@ class MediumPlaceDetails extends PlaceDetails {
     const { place } = this.props;
     const { location = {} } = place;
     return (
-      <Screen styleName="full-screen paper">
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderLeadImage(place)}
@@ -90,10 +78,30 @@ class MediumPlaceDetails extends PlaceDetails {
           {this.renderButtons()}
           {this.renderInlineMap(place)}
           {this.renderDescription(place)}
-          {this.renderDisclosureButton(place.url, I18n.t('shoutem.cms.websiteButton'), 'web', this.openWebLink)}
-          {this.renderDisclosureButton(location.formattedAddress, I18n.t('shoutem.cms.directionsButton'), 'pin', this.openMapLink)}
-          {this.renderDisclosureButton(place.mail, I18n.t('shoutem.cms.emailButton'), 'email', this.openEmailLink)}
-          {this.renderDisclosureButton(place.phone, I18n.t('shoutem.cms.phoneButton'), 'call', this.openPhoneLink)}
+          {this.renderDisclosureButton(
+            place.url,
+            I18n.t('shoutem.cms.websiteButton'),
+            'web',
+            this.openWebLink,
+          )}
+          {this.renderDisclosureButton(
+            location.formattedAddress,
+            I18n.t('shoutem.cms.directionsButton'),
+            'pin',
+            this.openMapLink,
+          )}
+          {this.renderDisclosureButton(
+            place.mail,
+            I18n.t('shoutem.cms.emailButton'),
+            'email',
+            this.openEmailLink,
+          )}
+          {this.renderDisclosureButton(
+            place.phone,
+            I18n.t('shoutem.cms.phoneButton'),
+            'call',
+            this.openPhoneLink,
+          )}
         </ScrollView>
       </Screen>
     );

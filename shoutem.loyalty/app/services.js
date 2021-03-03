@@ -1,12 +1,10 @@
-import { Alert } from 'react-native';
 import _ from 'lodash';
-
-import { invalidate } from '@shoutem/redux-io';
-
-import { navigateTo, openInModal } from 'shoutem.navigation';
+import { Alert } from 'react-native';
 import { getAppId } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
+import { navigateTo, openInModal } from 'shoutem.navigation';
+import { invalidate } from '@shoutem/redux-io';
 
 import {
   createCardForUser,
@@ -30,13 +28,10 @@ import {
 
 import { getErrorMessage } from './translations';
 
-const showTransactionError = (error) => {
+const showTransactionError = error => {
   const errorMessage = getErrorMessage(error.code);
 
-  Alert.alert(
-    I18n.t('shoutem.application.errorTitle'),
-    errorMessage,
-  );
+  Alert.alert(I18n.t('shoutem.application.errorTitle'), errorMessage);
 };
 
 /**
@@ -64,10 +59,9 @@ export const refreshCardState = () => {
     const cardId = getCardId(getState());
 
     if (!cardId) {
-      return dispatch(refreshCard())
-        .then((cardId) => {
-          dispatch(fetchCardState(cardId));
-        });
+      return dispatch(refreshCard()).then(cardId => {
+        dispatch(fetchCardState(cardId));
+      });
     }
 
     return dispatch(fetchCardState(cardId));
@@ -82,13 +76,175 @@ export const refreshTransactions = () => {
     const cardId = getCardId(getState());
 
     if (!cardId) {
-      dispatch(refreshCard()).then((cardId) => {
+      dispatch(refreshCard()).then(cardId => {
         dispatch(fetchTransactions(cardId));
       });
       return;
     }
 
     dispatch(fetchTransactions(cardId));
+  };
+};
+
+/**
+ * Helper function that gets schema for reward.
+ * We use it to create a transaction on the server.
+ *
+ * @param reward The reward
+ */
+const getSchemaForReward = reward => {
+  if (isPunchCard(reward)) {
+    return CMS_PUNCHCARDS_SCHEMA;
+  }
+
+  return reward.location ? PLACE_REWARDS_SCHEMA : REWARDS_SCHEMA;
+};
+
+/**
+ * Takes the user to a transaction summary screen.
+ *
+ * If there was a reward in the transaction, this screen shows that it was redeemed
+ * or that a punch card was stamped.
+ *
+ * If there was no reward, the user is taken to a screen where he can see how much
+ * points he earned on his regular loyalty card.
+ *
+ */
+const navigateToTransactionSummaryScreen = (reward, points, data) =>
+  navigateTo({
+    screen: ext(
+      `${reward ? 'TransactionProcessedScreen' : 'PointsEarnedScreen'}`,
+    ),
+    props: {
+      data,
+      points,
+      redeemed: points < 0,
+    },
+  });
+
+/**
+ * Takes the user to screen where he can choose to redeem the reward now or later
+ */
+const navigateToRedeemOrContinueScreen = (reward, points, authorization) =>
+  navigateTo({
+    screen: ext('RedeemOrContinueScreen'),
+    props: {
+      reward,
+      points,
+      authorization,
+    },
+  });
+
+/**
+ * Handles punch card transaction. If it has enough points, lets the user choose
+ * if he wants to redeem it right away.
+ *
+ * @param reward - The punch card reward
+ * @param points - Punches assigned in the transaction
+ * @param pin - The PIN number used in the transaction
+ *
+ */
+const handlePunchCardTransaction = (reward, points, authorization) => {
+  return dispatch => {
+    dispatch(invalidate(PUNCH_REWARDS_SCHEMA));
+
+    const { points: originalPoints = 0, pointsRequired } = reward;
+
+    const canRedeem = points + originalPoints === pointsRequired;
+
+    if (canRedeem) {
+      dispatch(navigateToRedeemOrContinueScreen(reward, points, authorization));
+      return;
+    }
+    dispatch(navigateToTransactionSummaryScreen(reward, points));
+  };
+};
+
+/**
+ * Processes transaction results.
+ *
+ * The action refreshes the punch cards or single card state based on transaction type.
+ *
+ * @param data - Transaction data, such as amount spent
+ * @param reward - An optional reward
+ * @param points - Points included in the transaction, if any
+ * @param awardedPoints - Points awarded after a transaction based on visit or amount spent
+ * @param pin - The PIN number used in the transaction
+ *
+ */
+export const processTransactionResults = (
+  data,
+  reward,
+  points,
+  awardedPoints,
+  authorization,
+) => {
+  return dispatch => {
+    if (isPunchCard(reward)) {
+      dispatch(handlePunchCardTransaction(reward, points, authorization));
+      return;
+    }
+
+    dispatch(refreshCardState());
+    dispatch(refreshTransactions());
+
+    dispatch(navigateToTransactionSummaryScreen(reward, awardedPoints, data));
+  };
+};
+
+/**
+ * Makes a loyalty transaction. Navigates the user to a result screen on success.
+ * A punch card reward can be stamped or redeemed. A regular reward can only be redeemed.
+ *
+ * If this is a redeeming transaction, points are negative. Their value is equal to points
+ * required to redeem a reward.
+ *
+ * @param data - Transaction data, such as amount spent or whether this was a purchase or visit.
+ * @param pin - Cashier pin
+ * @param reward - An optional reward.
+ *
+ */
+export const makeTransaction = (data, authorization, reward) => {
+  return dispatch => {
+    const { points } = data;
+
+    const defaultTransactionData = {
+      cms: {
+        appId: getAppId(),
+        schema: reward && getSchemaForReward(reward),
+        category: reward && reward.parentCategoryId,
+      },
+      rewardName: reward && reward.title,
+      ...data,
+    };
+
+    const location = _.get(authorization, 'placeId', false);
+    const rewardId = _.get(reward, 'id');
+
+    const transactionData = location
+      ? { ...defaultTransactionData, location }
+      : { ...defaultTransactionData };
+
+    const attributes = isPunchCard(reward)
+      ? { punchReward: rewardId, transactionData }
+      : { pointReward: rewardId, transactionData };
+
+    return dispatch(createTransaction(attributes, authorization))
+      .then(({ points: awardedPoints }) => {
+        return dispatch(
+          processTransactionResults(
+            data,
+            reward,
+            points,
+            awardedPoints,
+            authorization,
+          ),
+        );
+      })
+      .catch(({ payload }) => {
+        const { errors } = payload.response;
+        showTransactionError(errors[0]);
+      });
   };
 };
 
@@ -115,7 +271,7 @@ export const redeemReward = (data, authorization, reward) =>
  * Parses a reward from values encoded in QR code.
  * Reward values are encoded in an array to save space.
  */
-const getRewardFromEncodedValues = (rewardData) => {
+const getRewardFromEncodedValues = rewardData => {
   const [
     id,
     location,
@@ -139,11 +295,20 @@ const getRewardFromEncodedValues = (rewardData) => {
   };
 };
 
+const getPostAuthorizationRoute = (authorization, place, reward) => ({
+  screen: ext(`${reward ? 'StampCardScreen' : 'AssignPointsScreen'}`),
+  props: {
+    authorization,
+    place,
+    reward,
+  },
+});
+
 /**
  * Authorizes a transaction when a cashier scans a QR code.
  * This can be collecting points or redeeming a reward.
  */
-export const authorizeTransactionByQRCode = (dataString) => {
+export const authorizeTransactionByQRCode = dataString => {
   return (dispatch, getState) => {
     const data = JSON.parse(dataString);
 
@@ -169,180 +334,26 @@ export const authorizeTransactionByQRCode = (dataString) => {
 /**
  * Authorizes a transaction when a user scans a Barcode to collect points.
  */
-export const authorizeTransactionByBarCode = expression => (dispatch) => {
+export const authorizeTransactionByBarCode = expression => dispatch => {
   const authorization = { authorizationType: 'regex', data: { expression } };
 
   dispatch(createTransaction({ transactionData: {} }, authorization))
     .then(({ points }) => {
-      dispatch(openInModal({
-        screen: ext('PointsEarnedScreen'),
-        props: {
-          data: {},
-          points,
-        },
-      }));
-    }).catch(({ payload }) => {
+      dispatch(
+        openInModal({
+          screen: ext('PointsEarnedScreen'),
+          props: {
+            data: {},
+            points,
+          },
+        }),
+      );
+    })
+    .catch(({ payload }) => {
       const { errors } = payload.response;
       showTransactionError(errors[0]);
     });
 };
 
-/**
- * Helper function that gets schema for reward.
- * We use it to create a transaction on the server.
- *
- * @param reward The reward
- */
-const getSchemaForReward = (reward) => {
-  if (isPunchCard(reward)) {
-    return CMS_PUNCHCARDS_SCHEMA;
-  }
-
-  return reward.location ? PLACE_REWARDS_SCHEMA : REWARDS_SCHEMA;
-};
-
-/**
- * Makes a loyalty transaction. Navigates the user to a result screen on success.
- * A punch card reward can be stamped or redeemed. A regular reward can only be redeemed.
- *
- * If this is a redeeming transaction, points are negative. Their value is equal to points
- * required to redeem a reward.
- *
- * @param data - Transaction data, such as amount spent or whether this was a purchase or visit.
- * @param pin - Cashier pin
- * @param reward - An optional reward.
- *
- */
-export const makeTransaction = (data, authorization, reward) => {
-  return (dispatch) => {
-    const { points } = data;
-
-    const defaultTransactionData = {
-      cms: {
-        appId: getAppId(),
-        schema: reward && getSchemaForReward(reward),
-        category: reward && reward.parentCategoryId,
-      },
-      rewardName: reward && reward.title,
-      ...data,
-    };
-
-    const location = _.get(authorization, 'placeId', false);
-    const rewardId = _.get(reward, 'id');
-
-    const transactionData = location ?
-      { ...defaultTransactionData, location } :
-      { ...defaultTransactionData };
-
-    const attributes = isPunchCard(reward) ?
-      { punchReward: rewardId, transactionData } :
-      { pointReward: rewardId, transactionData };
-
-    return dispatch(createTransaction(attributes, authorization))
-      .then(({ points: awardedPoints }) => {
-        return dispatch(processTransactionResults(
-          data, reward, points, awardedPoints, authorization,
-        ));
-      })
-      .catch(({ payload }) => {
-        const { errors } = payload.response;
-        showTransactionError(errors[0]);
-      });
-  };
-};
-
-/**
- * Processes transaction results.
- *
- * The action refreshes the punch cards or single card state based on transaction type.
- *
- * @param data - Transaction data, such as amount spent
- * @param reward - An optional reward
- * @param points - Points included in the transaction, if any
- * @param awardedPoints - Points awarded after a transaction based on visit or amount spent
- * @param pin - The PIN number used in the transaction
- *
- */
-export const processTransactionResults = (data, reward, points, awardedPoints, authorization) => {
-  return (dispatch) => {
-    if (isPunchCard(reward)) {
-      dispatch(handlePunchCardTransaction(reward, points, authorization));
-      return;
-    }
-
-    dispatch(refreshCardState());
-    dispatch(refreshTransactions());
-
-    dispatch(navigateToTransactionSummaryScreen(reward, awardedPoints, data));
-  };
-};
-
-/**
- * Handles punch card transaction. If it has enough points, lets the user choose
- * if he wants to redeem it right away.
- *
- * @param reward - The punch card reward
- * @param points - Punches assigned in the transaction
- * @param pin - The PIN number used in the transaction
- *
- */
-const handlePunchCardTransaction = (reward, points, authorization) => {
-  return (dispatch) => {
-    dispatch(invalidate(PUNCH_REWARDS_SCHEMA));
-
-    const { points: originalPoints = 0, pointsRequired } = reward;
-
-    const canRedeem = (points + originalPoints) === pointsRequired;
-
-    if (canRedeem) {
-      dispatch(navigateToRedeemOrContinueScreen(reward, points, authorization));
-      return;
-    }
-    dispatch(navigateToTransactionSummaryScreen(reward, points));
-  };
-};
-
-/**
- * Takes the user to screen where he can choose to redeem the reward now or later
- */
-const navigateToRedeemOrContinueScreen = (reward, points, authorization) =>
-  navigateTo({
-    screen: ext('RedeemOrContinueScreen'),
-    props: {
-      reward,
-      points,
-      authorization,
-    },
-  });
-
-const getPostAuthorizationRoute = (authorization, place, reward) => ({
-  screen: ext(`${reward ? 'StampCardScreen' : 'AssignPointsScreen'}`),
-  props: {
-    authorization,
-    place,
-    reward,
-  },
-});
-
 export const authorizePointsByPin = (authorization, place, reward) =>
   navigateTo(getPostAuthorizationRoute(authorization, place, reward));
-
-/**
- * Takes the user to a transaction summary screen.
- *
- * If there was a reward in the transaction, this screen shows that it was redeemed
- * or that a punch card was stamped.
- *
- * If there was no reward, the user is taken to a screen where he can see how much
- * points he earned on his regular loyalty card.
- *
- */
-const navigateToTransactionSummaryScreen = (reward, points, data) =>
-  navigateTo({
-    screen: ext(`${reward ? 'TransactionProcessedScreen' : 'PointsEarnedScreen'}`),
-    props: {
-      data,
-      points,
-      redeemed: points < 0,
-    },
-  });

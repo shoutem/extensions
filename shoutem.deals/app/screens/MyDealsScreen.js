@@ -80,16 +80,13 @@ export class MyDealsScreen extends PureComponent {
 
   render() {
     const { activeTab } = this.state;
-    // const { style } = this.props;
-
     // Tabs activation status
     const myDealsTabActive = (activeTab === MY_DEALS_TAB);
     const favoriteDealsTabActive = (activeTab === FAVORITE_DEALS_TAB);
 
     return (
-      <Screen styleName="full-screen">
+      <Screen>
         <NavigationBar {...this.getNavBarProps()} />
-
         <View key="my-deals-tabs" styleName="flexible">
           <View key="my-deals-tabs-controls" styleName="solid horizontal">
             {renderTab({

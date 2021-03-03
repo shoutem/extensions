@@ -3,7 +3,9 @@ import _ from 'lodash';
 function extractCategoriesFromUrl(feedUrl) {
   const hasCategories = feedUrl.includes('/category/');
 
-  const categoriesString = feedUrl.slice(feedUrl.lastIndexOf('/category/') + 10);
+  const categoriesString = feedUrl.slice(
+    feedUrl.lastIndexOf('/category/') + 10,
+  );
   const categories = categoriesString.split('/');
 
   return hasCategories ? categories : [];

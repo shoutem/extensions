@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
-
+import PropTypes from 'prop-types';
 import {
   Caption,
   Card,
@@ -10,7 +9,6 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-
 import { ArticleView } from './ArticleView';
 
 /**
@@ -43,7 +41,9 @@ export class GridArticleView extends ArticleView {
             source={{ uri: imageUrl }}
           />
           <View styleName="flexible content space-between">
-            <Subtitle numberOfLines={3} styleName="lg-gutter-bottom">{title}</Subtitle>
+            <Subtitle numberOfLines={3} styleName="lg-gutter-bottom">
+              {title}
+            </Subtitle>
             {dateInfo}
           </View>
         </Card>

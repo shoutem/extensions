@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import he from 'he';
-
+import { NavigationBar } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
@@ -13,9 +13,6 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
-
-import { NavigationBar } from 'shoutem.navigation';
-
 import { ext } from '../const';
 import { getLeadImageUrl, getAuthorName } from '../services';
 import { ArticleDetailsScreen } from './ArticleDetailsScreen';
@@ -53,7 +50,6 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
 
     const resolvedTitle = he.decode(article.title.rendered);
     const imageUrl = getLeadImageUrl(article);
-    const screenStyle = imageUrl ? 'full-screen paper' : 'paper';
     const momentDate = moment(article.modified);
 
     const dateInfo = momentDate.isAfter(0) ? (
@@ -61,7 +57,7 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
     ) : null;
 
     return (
-      <Screen styleName={screenStyle}>
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderImage(imageUrl)}
@@ -83,4 +79,6 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
   }
 }
 
-export default connectStyle(ext('ArticleMediumDetailsScreen'))(ArticleMediumDetailsScreen);
+export default connectStyle(ext('ArticleMediumDetailsScreen'))(
+  ArticleMediumDetailsScreen,
+);

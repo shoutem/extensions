@@ -1,9 +1,10 @@
 {
   "name": "deals",
   "title": "Deals",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "platform": "2.5.*",
   "description": "Create special deals and redeem them with coupons",
+  "releaseNotes": "* Fixed navigation header overlapping screen content on 'My deals' screen",
   "icon": "server/assets/add-deals-image.png",
   "dependencies": [
     "shoutem.layouts"

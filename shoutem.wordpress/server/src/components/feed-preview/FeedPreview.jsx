@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { FormGroup, ControlLabel } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import _ from 'lodash';
 import { FontIcon } from '@shoutem/react-web-ui';
 import { isFeedUrlInsecure } from 'src/services';
 import FeedPreviewTable from '../feed-preview-table';
@@ -12,7 +12,8 @@ import LOCALIZATION from './localization';
 import './style.scss';
 
 // eslint-disable-next-line max-len
-const TUTORIAL_LINK = 'https://pearsonnacommunity.force.com/support/s/article/ka6d00000019KVGAA2/How-to-display-mixed-content-with-Google-Chrome-Internet-Explorer-or-Firefox-1408394589290';
+const TUTORIAL_LINK =
+  'https://pearsonnacommunity.force.com/support/s/article/ka6d00000019KVGAA2/How-to-display-mixed-content-with-Google-Chrome-Internet-Explorer-or-Firefox-1408394589290';
 
 export default class FeedPreview extends Component {
   constructor(props, context) {
@@ -30,8 +31,13 @@ export default class FeedPreview extends Component {
     return (
       <ControlLabel className="feed-preview__insecure-warning">
         <Trans i18nKey={LOCALIZATION.INSECURE_FEED_WARNING}>
-          You are trying to load a feed from 'http'. Change feed's protocol to 'https' or learn
-          <button className="btn-textual" onClick={this.handleLinkClick} target="_top">
+          You are trying to load a feed from 'http'. Change feed's protocol to
+          'https' or learn
+          <button
+            className="btn-textual"
+            onClick={this.handleLinkClick}
+            target="_top"
+          >
             here
           </button>
           how to allow your browser to load it.
@@ -54,9 +60,7 @@ export default class FeedPreview extends Component {
             <div className="feed-preview__feed-url-container">
               <div />
               <div className="feed-preview__feed-url-text-wrapper text-ellipsis">
-                <span className="feed-preview__feed-url">
-                  {feedUrl}
-                </span>
+                <span className="feed-preview__feed-url">{feedUrl}</span>
               </div>
               <FontIcon
                 className="feed-preview__remove"

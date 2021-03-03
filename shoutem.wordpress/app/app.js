@@ -1,5 +1,4 @@
 import rio from '@shoutem/redux-io';
-
 import {
   API_ENDPOINT,
   AUTHOR_API_ENDPOINT,

@@ -1,13 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import {
-  Button,
-  Icon,
-} from '@shoutem/ui';
-import { openURL } from 'shoutem.web-view';
 import { CmsListScreen } from 'shoutem.cms';
+import { openURL } from 'shoutem.web-view';
+import { Button, Icon } from '@shoutem/ui';
 
 class LinkIconButton extends PureComponent {
   static propTypes = {

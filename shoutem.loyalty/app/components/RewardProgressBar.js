@@ -1,12 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
-import {
-  View,
-} from '@shoutem/ui';
-
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-
+import { View } from '@shoutem/ui';
 import { ext } from '../const';
 
 const { number } = PropTypes;
@@ -27,10 +22,7 @@ class RewardProgressBar extends PureComponent {
     const progressPercentage = 100 * (points / pointsRequired);
 
     return (
-      <View
-        styleName="horizontal flexible"
-        style={style.container}
-      >
+      <View styleName="horizontal flexible" style={style.container}>
         <View
           style={{
             ...style.earnedPoints,

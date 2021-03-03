@@ -1,19 +1,12 @@
 import React from 'react';
+import _ from 'lodash';
 import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-
-import {
-  Button,
-  View,
-  Text,
-} from '@shoutem/ui';
-import { getCollection } from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
-
 import { FavoritesListScreen } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
-
+import { getCollection } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { Button, View, Text } from '@shoutem/ui';
 import MapList from '../components/MapList';
 import PlaceIconView from '../components/PlaceIconView';
 import { ext } from '../const';
@@ -70,7 +63,7 @@ export class FavoritesList extends FavoritesListScreen {
   shouldRenderMap(favorites) {
     const { mapView } = this.state;
 
-    return (!_.isEmpty(favorites) && mapView);
+    return !_.isEmpty(favorites) && mapView;
   }
 
   getNavBarProps() {
@@ -90,12 +83,7 @@ export class FavoritesList extends FavoritesListScreen {
     const placeId = _.get(place, 'id');
     const points = _.get(cardStatesByLocation[placeId], 'points');
 
-    return (
-      <PlaceIconView
-        place={place}
-        points={points}
-      />
-    );
+    return <PlaceIconView place={place} points={points} />;
   }
 
   toggleMapView() {
@@ -109,9 +97,9 @@ export class FavoritesList extends FavoritesListScreen {
     const { mapView } = this.state;
     const { favorites } = this.props;
 
-    const actionText = mapView ?
-      I18n.t('shoutem.cms.navBarListViewButton') :
-      I18n.t('shoutem.cms.navBarMapViewButton');
+    const actionText = mapView
+      ? I18n.t('shoutem.cms.navBarListViewButton')
+      : I18n.t('shoutem.cms.navBarMapViewButton');
 
     if (_.isEmpty(favorites)) {
       return null;
@@ -119,10 +107,7 @@ export class FavoritesList extends FavoritesListScreen {
 
     return (
       <View virtual styleName="container md-gutter-right">
-        <Button
-          styleName="tight"
-          onPress={this.toggleMapView}
-        >
+        <Button styleName="tight" onPress={this.toggleMapView}>
           <Text>{actionText}</Text>
         </Button>
       </View>
@@ -131,20 +116,21 @@ export class FavoritesList extends FavoritesListScreen {
 
   renderData(favorites) {
     if (this.shouldRenderMap(favorites)) {
-      return (
-        <MapList places={favorites} />
-      );
+      return <MapList places={favorites} />;
     }
 
     return super.renderData(favorites);
   }
 }
 
-export const mapStateToProps = (state) => {
+export const mapStateToProps = state => {
   const cardStates = getCollection(state[ext()].allCardStates, state);
 
   return {
-    ...FavoritesListScreen.createMapStateToProps(ext('places'), state => state[ext()].locations)(state),
+    ...FavoritesListScreen.createMapStateToProps(
+      ext('places'),
+      state => state[ext()].locations,
+    )(state),
     cardStatesByLocation: _.keyBy(cardStates, 'location'),
   };
 };
@@ -152,6 +138,7 @@ export const mapDispatchToProps = FavoritesListScreen.createMapDispatchToProps({
   refreshCardState,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('FavoritesList'), {})(FavoritesList),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('FavoritesList'), {})(FavoritesList));

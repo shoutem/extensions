@@ -1,10 +1,10 @@
 {
   "name": "news",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "platform": "2.5.*",
   "title": "News",
   "description": "Show news articles",
-  "releaseNotes": "* Code lint improvements.",
+  "releaseNotes": "* Added CMS search feature",
   "icon": "server/assets/add-news-image.png",
   "dependencies": [
     "shoutem.layouts",
@@ -28,6 +28,7 @@
       "icon": "theme://news.png",
       "screen": "@.ArticlesScreen",
       "capabilities": [
+        "shoutem.cms.search",
         "shoutem.cms.import-csv",
         "shoutem.cms.import-rss"
       ],

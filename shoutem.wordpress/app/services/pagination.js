@@ -12,7 +12,10 @@ export function getActionPageSize(action) {
 }
 
 export function getResponseTotalPages(response) {
-  const totalPages = parseInt(_.get(response, ['headers', 'x-wp-totalpages']), 10);
+  const totalPages = parseInt(
+    _.get(response, ['headers', 'x-wp-totalpages']),
+    10,
+  );
   return !isNaN(totalPages) ? totalPages : 1;
 }
 

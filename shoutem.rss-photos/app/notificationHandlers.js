@@ -28,16 +28,6 @@ function canHandle(notification) {
   return true;
 }
 
-function openItemInModal(notification, store) {
-  const state = store.getState();
-  const feedUrl = getFeedUrl(state, notification.shortcutId);
-  generateNavigationAction(notification, feedUrl, store).then(
-    (navigationAction) => {
-      store.dispatch(navigationAction);
-    },
-  );
-}
-
 function resolveNavigationAction(store, id, feedUrl) {
   const route = {
     screen: PHOTO_DETAILS_SCREEN,
@@ -52,6 +42,59 @@ function resolveNavigationAction(store, id, feedUrl) {
   const navigationAction = alreadyHasModalOpen ? navigateTo : openInModal;
 
   return navigationAction(route);
+}
+
+function getItemId(state, feedUrl, uuid) {
+  const data = getPhotosFeed(state, feedUrl);
+  const photos = remapAndFilterPhotos(data);
+  const photo = _.find(photos, photo => {
+    return photo.uuid === uuid;
+  });
+
+  return _.get(photo, 'id');
+}
+
+function generateNavigationAction(notification, feedUrl, store) {
+  return new Promise(resolve => {
+    store.dispatch(fetchPhotosFeed(notification.shortcutId)).then(() => {
+      const state = store.getState();
+      const id = getItemId(state, feedUrl, notification.itemId);
+
+      resolve(resolveNavigationAction(store, id, feedUrl));
+    });
+    // eslint-disable-next-line no-console
+  }).catch(err => console.warn('Resolve navigation action failed.', err));
+}
+
+function handleForegroundNotification(receivedNotification, store) {
+  const notification = resolveNotificationData(receivedNotification);
+
+  if (!canHandle(notification)) {
+    return;
+  }
+
+  const state = store.getState();
+  const feedUrl = getFeedUrl(state, notification.shortcutId);
+  generateNavigationAction(notification, feedUrl, store).then(
+    navigationAction => {
+      displayLocalNotification(
+        notification.title,
+        notification.body,
+        navigationAction,
+        store,
+      );
+    },
+  );
+}
+
+function openItemInModal(notification, store) {
+  const state = store.getState();
+  const feedUrl = getFeedUrl(state, notification.shortcutId);
+  generateNavigationAction(notification, feedUrl, store).then(
+    navigationAction => {
+      store.dispatch(navigationAction);
+    },
+  );
 }
 
 function handleNotificationTapped(receivedNotification, store) {
@@ -72,48 +115,6 @@ function handleNotificationTapped(receivedNotification, store) {
   openItemInModal(notification, store);
 }
 
-function getItemId(state, feedUrl, uuid) {
-  const data = getPhotosFeed(state, feedUrl);
-  const photos = remapAndFilterPhotos(data);
-  const photo = _.find(photos, (photo) => {
-    return photo.uuid === uuid;
-  });
-
-  return _.get(photo, 'id');
-}
-
-function generateNavigationAction(notification, feedUrl, store) {
-  return new Promise((resolve) => {
-    store.dispatch(fetchPhotosFeed(notification.shortcutId)).then(() => {
-      const state = store.getState();
-      const id = getItemId(state, feedUrl, notification.itemId);
-
-      resolve(resolveNavigationAction(store, id, feedUrl));
-    });
-  }).catch(err => console.warn('Resolve navigation action failed.', err));
-}
-
-function handleForegroundNotification(receivedNotification, store) {
-  const notification = resolveNotificationData(receivedNotification);
-
-  if (!canHandle(notification)) {
-    return;
-  }
-
-  const state = store.getState();
-  const feedUrl = getFeedUrl(state, notification.shortcutId);
-  generateNavigationAction(notification, feedUrl, store).then(
-    (navigationAction) => {
-      displayLocalNotification(
-        notification.title,
-        notification.body,
-        navigationAction,
-        store,
-      );
-    },
-  );
-}
-
 function handlePendingNotification(notification, store) {
   if (!canHandle(notification)) {
     return;
@@ -126,11 +127,11 @@ export function registerNotificationHandlers(store) {
   NotificationHandlers.registerNotificationReceivedHandlers({
     owner: ext(),
     notificationHandlers: {
-      onNotificationTapped: (notification) =>
+      onNotificationTapped: notification =>
         handleNotificationTapped(notification, store),
-      onNotificationReceivedForeground: (notification) =>
+      onNotificationReceivedForeground: notification =>
         handleForegroundNotification(notification, store),
-      onPendingNotificationDispatched: (notification) =>
+      onPendingNotificationDispatched: notification =>
         handlePendingNotification(notification, store),
     },
   });

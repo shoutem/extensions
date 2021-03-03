@@ -1,0 +1,65 @@
+definitions:
+  SettingsReference:
+    type: object
+    required:
+    - type
+    - id
+    properties:
+      type:
+        type: string
+        enum: [ settings ]
+      id:
+        type: string
+  Settings:
+    allOf:
+      - $ref: '#/definitions/SettingsReference'
+      - type: object
+        properties:
+          attributes:
+            type: object
+            properties:
+              userId:
+                type: string
+              commentsOnMyStatuses:
+                type: boolean
+              likesOnMyStatuses:
+                type: boolean
+              commentsOnCommentedStatuses:
+                type: boolean
+              commentsOnLikedStatuses:
+                type: boolean
+          relationships:
+            type: object
+            properties:
+  SettingsJsonApiDocument:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        $ref: '#/definitions/Settings'
+  SettingsCollectionJsonApiDocument:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Settings'
+  SettingsSingleRelationship:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        $ref: '#/definitions/SettingsReference'
+  SettingsCollectionRelationship:
+    type: object
+    required:
+    - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/SettingsReference'

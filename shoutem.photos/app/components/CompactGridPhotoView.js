@@ -1,12 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {
-  TouchableOpacity,
-  View,
-  Image,
-} from '@shoutem/ui';
-
+import PropTypes from 'prop-types';
+import { TouchableOpacity, View, Image } from '@shoutem/ui';
 import { BasePhotoView } from './BasePhotoView';
 
 /**

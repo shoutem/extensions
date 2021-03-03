@@ -22,6 +22,8 @@ import {
   Text,
   View,
   Divider,
+  Button,
+  Icon,
   TouchableOpacity,
 } from '@shoutem/ui';
 
@@ -115,7 +117,7 @@ export class SocialWallScreen extends RemoteDataListScreen {
         statusMaxLength,
         onStatusCreated: (status, attachment) => {
           createStatus(status, attachment)
-          .then(navigateBack())
+            .then(navigateBack())
         },
       },
     };
@@ -131,6 +133,22 @@ export class SocialWallScreen extends RemoteDataListScreen {
     } else {
       unlikeStatus(status.id);
     }
+  }
+
+  renderSettingsButton() {
+    return (
+      <View styleName="container" virtual>
+        <Button onPress={this.handleSettingsPress}>
+          <Icon name="settings" />
+        </Button>
+      </View>
+    );
+  }
+
+  handleSettingsPress() {
+    const { navigateTo } = this.props;
+
+    navigateTo({ screen: ext('NotificationSettingsScreen') });
   }
 
   getUsersWhoLiked(status) {
@@ -226,7 +244,10 @@ export class SocialWallScreen extends RemoteDataListScreen {
 
     return (
       <Screen style={style.screen}>
-        <NavigationBar title={title.toUpperCase()} />
+        <NavigationBar
+          renderRightComponent={this.renderSettingsButton}
+          title={title.toUpperCase()}
+        />
         <Divider styleName="line" />
         {this.renderAddNewStatusSection()}
         {this.renderData(data)}

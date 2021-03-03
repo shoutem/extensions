@@ -1,14 +1,11 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { connectStyle } from '@shoutem/theme';
-
-import { navigateTo } from 'shoutem.navigation';
 import { CmsListScreen } from 'shoutem.cms';
-
-import { ext } from '../const';
+import { navigateTo } from 'shoutem.navigation';
+import { connectStyle } from '@shoutem/theme';
 import ListPeopleView from '../components/ListPeopleView';
+import { ext } from '../const';
 
 export class PeopleListScreen extends CmsListScreen {
   static propTypes = {
@@ -56,6 +53,7 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   navigateTo,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PeopleListScreen'), {})(PeopleListScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('PeopleListScreen'), {})(PeopleListScreen));

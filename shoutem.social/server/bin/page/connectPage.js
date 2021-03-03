@@ -39,6 +39,6 @@ function mapStateToProps(state, ownProps) {
 }
 
 export default function connectPage() {
-  return (wrappedComponent) =>
+  return wrappedComponent =>
     connectPageContext(connect(mapStateToProps)(wrappedComponent));
 }

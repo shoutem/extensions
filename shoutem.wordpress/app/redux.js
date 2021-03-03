@@ -1,16 +1,7 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 import URI from 'urijs';
-
 import { mapReducers } from '@shoutem/redux-composers';
-import {
-  cloneStatus,
-  find,
-  LOAD_SUCCESS,
-  RESOLVED_ENDPOINT,
-  resource,
-  STATUS,
-} from '@shoutem/redux-io';
 import { APPEND_MODE } from '@shoutem/redux-io/actions/find';
 import Outdated from '@shoutem/redux-io/outdated';
 import {
@@ -20,15 +11,27 @@ import {
   updateStatus,
   validationStatus,
 } from '@shoutem/redux-io/status';
-
-import { getActionCurrentPage, getResponseTotalPages } from './services/pagination';
-import { CATEGORIES_PER_PAGE, ext, POSTS_PER_PAGE } from './const';
+import {
+  cloneStatus,
+  find,
+  LOAD_SUCCESS,
+  resource,
+  STATUS,
+} from '@shoutem/redux-io';
+import {
+  getActionCurrentPage,
+  getResponseTotalPages,
+} from './services/pagination';
+import { ext, POSTS_PER_PAGE } from './const';
 import { createCategoryFilter, extractBaseUrl } from './services';
 
 export const CATEGORIES_ENDPOINT = '{feedUrl}/wp-json/wp/v2/categories';
-export const API_ENDPOINT = '{feedUrl}/wp-json/wp/v2/posts?page={page}&per_page={perPage}';
-export const MEDIA_API_ENDPOINT = '{feedUrl}/wp-json/wp/v2/media?include={include}&per_page={perPage}';
-export const AUTHOR_API_ENDPOINT = '{feedUrl}/wp-json/wp/v2/users?include={include}&per_page={perPage}';
+export const API_ENDPOINT =
+  '{feedUrl}/wp-json/wp/v2/posts?page={page}&per_page={perPage}';
+export const MEDIA_API_ENDPOINT =
+  '{feedUrl}/wp-json/wp/v2/media?include={include}&per_page={perPage}';
+export const AUTHOR_API_ENDPOINT =
+  '{feedUrl}/wp-json/wp/v2/users?include={include}&per_page={perPage}';
 
 export const WORDPRESS_CATEGORIES_SCHEMA = 'shoutem.wordpress.categories';
 export const WORDPRESS_NEWS_SCHEMA = 'shoutem.wordpress.news';
@@ -61,6 +64,7 @@ export function resolvePostsAuthorUrl(feedUrl) {
 
 // ACTION CREATORS
 
+// eslint-disable-next-line no-unused-vars
 export function fetchCategories({ feedUrl, page, appendMode = false }) {
   const config = {
     schema: WORDPRESS_CATEGORIES_SCHEMA,
@@ -73,12 +77,7 @@ export function fetchCategories({ feedUrl, page, appendMode = false }) {
     },
   };
 
-  return find(
-    config,
-    undefined,
-    {},
-    { feedUrl, appendMode },
-  );
+  return find(config, undefined, {}, { feedUrl, appendMode });
 }
 
 /**
@@ -115,12 +114,7 @@ export function fetchPosts({
 
   const params = { page, perPage };
 
-  return find(
-    config,
-    undefined,
-    params,
-    { feedUrl, appendMode },
-  );
+  return find(config, undefined, params, { feedUrl, appendMode });
 }
 
 /**
@@ -169,12 +163,7 @@ export function fetchPostsAuthor({ feedUrl, posts, appendMode = false }) {
 
   const params = { include, perPage };
 
-  return find(
-    config,
-    undefined,
-    params,
-    { feedUrl, authorIds, appendMode },
-  );
+  return find(config, undefined, params, { feedUrl, authorIds, appendMode });
 }
 
 /**
@@ -182,31 +171,29 @@ export function fetchPostsAuthor({ feedUrl, posts, appendMode = false }) {
  * @param {Object} options @see fetchPosts
  */
 export function fetchWordpressPosts(options) {
-  return dispatch => (
+  return dispatch =>
     dispatch(fetchCategories(options))
-      .then(({ payload }) => dispatch(fetchPosts({ ...options, categories: payload })))
-      .then((action) => {
+      .then(({ payload }) =>
+        dispatch(fetchPosts({ ...options, categories: payload })),
+      )
+      .then(action => {
         const { payload: posts } = action;
 
         return Promise.all([
           dispatch(fetchPostsMedia({ ...options, posts })),
           dispatch(fetchPostsAuthor({ ...options, posts })),
         ]);
-      })
-  );
+      });
 }
 
 // REDUCERS
 
 function createDefaultStatus(schema) {
-  return updateStatus(
-    createStatus(),
-    {
-      schema,
-      type: 'resource',
-      id: _.uniqueId(),
-    },
-  );
+  return updateStatus(createStatus(), {
+    schema,
+    type: 'resource',
+    id: _.uniqueId(),
+  });
 }
 
 function createNewState(state) {
@@ -291,16 +278,16 @@ export function wordpressResource(schema, initialState = {}) {
           newState = _.concat(state, newState);
         }
 
-        setStatus(newState, updateStatus(
-          state[STATUS],
-          {
+        setStatus(
+          newState,
+          updateStatus(state[STATUS], {
             validationStatus: validationStatus.VALID,
             busyStatus: busyStatus.IDLE,
             error: false,
             links,
             schema,
-          },
-        ));
+          }),
+        );
         return newState;
       }
       default:
@@ -310,10 +297,22 @@ export function wordpressResource(schema, initialState = {}) {
 }
 
 export default combineReducers({
-  posts: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_NEWS_SCHEMA)),
-  media: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_MEDIA_SCHEMA)),
-  categories: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_CATEGORIES_SCHEMA)),
-  author: mapReducers(readFeedUrlFromAction, wordpressResource(WORDPRESS_AUTHOR_SCHEMA)),
+  posts: mapReducers(
+    readFeedUrlFromAction,
+    wordpressResource(WORDPRESS_NEWS_SCHEMA),
+  ),
+  media: mapReducers(
+    readFeedUrlFromAction,
+    wordpressResource(WORDPRESS_MEDIA_SCHEMA),
+  ),
+  categories: mapReducers(
+    readFeedUrlFromAction,
+    wordpressResource(WORDPRESS_CATEGORIES_SCHEMA),
+  ),
+  author: mapReducers(
+    readFeedUrlFromAction,
+    wordpressResource(WORDPRESS_AUTHOR_SCHEMA),
+  ),
 });
 
 // SELECTORS
@@ -331,7 +330,10 @@ export function getFeedItemInfo(item, state, feedUrl) {
   const itemInfo = { ...item };
 
   if (itemInfo.featured_media) {
-    itemInfo.featured_media_object = _.find(mediaList, ['id', itemInfo.featured_media]);
+    itemInfo.featured_media_object = _.find(mediaList, [
+      'id',
+      itemInfo.featured_media,
+    ]);
   }
 
   if (itemInfo.author) {
@@ -351,7 +353,9 @@ export function getFeedItems(state, feedUrl) {
   if (!feedItems) {
     return [];
   }
-  const feedItemsInfo = _.map(feedItems, item => getFeedItemInfo(item, state, feedUrl));
+  const feedItemsInfo = _.map(feedItems, item =>
+    getFeedItemInfo(item, state, feedUrl),
+  );
   cloneStatus(feedItems, feedItemsInfo);
 
   return feedItemsInfo;

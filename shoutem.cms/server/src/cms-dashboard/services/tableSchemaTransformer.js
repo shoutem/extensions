@@ -50,8 +50,9 @@ function getTableHeaderType(type) {
 }
 
 function getTableHeader(column, properties, categories, languages) {
-  const isCategoryColumn = column.name === 'categories';
-  if (isCategoryColumn) {
+  const columnName = _.get(column, 'name');
+
+  if (columnName === 'categories') {
     if (_.isEmpty(categories)) {
       return null;
     }
@@ -66,8 +67,7 @@ function getTableHeader(column, properties, categories, languages) {
     };
   }
 
-  const isLanguageColumn = column.name === 'languages';
-  if (isLanguageColumn) {
+  if (columnName === 'languages') {
     if (_.isEmpty(languages)) {
       return null;
     }

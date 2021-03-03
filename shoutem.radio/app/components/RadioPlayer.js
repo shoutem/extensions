@@ -1,7 +1,7 @@
 import React from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Animated } from 'react-native';
-import _ from 'lodash';
 import slugify from '@sindresorhus/slugify';
 
 import {
@@ -78,38 +78,40 @@ class RadioPlayer extends TrackPlayerBase {
   }
 
   composeBubbleAnimation() {
-    return Animated.loop(Animated.stagger(150, [
-      Animated.sequence([
-        Animated.timing(this.bubbleAnimationOuterA, {
-          toValue: 1.05,
-          ...COMMON_BUBBLE_PARAMS,
-        }),
-        Animated.timing(this.bubbleAnimationOuterA, {
-          toValue: 1,
-          ...COMMON_BUBBLE_PARAMS,
-        }),
+    return Animated.loop(
+      Animated.stagger(150, [
+        Animated.sequence([
+          Animated.timing(this.bubbleAnimationOuterA, {
+            toValue: 1.05,
+            ...COMMON_BUBBLE_PARAMS,
+          }),
+          Animated.timing(this.bubbleAnimationOuterA, {
+            toValue: 1,
+            ...COMMON_BUBBLE_PARAMS,
+          }),
+        ]),
+        Animated.sequence([
+          Animated.timing(this.bubbleAnimationMain, {
+            toValue: 0.05,
+            ...COMMON_BUBBLE_PARAMS,
+          }),
+          Animated.timing(this.bubbleAnimationMain, {
+            toValue: 0,
+            ...COMMON_BUBBLE_PARAMS,
+          }),
+        ]),
+        Animated.sequence([
+          Animated.timing(this.bubbleAnimationOuterB, {
+            toValue: 1.05,
+            ...COMMON_BUBBLE_PARAMS,
+          }),
+          Animated.timing(this.bubbleAnimationOuterB, {
+            toValue: 1,
+            ...COMMON_BUBBLE_PARAMS,
+          }),
+        ]),
       ]),
-      Animated.sequence([
-        Animated.timing(this.bubbleAnimationMain, {
-          toValue: 0.05,
-          ...COMMON_BUBBLE_PARAMS,
-        }),
-        Animated.timing(this.bubbleAnimationMain, {
-          toValue: 0,
-          ...COMMON_BUBBLE_PARAMS,
-        }),
-      ]),
-      Animated.sequence([
-        Animated.timing(this.bubbleAnimationOuterB, {
-          toValue: 1.05,
-          ...COMMON_BUBBLE_PARAMS,
-        }),
-        Animated.timing(this.bubbleAnimationOuterB, {
-          toValue: 1,
-          ...COMMON_BUBBLE_PARAMS,
-        }),
-      ]),
-    ]));
+    );
   }
 
   composeAppearAnimation(appear) {
@@ -126,13 +128,17 @@ class RadioPlayer extends TrackPlayerBase {
       }),
     ];
 
-    this.appearAnimation = Animated.sequence(appear ? animations : _.reverse(animations));
+    this.appearAnimation = Animated.sequence(
+      appear ? animations : _.reverse(animations),
+    );
   }
 
   calculateOuterCircleStyle(leadingCircle) {
     const { style } = this.props;
 
-    const bubbleAnimationValue = leadingCircle ? this.bubbleAnimationOuterA : this.bubbleAnimationOuterB;
+    const bubbleAnimationValue = leadingCircle
+      ? this.bubbleAnimationOuterA
+      : this.bubbleAnimationOuterB;
     const translateOutputRange = leadingCircle ? [0, -10] : [0, 10];
 
     return [
@@ -158,7 +164,8 @@ class RadioPlayer extends TrackPlayerBase {
             }),
           },
         ],
-      }];
+      },
+    ];
   }
 
   setTrackPlayerOptions() {
@@ -195,7 +202,11 @@ class RadioPlayer extends TrackPlayerBase {
     const { onPlaybackStateChange } = this.props;
     const { state } = data;
 
-    if (state === STATE_STOPPED || state === STATE_PLAYING || state === STATE_PAUSED) {
+    if (
+      state === STATE_STOPPED ||
+      state === STATE_PLAYING ||
+      state === STATE_PAUSED
+    ) {
       if (appearAnimationActive) {
         this.appearAnimation.reset();
       }
@@ -204,7 +215,9 @@ class RadioPlayer extends TrackPlayerBase {
 
       this.composeAppearAnimation(!wasPlaying);
 
-      const callback = wasPlaying ? () => this.bubbleAnimation.reset() : () => this.bubbleAnimation.start();
+      const callback = wasPlaying
+        ? () => this.bubbleAnimation.reset()
+        : () => this.bubbleAnimation.start();
 
       this.setState({ appearAnimationActive: true });
 
@@ -229,7 +242,9 @@ class RadioPlayer extends TrackPlayerBase {
 
     this.composeAppearAnimation();
 
-    const callback = wasPlaying ? () => this.bubbleAnimation.reset() : () => this.bubbleAnimation.start();
+    const callback = wasPlaying
+      ? () => this.bubbleAnimation.reset()
+      : () => this.bubbleAnimation.start();
 
     this.setState({ appearAnimationActive: true });
 
@@ -257,7 +272,9 @@ class RadioPlayer extends TrackPlayerBase {
   }
 
   resolveActionIcon() {
-    const { style: { playbackIcon, spinner } } = this.props;
+    const {
+      style: { playbackIcon, spinner },
+    } = this.props;
     const { playbackState } = this.state;
 
     const icons = {
@@ -283,15 +300,22 @@ class RadioPlayer extends TrackPlayerBase {
         style={style.playbackButton}
       >
         <ActionIcon />
-        <Animated.View style={[
-          style.playbackMainCircle,
-          { opacity: this.appearAnimationMain },
-          {
-            transform: [
-              { scale: Animated.add(this.appearAnimationMain, this.bubbleAnimationMain) },
-              { perspective: 1000 },
-            ],
-          }]}
+        <Animated.View
+          style={[
+            style.playbackMainCircle,
+            { opacity: this.appearAnimationMain },
+            {
+              transform: [
+                {
+                  scale: Animated.add(
+                    this.appearAnimationMain,
+                    this.bubbleAnimationMain,
+                  ),
+                },
+                { perspective: 1000 },
+              ],
+            },
+          ]}
         />
         <Animated.View style={this.calculateOuterCircleStyle(true)} />
         <Animated.View style={this.calculateOuterCircleStyle(false)} />

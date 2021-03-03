@@ -7,4 +7,3 @@ export function formatBookCaption(book) {
   }
   return authorAndPrice;
 }
-

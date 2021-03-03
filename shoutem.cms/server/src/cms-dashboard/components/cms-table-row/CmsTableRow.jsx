@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
 import CategorySelector from '../category-selector';
@@ -23,11 +24,7 @@ export default class CmsTableRow extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleCategoriesChanged = this.handleCategoriesChanged.bind(this);
-    this.handleLanguagesChanged = this.handleLanguagesChanged.bind(this);
-    this.formatValue = this.formatValue.bind(this);
-    this.renderTableCell = this.renderTableCell.bind(this);
+    autoBindReact(this);
   }
 
   handleCategoriesChanged(selectedCategories) {

@@ -1,12 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
 import _ from 'lodash';
-
-import { View } from '@shoutem/ui';
-
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-
+import { View } from '@shoutem/ui';
 import { ext } from '../const';
 import { rewardShape } from './shapes.js';
 import Stamp from './Stamp';
@@ -47,7 +43,11 @@ export class Stamps extends PureComponent {
   }
 
   renderStamp(stampIndex) {
-    const { onStamped, reward: { points }, iconStyle } = this.props;
+    const {
+      onStamped,
+      reward: { points },
+      iconStyle,
+    } = this.props;
 
     return (
       <Stamp
@@ -61,34 +61,31 @@ export class Stamps extends PureComponent {
   }
 
   renderRow(rowIndex) {
-    const { reward: { pointsRequired } } = this.props;
+    const {
+      reward: { pointsRequired },
+    } = this.props;
 
-    const stamps = _.times(STAMPS_PER_ROW, (index) => {
-      const stampIndex = (rowIndex * STAMPS_PER_ROW) + index;
+    const stamps = _.times(STAMPS_PER_ROW, index => {
+      const stampIndex = rowIndex * STAMPS_PER_ROW + index;
 
       return stampIndex < pointsRequired ? this.renderStamp(stampIndex) : null;
     });
 
     return (
-      <View
-        key={rowIndex}
-        styleName="horizontal sm-gutter-vertical"
-      >
+      <View key={rowIndex} styleName="horizontal sm-gutter-vertical">
         {stamps}
       </View>
     );
   }
 
   render() {
-    const { reward: { pointsRequired } } = this.props;
+    const {
+      reward: { pointsRequired },
+    } = this.props;
 
     const rows = Math.ceil(pointsRequired / STAMPS_PER_ROW);
 
-    return (
-      <View styleName="vertical">
-        {_.times(rows, this.renderRow)}
-      </View>
-    );
+    return <View styleName="vertical">{_.times(rows, this.renderRow)}</View>;
   }
 }
 

@@ -1,13 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
-import { connectStyle } from '@shoutem/theme';
-
 import { currentLocation } from 'shoutem.cms';
-
+import { connectStyle } from '@shoutem/theme';
+import PlaceIconView from '../components/PlaceIconView';
 import { ext } from '../const';
 import { PlacesList, mapStateToProps, mapDispatchToProps } from './PlacesList';
-import PlaceIconView from '../components/PlaceIconView';
 
 class PlacesListWithIcons extends PlacesList {
   static propTypes = {
@@ -19,6 +16,11 @@ class PlacesListWithIcons extends PlacesList {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PlacesListWithIcons'))(currentLocation(PlacesListWithIcons)),
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(
+  connectStyle(ext('PlacesListWithIcons'))(
+    currentLocation(PlacesListWithIcons),
+  ),
 );

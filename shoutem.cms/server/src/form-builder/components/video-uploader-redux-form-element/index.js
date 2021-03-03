@@ -1,2 +1,1 @@
-import VideoUploaderReduxFormElement from './VideoUploaderReduxFormElement';
-export default VideoUploaderReduxFormElement;
+export { default } from './VideoUploaderReduxFormElement';

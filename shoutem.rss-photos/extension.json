@@ -1,9 +1,10 @@
 {
   "name": "rss-photos",
   "title": "Photos RSS",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "platform": "2.5.*",
   "description": "Show a photo gallery from an RSS feed",
+  "releaseNotes": "UI improvements on RSS photo details screen",
   "icon": "server/assets/add-photos-image.png",
   "dependencies": [
     "shoutem.layouts",

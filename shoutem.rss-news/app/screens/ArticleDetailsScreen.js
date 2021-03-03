@@ -1,10 +1,18 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
+import moment from 'moment';
+import PropTypes from 'prop-types';
 import { Dimensions, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import _ from 'lodash';
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar, closeModal } from 'shoutem.navigation';
+import {
+  getLeadImageUrl,
+  createRenderAttachment,
+  ext as rssExt,
+} from 'shoutem.rss';
 import { isBusy, isValid } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   ScrollView,
@@ -18,14 +26,6 @@ import {
   Html,
   Spinner,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { NavigationBar, closeModal } from 'shoutem.navigation';
-import { I18n } from 'shoutem.i18n';
-import {
-  getLeadImageUrl,
-  createRenderAttachment,
-  ext as rssExt,
-} from 'shoutem.rss';
 import { NextArticle } from '../components/NextArticle';
 import { ext } from '../const';
 import { getNewsFeed } from '../redux';
@@ -143,14 +143,14 @@ export class ArticleDetailsScreen extends PureComponent {
     ) : null;
 
     return (
-      <Screen styleName="full-screen paper">
+      <Screen styleName="paper">
         <NavigationBar
           styleName="clear"
           animationName="solidify"
           title={title}
           share={{
-            title: title,
-            link: link,
+            title,
+            link,
           }}
         />
         {loading && (

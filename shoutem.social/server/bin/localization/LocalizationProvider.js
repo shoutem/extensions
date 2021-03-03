@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import translation from '../../translations/en.json';
 
-export class LocalizationProvider extends Component {
+export class LocalizationProvider extends PureComponent {
   constructor(props) {
     super(props);
 

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { Modal, Button, FormGroup, ControlLabel } from 'react-bootstrap';
+import _ from 'lodash';
 import i18next from 'i18next';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { IMPORTER_SCHEDULE_SETTINGS } from '../../const';
@@ -11,10 +13,7 @@ import LOCALIZATION from './localization';
 export default class ImporterRssForm extends Component {
   constructor(props) {
     super(props);
-
-    this.handleSaveClick = this.handleSaveClick.bind(this);
-    this.handleFeedUrlChange = this.handleFeedUrlChange.bind(this);
-    this.handleLanguagesChanged = this.handleLanguagesChanged.bind(this);
+    autoBindReact(this);
 
     this.state = {
       feedUrl: null,
@@ -68,7 +67,7 @@ export default class ImporterRssForm extends Component {
     const hasLanguages = !_.isEmpty(languages);
 
     return (
-      <>
+      <React.Fragment>
         <Modal.Body>
           <FormGroup>
             <ControlLabel>
@@ -103,7 +102,7 @@ export default class ImporterRssForm extends Component {
             </LoaderContainer>
           </Button>
         </Modal.Footer>
-      </>
+      </React.Fragment>
     );
   }
 }

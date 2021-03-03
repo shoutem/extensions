@@ -1,7 +1,12 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
 import { connect } from 'react-redux';
+import { getExtensionSettings } from 'shoutem.application';
+import { getUser, loginRequired } from 'shoutem.auth';
+import { CmsListScreen } from 'shoutem.cms';
+import { navigateTo } from 'shoutem.navigation';
+import { find, next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
   Divider,
@@ -10,27 +15,10 @@ import {
   Title,
   TouchableOpacity,
 } from '@shoutem/ui';
-
-import {
-  getCollection,
-} from '@shoutem/redux-io';
-
-import {
-  loginRequired,
-} from 'shoutem.auth';
-
-import {
-  CMS_PUNCHCARDS_SCHEMA,
-  PUNCH_REWARDS_SCHEMA,
-  ext,
-} from '../const';
-
 import Stamps from '../components/Stamps';
-import {
-  mapStateToProps as rewardsListMapStateToProps,
-  RewardsListScreen,
-  mapDispatchToProps,
-} from './RewardsListScreen';
+import { CMS_PUNCHCARDS_SCHEMA, PUNCH_REWARDS_SCHEMA, ext } from '../const';
+import { refreshCard } from '../services';
+import { RewardsListScreen } from './RewardsListScreen';
 
 /**
  * Displays a list of punch cards. A punch card is a reward that has points assigned to it.
@@ -44,13 +32,21 @@ export class PunchCardListScreen extends RewardsListScreen {
   constructor(props, context) {
     super(props, context);
 
-    this.renderRow = this.renderRow.bind(this);
+    autoBindReact(this);
 
     this.state = {
       ...this.state,
       cmsSchema: CMS_PUNCHCARDS_SCHEMA,
       schema: PUNCH_REWARDS_SCHEMA,
     };
+  }
+
+  onCategorySelected(category) {
+    super.onCategorySelected(category);
+
+    const cardId = _.get(this.props, 'card.id');
+
+    this.fetchData(cardId);
   }
 
   renderRow(reward) {
@@ -71,10 +67,7 @@ export class PunchCardListScreen extends RewardsListScreen {
         >
           <Tile>
             <Title styleName="lg-gutter">{title.toUpperCase()}</Title>
-            <Stamps
-              iconStyle={iconStyle}
-              reward={reward}
-            />
+            <Stamps iconStyle={iconStyle} reward={reward} />
           </Tile>
         </ImageBackground>
         <Divider styleName="line" />
@@ -84,14 +77,30 @@ export class PunchCardListScreen extends RewardsListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const { allPunchCards } = state[ext()];
+  const extensionSettings = getExtensionSettings(state, ext());
+  const programId = _.get(extensionSettings, 'program.id');
+  const card = _.get(state[ext()], 'card.data', {});
 
   return {
-    ...rewardsListMapStateToProps(state, ownProps),
-    data: getCollection(allPunchCards, state),
+    ...CmsListScreen.createMapStateToProps(
+      (state) => state[ext()].allPunchCards,
+    )(state, ownProps),
+    card,
+    programId,
+    user: getUser(state),
   };
 };
 
-export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PunchCardListScreen'))(PunchCardListScreen),
-));
+export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
+  find,
+  navigateTo,
+  next,
+  refreshCard,
+});
+
+export default loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('PunchCardListScreen'))(PunchCardListScreen)),
+);

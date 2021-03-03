@@ -1,6 +1,6 @@
 {
   "name": "shoutem.social",
-  "version": "2.5.0",
+  "version": "2.5.2",
   "description": "Social wall",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
@@ -50,7 +50,7 @@
     "@shoutem/react-web-ui": "0.12.4",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-composers": "^0.1.6",
-    "@shoutem/redux-io": "^3.2.0",
+    "@shoutem/redux-io": "^3.2.1",
     "@shoutem/redux-sync-state-engine": "^0.0.2",
     "auto-bind": "^4.0.0",
     "es6-promise": "^4.1.1",
@@ -63,8 +63,7 @@
     "react-redux": "^5.0.3",
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
-    "urijs": "^1.18.9",
-    "validator": "^6.2.1"
+    "urijs": "^1.18.9"
   },
   "babel": {
     "presets": [

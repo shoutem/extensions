@@ -1,7 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
+import { CmsListScreen } from 'shoutem.cms';
+import { Favorite } from 'shoutem.favorites';
 import {
   ImageBackground,
   Title,
@@ -11,12 +12,6 @@ import {
   Caption,
   Tile,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import { CmsListScreen } from 'shoutem.cms';
-import { Favorite } from 'shoutem.favorites';
-
-import { ext } from '../const';
 import { formatBookCaption } from '../shared/formatBookCaption';
 import LinkIconButton from './LinkIconButton';
 
@@ -39,7 +34,9 @@ class ListBooksView extends PureComponent {
 
   render() {
     const { book, hasFavoriteButton } = this.props;
-    const favorites = hasFavoriteButton ? <Favorite item={book} schema={book.type} /> : null;
+    const favorites = hasFavoriteButton ? (
+      <Favorite item={book} schema={book.type} />
+    ) : null;
     const addToCartButton = <LinkIconButton book={book} />;
 
     return (
@@ -50,9 +47,10 @@ class ListBooksView extends PureComponent {
         >
           <Tile>
             <View virtual styleName="actions horizontal">
-              {favorites}{addToCartButton}
+              {favorites}
+              {addToCartButton}
             </View>
-            <Title>{book.title.toUpperCase()}</Title>
+            <Title numberOfLines={2}>{book.title.toUpperCase()}</Title>
 
             <Caption>{formatBookCaption(book)}</Caption>
           </Tile>
@@ -64,9 +62,6 @@ class ListBooksView extends PureComponent {
   }
 }
 
-export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
-});
+export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({});
 
-export default connect(undefined, mapDispatchToProps)(
-  connectStyle(ext('ListBooksView'), {})(ListBooksView),
-);
+export default connect(undefined, mapDispatchToProps)(ListBooksView);

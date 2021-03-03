@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native/Libraries/Network/RCTNetworkTask.mm b/node_modules/react-native/Libraries/Network/RCTNetworkTask.mm
+index 5b07e2c..8c47f41 100644
+--- a/node_modules/react-native/Libraries/Network/RCTNetworkTask.mm
++++ b/node_modules/react-native/Libraries/Network/RCTNetworkTask.mm
+@@ -102,9 +102,9 @@ - (BOOL)validateRequestToken:(id)requestToken
+     _requestToken = requestToken;
+   } else if (![requestToken isEqual:_requestToken]) {
+     if (RCT_DEBUG) {
+-      RCTLogError(@"Unrecognized request token: %@ expected: %@", requestToken, _requestToken);
++      // RCTLogError(@"Unrecognized request token: %@ expected: %@", requestToken, _requestToken);
+     }
+-    valid = NO;
++    valid = YES;
+   }
+
+   if (!valid) {

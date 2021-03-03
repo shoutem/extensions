@@ -1,8 +1,17 @@
-import { createScopedReducer, getShortcutState } from '@shoutem/redux-api-sdk';
-import { resource, find, cloneStatus, RESOLVED_ENDPOINT } from '@shoutem/redux-io';
 import _ from 'lodash';
-import { createCategoryFilter, extractBaseUrl, toLocalDateTime } from './services';
+import { createScopedReducer, getShortcutState } from '@shoutem/redux-api-sdk';
+import {
+  resource,
+  find,
+  cloneStatus,
+  RESOLVED_ENDPOINT,
+} from '@shoutem/redux-io';
 import ext from './const';
+import {
+  createCategoryFilter,
+  extractBaseUrl,
+  toLocalDateTime,
+} from './services';
 
 export const CATEGORIES_SCHEMA = 'shoutem.wordpress.categories';
 export const FEED_ITEMS = 'shoutem.wordpress.feedItems';
@@ -21,7 +30,7 @@ const resolvedEndpointOptions = {
 
 export function getPostsMediaParams(posts) {
   return {
-    include: _.filter(_.map(posts, 'featured_media'), (mediaId) => !!mediaId),
+    include: _.filter(_.map(posts, 'featured_media'), mediaId => !!mediaId),
   };
 }
 
@@ -59,9 +68,15 @@ export function loadPosts({ feedUrl, shortcutId, categories = [] }) {
     },
   };
 
-  return find(config, ext('feedItems'), { shortcutId }, resolvedEndpointOptions);
+  return find(
+    config,
+    ext('feedItems'),
+    { shortcutId },
+    resolvedEndpointOptions,
+  );
 }
 
+// eslint-disable-next-line camelcase
 function loadPostsMedia({ feedUrl, posts, per_page, appendMode = false }) {
   const baseUrl = extractBaseUrl(feedUrl);
 
@@ -76,21 +91,30 @@ function loadPostsMedia({ feedUrl, posts, per_page, appendMode = false }) {
     },
   };
 
-  return find(config, ext('feedItemsMedia'), {
-    ...getPostsMediaParams(posts), per_page,
-  }, { feedUrl, appendMode });
+  return find(
+    config,
+    ext('feedItemsMedia'),
+    {
+      ...getPostsMediaParams(posts),
+      per_page,
+    },
+    { feedUrl, appendMode },
+  );
 }
 
 export function fetchWordPressPosts(params) {
-  return dispatch => (
+  return dispatch =>
     dispatch(getCategories(params))
-      .then(({ payload }) => dispatch(loadPosts({ ...params, categories: payload })))
-      .then((action) => {
+      .then(({ payload }) =>
+        dispatch(loadPosts({ ...params, categories: payload })),
+      )
+      .then(action => {
         const { payload: posts } = action;
 
-        return dispatch(loadPostsMedia({ ...params, posts })).then(() => action);
-      })
-  );
+        return dispatch(loadPostsMedia({ ...params, posts })).then(
+          () => action,
+        );
+      });
 }
 
 export function navigateToUrl(url) {
@@ -111,7 +135,7 @@ function createFeedItemInfo(feedItem, shortcutState) {
   if (feedItem.featured_media) {
     // eslint-disable-next-line
     feedItem.featured_media_object = _.first(
-      _.filter(mediaList, media => media.id === feedItem.featured_media)
+      _.filter(mediaList, media => media.id === feedItem.featured_media),
     );
   }
 
@@ -133,7 +157,9 @@ export function getFeedItems(state, extensionName, shortcutId) {
     return [];
   }
 
-  const feedItemInfos = _.map(feedItems, item => createFeedItemInfo(item, shortcutState));
+  const feedItemInfos = _.map(feedItems, item =>
+    createFeedItemInfo(item, shortcutState),
+  );
   cloneStatus(feedItems, feedItemInfos);
   return feedItemInfos;
 }

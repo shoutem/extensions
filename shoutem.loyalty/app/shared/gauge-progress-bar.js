@@ -1,5 +1,5 @@
 export function angleToRadians(angle) {
-  return angle * Math.PI / 180;
+  return (angle * Math.PI) / 180;
 }
 
 // Only 3/4 of circle are visible
@@ -12,7 +12,11 @@ export function getFullCircleCircumference(radius) {
   return 2 * Math.PI * radius;
 }
 
-export function getProgressCircleCircumference(progressValue, maxValue, circumference) {
+export function getProgressCircleCircumference(
+  progressValue,
+  maxValue,
+  circumference,
+) {
   if (maxValue <= 0) {
     return 0;
   }
@@ -22,5 +26,5 @@ export function getProgressCircleCircumference(progressValue, maxValue, circumfe
     pointsPercentage = 100;
   }
 
-  return ((pointsPercentage / 100) * circumference);
+  return (pointsPercentage / 100) * circumference;
 }

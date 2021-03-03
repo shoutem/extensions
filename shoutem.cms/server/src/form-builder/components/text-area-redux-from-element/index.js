@@ -1,2 +1,1 @@
-import TextAreaReduxFormElement from './TextAreaReduxFormElement';
-export default TextAreaReduxFormElement;
+export { default } from './TextAreaReduxFormElement';

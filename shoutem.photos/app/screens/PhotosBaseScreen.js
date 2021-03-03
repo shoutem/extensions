@@ -1,12 +1,8 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React from 'react';
-
 import { CmsListScreen } from 'shoutem.cms';
 import { openInModal } from 'shoutem.navigation';
-
 import { cloneStatus } from '@shoutem/redux-io';
-
 import { ext } from '../const';
 
 export function remapAndFilterPhotos(data) {
@@ -43,6 +39,8 @@ export class PhotosBaseScreen extends CmsListScreen {
       const photos = remapAndFilterPhotos(data);
       return { data, photos };
     }
+
+    return state;
   }
 
   constructor(props, context) {
@@ -77,7 +75,7 @@ export class PhotosBaseScreen extends CmsListScreen {
 }
 
 export const mapStateToProps = CmsListScreen.createMapStateToProps(
-  (state) => state[ext()].allPhotos,
+  state => state[ext()].allPhotos,
 );
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({

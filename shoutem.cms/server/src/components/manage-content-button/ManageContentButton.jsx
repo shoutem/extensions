@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import { Button, ButtonGroup } from 'react-bootstrap';
 import { FontIcon, LoaderContainer } from '@shoutem/react-web-ui';
@@ -8,8 +9,7 @@ import './style.scss';
 export default class ManageContentButton extends Component {
   constructor(props) {
     super(props);
-
-    this.handleCmsButtonClick = this.handleCmsButtonClick.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,
@@ -52,6 +52,7 @@ export default class ManageContentButton extends Component {
         </Button>
         <Button
           bsSize="large"
+          style={styles.advancedToggle}
           bsStyle={toggleButtonClass}
           className="manage-content-button__advanced-setup"
           onClick={onToggleAdditionalOptions}
@@ -69,4 +70,10 @@ ManageContentButton.propTypes = {
   onNavigateToCmsClick: PropTypes.func,
   showAdditionalOptions: PropTypes.bool,
   onToggleAdditionalOptions: PropTypes.func,
+};
+
+const styles = {
+  advancedToggle: {
+    marginLeft: 1,
+  },
 };

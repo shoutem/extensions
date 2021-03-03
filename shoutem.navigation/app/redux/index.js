@@ -14,14 +14,11 @@ import drawer from './drawer';
 import modal, {
   MODAL_NAVIGATION_STACK,
   SAVE_PREVIOUS_STACK,
-
   openModalMiddleware,
   closeModalMiddleware,
 } from './modal';
 
-import {
-  debounceNavigationMiddleware,
-} from './debounceNavigation';
+import { debounceNavigationMiddleware } from './debounceNavigation';
 
 import {
   NAVIGATION_INITIALIZED,
@@ -33,6 +30,7 @@ import {
   navigationInitializedReducer,
   getNavigationInitialized,
   setNavigationInitialized,
+  createResetToCurrentRoute,
 } from './core';
 
 const reducer = combineReducers({
@@ -40,7 +38,9 @@ const reducer = combineReducers({
   drawer,
   modal,
   rootStack: createNavigationReducer(ROOT_NAVIGATION_STACK.name),
-  activeNavigationStack: createActiveNavigationStackReducer(ROOT_NAVIGATION_STACK),
+  activeNavigationStack: createActiveNavigationStackReducer(
+    ROOT_NAVIGATION_STACK,
+  ),
   screenState: screenStateReducer,
   navigationInitialized: navigationInitializedReducer,
 });
@@ -52,19 +52,16 @@ export {
   MODAL_NAVIGATION_STACK,
   SAVE_PREVIOUS_STACK,
   NAVIGATION_INITIALIZED,
-
   getTabNavigationStack,
   getTabNavigationStateFromTabBarState,
   getTabNavigationState,
   getNavigationInitialized,
-
+  createResetToCurrentRoute,
   jumpToInitialTabBarTab,
   setNavigationInitialized,
 };
 
-export {
-  DRAWER_NAVIGATION_STACK,
-} from './drawer';
+export { DRAWER_NAVIGATION_STACK } from './drawer';
 
 export const middleware = [
   openModalMiddleware,

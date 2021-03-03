@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { Button } from 'react-bootstrap';
 import { FontIcon } from '@shoutem/react-web-ui';
@@ -28,12 +29,9 @@ export default class ResourceFormModal extends Component {
 
   constructor(props) {
     super(props);
+    autoBindReact(this);
 
     const { schema, resource } = props;
-
-    this.handleHide = this.handleHide.bind(this);
-    this.handleSaveResource = this.handleSaveResource.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
 
     this.state = {
       resourceForm: resolveResourceForm(schema),
@@ -106,6 +104,7 @@ export default class ResourceFormModal extends Component {
           schema={schema}
           canonicalName={canonicalName}
           assetManager={assetManager}
+          ownInitialValues={initialValues}
           initialValues={initialValues}
           googleApiKey={googleApiKey}
           loadSchema={loadSchema}

@@ -110,7 +110,7 @@ export function setQueueTargetComplete(targetName) {
   return {
     type: QUEUE_TARGET_COMPLETED,
     payload: targetName,
-  }
+  };
 }
 
 export function getAppInitQueue(state) {
@@ -181,6 +181,13 @@ export const getExtensionSettings = function (state, extensionName) {
     {},
   );
 };
+
+export function getExtensionCloudUrl(state, extensionName) {
+  return _.get(
+    state[ext()],
+    ['extensions', extensionName, 'attributes', 'settings', 'services', 'self', 'cloud'],
+  );
+}
 
 /**
  * A selector that returns shortcuts

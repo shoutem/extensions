@@ -1,14 +1,11 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { connectStyle } from '@shoutem/theme';
-import { navigateTo } from 'shoutem.navigation';
 import { CmsListScreen } from 'shoutem.cms';
 import { isFavoritesSchema, getFavoriteCollection } from 'shoutem.favorites';
-
-import { ext } from '../const';
+import { navigateTo } from 'shoutem.navigation';
 import ListBooksView from '../components/ListBooksView';
+import { ext } from '../const';
 
 export class BooksListScreen extends CmsListScreen {
   static propTypes = {
@@ -54,7 +51,10 @@ export class BooksListScreen extends CmsListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => ({
-  ...CmsListScreen.createMapStateToProps(state => state[ext()].allBooks)(state, ownProps),
+  ...CmsListScreen.createMapStateToProps(state => state[ext()].allBooks)(
+    state,
+    ownProps,
+  ),
   hasFavorites: isFavoritesSchema(state, ext('Books')),
   favoriteBooks: getFavoriteCollection(ext('Books'), state),
 });
@@ -63,6 +63,4 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   navigateTo,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('BooksListScreen'), {})(BooksListScreen),
-);
+export default connect(mapStateToProps, mapDispatchToProps)(BooksListScreen);

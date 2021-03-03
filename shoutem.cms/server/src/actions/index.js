@@ -4,6 +4,7 @@ export {
   loadReferenceResources,
   loadPreviousResourcesPage,
   loadNextResourcesPage,
+  fetchCmsDataZip,
 } from './resource';
 export { loadSchema } from './schema';
 export {

@@ -23,6 +23,8 @@ module.exports = {
     environment: true,
     lodash: true,
     react: true,
+    'auto-bind': true,
+    'auto-bind/react': true,
     'prop-types': true,
     'react-bootstrap': true,
     'react-dom': true,

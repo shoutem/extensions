@@ -1,25 +1,13 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import {
-  Button,
-  Image,
-  Screen,
-  Subtitle,
-  Text,
-  View,
-} from '@shoutem/ui';
-
+import { I18n } from 'shoutem.i18n';
 import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-
+import { Button, Image, Screen, Subtitle, Text, View } from '@shoutem/ui';
+import { authorizationShape, rewardShape } from '../components/shapes';
 import { ext } from '../const';
 import { redeemReward } from '../services';
-import { authorizationShape, rewardShape } from '../components/shapes';
 
 const { func, number } = PropTypes;
 
@@ -80,10 +68,7 @@ export class RedeemOrContinueScreen extends PureComponent {
         <NavigationBar title={I18n.t(ext('redeemRewardNavBarTitle'))} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <View styleName="oval-highlight">
-            <Image
-              source={STAMP_ICON}
-              styleName="small-avatar"
-            />
+            <Image source={STAMP_ICON} styleName="small-avatar" />
           </View>
           <Subtitle styleName="h-center md-gutter-top xl-gutter-horizontal">
             {I18n.t(ext('redeemMessage'))}

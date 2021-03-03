@@ -1,2 +1,1 @@
-import TextEditorReduxFormElement from './TextEditorReduxFormElement';
-export default TextEditorReduxFormElement;
+export { default } from './TextEditorReduxFormElement';

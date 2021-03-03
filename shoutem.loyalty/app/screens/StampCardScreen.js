@@ -1,25 +1,15 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { Alert } from 'react-native';
-
 import { connect } from 'react-redux';
-
-import {
-  Button,
-  Screen,
-  View,
-  Text,
-  Title,
-} from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar } from 'shoutem.navigation';
-
-import Stamps from '../components/Stamps';
-import { collectPoints } from '../services';
+import { connectStyle } from '@shoutem/theme';
+import { Button, Screen, View, Text, Title } from '@shoutem/ui';
 import { authorizationShape, rewardShape } from '../components/shapes';
+import Stamps from '../components/Stamps';
 import { ext } from '../const';
+import { collectPoints } from '../services';
 
 const { func } = PropTypes;
 
@@ -51,7 +41,7 @@ export class StampCardScreen extends PureComponent {
     if (!points) {
       Alert.alert(
         I18n.t(ext('noPointsAwardedErrorTitle')),
-        I18n.t(ext('noPointsAwardedErrorMessage'))
+        I18n.t(ext('noPointsAwardedErrorMessage')),
       );
       return;
     }
@@ -67,9 +57,11 @@ export class StampCardScreen extends PureComponent {
   }
 
   stampCard(stampIndex) {
-    const { reward: { points = 0 } } = this.props;
+    const {
+      reward: { points = 0 },
+    } = this.props;
 
-    const addedPoints = (stampIndex - points) + 1;
+    const addedPoints = stampIndex - points + 1;
 
     if (addedPoints >= 0) {
       this.setState({ points: addedPoints });
@@ -80,28 +72,28 @@ export class StampCardScreen extends PureComponent {
     const { reward: originalReward } = this.props;
     const { points } = this.state;
 
-    const reward = { ...originalReward, points: (originalReward.points || 0) + points };
+    const reward = {
+      ...originalReward,
+      points: (originalReward.points || 0) + points,
+    };
     const { title } = reward;
 
     return (
       <Screen>
         <NavigationBar title={I18n.t(ext('punchCardStampingNavBarTitle'))} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
-          <Title styleName="h-center xl-gutter-top md-gutter-bottom">{title}</Title>
-          <Stamps
-            reward={reward}
-            onStamped={this.stampCard}
-          />
-          { points >= 0 ?
+          <Title styleName="h-center xl-gutter-top md-gutter-bottom">
+            {title}
+          </Title>
+          <Stamps reward={reward} onStamped={this.stampCard} />
+          {points >= 0 ? (
             <Button
               styleName="secondary lg-gutter-vertical"
               onPress={this.handleDone}
             >
               <Text>{I18n.t(ext('punchCardStampingDoneButton'))}</Text>
             </Button>
-            :
-            null
-          }
+          ) : null}
         </View>
       </Screen>
     );

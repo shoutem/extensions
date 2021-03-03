@@ -5,6 +5,7 @@
   "type": "system",
   "title": "CodePush",
   "description": "Provides CodePush support for over the air code updates",
+  "releaseNotes": "* Added a script for calling and debugging prebuild script",
   "icon": "server/assets/add-code-push-image.png",
   "categories": []
 }

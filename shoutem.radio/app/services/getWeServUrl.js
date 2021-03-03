@@ -4,7 +4,7 @@ export default function getWeServUrl(url, width, height, fit = 'inside') {
   const cleanUrl = url.replace('https://', 'ssl:').replace(/^.*:\/\//g, '');
   const encodedUrl = encodeURIComponent(cleanUrl);
 
-  const h = (height || width);
+  const h = height || width;
 
   return `https://images.weserv.nl/?url=${encodedUrl}&w=${width}&h=${h}&fit=${fit}`;
 }

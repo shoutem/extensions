@@ -17,3 +17,12 @@ export const IMPORT_CAPABILITIES = {
   CSV: 'shoutem.cms.import-csv',
   RSS: 'shoutem.cms.import-rss',
 };
+
+export const EXPORT_CAPABILITIES = {
+  CSV: 'shoutem.cms.export-csv',
+};
+
+export const SEARCH_CAPABILITIES = {
+  SEARCH: 'shoutem.cms.search',
+  FILTER: 'shoutem.cms.filter',
+};

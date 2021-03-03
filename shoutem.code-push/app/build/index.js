@@ -1,6 +1,14 @@
-const { injectCodePushAndroid, injectCodePushIos } = require('./injectCodePush');
+const {
+  injectCodePushAndroid,
+  injectCodePushIos,
+} = require('./injectCodePush');
 
-exports.preBuild = function preBuild() {
+function preBuild() {
   injectCodePushAndroid();
   injectCodePushIos();
 }
+
+module.exports = {
+  preBuild,
+  runPreBuild: () => preBuild(),
+};

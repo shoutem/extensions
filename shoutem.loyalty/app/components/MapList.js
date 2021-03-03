@@ -1,19 +1,16 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { LayoutAnimation } from 'react-native';
 import _ from 'lodash';
-
-import { View, EmptyStateView } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
+import PropTypes from 'prop-types';
+import { LayoutAnimation } from 'react-native';
 import { MapView } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-
+import { View, EmptyStateView } from '@shoutem/ui';
+import { connectStyle } from '@shoutem/theme';
 import { ext } from '../const';
 import PlaceIconView from './PlaceIconView';
 import { placeShape } from './shapes';
 
-const createMarker = (place) => {
+const createMarker = place => {
   if (!place) {
     return undefined;
   }
@@ -31,22 +28,37 @@ const createMarker = (place) => {
   return undefined;
 };
 
-const createMarkersFromPlaces = places => _.reduce(places, (result, place) => {
-  const marker = createMarker(place);
+const createMarkersFromPlaces = places =>
+  _.reduce(
+    places,
+    (result, place) => {
+      const marker = createMarker(place);
 
-  if (marker) {
-    result.push(marker);
+      if (marker) {
+        result.push(marker);
+      }
+      return result;
+    },
+    [],
+  );
+
+function findSelectedPlace(places, selectedMarker) {
+  if (!selectedMarker) {
+    return null;
   }
-  return result;
-}, []);
+
+  const selectedPlace = places.find(
+    place => place.id === selectedMarker.placeId,
+  );
+
+  return selectedPlace;
+}
 
 export class MapList extends PureComponent {
-
   constructor(props) {
     super(props);
 
     this.renderImageRow = this.renderImageRow.bind(this);
-    this.findSelectedPlace = this.findSelectedPlace.bind(this);
     this.setSelectedMarker = this.setSelectedMarker.bind(this);
 
     const { selectedPlace } = this.props;
@@ -62,18 +74,23 @@ export class MapList extends PureComponent {
     const { places } = this.props;
 
     const markers = createMarkersFromPlaces(places);
-    const region = _.isEmpty(markers) ? undefined : this.resolveInitialRegion(markers);
+    const region = _.isEmpty(markers)
+      ? undefined
+      : this.resolveInitialRegion(markers);
 
     LayoutAnimation.easeInEaseOut();
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ markers, region });
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (places === state.places) {
+    const { places } = props;
+    const { places: statePlaces } = state;
+
+    if (places === statePlaces) {
       return state;
     }
 
-    const { places } = props;
     const { selectedMarker } = state;
 
     const markedPlace = findSelectedPlace(places, selectedMarker);
@@ -104,38 +121,23 @@ export class MapList extends PureComponent {
     return initialRegion || defaultRegion;
   }
 
-  findSelectedPlace(places) {
-    const { selectedMarker } = this.state;
-
-    if (!selectedMarker) {
-      return null;
-    }
-    const selectedPlace = places.find(place => place.id === selectedMarker.placeId);
-
-    return selectedPlace;
-  }
-
   renderImageRow() {
     const { cardStatesByLocation, places } = this.props;
+    const { selectedMarker } = this.state;
 
-    const returnedPlace = this.findSelectedPlace(places);
+    const returnedPlace = findSelectedPlace(places, selectedMarker);
     const { id } = returnedPlace;
 
+    const points = _.has(returnedPlace, 'points')
+      ? returnedPlace.points
+      : _.get(cardStatesByLocation[id], 'points');
 
-    const points = _.has(returnedPlace, 'points') ?
-      returnedPlace.points : _.get(cardStatesByLocation[id], 'points');
-
-    return (
-      <PlaceIconView
-        place={returnedPlace}
-        points={points}
-      />
-    );
+    return <PlaceIconView place={returnedPlace} points={points} />;
   }
 
   render() {
     const { selectedMarker, markers, region } = this.state;
-    const printImageRow = (selectedMarker) ? this.renderImageRow() : null;
+    const printImageRow = selectedMarker ? this.renderImageRow() : null;
 
     if (_.isEmpty(markers)) {
       return (

@@ -1,26 +1,17 @@
 import React from 'react';
-import { Dimensions } from 'react-native';
 import _ from 'lodash';
+import { Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { cloneStatus } from '@shoutem/redux-io';
-import {
-  connectStyle,
-  getSizeRelativeToReference,
-} from '@shoutem/theme';
-
-import {
-  GridRow,
-  View,
-} from '@shoutem/ui';
-
+import { connectStyle, getSizeRelativeToReference } from '@shoutem/theme';
+import { GridRow, View } from '@shoutem/ui';
+import GridPhotoView from '../components/GridPhotoView';
+import { ext } from '../const';
 import {
   PhotosBaseScreen,
   mapStateToProps,
   mapDispatchToProps,
 } from './PhotosBaseScreen';
-
-import { ext } from '../const';
-import GridPhotoView from '../components/GridPhotoView';
 
 const window = Dimensions.get('window');
 
@@ -67,10 +58,7 @@ class PhotosGrid extends PhotosBaseScreen {
   renderRow(photos) {
     const photoViews = this.remapPhotosToCells(photos);
     return (
-      <GridRow
-        columns={NUMBER_OF_COLUMNS}
-        key={photos[0].id}
-      >
+      <GridRow columns={NUMBER_OF_COLUMNS} key={photos[0].id}>
         {photoViews}
       </GridRow>
     );
@@ -86,6 +74,7 @@ class PhotosGrid extends PhotosBaseScreen {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PhotosGrid'))(PhotosGrid)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('PhotosGrid'))(PhotosGrid));

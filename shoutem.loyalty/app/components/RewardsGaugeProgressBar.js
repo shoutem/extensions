@@ -1,38 +1,18 @@
-import _ from 'lodash';
-
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
-
-import {
-  getCollection,
-  isBusy,
-} from '@shoutem/redux-io';
-
-import {
-  Button,
-  Text,
-  Title,
-  View,
-} from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
-
+import { getCollection, isBusy } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { Button, Text, Title, View } from '@shoutem/ui';
 import { ext } from '../const';
-import {
-  getMaxRewardPoints,
-  getRewardCoordinates,
-} from '../shared';
-import {
-  refreshCardState,
-  refreshTransactions,
-} from '../services';
-import PlaceRewardIcon from './PlaceRewardIcon';
+import { refreshCardState, refreshTransactions } from '../services';
+import { getMaxRewardPoints, getRewardCoordinates } from '../shared';
 import GaugeProgressBar from './GaugeProgressBar';
+import PlaceRewardIcon from './PlaceRewardIcon';
 
 export class RewardsGaugeProgressBar extends PureComponent {
-
   static propTypes = {
     isRefreshingPoints: PropTypes.bool,
     onCollectPoints: PropTypes.func,
@@ -98,10 +78,7 @@ export class RewardsGaugeProgressBar extends PureComponent {
 
     const {
       progressRadius: radius,
-      progressContainer: {
-        height: progressHeight,
-        width: progressWidth,
-      },
+      progressContainer: { height: progressHeight, width: progressWidth },
     } = style;
 
     const maxPoints = this.getMaxRewardsPoints(rewards);
@@ -122,17 +99,20 @@ export class RewardsGaugeProgressBar extends PureComponent {
     const { maxRewardPoints, points, style } = this.props;
     const {
       progressRadius: radius,
-      progressContainer: {
-        width: progressWidth,
-      },
+      progressContainer: { width: progressWidth },
     } = style;
 
     return (
       <PlaceRewardIcon
         key={reward.id}
-        pointsReached={(reward.pointsRequired <= points)}
+        pointsReached={reward.pointsRequired <= points}
         style={{
-          ...getRewardCoordinates(reward, maxRewardPoints, progressWidth, radius),
+          ...getRewardCoordinates(
+            reward,
+            maxRewardPoints,
+            progressWidth,
+            radius,
+          ),
           ...style.reward,
         }}
       />
@@ -175,9 +155,7 @@ export class RewardsGaugeProgressBar extends PureComponent {
           {this.renderPointsLabel()}
         </View>
 
-        <View styleName="horizontal h-center">
-          {this.renderButtons()}
-        </View>
+        <View styleName="horizontal h-center">{this.renderButtons()}</View>
       </View>
     );
   }
@@ -194,11 +172,12 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   refreshCardState: () => dispatch(refreshCardState()),
   refreshTransactions: () => dispatch(refreshTransactions()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('RewardsGaugeProgressBar', {}))(RewardsGaugeProgressBar)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('RewardsGaugeProgressBar', {}))(RewardsGaugeProgressBar));

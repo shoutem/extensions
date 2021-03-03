@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { updateShortcutSettings } from '@shoutem/redux-api-sdk';
 import { clear, isBusy } from '@shoutem/redux-io';
-import { connect } from 'react-redux';
+import { FeedUrlInput, FeedPreview } from 'src/components';
 import {
   FEED_ITEMS,
   navigateToUrl,
@@ -13,7 +14,6 @@ import {
   fetchWordPressPosts,
   loadPosts,
 } from 'src/redux';
-import { FeedUrlInput, FeedPreview } from 'src/components';
 import { isFeedUrlInsecure } from 'src/services';
 import './style.scss';
 
@@ -107,6 +107,7 @@ WordPressFeedPage.propTypes = {
   clearFeedItems: PropTypes.func,
   fetchWordPressPosts: PropTypes.func,
   navigateToUrl: PropTypes.func,
+  getCategories: PropTypes.func,
 };
 
 function mapStateToProps(state, ownProps) {
@@ -118,14 +119,13 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateShortcutSettings: (shortcut, settingsPatch) => (
-      dispatch(updateShortcutSettings(shortcut, settingsPatch))
-    ),
+    updateShortcutSettings: (shortcut, settingsPatch) =>
+      dispatch(updateShortcutSettings(shortcut, settingsPatch)),
     clearFeedItems: () => dispatch(clear(FEED_ITEMS, 'feedItems')),
-    fetchWordPressPosts: (params) => dispatch(fetchWordPressPosts(params)),
-    loadPosts: (params) => dispatch(loadPosts(params)),
-    navigateToUrl: (url) => dispatch(navigateToUrl(url)),
-    getCategories: (params) => dispatch(getCategories(params)),
+    fetchWordPressPosts: params => dispatch(fetchWordPressPosts(params)),
+    loadPosts: params => dispatch(loadPosts(params)),
+    navigateToUrl: url => dispatch(navigateToUrl(url)),
+    getCategories: params => dispatch(getCategories(params)),
   };
 }
 

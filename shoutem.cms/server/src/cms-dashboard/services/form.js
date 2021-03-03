@@ -3,6 +3,8 @@ import React from 'react';
 import i18next from 'i18next';
 import { ReduxFormElement } from '@shoutem/react-web-ui';
 import {
+  GalleryReduxFormElement,
+  ArrayReduxFormElement,
   ImageUploaderReduxFormElement,
   VideoUploaderReduxFormElement,
   GeolocationReduxFormElement,
@@ -21,6 +23,7 @@ import {
 import {
   getEditorSize,
   getEditorSections,
+  getSchemaPropertyKeys,
   getSchemaProperty,
   getSectionPropertyKey,
 } from './schema';
@@ -28,6 +31,24 @@ import LOCALIZATION from './localization';
 
 export function fieldInError(formField) {
   return formField.touched && formField.error;
+}
+
+export function getFormPropertyKeys(schema) {
+  const propertyKeys = getSchemaPropertyKeys(schema);
+
+  return _.map(propertyKeys, propertyKey => {
+    const property = getSchemaProperty(schema, propertyKey);
+
+    if (property.format === PROPERTY_FORMATS.ENTITY_REFERENCE_ARRAY) {
+      return `${propertyKey}[]`;
+    }
+
+    if (property.type === PROPERTY_TYPES.ARRAY) {
+      return `${propertyKey}[]`;
+    }
+
+    return propertyKey;
+  });
 }
 
 export function resolveReactComponent(Component, props = {}) {
@@ -64,6 +85,23 @@ export function mapViewToModel(schema, resource) {
         break;
       case PROPERTY_TYPES.NUMBER:
         _.set(model, key, _.toNumber(resourceValue));
+        break;
+      case PROPERTY_TYPES.ARRAY:
+        // remove empty values from array
+        const newResourceValue = _.reduce(
+          resourceValue,
+          (result, item) => {
+            if (!_.isEmpty(item)) {
+              result.push(item);
+              return result;
+            }
+
+            return result;
+          },
+          [],
+        );
+
+        _.set(model, key, newResourceValue);
         break;
       default:
         _.set(model, key, resourceValue);
@@ -108,6 +146,18 @@ export function resolveFormElement(sectionProperty, schema, fields, options) {
 
   const propertyField = _.get(fields, propertyKey);
 
+  if (
+    schemaProperty.type === PROPERTY_TYPES.ARRAY &&
+    schemaProperty.format === PROPERTY_FORMATS.ARRAY
+  ) {
+    const props = {
+      elementId: propertyKey,
+      field: propertyField,
+      name: schemaProperty.title,
+    };
+    return resolveReactComponent(ArrayReduxFormElement, props);
+  }
+
   if (schemaProperty.type === PROPERTY_TYPES.STRING) {
     if (schemaProperty.format === PROPERTY_FORMATS.HTML) {
       const props = {
@@ -140,6 +190,25 @@ export function resolveFormElement(sectionProperty, schema, fields, options) {
 
   if (
     schemaProperty.type === PROPERTY_TYPES.OBJECT &&
+    schemaProperty.format === PROPERTY_FORMATS.ENTITY_REFERENCE_ARRAY &&
+    schemaProperty.referencedSchema ===
+      PROPERTY_REFERENCED_SCHEMAS.IMAGE_ATTACHMENT
+  ) {
+    const props = {
+      elementId: propertyKey,
+      field: propertyField,
+      name: schemaProperty.title,
+      assetManager: options.assetManager,
+      folderName: options.canonicalName,
+      editorWidth: sectionProperty.width,
+      editorHeight: sectionProperty.height,
+    };
+    return resolveReactComponent(GalleryReduxFormElement, props);
+  }
+
+  if (
+    schemaProperty.type === PROPERTY_TYPES.OBJECT &&
+    schemaProperty.format === PROPERTY_FORMATS.ATTACHMENT &&
     schemaProperty.referencedSchema ===
       PROPERTY_REFERENCED_SCHEMAS.IMAGE_ATTACHMENT
   ) {
@@ -157,6 +226,7 @@ export function resolveFormElement(sectionProperty, schema, fields, options) {
 
   if (
     schemaProperty.type === PROPERTY_TYPES.OBJECT &&
+    schemaProperty.format === PROPERTY_FORMATS.ATTACHMENT &&
     schemaProperty.referencedSchema ===
       PROPERTY_REFERENCED_SCHEMAS.VIDEO_ATTACHMENT
   ) {
@@ -325,4 +395,27 @@ export function calculateDifferenceObject(newObject, object) {
   }
 
   return calculateChanges(newObject, object);
+}
+
+export function resolveIsArrayPropertiesChanged(schema, newObject, object) {
+  const propertyKeys = getSchemaPropertyKeys(schema);
+
+  return _.some(propertyKeys, propertyKey => {
+    const schemaProperty = getSchemaProperty(schema, propertyKey);
+    if (schemaProperty.type !== PROPERTY_TYPES.ARRAY) {
+      return false;
+    }
+
+    const newValue = _.compact(_.get(newObject, propertyKey));
+    const value = _.compact(_.get(object, propertyKey));
+
+    // redux form v5 has problem with calculating is form dirty when item
+    // from the array property is removed (adding a new item and updating item
+    // is working properly). redux form v6 has this fixed.
+    if (newValue.length !== value.length) {
+      return true;
+    }
+
+    return false;
+  });
 }

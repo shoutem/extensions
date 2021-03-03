@@ -1,22 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import {
-  Button,
-  Image,
-  Screen,
-  Subtitle,
-  Text,
-  View,
-} from '@shoutem/ui';
-
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar, closeModal } from 'shoutem.navigation';
-
+import { Button, Image, Screen, Subtitle, Text, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-
+import { NavigationBar, closeModal } from 'shoutem.navigation';
 import { ext } from '../const';
 
 const { bool, func, number } = PropTypes;
@@ -58,9 +46,9 @@ export class TransactionProcessedScreen extends PureComponent {
   render() {
     const { points, redeemed } = this.props;
 
-    const message = redeemed ?
-      I18n.t(ext('rewardRedemptionMessage')) :
-      I18n.t(ext('punchCardStampedMessage'), { count: points || 0 });
+    const message = redeemed
+      ? I18n.t(ext('rewardRedemptionMessage'))
+      : I18n.t(ext('punchCardStampedMessage'), { count: points || 0 });
 
     return (
       <Screen>
@@ -72,7 +60,9 @@ export class TransactionProcessedScreen extends PureComponent {
               styleName="small-avatar"
             />
           </View>
-          <Subtitle styleName="h-center md-gutter-top xl-gutter-horizontal">{message}</Subtitle>
+          <Subtitle styleName="h-center md-gutter-top xl-gutter-horizontal">
+            {message}
+          </Subtitle>
           <Button
             styleName="secondary lg-gutter-vertical"
             onPress={this.handleContinue}

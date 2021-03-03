@@ -1,9 +1,10 @@
 {
   "name": "events",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "platform": "2.5.*",
   "title": "Events",
   "description": "Show items with location and time",
+  "releaseNotes": "* Added CMS search feature",
   "dependencies": [
     "shoutem.layouts",
     "shoutem.cms"
@@ -27,6 +28,7 @@
       "name": "events-shortcut",
       "icon": "theme://events.png",
       "capabilities": [
+        "shoutem.cms.search",
         "shoutem.cms.import-csv"
       ],
       "settings": {

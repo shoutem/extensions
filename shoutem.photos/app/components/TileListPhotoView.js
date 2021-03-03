@@ -10,7 +10,6 @@ import {
   Tile,
   Divider,
 } from '@shoutem/ui';
-
 import { BasePhotoView } from './BasePhotoView';
 
 /**

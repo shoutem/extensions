@@ -11,7 +11,12 @@
       "shortcut-settings-page.form-title-comments": "Enable comments",
       "shortcut-settings-page.form-title-interactions": "Enable interactions",
       "shortcut-settings-page.popoover-enable-like-text": "Enable users to like posts",
-      "shortcut-settings-page.button-save": "Save"
+      "shortcut-settings-page.button-save": "Save",
+      "user-groups-table.empty-placeholder-message": "This app has no user groups defined",
+      "user-groups-table.header-name-title": "Visible groups",
+      "user-groups-table.help-text": "Select the user groups whose members will be visible to users who navigate to this screen. This only applies if 'Show all users' is disabled.",
+      "user-groups-table.show-all": "Show all users",
+      "user-groups-table.empty-placeholder-message": "No data to display"
     }
   }
 }

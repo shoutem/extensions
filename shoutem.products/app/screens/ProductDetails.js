@@ -1,8 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
+import { openURL as openURLAction } from 'shoutem.web-view';
+import { connectStyle } from '@shoutem/theme';
 import {
   View,
   Screen,
@@ -21,12 +24,6 @@ import {
   Row,
   SimpleHtml,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
-import { openURL as openURLAction } from 'shoutem.web-view';
-
 import { ext } from '../const';
 
 export class ProductDetails extends PureComponent {
@@ -70,16 +67,17 @@ export class ProductDetails extends PureComponent {
 
     const oldPrice = product.oldPrice;
 
+    if (!oldPrice) {
+      return (
+        <Heading styleName="sm-gutter-bottom">{product.currentPrice}</Heading>
+      );
+    }
+
     return (
-      oldPrice ?
-        <View virtual styleName="vertical h-center">
-          <Subtitle styleName="line-through">
-            {oldPrice}
-          </Subtitle>
-          <Heading styleName="sm-gutter-bottom">
-            {product.currentPrice}
-          </Heading>
-        </View> : <Heading styleName="sm-gutter-bottom">{product.currentPrice}</Heading>
+      <View virtual styleName="vertical h-center">
+        <Subtitle styleName="line-through">{oldPrice}</Subtitle>
+        <Heading styleName="sm-gutter-bottom">{product.currentPrice}</Heading>
+      </View>
     );
   }
 
@@ -110,6 +108,7 @@ export class ProductDetails extends PureComponent {
         >
           <Tile animationName="hero" styleName="text-centric fill-parent">
             <Title
+              numberOfLines={2}
               styleName="xl-gutter-top md-gutter-bottom lg-gutter-horizontal"
             >
               {product.name.toUpperCase()}
@@ -117,7 +116,8 @@ export class ProductDetails extends PureComponent {
             {this.renderProductPriceInfo()}
             {this.renderBuyField()}
           </Tile>
-        </ImageBackground>);
+        </ImageBackground>
+      );
     }
 
     return (
@@ -126,9 +126,7 @@ export class ProductDetails extends PureComponent {
         styleName="large-square placeholder"
       >
         <Tile animationName="hero" styleName="text-centric fill-parent">
-          <Subtitle
-            styleName="lg-gutter-top xl-gutter-bottom md-gutter-horizontal"
-          >
+          <Subtitle styleName="lg-gutter-top xl-gutter-bottom md-gutter-horizontal">
             {product.name.toUpperCase()}
           </Subtitle>
           {this.renderProductPriceInfo()}
@@ -181,7 +179,7 @@ export class ProductDetails extends PureComponent {
 
   render() {
     return (
-      <Screen styleName="full-screen paper">
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderNoImage()}

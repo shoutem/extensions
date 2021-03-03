@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import React from 'react';
 
 const { date, number, shape, string } = PropTypes;
 
@@ -66,4 +65,4 @@ export {
   rewardShape,
   placeShape,
   transactionShape,
- };
+};

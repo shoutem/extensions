@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import uuid from 'uuid-random';
 import { createResource, updateResource } from '../redux';
 import { PROPERTY_FORMATS } from '../const';
 import {
@@ -41,9 +42,12 @@ export function getResourceRelationships(resource) {
   );
 }
 
-function createResourceRelationship(appId, schema, key, value) {
+function createToOneRelationship(appId, schema, key, value) {
   return async dispatch => {
-    const response = await dispatch(createResource(appId, null, schema, value));
+    // adding uuid to avoid multiple fast requests returing as first request
+    const response = await dispatch(
+      createResource(appId, null, schema, value, {}, { requestId: uuid() }),
+    );
 
     const resourceId = _.get(response, 'payload.data.id');
     const relationships = {
@@ -59,9 +63,12 @@ function createResourceRelationship(appId, schema, key, value) {
   };
 }
 
-function updateResourceRelationship(appId, schema, key, value) {
+function updateToOneRelationship(appId, schema, key, value) {
   return async dispatch => {
-    const response = await dispatch(updateResource(appId, null, schema, value));
+    // adding uuid to avoid multiple fast requests returing as first request
+    const response = await dispatch(
+      updateResource(appId, null, schema, value, {}, { requestId: uuid() }),
+    );
 
     const resourceId = _.get(response, 'payload.data.id');
     const relationships = {
@@ -77,19 +84,133 @@ function updateResourceRelationship(appId, schema, key, value) {
   };
 }
 
-function updateResourceRelationships(appId, schema, resource, initialResource) {
+function createToManyRelationship(appId, schema, key, value) {
   return async dispatch => {
-    let relationships = {};
+    // adding uuid to avoid multiple fast requests returing as first request
+    const response = await dispatch(
+      createResource(appId, null, schema, value, {}, { requestId: uuid() }),
+    );
+
+    const resourceId = _.get(response, 'payload.data.id');
+    const relationships = {
+      [key]: {
+        data: [
+          {
+            id: resourceId,
+            type: schema,
+          },
+        ],
+      },
+    };
+
+    return relationships;
+  };
+}
+
+function updateToManyRelationship(appId, schema, key, value) {
+  return async dispatch => {
+    // adding uuid to avoid multiple fast requests returing as first request
+    const response = await dispatch(
+      updateResource(appId, null, schema, value, {}, { requestId: uuid() }),
+    );
+
+    const resourceId = _.get(response, 'payload.data.id');
+    const relationships = {
+      [key]: {
+        data: [
+          {
+            id: resourceId,
+            type: schema,
+          },
+        ],
+      },
+    };
+
+    return relationships;
+  };
+}
+
+function updateToOneRelationships(
+  appId,
+  schema,
+  key,
+  referencedSchema,
+  value,
+  initialValue,
+) {
+  return dispatch => {
+    const promises = [];
+    const id = _.get(value, 'id');
+
+    const schemeProperty = getSchemaProperty(schema, key);
+    const isEntityReference =
+      schemeProperty.format === PROPERTY_FORMATS.ENTITY_REFERENCE;
+
+    // if id exist that means that relationship already exist
+    // no need for creating a new resource relationship
+    if (id) {
+      const changes = calculateDifferenceObject(value, initialValue);
+
+      // if changes update relationship resource but only if it is not entity reference
+      if (!_.isEmpty(changes) && !isEntityReference) {
+        promises.push(
+          dispatch(
+            updateToOneRelationship(appId, referencedSchema, key, value),
+          ),
+        );
+      } else {
+        const relationships = {
+          [key]: {
+            data: {
+              id,
+              type: referencedSchema,
+            },
+          },
+        };
+
+        promises.push(Promise.resolve(relationships));
+      }
+    } else {
+      if (!_.isEmpty(value) && !isEntityReference) {
+        promises.push(
+          dispatch(
+            createToOneRelationship(appId, referencedSchema, key, value),
+          ),
+        );
+      } else {
+        const relationships = {
+          [key]: {
+            data: {
+              id,
+              type: referencedSchema,
+            },
+          },
+        };
+
+        promises.push(Promise.resolve(relationships));
+      }
+    }
+
+    return promises;
+  };
+}
+
+function updateToManyRelationships(
+  appId,
+  schema,
+  key,
+  referencedSchema,
+  values,
+  initialValues,
+) {
+  return dispatch => {
     const promises = [];
 
-    const include = getIncludeProperties(schema);
+    _.forEach(values, value => {
+      if (!value) {
+        return;
+      }
 
-    _.forEach(include, key => {
-      const referencedSchema = getReferencedSchema(schema, key);
-
-      // TODO: support multiple relationshsips, check if value is an array
-      const value = _.get(resource, key);
-      const initialValue = _.get(initialResource, key);
       const id = _.get(value, 'id');
 
       const schemeProperty = getSchemaProperty(schema, key);
@@ -99,39 +220,120 @@ function updateResourceRelationships(appId, schema, resource, initialResource) {
       // if id exist that means that relationship already exist
       // no need for creating a new resource relationship
       if (id) {
+        const initialValue = _.find(initialValues, { id });
         const changes = calculateDifferenceObject(value, initialValue);
 
         // if changes update relationship resource but only if it is not entity reference
         if (!_.isEmpty(changes) && !isEntityReference) {
           promises.push(
             dispatch(
-              updateResourceRelationship(appId, referencedSchema, key, value),
+              updateToManyRelationship(appId, referencedSchema, key, value),
             ),
           );
         } else {
-          const relationship = { data: { id, type: referencedSchema } };
-          _.set(relationships, key, relationship);
+          const relationships = {
+            [key]: {
+              data: [
+                {
+                  id,
+                  type: referencedSchema,
+                },
+              ],
+            },
+          };
+
+          promises.push(Promise.resolve(relationships));
         }
       } else {
         if (!_.isEmpty(value) && !isEntityReference) {
           promises.push(
             dispatch(
-              createResourceRelationship(appId, referencedSchema, key, value),
+              createToManyRelationship(appId, referencedSchema, key, value),
             ),
           );
         } else {
-          const relationship = { data: { id, type: referencedSchema } };
-          _.set(relationships, key, relationship);
+          const relationships = {
+            [key]: {
+              data: [
+                {
+                  id,
+                  type: referencedSchema,
+                },
+              ],
+            },
+          };
+
+          promises.push(Promise.resolve(relationships));
         }
+      }
+    });
+
+    return promises;
+  };
+}
+
+function updateResourceRelationships(appId, schema, resource, initialResource) {
+  return async dispatch => {
+    let relationships = {};
+    const toOnePromises = [];
+    const toManyPromises = [];
+
+    const include = getIncludeProperties(schema);
+
+    _.forEach(include, key => {
+      const referencedSchema = getReferencedSchema(schema, key);
+      const value = _.get(resource, key);
+      const initialValue = _.get(initialResource, key);
+
+      if (_.isArray(value)) {
+        toManyPromises.push(
+          ...dispatch(
+            updateToManyRelationships(
+              appId,
+              schema,
+              key,
+              referencedSchema,
+              value,
+              initialValue,
+            ),
+          ),
+        );
+      } else {
+        toOnePromises.push(
+          ...dispatch(
+            updateToOneRelationships(
+              appId,
+              schema,
+              key,
+              referencedSchema,
+              value,
+              initialValue,
+            ),
+          ),
+        );
       }
 
       // remove referenced item from attributes
       _.unset(resource, key);
     });
 
-    const values = await Promise.all(promises);
-    _.forEach(values, relationship => {
+    const toOneRelationships = await Promise.all(toOnePromises);
+    _.forEach(toOneRelationships, relationship => {
       relationships = _.merge(relationships, relationship);
+    });
+
+    const toManyRelationships = await Promise.all(toManyPromises);
+    _.forEach(toManyRelationships, relationship => {
+      const key = _.head(_.keys(relationship));
+
+      if (_.has(relationships, key)) {
+        const data = _.get(relationship, `[${key}].data`);
+        if (_.isArray(data)) {
+          relationships[key].data.push(...data);
+        }
+      } else {
+        relationships = _.merge(relationships, relationship);
+      }
     });
 
     return relationships;

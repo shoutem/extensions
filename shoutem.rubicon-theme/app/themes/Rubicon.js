@@ -427,12 +427,12 @@ export default (customVariables = {}) => {
             // Ripple effect is not supported on older Android versions and crashes the app
             (Platform.Version >= 21
               ? TouchableNativeFeedback.Ripple(
-                changeColorAlpha(
-                  variables.mainNavItemIconColor ||
-                  variables.mainNavItemColor,
-                  0.3,
-                ),
-              )
+                  changeColorAlpha(
+                    variables.mainNavItemIconColor ||
+                      variables.mainNavItemColor,
+                    0.3,
+                  ),
+                )
               : TouchableNativeFeedback.SelectableBackground()),
         },
       },
@@ -496,12 +496,12 @@ export default (customVariables = {}) => {
             // Ripple effect is not supported on older Android versions and crashes the app
             (Platform.Version >= 21
               ? TouchableNativeFeedback.Ripple(
-                changeColorAlpha(
-                  variables.mainNavItemIconColor ||
-                  variables.mainNavItemColor,
-                  0.2,
-                ),
-              )
+                  changeColorAlpha(
+                    variables.mainNavItemIconColor ||
+                      variables.mainNavItemColor,
+                    0.2,
+                  ),
+                )
               : TouchableNativeFeedback.SelectableBackground()),
         },
       },
@@ -1320,8 +1320,8 @@ export default (customVariables = {}) => {
         'shoutem.ui.Button': {
           position: 'absolute',
           right: 0,
-          top: 12,
-          padding: 5,
+          paddingTop: 13,
+          paddingBottom: 13,
         },
       },
     },
@@ -1407,26 +1407,33 @@ export default (customVariables = {}) => {
     // Auth Register form
     'shoutem.auth.RegisterForm': {
       'shoutem.ui.View': {
-        'shoutem.ui.Text': {
-          paddingBottom: 5,
-          fontSize: 15,
-        },
-        'shoutem.ui.TextInput': {
-          borderColor: variables.text.color,
-          borderRadius: 6,
-          height: 50,
-          paddingHorizontal: 15,
-          paddingVertical: 4,
-        },
         'shoutem.ui.View': {
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
+          'shoutem.ui.Text': {
+            paddingBottom: 5,
+            fontSize: 15,
+          },
           'shoutem.ui.TextInput': {
+            borderColor: variables.text.color,
             borderRadius: 6,
             height: 50,
+            paddingHorizontal: 15,
+            paddingVertical: 4,
+          },
+          'shoutem.ui.View': {
             flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            'shoutem.ui.TextInput': {
+              borderRadius: 6,
+              height: 50,
+              flex: 1,
+            },
+          },
+          'shoutem.ui.TouchableOpacity': {
+            'shoutem.ui.Caption': {
+              color: '#659CEC',
+            },
           },
         },
       },
@@ -1443,10 +1450,94 @@ export default (customVariables = {}) => {
         },
       },
     },
+
     'shoutem.auth.RegisterScreen': {
       registerScreenMargin: {
         marginHorizontal: 30,
         marginTop: 40,
+      },
+    },
+
+    'shoutem.auth.TermsAndPrivacy': {
+      container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+      },
+      link: {
+        margin: 0,
+        fontWeight: resolveFontWeight('700'),
+      },
+    },
+
+    'shoutem.auth.PasswordRecoveryScreen': {
+      textContainer: {
+        marginTop: 40,
+        marginBottom: 40,
+        marginLeft: 30,
+        marginRight: 18,
+      },
+      title: {
+        fontSize: 24,
+        lineHeight: 32,
+      },
+      description: {
+        marginTop: 12,
+        fontSize: 15,
+        lineHeight: 24,
+      },
+      inputCaption: {
+        marginBottom: 3,
+        opacity: 0.4,
+        fontSize: 15,
+        lineHeight: 18,
+      },
+      confirmButton: {
+        width: '50%',
+        marginTop: 24,
+        borderRadius: 6,
+      },
+    },
+
+    'shoutem.auth.ChangePasswordScreen': {
+      keyboardAvoidingViewContainer: {
+        flex: 1,
+      },
+      textContainer: {
+        marginTop: 40,
+        marginBottom: 40,
+        marginLeft: 30,
+        marginRight: 18,
+      },
+      title: {
+        fontSize: 24,
+        lineHeight: 32,
+      },
+      description: {
+        marginTop: 12,
+        fontSize: 15,
+        lineHeight: 24,
+      },
+      inputCaption: {
+        marginBottom: 3,
+        opacity: 0.4,
+        fontSize: 15,
+        lineHeight: 18,
+      },
+      inputWrapper: {
+        marginBottom: 26,
+      },
+      codeInput: {
+        height: 50,
+        paddingTop: 4,
+        paddingBottom: 4,
+        borderRadius: 6,
+      },
+      confirmButton: {
+        width: '50%',
+        marginTop: 24,
+        marginBottom: 30,
+        borderRadius: 6,
       },
     },
 
@@ -1884,7 +1975,10 @@ export default (customVariables = {}) => {
             backgroundColor: variables.imageOverlayTextColor,
 
             '.selected': {
-              backgroundColor: changeColorAlpha(variables.imageOverlayTextColor, 0.7),
+              backgroundColor: changeColorAlpha(
+                variables.imageOverlayTextColor,
+                0.7,
+              ),
             },
           },
         },
@@ -1919,12 +2013,12 @@ export default (customVariables = {}) => {
 
     'shoutem.sendbird.MessageListScreen': {
       sectionContainer: {
-        backgroundColor: variables.backgroundColor
+        backgroundColor: variables.backgroundColor,
       },
       sectionTitle: {
         fontWeight: '500',
-        margin: 20
-      }
+        margin: 20,
+      },
     },
 
     'shoutem.sendbird.SectionFooter': {

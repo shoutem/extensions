@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 import {
   TouchableOpacity,
   View,
@@ -8,9 +9,6 @@ import {
   Card,
   Subtitle,
 } from '@shoutem/ui';
-
-import moment from 'moment';
-
 import { BasePhotoView } from './BasePhotoView';
 
 /**
@@ -33,7 +31,9 @@ export default class FixedGridPhotoView extends BasePhotoView {
         <Card styleName="flexible">
           <Image styleName="medium-wide" source={source} />
           <View styleName="space-between">
-            <Subtitle numberOfLines={3} styleName="lg-gutter-bottom">{photo.title}</Subtitle>
+            <Subtitle numberOfLines={3} styleName="lg-gutter-bottom">
+              {photo.title}
+            </Subtitle>
             {dateInfo}
           </View>
         </Card>

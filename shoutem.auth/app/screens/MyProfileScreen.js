@@ -11,7 +11,10 @@ import {
   mapStateToProps,
 } from './UserProfileScreen';
 
-export default loginRequired(connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(connectStyle(ext('UserProfileScreen'))(UserProfileScreen)), true);
+export default loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('UserProfileScreen'))(UserProfileScreen)),
+  true,
+);

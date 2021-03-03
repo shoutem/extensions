@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { Button, FormGroup, ControlLabel } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import i18next from 'i18next';
@@ -22,9 +23,7 @@ const resolveApiEndpoint = extensionInstallation => {
 export class SettingsPage extends Component {
   constructor(props) {
     super(props);
-
-    this.updateApiEndpoint = this.updateApiEndpoint.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
+    autoBindReact(this);
 
     this.state = {
       apiEndpoint: resolveApiEndpoint(props.extensionInstallation),

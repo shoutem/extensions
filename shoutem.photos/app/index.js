@@ -1,6 +1,6 @@
-import reducer from './reducers/';
-import * as extension from './extension.js';
 import PhotosScreen from './screens/PhotosScreen';
+import * as extension from './extension.js';
+import reducer from './reducers/';
 
 export const screens = {
   ...extension.screens,
@@ -10,4 +10,4 @@ export const screens = {
   PhotosLargeList: PhotosScreen,
 };
 
-export { reducer, };
+export { reducer };

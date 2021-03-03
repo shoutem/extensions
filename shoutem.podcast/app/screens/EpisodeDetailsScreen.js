@@ -103,7 +103,7 @@ export class EpisodeDetailsScreen extends PureComponent {
     const validDate = momentDate.isAfter(0);
 
     return (
-      <Screen styleName="full-screen paper">
+      <Screen styleName="paper">
         <NavigationBar share={{ link, title }} />
         {loading && (
           <View styleName="flexible vertical h-center v-center">

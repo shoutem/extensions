@@ -1,9 +1,10 @@
 {
   "name": "loyalty",
-  "version": "2.5.1",
+  "version": "2.5.4",
   "platform": "2.5.*",
   "title": "Loyalty",
   "description": "Reward your returning customers",
+  "releaseNotes": "* Added CMS search feature",
   "dependencies": [
     "shoutem.layouts",
     "shoutem.cms"
@@ -27,6 +28,7 @@
       "name": "punch-card-shortcut",
       "icon": "theme://gift.png",
       "capabilities": [
+        "shoutem.cms.search",
         "shoutem.cms.import-csv"
       ],
       "adminPages": [
@@ -73,6 +75,7 @@
       "name": "rewards-shortcut",
       "icon": "theme://gift.png",
       "capabilities": [
+        "shoutem.cms.search",
         "shoutem.cms.import-csv"
       ],
       "adminPages": [
@@ -99,6 +102,7 @@
       "name": "stores-shortcut",
       "icon": "theme://address-full.png",
       "capabilities": [
+        "shoutem.cms.search",
         "shoutem.cms.import-csv"
       ],
       "adminPages": [
@@ -144,9 +148,7 @@
       "settings": {
         "defaultShortcutTitle": "My Stores",
         "extensionTitle": "Loyalty",
-        "favoritesSchemas": [
-          "@.places"
-        ]
+        "favoritesSchemas": ["@.places"]
       }
     }
   ],
@@ -182,9 +184,7 @@
       "name": "PlacesListScreen",
       "title": "Stores",
       "image": "./server/assets/images/layout-compact-list.png",
-      "navigatesTo": [
-        "@.PlaceDetails"
-      ]
+      "navigatesTo": ["@.PlaceDetails"]
     },
     {
       "name": "FavoritesList",

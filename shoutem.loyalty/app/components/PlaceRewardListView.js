@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
+import PropTypes from 'prop-types';
+import { I18n } from 'shoutem.i18n';
+import { connectStyle } from '@shoutem/theme';
 import {
   TouchableOpacity,
   Caption,
@@ -11,19 +12,9 @@ import {
   Subtitle,
   View,
 } from '@shoutem/ui';
-
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-
 import { ext } from '../const';
-
-import {
-  placeShape,
-  rewardShape,
- } from './shapes';
-
 import RewardProgressBar from './RewardProgressBar';
+import { placeShape, rewardShape } from './shapes';
 
 const { func } = PropTypes;
 
@@ -50,7 +41,10 @@ export class PlaceRewardListView extends PureComponent {
   }
 
   render() {
-    const { place: { points }, reward } = this.props;
+    const {
+      place: { points },
+      reward,
+    } = this.props;
     const { image, pointsRequired, title } = reward;
 
     return (
@@ -62,15 +56,16 @@ export class PlaceRewardListView extends PureComponent {
           />
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={2}>{title}</Subtitle>
-            <Caption>{I18n.t(ext('pointsRequiredStores'), { count: pointsRequired || 0 })}</Caption>
+            <Caption>
+              {I18n.t(ext('pointsRequiredStores'), {
+                count: pointsRequired || 0,
+              })}
+            </Caption>
           </View>
           <Icon styleName="disclosure" name="right-arrow" />
         </Row>
         <Row>
-          <RewardProgressBar
-            points={points}
-            pointsRequired={pointsRequired}
-          />
+          <RewardProgressBar points={points} pointsRequired={pointsRequired} />
         </Row>
         <Divider styleName="line" />
       </TouchableOpacity>

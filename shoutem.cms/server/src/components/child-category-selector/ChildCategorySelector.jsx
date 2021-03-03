@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
 import { isBusy } from '@shoutem/redux-io';
@@ -31,10 +32,7 @@ function getDisplayLabel(options, selectedOptions = []) {
 export default class ChildCategorySelector extends Component {
   constructor(props) {
     super(props);
-
-    this.checkData = this.checkData.bind(this);
-    this.handleToggleCategory = this.handleToggleCategory.bind(this);
-    this.renderCategoryMenuItem = this.renderCategoryMenuItem.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {

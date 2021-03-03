@@ -1,2 +1,1 @@
-import ImageUploaderReduxFormElement from './ImageUploaderReduxFormElement';
-export default ImageUploaderReduxFormElement;
+export { default } from './ImageUploaderReduxFormElement';

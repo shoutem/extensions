@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import Select from 'react-select';
@@ -10,8 +11,7 @@ import Select from 'react-select';
 export default class SelectTableHeader extends Component {
   constructor(props) {
     super(props);
-
-    this.handleSelectionChanged = this.handleSelectionChanged.bind(this);
+    autoBindReact(this);
   }
 
   handleSelectionChanged(selectedItem) {

@@ -26,7 +26,31 @@ function resolveIncludeParam(include = {}) {
     return {};
   }
 
-  return { include: include };
+  return { include };
+}
+
+function resolveSearchParams(searchOptions = {}) {
+  const params = {};
+
+  if (_.isEmpty(searchOptions)) {
+    return params;
+  }
+
+  if (searchOptions.query) {
+    _.set(params, 'query', searchOptions.query);
+  }
+
+  _.forEach(searchOptions.filters, filter => {
+    if (filter) {
+      if (filter.operator && filter.operator !== 'eq') {
+        params[`filter[${filter.name}][${filter.operator}]`] = filter.value;
+      } else {
+        params[`filter[${filter.name}]`] = filter.value;
+      }
+    }
+  });
+
+  return params;
 }
 
 export function loadResources(
@@ -36,10 +60,12 @@ export function loadResources(
   include,
   limit,
   offset,
+  searchOptions,
 ) {
   const queryParams = {
     ...resolveSortParam(sortOptions),
     ...resolveIncludeParam(include),
+    ...resolveSearchParams(searchOptions),
     'filter[categories]': parentCategoryId,
     'page[limit]': limit,
     'page[offset]': offset,
@@ -98,4 +124,15 @@ export function loadPreviousResourcesPage(resources) {
   };
 
   return prev(resources, false, config);
+}
+
+export function fetchCmsDataZip(appId, categoryId) {
+  const filter = `filter[categories]=${categoryId}`;
+  const endpoint = `//${url.apps}/v1/apps/${appId}/resources/${CURRENT_SCHEMA}/actions/export?${filter}`;
+  const config = {
+    method: 'POST',
+    headers: { Accept: 'application/zip' },
+  };
+
+  return fetch(endpoint, config).then(response => response.blob());
 }

@@ -1,14 +1,11 @@
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { LayoutAnimation } from 'react-native';
-import _ from 'lodash';
-
-import { connectStyle } from '@shoutem/theme';
-import { View, EmptyStateView } from '@shoutem/ui';
-
 import { MapView } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-
+import { connectStyle } from '@shoutem/theme';
+import { View, EmptyStateView } from '@shoutem/ui';
 import PlaceIconView from '../components/PlaceIconView';
 import { ext } from '../const';
 
@@ -38,7 +35,9 @@ function createMarker(place) {
 }
 
 function createMarkersFromPlaces(places) {
-    return _.reduce(places, (result, place) => {
+  return _.reduce(
+    places,
+    (result, place) => {
       const marker = createMarker(place);
 
       if (marker) {
@@ -46,11 +45,11 @@ function createMarkersFromPlaces(places) {
       }
       return result;
     },
-    []);
-  }
+    [],
+  );
+}
 
 export class MapList extends PureComponent {
-
   constructor(props) {
     super(props);
 
@@ -69,18 +68,23 @@ export class MapList extends PureComponent {
     const { places } = this.props;
 
     const markers = createMarkersFromPlaces(places);
-    const region = _.isEmpty(markers) ? undefined : this.resolveInitialRegion(markers);
+    const region = _.isEmpty(markers)
+      ? undefined
+      : this.resolveInitialRegion(markers);
 
     LayoutAnimation.easeInEaseOut();
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ markers, region });
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (places === state.places) {
+    const { places } = props;
+    const { places: statePlaces } = state;
+
+    if (places === statePlaces) {
       return state;
     }
 
-    const { places } = props;
     const { selectedMarker } = state;
 
     const markedPlace = findSelectedPlace(places, selectedMarker);
@@ -122,7 +126,7 @@ export class MapList extends PureComponent {
 
   render() {
     const { selectedMarker, markers, region } = this.state;
-    const printImageRow = (selectedMarker) ? this.renderImageRow() : null;
+    const printImageRow = selectedMarker ? this.renderImageRow() : null;
 
     if (_.isEmpty(markers)) {
       return (

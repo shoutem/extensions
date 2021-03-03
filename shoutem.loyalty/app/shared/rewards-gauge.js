@@ -1,7 +1,5 @@
 import _ from 'lodash';
-import {
-  angleToRadians,
-} from './gauge-progress-bar';
+import { angleToRadians } from './gauge-progress-bar';
 
 // Actually, visible angles of gauge are -45 deg to 225 deg
 const endAngle = 270;
@@ -22,7 +20,7 @@ export function getRewardCoordinates(reward, maxPoints, width, radius) {
     pointsPercentage = 100;
   }
 
-  let pointsAngle = (endAngle - ((pointsPercentage / 100) * endAngle)) - 45;
+  let pointsAngle = endAngle - (pointsPercentage / 100) * endAngle - 45;
   if (pointsAngle < 0) {
     pointsAngle += 360;
   }

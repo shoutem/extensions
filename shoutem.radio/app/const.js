@@ -6,18 +6,9 @@ export const trackPlayerOptions = {
   stopWithApp: true,
   alwaysPauseOnInterruption: true,
   isLiveStreamSource: true,
-  capabilities: [
-    CAPABILITY_PLAY,
-    CAPABILITY_PAUSE,
-  ],
-  notificationCapabilities: [
-    CAPABILITY_PLAY,
-    CAPABILITY_PAUSE,
-  ],
-  compactCapabilities: [
-    CAPABILITY_PLAY,
-    CAPABILITY_PAUSE,
-  ],
+  capabilities: [CAPABILITY_PLAY, CAPABILITY_PAUSE],
+  notificationCapabilities: [CAPABILITY_PLAY, CAPABILITY_PAUSE],
+  compactCapabilities: [CAPABILITY_PLAY, CAPABILITY_PAUSE],
 };
 
 // defines scope for the current extension state within the global app's state

@@ -1,9 +1,10 @@
 {
   "name": "about",
-  "version": "2.5.0",
+  "version": "2.5.2",
   "platform": "2.5.*",
   "title": "About",
   "description": "Show info about your app or your business",
+  "releaseNotes": "* Added CMS search feature",
   "icon": "server/assets/add-about-image.png",
   "dependencies": [
     "shoutem.layouts",
@@ -27,6 +28,7 @@
       "icon": "theme://about.png",
       "screen": "@.AboutScreen",
       "capabilities": [
+        "shoutem.cms.search",
         "shoutem.cms.import-csv"
       ],
       "adminPages": [

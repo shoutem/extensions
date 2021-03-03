@@ -1,10 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { navigateTo } from 'shoutem.navigation';
-import { ext } from '../const';
-
 import { placeShape } from '../components/shapes';
+import { ext } from '../const';
 
 /**
  * Wraps the received component with the method used to navigate to the

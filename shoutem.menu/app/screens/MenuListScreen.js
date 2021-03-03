@@ -1,20 +1,17 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
+import { CmsListScreen } from 'shoutem.cms';
 import { navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-
-import { CmsListScreen } from 'shoutem.cms';
-
-import { ext } from '../const';
 import ListMenuView from '../components/ListMenuView';
+import { ext } from '../const';
 
 export class MenuListScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
     navigateTo: PropTypes.func.isRequired,
-  }
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -58,6 +55,7 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   navigateTo,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('MenuListScreen'), {})(MenuListScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('MenuListScreen'), {})(MenuListScreen));

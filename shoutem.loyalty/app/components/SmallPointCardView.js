@@ -1,15 +1,8 @@
 import React, { PureComponent } from 'react';
 import QRCode from 'react-native-qrcode-svg';
-
-import {
-  TouchableOpacity,
-  Caption,
-  Title,
-  View,
-} from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
-
+import { connectStyle } from '@shoutem/theme';
+import { TouchableOpacity, Caption, Title, View } from '@shoutem/ui';
 import { ext } from '../const';
 
 /**
@@ -24,25 +17,16 @@ class SmallPointCardView extends PureComponent {
     const { cardId, points, onPress, style } = this.props;
 
     return (
-      <View
-        styleName="featured"
-        style={style.container}
-      >
+      <View styleName="featured" style={style.container}>
         <View
           styleName="horizontal v-center h-center"
           style={style.innerContainer}
         >
           <View styleName="flexible v-center h-center">
-            <Title
-              styleName="h-center"
-              style={style.points}
-            >
+            <Title styleName="h-center" style={style.points}>
               {points}
             </Title>
-            <Caption
-              styleName="h-center sm-gutter"
-              style={style.pointsTitle}
-            >
+            <Caption styleName="h-center sm-gutter" style={style.pointsTitle}>
               {I18n.t(ext('myCardScreenPointsTitle'))}
             </Caption>
           </View>
@@ -51,10 +35,7 @@ class SmallPointCardView extends PureComponent {
             style={style.qrBackground}
           >
             <TouchableOpacity onPress={onPress}>
-              <QRCode
-                size={102}
-                value={JSON.stringify([cardId])}
-              />
+              <QRCode size={102} value={JSON.stringify([cardId])} />
             </TouchableOpacity>
           </View>
         </View>
@@ -62,6 +43,5 @@ class SmallPointCardView extends PureComponent {
     );
   }
 }
-
 
 export default connectStyle(ext('SmallPointCardView'))(SmallPointCardView);

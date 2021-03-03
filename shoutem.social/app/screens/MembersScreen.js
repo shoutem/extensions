@@ -1,11 +1,10 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { InteractionManager } from 'react-native';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
+import { InteractionManager } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { isBusy, isInitialized, next } from '@shoutem/redux-io';
 import {
   setStatus,
@@ -14,22 +13,15 @@ import {
   validationStatus,
 } from '@shoutem/redux-io/status';
 import { connectStyle } from '@shoutem/theme';
-import {
-  ListView,
-  View,
-  Button,
-  Icon,
-} from '@shoutem/ui';
-
+import { ListView, View, Button, Icon } from '@shoutem/ui';
 import { RemoteDataListScreen } from 'shoutem.application';
 import { navigateTo } from 'shoutem.navigation';
-
 import MemberView from '../components/MemberView';
 import { user as userShape } from '../components/shapes';
+import { getUsers, getUsersInGroups } from '../redux/selectors';
 import { ext } from '../const';
-import { loadUsers } from '../redux';
+import { loadUsers, loadUsersInGroups } from '../redux';
 import { openProfileForLegacyUser } from '../services';
-import { getUsers } from '../redux/selectors';
 
 export class MembersScreen extends RemoteDataListScreen {
   static propTypes = {
@@ -44,22 +36,51 @@ export class MembersScreen extends RemoteDataListScreen {
     autoBindReact(this);
   }
 
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { showAllUsers, userGroups, users } = this.props;
+    const {
+      showAllUsers: prevShowAllUsers,
+      userGroups: prevUserGroups,
+    } = prevProps;
+
+    if (
+      !users &&
+      (showAllUsers !== prevShowAllUsers || userGroups !== prevUserGroups)
+    ) {
+      this.fetchData();
+    }
+  }
+
   openSearchScreen() {
     const { navigateTo } = this.props;
 
-    const route = {
-      screen: ext('SearchScreen'),
-    };
+    const route = { screen: ext('SearchScreen') };
 
     navigateTo(route);
   }
 
   fetchData() {
-    const { loadUsers } = this.props;
+    const {
+      loadUsers,
+      loadUsersInGroups,
+      showAllUsers,
+      users,
+      visibleGroups,
+    } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      loadUsers();
-    });
+    if (!users) {
+      InteractionManager.runAfterInteractions(() => {
+        if (showAllUsers) {
+          loadUsers();
+        } else {
+          loadUsersInGroups(visibleGroups);
+        }
+      });
+    }
   }
 
   getNavigationBarProps() {
@@ -81,18 +102,16 @@ export class MembersScreen extends RemoteDataListScreen {
 
   renderRow(user) {
     const { openProfile } = this.props;
+
     return (
       <View>
-        <MemberView
-          openProfile={openProfile}
-          user={user}
-        />
+        <MemberView openProfile={openProfile} user={user} />
       </View>
     );
   }
 
   renderData(data) {
-    const { loadUsers } = this.props;
+    const { style } = this.props;
 
     if (this.shouldRenderPlaceholderView(data)) {
       return this.renderPlaceholderView(data);
@@ -105,41 +124,56 @@ export class MembersScreen extends RemoteDataListScreen {
         initialListSize={1}
         loading={isBusy(data) || !isInitialized(data)}
         onLoadMore={this.loadMore}
-        onRefresh={loadUsers}
+        onRefresh={this.fetchData}
         renderRow={this.renderRow}
-        style={this.props.style.list}
+        style={style.list}
       />
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const users = ownProps.users;
-  
-  if (_.isEmpty(users)) {
-    return { data: getUsers(state) };
-  }
+  const users = _.get(ownProps, 'users');
+  const userGroups = _.get(ownProps, 'shortcut.settings.userGroups', []);
+  const visibleGroups = userGroups.length
+    ? userGroups.filter(group => group.visible)
+    : [];
+  const visibleGroupIds = visibleGroups.length
+    ? visibleGroups.map(group => group.id)
+    : [];
+  const showAllUsers = _.get(ownProps, 'shortcut.settings.showAllUsers', true);
+  const visibleUsers = showAllUsers ? getUsers(state) : getUsersInGroups(state);
 
   // update status to valid to initialize data
   const initializedStatus = updateStatus(createStatus(), {
     validationStatus: validationStatus.VALID,
   });
-  setStatus(users, initializedStatus);
+  setStatus(visibleUsers, initializedStatus);
+  if (users) {
+    setStatus(users, initializedStatus);
+  }
 
   return {
-    data: users,
+    data: users || visibleUsers,
+    visibleGroups: visibleGroupIds,
+    showAllUsers,
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  ...bindActionCreators({
-    navigateTo,
-    loadUsers: ownProps.users ? undefined : loadUsers,
-    next,
-  }, dispatch),
+  ...bindActionCreators(
+    {
+      navigateTo,
+      loadUsers: ownProps.users ? undefined : loadUsers,
+      loadUsersInGroups: ownProps.users ? undefined : loadUsersInGroups,
+      next,
+    },
+    dispatch,
+  ),
   openProfile: openProfileForLegacyUser(dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('MembersScreen'))(MembersScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('MembersScreen'))(MembersScreen));

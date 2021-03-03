@@ -74,12 +74,12 @@ export class GeneralSettingsPage extends Component {
     const { appId, storeSettings, updateAppRealm } = this.props;
 
     const appleClientId = _.get(storeSettings, 'iphoneBundleId');
-    return updateAppRealm(appId, { appleClientId: appleClientId });
+    return updateAppRealm(appId, { appleClientId });
   }
 
   changeFacebookAppId(facebookAppId) {
     const { appId, updateAppRealm } = this.props;
-    return updateAppRealm(appId, { facebookAppId: facebookAppId });
+    return updateAppRealm(appId, { facebookAppId });
   }
 
   handleEmailEnabledChange(event) {
@@ -176,12 +176,15 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
-    updateExtensionSettings: (extension, settings) => dispatch(updateExtensionSettings(extension, settings)),
+    updateExtensionSettings: (extension, settings) =>
+      dispatch(updateExtensionSettings(extension, settings)),
     fetchShortcuts: () => dispatch(fetchShortcuts()),
     loadAppSettings: appId => dispatch(loadAppSettings(appId, scope)),
     loadAppStoreSettings: appId => dispatch(loadAppStoreSettings(appId, scope)),
-    updateAppSettings: (appId, appSettings) => dispatch(updateAppSettings(appId, appSettings, scope)),
-    updateAppRealm: (appId, realmPatch) => dispatch(updateAppRealm(appId, realmPatch)),
+    updateAppSettings: (appId, appSettings) =>
+      dispatch(updateAppSettings(appId, appSettings, scope)),
+    updateAppRealm: (appId, realmPatch) =>
+      dispatch(updateAppRealm(appId, realmPatch)),
   };
 }
 

@@ -6,6 +6,7 @@ export const PROPERTY_TYPES = {
   OBJECT: 'object',
   INTEGER: 'integer',
   NUMBER: 'number',
+  ARRAY: 'array',
 };
 
 export const PROPERTY_FORMATS = {
@@ -19,9 +20,18 @@ export const PROPERTY_FORMATS = {
   GEOLOCATION: 'geolocation',
   DATE_TIME: 'date-time',
   ENTITY_REFERENCE: 'entity-reference',
+  ENTITY_REFERENCE_ARRAY: 'entity-reference-array',
+  ARRAY: 'array',
 };
 
 export const PROPERTY_REFERENCED_SCHEMAS = {
   IMAGE_ATTACHMENT: 'shoutem.core.image-attachments',
   VIDEO_ATTACHMENT: 'shoutem.core.video-attachments',
+};
+
+export const FILTER_OPERATOR_TYPES = {
+  EQUALS: 'eq',
+  LESS_THAN: 'lt',
+  GREATER_THAN: 'gt',
+  CONTAINS: 'contains',
 };

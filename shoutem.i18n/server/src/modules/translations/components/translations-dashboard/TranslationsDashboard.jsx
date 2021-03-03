@@ -39,6 +39,30 @@ export default class TranslationsDashboard extends Component {
     });
   }
 
+  handleTranslationTableDownloadClick(language) {
+    const translationUrl = _.get(language, 'url');
+    const languageCode = _.get(language, 'code');
+
+    return fetch(translationUrl)
+      .then(response => response.blob())
+      .then(jsonBlob => {
+        const blobUrl = URL.createObjectURL(jsonBlob);
+        const fileName = `translations-${languageCode}.json`;
+
+        const link = document.createElement('a');
+        link.setAttribute('href', blobUrl);
+        link.setAttribute('download', fileName);
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        // Remove references
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+      });
+  }
+
   render() {
     const {
       translations,
@@ -74,6 +98,7 @@ export default class TranslationsDashboard extends Component {
           translations={rows}
           onDeleteClick={this.handleTranslationTableDeleteClick}
           onEditClick={this.handleTranslationTableUpdateClick}
+          onDownloadClick={this.handleTranslationTableDownloadClick}
           onStatusChange={onStatusChange}
         />
         <ConfirmModal className="settings-page-modal-small" ref="confirm" />

@@ -1,6 +1,9 @@
-import { combineReducers } from 'redux';
 import _ from 'lodash';
-
+import { combineReducers } from 'redux';
+import { getAppId } from 'shoutem.application';
+import { getUser } from 'shoutem.auth';
+import { cmsCollection } from 'shoutem.cms';
+import { preventStateRehydration } from 'shoutem.redux';
 import {
   collection,
   create,
@@ -8,13 +11,7 @@ import {
   getCollection,
   storage,
   resource,
- } from '@shoutem/redux-io';
-import { preventStateRehydration } from 'shoutem.redux';
-
-import { getAppId } from 'shoutem.application';
-import { getUser } from 'shoutem.auth';
-import { cmsCollection } from 'shoutem.cms';
-
+} from '@shoutem/redux-io';
 import {
   AUTHORIZATIONS_SCHEMA,
   CARD_SCHEMA,
@@ -44,7 +41,7 @@ const requestConfig = {
  *
  * @returns Card ID
  */
-export const getCardId = (state) => {
+export const getCardId = state => {
   const { data } = state[ext()].card || {};
 
   return data && data.id;
@@ -55,7 +52,8 @@ export const getCardId = (state) => {
  *
  * @returns true if the reward can be redeemed, false otherwise
  */
-export const canRedeem = ({ points = 0, pointsRequired }) => points >= pointsRequired;
+export const canRedeem = ({ points = 0, pointsRequired }) =>
+  points >= pointsRequired;
 
 /**
  * Checks if the reward is a punch card.
@@ -72,7 +70,8 @@ export const isPunchCard = reward =>
 /**
  * Gets cashier attributes from state
  */
-export const getCashierInfo = state => _.get(state[ext()].cashierInfo, 'data.attributes');
+export const getCashierInfo = state =>
+  _.get(state[ext()].cashierInfo, 'data.attributes');
 
 /**
  * Returns point card state for a place.
@@ -99,8 +98,8 @@ export const getSingleCardState = state => getCardStateForPlace(state, null);
  * @param userId User ID
  * @returns Server response with new card ID
  */
-export const createCardForUser = (userId) => {
-  return (dispatch) => {
+export const createCardForUser = userId => {
+  return dispatch => {
     const newCard = {
       type: CARD_SCHEMA,
       attributes: {
@@ -123,14 +122,16 @@ export const createCardForUser = (userId) => {
  * @param userId User ID
  * @returns Server response with new card ID
  */
-export const fetchCard = userId => find(CARD_SCHEMA, undefined, { user: `user:${userId}` });
+export const fetchCard = userId =>
+  find(CARD_SCHEMA, undefined, { user: `user:${userId}` });
 
 /**
  * Fetches point card state from server to refresh local state.
  *
  * @param cardId Loyalty card ID
  */
-export const fetchCardState = cardId => find(CARD_STATE_SCHEMA, undefined, { cardId });
+export const fetchCardState = cardId =>
+  find(CARD_STATE_SCHEMA, undefined, { cardId });
 
 /**
  * Fetches cashier info for user.
@@ -138,7 +139,8 @@ export const fetchCardState = cardId => find(CARD_STATE_SCHEMA, undefined, { car
  * @param userId User ID
  * @returns Server response with cashier info
  */
-export const fetchCashierInfo = userId => find(CASHIERS_SCHEMA, undefined, { userId });
+export const fetchCashierInfo = userId =>
+  find(CASHIERS_SCHEMA, undefined, { userId });
 
 /**
  * Fetches point rewards from server
@@ -153,13 +155,12 @@ export const fetchPointRewards = (cardId, parentCategoryId) =>
     },
   });
 
-export const fetchPlaceRewards = (placeId) => (
+export const fetchPlaceRewards = placeId =>
   find(PLACE_REWARDS_SCHEMA, undefined, {
     query: {
       'filter[place.id]': placeId,
     },
-  })
-);
+  });
 
 /**
  * Fetches transactions from server to refresh local state.
@@ -175,9 +176,9 @@ export const fetchRules = () => find(RULES_SCHEMA, undefined, {});
  */
 export const fetchTransactions = cardId =>
   find(TRANSACTIONS_SCHEMA, undefined, {
-     query: {
-       'filter[card]': cardId,
-     },
+    query: {
+      'filter[card]': cardId,
+    },
   });
 
 /**
@@ -193,15 +194,18 @@ export const createTransaction = (attributes, authorization) => {
 
     const { legacyId: userId } = getUser(getState());
 
-    const data = authorization.data || (authorizationType === 'userId' && { userId });
+    const data =
+      authorization.data || (authorizationType === 'userId' && { userId });
 
     const item = {
       type: TRANSACTIONS_SCHEMA,
       attributes: {
-        authorizations: [{
-          authorizationType,
-          data,
-        }],
+        authorizations: [
+          {
+            authorizationType,
+            data,
+          },
+        ],
         ...attributes,
         card: cardId || getCardId(getState()),
       },
@@ -209,8 +213,9 @@ export const createTransaction = (attributes, authorization) => {
 
     const config = { ...requestConfig, schema: TRANSACTIONS_SCHEMA };
 
-    return dispatch(create(config, item))
-      .then(response => _.get(response, 'payload.data.attributes.transactionData'));
+    return dispatch(create(config, item)).then(response =>
+      _.get(response, 'payload.data.attributes.transactionData'),
+    );
   };
 };
 
@@ -221,16 +226,18 @@ export const createTransaction = (attributes, authorization) => {
  * @param placeId - Place Id
  */
 export const verifyPin = (pin, placeId) => {
-  const item = [{
-    type: AUTHORIZATIONS_SCHEMA,
-    attributes: {
-      authorizationType: 'pin',
-      data: {
-        pin,
-        location: placeId,
+  const item = [
+    {
+      type: AUTHORIZATIONS_SCHEMA,
+      attributes: {
+        authorizationType: 'pin',
+        data: {
+          pin,
+          location: placeId,
+        },
       },
     },
-  }];
+  ];
 
   const config = { ...requestConfig, schema: AUTHORIZATIONS_SCHEMA };
 
@@ -244,15 +251,16 @@ export default preventStateRehydration(
     allCardStates: collection(CARD_STATE_SCHEMA),
     cardStates: storage(CARD_STATE_SCHEMA),
     punchCards: storage(PUNCH_REWARDS_SCHEMA),
-    allPunchCards: collection(PUNCH_REWARDS_SCHEMA),
+    allPunchCards: cmsCollection(PUNCH_REWARDS_SCHEMA),
     allLocations: cmsCollection(PLACES_SCHEMA),
     locations: storage(PLACES_SCHEMA),
     allPlaceRewards: collection(PLACE_REWARDS_SCHEMA),
     placeRewards: storage(PLACE_REWARDS_SCHEMA),
     pointRewards: storage(POINT_REWARDS_SCHEMA),
-    allPointRewards: collection(POINT_REWARDS_SCHEMA),
+    allPointRewards: cmsCollection(POINT_REWARDS_SCHEMA),
     rules: storage(RULES_SCHEMA),
     allRules: collection(RULES_SCHEMA),
     transactions: storage(TRANSACTIONS_SCHEMA),
     allTransactions: collection(TRANSACTIONS_SCHEMA),
-  }));
+  }),
+);

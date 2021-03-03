@@ -1,0 +1,51 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/app.Dockerfile
+    env_file: ./config/.env-handsoff
+    depends_on:
+      - postgres
+      - redis
+    command: sh -c "npm run migrate:docker && npm run start:debug:docker"
+    volumes:
+      - .:/app/
+      - /app/node_modules
+    ports:
+      - "${API_EXPOSED_PORT}:${NODE_PORT}"
+      - "9229:9229"
+    expose:
+      - 9229
+      - "${API_EXPOSED_PORT}"
+    networks:
+      - local
+
+  postgres:
+    build:
+      context: ./docker/db
+      dockerfile: db.Dockerfile
+    env_file: ./config/.env-handsoff
+    ports:
+      - "${POSTGRES_EXPOSED_PORT}:${POSTGRES_PORT}"
+    expose:
+      - "${POSTGRES_EXPOSED_PORT}"
+    command: "-p ${POSTGRES_PORT}"
+    volumes:
+      # if you want your db to be cleared after docker-compose down,
+      # comment out the line below
+      - "${DB_PERSIST_PATH}:/var/lib/postgresql/data"
+    networks:
+      - local
+
+  redis:
+    image: redis
+    env_file: ./config/.env-handsoff
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    expose:
+      - ${REDIS_EXPOSED_PORT}
+    networks:
+      - local
+networks:
+  local:

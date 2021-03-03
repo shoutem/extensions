@@ -31,8 +31,6 @@ import {
 } from '@shoutem/ui';
 import { ext, PAGE_SCHEMA } from '../const';
 
-const defaultImage = require('../assets/images/image-fallback.png');
-
 const navigationComponentsForLayoutTypes = {
   iconGrid: IconGrid,
   list: List,
@@ -184,7 +182,6 @@ export class PageScreen extends PureComponent {
       <Image
         styleName={imageSize || 'large'}
         source={{ uri: profile.image.url }}
-        defaultSource={defaultImage}
         animationName="hero"
       />
     );

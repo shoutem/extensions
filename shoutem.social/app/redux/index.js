@@ -12,16 +12,22 @@ export {
   loadComments,
   deleteComment,
   createComment,
-  loadUsers,
   loadUser,
+  loadUsers,
+  loadUsersInGroups,
   searchUsers,
-  searchUsersNextPage
+  searchUsersNextPage,
+  loadSocialSettings,
+  createSocialSettings,
+  updateSocialSettings,
+  initUserSettings,
 } from './actions';
 
 export {
   collectionStatusMiddleware,
+  authChangeMiddleware,
 } from './middleware';
 
-export { actions, selectors }
+export { actions, selectors };
 
 export default reducer;

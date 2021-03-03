@@ -1,7 +1,7 @@
-import { reducer } from './redux';
+import PhotoDetails from './screens/PhotoDetails';
 import PhotosGrid from './screens/PhotosGrid';
 import PhotosList from './screens/PhotosList';
-import PhotoDetails from './screens/PhotoDetails';
+import { reducer } from './redux';
 
 export const screens = {
   PhotosGrid,

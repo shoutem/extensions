@@ -1,5 +1,6 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
 import { connect } from 'react-redux';
@@ -22,6 +23,7 @@ import {
   updateResourceLanguages,
   CategoryTree,
   CmsTable,
+  SearchForm,
 } from '@shoutem/cms-dashboard';
 import {
   loadResources,
@@ -29,7 +31,12 @@ import {
   loadPreviousResourcesPage,
 } from '../../actions';
 import { getResources } from '../../selectors';
-import { getCurrentPagingOffsetFromCollection } from '../../services';
+import {
+  getCurrentPagingOffsetFromCollection,
+  getCurrentSearchOptionsFromCollection,
+  canSearch,
+  canFilter,
+} from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -42,6 +49,7 @@ function resolvePageLabel(pageNumber) {
 export class ResourceDashboard extends Component {
   static propTypes = {
     schema: PropTypes.object,
+    shortcut: PropTypes.object,
     parentCategoryId: PropTypes.string,
     selectedCategoryId: PropTypes.string,
     categories: PropTypes.array,
@@ -60,17 +68,10 @@ export class ResourceDashboard extends Component {
 
   constructor(props) {
     super(props);
+    autoBindReact(this);
 
     this.paging = createRef();
     this.resourceDeleteModal = createRef();
-
-    this.checkData = this.checkData.bind(this);
-    this.handleDeleteResourceClick = this.handleDeleteResourceClick.bind(this);
-    this.handleCategoryCreate = this.handleCategoryCreate.bind(this);
-    this.handleCategoryRename = this.handleCategoryRename.bind(this);
-    this.handleLoadResources = this.handleLoadResources.bind(this);
-    this.handleNextPageClick = this.handleNextPageClick.bind(this);
-    this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
 
     const { schema } = props;
 
@@ -112,20 +113,31 @@ export class ResourceDashboard extends Component {
         DEFAULT_LIMIT,
       );
 
-      this.handleLoadResources(nextSelectedCategoryId, nextSortOptions, offset);
+      this.handleLoadResources(
+        nextSelectedCategoryId,
+        {},
+        nextSortOptions,
+        offset,
+      );
     }
   }
 
-  handleLoadResources(categoryId, sortOptions, offset) {
+  handleLoadResources(categoryId, filterOptions, sortOptions, offset) {
     const { include } = this.state;
 
     this.props.loadResources(
       categoryId,
+      filterOptions,
       sortOptions,
       include,
       DEFAULT_LIMIT,
       offset,
     );
+  }
+
+  handleFilterChange(searchOptions) {
+    const { selectedCategoryId, sortOptions } = this.props;
+    this.handleLoadResources(selectedCategoryId, searchOptions, sortOptions, 0);
   }
 
   handleNextPageClick() {
@@ -141,6 +153,19 @@ export class ResourceDashboard extends Component {
   handleCategoryCreate(categoryName) {
     const { parentCategoryId } = this.props;
     return this.props.createCategory(categoryName, parentCategoryId);
+  }
+
+  async handleCategoryDelete(categoryId) {
+    const { onCategorySelected, selectedCategoryId } = this.props;
+    const { mainCategoryId } = this.state;
+
+    await this.props.deleteCategory(categoryId);
+
+    if (selectedCategoryId === categoryId) {
+      if (mainCategoryId && _.isFunction(onCategorySelected)) {
+        onCategorySelected(mainCategoryId);
+      }
+    }
   }
 
   handleCategoryRename(categoryId, categoryName) {
@@ -172,6 +197,7 @@ export class ResourceDashboard extends Component {
       categories,
       resources,
       schema,
+      shortcut,
     } = this.props;
     const { mainCategoryId } = this.state;
 
@@ -182,6 +208,10 @@ export class ResourceDashboard extends Component {
     const isLoading = !isInitialized(resources) || isBusy(resources);
     const inProgress = isBusy(resources);
 
+    const showSearch = canSearch(shortcut);
+    const showFilter = canFilter(shortcut);
+    const showSearchForm = showSearch || showFilter;
+
     return (
       <div className="resources-dashboard">
         <LoaderContainer isLoading={isLoading} isOverlay={inProgress}>
@@ -190,11 +220,24 @@ export class ResourceDashboard extends Component {
             categoryActionWhitelist={categoryActionWhitelist}
             onCategoryCreate={this.handleCategoryCreate}
             onCategoryUpdate={this.handleCategoryRename}
-            onCategoryDelete={this.props.deleteCategory}
+            onCategoryDelete={this.handleCategoryDelete}
             onCategorySelected={this.props.onCategorySelected}
             selectedCategoryId={selectedCategoryId}
             staticCategories={[mainCategoryId]}
           />
+          {showSearchForm && (
+            <SearchForm
+              key={selectedCategoryId}
+              schema={schema}
+              showSearch={showSearch}
+              showFilter={showFilter}
+              searchOptions={getCurrentSearchOptionsFromCollection(
+                schema,
+                resources,
+              )}
+              onChange={this.handleFilterChange}
+            />
+          )}
           <CmsTable
             className="resources-cms-table"
             schema={schema}
@@ -257,7 +300,14 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(updateResourceCategories(appId, categoryIds, resource)),
     updateResourceLanguages: (languageIds, resource) =>
       dispatch(updateResourceLanguages(appId, languageIds, resource)),
-    loadResources: (categoryId, sortOptions, include, limit, offset) =>
+    loadResources: (
+      categoryId,
+      searchOptions,
+      sortOptions,
+      include,
+      limit,
+      offset,
+    ) =>
       dispatch(
         loadResources(
           canonicalName,
@@ -266,6 +316,7 @@ function mapDispatchToProps(dispatch, ownProps) {
           include,
           limit,
           offset,
+          searchOptions,
         ),
       ),
     loadNextPage: resources => dispatch(loadNextResourcesPage(resources)),

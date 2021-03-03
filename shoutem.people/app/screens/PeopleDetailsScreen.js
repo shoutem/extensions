@@ -1,8 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { Linking } from 'react-native';
 import { connect } from 'react-redux';
-
+import { I18n } from 'shoutem.i18n';
+import { NavigationBar } from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
+import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   Image,
@@ -15,12 +18,6 @@ import {
   SimpleHtml,
   ScrollView,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
-import { openURL } from 'shoutem.web-view';
-import { NavigationBar } from 'shoutem.navigation';
-
 import { ext } from '../const';
 
 class PeopleDetailsScreen extends PureComponent {
@@ -43,11 +40,6 @@ class PeopleDetailsScreen extends PureComponent {
     };
   }
 
-  getScreenStyle() {
-    const { person } = this.props;
-    return person.image ? 'full-screen paper' : 'paper';
-  }
-
   renderImage() {
     const { person } = this.props;
 
@@ -56,7 +48,10 @@ class PeopleDetailsScreen extends PureComponent {
         animationName="hero"
         styleName="large-square placeholder"
         source={{ uri: person.image && person.image.url }}
-      />) : <View styleName="sm-gutter-top" />;
+      />
+    ) : (
+      <View styleName="sm-gutter-top" />
+    );
   }
 
   renderFooterButtons() {
@@ -65,27 +60,49 @@ class PeopleDetailsScreen extends PureComponent {
     return (
       <View styleName="horizontal h-center">
         <View styleName="horizontal wrap h-start">
-          {this.renderLinkButton('web', I18n.t('shoutem.cms.websiteButton'), person.websiteUrl)}
-          {this.renderLinkButton('call', I18n.t('shoutem.cms.phoneButton'), person.phone ? `tel:${person.phone}` : null)}
+          {this.renderLinkButton(
+            'web',
+            I18n.t('shoutem.cms.websiteButton'),
+            person.websiteUrl,
+          )}
+          {this.renderLinkButton(
+            'call',
+            I18n.t('shoutem.cms.phoneButton'),
+            person.phone ? `tel:${person.phone}` : null,
+          )}
           {this.renderLinkButton('tweet', 'Twitter', person.twitterPageUrl)}
-          {this.renderLinkButton('linkedin', 'LinkedIn', person.linkedinProfileUrl)}
-          {this.renderLinkButton('facebook', 'Facebook', person.facebookProfileUrl)}
-          {this.renderLinkButton('email', I18n.t('shoutem.cms.emailButton'),
-          person.email ? `mailto:${person.email}` : null)}
+          {this.renderLinkButton(
+            'linkedin',
+            'LinkedIn',
+            person.linkedinProfileUrl,
+          )}
+          {this.renderLinkButton(
+            'facebook',
+            'Facebook',
+            person.facebookProfileUrl,
+          )}
+          {this.renderLinkButton(
+            'email',
+            I18n.t('shoutem.cms.emailButton'),
+            person.email ? `mailto:${person.email}` : null,
+          )}
         </View>
       </View>
     );
   }
 
   renderLinkButton(icon, name, url) {
-    if (!url) return null;  // field is empty
+    if (!url) return null; // field is empty
 
     const { openURL, person } = this.props;
     const fullName = `${person.firstName} ${person.lastName}`;
 
     if (icon === 'email' || icon === 'call') {
       return (
-        <Button styleName="stacked clear tight" onPress={() => Linking.openURL(url)}>
+        <Button
+          styleName="stacked clear tight"
+          onPress={() => Linking.openURL(url)}
+        >
           <Icon name={icon} />
           <Text>{name}</Text>
         </Button>
@@ -93,7 +110,10 @@ class PeopleDetailsScreen extends PureComponent {
     }
 
     return (
-      <Button styleName="stacked clear tight" onPress={() => openURL(url, fullName)}>
+      <Button
+        styleName="stacked clear tight"
+        onPress={() => openURL(url, fullName)}
+      >
         <Icon name={icon} />
         <Text>{name}</Text>
       </Button>
@@ -103,10 +123,9 @@ class PeopleDetailsScreen extends PureComponent {
   render() {
     const { person } = this.props;
     const fullName = `${person.firstName} ${person.lastName}`.toUpperCase();
-    const screenStyle = this.getScreenStyle();
 
     return (
-      <Screen styleName={screenStyle}>
+      <Screen styleName="paper">
         <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderImage()}
@@ -128,5 +147,5 @@ class PeopleDetailsScreen extends PureComponent {
 }
 
 export default connect(undefined, { openURL })(
-    connectStyle(ext('PeopleDetailsScreen'))(PeopleDetailsScreen),
-  );
+  connectStyle(ext('PeopleDetailsScreen'))(PeopleDetailsScreen),
+);

@@ -64,6 +64,7 @@ export {
   isShortcutVisible,
   restartApp,
   setQueueTargetComplete,
+  getExtensionCloudUrl,
 } from './redux';
 
 export const actions = {

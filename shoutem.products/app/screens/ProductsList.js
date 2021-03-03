@@ -1,14 +1,12 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { navigateTo as navigateToAction } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
-import { openURL as openURLAction } from 'shoutem.web-view';
-
 import { CmsListScreen } from 'shoutem.cms';
-import { ext } from '../const';
+import { navigateTo as navigateToAction } from 'shoutem.navigation';
+import { openURL as openURLAction } from 'shoutem.web-view';
+import { connectStyle } from '@shoutem/theme';
 import ListProductView from '../components/ListProductView';
+import { ext } from '../const';
 
 export class ProductsList extends CmsListScreen {
   static propTypes = {
@@ -38,10 +36,7 @@ export class ProductsList extends CmsListScreen {
 
   renderRow(product) {
     return (
-      <ListProductView
-        product={product}
-        onPress={this.openDetailsScreen}
-      />
+      <ListProductView product={product} onPress={this.openDetailsScreen} />
     );
   }
 }
@@ -55,6 +50,7 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   openURL: openURLAction,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ProductsList'), {})(ProductsList),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('ProductsList'), {})(ProductsList));

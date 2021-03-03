@@ -1,27 +1,16 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
-import {
-  find,
-  getCollection,
-  isValid,
-  next,
-  shouldRefresh,
-} from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
-import { EmptyStateView } from '@shoutem/ui';
-
-import {
-  getAppId,
-  getExtensionSettings,
-  RemoteDataListScreen,
-} from 'shoutem.application';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { getAppId, getExtensionSettings } from 'shoutem.application';
 import { getUser, loginRequired } from 'shoutem.auth';
+import { CmsListScreen } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
-
+import { find, isValid, next, shouldRefresh } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { EmptyStateView } from '@shoutem/ui';
 import RewardListView from '../components/RewardListView';
 import {
   REWARDS_SCHEMA,
@@ -32,42 +21,39 @@ import {
 import { refreshCard } from '../services';
 import NoProgramScreen from './NoProgramScreen';
 
-const { func, shape, string } = PropTypes;
-
 /**
  * Displays a list of rewards.
  * The user can redeem a reward once he collects the required number of points on his loyalty card.
  */
-export class RewardsListScreen extends RemoteDataListScreen {
+export class RewardsListScreen extends CmsListScreen {
   static propTypes = {
-    ...RemoteDataListScreen.propTypes,
+    ...CmsListScreen.propTypes,
     // Loyalty card for user
-    card: shape({
+    card: PropTypes.shape({
       // Card ID
-      id: string,
+      id: PropTypes.string,
     }),
     // Parent category ID in Shoutem CMS
-    parentCategoryId: string,
+    parentCategoryId: PropTypes.string,
     // ID of loyalty program for this extension
-    programId: string,
+    programId: PropTypes.string,
     // Currently logged in user
-    user: shape({
-      id: string,
+    user: PropTypes.shape({
+      id: PropTypes.string,
     }),
 
     // Actions
-    find: func,
-    navigateTo: func,
-    next: func,
+    find: PropTypes.func,
+    navigateTo: PropTypes.func,
+    next: PropTypes.func,
     // Refreshes the loyalty card
-    refreshCard: func,
+    refreshCard: PropTypes.func,
   };
 
   constructor(props, context) {
     super(props, context);
 
-    this.renderRow = this.renderRow.bind(this);
-    this.navigateToRewardDetails = this.navigateToRewardDetails.bind(this);
+    autoBindReact(this);
 
     this.state = {
       cmsSchema: REWARDS_SCHEMA,
@@ -93,13 +79,24 @@ export class RewardsListScreen extends RemoteDataListScreen {
     if (hasNewCardId || (cardId && shouldRefresh(data))) {
       return this.fetchData(cardId);
     }
+
+    return null;
+  }
+
+  onCategorySelected(category) {
+    super.onCategorySelected(category);
+
+    const cardId = _.get(this.props, 'card.id');
+
+    this.fetchData(cardId);
   }
 
   fetchData(newCardId) {
-    const { card, find, parentCategoryId, refreshCard } = this.props;
+    const { card, find, refreshCard } = this.props;
     const { cmsSchema, schema } = this.state;
 
-    const cardId = card.id || newCardId;
+    const cardId = _.get(card, 'id', newCardId);
+    const categoryId = _.get(this.props, 'selectedCategory.id');
 
     if (!cardId) {
       refreshCard();
@@ -108,9 +105,9 @@ export class RewardsListScreen extends RemoteDataListScreen {
 
     find(schema, undefined, {
       query: {
+        'filter[categories]': categoryId,
         'filter[app]': getAppId(),
         'filter[schema]': cmsSchema,
-        'filter[categories]': parentCategoryId,
         'filter[card]': cardId,
       },
     });
@@ -161,34 +158,43 @@ export class RewardsListScreen extends RemoteDataListScreen {
   shouldRenderPlaceholderView() {
     const { parentCategoryId, data } = this.props;
 
-    return _.isUndefined(parentCategoryId) || super.shouldRenderPlaceholderView(data);
+    return (
+      _.isUndefined(parentCategoryId) || super.shouldRenderPlaceholderView(data)
+    );
   }
 
   render() {
     const { programId } = this.props;
 
-    return programId ? super.render() : (<NoProgramScreen />);
+    return programId ? super.render() : <NoProgramScreen />;
   }
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const parentCategoryId = _.get(ownProps, 'shortcut.settings.parentCategory.id');
-  const { allPointRewards, card: { data = {} } } = state[ext()];
-
   const extensionSettings = getExtensionSettings(state, ext());
   const programId = _.get(extensionSettings, 'program.id');
+  const card = _.get(state[ext()], 'card.data', {});
 
   return {
-    card: data,
-    parentCategoryId,
+    ...CmsListScreen.createMapStateToProps(
+      state => state[ext()].allPointRewards,
+    )(state, ownProps),
+    card,
     programId,
-    data: getCollection(allPointRewards, state),
     user: getUser(state),
   };
 };
 
-export const mapDispatchToProps = { find, navigateTo, next, refreshCard };
+export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
+  find,
+  navigateTo,
+  next,
+  refreshCard,
+});
 
-export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('RewardsListScreen'))(RewardsListScreen),
-));
+export default loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('RewardsListScreen'))(RewardsListScreen)),
+);

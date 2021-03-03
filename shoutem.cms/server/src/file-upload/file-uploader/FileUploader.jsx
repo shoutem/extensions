@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
 import { HelpBlock } from 'react-bootstrap';
@@ -14,17 +15,7 @@ import './style.scss';
 export default class FileUploader extends React.Component {
   constructor(props) {
     super(props);
-
-    this.handleUploadFailed = this.handleUploadFailed.bind(this);
-    this.handleUploadSucceeded = this.handleUploadSucceeded.bind(this);
-    this.validateFileSize = this.validateFileSize.bind(this);
-    this.uploadFile = this.uploadFile.bind(this);
-    this.upload = this.upload.bind(this);
-    this.handleDrop = this.handleDrop.bind(this);
-    this.handleDropRejected = this.handleDropRejected.bind(this);
-    this.handleDeleteFailed = this.handleDeleteFailed.bind(this);
-    this.handleDeleteClick = this.handleDeleteClick.bind(this);
-    this.renderDropzoneContent = this.renderDropzoneContent.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,

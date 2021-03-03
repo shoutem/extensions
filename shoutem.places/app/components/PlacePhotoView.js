@@ -1,5 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { Favorite } from 'shoutem.favorites';
+import { connectStyle } from '@shoutem/theme';
 import {
   TouchableOpacity,
   Caption,
@@ -9,11 +11,9 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { Favorite } from 'shoutem.favorites';
-import { ext } from '../const';
-import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
 import { getFirstImage } from '../services/places';
+import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
+import { ext } from '../const';
 
 export class PlacePhotoView extends PureComponent {
   static propTypes = {
@@ -38,9 +38,7 @@ export class PlacePhotoView extends PureComponent {
     const imageSource = leadImage ? { uri: leadImage.url } : undefined;
 
     return (
-      <TouchableOpacity
-        onPress={onPress}
-      >
+      <TouchableOpacity onPress={onPress}>
         <Divider styleName="line" />
         <ImageBackground
           source={imageSource}
@@ -48,12 +46,11 @@ export class PlacePhotoView extends PureComponent {
         >
           <Tile>
             <View styleName="actions" virtual>
-              <Favorite
-                item={place}
-                schema={schema}
-              />
+              <Favorite item={place} schema={schema} />
             </View>
-            <Title numberOfLines={2} styleName="vertical">{place.name.toUpperCase()}</Title>
+            <Title numberOfLines={2} styleName="vertical">
+              {place.name.toUpperCase()}
+            </Title>
             <Caption styleName="vertical">{formattedAddress}</Caption>
           </Tile>
         </ImageBackground>

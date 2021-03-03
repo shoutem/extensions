@@ -1,8 +1,8 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
   Button,
   ButtonToolbar,
@@ -34,14 +34,16 @@ export default class FeedUrlInput extends Component {
   updateFeedUrl(feedUrl) {
     this.setState({ inProgress: true });
 
-    this.props.onContinueClick(feedUrl)
+    this.props
+      .onContinueClick(feedUrl)
       .then(() => this.setState({ inProgress: false }))
-      .catch((error) => {
+      .catch(error => {
+        // eslint-disable-next-line no-console
         console.error('Failed to update feed URL:\n', error);
         this.setState({
           inProgress: false,
           error: i18next.t(LOCALIZATION.NOT_WORDPRESS_URL),
-        })
+        });
       });
   }
 
@@ -78,9 +80,7 @@ export default class FeedUrlInput extends Component {
       <div className="feed-url-input">
         <form onSubmit={this.handleSubmit}>
           <FormGroup validationState={validationState}>
-            <ControlLabel>
-              {i18next.t(LOCALIZATION.PAGE_URL)}
-            </ControlLabel>
+            <ControlLabel>{i18next.t(LOCALIZATION.PAGE_URL)}</ControlLabel>
             <FormControl
               className="form-control"
               onChange={this.handleTextChange}

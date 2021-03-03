@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import autoBind from 'auto-bind';
-import { find, next, shouldRefresh } from '@shoutem/redux-io';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { openInModal } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
+import { find, next, shouldRefresh } from '@shoutem/redux-io';
 import { ext, RSS_PHOTOS_SCHEMA } from '../const';
 import { getPhotosFeed, fetchPhotosFeed } from '../redux';
 import { remapAndFilterPhotos } from '../services';

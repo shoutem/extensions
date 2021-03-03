@@ -1,7 +1,6 @@
 export {
   SET_ACTIVE_NAVIGATION_STACK,
   ROOT_NAVIGATION_STACK,
-
   // Navigation actions
   NAVIGATE,
   NAVIGATE_BACK,
@@ -15,7 +14,6 @@ export {
   OPEN_MODAL,
   CLOSE_MODAL,
   NAVIGATION_INITIALIZED,
-
   // Navigation action creators
   createNavigationAction,
   navigateTo,
@@ -30,14 +28,13 @@ export {
   closeModal,
   rewrite,
   setNavigationInitialized,
-
+  createResetToCurrentRoute,
   // Screen state actions & action creators
   SET_SCREEN_STATE,
   CLEAR_SCREEN_STATE,
   clearScreenState,
   setActiveNavigationStack,
   setScreenState,
-
   // Helpers
   hasRouteWithKey,
   isEmptyNavigationState,

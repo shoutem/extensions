@@ -1,10 +1,11 @@
 {
   "name": "people",
   "title": "People",
-  "version": "2.5.0",
+  "version": "2.5.2",
   "platform": "2.5.*",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
+  "releaseNotes": "* Added CMS search feature",
   "dependencies": [
     "shoutem.cms"
   ],
@@ -26,6 +27,7 @@
       "name": "openPeopleListScreen",
       "screen": "@.PeopleListScreen",
       "capabilities": [
+        "shoutem.cms.search",
         "shoutem.cms.import-csv"
       ],
       "adminPages": [

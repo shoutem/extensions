@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
+import PropTypes from 'prop-types';
+import { NavigationBar } from 'shoutem.navigation';
+import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   ImageBackground,
@@ -13,10 +14,6 @@ import {
   Tile,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import { NavigationBar } from 'shoutem.navigation';
-
 import { ext } from '../const';
 
 class MenuDetailsScreen extends PureComponent {
@@ -30,10 +27,11 @@ class MenuDetailsScreen extends PureComponent {
     const price = item.price ? (
       <Overlay>
         <Subtitle styleName="sm-gutter-horizontal">{item.price}</Subtitle>
-      </Overlay>) : null;
+      </Overlay>
+    ) : null;
 
     return (
-      <Screen styleName="full-screen paper">
+      <Screen styleName="paper">
         <NavigationBar
           styleName="clear"
           animationName="solidify"
@@ -46,7 +44,9 @@ class MenuDetailsScreen extends PureComponent {
             source={{ uri: item.image ? item.image.url : undefined }}
           >
             <Tile animationName="hero">
-              <Title styleName="md-gutter-bottom">{item.name.toUpperCase()}</Title>
+              <Title styleName="md-gutter-bottom">
+                {item.name.toUpperCase()}
+              </Title>
               {price}
             </Tile>
           </ImageBackground>

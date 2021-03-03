@@ -212,7 +212,6 @@ export class AboutScreen extends PureComponent {
       <Image
         styleName={styleName || 'large'}
         source={{ uri: profile.image.url }}
-        defaultSource={require('../assets/images/image-fallback.png')}
         animationName="hero"
       />
     );

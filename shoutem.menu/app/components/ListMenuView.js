@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
+import PropTypes from 'prop-types';
 import {
   ImageBackground,
   Subtitle,
@@ -31,7 +30,8 @@ export default class ListMenuView extends PureComponent {
     const price = item.price ? (
       <Overlay>
         <Subtitle styleName="sm-gutter-horizontal">{item.price}</Subtitle>
-      </Overlay>) : null;
+      </Overlay>
+    ) : null;
 
     return (
       <TouchableOpacity key={item.id} onPress={this.onPress}>
@@ -40,7 +40,9 @@ export default class ListMenuView extends PureComponent {
           source={{ uri: item.image ? item.image.url : undefined }}
         >
           <Tile>
-            <Title styleName="md-gutter-bottom">{item.name.toUpperCase()}</Title>
+            <Title styleName="md-gutter-bottom">
+              {item.name.toUpperCase()}
+            </Title>
             {price}
           </Tile>
         </ImageBackground>

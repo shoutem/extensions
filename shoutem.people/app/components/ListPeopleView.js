@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-
+import PropTypes from 'prop-types';
 import {
   Image,
   Subtitle,
@@ -38,7 +37,9 @@ export default class ListPeopleView extends PureComponent {
               styleName="small rounded-corners placeholder"
             />
             <View styleName="vertical stretch space-between">
-              <Subtitle>{person.firstName} {person.lastName}</Subtitle>
+              <Subtitle>
+                {person.firstName} {person.lastName}
+              </Subtitle>
               <Caption>{person.profession}</Caption>
             </View>
           </Row>

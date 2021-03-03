@@ -4,12 +4,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 
 import { connectStyle } from '@shoutem/theme';
-import {
-  Button,
-  Text,
-  TextInput,
-  View,
-} from '@shoutem/ui';
+import { Button, Text, TextInput, View } from '@shoutem/ui';
 
 import { I18n } from 'shoutem.i18n';
 
@@ -54,8 +49,8 @@ class LoginForm extends PureComponent {
   }
 
   render() {
-    const { style } = this.props;
-    const { visibility, username, password } = this.state;
+    const { style, onForgotPasswordPress } = this.props;
+    const { username, password } = this.state;
 
     return (
       <View>
@@ -75,12 +70,9 @@ class LoginForm extends PureComponent {
         </View>
         <View style={style.passwordLabelContainer}>
           <Text>{I18n.t(ext('password'))}</Text>
-
-          {/* A placeholder for "Forgot Password" feature
-          <Button styleName="clear">
-            <Text>Forgot Password?</Text>
+          <Button styleName="clear" onPress={onForgotPasswordPress}>
+            <Text>{I18n.t(ext('forgotPasswordText'))}</Text>
           </Button>
-          */}
         </View>
         <PasswordTextInput
           onChangeText={this.handlePasswordChange}

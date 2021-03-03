@@ -1,3 +1,3 @@
 export * from './gauge-progress-bar';
 export * from './rewards-gauge';
-export * from './withOpenPlaceDetails';
+export { default as withOpenPlaceDetails } from './withOpenPlaceDetails';

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
 import classNames from 'classnames';
@@ -33,17 +34,7 @@ function getVisibleCategoryIds(visibleCategoryIds) {
 export class AdvancedSetup extends Component {
   constructor(props) {
     super(props);
-
-    this.checkData = this.checkData.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
-    this.handleParentCategoryChange = this.handleParentCategoryChange.bind(
-      this,
-    );
-    this.handleVisibleCategoriesChange = this.handleVisibleCategoriesChange.bind(
-      this,
-    );
-    this.handleCreateCategory = this.handleCreateCategory.bind(this);
+    autoBindReact(this);
 
     const { parentCategoryId, visibleCategoryIds } = props;
 

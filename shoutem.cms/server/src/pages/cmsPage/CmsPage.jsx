@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import classNames from 'classnames';
 import Uri from 'urijs';
 import {
   shouldLoad,
@@ -9,12 +11,11 @@ import {
   isInitialized,
 } from '@shoutem/redux-io';
 import { AssetManager } from '@shoutem/assets-sdk';
-import { url, appId, googleApiKey } from 'environment';
+import { url, appId, googleApiKey, getShortcut } from 'environment';
 import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { ControlLabel } from 'react-bootstrap';
-import { getShortcut } from 'environment';
 import {
   getCategories,
   getChildCategories,
@@ -32,6 +33,7 @@ import {
   updateResourceWithRelationships,
   getMainCategoryId,
   ResourceFormModal,
+  getReferencedSchemas,
 } from '@shoutem/cms-dashboard';
 import {
   loadLanguageModuleStatus,
@@ -43,7 +45,11 @@ import {
   loadSchema,
   updateShortcutSortOptions,
 } from '../../actions';
-import { ManageContentButton, SortOptions } from '../../components';
+import {
+  ManageContentButton,
+  SortOptions,
+  ExportCmsButton,
+} from '../../components';
 import AdvancedSetup from '../../fragments/advanced-setup';
 import ImporterDashboard from '../../fragments/importer-dashboard';
 import ResourceDashboard from '../../fragments/resource-dashboard';
@@ -57,14 +63,15 @@ import {
   getVisibleCategoryIds,
   checkStatusOfImporters,
   getImporterCapabilities,
+  canExportData,
 } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';
-import { getReferencedSchemas } from '../../cms-dashboard';
 
 export class CmsPage extends Component {
   constructor(props, context) {
     super(props, context);
+    autoBindReact(this);
 
     shoutemUrls.init(url);
 
@@ -73,30 +80,15 @@ export class CmsPage extends Component {
       .segment('api')
       .toString();
 
-    const appsUrl = new Uri(`//${_.get(url, 'apps')}`)
+    this.appsUrl = new Uri(`//${_.get(url, 'apps')}`)
       .protocol(location.protocol)
       .toString();
 
     this.assetManager = new AssetManager({
       scopeType: 'application',
       scopeId: appId,
-      assetPolicyHost: appsUrl,
+      assetPolicyHost: this.appsUrl,
     });
-
-    this.checkData = this.checkData.bind(this);
-    this.handleCreateCategory = this.handleCreateCategory.bind(this);
-    this.handleSortOptionsChange = this.handleSortOptionsChange.bind(this);
-    this.handleToggleAdditionalOptions = this.handleToggleAdditionalOptions.bind(
-      this,
-    );
-    this.handleResourceAddClick = this.handleResourceAddClick.bind(this);
-    this.handleResourceEditClick = this.handleResourceEditClick.bind(this);
-    this.handleResourceModalHide = this.handleResourceModalHide.bind(this);
-    this.handleCategorySelected = this.handleCategorySelected.bind(this);
-    this.handleCreateResource = this.handleCreateResource.bind(this);
-    this.handleUpdateResource = this.handleUpdateResource.bind(this);
-    this.renderBody = this.renderBody.bind(this);
-    this.renderModal = this.renderModal.bind(this);
 
     const { shortcut, createCategory } = props;
 
@@ -118,7 +110,7 @@ export class CmsPage extends Component {
       showAdditionalOptions: false,
       showResourceModal: false,
       currentResource: null,
-      parentCategoryId: parentCategoryId,
+      parentCategoryId,
       selectedCategoryId: null,
     };
   }
@@ -339,6 +331,7 @@ export class CmsPage extends Component {
     const parentCategoryId = getParentCategoryId(shortcut);
     const visibleCategoryIds = getVisibleCategoryIds(shortcut);
     const extensionInfo = this.resolveExtensionInfo(shortcut);
+    const canExportCmsData = canExportData(shortcut);
 
     return (
       <div>
@@ -350,13 +343,17 @@ export class CmsPage extends Component {
             schema={schema}
             sortOptions={sortOptions}
           />
-          <ManageContentButton
-            className="pull-right"
-            cmsButtonLabel={i18next.t(LOCALIZATION.BUTTON_ADD_ITEM)}
-            onNavigateToCmsClick={this.handleResourceAddClick}
-            onToggleAdditionalOptions={this.handleToggleAdditionalOptions}
-            showAdditionalOptions={showAdditionalOptions}
-          />
+          <div className="content-options">
+            {canExportCmsData && (
+              <ExportCmsButton appId={appId} categoryId={parentCategoryId} />
+            )}
+            <ManageContentButton
+              cmsButtonLabel={i18next.t(LOCALIZATION.BUTTON_ADD_ITEM)}
+              onNavigateToCmsClick={this.handleResourceAddClick}
+              onToggleAdditionalOptions={this.handleToggleAdditionalOptions}
+              showAdditionalOptions={showAdditionalOptions}
+            />
+          </div>
         </div>
         {showAdditionalOptions && (
           <div className="additional-options">
@@ -388,6 +385,7 @@ export class CmsPage extends Component {
             appId={appId}
             canonicalName={canonicalName}
             schema={schema}
+            shortcut={shortcut}
             parentCategoryId={parentCategoryId}
             languages={resolvedLanguages}
             categories={childCategories}
@@ -422,7 +420,7 @@ export class CmsPage extends Component {
   }
 
   render() {
-    const { schema, languages, languageModuleStatus, initialized } = this.props;
+    const { schema, shortcut, languages, languageModuleStatus, initialized } = this.props;
     const { showResourceModal, selectedCategoryId } = this.state;
 
     const isLoading =
@@ -432,9 +430,14 @@ export class CmsPage extends Component {
       isBusy(languages);
 
     const translatedSchema = translateSchema(schema);
+    const canExportCmsData = canExportData(shortcut);
+
+    const cmsClasses = classNames('cms', {
+      'cms-extended': canExportCmsData,
+    });
 
     return (
-      <LoaderContainer className="cms" isLoading={isLoading} isOverlay>
+      <LoaderContainer className={cmsClasses} isLoading={isLoading} isOverlay>
         {!showResourceModal && this.renderBody(translatedSchema)}
         {showResourceModal && this.renderModal(translatedSchema)}
       </LoaderContainer>
@@ -465,6 +468,10 @@ CmsPage.propTypes = {
   updateResourceWithRelationships: PropTypes.func,
   loadReferenceSchema: PropTypes.func,
   loadReferenceResources: PropTypes.func,
+  appId: PropTypes.string,
+  canonicalName: PropTypes.string,
+  childCategories: PropTypes.array,
+  loadChildCategories: PropTypes.func,
 };
 
 function mapStateToProps(state) {

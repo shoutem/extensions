@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { HelpBlock } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import classNames from 'classnames';
@@ -14,21 +15,12 @@ import './style.scss';
 export default class ImageUploader extends Component {
   constructor(props) {
     super(props);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,
       error: null,
     };
-
-    this.handleUploadFailed = this.handleUploadFailed.bind(this);
-    this.handleUploadSucceeded = this.handleUploadSucceeded.bind(this);
-    this.handleDeleteClick = this.handleDeleteClick.bind(this);
-    this.handleDeleteFailed = this.handleDeleteFailed.bind(this);
-    this.validateFileSize = this.validateFileSize.bind(this);
-    this.upload = this.upload.bind(this);
-    this.handleDrop = this.handleDrop.bind(this);
-    this.handleDropRejected = this.handleDropRejected.bind(this);
-    this.renderDropzoneContent = this.renderDropzoneContent.bind(this);
   }
 
   handleUploadFailed(errorMessage) {
@@ -125,8 +117,24 @@ export default class ImageUploader extends Component {
     }, this.handleDeleteFailed);
   }
 
+  handlePreviewClick(event) {
+    event.stopPropagation();
+
+    const { src, onPreviewClick } = this.props;
+
+    if (_.isFunction(onPreviewClick)) {
+      return onPreviewClick(src);
+    }
+  }
+
   renderDropzoneContent() {
-    const { src, canBeDeleted, editorWidth, editorHeight } = this.props;
+    const {
+      src,
+      canBeDeleted,
+      canBePreviewed,
+      editorWidth,
+      editorHeight,
+    } = this.props;
 
     if (!src) {
       return (
@@ -139,7 +147,9 @@ export default class ImageUploader extends Component {
         width={editorWidth}
         height={editorHeight}
         canBeDeleted={canBeDeleted}
+        canBePreviewed={canBePreviewed}
         onDeleteClick={this.handleDeleteClick}
+        onPreviewClick={this.handlePreviewClick}
         src={src}
       />
     );
@@ -225,6 +235,7 @@ ImageUploader.propTypes = {
   }),
   folderName: PropTypes.string,
   resolveFilename: PropTypes.func,
+  onPreviewClick: PropTypes.func,
   /**
    *  Callback forwarded to ImagePreview component; invoked when existing file is deleted
    */
@@ -233,6 +244,10 @@ ImageUploader.propTypes = {
    * Flag indicating whether file can be deleted
    */
   canBeDeleted: PropTypes.bool,
+  /**
+   * Flag indicating whether file can be previewed
+   */
+  canBePreviewed: PropTypes.bool,
   /**
    * By providing accept prop you can make Dropzone to accept
    * specific file types and reject the others.
@@ -265,6 +280,7 @@ ImageUploader.defaultProps = {
   onError: () => {},
   showValidationError: true,
   canBeDeleted: true,
+  canBePreviewed: true,
   autoResize: true,
   resolveFilename: file => file.name,
   editorWidth: '200px',

@@ -47,7 +47,11 @@
       "reportActionSheetTitle": "Report",
       "reportActionSheetMessage": "Why are you reporting this post? ",
       "reportSuccessTitle": "Report sent",
-      "reportSuccessMessage": "Your report has been sent to our administrators."
+      "reportSuccessMessage": "Your report has been sent to our administrators.",
+      "settingsScreentitle": "SETTINGS",
+      "settingsScreenSubtitle": "Send me a push notification for",
+      "commentsOnMyStatuses": "Comments on my statuses",
+      "likesOnMyStatuses": "Likes on my statuses"
     }
   }
 }
