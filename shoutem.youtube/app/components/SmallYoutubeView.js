@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import he from 'he';
 import _ from 'lodash';
 import moment from 'moment';
-import he from 'he';
+import PropTypes from 'prop-types';
 import {
   TouchableOpacity,
   Row,
@@ -14,7 +14,6 @@ import {
   Icon,
   Divider,
 } from '@shoutem/ui';
-
 import getImageSource from '../services/youtube-view';
 
 /**
@@ -38,8 +37,14 @@ export default class SmallYoutubeView extends PureComponent {
 
   render() {
     const { video } = this.props;
+
+    // Only PlaylistItems API response contains item kind: "youtube#playlistItem"
+    // that has contentDetails object (other APIs don't) & response is sorted by
+    // contentDetails.videoPublishedAt
+    const publishedAt =
+      _.get(video, 'contentDetails.videoPublishedAt') ||
+      _.get(video, 'snippet.publishedAt');
     const titleSource = he.decode(_.get(video, 'snippet.title'));
-    const publishedAt = _.get(video, 'snippet.publishedAt');
 
     return (
       <TouchableOpacity onPress={this.onPress}>

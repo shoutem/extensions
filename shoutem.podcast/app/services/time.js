@@ -1,5 +1,5 @@
 // https://stackoverflow.com/a/1322798/1548564
-export default function convertSecondsToTimeDisplay(totalSeconds = 0) {
+export function convertSecondsToTimeDisplay(totalSeconds = 0) {
   if (totalSeconds === 0 || Number.isNaN(totalSeconds)) {
     return '0:00';
   }

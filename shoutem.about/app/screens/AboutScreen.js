@@ -349,6 +349,12 @@ export class AboutScreen extends PureComponent {
             title="Facebook"
             openURL={openURL}
           />
+          <SocialButton
+            icon="instagram"
+            url={profile.instagram}
+            title="Instagram"
+            openURL={openURL}
+          />
         </View>
       </View>
     );

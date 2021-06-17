@@ -45,6 +45,7 @@ export default class TextEditorReduxFormElement extends Component {
       className,
       ...otherProps
     } = this.props;
+    const { value } = this.state;
 
     const classes = classNames('text-editor-redux-from-element', className);
     const isError = fieldInError(field);
@@ -59,7 +60,7 @@ export default class TextEditorReduxFormElement extends Component {
         <ControlLabel>{name}</ControlLabel>
         <RichTextEditor
           onChange={this.handleChange}
-          value={this.state.value}
+          value={value}
           {...otherProps}
         />
         {helpBlockText && <HelpBlock>{helpBlockText}</HelpBlock>}

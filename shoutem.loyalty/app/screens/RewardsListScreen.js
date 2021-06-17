@@ -103,18 +103,20 @@ export class RewardsListScreen extends CmsListScreen {
       return;
     }
 
-    find(schema, undefined, {
-      query: {
-        'filter[categories]': categoryId,
-        'filter[app]': getAppId(),
-        'filter[schema]': cmsSchema,
-        'filter[card]': cardId,
-      },
-    });
+    if (_.isString(cardId)) {
+      find(schema, undefined, {
+        query: {
+          'filter[categories]': categoryId,
+          'filter[app]': getAppId(),
+          'filter[schema]': cmsSchema,
+          'filter[card]': cardId,
+        },
+      });
 
-    find(CARD_STATE_SCHEMA, undefined, {
-      cardId,
-    });
+      find(CARD_STATE_SCHEMA, undefined, {
+        cardId,
+      });
+    }
   }
 
   navigateToRewardDetails(reward) {

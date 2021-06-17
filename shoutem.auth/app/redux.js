@@ -28,6 +28,7 @@ import { shoutemApi } from './services/shoutemApi';
 export const LOGIN = 'shoutem.auth.LOGIN';
 export const LOGOUT = 'shoutem.auth.LOGOUT';
 export const AUTHENTICATE = 'shoutem.auth.AUTHENTICATE';
+export const REAUTHENTICATE_FAILED = 'shoutem.auth.REAUTHENTICATE_FAILED';
 export const RESTORE_SESSION = 'shoutem.auth.RESTORE_SESSION';
 export const REGISTER = 'shoutem.auth.REGISTER';
 export const SET_ACCESS_TOKEN = 'shoutem.auth.SET_ACCESS_TOKEN';

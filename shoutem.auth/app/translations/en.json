@@ -17,6 +17,8 @@
       "formNotFilledErrorMessage": "All form fields are required.",
       "gdprConsentMessage": "I allow this app to collect and use my data, as described in Privacy Policy",
       "emailTakenErrorMessage": "This email address is already registered.",
+      "emptyUsernameErrorMessage": "Username/email should not be empty",
+      "emptyPasswordErrorMessage": "Password should not be empty",
       "recoverPasswordText": "Recover password?",
       "horizontalSeparatorText": "OR",
       "imageSelectErrorMessage": "Image selection error.",

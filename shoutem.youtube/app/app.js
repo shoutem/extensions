@@ -1,6 +1,6 @@
 import rio from '@shoutem/redux-io';
-import { YOUTUBE_VIDEOS_SCHEMA } from './redux';
 import { API_ENDPOINT } from './const';
+import { YOUTUBE_VIDEOS_SCHEMA } from './redux';
 
 export function appDidMount() {
   rio.registerResource({

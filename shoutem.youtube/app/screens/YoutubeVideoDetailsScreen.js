@@ -1,12 +1,11 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import {
-  AppState,
-  Platform,
-} from 'react-native';
-import moment from 'moment';
-import _ from 'lodash';
 import he from 'he';
+import _ from 'lodash';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import { AppState, Platform } from 'react-native';
+import { NavigationBar } from 'shoutem.navigation';
+import { connectStyle } from '@shoutem/theme';
 import {
   ScrollView,
   Title,
@@ -17,9 +16,6 @@ import {
   View,
   SimpleHtml,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from 'shoutem.navigation';
-
 import { ext } from '../const';
 
 class YoutubeVideoDetailsScreen extends PureComponent {
@@ -55,13 +51,14 @@ class YoutubeVideoDetailsScreen extends PureComponent {
     const { video } = this.props;
     const { appState } = this.state;
 
-    const videoSource = _.get(video, 'id.videoId');
+    // PlaylistItems API returns video ID value inside item.snippet.resourceId.videoId
+    // Search API returns the same in item.id.videoId
+    const videoSource =
+      _.get(video, 'snippet.resourceId.videoId') || _.get(video, 'id.videoId');
     const titleSource = he.decode(_.get(video, 'snippet.title'));
     const publishedAt = _.get(video, 'snippet.publishedAt');
     const descriptionSource = _.get(video, 'snippet.description');
-    const playlistVideoSource = _.get(video, 'snippet.resourceId.videoId');
-    const youtubeSource = playlistVideoSource || videoSource;
-    const videoUrl = `https://youtube.com/watch?v=${youtubeSource}`;
+    const videoUrl = `https://youtube.com/watch?v=${videoSource}`;
 
     // When an iOS device is locked, the video pauses automatically
     // on android we have to explicitly remove it from component tree
@@ -81,9 +78,7 @@ class YoutubeVideoDetailsScreen extends PureComponent {
         />
 
         <ScrollView>
-          {shouldRenderVideo && (
-            <Video source={{ uri: videoUrl }} />
-          )}
+          {shouldRenderVideo && <Video source={{ uri: videoUrl }} />}
           <Tile styleName="text-centric">
             <Title styleName="md-gutter-bottom">{titleSource}</Title>
             <Caption>{moment(publishedAt).fromNow()}</Caption>
@@ -97,4 +92,6 @@ class YoutubeVideoDetailsScreen extends PureComponent {
   }
 }
 
-export default connectStyle(ext('YoutubeVideoDetailsScreen'))(YoutubeVideoDetailsScreen);
+export default connectStyle(ext('YoutubeVideoDetailsScreen'))(
+  YoutubeVideoDetailsScreen,
+);

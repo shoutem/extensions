@@ -1,12 +1,14 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "2.5.2",
+  "version": "2.5.5",
   "platform": "2.5.*",
   "skipClone": false,
   "releaseNotes": "* Added user notification preferences screen\n* Added social based push notifications (likes, comments…)",
   "description": "Let members create posts, comment and like them",
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

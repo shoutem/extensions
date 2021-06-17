@@ -1,15 +1,13 @@
 {
   "name": "cms",
-  "version": "2.5.4",
+  "version": "2.5.7",
   "platform": "2.5.*",
   "type": "system",
   "title": "CMS",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",
-  "releaseNotes": "* Added CMS data export option for supported extensions",
+  "releaseNotes": "* Upgraded Rich text editor component\n *Added video support in Rich text editor\n *Added emoji picker to inputs",
   "icon": "server/assets/add-cms-image.png",
-  "categories": [
-    "content"
-  ],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

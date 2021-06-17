@@ -1,8 +1,8 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
   Button,
   ButtonToolbar,
@@ -12,6 +12,7 @@ import {
 } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { validateYoutubeUrl } from '../../services/youtube';
+import { FeedUrlDescription } from '../feed-url-description';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -28,17 +29,22 @@ export default class FeedUrlInput extends Component {
   }
 
   getValidationState() {
-    return this.state.error ? 'error' : 'success';
+    const { error } = this.state;
+
+    return error ? 'error' : 'success';
   }
 
   handleContinueClick() {
-    const feedUrl = _.trim(this.state.feedUrl);
-    if (!validateYoutubeUrl(feedUrl)) {
+    const { onContinueClick } = this.props;
+    const { feedUrl } = this.state;
+    const feedUrlTrimmed = _.trim(feedUrl);
+
+    if (!validateYoutubeUrl(feedUrlTrimmed)) {
       this.setState({
         error: i18next.t(LOCALIZATION.TOOLTIP_LABEL),
       });
     } else {
-      this.props.onContinueClick(feedUrl);
+      onContinueClick(feedUrlTrimmed);
     }
   }
 
@@ -58,18 +64,19 @@ export default class FeedUrlInput extends Component {
     const { error } = this.state;
 
     if (!error) {
-      return (
-        <ControlLabel>
-          {i18next.t(LOCALIZATION.TOOLTIP_LABEL)}
-        </ControlLabel>
-      );
+      return null;
     }
-    return (<ControlLabel className="text-error feed-url-input__error">
-      {error}
-    </ControlLabel>);
+    return (
+      <ControlLabel className="text-error feed-url-input__error">
+        {error}
+      </ControlLabel>
+    );
   }
 
   render() {
+    const { feedUrl } = this.state;
+    const { inProgress } = this.props;
+
     return (
       <div className="feed-url-input">
         <form onSubmit={this.handleSubmit}>
@@ -78,19 +85,20 @@ export default class FeedUrlInput extends Component {
             <FormControl
               type="text"
               className="form-control"
-              value={this.state.feedUrl}
+              value={feedUrl}
               onChange={this.handleTextChange}
             />
           </FormGroup>
         </form>
         {this.handleTextChangeError()}
+        <FeedUrlDescription />
         <ButtonToolbar>
           <Button
             bsStyle="primary"
-            disabled={!this.state.feedUrl}
+            disabled={!feedUrl}
             onClick={this.handleContinueClick}
           >
-            <LoaderContainer isLoading={this.props.inProgress}>
+            <LoaderContainer isLoading={inProgress}>
               {i18next.t(LOCALIZATION.CONTINUE_BUTTON)}
             </LoaderContainer>
           </Button>

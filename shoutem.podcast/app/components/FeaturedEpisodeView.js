@@ -1,39 +1,41 @@
 import React from 'react';
 import moment from 'moment';
-
+import { connect } from 'react-redux';
+import { connectStyle } from '@shoutem/theme';
 import {
-  TouchableOpacity,
-  Title,
+  Button,
   Caption,
-  View,
-  Tile,
-  ImageBackground,
   Divider,
+  ImageBackground,
+  Icon,
+  Spinner,
+  Tile,
+  Title,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
-
-import {
-  EpisodeView,
-} from './EpisodeView';
+import { EpisodeView, mapDispatchToProps } from './EpisodeView';
+import { ext } from '../const';
 
 /**
  * A component used to render featured podcast episode
  */
 export class FeaturedEpisodeView extends EpisodeView {
   render() {
-    const { title, imageUrl, date, author } = this.props;
+    const { enableDownload, episode, style } = this.props;
+    const { author, downloadInProgress, path, timeUpdated, title } = episode;
 
-    const momentDate = moment(date);
-    const dateInfo = momentDate.isAfter(0) ? (
-      <Caption styleName="md-gutter-left">
-        {momentDate.fromNow()}
-      </Caption>
-    ) : null;
+    const momentDate = moment(timeUpdated);
+    const iconName = path ? 'delete' : 'download';
+    const handleDownloadManagerPress = path
+      ? this.onDeletePress
+      : this.onDownloadPress;
 
     return (
       <TouchableOpacity onPress={this.onPress}>
         <View styleName="sm-gutter featured">
           <ImageBackground
-            source={{ uri: imageUrl }}
+            source={{ uri: this.getImageUrl(episode) }}
             styleName="featured placeholder"
           >
             <Tile>
@@ -42,9 +44,25 @@ export class FeaturedEpisodeView extends EpisodeView {
                 <Caption numberOfLines={1} styleName="collapsible">
                   {author}
                 </Caption>
-                {dateInfo}
+                {momentDate.isAfter(0) && (
+                  <Caption styleName="md-gutter-left">
+                    {momentDate.fromNow()}
+                  </Caption>
+                )}
               </View>
             </Tile>
+            {enableDownload && !downloadInProgress && (
+              <Button
+                styleName="clear tight"
+                onPress={handleDownloadManagerPress}
+                style={style.downloadManagerButton}
+              >
+                <Icon name={iconName} />
+              </Button>
+            )}
+            {downloadInProgress && (
+              <Spinner style={style.downloadManagerButton} />
+            )}
           </ImageBackground>
         </View>
         <Divider styleName="line" />
@@ -52,3 +70,8 @@ export class FeaturedEpisodeView extends EpisodeView {
     );
   }
 }
+
+export default connect(
+  undefined,
+  mapDispatchToProps,
+)(connectStyle(ext('FeaturedEpisodeView'), {})(FeaturedEpisodeView));

@@ -23,7 +23,6 @@ import {
   userLoggedIn,
   getUser,
   getAccessToken,
-  hideShortcuts,
   createResetToLoginScreen,
 } from '../redux';
 import { saveSession } from '../session';
@@ -38,7 +37,6 @@ export class LoginScreen extends PureComponent {
     onLoginSuccess: PropTypes.func,
     isAuthenticated: PropTypes.bool,
     interceptedRoute: PropTypes.object,
-    hideShortcuts: PropTypes.func,
     user: PropTypes.shape({
       id: PropTypes.string,
     }),
@@ -73,14 +71,6 @@ export class LoginScreen extends PureComponent {
   handlePerformLogin(username, password) {
     const { login } = this.props;
 
-    if (_.isEmpty(username) || _.isEmpty(password)) {
-      Alert.alert(
-        I18n.t('shoutem.application.errorTitle'),
-        I18n.t(ext('formNotFilledErrorMessage')),
-      );
-      return;
-    }
-
     const resolvedUsername = username.toLowerCase();
     this.setState({ inProgress: true });
     login(resolvedUsername, password)
@@ -109,19 +99,13 @@ export class LoginScreen extends PureComponent {
       userLoggedIn,
       onLoginSuccess,
       isScreenActive,
-      hideShortcuts,
     } = this.props;
 
     this.setState({ inProgress: false });
     saveSession(JSON.stringify({ access_token }));
     userLoggedIn({ user, access_token }).then(() => {
       if (isScreenActive) {
-        InteractionManager.runAfterInteractions(() => {
-          const { settings } = this.props;
-
-          hideShortcuts(user, settings);
-          onLoginSuccess(user);
-        });
+        InteractionManager.runAfterInteractions(() => onLoginSuccess(user));
       }
     });
   }
@@ -240,7 +224,6 @@ const mapDispatchToProps = {
   navigateTo,
   login,
   userLoggedIn,
-  hideShortcuts,
   createResetToLoginScreen,
 };
 

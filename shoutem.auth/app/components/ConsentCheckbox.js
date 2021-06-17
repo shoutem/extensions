@@ -31,12 +31,14 @@ export class ConsentCheckbox extends PureComponent {
   render() {
     const { checked, description, error } = this.props;
 
-    const iconName = checked ? 'checkbox-on' : 'checkbox-off';
+    const iconName = checked
+      ? 'checkbox-rectangle-on'
+      : 'checkbox-rectangle-off';
 
     return (
       <>
         <TouchableOpacity onPress={this.handleTogglePress}>
-          <View styleName="horizontal v-start md-gutter-top">
+          <View styleName="horizontal v-start md-gutter-top md-gutter-right">
             <Icon name={iconName} />
             <Text styleName="md-gutter-left">{description}</Text>
           </View>

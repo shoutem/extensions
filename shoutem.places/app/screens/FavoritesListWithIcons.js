@@ -6,7 +6,7 @@ import {
   mapStateToProps,
   mapDispatchToProps,
 } from '../screens/FavoritesList';
-import PlaceIconView from '../components/PlaceIconView';
+import { PlaceIconView } from '../components';
 import { ext } from '../const';
 
 class FavoritesListWithIcons extends FavoritesList {

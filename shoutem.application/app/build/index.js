@@ -2,6 +2,7 @@ const {
   getAppConfiguration,
   getBuildConfiguration,
 } = require('@shoutem/build-tools');
+const increaseJvmMemory = require('./increaseJvmMemory');
 const injectReactNativeMaps = require('./injectMaps');
 const injectReactNativeSplashScreen = require('./injectSplashScreen');
 const files = require('./files');
@@ -10,6 +11,7 @@ const configuration = require('./configuration');
 const { writeJsonToFile } = files;
 
 function preBuild(appConfiguration, buildConfiguration) {
+  increaseJvmMemory();
   injectReactNativeMaps();
   injectReactNativeSplashScreen();
 

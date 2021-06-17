@@ -1,19 +1,10 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import Slider from '@react-native-community/slider';
 import _ from 'lodash';
-
-import {
-  STATE_PAUSED,
-  STATE_PLAYING,
-  TrackPlayer,
-  useProgress,
-} from 'shoutem.audio';
-
-import { Caption, Row, View } from '@shoutem/ui';
-
-import convertSecondsToTimeDisplay from '../../services/time';
-import { ext } from '../../const';
+import PropTypes from 'prop-types';
+import { TrackPlayer, useProgress } from 'shoutem.audio';
+import { Caption, View } from '@shoutem/ui';
+import { convertSecondsToTimeDisplay } from '../../services';
 
 const sliderColorProps = [
   'thumbTintColor',
@@ -21,7 +12,7 @@ const sliderColorProps = [
   'maximumTrackTintColor',
 ];
 
-export const ProgressControl = ({ playbackState, style }) => {
+export const ProgressControl = ({ style }) => {
   const { slider, timeDisplay } = style;
   const [sliderPosition, setSliderPosition] = useState(0);
   const [slidingPosition, setSlidingPosition] = useState(0);
@@ -29,16 +20,22 @@ export const ProgressControl = ({ playbackState, style }) => {
 
   const colorProps = _.pick(slider, sliderColorProps);
   const sliderStyle = _.omit(slider, sliderColorProps);
-  const progress = (position === 0 || duration === 0) ? 0 :
-    parseFloat((position/duration).toFixed(2));
+  const progress =
+    position === 0 || duration === 0
+      ? 0
+      : parseFloat((position / duration).toFixed(2));
   const episodeIsActive = duration !== 0;
 
   const totalDuration = convertSecondsToTimeDisplay(Math.floor(duration));
   const resolvedTotalDuration = totalDuration === '0:00' ? '' : totalDuration;
-  const currentTime = sliderPosition === 1 ? totalDuration :
-    convertSecondsToTimeDisplay(Math.floor(position));
-  const resolvedCurrentTime = slidingPosition === 0 ? currentTime :
-    convertSecondsToTimeDisplay(Math.floor(slidingPosition*duration));
+  const currentTime =
+    sliderPosition === 1
+      ? totalDuration
+      : convertSecondsToTimeDisplay(Math.floor(position));
+  const resolvedCurrentTime =
+    slidingPosition === 0
+      ? currentTime
+      : convertSecondsToTimeDisplay(Math.floor(slidingPosition * duration));
 
   function handleSlidingStart() {
     TrackPlayer.pause();
@@ -81,4 +78,8 @@ export const ProgressControl = ({ playbackState, style }) => {
       </View>
     </View>
   );
-}
+};
+
+ProgressControl.propTypes = {
+  style: PropTypes.object,
+};

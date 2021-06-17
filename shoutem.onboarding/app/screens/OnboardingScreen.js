@@ -48,6 +48,7 @@ export class OnboardingScreen extends PureComponent {
 
     return {
       styleName: 'clear',
+      renderBackground: () => null,
       renderRightComponent: () => (
         <View styleName="container" virtual>
           <Button onPress={this.closeModal}>

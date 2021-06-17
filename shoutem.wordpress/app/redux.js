@@ -170,20 +170,16 @@ export function fetchPostsAuthor({ feedUrl, posts, appendMode = false }) {
  * Redux thunk for fetching posts and media one after other
  * @param {Object} options @see fetchPosts
  */
-export function fetchWordpressPosts(options) {
+export function fetchWordpressPosts(options, categories) {
   return dispatch =>
-    dispatch(fetchCategories(options))
-      .then(({ payload }) =>
-        dispatch(fetchPosts({ ...options, categories: payload })),
-      )
-      .then(action => {
-        const { payload: posts } = action;
+    dispatch(fetchPosts({ ...options, categories })).then(action => {
+      const posts = _.get(action, 'payload');
 
-        return Promise.all([
-          dispatch(fetchPostsMedia({ ...options, posts })),
-          dispatch(fetchPostsAuthor({ ...options, posts })),
-        ]);
-      });
+      return Promise.all([
+        dispatch(fetchPostsMedia({ ...options, posts })),
+        dispatch(fetchPostsAuthor({ ...options, posts })),
+      ]);
+    });
 }
 
 // REDUCERS

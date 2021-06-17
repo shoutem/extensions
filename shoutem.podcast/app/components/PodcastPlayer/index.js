@@ -1,5 +1,1 @@
-import PodcastPlayer from './PodcastPlayer';
-
-export {
-  PodcastPlayer,
-};
+export { default as PodcastPlayer } from './PodcastPlayer';

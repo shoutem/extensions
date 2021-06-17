@@ -82,9 +82,10 @@ export const mapStateToProps = (state, ownProps) => {
   const card = _.get(state[ext()], 'card.data', {});
 
   return {
-    ...CmsListScreen.createMapStateToProps(
-      (state) => state[ext()].allPunchCards,
-    )(state, ownProps),
+    ...CmsListScreen.createMapStateToProps(state => state[ext()].allPunchCards)(
+      state,
+      ownProps,
+    ),
     card,
     programId,
     user: getUser(state),

@@ -36,6 +36,7 @@ export class PlacePhotoView extends PureComponent {
     const { formattedAddress = '' } = location;
     const leadImage = getFirstImage(place);
     const imageSource = leadImage ? { uri: leadImage.url } : undefined;
+    const placeName = place?.name?.toUpperCase() || '';
 
     return (
       <TouchableOpacity onPress={onPress}>
@@ -49,7 +50,7 @@ export class PlacePhotoView extends PureComponent {
               <Favorite item={place} schema={schema} />
             </View>
             <Title numberOfLines={2} styleName="vertical">
-              {place.name.toUpperCase()}
+              {placeName}
             </Title>
             <Caption styleName="vertical">{formattedAddress}</Caption>
           </Tile>

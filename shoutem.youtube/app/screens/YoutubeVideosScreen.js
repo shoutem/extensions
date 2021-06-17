@@ -1,27 +1,15 @@
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-
-import { ListView, Spinner } from '@shoutem/ui';
-import {
-  next,
-  isBusy,
-  isInitialized,
-  shouldLoad,
-} from '@shoutem/redux-io';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { getExtensionSettings } from 'shoutem.application';
 import { navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
-
-import { ext } from '../const';
+import { next, isBusy, isInitialized, shouldLoad } from '@shoutem/redux-io';
+import { ListView, Spinner } from '@shoutem/ui';
 import LargeYoutubeView from '../components/LargeYoutubeView';
-import {
-  YOUTUBE_VIDEOS_SCHEMA,
-  getVideosFeed,
-  fetchFeed,
- } from '../redux';
+import { ext } from '../const';
+import { YOUTUBE_VIDEOS_SCHEMA, getVideosFeed, fetchFeed } from '../redux';
 
 export class YoutubeVideosScreen extends RssListScreen {
   static propTypes = {
@@ -42,7 +30,7 @@ export class YoutubeVideosScreen extends RssListScreen {
   }
 
   openDetailsScreen(video) {
-    const { feedUrl } = this.props;
+    const { feedUrl, navigateTo } = this.props;
 
     const route = {
       screen: ext('YoutubeVideoDetailsScreen'),
@@ -51,7 +39,8 @@ export class YoutubeVideosScreen extends RssListScreen {
         feedUrl,
       },
     };
-    this.props.navigateTo(route);
+
+    navigateTo(route);
   }
 
   refreshData(prevProps) {
@@ -61,22 +50,17 @@ export class YoutubeVideosScreen extends RssListScreen {
   }
 
   fetchData() {
-    const { feedUrl, apiKey } = this.props;
+    const { fetchFeed, feedUrl, apiKey, sort } = this.props;
 
     if (_.isEmpty(feedUrl)) {
       return;
     }
 
-    this.props.fetchFeed(feedUrl, apiKey);
+    fetchFeed(feedUrl, apiKey, sort);
   }
 
   renderRow(video) {
-    return (
-      <LargeYoutubeView
-        video={video}
-        onPress={this.openDetailsScreen}
-      />
-    );
+    return <LargeYoutubeView video={video} onPress={this.openDetailsScreen} />;
   }
 
   renderData(data) {
@@ -85,9 +69,7 @@ export class YoutubeVideosScreen extends RssListScreen {
     }
 
     if (!isInitialized(data)) {
-      return (
-        <Spinner styleName="xl-gutter-top" />
-      );
+      return <Spinner styleName="xl-gutter-top" />;
     }
 
     return (
@@ -105,14 +87,19 @@ export class YoutubeVideosScreen extends RssListScreen {
 export const mapStateToProps = (state, ownProps) => {
   const feedUrl = _.get(ownProps, 'shortcut.settings.feedUrl');
   const { apiKey } = getExtensionSettings(state, ext());
+  const sort = _.get(ownProps, 'shortcut.settings.sort');
 
   return {
     feedUrl,
     apiKey,
+    sort,
     data: getVideosFeed(state, feedUrl),
   };
 };
 
 export const mapDispatchToProps = { navigateTo, fetchFeed, next };
 
-export default connect(mapStateToProps, mapDispatchToProps)(YoutubeVideosScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(YoutubeVideosScreen);

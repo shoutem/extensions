@@ -1,3 +1,1 @@
-import FeedPreviewTable from './FeedPreviewTable';
-
-export default FeedPreviewTable;
+export { default as FeedPreviewTable } from './FeedPreviewTable';

@@ -6,5 +6,7 @@
     <string>Enable location access so you can get relevant content or directions</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Enable location access so you can get relevant content or directions</string>
+     <key>NSCameraUsageDescription</key>
+    <string>App needs access to your camera to be able to scan QR codes</string>
   </dict>
 </plist>

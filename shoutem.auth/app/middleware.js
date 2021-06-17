@@ -23,6 +23,7 @@ import {
   LOGOUT,
   AUTHENTICATE,
   getAccessToken,
+  hideShortcuts,
 } from './redux';
 import { clearSession, getSession, saveSession } from './session.js';
 
@@ -53,12 +54,17 @@ export function createLoginMiddleware(screens) {
             action.route,
           );
 
+          const onLoginSuccess = user => {
+            store.dispatch(hideShortcuts(user));
+            navigateToCurrentRoute();
+          };
+
           return next(
             redirectTo(action, {
               screen: ext('LoginScreen'),
               props: {
                 action,
-                onLoginSuccess: navigateToCurrentRoute,
+                onLoginSuccess,
                 interceptedRoute: _.get(action, 'route', null),
               },
             }),

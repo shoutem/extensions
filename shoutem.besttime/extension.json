@@ -1,0 +1,55 @@
+{
+  "name": "besttime",
+  "title": "BestTime",
+  "version": "1.1.0",
+  "description": "Check the busyness of an establishment using BestTime.",
+  "releaseNotes": "* Added location biasing for search results\n* Added directions capability to map view\n* Added loading animations for forecast screen\n* Added AM/PM and 24 hour clock notations depending on device settings\n* Adjusted styling and UX\n* Added background image to search screen",
+  "platform": "2.5.*",
+  "icon": "server/assets/add-besttime-image.png",
+  "screens": [
+    {
+      "name": "SearchScreen"
+    },
+    {
+      "name": "ForecastScreen"
+    },
+    {
+      "name": "MapScreen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "BestTimeSearch",
+      "title": "BestTime Search",
+      "description": "Search for establishments to check their busyness using BestTime.",
+      "screen": "@.SearchScreen",
+      "navigatesTo": ["@.ForecastScreen"],
+      "adminPages": [
+        {
+          "page": "@.LocationBiasingPage",
+          "title": "Location Biasing"
+        }
+      ],
+      "settings": {
+        "radius": "50000",
+        "useLocationBiasing": false
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "ApiKeysPage",
+      "type": "react-page"
+    },
+    {
+      "name": "LocationBiasingPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.ApiKeysPage",
+      "title": "API keys"
+    }
+  ]
+}

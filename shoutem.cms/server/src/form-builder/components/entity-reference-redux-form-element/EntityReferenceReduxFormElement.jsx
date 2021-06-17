@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import SelectReduxFormElement from '../select-redux-form-element';
 
 export default class EntityReferenceReduxFormElement extends Component {

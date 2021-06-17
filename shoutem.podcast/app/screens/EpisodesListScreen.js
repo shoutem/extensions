@@ -1,15 +1,20 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import autoBind from 'auto-bind';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
-import { find, next, shouldRefresh } from '@shoutem/redux-io';
+import { cloneStatus, find, next, shouldRefresh } from '@shoutem/redux-io';
 import { navigateTo as navigateToAction } from 'shoutem.navigation';
-import { RssListScreen, getLeadImageUrl } from 'shoutem.rss';
-import { ListEpisodeView } from '../components/ListEpisodeView';
-import { FeaturedEpisodeView } from '../components/FeaturedEpisodeView';
-import { getEpisodesFeed, fetchEpisodesFeed } from '../redux';
-import { ext, RSS_PODCAST_SCHEMA } from '../const.js';
+import { RssListScreen } from 'shoutem.rss';
+import { ListEpisodeView, FeaturedEpisodeView } from '../components';
+import { ext, RSS_PODCAST_SCHEMA } from '../const';
+import {
+  addDownloadedEpisode,
+  fetchEpisodesFeed,
+  getEpisodesFeedWithDownloads,
+  getEpisodesFeed,
+  removeDownloadedEpisode,
+} from '../redux';
 
 export class EpisodesListScreen extends RssListScreen {
   static propTypes = {
@@ -18,12 +23,13 @@ export class EpisodesListScreen extends RssListScreen {
 
   constructor(props, context) {
     super(props, context);
+
+    autoBindReact(this);
+
     this.state = {
       ...this.state,
       schema: RSS_PODCAST_SCHEMA,
     };
-
-    autoBind(this);
   }
 
   componentDidMount() {
@@ -57,30 +63,29 @@ export class EpisodesListScreen extends RssListScreen {
   }
 
   renderFeaturedItem(episode) {
-    const { hasFeaturedItem } = this.props;
+    const { enableDownload, feedUrl, hasFeaturedItem } = this.props;
 
     return hasFeaturedItem && episode ? (
       <FeaturedEpisodeView
         key={episode.id}
-        author={episode.author}
-        date={episode.timeUpdated}
-        episodeId={episode.id}
-        imageUrl={getLeadImageUrl(episode)}
+        feedUrl={feedUrl}
+        enableDownload={enableDownload}
+        episode={episode}
         onPress={this.openEpisodeWithId}
-        title={episode.title}
       />
     ) : null;
   }
 
   renderRow(episode) {
+    const { enableDownload, feedUrl } = this.props;
+
     return (
       <ListEpisodeView
         key={episode.id}
-        date={episode.timeUpdated}
-        episodeId={episode.id}
-        imageUrl={getLeadImageUrl(episode)}
+        enableDownload={enableDownload}
+        episode={episode}
+        feedUrl={feedUrl}
         onPress={this.openEpisodeWithId}
-        title={episode.title}
       />
     );
   }
@@ -88,17 +93,28 @@ export class EpisodesListScreen extends RssListScreen {
 
 export const mapStateToProps = (state, ownProps) => {
   const shortcutId = _.get(ownProps, 'shortcut.id');
-  const feedUrl = _.get(ownProps, 'shortcut.settings.feedUrl');
-  const data = getEpisodesFeed(state, feedUrl);
+  const settings = ownProps.shortcut?.settings || {};
+  const { feedUrl, enableDownload } = settings;
+  const episodesFeed = getEpisodesFeed(state, feedUrl);
+  const resolvedFeed = enableDownload
+    ? getEpisodesFeedWithDownloads(state, feedUrl)
+    : null;
+
+  if (resolvedFeed) {
+    cloneStatus(episodesFeed, resolvedFeed);
+  }
 
   return {
-    shortcutId,
+    data: resolvedFeed || episodesFeed,
     feedUrl,
-    data,
+    shortcutId,
+    enableDownload,
   };
 };
 
 export const mapDispatchToProps = {
+  addDownloadedEpisode,
+  removeDownloadedEpisode,
   fetchEpisodesFeed,
   navigateTo: navigateToAction,
   find,

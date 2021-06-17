@@ -105,30 +105,15 @@ export function loadUsers() {
   return find(USER_SCHEMA, 'users');
 }
 
-export function loadUsersInGroups(visibleGroups) {
-  const queryParam = `filter[userGroups]=${visibleGroups.join(',')}`;
-  const config = {
-    schema: USER_SCHEMA,
-    request: {
-      endpoint: shoutemApi.buildAuthUrl('users', queryParam),
-      headers: {
-        Accept: 'application/vnd.api+json',
-      },
-    },
-  }
-
-  return find(config, 'usersInGroups');
-}
-
 export function searchUsers(searchTerm) {
   const body = {
     data: {
       type: USERS_SEARCH_SCHEMA,
       attributes: {
-        query: `%${searchTerm}%`
-      }
-    }
-  }
+        query: `%${searchTerm}%`,
+      },
+    },
+  };
 
   const config = {
     schema: USER_SCHEMA,
@@ -140,10 +125,25 @@ export function searchUsers(searchTerm) {
         Accept: 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
       },
-    }
-  }
+    },
+  };
 
   return find(config, 'searchUsers');
+}
+
+export function loadUsersInGroups(visibleGroups) {
+  const queryParam = `filter[userGroups]=${visibleGroups.join(',')}`;
+  const config = {
+    schema: USER_SCHEMA,
+    request: {
+      endpoint: shoutemApi.buildAuthUrl('users', queryParam),
+      headers: {
+        Accept: 'application/vnd.api+json',
+      },
+    },
+  };
+
+  return find(config, 'usersInGroups');
 }
 
 export function searchUsersNextPage(searchTerm, currentData) {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
 import timezones from 'timezones.json';
 import moment from 'moment-timezone';

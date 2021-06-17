@@ -1,0 +1,16 @@
+{
+  "shoutem": {
+    "besttime": {
+      "api-keys-save-button": "Save",
+      "best-time-private-key-label": "BestTime Private API key",
+      "biasing-checkbox-label": "Use location biasing for search results",
+      "google-places-label": "Google Places API key",
+      "location-biasing-explanation": "If enabled, users will be asked for location permissions when opening the BestTime Search screen. Their location will then be used to make Google Places Autocomplete API use it's <2>location biasing</2> and prefer businesses within the given radius of the device location, while still showing relevant results outside of it.",
+      "location-biasing-note": "The Builder Preview app is an online simulator, and it's location and timezone may be different than yours, so a discrepancy might be seen with location biasing and current time highlighting in the busyness graph.",
+      "location-biasing-radius-error": "Radius has to be a non-decimal number in meters.",
+      "location-biasing-radius-label": "Location biasing radius (in meters)",
+      "location-biasing-save-button": "Save",
+      "require-all-keys-error": "All three API keys are required for the extension to function"
+    }
+  }
+}

@@ -4,6 +4,7 @@ import { shoutemApi } from './services/shoutemApi';
 import { ext } from './const';
 import {
   USER_SCHEMA,
+  REAUTHENTICATE_FAILED,
   AUTH_TOKEN_SCHEMA,
   fetchUser,
   restoreSession,
@@ -18,15 +19,20 @@ import { getAppId, getExtensionSettings } from 'shoutem.application';
 
 function refreshUser(dispatch, getState) {
   return getSession()
-    .then(session => session && dispatch(restoreSession(session)))
+    .then(session => {
+      if (session) {
+        return dispatch(restoreSession(session));
+      }
+
+      return dispatch({ type: REAUTHENTICATE_FAILED });
+    })
     .then(() => getAccessToken(getState()) && dispatch(fetchUser('me')))
     .then(() => {
       const state = getState();
       if (isAuthenticated(state)) {
-        const settings = getExtensionSettings(state, ext());
         const user = getUser(state);
 
-        return dispatch(hideShortcuts(user, settings));
+        return dispatch(hideShortcuts(user));
       }
 
       return null;

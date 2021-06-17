@@ -1,10 +1,10 @@
 {
   "name": "places",
-  "version": "2.5.3",
+  "version": "2.6.0",
   "platform": "2.5.*",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "releaseNotes": "* Added CMS search feature",
+  "releaseNotes": "* Added new layout - places grid list",
   "icon": "./server/assets/images/add-places-image.png",
   "dependencies": ["shoutem.layouts", "shoutem.cms"],
   "categories": ["content"],
@@ -77,6 +77,13 @@
       "name": "PlacesListScreen",
       "title": "Photo List",
       "image": "./server/assets/images/layout_photo.png",
+      "navigatesTo": ["@.PlaceDetails"]
+    },
+    {
+      "name": "PlacesGridScreen",
+      "title": "Grid list",
+      "extends": "@.PlacesListScreen",
+      "image": "./server/assets/images/layout_grid.png",
       "navigatesTo": ["@.PlaceDetails"]
     },
     {

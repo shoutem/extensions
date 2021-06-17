@@ -1,10 +1,10 @@
 {
   "name": "auth",
-  "version": "2.7.1",
+  "version": "2.7.8",
   "platform": "2.5.*",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Added reset password feature",
+  "releaseNotes": "* Properly hide shortcuts upon new user registration, for respective user groups",
   "description": "Show user profile, sign out user",
   "categories": [
     "users"
@@ -101,7 +101,7 @@
     }
   ],
   "settings": {
-    "authApiEndpoint": "auth.api.shoutem.com",
+    "authApiEndpoint": "auth.api.dev.sauros.hr",
     "signupEnabled": true,
     "manuallyApproveMembers": false,
     "allScreensProtected": false,

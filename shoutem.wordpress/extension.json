@@ -1,17 +1,13 @@
 {
   "name": "wordpress",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "platform": "2.5.*",
   "title": "WordPress",
   "description": "Show news articles from WordPress blog.",
-  "releaseNotes": "UI improvements on article details screens",
+  "releaseNotes": "* Fixed loading WordPress items cover photos",
   "icon": "server/assets/extension-icon.png",
-  "dependencies": [
-    "shoutem.layouts"
-  ],
-  "categories": [
-    "content"
-  ],
+  "dependencies": ["shoutem.layouts"],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -57,9 +53,7 @@
       "title": "Grid with a featured article",
       "image": "./server/assets/screens/featuredgrid.png",
       "groupTitle": "Choose List screen layout",
-      "navigatesTo": [
-        "@.ArticleDetailsScreen"
-      ],
+      "navigatesTo": ["@.ArticleDetailsScreen"],
       "settings": {
         "listType": "fixed-grid",
         "hasFeaturedItem": true

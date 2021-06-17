@@ -6,10 +6,14 @@ import { MapView } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import { View, EmptyStateView } from '@shoutem/ui';
-import PlaceIconView from '../components/PlaceIconView';
+import { PlaceIconView } from '../components';
 import { ext } from '../const';
 
 function findSelectedPlace(places, marker) {
+  if (_.isEmpty(places) || !marker) {
+    return undefined;
+  }
+
   const selectedPlace = places.find(place => place.id === marker.placeId);
 
   return selectedPlace;

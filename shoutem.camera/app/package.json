@@ -1,6 +1,6 @@
 {
   "name": "shoutem.camera",
-  "version": "2.5.0",
+  "version": "2.6.1",
   "description": "Shoutem camera extension",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

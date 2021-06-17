@@ -7,9 +7,9 @@ import { NavigationBar } from 'shoutem.navigation';
 import { isBusy, find, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { View, Text, ListView, Screen, Button } from '@shoutem/ui';
-import MapList from '../components/MapList';
-import PlacePhotoView from '../components/PlacePhotoView';
+import { MapList, PlacePhotoView } from '../components';
 import { ext } from '../const';
+import { getAllPlaces } from '../redux';
 
 export class PlacesList extends CmsListScreen {
   static propTypes = {
@@ -112,12 +112,9 @@ export class PlacesList extends CmsListScreen {
   }
 }
 
-export const mapStateToProps = (state, ownProps) => ({
-  ...CmsListScreen.createMapStateToProps(state => state[ext()].allPlaces)(
-    state,
-    ownProps,
-  ),
-});
+export const mapStateToProps = CmsListScreen.createMapStateToProps(
+  getAllPlaces,
+);
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   find,

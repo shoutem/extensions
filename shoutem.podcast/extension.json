@@ -1,31 +1,24 @@
 {
   "name": "podcast",
-  "version": "2.5.1",
-  "platform": "2.5.*",
+  "version": "2.6.0",
+  "platform": "~2.5.4",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* Fixed navigation header overlapping screen content on 'Episode details' screen",
+  "releaseNotes": "* Added ability to download episodes\n* Added large grid layouts",
   "icon": "server/assets/extension-icon.png",
-  "categories": [
-    "media"
-  ],
+  "categories": ["media"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.rss"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.permissions", "shoutem.rss"],
   "shortcuts": [
     {
       "name": "podcast-shortcut",
       "title": "Podcast RSS",
       "icon": "theme://podcasts.png",
       "screen": "@.EpisodesListScreen",
-      "capabilities": [
-        "shoutem.rss.feed"
-      ],
+      "capabilities": ["shoutem.rss.feed"],
       "adminPages": [
         {
           "page": "shoutem.rss.RssPage",
@@ -37,6 +30,13 @@
         {
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
+        },
+        {
+          "page": "@.DownloadPage",
+          "title": "Download",
+          "settings": {
+            "enableDownload": false
+          }
         }
       ],
       "settings": {
@@ -51,9 +51,7 @@
       "name": "EpisodesListScreen",
       "title": "List",
       "image": "./server/assets/screens/list.png",
-      "navigatesTo": [
-        "@.EpisodeDetailsScreen"
-      ],
+      "navigatesTo": ["@.EpisodeDetailsScreen"],
       "settings": {
         "listType": "list",
         "hasFeaturedItem": false
@@ -80,6 +78,16 @@
       }
     },
     {
+      "name": "EpisodesLargeGridScreen",
+      "title": "Large grid",
+      "image": "./server/assets/screens/large-grid.png",
+      "extends": "@.EpisodesListScreen",
+      "settings": {
+        "listType": "large-fixed-grid",
+        "hasFeaturedItem": false
+      }
+    },
+    {
       "name": "EpisodesFeaturedGridScreen",
       "title": "Grid with a featured episode",
       "image": "./server/assets/screens/featuredgrid.png",
@@ -90,9 +98,25 @@
       }
     },
     {
+      "name": "EpisodesFeaturedLargeGridScreen",
+      "title": "Large grid with a featured episode",
+      "image": "./server/assets/screens/featuredlargegrid.png",
+      "extends": "@.EpisodesListScreen",
+      "settings": {
+        "listType": "large-fixed-grid",
+        "hasFeaturedItem": true
+      }
+    },
+    {
       "name": "EpisodeDetailsScreen",
       "title": "Episode details",
       "image": "./server/assets/screens/large-details.png"
+    }
+  ],
+  "pages": [
+    {
+      "name": "DownloadPage",
+      "type": "react-page"
     }
   ]
 }

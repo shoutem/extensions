@@ -1,18 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
-
-import { ext } from '../const';
-
-import { YoutubeVideosScreen, mapStateToProps, mapDispatchToProps } from './YoutubeVideosScreen';
 import SmallYoutubeView from '../components/SmallYoutubeView';
+import { ext } from '../const';
+import {
+  YoutubeVideosScreen,
+  mapStateToProps,
+  mapDispatchToProps,
+} from './YoutubeVideosScreen';
 
 class YoutubeSmallListScreen extends YoutubeVideosScreen {
   renderRow(video) {
-    return (
-      <SmallYoutubeView video={video} onPress={this.openDetailsScreen} />
-    );
+    return <SmallYoutubeView video={video} onPress={this.openDetailsScreen} />;
   }
 }
 

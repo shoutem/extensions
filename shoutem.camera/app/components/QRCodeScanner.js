@@ -1,42 +1,30 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Linking, Platform } from 'react-native';
-import { RNCamera } from 'react-native-camera';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
-
-import { I18n } from 'shoutem.i18n';
-
+import autoBindReact from 'auto-bind/react';
+import { RNCamera } from 'react-native-camera';
 import { connectStyle } from '@shoutem/theme';
 import { View, Image } from '@shoutem/ui';
-
 import { ext } from '../const';
-
-const openAppSettings = () => {
-  Linking.openURL('app-settings:');
-};
-
-const { func, object, shape } = PropTypes;
 
 /**
  * A component that lets a user scan a QR code
  */
 class QRCodeScanner extends PureComponent {
   static propTypes = {
-    // Called when a QR code has been successfully scanned
-    onQRCodeScanned: func,
-    // Component style,
-    style: shape({
-      cameraContainer: object,
-      cameraFocusFrame: object,
-      cameraView: object,
-      noPermissionsMessage: object,
+    onQRCodeScanned: PropTypes.func,
+    style: PropTypes.shape({
+      cameraContainer: PropTypes.object,
+      cameraFocusFrame: PropTypes.object,
+      cameraView: PropTypes.object,
+      noPermissionsMessage: PropTypes.object,
     }),
-  }
+  };
 
   constructor(props) {
     super(props);
 
-    this.onQRCodeScanned = this.onQRCodeScanned.bind(this);
+    autoBindReact(this);
   }
 
   onQRCodeScanned(data) {

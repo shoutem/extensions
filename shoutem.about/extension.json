@@ -1,18 +1,13 @@
 {
   "name": "about",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "platform": "2.5.*",
   "title": "About",
   "description": "Show info about your app or your business",
-  "releaseNotes": "* Added CMS search feature",
+  "releaseNotes": "* Added Instagram social button",
   "icon": "server/assets/add-about-image.png",
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.cms"
-  ],
-  "categories": [
-    "content"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -27,10 +22,7 @@
       "title": "About",
       "icon": "theme://about.png",
       "screen": "@.AboutScreen",
-      "capabilities": [
-        "shoutem.cms.search",
-        "shoutem.cms.import-csv"
-      ],
+      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",

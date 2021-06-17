@@ -1,8 +1,8 @@
 import React from 'react';
+import slugify from '@sindresorhus/slugify';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import VectorIcon from 'react-native-vector-icons/MaterialIcons';
-import slugify from '@sindresorhus/slugify';
-
 import {
   STATE_NONE,
   STATE_STOPPED,
@@ -14,15 +14,8 @@ import {
   TrackPlayer,
   TrackPlayerBase,
 } from 'shoutem.audio';
-
 import { connectStyle } from '@shoutem/theme';
-import {
-  Icon,
-  Button,
-  Spinner,
-  View,
-} from '@shoutem/ui';
-
+import { Icon, Button, Spinner, View } from '@shoutem/ui';
 import { ext, trackPlayerOptions } from '../../const';
 import { SKIP_BACK_TIME, SKIP_FORWARD_TIME } from './const';
 import { ProgressControl } from './ProgressControl';
@@ -31,12 +24,7 @@ class PodcastPlayer extends TrackPlayerBase {
   constructor(props) {
     super(props);
 
-    this.handleSkipBack = this.handleSkipBack.bind(this);
-    this.handleSkipForward = this.handleSkipForward.bind(this);
-
-    this.handleSeekToPosition = this.handleSeekToPosition.bind(this);
-    this.handleJumpBack = this.handleJumpBack.bind(this);
-    this.handleJumpForward = this.handleJumpForward.bind(this);
+    autoBindReact(this);
 
     this.state = {
       playbackState: STATE_PAUSED,
@@ -66,9 +54,18 @@ class PodcastPlayer extends TrackPlayerBase {
   }
 
   addEventListeners() {
-    this.jumpForwardListener = TrackPlayer.addEventListener('remote-jump-forward', this.handleJumpForward);
-    this.jumpBackwardsListener = TrackPlayer.addEventListener('remote-jump-backward', this.handleJumpBack);
-    this.seekToListener = TrackPlayer.addEventListener('remote-seek', this.handleSeekToPosition);
+    this.jumpForwardListener = TrackPlayer.addEventListener(
+      'remote-jump-forward',
+      this.handleJumpForward,
+    );
+    this.jumpBackwardsListener = TrackPlayer.addEventListener(
+      'remote-jump-backward',
+      this.handleJumpBack,
+    );
+    this.seekToListener = TrackPlayer.addEventListener(
+      'remote-seek',
+      this.handleSeekToPosition,
+    );
 
     super.addEventListeners();
   }
@@ -108,14 +105,13 @@ class PodcastPlayer extends TrackPlayerBase {
   }
 
   async addTrack() {
-    const { episode, url, podcastTitle } = this.props;
-    const { title, artist = podcastTitle } = episode;
+    const { downloadedEpisode, episode, podcastTitle, url } = this.props;
+    const { artist = podcastTitle, title } = episode;
 
     const id = this.getId();
-
     const stream = {
       id,
-      url,
+      url: downloadedEpisode ? `file://${downloadedEpisode.path}` : url,
       title,
       artist,
     };
@@ -129,7 +125,7 @@ class PodcastPlayer extends TrackPlayerBase {
     const { playbackState } = this.state;
 
     const position = await TrackPlayer.getPosition();
-    const newPosition = Math.max((position - SKIP_BACK_TIME), 0);
+    const newPosition = Math.max(position - SKIP_BACK_TIME, 0);
 
     TrackPlayer.seekTo(newPosition);
     if (playbackState === STATE_PAUSED) {
@@ -152,7 +148,9 @@ class PodcastPlayer extends TrackPlayerBase {
 
   renderSkipIcon(iconName) {
     const { currentlyActiveTrack } = this.state;
-    const { style: { skipIcon, skipIconSize } } = this.props;
+    const {
+      style: { skipIcon, skipIconSize },
+    } = this.props;
 
     const opacity = currentlyActiveTrack ? 1.0 : 0.5;
 
@@ -166,7 +164,9 @@ class PodcastPlayer extends TrackPlayerBase {
   }
 
   renderActionButton() {
-    const { style: { spinnerStyle, playbackIconStyle } } = this.props;
+    const {
+      style: { spinnerStyle, playbackIconStyle },
+    } = this.props;
     const { playbackState } = this.state;
 
     const actionButtons = {
@@ -228,6 +228,7 @@ class PodcastPlayer extends TrackPlayerBase {
 }
 
 PodcastPlayer.propTypes = {
+  downloadedEpisode: PropTypes.object,
   episode: PropTypes.object,
   style: PropTypes.object,
   url: PropTypes.string,
@@ -236,6 +237,7 @@ PodcastPlayer.propTypes = {
 
 PodcastPlayer.defaultProps = {
   podcastTitle: '-',
+  enableDownload: false,
 };
 
 export default connectStyle(ext('PodcastPlayer'))(PodcastPlayer);

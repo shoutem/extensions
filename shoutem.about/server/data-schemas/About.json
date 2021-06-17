@@ -61,12 +61,18 @@
       "type": "string",
       "displayPriority": 10
     },
+    "instagram": {
+      "format": "uri",
+      "title": "Instagram",
+      "type": "string",
+      "displayPriority": 11
+    },
     "image": {
       "format": "attachment",
       "title": "Image",
       "type": "object",
       "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 11
+      "displayPriority": 12
     }
   },
   "titleProperty": "name",

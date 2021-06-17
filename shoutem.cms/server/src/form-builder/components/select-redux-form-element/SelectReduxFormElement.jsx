@@ -44,7 +44,7 @@ export default class SelectReduxFormElement extends Component {
       ...otherProps
     } = this.props;
 
-    const classes = classNames('select-redux-from-element', className);
+    const classes = classNames('select-redux-form-element', className);
     const isError = fieldInError(field);
     const helpBlockText = isError ? field.error : helpText;
 

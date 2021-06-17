@@ -1,5 +1,16 @@
-import reducer from './reducer';
-
-export { getEpisodesFeed, getFeedUrl } from './selectors';
-export { fetchEpisodesFeed } from './actions';
-export { reducer };
+export {
+  addDownloadedEpisode,
+  deleteEpisode,
+  downloadEpisode,
+  fetchEpisodesFeed,
+  removeDownloadedEpisode,
+  setDownloadInProgress,
+} from './actions';
+export { default as reducer } from './reducer';
+export {
+  getDownloadedEpisodes,
+  getDownloadedEpisode,
+  getEpisodesFeed,
+  getEpisodesFeedWithDownloads,
+  getFeedUrl,
+} from './selectors';

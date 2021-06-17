@@ -1,10 +1,24 @@
 {
   "name": "camera",
-  "version": "2.5.0",
+  "version": "2.6.1",
   "platform": "2.5.*",
   "title": "Camera",
   "type": "system",
   "description": "Shoutem camera extension",
   "releaseNotes": "* Added a script for calling and debugging prebuild script",
-  "icon": "server/assets/add-camera-image.png"
+  "icon": "server/assets/add-camera-image.png",
+  "screens": [
+    {
+      "name": "QRCodeScannerScreen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "QRCodeScanner",
+      "title": "QR Code Scanner",
+      "icon": "theme://take-a-photo.png",
+      "description": "Scan any QR code with your camera and open the scanned link",
+      "screen": "@.QRCodeScannerScreen"
+    }
+  ]
 }

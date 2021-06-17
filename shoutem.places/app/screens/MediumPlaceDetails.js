@@ -7,8 +7,8 @@ import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { openURL } from 'shoutem.web-view';
 import { connectStyle } from '@shoutem/theme';
 import { ScrollView, Caption, Title, Screen, Tile, View } from '@shoutem/ui';
-import PlaceImageGallery from '../components/PlaceImageGallery';
 import { getPlaceImages } from '../services/places';
+import { PlaceImageGallery } from '../components';
 import { ext } from '../const';
 import { PlaceDetails } from './PlaceDetails';
 

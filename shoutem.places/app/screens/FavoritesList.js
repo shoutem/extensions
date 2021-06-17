@@ -6,9 +6,9 @@ import { FavoritesListScreen } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import { Button, View, Text } from '@shoutem/ui';
-import MapList from '../components/MapList';
-import PlacePhotoView from '../components/PlacePhotoView';
+import { MapList, PlacePhotoView } from '../components';
 import { ext } from '../const';
+import { getAllPlaces } from '../redux';
 
 export class FavoritesList extends FavoritesListScreen {
   static propTypes = {
@@ -97,7 +97,7 @@ export class FavoritesList extends FavoritesListScreen {
 
 export const mapStateToProps = FavoritesListScreen.createMapStateToProps(
   ext('places'),
-  state => state[ext()].allPlaces,
+  getAllPlaces,
 );
 
 export const mapDispatchToProps = FavoritesListScreen.createMapDispatchToProps();

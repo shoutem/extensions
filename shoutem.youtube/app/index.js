@@ -9,6 +9,4 @@ export const screens = extension.screens;
 
 export { reducer };
 
-export {
-  appDidMount,
-};
+export { appDidMount };

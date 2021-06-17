@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import { find, next } from '@shoutem/redux-io';
+import { isError, shouldRefresh } from '@shoutem/redux-io/status';
 
 import { navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
@@ -28,6 +29,14 @@ export class VimeoList extends RssListScreen {
     };
   }
 
+  refreshData() {
+    const { data } = this.props;
+
+    if (shouldRefresh(data, true) && !isError(data)) {
+      this.fetchData();
+    }
+  }
+
   openDetailsScreen(video) {
     const { navigateTo, feedUrl } = this.props;
 
@@ -43,9 +52,7 @@ export class VimeoList extends RssListScreen {
   }
 
   renderRow(video) {
-    return (
-      <LargeVimeoView video={video} onPress={this.openDetailsScreen} />
-    );
+    return <LargeVimeoView video={video} onPress={this.openDetailsScreen} />;
   }
 }
 

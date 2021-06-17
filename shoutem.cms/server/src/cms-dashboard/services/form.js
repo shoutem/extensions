@@ -4,7 +4,9 @@ import i18next from 'i18next';
 import { ReduxFormElement } from '@shoutem/react-web-ui';
 import {
   GalleryReduxFormElement,
-  ArrayReduxFormElement,
+  ArrayFormElement,
+  ArrayReduxFormItem,
+  ArrayTextEditorFormItem,
   ImageUploaderReduxFormElement,
   VideoUploaderReduxFormElement,
   GeolocationReduxFormElement,
@@ -12,6 +14,7 @@ import {
   TextEditorReduxFormElement,
   TextAreaReduxFormElement,
   EntityReferenceReduxFormElement,
+  BooleanReduxFormElement,
 } from '@shoutem/form-builder';
 import SectionForm from '../components/section-form';
 import FormContainer from '../components/form-container';
@@ -151,11 +154,26 @@ export function resolveFormElement(sectionProperty, schema, fields, options) {
     schemaProperty.format === PROPERTY_FORMATS.ARRAY
   ) {
     const props = {
+      ItemComponent: ArrayReduxFormItem,
       elementId: propertyKey,
       field: propertyField,
       name: schemaProperty.title,
     };
-    return resolveReactComponent(ArrayReduxFormElement, props);
+    return resolveReactComponent(ArrayFormElement, props);
+  }
+
+  if (
+    schemaProperty.type === PROPERTY_TYPES.ARRAY &&
+    schemaProperty.format === PROPERTY_FORMATS.HTML
+  ) {
+    const props = {
+      ItemComponent: ArrayTextEditorFormItem,
+      elementId: propertyKey,
+      field: propertyField,
+      name: schemaProperty.title,
+      maxLength: schemaProperty.maxLength,
+    };
+    return resolveReactComponent(ArrayFormElement, props);
   }
 
   if (schemaProperty.type === PROPERTY_TYPES.STRING) {
@@ -184,6 +202,7 @@ export function resolveFormElement(sectionProperty, schema, fields, options) {
       field: propertyField,
       name: schemaProperty.title,
       maxLength: schemaProperty.maxLength,
+      enableEmojiPicker: true,
     };
     return resolveReactComponent(ReduxFormElement, props);
   }
@@ -288,6 +307,18 @@ export function resolveFormElement(sectionProperty, schema, fields, options) {
       maxLength: schemaProperty.maxLength,
     };
     return resolveReactComponent(ReduxFormElement, props);
+  }
+
+  if (
+    schemaProperty.type === PROPERTY_TYPES.BOOLEAN &&
+    schemaProperty.format === PROPERTY_FORMATS.BOOLEAN
+  ) {
+    const props = {
+      elementId: propertyKey,
+      field: propertyField,
+      name: schemaProperty.title,
+    };
+    return resolveReactComponent(BooleanReduxFormElement, props);
   }
 
   if (

@@ -1,25 +1,65 @@
-import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { getLeadImageUrl } from 'shoutem.rss';
+import { deleteEpisode, downloadEpisode } from '../redux';
 
 export class EpisodeView extends PureComponent {
   static propTypes = {
-    onPress: PropTypes.func,
-    episodeId: PropTypes.string,
+    enableDownload: PropTypes.bool,
     episode: PropTypes.object,
-    podcastTitle: PropTypes.string,
-    imageUrl: PropTypes.string,
-    date: PropTypes.string,
+    feedUrl: PropTypes.string,
+    onPress: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
 
-    this.onPress = this.onPress.bind(this);
+    autoBindReact(this);
+  }
+
+  getEpisodeUrl() {
+    const { episode } = this.props;
+
+    return episode.audioAttachments[0]?.src;
+  }
+
+  getImageUrl() {
+    const { episode } = this.props;
+
+    return getLeadImageUrl(episode);
+  }
+
+  onDownloadPress() {
+    const {
+      downloadEpisode,
+      episode: { id },
+      feedUrl,
+    } = this.props;
+
+    downloadEpisode(id, feedUrl);
+  }
+
+  onDeletePress() {
+    const {
+      deleteEpisode,
+      episode: { id, path },
+    } = this.props;
+
+    deleteEpisode(id, path);
   }
 
   onPress() {
-    const { onPress, episodeId } = this.props;
+    const {
+      episode: { id },
+      onPress,
+    } = this.props;
 
-    onPress(episodeId);
+    onPress(id);
   }
 }
+
+export const mapDispatchToProps = { deleteEpisode, downloadEpisode };
+
+export default connect(undefined, mapDispatchToProps)(EpisodeView);

@@ -1,40 +1,42 @@
+import _ from 'lodash';
 import { combineReducers } from 'redux';
 import URI from 'urijs';
-import _ from 'lodash';
-
+import { isAppendMode } from '@shoutem/redux-io/actions/find';
 import {
-  find,
-  resource,
-  LOAD_SUCCESS,
-  STATUS,
-} from '@shoutem/redux-io';
+  createInitialStatus,
+  canHandleAction,
+} from '@shoutem/redux-io/reducers/resource';
 import Outdated from '@shoutem/redux-io/outdated';
-import {
-  isAppendMode,
-} from '@shoutem/redux-io/actions/find';
 import {
   validationStatus,
   busyStatus,
   updateStatus,
   setStatus,
 } from '@shoutem/redux-io/status';
-import {
-  createInitialStatus,
-  canHandleAction,
-} from '@shoutem/redux-io/reducers/resource';
 import { mapReducers } from '@shoutem/redux-composers';
-
-import { resolveUserPlaylistUrl } from './services/user-uploads';
+import { find, resource, LOAD_SUCCESS, STATUS } from '@shoutem/redux-io';
+import {
+  resolveUserChannelUrl,
+  resolveChannelsSearchEndpoint,
+  resolveChannelsDataEndpoint,
+  parseCustomUrl,
+  extractChannelId,
+  extractPlaylistId,
+  createYoutubeChannelUrl,
+} from './services/youtube';
 import {
   ext,
-  CHANNEL_REGEX,
-  PLAYLIST_REGEX,
   API_ENDPOINT,
   RESOURCE_TYPES,
+  CUSTOM_CHANNEL_REGEX,
+  USER_REGEX,
+  CHANNEL_REGEX,
+  PLAYLIST_REGEX,
 } from './const';
 
-export const YOUTUBE_PLAYLIST_SCHEMA = 'shoutem.youtube.playlist';
 export const YOUTUBE_VIDEOS_SCHEMA = 'shoutem.youtube.videos';
+const YOUTUBE_CHANNELS_SCHEMA = 'shoutem.youtube.channels';
+const YOUTUBE_SEARCH_SCHEMA = 'shoutem.youtube.search';
 
 /**
  * Check if there is another page of youtube videos
@@ -112,17 +114,17 @@ export function youtubeResource(schema, initialState = []) {
         const links = hasNextPage(payload) ? getNextActionLinks(action) : {};
         const params = hasNextPage(payload) ? getNextActionParams(action) : {};
 
-        setStatus(newState, updateStatus(
-          state[STATUS],
-          {
+        setStatus(
+          newState,
+          updateStatus(state[STATUS], {
             validationStatus: validationStatus.VALID,
             busyStatus: busyStatus.IDLE,
             error: false,
             links,
             params,
             schema,
-          },
-        ));
+          }),
+        );
         return newState;
       }
       default:
@@ -132,115 +134,173 @@ export function youtubeResource(schema, initialState = []) {
 }
 
 export default combineReducers({
-  videos: mapReducers(getFeedUrlFromAction, youtubeResource(YOUTUBE_VIDEOS_SCHEMA)),
+  videos: mapReducers(
+    getFeedUrlFromAction,
+    youtubeResource(YOUTUBE_VIDEOS_SCHEMA),
+  ),
 });
 
 export function getVideosFeed(state, feedUrl) {
   return _.get(state[ext()], ['videos', feedUrl]);
 }
 
-const sharedParams = {
-  part: 'snippet',
-  maxResults: 20,
-};
-
-/**
- * This regex will extract the parameter id from a YouTube channel link, for example,
- * for the link https://www.youtube.com/channel/UCrJs_gMaJZDqN6Wz76FQ35A,
- * regex will result with UCrJs_gMaJZDqN6Wz76FQ35A.
- */
-function extractChannelId(feedUrl) {
-  // eslint-disable-next-line max-len
-  return _.get(feedUrl.match(CHANNEL_REGEX), 1);
-}
-
-/**
- * This regex will extract the parameter id from a YouTube playlist link, for example,
- * for the link https://www.youtube.com/watch?v=2jAoKF2heDE&list=PLjVnDc2oPyOGBOb75V8CpeSr9Gww8pZdL,
- * regex will result with UCrJs_gMaJZDqN6Wz76FQ35A.
- */
-function extractPlaylistId(feedUrl) {
-  return _.get(feedUrl.match(PLAYLIST_REGEX), 1);
-}
-
-function fetchUserPlaylistId(feedUrl, apiKey) {
-  const endpoint = resolveUserPlaylistUrl(feedUrl, apiKey);
-  if (!endpoint) {
-    return null;
-  }
+function searchForCustomChannel(feedUrl, apiKey) {
+  const endpoint = resolveChannelsSearchEndpoint(feedUrl, apiKey);
 
   const config = {
-    schema: YOUTUBE_PLAYLIST_SCHEMA,
+    schema: YOUTUBE_SEARCH_SCHEMA,
     request: {
       endpoint,
-      headers: {
-        Accept: 'application/json',
-      },
       resourceType: 'json',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     },
   };
 
   return find(config);
 }
 
-function fetchUserUploads(feedUrl, apiKey, playlistIds) {
-  const params = {
-    query: {
-      ...sharedParams,
-      playlistId: playlistIds,
-      key: apiKey,
-      feedUrl,
+function fetchChannelsData(channelsIds, apiKey) {
+  const endpoint = resolveChannelsDataEndpoint(channelsIds, apiKey);
+
+  const config = {
+    schema: YOUTUBE_CHANNELS_SCHEMA,
+    request: {
+      endpoint,
+      resourceType: 'json',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     },
-    type: RESOURCE_TYPES.PLAYLIST,
   };
-  return find(YOUTUBE_VIDEOS_SCHEMA, undefined, { ...params });
+
+  return find(config);
 }
 
-function buildFeedParams(feedUrl, apiKey) {
-  if (/channel/i.test(feedUrl)) {
-    return {
-      type: RESOURCE_TYPES.SEARCH,
-      query: {
-        ...sharedParams,
-        channelId: extractChannelId(feedUrl),
-        key: apiKey,
-        feedUrl,
+function fetchUserChannel(feedUrl, apiKey) {
+  const endpoint = resolveUserChannelUrl(feedUrl, apiKey);
+
+  const config = {
+    schema: YOUTUBE_CHANNELS_SCHEMA,
+    request: {
+      endpoint,
+      resourceType: 'json',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    };
-  } else if (/playlist/i.test(feedUrl)) {
-    return {
+    },
+  };
+
+  return find(config);
+}
+
+function fetchChannelVideosSearchResults(feedUrl, apiKey, sort, reducerName) {
+  const params = {
+    type: RESOURCE_TYPES.SEARCH,
+    query: {
+      maxResults: 20,
+      part: 'id,snippet',
+      channelId: extractChannelId(feedUrl),
+      type: 'video',
+      order: sort,
+      key: apiKey,
+      feedUrl: reducerName,
+    },
+  };
+
+  return find(YOUTUBE_VIDEOS_SCHEMA, undefined, params);
+}
+
+function fetchUserVideos(feedUrl, apiKey, sort) {
+  return dispatch => {
+    dispatch(fetchUserChannel(feedUrl, apiKey)).then(action => {
+      const channelId = _.get(action, 'payload.items.0.id');
+      const channelUrl = createYoutubeChannelUrl(channelId);
+
+      return dispatch(
+        fetchChannelVideosSearchResults(channelUrl, apiKey, sort, feedUrl),
+      );
+    });
+  };
+}
+
+function fetchCustomChannelVideos(feedUrl, apiKey, sort) {
+  return dispatch =>
+    // Fetch first 20 channels, sorted by keyword(customUrl) relevance
+    dispatch(searchForCustomChannel(feedUrl, apiKey)).then(
+      channelSearchResultsResponse => {
+        const channels = _.get(
+          channelSearchResultsResponse,
+          'payload.items',
+          [],
+        );
+        const channelsIds = _.map(channels, 'id.channelId');
+        // Fetch more detailed channel data on our ~20 results
+        return dispatch(fetchChannelsData(channelsIds, apiKey)).then(
+          channelsDataResponse => {
+            const customUrl = parseCustomUrl(feedUrl);
+            const channelsData = _.get(channelsDataResponse, 'payload.items');
+            // Find a channel with exact custom URL our feed URL contains
+            const verifiedCustomChannel = _.find(channelsData, channel => {
+              return _.get(channel, 'snippet.customUrl') === customUrl;
+            });
+
+            if (!verifiedCustomChannel) {
+              return null;
+            }
+
+            const channelUrl = createYoutubeChannelUrl(
+              verifiedCustomChannel.id,
+            );
+
+            return dispatch(
+              fetchChannelVideosSearchResults(
+                channelUrl,
+                apiKey,
+                sort,
+                feedUrl,
+              ),
+            );
+          },
+        );
+      },
+    );
+}
+
+function playlistFeedThunk(feedUrl, apiKey) {
+  return dispatch => {
+    const params = {
       type: RESOURCE_TYPES.PLAYLIST,
       query: {
-        ...sharedParams,
+        maxResults: 20,
+        part: 'snippet,contentDetails',
         playlistId: extractPlaylistId(feedUrl),
         key: apiKey,
         feedUrl,
       },
     };
-  }
-  return {};
-}
 
-function userFeedThunk(feedUrl, apiKey) {
-  return (dispatch) => {
-    dispatch(fetchUserPlaylistId(feedUrl, apiKey)).then((action) => {
-      const { payload } = action;
-      const playlistIds = _.map(payload.items, items =>
-          (_.get(items, 'contentDetails.relatedPlaylists.uploads')),
-        );
-      dispatch(fetchUserUploads(feedUrl, apiKey, playlistIds));
-    });
-
-    const params = { query: sharedParams };
-    return find(YOUTUBE_VIDEOS_SCHEMA, undefined, params);
+    return dispatch(find(YOUTUBE_VIDEOS_SCHEMA, undefined, params));
   };
 }
 
-export function fetchFeed(feedUrl, apiKey) {
-  if (/user/i.test(feedUrl)) {
-    return userFeedThunk(feedUrl, apiKey);
+export function fetchFeed(feedUrl, apiKey, sort) {
+  if (USER_REGEX.test(feedUrl)) {
+    return fetchUserVideos(feedUrl, apiKey, sort);
   }
 
-  const params = buildFeedParams(feedUrl, apiKey);
-  return find(YOUTUBE_VIDEOS_SCHEMA, undefined, params);
+  if (CUSTOM_CHANNEL_REGEX.test(feedUrl)) {
+    return fetchCustomChannelVideos(feedUrl, apiKey, sort);
+  }
+
+  if (CHANNEL_REGEX.test(feedUrl)) {
+    return fetchChannelVideosSearchResults(feedUrl, apiKey, sort, feedUrl);
+  }
+
+  if (PLAYLIST_REGEX.test(feedUrl)) {
+    return playlistFeedThunk(feedUrl, apiKey);
+  }
+
+  return {};
 }

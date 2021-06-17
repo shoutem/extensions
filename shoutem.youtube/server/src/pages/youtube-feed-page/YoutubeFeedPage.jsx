@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
-import { connect } from 'react-redux';
-import { isBusy, clear, isInitialized } from '@shoutem/redux-io';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 import {
   fetchShortcut,
   updateShortcutSettings,
@@ -11,16 +11,12 @@ import {
   fetchExtension,
   getExtension,
 } from '@shoutem/redux-api-sdk';
-import { LoaderContainer } from '@shoutem/react-web-ui';
-import {
-  FEED_ITEMS,
-  loadFeed,
-  getFeedItems,
-} from '../../redux';
-import FeedUrlInput from '../../components/feed-url-input';
-import FeedPreview from '../../components/feed-preview';
+import { isBusy, clear, isInitialized } from '@shoutem/redux-io';
+import { FeedPreview, FeedUrlInput } from '../../components';
+import { validateYoutubeUrl, isPlaylistUrl } from '../../services/youtube';
 import ext from '../../const';
-import { validateYoutubeUrl } from '../../services/youtube';
+import { FEED_ITEMS, loadFeed, getFeedItems } from '../../redux';
+import './style.scss';
 
 const ACTIVE_SCREEN_INPUT = 0;
 const ACTIVE_SCREEN_PREVIEW = 1;
@@ -33,19 +29,18 @@ export class YoutubeFeedPage extends Component {
 
     const feedUrl = _.get(props.shortcut, 'settings.feedUrl');
     const apiKey = _.get(props.extension, 'settings.apiKey');
+    const sort = _.get(props.shortcut, 'settings.sort', 'relevance');
 
     this.state = {
       error: null,
       hasChanges: false,
       apiKey,
       feedUrl,
+      sort,
     };
 
     if (validateYoutubeUrl(feedUrl)) {
-      this.fetchPosts({
-        feedUrl,
-        apiKey,
-      });
+      this.fetchPosts(feedUrl, sort);
     }
   }
 
@@ -74,33 +69,37 @@ export class YoutubeFeedPage extends Component {
 
   getActiveScreen() {
     const { feedUrl } = this.state;
+
     if (!_.isEmpty(feedUrl)) {
       return ACTIVE_SCREEN_PREVIEW;
     }
+
     return ACTIVE_SCREEN_INPUT;
   }
 
-  saveFeedUrl(feedUrl) {
-    const { shortcut } = this.props;
-    const settings = { feedUrl };
+  updateSettings(feedUrl, sort) {
+    const { shortcut, updateShortcutSettings } = this.props;
+    const settings = { feedUrl, sort };
 
     this.setState({ error: '', inProgress: true });
-    this.props.updateShortcutSettings(shortcut, settings).then(() => {
-      this.setState({ hasChanges: false, inProgress: false });
-    }).catch((err) => {
-      this.setState({ error: err, inProgress: false });
-    });
+    updateShortcutSettings(shortcut, settings)
+      .then(() => {
+        this.setState({ hasChanges: false, inProgress: false });
+      })
+      .catch(err => {
+        this.setState({ error: err, inProgress: false });
+      });
   }
 
-  fetchPosts({ feedUrl }) {
+  fetchPosts(feedUrl, sort) {
     const { apiKey } = this.state;
-    const { shortcut } = this.props;
+    const { shortcut, loadFeed } = this.props;
 
     if (!feedUrl || !apiKey || !shortcut) {
       return;
     }
 
-    this.props.loadFeed(feedUrl, apiKey, shortcut.id).catch((err) => {
+    loadFeed(feedUrl, apiKey, shortcut.id, sort).catch(err => {
       this.setState({
         error: _.get(err, 'message'),
         inProgress: false,
@@ -112,42 +111,69 @@ export class YoutubeFeedPage extends Component {
     this.setState({
       feedUrl,
     });
-    this.saveFeedUrl(feedUrl);
-    this.fetchPosts({ feedUrl });
+    this.updateSettings(feedUrl);
+    this.fetchPosts(feedUrl);
   }
 
   handleFeedPreviewRemoveClick() {
+    const { clearFeedItems } = this.props;
+
+    const sort = 'relevance';
+
     this.setState({
       feedUrl: null,
+      sort,
     });
 
-    this.saveFeedUrl(null);
-    this.props.clearFeedItems();
+    this.updateSettings(null, sort);
+    clearFeedItems();
+  }
+
+  handleSortChanged(sort) {
+    this.setState({
+      sort,
+    });
+  }
+
+  handleSortConfirmedClick() {
+    const { shortcut, updateShortcutSettings } = this.props;
+    const { feedUrl, sort } = this.state;
+    const settings = { feedUrl, sort };
+
+    updateShortcutSettings(shortcut, settings).then(() =>
+      this.fetchPosts(feedUrl, sort),
+    );
   }
 
   render() {
-    const activeScreen = this.getActiveScreen();
-    const { feedUrl } = this.state;
+    const { feedUrl, sort, error } = this.state;
     const { feedItems, shortcut } = this.props;
+
+    const activeScreen = this.getActiveScreen();
     const initialized = isInitialized(shortcut);
+    const savedSort = _.get(shortcut, 'settings.sort');
+    const sortOptionsAvailable = !isPlaylistUrl(feedUrl);
 
     return (
       <LoaderContainer isLoading={!initialized} className="youtube-feed-page">
-        {(activeScreen === ACTIVE_SCREEN_INPUT) && (
+        {activeScreen === ACTIVE_SCREEN_INPUT && (
           <FeedUrlInput
             inProgress={isBusy(feedItems)}
-            error={this.state.error}
+            error={error}
             onContinueClick={this.handleFeedUrlInputContinueClick}
           />
         )}
-        {(activeScreen === ACTIVE_SCREEN_PREVIEW) && (
-          <div className="youtube-feed-page__content">
-            <FeedPreview
-              feedUrl={feedUrl}
-              feedItems={feedItems}
-              onRemoveClick={this.handleFeedPreviewRemoveClick}
-            />
-          </div>
+        {activeScreen === ACTIVE_SCREEN_PREVIEW && (
+          <FeedPreview
+            feedUrl={feedUrl}
+            feedItems={feedItems}
+            onRemoveClick={this.handleFeedPreviewRemoveClick}
+            selectedSort={sort}
+            savedSort={savedSort}
+            onSortChanged={this.handleSortChanged}
+            onConfirmClick={this.handleSortConfirmedClick}
+            sortOptionsAvailable={sortOptionsAvailable}
+          />
         )}
       </LoaderContainer>
     );
@@ -164,7 +190,6 @@ YoutubeFeedPage.propTypes = {
   loadFeed: PropTypes.func,
   clearFeedItems: PropTypes.func,
 };
-
 
 function mapStateToProps(state, ownProps) {
   const { shortcutId } = ownProps;
@@ -183,10 +208,11 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     fetchExtension: () => dispatch(fetchExtension(ext())),
     fetchShortcut: () => dispatch(fetchShortcut(shortcutId)),
-    updateShortcutSettings: (shortcut, { feedUrl }) => (
-      dispatch(updateShortcutSettings(shortcut, { feedUrl }))),
+    updateShortcutSettings: (shortcut, settings) =>
+      dispatch(updateShortcutSettings(shortcut, settings)),
     clearFeedItems: () => dispatch(clear(FEED_ITEMS, 'feedItems')),
-    loadFeed: (url, apiKey) => dispatch(loadFeed(url, apiKey, shortcutId)),
+    loadFeed: (url, apiKey, shortcutId, sort) =>
+      dispatch(loadFeed(url, apiKey, shortcutId, sort)),
   };
 }
 

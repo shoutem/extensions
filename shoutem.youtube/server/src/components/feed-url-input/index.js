@@ -1,3 +1,1 @@
-import FeedUrlInput from './FeedUrlInput';
-
-export default FeedUrlInput;
+export { default as FeedUrlInput } from './FeedUrlInput';

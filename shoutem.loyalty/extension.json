@@ -1,17 +1,12 @@
 {
   "name": "loyalty",
-  "version": "2.5.4",
+  "version": "2.5.7",
   "platform": "2.5.*",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "releaseNotes": "* Added CMS search feature",
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.cms"
-  ],
-  "categories": [
-    "commerce"
-  ],
+  "releaseNotes": "* Fixed punch cards loading on first Punch cards list screen enter",
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "categories": ["commerce"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -27,10 +22,7 @@
       "title": "Punch Card",
       "name": "punch-card-shortcut",
       "icon": "theme://gift.png",
-      "capabilities": [
-        "shoutem.cms.search",
-        "shoutem.cms.import-csv"
-      ],
+      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
@@ -74,10 +66,7 @@
       "title": "Rewards",
       "name": "rewards-shortcut",
       "icon": "theme://gift.png",
-      "capabilities": [
-        "shoutem.cms.search",
-        "shoutem.cms.import-csv"
-      ],
+      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
@@ -101,10 +90,7 @@
       "title": "Stores",
       "name": "stores-shortcut",
       "icon": "theme://address-full.png",
-      "capabilities": [
-        "shoutem.cms.search",
-        "shoutem.cms.import-csv"
-      ],
+      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",

@@ -1383,6 +1383,7 @@ export default (customVariables = {}) => {
     'shoutem.auth.RegisterButton': {
       'shoutem.ui.View': {
         flexDirection: 'row',
+        flexWrap: 'wrap',
         justifyContent: 'center',
         alignSelf: 'center',
         alignItems: 'center',
@@ -1391,13 +1392,13 @@ export default (customVariables = {}) => {
         paddingBottom: 20,
         'shoutem.ui.Caption': {
           lineHeight: 24,
-          fontSize: 12,
+          fontSize: variables.text.fontSize,
         },
         'shoutem.ui.Button': {
           paddingLeft: 5,
           'shoutem.ui.Text': {
             lineHeight: 24,
-            fontSize: 12,
+            fontSize: variables.text.fontSize,
             margin: 0,
           },
         },
@@ -1407,33 +1408,31 @@ export default (customVariables = {}) => {
     // Auth Register form
     'shoutem.auth.RegisterForm': {
       'shoutem.ui.View': {
+        'shoutem.ui.Text': {
+          paddingBottom: 5,
+          fontSize: 15,
+        },
+        'shoutem.ui.TextInput': {
+          borderColor: variables.text.color,
+          borderRadius: 6,
+          height: 50,
+          paddingHorizontal: 15,
+          paddingVertical: 4,
+        },
         'shoutem.ui.View': {
-          'shoutem.ui.Text': {
-            paddingBottom: 5,
-            fontSize: 15,
-          },
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
           'shoutem.ui.TextInput': {
-            borderColor: variables.text.color,
             borderRadius: 6,
             height: 50,
-            paddingHorizontal: 15,
-            paddingVertical: 4,
-          },
-          'shoutem.ui.View': {
             flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            'shoutem.ui.TextInput': {
-              borderRadius: 6,
-              height: 50,
-              flex: 1,
-            },
           },
-          'shoutem.ui.TouchableOpacity': {
-            'shoutem.ui.Caption': {
-              color: '#659CEC',
-            },
+        },
+        'shoutem.ui.TouchableOpacity': {
+          'shoutem.ui.Caption': {
+            color: '#659CEC',
           },
         },
       },
@@ -1454,7 +1453,6 @@ export default (customVariables = {}) => {
     'shoutem.auth.RegisterScreen': {
       registerScreenMargin: {
         marginHorizontal: 30,
-        marginTop: 40,
       },
     },
 
@@ -1485,6 +1483,9 @@ export default (customVariables = {}) => {
         marginTop: 12,
         fontSize: 15,
         lineHeight: 24,
+      },
+      emailInput: {
+        borderRadius: 6,
       },
       inputCaption: {
         marginBottom: 3,
@@ -1538,6 +1539,128 @@ export default (customVariables = {}) => {
         marginTop: 24,
         marginBottom: 30,
         borderRadius: 6,
+      },
+    },
+
+    'shoutem.besttime.OpenHours': {
+      openText: {
+        color: '#EF1095',
+      },
+    },
+
+    'shoutem.besttime.ForecastScreen': {
+      buttonText: {
+        color: variables.secondaryButtonTextColor,
+      },
+    },
+
+    'shoutem.besttime.ForecastGraph': {
+      'shoutem.ui.View': {
+        'shoutem.ui.View': {
+          '.overlaid': {
+            paddingTop: 80,
+            position: 'absolute',
+          },
+        },
+      },
+      axisColor: variables.text.color,
+      yAxisSvg: {
+        fill: variables.text.color,
+        fontSize: 10,
+      },
+      xAxisSvg: {
+        fill: variables.text.color,
+        fontSize: 10,
+        textAnchor: 'end',
+      },
+      chartContentInsets: {
+        bottom: 5,
+        top: 20,
+      },
+      forecastColor: variables.featuredColor,
+      liveBarChart: {
+        position: 'absolute',
+        marginLeft: 6,
+        height: 160,
+        paddingRight: 15,
+        width: window.width - 40,
+      },
+      liveColor: '#EF1095DD',
+      rawBarChart: {
+        height: 160,
+        paddingRight: 15,
+        width: window.width - 40,
+      },
+      xAxis: {
+        paddingLeft: 15,
+        paddingRight: 15,
+        paddingTop: 5,
+        width: window.width - 40,
+      },
+      yAxis: {
+        height: 180,
+        paddingLeft: 15,
+      },
+      yAxisContentInsets: {
+        top: 20,
+        bottom: 25,
+      },
+    },
+
+    'shoutem.besttime.SearchScreen': {
+      backgroundImage: {
+        [INCLUDE]: ['fillParent'],
+        width: window.width,
+        height: window.height,
+      },
+    },
+
+    'shoutem.besttime.SearchInput': {
+      'shoutem.ui.View': {
+        'shoutem.ui.View': {
+          'shoutem.ui.Icon': {
+            backgroundColor: variables.paperColor,
+            marginHorizontal: 10,
+            marginVertical: 5,
+            color: variables.navBarIconsColor,
+          },
+
+          'shoutem.ui.TextInput': {
+            backgroundColor: variables.paperColor,
+            height: 30,
+            paddingVertical: 0,
+            paddingLeft: 0,
+            marginLeft: 0,
+            width: window.width - dimensionRelativeToIphone(130),
+          },
+
+          'shoutem.ui.Button': {
+            'shoutem.ui.Icon': {
+              color: variables.navBarIconsColor,
+              marginRight: 0,
+              paddingLeft: 10,
+            },
+          },
+
+          backgroundColor: variables.paperColor,
+          borderRadius: 6,
+          marginHorizontal: variables.mediumGutter,
+        },
+
+        backgroundColor: variables.navBarBackground,
+        height: 40,
+      },
+    },
+
+    'shoutem.besttime.SearchInstructions': {
+      'shoutem.ui.View': {
+        flex: 1,
+      },
+    },
+
+    'shoutem.besttime.GooglePlacesError': {
+      'shoutem.ui.View': {
+        flex: 1,
       },
     },
 
@@ -1752,6 +1875,51 @@ export default (customVariables = {}) => {
       },
     },
 
+    // Places
+
+    'shoutem.places.PlacesGridScreen': {
+      list: { marginTop: 8, marginHorizontal: 8 },
+    },
+
+    'shoutem.places.PlaceFullGridRowView': {
+      container: {
+        marginBottom: 8,
+        borderRadius: 4,
+        borderColor: 'rgba(68,79,108,0.2)',
+        borderWidth: 1,
+      },
+      imageContainer: { height: dimensionRelativeToIphone(224) },
+      textContainer: {
+        height: dimensionRelativeToIphone(92),
+        borderTopColor: 'rgba(68,79,108,0.2)',
+        borderTopWidth: 1,
+        paddingTop: 16,
+        paddingLeft: 16,
+        paddingRight: 16,
+        paddingBottom: 4,
+      },
+      title: { fontSize: 20, lineHeight: 24, fontWeight: 'bold' },
+      description: {
+        fontSize: 14,
+        lineHeight: 16,
+        paddingTop: 4,
+        paddingBottom: 16,
+      },
+    },
+
+    'shoutem.places.PlaceHalfGridRowView': {
+      [INCLUDE]: ['shoutem.places.PlaceFullGridRowView'],
+      container: {
+        ...['shoutem.places.PlaceFullGridRowView'],
+        marginHorizontal: 4,
+      },
+      imageContainer: { height: dimensionRelativeToIphone(110) },
+      textContainer: {
+        ...['shoutem.places.PlaceFullGridRowView'],
+        height: dimensionRelativeToIphone(108),
+      },
+    },
+
     // Social
     'shoutem.social.CreateStatusScreen': {
       footer: {
@@ -1800,6 +1968,50 @@ export default (customVariables = {}) => {
       },
     },
 
+    'shoutem.podcast.FeaturedEpisodeView': {
+      downloadManagerButton: {
+        position: 'absolute',
+        top: 5,
+        right: 5,
+      },
+    },
+
+    'shoutem.podcast.ListEpisodeView': {
+      episodeTitle: {
+        width:
+          window.width -
+          3 * variables.mediumGutter -
+          dimensionRelativeToIphone(65) -
+          30,
+      },
+    },
+
+    'shoutem.podcast.EpisodesLargeGridScreen': {
+      gridRow: {
+        paddingLeft: 25,
+        paddingTop: 30,
+      },
+    },
+
+    'shoutem.podcast.LargeGridEpisodeView': {
+      'shoutem.ui.TouchableOpacity': {
+        'shoutem.ui.Card': {
+          'shoutem.ui.Image': {
+            height: dimensionRelativeToIphone(145),
+            width: dimensionRelativeToIphone(145),
+          },
+          'shoutem.ui.View': {
+            backgroundColor: 'transparent',
+            paddingHorizontal: 0,
+            paddingBottom: 0,
+            width: dimensionRelativeToIphone(145),
+          },
+
+          backgroundColor: 'transparent',
+        },
+      },
+    },
+
     'shoutem.podcast.PodcastPlayer': {
       container: {
         paddingBottom: Device.select({
@@ -1831,24 +2043,21 @@ export default (customVariables = {}) => {
       skipIcon: {
         color: variables.primaryButtonText.color,
       },
-      skipIconSize: 35,
+      skipIconSize: 30,
       timeDisplay: {
         lineHeight: 15,
         fontSize: 12,
       },
       playbackButtonStyle: {
-        width: 90,
-        height: 90,
         padding: 0,
         margin: 0,
-        marginBottom: 3,
         marginLeft: 10,
         backgroundColor: 'transparent',
         borderWidth: 0,
       },
       playbackIconStyle: {
-        height: 70,
-        width: 70,
+        height: 45,
+        width: 45,
         padding: 0,
         margin: 0,
       },

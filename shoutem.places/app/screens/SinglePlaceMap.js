@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Linking } from 'react-native';
 import { NavigationBar } from 'shoutem.navigation';
 import { View, Screen, TouchableOpacity, Icon } from '@shoutem/ui';
-import MapList from '../components/MapList';
+import { MapList } from '../components';
 import { getMapUrl } from '../services/places';
 
 export default class SinglePlaceMap extends PureComponent {

@@ -2,13 +2,11 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-
+import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Text, TextInput, View } from '@shoutem/ui';
-
-import { I18n } from 'shoutem.i18n';
-
 import { ext } from '../const';
+import { errorMessages } from '../errorMessages';
 import PasswordTextInput from './PasswordTextInput';
 
 class LoginForm extends PureComponent {
@@ -28,16 +26,46 @@ class LoginForm extends PureComponent {
     this.state = {
       username: '',
       password: '',
+      usernameError: null,
+      passwordError: null,
     };
+  }
+
+  validateInputs(username, password) {
+    let isValid = true;
+
+    if (_.isEmpty(username)) {
+      isValid = false;
+
+      this.setState({ usernameError: errorMessages.USERNAME_EMPTY });
+    }
+
+    if (_.isEmpty(password)) {
+      isValid = false;
+
+      this.setState({ passwordError: errorMessages.PASSWORD_EMPTY });
+    }
+
+    return isValid;
   }
 
   handleLoginButtonPress() {
     const { onSubmit } = this.props;
     const { username, password } = this.state;
 
-    if (onSubmit) {
-      onSubmit(username, password);
-    }
+    this.setState(
+      {
+        usernameError: null,
+        passwordError: null,
+      },
+      () => {
+        const validationPassed = this.validateInputs(username, password);
+
+        if (onSubmit && validationPassed) {
+          onSubmit(username, password);
+        }
+      },
+    );
   }
 
   handleUsernameChange(username) {
@@ -50,7 +78,7 @@ class LoginForm extends PureComponent {
 
   render() {
     const { style, onForgotPasswordPress } = this.props;
-    const { username, password } = this.state;
+    const { username, password, usernameError, passwordError } = this.state;
 
     return (
       <View>
@@ -64,6 +92,7 @@ class LoginForm extends PureComponent {
             keyboardType="email-address"
             onChangeText={this.handleUsernameChange}
             placeholder={I18n.t(ext('usernameOrEmailPlaceholder'))}
+            errorMessage={usernameError}
             returnKeyType="done"
             value={username}
           />
@@ -77,6 +106,7 @@ class LoginForm extends PureComponent {
         <PasswordTextInput
           onChangeText={this.handlePasswordChange}
           password={password}
+          errorMessage={passwordError}
         />
         <Button onPress={this.handleLoginButtonPress} style={style.loginButton}>
           <Text allowFontScaling={false}>{I18n.t(ext('logInButton'))}</Text>

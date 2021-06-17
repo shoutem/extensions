@@ -1,0 +1,20 @@
+{
+  "shoutem": {
+    "besttime": {
+      "besttimeServiceUnavailable": "Service currently not available.",
+      "closed": "Closed",
+      "currentHourLabel": "Now",
+      "googlePlacesErrorSuggestion": "Try entering a more precise address or name",
+      "noDataAvailableMessage": "No data available for this business.",
+      "noForecastDataMessage": "Not enough data available yet for full forecast.",
+      "noGooglePlacesFound": "No places found",
+      "noLiveDataMessage": "No live data available at the moment.",
+      "noPlaceDetailsFoundMessage": "No information found, venue might be permanently closed.",
+      "openAllDay": "Open all day",
+      "openNow": "Open now:",
+      "searchInstructions": "Search for businesses",
+      "searchExplanation": "And find out the best time to visit",
+      "showOnMap": "Show on map"
+    }
+  }
+}

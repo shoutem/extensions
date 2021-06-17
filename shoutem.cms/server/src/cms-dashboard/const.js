@@ -7,6 +7,7 @@ export const PROPERTY_TYPES = {
   INTEGER: 'integer',
   NUMBER: 'number',
   ARRAY: 'array',
+  BOOLEAN: 'boolean',
 };
 
 export const PROPERTY_FORMATS = {
@@ -22,6 +23,7 @@ export const PROPERTY_FORMATS = {
   ENTITY_REFERENCE: 'entity-reference',
   ENTITY_REFERENCE_ARRAY: 'entity-reference-array',
   ARRAY: 'array',
+  BOOLEAN: 'boolean',
 };
 
 export const PROPERTY_REFERENCED_SCHEMAS = {

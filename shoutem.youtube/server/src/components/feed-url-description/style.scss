@@ -1,0 +1,28 @@
+.feed-url-description__container {
+  padding-top: 25px;
+  padding-bottom: 10px;
+  color: #888fa1;
+  font-size: 14px;
+  line-height: 20px;
+
+  b {
+    font-weight: 900;
+    color: #444f6c;
+  }
+
+  .se-icon {
+    position: absolute;
+    margin-left: 5px;
+  }
+}
+
+.feed-url-description__popover-text {
+  color: #888fa1;
+  font-size: 13px;
+  line-height: 20px;
+
+  b {
+    color: #444f6c;
+    font-weight: bolder;
+  }
+}

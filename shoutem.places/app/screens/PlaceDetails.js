@@ -25,7 +25,7 @@ import { Favorite } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { openURL } from 'shoutem.web-view';
-import PlaceImageGallery from '../components/PlaceImageGallery';
+import { PlaceImageGallery } from '../components';
 import { ext } from '../const';
 import { getPlaceImages, getMapUrl } from '../services/places';
 

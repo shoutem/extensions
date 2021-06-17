@@ -8,7 +8,7 @@ import { getAppId, getExtensionSettings } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-import { Screen, Spinner, ScrollView } from '@shoutem/ui';
+import { Screen, Spinner, ScrollView, View } from '@shoutem/ui';
 import {
   RegisterForm,
   AppleSignInButton,
@@ -170,26 +170,29 @@ export class RegisterScreen extends PureComponent {
           />
 
           {(isEligibleForAppleSignIn || isFacebookAuthEnabled) && (
-            <HorizontalSeparator />
+            <View>
+              <HorizontalSeparator />
+              {isEligibleForAppleSignIn && (
+                <AppleSignInButton
+                  onLoginFailed={this.handleRegistrationFailed}
+                  onLoginSuccess={this.handleRegistrationSuccess}
+                />
+              )}
+              {isFacebookAuthEnabled && (
+                <FacebookButton
+                  onLoginFailed={this.handleRegistrationFailed}
+                  onLoginSuccess={this.handleRegistrationSuccess}
+                />
+              )}
+            </View>
           )}
 
-          {isEligibleForAppleSignIn && (
-            <AppleSignInButton
-              onLoginFailed={this.handleRegistrationFailed}
-              onLoginSuccess={this.handleRegistrationSuccess}
+          <View styleName="lg-gutter-bottom">
+            <TermsAndPrivacy
+              termsOfServiceLink={termsOfServiceLink}
+              privacyPolicyLink={privacyPolicyLink}
             />
-          )}
-
-          {isFacebookAuthEnabled && (
-            <FacebookButton
-              onLoginFailed={this.handleRegistrationFailed}
-              onLoginSuccess={this.handleRegistrationSuccess}
-            />
-          )}
-          <TermsAndPrivacy
-            termsOfServiceLink={termsOfServiceLink}
-            privacyPolicyLink={privacyPolicyLink}
-          />
+          </View>
         </ScrollView>
       </Screen>
     );

@@ -1,16 +1,14 @@
 import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-
+import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Icon, TextInput, View } from '@shoutem/ui';
-
-import { I18n } from 'shoutem.i18n';
-
 import { ext } from '../const';
 
 class PasswordTextInput extends PureComponent {
   static propTypes = {
+    animate: PropTypes.bool,
     errorMessage: PropTypes.string,
     onChangeText: PropTypes.func,
     password: PropTypes.string,
@@ -33,12 +31,13 @@ class PasswordTextInput extends PureComponent {
   }
 
   render() {
-    const { errorMessage, onChangeText, password } = this.props;
+    const { errorMessage, onChangeText, password, animate } = this.props;
     const { visibility } = this.state;
 
     return (
       <View>
         <TextInput
+          animate={animate}
           autoCapitalize="none"
           autoCorrect={false}
           errorMessage={errorMessage}

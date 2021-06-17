@@ -32,6 +32,12 @@ export const errorMessages = {
   get CONSENT_REQUIRED() {
     return I18n.t(ext('consentRequiredError'));
   },
+  get USERNAME_EMPTY() {
+    return I18n.t(ext('emptyUsernameErrorMessage'));
+  },
+  get PASSWORD_EMPTY() {
+    return I18n.t(ext('emptyPasswordErrorMessage'));
+  },
 };
 
 export function resolveErrorMessage(errorCode) {

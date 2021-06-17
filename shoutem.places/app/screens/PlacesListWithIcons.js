@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { currentLocation } from 'shoutem.cms';
 import { connectStyle } from '@shoutem/theme';
-import PlaceIconView from '../components/PlaceIconView';
+import { PlaceIconView } from '../components';
 import { ext } from '../const';
 import { PlacesList, mapStateToProps, mapDispatchToProps } from './PlacesList';
 

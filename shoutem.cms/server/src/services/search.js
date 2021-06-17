@@ -26,7 +26,7 @@ export function getCurrentSearchOptionsFromCollection(schema, collection) {
         return;
       }
 
-      const matches = key.match(/(?<=\[).+?(?=\])/g);
+      const matches = key.match(/([^[]+(?=]))/g);
       if (matches && matches.length === 0) {
         return;
       }

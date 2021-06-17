@@ -1,7 +1,7 @@
-import _ from 'lodash';
 import React from 'react';
-import PropTypes from 'prop-types';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { isBusy } from '@shoutem/redux-io';
 import FeedPreviewTableItem from './FeedPreviewTableItem';
 import LOCALIZATION from './localization';
@@ -14,9 +14,12 @@ export default function FeedPreviewTable({ feedItems }) {
     <table className="table feed-preview-table">
       <thead>
         <tr>
-          <th className="feed-preview-table__title">{i18next.t(LOCALIZATION.TITLE)}</th>
+          <th className="feed-preview-table__title">
+            {i18next.t(LOCALIZATION.TITLE)}
+          </th>
           <th className="feed-preview-table__duration">
-            <span className="feed-preview-table__duration-margin">{i18next.t(LOCALIZATION.DURATION)}</span></th>
+            {i18next.t(LOCALIZATION.DURATION)}
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -25,14 +28,16 @@ export default function FeedPreviewTable({ feedItems }) {
             <td colSpan="2">{i18next.t(LOCALIZATION.LOADING)}</td>
           </tr>
         )}
-        {!loading && (_.isEmpty(feedItems)) && (
+        {!loading && _.isEmpty(feedItems) && (
           <tr>
             <td colSpan="2">{i18next.t(LOCALIZATION.NO_CONTENT_MESSAGE)}</td>
           </tr>
         )}
-        {(!loading && !_.isEmpty(feedItems)) && feedItems.map(item => (
-          <FeedPreviewTableItem item={item} key={item.id} />
-        ))}
+        {!loading &&
+          !_.isEmpty(feedItems) &&
+          feedItems.map(item => (
+            <FeedPreviewTableItem item={item} key={item.id} />
+          ))}
       </tbody>
     </table>
   );

@@ -10,6 +10,8 @@
       "file-uploader.file-upload-failed-error": "File upload failed.",
       "file-uploader.file-rejected-error": "File rejected",
       "file-uploader.file-delete-failed-error": "Delete failed.",
+      "form-builder.add-more": "Add more",
+      "form-builder.remove-section": "Remove section",
       "cms-dashboard.category-name-modal.create-category-button": "Create category",
       "cms-dashboard.category-name-modal.rename-category-button": "Rename category",
       "cms-dashboard.category-name-modal.enter-category-name": "Enter category name",

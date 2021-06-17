@@ -1,0 +1,8 @@
+{
+  "shoutem": {
+    "podcast": {
+      "download-explanation": "Downloads will not be accessible through the device's media library, they'll only be accessible through the app itself.",
+      "enable-download-checkbox-label": "Enable download of episodes"
+    }
+  }
+}

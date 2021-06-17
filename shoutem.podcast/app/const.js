@@ -5,12 +5,15 @@ import {
   CAPABILITY_JUMP_BACKWARD,
   CAPABILITY_SEEK_TO,
 } from 'shoutem.audio';
-
 import pack from './package.json';
 
 export function ext(resourceName) {
   return resourceName ? `${pack.name}.${resourceName}` : pack.name;
 }
+
+export const DOWNLOADED_EPISODE_ADDED = ext('DOWNLOADED_EPISODE_ADDED');
+export const DOWNLOADED_EPISODE_REMOVED = ext('DOWNLOADED_EPISODE_REMOVED');
+export const SET_DOWNLOAD_IN_PROGRESS = ext('SET_DOWNLOAD_IN_PROGRESS');
 
 // TODO: Currently, backend has no shoutem.proxy.podcast
 // schema defined. We can't use news schema, it's causing

@@ -1,7 +1,7 @@
 const key = 'feed-preview-table';
 
 const TITLE = `${key}.title`;
-const DURATION =`${key}.duration`;
+const DURATION = `${key}.duration`;
 const LOADING = `${key}.loading`;
 const NO_CONTENT_MESSAGE = `${key}.no-content-message`;
 

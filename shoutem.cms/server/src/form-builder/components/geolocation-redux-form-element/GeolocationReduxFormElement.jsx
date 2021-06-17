@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
 import { ReduxFormElement } from '@shoutem/react-web-ui';
 import SelectReduxFormElement from '../select-redux-form-element';

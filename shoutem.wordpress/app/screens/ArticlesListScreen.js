@@ -2,69 +2,90 @@ import React from 'react';
 import autoBindReact from 'auto-bind/react';
 import he from 'he';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { RemoteDataListScreen } from 'shoutem.application';
 import { navigateTo as navigateToAction } from 'shoutem.navigation';
-import { find, next, shouldRefresh } from '@shoutem/redux-io';
+import { next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
 import { ListArticleView } from '../components/ListArticleView';
 import { ext, POSTS_PER_PAGE } from '../const';
-import { fetchWordpressPosts, getFeedCategories, getFeedItems } from '../redux';
+import {
+  fetchWordpressPosts,
+  getFeedCategories,
+  fetchPostsMedia,
+  fetchPostsAuthor,
+  getFeedItems,
+  fetchCategories,
+} from '../redux';
 import { getLeadImageUrl, getAuthorName } from '../services';
-
 export class ArticlesListScreen extends RemoteDataListScreen {
   static propTypes = {
     ...RemoteDataListScreen.propTypes,
-    page: PropTypes.number,
-    loadFeed: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
 
     autoBindReact(this);
-
-    this.state = {
-      page: 1,
-    };
   }
 
-  // eslint-disable-next-line no-unused-vars
-  refreshData(prevProps = {}) {
-    const { categories, data } = this.props;
-
-    if (shouldRefresh(data, true) && shouldRefresh(categories, true)) {
-      this.fetchData();
-    }
+  componentDidMount() {
+    this.fetchData();
   }
 
-  fetchPosts() {
+  refreshData() {
+    return null;
+  }
+
+  loadMore() {
     const {
       feedUrl,
-      fetchWordpressPosts,
-      shortcut: { id: shortcutId },
+      data,
+      next,
+      fetchPostsMedia,
+      fetchPostsAuthor,
     } = this.props;
-    const { page } = this.state;
 
-    fetchWordpressPosts({
-      feedUrl,
-      shortcutId,
-      page,
-      perPage: POSTS_PER_PAGE,
-      appendMode: page > 1,
+    next(data).then(res => {
+      const options = { ..._.get(res, 'meta.options'), feedUrl };
+      const posts = _.get(res, 'payload');
+
+      return Promise.all([
+        fetchPostsMedia({ ...options, posts }),
+        fetchPostsAuthor({ ...options, posts }),
+      ]);
     });
   }
 
+  // Called only on didMount & pull to refresh
   fetchData() {
-    const { feedUrl } = this.props;
+    const {
+      feedUrl,
+      fetchCategories,
+      fetchWordpressPosts,
+      shortcut: { id: shortcutId },
+    } = this.props;
 
     if (_.isEmpty(feedUrl)) {
-      return;
+      return null;
     }
 
-    this.setState({ page: 1 }, this.fetchPosts);
+    const options = {
+      // We pass page=1 only on initial fetch data.
+      // After it is loaded, next page URL is stored in reducer's links.next
+      // Each next data fetching is performed using next()
+      page: 1,
+      feedUrl,
+      shortcutId,
+      perPage: POSTS_PER_PAGE,
+    };
+
+    return fetchCategories(options).then(res => {
+      const categories = _.get(res, 'payload');
+
+      fetchWordpressPosts(options, categories);
+    });
   }
 
   openArticle(article) {
@@ -145,8 +166,10 @@ export const mapStateToProps = (state, ownProps) => {
 export const mapDispatchToProps = {
   navigateToAction,
   fetchWordpressPosts,
-  find,
   next,
+  fetchCategories,
+  fetchPostsMedia,
+  fetchPostsAuthor,
 };
 
 export default connect(

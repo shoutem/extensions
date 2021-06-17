@@ -3,7 +3,6 @@ import autoBindReact from 'auto-bind/react';
 import isEmail from 'is-email';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Alert } from 'react-native';
 import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -62,37 +61,27 @@ class RegisterForm extends PureComponent {
     const consentRequired = _.get(gdprSettings, 'consentRequired', false);
 
     let isValid = true;
-    if (_.isEmpty(email) || _.isEmpty(username) || _.isEmpty(password)) {
-      Alert.alert(
-        I18n.t('shoutem.application.errorTitle'),
-        errorMessages.EMPTY_FIELDS,
-      );
-
-      isValid = false;
-    }
 
     if (consentRequired && !gdprConsentGiven) {
-      this.setState({ gdprConsentError: errorMessages.CONSENT_REQUIRED });
+      this.setState({
+        gdprConsentError: errorMessages.CONSENT_REQUIRED,
+      });
 
       isValid = false;
-    } else {
-      this.setState({ gdprConsentError: null });
     }
 
     if (!isEmail(email)) {
       this.setState({ emailError: errorMessages.SIGNUP_EMAIL_INVALID });
 
       isValid = false;
-    } else {
-      this.setState({ emailError: null });
     }
 
     if (!password || password.length < 6) {
-      this.setState({ passwordError: errorMessages.SIGNUP_PASSWORD_INVALID });
+      this.setState({
+        passwordError: errorMessages.SIGNUP_PASSWORD_INVALID,
+      });
 
       isValid = false;
-    } else {
-      this.setState({ passwordError: null });
     }
 
     const usernameRegexMatch = username.match(this.usernameRegex);
@@ -101,11 +90,11 @@ class RegisterForm extends PureComponent {
       !usernameRegexMatch ||
       username.toLowerCase() !== username
     ) {
-      this.setState({ usernameError: errorMessages.SIGNUP_USERNAME_INVALID });
+      this.setState({
+        usernameError: errorMessages.SIGNUP_USERNAME_INVALID,
+      });
 
       isValid = false;
-    } else {
-      this.setState({ usernameError: null });
     }
 
     return isValid;
@@ -121,17 +110,27 @@ class RegisterForm extends PureComponent {
       gdprConsentGiven,
     } = this.state;
 
-    const validationPassed = this.validateInput();
+    this.setState(
+      {
+        emailError: null,
+        usernameError: null,
+        passwordError: null,
+        gdprConsentError: null,
+      },
+      () => {
+        const validationPassed = this.validateInput();
 
-    if (validationPassed && onSubmit) {
-      onSubmit(
-        email,
-        username,
-        password,
-        gdprConsentGiven,
-        newsletterConsentGiven,
-      );
-    }
+        if (validationPassed && onSubmit) {
+          onSubmit(
+            email,
+            username,
+            password,
+            gdprConsentGiven,
+            newsletterConsentGiven,
+          );
+        }
+      },
+    );
   }
 
   handleGdprConsentToggle() {
@@ -182,8 +181,8 @@ class RegisterForm extends PureComponent {
     const { consentToggleActive: newsletterToggleActive } = newsletterSettings;
 
     return (
-      <View>
-        <View styleName="lg-gutter-bottom">
+      <>
+        <View styleName="lg-gutter-vertical">
           <Text>{I18n.t(ext('email'))}</Text>
           <TextInput
             autoCapitalize="none"
@@ -253,7 +252,7 @@ class RegisterForm extends PureComponent {
         >
           <Text allowFontScaling={false}>{I18n.t(ext('registerButton'))}</Text>
         </Button>
-      </View>
+      </>
     );
   }
 }

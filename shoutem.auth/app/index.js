@@ -20,11 +20,15 @@ import reducer, {
   isAuthenticated,
   isUserUpdateAction,
   openProfile,
+  register,
   RESTORE_SESSION,
   LOGIN,
   LOGOUT,
   REGISTER,
   USER_SCHEMA,
+  updateProfile,
+  userRegistered,
+  REAUTHENTICATE_FAILED,
 } from './redux';
 
 import {
@@ -36,6 +40,8 @@ import {
 } from './middleware';
 
 import { loginRequired } from './loginRequired';
+import { saveSession } from './session';
+import { getErrorCode, getErrorMessage } from './errorMessages';
 
 import enTranslations from './translations/en.json';
 
@@ -88,14 +94,21 @@ export {
   getUser,
   getUserGroups,
   getAccessToken,
+  getErrorCode,
+  getErrorMessage,
   authenticate,
   loginRequired,
   isAuthenticated,
+  register,
+  saveSession,
+  userRegistered,
   isUserUpdateAction,
   openProfile,
+  updateProfile,
   LOGIN,
   LOGOUT,
   REGISTER,
   RESTORE_SESSION,
+  REAUTHENTICATE_FAILED,
   USER_SCHEMA,
 };

@@ -10,6 +10,7 @@ import { connectStyle } from '@shoutem/theme';
 import { Screen, Title, Text, TextInput, Button, View } from '@shoutem/ui';
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
+import { loginRequired } from '../loginRequired';
 import { sendVerificationCodeEmail } from '../redux';
 
 class PasswordRecoveryScreen extends PureComponent {
@@ -34,15 +35,17 @@ class PasswordRecoveryScreen extends PureComponent {
     const { sendVerificationCodeEmail } = this.props;
     const { email } = this.state;
 
-    if (!isEmail(email)) {
-      return this.setState({ emailError: errorMessages.SIGNUP_EMAIL_INVALID });
-    }
+    this.setState({ emailError: null }, () => {
+      if (!isEmail(email)) {
+        return this.setState({
+          emailError: errorMessages.SIGNUP_EMAIL_INVALID,
+        });
+      }
 
-    this.setState({ emailError: null });
-
-    return sendVerificationCodeEmail(email).then(() =>
-      this.navigateToChangePasswordScreen(email),
-    );
+      return sendVerificationCodeEmail(email).then(() =>
+        this.navigateToChangePasswordScreen(email),
+      );
+    });
   }
 
   navigateToChangePasswordScreen(email) {
@@ -82,6 +85,7 @@ class PasswordRecoveryScreen extends PureComponent {
           </Text>
           <TextInput
             styleName="lg-gutter-right"
+            style={style.emailInput}
             placeholder={I18n.t(ext('emailPlaceholder'))}
             errorMessage={emailError}
             autoCapitalize="none"
@@ -116,7 +120,10 @@ export const mapDispatchToProps = {
   sendVerificationCodeEmail,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(connectStyle(ext('PasswordRecoveryScreen'))(PasswordRecoveryScreen));
+export default loginRequired(
+  connect(
+    null,
+    mapDispatchToProps,
+  )(connectStyle(ext('PasswordRecoveryScreen'))(PasswordRecoveryScreen)),
+  false,
+);

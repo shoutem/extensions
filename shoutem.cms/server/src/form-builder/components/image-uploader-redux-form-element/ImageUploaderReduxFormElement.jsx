@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
 import { ImageUploader } from '@shoutem/file-upload';
 import { fieldInError } from '../services';

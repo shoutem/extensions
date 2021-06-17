@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { Trans } from 'react-i18next';
-import { connect } from 'react-redux';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
   Button,
   ButtonToolbar,
@@ -13,14 +11,18 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
+import { Trans } from 'react-i18next';
+import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { fetchExtension, updateExtensionSettings, getExtension } from '@shoutem/redux-api-sdk';
+import {
+  fetchExtension,
+  updateExtensionSettings,
+  getExtension,
+} from '@shoutem/redux-api-sdk';
 import { shouldRefresh } from '@shoutem/redux-io';
 import { validateYoutubeSettings } from '../../redux';
 import LOCALIZATION from './localization';
 import './style.scss';
-
-const ERROR_KEY = 'Unable to connect. Check your API key and try again.';
 
 class SettingsPage extends Component {
   constructor(props) {
@@ -45,17 +47,14 @@ class SettingsPage extends Component {
 
     if (_.isEmpty(apiKey)) {
       const apiKey = _.get(nextExtension, 'settings.apiKey');
-      const isSaved = (apiKey !== undefined);
+      const isSaved = apiKey !== undefined;
       this.setState({
         apiKey,
         isSaved,
       });
     }
 
-    if (
-      extension !== nextExtension &&
-      shouldRefresh(nextExtension)
-    ) {
+    if (extension !== nextExtension && shouldRefresh(nextExtension)) {
       this.props.fetchExtension();
     }
   }
@@ -82,20 +81,22 @@ class SettingsPage extends Component {
 
     this.setState({ error: '', inProgress: true });
 
-    validateYoutubeSettings(apiKey).then(() => {
-      updateExtensionSettings(extension, { apiKey }).then(() => {
+    validateYoutubeSettings(apiKey)
+      .then(() => {
+        updateExtensionSettings(extension, { apiKey }).then(() => {
+          this.setState({
+            hasChanges: false,
+            inProgress: false,
+            isSaved: true,
+          });
+        });
+      })
+      .catch(() => {
         this.setState({
-          hasChanges: false,
+          error: i18next.t(LOCALIZATION.ERROR_MESSAGE),
           inProgress: false,
-          isSaved: true,
         });
       });
-    }).catch(() => {
-      this.setState({
-        error: i18next.t(LOCALIZATION.ERROR_MESSAGE),
-        inProgress: false,
-      });
-    });
   }
 
   render() {
@@ -116,19 +117,20 @@ class SettingsPage extends Component {
               onChange={this.handleTextChange}
             />
           </FormGroup>
-          {error &&
-            <HelpBlock className="text-error">{error}</HelpBlock>
-          }
+          {error && <HelpBlock className="text-error">{error}</HelpBlock>}
         </form>
         <ControlLabel>
           <Trans i18nKey={LOCALIZATION.TO_CREATE_A_KEY}>
-            To create your Youtube API key you need to create an app
-            on Google Developer Console. You can find detailed instructions <a
+            To create your Youtube API key you need to create an app on Google
+            Developer Console. You can find detailed instructions{' '}
+            <a
               href="https://developers.google.com/youtube/v3/getting-started"
               target="_blank"
               rel="noopener noreferrer"
-            >here
-            </a>.
+            >
+              here
+            </a>
+            .
           </Trans>
         </ControlLabel>
         <ButtonToolbar>
@@ -166,11 +168,11 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { extensionName } = ownProps;
 
   return {
-    validateYoutubeSettings: apiKey => dispatch(validateYoutubeSettings(apiKey)),
+    validateYoutubeSettings: apiKey =>
+      dispatch(validateYoutubeSettings(apiKey)),
     fetchExtension: () => dispatch(fetchExtension(extensionName)),
-    updateExtensionSettings: (extension, settings) => (
-      dispatch(updateExtensionSettings(extension, settings))
-    ),
+    updateExtensionSettings: (extension, settings) =>
+      dispatch(updateExtensionSettings(extension, settings)),
   };
 }
 

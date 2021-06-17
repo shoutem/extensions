@@ -2,7 +2,12 @@
   "shoutem": {
     "camera": {
       "changePermissionsButton": "Change permissions",
-      "permissionNotGranted": "Camera permission not granted."
+      "permissionNotGranted": "Camera permission not granted.",
+      "codeScannedTitle": "QR Code scanned",
+      "codeScannedMessage": "Scanned link: {{url}}",
+      "codeMissingUrlMessage": "This code doesn't contain a valid url",
+      "cancelButtonLabel": "Cancel",
+      "openButtonLabel": "Open"
     }
   }
 }

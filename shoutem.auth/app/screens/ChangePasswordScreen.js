@@ -25,6 +25,7 @@ import {
 import { PasswordTextInput } from '../components';
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
+import { loginRequired } from '../loginRequired';
 import { resetPassword } from '../redux';
 
 class ChangePasswordScreen extends PureComponent {
@@ -37,6 +38,7 @@ class ChangePasswordScreen extends PureComponent {
       verificationCode: '',
       newPassword: '',
       repeatNewPassword: '',
+      verificationCodeError: null,
       newPasswordError: null,
       repeatNewPasswordError: null,
     };
@@ -50,62 +52,62 @@ class ChangePasswordScreen extends PureComponent {
     const { email, resetPassword } = this.props;
     const { verificationCode, newPassword } = this.state;
 
-    const invalidInputValues = !this.validateInputValues();
-    if (invalidInputValues) {
-      return;
-    }
+    this.setState(
+      {
+        verificationCodeError: null,
+        newPasswordError: null,
+        repeatNewPasswordError: null,
+      },
+      () => {
+        const validInputs = this.validateInputValues();
 
-    this.setInputsErrorState(null, null, null);
-
-    resetPassword(verificationCode, email, newPassword)
-      .then(() => this.showResetResultAlert(true))
-      .catch(() => this.showResetResultAlert(false));
+        if (validInputs) {
+          resetPassword(verificationCode, email, newPassword)
+            .then(() => this.showResetResultAlert(true))
+            .catch(() => this.showResetResultAlert(false));
+        }
+      },
+    );
   }
 
   validateInputValues() {
     const { verificationCode, newPassword, repeatNewPassword } = this.state;
 
+    let isValid = true;
+
     if (_.isEmpty(verificationCode)) {
+      isValid = false;
+
       this.setState({
         verificationCodeError: I18n.t(ext('verificationCodeErrorText')),
       });
-
-      return false;
     }
 
     if (newPassword.length < 6) {
-      this.setInputsErrorState(
-        null,
-        errorMessages.SIGNUP_PASSWORD_INVALID,
-        errorMessages.SIGNUP_PASSWORD_INVALID,
-      );
+      isValid = false;
 
-      return false;
+      this.setState({
+        newPasswordError: errorMessages.SIGNUP_PASSWORD_INVALID,
+      });
     }
 
     if (newPassword !== repeatNewPassword) {
-      this.setInputsErrorState(
-        null,
-        ' ',
-        I18n.t(ext('repeatPasswordErrorText')),
-      );
+      isValid = false;
 
-      return false;
+      this.setState({
+        repeatNewPasswordError: I18n.t(ext('repeatPasswordErrorText')),
+      });
     }
 
-    return true;
-  }
+    if (repeatNewPassword.length < 6) {
+      isValid = false;
 
-  setInputsErrorState(
-    verificationCodeError,
-    newPasswordError,
-    repeatNewPasswordError,
-  ) {
-    this.setState({
-      verificationCodeError,
-      newPasswordError,
-      repeatNewPasswordError,
-    });
+      this.setState({
+        repeatNewPasswordError: errorMessages.SIGNUP_PASSWORD_INVALID,
+      });
+    }
+
+    return isValid;
   }
 
   showResetResultAlert(passwordChangedSuccessfully) {
@@ -237,7 +239,10 @@ export const mapDispatchToProps = {
   resetPassword,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(connectStyle(ext('ChangePasswordScreen'))(ChangePasswordScreen));
+export default loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('ChangePasswordScreen'))(ChangePasswordScreen)),
+  false,
+);

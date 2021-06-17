@@ -1,0 +1,19 @@
+.array-redux-form-item-container {
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
+
+  .field {
+    width: 100%;
+  }
+
+  .close-icon {
+    padding-left: 5px;
+    color: #bdc0cb;
+    cursor: pointer;
+  }
+
+  label {
+    display: none;
+  }
+}

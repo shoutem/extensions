@@ -1,15 +1,24 @@
-import { createScopedReducer, getShortcutState } from '@shoutem/redux-api-sdk';
-import { resource, find, cloneStatus, RESOLVED_ENDPOINT } from '@shoutem/redux-io';
 import _ from 'lodash';
+import { createScopedReducer, getShortcutState } from '@shoutem/redux-api-sdk';
+import {
+  resource,
+  find,
+  cloneStatus,
+  RESOLVED_ENDPOINT,
+} from '@shoutem/redux-io';
 import {
   resolveVideosFetchEndpoint,
   resolveVideosSearchEndpoint,
+  resolveChannelsSearchEndpoint,
+  resolveChannelsDataEndpoint,
   isUserUrl,
   isChannelUrl,
   isPlaylistUrl,
   resolveUserChannel,
   createYoutubeValidationUrl,
-  createYoutubePlaylistUrl,
+  isCustomChannelUrl,
+  parseCustomUrl,
+  createYoutubeChannelUrl,
 } from './services/youtube';
 
 export const YOUTUBE_API_SETTINGS = 'shoutem.youtube.api-settings';
@@ -36,32 +45,13 @@ export function validateYoutubeSettings(apiKey) {
       headers: {},
     },
   };
+
   return find(config, 'validation');
 }
 
-function searchVideos(feedUrl, apiKey, shortcutId) {
-  const endpoint = resolveVideosSearchEndpoint(feedUrl, apiKey);
-  if (!endpoint) {
-    return null;
-  }
-  const config = {
-    schema: SEARCH_RESULTS,
-    request: {
-      endpoint,
-      resourceType: 'json',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
-  };
-  return find(config, 'searchVideos', { shortcutId }, resolvedEndpointOptions);
-}
+function searchVideos(feedUrl, apiKey, shortcutId, order) {
+  const endpoint = resolveVideosSearchEndpoint(feedUrl, apiKey, order);
 
-function fetchVideos(feedUrl, apiKey, videoIds, shortcutId) {
-  const endpoint = resolveVideosFetchEndpoint(feedUrl, apiKey, videoIds);
-  if (!endpoint) {
-    return null;
-  }
   const config = {
     schema: FEED_ITEMS,
     request: {
@@ -72,14 +62,65 @@ function fetchVideos(feedUrl, apiKey, videoIds, shortcutId) {
       },
     },
   };
+
+  // Don't fill reducer if playlist url, next request response will do that
+  if (isPlaylistUrl(feedUrl)) {
+    return find(config);
+  }
+
+  return find(config, 'feedItems', { shortcutId }, resolvedEndpointOptions);
+}
+
+function fetchCustomChannelSearchResults(feedUrl, apiKey) {
+  const endpoint = resolveChannelsSearchEndpoint(feedUrl, apiKey);
+  const config = {
+    schema: SEARCH_RESULTS,
+    request: {
+      endpoint,
+      resourceType: 'json',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  };
+
+  return find(config);
+}
+
+function fetchChannelsData(channelsIds, apiKey) {
+  const endpoint = resolveChannelsDataEndpoint(channelsIds, apiKey);
+  const config = {
+    schema: SEARCH_RESULTS,
+    request: {
+      endpoint,
+      resourceType: 'json',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  };
+
+  return find(config);
+}
+
+function fetchVideos(feedUrl, apiKey, videoIds, shortcutId) {
+  const endpoint = resolveVideosFetchEndpoint(feedUrl, apiKey, videoIds);
+  const config = {
+    schema: FEED_ITEMS,
+    request: {
+      endpoint,
+      resourceType: 'json',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  };
+
   return find(config, 'feedItems', { shortcutId }, resolvedEndpointOptions);
 }
 
 function fetchUserChannel(feedUrl, apiKey, shortcutId) {
   const endpoint = resolveUserChannel(feedUrl, apiKey);
-  if (!endpoint) {
-    return null;
-  }
   const config = {
     schema: USER,
     request: {
@@ -90,56 +131,102 @@ function fetchUserChannel(feedUrl, apiKey, shortcutId) {
       },
     },
   };
+
   return find(config, 'userChannel', { shortcutId }, resolvedEndpointOptions);
 }
 
-function fetchChannelVideos(feedUrl, apiKey, shortcutId) {
-  return (dispatch) => (
-    dispatch(searchVideos(feedUrl, apiKey, shortcutId)).then((action) => {
-      const items = _.get(action, 'payload.items');
-      const videoIds = _.map(items, item => (_.get(item, 'id.videoId')));
-      return dispatch(fetchVideos(feedUrl, apiKey, videoIds, shortcutId));
-    })
-  );
+function fetchChannelVideos(feedUrl, apiKey, shortcutId, selectedSort) {
+  return dispatch =>
+    dispatch(searchVideos(feedUrl, apiKey, shortcutId, selectedSort));
 }
 
 function fetchPlaylistVideos(feedUrl, apiKey, shortcutId) {
-  return (dispatch) => (
-    dispatch(searchVideos(feedUrl, apiKey, shortcutId)).then((action) => {
+  return dispatch =>
+    dispatch(searchVideos(feedUrl, apiKey, shortcutId)).then(action => {
       const items = _.get(action, 'payload.items');
-      const videoIds = _.map(items, item => (_.get(item, 'snippet.resourceId.videoId')));
+      const videoIds = _.map(items, item =>
+        _.get(item, 'snippet.resourceId.videoId'),
+      );
+
       return dispatch(fetchVideos(feedUrl, apiKey, videoIds, shortcutId));
-    })
-  );
+    });
 }
 
-function fetchUserVideos(feedUrl, apiKey, shortcutId) {
-  return (dispatch) => (
-    dispatch(fetchUserChannel(feedUrl, apiKey, shortcutId)).then((action) => {
+function fetchUserVideos(feedUrl, apiKey, shortcutId, selectedSort) {
+  return dispatch =>
+    dispatch(fetchUserChannel(feedUrl, apiKey, shortcutId)).then(action => {
       const items = _.get(action, 'payload.items', []);
-      const playlistId = _.get(items, '0.contentDetails.relatedPlaylists.uploads');
+      const channelId = _.get(items, '0.id');
 
-      if (_.isEmpty(playlistId)) {
-        throw new Error('Cannot extract content from user channel');
-      }
-      const playlistUrl = createYoutubePlaylistUrl(playlistId);
-      return dispatch(fetchPlaylistVideos(playlistUrl, apiKey, shortcutId));
-    })
-  );
+      const channelUrl = createYoutubeChannelUrl(channelId);
+
+      dispatch(searchVideos(channelUrl, apiKey, shortcutId, selectedSort));
+    });
 }
 
+function fetchCustomChannelVideos(feedUrl, apiKey, shortcutId, selectedSort) {
+  return dispatch =>
+    // Fetch first 20 channels, sorted by keyword(customUrl) relevance
+    dispatch(fetchCustomChannelSearchResults(feedUrl, apiKey)).then(
+      channelSearchResultsResponse => {
+        const channels = _.get(
+          channelSearchResultsResponse,
+          'payload.items',
+          [],
+        );
+        const channelsIds = _.map(channels, 'id.channelId');
 
-export function loadFeed(feedUrl, apiKey, shortcutId) {
-  return (dispatch) => {
+        // Fetch more detailed channel data on our ~20 results
+        return dispatch(fetchChannelsData(channelsIds, apiKey)).then(
+          channelsDataResponse => {
+            const customUrl = parseCustomUrl(feedUrl);
+            const channelsData = _.get(channelsDataResponse, 'payload.items');
+
+            // Find a channel with exact custom URL our feed URL contains
+            const verifiedCustomChannel = _.find(channelsData, channel => {
+              return _.get(channel, 'snippet.customUrl') === customUrl;
+            });
+
+            if (!verifiedCustomChannel) {
+              return null;
+            }
+
+            // use channelId to search for videos and sort them by selected sort
+            const channelUrl = `youtube.com/channel/${verifiedCustomChannel.id}`;
+
+            return dispatch(
+              searchVideos(channelUrl, apiKey, shortcutId, selectedSort),
+            );
+          },
+        );
+      },
+    );
+}
+
+export function loadFeed(feedUrl, apiKey, shortcutId, selectedSort) {
+  return dispatch => {
     if (isUserUrl(feedUrl)) {
-      return dispatch(fetchUserVideos(feedUrl, apiKey, shortcutId));
+      return dispatch(
+        fetchUserVideos(feedUrl, apiKey, shortcutId, selectedSort),
+      );
     }
+
     if (isChannelUrl(feedUrl)) {
-      return dispatch(fetchChannelVideos(feedUrl, apiKey, shortcutId));
+      return dispatch(
+        fetchChannelVideos(feedUrl, apiKey, shortcutId, selectedSort),
+      );
     }
+
     if (isPlaylistUrl(feedUrl)) {
       return dispatch(fetchPlaylistVideos(feedUrl, apiKey, shortcutId));
     }
+
+    if (isCustomChannelUrl(feedUrl)) {
+      return dispatch(
+        fetchCustomChannelVideos(feedUrl, apiKey, shortcutId, selectedSort),
+      );
+    }
+
     throw Error('Invalid Url');
   };
 }
@@ -165,7 +252,10 @@ export function getFeedItems(state, extensionName, shortcutId) {
     return [];
   }
 
-  const feedItemInfos = _.map(_.get(feedItems, 'items'), item => createFeedItemInfo(item));
+  const feedItemInfos = _.map(_.get(feedItems, 'items'), item =>
+    createFeedItemInfo(item),
+  );
   cloneStatus(feedItems, feedItemInfos);
+
   return feedItemInfos;
 }
