@@ -1,0 +1,25 @@
+{
+  "title": "checklists",
+  "properties": {
+    "title": {
+      "displayPriority": 1,
+      "format": "single-line",
+      "title": "Title",
+      "type": "string"
+    },
+    "description": {
+      "displayPriority": 2,
+      "format": "html",
+      "title": "Description",
+      "type": "string"
+    },
+    "checklistItems": {
+      "displayPriority": 3,
+      "format": "html",
+      "title": "Checklist items",
+      "type": "array"
+    }
+  },
+  "titleProperty": "title",
+  "type": "object"
+}

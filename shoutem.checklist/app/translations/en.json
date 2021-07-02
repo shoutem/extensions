@@ -1,0 +1,15 @@
+{
+  "shoutem": {
+    "checklist": {
+      "checklistScreenSubmitButton": "Submit",
+      "checklistScreenHelpButton": "Help",
+      "contactButton": "Contact us via email",
+      "goBackButton": "Go back",
+      "saveProgressButton": "Save",
+      "submitAlertAccept": "Submit",
+      "submitAlertCancel": "Go back",
+      "submitAlertMessage": "Once you submit your progress, you will no longer be able to edit it.\n Are you sure you want to submit?",
+      "submitAlertTitle": "Progress Submission"
+    }
+  }
+}

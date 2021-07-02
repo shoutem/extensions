@@ -1,0 +1,192 @@
+import React from 'react';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
+import { Alert, Linking } from 'react-native';
+import { connect } from 'react-redux';
+import { connectStyle } from '@shoutem/theme';
+import { Button, Screen, ScrollView, Text } from '@shoutem/ui';
+import { CmsListScreen } from 'shoutem.cms';
+import { I18n } from 'shoutem.i18n';
+import { navigateTo, NavigationBar } from 'shoutem.navigation';
+import { Checklist, ChecklistNavBarButton } from '../components';
+import { ext } from '../const';
+import {
+  getChecklists,
+  getChecklistStatuses,
+  getSubmittedChecklists,
+  setChecklistStatuses,
+  submitChecklist,
+} from '../redux';
+
+export class ChecklistScreen extends CmsListScreen {
+  static propTypes = {
+    ...CmsListScreen.propTypes,
+    // An object showing the boolean statuses of individual checklist items
+    // for each checklist. Defaults to {}.
+    checklistStatuses: PropTypes.object,
+    setChecklistStatuses: PropTypes.func,
+    submitChecklist: PropTypes.func,
+  };
+
+  constructor(props) {
+    super(props);
+
+    autoBindReact(this);
+
+    this.state = {
+      hasChanges: false,
+      schema: ext('checklists'),
+      statuses: props.checklistStatuses,
+    };
+  }
+
+  getNavBarProps() {
+    const { contactEmail, isSubmitted, title } = this.props;
+
+    return {
+      renderRightComponent: () => (
+        <ChecklistNavBarButton
+          contactEmail={contactEmail}
+          isSubmitted={isSubmitted}
+          onContactPress={this.handleHelpPress}
+          onSubmitPress={this.handleSubmit}
+        />
+      ),
+      title,
+    };
+  }
+
+  handleHelpPress() {
+    const { contactEmail } = this.props;
+
+    Linking.openURL(`mailto:${contactEmail}`);
+  }
+
+  handleItemChange(checklistId, itemIndex, itemStatus) {
+    const { statuses } = this.state;
+
+    const updatedStatuses = {
+      ...statuses,
+      [checklistId]: {
+        ...statuses[checklistId],
+        [itemIndex]: itemStatus,
+      },
+    };
+
+    this.setState({ hasChanges: true, statuses: updatedStatuses });
+  }
+
+  handleSubmit() {
+    this.saveProgress();
+
+    Alert.alert(
+      I18n.t(ext('submitAlertTitle')),
+      I18n.t(ext('submitAlertMessage')),
+      [
+        {
+          text: I18n.t(ext('submitAlertCancel')),
+        },
+        {
+          onPress: this.submitProgress,
+          text: I18n.t(ext('submitAlertAccept')),
+        },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  saveProgress() {
+    const { setChecklistStatuses } = this.props;
+    const { statuses } = this.state;
+
+    setChecklistStatuses(statuses);
+    this.setState({ hasChanges: false });
+  }
+
+  submitProgress() {
+    const {
+      hasSubmitMessageScreen,
+      navigateTo,
+      shortcut: { id },
+      submitChecklist,
+    } = this.props;
+
+    submitChecklist(id);
+
+    if (hasSubmitMessageScreen) {
+      navigateTo({
+        screen: ext('SubmitMessageScreen'),
+        props: { shortcutId: id },
+      });
+    }
+  }
+
+  render() {
+    const { data, isSubmitted, style } = this.props;
+    const { hasChanges, statuses } = this.state;
+
+    const contentContainerStyle = isSubmitted ? {} : style.scrollViewContainer;
+    const saveButtonTextStyle =
+      hasChanges && !isSubmitted
+        ? style.saveButtonText
+        : style.disabledSaveButtonText;
+
+    return (
+      <Screen>
+        <NavigationBar {...this.getNavBarProps()} />
+        <ScrollView
+          contentContainerStyle={contentContainerStyle}
+          endFillColor={style.endFillColor}
+        >
+          {data &&
+            data.map((checklist, index) => (
+              <Checklist
+                checklist={checklist}
+                checklistStatus={statuses[checklist.id] || {}}
+                disabled={isSubmitted}
+                key={index}
+                onItemToggle={this.handleItemChange}
+              />
+            ))}
+        </ScrollView>
+        {!isSubmitted && (
+          <Button
+            disabled={!hasChanges || isSubmitted}
+            onPress={this.saveProgress}
+            style={style.saveButton}
+          >
+            <Text style={saveButtonTextStyle}>
+              {I18n.t(ext('saveProgressButton'))}
+            </Text>
+          </Button>
+        )}
+      </Screen>
+    );
+  }
+}
+
+export const mapStateToProps = (state, ownProps) => {
+  const submittedChecklists = getSubmittedChecklists(state);
+  const isSubmitted = submittedChecklists.includes(ownProps.shortcut.id);
+  const settings = ownProps.shortcut?.settings || {};
+  const { contactEmail = '', hasSubmitMessageScreen = false } = settings;
+
+  return {
+    ...CmsListScreen.createMapStateToProps(getChecklists)(state, ownProps),
+    contactEmail,
+    checklistStatuses: getChecklistStatuses(state),
+    hasSubmitMessageScreen,
+    isSubmitted,
+  };
+};
+
+export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
+  navigateTo,
+  setChecklistStatuses,
+  submitChecklist,
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('ChecklistScreen'))(ChecklistScreen));

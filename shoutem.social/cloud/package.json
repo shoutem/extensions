@@ -1,6 +1,6 @@
 {
   "name": "shoutem.social",
-  "version": "2.5.5",
+  "version": "2.5.6",
   "private": true,
   "scripts": {
     "@comment init": "Generates env files for all workflow types - should work out of the box",

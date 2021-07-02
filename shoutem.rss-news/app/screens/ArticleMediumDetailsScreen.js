@@ -1,8 +1,9 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import { NavigationBar } from 'shoutem.navigation';
-import { getLeadImageUrl, createRenderAttachment } from 'shoutem.rss';
+import { getLeadImageUrl, getImageAttachments } from 'shoutem.rss';
 import { connectStyle } from '@shoutem/theme';
 import {
   ScrollView,
@@ -12,9 +13,10 @@ import {
   Image,
   Tile,
   View,
-  Html,
+  SimpleHtml,
 } from '@shoutem/ui';
 import { ext } from '../const';
+import { VideoGallery } from '../components/VideoGallery';
 import {
   ArticleDetailsScreen,
   mapStateToProps,
@@ -52,6 +54,10 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
     const { article } = this.props;
     const imageUrl = getLeadImageUrl(article);
 
+    const videoAttachments = _.get(article, 'videoAttachments', []);
+    const imageAttachments = getImageAttachments(article);
+    const body = _.get(article, 'body', '');
+
     const momentDate = moment.utc(article.timeUpdated);
     const dateInfo = moment.utc(momentDate).isAfter(0) ? (
       <Caption styleName="md-gutter-left">
@@ -73,10 +79,8 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
                 {dateInfo}
               </View>
             </Tile>
-            <Html
-              body={article.body}
-              renderElement={createRenderAttachment(article, 'image')}
-            />
+            <SimpleHtml body={body} attachments={imageAttachments} />
+            <VideoGallery videos={videoAttachments} />
             {this.renderUpNext()}
           </View>
         </ScrollView>

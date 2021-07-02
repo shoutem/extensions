@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import moment from 'moment';
 import i18next from 'i18next';
 import { isBusy } from '@shoutem/redux-io';
@@ -127,7 +126,7 @@ export default class ImporterTable extends Component {
           </Button>
         </div>
         <EditableTable
-          canDelete={true}
+          canDelete
           canUpdate={false}
           emptyStateText={i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_LABEL)}
           headers={tableHeaders}

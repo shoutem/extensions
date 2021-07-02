@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { getShortcut } from 'environment';
 import { data } from 'context';
 import { updateShortcut } from '../reducer';
+import { trackEvent } from '../providers/analytics';
 
 export function provideScreenSettings(WrappedComponent) {
   class LayoutSettings extends Component {
@@ -14,6 +15,10 @@ export function provideScreenSettings(WrappedComponent) {
       this.handleSettingsChange = this.handleSettingsChange.bind(this);
       this.handleIconChange = this.handleIconChange.bind(this);
       this.getSettings = this.getSettings.bind(this);
+    }
+
+    componentDidMount() {
+      trackEvent('screens', 'main-navigation-screen-viewed');
     }
 
     getSettings() {

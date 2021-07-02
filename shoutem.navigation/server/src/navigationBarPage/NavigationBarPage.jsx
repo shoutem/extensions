@@ -4,6 +4,7 @@ import { getExtensionInstallation } from 'environment';
 import { Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { updateExtensionSettings } from '../builder-sdk';
+import { trackEvent } from '../providers/analytics';
 import NavigationBarBackgroundImage from './components/NavigationBarBackgroundImage';
 import NavigationBarFirstScreenImageToggle from './components/NavigationBarFirstScreenImageToggle';
 import NavigationBarTitleToggle from './components/NavigationBarTitleToggle';
@@ -40,6 +41,8 @@ export class NavigationBarPage extends Component {
    * @param {void} backgroundImage
    */
   handleBackgroundImageChange(backgroundImage = null) {
+    trackEvent('screens', 'main-navigation-background-image-added');
+
     this.updateExtensionSettings({
       [BACKGROUND_IMAGE]: backgroundImage,
     });
@@ -51,6 +54,12 @@ export class NavigationBarPage extends Component {
    * @return {void}
    */
   handleBackgroundImageToggle(backgroundImageEnabledFirstScreen) {
+    trackEvent(
+      'screens',
+      'main-navigation-navigation-bar-settings-changed',
+      'background-settings',
+    );
+
     this.updateExtensionSettings({
       [BACKGROUND_IMAGE_ENABLED_FIRST_SCREEN]: backgroundImageEnabledFirstScreen,
     });
@@ -62,6 +71,12 @@ export class NavigationBarPage extends Component {
    * @param {void} fitContainer
    */
   handleBackgroundSizeToggle(fitContainer) {
+    trackEvent(
+      'screens',
+      'main-navigation-navigation-bar-settings-changed',
+      'background-size',
+    );
+
     this.updateExtensionSettings({
       [FIT_CONTAINER]: fitContainer,
     });
@@ -73,6 +88,12 @@ export class NavigationBarPage extends Component {
    * @return {void}
    */
   handleTitleToggle(showTitle) {
+    trackEvent(
+      'screens',
+      'main-navigation-navigation-bar-settings-changed',
+      'navigation-title',
+    );
+
     this.updateExtensionSettings({
       [SHOW_TITLE]: showTitle,
     });

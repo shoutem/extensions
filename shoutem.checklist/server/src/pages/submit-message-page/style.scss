@@ -1,0 +1,43 @@
+body.extension-sandbox-container {
+  .settings-page {
+    max-width: 552px;
+    margin: auto;
+
+    &.is-wide {
+      max-width: 808px;
+    }
+  }
+}
+
+.no-submit-message-screen {
+  opacity: 0.5;
+}
+
+.image-input {
+  display: flex;
+  flex-direction: row;
+}
+
+.image-preview-button {
+  margin-left: 20px;
+}
+
+.submit-image {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  img  {
+    width: 50%;
+    margin-top: 20px;
+  }
+}
+
+.save-button {
+  padding-top: 20px;
+}
+
+.textarea-formcontrol {
+  width: 100%;
+}

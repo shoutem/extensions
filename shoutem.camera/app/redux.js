@@ -1,8 +1,6 @@
 import { closeModal, navigateTo, openInModal } from 'shoutem.navigation';
 
-import {
-  ext,
-} from './const';
+import { ext } from './const';
 
 const getQRCodeScannerRoute = (onQRCodeScanned, title) => ({
   screen: ext('QRCodeScannerScreen'),
@@ -16,11 +14,11 @@ const getQRCodeScannerRoute = (onQRCodeScanned, title) => ({
  * Opens a screen to scan a QR code in a modal.
  * Triggers a callback function when a code has been scanned.
  */
-export const scanQRCode = (onQRCodeScanned, title) => (dispatch) => {
-  const callback = (code) => {
+export const scanQRCode = (onQRCodeScanned, title) => dispatch => {
+  const callback = code => {
     if (code.data) {
-      onQRCodeScanned(code.data);
       dispatch(closeModal());
+      onQRCodeScanned(code.data);
     }
   };
 
@@ -30,6 +28,9 @@ export const scanQRCode = (onQRCodeScanned, title) => (dispatch) => {
 /**
  * Navigates to QR Code scanner screen
  */
-export const navigateToQRCodeScannerScreen = (onQRCodeScanned, title) => (dispatch) => {
+export const navigateToQRCodeScannerScreen = (
+  onQRCodeScanned,
+  title,
+) => dispatch => {
   dispatch(navigateTo(getQRCodeScannerRoute(onQRCodeScanned, title)));
 };

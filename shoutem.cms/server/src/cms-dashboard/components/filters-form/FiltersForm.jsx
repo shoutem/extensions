@@ -11,6 +11,32 @@ import LOCALIZATION from './localization';
 
 const fields = ['filters[].name', 'filters[].operator', 'filters[].value'];
 
+// not using classNames as this is modal and CSS is not working
+const styles = {
+  filterForm: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingTop: 8,
+  },
+  addFilterBtnContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+    marginTop: 20,
+    width: 100,
+  },
+  addFilterText: {
+    fontWeight: 500,
+    fontSize: 15,
+    paddingLeft: 5,
+    paddingTop: 2,
+  },
+  addFilterIcon: {
+    fontSize: 25,
+    color: '#bdc0cb',
+  },
+};
+
 class FiltersForm extends Component {
   constructor(props) {
     super(props);
@@ -95,29 +121,3 @@ export default reduxForm({
   form: 'filtersForm',
   fields,
 })(FiltersForm);
-
-// not using classNames as this is modal and CSS is not working
-const styles = {
-  filterForm: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingTop: 8,
-  },
-  addFilterBtnContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'pointer',
-    marginTop: 20,
-    width: 100,
-  },
-  addFilterText: {
-    fontWeight: 500,
-    fontSize: 15,
-    paddingLeft: 5,
-    paddingTop: 2,
-  },
-  addFilterIcon: {
-    fontSize: 25,
-    color: '#bdc0cb',
-  },
-};

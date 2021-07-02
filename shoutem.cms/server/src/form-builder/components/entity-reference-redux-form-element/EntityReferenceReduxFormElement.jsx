@@ -8,6 +8,7 @@ export default class EntityReferenceReduxFormElement extends Component {
   static propTypes = {
     elementId: PropTypes.string,
     name: PropTypes.string,
+    placeholder: PropTypes.string,
     canonicalName: PropTypes.string,
     field: PropTypes.object,
     touch: PropTypes.func,
@@ -87,15 +88,7 @@ export default class EntityReferenceReduxFormElement extends Component {
   }
 
   render() {
-    const {
-      elementId,
-      field,
-      name,
-      placeholder,
-      helpText,
-      className,
-      ...otherProps
-    } = this.props;
+    const { field, name, placeholder, ...otherProps } = this.props;
     const { loading, titleProperty, options } = this.state;
 
     const value = _.get(field, 'value.id');

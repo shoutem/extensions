@@ -12,6 +12,7 @@ import {
 import { ControlLabel } from 'react-bootstrap';
 import { ext } from 'context';
 import { getShortcut, getExtensionInstallation } from 'environment';
+import { trackEvent } from '../../providers/analytics';
 import { translateExt18n } from '../../services';
 import layoutImage from './../assets/layout.png';
 import { updateShortcut, loadHierarchy, HIERARCHY } from './../reducer';
@@ -81,6 +82,8 @@ export class LayoutPage extends Component {
         canonicalName,
       };
     });
+
+    trackEvent('screens', 'layout-chosen', _.get(shortcut, 'screen'));
 
     this.props.updateShortcut({
       id: shortcut.id,

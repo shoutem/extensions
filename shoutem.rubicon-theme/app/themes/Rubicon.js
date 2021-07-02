@@ -1,11 +1,11 @@
+import _ from 'lodash';
 import {
   Platform,
   StyleSheet,
   TouchableNativeFeedback,
   Dimensions,
 } from 'react-native';
-import _ from 'lodash';
-
+import { INCLUDE, changeColorAlpha } from '@shoutem/theme';
 import {
   getTheme,
   defaultThemeVariables as defaultUiThemeVariables,
@@ -16,8 +16,6 @@ import {
   resolveFontStyle,
   resolveFontWeight,
 } from '@shoutem/ui';
-
-import { INCLUDE, changeColorAlpha } from '@shoutem/theme';
 import {
   IPHONE_X_HOME_INDICATOR_PADDING,
   IPHONE_X_NOTCH_PADDING,
@@ -97,6 +95,29 @@ export default (customVariables = {}) => {
         fontWeight: resolveFontWeight(variables.text.fontWeight),
         fontStyle: resolveFontStyle(variables.text.fontStyle),
       },
+      table: {
+        fitContainerWidth: true,
+        fitContainerHeight: true,
+        cellPaddingEm: 0.25,
+        borderWidthPx: 0.25,
+        linkColor: variables.links.colors,
+        thBorderColor: '#E1E1E1',
+        tdBorderColor: '#E1E1E1',
+        thOddBackground: '#F3F3F3',
+        thOddColor: variables.title.color,
+        thEvenBackground: '#F3F3F3',
+        thEvenColor: variables.title.color,
+        trOddBackground: variables.paperColor,
+        trOddColor: variables.text.color,
+        trEvenBackground: variables.paperColor,
+        trEvenColor: variables.text.color,
+      },
+      tableCss: `th, td {
+        text-align: left;
+      }
+      th {
+        border-bottom: 2px solid #343434 !important;
+      }`,
       tags: {
         h1: {
           fontFamily: resolveFontFamily(
@@ -179,6 +200,7 @@ export default (customVariables = {}) => {
           fontWeight: resolveFontWeight(variables.text.fontWeight),
           fontStyle: resolveFontStyle(variables.text.fontStyle),
           fontSize: 15,
+          lineHeight: calculateLineHeight(15),
           marginTop: variables.mediumGutter,
           marginBottom: variables.mediumGutter,
           color: variables.text.color,
@@ -986,6 +1008,18 @@ export default (customVariables = {}) => {
       },
     },
 
+    'shoutem.web-view.WebViewScreen': {
+      container: {
+        flex: 1,
+      },
+    },
+
+    'shoutem.web-view.WebViewWithShareScreen': {
+      container: {
+        flex: 1,
+      },
+    },
+
     //
     // Photos
     //
@@ -1691,6 +1725,115 @@ export default (customVariables = {}) => {
       },
     },
 
+    // Checklist
+    'shoutem.checklist.ChecklistScreen': {
+      disabledSaveButtonText: {
+        color: variables.backgroundColor,
+        opacity: 0.5,
+      },
+      endFillColor: {
+        color: variables.backgroundColor,
+      },
+      saveButton: {
+        bottom: variables.mediumGutter,
+        height: dimensionRelativeToIphone(44),
+        left: variables.mediumGutter,
+        position: 'absolute',
+        width: window.width - variables.mediumGutter * 2,
+      },
+      saveButtonText: {
+        color: variables.backgroundColor,
+      },
+      scrollViewContainer: {
+        paddingBottom: variables.largeGutter + dimensionRelativeToIphone(44),
+      },
+    },
+
+    'shoutem.checklist.Checklist': {
+      mainContainer: {
+        backgroundColor: variables.paperColor,
+        padding: variables.mediumGutter,
+        marginTop: variables.mediumGutter,
+        width: window.width,
+      },
+      simpleHtml: {
+        container: {
+          paddingHorizontal: 0,
+        },
+      },
+    },
+
+    'shoutem.checklist.ChecklistItem': {
+      disabledIconFill: changeColorAlpha(variables.featuredColor, 0.5),
+      iconFill: variables.featuredColor,
+      mainContainer: {
+        marginBottom: variables.mediumGutter,
+      },
+      simpleHtml: {
+        container: {
+          paddingVertical: 0,
+          paddingLeft: variables.smallGutter,
+          flex: 1,
+        },
+      },
+    },
+
+    'shoutem.checklist.ChecklistNavBarButton': {
+      buttonText: {
+        ...variables.navBarText,
+        color: variables.navBarIconsColor,
+      },
+    },
+
+    'shoutem.checklist.SubmitMessageScreen': {
+      contactButton: {
+        backgroundColor: variables.primaryButtonBackgroundColor,
+        borderWidth: 0,
+        bottom: variables.mediumGutter * 2 + dimensionRelativeToIphone(44),
+        height: dimensionRelativeToIphone(44),
+        left: variables.mediumGutter,
+        position: 'absolute',
+        width: window.width - variables.mediumGutter * 2,
+      },
+      contactButtonIcon: {
+        bottom: dimensionRelativeToIphone(9),
+        right: 0,
+        position: 'absolute',
+      },
+      contactButtonIconFill: variables.backgroundColor,
+      contactButtonText: {
+        ...variables.primaryButtonText,
+        color: variables.backgroundColor,
+      },
+      endFillColor: {
+        color: variables.backgroundColor,
+      },
+      goBackButton: {
+        backgroundColor: changeColorAlpha(variables.featuredColor, 0.1),
+        borderWidth: 0,
+        bottom: variables.mediumGutter,
+        height: dimensionRelativeToIphone(44),
+        left: variables.mediumGutter,
+        position: 'absolute',
+        width: window.width - variables.mediumGutter * 2,
+      },
+      goBackButtonText: {
+        color: variables.featuredColor,
+      },
+      overlayText: {
+        fontFamily: resolveFontFamily(variables.title.fontFamily, '600'),
+        fontSize: 35,
+        lineHeight: calculateLineHeight(35),
+      },
+      scrollViewContainerOneButton: {
+        paddingBottom: variables.mediumGutter + dimensionRelativeToIphone(44),
+      },
+      scrollViewContainerTwoButtons: {
+        paddingBottom:
+          variables.mediumGutter * 2 + dimensionRelativeToIphone(44) * 2,
+      },
+    },
+
     // Deals
     'shoutem.deals.DealsListScreen': {
       titleContainer: Platform.select({
@@ -1878,32 +2021,33 @@ export default (customVariables = {}) => {
     // Places
 
     'shoutem.places.PlacesGridScreen': {
-      list: { marginTop: 8, marginHorizontal: 8 },
+      list: { marginHorizontal: 8, marginTop: 8 },
     },
 
     'shoutem.places.PlaceFullGridRowView': {
       container: {
-        marginBottom: 8,
-        borderRadius: 4,
         borderColor: 'rgba(68,79,108,0.2)',
+        borderRadius: 4,
         borderWidth: 1,
+        marginBottom: 8,
       },
       imageContainer: { height: dimensionRelativeToIphone(224) },
       textContainer: {
-        height: dimensionRelativeToIphone(92),
+        backgroundColor: variables.gridItemBackgroundColor,
         borderTopColor: 'rgba(68,79,108,0.2)',
         borderTopWidth: 1,
-        paddingTop: 16,
+        height: dimensionRelativeToIphone(92),
+        paddingBottom: 4,
         paddingLeft: 16,
         paddingRight: 16,
-        paddingBottom: 4,
+        paddingTop: 16,
       },
-      title: { fontSize: 20, lineHeight: 24, fontWeight: 'bold' },
+      title: { fontSize: 20, fontWeight: 'bold', lineHeight: 24 },
       description: {
         fontSize: 14,
         lineHeight: 16,
-        paddingTop: 4,
         paddingBottom: 16,
+        paddingTop: 4,
       },
     },
 

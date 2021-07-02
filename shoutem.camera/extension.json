@@ -1,11 +1,11 @@
 {
   "name": "camera",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "platform": "2.5.*",
   "title": "Camera",
   "type": "system",
   "description": "Shoutem camera extension",
-  "releaseNotes": "* Added a script for calling and debugging prebuild script",
+  "releaseNotes": "* Optimize scanning behaviour",
   "icon": "server/assets/add-camera-image.png",
   "screens": [
     {

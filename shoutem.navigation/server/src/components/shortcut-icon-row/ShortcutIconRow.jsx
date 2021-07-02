@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { IconLabel } from '@shoutem/react-web-ui';
 import { IconPicker } from '@shoutem/web-core';
 import { url, appId, getActiveTheme, getDefaultTheme } from 'environment';
+import { trackEvent } from '../../providers/analytics';
 import { UndeletableS3Uploader } from '../../fileUpload';
 
 function getLabelIcon(shortcutType) {
@@ -27,7 +28,14 @@ export default class ShortcutIconRow extends Component {
   }
 
   handleIconSelected(icon) {
-    const { shortcutId, onIconSelected } = this.props;
+    const { shortcutId, shortcutScreen, onIconSelected } = this.props;
+
+    trackEvent(
+      'screens',
+      'main-navigation-screen-icon-changed',
+      shortcutScreen,
+    );
+
     onIconSelected(shortcutId, { icon });
   }
 
@@ -65,6 +73,7 @@ export default class ShortcutIconRow extends Component {
 
 ShortcutIconRow.propTypes = {
   shortcutId: PropTypes.string,
+  shortcutScreen: PropTypes.string,
   title: PropTypes.string,
   shortcutType: PropTypes.string,
   icon: PropTypes.string,

@@ -65,6 +65,10 @@ export function invalidateNotifications () {
   return invalidate(NOTIFICATIONS_SCHEMA);
 }
 
+export function viewNotification (notification) {
+  return notification.action;
+}
+
 const getNextActionParams = (action) => ({
   ..._.get(action, 'meta.params'),
 });

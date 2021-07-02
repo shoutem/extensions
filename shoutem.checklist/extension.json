@@ -1,0 +1,78 @@
+{
+  "name": "checklist",
+  "title": "Checklist",
+  "version": "1.0.0",
+  "description": "Create to-do list, onboarding tasklist and more.",
+  "releaseNotes": "",
+  "icon": "server/assets/images/add-checklist-image.png",
+  "platform": "2.5.*",
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "screens": [
+    {
+      "name": "ChecklistScreen",
+      "title": "Standard checklist",
+      "groupTitle": "Choose layout for checklists",
+      "image": "./server/assets/images/screens/standard-checklist.png",
+      "navigatesTo": ["@.SubmitMessageScreen"]
+    },
+    {
+      "name": "SubmitMessageScreen",
+      "title": "Submission message",
+      "groupTitle": "Choose layout for submission message",
+      "image": "./server/assets/images/screens/submit-message.png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "ChecklistScreen",
+      "title": "Checklist",
+      "description": "Show checklists to app users.",
+      "icon": "theme://checklist.png",
+      "screen": "@.ChecklistScreen",
+      "capabilities": [
+        "shoutem.cms.export",
+        "shoutem.cms.import-csv",
+        "shoutem.cms.search"
+      ],
+      "adminPages": [
+        {
+          "page": "shoutem.cms.CmsPage",
+          "title": "Content",
+          "parameters": {
+            "schema": "@.checklists"
+          }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        },
+        {
+          "page": "@.SubmitMessagePage",
+          "title": "Submit Message",
+          "settings": {
+            "hasSubmitMessageScreen": false,
+            "imageOverlayMessage": "Thank you",
+            "submitMessageTitle": "Thank you",
+            "submitMessage": "Thank you for submitting your progress."
+          }
+        }
+      ],
+      "settings": {
+        "defaultShortcutTitle": "Checklist",
+        "extensionTitle": "Checklist"
+      }
+    }
+  ],
+  "dataSchemas": [
+    {
+      "name": "checklists",
+      "path": "server/data-schemas/checklists.json"
+    }
+  ],
+  "pages": [
+    {
+      "name": "SubmitMessagePage",
+      "type": "react-page"
+    }
+  ]
+}

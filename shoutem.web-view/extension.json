@@ -1,9 +1,9 @@
 {
   "name": "web-view",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "platform": "~2.5.2",
   "title": "Web view",
-  "releaseNotes": "* Updated react-native-webview dependency",
+  "releaseNotes": "* Extend WebView launch capabilities",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "dependencies": [

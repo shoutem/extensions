@@ -8,7 +8,7 @@ import SelectReduxFormElement from '../select-redux-form-element';
 import './style.scss';
 
 const loadScript = (url, callback) => {
-  let script = document.createElement('script');
+  const script = document.createElement('script');
   script.type = 'text/javascript';
 
   if (script.readyState) {
@@ -30,6 +30,7 @@ export default class GeolocationReduxFormElement extends Component {
   static propTypes = {
     elementId: PropTypes.string,
     name: PropTypes.string,
+    placeholder: PropTypes.string,
     latitudeName: PropTypes.string,
     longitudeName: PropTypes.string,
     googleApiKey: PropTypes.string,
@@ -164,14 +165,11 @@ export default class GeolocationReduxFormElement extends Component {
 
   render() {
     const {
-      elementId,
       field,
       name,
       placeholder,
       latitudeName,
       longitudeName,
-      helpText,
-      className,
       ...otherProps
     } = this.props;
     const { options, latElementId, lngElementId } = this.state;

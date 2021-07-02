@@ -1,8 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
+import { connectStyle } from '@shoutem/theme';
 import { NavigationBar } from 'shoutem.navigation';
 import { currentLocation } from 'shoutem.cms';
 import { WebViewScreen } from './WebViewScreen';
+import { ext } from '../const';
 
 export class WebViewWithShareScreen extends WebViewScreen {
   static propTypes = {
@@ -19,14 +21,12 @@ export class WebViewWithShareScreen extends WebViewScreen {
         title,
         link: url,
       },
-    }
+    };
 
-    return (
-      <NavigationBar
-        {...navBarProps}
-      />
-    );
+    return <NavigationBar {...navBarProps} />;
   }
 }
 
-export default currentLocation(WebViewWithShareScreen);
+export default connectStyle(ext('WebViewWithShareScreen'))(
+  currentLocation(WebViewWithShareScreen),
+);

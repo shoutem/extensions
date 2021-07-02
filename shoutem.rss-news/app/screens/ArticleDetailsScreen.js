@@ -8,7 +8,7 @@ import { I18n } from 'shoutem.i18n';
 import { NavigationBar, closeModal } from 'shoutem.navigation';
 import {
   getLeadImageUrl,
-  createRenderAttachment,
+  getImageAttachments,
   ext as rssExt,
 } from 'shoutem.rss';
 import { isBusy, isValid } from '@shoutem/redux-io';
@@ -23,10 +23,11 @@ import {
   Icon,
   ImageBackground,
   ImageGallery,
-  Html,
+  SimpleHtml,
   Spinner,
 } from '@shoutem/ui';
 import { NextArticle } from '../components/NextArticle';
+import { VideoGallery } from '../components/VideoGallery';
 import { ext } from '../const';
 import { getNewsFeed } from '../redux';
 
@@ -131,6 +132,8 @@ export class ArticleDetailsScreen extends PureComponent {
     const link = _.get(article, 'link', '');
     const author = _.get(article, 'author', '');
     const body = _.get(article, 'body', '');
+    const videoAttachments = _.get(article, 'videoAttachments', []);
+    const imageAttachments = getImageAttachments(article);
 
     const loading = isBusy(data) || articleNotFound;
     const articleImageUrl = getLeadImageUrl(article);
@@ -178,11 +181,9 @@ export class ArticleDetailsScreen extends PureComponent {
                 </Tile>
               </ImageBackground>
               <View styleName="solid">
-                <Html
-                  body={body}
-                  renderElement={createRenderAttachment(article, 'image')}
-                />
+                <SimpleHtml body={body} attachments={imageAttachments} />
                 {this.renderInlineGallery()}
+                <VideoGallery videos={videoAttachments} />
                 {this.renderUpNext()}
               </View>
             </ScrollView>

@@ -1,11 +1,40 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import i18next from 'i18next';
+import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
 import { Modal, Button } from 'react-bootstrap';
 import classNames from 'classnames';
 import FiltersForm from '../filters-form';
 import LOCALIZATION from './localization';
+
+const styles = {
+  footer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  resetContainer: {
+    flex: 1,
+  },
+  resetButton: {
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+    width: 80,
+  },
+  resetIcon: {
+    fontSize: 25,
+    fontWeight: 700,
+    color: '#A3A7B5',
+  },
+  resetText: {
+    fontWeight: 500,
+    fontSize: 14,
+    paddingLeft: 5,
+    textTransform: 'uppercase',
+  },
+};
 
 export default class FiltersModal extends Component {
   constructor(props) {
@@ -127,32 +156,4 @@ export default class FiltersModal extends Component {
 FiltersModal.propTypes = {
   schema: PropTypes.object,
   onSubmit: PropTypes.func,
-};
-
-const styles = {
-  footer: {
-    display: 'flex',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  resetContainer: {
-    flex: 1,
-  },
-  resetButton: {
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'pointer',
-    width: 80,
-  },
-  resetIcon: {
-    fontSize: 25,
-    fontWeight: 700,
-    color: '#A3A7B5',
-  },
-  resetText: {
-    fontWeight: 500,
-    fontSize: 14,
-    paddingLeft: 5,
-    textTransform: 'uppercase',
-  },
 };

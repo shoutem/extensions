@@ -123,7 +123,7 @@ export default class ImageUploader extends Component {
     const { src, onPreviewClick } = this.props;
 
     if (_.isFunction(onPreviewClick)) {
-      return onPreviewClick(src);
+      onPreviewClick(src);
     }
   }
 

@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { Dimensions, Platform } from 'react-native';
+import { Dimensions, Platform, KeyboardAvoidingView } from 'react-native';
 import WebView from 'react-native-webview';
 import Pdf from 'react-native-pdf';
 import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
-import { View, Screen, EmptyStateView } from '@shoutem/ui';
+import { View, EmptyStateView, Screen, Keyboard } from '@shoutem/ui';
+import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
 import { currentLocation } from 'shoutem.cms';
 import { NavigationBar } from 'shoutem.navigation';
@@ -14,10 +15,11 @@ import NavigationToolbar from '../components/NavigationToolbar';
 import { ext } from '../const';
 
 function renderPlaceholderView() {
-  return (
-    <EmptyStateView message={I18n.t(ext('noUrlErrorMessage'))} />
-  );
+  return <EmptyStateView message={I18n.t(ext('noUrlErrorMessage'))} />;
 }
+
+const KEYBOARD_AVOIDING_ENABLED = Platform.OS === 'android';
+const KEYBOARD_OFFSET = Keyboard.calculateKeyboardOffset();
 
 export class WebViewScreen extends PureComponent {
   static propTypes = {
@@ -34,6 +36,7 @@ export class WebViewScreen extends PureComponent {
     // received via openURL, when other extensions open in-app browsers
     requireLocationPermission: PropTypes.bool,
     currentLocation: PropTypes.object,
+    style: PropTypes.object,
   };
 
   constructor(props) {
@@ -54,7 +57,8 @@ export class WebViewScreen extends PureComponent {
     }
 
     const settingsPath = 'shortcut.settings.requireGeolocationPermission';
-    const requirePermission = _.get(props, settingsPath, false) || requireLocationPermission;
+    const requirePermission =
+      _.get(props, settingsPath, false) || requireLocationPermission;
     const isLocationAvailable = !!props.currentLocation;
 
     if (requirePermission && !isLocationAvailable) {
@@ -100,42 +104,49 @@ export class WebViewScreen extends PureComponent {
     const { showNavigationToolbar } = this.getSettings();
     const { webNavigationState } = this.state;
 
-    const webNavigation = webNavigationState.canGoBack || webNavigationState.canGoForward;
+    const webNavigation =
+      webNavigationState.canGoBack || webNavigationState.canGoForward;
     return showNavigationToolbar && webNavigation;
   }
 
   resolveWebViewProps() {
-    const { url, requireGeolocationPermission } = this.getSettings();
+    const {
+      url,
+      requireGeolocationPermission,
+      webViewProps,
+    } = this.getSettings();
+
     const defaultWebViewProps = {
       ref: this.setWebViewRef,
       startInLoadingState: true,
       onNavigationStateChange: this.onNavigationStateChange,
-      source: { uri: url },
+      source: _.isObject(url) ? url : { uri: url },
       scalesPageToFit: true,
       allowsInlineMediaPlayback: true,
       showsVerticalScrollIndicator: false,
+      javaScriptCanOpenWindowsAutomatically: true,
     };
 
     if (Platform.OS === 'android') {
-      return ({
+      return {
         ...defaultWebViewProps,
+        ...webViewProps,
         geolocationEnabled: requireGeolocationPermission,
-      });
+      };
     }
 
-    return defaultWebViewProps;
+    return { ...defaultWebViewProps, ...webViewProps };
   }
 
   renderNavigationBar() {
-    return (
-      <NavigationBar {...this.getNavBarProps()} />
-    );
+    return <NavigationBar {...this.getNavBarProps()} />;
   }
 
   renderWebView() {
     const { url } = this.getSettings();
+    const resolvedUrl = _.isObject(url) ? url.uri : url;
 
-    if (url.includes('.pdf')) {
+    if (resolvedUrl.includes('.pdf')) {
       return (
         <Pdf
           source={{ uri: url }}
@@ -144,11 +155,7 @@ export class WebViewScreen extends PureComponent {
       );
     }
 
-    return (
-      <WebView
-        {...this.resolveWebViewProps()}
-      />
-    );
+    return <WebView {...this.resolveWebViewProps()} />;
   }
 
   renderWebNavigation() {
@@ -181,6 +188,8 @@ export class WebViewScreen extends PureComponent {
   }
 
   render() {
+    const { style } = this.props;
+
     const { url } = this.getSettings();
 
     if (!url) {
@@ -189,11 +198,20 @@ export class WebViewScreen extends PureComponent {
 
     return (
       <Screen>
-        {this.renderNavigationBar()}
-        {this.renderBrowser()}
+        <KeyboardAvoidingView
+          style={style.container}
+          behavior="padding"
+          keyboardVerticalOffset={KEYBOARD_OFFSET}
+          enabled={KEYBOARD_AVOIDING_ENABLED}
+        >
+          {this.renderNavigationBar()}
+          {this.renderBrowser()}
+        </KeyboardAvoidingView>
       </Screen>
     );
   }
 }
 
-export default connect()(currentLocation(WebViewScreen));
+export default connect()(
+  connectStyle(ext('WebViewScreen'))(currentLocation(WebViewScreen)),
+);
