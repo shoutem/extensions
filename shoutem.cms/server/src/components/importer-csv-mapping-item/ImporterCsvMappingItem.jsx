@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import Select from 'react-select';
@@ -25,7 +26,7 @@ export default class ImporterCsvMappingItem extends Component {
   handleChange(csvOption) {
     const { cmsOption } = this.props;
 
-    let key = _.get(cmsOption, 'value');
+    const key = _.get(cmsOption, 'value');
     const value = _.get(csvOption, 'value');
 
     this.setState({ value });

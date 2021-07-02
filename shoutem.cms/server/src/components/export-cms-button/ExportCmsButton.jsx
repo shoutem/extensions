@@ -52,7 +52,11 @@ class ExportCmsButton extends PureComponent {
         className="export-button"
         onClick={this.handleDownloadCSV}
       >
-        <LoaderContainer size="20px" className="export-loader" isLoading={downloadInProgress}>
+        <LoaderContainer
+          size="20px"
+          className="export-loader"
+          isLoading={downloadInProgress}
+        >
           <FontIcon className="export-icon" name="download" size="25px" />
         </LoaderContainer>
       </Button>

@@ -1,0 +1,10 @@
+{
+  "name": "shoutem.checklist",
+  "version": "1.0.0",
+  "description": "Create checklists for app users to complete.",
+  "peerDependencies": {
+    "@shoutem/redux-io": "*",
+    "@shoutem/theme": "*",
+    "@shoutem/ui": "*"
+  }
+}

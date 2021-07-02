@@ -86,8 +86,10 @@ class QRCodeScannerScreen extends PureComponent {
 
   handleQRCodeScan(code) {
     const { onQRCodeScanned } = this.props;
+    const { codeScanned } = this.state;
 
-    if (onQRCodeScanned) {
+    if (onQRCodeScanned && !codeScanned) {
+      this.setState({ codeScanned: true });
       onQRCodeScanned(code);
       return;
     }

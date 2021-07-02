@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
+import { HelpBlock, FormGroup } from 'react-bootstrap';
 import classNames from 'classnames';
 import { Switch } from '@shoutem/react-web-ui';
 import { fieldInError } from '../services';

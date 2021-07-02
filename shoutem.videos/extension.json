@@ -1,10 +1,10 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "platform": "2.5.*",
   "description": "Show a video gallery",
-  "releaseNotes": "* Added CMS search feature",
+  "releaseNotes": "* Stability improvements",
   "icon": "server/assets/add-videos-image.png",
   "dependencies": [
     "shoutem.cms",

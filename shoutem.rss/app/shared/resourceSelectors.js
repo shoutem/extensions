@@ -1,5 +1,9 @@
 import _ from 'lodash';
 
+export function getAttachments(resource, type) {
+  return _.get(resource, `${type}Attachments`);
+}
+
 export function getLeadAttachment(resource, type) {
   return _.get(resource, `${type}Attachments[0]`);
 }
@@ -17,4 +21,15 @@ export function getLeadImageUrl(resource) {
 export function isLeadAttachment(resource, attachmentId, type) {
   const leadAttachment = getLeadAttachment(resource, type);
   return leadAttachment && leadAttachment.id === attachmentId;
+}
+
+/**
+ * Returns all image attachments without lead image
+ */
+export function getImageAttachments(resource) {
+  const imageAttachments = getAttachments(resource, 'image');
+
+  return _.reject(imageAttachments, attachment =>
+    isLeadAttachment(resource, attachment.id, 'image'),
+  );
 }

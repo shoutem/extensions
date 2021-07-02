@@ -56,6 +56,7 @@ export class IconsPage extends Component {
     return (
       <ShortcutIconRow
         shortcutType={shortcut.shortcutType}
+        shortcutScreen={shortcut.screen}
         title={shortcut.title}
         icon={shortcut.icon}
         shortcutId={shortcut.id}

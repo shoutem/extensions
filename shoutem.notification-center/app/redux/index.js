@@ -15,6 +15,7 @@ export {
   markAsRead,
   fetchNotifications,
   invalidateNotifications,
+  viewNotification,
 } from './notifications';
 
 export {

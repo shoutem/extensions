@@ -13,6 +13,7 @@ export default class ArrayFormElement extends Component {
     elementId: PropTypes.string,
     element: PropTypes.node,
     name: PropTypes.string,
+    field: PropTypes.object,
     ItemComponent: PropTypes.object,
   };
 

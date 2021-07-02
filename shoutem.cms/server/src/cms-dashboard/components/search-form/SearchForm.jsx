@@ -28,7 +28,7 @@ export default class SearchForm extends Component {
     };
 
     if (_.isFunction(onChange)) {
-      return onChange(newSearchOptions);
+      onChange(newSearchOptions);
     }
   }
 
@@ -37,7 +37,7 @@ export default class SearchForm extends Component {
     const newSearchOptions = _.omit(searchOptions, ['query']);
 
     if (_.isFunction(onChange)) {
-      return onChange(newSearchOptions);
+      onChange(newSearchOptions);
     }
   }
 
@@ -50,7 +50,7 @@ export default class SearchForm extends Component {
     };
 
     if (_.isFunction(onChange)) {
-      return onChange(newSearchOptions);
+      onChange(newSearchOptions);
     }
   }
 

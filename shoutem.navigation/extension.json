@@ -1,10 +1,10 @@
 {
   "name": "navigation",
-  "version": "2.5.4",
+  "version": "2.5.5",
   "platform": "2.5.*",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "* Introduced code-linted package.",
+  "releaseNotes": "* Continuous improvements",
   "description": "App-level navigation",
   "dependencies": [
     "shoutem.application",

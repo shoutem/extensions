@@ -23,17 +23,17 @@ export function getCurrentSearchOptionsFromCollection(schema, collection) {
   const filters = _.compact(
     _.map(params, (value, key) => {
       if (!_.startsWith(key, 'filter')) {
-        return;
+        return null;
       }
 
       const matches = key.match(/([^[]+(?=]))/g);
       if (matches && matches.length === 0) {
-        return;
+        return null;
       }
 
       const name = _.get(matches, '[0]');
       if (!_.includes(filterableKeys, name)) {
-        return;
+        return null;
       }
 
       const operator = _.get(matches, '[1]', 'eq');

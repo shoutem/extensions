@@ -19,10 +19,7 @@
           ]
         },
         "fontStyle": {
-          "enum": [
-            "normal",
-            "italic"
-          ]
+          "enum": ["normal", "italic"]
         },
         "fontWeight": {
           "enum": [
@@ -51,10 +48,7 @@
       },
       "constraints": {
         "dropdownValue": {
-          "enum": [
-            "light",
-            "dark"
-          ]
+          "enum": ["light", "dark"]
         }
       }
     }
@@ -405,6 +399,12 @@
       "title": "Section header background color - details screens",
       "format": "color",
       "default": "#F2F2F2"
+    },
+    "gridItemBackgroundColor": {
+      "type": "string",
+      "title": "Places grid layout item - background color",
+      "format": "color",
+      "default": "#FFFFFF"
     }
   },
   "layout": {
@@ -498,7 +498,8 @@
           "errorText",
           "lineColor",
           "indicatorColor",
-          "sectionHeaderBackgroundColor"
+          "sectionHeaderBackgroundColor",
+          "gridItemBackgroundColor"
         ]
       }
     ]

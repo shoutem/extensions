@@ -10,6 +10,20 @@ import { getSchemaPropertyOperators } from '../../services';
 import { FILTER_OPERATOR_TYPES } from '../../const';
 import LOCALIZATION from './localization';
 
+// not using classNames as this is modal and CSS is not working
+const styles = {
+  filterForm: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingTop: 8,
+  },
+  filterCloseBtn: {
+    fontSize: 25,
+    color: '#bdc0cb',
+    cursor: 'pointer',
+  },
+};
+
 function getOperatorOptions(operators) {
   return _.compact(
     _.map(operators, operator => {
@@ -117,18 +131,4 @@ FiltersFormItem.propTypes = {
   filter: PropTypes.object,
   categoryOptions: PropTypes.array,
   onRemove: PropTypes.func,
-};
-
-// not using classNames as this is modal and CSS is not working
-const styles = {
-  filterForm: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingTop: 8,
-  },
-  filterCloseBtn: {
-    fontSize: 25,
-    color: '#bdc0cb',
-    cursor: 'pointer',
-  },
 };

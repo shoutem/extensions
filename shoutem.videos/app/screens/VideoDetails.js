@@ -17,7 +17,7 @@ import {
 import { NavigationBar } from 'shoutem.navigation';
 import { ext } from '../const';
 
-class VideoDetails extends PureComponent {
+export class VideoDetails extends PureComponent {
   constructor(props) {
     super(props);
 

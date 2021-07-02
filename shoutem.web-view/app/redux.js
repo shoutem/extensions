@@ -3,28 +3,49 @@ import { getShortcut } from 'shoutem.application';
 
 import { ext } from './const';
 
-const getWebViewRoute = (url, title, showNavigationToolbar = true, requireLocationPermission = false) => ({
+const getWebViewRoute = (
+  url,
+  title,
+  showNavigationToolbar = true,
+  requireLocationPermission = false,
+  webViewProps = {},
+) => ({
   screen: ext('WebViewWithShareScreen'),
   props: {
     url,
     title,
     showNavigationToolbar,
     requireLocationPermission,
+    webViewProps,
   },
 });
 
 export const OPEN_EXTERNAL_BROWSER = 'OPEN_EXTERNAL_BROWSER';
 
 function openExternalBrowserActionCreator(url) {
-  return ({
+  return {
     type: OPEN_EXTERNAL_BROWSER,
     url,
-  });
+  };
 }
 
 // Shoutem specified actions
-export function openURL(url, title, showNavigationToolbar, requireLocationPermission) {
-  return navigateTo(getWebViewRoute(url, title, showNavigationToolbar, requireLocationPermission));
+export function openURL(
+  url,
+  title,
+  showNavigationToolbar,
+  requireLocationPermission,
+  webViewProps,
+) {
+  return navigateTo(
+    getWebViewRoute(
+      url,
+      title,
+      showNavigationToolbar,
+      requireLocationPermission,
+      webViewProps,
+    ),
+  );
 }
 
 export function openUrlInExternalBrowser(state, action) {

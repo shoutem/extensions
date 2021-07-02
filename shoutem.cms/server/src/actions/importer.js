@@ -1,4 +1,5 @@
 import { url } from 'environment';
+import _ from 'lodash';
 import Uri from 'urijs';
 import { find, remove } from '@shoutem/redux-io';
 import { ext } from 'context';
@@ -42,7 +43,7 @@ export function deleteImporter(appId, importerId) {
 }
 
 export function loadCsvColumns(appId, groupId, fileUrl) {
-  return dispatch => {
+  return () => {
     const legacyUrl = new Uri(`//${_.get(url, 'legacy')}`)
       .protocol(location.protocol)
       .segment('api')
@@ -53,7 +54,7 @@ export function loadCsvColumns(appId, groupId, fileUrl) {
         type: 'shoutem',
         parameters: {
           applicationId: appId,
-          groupId: groupId,
+          groupId,
           apiUrl: legacyUrl,
         },
       },
@@ -109,7 +110,7 @@ export function createImporter(
         type: 'shoutem',
         parameters: {
           applicationId: appId,
-          groupId: groupId,
+          groupId,
           apiUrl: legacyUrl,
           channelIds: languageIds,
           schemaCanonicalName: canonicalName,

@@ -1,0 +1,13 @@
+{
+  "shoutem": {
+    "checklist": {
+      "contact-email-label": "Contact email (optional)",
+      "has-submit-message-screen-label": "Enable submit message screen",
+      "image-overlay-message": "Image overlay message (optional):",
+      "image-url-label": "Image URL (optional):",
+      "save-button": "Save",
+      "submit-message": "Message:",
+      "submit-message-title": "Message title:"
+    }
+  }
+}

@@ -101,7 +101,7 @@
     }
   ],
   "settings": {
-    "authApiEndpoint": "auth.api.dev.sauros.hr",
+    "authApiEndpoint": "auth.api.shoutem.com",
     "signupEnabled": true,
     "manuallyApproveMembers": false,
     "allScreensProtected": false,

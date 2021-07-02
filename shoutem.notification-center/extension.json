@@ -1,10 +1,10 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "platform": "2.5.*",
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* Fixed navigation header overlapping screen content on 'Notification details' screen",
+  "releaseNotes": "* Tap on notification in notification center UX improvements",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": ["users"],
   "i18n": {

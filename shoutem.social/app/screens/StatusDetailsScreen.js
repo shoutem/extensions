@@ -42,10 +42,11 @@ import {
   createComment,
   deleteStatus,
   deleteComment,
+  selectors,
 } from '../redux';
 import { openProfileForLegacyUser } from '../services';
 
-const { array, number, func, bool } = PropTypes;
+const { array, number, func, bool, object } = PropTypes;
 
 export class StatusDetailsScreen extends PureComponent {
   static propTypes = {
@@ -54,7 +55,7 @@ export class StatusDetailsScreen extends PureComponent {
       data: array,
     }).isRequired,
     statusId: number.isRequired,
-    statuses: array.isRequired,
+    status: object.isRequired,
     openUserLikes: func.isRequired,
     addComment: func.isRequired,
     onLikeAction: func.isRequired,
@@ -167,16 +168,13 @@ export class StatusDetailsScreen extends PureComponent {
   }
 
   isStatusAuthorOrAppOwner() {
-    const { statuses, statusId } = this.props;
-    const status = _.find(statuses, { id: statusId });
+    const { status } = this.props;
 
     return _.get(status, 'deletable') === 'yes';
   }
 
   openActionSheet() {
-    const { deleteStatus, statuses, statusId, navigateBack } = this.props;
-
-    const status = _.find(statuses, { id: statusId });
+    const { deleteStatus, status, navigateBack } = this.props;
 
     ActionSheet.showActionSheetWithOptions(
       {
@@ -303,16 +301,13 @@ export class StatusDetailsScreen extends PureComponent {
 
   renderStatus() {
     const {
-      statusId,
-      statuses,
+      status,
       openUserLikes,
       onLikeAction,
       openProfile,
       enableComments,
       enableInteractions,
     } = this.props;
-
-    const status = _.find(statuses, { id: statusId });
 
     return (
       <View>
@@ -332,7 +327,7 @@ export class StatusDetailsScreen extends PureComponent {
   }
 
   render() {
-    const { enableComments, comments } = this.props;
+    const { enableComments, comments, status } = this.props;
     const commentsData = _.get(comments, 'data', []);
     const areCommentsLoading = isBusy(comments) && !isInitialized(comments);
     const hasMoreComments = hasNext(comments);
@@ -347,6 +342,7 @@ export class StatusDetailsScreen extends PureComponent {
         <Divider styleName="line" />
         <ListView
           data={commentsData}
+          extraData={status.liked}
           ref={this.captureScrollViewRef}
           loading={areCommentsLoading}
           renderHeader={this.renderStatus}
@@ -360,12 +356,16 @@ export class StatusDetailsScreen extends PureComponent {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  statuses: state[ext()].statuses.data,
-  comments: _.get(state[ext()], ['comments', ownProps.statusId], {}),
-});
+const mapStateToProps = (state, ownProps) => {
+  const statusId = _.get(ownProps, 'statusId');
 
-const mapDispatchToProps = (dispatch) => ({
+  return {
+    status: selectors.getStatus(state, statusId),
+    comments: selectors.getCommentsForStatus(state, statusId),
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
   ...bindActionCreators(
     {
       loadComments,

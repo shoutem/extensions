@@ -95,8 +95,14 @@ function ResourceForm({
 
 ResourceForm.propTypes = {
   schema: PropTypes.object,
+  values: PropTypes.object,
+  canonicalName: PropTypes.string,
+  googleApiKey: PropTypes.string,
   assetManager: PropTypes.object,
+  ownInitialValues: PropTypes.func,
   handleSubmit: PropTypes.func,
+  loadSchema: PropTypes.func,
+  loadResources: PropTypes.func,
   touch: PropTypes.func,
   pristine: PropTypes.bool,
   submitting: PropTypes.bool,

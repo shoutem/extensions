@@ -14,6 +14,7 @@ export { buildFeedUrl, buildFeedUrlWithEndpoint } from './shared/buildFeedUrl';
 export {
   getLeadAttachment,
   getLeadImageUrl,
+  getImageAttachments,
   isLeadAttachment,
 } from './shared/resourceSelectors';
 export { default as createRenderAttachment } from './shared/createRenderAttachment';

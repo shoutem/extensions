@@ -1,10 +1,11 @@
 {
   "name": "rss",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "platform": "2.5.*",
   "type": "system",
   "title": "RSS",
   "description": "Integrate with RSS feed source",
+  "releaseNotes": "* Continuous improvements",
   "icon": "server/assets/add-rss-image.png",
   "categories": [
     "content"

@@ -34,12 +34,7 @@ import { getUser, isAuthenticated } from 'shoutem.auth/redux';
 import { I18n } from 'shoutem.i18n';
 
 import StatusView from '../components/StatusView';
-import {
-  loadStatuses,
-  createStatus,
-  likeStatus,
-  unlikeStatus,
-} from '../redux';
+import { loadStatuses, createStatus, likeStatus, unlikeStatus } from '../redux';
 import { openProfileForLegacyUser } from '../services';
 import { ext } from '../const';
 
@@ -61,21 +56,18 @@ export class SocialWallScreen extends RemoteDataListScreen {
     const {
       navigateTo,
       user,
-      data,
       statusMaxLength,
       enableComments,
       enableInteractions,
       enablePhotoAttachments,
     } = this.props;
 
-    const status = _.find(data.data, { id: statusId });
     const route = {
       screen: ext('StatusDetailsScreen'),
       title: I18n.t(ext('postDetailsTitle')),
       props: {
         user,
         statusId,
-        status,
         addComment: this.addComment,
         openUserLikes: this.openUserLikes,
         onLikeAction: this.onLikeAction,

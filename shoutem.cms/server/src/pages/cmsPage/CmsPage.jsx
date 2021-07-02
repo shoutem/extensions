@@ -27,6 +27,7 @@ import {
   getLanguageModuleStatus,
 } from '../../selectors';
 import { addSchemasToDenormalizer } from '../../denormalizer';
+import { trackEvent } from '../../providers/analytics';
 import {
   shoutemUrls,
   createResourceWithRelationships,
@@ -244,8 +245,10 @@ export class CmsPage extends Component {
   }
 
   handleCreateResource(resource) {
-    const { schema } = this.props;
+    const { schema, shortcut } = this.props;
     const { selectedCategoryId } = this.state;
+
+    trackEvent('screens', 'content-item-added', _.get(shortcut, 'screen'));
 
     return this.props.createResourceWithRelationships(
       [selectedCategoryId],
@@ -256,7 +259,9 @@ export class CmsPage extends Component {
   }
 
   handleUpdateResource(resource, initialResource) {
-    const { schema } = this.props;
+    const { schema, shortcut } = this.props;
+
+    trackEvent('screens', 'content-item-edited', _.get(shortcut, 'screen'));
 
     return this.props.updateResourceWithRelationships(
       CURRENT_SCHEMA,
@@ -420,7 +425,13 @@ export class CmsPage extends Component {
   }
 
   render() {
-    const { schema, shortcut, languages, languageModuleStatus, initialized } = this.props;
+    const {
+      schema,
+      shortcut,
+      languages,
+      languageModuleStatus,
+      initialized,
+    } = this.props;
     const { showResourceModal, selectedCategoryId } = this.state;
 
     const isLoading =

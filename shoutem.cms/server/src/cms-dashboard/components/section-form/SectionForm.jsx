@@ -16,4 +16,5 @@ export default function SectionForm({ children, title, editorSize }) {
 SectionForm.propTypes = {
   children: PropTypes.object,
   title: PropTypes.string,
+  editorSize: PropTypes.string,
 };

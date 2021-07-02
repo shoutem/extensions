@@ -29,3 +29,9 @@ export function getUsersInGroups(state) {
 
   return getCollection(usersInGroups, state);
 }
+
+export function getCommentsForStatus(state, statusId) {
+  const comments = state[ext()].comments;
+
+  return _.get(comments, statusId, {});
+}

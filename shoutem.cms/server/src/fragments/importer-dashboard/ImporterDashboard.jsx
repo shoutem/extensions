@@ -1,7 +1,6 @@
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { invalidate } from '@shoutem/redux-io';
@@ -22,9 +21,7 @@ export class ImporterDashboard extends Component {
   }
 
   handleAddImporterClick() {
-    this.importerModal.current.show({
-      onConfirm: () => this.props.deleteImporter(importerId),
-    });
+    this.importerModal.current.show();
   }
 
   handleDeleteImporterClick(importerId) {

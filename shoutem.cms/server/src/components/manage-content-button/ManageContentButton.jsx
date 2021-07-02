@@ -6,6 +6,12 @@ import { Button, ButtonGroup } from 'react-bootstrap';
 import { FontIcon, LoaderContainer } from '@shoutem/react-web-ui';
 import './style.scss';
 
+const styles = {
+  advancedToggle: {
+    marginLeft: 1,
+  },
+};
+
 export default class ManageContentButton extends Component {
   constructor(props) {
     super(props);
@@ -70,10 +76,4 @@ ManageContentButton.propTypes = {
   onNavigateToCmsClick: PropTypes.func,
   showAdditionalOptions: PropTypes.bool,
   onToggleAdditionalOptions: PropTypes.func,
-};
-
-const styles = {
-  advancedToggle: {
-    marginLeft: 1,
-  },
 };

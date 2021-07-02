@@ -25,6 +25,7 @@ import {
   CmsTable,
   SearchForm,
 } from '@shoutem/cms-dashboard';
+import { trackEvent } from '../../providers/analytics';
 import {
   loadResources,
   loadNextResourcesPage,
@@ -52,6 +53,7 @@ export class ResourceDashboard extends Component {
     shortcut: PropTypes.object,
     parentCategoryId: PropTypes.string,
     selectedCategoryId: PropTypes.string,
+    sortOptions: PropTypes.object,
     categories: PropTypes.array,
     languages: PropTypes.array,
     resources: PropTypes.array,
@@ -64,6 +66,8 @@ export class ResourceDashboard extends Component {
     deleteResource: PropTypes.func,
     loadNextPage: PropTypes.func,
     loadPreviousPage: PropTypes.func,
+    onCategorySelected: PropTypes.func,
+    onResourceEditClick: PropTypes.func,
   };
 
   constructor(props) {
@@ -151,13 +155,26 @@ export class ResourceDashboard extends Component {
   }
 
   handleCategoryCreate(categoryName) {
-    const { parentCategoryId } = this.props;
+    const { parentCategoryId, shortcut } = this.props;
+
+    trackEvent(
+      'screens',
+      'content-category-created',
+      _.get(shortcut, 'screen'),
+    );
+
     return this.props.createCategory(categoryName, parentCategoryId);
   }
 
   async handleCategoryDelete(categoryId) {
-    const { onCategorySelected, selectedCategoryId } = this.props;
+    const { shortcut, onCategorySelected, selectedCategoryId } = this.props;
     const { mainCategoryId } = this.state;
+
+    trackEvent(
+      'screens',
+      'content-category-deleted',
+      _.get(shortcut, 'screen'),
+    );
 
     await this.props.deleteCategory(categoryId);
 
@@ -169,7 +186,14 @@ export class ResourceDashboard extends Component {
   }
 
   handleCategoryRename(categoryId, categoryName) {
-    const { parentCategoryId } = this.props;
+    const { shortcut, parentCategoryId } = this.props;
+
+    trackEvent(
+      'screens',
+      'content-category-renamed',
+      _.get(shortcut, 'screen'),
+    );
+
     return this.props.renameCategory(
       parentCategoryId,
       categoryId,

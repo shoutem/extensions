@@ -8,9 +8,9 @@ import { ReduxFormElement } from '@shoutem/react-web-ui';
 
 const YOUTUBE_REGEXS = [
   /((www\.)?youtube\.com\/watch\?.*v=(?<videoId>[^&]+))/,
-  /((www\.)?youtube\.com\/v\/(?<videoId>[^&\?]+))/,
-  /((www\.)?youtube\.com\/embed\/(?<videoId>[^&\?]+))/,
-  /(youtu.be\/(?<videoId>[^&\?]+))/,
+  /((www\.)?youtube\.com\/v\/(?<videoId>[^&?]+))/,
+  /((www\.)?youtube\.com\/embed\/(?<videoId>[^&?]+))/,
+  /(youtu.be\/(?<videoId>[^&?]+))/,
 ];
 
 function resolveFilename(file) {
@@ -33,6 +33,8 @@ function resolveThumbnailUrl(url) {
     if (youtubeVideoId) {
       return false;
     }
+
+    return true;
   });
 
   if (youtubeVideoId) {
@@ -51,6 +53,7 @@ export default class VideoUploaderReduxFormElement extends Component {
     helpText: PropTypes.string,
     className: PropTypes.string,
     folderName: PropTypes.string,
+    thumbnailName: PropTypes.string,
     touch: PropTypes.func,
   };
 
@@ -122,7 +125,6 @@ export default class VideoUploaderReduxFormElement extends Component {
       field,
       name,
       thumbnailName,
-      helpText,
       className,
       folderName,
       ...otherProps
