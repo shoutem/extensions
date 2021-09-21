@@ -50,7 +50,7 @@ class FacebookButton extends PureComponent {
 
     this.setState({ accessToken });
 
-    return fetchFacebookUserInfo(accessToken).then((results) => {
+    return fetchFacebookUserInfo(accessToken).then(results => {
       const firstName = _.get(results, 'first_name', '');
       const lastName = _.get(results, 'last_name', '');
 

@@ -4,10 +4,10 @@ import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 import { isBusy, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { View, Text, Screen, Button, GridRow, ListView } from '@shoutem/ui';
+import { Screen, GridRow, ListView } from '@shoutem/ui';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
+import { HeaderTextButton } from 'shoutem.navigation';
 import {
   MapList,
   PlaceHalfGridRowView,
@@ -46,25 +46,25 @@ class PlacesGridScreen extends CmsListScreen {
     this.setState({ mapView: !mapView });
   }
 
-  renderRightNavBarComponent() {
+  renderRightNavBarComponent(props) {
     const { mapView } = this.state;
     const actionText = mapView
       ? I18n.t('shoutem.cms.navBarListViewButton')
       : I18n.t('shoutem.cms.navBarMapViewButton');
 
     return (
-      <View styleName="container md-gutter-right" virtual>
-        <Button onPress={this.toggleMapView} styleName="tight">
-          <Text>{actionText}</Text>
-        </Button>
-      </View>
+      <HeaderTextButton
+        {...props}
+        onPress={this.toggleMapView}
+        title={actionText}
+      />
     );
   }
 
   getNavBarProps() {
     return {
       ...super.getNavBarProps(),
-      renderRightComponent: () => this.renderRightNavBarComponent(),
+      headerRight: this.renderRightNavBarComponent,
     };
   }
 
@@ -124,7 +124,6 @@ class PlacesGridScreen extends CmsListScreen {
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
         {renderCategoriesInline && this.renderCategoriesDropDown('horizontal')}
         {this.renderData(data)}
       </Screen>

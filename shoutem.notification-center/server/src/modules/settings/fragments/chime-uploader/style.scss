@@ -1,0 +1,27 @@
+.general__notification-form {
+  max-width: 552px;
+  margin: auto;
+  padding-bottom: 12px;
+
+  .btn-toolbar {
+    margin-top: 48px;
+    margin-bottom: 48px;
+  }
+}
+
+.general__radio-selector {
+  align-items: center;
+
+  > :last-child {
+    margin-left: 20px;
+    margin-top: 0px;
+  }
+}
+
+.general__form-message-margin {
+  margin-bottom: 50px;
+}
+
+.save-button {
+  padding-top: 20px;
+}

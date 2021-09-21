@@ -11,13 +11,17 @@ import SeGallery from './SeGallery';
  * @returns {*}
  */
 function formatAttachmentPropNames(attachment) {
-  return _.reduce(attachment, (result, val, key) => {
-    const formattedKey = _.camelCase(key);
-    return {
-      ...result,
-      [formattedKey]: val,
-    };
-  }, {});
+  return _.reduce(
+    attachment,
+    (result, val, key) => {
+      const formattedKey = _.camelCase(key);
+      return {
+        ...result,
+        [formattedKey]: val,
+      };
+    },
+    {},
+  );
 }
 
 function resolveAttributes(element, resource) {
@@ -74,12 +78,7 @@ function resolveAttributes(element, resource) {
  * @param style
  */
 export default function SeAttachment(props) {
-  const {
-    element,
-    renderElement,
-    resource,
-    style,
-  } = props;
+  const { element, renderElement, resource, style } = props;
   const { type } = element.attributes;
 
   const attributes = resolveAttributes(element, resource);

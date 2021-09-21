@@ -1,7 +1,7 @@
 import { PureComponent } from 'react';
 import TrackPlayer from 'react-native-track-player';
 import _ from 'lodash';
-
+import { trackPlayerService } from '../services/trackPlayerService';
 import {
   STATE_STOPPED, // 1 idle
   STATE_PAUSED, // 2 paused
@@ -73,9 +73,18 @@ class TrackPlayerBase extends PureComponent {
       return;
     }
 
-    this.stateListener = TrackPlayer.addEventListener('playback-state', this.handlePlaybackStateChange);
-    this.errorListener = TrackPlayer.addEventListener('playback-error', this.handlePlaybackError);
-    this.remoteStopListener = TrackPlayer.addEventListener('remote-stop', this.handleRemoteStop);
+    this.stateListener = TrackPlayer.addEventListener(
+      'playback-state',
+      this.handlePlaybackStateChange,
+    );
+    this.errorListener = TrackPlayer.addEventListener(
+      'playback-error',
+      this.handlePlaybackError,
+    );
+    this.remoteStopListener = TrackPlayer.addEventListener(
+      'remote-stop',
+      this.handleRemoteStop,
+    );
   }
 
   removeEventListeners() {
@@ -132,7 +141,7 @@ class TrackPlayerBase extends PureComponent {
     this.setPlaybackState(STATE_BUFFERING);
     this.addEventListeners();
 
-    if (!await this.isCurrentTrack()) {
+    if (!(await this.isCurrentTrack())) {
       await this.reset();
       await this.addTrack();
       this.play();
@@ -144,18 +153,29 @@ class TrackPlayerBase extends PureComponent {
 
     if (this.firstPlay && playbackState !== STATE_PLAYING) {
       this.handleFirstPlay();
+      trackPlayerService.setShouldResumeAfterDuck(true);
       return;
     }
 
     if (playbackState === STATE_PLAYING) {
       this.pause();
+      trackPlayerService.setShouldResumeAfterDuck(false);
     } else {
       this.play();
+      trackPlayerService.setShouldResumeAfterDuck(true);
     }
   }
 
   async isCurrentTrack() {
-    const currentTrackId = await TrackPlayer.getCurrentTrack();
+    const currentTrackIndex = await TrackPlayer.getCurrentTrack();
+    const queue = await TrackPlayer.getQueue();
+
+    if (_.isEmpty(queue) || currentTrackIndex === null) {
+      return false;
+    }
+
+    const currentTrack = await TrackPlayer.getTrack(currentTrackIndex);
+    const currentTrackId = _.get(currentTrack, 'id');
 
     return currentTrackId === this.getId();
   }

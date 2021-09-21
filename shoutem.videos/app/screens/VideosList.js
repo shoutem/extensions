@@ -1,10 +1,9 @@
 import React from 'react';
 import autoBindReact from 'auto-bind/react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { connectStyle } from '@shoutem/theme';
 import { CmsListScreen } from 'shoutem.cms';
 import { navigateTo } from 'shoutem.navigation';
+import { connectStyle } from '@shoutem/theme';
 import LargeVideoView from '../components/LargeVideoView';
 import { ext } from '../const';
 import { VIDEOS_SCHEMA } from '../redux';
@@ -12,7 +11,6 @@ import { VIDEOS_SCHEMA } from '../redux';
 export class VideosList extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    navigateTo: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -27,23 +25,11 @@ export class VideosList extends CmsListScreen {
   }
 
   openDetailsScreen(video) {
-    const { navigateTo } = this.props;
-
-    const route = {
-      screen: ext('VideoDetails'),
-      props: { video },
-    };
-
-    navigateTo(route);
+    navigateTo(ext('VideoDetails'), { video });
   }
 
   renderRow(video) {
-    return (
-      <LargeVideoView
-        video={video}
-        onPress={this.openDetailsScreen}
-      />
-    );
+    return <LargeVideoView video={video} onPress={this.openDetailsScreen} />;
   }
 }
 
@@ -51,10 +37,9 @@ export const mapStateToProps = CmsListScreen.createMapStateToProps(
   state => state[ext()].latestVideos,
 );
 
-export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
-  navigateTo,
-});
+export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps();
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('VideosList'))(VideosList),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('VideosList'))(VideosList));

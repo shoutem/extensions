@@ -1,4 +1,5 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { ImageBackground, Tile, Title, View } from '@shoutem/ui';
@@ -22,9 +23,7 @@ export class LargeImageGaugeRewardsPlaceDetails extends PlaceDetails {
   constructor(props) {
     super(props);
 
-    this.renderLeadImage = this.renderLeadImage.bind(this);
-    this.renderPoints = this.renderPoints.bind(this);
-    this.renderRewardRow = this.renderRewardRow.bind(this);
+    autoBindReact(this);
   }
 
   renderLeadImage() {

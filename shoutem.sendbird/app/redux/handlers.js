@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import { getActiveRoute } from 'shoutem.navigation';
+import { CONNECTION_STATUSES, CHAT_CONVERSATION_SCREEN } from '../const';
+import { getCurrentRoute } from 'shoutem.navigation';
+import { SendBird } from '../services';
 import { setNewMessage, updateChannel, setConnectionState } from './actions';
 import { getActiveChannelId } from './selectors';
-import { SendBird } from '../services';
-import { CONNECTION_STATUSES, CHAT_CONVERSATION_SCREEN } from '../const';
 
 function onMessageReceivedHandler(dispatch, getState) {
   return (channel, message) => {
@@ -17,24 +17,22 @@ function onMessageReceivedHandler(dispatch, getState) {
 }
 
 function onTypingStatusUpdatedHandler(dispatch) {
-  return (channel) => {
+  return channel => {
     dispatch(updateChannel(channel));
   };
 }
 
-function isAtConversationScreen(state) {
-  const activeRoute = getActiveRoute(state);
-  return _.get(activeRoute, 'screen') === CHAT_CONVERSATION_SCREEN;
-}
-
 function onChannelChangedHandler(dispatch, getState) {
-  return (channel) => {
+  return channel => {
     const state = getState();
     const activeChannelId = getActiveChannelId(state);
+    const currentRoute = getCurrentRoute();
+    const isAtConversationScreen =
+      currentRoute.name === CHAT_CONVERSATION_SCREEN;
 
     dispatch(updateChannel(channel));
 
-    if (isAtConversationScreen(state) && channel.url === activeChannelId) {
+    if (isAtConversationScreen && channel.url === activeChannelId) {
       SendBird.markMessagesRead(activeChannelId);
     }
   };

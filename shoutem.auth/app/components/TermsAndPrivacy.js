@@ -1,18 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { I18n } from 'shoutem.i18n';
 import { openURL } from 'shoutem.web-view';
 import { View, Text } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 import { ext } from '../const';
 
-const TermsAndPrivacy = ({
-  termsOfServiceLink,
-  privacyPolicyLink,
-  openURL,
-  style,
-}) => {
+const TermsAndPrivacy = ({ termsOfServiceLink, privacyPolicyLink, style }) => {
   const handleTermsOfServiceTap = () => {
     openURL(termsOfServiceLink);
   };
@@ -44,13 +38,7 @@ const TermsAndPrivacy = ({
 TermsAndPrivacy.propTypes = {
   termsOfServiceLink: PropTypes.string,
   privacyPolicyLink: PropTypes.string,
-  openURL: PropTypes.func,
   style: PropTypes.any,
 };
 
-const mapDispatchToProps = { openURL };
-
-export default connect(
-  null,
-  mapDispatchToProps,
-)(connectStyle(ext('TermsAndPrivacy'))(TermsAndPrivacy));
+export default connectStyle(ext('TermsAndPrivacy'))(TermsAndPrivacy);

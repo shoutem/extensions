@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, View } from '@shoutem/ui';
+import { Button, Icon, View, Spinner } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 import { ext } from '../const';
 
 function ControlButtonsView({
+  loading,
   audioMute,
   connectionSuccess,
   videoMute,
@@ -32,9 +33,11 @@ function ControlButtonsView({
       <Button
         onPress={connectionSuccess ? onEndCallPress : onStartCallPress}
         style={connectionSuccess ? style.endCall : style.startCall}
-        styleName="clear"
+        styleName="clear tight"
+        disabled={loading}
       >
-        <Icon name="hang-up" />
+        {!loading && <Icon name="hang-up" />}
+        {loading && <Spinner />}
       </Button>
 
       <Button
@@ -62,6 +65,7 @@ ControlButtonsView.propTypes = {
   onStartCallPress: PropTypes.func,
   onVideoMutePress: PropTypes.func,
   style: PropTypes.object,
+  loading: PropTypes.bool,
 };
 
 export default connectStyle(ext('ControlButtonsView'))(ControlButtonsView);

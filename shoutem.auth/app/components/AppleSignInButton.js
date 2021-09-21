@@ -4,7 +4,10 @@ import { Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import autoBind from 'auto-bind';
-import { appleAuth, AppleButton } from '@invertase/react-native-apple-authentication';
+import {
+  appleAuth,
+  AppleButton,
+} from '@invertase/react-native-apple-authentication';
 import { connectStyle } from '@shoutem/theme';
 import { View, Spinner } from '@shoutem/ui';
 import { getExtensionSettings, getAppId } from 'shoutem.application';
@@ -17,10 +20,7 @@ import { ext } from '../const';
 
 const APPLE_AUTH_OPTIONS = {
   requestedOperation: appleAuth.Operation.LOGIN,
-  requestedScopes: [
-    appleAuth.Scope.EMAIL,
-    appleAuth.Scope.FULL_NAME,
-  ],
+  requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
 };
 const LOGIN_ERROR_TITLE = () => I18n.t(ext('loginFailedErrorTitle'));
 const UNEXPECTED_ERROR = () =>

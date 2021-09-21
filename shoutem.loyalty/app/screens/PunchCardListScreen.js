@@ -2,10 +2,6 @@ import React from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { getExtensionSettings } from 'shoutem.application';
-import { getUser, loginRequired } from 'shoutem.auth';
-import { CmsListScreen } from 'shoutem.cms';
-import { navigateTo } from 'shoutem.navigation';
 import { find, next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -15,6 +11,9 @@ import {
   Title,
   TouchableOpacity,
 } from '@shoutem/ui';
+import { getExtensionSettings } from 'shoutem.application';
+import { getUser, loginRequired } from 'shoutem.auth';
+import { CmsListScreen } from 'shoutem.cms';
 import Stamps from '../components/Stamps';
 import { CMS_PUNCHCARDS_SCHEMA, PUNCH_REWARDS_SCHEMA, ext } from '../const';
 import { refreshCard } from '../services';
@@ -94,7 +93,6 @@ export const mapStateToProps = (state, ownProps) => {
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   find,
-  navigateTo,
   next,
   refreshCard,
 });

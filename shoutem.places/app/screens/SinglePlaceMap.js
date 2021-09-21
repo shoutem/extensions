@@ -1,60 +1,51 @@
-import React, { PureComponent } from 'react';
+import React, { useEffect } from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Linking } from 'react-native';
-import { NavigationBar } from 'shoutem.navigation';
 import { View, Screen, TouchableOpacity, Icon } from '@shoutem/ui';
 import { MapList } from '../components';
 import { getMapUrl } from '../services/places';
+import { getRouteParams } from 'shoutem.navigation';
 
-export default class SinglePlaceMap extends PureComponent {
-  static propTypes = {
-    place: PropTypes.object,
-    title: PropTypes.string,
-  };
+const openMapLink = place => {
+  const location = _.get(place, 'location', {});
+  const { latitude, longitude, formattedAddress } = location;
 
-  constructor(props) {
-    super(props);
-
-    this.openMapLink = this.openMapLink.bind(this);
-    this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(
-      this,
-    );
+  if (latitude && longitude) {
+    Linking.openURL(getMapUrl(latitude, longitude, formattedAddress));
   }
+};
 
-  getNavBarProps() {
-    return {
-      title: this.props.title.toUpperCase() || '',
-      renderRightComponent: this.renderRightNavBarComponent,
-    };
-  }
+const renderRightNavBarComponent = place => {
+  return (
+    <View styleName="container md-gutter-right">
+      <TouchableOpacity onPress={() => openMapLink(place)}>
+        <Icon name="directions" />
+      </TouchableOpacity>
+    </View>
+  );
+};
 
-  openMapLink() {
-    const { location = {} } = this.props.place;
-    const { latitude, longitude, formattedAddress } = location;
+const SinglePlaceMap = props => {
+  const { navigation } = props;
+  const { place, title } = getRouteParams(props);
 
-    if (latitude && longitude) {
-      Linking.openURL(getMapUrl(latitude, longitude, formattedAddress));
-    }
-  }
+  useEffect(() => {
+    navigation.setOptions({
+      title,
+      headerRight: () => renderRightNavBarComponent(place),
+    });
+  });
 
-  renderRightNavBarComponent() {
-    return (
-      <View styleName="container md-gutter-right">
-        <TouchableOpacity onPress={this.openMapLink}>
-          <Icon name="directions" />
-        </TouchableOpacity>
-      </View>
-    );
-  }
+  return (
+    <Screen>
+      <MapList places={[place]} selectedPlace={place} />
+    </Screen>
+  );
+};
 
-  render() {
-    const { place } = this.props;
+SinglePlaceMap.propTypes = {
+  navigation: PropTypes.object,
+};
 
-    return (
-      <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
-        <MapList places={[place]} selectedPlace={place} />
-      </Screen>
-    );
-  }
-}
+export default SinglePlaceMap;

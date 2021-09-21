@@ -1,8 +1,5 @@
 import _ from 'lodash';
-
-import {
-  Platform,
-} from 'react-native';
+import { Platform } from 'react-native';
 
 export function dealHasLocation(deal) {
   return (
@@ -29,15 +26,17 @@ export function getMarkersFromDeals(deals) {
 }
 
 export function getCoordinatesDelta(deals, coordinateName) {
-  return _.maxBy(deals, coordinateName)[coordinateName] -
-    _.minBy(deals, coordinateName)[coordinateName];
+  return (
+    _.maxBy(deals, coordinateName)[coordinateName] -
+    _.minBy(deals, coordinateName)[coordinateName]
+  );
 }
 
 export function getInitialRegionFromDeals(deals) {
   const defaultLatitudeDelta = 0.01;
   const defaultLongitudeDelta = 0.01;
 
-  const validDeals = _.map(_.filter(deals, dealHasLocation), (deal) => ({
+  const validDeals = _.map(_.filter(deals, dealHasLocation), deal => ({
     latitude: parseFloat(_.get(deal, 'place.location.latitude')),
     longitude: parseFloat(_.get(deal, 'place.location.longitude')),
   }));
@@ -46,8 +45,10 @@ export function getInitialRegionFromDeals(deals) {
     return null;
   }
 
-  const latitudeDelta = getCoordinatesDelta(validDeals, 'latitude') || defaultLatitudeDelta;
-  const longitudeDelta = getCoordinatesDelta(validDeals, 'longitude') || defaultLongitudeDelta;
+  const latitudeDelta =
+    getCoordinatesDelta(validDeals, 'latitude') || defaultLatitudeDelta;
+  const longitudeDelta =
+    getCoordinatesDelta(validDeals, 'longitude') || defaultLongitudeDelta;
 
   return {
     latitude: _.meanBy(validDeals, 'latitude'),
@@ -76,10 +77,12 @@ export function resolveMapScheme(deal) {
     return null;
   }
 
-  const { place: { location } } = deal;
+  const {
+    place: { location },
+  } = deal;
   const { latitude, longitude, formattedAddress } = location;
 
-  return (Platform.OS === 'ios')
+  return Platform.OS === 'ios'
     ? `http://maps.apple.com/?ll=${latitude},${longitude}&q=${formattedAddress}`
     : `geo:${latitude},${longitude}?q=${formattedAddress}`;
 }

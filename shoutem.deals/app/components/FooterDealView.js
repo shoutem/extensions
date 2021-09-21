@@ -3,7 +3,6 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Dimensions } from 'react-native';
-
 import {
   Caption,
   ImageBackground,
@@ -12,8 +11,8 @@ import {
   TouchableOpacity,
 } from '@shoutem/ui';
 
-const imageWidth = (Dimensions.get('window').width / 2) - 1;
-const imageHeight = imageWidth - (imageWidth / 3);
+const imageWidth = Dimensions.get('window').width / 2 - 1;
+const imageHeight = imageWidth - imageWidth / 3;
 
 const styles = {
   image: {
@@ -49,11 +48,11 @@ export default class FooterDealView extends PureComponent {
           styleName="placeholder"
           source={{ uri: _.get(deal, 'image1') }}
         >
-          <Tile
-            styleName="fill-parent md-gutter space-between"
-          >
+          <Tile styleName="fill-parent md-gutter space-between">
             <Caption styleName="bold h-left">{this.props.label}</Caption>
-            <Subtitle styleName="h-left" numberOfLines={2}>{deal.title}</Subtitle>
+            <Subtitle styleName="h-left" numberOfLines={2}>
+              {deal.title}
+            </Subtitle>
           </Tile>
         </ImageBackground>
       </TouchableOpacity>

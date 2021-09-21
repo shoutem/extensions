@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-
 import { connectStyle } from '@shoutem/theme';
 import { Text, View } from '@shoutem/ui';
-
 import { ext } from '../const';
 
 export class DealFeaturedView extends PureComponent {
@@ -13,13 +12,13 @@ export class DealFeaturedView extends PureComponent {
   };
 
   static defaultProps = {
-    onPress: () => { },
+    onPress: () => {},
   };
 
   constructor(props) {
     super(props);
 
-    this.handlePress = this.handlePress.bind(this);
+    autoBindReact(this);
   }
 
   handlePress() {

@@ -2,29 +2,11 @@ import _ from 'lodash';
 import { isRSAA, RSAA } from 'redux-api-middleware';
 import URI from 'urijs';
 
-import { getOne, UPDATE_SUCCESS } from '@shoutem/redux-io';
+import { UPDATE_SUCCESS } from '@shoutem/redux-io';
 import { priorities, setPriority, before } from 'shoutem-core';
 
 import { getExtensionSettings, RESTART_APP } from 'shoutem.application';
-import {
-  createResetToCurrentRoute,
-  isEmptyRoute,
-  isNavigationAction,
-  navigateTo,
-  redirectTo,
-} from 'shoutem.navigation';
-
-import { ext } from './const';
-import { isAuthenticationRequired } from './isAuthenticationRequired';
-import {
-  isAuthenticated,
-  isUserUpdateAction,
-  getUser,
-  LOGOUT,
-  AUTHENTICATE,
-  getAccessToken,
-  hideShortcuts,
-} from './redux';
+import { isUserUpdateAction, getUser, LOGOUT, getAccessToken } from './redux';
 import { clearSession, getSession, saveSession } from './session.js';
 
 function getAuthHeader(state) {
@@ -33,96 +15,6 @@ function getAuthHeader(state) {
 
 const APPLICATION_EXTENSION = 'shoutem.application';
 const AUTH_HEADERS = 'headers.Authorization';
-
-const hasValidRoute = action => action.route && !isEmptyRoute(action.route);
-
-export function createLoginMiddleware(screens) {
-  return setPriority(
-    store => next => action => {
-      // We want to intercept only actions with a route because this is the only way
-      // to open a new screen.
-      if (isNavigationAction(action) && hasValidRoute(action)) {
-        const state = store.getState();
-
-        if (
-          isAuthenticationRequired(screens, action, state) &&
-          !isAuthenticated(state)
-        ) {
-          const navigateToCurrentRoute = createResetToCurrentRoute(
-            state,
-            store.dispatch,
-            action.route,
-          );
-
-          const onLoginSuccess = user => {
-            store.dispatch(hideShortcuts(user));
-            navigateToCurrentRoute();
-          };
-
-          return next(
-            redirectTo(action, {
-              screen: ext('LoginScreen'),
-              props: {
-                action,
-                onLoginSuccess,
-                interceptedRoute: _.get(action, 'route', null),
-              },
-            }),
-          );
-        }
-      }
-
-      return next(action);
-    },
-    priorities.AUTH,
-  );
-}
-
-/**
- * Enables an action within a screen to require authentication.
- * For example, when a comment button is clicked and this action requires a session.
- *
- * If the user is not authenticated, this middleware will present a login screen.
- * After successful login, it will execute the callback provided in the action.
- * If the user is already logged in, the callback will be immediately executed.
- */
-export const authenticateMiddleware = setPriority(
-  store => next => action => {
-    if (action.type === AUTHENTICATE) {
-      const state = store.getState();
-      const { dispatch } = store;
-
-      if (isAuthenticated(state)) {
-        const { user } = state[ext()];
-
-        action.callback(getOne(user, state));
-      } else {
-        const navigateToCurrentRoute = createResetToCurrentRoute(
-          state,
-          dispatch,
-        );
-
-        dispatch(
-          navigateTo({
-            screen: ext('LoginScreen'),
-            props: {
-              onLoginSuccess: user => {
-                navigateToCurrentRoute();
-                action.callback(user);
-              },
-              onRegisterSuccess: user => {
-                action.callback(user);
-              },
-            },
-          }),
-        );
-      }
-    }
-
-    return next(action);
-  },
-  priorities.AUTH,
-);
 
 /**
  * Listens to user profile changes and updates the saved session.

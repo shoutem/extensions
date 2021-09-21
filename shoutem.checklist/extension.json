@@ -1,11 +1,11 @@
 {
   "name": "checklist",
   "title": "Checklist",
-  "version": "1.0.0",
+  "version": "3.0.1",
   "description": "Create to-do list, onboarding tasklist and more.",
-  "releaseNotes": "",
+  "releaseNotes": "* Fixed email contact button not opening mail app on Android 11",
   "icon": "server/assets/images/add-checklist-image.png",
-  "platform": "2.5.*",
+  "platform": "~3.0.1",
   "dependencies": ["shoutem.layouts", "shoutem.cms"],
   "screens": [
     {

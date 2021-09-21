@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { isBusy, isError, isInitialized } from '@shoutem/redux-io';
@@ -21,8 +22,6 @@ import { transactionShape } from './shapes';
 
 const NO_ACTIVITY_ICON = require('../assets/icons/no-activity.png');
 
-const { arrayOf, func } = PropTypes;
-
 const renderTransactionRow = transaction => (
   <TransactionItem transaction={transaction} />
 );
@@ -33,15 +32,15 @@ const renderTransactionRow = transaction => (
 export class TransactionHistoryView extends PureComponent {
   static propTypes = {
     // Called when the user presses the Show history button
-    onShowHistory: func,
+    onShowHistory: PropTypes.func,
     // Recent transactions
-    transactions: arrayOf(transactionShape),
+    transactions: PropTypes.arrayOf(transactionShape),
   };
 
   constructor(props) {
     super(props);
 
-    this.showEntireHistory = this.showEntireHistory.bind(this);
+    autoBindReact(this);
 
     this.state = {
       numberOfVisibleTransactions: 3,

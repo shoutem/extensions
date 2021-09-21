@@ -1,6 +1,6 @@
 {
   "name": "shoutem.checklist",
-  "version": "1.0.0",
+  "version": "3.0.1",
   "description": "Create checklists for app users to complete.",
   "scripts": {
     "lint": "eslint --no-eslintrc src/**/*.{js,jsx}",

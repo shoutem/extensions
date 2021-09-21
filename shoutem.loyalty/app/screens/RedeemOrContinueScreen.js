@@ -1,15 +1,14 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Image, Screen, Subtitle, Text, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { navigateTo, getRouteParams } from 'shoutem.navigation';
 import { authorizationShape, rewardShape } from '../components/shapes';
 import { ext } from '../const';
 import { redeemReward } from '../services';
-
-const { func, number } = PropTypes;
 
 const STAMP_ICON = require('../assets/icons/stamp.png');
 
@@ -20,44 +19,46 @@ const STAMP_ICON = require('../assets/icons/stamp.png');
  */
 export class RedeemOrContinueScreen extends PureComponent {
   static propTypes = {
-    // Navigates to transaction processed screen
-    navigateTo: func,
     // An already verified authorization,
     authorization: authorizationShape,
     // Points assigned in transaction
-    points: number,
+    points: PropTypes.number,
     // Reward that can be redeemed
     reward: rewardShape,
     // Redeems the reward
-    redeemReward: func,
+    redeemReward: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
 
-    this.handleRedeemLater = this.handleRedeemLater.bind(this);
-    this.handleRedeemNow = this.handleRedeemNow.bind(this);
+    autoBindReact(this);
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({ title: I18n.t(ext('redeemRewardNavBarTitle')) });
   }
 
   handleRedeemLater() {
-    const { navigateTo, points } = this.props;
+    const { points } = getRouteParams(this.props);
 
-    navigateTo({
-      screen: ext('TransactionProcessedScreen'),
-      props: {
-        points,
-      },
+    navigateTo(ext('TransactionProcessedScreen'), {
+      points,
     });
   }
 
   handleRedeemNow() {
-    const { pointsRequired } = this.props.reward;
+    const { reward } = getRouteParams(this.props);
+    const { pointsRequired } = reward;
 
     this.processTransaction(-pointsRequired);
   }
 
   processTransaction(points) {
-    const { redeemReward, authorization, reward } = this.props;
+    const { redeemReward } = this.props;
+    const { authorization, reward } = getRouteParams(this.props);
 
     redeemReward({ points }, authorization, reward);
   }
@@ -65,7 +66,6 @@ export class RedeemOrContinueScreen extends PureComponent {
   render() {
     return (
       <Screen>
-        <NavigationBar title={I18n.t(ext('redeemRewardNavBarTitle'))} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <View styleName="oval-highlight">
             <Image source={STAMP_ICON} styleName="small-avatar" />
@@ -90,6 +90,6 @@ export class RedeemOrContinueScreen extends PureComponent {
   }
 }
 
-export default connect(undefined, { redeemReward, navigateTo })(
+export default connect(undefined, { redeemReward })(
   connectStyle(ext('RedeemOrContinueScreen'))(RedeemOrContinueScreen),
 );

@@ -1,7 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
 
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
   Subtitle,
   Caption,
@@ -11,11 +12,8 @@ import {
   TouchableOpacity,
   Divider,
   Button,
-  Image
 } from '@shoutem/ui';
-
 import { formatToLocalDate } from '../services/Calendar';
-
 /**
  * Component used to render single list event item
  */
@@ -29,8 +27,8 @@ export default class ListEventView extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.onPress = this.onPress.bind(this);
-    this.action = this.action.bind(this);
+
+    autoBindReact(this);
   }
 
   onPress() {
@@ -57,10 +55,7 @@ export default class ListEventView extends PureComponent {
             <Subtitle>{event.name}</Subtitle>
             <Caption>{formatToLocalDate(event.start)}</Caption>
           </View>
-          <Button
-            styleName="tight clear"
-            onPress={this.action}
-          >
+          <Button styleName="tight clear" onPress={this.action}>
             <Icon name="add-event" />
           </Button>
         </Row>

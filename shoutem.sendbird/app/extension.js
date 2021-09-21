@@ -1,5 +1,9 @@
 import pack from './package.json';
-import { MessageListScreen, ChatWindowScreen, PhotoFullScreen } from './screens';
+import {
+  MessageListScreen,
+  ChatWindowScreen,
+  PhotoFullScreen,
+} from './screens';
 
 export const screens = {
   MessageListScreen,

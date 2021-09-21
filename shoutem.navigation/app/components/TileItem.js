@@ -10,7 +10,10 @@ export default class TileItem extends NavigationBaseItem {
   render() {
     const { style, styleName, showBackground } = this.props;
     const shortcutSettings = this.getShortcutLayoutSettings('tileGrid');
-    const backgroundImageUrl = showBackground ? shortcutSettings.normalIconUrl : undefined;
+    const backgroundImageUrl = showBackground
+      ? shortcutSettings.normalIconUrl
+      : undefined;
+
     return (
       <FolderItemContainer
         onPress={this.onPress}

@@ -39,7 +39,10 @@ export default class NotificationInfoForm extends Component {
         audienceGroups,
         title,
         summary,
+        summaries,
+        numberOfMessages,
         deliveryTime,
+        type,
       },
       onCancel,
     } = this.props;
@@ -106,16 +109,38 @@ export default class NotificationInfoForm extends Component {
             </FormGroup>
           </Col>
         </Row>
-        <Row>
-          <Col xs={12}>
-            <FormGroup controlId="summary">
+        {type !== 'Silent' && (
+          <Row>
+            <Col xs={12}>
+              <FormGroup controlId="summary">
+                <ControlLabel>
+                  {i18next.t(LOCALIZATION.MESSAGE_LABEL)}
+                </ControlLabel>
+                <FormControl componentClass="textarea" value={summary} />
+              </FormGroup>
+            </Col>
+          </Row>
+        )}
+        {type === 'Silent' && (
+          <>
+            {_.map(summaries, summary => {
+              return (
+                <FormGroup>
+                  <ControlLabel>
+                    {i18next.t(LOCALIZATION.MESSAGE_LABEL)}
+                  </ControlLabel>
+                  <FormControl componentClass="textarea" value={summary} />
+                </FormGroup>
+              );
+            })}
+            <FormGroup>
               <ControlLabel>
-                {i18next.t(LOCALIZATION.MESSAGE_LABEL)}
+                {i18next.t(LOCALIZATION.NUMBER_OF_MESSAGES_LABEL)}
               </ControlLabel>
-              <FormControl componentClass="textarea" value={summary} />
+              <FormControl value={numberOfMessages} />
             </FormGroup>
-          </Col>
-        </Row>
+          </>
+        )}
         <ButtonToolbar>
           <Button bsSize="large" onClick={onCancel}>
             {i18next.t(LOCALIZATION.BUTTON_CANCEL)}

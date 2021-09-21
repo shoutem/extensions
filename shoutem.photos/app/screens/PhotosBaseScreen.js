@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { CmsListScreen } from 'shoutem.cms';
 import { openInModal } from 'shoutem.navigation';
 import { cloneStatus } from '@shoutem/redux-io';
@@ -29,7 +29,6 @@ export function remapAndFilterPhotos(data) {
 export class PhotosBaseScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    openInModal: PropTypes.func.isRequired,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -46,8 +45,7 @@ export class PhotosBaseScreen extends CmsListScreen {
   constructor(props, context) {
     super(props, context);
 
-    this.openDetailsScreen = this.openDetailsScreen.bind(this);
-    this.renderRow = this.renderRow.bind(this);
+    autoBindReact(this);
 
     const photos = remapAndFilterPhotos(this.props.data);
 
@@ -59,18 +57,12 @@ export class PhotosBaseScreen extends CmsListScreen {
   }
 
   openDetailsScreen(photo) {
-    const { openInModal } = this.props;
     const { photos } = this.state;
 
-    const route = {
-      screen: ext('PhotoDetailsScreen'),
-      props: {
-        photo,
-        photos,
-      },
-    };
-
-    openInModal(route);
+    openInModal(ext('PhotoDetailsScreen'), {
+      photo,
+      photos,
+    });
   }
 }
 
@@ -78,6 +70,4 @@ export const mapStateToProps = CmsListScreen.createMapStateToProps(
   state => state[ext()].allPhotos,
 );
 
-export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
-  openInModal,
-});
+export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps();

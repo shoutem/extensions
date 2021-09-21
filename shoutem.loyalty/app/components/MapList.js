@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { LayoutAnimation } from 'react-native';
-import { MapView } from 'shoutem.application';
-import { I18n } from 'shoutem.i18n';
 import { View, EmptyStateView } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { MapView } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import PlaceIconView from './PlaceIconView';
 import { placeShape } from './shapes';
@@ -58,8 +59,7 @@ export class MapList extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.renderImageRow = this.renderImageRow.bind(this);
-    this.setSelectedMarker = this.setSelectedMarker.bind(this);
+    autoBindReact(this);
 
     const { selectedPlace } = this.props;
 

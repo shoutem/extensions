@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'lodash';
-
 import {
   Subtitle,
   Caption,
@@ -10,7 +9,6 @@ import {
   Button,
   Card,
 } from '@shoutem/ui';
-
 import { formatDate } from '../shared/Calendar';
 import EventImage from './EventImage';
 import { BaseEventItem } from './BaseEventItem';
@@ -19,6 +17,9 @@ import { BaseEventItem } from './BaseEventItem';
  * Component used to render single list event item
  */
 export default class MediumEventView extends BaseEventItem {
+  static propTypes = {
+    ...BaseEventItem.propTypes,
+  };
 
   render() {
     const { event, onPress } = this.props;
@@ -30,17 +31,15 @@ export default class MediumEventView extends BaseEventItem {
         key={event.id}
       >
         <Card styleName="horizontal">
-          <EventImage styleName="medium-portrait rounded-corners" event={event} />
+          <EventImage
+            styleName="medium-portrait rounded-corners"
+            event={event}
+          />
           <View styleName="content pull-left space-between rounded-corners">
-            <Subtitle numberOfLines={3} >{event.name}</Subtitle>
+            <Subtitle numberOfLines={3}>{event.name}</Subtitle>
             <View styleName="horizontal stretch space-between v-center">
-              <Caption>
-                {formatDate(event.startTime)}
-              </Caption>
-              <Button
-                styleName="tight clear"
-                onPress={this.action}
-              >
+              <Caption>{formatDate(event.startTime)}</Caption>
+              <Button styleName="tight clear" onPress={this.action}>
                 <Icon name="add-event" />
               </Button>
             </View>

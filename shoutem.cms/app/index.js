@@ -1,7 +1,8 @@
 export { CmsListScreen } from './screens/CmsListScreen';
 export { default as currentLocation } from './components/CurrentLocation';
+export { Grid122Layout } from './components/layouts';
 export {
-  default as reducer,
+  reducer,
   invalidateLoadedCollections,
   CATEGORIES_SCHEMA,
   IMAGE_ATTACHMENTS_SCHEMA,
@@ -9,6 +10,9 @@ export {
   cmsCollection,
   childCategories,
   getCategories,
+  setScreenState,
+  clearScreenState,
+  getScreenState,
 } from './redux';
 
 import enTranslations from './translations/en.json';

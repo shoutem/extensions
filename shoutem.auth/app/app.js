@@ -14,8 +14,11 @@ import {
   hideShortcuts,
 } from './redux';
 import { getSession } from './session';
-
-import { getAppId, getExtensionSettings } from 'shoutem.application';
+import {
+  getAppId,
+  getExtensionSettings,
+  setQueueTargetComplete,
+} from 'shoutem.application';
 
 function refreshUser(dispatch, getState) {
   return getSession()
@@ -32,9 +35,12 @@ function refreshUser(dispatch, getState) {
       if (isAuthenticated(state)) {
         const user = getUser(state);
 
-        return dispatch(hideShortcuts(user));
+        dispatch(hideShortcuts(user));
+        dispatch(setQueueTargetComplete(ext()));
+        return null;
       }
 
+      dispatch(setQueueTargetComplete(ext()));
       return null;
     });
 }

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
 import { cloneStatus } from '@shoutem/redux-io';
+import { getRouteParams, composeNavigationStyles } from 'shoutem.navigation';
 import { LargeGridEpisodeView, FeaturedEpisodeView } from '../components';
 import { ext } from '../const';
 import {
@@ -24,11 +25,22 @@ class EpisodesLargeGridScreen extends EpisodesListScreen {
     autoBindReact(this);
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({
+      ...composeNavigationStyles(['featured']),
+    });
+
+    super.componentDidMount();
+  }
+
   getNavigationBarProps() {
-    return {
-      title: this.props.title || '',
-      styleName: 'featured',
-    };
+    const { navigation } = this.props;
+
+    navigation.setOptions({
+      ...composeNavigationStyles(['featured']),
+    });
   }
 
   // episode[0] is used because of GridRow.groupByRows, which is used in the
@@ -36,9 +48,10 @@ class EpisodesLargeGridScreen extends EpisodesListScreen {
   // array, because it usually groups two episodes in a single array, which is
   // then mapped into a single row as seen in the renderRow() method.
   renderFeaturedItem(episode) {
-    const { enableDownload, feedUrl, hasFeaturedItem } = this.props;
+    const { enableDownload, feedUrl } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return hasFeaturedItem && episode ? (
+    return screenSettings.hasFeaturedItem && episode ? (
       <FeaturedEpisodeView
         key={episode[0].id}
         enableDownload={enableDownload}
@@ -72,11 +85,11 @@ class EpisodesLargeGridScreen extends EpisodesListScreen {
   }
 
   renderData(episodes) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
     // Group items into rows with 2 columns, except for the
     // first episode. The first episode is treated as a featured episode
-    let isFirstItem = hasFeaturedItem;
+    let isFirstItem = screenSettings.hasFeaturedItem;
 
     const groupedItems = GridRow.groupByRows(episodes, 2, () => {
       if (isFirstItem) {

@@ -1,19 +1,21 @@
-// @flow
-import React, { PureComponent } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
+import React, { useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
   Alert,
   KeyboardAvoidingView,
   Keyboard as RNKeyboard,
   TextInput,
+  Platform,
 } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import ActionSheet from 'react-native-action-sheet';
-import ImagePicker from 'react-native-image-picker';
-
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { authenticate } from 'shoutem.auth';
+import { getUser } from 'shoutem.auth/redux';
+import { I18n } from 'shoutem.i18n';
+import { getRouteParams, HeaderIconButton } from 'shoutem.navigation';
 import { isBusy, isInitialized, next, hasNext } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -27,12 +29,13 @@ import {
   ImageBackground,
   Keyboard,
   Row,
+  ActionSheet as ShoutemActionSheet,
 } from '@shoutem/ui';
-
-import { authenticate } from 'shoutem.auth';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, openInModal, navigateBack } from 'shoutem.navigation';
-
+import {
+  requestPermissions,
+  PERMISSION_TYPES,
+  RESULTS,
+} from 'shoutem.permissions';
 import CommentView from '../components/CommentView';
 import { user as userShape } from '../components/shapes';
 import StatusView from '../components/StatusView';
@@ -43,139 +46,80 @@ import {
   deleteStatus,
   deleteComment,
   selectors,
+  blockUser,
 } from '../redux';
-import { openProfileForLegacyUser } from '../services';
+import {
+  openProfileForLegacyUser,
+  currentUserOwnsStatus,
+  openBlockOrReportActionSheet,
+} from '../services';
 
-const { array, number, func, bool, object } = PropTypes;
+const CAMERA_PERMISSION = Platform.select({
+  ios: PERMISSION_TYPES.IOS_CAMERA,
+  default: PERMISSION_TYPES.ANDROID_CAMERA,
+});
 
-export class StatusDetailsScreen extends PureComponent {
-  static propTypes = {
-    user: userShape.isRequired,
-    comments: PropTypes.shape({
-      data: array,
-    }).isRequired,
-    statusId: number.isRequired,
-    status: object.isRequired,
-    openUserLikes: func.isRequired,
-    addComment: func.isRequired,
-    onLikeAction: func.isRequired,
-    loadComments: func.isRequired,
-    scrollDownOnOpen: bool.isRequired,
+const IMAGE_PICKER_OPTIONS = {
+  includeBase64: true,
+  maxHeight: 1024,
+  maxWidth: 1024,
+  mediaType: 'photo',
+};
+
+export function StatusDetailsScreen(props) {
+  const {
+    comments,
+    next,
+    createComment,
+    authenticate,
+    loadComments,
+    openProfile,
+    deleteComment,
+    status,
+    filteredComments,
+    user,
+    deleteStatus,
+    navigation,
+    blockUser,
+    style,
+  } = props;
+  const {
+    statusId,
+    enableInteractions,
+    statusMaxLength,
+    enablePhotoAttachments,
+    scrollDownOnOpen,
+    openUserLikes,
+    onLikeAction,
+    enableComments,
+  } = getRouteParams(props);
+
+  const [text, setText] = useState('');
+  const [image64Data, setImage64Data] = useState(undefined);
+  const [pickerActive, setPickerActive] = useState(false);
+
+  const scrollViewRef = useRef(null);
+  const textInputRef = useRef(null);
+
+  const focusOnComment = () => {
+    if (textInputRef) {
+      textInputRef.current.focus();
+    }
   };
 
-  constructor(props) {
-    super(props);
-
-    autoBindReact(this);
-
-    this.state = {
-      text: '',
-      numberOfCharacters: 0,
-      image64Data: undefined,
-    };
-  }
-
-  componentDidMount() {
-    this.fetchData();
-  }
-
-  fetchData() {
-    const { statusId, loadComments, scrollDownOnOpen } = this.props;
-
-    loadComments(statusId).then((res) => {
+  const fetchData = () => {
+    loadComments(statusId).then(() => {
       if (scrollDownOnOpen) {
-        this.focusOnComment();
+        focusOnComment();
       }
     });
-  }
+  };
 
-  onSubmit() {
-    this.setState({ text: '', image64Data: undefined });
-  }
-
-  handleTextChange(text) {
-    this.setState({ text });
-  }
-
-  handleStatusCommentClick() {
-    const { createComment, statusId, authenticate } = this.props;
-    const { text, image64Data } = this.state;
-
-    authenticate(() => {
-      createComment(statusId, text, image64Data)
-        .then(this.onSubmit())
-        .then(this.scrollDownOnComment());
-      RNKeyboard.dismiss();
-      this.setState({ text: '' });
-    });
-  }
-
-  captureScrollViewRef(component) {
-    this.scrollView = component;
-  }
-
-  getCommentsLength() {
-    return this.props.comments.data.length;
-  }
-
-  appendImage() {
-    const options = {
-      allowsEditing: true,
-      maxHeight: 1024,
-      maxWidth: 1024,
-    };
-
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.error) {
-        Alert.alert(response.error);
-      } else if (!response.didCancel) {
-        this.setState({ image64Data: response });
-      }
-    });
-  }
-
-  discardImage() {
-    this.setState({ image64Data: undefined });
-  }
-
-  focusOnComment() {
-    this.textInputRef.focus();
-  }
-
-  scrollDownOnComment() {
-    if (this.getCommentsLength() > 3) {
-      this.scrollView.scrollToEnd({ animated: true });
-    }
-  }
-
-  loadMoreComments() {
-    const { next, comments } = this.props;
-
-    next(comments);
-  }
-
-  renderLoadingMoreText() {
-    if (!hasNext(this.props.comments)) {
-      return null;
-    }
-
-    return (
-      <View styleName="horizontal h-center v-center md-gutter">
-        <Text>{I18n.t(ext('loadingMoreComments'))}</Text>
-        <Divider styleName="line" />
-      </View>
-    );
-  }
-
-  isStatusAuthorOrAppOwner() {
-    const { status } = this.props;
-
+  const isStatusAuthorOrAppOwner = () => {
     return _.get(status, 'deletable') === 'yes';
-  }
+  };
 
-  openActionSheet() {
-    const { deleteStatus, status, navigateBack } = this.props;
-
+  const openActionSheet = () => {
     ActionSheet.showActionSheetWithOptions(
       {
         options: [
@@ -185,31 +129,131 @@ export class StatusDetailsScreen extends PureComponent {
         destructiveButtonIndex: 0,
         cancelButtonIndex: 1,
       },
-      (index) => {
+      index => {
         if (index === 0) {
-          return deleteStatus(status).then(navigateBack());
+          return deleteStatus(status).then(navigation.goBack);
         }
+
+        return null;
       },
     );
-  }
+  };
 
-  renderRightComponent() {
-    if (!this.isStatusAuthorOrAppOwner()) {
+  const headerRight = props => {
+    if (!isStatusAuthorOrAppOwner()) {
       return null;
     }
 
     return (
-      <View styleName="container" virtual>
-        <Button onPress={this.openActionSheet}>
-          <Icon name="more-horizontal" />
-        </Button>
-      </View>
+      <HeaderIconButton
+        iconName="more-horizontal"
+        onPress={openActionSheet}
+        {...props}
+      />
+    );
+  };
+
+  useEffect(() => {
+    fetchData();
+
+    navigation.setOptions({
+      title: I18n.t(ext('postDetailsNavBarTitle')),
+      headerRight,
+    });
+  }, []);
+
+  const onSubmit = () => {
+    setText('');
+    setImage64Data(undefined);
+  };
+
+  const handleTextChange = text => {
+    setText(text);
+  };
+
+  const getCommentsLength = () => {
+    return comments.data.length;
+  };
+
+  const scrollDownOnComment = () => {
+    if (getCommentsLength() > 3) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  };
+
+  const handleStatusCommentClick = () => {
+    authenticate(() => {
+      createComment(statusId, text, image64Data)
+        .then(onSubmit())
+        .then(scrollDownOnComment());
+      RNKeyboard.dismiss();
+      setText('');
+    });
+  };
+
+  const handleImageSelected = response => {
+    if (response.errorCode) {
+      Alert.alert(response.errorMessage);
+    } else if (!response.didCancel) {
+      setImage64Data(response.assets[0].base64);
+    }
+  };
+
+  const handleCameraSelectPress = () => {
+    setPickerActive(false);
+    requestPermissions(CAMERA_PERMISSION).then(result => {
+      if (result[CAMERA_PERMISSION] === RESULTS.GRANTED) {
+        return launchCamera(IMAGE_PICKER_OPTIONS, handleImageSelected);
+      }
+    });
+  };
+
+  const handleGallerySelectPress = () => {
+    setPickerActive(false);
+    launchImageLibrary(IMAGE_PICKER_OPTIONS, handleImageSelected);
+  };
+
+  const discardImage = () => {
+    setImage64Data(undefined);
+  };
+
+  const loadMoreComments = () => {
+    next(comments);
+  };
+
+  function handleBlockUser() {
+    const {
+      authenticate,
+      user: { legacyId: currentUserId },
+    } = props;
+    const blockUserId = status?.user?.id;
+
+    return authenticate(() =>
+      blockUser(blockUserId, currentUserId).then(() => navigation.goBack()),
     );
   }
 
-  renderRow(comment) {
-    const { openProfile, deleteComment } = this.props;
+  function handleMenuPress() {
+    const statusOwner = status?.user;
+    const isBlockAllowed = !currentUserOwnsStatus(user, statusOwner);
 
+    return openBlockOrReportActionSheet(isBlockAllowed, handleBlockUser);
+  }
+
+  const renderLoadingMoreText = () => {
+    if (!hasNext(comments)) {
+      return null;
+    }
+
+    return (
+      <View styleName="horizontal h-center v-center md-gutter">
+        <Text>{I18n.t(ext('loadingMoreComments'))}</Text>
+        <Divider styleName="line" />
+      </View>
+    );
+  };
+
+  const renderRow = comment => {
     return (
       <View>
         <CommentView
@@ -220,18 +264,49 @@ export class StatusDetailsScreen extends PureComponent {
         <Divider styleName="line" />
       </View>
     );
-  }
+  };
 
-  renderAddCommentSection() {
-    const { enablePhotoAttachments, style } = this.props;
-    const { image64Data } = this.state;
+  const renderAttachedImage = () => {
+    if (!image64Data) return null;
+    return (
+      <Row>
+        <ImageBackground
+          styleName="small md-gutter"
+          source={{ uri: `data:image/jpg;base64,${image64Data}` }}
+        >
+          <View styleName="fill-parent horizontal v-start h-end">
+            <Button styleName="tight clear" onPress={discardImage}>
+              <Icon name="close" />
+            </Button>
+          </View>
+        </ImageBackground>
+      </Row>
+    );
+  };
 
-    const postButtonDisabled = this.state.text.length === 0 && !image64Data;
+  const renderCommentTextInput = () => {
+    return (
+      <TextInput
+        style={style.textInput}
+        maxLength={statusMaxLength}
+        multiline
+        onChangeText={handleTextChange}
+        placeholder={I18n.t(ext('newCommentPlaceholder'))}
+        styleName="flexible"
+        value={text}
+        returnKeyType="next"
+        ref={textInputRef}
+      />
+    );
+  };
+
+  const renderAddCommentSection = () => {
+    const postButtonDisabled = text.length === 0 && !image64Data;
     const resolvedBehavior = Platform.OS === 'ios' ? 'padding' : '';
     const keyboardOffset = Keyboard.calculateKeyboardOffset();
 
     const addPhotoButton = enablePhotoAttachments && (
-      <Button styleName="clear" onPress={this.appendImage}>
+      <Button styleName="clear" onPress={() => setPickerActive(true)}>
         <Icon name="take-a-photo" />
       </Button>
     );
@@ -241,81 +316,32 @@ export class StatusDetailsScreen extends PureComponent {
         behavior={resolvedBehavior}
         keyboardVerticalOffset={keyboardOffset}
       >
-        {this.renderAttachedImage()}
+        {renderAttachedImage()}
         <Divider styleName="line" />
         <View styleName="horizontal v-center">
           {addPhotoButton}
-          {this.renderCommentTextInput()}
+          {renderCommentTextInput()}
           <Button
             styleName="clear"
             disabled={postButtonDisabled}
-            onPress={this.handleStatusCommentClick}
+            onPress={handleStatusCommentClick}
           >
             <Text>{I18n.t(ext('postStatusButton'))}</Text>
           </Button>
         </View>
       </KeyboardAvoidingView>
     );
-  }
+  };
 
-  renderAttachedImage() {
-    const { image64Data } = this.state;
-
-    if (!image64Data) return null;
-    return (
-      <Row>
-        <ImageBackground
-          styleName="small md-gutter"
-          source={{ uri: `data:image/jpg;base64,${image64Data.data}` }}
-        >
-          <View styleName="fill-parent horizontal v-start h-end">
-            <Button styleName="tight clear" onPress={this.discardImage}>
-              <Icon name="close" />
-            </Button>
-          </View>
-        </ImageBackground>
-      </Row>
-    );
-  }
-
-  renderCommentTextInput() {
-    const { text } = this.state;
-    const { statusMaxLength, style } = this.props;
-
-    return (
-      <TextInput
-        style={style.textInput}
-        maxLength={statusMaxLength}
-        multiline
-        onChangeText={this.handleTextChange}
-        placeholder={I18n.t(ext('newCommentPlaceholder'))}
-        styleName="flexible"
-        value={text}
-        returnKeyType="next"
-        ref={(ref) => {
-          this.textInputRef = ref;
-        }}
-      />
-    );
-  }
-
-  renderStatus() {
-    const {
-      status,
-      openUserLikes,
-      onLikeAction,
-      openProfile,
-      enableComments,
-      enableInteractions,
-    } = this.props;
-
+  const renderStatus = () => {
     return (
       <View>
         <StatusView
           status={status}
           openUserLikes={openUserLikes}
-          addComment={this.focusOnComment}
+          addComment={focusOnComment}
           onLikeAction={onLikeAction}
+          onMenuPress={handleMenuPress}
           openProfile={openProfile}
           showUsersWhoLiked
           enableImageFullScreen
@@ -324,44 +350,79 @@ export class StatusDetailsScreen extends PureComponent {
         />
       </View>
     );
-  }
+  };
 
-  render() {
-    const { enableComments, comments, status } = this.props;
-    const commentsData = _.get(comments, 'data', []);
-    const areCommentsLoading = isBusy(comments) && !isInitialized(comments);
-    const hasMoreComments = hasNext(comments);
-    const showAddCommentSection = !areCommentsLoading && enableComments;
+  const commentsData = _.get(filteredComments, 'data', []);
+  const areCommentsLoading = isBusy(comments) && !isInitialized(comments);
+  const showAddCommentSection = !areCommentsLoading && enableComments;
 
-    return (
-      <Screen styleName="paper with-notch-padding">
-        <NavigationBar
-          title={I18n.t(ext('postDetailsNavBarTitle'))}
-          renderRightComponent={this.renderRightComponent}
-        />
-        <Divider styleName="line" />
-        <ListView
-          data={commentsData}
-          extraData={status.liked}
-          ref={this.captureScrollViewRef}
-          loading={areCommentsLoading}
-          renderHeader={this.renderStatus}
-          renderRow={this.renderRow}
-          renderFooter={this.renderLoadingMoreText}
-          onLoadMore={this.loadMoreComments}
-        />
-        {showAddCommentSection && this.renderAddCommentSection()}
-      </Screen>
-    );
-  }
+  const pickerOptions = [
+    {
+      title: I18n.t(ext('imagePickerCameraOption')),
+      onPress: handleCameraSelectPress,
+    },
+    {
+      title: I18n.t(ext('imagePickerGalleryOption')),
+      onPress: handleGallerySelectPress,
+    },
+  ];
+
+  return (
+    <Screen styleName="paper with-notch-padding">
+      <Divider styleName="line" />
+      <ListView
+        data={commentsData}
+        ref={scrollViewRef}
+        loading={areCommentsLoading}
+        renderHeader={renderStatus}
+        renderRow={renderRow}
+        renderFooter={renderLoadingMoreText}
+        onLoadMore={loadMoreComments}
+      />
+      {showAddCommentSection && renderAddCommentSection()}
+      <ShoutemActionSheet
+        confirmOptions={pickerOptions}
+        active={pickerActive}
+        onDismiss={() => setPickerActive(false)}
+      />
+    </Screen>
+  );
 }
 
+StatusDetailsScreen.propTypes = {
+  user: userShape.isRequired,
+  comments: PropTypes.shape({
+    data: PropTypes.array,
+  }).isRequired,
+  filteredComments: PropTypes.shape({
+    data: PropTypes.array,
+  }).isRequired,
+  statusId: PropTypes.number.isRequired,
+  status: PropTypes.object.isRequired,
+  openUserLikes: PropTypes.func.isRequired,
+  addComment: PropTypes.func.isRequired,
+  onLikeAction: PropTypes.func.isRequired,
+  loadComments: PropTypes.func.isRequired,
+  scrollDownOnOpen: PropTypes.bool.isRequired,
+  next: PropTypes.func.isRequired,
+  blockUser: PropTypes.func.isRequired,
+  createComment: PropTypes.func.isRequired,
+  authenticate: PropTypes.func.isRequired,
+  openProfile: PropTypes.func.isRequired,
+  deleteComment: PropTypes.func.isRequired,
+  deleteStatus: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  style: PropTypes.object,
+};
+
 const mapStateToProps = (state, ownProps) => {
-  const statusId = _.get(ownProps, 'statusId');
+  const { statusId } = getRouteParams(ownProps);
 
   return {
     status: selectors.getStatus(state, statusId),
     comments: selectors.getCommentsForStatus(state, statusId),
+    filteredComments: selectors.getFilteredCommentsForStatus(state, statusId),
+    user: getUser(state) || {},
   };
 };
 
@@ -369,13 +430,12 @@ const mapDispatchToProps = dispatch => ({
   ...bindActionCreators(
     {
       loadComments,
-      openInModal,
-      navigateBack,
       createComment,
       authenticate,
       next,
       deleteStatus,
       deleteComment,
+      blockUser,
     },
     dispatch,
   ),

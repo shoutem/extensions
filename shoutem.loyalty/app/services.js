@@ -1,11 +1,17 @@
 import _ from 'lodash';
 import { Alert } from 'react-native';
+import { invalidate } from '@shoutem/redux-io';
 import { getAppId } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo, openInModal } from 'shoutem.navigation';
-import { invalidate } from '@shoutem/redux-io';
-
+import {
+  ext,
+  CMS_PUNCHCARDS_SCHEMA,
+  REWARDS_SCHEMA,
+  PLACE_REWARDS_SCHEMA,
+  PUNCH_REWARDS_SCHEMA,
+} from './const';
 import {
   createCardForUser,
   fetchCard,
@@ -17,14 +23,6 @@ import {
   isPunchCard,
   createTransaction,
 } from './redux';
-
-import {
-  ext,
-  CMS_PUNCHCARDS_SCHEMA,
-  REWARDS_SCHEMA,
-  PLACE_REWARDS_SCHEMA,
-  PUNCH_REWARDS_SCHEMA,
-} from './const';
 
 import { getErrorMessage } from './translations';
 
@@ -110,30 +108,28 @@ const getSchemaForReward = reward => {
  * points he earned on his regular loyalty card.
  *
  */
-const navigateToTransactionSummaryScreen = (reward, points, data) =>
-  navigateTo({
-    screen: ext(
-      `${reward ? 'TransactionProcessedScreen' : 'PointsEarnedScreen'}`,
-    ),
-    props: {
-      data,
-      points,
-      redeemed: points < 0,
-    },
+function navigateToTransactionSummaryScreen(reward, points, data) {
+  const screen = reward
+    ? ext('TransactionProcessedScreen')
+    : ext('PointsEarnedScreen');
+
+  openInModal(screen, {
+    data,
+    points,
+    redeemed: points < 0,
   });
+}
 
 /**
  * Takes the user to screen where he can choose to redeem the reward now or later
  */
-const navigateToRedeemOrContinueScreen = (reward, points, authorization) =>
-  navigateTo({
-    screen: ext('RedeemOrContinueScreen'),
-    props: {
-      reward,
-      points,
-      authorization,
-    },
+function navigateToRedeemOrContinueScreen(reward, points, authorization) {
+  navigateTo(ext('RedeemOrContinueScreen'), {
+    reward,
+    points,
+    authorization,
   });
+}
 
 /**
  * Handles punch card transaction. If it has enough points, lets the user choose
@@ -153,10 +149,10 @@ const handlePunchCardTransaction = (reward, points, authorization) => {
     const canRedeem = points + originalPoints === pointsRequired;
 
     if (canRedeem) {
-      dispatch(navigateToRedeemOrContinueScreen(reward, points, authorization));
+      navigateToRedeemOrContinueScreen(reward, points, authorization);
       return;
     }
-    dispatch(navigateToTransactionSummaryScreen(reward, points));
+    navigateToTransactionSummaryScreen(reward, points);
   };
 };
 
@@ -188,7 +184,7 @@ export const processTransactionResults = (
     dispatch(refreshCardState());
     dispatch(refreshTransactions());
 
-    dispatch(navigateToTransactionSummaryScreen(reward, awardedPoints, data));
+    navigateToTransactionSummaryScreen(reward, awardedPoints, data);
   };
 };
 
@@ -327,7 +323,7 @@ export const authorizeTransactionByQRCode = dataString => {
     const place = { id: cashierInfo.location };
     const route = getPostAuthorizationRoute(authorization, place, reward);
 
-    return dispatch(openInModal(route));
+    return openInModal(route.screen, { ...route.props });
   };
 };
 
@@ -339,15 +335,10 @@ export const authorizeTransactionByBarCode = expression => dispatch => {
 
   dispatch(createTransaction({ transactionData: {} }, authorization))
     .then(({ points }) => {
-      dispatch(
-        openInModal({
-          screen: ext('PointsEarnedScreen'),
-          props: {
-            data: {},
-            points,
-          },
-        }),
-      );
+      openInModal(ext('PointsEarnedScreen'), {
+        data: {},
+        points,
+      });
     })
     .catch(({ payload }) => {
       const { errors } = payload.response;
@@ -355,5 +346,8 @@ export const authorizeTransactionByBarCode = expression => dispatch => {
     });
 };
 
-export const authorizePointsByPin = (authorization, place, reward) =>
-  navigateTo(getPostAuthorizationRoute(authorization, place, reward));
+export const authorizePointsByPin = (authorization, place, reward) => {
+  const routeData = getPostAuthorizationRoute(authorization, place, reward);
+
+  navigateTo(routeData.screen, { ...routeData.props });
+};

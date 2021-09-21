@@ -23,6 +23,7 @@
         "other": "{{count}} Likes"
       },
       "blankPostWarning": "This post appears to be blank. Please write something.",
+      "charactersLeft": "{{numOfCharacters}} characters left",
       "numberOfComments": {
         "one": "{{count}} Comment",
         "other": "{{count}} Comments",
@@ -44,6 +45,11 @@
       "reportOptionInappropriate": "It's inappropriate",
       "reportOptionAbuse": "It's abusive",
       "reportOptionCancel": "Cancel",
+      "blockOption": "Block",
+      "reportOption": "Report",
+      "unblockOption": "Unblock user",
+      "reportPostOption": "Report post",
+      "unblockOptionCancel": "Cancel",
       "reportActionSheetTitle": "Report",
       "reportActionSheetMessage": "Why are you reporting this post? ",
       "reportSuccessTitle": "Report sent",
@@ -51,7 +57,9 @@
       "settingsScreentitle": "SETTINGS",
       "settingsScreenSubtitle": "Send me a push notification for",
       "commentsOnMyStatuses": "Comments on my statuses",
-      "likesOnMyStatuses": "Likes on my statuses"
+      "likesOnMyStatuses": "Likes on my statuses",
+      "imagePickerCameraOption": "Take a photo",
+      "imagePickerGalleryOption": "Select photo from gallery"
     }
   }
 }

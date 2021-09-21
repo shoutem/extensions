@@ -1,11 +1,11 @@
 {
   "name": "advertising",
   "title": "Advertising",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "description": "Integrate AdMob and embed ads to your application",
   "releaseNotes": "* Added a script for calling and debugging prebuild script",
   "icon": "server/assets/add-advertising-image.png",
-  "platform": "2.5.*",
+  "platform": "^3.0.0",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

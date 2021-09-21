@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { REHYDRATE } from 'redux-persist/constants';
-import { rssFeed } from 'shoutem.rss';
 import { storage } from '@shoutem/redux-io';
+import { rssFeed } from 'shoutem.rss';
 import {
   DOWNLOADED_EPISODE_ADDED,
   DOWNLOADED_EPISODE_REMOVED,

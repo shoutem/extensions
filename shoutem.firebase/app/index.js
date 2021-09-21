@@ -1,19 +1,18 @@
-import { Platform } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
+import { Platform } from 'react-native';
 import {
   NotificationHandlers,
   Firebase,
-  handleNotificationReceivedBackground,
   handlePendingNotification,
+  handleNotificationReceivedBackground,
 } from './services';
 
 export { appDidFinishLaunching } from './app';
 export { NotificationHandlers, Firebase, handlePendingNotification };
+export { consumeNotification, reducer, middleware } from './redux';
 
-messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  if (Platform.OS === 'ios') {
-    return;
-  }
-
-  handleNotificationReceivedBackground(remoteMessage);
-});
+if (Platform.OS !== 'ios') {
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+    handleNotificationReceivedBackground(remoteMessage);
+  });
+}

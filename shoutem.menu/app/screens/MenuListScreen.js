@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
 import { CmsListScreen } from 'shoutem.cms';
 import { navigateTo } from 'shoutem.navigation';
@@ -10,13 +10,12 @@ import { ext } from '../const';
 export class MenuListScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    navigateTo: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {
     super(props, context);
-    this.openDetailsScreen = this.openDetailsScreen.bind(this);
-    this.renderRow = this.renderRow.bind(this);
+
+    autoBindReact(this);
 
     this.state = {
       ...this.state,
@@ -25,15 +24,9 @@ export class MenuListScreen extends CmsListScreen {
   }
 
   openDetailsScreen(item) {
-    const { navigateTo } = this.props;
-    const route = {
-      screen: ext('MenuDetailsScreen'),
-      props: {
-        item,
-      },
-    };
-
-    navigateTo(route);
+    navigateTo(ext('MenuDetailsScreen'), {
+      item,
+    });
   }
 
   renderRow(item) {
@@ -51,9 +44,7 @@ export const mapStateToProps = CmsListScreen.createMapStateToProps(
   state => state[ext()].allMenuItems,
 );
 
-export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
-  navigateTo,
-});
+export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps();
 
 export default connect(
   mapStateToProps,

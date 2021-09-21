@@ -1,17 +1,19 @@
 {
   "name": "people",
   "title": "People",
-  "version": "2.5.2",
-  "platform": "2.5.*",
+  "version": "3.0.2",
+  "platform": "~3.0.1",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
-  "releaseNotes": "* Added CMS search feature",
+  "releaseNotes": "* Fixed Phone and Email buttons not opening respective apps on Android 11",
   "dependencies": [
-    "shoutem.cms"
+    "shoutem.cms",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.web-view"
   ],
-  "categories": [
-    "content"
-  ],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -26,10 +28,7 @@
       "icon": "theme://members.png",
       "name": "openPeopleListScreen",
       "screen": "@.PeopleListScreen",
-      "capabilities": [
-        "shoutem.cms.search",
-        "shoutem.cms.import-csv"
-      ],
+      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
@@ -37,6 +36,10 @@
           "parameters": {
             "schema": "@.People"
           }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
         }
       ],
       "settings": {
@@ -47,10 +50,15 @@
   ],
   "screens": [
     {
-      "name": "PeopleListScreen"
+      "name": "PeopleListScreen",
+      "title": "Compact list",
+      "image": "./server/assets/screens/compact-list.png",
+      "navigatesTo": ["@.PeopleDetailsScreen"]
     },
     {
-      "name": "PeopleDetailsScreen"
+      "name": "PeopleDetailsScreen",
+      "title": "Large square photo with transparent navbar",
+      "image": "./server/assets/screens/large-square-photo-clear-navbar-details.png"
     }
   ],
   "dataSchemas": [

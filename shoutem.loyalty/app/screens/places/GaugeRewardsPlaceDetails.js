@@ -1,4 +1,5 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { View } from '@shoutem/ui';
@@ -22,8 +23,7 @@ export class GaugeRewardsPlaceDetails extends PlaceDetails {
   constructor(props) {
     super(props);
 
-    this.renderPoints = this.renderPoints.bind(this);
-    this.renderRewardRow = this.renderRewardRow.bind(this);
+    autoBindReact(this);
   }
 
   renderPoints() {

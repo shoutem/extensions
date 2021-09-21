@@ -4,10 +4,8 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  Button,
   EmptyListImage,
   HorizontalPager,
-  Icon,
   ImageBackground,
   PageIndicators,
   Subtitle,
@@ -17,10 +15,10 @@ import {
 import { connectStyle } from '@shoutem/theme';
 import { getExtensionSettings } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-import { closeModal, NavigationBar } from 'shoutem.navigation';
+import { composeNavigationStyles, HeaderTextButton } from 'shoutem.navigation';
 import { ext } from '../const';
-import { setOnboardingCompleted } from '../redux'
-import { StyleOptions } from '../services'
+import { setOnboardingCompleted } from '../redux';
+import { StyleOptions } from '../services';
 
 export class OnboardingScreen extends PureComponent {
   static propTypes = {
@@ -39,35 +37,49 @@ export class OnboardingScreen extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({
+      ...this.getNavbarProps(),
+    });
+  }
+
+  componentDidUpdate() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({
+      ...this.getNavbarProps(),
+    });
+  }
+
   getNavbarProps() {
     const { currentPage } = this.state;
     const { pages } = this.props;
 
     const lastPage = _.size(pages) === currentPage + 1;
-    const navBarText = lastPage ? I18n.t(ext('continueButtonLabel')) : I18n.t(ext('skipButtonLabel'));
+    const navBarText = lastPage
+      ? I18n.t(ext('continueButtonLabel'))
+      : I18n.t(ext('skipButtonLabel'));
 
     return {
-      styleName: 'clear',
-      renderBackground: () => null,
-      renderRightComponent: () => (
-        <View styleName="container" virtual>
-          <Button onPress={this.closeModal}>
-            <Text>{navBarText}</Text>
-            <Icon name="right-arrow"></Icon>
-          </Button>
-        </View>
+      ...composeNavigationStyles(['clear']),
+      headerLeft: null,
+      headerRight: props => (
+        <HeaderTextButton
+          {...props}
+          onPress={this.closeModal}
+          title={navBarText}
+        />
       ),
+      title: '',
     };
   }
 
   closeModal() {
-    const { closeModal, setOnboardingCompleted } = this.props;
+    const { navigation, setOnboardingCompleted } = this.props;
 
-    /* When user skips or finishes the onboarding we set oboardingFinished to true, 
-    so it doesn't get displayed again */
-    setOnboardingCompleted()
-      .then(() => closeModal())
-      .catch(() => closeModal());
+    setOnboardingCompleted().then(navigation.goBack);
   }
 
   setIndex(index) {
@@ -91,16 +103,14 @@ export class OnboardingScreen extends PureComponent {
     const { style } = this.props;
     const { title, description, imageUrl, textPosition } = page;
 
-    const textPositionStyle = StyleOptions.resolveTextPositionStyle(textPosition, style);
+    const textPositionStyle = StyleOptions.resolveTextPositionStyle(
+      textPosition,
+      style,
+    );
 
     return (
-      <ImageBackground
-        source={{ uri: imageUrl }}
-        style={style.imageBackground}
-      >
-        <View
-          style={textPositionStyle}
-          styleName="fill-parent md-gutter">
+      <ImageBackground source={{ uri: imageUrl }} style={style.imageBackground}>
+        <View style={textPositionStyle} styleName="fill-parent md-gutter">
           <Subtitle numberOfLines={1} styleName="sm-gutter-bottom h-center">
             {title.toUpperCase()}
           </Subtitle>
@@ -117,12 +127,11 @@ export class OnboardingScreen extends PureComponent {
     const { pages } = this.props;
 
     if (_.isEmpty(pages)) {
-      return <EmptyListImage />
+      return <EmptyListImage />;
     }
 
     return (
       <View>
-        <NavigationBar {...this.getNavbarProps()} />
         <HorizontalPager
           bounces
           data={pages}
@@ -144,11 +153,9 @@ function mapStateToProps(state) {
     pages,
   };
 }
-const mapDispatchToProps = {
-  closeModal,
-  setOnboardingCompleted,
-};
+const mapDispatchToProps = { setOnboardingCompleted };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('OnboardingScreen'))(OnboardingScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('OnboardingScreen'))(OnboardingScreen));

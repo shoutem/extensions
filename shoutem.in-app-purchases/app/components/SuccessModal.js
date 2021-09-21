@@ -3,10 +3,7 @@ import React, { PureComponent } from 'react';
 import { View } from 'react-native';
 import Modal from 'react-native-modal';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Text,
-  Button,
-} from '@shoutem/ui';
+import { Text, Button } from '@shoutem/ui';
 import { ext } from '../const';
 
 class SuccessModal extends PureComponent {

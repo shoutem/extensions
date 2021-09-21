@@ -21,12 +21,11 @@ export {
   createSocialSettings,
   updateSocialSettings,
   initUserSettings,
+  blockUser,
+  unblockUser,
 } from './actions';
 
-export {
-  collectionStatusMiddleware,
-  authChangeMiddleware,
-} from './middleware';
+export { collectionStatusMiddleware, authChangeMiddleware } from './middleware';
 
 export { actions, selectors };
 

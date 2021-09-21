@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-community/async-storage';
 import _ from 'lodash';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import { loadFavoritesSchemas, saveFavorite } from './redux';
 
@@ -14,10 +14,17 @@ const SETTINGS_ATTRIBUTE = 'favoritesSchemas';
  */
 function extractFavoritesSchemas(state) {
   const favoritesSchemaProp = `attributes.settings.${SETTINGS_ATTRIBUTE}`;
-  const shortcuts = _.filter(state['shoutem.application'].shortcuts, favoritesSchemaProp);
+  const shortcuts = _.filter(
+    state['shoutem.application'].shortcuts,
+    favoritesSchemaProp,
+  );
   const schemas = _.uniq(_.flatMap(shortcuts, favoritesSchemaProp));
 
-  return _.reduce(schemas, (result, schema) => _.set(result, [schema], true), {});
+  return _.reduce(
+    schemas,
+    (result, schema) => _.set(result, [schema], true),
+    {},
+  );
 }
 
 /**
@@ -31,7 +38,7 @@ function getFavorites(schemas, dispatch) {
   _.forEach(schemas, (value, schema) => {
     AsyncStorage.getItem(schema, (err, results) => {
       if (results) {
-        _.forEach(JSON.parse(results), (item) => {
+        _.forEach(JSON.parse(results), item => {
           dispatch(saveFavorite(item, schema));
         });
       }

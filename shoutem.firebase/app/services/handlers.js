@@ -1,8 +1,10 @@
 import _ from 'lodash';
+import { getNavInitialized } from 'shoutem.navigation';
+import { queueNotification } from '../redux';
 
-let APNSTokenReceivedHandlers = {};
-let FCMTokenReceivedhandlers = {};
-let notificationReceivedHandlers = {};
+const APNSTokenReceivedHandlers = {};
+const FCMTokenReceivedhandlers = {};
+const notificationReceivedHandlers = {};
 
 function collectHandlers(targetEvent) {
   return _.reduce(
@@ -43,7 +45,10 @@ function registerNotificationReceivedHandlers(notificationHandlers) {
   const handlers = _.get(notificationHandlers, 'notificationHandlers');
 
   if (extensionOwner && handlers) {
-    notificationReceivedHandlers[extensionOwner] = handlers;
+    notificationReceivedHandlers[extensionOwner] = {
+      ...notificationReceivedHandlers[extensionOwner],
+      ...handlers,
+    };
   }
 }
 
@@ -53,6 +58,12 @@ export function handleFCMTokenReceived(token, dispatch) {
 
 export function handleAPNSTokenReceived(token, dispatch) {
   _.forEach(APNSTokenReceivedHandlers, handler => handler(token, dispatch));
+}
+
+export function handleNotificationConsumed(notification, dispatch) {
+  const mappedHandlers = collectHandlers('onConsumeNotification');
+
+  _.forEach(mappedHandlers, handler => handler(notification, dispatch));
 }
 
 export function handleNotificationReceivedBackground(notification, dispatch) {
@@ -67,8 +78,22 @@ export function handleNotificationReceivedForeground(notification, dispatch) {
   _.forEach(mappedHandlers, handler => handler(notification, dispatch));
 }
 
-export function handleNotificationTapped(notification, dispatch) {
+export function handleNotificationTapped(notification, store) {
+  const state = store.getState();
+  const navInitialized = getNavInitialized(state);
+
+  if (!navInitialized) {
+    store.dispatch(queueNotification(notification));
+    return;
+  }
+
   const mappedHandlers = collectHandlers('onNotificationTapped');
+
+  _.forEach(mappedHandlers, handler => handler(notification, store.dispatch));
+}
+
+export function handleNotification(notification, dispatch) {
+  const mappedHandlers = collectHandlers('onNotification');
 
   _.forEach(mappedHandlers, handler => handler(notification, dispatch));
 }

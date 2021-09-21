@@ -8,7 +8,7 @@ import {
   checkNotifications,
   openSettings,
   RESULTS,
-} from 'react-native-permissions';
+} from 'shoutem.permissions';
 
 import {
   Divider,
@@ -24,16 +24,10 @@ import { connectStyle } from '@shoutem/theme';
 
 import { I18n } from 'shoutem.i18n';
 import { isProduction } from 'shoutem.application';
-import { Firebase } from 'shoutem.firebase'
-import { NavigationBar } from 'shoutem.navigation';
+import { Firebase } from 'shoutem.firebase';
 import { selectPushNotificationGroups } from 'shoutem.push-notifications';
-
-import { pushGroupShape } from '../components/shapes';
-import {
-  fetchGroups,
-  invalidateNotifications,
-} from '../redux';
-import { ext, GROUP_PREFIX } from '../const';
+import { fetchGroups, invalidateNotifications } from '../redux';
+import { ext, pushGroupShape, GROUP_PREFIX } from '../const';
 
 const { arrayOf, func, string } = PropTypes;
 
@@ -75,9 +69,13 @@ export class PushGroupsScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { fetchGroups } = this.props;
+    const { fetchGroups, navigation } = this.props;
 
     fetchGroups();
+
+    navigation.setOptions({
+      title: I18n.t(ext('pushGroupsSettingsNavBarTitle')),
+    });
 
     // Push groups and notifications are not enabled when there are no certificates set up.
     // They are usually set up only in production environments
@@ -116,7 +114,10 @@ export class PushGroupsScreen extends PureComponent {
       I18n.t(ext('notificationPermissionsAlertTitle')),
       I18n.t(ext('notificationPermissionsAlertMessage')),
       [
-        { text: I18n.t(ext('notificationPermissionsSettings')), onPress: this.handleOpenSettingsPress },
+        {
+          text: I18n.t(ext('notificationPermissionsSettings')),
+          onPress: this.handleOpenSettingsPress,
+        },
         { text: I18n.t(ext('notificationPermissionsCancel')) },
       ],
     );
@@ -126,10 +127,10 @@ export class PushGroupsScreen extends PureComponent {
     const { areNotificationsEnabled } = this.state;
 
     /**
-    * When the user, who initially had disabled notifications, pulls the app from background to foreground, 
-    * we check if notifications are enabled in the meantime and if they are - we obtain FCM token.
-    * This covers scenarios when user navigates to device Settings, enables notifications and returns back to the app. 
-    */
+     * When the user, who initially had disabled notifications, pulls the app from background to foreground,
+     * we check if notifications are enabled in the meantime and if they are - we obtain FCM token.
+     * This covers scenarios when user navigates to device Settings, enables notifications and returns back to the app.
+     */
     if (appState === 'active' && !areNotificationsEnabled) {
       checkNotifications().then(({ status }) => {
         if (status === RESULTS.GRANTED) {
@@ -141,14 +142,16 @@ export class PushGroupsScreen extends PureComponent {
 
   // Checks if notifications are curently disabled and opens "Go to Settings" pop up
   checkIfNotificationsAreEnabled() {
-    checkNotifications().then(({ status }) => {
-      if (status === RESULTS.BLOCKED) {
-        this.showSuggestionToEnableNotifications();
-        this.setState({ areNotificationsEnabled: false });
-      }
-    }).catch((error) => {
-      console.log('Check push notification permissions failed:', error);
-    });
+    checkNotifications()
+      .then(({ status }) => {
+        if (status === RESULTS.BLOCKED) {
+          this.showSuggestionToEnableNotifications();
+          this.setState({ areNotificationsEnabled: false });
+        }
+      })
+      .catch(error => {
+        console.log('Check push notification permissions failed:', error);
+      });
   }
 
   renderRow(group) {
@@ -163,7 +166,9 @@ export class PushGroupsScreen extends PureComponent {
           <Subtitle>{name}</Subtitle>
           <Switch
             value={_.includes(selectedGroups, prefixedTag)}
-            onValueChange={value => this.onToggleGroupSubscription(prefixedTag, value)}
+            onValueChange={value =>
+              this.onToggleGroupSubscription(prefixedTag, value)
+            }
           />
         </Row>
         <Divider styleName="line" />
@@ -180,14 +185,12 @@ export class PushGroupsScreen extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar title={I18n.t(ext('pushGroupsSettingsNavBarTitle'))} />
         <View styleName="md-gutter solid">
-          <Subtitle styleName="h-center">{I18n.t(ext('subscribeToPushGroups'))}</Subtitle>
+          <Subtitle styleName="h-center">
+            {I18n.t(ext('subscribeToPushGroups'))}
+          </Subtitle>
         </View>
-        <ListView
-          data={[...groups]}
-          renderRow={this.renderRow}
-        />
+        <ListView data={[...groups]} renderRow={this.renderRow} />
       </Screen>
     );
   }
@@ -205,6 +208,7 @@ const mapDispatchToProps = {
   obtainFCMToken: Firebase.obtainFCMToken,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('PushGroupsListScreen'))(PushGroupsScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('PushGroupsListScreen'))(PushGroupsScreen));

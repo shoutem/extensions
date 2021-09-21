@@ -1,23 +1,22 @@
 import React from 'react';
-import { LayoutAnimation, Alert } from 'react-native';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { LayoutAnimation, Alert } from 'react-native';
 import { connect } from 'react-redux';
+import { find, isBusy, isInitialized, getCollection } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { ListView, Screen } from '@shoutem/ui';
+import { getExtensionSettings } from 'shoutem.application';
 import { loginRequired } from 'shoutem.auth';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
-import { find, isBusy, isInitialized, getCollection } from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
-import { Button, ListView, Screen, Text, View } from '@shoutem/ui';
+import { getRouteParams, HeaderTextButton } from 'shoutem.navigation';
 import MapList from '../../components/MapList';
 import PlaceIconView from '../../components/PlaceIconView';
 import { refreshCardState } from '../../services';
 import { ext } from '../../const';
-
-/* eslint-disable class-methods-use-this, no-undef, react/forbid-prop-types */
-
-const { func, object } = PropTypes;
+import NoProgramScreen from '../NoProgramScreen';
 
 /**
  * A base screen for displaying a list of loyalty places.
@@ -26,20 +25,15 @@ export class PlacesList extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
     // A dictionary of card states with location as the key
-    cardStatesByLocation: object,
+    cardStatesByLocation: PropTypes.object,
     // Refreshes card state when it changes after a transaction
-    refreshCardState: func,
+    refreshCardState: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
 
-    this.renderRow = this.renderRow.bind(this);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(
-      this,
-    );
-    this.toggleMapView = this.toggleMapView.bind(this);
+    autoBindReact(this);
 
     this.state = {
       ...this.state,
@@ -50,7 +44,11 @@ export class PlacesList extends CmsListScreen {
   }
 
   componentDidMount() {
-    const { refreshCardState } = this.props;
+    const { navigation, programId, refreshCardState } = this.props;
+
+    navigation.setOptions({
+      ...this.getNavBarProps(),
+    });
 
     if (!this.state.schema) {
       throw Error(
@@ -59,13 +57,19 @@ export class PlacesList extends CmsListScreen {
       );
     }
 
-    super.refreshInvalidContent(this.props, true);
-    refreshCardState();
+    if (programId) {
+      super.refreshInvalidContent(this.props, true);
+      refreshCardState();
+    }
   }
 
   refreshData() {
-    super.refreshData();
-    refreshCardState();
+    const { programId } = this.props;
+
+    if (programId) {
+      super.refreshData();
+      refreshCardState();
+    }
   }
 
   fetchData(options) {
@@ -80,18 +84,18 @@ export class PlacesList extends CmsListScreen {
     this.setState({ mapView: !mapView });
   }
 
-  renderRightNavBarComponent() {
+  renderRightNavBarComponent(props) {
     const { mapView } = this.state;
     const actionText = mapView
       ? I18n.t('shoutem.cms.navBarListViewButton')
       : I18n.t('shoutem.cms.navBarMapViewButton');
 
     return (
-      <View styleName="container md-gutter-right" virtual>
-        <Button onPress={this.toggleMapView} styleName="tight">
-          <Text>{actionText}</Text>
-        </Button>
-      </View>
+      <HeaderTextButton
+        {...props}
+        onPress={this.toggleMapView}
+        title={actionText}
+      />
     );
   }
 
@@ -113,7 +117,7 @@ export class PlacesList extends CmsListScreen {
   getNavBarProps() {
     return {
       ...super.getNavBarProps(),
-      renderRightComponent: () => this.renderRightNavBarComponent(),
+      headerRight: this.renderRightNavBarComponent,
     };
   }
 
@@ -159,12 +163,15 @@ export class PlacesList extends CmsListScreen {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, navigation, programId } = this.props;
     const { renderCategoriesInline } = this.state;
+
+    if (!programId) {
+      return <NoProgramScreen navigation={navigation} />;
+    }
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
         {renderCategoriesInline
           ? this.renderCategoriesDropDown('horizontal')
           : null}
@@ -176,12 +183,16 @@ export class PlacesList extends CmsListScreen {
 
 export const mapStateToProps = (state, ownProps) => {
   const { allCardStates, allLocations, permissionStatus } = state[ext()];
+  const { shortcut } = getRouteParams(ownProps);
   const placeRewardsParentCategoryId = _.get(
-    ownProps,
-    'shortcut.settings.cmsCategory.id',
+    shortcut,
+    'settings.cmsCategory.id',
   );
 
   const cardStates = getCollection(allCardStates, state);
+
+  const extensionSettings = getExtensionSettings(state, ext());
+  const programId = _.get(extensionSettings, 'program.id');
 
   return {
     ...CmsListScreen.createMapStateToProps(() => allLocations)(state, ownProps),
@@ -189,6 +200,7 @@ export const mapStateToProps = (state, ownProps) => {
     cardStatesByLocation: _.keyBy(cardStates, 'location'),
     permissionStatus,
     placeRewardsParentCategoryId,
+    programId,
   };
 };
 

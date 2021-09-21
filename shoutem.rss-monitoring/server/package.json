@@ -1,6 +1,6 @@
 {
   "name": "shoutem.rss-monitoring",
-  "version": "2.5.1",
+  "version": "3.0.0",
   "description": "Monitors RSS feed content and sends automated push notifications when new content is loaded.",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

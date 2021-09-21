@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
-
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
+import ProductsGrid from '../components/ProductsGrid';
 import {
   ProductsListScreen,
   mapStateToProps,
   mapDispatchToProps,
 } from './ProductsListScreen';
-
-import ProductsGrid from '../components/ProductsGrid';
 import { ext } from '../const';
 
 /**
@@ -20,7 +19,10 @@ class ProductsGridScreen extends ProductsListScreen {
   };
 
   getNavBarProps() {
-    return { ...super.getNavBarProps(), styleName: 'featured' };
+    return {
+      ...super.getNavBarProps(),
+      ...composeNavigationStyles(['featured']),
+    };
   }
 
   renderCollectionsPicker() {
@@ -29,16 +31,14 @@ class ProductsGridScreen extends ProductsListScreen {
 
   /* eslint-disable class-methods-use-this */
   renderProducts(collectionId) {
-    const { listType } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
+    const isTallGrid = screenSettings.listType === 'tall-grid';
 
-    const isTallGrid = listType === 'tall-grid';
-
-    return (
-      <ProductsGrid collectionId={collectionId} isTall={isTallGrid} />
-    );
+    return <ProductsGrid collectionId={collectionId} isTall={isTallGrid} />;
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ProductsGridScreen'), {})(ProductsGridScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('ProductsGridScreen'), {})(ProductsGridScreen));

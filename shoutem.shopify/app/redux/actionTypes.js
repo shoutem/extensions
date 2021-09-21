@@ -71,7 +71,8 @@ export const PRODUCTS_ERROR = 'shoutem.shopify.PRODUCTS_ERROR';
  @property payload { customer: { email: string, firstName: string, lastName: string,
     address: string, city: string, countryCode: string, zip: string }} Customer information
  */
-export const CUSTOMER_INFORMATION_UPDATED = 'shoutem.shopify.CUSTOMER_INFORMATION_UPDATED';
+export const CUSTOMER_INFORMATION_UPDATED =
+  'shoutem.shopify.CUSTOMER_INFORMATION_UPDATED';
 
 /**
  @typedef ORDER_NUMBER_LOADED

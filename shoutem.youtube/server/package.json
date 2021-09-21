@@ -1,6 +1,6 @@
 {
   "name": "shoutem.youtube",
-  "version": "2.5.2",
+  "version": "3.0.0",
   "description": "Show a video gallery from Youtube channel, user or playlist",
   "scripts": {
     "build": "npm run clean && cross-env NODE_ENV=production webpack --config ./bin/webpack/webpack.config.js",

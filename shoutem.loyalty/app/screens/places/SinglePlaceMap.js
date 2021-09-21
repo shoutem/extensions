@@ -1,40 +1,42 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import { Linking, Platform } from 'react-native';
 import PropTypes from 'prop-types';
-import { NavigationBar } from 'shoutem.navigation';
-import { View, Screen, TouchableOpacity, Icon } from '@shoutem/ui';
+import _ from 'lodash';
+import { Screen } from '@shoutem/ui';
+import { HeaderIconButton, getRouteParams } from 'shoutem.navigation';
 import MapList from '../../components/MapList';
 import { placeShape } from '../../components/shapes';
-
-const { string } = PropTypes;
 
 export default class SinglePlaceMap extends PureComponent {
   static propTypes = {
     // The place
     place: placeShape,
     // Screen title
-    title: string,
+    title: PropTypes.string,
   };
 
   constructor(props) {
     super(props);
-    this.openMapLink = this.openMapLink.bind(this);
-    this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(
-      this,
-    );
+
+    autoBindReact(this);
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({ ...this.getNavBarProps() });
   }
 
   getNavBarProps() {
-    const { title = '' } = this.props;
-
     return {
-      title: title.toUpperCase(),
-      renderRightComponent: this.renderRightNavBarComponent,
+      headerRight: this.renderRightNavBarComponent,
     };
   }
 
   openMapLink() {
-    const { location = {} } = this.props.place;
+    const { place } = getRouteParams(this.props);
+    const location = _.get(place, 'location', {});
     const { latitude, longitude, formattedAddress } = location;
 
     const resolvedScheme =
@@ -47,22 +49,21 @@ export default class SinglePlaceMap extends PureComponent {
     }
   }
 
-  renderRightNavBarComponent() {
+  renderRightNavBarComponent(props) {
     return (
-      <View styleName="container md-gutter-right">
-        <TouchableOpacity onPress={this.openMapLink}>
-          <Icon name="directions" />
-        </TouchableOpacity>
-      </View>
+      <HeaderIconButton
+        {...props}
+        onPress={this.openMapLink}
+        iconName="directions"
+      />
     );
   }
 
   render() {
-    const { place } = this.props;
+    const { place } = getRouteParams(this.props);
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
         <MapList places={[place]} selectedPlace={place} />
       </Screen>
     );

@@ -1,10 +1,10 @@
 {
   "name": "products",
-  "version": "2.5.2",
-  "platform": "2.5.*",
+  "version": "3.0.1",
+  "platform": "^3.0.0",
   "title": "Products",
   "description": "Show products with purchase link",
-  "releaseNotes": "* Added CMS search feature",
+  "releaseNotes": "* Added layout images",
   "categories": [
     "commerce"
   ],
@@ -18,7 +18,11 @@
   },
   "icon": "server/assets/add-products-image.png",
   "dependencies": [
-    "shoutem.cms"
+    "shoutem.cms",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.web-view"
   ],
   "shortcuts": [
     {
@@ -37,6 +41,10 @@
           "parameters": {
             "schema": "@.Products"
           }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
         }
       ],
       "settings": {
@@ -47,10 +55,19 @@
   ],
   "screens": [
     {
-      "name": "ProductsList"
+      "name": "ProductsList",
+      "title": "Compact list",
+      "image": "./server/assets/screens/compact-list.png",
+      "groupTitle": "Choose list layout",
+      "navigatesTo": [
+        "@.ProductDetails"
+      ]
     },
     {
-      "name": "ProductDetails"
+      "name": "ProductDetails",
+      "title": "Large photo clear navbar details",
+      "groupTitle": "Choose product details layout",
+      "image": "./server/assets/screens/large-photo-details.png"
     }
   ],
   "dataSchemas": [

@@ -1,10 +1,10 @@
 {
   "name": "podcast",
-  "version": "2.6.0",
-  "platform": "~2.5.4",
+  "version": "3.0.1",
+  "platform": "^3.0.0",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* Added ability to download episodes\n* Added large grid layouts",
+  "releaseNotes": "* Fixed app slowdown after podcast is played for more than 15 minutes\n* Add share functionality for rss feeds without link in episode info",
   "icon": "server/assets/extension-icon.png",
   "categories": ["media"],
   "repository": {

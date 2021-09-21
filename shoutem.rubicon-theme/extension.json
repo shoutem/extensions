@@ -1,10 +1,10 @@
 {
   "name": "rubicon-theme",
-  "version": "2.6.1",
-  "platform": "2.5.*",
+  "version": "3.0.5",
+  "platform": "^3.0.0",
   "type": "system",
   "title": "Rubicon Theme",
-  "releaseNotes": "* Adjusted styling for WebView extension",
+  "releaseNotes": "* Added style changes for Social extension",
   "description": "Rubicon theme",
   "icon": "server/assets/add-rubicon-theme-image.png",
   "categories": [],

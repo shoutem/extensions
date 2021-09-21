@@ -1,10 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
-
+import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { Image, View, Tile } from '@shoutem/ui';
-
 import { ext } from '../const';
 import { EventDetailsScreen, mapDispatchToProps } from './EventDetailsScreen';
 
@@ -39,6 +37,7 @@ class MediumEventDetailsScreen extends EventDetailsScreen {
   }
 }
 
-export default connect(undefined, mapDispatchToProps)(
-  connectStyle(ext('MediumEventDetailsScreen'))(MediumEventDetailsScreen),
-);
+export default connect(
+  undefined,
+  mapDispatchToProps,
+)(connectStyle(ext('MediumEventDetailsScreen'))(MediumEventDetailsScreen));

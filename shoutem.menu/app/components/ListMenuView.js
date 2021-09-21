@@ -1,53 +1,36 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   ImageBackground,
-  Subtitle,
-  Overlay,
   Title,
   Divider,
   TouchableOpacity,
   Tile,
 } from '@shoutem/ui';
+import { PriceOverlay } from './PriceOverlay';
 
-export default class ListMenuView extends PureComponent {
-  static propTypes = {
-    onPress: PropTypes.func,
-    item: PropTypes.object.isRequired,
-  };
+const ListMenuView = props => {
+  const { onPress, item } = props;
 
-  constructor(props) {
-    super(props);
-    this.onPress = this.onPress.bind(this);
-  }
+  return (
+    <TouchableOpacity key={item.id} onPress={() => onPress(item)}>
+      <ImageBackground
+        styleName="large-banner placeholder"
+        source={{ uri: item.image ? item.image.url : undefined }}
+      >
+        <Tile>
+          <Title styleName="md-gutter-bottom">{item.name.toUpperCase()}</Title>
+          <PriceOverlay price={item.price} />
+        </Tile>
+      </ImageBackground>
+      <Divider styleName="line" />
+    </TouchableOpacity>
+  );
+};
 
-  onPress() {
-    this.props.onPress(this.props.item);
-  }
+ListMenuView.propTypes = {
+  onPress: PropTypes.func,
+  item: PropTypes.object.isRequired,
+};
 
-  render() {
-    const { item } = this.props;
-    const price = item.price ? (
-      <Overlay>
-        <Subtitle styleName="sm-gutter-horizontal">{item.price}</Subtitle>
-      </Overlay>
-    ) : null;
-
-    return (
-      <TouchableOpacity key={item.id} onPress={this.onPress}>
-        <ImageBackground
-          styleName="large-banner placeholder"
-          source={{ uri: item.image ? item.image.url : undefined }}
-        >
-          <Tile>
-            <Title styleName="md-gutter-bottom">
-              {item.name.toUpperCase()}
-            </Title>
-            {price}
-          </Tile>
-        </ImageBackground>
-        <Divider styleName="line" />
-      </TouchableOpacity>
-    );
-  }
-}
+export default ListMenuView;

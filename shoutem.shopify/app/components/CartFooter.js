@@ -5,12 +5,7 @@ import { connect } from 'react-redux';
 import { I18n } from 'shoutem.i18n';
 
 import { connectStyle } from '@shoutem/theme';
-import {
-  Button,
-  Subtitle,
-  Text,
-  View,
-} from '@shoutem/ui';
+import { Button, Subtitle, Text, View } from '@shoutem/ui';
 
 import { getCartTotal } from '../redux/selectors';
 import { ext } from '../const';
@@ -19,9 +14,7 @@ import { shop as shopShape } from './shapes';
 const renderStatusRow = (cartTotal, { currency }) => (
   <View styleName="horizontal md-gutter space-between">
     <Subtitle>{I18n.t(ext('totalPrice'))}</Subtitle>
-    <Subtitle>
-      {`${currency}${cartTotal}`}
-    </Subtitle>
+    <Subtitle>{`${currency}${cartTotal}`}</Subtitle>
   </View>
 );
 

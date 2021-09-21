@@ -7,13 +7,19 @@ export function Banner(props) {
   return (
     <AdContext.Consumer>
       {context => {
-        const adUnitId = _.get(context, 'ads.bannerAdId');
+        const adUnitId = _.get(context, 'bannerAdId');
 
         if (!adUnitId) {
           return null;
         }
 
-        return <BannerAd size={BannerAdSize.SMART_BANNER} unitId={adUnitId} {...props} />;
+        return (
+          <BannerAd
+            size={BannerAdSize.SMART_BANNER}
+            unitId={adUnitId}
+            {...props}
+          />
+        );
       }}
     </AdContext.Consumer>
   );

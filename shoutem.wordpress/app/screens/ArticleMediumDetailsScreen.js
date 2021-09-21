@@ -1,13 +1,14 @@
 import React from 'react';
 import moment from 'moment';
 import he from 'he';
-import { NavigationBar } from 'shoutem.navigation';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
   Image,
   Screen,
   ScrollView,
+  ShareButton,
   SimpleHtml,
   Tile,
   Title,
@@ -23,15 +24,30 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
   };
 
   getNavBarProps() {
-    const { article } = this.props;
+    const { article } = getRouteParams(this.props);
+
+    const shareTitle = he.decode(article.title.rendered) || '';
+    const url = article.link;
+    const style = getLeadImageUrl(article)
+      ? {
+          ...composeNavigationStyles(['clear', 'solidify']),
+        }
+      : {
+          ...composeNavigationStyles(['noBorder']),
+        };
 
     return {
-      styleName: getLeadImageUrl(article) ? 'clear' : 'no-border',
-      animationName: getLeadImageUrl(article) ? 'solidify' : '',
-      share: {
-        title: he.decode(article.title.rendered),
-        link: article.link,
-      },
+      headerRight: props => (
+        <ShareButton
+          styleName="clear"
+          // eslint-disable-next-line react/prop-types
+          iconProps={{ style: props.tintColor }}
+          title={shareTitle}
+          url={url}
+        />
+      ),
+      title: '',
+      ...style,
     };
   }
 
@@ -46,7 +62,7 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
   }
 
   render() {
-    const { article } = this.props;
+    const { article } = getRouteParams(this.props);
 
     const resolvedTitle = he.decode(article.title.rendered);
     const imageUrl = getLeadImageUrl(article);
@@ -58,7 +74,6 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderImage(imageUrl)}
           <View styleName="solid">

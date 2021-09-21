@@ -1,5 +1,4 @@
 import React from 'react';
-import { LayoutAnimation } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
 import { Touchable } from '@shoutem/ui';
 import { ext } from '../const';
@@ -24,7 +23,6 @@ const mapPropsToStyleNames = (styleNames, props) => {
   const customStyleNames = [];
 
   if (props.selected) {
-    LayoutAnimation.easeInEaseOut();
     customStyleNames.push('selected');
   }
 
@@ -39,4 +37,8 @@ const mapPropsToStyleNames = (styleNames, props) => {
   return styleNames.concat(customStyleNames);
 };
 
-export default connectStyle(ext('TabBarItem'), undefined, mapPropsToStyleNames)(TabBarItem);
+export default connectStyle(
+  ext('TabBarItem'),
+  undefined,
+  mapPropsToStyleNames,
+)(TabBarItem);

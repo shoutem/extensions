@@ -1,8 +1,8 @@
-import { combineReducers } from 'redux';
-import { preventStateRehydration } from 'shoutem.redux';
 import _ from 'lodash';
-import { CATEGORIES_SCHEMA } from 'shoutem.cms';
+import { combineReducers } from 'redux';
 import { storage, collection } from '@shoutem/redux-io';
+import { CATEGORIES_SCHEMA } from 'shoutem.cms';
+import { preventStateRehydration } from 'shoutem.redux';
 import { OPEN_CATEGORY_ACTION, GO_BACK_ACTION } from './actions';
 import { QUESTIONS_SCHEMA } from './const';
 
@@ -20,7 +20,8 @@ const levelReducer = (state = initialState, action) => {
   }
 
   if (action.type === GO_BACK_ACTION) {
-    const categoryPath = _.size(state.categoryPath) > 1 ? _.dropRight(state.categoryPath) : [];
+    const categoryPath =
+      _.size(state.categoryPath) > 1 ? _.dropRight(state.categoryPath) : [];
     const activeCategory = _.last(categoryPath) || null;
 
     return { categoryPath, activeCategory };

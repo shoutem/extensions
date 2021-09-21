@@ -1,9 +1,10 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getExtensionSettings } from 'shoutem.application';
-import { navigateTo } from 'shoutem.navigation';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
 import { next, isBusy, isInitialized, shouldLoad } from '@shoutem/redux-io';
 import { ListView, Spinner } from '@shoutem/ui';
@@ -20,27 +21,22 @@ export class YoutubeVideosScreen extends RssListScreen {
 
   constructor(props, context) {
     super(props, context);
+
     this.state = {
       ...this.state,
       schema: YOUTUBE_VIDEOS_SCHEMA,
     };
-    this.openDetailsScreen = this.openDetailsScreen.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.renderData = this.renderData.bind(this);
+
+    autoBindReact(this);
   }
 
   openDetailsScreen(video) {
-    const { feedUrl, navigateTo } = this.props;
+    const { feedUrl } = this.props;
 
-    const route = {
-      screen: ext('YoutubeVideoDetailsScreen'),
-      props: {
-        video,
-        feedUrl,
-      },
-    };
-
-    navigateTo(route);
+    navigateTo(ext('YoutubeVideoDetailsScreen'), {
+      video,
+      feedUrl,
+    });
   }
 
   refreshData(prevProps) {
@@ -85,9 +81,10 @@ export class YoutubeVideosScreen extends RssListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const feedUrl = _.get(ownProps, 'shortcut.settings.feedUrl');
+  const routeParams = getRouteParams(ownProps);
+  const feedUrl = _.get(routeParams, 'shortcut.settings.feedUrl');
+  const sort = _.get(routeParams, 'shortcut.settings.sort');
   const { apiKey } = getExtensionSettings(state, ext());
-  const sort = _.get(ownProps, 'shortcut.settings.sort');
 
   return {
     feedUrl,
@@ -97,7 +94,7 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = { navigateTo, fetchFeed, next };
+export const mapDispatchToProps = { fetchFeed, next };
 
 export default connect(
   mapStateToProps,

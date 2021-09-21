@@ -1,17 +1,19 @@
 import _ from 'lodash';
 import { priorities, after, setPriority } from 'shoutem-core';
-import { getAppId, getActiveShortcut } from 'shoutem.application';
-import { getActiveRoute } from 'shoutem.navigation';
+import { getAppId } from 'shoutem.application';
+import { getCurrentRoute } from 'shoutem.navigation';
 import { EVENT, SCREEN_VIEW, isAnalyticsAction } from './redux';
 
 // Use to intercept analytics actions and provide more data to the action
 export const ANALYTICS_MIDDLEWARE_PRIORITY = priorities.NAVIGATION;
 // Use to intercept analytics actions and pass data to native SDK or server
-export const ANALYTICS_OUT_MIDDLEWARE_PRIORITY = after(ANALYTICS_MIDDLEWARE_PRIORITY);
+export const ANALYTICS_OUT_MIDDLEWARE_PRIORITY = after(
+  ANALYTICS_MIDDLEWARE_PRIORITY,
+);
 
 function getExtensionNameFromScreen(screen) {
   const extensionName = screen && _.slice(screen.split('.'), 0, 2);
-  return extensionName ? extensionName[0] : undefined;
+  return extensionName ? `${extensionName[0]}.${extensionName[1]}` : undefined;
 }
 
 /**
@@ -49,16 +51,15 @@ export function createScreenViewMiddleware(middleware) {
  * @param store
  * @returns {{appId: *, screen: V, shortcut: *}}
  */
-function getApplicationAnalyticsData(store) {
-  const state = store.getState();
-  const activeRoute = getActiveRoute(state);
+function getApplicationAnalyticsData() {
+  const activeRoute = getCurrentRoute();
 
-  const screen = activeRoute.screen;
-  const extension = getExtensionNameFromScreen(screen);
-  const shortcutId = (getActiveShortcut(state) || {}).id;
+  const screenName = activeRoute.name;
+  const extension = getExtensionNameFromScreen(screenName);
+  const shortcutId = (_.get(activeRoute, 'params.shortcut') || {}).id;
   const appId = `${getAppId()}`; // All GA dimensions values should be sent as strings
 
-  return { appId, extension, screen, shortcutId };
+  return { appId, extension, screen: screenName, shortcutId };
 }
 
 /**
@@ -66,10 +67,13 @@ function getApplicationAnalyticsData(store) {
  */
 const injectApplicationDataToAnalyticsAction = store => next => action => {
   if (isAnalyticsAction(action)) {
-    _.assign(action.payload, getApplicationAnalyticsData(store));
+    _.assign(action.payload, getApplicationAnalyticsData());
   }
   return next(action);
 };
-setPriority(injectApplicationDataToAnalyticsAction, ANALYTICS_MIDDLEWARE_PRIORITY);
+setPriority(
+  injectApplicationDataToAnalyticsAction,
+  ANALYTICS_MIDDLEWARE_PRIORITY,
+);
 
 export default [injectApplicationDataToAnalyticsAction];

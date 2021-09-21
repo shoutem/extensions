@@ -1,10 +1,9 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import moment from 'moment';
-import autoBindReact from 'auto-bind/react';
+import React from 'react';
 import _ from 'lodash';
+import moment from 'moment';
+import PropTypes from 'prop-types';
 import ActionSheet from 'react-native-action-sheet';
-
+import { I18n } from 'shoutem.i18n';
 import {
   View,
   Image,
@@ -15,37 +14,19 @@ import {
   Lightbox,
   dimensionRelativeToIphone,
 } from '@shoutem/ui';
-
-import { I18n } from 'shoutem.i18n';
-
-import { adaptSocialUserForProfileScreen } from '../services';
 import { ext } from '../const';
 import HtmlTextView from './HtmlTextView';
+import { adaptSocialUserForProfileScreen } from '../services';
 import { comment as commentShape } from './shapes';
 
-export default class CommentView extends PureComponent {
-  static propTypes = {
-    comment: commentShape.isRequired,
-    openProfile: PropTypes.func.isRequired,
-    deleteComment: PropTypes.func.isRequired,
-  };
-
-  constructor(props) {
-    super(props);
-
-    autoBindReact(this);
-  }
-
-  handleClickOnUser() {
-    const { comment, openProfile } = this.props;
+export default function CommentView({ comment, openProfile, deleteComment }) {
+  const handleClickOnUser = () => {
     const { user } = comment;
 
     openProfile(adaptSocialUserForProfileScreen(user));
-  }
+  };
 
-  renderStatusAttachments() {
-    const { comment } = this.props;
-
+  const renderStatusAttachments = () => {
     const { shoutem_attachments: attachments } = comment;
     const hasPicture = _.get(attachments, [0, 'type']) === 'picture';
 
@@ -56,17 +37,18 @@ export default class CommentView extends PureComponent {
     return (
       <Lightbox activeProps={{ styleName: 'preview' }}>
         <Image
-          style={{ width: dimensionRelativeToIphone(305), height: dimensionRelativeToIphone(163) }}
+          style={{
+            width: dimensionRelativeToIphone(305),
+            height: dimensionRelativeToIphone(163),
+          }}
           source={{ uri: attachments[0].url_large }}
         />
       </Lightbox>
     );
-  }
+  };
 
-  showActionSheet() {
-    const { comment, deleteComment } = this.props;
-
-    if (_.get(comment, 'deletable') !== 'yes'){
+  const showActionSheet = () => {
+    if (_.get(comment, 'deletable') !== 'yes') {
       return;
     }
 
@@ -79,40 +61,42 @@ export default class CommentView extends PureComponent {
         destructiveButtonIndex: 0,
         cancelButtonIndex: 1,
       },
-      (index) => {
-        switch (index) {
-          case 0:
-            deleteComment(comment);
+      index => {
+        if (index === 0) {
+          deleteComment(comment);
         }
-      }
+      },
     );
-  }
+  };
 
-  render() {
-    const { comment } = this.props;
+  // eslint-disable-next-line camelcase
+  const { user, created_at, text } = comment;
+  const profileImageUrl = user.profile_image_url;
 
-    const { user, created_at, text } = comment;
-    const profileImageUrl = user.profile_image_url;
-
-    return (
-      <TouchableOpacity onLongPress={this.showActionSheet}>
-        <Row>
-          <TouchableOpacity styleName="top" onPress={this.handleClickOnUser}>
-            <Image
-              styleName="small-avatar placeholder top"
-              source={{ uri: profileImageUrl || undefined }}
-            />
-          </TouchableOpacity>
-          <View styleName="vertical md-gutter-left">
-            <View styleName="horizontal space-between">
-              <Subtitle>{`${user.name}`}</Subtitle>
-              <Caption>{moment(created_at).fromNow()}</Caption>
-            </View>
-            <HtmlTextView text={text}/>
-            {this.renderStatusAttachments()}
+  return (
+    <TouchableOpacity onLongPress={showActionSheet}>
+      <Row>
+        <TouchableOpacity styleName="top" onPress={handleClickOnUser}>
+          <Image
+            styleName="small-avatar placeholder top"
+            source={{ uri: profileImageUrl || undefined }}
+          />
+        </TouchableOpacity>
+        <View styleName="vertical md-gutter-left">
+          <View styleName="horizontal space-between">
+            <Subtitle>{`${user.name}`}</Subtitle>
+            <Caption>{moment(created_at).fromNow()}</Caption>
           </View>
-        </Row>
-      </TouchableOpacity>
-    );
-  }
+          <HtmlTextView text={text} />
+          {renderStatusAttachments()}
+        </View>
+      </Row>
+    </TouchableOpacity>
+  );
 }
+
+CommentView.propTypes = {
+  comment: commentShape.isRequired,
+  openProfile: PropTypes.func.isRequired,
+  deleteComment: PropTypes.func.isRequired,
+};

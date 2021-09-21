@@ -1,6 +1,6 @@
 {
   "name": "shoutem.advertising",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "description": "Integrate AdMob and embed ads to your application",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

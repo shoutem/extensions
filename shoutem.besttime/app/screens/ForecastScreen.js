@@ -1,13 +1,18 @@
 import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { I18n } from 'shoutem.i18n';
-import { navigateTo, NavigationBar } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Icon, Screen, Spinner, Subtitle, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import {
+  composeNavigationStyles,
+  getRouteParams,
+  navigateTo,
+} from 'shoutem.navigation';
 import ForecastGraph from '../components/ForecastGraph';
 import OpenHours from '../components/OpenHours';
 import { ext } from '../const';
@@ -28,7 +33,7 @@ import {
 
 export class ForecastScreen extends PureComponent {
   static propTypes = {
-    placeId: PropTypes.string.isRequired,
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -38,7 +43,14 @@ export class ForecastScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { placeId, fetchGooglePlaceDetails } = this.props;
+    const { place, fetchGooglePlaceDetails, navigation } = this.props;
+    const { placeId } = getRouteParams(this.props);
+    const title = _.get(place, 'name', '');
+
+    navigation.setOptions({
+      ...composeNavigationStyles(['noBorder']),
+      title,
+    });
 
     clearGooglePlaceDetails();
     fetchGooglePlaceDetails(placeId);
@@ -70,14 +82,8 @@ export class ForecastScreen extends PureComponent {
   }
 
   openMapView() {
-    const { navigateTo, place } = this.props;
-
-    const route = {
-      screen: ext('MapScreen'),
-      props: { place },
-    };
-
-    navigateTo(route);
+    const { place } = this.props;
+    navigateTo(ext('MapScreen'), { place });
   }
 
   render() {
@@ -95,7 +101,6 @@ export class ForecastScreen extends PureComponent {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar title={place ? place.name : ''} styleName="no-border" />
         {place && !place.error && (
           <>
             <View styleName="horizontal v-center md-gutter">
@@ -165,7 +170,6 @@ export const mapDispatchToProps = dispatch =>
       fetchGooglePlaceDetails,
       fetchLiveForecast,
       fetchNewForecast,
-      navigateTo,
     },
     dispatch,
   );

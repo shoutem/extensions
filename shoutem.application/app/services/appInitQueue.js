@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-let initQueue = [];
+const initQueue = [];
 
 function formatInitialReducerState() {
   return _.reduce(
@@ -10,7 +10,7 @@ function formatInitialReducerState() {
       [extension]: false,
     }),
     {},
-  )
+  );
 }
 
 function addExtension(extensionName) {

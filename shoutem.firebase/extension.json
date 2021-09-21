@@ -1,13 +1,13 @@
 {
   "name": "firebase",
-  "version": "2.5.0",
-  "platform": "2.5.*",
+  "version": "3.0.0",
+  "platform": "^3.0.0",
   "type": "system",
   "skipClone": false,
   "title": "Firebase",
   "native": true,
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
-  "releaseNotes": "* Added a script for calling and debugging prebuild script",
+  "releaseNotes": "* Updated push notifications dependencies\n* Added local notifications feature",
   "icon": "server/assets/add-firebase-image.png",
   "i18n": {
     "locale": "en",

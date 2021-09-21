@@ -1,47 +1,27 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
-
-import {
-  Button,
-  Icon,
-  Text,
-} from '@shoutem/ui';
-
 import { I18n } from 'shoutem.i18n';
-
+import { Button, Icon, Text } from '@shoutem/ui';
 import { ext } from '../const';
 import { post as postShape } from './shapes';
 
-const { func } = PropTypes;
-
-export default class CommentButton extends PureComponent {
-  static propTypes = {
-    status: postShape.isRequired,
-    addComment: func.isRequired,
+export default function CommentButton({ status, addComment }) {
+  const handleAddCommentPress = () => {
+    addComment(status.id);
   };
 
-  constructor(props) {
-    super(props);
-
-    autoBindReact(this);
-  }
-
-  commentStatus() {
-    const { status, addComment } = this.props;
-
-    addComment(status.id);
-  }
-
-  render() {
-    return (
-      <Button
-        styleName="full-width medium-height secondary"
-        onPress={this.commentStatus}
-      >
-        <Icon name="comment" />
-        <Text>{I18n.t(ext('commentButton'))}</Text>
-      </Button>
-    );
-  }
+  return (
+    <Button
+      styleName="full-width medium-height secondary"
+      onPress={handleAddCommentPress}
+    >
+      <Icon name="comment" />
+      <Text>{I18n.t(ext('commentButton'))}</Text>
+    </Button>
+  );
 }
+
+CommentButton.propTypes = {
+  status: postShape.isRequired,
+  addComment: PropTypes.func.isRequired,
+};

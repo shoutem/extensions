@@ -7,6 +7,7 @@ const AUDIENCE_LABEL = `${key}.audience-label`;
 const DELIVERY_LABEL = `${key}.delivery-label`;
 const TITLE_LABEL = `${key}.title-label`;
 const MESSAGE_LABEL = `${key}.message-label`;
+const NUMBER_OF_MESSAGES_LABEL = `${key}.number-of-messages-label`;
 const BUTTON_CANCEL = `${key}.button-cancel`;
 
 export default {
@@ -17,5 +18,6 @@ export default {
   DELIVERY_LABEL,
   TITLE_LABEL,
   MESSAGE_LABEL,
+  NUMBER_OF_MESSAGES_LABEL,
   BUTTON_CANCEL,
 };

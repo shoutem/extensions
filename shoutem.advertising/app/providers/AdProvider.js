@@ -22,24 +22,22 @@ export class AdProvider extends PureComponent {
     const { context } = this.props;
     const { context: prevContext } = prevProps;
 
-    const ads = _.get(context, 'ads');
-    const interstitialAdId = _.get(context, 'ads.interstitialAdId');
-    const prevAds = _.get(prevContext, 'ads');
+    const interstitialAdId = _.get(context, 'interstitialAdId');
 
-    if (!ads || !interstitialAdId) {
+    if (!context || !interstitialAdId) {
       return;
     }
 
-    const { keywords } = ads;
+    const { keywords } = context;
 
-    if (!prevAds && ads) {
+    if (!prevContext && context) {
       const parsedKeywords = _.isEmpty(keywords) ? [] : _.split(keywords, ',');
       this.interstitial = InterstitialAd.createForAdRequest(interstitialAdId, {
         requestNonPersonalizedAdsOnly: true,
         keywords: parsedKeywords,
       });
 
-      this.removeAdListener = this.interstitial.onAdEvent((type) => {
+      this.removeAdListener = this.interstitial.onAdEvent(type => {
         if (type === AdEventType.LOADED) {
           this.interstitial.show();
         }
@@ -60,9 +58,7 @@ export class AdProvider extends PureComponent {
 
     return (
       <AdContext.Provider value={context}>
-        <View style={styles.container}>
-          {children}
-        </View>
+        <View style={styles.container}>{children}</View>
       </AdContext.Provider>
     );
   }

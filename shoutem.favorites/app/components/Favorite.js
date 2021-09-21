@@ -1,21 +1,14 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LayoutAnimation } from 'react-native';
 import { bindActionCreators } from 'redux';
-
-import { Button, Icon } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-
+import { Button, Icon } from '@shoutem/ui';
 import { ext } from '../const';
-import {
-  isFavoriteItem,
-  isFavoritesSchema,
-} from '../helpers';
-import {
-  saveFavorite,
-  deleteFavorite,
-} from '../redux';
+import { isFavoriteItem, isFavoritesSchema } from '../helpers';
+import { saveFavorite, deleteFavorite } from '../redux';
 
 export class Favorite extends PureComponent {
   static propTypes = {
@@ -27,16 +20,23 @@ export class Favorite extends PureComponent {
     schema: PropTypes.string.isRequired,
     children: PropTypes.any,
     hasFavorites: PropTypes.bool,
+    iconProps: PropTypes.object,
   };
 
   constructor(props) {
     super(props);
 
-    this.toggleFavorite = this.toggleFavorite.bind(this);
+    autoBindReact(this);
   }
 
   toggleFavorite() {
-    const { item, saveFavorite, isFavorite, deleteFavorite, schema } = this.props;
+    const {
+      item,
+      saveFavorite,
+      isFavorite,
+      deleteFavorite,
+      schema,
+    } = this.props;
 
     if (isFavorite) {
       LayoutAnimation.easeInEaseOut();
@@ -48,7 +48,7 @@ export class Favorite extends PureComponent {
   }
 
   render() {
-    const { navBarButton, isFavorite, hasFavorites } = this.props;
+    const { navBarButton, isFavorite, hasFavorites, iconProps } = this.props;
 
     const type = isFavorite ? 'add-to-favorites-on' : 'add-to-favorites-off';
     const styleName = navBarButton ? 'clear' : 'clear tight';
@@ -58,11 +58,8 @@ export class Favorite extends PureComponent {
     }
 
     return (
-      <Button
-        styleName={styleName}
-        onPress={this.toggleFavorite}
-      >
-        {this.props.children || <Icon name={type} />}
+      <Button styleName={styleName} onPress={this.toggleFavorite}>
+        {this.props.children || <Icon name={type} {...iconProps} />}
       </Button>
     );
   }
@@ -77,16 +74,20 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = dispatch => (
+export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       saveFavorite,
       deleteFavorite,
     },
     dispatch,
-  )
-);
+  );
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('Favorite'), undefined, undefined, { virtual: true })(Favorite)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(
+  connectStyle(ext('Favorite'), undefined, undefined, { virtual: true })(
+    Favorite,
+  ),
 );

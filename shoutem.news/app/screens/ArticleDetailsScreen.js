@@ -1,36 +1,112 @@
 import React, { PureComponent } from 'react';
-import moment from 'moment';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import moment from 'moment';
 import PropTypes from 'prop-types';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
-  ScrollView,
-  Screen,
-  Title,
   Caption,
+  HorizontalPager,
   Image,
-  Tile,
+  PageIndicators,
+  Screen,
+  ScrollView,
+  ShareButton,
   SimpleHtml,
+  Tile,
+  Title,
   View,
 } from '@shoutem/ui';
-import { NavigationBar } from 'shoutem.navigation';
 import { NextArticle } from '../components/NextArticle';
+import { getArticleImages } from '../services/images';
 import { ext } from '../const';
 
 export class ArticleDetailsScreen extends PureComponent {
   static propTypes = {
-    // The news article to display
-    article: PropTypes.object.isRequired,
-    // The next article, if this article is defined, the
-    // up next view will be displayed on this screen
-    nextArticle: PropTypes.object,
-    // A function that will open the given article, this
-    // function is required to show the up next view
-    openArticle: PropTypes.func,
+    navigation: PropTypes.object.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+
+    autoBindReact(this);
+
+    const { article } = getRouteParams(props);
+
+    this.state = {
+      images: getArticleImages(article),
+      selectedImageIndex: 0,
+    };
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
+  }
+
+  getNavBarProps() {
+    const { article } = getRouteParams(this.props);
+
+    const title = article.title || '';
+    const headerRight = props => {
+      if (!article.link) {
+        return null;
+      }
+
+      return (
+        <ShareButton
+          // eslint-disable-next-line react/prop-types
+          iconProps={{ style: props.tintColor }}
+          styleName="clear"
+          title={article.title}
+          url={article.link}
+        />
+      );
+    };
+
+    if (this.isNavigationBarClear()) {
+      if (article.image) {
+        // If navigation bar is clear and image exists, navigation bar should be initially clear
+        // but after scrolling down navigation bar should appear (solidify animation)
+        return {
+          ...composeNavigationStyles(['clear', 'solidify']),
+          headerRight,
+          title,
+        };
+      }
+      // If navigation bar is clear, but there is no image, navigation bar should be set to solid,
+      // but boxing animation should be applied so title appears after scrolling down
+
+      return {
+        ...composeNavigationStyles(['boxing']),
+        headerRight,
+        title,
+      };
+    }
+
+    return {
+      headerRight: props => (
+        <ShareButton
+          // eslint-disable-next-line react/prop-types
+          iconProps={{ style: props.tintColor }}
+          styleName="clear"
+          title={article.title}
+          url={article.link}
+        />
+      ),
+      title,
+    };
+  }
+
+  isNavigationBarClear() {
+    const { screenSettings } = getRouteParams(this.props);
+    return screenSettings.navigationBarStyle === 'clear';
+  }
+
   renderUpNext() {
-    const { nextArticle, openArticle } = this.props;
+    const { nextArticle, openArticle } = getRouteParams(this.props);
 
     if (nextArticle && openArticle) {
       return (
@@ -44,29 +120,60 @@ export class ArticleDetailsScreen extends PureComponent {
     return null;
   }
 
-  isNavigationBarClear() {
-    const { navigationBarStyle } = this.props;
+  setSelectedImageIndex(selectedImageIndex) {
+    this.setState({ selectedImageIndex });
+  }
 
-    return navigationBarStyle === 'clear';
+  renderGalleryOverlay() {
+    const { images, selectedImageIndex } = this.state;
+    const imageCount = _.size(images);
+
+    if (imageCount <= 1) {
+      return null;
+    }
+
+    return (
+      <PageIndicators
+        activeIndex={selectedImageIndex}
+        count={imageCount}
+        styleName="overlay-bottom"
+      />
+    );
+  }
+
+  renderImageGalleryPage(image) {
+    return (
+      <Image
+        styleName="large"
+        source={{ uri: image }}
+        animationName="hero"
+      />
+    );
   }
 
   renderImage() {
-    const { article } = this.props;
+    const { images, selectedImageIndex } = this.state;
 
-    if (article.image) {
-      return (
-        <Image
-          styleName="large"
-          source={{ uri: _.get(article, 'image.url') }}
-          animationName="hero"
-        />
-      );
+    if (_.isEmpty(images)) {
+      return null;
     }
-    return null;
+
+    return (
+      <HorizontalPager
+        bounces
+        data={images}
+        onIndexSelected={this.setSelectedImageIndex}
+        renderOverlay={this.renderGalleryOverlay}
+        renderPage={this.renderImageGalleryPage}
+        selectedIndex={selectedImageIndex}
+        surroundingPagesToLoad={1}
+      />
+    );
+
   }
 
   renderHeader() {
-    const { article } = this.props;
+    const { article } = getRouteParams(this.props);
 
     return (
       <Tile styleName="text-centric md-gutter-bottom">
@@ -82,41 +189,17 @@ export class ArticleDetailsScreen extends PureComponent {
   }
 
   render() {
-    const { article } = this.props;
-
-    let styleName = '';
-    let animationName = '';
-
-    if (this.isNavigationBarClear()) {
-      if (article.image) {
-        // If navigation bar is clear and image exists, navigation bar should be initially clear
-        // but after scrolling down navigation bar should appear (solidify animation)
-        styleName = 'clear';
-        animationName = 'solidify';
-      } else {
-        // If navigation bar is clear, but there is no image, navigation bar should be set to solid,
-        // but boxing animation should be applied so title appears after scrolling down
-        animationName = 'boxing';
-      }
-    }
+    const { style } = this.props;
+    const { article } = getRouteParams(this.props);
 
     return (
       <Screen styleName="paper">
-        <NavigationBar
-          styleName={styleName}
-          animationName={animationName}
-          title={article.title}
-          share={{
-            link: article.link,
-            title: article.title,
-          }}
-        />
         <ScrollView>
           {this.renderImage()}
           <View styleName="solid">
             {this.renderHeader()}
             <View styleName="sm-gutter-horizontal md-gutter-vertical">
-              <SimpleHtml body={article.body} />
+              <SimpleHtml body={article.body} style={style.outerPadding} />
             </View>
             {this.renderUpNext()}
           </View>

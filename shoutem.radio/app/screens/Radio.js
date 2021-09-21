@@ -1,22 +1,7 @@
 import React, { PureComponent } from 'react';
-import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { Dimensions, PixelRatio } from 'react-native';
-import { connect } from 'react-redux';
-
-import {
-  STATE_NONE, // 0 idle
-  STATE_STOPPED, // 1 idle
-  STATE_PAUSED, // 2 paused
-  STATE_PLAYING, // 3 playing
-  STATE_READY, // undefined ready
-  STATE_BUFFERING, // 6 buffering
-  STATE_CONNECTING, // 8 connecting
-} from 'shoutem.audio';
-import { getActiveShortcut } from 'shoutem.application';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   EmptyStateView,
@@ -29,10 +14,25 @@ import {
   Tile,
   View,
   NAVIGATION_HEADER_HEIGHT,
+  ShareButton,
 } from '@shoutem/ui';
-
-import getWeServUrl from '../services/getWeServUrl';
+import {
+  STATE_NONE, // 0 idle
+  STATE_STOPPED, // 1 idle
+  STATE_PAUSED, // 2 paused
+  STATE_PLAYING, // 3 playing
+  STATE_READY, // undefined ready
+  STATE_BUFFERING, // 6 buffering
+  STATE_CONNECTING, // 8 connecting
+} from 'shoutem.audio';
+import { I18n } from 'shoutem.i18n';
+import {
+  composeNavigationStyles,
+  getCurrentRoute,
+  getRouteParams,
+} from 'shoutem.navigation';
 import RadioPlayer from '../components/RadioPlayer';
+import getWeServUrl from '../services/getWeServUrl';
 import { ext } from '../const';
 
 const overlayStyle = { marginBottom: 0 };
@@ -59,20 +59,51 @@ function renderPlaceholderView() {
 
 export class Radio extends PureComponent {
   static propTypes = {
-    shortcut: PropTypes.object,
     style: PropTypes.any,
+    navigation: PropTypes.object,
   };
 
   constructor(props) {
     super(props);
 
-    this.resolveStatusText = this.resolveStatusText.bind(this);
-    this.shouldResetPlayer = this.shouldResetPlayer.bind(this);
-    this.handleUpdatePlaybackState = this.handleUpdatePlaybackState.bind(this);
+    autoBindReact(this);
 
     this.state = {
       playbackState: STATE_STOPPED,
     };
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+    const { shortcut } = getRouteParams(this.props);
+    const {
+      settings: { navbarTitle: title = '' },
+    } = shortcut;
+
+    navigation.setOptions({
+      ...composeNavigationStyles(['clear']),
+      headerRight: this.renderShare,
+      title,
+    });
+  }
+
+  renderShare() {
+    const { shortcut } = getRouteParams(this.props);
+    const {
+      settings: { streamTitle, streamUrl, showSharing },
+    } = shortcut;
+
+    if (!showSharing) {
+      return null;
+    }
+    return (
+      <ShareButton
+        message={`Stream address: ${streamUrl}`}
+        styleName="clear"
+        title={`Currently listening to ${streamTitle}`}
+        url={streamUrl}
+      />
+    );
   }
 
   handleUpdatePlaybackState(playbackState) {
@@ -96,41 +127,28 @@ export class Radio extends PureComponent {
   }
 
   shouldResetPlayer() {
-    const shortcutId = _.get(this.props, 'shortcut.id');
-    const activeShortcutId = _.get(this.props, 'activeShortcut.id');
-    const activeCanonicalName = _.get(
-      this.props,
-      'activeShortcut.canonicalName',
-    );
-    const isActiveShortcutRadio = activeCanonicalName === ext('Radio');
+    const { route } = this.props;
+    const activeRoute = getCurrentRoute();
 
-    return isActiveShortcutRadio && shortcutId !== activeShortcutId;
+    if (activeRoute) {
+      const isActiveShortcutRadio = activeRoute.name === ext('Radio');
+      return isActiveShortcutRadio && route.key !== activeRoute.key;
+    }
+
+    return false;
   }
 
   render() {
-    const { shortcut, style } = this.props;
+    const { style } = this.props;
+    const { shortcut } = getRouteParams(this.props);
     const { playbackState } = this.state;
     const {
-      settings: {
-        backgroundImageUrl,
-        navbarTitle,
-        streamTitle,
-        streamUrl,
-        showSharing,
-      },
+      settings: { backgroundImageUrl, streamTitle, streamUrl },
     } = shortcut;
 
     if (!streamUrl) {
       return renderPlaceholderView();
     }
-
-    const share = showSharing
-      ? {
-          link: 'streamUrl',
-          text: `Stream address: ${streamUrl}`,
-          title: `Currently listening to ${streamTitle}`,
-        }
-      : null;
 
     const statusText = this.resolveStatusText();
     const isPlaying = playbackState === STATE_PLAYING;
@@ -141,11 +159,6 @@ export class Radio extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar
-          share={share}
-          styleName="clear"
-          title={navbarTitle.toUpperCase()}
-        />
         <ImageBackground source={bgImage} styleName="fill-parent">
           <Tile styleName="clear text-centric">
             <Overlay style={overlayStyle} styleName="fill-parent image-overlay">
@@ -178,8 +191,4 @@ export class Radio extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  activeShortcut: getActiveShortcut(state),
-});
-
-export default connect(mapStateToProps)(connectStyle(ext('Radio'))(Radio));
+export default connectStyle(ext('Radio'))(Radio);

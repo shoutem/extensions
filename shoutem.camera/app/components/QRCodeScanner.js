@@ -1,58 +1,38 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
+import { useIsFocused } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
 import { connectStyle } from '@shoutem/theme';
 import { View, Image } from '@shoutem/ui';
+import cameraFrame from '../assets/images/focus-frame.png';
 import { ext } from '../const';
 
 /**
  * A component that lets a user scan a QR code
  */
-class QRCodeScanner extends PureComponent {
-  static propTypes = {
-    onQRCodeScanned: PropTypes.func,
-    style: PropTypes.shape({
-      cameraContainer: PropTypes.object,
-      cameraFocusFrame: PropTypes.object,
-      cameraView: PropTypes.object,
-      noPermissionsMessage: PropTypes.object,
-    }),
-  };
+function QRCodeScanner({ style, onQRCodeScanned }) {
+  const isFocused = useIsFocused();
 
-  constructor(props) {
-    super(props);
-
-    autoBindReact(this);
+  if (!isFocused) {
+    return null;
   }
 
-  onQRCodeScanned(data) {
-    const { onQRCodeScanned } = this.props;
-
-    if (!_.isFunction(onQRCodeScanned)) {
-      return null;
-    }
-
-    return onQRCodeScanned(data);
-  }
-
-  render() {
-    const { style } = this.props;
-
-    return (
-      <View style={style.cameraContainer}>
-        <RNCamera
-          onBarCodeRead={this.onQRCodeScanned}
-          style={style.cameraView}
-        />
-        <Image
-          source={require('../assets/images/focus-frame.png')}
-          style={style.cameraFocusFrame}
-        />
-      </View>
-    );
-  }
+  return (
+    <View style={style.cameraContainer}>
+      <RNCamera onBarCodeRead={onQRCodeScanned} style={style.cameraView} captureAudio={false} />
+      <Image source={cameraFrame} style={style.cameraFocusFrame} />
+    </View>
+  );
 }
+
+QRCodeScanner.propTypes = {
+  onQRCodeScanned: PropTypes.func,
+  style: PropTypes.shape({
+    cameraContainer: PropTypes.object,
+    cameraFocusFrame: PropTypes.object,
+    cameraView: PropTypes.object,
+    noPermissionsMessage: PropTypes.object,
+  }),
+};
 
 export default connectStyle(ext('QRCodeScanner'))(QRCodeScanner);

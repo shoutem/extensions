@@ -1,8 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Keyboard } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { Keyboard } from 'react-native';
+import { connectStyle } from '@shoutem/theme';
 import {
   Row,
   Image,
@@ -12,9 +13,8 @@ import {
   Subtitle,
   TouchableOpacity,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { ext, CONNECTION_STATUSES } from '../const';
 import { images } from '../assets';
+import { ext, CONNECTION_STATUSES } from '../const';
 import { formatMessageDate, SendBird } from '../services';
 
 class ExistingChannelListItem extends PureComponent {
@@ -53,10 +53,15 @@ class ExistingChannelListItem extends PureComponent {
     const name = _.get(lastMessage, 'name');
 
     const member = SendBird.getChannelPartner(channel.channel, currentUser);
-    const onlineStatus = _.get(member, 'connectionStatus', CONNECTION_STATUSES.OFFLINE);
+    const onlineStatus = _.get(
+      member,
+      'connectionStatus',
+      CONNECTION_STATUSES.OFFLINE,
+    );
     const isOnline = onlineStatus === CONNECTION_STATUSES.ONLINE;
 
-    const profileImage = _.get(member, 'profileUrl') || _.get(channel, 'channel.coverUrl');
+    const profileImage =
+      _.get(member, 'profileUrl') || _.get(channel, 'channel.coverUrl');
     const memberName = _.get(member, 'nickname');
     const timeStamp = formatMessageDate(createdAt);
     const hasUnreadMessages = unreadMessageCount > 0;
@@ -71,16 +76,17 @@ class ExistingChannelListItem extends PureComponent {
             styleName="small"
           >
             {isOnline && (
-              <Image
-                source={images.indicator}
-                style={style.indicator}
-              />
+              <Image source={images.indicator} style={style.indicator} />
             )}
           </ImageBackground>
           <View styleName="vertical v-start">
             <View styleName="horizontal space-between v-center">
               <Subtitle
-                style={[style.text, style.nickname, hasUnreadMessages && style.unreadText]}
+                style={[
+                  style.text,
+                  style.nickname,
+                  hasUnreadMessages && style.unreadText,
+                ]}
               >
                 {memberName}
               </Subtitle>
@@ -95,7 +101,9 @@ class ExistingChannelListItem extends PureComponent {
               </Text>
               {hasUnreadMessages && (
                 <View style={style.unreadCountContainer}>
-                  <Text style={[style.text, style.unreadCountText]}>{unreadMessageCount}</Text>
+                  <Text style={[style.text, style.unreadCountText]}>
+                    {unreadMessageCount}
+                  </Text>
                 </View>
               )}
             </View>
@@ -106,4 +114,6 @@ class ExistingChannelListItem extends PureComponent {
   }
 }
 
-export default connectStyle(ext('ExistingChannelListItem'))(ExistingChannelListItem);
+export default connectStyle(ext('ExistingChannelListItem'))(
+  ExistingChannelListItem,
+);

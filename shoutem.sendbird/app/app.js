@@ -1,10 +1,10 @@
 import { AppState, Platform } from 'react-native';
 import _ from 'lodash';
-import { getUser, isAuthenticated } from 'shoutem.auth';
-import { NotificationHandlers } from 'shoutem.firebase';
-import { getAppId, getSubscriptionValidState } from 'shoutem.application';
-import { navigateTo, getActiveRoute, getNavigationInitialized, replace } from 'shoutem.navigation';
 import { getExtensionSettings } from 'shoutem.application/redux';
+import { getAppId, getSubscriptionValidState } from 'shoutem.application';
+import { getUser, isAuthenticated } from 'shoutem.auth';
+import { getCurrentRoute, openInModal } from 'shoutem.navigation';
+import { NotificationHandlers, Firebase } from 'shoutem.firebase';
 import { SendBird } from './services';
 import { ext, CONNECTION_STATUSES } from './const';
 import { actions, handlers, selectors } from './redux';
@@ -16,42 +16,46 @@ export function handleNotificationOpened(notification, dispatch, store) {
     return;
   }
 
-  const parsedSendBirdData = Platform.OS === 'ios' ? sendBirdData : JSON.parse(sendBirdData);
+  const parsedSendBirdData =
+    Platform.OS === 'ios' ? sendBirdData : JSON.parse(sendBirdData);
 
   const channelId = _.get(parsedSendBirdData, 'channel.channel_url');
 
   const state = store.getState();
-  const navigationInitialized = getNavigationInitialized(state);
-  const activeRoute = getActiveRoute(state);
-  const currentScreen = _.get(activeRoute, 'screen');
+  const currentRoute = getCurrentRoute();
   const activeChannelId = selectors.getActiveChannelId(state);
 
-  if (!navigationInitialized) {
-    store.dispatch(actions.queueNotification(notification));
-    return;
-  }
-
   const sameDestinationChannel = channelId === activeChannelId;
-  const routeReady = currentScreen === ext('ChatWindowScreen');
+  const routeReady = currentRoute.name === ext('ChatWindowScreen');
   const alreadyOnScreen = sameDestinationChannel && routeReady;
-  const navigationAction = routeReady && !sameDestinationChannel ? replace : navigateTo;
 
   if (channelId && !alreadyOnScreen) {
-    dispatch(navigationAction({
-      screen: ext('ChatWindowScreen'),
-      props: { channelId },
-    }));
+    openInModal(ext('ChatWindowScreen'), { channelId });
   }
 }
 
-// SendBird notification configuration causes some false positive triggers on our firebase
-// extension. So we map appropriate actions to seemingly wrong triggers.
-function handleNotificationOpenedIOS(notification, dispatch, store) {
+export function handleNotificationReceivedBackground(notification) {
   if (Platform.OS !== 'ios') {
-    return;
-  }
+    const sendbirdData = _.get(notification, 'data.sendbird');
+    const message = _.get(notification, 'data.message');
+    if (!sendbirdData) {
+      return;
+    }
 
-  handleNotificationOpened(notification, dispatch, store);
+    Firebase.presentLocalNotification({
+      channelId: 'SENDBIRD',
+      message,
+      data: notification.data,
+      somethingElse: sendbirdData,
+    });
+  }
+}
+
+export function handleNotification(notification, dispatch, store) {
+  const { userInteraction, foreground } = notification;
+  if (Platform.OS === 'ios' && userInteraction && !foreground) {
+    handleNotificationOpened(notification, dispatch, store);
+  }
 }
 
 function handleAppStateChange(nextState) {
@@ -67,6 +71,16 @@ function handleAppStateChange(nextState) {
 
 export function appWillMount(app) {
   const store = app.getStore();
+
+  if (Platform.OS === 'android') {
+    const sendbirdChannelConfig = {
+      channelId: 'SENDBIRD',
+      channelName: 'SENDBIRD_CHANNEL',
+      channelDescription: 'A channel for sendbid pushes',
+    };
+
+    Firebase.createNotificationChannels([sendbirdChannelConfig]);
+  }
 
   if (Platform.OS !== 'ios') {
     NotificationHandlers.registerFCMTokenReceivedHandler({
@@ -85,9 +99,10 @@ export function appWillMount(app) {
   NotificationHandlers.registerNotificationReceivedHandlers({
     owner: ext(),
     notificationHandlers: {
-      onNotificationTapped: (notification, dispatch) => handleNotificationOpened(notification, dispatch, store),
-      onNotificationReceivedBackground: (notification, dispatch) => handleNotificationOpenedIOS(notification, dispatch, store),
-      onNotificationReceivedForeground: (notification, dispatch) => handleNotificationOpenedIOS(notification, dispatch, store),
+      onNotificationTapped: (notification, dispatch) =>
+        handleNotificationOpened(notification, dispatch, store),
+      onNotification: (notification, dispatch) =>
+        handleNotification(notification, dispatch, store),
     },
   });
 }
@@ -106,9 +121,17 @@ export function appDidFinishLaunching(app) {
   AppState.addEventListener('change', handleAppStateChange);
 
   const channelHandlers = {
-    onMessageReceived: handlers.onMessageReceivedHandler(store.dispatch, store.getState),
-    onChannelChanged: handlers.onChannelChangedHandler(store.dispatch, store.getState),
-    onTypingStatusUpdated: handlers.onTypingStatusUpdatedHandler(store.dispatch),
+    onMessageReceived: handlers.onMessageReceivedHandler(
+      store.dispatch,
+      store.getState,
+    ),
+    onChannelChanged: handlers.onChannelChangedHandler(
+      store.dispatch,
+      store.getState,
+    ),
+    onTypingStatusUpdated: handlers.onTypingStatusUpdatedHandler(
+      store.dispatch,
+    ),
   };
 
   const connectionHandlers = {
@@ -119,12 +142,24 @@ export function appDidFinishLaunching(app) {
 
   if (isLoggedIn && featureActive && hasValidSubscription) {
     store.dispatch(actions.setConnectionState(CONNECTION_STATUSES.CONNECTING));
-    SendBird.init({ appId: resolvedAppId, user, channelHandlers, connectionHandlers, metadata })
+    SendBird.init({
+      appId: resolvedAppId,
+      user,
+      channelHandlers,
+      connectionHandlers,
+      metadata,
+    })
       .then(() => {
-        store.dispatch(actions.setConnectionState(CONNECTION_STATUSES.CONNECTED));
+        store.dispatch(
+          actions.setConnectionState(CONNECTION_STATUSES.CONNECTED),
+        );
         SendBird.registerPushToken();
       })
-      .catch(() => store.dispatch(actions.setConnectionState(CONNECTION_STATUSES.DISCONNECTED)));
+      .catch(() =>
+        store.dispatch(
+          actions.setConnectionState(CONNECTION_STATUSES.DISCONNECTED),
+        ),
+      );
   }
 }
 

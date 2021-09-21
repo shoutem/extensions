@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { navigateTo } from 'shoutem.navigation';
 import { ext } from '../const';
 
@@ -22,14 +21,11 @@ export default function withOpenPlaceDetails(RowComponent, prop = 'onPress') {
     }
 
     openPlaceDetailsScreen() {
-      const { place, navigateTo } = this.props;
+      const { place } = this.props;
 
-      navigateTo({
-        screen: ext('PlaceDetails'),
+      navigateTo(ext('PlaceDetails'), {
         title: place.name,
-        props: {
-          place,
-        },
+        place,
       });
     }
 
@@ -48,5 +44,5 @@ export default function withOpenPlaceDetails(RowComponent, prop = 'onPress') {
     navigateTo: PropTypes.func,
   };
 
-  return connect(undefined, { navigateTo })(EnhancedComponent);
+  return EnhancedComponent;
 }

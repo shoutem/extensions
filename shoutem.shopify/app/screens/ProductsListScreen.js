@@ -1,26 +1,16 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
-import { connectStyle } from '@shoutem/theme';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { setScreenState, getScreenState } from 'shoutem.cms';
 import {
-  Button,
-  DropDownMenu,
-  Icon,
-  Screen,
-  View,
-  Spinner,
-} from '@shoutem/ui';
-
-import { I18n } from 'shoutem.i18n';
-import {
-  NavigationBar,
-  getScreenState,
+  getRouteParams,
+  HeaderIconButton,
   navigateTo,
-  setScreenState,
 } from 'shoutem.navigation';
-
+import { connectStyle } from '@shoutem/theme';
+import { DropDownMenu, Screen, View, Spinner } from '@shoutem/ui';
 import CartIcon from '../components/CartIcon';
 import ProductsList from '../components/ProductsList';
 import {
@@ -31,47 +21,56 @@ import { refreshProducts } from '../redux/actionCreators';
 import { getCartSize } from '../redux/selectors';
 import { ext } from '../const';
 
-const { array, func, number, shape, string } = PropTypes;
-
 /**
  * This is a base screen that allows users to browse through products and collections
  */
 export class ProductsListScreen extends PureComponent {
   static propTypes = {
     // Number of items that the user has added to his cart
-    cartSize: number.isRequired,
+    cartSize: PropTypes.number.isRequired,
     // Selected collection
     collection: collectionShape,
-    // Used to navigate to cart
-    navigateTo: func.isRequired,
     // Dispatched when the user selects a collection to load products that belong
     // to that collection
-    refreshProducts: func.isRequired,
-    // ID of this screen, used to persist the selected collection
-    screenId: string.isRequired,
+    refreshProducts: PropTypes.func.isRequired,
     // Dispatched when a collection is selected to persist it for this screen
-    setScreenState: func.isRequired,
+    setScreenState: PropTypes.func.isRequired,
     // Shop properties, currently used just to display currency
     shop: shopShape.isRequired,
     // Shortcut that opens this screen
-    shortcut: shape({
-      title: string,
+    shortcut: PropTypes.shape({
+      title: PropTypes.string,
     }),
     // Collections which are selected in shortcut settings
-    visibleCollections: array,
+    visibleCollections: PropTypes.array,
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props) {
     super(props);
 
-    this.navigateToCart = this.navigateToCart.bind(this);
-    this.navigateToSearchScreen = this.navigateToSearchScreen.bind(this);
-    this.onCollectionSelected = this.onCollectionSelected.bind(this);
+    autoBindReact(this);
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
+  }
+
+  componentDidUpdate() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
   }
 
   onCollectionSelected(collection) {
-    const { collection: selectedCollection, refreshProducts,
-      setScreenState, screenId } = this.props;
+    const {
+      collection: selectedCollection,
+      refreshProducts,
+      setScreenState,
+    } = this.props;
+    const { screenId } = getRouteParams(this.props);
 
     if (selectedCollection.id === collection.id) {
       return;
@@ -85,43 +84,36 @@ export class ProductsListScreen extends PureComponent {
   }
 
   getNavBarProps() {
-    const { cartSize, shortcut } = this.props;
+    const { cartSize } = this.props;
 
     return {
-      renderRightComponent: () => {
+      headerRight: props => {
         return (
-          <View virtual styleName="container">
-            <Button
+          <View virtual styleName="horizontal">
+            <HeaderIconButton
+              iconName="search"
               onPress={this.navigateToSearchScreen}
-              styleName="clear"
-            >
-              <Icon name="search" />
-            </Button>
-            <CartIcon cartSize={cartSize} onPress={this.navigateToCart} />
+              {...props}
+            />
+            <CartIcon
+              cartSize={cartSize}
+              onPress={this.navigateToCart}
+              iconProps={{ style: props.tintColor }}
+            />
           </View>
         );
       },
-      title: shortcut.title || I18n.t(ext('shopTitlePlaceholder')),
     };
   }
 
   navigateToCart() {
-    const { navigateTo } = this.props;
-
-    navigateTo({
-      screen: ext('CartScreen'),
-    });
+    navigateTo(ext('CartScreen'));
   }
 
   navigateToSearchScreen() {
-    const { collection, navigateTo } = this.props;
+    const { collection } = this.props;
 
-    navigateTo({
-      screen: ext('SearchProductsScreen'),
-      props: {
-        collectionId: collection.id,
-      },
-    });
+    navigateTo(ext('SearchProductsScreen'), { collectionId: collection.id });
   }
 
   renderCollectionsPicker(styleName = 'horizontal') {
@@ -142,9 +134,7 @@ export class ProductsListScreen extends PureComponent {
 
   /* eslint-disable class-methods-use-this */
   renderProducts(collectionId) {
-    return (
-      <ProductsList collectionId={collectionId} />
-    );
+    return <ProductsList collectionId={collectionId} />;
   }
 
   render() {
@@ -153,12 +143,12 @@ export class ProductsListScreen extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
         {_.size(collections) > 1 ? this.renderCollectionsPicker() : null}
-        {isLoading ?
-          <Spinner styleName="md-gutter-top"/> :
+        {isLoading ? (
+          <Spinner styleName="md-gutter-top" />
+        ) : (
           this.renderProducts(collection.id)
-        }
+        )}
       </Screen>
     );
   }
@@ -170,33 +160,35 @@ export class ProductsListScreen extends PureComponent {
  */
 const getCollectionsVisibleInShortcut = (
   selectedCollections,
-  allCollections
+  allCollections,
 ) => {
   const getId = k => parseFloat(decode64(k).split('/')[4]);
 
-  return _.filter(allCollections, collection =>
-    {
-      return !_.size(selectedCollections) ||
-        _.includes(selectedCollections, getId(collection.id))
-    }
-  );
+  return _.filter(allCollections, collection => {
+    return (
+      !_.size(selectedCollections) ||
+      _.includes(selectedCollections, getId(collection.id))
+    );
+  });
 };
 
 export const mapStateToProps = (state, ownProps) => {
   const extState = state[ext()];
   const { shop } = extState;
-  const { screenId, shortcut = {} } = ownProps;
+  const { screenId, shortcut = {} } = getRouteParams(ownProps);
   const { selectedCollections } = shortcut.settings || {};
 
   const data = getScreenState(state, screenId);
   const { collectionId } = data;
 
-  const collections =
-    getCollectionsVisibleInShortcut(selectedCollections, shop.collections);
+  const collections = getCollectionsVisibleInShortcut(
+    selectedCollections,
+    shop.collections,
+  );
 
   return {
     cartSize: getCartSize(state),
-    collection: _.find(collections, { 'id': collectionId }) || collections[0],
+    collection: _.find(collections, { id: collectionId }) || collections[0],
     shop: { ...shop, collections },
     visibleCollections: collections,
     shortcut,
@@ -204,27 +196,33 @@ export const mapStateToProps = (state, ownProps) => {
 };
 
 export const mapDispatchToProps = {
-  navigateTo,
   refreshProducts,
-  setScreenState
+  setScreenState,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ProductsListScreen'))(ProductsListScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('ProductsListScreen'))(ProductsListScreen));
 
-var keyStr = "ABCDEFGHIJKLMNOP" +
-  "QRSTUVWXYZabcdef" +
-  "ghijklmnopqrstuv" +
-  "wxyz0123456789+/" +
-  "=";
+const keyStr =
+  'ABCDEFGHIJKLMNOP' +
+  'QRSTUVWXYZabcdef' +
+  'ghijklmnopqrstuv' +
+  'wxyz0123456789+/' +
+  '=';
 
 function encode64(input) {
   input = escape(input);
-  var output = "";
-  var chr1, chr2, chr3 = "";
-  var enc1, enc2, enc3, enc4 = "";
-  var i = 0;
+  let output = '';
+  let chr1;
+  let chr2;
+  let chr3 = '';
+  let enc1;
+  let enc2;
+  let enc3;
+  let enc4 = '';
+  let i = 0;
 
   do {
     chr1 = input.charCodeAt(i++);
@@ -239,35 +237,43 @@ function encode64(input) {
     if (isNaN(chr2)) {
       enc3 = enc4 = 64;
     } else if (isNaN(chr3)) {
-        enc4 = 64;
-      }
+      enc4 = 64;
+    }
 
-    output = output +
+    output =
+      output +
       keyStr.charAt(enc1) +
       keyStr.charAt(enc2) +
       keyStr.charAt(enc3) +
       keyStr.charAt(enc4);
-    chr1 = chr2 = chr3 = "";
-    enc1 = enc2 = enc3 = enc4 = "";
+    chr1 = chr2 = chr3 = '';
+    enc1 = enc2 = enc3 = enc4 = '';
   } while (i < input.length);
 
   return output;
 }
 
 function decode64(input) {
-  var output = "";
-  var chr1, chr2, chr3 = "";
-  var enc1, enc2, enc3, enc4 = "";
-  var i = 0;
+  let output = '';
+  let chr1;
+  let chr2;
+  let chr3 = '';
+  let enc1;
+  let enc2;
+  let enc3;
+  let enc4 = '';
+  let i = 0;
 
   // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
-  var base64test = /[^A-Za-z0-9\+\/\=]/g;
+  const base64test = /[^A-Za-z0-9\+\/\=]/g;
   if (base64test.exec(input)) {
-    alert("There were invalid base64 characters in the input text.\n" +
+    alert(
+      'There were invalid base64 characters in the input text.\n' +
       "Valid base64 characters are A-Z, a-z, 0-9, '+', '/',and '='\n" +
-      "Expect errors in decoding.");
+      'Expect errors in decoding.',
+    );
   }
-  input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+  input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
 
   do {
     enc1 = keyStr.indexOf(input.charAt(i++));
@@ -289,9 +295,8 @@ function decode64(input) {
       output = output + String.fromCharCode(chr3);
     }
 
-    chr1 = chr2 = chr3 = "";
-    enc1 = enc2 = enc3 = enc4 = "";
-
+    chr1 = chr2 = chr3 = '';
+    enc1 = enc2 = enc3 = enc4 = '';
   } while (i < input.length);
 
   return unescape(output);

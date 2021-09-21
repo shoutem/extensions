@@ -1,91 +1,97 @@
-import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { AppState, Platform } from 'react-native';
+import { Platform, AppState } from 'react-native';
+import {
+  composeNavigationStyles,
+  getRouteParams,
+  withIsFocused,
+} from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
   Screen,
   ScrollView,
+  ShareButton,
   SimpleHtml,
   Tile,
   Title,
   Video,
 } from '@shoutem/ui';
-import { NavigationBar } from 'shoutem.navigation';
 import { ext } from '../const';
 
-export class VideoDetails extends PureComponent {
-  constructor(props) {
-    super(props);
+function VideoDetails(props) {
+  const { navigation } = props;
+  const { video } = getRouteParams(props);
 
-    autoBindReact(this);
+  const [appState, setAppState] = useState('active');
 
-    this.state = {
-      appState: 'active',
-    };
-  }
+  const headerRight = () => {
+    const { video, screenSettings } = getRouteParams(props);
+    const { shareable = true } = screenSettings;
 
-  componentDidMount() {
-    AppState.addEventListener('change', this.handleAppStateChange);
-  }
-
-  componentWillUnmount() {
-    AppState.removeEventListener('change', this.handleAppStateChange);
-  }
-
-  handleAppStateChange(appState) {
-    this.setState({ appState });
-  }
-
-  render() {
-    const { shareable = true, video } = this.props;
-    const { appState } = this.state;
-
-    // When an iOS device is locked, the video pauses automatically on android we have to explicitly
-    // remove it from component tree.
-    const isAppActive = appState === 'active';
-    const isIos = Platform.OS === 'ios';
-    const shouldRenderVideo = isAppActive || isIos;
-
-    // For some reason we pass an object instead of a string, so another check is necessary.
-    const thumbnailUrl = _.get(video, 'video.thumbnailurl');
-    const resolvedThumbnailUrl = (thumbnailUrl === null) ? undefined : thumbnailUrl;
-
+    if (!shareable) {
+      return null;
+    }
     return (
-      <Screen styleName="paper">
-        <NavigationBar
-          share={shareable ? {
-            title: video.name,
-            link: video.video.url,
-          } : null}
-          title={video.name}
-          animationName="boxing"
-        />
-        <ScrollView>
-          {shouldRenderVideo &&
-            <Video
-              source={{ uri: video.video.url }}
-              poster={resolvedThumbnailUrl}
-            />
-          }
-          <Tile styleName="text-centric">
-            <Title styleName="md-gutter-bottom">{video.name}</Title>
-            <Caption>
-              {moment(video.timeCreated).fromNow()}{video.duration ? `    ${video.duration}` : ''}
-            </Caption>
-          </Tile>
-          <SimpleHtml body={video.description} />
-        </ScrollView>
-      </Screen>
+      <ShareButton styleName="clear" title={video.name} url={video.video.url} />
     );
-  }
+  };
+
+  const getNavbarProps = () => {
+    return {
+      ...composeNavigationStyles(['boxing']),
+      headerRight,
+      title: video.name || '',
+    };
+  };
+
+  const handleAppStateChange = appState => {
+    setAppState(appState);
+  };
+
+  useEffect(() => {
+    AppState.addEventListener('change', handleAppStateChange);
+    navigation.setOptions(getNavbarProps());
+
+    return () => AppState.removeEventListener('change', handleAppStateChange);
+  }, []);
+
+  // When an iOS device is locked, the video pauses automatically on android we have to explicitly
+  // remove it from component tree.
+  const isAppActive = appState === 'active';
+  const isIos = Platform.OS === 'ios';
+  const shouldRenderVideo = isAppActive || isIos;
+
+  // For some reason we pass an object instead of a string, so another check is necessary.
+  const thumbnailUrl = _.get(video, 'video.thumbnailurl');
+  const resolvedThumbnailUrl = thumbnailUrl === null ? undefined : thumbnailUrl;
+
+  return (
+    <Screen styleName="paper">
+      <ScrollView>
+        {shouldRenderVideo && (
+          <Video
+            source={{ uri: video.video.url }}
+            poster={resolvedThumbnailUrl}
+          />
+        )}
+        <Tile styleName="text-centric">
+          <Title styleName="md-gutter-bottom">{video.name}</Title>
+          <Caption>
+            {moment(video.timeCreated).fromNow()}
+            {video.duration ? `    ${video.duration}` : ''}
+          </Caption>
+        </Tile>
+        <SimpleHtml body={video.description} />
+      </ScrollView>
+    </Screen>
+  );
 }
 
 VideoDetails.propTypes = {
-  video: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
-export default connectStyle(ext('VideoDetails'))(VideoDetails);
+export default withIsFocused(connectStyle(ext('VideoDetails'))(VideoDetails));

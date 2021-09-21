@@ -8,7 +8,8 @@ export function getStorageKey() {
   return `app-${getAppId()}:${ext()}.session`;
 }
 
-export const saveSession = session => AsyncStorage.setItem(getStorageKey(), session);
+export const saveSession = session =>
+  AsyncStorage.setItem(getStorageKey(), session);
 
 export const clearSession = () => AsyncStorage.removeItem(getStorageKey());
 

@@ -1,9 +1,17 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Linking } from 'react-native';
-import { connect } from 'react-redux';
-
+import { InlineMap } from 'shoutem.application';
+import { Favorite } from 'shoutem.favorites';
+import { I18n } from 'shoutem.i18n';
+import {
+  navigateTo,
+  getRouteParams,
+  composeNavigationStyles,
+} from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
 import { connectStyle } from '@shoutem/theme';
 import {
   ScrollView,
@@ -20,32 +28,19 @@ import {
   Button,
   SimpleHtml,
 } from '@shoutem/ui';
-import { InlineMap } from 'shoutem.application';
-import { Favorite } from 'shoutem.favorites';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
-import { openURL } from 'shoutem.web-view';
 import { PlaceImageGallery } from '../components';
 import { ext } from '../const';
 import { getPlaceImages, getMapUrl } from '../services/places';
 
 export class PlaceDetails extends PureComponent {
   static propTypes = {
-    place: PropTypes.object.isRequired,
-    openURL: PropTypes.func,
-    navigateTo: PropTypes.func,
-    hasFavorites: PropTypes.bool,
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props) {
     super(props);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.openWebLink = this.openWebLink.bind(this);
-    this.openMapLink = this.openMapLink.bind(this);
-    this.openEmailLink = this.openEmailLink.bind(this);
-    this.openPhoneLink = this.openPhoneLink.bind(this);
-    this.openMapScreen = this.openMapScreen.bind(this);
-    this.openURL = this.openURL.bind(this);
+
+    autoBindReact(this);
 
     this.state = {
       ...this.state,
@@ -53,36 +48,59 @@ export class PlaceDetails extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
+  }
+
   getNavBarProps() {
-    const { place } = this.props;
     const { schema } = this.state;
+    const { place, screenSettings } = getRouteParams(this.props);
     const images = getPlaceImages(place);
+    const title = place.name || '';
+    const headerRight = props => (
+      <Favorite
+        // eslint-disable-next-line react/prop-types
+        iconProps={{ style: props.tintColor }}
+        item={place}
+        navBarButton
+        schema={schema}
+      />
+    );
+
+    if (screenSettings.navigationBarStyle === 'solid') {
+      return {
+        headerRight,
+        title,
+      };
+    }
+
+    const resolvedStyle =
+      _.size(images) >= 1
+        ? { ...composeNavigationStyles(['clear', 'solidify']) }
+        : { ...composeNavigationStyles(['noBorder', 'solidify']) };
 
     return {
-      renderRightComponent: () => (
-        <View styleName="container" virtual>
-          <Favorite item={place} navBarButton schema={schema} />
-        </View>
-      ),
-      styleName: _.size(images) >= 1 ? 'clear' : 'no-border',
-      animationName: 'solidify',
-      title: place.name,
+      ...resolvedStyle,
+      headerRight,
+      title,
     };
   }
 
   openURL() {
-    const { place, openURL } = this.props;
-
+    const { place } = getRouteParams(this.props);
     openURL(place.rsvpLink, place.name);
   }
 
   openWebLink() {
-    const { place, openURL } = this.props;
+    const { place } = getRouteParams(this.props);
     openURL(place.url);
   }
 
   openMapLink() {
-    const { location = {} } = this.props.place;
+    const { place } = getRouteParams(this.props);
+    const location = _.get(place, 'location', {});
     const { latitude, longitude, formattedAddress } = location;
 
     if (latitude && longitude) {
@@ -91,23 +109,20 @@ export class PlaceDetails extends PureComponent {
   }
 
   openEmailLink() {
-    const { place } = this.props;
+    const { place } = getRouteParams(this.props);
     Linking.openURL(`mailto:${place.mail}`);
   }
 
   openPhoneLink() {
-    const { place } = this.props;
+    const { place } = getRouteParams(this.props);
     Linking.openURL(`tel:${place.phone}`);
   }
 
   openMapScreen() {
-    const { navigateTo, place } = this.props;
-    navigateTo({
-      screen: ext('SinglePlaceMap'),
-      props: {
-        place,
-        title: place.name,
-      },
+    const { place } = getRouteParams(this.props);
+    navigateTo(ext('SinglePlaceMap'), {
+      place,
+      title: place.name,
     });
   }
 
@@ -193,7 +208,7 @@ export class PlaceDetails extends PureComponent {
   }
 
   renderButtons() {
-    const { place } = this.props;
+    const { place } = getRouteParams(this.props);
     return (
       <Row>
         <View styleName="horizontal h-center">
@@ -224,11 +239,11 @@ export class PlaceDetails extends PureComponent {
   }
 
   render() {
-    const { place } = this.props;
-    const { location = {} } = this.props.place;
+    const { place } = getRouteParams(this.props);
+    const location = _.get(place, 'location', {});
+
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderLeadImage(place)}
           {this.renderOpeningHours(place)}
@@ -265,6 +280,4 @@ export class PlaceDetails extends PureComponent {
   }
 }
 
-export default connect(undefined, { navigateTo, openURL })(
-  connectStyle(ext('PlaceDetails'))(PlaceDetails),
-);
+export default connectStyle(ext('PlaceDetails'))(PlaceDetails);

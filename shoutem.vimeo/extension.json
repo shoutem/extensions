@@ -1,13 +1,19 @@
 {
   "name": "vimeo",
   "title": "Vimeo",
-  "version": "2.5.1",
-  "platform": "2.5.*",
+  "version": "3.0.0",
+  "platform": "^3.0.0",
   "description": "Show videos from Vimeo",
   "releaseNotes": "* Fixed infinite spinner",
   "icon": "server/assets/add-videos-vimeo-image.png",
-  "dependencies": ["shoutem.layouts", "shoutem.navigation", "shoutem.rss"],
-  "categories": ["media"],
+  "dependencies": [
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.rss"
+  ],
+  "categories": [
+    "media"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -46,7 +52,9 @@
       "name": "VimeoList",
       "title": "Big list",
       "image": "server/assets/screens/big-list.png",
-      "navigatesTo": ["@.VimeoDetails"],
+      "navigatesTo": [
+        "@.VimeoDetails"
+      ],
       "groupTitle": "Choose List screen layout"
     },
     {

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import {
   TouchableOpacity,
@@ -10,6 +10,7 @@ import {
   Caption,
   View,
 } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import RewardProgressBar from './RewardProgressBar';
 import { rewardShape } from './shapes';
@@ -29,7 +30,8 @@ export class RewardMediumListView extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.onPress = this.onPress.bind(this);
+
+    autoBindReact(this);
   }
 
   onPress() {

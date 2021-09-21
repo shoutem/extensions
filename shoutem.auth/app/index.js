@@ -2,7 +2,8 @@
 // It is important to use those exact names
 
 import _ from 'lodash';
-
+import { AppInitQueue } from 'shoutem.application';
+import { ext } from './const';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import UserProfileScreen from './screens/UserProfileScreen';
@@ -10,7 +11,6 @@ import EditProfileScreen from './screens/EditProfileScreen';
 import MyProfileScreen from './screens/MyProfileScreen';
 import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
 import ChangePasswordScreen from './screens/ChangePasswordScreen';
-
 import reducer, {
   getUser,
   getUserGroups,
@@ -32,18 +32,20 @@ import reducer, {
 } from './redux';
 
 import {
-  createLoginMiddleware,
   networkRequestMiddleware,
   logoutMiddleware,
   userUpdatedMiddleware,
-  authenticateMiddleware,
 } from './middleware';
 
-import { loginRequired } from './loginRequired';
+import { loginRequired, withLoginRequired } from './loginRequired';
 import { saveSession } from './session';
 import { getErrorCode, getErrorMessage } from './errorMessages';
 
 import enTranslations from './translations/en.json';
+
+import './navigation';
+
+AppInitQueue.addExtension(ext());
 
 const appScreens = {};
 
@@ -70,11 +72,9 @@ export const actions = {
 };
 
 const middleware = [
-  createLoginMiddleware(appScreens),
   networkRequestMiddleware,
   logoutMiddleware,
   userUpdatedMiddleware,
-  authenticateMiddleware,
 ];
 
 export const shoutem = {
@@ -98,6 +98,7 @@ export {
   getErrorMessage,
   authenticate,
   loginRequired,
+  withLoginRequired,
   isAuthenticated,
   register,
   saveSession,

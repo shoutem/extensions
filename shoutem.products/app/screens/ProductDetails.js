@@ -1,10 +1,9 @@
-import React, { PureComponent } from 'react';
+import React, { useEffect } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
-import { openURL as openURLAction } from 'shoutem.web-view';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
 import { connectStyle } from '@shoutem/theme';
 import {
   View,
@@ -23,48 +22,45 @@ import {
   TouchableOpacity,
   Row,
   SimpleHtml,
+  ShareButton,
 } from '@shoutem/ui';
 import { ext } from '../const';
 
-export class ProductDetails extends PureComponent {
-  static propTypes = {
-    product: PropTypes.object.isRequired,
-    openURL: PropTypes.func,
+function ProductDetails(props) {
+  const { navigation } = props;
+  const { product } = getRouteParams(props);
+
+  const getNavBarProps = () => {
+    return {
+      ...composeNavigationStyles(['clear', 'solidify']),
+      headerRight: props => {
+        if (!product.link) {
+          return null;
+        }
+
+        return (
+          <ShareButton
+            // eslint-disable-next-line react/prop-types
+            iconProps={{ style: props.tintColor }}
+            styleName="clear"
+            title={product.name}
+            url={product.link}
+          />
+        );
+      },
+      title: product.name || '',
+    };
   };
 
-  constructor(props) {
-    super(props);
+  useEffect(() => {
+    navigation.setOptions(getNavBarProps());
+  }, []);
 
-    this.onBuyPress = this.onBuyPress.bind(this);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.renderProductPriceInfo = this.renderProductPriceInfo.bind(this);
-    this.renderBuyField = this.renderBuyField.bind(this);
-  }
-
-  onBuyPress() {
-    const { product, openURL } = this.props;
+  const onBuyPress = () => {
     openURL(product.link, product.name);
-  }
+  };
 
-  getNavBarProps() {
-    const { product } = this.props;
-
-    const share = {
-      title: product.name,
-      link: product.link,
-    };
-
-    return {
-      styleName: 'clear',
-      animationName: 'solidify',
-      share,
-      title: product.name,
-    };
-  }
-
-  renderProductPriceInfo() {
-    const { product } = this.props;
-
+  const renderProductPriceInfo = () => {
     const oldPrice = product.oldPrice;
 
     if (!oldPrice) {
@@ -74,30 +70,26 @@ export class ProductDetails extends PureComponent {
     }
 
     return (
-      <View virtual styleName="vertical h-center">
+      <View styleName="vertical h-center">
         <Subtitle styleName="line-through">{oldPrice}</Subtitle>
         <Heading styleName="sm-gutter-bottom">{product.currentPrice}</Heading>
       </View>
     );
-  }
+  };
 
-  renderBuyField() {
-    const { product } = this.props;
-
+  const renderBuyField = () => {
     if (!product.link) {
       return null;
     }
 
     return (
-      <Button styleName="md-gutter-top" onPress={this.onBuyPress}>
+      <Button styleName="md-gutter-top" onPress={onBuyPress}>
         <Text>{product.buyTitle}</Text>
       </Button>
     );
-  }
+  };
 
-  renderNoImage() {
-    const { product } = this.props;
-
+  const renderNoImage = () => {
     if (product.image) {
       return (
         <ImageBackground
@@ -113,8 +105,8 @@ export class ProductDetails extends PureComponent {
             >
               {product.name.toUpperCase()}
             </Title>
-            {this.renderProductPriceInfo()}
-            {this.renderBuyField()}
+            {renderProductPriceInfo()}
+            {renderBuyField()}
           </Tile>
         </ImageBackground>
       );
@@ -129,39 +121,35 @@ export class ProductDetails extends PureComponent {
           <Subtitle styleName="lg-gutter-top xl-gutter-bottom md-gutter-horizontal">
             {product.name.toUpperCase()}
           </Subtitle>
-          {this.renderProductPriceInfo()}
-          {this.renderBuyField()}
+          {renderProductPriceInfo()}
+          {renderBuyField()}
         </Tile>
       </ImageBackground>
     );
-  }
+  };
 
-  renderInformation() {
-    const { product } = this.props;
-
+  const renderInformation = () => {
     if (!product.description) {
       return null;
     }
 
     return (
-      <Tile>
+      <View styleName="solid">
         <Divider styleName="section-header">
           <Caption>{I18n.t('shoutem.cms.descriptionTitle')}</Caption>
         </Divider>
         <SimpleHtml body={product.description} />
-      </Tile>
+      </View>
     );
-  }
+  };
 
-  renderDisclosureBuyLink() {
-    const { product } = this.props;
-
+  const renderDisclosureBuyLink = () => {
     if (!product.link) {
       return null;
     }
 
     return (
-      <TouchableOpacity onPress={this.onBuyPress}>
+      <TouchableOpacity onPress={onBuyPress}>
         <Divider styleName="section-header">
           <Caption />
         </Divider>
@@ -175,23 +163,22 @@ export class ProductDetails extends PureComponent {
         </Row>
       </TouchableOpacity>
     );
-  }
+  };
 
-  render() {
-    return (
-      <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
-        <ScrollView>
-          {this.renderNoImage()}
-          {this.renderInformation()}
-          {this.renderDisclosureBuyLink()}
-          <Divider styleName="section-header" />
-        </ScrollView>
-      </Screen>
-    );
-  }
+  return (
+    <Screen styleName="paper">
+      <ScrollView>
+        {renderNoImage()}
+        {renderInformation()}
+        {renderDisclosureBuyLink()}
+        <Divider styleName="section-header" />
+      </ScrollView>
+    </Screen>
+  );
 }
 
-export default connect(undefined, { openURL: openURLAction })(
-  connectStyle(ext('ProductDetails'))(ProductDetails),
-);
+ProductDetails.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
+
+export default connectStyle(ext('ProductDetails'))(ProductDetails);

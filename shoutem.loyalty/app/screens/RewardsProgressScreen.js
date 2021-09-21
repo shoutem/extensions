@@ -1,12 +1,12 @@
 import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { find, next } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import { getExtensionSettings } from 'shoutem.application';
 import { getUser, loginRequired } from 'shoutem.auth';
 import { CmsListScreen } from 'shoutem.cms';
-import { navigateTo } from 'shoutem.navigation';
-import { find, next } from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
+import { getRouteParams } from 'shoutem.navigation';
 import RewardMediumListView from '../components/RewardMediumListView';
 import { ext } from '../const';
 import { getCardStateForPlace } from '../redux';
@@ -36,7 +36,7 @@ export const mapStateToProps = (state, ownProps) => {
   const extensionSettings = getExtensionSettings(state, ext());
   const programId = _.get(extensionSettings, 'program.id');
   const card = _.get(state[ext()], 'card.data', {});
-  const placeId = _.get(ownProps, 'place.id', null);
+  const placeId = _.get(getRouteParams(ownProps), 'place.id', null);
 
   return {
     ...CmsListScreen.createMapStateToProps(
@@ -51,7 +51,6 @@ export const mapStateToProps = (state, ownProps) => {
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   find,
-  navigateTo,
   next,
   refreshCard,
 });

@@ -6,7 +6,8 @@ const {
   GridEventsScreen,
   EventsScreen,
   MediumEventDetailsScreen,
-  LargeEventDetailsScreen } = extension.screens;
+  LargeEventDetailsScreen,
+} = extension.screens;
 
 export const screens = {
   ...extension.screens,
@@ -31,6 +32,4 @@ export const shoutem = {
     },
   },
 };
-export {
-  reducer,
-};
+export { reducer };

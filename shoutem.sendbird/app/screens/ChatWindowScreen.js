@@ -1,5 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import moment from 'moment';
+import PropTypes from 'prop-types';
 import {
   KeyboardAvoidingView,
   Keyboard as RNKeyboard,
@@ -7,39 +10,49 @@ import {
   Alert,
   InteractionManager,
   View,
+  Platform,
   AppState,
 } from 'react-native';
-import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-import moment from 'moment';
-import ImagePicker from 'react-native-image-picker';
+import { getSubscriptionValidState } from 'shoutem.application';
+import { loginRequired, getUser } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import {
-  NavigationBar,
-  navigateBack,
+  goBack,
   openInModal,
   isTabBarNavigation,
-  getActiveRoute,
+  withIsFocused,
+  getRouteParams,
+  HeaderBackButton,
 } from 'shoutem.navigation';
-import { getSubscriptionValidState } from 'shoutem.application';
-import { I18n } from 'shoutem.i18n';
-import { loginRequired, getUser } from 'shoutem.auth';
-import { Screen, Keyboard, ActionSheet, Spinner } from '@shoutem/ui';
+import {
+  requestPermissions,
+  PERMISSION_TYPES,
+  RESULTS,
+} from 'shoutem.permissions';
 import { connectStyle } from '@shoutem/theme';
-import { ext, CHAT_CONVERSATION_SCREEN } from '../const';
+import { Screen, Keyboard, ActionSheet, Spinner } from '@shoutem/ui';
 import {
   MessageBubble,
   ChatInputBox,
   ChatEncryptionMessage,
   ErrorModal,
 } from '../components';
+import { ext } from '../const';
 import { actions, selectors } from '../redux';
 import { SendBird, composeSendBirdId } from '../services';
 
+const CAMERA_PERMISSION = Platform.select({
+  ios: PERMISSION_TYPES.IOS_CAMERA,
+  default: PERMISSION_TYPES.ANDROID_CAMERA,
+});
+
 const IMAGE_CAPTURE_OPTIONS = {
-  allowsEditing: true,
   maxHeight: 1024,
   maxWidth: 1024,
+  saveToPhotos: false,
+  mediaType: 'photo',
 };
 
 function listKeyExtractor(item) {
@@ -51,26 +64,27 @@ function withinMinuteOf(leadingMoment, trailingMoment) {
     return false;
   }
 
-  return moment(leadingMoment.createdAt).diff(moment(trailingMoment.createdAt), 'seconds') < 60;
+  return (
+    moment(leadingMoment.createdAt).diff(
+      moment(trailingMoment.createdAt),
+      'seconds',
+    ) < 60
+  );
 }
 
 export class ChatWindowScreen extends PureComponent {
   static propTypes = {
     createChannel: PropTypes.func,
     isConnected: PropTypes.bool,
-    goBack: PropTypes.func,
     user: PropTypes.object,
-    channelId: PropTypes.string,
     setActiveChannel: PropTypes.func,
     sendMessage: PropTypes.func,
-    screenActive: PropTypes.bool,
     loadChannelMessages: PropTypes.func,
     messages: PropTypes.array,
     currentUser: PropTypes.object,
     channel: PropTypes.object,
     navigateTo: PropTypes.func,
     sendFileMessage: PropTypes.func,
-    openInModalAction: PropTypes.func,
     style: Screen.propTypes.style,
     isTabBar: PropTypes.bool,
     loadChannel: PropTypes.func,
@@ -97,13 +111,12 @@ export class ChatWindowScreen extends PureComponent {
 
   componentDidMount() {
     const {
-      channelId,
-      user,
       loadChannel,
       setActiveChannel,
       isConnected,
       hasValidSubscription,
     } = this.props;
+    const { channelId, user } = getRouteParams(this.props);
 
     if (!hasValidSubscription) {
       this.handleGenericError(this.SUBSCRIPTION_ERROR_MESSAGE);
@@ -113,10 +126,12 @@ export class ChatWindowScreen extends PureComponent {
     AppState.addEventListener('change', this.handleAppStateChange);
 
     if (channelId && isConnected) {
-      loadChannel(channelId).then(() => {
-        setActiveChannel(channelId);
-        return this.loadData();
-      }).catch(this.handleGenericError);
+      loadChannel(channelId)
+        .then(() => {
+          setActiveChannel(channelId);
+          return this.loadData();
+        })
+        .catch(this.handleGenericError);
     }
 
     if (user && isConnected) {
@@ -130,19 +145,21 @@ export class ChatWindowScreen extends PureComponent {
       messages,
       isConnected,
       channel,
-      channelId,
       loadChannel,
       setActiveChannel,
-      user,
-      screenActive,
+      isFocused,
+      navigation,
     } = this.props;
     const {
       messages: prevMessages,
       isConnected: wasConnected,
-      screenActive: wasScreenActive,
+      isFocused: wasFocused,
     } = prevProps;
+    const { channelId, user } = getRouteParams(this.props);
 
-    if (!wasScreenActive && screenActive) {
+    navigation.setOptions(this.getNavBarProps());
+
+    if (!wasFocused && isFocused) {
       channel.channel.markAsRead();
     }
 
@@ -152,10 +169,12 @@ export class ChatWindowScreen extends PureComponent {
     }
 
     if (!wasConnected && isConnected && channelId) {
-      loadChannel(channelId).then(() => {
-        setActiveChannel(channelId);
-        return this.loadData();
-      }).catch(this.handleGenericError);
+      loadChannel(channelId)
+        .then(() => {
+          setActiveChannel(channelId);
+          return this.loadData();
+        })
+        .catch(this.handleGenericError);
     }
 
     if (!wasConnected && isConnected && user) {
@@ -169,7 +188,8 @@ export class ChatWindowScreen extends PureComponent {
 
       if (prevMessagesSize > 0 && initialUnreadCount > 0) {
         this.setState({
-          initialUnreadCount: initialUnreadCount + nextMessagesSize - prevMessagesSize,
+          initialUnreadCount:
+            initialUnreadCount + nextMessagesSize - prevMessagesSize,
         });
       }
     }
@@ -179,17 +199,32 @@ export class ChatWindowScreen extends PureComponent {
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
-  getNavigationBarProps() {
-    const { channel, user } = this.props;
+  handleGoBack() {
+    const { setActiveChannel } = this.props;
+
+    setActiveChannel('');
+    goBack();
+  }
+
+  getNavBarProps() {
+    const { channel } = this.props;
     const { currentUser } = this.state;
 
-    const partner = channel ? SendBird.getChannelPartner(channel.channel, currentUser) : null;
+    const { user } = getRouteParams(this.props);
 
-    const nickname = partner ? _.get(partner, 'nickname', '') : _.get(user, 'profile.name', '');
+    const partner = channel
+      ? SendBird.getChannelPartner(channel.channel, currentUser)
+      : null;
+
+    const nickname = partner
+      ? _.get(partner, 'nickname', '')
+      : _.get(user, 'profile.name', '');
 
     return {
-      title: nickname.toUpperCase(),
-      onNavigateBack: this.handleNavigateBack,
+      headerLeft: () => (
+        <HeaderBackButton onPress={this.handleGoBack} {...this.props} />
+      ),
+      title: nickname,
     };
   }
 
@@ -202,7 +237,10 @@ export class ChatWindowScreen extends PureComponent {
 
     const typingMembers = channel.channel.getTypingMembers();
     const currentUserId = composeSendBirdId(currentUser);
-    const partnerTyping = _.find(typingMembers, member => member.userId !== currentUserId);
+    const partnerTyping = _.find(
+      typingMembers,
+      member => member.userId !== currentUserId,
+    );
 
     if (partnerTyping) {
       return partnerTyping.nickname;
@@ -233,18 +271,13 @@ export class ChatWindowScreen extends PureComponent {
   }
 
   resolveChannelPerUser() {
-    const {
-      user,
-      setActiveChannel,
-      createChannel,
-      currentUser,
-    } = this.props;
-
+    const { setActiveChannel, createChannel, currentUser } = this.props;
+    const { user } = getRouteParams(this.props);
     const userId = composeSendBirdId(currentUser);
     const targetId = composeSendBirdId(user);
 
     createChannel(userId, targetId)
-      .then((resp) => {
+      .then(resp => {
         const payload = _.get(resp, 'payload');
 
         if (!payload) {
@@ -254,7 +287,8 @@ export class ChatWindowScreen extends PureComponent {
 
         setActiveChannel(payload.url);
         this.loadData();
-      }).catch(this.handleGenericError);
+      })
+      .catch(this.handleGenericError);
   }
 
   loadData() {
@@ -292,19 +326,33 @@ export class ChatWindowScreen extends PureComponent {
   }
 
   handleTakePhotoPress() {
-    ImagePicker.launchCamera(IMAGE_CAPTURE_OPTIONS, (response) => {
-      if (response.error) {
-        Alert.alert(response.error);
-      } else if (!response.didCancel) {
-        this.handleImageSelectSuccess(response);
+    requestPermissions(CAMERA_PERMISSION).then(result => {
+      if (result[CAMERA_PERMISSION] === RESULTS.GRANTED) {
+        launchCamera(IMAGE_CAPTURE_OPTIONS, response => {
+          if (response.didCancel) {
+            this.setState({ actionSheetOpen: false });
+            return;
+          }
+
+          if (response.errorCode) {
+            Alert.alert(response.errorMessage);
+          } else if (!response.didCancel) {
+            this.handleImageSelectSuccess(response);
+          }
+        });
       }
     });
   }
 
   handleChoosePhotoPress() {
-    ImagePicker.launchImageLibrary(IMAGE_CAPTURE_OPTIONS, (response) => {
-      if (response.error) {
-        Alert.alert(response.error);
+    launchImageLibrary(IMAGE_CAPTURE_OPTIONS, response => {
+      if (response.didCancel) {
+        this.setState({ actionSheetOpen: false });
+        return;
+      }
+
+      if (response.errorCode) {
+        Alert.alert(response.errorMessage);
       } else if (!response.didCancel) {
         this.handleImageSelectSuccess(response);
       }
@@ -316,7 +364,11 @@ export class ChatWindowScreen extends PureComponent {
 
     this.handleAttachmentDismiss(() => {
       this.setState({ uploadProgress: 0 });
-      sendFileMessage(channel.channel, imageData, this.handleUploadProgress);
+      sendFileMessage(
+        channel.channel,
+        imageData.assets[0],
+        this.handleUploadProgress,
+      );
     });
   }
 
@@ -328,7 +380,9 @@ export class ChatWindowScreen extends PureComponent {
   handleAttachmentDismiss(callback) {
     const resolvedCallback = _.isFunction(callback) ? callback : null;
 
-    this.setState({ actionSheetOpen: false }, () => InteractionManager.runAfterInteractions(resolvedCallback));
+    this.setState({ actionSheetOpen: false }, () =>
+      InteractionManager.runAfterInteractions(resolvedCallback),
+    );
   }
 
   handleTypingStatusChange(typing) {
@@ -343,27 +397,15 @@ export class ChatWindowScreen extends PureComponent {
   }
 
   handleUploadProgress(uploadEvent) {
-    const uploadProgress = parseInt(Math.floor(uploadEvent.loaded / uploadEvent.total * 100));
+    const uploadProgress = parseInt(
+      Math.floor((uploadEvent.loaded / uploadEvent.total) * 100),
+    );
 
     this.setState({ uploadProgress });
   }
 
-  handleNavigateBack() {
-    const { setActiveChannel, goBack } = this.props;
-
-    setActiveChannel('');
-    goBack();
-  }
-
   handlePhotoOpen(photo) {
-    const { openInModalAction } = this.props;
-
-    const route = {
-      screen: ext('PhotoFullScreen'),
-      props: { photo },
-    };
-
-    openInModalAction(route);
+    openInModal(ext('PhotoFullScreen'), { photo });
   }
 
   handleSendPress(message) {
@@ -389,7 +431,8 @@ export class ChatWindowScreen extends PureComponent {
     const withinMinuteOfNext = withinMinuteOf(message, nextItem);
     const defaultProfileImage = _.get(channel, 'channel.coverUrl');
 
-    const showNewLabel = initialUnreadCount > 0 && index === initialUnreadCount - 1;
+    const showNewLabel =
+      initialUnreadCount > 0 && index === initialUnreadCount - 1;
     const showTimeStamp = isFirstItem || !withinMinuteOfPrev;
 
     return (
@@ -447,8 +490,13 @@ export class ChatWindowScreen extends PureComponent {
 
   render() {
     const { style, messages, isTabBar } = this.props;
-    const { loading, actionSheetOpen, uploadProgress, modalActive, errorMessage } = this.state;
-    const navigationBarProps = this.getNavigationBarProps();
+    const {
+      loading,
+      actionSheetOpen,
+      uploadProgress,
+      modalActive,
+      errorMessage,
+    } = this.state;
     const typing = this.getTypingStatus();
     const keyboardOffset = Keyboard.calculateKeyboardOffset();
 
@@ -456,12 +504,13 @@ export class ChatWindowScreen extends PureComponent {
       { title: 'Camera', onPress: this.handleTakePhotoPress },
       { title: 'Photo & Video Library', onPress: this.handleChoosePhotoPress },
     ];
-    const cancelOptions = [{ title: 'Cancel', onPress: this.handleAttachmentDismiss }];
+    const cancelOptions = [
+      { title: 'Cancel', onPress: this.handleAttachmentDismiss },
+    ];
     const styleName = isTabBar ? '' : 'with-notch-padding';
 
     return (
       <Screen style={style.screen} styleName={styleName}>
-        <NavigationBar {...navigationBarProps} />
         <FlatList
           data={messages}
           inverted
@@ -473,7 +522,10 @@ export class ChatWindowScreen extends PureComponent {
           onEndReachedThreshold={0.5}
           renderItem={this.renderItem}
         />
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={keyboardOffset}>
+        <KeyboardAvoidingView
+          behavior="padding"
+          keyboardVerticalOffset={keyboardOffset}
+        >
           <ChatInputBox
             editable={!loading}
             onAttachmentPress={this.handleAttachmentPress}
@@ -487,7 +539,7 @@ export class ChatWindowScreen extends PureComponent {
           visible={modalActive}
           onDismissPress={this.handleModalDismiss}
           onButtonPress={this.handleModalDismiss}
-          onModalHide={this.handleNavigateBack}
+          onModalHide={this.handleGoBack}
           title={I18n.t(ext('chatUnavailableErrorTitle'))}
           description={errorMessage}
         />
@@ -502,18 +554,17 @@ export class ChatWindowScreen extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const channel = selectors.getActiveChannel(state);
-  const activeRoute = getActiveRoute(state);
-  const screenActive = _.get(activeRoute, 'screen') === CHAT_CONVERSATION_SCREEN;
 
   return {
     currentUser: getUser(state),
     channel,
-    messages: channel ? selectors.getChannelMessages(channel.channel, state) : [],
+    messages: channel
+      ? selectors.getChannelMessages(channel.channel, state)
+      : [],
     isTabBar: isTabBarNavigation(state),
     isConnected: selectors.isConnected(state),
-    screenActive,
     hasValidSubscription: getSubscriptionValidState(state),
   };
 };
@@ -524,11 +575,15 @@ const mapDispatchToProps = {
   setActiveChannel: actions.setActiveChannel,
   createChannel: actions.createChannel,
   sendFileMessage: actions.sendFileMessage,
-  openInModalAction: openInModal,
   loadChannel: actions.loadChannel,
-  goBack: navigateBack,
 };
 
-export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ChatWindowScreen'))(ChatWindowScreen),
-), true);
+export default withIsFocused(
+  loginRequired(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps,
+    )(connectStyle(ext('ChatWindowScreen'))(ChatWindowScreen)),
+    true,
+  ),
+);

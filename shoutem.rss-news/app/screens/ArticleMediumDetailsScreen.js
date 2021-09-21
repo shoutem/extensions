@@ -1,8 +1,9 @@
 import React from 'react';
-import moment from 'moment';
-import { connect } from 'react-redux';
 import _ from 'lodash';
-import { NavigationBar } from 'shoutem.navigation';
+import moment from 'moment';
+import autoBindReact from 'auto-bind/react';
+import { connect } from 'react-redux';
+import { composeNavigationStyles } from 'shoutem.navigation';
 import { getLeadImageUrl, getImageAttachments } from 'shoutem.rss';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -13,6 +14,7 @@ import {
   Image,
   Tile,
   View,
+  ShareButton,
   SimpleHtml,
 } from '@shoutem/ui';
 import { ext } from '../const';
@@ -28,15 +30,38 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
     ...ArticleDetailsScreen.propTypes,
   };
 
+  constructor(props) {
+    super(props);
+
+    autoBindReact(this);
+
+    props.navigation.setOptions(this.getNavBarProps());
+  }
+
+  componentDidMount() { }
+
   getNavBarProps() {
     const { article } = this.props;
+
+    const styleName = getLeadImageUrl(article) ? 'clear' : 'noBorder';
+
+    const articleTitle = _.get(article, 'title', '');
+    const articleLink = _.get(article, 'link', '');
+
     return {
-      styleName: getLeadImageUrl(article) ? 'clear' : 'no-border',
-      animationName: getLeadImageUrl(article) ? 'solidify' : '',
-      share: {
-        title: article.title,
-        link: article.link,
-      },
+      headerRight: props => (
+        <ShareButton
+          styleName="clear"
+          title={articleTitle}
+          url={articleLink}
+          iconProps={{ style: props.tintColor }}
+        />
+      ),
+      title: '',
+      ...composeNavigationStyles([
+        styleName,
+        getLeadImageUrl(article) && 'solidify',
+      ]),
     };
   }
 
@@ -67,7 +92,6 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderImage(imageUrl)}
           <View styleName="solid">
@@ -92,9 +116,4 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(
-  connectStyle(
-    ext('ArticleMediumDetailsScreen'),
-    {},
-  )(ArticleMediumDetailsScreen),
-);
+)(connectStyle(ext('ArticleMediumDetailsScreen'))(ArticleMediumDetailsScreen));

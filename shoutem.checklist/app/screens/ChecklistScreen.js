@@ -7,7 +7,7 @@ import { connectStyle } from '@shoutem/theme';
 import { Button, Screen, ScrollView, Text } from '@shoutem/ui';
 import { CmsListScreen } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
-import { navigateTo, NavigationBar } from 'shoutem.navigation';
+import { navigateTo, getRouteParams } from 'shoutem.navigation';
 import { Checklist, ChecklistNavBarButton } from '../components';
 import { ext } from '../const';
 import {
@@ -41,10 +41,10 @@ export class ChecklistScreen extends CmsListScreen {
   }
 
   getNavBarProps() {
-    const { contactEmail, isSubmitted, title } = this.props;
+    const { contactEmail, isSubmitted } = this.props;
 
     return {
-      renderRightComponent: () => (
+      headerRight: () => (
         <ChecklistNavBarButton
           contactEmail={contactEmail}
           isSubmitted={isSubmitted}
@@ -52,7 +52,6 @@ export class ChecklistScreen extends CmsListScreen {
           onSubmitPress={this.handleSubmit}
         />
       ),
-      title,
     };
   }
 
@@ -96,28 +95,23 @@ export class ChecklistScreen extends CmsListScreen {
   }
 
   saveProgress() {
-    const { setChecklistStatuses } = this.props;
+    const { setChecklistStatuses, shortcutId } = this.props;
     const { statuses } = this.state;
 
-    setChecklistStatuses(statuses);
+    setChecklistStatuses(statuses, shortcutId);
     this.setState({ hasChanges: false });
   }
 
   submitProgress() {
+    const { hasSubmitMessageScreen, submitChecklist } = this.props;
     const {
-      hasSubmitMessageScreen,
-      navigateTo,
       shortcut: { id },
-      submitChecklist,
-    } = this.props;
+    } = getRouteParams(this.props);
 
     submitChecklist(id);
 
     if (hasSubmitMessageScreen) {
-      navigateTo({
-        screen: ext('SubmitMessageScreen'),
-        props: { shortcutId: id },
-      });
+      navigateTo(ext('SubmitMessageScreen'), { shortcutId: id });
     }
   }
 
@@ -133,7 +127,6 @@ export class ChecklistScreen extends CmsListScreen {
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
         <ScrollView
           contentContainerStyle={contentContainerStyle}
           endFillColor={style.endFillColor}
@@ -167,8 +160,9 @@ export class ChecklistScreen extends CmsListScreen {
 
 export const mapStateToProps = (state, ownProps) => {
   const submittedChecklists = getSubmittedChecklists(state);
-  const isSubmitted = submittedChecklists.includes(ownProps.shortcut.id);
-  const settings = ownProps.shortcut?.settings || {};
+  const { shortcut } = getRouteParams(ownProps);
+  const isSubmitted = submittedChecklists.includes(shortcut.id);
+  const settings = shortcut?.settings || {};
   const { contactEmail = '', hasSubmitMessageScreen = false } = settings;
 
   return {
@@ -177,11 +171,11 @@ export const mapStateToProps = (state, ownProps) => {
     checklistStatuses: getChecklistStatuses(state),
     hasSubmitMessageScreen,
     isSubmitted,
+    shortcutId: shortcut.id,
   };
 };
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
-  navigateTo,
   setChecklistStatuses,
   submitChecklist,
 });

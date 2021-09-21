@@ -1,10 +1,10 @@
 {
   "name": "news",
-  "version": "2.5.2",
-  "platform": "2.5.*",
+  "version": "3.2.1-rc.0",
+  "platform": "^3.0.0",
   "title": "News",
   "description": "Show news articles",
-  "releaseNotes": "* Added CMS search feature",
+  "releaseNotes": "* Added new layout - Medium photo with solid navbar without the date\n* Added image gallery feature",
   "icon": "server/assets/add-news-image.png",
   "dependencies": [
     "shoutem.layouts",
@@ -152,6 +152,15 @@
       }
     },
     {
+      "name": "SolidNavbarMediumArticleDetailsNoDateScreen",
+      "title": "Medium photo with solid navbar without the date",
+      "image": "./server/assets/screens/medium-photo-solid-navbar-details-no-date.png",
+      "extends": "@.ArticleDetailsScreen",
+      "settings": {
+        "navigationBarStyle": "solid"
+      }
+    },
+    {
       "name": "SolidNavbarLargeArticleDetailsScreen",
       "title": "Large photo with solid navbar",
       "image": "./server/assets/screens/large-photo-solid-navbar-details.png",
@@ -167,6 +176,15 @@
       "extends": "@.ArticleDetailsScreen",
       "settings": {
         "navigationBarStyle": "clear"
+      }
+    },
+    {
+      "name": "FeaturedGrid122ArticlesScreen",
+      "title": "1-2-2 pattern grid with a featured item",
+      "image": "./server/assets/screens/1-2-2-grid-with-featured.png",
+      "extends": "@.ArticlesScreen",
+      "settings": {
+        "hasFeaturedItem": true
       }
     }
   ],

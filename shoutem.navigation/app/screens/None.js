@@ -1,39 +1,37 @@
-import React, { PureComponent } from 'react';
+import { PureComponent } from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { executeShortcut } from 'shoutem.application/redux';
-import {
-  replace,
-  REPLACE,
-  ROOT_NAVIGATION_STACK,
-} from '../redux/core';
-import { NO_SCREENS_ROUTE } from '../const';
+import { NO_SCREENS } from '../const';
+import { getRouteParams } from '../services';
 
-class None extends PureComponent {
+export default class None extends PureComponent {
   static propTypes = {
-    shortcut: PropTypes.object.isRequired,
-    executeShortcut: PropTypes.func,
-    replace: PropTypes.func,
+    route: PropTypes.shape({
+      params: PropTypes.shape({
+        shortcut: PropTypes.object.isRequired,
+        startingScreen: PropTypes.string.isRequired,
+      }),
+    }),
   };
 
   componentDidMount() {
-    const { shortcut, replace, executeShortcut } = this.props;
+    const { navigation } = this.props;
+    const { shortcut, startingScreen } = getRouteParams(this.props);
 
-    const children = shortcut.children || [];
+    const children = _.get(shortcut, 'children', []);
 
-    if (!children[0]) {
-      replace(NO_SCREENS_ROUTE, ROOT_NAVIGATION_STACK);
-      return;
-    }
+    const selectedFirstScreen = _.find(children, { id: startingScreen });
+    const firstScreen = children[0];
 
-    const shortcutId = children[0].id;
+    const resolvedScreen = selectedFirstScreen || firstScreen;
+    const resolvedRoute = resolvedScreen
+      ? resolvedScreen.canonicalName
+      : NO_SCREENS;
 
-    executeShortcut(shortcutId, REPLACE);
+    navigation.replace(resolvedRoute);
   }
 
   render() {
     return null;
   }
 }
-
-export default connect(undefined, { executeShortcut, replace })(None);

@@ -1,10 +1,23 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import { Alert, KeyboardAvoidingView, TextInput } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
-import { connect } from 'react-redux';
-import autoBindReact from 'auto-bind/react';
+import React, { useEffect, useState, useRef } from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  TextInput,
+  Platform,
+  Keyboard as RNKeyboard,
+} from 'react-native';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { connect } from 'react-redux';
+import { authenticate } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
+import {
+  requestPermissions,
+  PERMISSION_TYPES,
+  RESULTS,
+} from 'shoutem.permissions';
+import { getRouteParams, HeaderTextButton } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
@@ -20,140 +33,124 @@ import {
   TouchableOpacity,
   Keyboard,
   ScrollView,
+  ActionSheet,
 } from '@shoutem/ui';
-
-import { authenticate } from 'shoutem.auth';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
-
-import { user as userShape } from '../components/shapes';
 import { ext } from '../const';
 
-const { string, func, number, bool } = PropTypes;
+const CAMERA_PERMISSION = Platform.select({
+  ios: PERMISSION_TYPES.IOS_CAMERA,
+  default: PERMISSION_TYPES.ANDROID_CAMERA,
+});
 
-export class CreateStatusScreen extends PureComponent {
-  static propTypes = {
-    user: userShape.isRequired,
-    onStatusCreated: func.isRequired,
-    enablePhotoAttachments: bool,
-    placeholder: string,
-    statusMaxLength: number,
-    title: string,
+const IMAGE_PICKER_OPTIONS = {
+  includeBase64: true,
+  maxHeight: 1024,
+  maxWidth: 1024,
+  mediaType: 'photo',
+};
+
+export function CreateStatusScreen(props) {
+  const { authenticate, style } = props;
+  const {
+    title,
+    user,
+    placeholder,
+    enablePhotoAttachments = true,
+    statusMaxLength,
+    onStatusCreated,
+  } = getRouteParams(props);
+
+  const [text, setText] = useState('');
+  const [numOfCharacters, setNumOfCharacters] = useState(statusMaxLength);
+  const [pickerActive, setPickerActive] = useState(false);
+  const [isPostEmpty, setIsPostEmpty] = useState(true);
+  const [imageData, setImageData] = useState(undefined);
+
+  const textInputRef = useRef(null);
+
+  useEffect(() => {
+    const { navigation } = props;
+    navigation.setOptions({ title, headerRight });
+
+    if (textInputRef && _.isFunction(textInputRef.current.focus())) {
+      textInputRef.current.focus();
+    }
+  }, [text, isPostEmpty, imageData]);
+
+  const handleTextChange = text => {
+    setText(text);
+    setNumOfCharacters(statusMaxLength - text.length);
+    setIsPostEmpty(text.length === 0);
   };
 
-  static defaultProps = {
-    enablePhotoAttachments: true,
-  };
-
-  constructor(props) {
-    super(props);
-
-    autoBindReact(this);
-
-    this.state = {
-      text: '',
-      numOfCharacters: props.statusMaxLength,
-      postingDisabled: true,
-      imageData: undefined,
-    };
-  }
-
-  handleTextChange(text) {
-    const { statusMaxLength } = this.props;
-
-    this.setState({
-      text,
-      numOfCharacters: statusMaxLength - text.length,
-      postingDisabled: text.length === 0,
-    });
-  }
-
-  addNewStatus() {
-    const { authenticate, onStatusCreated } = this.props;
-    const { imageData, postingDisabled, text } = this.state;
-
-    if (postingDisabled) {
+  const addNewStatus = () => {
+    if (isPostEmpty) {
       Alert.alert(I18n.t(ext('blankPostWarning')));
     } else {
       authenticate(() => onStatusCreated(text, imageData));
     }
-  }
+  };
 
-  appendImage() {
-    const options = {
-      allowsEditing: true,
-      maxHeight: 1024,
-      maxWidth: 1024,
-    };
+  const showPicker = () => {
+    RNKeyboard.dismiss();
+    setPickerActive(true);
+  };
 
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.error) {
-        Alert.alert(response.error);
-      } else if (!response.didCancel) {
-        this.setState({ imageData: response });
+  const hidePicker = () => {
+    setPickerActive(false);
+  };
+
+  const handleImageSelected = response => {
+    if (response.errorCode) {
+      Alert.alert(response.errorMessage);
+    } else if (!response.didCancel) {
+      setImageData(response.assets[0].base64);
+      setPickerActive(false);
+    }
+  };
+
+  const handleCameraSelectPress = () => {
+    requestPermissions(CAMERA_PERMISSION).then(result => {
+      if (result[CAMERA_PERMISSION] === RESULTS.GRANTED) {
+        return launchCamera(IMAGE_PICKER_OPTIONS, handleImageSelected);
       }
     });
-  }
+  };
 
-  removeImage() {
-    this.setState({ imageData: undefined });
-  }
+  const removeImage = () => {
+    setImageData(undefined);
+  };
 
-  renderRightComponent() {
+  const handleGallerySelectPress = () => {
+    launchImageLibrary(IMAGE_PICKER_OPTIONS, handleImageSelected);
+  };
+
+  const headerRight = props => {
     return (
-      <View styleName="container" virtual>
-        <Button
-          styleName="clear"
-          onPress={this.addNewStatus}
-        >
-          <Text>{I18n.t(ext('postCommentButton'))}</Text>
-        </Button>
-      </View>
+      <HeaderTextButton
+        title={I18n.t(ext('postCommentButton'))}
+        onPress={addNewStatus}
+        {...props}
+      />
     );
-  }
+  };
 
-  renderHeader() {
-    const { user } = this.props;
-
+  const renderHeader = () => {
     const name = _.get(user, 'profile.name');
+    // eslint-disable-next-line camelcase
     const profile_image_url = _.get(user, 'profile.image');
 
     return (
       <View>
         <Row styleName="small">
-          <Image
-            styleName="small-avatar"
-            source={{ uri: profile_image_url }}
-          />
+          <Image styleName="small-avatar" source={{ uri: profile_image_url }} />
           <Text>{name}</Text>
         </Row>
       </View>
     );
-  }
+  };
 
-  renderTextInput() {
-    const { text } = this.state;
-    const { placeholder, statusMaxLength, style } = this.props;
-
-    return (
-      <View styleName="flexible">
-        <TextInput
-          style={style.textInput}
-          multiline
-          maxLength={statusMaxLength}
-          placeholder={placeholder}
-          onChangeText={this.handleTextChange}
-          value={text}
-          returnKeyType="next"
-        />
-        {this.renderAttachedImage()}
-      </View>
-    );
-  }
-
-  renderAttachedImage() {
-    const { imageData } = this.state;
-
+  const renderAttachedImage = () => {
     if (!imageData) {
       return null;
     }
@@ -161,33 +158,48 @@ export class CreateStatusScreen extends PureComponent {
     return (
       <View styleName="md-gutter-vertical">
         <ImageBackground
-          source={{ uri: `data:image/png;base64,${imageData.data}` }}
+          source={{ uri: `data:image/png;base64,${imageData}` }}
           styleName="large-wide"
         >
           <View styleName="fill-parent horizontal v-start h-end sm-gutter-right sm-gutter-top">
-            <Button styleName="tight clear" onPress={this.removeImage}>
+            <Button styleName="tight clear" onPress={removeImage}>
               <Icon name="close" />
             </Button>
           </View>
         </ImageBackground>
       </View>
     );
-  }
+  };
 
-  renderFooter() {
-    const { enablePhotoAttachments, style } = this.props;
-    const { numOfCharacters } = this.state;
+  const renderTextInput = () => {
+    return (
+      <View styleName="flexible">
+        <TextInput
+          ref={textInputRef}
+          style={style.textInput}
+          multiline
+          maxLength={statusMaxLength}
+          placeholder={placeholder}
+          onChangeText={handleTextChange}
+          value={text}
+          returnKeyType="next"
+        />
+        {renderAttachedImage()}
+      </View>
+    );
+  };
 
+  const renderFooter = () => {
     const keyboardOffset = Keyboard.calculateKeyboardOffset();
     const addPhotoButton = enablePhotoAttachments && (
-      <TouchableOpacity onPress={this.appendImage}>
+      <TouchableOpacity onPress={showPicker}>
         <Icon name="take-a-photo" />
       </TouchableOpacity>
     );
 
     return (
       <KeyboardAvoidingView
-        behavior='padding'
+        behavior="padding"
         keyboardVerticalOffset={keyboardOffset}
       >
         <Divider styleName="line" />
@@ -196,32 +208,46 @@ export class CreateStatusScreen extends PureComponent {
           style={style.footer}
         >
           {addPhotoButton}
-          <Caption>{numOfCharacters} characters left</Caption>
+          <Caption>
+            {I18n.t(ext('charactersLeft'), { numOfCharacters })}
+          </Caption>
         </View>
       </KeyboardAvoidingView>
     );
-  }
+  };
 
-  render() {
-    const { title } = this.props;
+  const pickerOptions = [
+    {
+      title: I18n.t(ext('imagePickerCameraOption')),
+      onPress: handleCameraSelectPress,
+    },
+    {
+      title: I18n.t(ext('imagePickerGalleryOption')),
+      onPress: handleGallerySelectPress,
+    },
+  ];
 
-    return (
-      <Screen styleName="paper with-notch-padding">
-        <NavigationBar
-          title={title}
-          renderRightComponent={this.renderRightComponent}
-        />
-        <Divider styleName="line" />
-        {this.renderHeader()}
-        <ScrollView>
-          {this.renderTextInput()}
-        </ScrollView>
-        {this.renderFooter()}
-      </Screen>
-    );
-  }
+  return (
+    <Screen styleName="paper with-notch-padding">
+      <Divider styleName="line" />
+      {renderHeader()}
+      <ScrollView>{renderTextInput()}</ScrollView>
+      {renderFooter()}
+      <ActionSheet
+        confirmOptions={pickerOptions}
+        active={pickerActive}
+        onDismiss={hidePicker}
+      />
+    </Screen>
+  );
 }
 
-export default connect(undefined, { authenticate })(
+CreateStatusScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  authenticate: PropTypes.func,
+  style: PropTypes.object,
+};
+
+export default connect(null, { authenticate })(
   connectStyle(ext('CreateStatusScreen'))(CreateStatusScreen),
 );

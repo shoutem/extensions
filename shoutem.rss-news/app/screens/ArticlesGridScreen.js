@@ -1,8 +1,9 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { getLeadImageUrl } from 'shoutem.rss';
-import { cloneStatus } from '@shoutem/redux-io';
+import { cloneStatus, shouldRefresh } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
@@ -13,6 +14,7 @@ import {
   mapStateToProps,
   mapDispatchToProps,
 } from './ArticlesListScreen';
+import { getRouteParams, HeaderStyles } from 'shoutem.navigation';
 
 class ArticlesGridScreen extends ArticlesListScreen {
   static propTypes = {
@@ -21,20 +23,26 @@ class ArticlesGridScreen extends ArticlesListScreen {
 
   constructor(props, context) {
     super(props, context);
-    this.renderRow = this.renderRow.bind(this);
+
+    autoBindReact(this);
   }
 
-  getNavigationBarProps() {
-    return {
-      title: this.props.title || '',
-      styleName: 'featured',
-    };
+  componentDidMount() {
+    const { data, fetchNewsFeed, shortcutId, navigation } = this.props;
+
+    if (shouldRefresh(data)) {
+      fetchNewsFeed(shortcutId);
+    }
+
+    navigation.setOptions({
+      ...HeaderStyles.featured,
+    });
   }
 
   renderFeaturedItem(article) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return hasFeaturedItem && article ? (
+    return screenSettings.hasFeaturedItem && article ? (
       <FeaturedArticleView
         key={article[0].id}
         articleId={article[0].id}
@@ -65,10 +73,10 @@ class ArticlesGridScreen extends ArticlesListScreen {
   }
 
   renderData(articles) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
     // Group the articles into rows with 2 columns, except for the
     // first article. The first article is treated as a featured article
-    let isFirstArticle = hasFeaturedItem;
+    let isFirstArticle = screenSettings.hasFeaturedItem;
     const groupedArticles = GridRow.groupByRows(articles, 2, () => {
       if (isFirstArticle) {
         isFirstArticle = false;

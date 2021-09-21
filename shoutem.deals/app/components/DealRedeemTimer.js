@@ -3,9 +3,7 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-
 import { Icon, Text } from '@shoutem/ui';
-
 import { formatTwoDigitNumber, getTimeLeft } from '../services';
 
 export default class DealRedeemTimer extends PureComponent {
@@ -42,14 +40,17 @@ export default class DealRedeemTimer extends PureComponent {
     const endTime = moment(propsEndTime);
 
     if (stateEndTime.format() !== endTime.format()) {
-      this.setState({
-        endTime,
-      }, () => {
-        if (this.timerInterval) {
-          this.destroyTimer();
-          this.initializeTimer();
-        }
-      });
+      this.setState(
+        {
+          endTime,
+        },
+        () => {
+          if (this.timerInterval) {
+            this.destroyTimer();
+            this.initializeTimer();
+          }
+        },
+      );
     }
   }
 
@@ -58,7 +59,7 @@ export default class DealRedeemTimer extends PureComponent {
   }
 
   canContinueTimer() {
-    return (this.secondsLeft > 0);
+    return this.secondsLeft > 0;
   }
 
   initializeTimer() {
@@ -112,18 +113,20 @@ export default class DealRedeemTimer extends PureComponent {
     const { hoursLeft, minutesLeft } = this.state;
 
     if (!this.canContinueTimer()) {
-      return (<Text virtual />);
+      return <Text />;
     }
 
     return (
-      <Text virtual>
+      <Text>
         <Icon
           name="checkbox-on"
           styleName="md-gutter-right"
           style={{ fontSize: 14 }}
         />
         <Text>
-          {`  ${formatTwoDigitNumber(hoursLeft)} H : ${formatTwoDigitNumber(minutesLeft)} M`}
+          {`  ${formatTwoDigitNumber(hoursLeft)} H : ${formatTwoDigitNumber(
+            minutesLeft,
+          )} M`}
         </Text>
       </Text>
     );

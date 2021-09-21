@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-
 import {
   HorizontalPager,
   Image,
@@ -10,7 +9,6 @@ import {
   PageIndicators,
   Tile,
 } from '@shoutem/ui';
-
 import DealImage from './DealImage';
 
 export default class DealImageGallery extends PureComponent {
@@ -39,16 +37,11 @@ export default class DealImageGallery extends PureComponent {
   }
 
   hasMultipleImages() {
-    return (_.size(this.props.images) > 1);
+    return _.size(this.props.images) > 1;
   }
 
   renderImage(hasAnimation = true) {
-    const {
-      children,
-      deal,
-      animationName,
-      imageStyleName,
-    } = this.props;
+    const { children, deal, animationName, imageStyleName } = this.props;
 
     const resolvedAnimation = hasAnimation ? animationName : null;
 
@@ -59,10 +52,7 @@ export default class DealImageGallery extends PureComponent {
         styleName={imageStyleName}
       >
         {!_.isEmpty(children) && (
-          <Tile
-            animationName="hero"
-            styleName="text-centric clear fill-parent"
-          >
+          <Tile animationName="hero" styleName="text-centric clear fill-parent">
             <Overlay
               styleName="image-overlay fill-parent"
               style={{ marginBottom: 0 }}
@@ -102,10 +92,7 @@ export default class DealImageGallery extends PureComponent {
 
   renderGalleryPage(image) {
     return (
-      <Image
-        source={{ uri: image }}
-        styleName={this.props.imageStyleName}
-      />
+      <Image source={{ uri: image }} styleName={this.props.imageStyleName} />
     );
   }
 
@@ -118,5 +105,4 @@ export default class DealImageGallery extends PureComponent {
     // to avoid crash on Android 9 (maybe also higher OS)
     return this.renderImage(false);
   }
-
 }

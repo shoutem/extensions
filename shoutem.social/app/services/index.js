@@ -1,5 +1,4 @@
-export ShoutemApi, { shoutemApi } from './shoutemApi';
-
+export { shoutemApi } from './shoutemApi';
 export {
   increaseNumberOfComments,
   decreaseNumberOfComments,
@@ -8,9 +7,17 @@ export {
   updateStatusesAfterLike,
   updateStatusesAfterUnlike,
   formatLikeText,
+  currentUserOwnsStatus,
 } from './status';
-
 export {
   adaptSocialUserForProfileScreen,
   openProfileForLegacyUser,
 } from './user';
+
+export {
+  openBlockActionSheet,
+  openBlockOrReportActionSheet,
+  openReportActionSheet,
+  openBlockAndReportActionSheet,
+  openUnblockActionSheet,
+} from './reporting';

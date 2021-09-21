@@ -1,4 +1,4 @@
-import { createSubNavigationScreen } from '../helpers';
+import { withSubNavigationScreen } from '../hoc';
 import IconGrid from '../components/IconGrid';
 
-export default createSubNavigationScreen(IconGrid);
+export default withSubNavigationScreen(IconGrid);

@@ -2,10 +2,10 @@ import React from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
+import { RssListScreen } from 'shoutem.rss';
 import { connectStyle } from '@shoutem/theme';
 import { cloneStatus, find, next, shouldRefresh } from '@shoutem/redux-io';
-import { navigateTo as navigateToAction } from 'shoutem.navigation';
-import { RssListScreen } from 'shoutem.rss';
 import { ListEpisodeView, FeaturedEpisodeView } from '../components';
 import { ext, RSS_PODCAST_SCHEMA } from '../const';
 import {
@@ -40,18 +40,20 @@ export class EpisodesListScreen extends RssListScreen {
     }
   }
 
+  // Overriding RssListScreen refreshData.
+  // Once the collection is expired & data needs to be refreshed, it tries to fetch
+  // data by schema that doesn't exist (shoutem.proxy.news), fails & tries over and
+  // over again - infinite loop that causes app freeze.
+  refreshData() {}
+
   openEpisodeWithId(id) {
-    const { navigateTo, feedUrl } = this.props;
+    const { feedUrl, enableDownload } = this.props;
 
-    const route = {
-      screen: ext('EpisodeDetailsScreen'),
-      props: {
-        id,
-        feedUrl,
-      },
-    };
-
-    navigateTo(route);
+    navigateTo(ext('EpisodeDetailsScreen'), {
+      id,
+      feedUrl,
+      enableDownload,
+    });
   }
 
   getNextEpisode(episode) {
@@ -63,9 +65,10 @@ export class EpisodesListScreen extends RssListScreen {
   }
 
   renderFeaturedItem(episode) {
-    const { enableDownload, feedUrl, hasFeaturedItem } = this.props;
+    const { enableDownload, feedUrl } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return hasFeaturedItem && episode ? (
+    return screenSettings.hasFeaturedItem && episode ? (
       <FeaturedEpisodeView
         key={episode.id}
         feedUrl={feedUrl}
@@ -92,9 +95,10 @@ export class EpisodesListScreen extends RssListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const shortcutId = _.get(ownProps, 'shortcut.id');
-  const settings = ownProps.shortcut?.settings || {};
-  const { feedUrl, enableDownload } = settings;
+  const { shortcut } = getRouteParams(ownProps);
+  const shortcutId = shortcut?.id || null;
+  const settings = shortcut?.settings || {};
+  const { feedUrl, enableDownload = false } = settings;
   const episodesFeed = getEpisodesFeed(state, feedUrl);
   const resolvedFeed = enableDownload
     ? getEpisodesFeedWithDownloads(state, feedUrl)
@@ -116,7 +120,6 @@ export const mapDispatchToProps = {
   addDownloadedEpisode,
   removeDownloadedEpisode,
   fetchEpisodesFeed,
-  navigateTo: navigateToAction,
   find,
   next,
 };

@@ -2,15 +2,16 @@
 
 // Constants `screens`, `actions` and `reducer` are exported via named export
 // It is important to use those exact names
-import { NotificationsPage, GroupsPage } from './pages';
+import { GeneralPage, GroupsPage, NotificationsPage } from './pages';
 import { shoutemUrls } from './services';
 import './style.scss';
 
 import { reducer } from './redux';
 
 export const pages = {
-  NotificationsPage,
+  GeneralPage,
   GroupsPage,
+  NotificationsPage,
 };
 
 let pageReducer = null;

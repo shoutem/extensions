@@ -34,7 +34,11 @@ export class Checklist extends PureComponent {
     return (
       <View style={style.mainContainer}>
         <Title styleName="md-gutter-bottom">{title}</Title>
-        <SimpleHtml body={description} style={style.simpleHtml} />
+        <SimpleHtml
+          body={description}
+          imagesMaxWidth={style.imagesMaxWidth}
+          style={style.simpleHtml}
+        />
         {checklistItems.map((item, index) => {
           return (
             <ChecklistItem

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import SmallListBooksView from '../components/SmallListBooksView';
 import {
   BooksListScreen,
@@ -10,7 +11,8 @@ import {
 class BooksSmallListScreen extends BooksListScreen {
   constructor(props, context) {
     super(props, context);
-    this.renderRow = this.renderRow.bind(this);
+
+    autoBindReact(this);
 
     this.state.renderCategoriesInline = false;
   }

@@ -1,5 +1,6 @@
 import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { Image, InteractionManager, ColorPropType } from 'react-native';
 import _ from 'lodash';
 
@@ -23,7 +24,8 @@ function getUserLocation(success, error) {
 function isLocatedAt(coordinates) {
   const { latitude, longitude } = coordinates;
 
-  return (marker) => marker.latitude === latitude && marker.longitude === longitude;
+  return marker =>
+    marker.latitude === latitude && marker.longitude === longitude;
 }
 
 /**
@@ -36,8 +38,7 @@ export default class MapViewBase extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.onRegionChange = this.onRegionChange.bind(this);
-    this.onMarkerPress = this.onMarkerPress.bind(this);
+    autoBindReact(this);
 
     this.state = {
       isReady: false,
@@ -87,14 +88,18 @@ export default class MapViewBase extends PureComponent {
 
     const topZindex = _.size(markers);
 
-    return selectedMarker && _.isEqual(marker, selectedMarker) ? topZindex : index;
+    return selectedMarker && _.isEqual(marker, selectedMarker)
+      ? topZindex
+      : index;
   }
 
   getMarkerImage(marker) {
     const { selectedMarkerImage, markerImage } = this.props;
     const { selectedMarker } = this.state;
 
-    return selectedMarker && _.isEqual(marker, selectedMarker) ? selectedMarkerImage : markerImage;
+    return selectedMarker && _.isEqual(marker, selectedMarker)
+      ? selectedMarkerImage
+      : markerImage;
   }
 
   resolveInitialRegion() {
@@ -105,7 +110,7 @@ export default class MapViewBase extends PureComponent {
     if (focusUserLocation) {
       getUserLocation(
         location => this.updateInitialRegion(location.coords),
-        () => this.updateInitialRegion(region)
+        () => this.updateInitialRegion(region),
       );
       return;
     }
@@ -130,7 +135,9 @@ export default class MapViewBase extends PureComponent {
         ...region,
       },
     });
-    InteractionManager.runAfterInteractions(() => this.setState({ isReady: true }));
+    InteractionManager.runAfterInteractions(() =>
+      this.setState({ isReady: true }),
+    );
   }
 
   // Override in subclass
@@ -162,80 +169,81 @@ const Region = PropTypes.shape({
 /**
  * Map annotations with title and subtitle.
  */
-const Annotations = PropTypes.arrayOf(PropTypes.shape({
-  /**
-   * The location of the annotation.
-   */
-  latitude: PropTypes.number.isRequired,
-  longitude: PropTypes.number.isRequired,
+const Annotations = PropTypes.arrayOf(
+  PropTypes.shape({
+    /**
+     * The location of the annotation.
+     */
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
 
-  /**
-   * Whether the pin drop should be animated or not
-   */
-  animateDrop: PropTypes.bool,
+    /**
+     * Whether the pin drop should be animated or not
+     */
+    animateDrop: PropTypes.bool,
 
-  /**
-   * Whether the pin should be draggable or not
-   */
-  draggable: PropTypes.bool,
+    /**
+     * Whether the pin should be draggable or not
+     */
+    draggable: PropTypes.bool,
 
-  /**
-   * Event that fires when the annotation drag state changes.
-   */
-  onDragStateChange: PropTypes.func,
+    /**
+     * Event that fires when the annotation drag state changes.
+     */
+    onDragStateChange: PropTypes.func,
 
-  /**
-   * Event that fires when the annotation gets was tapped by the user
-   * and the callout view was displayed.
-   */
-  onFocus: PropTypes.func,
+    /**
+     * Event that fires when the annotation gets was tapped by the user
+     * and the callout view was displayed.
+     */
+    onFocus: PropTypes.func,
 
-  /**
-   * Event that fires when another annotation or the mapview itself
-   * was tapped and a previously shown annotation will be closed.
-   */
-  onBlur: PropTypes.func,
+    /**
+     * Event that fires when another annotation or the mapview itself
+     * was tapped and a previously shown annotation will be closed.
+     */
+    onBlur: PropTypes.func,
 
-  /**
-   * Annotation title and subtile.
-   */
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
+    /**
+     * Annotation title and subtile.
+     */
+    title: PropTypes.string,
+    subtitle: PropTypes.string,
 
-  /**
-   * Callout views.
-   */
-  leftCalloutView: PropTypes.element,
-  rightCalloutView: PropTypes.element,
-  detailCalloutView: PropTypes.element,
+    /**
+     * Callout views.
+     */
+    leftCalloutView: PropTypes.element,
+    rightCalloutView: PropTypes.element,
+    detailCalloutView: PropTypes.element,
 
-  /**
-   * The pin color. This can be any valid color string, or you can use one
-   * of the predefined PinColors constants. Applies to both standard pins
-   * and custom pin images.
-   *
-   * Note that on iOS 8 and earlier, only the standard PinColor constants
-   * are supported for regular pins. For custom pin images, any tintColor
-   * value is supported on all iOS versions.
-   */
-  tintColor: ColorPropType,
+    /**
+     * The pin color. This can be any valid color string, or you can use one
+     * of the predefined PinColors constants. Applies to both standard pins
+     * and custom pin images.
+     *
+     * Note that on iOS 8 and earlier, only the standard PinColor constants
+     * are supported for regular pins. For custom pin images, any tintColor
+     * value is supported on all iOS versions.
+     */
+    tintColor: ColorPropType,
 
-  /**
-   * Custom pin image. This must be a static image resource inside the app.
-   */
-  image: Image.propTypes.source,
+    /**
+     * Custom pin image. This must be a static image resource inside the app.
+     */
+    image: Image.propTypes.source,
 
-  /**
-   * Custom pin view. If set, this replaces the pin or custom pin image.
-   */
-  view: PropTypes.element,
+    /**
+     * Custom pin view. If set, this replaces the pin or custom pin image.
+     */
+    view: PropTypes.element,
 
-  /**
-   * annotation id
-   */
-  id: PropTypes.string,
-}));
-
+    /**
+     * annotation id
+     */
+    id: PropTypes.string,
+  }),
+);
 
 MapViewBase.propTypes = {
   markerImage: Image.propTypes.source,

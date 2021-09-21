@@ -4,6 +4,8 @@ export {
   handleNotificationReceivedBackground,
   handleNotificationReceivedForeground,
   handleNotificationTapped,
+  handleNotificationConsumed,
+  handleNotification,
   handlePendingNotification,
   handleFCMTokenReceived,
 } from './handlers';

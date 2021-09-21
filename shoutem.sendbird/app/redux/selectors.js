@@ -26,7 +26,10 @@ export function getSearchedChannels(state) {
 }
 
 export function getChannel(channelId, state) {
-  return _.find(getChannels(state), channel => channel.channel.url === channelId);
+  return _.find(
+    getChannels(state),
+    channel => channel.channel.url === channelId,
+  );
 }
 
 export function getConnectionState(state) {
@@ -53,8 +56,4 @@ export function getActiveChannel(state) {
   const activeChannelId = getActiveChannelId(state);
 
   return getChannel(activeChannelId, state);
-}
-
-export function getQueuedNotification(state) {
-  return getModuleState(state).notifications;
 }

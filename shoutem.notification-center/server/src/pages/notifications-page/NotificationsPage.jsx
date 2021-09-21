@@ -26,6 +26,7 @@ class NotificationsPage extends Component {
     this.state = {
       showAlert: false,
       alertMessage: null,
+      isModalShown: false,
     };
   }
 
@@ -62,6 +63,10 @@ class NotificationsPage extends Component {
     setTimeout(this.hideAlert, 4000);
   }
 
+  handleUpdateIsModalShown(isModalShown) {
+    this.setState({ isModalShown });
+  }
+
   renderAlert() {
     const { showAlert, alertMessage } = this.state;
 
@@ -77,19 +82,31 @@ class NotificationsPage extends Component {
   }
 
   render() {
-    const { appId, applicationStatus } = this.props;
+    const { appId, applicationStatus, settings } = this.props;
+    const { isModalShown } = this.state;
 
     const published = isPublished(applicationStatus);
 
     return (
       <div className="notifications-page">
-        {!published && (
-          <Alert className="publish-alert">
-            {i18next.t(LOCALIZATION.PUBLISH_ALERT)}
-          </Alert>
+        {/* Hiding because if user adds X number of summary fields (user scheduled
+        notifications), this form becomes visible inside modal - broken UI */}
+        {!isModalShown && (
+          <>
+            {!published && (
+              <Alert className="publish-alert">
+                {i18next.t(LOCALIZATION.PUBLISH_ALERT)}
+              </Alert>
+            )}
+            {this.renderAlert()}
+          </>
         )}
-        {this.renderAlert()}
-        <Notifications appId={appId} showAlert={this.handleShowAlert} />
+        <Notifications
+          appId={appId}
+          onModalShown={this.handleUpdateIsModalShown}
+          showAlert={this.handleShowAlert}
+          settings={settings}
+        />
       </div>
     );
   }
@@ -98,11 +115,13 @@ class NotificationsPage extends Component {
 NotificationsPage.propTypes = {
   appId: PropTypes.string.isRequired,
   applicationStatus: PropTypes.object,
+  settings: PropTypes.object,
 };
 
 function mapStateToProps(state, ownProps) {
   const { extensionName } = ownProps;
   const extension = getExtension(state, extensionName);
+  const settings = _.get(extension, 'settings', {});
   const applicationStatus = getApplicationStatus(state);
   const appId = _.get(extension, 'app');
 
@@ -110,6 +129,7 @@ function mapStateToProps(state, ownProps) {
     extension,
     appId,
     applicationStatus,
+    settings,
   };
 }
 

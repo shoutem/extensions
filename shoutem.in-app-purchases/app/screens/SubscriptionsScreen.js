@@ -14,7 +14,7 @@ import {
   LinearGradient,
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar, isScreenActive } from 'shoutem.navigation';
+import { getRouteParams, HeaderBackButton } from 'shoutem.navigation';
 import { isPreviewApp } from 'shoutem.preview';
 import { I18n } from 'shoutem.i18n';
 import { openURL } from 'shoutem.web-view';
@@ -41,7 +41,6 @@ class SubscriptionsScreen extends PureComponent {
     productId: PropTypes.string,
     isScreenActive: PropTypes.bool,
     style: PropTypes.any,
-    openURL: PropTypes.func,
   };
 
   constructor(props, contex) {
@@ -52,25 +51,37 @@ class SubscriptionsScreen extends PureComponent {
     this.state = {
       loading: false,
       modalActive: false,
-      productHasTrial: _.get(props.subscriptionProduct, 'subscriptionPeriodType') === 'trial',
+      productHasTrial:
+        _.get(props.subscriptionProduct, 'subscriptionPeriodType') === 'trial',
     };
   }
 
+  componentDidMount() {
+    const { navigation, subscriptionMetadata } = this.props;
+
+    navigation.setOptions({
+      title: subscriptionMetadata.subscriptionScreenTitle,
+      headerLeft: this.renderBackButton,
+    });
+  }
+
   componentDidUpdate(prevProps) {
-    const {
-      hasActiveProduct,
-      onSubscriptionObtained,
-      isScreenActive,
-    } = this.props;
+    const { hasActiveProduct } = this.props;
     const { hasActiveProduct: prevHasActiveProduct } = prevProps;
 
-    if (!prevHasActiveProduct && hasActiveProduct && isScreenActive) {
+    if (!prevHasActiveProduct && hasActiveProduct) {
       this.setState({ modalActive: true });
     }
+  }
 
-    if (!prevHasActiveProduct && hasActiveProduct && !isScreenActive) {
-      onSubscriptionObtained();
+  renderBackButton(props) {
+    const { canGoBack } = getRouteParams(this.props);
+
+    if (!canGoBack) {
+      return null;
     }
+
+    return <HeaderBackButton {...props} />;
   }
 
   setLoadingState(loading) {
@@ -78,7 +89,7 @@ class SubscriptionsScreen extends PureComponent {
   }
 
   handleSuccessModalConfirm() {
-    const { onSubscriptionObtained } = this.props;
+    const { onSubscriptionObtained } = getRouteParams(this.props);
 
     this.setState({ modalActive: false });
     onSubscriptionObtained();
@@ -91,7 +102,7 @@ class SubscriptionsScreen extends PureComponent {
 
     buyProduct(productId)
       .then(() => this.setLoadingState(false))
-      .catch((err) => {
+      .catch(err => {
         this.setLoadingState(false);
         formatPurchaseError(err);
       });
@@ -118,13 +129,13 @@ class SubscriptionsScreen extends PureComponent {
   }
 
   handleTermsPress() {
-    const { termsOfServiceUrl, openURL } = this.props;
+    const { termsOfServiceUrl } = this.props;
 
     openURL(termsOfServiceUrl);
   }
 
   handlePrivacyPolicyPress() {
-    const { privacyPolicyUrl, openURL } = this.props;
+    const { privacyPolicyUrl } = this.props;
 
     openURL(privacyPolicyUrl);
   }
@@ -137,11 +148,7 @@ class SubscriptionsScreen extends PureComponent {
       termsOfServiceUrl,
       subscriptionMetadata,
     } = this.props;
-    const {
-      loading,
-      modalActive,
-      productHasTrial,
-    } = this.state;
+    const { loading, modalActive, productHasTrial } = this.state;
 
     const trialDuration = formatTrialDuration(subscriptionProduct);
     const purchaseSuccessDescription = productHasTrial
@@ -150,7 +157,6 @@ class SubscriptionsScreen extends PureComponent {
 
     return (
       <Screen styleName="paper with-notch-padding">
-        <NavigationBar title={subscriptionMetadata.subscriptionScreenTitle} />
         <View styleName="flexible">
           <ScrollView contentContainerStyle={style.scrollContainer}>
             <Text style={style.leadingText}>
@@ -180,7 +186,9 @@ class SubscriptionsScreen extends PureComponent {
             )}
             {loading && <Spinner style={style.spinner} />}
           </Button>
-          {trialDuration && <Text style={style.trialText}>{trialDuration}</Text>}
+          {trialDuration && (
+            <Text style={style.trialText}>{trialDuration}</Text>
+          )}
           <Button
             disabled={loading || isPreviewApp}
             onPress={this.handleRestorePress}
@@ -212,7 +220,7 @@ class SubscriptionsScreen extends PureComponent {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
   const productId = selectors.getSubscriptionProductId(state);
 
   return {
@@ -222,16 +230,15 @@ const mapStateToProps = (state, ownProps) => {
     privacyPolicyUrl: selectors.getPrivacyPolicyLink(state),
     termsOfServiceUrl: selectors.getTermsOfServiceLink(state),
     subscriptionMetadata: selectors.getSubscriptionMetadata(state),
-    isScreenActive: isScreenActive(state, ownProps.screenId),
   };
 };
 
 const mapDispatchToProps = {
   buyProduct: actions.buyProduct,
   restorePurchases: actions.restorePurchases,
-  openURL,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('SubscriptionsScreen'))(SubscriptionsScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('SubscriptionsScreen'))(SubscriptionsScreen));

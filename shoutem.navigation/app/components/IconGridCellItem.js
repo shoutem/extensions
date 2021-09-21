@@ -10,13 +10,8 @@ import { NavigationBaseItem } from './NavigationBaseItem';
 export default class IconGridItemCell extends NavigationBaseItem {
   render() {
     return (
-      <FolderItemContainer
-        onPress={this.onPress}
-        style={this.props.style.item}
-      >
-        <View style={this.props.style.iconContainer}>
-          {this.renderIcon()}
-        </View>
+      <FolderItemContainer onPress={this.onPress} style={this.props.style.item}>
+        <View style={this.props.style.iconContainer}>{this.renderIcon()}</View>
         {this.renderText()}
       </FolderItemContainer>
     );

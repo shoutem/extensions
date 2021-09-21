@@ -1,4 +1,8 @@
+/* eslint-disable camelcase */
 import _ from 'lodash';
+import { getAppId } from 'shoutem.application/app';
+import { getUser, USER_SCHEMA } from 'shoutem.auth';
+import { openInModal } from 'shoutem.navigation';
 import {
   find,
   create,
@@ -7,16 +11,14 @@ import {
   next,
   REFERENCE_FETCHED,
 } from '@shoutem/redux-io';
-import { getAppId } from 'shoutem.application/app';
-import { getUser, USER_SCHEMA } from 'shoutem.auth';
 import { shoutemApi } from '../services/shoutemApi';
 import { apiVersion } from '../app';
 import {
-  ext,
   STATUSES_SCHEMA,
   USERS_SEARCH_SCHEMA,
   SOCIAL_SETTINGS_SCHEMA,
   DEFAULT_USER_SETTINGS,
+  ext,
 } from '../const';
 import { getStatus } from './selectors';
 
@@ -25,9 +27,37 @@ export const LOAD = 'LOAD';
 export const LIKE = 'LIKE';
 export const UNLIKE = 'UNLIKE';
 export const DELETE = 'DELETE';
+export const BLOCK_USER = 'BLOCK_USER';
+export const UNBLOCK_USER = 'UNBLOCK_USER';
+
+export function openProfile(user) {
+  return openInModal(ext('UserProfileScreen'), { user });
+}
 
 function resolveUsername(user) {
-  return _.get(user, 'profile.nick') || _.get(user, 'profile.firstName') || 'someone';
+  return (
+    _.get(user, 'profile.nick') || _.get(user, 'profile.firstName') || 'someone'
+  );
+}
+
+export function blockUser(userId, currentUserId) {
+  return {
+    type: BLOCK_USER,
+    payload: {
+      userId: _.toString(userId),
+      currentUserId: _.toString(currentUserId),
+    },
+  };
+}
+
+export function unblockUser(userId, currentUserId) {
+  return {
+    type: UNBLOCK_USER,
+    payload: {
+      userId: _.toString(userId),
+      currentUserId: _.toString(currentUserId),
+    },
+  };
 }
 
 export function loadSocialSettings(legacyId) {
@@ -42,21 +72,26 @@ export function createSocialSettings(settings, legacyId) {
 // load the one collection with the newly created set of settings for
 // the current user.
 export function initUserSettings(legacyId) {
-  return (dispatch, getState) => {
-    return dispatch(loadSocialSettings(legacyId)).catch((error) => {
+  return dispatch => {
+    return dispatch(loadSocialSettings(legacyId)).catch(error => {
       const errorCode = _.get(error, 'payload.response.errors[0].code');
 
       if (errorCode === 'settings_notFound_settingsNotFound') {
-        return dispatch(createSocialSettings(DEFAULT_USER_SETTINGS, legacyId))
-          .then(res => dispatch({
+        return dispatch(
+          createSocialSettings(DEFAULT_USER_SETTINGS, legacyId),
+        ).then(res =>
+          dispatch({
             payload: [res.payload.data],
             type: REFERENCE_FETCHED,
             meta: {
               schema: SOCIAL_SETTINGS_SCHEMA,
               tag: 'settings',
             },
-          }));
+          }),
+        );
       }
+
+      return null;
     });
   };
 }
@@ -151,10 +186,10 @@ export function searchUsersNextPage(searchTerm, currentData) {
     data: {
       type: USERS_SEARCH_SCHEMA,
       attributes: {
-        query: `%${searchTerm}%`
-      }
-    }
-  }
+        query: `%${searchTerm}%`,
+      },
+    },
+  };
 
   const config = {
     request: {
@@ -164,8 +199,8 @@ export function searchUsersNextPage(searchTerm, currentData) {
         Accept: 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
       },
-    }
-  }
+    },
+  };
 
   return next(currentData, true, config);
 }
@@ -181,7 +216,10 @@ export function loadStatuses() {
   const rioConfig = {
     schema: STATUSES_SCHEMA,
     request: {
-      endpoint: shoutemApi.buildUrl('/api/statuses/public_timeline.json', params),
+      endpoint: shoutemApi.buildUrl(
+        '/api/statuses/public_timeline.json',
+        params,
+      ),
       method: 'GET',
       resourceType: 'JSON',
       headers: {
@@ -219,7 +257,7 @@ export function createStatus(text, imageData) {
   };
 
   if (imageData) {
-    body.file_attachment = imageData.data;
+    body.file_attachment = imageData;
   }
 
   const rioConfig = {
@@ -254,7 +292,9 @@ export function likeStatus(statusId) {
     const rioConfig = {
       schema: STATUSES_SCHEMA,
       request: {
-        endpoint: shoutemApi.buildCloudUrl(`/v1/users/legacyId:${userId}/actions/like/${statusId}`),
+        endpoint: shoutemApi.buildCloudUrl(
+          `/v1/users/legacyId:${userId}/actions/like/${statusId}`,
+        ),
         body: JSON.stringify(body),
         method: 'POST',
         headers: {
@@ -263,10 +303,12 @@ export function likeStatus(statusId) {
       },
     };
 
-    dispatch(create(rioConfig, null, null, {
-      operation: LIKE,
-      user: adaptUserForSocialActions(user),
-    }));
+    dispatch(
+      create(rioConfig, null, null, {
+        operation: LIKE,
+        user: adaptUserForSocialActions(user),
+      }),
+    );
   };
 }
 
@@ -287,17 +329,17 @@ export function unlikeStatus(statusId) {
   };
 
   return (dispatch, getState) => {
-    dispatch(create(rioConfig, null, null, {
-      operation: UNLIKE,
-      user: adaptUserForSocialActions(getUser(getState())),
-    }));
+    dispatch(
+      create(rioConfig, null, null, {
+        operation: UNLIKE,
+        user: adaptUserForSocialActions(getUser(getState())),
+      }),
+    );
   };
 }
 
 export function invalidateSocialCollections() {
-  const actions = [
-    invalidate(STATUSES_SCHEMA),
-  ];
+  const actions = [invalidate(STATUSES_SCHEMA)];
 
   return dispatch => Promise.all(_.map(actions, dispatch));
 }
@@ -314,7 +356,10 @@ export function loadComments(statusId) {
   const rioConfig = {
     schema: STATUSES_SCHEMA,
     request: {
-      endpoint: shoutemApi.buildUrl('/api/statuses/replies.json', formatParams(params)),
+      endpoint: shoutemApi.buildUrl(
+        '/api/statuses/replies.json',
+        formatParams(params),
+      ),
       method: 'GET',
       resourceType: 'JSON',
       headers: {
@@ -362,13 +407,15 @@ export function createComment(statusId, text, imageData) {
     };
 
     if (imageData) {
-      body.imageData = imageData.data;
+      body.imageData = imageData;
     }
 
     const rioConfig = {
       schema: STATUSES_SCHEMA,
       request: {
-        endpoint: shoutemApi.buildCloudUrl(`/v1/users/legacyId:${userId}/actions/comment/${statusId}`),
+        endpoint: shoutemApi.buildCloudUrl(
+          `/v1/users/legacyId:${userId}/actions/comment/${statusId}`,
+        ),
         body: JSON.stringify(body),
         method: 'POST',
         headers: {
@@ -377,8 +424,10 @@ export function createComment(statusId, text, imageData) {
       },
     };
 
-    return dispatch(create(rioConfig, null, params, {
-      operation: CREATE,
-    }));
+    return dispatch(
+      create(rioConfig, null, params, {
+        operation: CREATE,
+      }),
+    );
   };
 }

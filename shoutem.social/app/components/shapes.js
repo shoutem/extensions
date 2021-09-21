@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import React from 'react';
 
 const { shape, string, object } = PropTypes;
 
@@ -10,7 +9,7 @@ const user = shape({
   name: string,
   // First name
   first_name: string,
-  //Last name
+  // Last name
   last_name: string,
   // User location
   location: string,

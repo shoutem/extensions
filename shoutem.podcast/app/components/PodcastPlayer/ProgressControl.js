@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import Slider from '@react-native-community/slider';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { TrackPlayer, useProgress } from 'shoutem.audio';
 import { Caption, View } from '@shoutem/ui';
+import { TrackPlayer, useProgress } from 'shoutem.audio';
 import { convertSecondsToTimeDisplay } from '../../services';
 
 const sliderColorProps = [

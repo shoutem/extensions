@@ -11,7 +11,7 @@ export function resolveTextPositionStyle(option, style) {
     case 'top':
       return style.textContainerTop;
     default:
-      return style.textContainerMiddle
+      return style.textContainerMiddle;
   }
 }
 

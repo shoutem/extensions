@@ -1,11 +1,16 @@
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Dimensions, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar, closeModal } from 'shoutem.navigation';
+import {
+  closeModal,
+  getRouteParams,
+  composeNavigationStyles,
+} from 'shoutem.navigation';
 import {
   getLeadImageUrl,
   getImageAttachments,
@@ -25,6 +30,7 @@ import {
   ImageGallery,
   SimpleHtml,
   Spinner,
+  ShareButton,
 } from '@shoutem/ui';
 import { NextArticle } from '../components/NextArticle';
 import { VideoGallery } from '../components/VideoGallery';
@@ -33,13 +39,9 @@ import { getNewsFeed } from '../redux';
 
 export class ArticleDetailsScreen extends PureComponent {
   static propTypes = {
-    id: PropTypes.string.isRequired,
     // The next article, if this article is defined, the
     // up next view will be displayed on this screen
     nextArticle: PropTypes.object,
-    // A function that will open the given article, this
-    // function is required to show the up next view
-    openArticle: PropTypes.func,
     // Whether the inline gallery should be displayed on the
     // details screen. Inline gallery displays the image
     // attachments that are not directly referenced in the
@@ -48,12 +50,28 @@ export class ArticleDetailsScreen extends PureComponent {
     openNextArticle: PropTypes.func,
   };
 
+  constructor(props) {
+    super(props);
+
+    autoBindReact(this);
+
+    props.navigation.setOptions({
+      ...composeNavigationStyles(['clear', 'solidify']),
+      title: '',
+    });
+  }
+
   componentWillMount() {
     const { articleNotFound } = this.props;
 
     if (articleNotFound) {
       this.handleItemNotFound();
     }
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+    navigation.setOptions(this.getNavBarProps());
   }
 
   componentWillReceiveProps(nextProps) {
@@ -65,11 +83,34 @@ export class ArticleDetailsScreen extends PureComponent {
     }
   }
 
-  handleItemNotFound() {
-    const { closeModal } = this.props;
+  getNavBarProps() {
+    const { article } = this.props;
 
+    const articleTitle = _.get(article, 'title', '');
+    const articleLink = _.get(article, 'link', '');
+
+    return {
+      headerRight: props => {
+        if (!articleLink) {
+          return null;
+        }
+
+        return (
+          <ShareButton
+            // eslint-disable-next-line react/prop-types
+            iconProps={{ style: props.tintColor }}
+            styleName="clear"
+            title={articleTitle}
+            url={articleLink}
+          />
+        );
+      },
+    };
+  }
+
+  handleItemNotFound() {
     const okButton = {
-      onPress: () => closeModal(),
+      onPress: closeModal,
     };
 
     return Alert.alert(
@@ -80,7 +121,8 @@ export class ArticleDetailsScreen extends PureComponent {
   }
 
   renderUpNext() {
-    const { nextArticle, openArticle } = this.props;
+    const { nextArticle } = this.props;
+    const { openArticle } = getRouteParams(this.props);
 
     if (nextArticle && openArticle) {
       return (
@@ -129,7 +171,6 @@ export class ArticleDetailsScreen extends PureComponent {
 
     const timeUpdated = _.get(article, 'timeUpdated', '');
     const title = _.get(article, 'title', '');
-    const link = _.get(article, 'link', '');
     const author = _.get(article, 'author', '');
     const body = _.get(article, 'body', '');
     const videoAttachments = _.get(article, 'videoAttachments', []);
@@ -147,15 +188,6 @@ export class ArticleDetailsScreen extends PureComponent {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar
-          styleName="clear"
-          animationName="solidify"
-          title={title}
-          share={{
-            title,
-            link,
-          }}
-        />
         {loading && (
           <View styleName="vertical flexible h-center v-center">
             <Spinner />
@@ -171,7 +203,7 @@ export class ArticleDetailsScreen extends PureComponent {
               >
                 <Tile animationName="hero">
                   <Title styleName="centered">{title.toUpperCase()}</Title>
-                  <View styleName="horizontal collapsed" virtual>
+                  <View styleName="horizontal collapsed">
                     <Caption numberOfLines={1} styleName="collapsible">
                       {author}
                     </Caption>
@@ -195,7 +227,7 @@ export class ArticleDetailsScreen extends PureComponent {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const { id, feedUrl } = ownProps;
+  const { id, feedUrl } = getRouteParams(ownProps);
 
   const data = getNewsFeed(state, feedUrl);
   const article = _.find(data, { id });
@@ -208,9 +240,7 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = { closeModal };
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  null,
 )(connectStyle(ext('ArticleDetailsScreen'))(ArticleDetailsScreen));

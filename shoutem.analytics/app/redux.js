@@ -56,7 +56,7 @@ function createAnalyticsAction(action) {
   if (!_.isPlainObject(actionPayload)) {
     throw Error(
       `Analytics action payload must be object, ${typeof actionPayload} provided. ` +
-      `Action: ${JSON.stringify(action)}`
+      `Action: ${JSON.stringify(action)}`,
     );
   }
   return action;
@@ -72,11 +72,12 @@ function createAnalyticsAction(action) {
  * @param payload {object} (optional) Data
  * @returns {{type, action}}
  */
-export const triggerScreenView = (title, payload = {}) => createAnalyticsAction({
-  type: SCREEN_VIEW,
-  title,
-  payload,
-});
+export const triggerScreenView = (title, payload = {}) =>
+  createAnalyticsAction({
+    type: SCREEN_VIEW,
+    title,
+    payload,
+  });
 
 /**
  * Additionally, screenView object will be injected {@see injectScreenViewToAnalyticsEventAction}
@@ -87,9 +88,10 @@ export const triggerScreenView = (title, payload = {}) => createAnalyticsAction(
  * @param payload {object} (optional) Data
  * @returns {{type, action}}
  */
-export const triggerEvent = (resource, action, payload = {}) => createAnalyticsAction({
-  type: EVENT,
-  resource,
-  action,
-  payload,
-});
+export const triggerEvent = (resource, action, payload = {}) =>
+  createAnalyticsAction({
+    type: EVENT,
+    resource,
+    action,
+    payload,
+  });

@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import { Alert, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Screen, Spinner, ScrollView, View } from '@shoutem/ui';
 import {
@@ -47,6 +47,14 @@ export class RegisterScreen extends PureComponent {
       emailTaken: false,
       email: '',
     };
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({
+      title: I18n.t(ext('registerNavBarTitle')),
+    });
   }
 
   handleRegistrationSuccess({ payload }) {
@@ -97,17 +105,8 @@ export class RegisterScreen extends PureComponent {
 
   handleOpenPasswordRecoveryScreen() {
     const { email } = this.state;
-    const { navigateTo, navigateToLoginScreen } = this.props;
 
-    const route = {
-      screen: ext('PasswordRecoveryScreen'),
-      props: {
-        email,
-        navigateToLoginScreen,
-      },
-    };
-
-    navigateTo(route);
+    navigateTo(ext('PasswordRecoveryScreen'), { email });
   }
 
   performRegistration(
@@ -147,7 +146,6 @@ export class RegisterScreen extends PureComponent {
     if (inProgress) {
       return (
         <Screen>
-          <NavigationBar title={I18n.t(ext('registerNavBarTitle'))} />
           <Spinner styleName="xl-gutter-top" />
         </Screen>
       );
@@ -159,7 +157,6 @@ export class RegisterScreen extends PureComponent {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <NavigationBar title={I18n.t(ext('registerNavBarTitle'))} />
           <RegisterForm
             email={email}
             gdprSettings={gdprSettings}
@@ -203,15 +200,15 @@ export const mapDispatchToProps = {
   register,
   userRegistered,
   loginWithFacebook,
-  navigateTo,
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   return {
     user: state[ext()].user,
     appId: getAppId(),
     access_token: getAccessToken(state),
     settings: getExtensionSettings(state, ext()),
+    ...getRouteParams(ownProps),
   };
 }
 

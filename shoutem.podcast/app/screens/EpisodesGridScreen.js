@@ -4,7 +4,8 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
-import { cloneStatus } from '@shoutem/redux-io';
+import { cloneStatus, shouldRefresh } from '@shoutem/redux-io';
+import { getRouteParams, composeNavigationStyles } from 'shoutem.navigation';
 import { GridEpisodeView, FeaturedEpisodeView } from '../components';
 import { ext } from '../const';
 import {
@@ -24,19 +25,21 @@ class EpisodesGridScreen extends EpisodesListScreen {
     autoBindReact(this);
   }
 
-  getNavigationBarProps() {
-    const { title } = this.props;
+  componentDidMount() {
+    const { navigation } = this.props;
 
-    return {
-      title: title || '',
-      styleName: 'featured',
-    };
+    navigation.setOptions({
+      ...composeNavigationStyles(['featured']),
+    });
+
+    super.componentDidMount();
   }
 
   renderFeaturedItem(episode) {
-    const { enableDownload, feedUrl, hasFeaturedItem } = this.props;
+    const { enableDownload, feedUrl } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return hasFeaturedItem && episode ? (
+    return screenSettings.hasFeaturedItem && episode ? (
       <FeaturedEpisodeView
         key={episode[0].id}
         enableDownload={enableDownload}
@@ -66,7 +69,10 @@ class EpisodesGridScreen extends EpisodesListScreen {
   }
 
   renderData() {
-    const { data, hasFeaturedItem } = this.props;
+    const {
+      screenSettings: { hasFeaturedItem },
+    } = getRouteParams(this.props);
+    const { data } = this.props;
 
     // Group items into rows with 2 columns, except for the
     // first episode. The first episode is treated as a featured episode

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.redux",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "dependencies": {
     "@shoutem/redux-composers": "0.1.4",
     "@shoutem/redux-io": "3.0.1-beta.3"

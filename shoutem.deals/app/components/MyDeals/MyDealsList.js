@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { InteractionManager } from 'react-native';
 import { bindActionCreators } from 'redux';
-
 import {
   cloneStatus,
   find,
@@ -16,26 +15,16 @@ import {
   next,
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import {
-  EmptyStateView,
-  GridRow,
-  ListView,
-  View,
-} from '@shoutem/ui';
-
+import { EmptyStateView, GridRow, ListView, View } from '@shoutem/ui';
 import { authenticate, isAuthenticated } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
-
 import {
   ext,
   TRANSLATIONS,
   DEAL_TRANSACTIONS_SCHEMA,
   MY_DEALS_TAG,
 } from '../../const';
-import {
-  fetchMyDealTransactions,
-  getMyDeals,
-} from '../../redux';
+import { fetchMyDealTransactions, getMyDeals } from '../../redux';
 import DealGridView from '../DealGridView';
 
 export class MyDealsList extends PureComponent {
@@ -82,15 +71,15 @@ export class MyDealsList extends PureComponent {
   }
 
   fetchData() {
-    const {
-      catalogId,
-    } = this.props;
+    const { catalogId } = this.props;
 
     if (!this.props.isAuthenticated) {
       return;
     }
 
-    InteractionManager.runAfterInteractions(() => this.props.fetchMyDealTransactions(catalogId));
+    InteractionManager.runAfterInteractions(() =>
+      this.props.fetchMyDealTransactions(catalogId),
+    );
   }
 
   loadMore() {
@@ -121,9 +110,7 @@ export class MyDealsList extends PureComponent {
       ? I18n.t('shoutem.application.unexpectedErrorMessage')
       : I18n.t('shoutem.application.preview.noContentErrorMessage');
 
-    return (
-      <EmptyStateView icon="deals" message={message} />
-    );
+    return <EmptyStateView icon="deals" message={message} />;
   }
 
   renderRow(deals) {
@@ -138,9 +125,7 @@ export class MyDealsList extends PureComponent {
 
     return (
       <View styleName="flexible sm-gutter-bottom sm-gutter-left">
-        <GridRow columns={2}>
-          {dealsViews}
-        </GridRow>
+        <GridRow columns={2}>{dealsViews}</GridRow>
       </View>
     );
   }
@@ -173,13 +158,8 @@ export class MyDealsList extends PureComponent {
       return this.renderPlaceholderView();
     }
 
-    return (
-      <View key="my-deals-list">
-        {this.renderData(this.props.data)}
-      </View>
-    );
+    return <View key="my-deals-list">{this.renderData(this.props.data)}</View>;
   }
-
 }
 
 export const mapStateToProps = state => ({
@@ -187,13 +167,18 @@ export const mapStateToProps = state => ({
   isAuthenticated: isAuthenticated(state),
 });
 
-export const mapDispatchToProps = dispatch => bindActionCreators({
-  authenticate,
-  fetchMyDealTransactions,
-  find,
-  next,
-}, dispatch);
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      authenticate,
+      fetchMyDealTransactions,
+      find,
+      next,
+    },
+    dispatch,
+  );
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('MyDealsList'), {})(MyDealsList),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('MyDealsList'), {})(MyDealsList));

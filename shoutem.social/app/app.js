@@ -1,10 +1,10 @@
 import rio from '@shoutem/redux-io';
-import { getUser, isAuthenticated } from 'shoutem.auth';
 import { getAppId } from 'shoutem.application/app';
 import {
   getExtensionSettings,
   getExtensionCloudUrl,
 } from 'shoutem.application/redux';
+import { getUser, isAuthenticated } from 'shoutem.auth';
 import { Firebase } from 'shoutem.firebase';
 import { shoutemApi } from './services/shoutemApi';
 import { ext, SOCIAL_SETTINGS_SCHEMA, STATUSES_SCHEMA } from './const';
@@ -18,7 +18,8 @@ export const apiVersion = '59';
 export function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
-  const apiEndpoint = getExtensionSettings(state, APPLICATION_EXTENSION).legacyApiEndpoint;
+  const apiEndpoint = getExtensionSettings(state, APPLICATION_EXTENSION)
+    .legacyApiEndpoint;
   const cloudHost = getExtensionCloudUrl(state, ext());
 
   const { authApiEndpoint } = getExtensionSettings(state, AUTH_EXTENSION);
@@ -47,7 +48,9 @@ export function appDidMount(app) {
   rio.registerResource({
     schema: SOCIAL_SETTINGS_SCHEMA,
     request: {
-      endpoint: shoutemApi.buildCloudUrl('/v1/users/legacyId:{userId}/settings/{settingsId}'),
+      endpoint: shoutemApi.buildCloudUrl(
+        '/v1/users/legacyId:{userId}/settings/{settingsId}',
+      ),
       headers: {
         Accept: 'application/vnd.api+json',
       },

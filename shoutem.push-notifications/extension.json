@@ -1,11 +1,11 @@
 {
   "name": "push-notifications",
-  "version": "2.5.0",
-  "platform": "2.5.*",
+  "version": "3.0.0",
+  "platform": "^3.0.0",
   "type": "system",
   "title": "Push Notifications",
   "description": "Base extension for push notifications",
-  "releaseNotes": "* Added a script for calling and debugging prebuild script",
+  "releaseNotes": "* Added support for silent & scheduled push notifications",
   "icon": "server/assets/add-push-notifications-image.png",
   "categories": [
     "push"

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
+import { mapReducers } from '@shoutem/redux-composers';
 import { storage, collection, getCollection } from '@shoutem/redux-io';
-import { mapReducers, TARGET_ALL_REDUCERS } from '@shoutem/redux-composers';
 import adaptEventAttributes from './services/eventAdapter';
 import { ext } from './const';
 
@@ -30,7 +30,7 @@ const _15min = 15 * 60;
 export function icalFeed(schema) {
   return mapReducers(
     getIcalUrl,
-    collection(schema, 'urlSpecificEvents', { expirationTime: _15min })
+    collection(schema, 'urlSpecificEvents', { expirationTime: _15min }),
   );
 }
 

@@ -1,14 +1,9 @@
 import TrackPlayer from 'react-native-track-player';
-import {
-  destroyTrackPlayer,
-  registerTrackPlayerService,
-} from './services/trackPlayer';
+import { trackPlayerService } from './services/trackPlayerService';
 import TrackPlayerBase from './components/TrackPlayerBase';
 import { destroyTrackPlayerMiddleware } from './middleware';
 
-const middleware = [
-  destroyTrackPlayerMiddleware,
-];
+const middleware = [destroyTrackPlayerMiddleware];
 
 // Constants `screens` (from extension.js) and `reducer` (from index.js)
 // are exported via named export
@@ -18,11 +13,11 @@ const middleware = [
 export * from './middleware';
 
 export function appWillMount() {
-  registerTrackPlayerService();
+  trackPlayerService.register();
 }
 
 export function appWillUnmount() {
-  destroyTrackPlayer();
+  trackPlayerService.destroy();
 }
 
 export {

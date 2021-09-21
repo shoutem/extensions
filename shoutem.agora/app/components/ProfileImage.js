@@ -13,7 +13,10 @@ function ProfileImage({ image, style }) {
 }
 
 ProfileImage.propTypes = {
-  image: PropTypes.oneOfType([PropTypes.number, PropTypes.shape({ uri: PropTypes.string })]),
+  image: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.shape({ uri: PropTypes.string }),
+  ]),
   style: PropTypes.object,
 };
 

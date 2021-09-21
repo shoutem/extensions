@@ -1,6 +1,8 @@
 import { screens } from './extension.js';
-import { onboardingMiddleware } from './redux/middleware';
 import enTranslations from './translations/en.json';
+import { showOnboardingMiddleware } from './redux';
+
+import './navigation';
 
 export { screens };
 
@@ -10,8 +12,8 @@ export const shoutem = {
   },
 };
 
-export const middleware = [
-  onboardingMiddleware
-];
+export const middleware = [showOnboardingMiddleware];
 
 export { default as reducer } from './redux';
+
+export { appWillMount } from './app';

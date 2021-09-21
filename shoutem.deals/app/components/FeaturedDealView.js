@@ -3,7 +3,6 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   Icon,
@@ -14,7 +13,6 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-
 import {
   getLastDealAction,
   getLastDealTransaction,
@@ -42,7 +40,7 @@ export class FeaturedDealView extends PureComponent {
   };
 
   static defaultProps = {
-    onPress: () => { },
+    onPress: () => {},
   };
 
   constructor(props) {
@@ -58,17 +56,13 @@ export class FeaturedDealView extends PureComponent {
   render() {
     const {
       activeCoupon,
-      dealStatus: {
-        couponClaimed,
-        couponRedeemed,
-        dealRedeemed,
-      },
+      dealStatus: { couponClaimed, couponRedeemed, dealRedeemed },
       deal,
       styleName,
     } = this.props;
     const containerStyleName = `sm-gutter ${styleName || ''}`;
     const couponExpiresAt = _.get(activeCoupon, 'expiresAt');
-    const hasTimer = (activeCoupon && couponClaimed && couponExpiresAt);
+    const hasTimer = activeCoupon && couponClaimed && couponExpiresAt;
 
     return (
       <TouchableOpacity key={deal.id} onPress={this.handlePress}>
@@ -76,12 +70,12 @@ export class FeaturedDealView extends PureComponent {
           <DealImage styleName="featured" deal={deal} renderTimer={false}>
             <Tile styleName="h-center">
               <Overlay>
-                <Title styleName="h-center">
-                  {getFormattedDiscount(deal)}
-                </Title>
+                <Title styleName="h-center">{getFormattedDiscount(deal)}</Title>
               </Overlay>
 
-              <Title styleName="lg-gutter-vertical h-center">{_.toUpper(deal.title)}</Title>
+              <Title styleName="lg-gutter-vertical h-center">
+                {_.toUpper(deal.title)}
+              </Title>
               <Text styleName="sm-gutter-bottom line-through h-center">
                 {formatPrice(deal.regularPrice, deal.currency)}
               </Text>
@@ -97,9 +91,7 @@ export class FeaturedDealView extends PureComponent {
                 />
               )}
 
-              {(couponRedeemed || dealRedeemed) && (
-                <Icon name="checkbox-on" />
-              )}
+              {(couponRedeemed || dealRedeemed) && <Icon name="checkbox-on" />}
             </Tile>
           </DealImage>
         </View>
@@ -111,7 +103,10 @@ export class FeaturedDealView extends PureComponent {
 export const mapStateToProps = (state, ownProps) => {
   const { deal } = ownProps;
   const lastDealTransaction = getLastDealTransaction(state, deal.id);
-  const lastDealStatusTransaction = getLastDealStatusTransaction(state, deal.id);
+  const lastDealStatusTransaction = getLastDealStatusTransaction(
+    state,
+    deal.id,
+  );
   const lastDealAction = getLastDealAction(state, deal.id);
   const activeCoupon = getDealActiveCoupon(lastDealStatusTransaction);
 

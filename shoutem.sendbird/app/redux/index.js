@@ -1,20 +1,9 @@
 import * as actions from './actions';
-import * as selectors from './selectors';
 import * as handlers from './handlers';
-import {
-  initMiddleware,
-  logoutMiddleware,
-  notificationQueueMiddleware,
-  navigateBackMiddleware,
-} from './middleware';
-
+import { initMiddleware, logoutMiddleware } from './middleware';
 export { default as reducer } from './reducer';
+import * as selectors from './selectors';
 
 export { actions, selectors, handlers };
 
-export const middleware = [
-  initMiddleware,
-  logoutMiddleware,
-  notificationQueueMiddleware,
-  navigateBackMiddleware,
-];
+export const middleware = [initMiddleware, logoutMiddleware];

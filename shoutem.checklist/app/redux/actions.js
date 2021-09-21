@@ -3,10 +3,10 @@ import { ext } from '../const';
 export const SET_CHECKLIST_STATUSES = ext('SET_CHECKLIST_STATUSES');
 export const SUBMIT_CHECKLIST = ext('SUBMIT_CHECKLIST');
 
-export function setChecklistStatuses(statuses) {
+export function setChecklistStatuses(statuses, shortcutId) {
   return {
     type: SET_CHECKLIST_STATUSES,
-    payload: { statuses },
+    payload: { statuses, shortcutId },
   };
 }
 

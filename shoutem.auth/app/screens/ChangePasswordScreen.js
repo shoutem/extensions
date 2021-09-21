@@ -4,13 +4,6 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
-import {
-  NavigationBar,
-  isTabBarNavigation,
-  getActiveNavigationStack,
-  getActiveNavigationStackState,
-} from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
@@ -22,13 +15,19 @@ import {
   View,
   Keyboard,
 } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { PasswordTextInput } from '../components';
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
-import { loginRequired } from '../loginRequired';
 import { resetPassword } from '../redux';
 
 class ChangePasswordScreen extends PureComponent {
+  static propTypes = {
+    style: PropTypes.object,
+    resetPassword: PropTypes.func,
+  };
+
   constructor(props) {
     super(props);
 
@@ -44,13 +43,22 @@ class ChangePasswordScreen extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({
+      title: I18n.t(ext('changePasswordNavBarTitle')),
+    });
+  }
+
   handleValueChange(fieldName) {
     return value => this.setState({ [fieldName]: value });
   }
 
   handleChangePasswordPress() {
-    const { email, resetPassword } = this.props;
+    const { resetPassword } = this.props;
     const { verificationCode, newPassword } = this.state;
+    const { email } = getRouteParams(this.props);
 
     this.setState(
       {
@@ -110,17 +118,19 @@ class ChangePasswordScreen extends PureComponent {
     return isValid;
   }
 
+  handleNavigateToLogin() {
+    navigateTo(ext('LoginScreen'));
+  }
+
   showResetResultAlert(passwordChangedSuccessfully) {
     if (passwordChangedSuccessfully) {
-      const { navigateToLoginScreen } = this.props;
-
       return Alert.alert(
         I18n.t(ext('alertSuccessTitle')),
         I18n.t(ext('alertSuccessMessage')),
         [
           {
             text: I18n.t(ext('alertConfirmButton')),
-            onPress: () => navigateToLoginScreen(),
+            onPress: this.handleNavigateToLogin,
           },
         ],
       );
@@ -134,7 +144,7 @@ class ChangePasswordScreen extends PureComponent {
   }
 
   render() {
-    const { style, isTabBar } = this.props;
+    const { style } = this.props;
     const {
       verificationCode,
       newPassword,
@@ -145,13 +155,9 @@ class ChangePasswordScreen extends PureComponent {
     } = this.state;
 
     const keyboardOffset = Keyboard.calculateKeyboardOffset();
-    const styleName = isTabBar ? '' : 'with-notch-padding';
 
     return (
-      <Screen styleName={styleName}>
-        <NavigationBar
-          title={I18n.t(ext('changePasswordNavBarTitle')).toUpperCase()}
-        />
+      <Screen>
         <KeyboardAvoidingView
           behavior="padding"
           keyboardVerticalOffset={keyboardOffset}
@@ -221,28 +227,11 @@ class ChangePasswordScreen extends PureComponent {
   }
 }
 
-ChangePasswordScreen.propTypes = {
-  email: PropTypes.string.isRequired,
-  style: PropTypes.object,
-  resetPassword: PropTypes.func,
-};
-
-const mapStateToProps = state => {
-  return {
-    isTabBar: isTabBarNavigation(state),
-    activeNavigationStack: getActiveNavigationStack(state),
-    activeNavigationStackState: getActiveNavigationStackState(state),
-  };
-};
-
 export const mapDispatchToProps = {
   resetPassword,
 };
 
-export default loginRequired(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(connectStyle(ext('ChangePasswordScreen'))(ChangePasswordScreen)),
-  false,
-);
+export default connect(
+  null,
+  mapDispatchToProps,
+)(connectStyle(ext('ChangePasswordScreen'))(ChangePasswordScreen));

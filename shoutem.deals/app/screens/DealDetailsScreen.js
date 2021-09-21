@@ -5,7 +5,6 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Linking } from 'react-native';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -24,19 +23,20 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-
-import { NavigationBar, isScreenActive } from 'shoutem.navigation';
-import { openURL } from 'shoutem.web-view';
-import { I18n } from 'shoutem.i18n';
 import { authenticate } from 'shoutem.auth';
 import { Favorite } from 'shoutem.favorites';
-
+import { I18n } from 'shoutem.i18n';
+import {
+  getRouteParams,
+  composeNavigationStyles,
+  withIsFocused,
+} from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
 import DealRedeemContentView from '../components/DealRedeemContentView';
 import FooterDealView from '../components/FooterDealView';
 import {
   claimCoupon,
   fetchDealTransactions,
-  getCatalogId,
   getLastDealTransaction,
   getLastDealStatusTransaction,
   redeemCoupon,
@@ -65,7 +65,7 @@ const styles = {
   },
 };
 
-const formatDealDate = (dealDateStr) => {
+const formatDealDate = dealDateStr => {
   const dealDate = moment(dealDateStr);
   return dealDate.format('MMMM DD  • h:mm a');
 };
@@ -74,29 +74,25 @@ export class DealDetailsScreen extends PureComponent {
   static propTypes = {
     activeCoupon: PropTypes.object,
     authenticate: PropTypes.func,
-    catalogId: PropTypes.string,
     claimCoupon: PropTypes.func,
     deal: PropTypes.object,
     dealStatus: dealStatusShape,
     fetchDealTransactions: PropTypes.func,
     isDealActive: PropTypes.bool,
-    isScreenActive: PropTypes.bool,
+    isFocused: PropTypes.bool,
     hasFavoriteButton: PropTypes.bool,
-    navigationBarStyle: PropTypes.string,
     nextDeal: PropTypes.object,
-    onOpenDealDetails: PropTypes.func.isRequired,
-    openURL: PropTypes.func,
     previousDeal: PropTypes.object,
     redeemCoupon: PropTypes.func,
     redeemDeal: PropTypes.func,
   };
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props) {
     const newState = {
       dealStatus: props.dealStatus,
     };
 
-    if (props.isScreenActive) {
+    if (props.isFocused) {
       newState.isClaiming = false;
       newState.isRedeeming = false;
     }
@@ -119,11 +115,13 @@ export class DealDetailsScreen extends PureComponent {
 
   componentDidMount() {
     const {
-      catalogId,
       deal: { id },
       fetchDealTransactions,
+      navigation,
     } = this.props;
+    const { catalogId } = getRouteParams(this.props);
 
+    navigation.setOptions(this.getNavBarProps());
     fetchDealTransactions(catalogId, id);
   }
 
@@ -131,45 +129,52 @@ export class DealDetailsScreen extends PureComponent {
    * Getters and setters
    */
 
-  getNavBarProps(options) {
-    const { deal, hasFavoriteButton } = this.props;
+  getNavBarProps() {
+    const { deal } = this.props;
 
-    let styleName = '';
-    let animationName = '';
+    let navigationStyles = '';
 
     if (this.isNavigationBarClear()) {
-      styleName = 'clear';
-
       if (deal.image1) {
-        animationName = 'solidify';
+        navigationStyles = composeNavigationStyles(['clear', 'solidify']);
       } else {
-        animationName = 'boxing';
+        navigationStyles = composeNavigationStyles(['boxing']);
       }
     }
 
-    const favorites = hasFavoriteButton ?
-      (<Favorite
-        buttonStyle={deal.buyLink ? null : 'md-gutter-right'}
+    return {
+      ...navigationStyles,
+      headerRight: this.headerRight,
+      title: deal.title || '',
+    };
+  }
+
+  headerRight(props) {
+    const { deal } = this.props;
+    const { hasFavoriteButton } = getRouteParams(this.props);
+
+    const favorites = hasFavoriteButton ? (
+      <Favorite
+        iconProps={{ style: props.tintColor }}
         item={deal}
         schema={deal.type}
-        virtual
-      />) : null;
-    const share = deal.buyLink
-      ? (<ShareButton url={deal.buyLink} title={deal.title} />)
-      : null;
+      />
+    ) : null;
+    const share = deal.buyLink ? (
+      <ShareButton
+        iconProps={{ style: props.tintColor }}
+        styleName="clear"
+        title={deal.title}
+        url={deal.buyLink}
+      />
+    ) : null;
 
-    return {
-      animationName,
-      styleName,
-      title: deal.title,
-      renderRightComponent: () => (
-        <View virtual styleName="container">
-          {favorites}
-          {share}
-        </View>
-      ),
-      ...options,
-    };
+    return (
+      <View styleName="horizontal">
+        {favorites}
+        {share}
+      </View>
+    );
   }
 
   /**
@@ -177,8 +182,8 @@ export class DealDetailsScreen extends PureComponent {
    */
 
   isNavigationBarClear() {
-    const { navigationBarStyle } = this.props;
-    return navigationBarStyle === 'clear';
+    const { screenSettings } = getRouteParams(this.props);
+    return screenSettings.navigationBarStyle === 'clear';
   }
 
   /**
@@ -186,61 +191,60 @@ export class DealDetailsScreen extends PureComponent {
    */
 
   handleClaimCoupon() {
-    const { authenticate, claimCoupon, catalogId, deal } = this.props;
+    const { authenticate, claimCoupon, deal } = this.props;
+    const { catalogId } = getRouteParams(this.props);
 
     this.setState({
       isClaiming: true,
     });
 
-    authenticate(() => (
+    authenticate(() =>
       claimCoupon(catalogId, deal.id)
         .then(() => this.setState({ isClaiming: false }))
-        .catch(() => this.setState({ isClaiming: false }))
-    ));
+        .catch(() => this.setState({ isClaiming: false })),
+    );
   }
 
   handleRedeemCoupon() {
+    const { authenticate, activeCoupon, deal, redeemCoupon } = this.props;
+    const { catalogId } = getRouteParams(this.props);
     const {
-      authenticate,
-      activeCoupon,
-      catalogId,
-      deal,
-      redeemCoupon,
-    } = this.props;
-    const { dealStatus: { couponExpired } } = this.state;
+      dealStatus: { couponExpired },
+    } = this.state;
 
     if (!activeCoupon || couponExpired) {
       return;
     }
 
     this.setState({ isRedeeming: true });
-    authenticate(() => (
-      redeemCoupon(catalogId, deal.id, activeCoupon.id))
-      .then(() => this.setState({ isRedeeming: false }))
-      .catch(() => this.setState({ isRedeeming: false }))
+    authenticate(() =>
+      redeemCoupon(catalogId, deal.id, activeCoupon.id)
+        .then(() => this.setState({ isRedeeming: false }))
+        .catch(() => this.setState({ isRedeeming: false })),
     );
   }
 
   handleRedeemDeal() {
-    const { authenticate, catalogId, deal, redeemDeal } = this.props;
+    const { authenticate, deal, redeemDeal } = this.props;
+    const { catalogId } = getRouteParams(this.props);
 
     this.setState({ isRedeeming: true });
 
-    authenticate(() => (
-      redeemDeal(catalogId, deal.id))
-      .then(() => this.setState({ isRedeeming: false }))
-      .catch(() => this.setState({ isRedeeming: false }))
+    authenticate(() =>
+      redeemDeal(catalogId, deal.id)
+        .then(() => this.setState({ isRedeeming: false }))
+        .catch(() => this.setState({ isRedeeming: false })),
     );
   }
 
   handleOpenDealDetails(deal) {
-    const { onOpenDealDetails } = this.props;
+    const { onOpenDealDetails } = getRouteParams(this.props);
 
     onOpenDealDetails(deal);
   }
 
   handleOpenWebsite() {
-    const { deal, openURL } = this.props;
+    const { deal } = this.props;
 
     if (!deal.buyLink) {
       return;
@@ -275,7 +279,9 @@ export class DealDetailsScreen extends PureComponent {
    */
 
   renderBarcodeImage() {
-    const { deal: { barcode } } = this.props;
+    const {
+      deal: { barcode },
+    } = this.props;
 
     if (!barcode) {
       return null;
@@ -283,10 +289,7 @@ export class DealDetailsScreen extends PureComponent {
 
     return (
       <View styleName="vertical h-center md-gutter-horizontal">
-        <Image
-          source={{ uri: barcode }}
-          styleName="large-ultra-wide"
-        />
+        <Image source={{ uri: barcode }} styleName="large-ultra-wide" />
       </View>
     );
   }
@@ -306,7 +309,9 @@ export class DealDetailsScreen extends PureComponent {
         <Row styleName="small">
           <Icon name="web" />
           <View>
-            <Text>{deal.buyLinkTitle || I18n.t(TRANSLATIONS.VISIT_WEBSITE_LABEL)}</Text>
+            <Text>
+              {deal.buyLinkTitle || I18n.t(TRANSLATIONS.VISIT_WEBSITE_LABEL)}
+            </Text>
             <Caption>{displayedLink}</Caption>
           </View>
           <Icon styleName="disclosure" name="right-arrow" />
@@ -335,7 +340,7 @@ export class DealDetailsScreen extends PureComponent {
      * This logic will be checked only if coupons are actually enabled.
      */
     const hasRemainingCoupons = !_.isUndefined(remainingCoupons)
-      ? (remainingCoupons > 0)
+      ? remainingCoupons > 0
       : true;
 
     if (!isDealActive) {
@@ -390,22 +395,26 @@ export class DealDetailsScreen extends PureComponent {
       <View styleName="solid">
         {this.renderRedeemContent()}
 
-        {!_.isEmpty(deal.description) && this.renderDealDescription(
-          I18n.t(TRANSLATIONS.DEAL_DESCRIPTION_HEADING),
-          deal.description
-        )}
+        {!_.isEmpty(deal.description) &&
+          this.renderDealDescription(
+            I18n.t(TRANSLATIONS.DEAL_DESCRIPTION_HEADING),
+            deal.description,
+          )}
 
-        {!_.isEmpty(deal.condition) && this.renderDealDescription(
-          I18n.t(TRANSLATIONS.DEAL_CONDITIONS_HEADING),
-          deal.condition,
-        )}
+        {!_.isEmpty(deal.condition) &&
+          this.renderDealDescription(
+            I18n.t(TRANSLATIONS.DEAL_CONDITIONS_HEADING),
+            deal.condition,
+          )}
       </View>
     );
   }
 
   renderDealCouponsCount() {
     const { deal } = this.props;
-    const { dealStatus: { couponsEnabled } } = this.state;
+    const {
+      dealStatus: { couponsEnabled },
+    } = this.state;
 
     if (!couponsEnabled) {
       return null;
@@ -420,9 +429,11 @@ export class DealDetailsScreen extends PureComponent {
     return (
       <View style={styles.dealCoupons} styleName="vertical h-center">
         <Text styleName="md-gutter-vertical">
-          {_.toUpper(I18n.t(TRANSLATIONS.REMAINING_COUPONS, {
-            count: remainingCoupons,
-          }))}
+          {_.toUpper(
+            I18n.t(TRANSLATIONS.REMAINING_COUPONS, {
+              count: remainingCoupons,
+            }),
+          )}
         </Text>
       </View>
     );
@@ -442,7 +453,7 @@ export class DealDetailsScreen extends PureComponent {
     } = deal;
 
     return (
-      <View styleName="lg-gutter-bottom middleCenter" pointerEvents="box-none" virtual>
+      <View styleName="lg-gutter-bottom middleCenter" pointerEvents="box-none">
         <Overlay styleName="rounded-corners">
           <Title styleName={`h-center ${textColorStyle}`}>
             {getFormattedDiscount(deal)}
@@ -452,7 +463,9 @@ export class DealDetailsScreen extends PureComponent {
         <Title styleName={`lg-gutter-vertical h-center ${textColorStyle}`}>
           {_.toUpper(title)}
         </Title>
-        <Text styleName={`sm-gutter-bottom h-center line-through ${textColorStyle}`}>
+        <Text
+          styleName={`sm-gutter-bottom h-center line-through ${textColorStyle}`}
+        >
           {formatPrice(regularPrice, currency)}
         </Text>
         <Title styleName={`lg-gutter-bottom h-center ${textColorStyle}`}>
@@ -479,16 +492,14 @@ export class DealDetailsScreen extends PureComponent {
     return (
       <View>
         <Divider styleName="line section-header">
-          <Text styleName="md-gutter-horizontal sm-gutter-bottom">
-            {title}
-          </Text>
+          <Text styleName="md-gutter-horizontal sm-gutter-bottom">{title}</Text>
         </Divider>
         <SimpleHtml body={description} />
       </View>
     );
   }
 
-  renderDealImage() { }
+  renderDealImage() {}
 
   renderDirections() {
     const { deal } = this.props;
@@ -519,7 +530,7 @@ export class DealDetailsScreen extends PureComponent {
   }
 
   renderFooter() {
-    const { nextDeal, previousDeal } = this.props;
+    const { nextDeal, previousDeal } = getRouteParams(this.props);
 
     return (
       <View>
@@ -561,43 +572,35 @@ export class DealDetailsScreen extends PureComponent {
     );
   }
 
-  renderScreen() {
-    return (
-      <ScrollView>
-        {this.renderHeader()}
-        {this.renderContent()}
-        {this.renderFooter()}
-      </ScrollView>
-    );
-  }
-
   render() {
-    const { deal } = this.props;
-
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
-        {this.renderScreen()}
+        <ScrollView>
+          {this.renderHeader()}
+          {this.renderContent()}
+          {this.renderFooter()}
+        </ScrollView>
       </Screen>
     );
   }
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const { deal, shortcut } = ownProps;
+  const { deal } = getRouteParams(ownProps);
   const lastDealTransaction = getLastDealTransaction(state, deal.id);
-  const lastDealStatusTransaction = getLastDealStatusTransaction(state, deal.id);
+  const lastDealStatusTransaction = getLastDealStatusTransaction(
+    state,
+    deal.id,
+  );
   const activeCoupon = getDealActiveCoupon(lastDealStatusTransaction);
 
   return {
     activeCoupon,
-    catalogId: getCatalogId(shortcut),
 
     // Doing this in order to reload deal object in case anything changed in state.
     // For some reason, it doesn't propagate updates to and from deals list.
     deal: getDeal(state, deal.id),
     isDealActive: isDealActive(deal),
-    isScreenActive: isScreenActive(state, ownProps.screenId),
     lastDealTransaction,
     lastDealStatusTransaction,
     dealStatus: getDealStatus(deal, lastDealStatusTransaction),
@@ -607,14 +610,16 @@ export const mapStateToProps = (state, ownProps) => {
 export const mapDispatchToProps = dispatch => ({
   authenticate: callback => dispatch(authenticate(callback)),
   claimCoupon: (catalogId, dealId) => dispatch(claimCoupon(catalogId, dealId)),
-  fetchDealTransactions: (catalogId, dealId) => dispatch(fetchDealTransactions(catalogId, dealId)),
-  openURL: (url, name) => dispatch(openURL(url, name)),
+  fetchDealTransactions: (catalogId, dealId) =>
+    dispatch(fetchDealTransactions(catalogId, dealId)),
   redeemCoupon: (catalogId, dealId, couponId) =>
     dispatch(redeemCoupon(catalogId, dealId, couponId)),
-  redeemDeal: (catalogId, dealId) =>
-    dispatch(redeemDeal(catalogId, dealId)),
+  redeemDeal: (catalogId, dealId) => dispatch(redeemDeal(catalogId, dealId)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('DealDetailsScreen', {}))(DealDetailsScreen),
+export default withIsFocused(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('DealDetailsScreen', {}))(DealDetailsScreen)),
 );

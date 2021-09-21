@@ -2,14 +2,7 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-
-import {
-  Icon,
-  ImageBackground,
-  Tile,
-  View,
-} from '@shoutem/ui';
-
+import { Icon, ImageBackground, Tile, View } from '@shoutem/ui';
 import { dealStatusShape, getDealImages } from '../services';
 import DealRedeemTimer from './DealRedeemTimer';
 
@@ -58,18 +51,10 @@ export default class DealImage extends PureComponent {
   }
 
   renderInnerContent() {
-    const {
-      deal,
-      activeCoupon,
-      renderTimer,
-    } = this.props;
+    const { deal, activeCoupon, renderTimer } = this.props;
 
     const {
-      dealStatus: {
-        couponClaimed,
-        couponRedeemed,
-        dealRedeemed,
-      },
+      dealStatus: { couponClaimed, couponRedeemed, dealRedeemed },
     } = this.state;
 
     if (renderTimer) {
@@ -78,7 +63,7 @@ export default class DealImage extends PureComponent {
 
         return (
           <Tile styleName="text-centric sm-gutter overlay">
-            <View styleName="flexible middleCenter fill-parent space-around" virtual>
+            <View styleName="flexible middleCenter fill-parent space-around">
               {couponExpiresAt && (
                 <DealRedeemTimer
                   deal={deal}

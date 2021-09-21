@@ -7,6 +7,7 @@
 
 import { appDidFinishLaunching } from './app';
 import enTranslations from './translations/en.json';
+import './navigation';
 
 export const shoutem = {
   i18n: {

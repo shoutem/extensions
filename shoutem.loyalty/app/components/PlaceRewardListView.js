@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import {
   TouchableOpacity,
@@ -12,11 +12,10 @@ import {
   Subtitle,
   View,
 } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import RewardProgressBar from './RewardProgressBar';
 import { placeShape, rewardShape } from './shapes';
-
-const { func } = PropTypes;
 
 /**
  * Renders a single reward, in a list of rewards for places.
@@ -28,12 +27,13 @@ export class PlaceRewardListView extends PureComponent {
     // The reward
     reward: rewardShape.isRequired,
     // Called when reward is pressed
-    onPress: func,
+    onPress: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
-    this.onPress = this.onPress.bind(this);
+
+    autoBindReact(this);
   }
 
   onPress() {

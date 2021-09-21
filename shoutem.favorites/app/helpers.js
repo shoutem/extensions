@@ -1,5 +1,4 @@
 import _ from 'lodash';
-
 import { find, clear } from '@shoutem/redux-io';
 
 export const FAVORITES_TAG = 'favorite';
@@ -70,7 +69,12 @@ export function isFavoriteItem(state, schema, id) {
  * @param options {Object} Additional options object for find action
  * @returns {*}
  */
-export function fetchFavoritesData(schema, collection, options = {}, tag = FAVORITES_TAG) {
+export function fetchFavoritesData(
+  schema,
+  collection,
+  options = {},
+  tag = FAVORITES_TAG,
+) {
   if (_.isEmpty(collection)) {
     return clear(schema, tag);
   }

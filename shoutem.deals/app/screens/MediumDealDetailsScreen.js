@@ -1,14 +1,16 @@
 import React from 'react';
 import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
-import { ScrollView, View } from '@shoutem/ui';
-
+import { Screen, ScrollView, View } from '@shoutem/ui';
 import DealImageGallery from '../components/DealImageGallery';
 import { ext } from '../const';
 import { getDealImages } from '../services';
-import { DealDetailsScreen, mapStateToProps, mapDispatchToProps } from './DealDetailsScreen';
+import {
+  DealDetailsScreen,
+  mapStateToProps,
+  mapDispatchToProps,
+} from './DealDetailsScreen';
 
 export class MediumDealDetailsScreen extends DealDetailsScreen {
   static propTypes = {
@@ -34,22 +36,25 @@ export class MediumDealDetailsScreen extends DealDetailsScreen {
     );
   }
 
-  renderScreen() {
+  render() {
     return (
-      <ScrollView>
-        {this.renderHeader()}
-        <View styleName="solid horizontal h-center">
-          <View styleName="lg-gutter-top lg-gutter-horizontal">
-            {this.renderDealDetails()}
+      <Screen>
+        <ScrollView>
+          {this.renderHeader()}
+          <View styleName="solid horizontal h-center">
+            <View styleName="lg-gutter-top lg-gutter-horizontal">
+              {this.renderDealDetails()}
+            </View>
           </View>
-        </View>
-        {this.renderContent()}
-        {this.renderFooter()}
-      </ScrollView>
+          {this.renderContent()}
+          {this.renderFooter()}
+        </ScrollView>
+      </Screen>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('MediumDealDetailsScreen', {}))(MediumDealDetailsScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('MediumDealDetailsScreen', {}))(MediumDealDetailsScreen));

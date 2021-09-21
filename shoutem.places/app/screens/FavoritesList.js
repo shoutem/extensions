@@ -1,11 +1,12 @@
 import React from 'react';
+import autoBindReact from 'auto-bind';
 import _ from 'lodash';
 import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 import { FavoritesListScreen } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
+import { getRouteParams, HeaderTextButton } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-import { Button, View, Text } from '@shoutem/ui';
 import { MapList, PlacePhotoView } from '../components';
 import { ext } from '../const';
 import { getAllPlaces } from '../redux';
@@ -28,11 +29,7 @@ export class FavoritesList extends FavoritesListScreen {
   constructor(props, context) {
     super(props, context);
 
-    this.renderData = this.renderData.bind(this);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.toggleMapView = this.toggleMapView.bind(this);
-    this.renderFavorite = this.renderFavorite.bind(this);
-    this.shouldRenderMap = this.shouldRenderMap.bind(this);
+    autoBindReact(this);
 
     this.state = {
       schema: ext('places'),
@@ -47,12 +44,33 @@ export class FavoritesList extends FavoritesListScreen {
   }
 
   getNavBarProps() {
-    const { title } = this.props;
+    const { title } = getRouteParams(this.props);
 
     return {
+      headerRight: this.headerRight,
       title,
-      renderRightComponent: () => this.renderRightNavBarComponent(),
     };
+  }
+
+  headerRight(props) {
+    const { favorites } = this.props;
+    const { mapView } = this.state;
+
+    if (_.isEmpty(favorites)) {
+      return null;
+    }
+
+    const actionText = mapView
+      ? I18n.t('shoutem.cms.navBarListViewButton')
+      : I18n.t('shoutem.cms.navBarMapViewButton');
+
+    return (
+      <HeaderTextButton
+        {...props}
+        title={actionText}
+        onPress={this.toggleMapView}
+      />
+    );
   }
 
   renderFavorite(place) {
@@ -66,31 +84,11 @@ export class FavoritesList extends FavoritesListScreen {
     this.setState({ mapView: !mapView });
   }
 
-  renderRightNavBarComponent() {
-    const { mapView } = this.state;
-    const { favorites } = this.props;
-
-    const actionText = mapView
-      ? I18n.t('shoutem.cms.navBarListViewButton')
-      : I18n.t('shoutem.cms.navBarMapViewButton');
-
-    if (_.isEmpty(favorites)) {
-      return null;
-    }
-
-    return (
-      <View virtual styleName="container md-gutter-right">
-        <Button styleName="tight" onPress={this.toggleMapView}>
-          <Text>{actionText}</Text>
-        </Button>
-      </View>
-    );
-  }
-
   renderData(favorites) {
     if (this.shouldRenderMap(favorites)) {
       return <MapList places={favorites} />;
     }
+
     return super.renderData(favorites);
   }
 }

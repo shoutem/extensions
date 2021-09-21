@@ -3,17 +3,20 @@ import { getExtensionSettings } from 'shoutem.application';
 
 import { ext } from '../const';
 
-export const getCartSize = (state) => {
+export const getCartSize = state => {
   const { cart } = state[ext()];
 
   return _.reduce(cart, (result, item) => result + item.quantity, 0);
 };
 
-export const getCartTotal = (state) => {
+export const getCartTotal = state => {
   const { cart } = state[ext()];
 
-  const total = cart.reduce((total, { quantity, variant }) =>
-    total + (quantity * parseFloat(variant.price)), 0);
+  const total = cart.reduce(
+    (total, { quantity, variant }) =>
+      total + quantity * parseFloat(variant.price),
+    0,
+  );
 
   return total.toFixed(2);
 };
@@ -41,5 +44,8 @@ export const getProducts = (state, collectionId = 0, tag) => {
   const { products, collections, tags } = state[ext()];
   const productState = tag ? tags[tag] : collections[collectionId];
 
-  return { ...productState, products: _.map((productState || {}).productIds, id => products[id]) };
+  return {
+    ...productState,
+    products: _.map((productState || {}).productIds, id => products[id]),
+  };
 };

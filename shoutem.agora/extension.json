@@ -1,10 +1,10 @@
 {
   "name": "agora",
   "title": "Agora video calls",
-  "version": "2.5.1",
+  "version": "3.0.0",
   "icon": "server/assets/add-videos-image.png",
   "description": "Connect your users with real-time video conferencing!",
-  "platform": "~2.5.1",
+  "platform": "^3.0.0",
   "releaseNotes": "* Added a script for calling and debugging prebuild script",
   "i18n": {
     "locale": "en",

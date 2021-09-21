@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Alert } from 'react-native';
 import moment from 'moment';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Alert } from 'react-native';
 import { isBusy, isValid } from '@shoutem/redux-io';
 import {
   ScrollView,
@@ -15,24 +15,42 @@ import {
   View,
   SimpleHtml,
   Spinner,
+  ShareButton,
 } from '@shoutem/ui';
-import { NavigationBar, closeModal } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
+import { closeModal, getRouteParams } from 'shoutem.navigation';
 import { createRenderAttachment, ext as rssExt } from 'shoutem.rss';
 import { getVideosFeed } from '../redux';
 
 export class VideoDetails extends PureComponent {
   static propTypes = {
-    // The video article to display
-    id: PropTypes.string.isRequired,
+    navigation: PropTypes.object.isRequired,
   };
 
-  componentWillMount() {
-    const { videoNotFound } = this.props;
+  componentDidMount() {
+    const { video, videoNotFound, navigation } = this.props;
+
+    const title = _.get(video, 'title', '');
+    const videoAttachments = _.get(video, 'videoAttachments', []);
+    const videoAttachment =
+      videoAttachments.length > 0 ? videoAttachments[0] : null;
+    const link = _.get(videoAttachment, 'src', '');
 
     if (videoNotFound) {
       this.handleItemNotFound();
     }
+
+    navigation.setOptions({
+      headerRight: props => (
+        <ShareButton
+          styleName="clear"
+          title={title}
+          url={link}
+          iconProps={{ style: props.tintColor }}
+        />
+      ),
+      title,
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -45,10 +63,8 @@ export class VideoDetails extends PureComponent {
   }
 
   handleItemNotFound() {
-    const { closeModal } = this.props;
-
     const okButton = {
-      onPress: () => closeModal(),
+      onPress: closeModal,
     };
 
     return Alert.alert(
@@ -80,13 +96,6 @@ export class VideoDetails extends PureComponent {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar
-          share={{
-            title: title,
-            link: videoAttachment ? videoAttachment.src : '',
-          }}
-          title={title}
-        />
         {loading && (
           <View styleName="vertical flexible h-center v-center">
             <Spinner />
@@ -116,7 +125,7 @@ export class VideoDetails extends PureComponent {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const { id, feedUrl } = ownProps;
+  const { id, feedUrl } = getRouteParams(ownProps);
 
   const data = getVideosFeed(state, feedUrl);
   const video = _.find(data, { id });
@@ -129,8 +138,4 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = {
-  closeModal,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(VideoDetails);
+export default connect(mapStateToProps, null)(VideoDetails);

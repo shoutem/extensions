@@ -5,8 +5,12 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import autoBind from 'auto-bind';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
+import {
+  getRouteParams,
+  HeaderBackButton,
+  navigateTo,
+} from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
-import { isScreenActive, NavigationBar, navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Screen, Spinner, ScrollView } from '@shoutem/ui';
 import { loginRequired } from '../loginRequired';
@@ -23,20 +27,19 @@ import {
   userLoggedIn,
   getUser,
   getAccessToken,
-  createResetToLoginScreen,
+  hideShortcuts,
 } from '../redux';
 import { saveSession } from '../session';
 
 export class LoginScreen extends PureComponent {
   static propTypes = {
-    navigateTo: PropTypes.func,
     login: PropTypes.func,
     loginWithFacebook: PropTypes.func,
     isUserAuthenticated: PropTypes.bool,
     inProgress: PropTypes.bool,
     onLoginSuccess: PropTypes.func,
     isAuthenticated: PropTypes.bool,
-    interceptedRoute: PropTypes.object,
+    hideShortcuts: PropTypes.func,
     user: PropTypes.shape({
       id: PropTypes.string,
     }),
@@ -60,12 +63,29 @@ export class LoginScreen extends PureComponent {
 
   static defaultPropTypes = { onLoginSuccess: _.noop };
 
-  constructor(props, contex) {
-    super(props, contex);
+  constructor(props) {
+    super(props);
 
     autoBind(this);
 
     this.state = { inProgress: false };
+  }
+
+  componentDidMount() {
+    const { navigation, canGoBack } = this.props;
+
+    navigation.setOptions({
+      title: I18n.t(ext('logInNavBarTitle')),
+      headerLeft: canGoBack
+        ? props => <HeaderBackButton {...props} onPress={this.handleCancel} />
+        : null,
+    });
+  }
+
+  handleCancel() {
+    const { onCancel } = this.props;
+
+    onCancel();
   }
 
   handlePerformLogin(username, password) {
@@ -79,16 +99,7 @@ export class LoginScreen extends PureComponent {
   }
 
   handleForgotPasswordPress() {
-    const { navigateTo, createResetToLoginScreen } = this.props;
-
-    const route = {
-      screen: ext('PasswordRecoveryScreen'),
-      props: {
-        navigateToLoginScreen: createResetToLoginScreen(),
-      },
-    };
-
-    navigateTo(route);
+    navigateTo(ext('PasswordRecoveryScreen'));
   }
 
   handleLoginSuccess() {
@@ -97,16 +108,19 @@ export class LoginScreen extends PureComponent {
       access_token,
       user,
       userLoggedIn,
+      hideShortcuts,
       onLoginSuccess,
-      isScreenActive,
     } = this.props;
 
     this.setState({ inProgress: false });
     saveSession(JSON.stringify({ access_token }));
     userLoggedIn({ user, access_token }).then(() => {
-      if (isScreenActive) {
-        InteractionManager.runAfterInteractions(() => onLoginSuccess(user));
-      }
+      InteractionManager.runAfterInteractions(() => {
+        const { settings } = this.props;
+
+        hideShortcuts(user, settings);
+        onLoginSuccess(user);
+      });
     });
   }
 
@@ -122,29 +136,14 @@ export class LoginScreen extends PureComponent {
   }
 
   handleRegisterPress() {
-    const {
-      interceptedRoute,
-      navigateTo,
-      onLoginSuccess,
-      createResetToLoginScreen,
-    } = this.props;
+    const { onLoginSuccess, settings } = this.props;
 
-    const manuallyApproveMembers = _.get(
-      this.props,
-      'settings.manuallyApproveMembers',
-    );
+    const manuallyApproveMembers = _.get(settings, 'manuallyApproveMembers');
 
-    const route = {
-      screen: ext('RegisterScreen'),
-      props: {
-        manualApprovalActive: manuallyApproveMembers,
-        routeToReturnTo: interceptedRoute,
-        onRegisterSuccess: onLoginSuccess,
-        navigateToLoginScreen: createResetToLoginScreen(),
-      },
-    };
-
-    navigateTo(route);
+    navigateTo(ext('RegisterScreen'), {
+      manualApprovalActive: manuallyApproveMembers,
+      onRegisterSuccess: onLoginSuccess,
+    });
   }
 
   render() {
@@ -170,23 +169,18 @@ export class LoginScreen extends PureComponent {
     // if you log in on any stack, on other stacks spinner will be shown
     // instead of login form
     const isLoading = inProgress || isUserAuthenticated;
-
-    if (isLoading) {
-      return (
-        <Screen>
-          <NavigationBar title={I18n.t(ext('logInNavBarTitle'))} />
-          <Spinner styleName="xl-gutter-top" />
-        </Screen>
-      );
-    }
+    const resolvedSpinnerStyle = !isLoading ? style.hideComponent : {};
+    const resolvedLoginScreenStyle = isLoading ? style.hideComponent : {};
 
     return (
       <Screen style={style.loginScreen}>
+        <Spinner styleName="xl-gutter-top" style={resolvedSpinnerStyle} />
+
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
+          style={resolvedLoginScreenStyle}
         >
-          <NavigationBar title={I18n.t(ext('logInNavBarTitle'))} />
           {isEmailAuthEnabled && (
             <LoginForm
               onSubmit={this.handlePerformLogin}
@@ -221,10 +215,9 @@ export class LoginScreen extends PureComponent {
 }
 
 const mapDispatchToProps = {
-  navigateTo,
   login,
   userLoggedIn,
-  createResetToLoginScreen,
+  hideShortcuts,
 };
 
 function mapStateToProps(state, ownProps) {
@@ -233,9 +226,9 @@ function mapStateToProps(state, ownProps) {
     isUserAuthenticated: isAuthenticated(state),
     appId: getAppId(),
     settings: getExtensionSettings(state, ext()),
-    isScreenActive: isScreenActive(state, ownProps.screenId),
     access_token: getAccessToken(state),
     isAuthenticated: isAuthenticated(state),
+    ...getRouteParams(ownProps),
   };
 }
 

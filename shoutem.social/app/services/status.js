@@ -3,7 +3,14 @@ import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 function truncateUsername(userName, maxLength = 12) {
-  return _.truncate(userName, { 'length': maxLength });
+  return _.truncate(userName, { length: maxLength });
+}
+
+export function currentUserOwnsStatus(user, statusOwner) {
+  const userId = _.get(user, 'legacyId');
+  const statusOwnerId = _.get(statusOwner, 'id');
+
+  return _.toString(userId) === _.toString(statusOwnerId);
 }
 
 export function formatLikeText(status, showUsersWhoLiked = true) {
@@ -86,8 +93,13 @@ export function removeStatus(statuses, statusId) {
   return _.reject(statuses, status => status.id === statusId);
 }
 
-export function updateStatusesAfterLike(statuses, statusId, user, currentlyLiked) {
-  return _.map(statuses, (status) => {
+export function updateStatusesAfterLike(
+  statuses,
+  statusId,
+  user,
+  currentlyLiked,
+) {
+  return _.map(statuses, status => {
     if (status.id === statusId && !status.liked) {
       const usersWhoLike = _.get(status, 'shoutem_favorited_by.users');
 
@@ -106,8 +118,13 @@ export function updateStatusesAfterLike(statuses, statusId, user, currentlyLiked
   });
 }
 
-export function updateStatusesAfterUnlike(statuses, statusId, userId, currentlyLiked) {
-  return _.map(statuses, (status) => {
+export function updateStatusesAfterUnlike(
+  statuses,
+  statusId,
+  userId,
+  currentlyLiked,
+) {
+  return _.map(statuses, status => {
     if (status.id === statusId && status.liked) {
       const usersWhoLike = _.get(status, 'shoutem_favorited_by.users');
 

@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -19,16 +18,16 @@ import {
   Title,
   TouchableOpacity,
   View,
+  ShareButton,
 } from '@shoutem/ui';
-
 import { InlineMap } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import {
-  NavigationBar,
-  navigateTo as navigateToAction,
-} from 'shoutem.navigation'
-import { openURL as openUrlAction } from 'shoutem.web-view';
-
+  getRouteParams,
+  composeNavigationStyles,
+  navigateTo,
+} from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
 import { formatToLocalDate, addToCalendar } from '../services/Calendar';
 import isValidEvent from '../services/isValidEvent';
 import { ext } from '../const';
@@ -48,53 +47,68 @@ const getEventLocation = event => ({
 
 export class EventDetailsScreen extends PureComponent {
   static propTypes = {
-    event: PropTypes.object.isRequired,
-    openURL: PropTypes.func.isRequired,
-    navigateTo: PropTypes.func.isRequired,
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props, context) {
     super(props, context);
-    this.addToCalendar = this.addToCalendar.bind(this);
-    this.openMapScreen = this.openMapScreen.bind(this);
-    this.renderRsvpButton = this.renderRsvpButton.bind(this);
-    this.openURL = this.openURL.bind(this);
+
+    autoBindReact(this);
   }
 
-  resolveNavBarProps(options = {}) {
-    const { event, navigationBarStyle } = this.props;
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
+  }
+
+  getNavBarProps() {
+    const { event, screenSettings } = getRouteParams(this.props);
+    const title = _.get(event, 'name', '');
+
+    const headerStyles =
+      screenSettings.navigationBarStyle === 'clear'
+        ? composeNavigationStyles(['clear'])
+        : {};
 
     return {
-      share: {
-        title: event.name,
-        link: event.rsvpLink,
-      },
-      styleName: navigationBarStyle,
-      title: event.name,
-      ...options,
+      headerRight: this.renderShare,
+      ...headerStyles,
+      title,
     };
   }
 
+  renderShare() {
+    const { event } = getRouteParams(this.props);
+    const title = _.get(event, 'name', '');
+    const rsvpLink = _.get(event, 'rsvpLink', '');
+
+    if (_.isEmpty(rsvpLink)) {
+      return null;
+    }
+
+    return <ShareButton styleName="clear" title={title} url={rsvpLink} />;
+  }
+
   addToCalendar() {
-    addToCalendar(this.props.event);
+    const { event } = getRouteParams(this.props);
+    addToCalendar(event);
   }
 
   openMapScreen() {
-    const { event, navigateTo } = this.props;
+    const { event } = getRouteParams(this.props);
 
-    navigateTo({
-      screen: ext('EventMapScreen'),
+    navigateTo(ext('EventMapScreen'), {
       title: `Map View - ${event.name}`,
-      props: {
+      event: {
         title: _.get(event, 'name'),
         marker: getEventLocation(event),
       },
     });
   }
 
-  openURL() {
-    const { event, openURL } = this.props;
-
+  handleOpenURL() {
+    const { event } = getRouteParams(this.props);
     openURL(event.rsvpLink, event.name);
   }
 
@@ -121,10 +135,10 @@ export class EventDetailsScreen extends PureComponent {
 
   renderHeadlineDetails(event, darkened = true, navBarClear = true) {
     const textColorStyle = darkened ? '' : 'bright';
-    const paddingTop = navBarClear ? 45 : 0;
+    const paddingTop = navBarClear ? 90 : 0;
 
     return (
-      <View virtual style={{ paddingTop: paddingTop }}>
+      <View style={{ paddingTop }}>
         <Title styleName={`${textColorStyle} md-gutter-bottom`}>
           {event.name.toUpperCase()}
         </Title>
@@ -153,7 +167,7 @@ export class EventDetailsScreen extends PureComponent {
 
   renderRsvpButton(event) {
     return event.rsvpLink ? (
-      <TouchableOpacity onPress={this.openURL}>
+      <TouchableOpacity onPress={this.handleOpenURL}>
         <Divider styleName="line" />
         <Row styleName="small">
           <Icon name="add-event" />
@@ -177,10 +191,7 @@ export class EventDetailsScreen extends PureComponent {
 
   renderHeader(event) {
     return (
-      <Tile
-        animationName="hero"
-        styleName="text-centric"
-      >
+      <Tile animationName="hero" styleName="text-centric">
         {this.renderHeadlineDetails(event, true, true)}
         {this.renderAddToCalendarButton(false)}
       </Tile>
@@ -199,14 +210,11 @@ export class EventDetailsScreen extends PureComponent {
   }
 
   renderScreen(fullScreen) {
-    const { event } = this.props;
+    const { event } = getRouteParams(this.props);
     const screenStyleName = `${fullScreen ? ' full-screen' : ''} paper`;
 
     return (
-      <Screen styleName={screenStyleName}>
-        <NavigationBar {...this.resolveNavBarProps()} />
-        {this.renderData(event)}
-      </Screen>
+      <Screen styleName={screenStyleName}>{this.renderData(event)}</Screen>
     );
   }
 
@@ -215,12 +223,4 @@ export class EventDetailsScreen extends PureComponent {
   }
 }
 
-
-export const mapDispatchToProps = {
-  openURL: openUrlAction,
-  navigateTo: navigateToAction,
-};
-
-export default connect(undefined, mapDispatchToProps)(
-  connectStyle(ext('EventDetailsScreen'))(EventDetailsScreen),
-);
+export default connectStyle(ext('EventDetailsScreen'))(EventDetailsScreen);

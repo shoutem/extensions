@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
 import { getCollection, isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Caption, Text, Tile, Title, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import { refreshCardState, refreshTransactions } from '../services';
 import { placeShape } from './shapes';
@@ -28,7 +29,7 @@ class PlaceLoyaltyPointsView extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.refreshCardState = this.refreshCardState.bind(this);
+    autoBindReact(this);
   }
 
   refreshCardState() {

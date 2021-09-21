@@ -1,19 +1,17 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Image, Screen, Subtitle, Text, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar, closeModal } from 'shoutem.navigation';
+import { closeModal, getRouteParams } from 'shoutem.navigation';
 import { ext } from '../const';
-
-const { bool, func, number } = PropTypes;
 
 const STAMP_ICON = require('../assets/icons/stamp.png');
 const TROPHY_ICON = require('../assets/icons/trophy.png');
 
 const getNavBarProps = () => ({
-  renderLeftComponent: () => null,
+  headerLeft: () => null,
   title: I18n.t(ext('rewardRedemptionCongratulation')),
 });
 
@@ -24,27 +22,27 @@ const getNavBarProps = () => ({
 export class TransactionProcessedScreen extends PureComponent {
   static propTypes = {
     // Points assigned in transaction
-    points: number,
+    points: PropTypes.number,
     // Whether the transaction redeemed a reward
-    redeemed: bool,
-    // Closes modal dialog in which the stamp card flow was started
-    closeModal: func,
+    redeemed: PropTypes.bool,
   };
 
   constructor(props) {
     super(props);
 
-    this.handleContinue = this.handleContinue.bind(this);
+    autoBindReact(this);
   }
 
-  handleContinue() {
-    const { closeModal } = this.props;
+  componentDidMount() {
+    const { navigation } = this.props;
 
-    closeModal();
+    navigation.setOptions({
+      ...getNavBarProps(),
+    });
   }
 
   render() {
-    const { points, redeemed } = this.props;
+    const { points, redeemed } = getRouteParams(this.props);
 
     const message = redeemed
       ? I18n.t(ext('rewardRedemptionMessage'))
@@ -52,7 +50,6 @@ export class TransactionProcessedScreen extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar {...getNavBarProps()} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <View styleName="oval-highlight">
             <Image
@@ -63,10 +60,7 @@ export class TransactionProcessedScreen extends PureComponent {
           <Subtitle styleName="h-center md-gutter-top xl-gutter-horizontal">
             {message}
           </Subtitle>
-          <Button
-            styleName="secondary lg-gutter-vertical"
-            onPress={this.handleContinue}
-          >
+          <Button styleName="secondary lg-gutter-vertical" onPress={closeModal}>
             <Text>{I18n.t(ext('rewardRedemptionContinueButton'))}</Text>
           </Button>
         </View>
@@ -75,6 +69,6 @@ export class TransactionProcessedScreen extends PureComponent {
   }
 }
 
-export default connect(undefined, { closeModal })(
-  connectStyle(ext('TransactionProcessedScreen'))(TransactionProcessedScreen),
+export default connectStyle(ext('TransactionProcessedScreen'))(
+  TransactionProcessedScreen,
 );

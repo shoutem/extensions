@@ -29,5 +29,7 @@ export const createListItem = (layoutName, event, onPress, action, style) => {
   }
 
   const ListItem = layoutItems[layoutName];
-  return (<ListItem event={event} onPress={onPress} action={action} style={style} />);
+  return (
+    <ListItem event={event} onPress={onPress} action={action} style={style} />
+  );
 };

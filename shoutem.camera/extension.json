@@ -1,7 +1,7 @@
 {
   "name": "camera",
-  "version": "2.6.2",
-  "platform": "2.5.*",
+  "version": "3.0.0",
+  "platform": "^3.0.0",
   "title": "Camera",
   "type": "system",
   "description": "Shoutem camera extension",

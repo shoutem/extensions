@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
 import { CmsListScreen } from 'shoutem.cms';
-import { navigateTo as navigateToAction } from 'shoutem.navigation';
-import { openURL as openURLAction } from 'shoutem.web-view';
+import { navigateTo } from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
 import { connectStyle } from '@shoutem/theme';
 import ListProductView from '../components/ListProductView';
 import { ext } from '../const';
@@ -11,13 +11,11 @@ import { ext } from '../const';
 export class ProductsList extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    navigateTo: PropTypes.func,
   };
 
   constructor(props, context) {
     super(props, context);
-    this.renderRow = this.renderRow.bind(this);
-    this.openDetailsScreen = this.openDetailsScreen.bind(this);
+    autoBindReact(this);
 
     this.state = {
       ...this.state,
@@ -26,12 +24,7 @@ export class ProductsList extends CmsListScreen {
   }
 
   openDetailsScreen(product) {
-    const { navigateTo } = this.props;
-
-    navigateTo({
-      screen: ext('ProductDetails'),
-      props: { product },
-    });
+    navigateTo(ext('ProductDetails'), { product });
   }
 
   renderRow(product) {
@@ -46,8 +39,7 @@ export const mapStateToProps = CmsListScreen.createMapStateToProps(
 );
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
-  navigateTo: navigateToAction,
-  openURL: openURLAction,
+  openURL,
 });
 
 export default connect(

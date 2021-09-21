@@ -1,9 +1,9 @@
+import React, { PureComponent } from 'react';
+import { Modal } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { Modal } from 'react-native';
-import autoBind from 'auto-bind';
+import autoBindReact from 'auto-bind/react';
 import {
   Button,
   Caption,
@@ -12,21 +12,17 @@ import {
   NavigationBar as UINavigationBar,
   Screen,
   ScrollView,
-  Subtitle,
   Text,
   Title,
   View,
 } from '@shoutem/ui';
-import {
-  NavigationBar,
-  closeModal,
-  openInModal,
-  navigateTo,
-} from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-
+import {
+  openInModal,
+  getRouteParams,
+  HeaderTextButton,
+} from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
-
 import { user as userShape } from '../components/shapes';
 import ProfileImage from '../components/ProfileImage';
 import {
@@ -35,52 +31,47 @@ import {
   isSendBirdConfigured,
   isAgoraConfigured,
 } from '../redux';
-import { ext } from '../const';
-
-const SENDBIRD_SCREEN_ID = 'shoutem.sendbird.ChatWindowScreen';
-const AGORA_SCREEN_ID = 'shoutem.agora.VideoCallScreen';
+import { ext, SENDBIRD_SCREEN_ID, AGORA_SCREEN_ID } from '../const';
 
 export class UserProfileScreen extends PureComponent {
   static propTypes = {
     isProfileOwner: PropTypes.bool,
     sendBirdConfigured: PropTypes.bool,
     isAgoraConfigured: PropTypes.bool,
-    navigateTo: PropTypes.func,
-    // Closes the modal in which the edit profile screen is opened
-    closeModal: PropTypes.func,
-    // Dispatched to log the user out of the application
     logout: PropTypes.func,
-    // Opens the modal in which the edit profile screen is opened
-    openInModal: PropTypes.func,
-    // User to which the profile belongs
     user: userShape.isRequired,
   };
 
   constructor(props) {
     super(props);
 
-    autoBind(this);
+    autoBindReact(this);
 
     this.state = {
       shouldRenderImageGallery: false,
     };
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({
+      ...this.getNavBarProps(),
+    });
+  }
+
   getNavBarProps() {
     const { logout, isProfileOwner } = this.props;
 
     return {
-      renderRightComponent: () => {
+      headerRight: props => {
         if (isProfileOwner) {
           return (
-            <View styleName="container" virtual>
-              <Button
-                onPress={logout}
-                styleName="clear"
-              >
-                <Subtitle>{I18n.t(ext('profileNavBarLogoutButton'))}</Subtitle>
-              </Button>
-            </View>
+            <HeaderTextButton
+              title={I18n.t(ext('profileNavBarLogoutButton'))}
+              onPress={logout}
+              {...props}
+            />
           );
         }
 
@@ -91,7 +82,10 @@ export class UserProfileScreen extends PureComponent {
   }
 
   getImageGalleryNavbarProps() {
-    const { first_name, url } = this.props.user;
+    const {
+      // eslint-disable-next-line camelcase
+      user: { first_name, url },
+    } = this.props;
 
     const share = {
       title: first_name,
@@ -112,44 +106,26 @@ export class UserProfileScreen extends PureComponent {
   toggleImageGallery() {
     const { profile_image_url: image } = this.props.user;
     if (image) {
-      this.setState({ shouldRenderImageGallery: !this.state.shouldRenderImageGallery });
+      this.setState({
+        shouldRenderImageGallery: !this.state.shouldRenderImageGallery,
+      });
     }
   }
 
   openEditProfileScreen() {
-    const { closeModal, openInModal } = this.props;
-
-    const route = {
-      screen: ext('EditProfileScreen'),
-      props: {
-        onClose: closeModal,
-      },
-    };
-
-    openInModal(route);
+    openInModal(ext('EditProfileScreen'));
   }
 
   handleChatPress() {
-    const { navigateTo, user } = this.props;
+    const { user } = this.props;
 
-    return navigateTo({
-      screen: SENDBIRD_SCREEN_ID,
-      props: { user },
-    });
+    openInModal(SENDBIRD_SCREEN_ID, { user });
   }
 
   handleAgoraPress() {
-    const { closeModal, openInModal, user } = this.props;
+    const { user } = this.props;
 
-    const route = {
-      screen: AGORA_SCREEN_ID,
-      props: {
-        onClose: closeModal,
-        user,
-      },
-    };
-
-    openInModal(route);
+    openInModal(AGORA_SCREEN_ID, { user });
   }
 
   renderImageGallery() {
@@ -163,10 +139,7 @@ export class UserProfileScreen extends PureComponent {
         onRequestClose={this.toggleImageGallery}
         visible={shouldRenderImageGallery}
       >
-        <ImageGallery
-          data={data}
-          selectedIndex={0}
-        />
+        <ImageGallery data={data} selectedIndex={0} />
         <UINavigationBar {...this.getImageGalleryNavbarProps()} />
       </Modal>
     );
@@ -201,9 +174,7 @@ export class UserProfileScreen extends PureComponent {
       return null;
     }
 
-    return (
-      <Title styleName="md-gutter-vertical">{actualName}</Title>
-    );
+    return <Title styleName="md-gutter-vertical">{actualName}</Title>;
   }
 
   renderChatButton() {
@@ -243,32 +214,22 @@ export class UserProfileScreen extends PureComponent {
       return null;
     }
 
-    const {
-      name,
-      nick,
-      image,
-      location,
-      url,
-      description,
-    } = profile;
+    const { name, nick, image, location, url, description } = profile;
 
     return (
       <View styleName="vertical h-center lg-gutter-top">
-        <ProfileImage
-          onPress={this.toggleImageGallery}
-          uri={image}
-        />
-        {nick ? <Caption styleName="md-gutter-vertical">{`${nick}`}</Caption> : null
-        }
-        {name ? <Title styleName="md-gutter-vertical">{name}</Title> : null
-        }
-        {location ? <Caption styleName="md-gutter-vertical">{`${location}`}</Caption> : null
-        }
-        {url ? <Caption styleName="md-gutter-vertical">{`${url}`}</Caption> : null
-        }
-        <Text styleName="h-center">
-          {description}
-        </Text>
+        <ProfileImage onPress={this.toggleImageGallery} uri={image} />
+        {nick ? (
+          <Caption styleName="md-gutter-vertical">{`${nick}`}</Caption>
+        ) : null}
+        {name ? <Title styleName="md-gutter-vertical">{name}</Title> : null}
+        {location ? (
+          <Caption styleName="md-gutter-vertical">{`${location}`}</Caption>
+        ) : null}
+        {url ? (
+          <Caption styleName="md-gutter-vertical">{`${url}`}</Caption>
+        ) : null}
+        <Text styleName="h-center">{description}</Text>
         {this.renderEditButton()}
         {this.renderVideoChatButton()}
         {this.renderChatButton()}
@@ -279,10 +240,7 @@ export class UserProfileScreen extends PureComponent {
   render() {
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
-        <ScrollView>
-          {this.renderContent()}
-        </ScrollView>
+        <ScrollView>{this.renderContent()}</ScrollView>
         {this.renderImageGallery()}
       </Screen>
     );
@@ -290,9 +248,13 @@ export class UserProfileScreen extends PureComponent {
 }
 
 export const mapStateToProps = (state, ownProps) => {
+  const navProps = getRouteParams(ownProps);
+  const passedUser = _.get(navProps, 'user');
   const me = getUser(state);
-  const isProfileOwner = !_.isEmpty(ownProps.user) ? _.get(ownProps.user, 'id') === _.get(me, 'id') : !_.isEmpty(me);
-  const user = isProfileOwner ? me : ownProps.user || me;
+  const isProfileOwner = !_.isEmpty(passedUser)
+    ? _.get(passedUser, 'id') === _.get(me, 'id')
+    : !_.isEmpty(me);
+  const user = isProfileOwner ? me : passedUser || me;
 
   return {
     user: user || me || {},
@@ -302,12 +264,7 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = {
-  closeModal,
-  logout,
-  openInModal,
-  navigateTo,
-};
+export const mapDispatchToProps = { logout };
 
 export default connect(
   mapStateToProps,

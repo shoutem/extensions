@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-community/async-storage';
-import { combineReducers } from 'redux';
 import _ from 'lodash';
+import { combineReducers } from 'redux';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const LOAD_FAVORITES_SCHEMAS = 'shoutem.favorites.LOAD_FAVORITES_SCHEMAS';
 const SAVE_FAVORITE_ITEM = 'shoutem.favorites.SAVE_FAVORITE_ITEM';
@@ -68,31 +68,37 @@ export function loadFavoritesSchemas(favoritesSchemas) {
  * @returns {{}} New state with refreshed favorite items.
  */
 function favoriteItems(state = {}, action) {
-  let newCollection;
   const newState = { ...state };
 
   switch (action.type) {
-    case SAVE_FAVORITE_ITEM:
+    case SAVE_FAVORITE_ITEM: {
       if (!state[action.schema]) {
         newState[action.schema] = [];
       }
-      const schemaState = !_.isEmpty(newState[action.schema]) ? newState[action.schema] : [];
+      const schemaState = !_.isEmpty(newState[action.schema])
+        ? newState[action.schema]
+        : [];
       const favoriteId = action.data;
 
       newState[action.schema] = _.uniqBy([...schemaState, favoriteId], 'id');
 
       saveStateToLocalStorage(action.schema, newState[action.schema]);
       return newState;
-    case DELETE_FAVORITE_ITEM:
-      newState[action.schema] = _.reject(newState[action.schema], ['id', action.id]);
+    }
+    case DELETE_FAVORITE_ITEM: {
+      newState[action.schema] = _.reject(newState[action.schema], [
+        'id',
+        action.id,
+      ]);
 
       saveStateToLocalStorage(action.schema, newState[action.schema]);
       return newState;
-    default:
+    }
+    default: {
       return state;
+    }
   }
 }
-
 
 /**
  * A reducer that returns all favorites schemas.
@@ -109,7 +115,6 @@ function schemas(state = {}, action) {
       return state;
   }
 }
-
 
 export default combineReducers({
   schemas,

@@ -1,29 +1,22 @@
 import React from 'react';
+import autoBindReact from 'auto-bind';
 import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
+import { HeaderTextButton } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
 import { isBusy, find, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { View, Text, ListView, Screen, Button } from '@shoutem/ui';
+import { ListView, Screen } from '@shoutem/ui';
 import { MapList, PlacePhotoView } from '../components';
 import { ext } from '../const';
 import { getAllPlaces } from '../redux';
 
 export class PlacesList extends CmsListScreen {
-  static propTypes = {
-    ...CmsListScreen.propTypes,
-  };
-
   constructor(props) {
     super(props);
-    this.renderRow = this.renderRow.bind(this);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(
-      this,
-    );
-    this.toggleMapView = this.toggleMapView.bind(this);
+
+    autoBindReact(this);
 
     this.state = {
       ...this.state,
@@ -45,25 +38,25 @@ export class PlacesList extends CmsListScreen {
     this.setState({ mapView: !mapView });
   }
 
-  renderRightNavBarComponent() {
+  headerRight(props) {
     const { mapView } = this.state;
     const actionText = mapView
       ? I18n.t('shoutem.cms.navBarListViewButton')
       : I18n.t('shoutem.cms.navBarMapViewButton');
 
     return (
-      <View styleName="container md-gutter-right" virtual>
-        <Button onPress={this.toggleMapView} styleName="tight">
-          <Text>{actionText}</Text>
-        </Button>
-      </View>
+      <HeaderTextButton
+        {...props}
+        onPress={this.toggleMapView}
+        title={actionText}
+      />
     );
   }
 
   getNavBarProps() {
     return {
       ...super.getNavBarProps(),
-      renderRightComponent: () => this.renderRightNavBarComponent(),
+      headerRight: this.headerRight,
     };
   }
 
@@ -102,7 +95,6 @@ export class PlacesList extends CmsListScreen {
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
         {renderCategoriesInline
           ? this.renderCategoriesDropDown('horizontal')
           : null}
@@ -111,6 +103,10 @@ export class PlacesList extends CmsListScreen {
     );
   }
 }
+
+PlacesList.propTypes = {
+  ...CmsListScreen.propTypes,
+};
 
 export const mapStateToProps = CmsListScreen.createMapStateToProps(
   getAllPlaces,

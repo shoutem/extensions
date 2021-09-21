@@ -8,5 +8,5 @@ import WebViewWithShareScreen from './screens/WebViewWithShareScreen';
 
 export const screens = {
   WebViewScreen,
-  WebViewWithShareScreen
+  WebViewWithShareScreen,
 };

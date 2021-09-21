@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import {
   TouchableOpacity,
@@ -11,6 +10,7 @@ import {
   Subtitle,
   View,
 } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import PlaceRewardIcon from './PlaceRewardIcon';
 import { PlaceRewardListView } from './PlaceRewardListView';

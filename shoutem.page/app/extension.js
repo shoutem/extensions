@@ -5,12 +5,10 @@ import pack from './package.json';
 import PageScreen from './screens/PageScreen';
 
 export const screens = {
-  PageScreen
+  PageScreen,
 };
 
-export const themes = {
-
-};
+export const themes = {};
 
 export function ext(resourceName) {
   return resourceName ? `${pack.name}.${resourceName}` : pack.name;

@@ -1,23 +1,12 @@
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Device,
-  GridRow,
-  HorizontalPager,
-  PageIndicators,
-} from '@shoutem/ui';
-import {
-  ICON_GRID,
-  ext,
-  IPHONE_X_HOME_INDICATOR_PADDING,
-  TAB_BAR_ITEM_HEIGHT,
-} from '../const';
-import { isTabBarNavigation } from '../helpers';
-import FolderBase from './FolderBase';
+import { Device, GridRow, HorizontalPager, PageIndicators } from '@shoutem/ui';
+import { ICON_GRID, IPHONE_X_HOME_INDICATOR_PADDING } from '../const';
+import { getRouteParams } from '../services';
 import IconGridCellItem from './IconGridCellItem';
+import FolderBase from './FolderBase';
 
 const renderPageIndicators = (data, selectedIndex) => (
   <PageIndicators
@@ -30,16 +19,18 @@ const renderPageIndicators = (data, selectedIndex) => (
 export class IconGrid extends FolderBase {
   static propTypes = {
     ...FolderBase.propTypes,
-    rows: PropTypes.number.isRequired,
-    cols: PropTypes.number.isRequired,
-    scrolling: PropTypes.string,
-    gridAlignment: PropTypes.string,
+    screenSettings: PropTypes.shape({
+      rows: PropTypes.number.isRequired,
+      cols: PropTypes.number.isRequired,
+      scrolling: PropTypes.string,
+      gridAlignment: PropTypes.string,
+      showIcon: PropTypes.bool,
+      showText: PropTypes.bool,
+      backgroundImage: PropTypes.string,
+    }),
     iconWidth: PropTypes.number,
     iconHeight: PropTypes.number,
-    showIcon: PropTypes.bool,
-    showText: PropTypes.bool,
     scrollingDirection: PropTypes.string,
-    backgroundImage: PropTypes.string,
     resolution: PropTypes.shape({
       width: PropTypes.number,
       height: PropTypes.number,
@@ -48,13 +39,14 @@ export class IconGrid extends FolderBase {
 
   constructor(props) {
     super(props);
+
     this.onPageSelected = this.onPageSelected.bind(this);
 
     this.state = { ...this.state, selectedIndex: 0 };
   }
 
   isPagingEnabled(props) {
-    return this.getLayoutSettings(props).scrolling === 'paged';
+    return this.getScreenSettings(props).scrolling === 'paged';
   }
 
   hasPager() {
@@ -62,14 +54,14 @@ export class IconGrid extends FolderBase {
   }
 
   getPageCount() {
-    const { cols, rows } = this.getLayoutSettings();
+    const { cols, rows } = this.getScreenSettings();
     const { children } = this.props.shortcut;
 
     return Math.ceil(_.size(children) / (cols * rows));
   }
 
   calculateRowWidth(props = this.props) {
-    const { cols } = this.getLayoutSettings(props);
+    const { cols } = this.getScreenSettings(props);
     const { item, row } = this.props.style;
     const itemWidth = _.get(item, 'width', 0);
     const itemMargin = _.get(item, 'marginLeft', 0);
@@ -77,13 +69,15 @@ export class IconGrid extends FolderBase {
     // Actual row width.
     // Used to keep items aligned from corner to corner in the row.
     // Prevents last item in last row if row is not filled from centering.
-    return ((itemWidth + itemMargin) * cols) + rowRightPadding;
+    return (itemWidth + itemMargin) * cols + rowRightPadding;
   }
 
   resolveRowStyleName(props = this.props) {
-    const { gridAlignment } = this.getLayoutSettings(props);
+    const { gridAlignment } = this.getScreenSettings(props);
     // Strip horizontal alignment from grid alignment
-    const horizontalAlignment = gridAlignment.replace(/top|middle|bottom/, '').toLowerCase();
+    const horizontalAlignment = gridAlignment
+      .replace(/top|middle|bottom/, '')
+      .toLowerCase();
     return `${horizontalAlignment}-alignment`;
   }
 
@@ -107,13 +101,15 @@ export class IconGrid extends FolderBase {
    */
   resolvePageProps() {
     const { style, isTabBar } = this.props;
-    const { dimensions: { width, height } } = this.state;
-    const { gridAlignment } = this.getLayoutSettings();
+    const {
+      dimensions: { width, height },
+    } = this.state;
+    const { gridAlignment } = this.getScreenSettings();
 
     const styleNames = [gridAlignment];
     const resolvedHeight = Device.select({
-      iPhoneX: isTabBar ? height : (height - IPHONE_X_HOME_INDICATOR_PADDING),
-      iPhoneXR: isTabBar ? height : (height - IPHONE_X_HOME_INDICATOR_PADDING),
+      iPhoneX: isTabBar ? height : height - IPHONE_X_HOME_INDICATOR_PADDING,
+      iPhoneXR: isTabBar ? height : height - IPHONE_X_HOME_INDICATOR_PADDING,
       default: height,
     });
 
@@ -132,8 +128,8 @@ export class IconGrid extends FolderBase {
   }
 
   resolveScrollViewProps() {
-    const { style, isTabBar } = this.props;
-    const { scrollingDirection } = this.getLayoutSettings();
+    const { isTabBar } = this.props;
+    const { scrollingDirection } = this.getScreenSettings();
 
     const homeIndicatorPadding = Device.select({
       iPhoneX: isTabBar ? 0 : IPHONE_X_HOME_INDICATOR_PADDING,
@@ -147,7 +143,7 @@ export class IconGrid extends FolderBase {
       pagingEnabled: this.isPagingEnabled(),
       contentContainerStyle: {
         paddingBottom: homeIndicatorPadding,
-      }
+      },
     };
   }
 
@@ -156,12 +152,12 @@ export class IconGrid extends FolderBase {
   }
 
   groupItemsIntoRows(items) {
-    const { cols } = this.getLayoutSettings();
+    const { cols } = this.getScreenSettings();
     return GridRow.groupByRows(items, cols);
   }
 
   groupRowsIntoPages(rows) {
-    const { rows: rowsPerPage } = this.getLayoutSettings();
+    const { rows: rowsPerPage } = this.getScreenSettings();
     return rows.reduce((pages, row) => {
       let currentPage = _.last(pages);
 
@@ -187,14 +183,16 @@ export class IconGrid extends FolderBase {
   }
 
   renderItem(shortcut, index) {
-    const { showText, textSize } = this.getLayoutSettings();
+    const { showText, textSize } = this.getScreenSettings();
     const { style } = this.props;
+
     const cellStyle = {
       text: this.scale({ ...style.text, ...style[`${textSize}-text`] }),
       icon: this.scale(style.icon),
       iconContainer: this.scale(style.iconContainer),
       item: this.scale(style.item),
     };
+
     return (
       <IconGridCellItem
         key={`item_${index}`}
@@ -231,17 +229,21 @@ export class IconGrid extends FolderBase {
 }
 
 const mapPropsToStyleNames = (styleNames, props) => {
-  const { cols, marginSize, rows } = props;
+  const { cols, marginSize, rows } = _.get(
+    getRouteParams(props),
+    'screenSettings',
+  );
 
   styleNames.push(marginSize, `${rows}-rows`, `${cols}-columns`);
 
-  return FolderBase.mapPropsToStyleNames(styleNames, props);
+  return FolderBase.mapPropsToStyleNames(styleNames, {
+    ...getRouteParams(props).screenSettings,
+    isRootScreen: getRouteParams(props).isRootScreen,
+  });
 };
 
-const mapStateToProps = (state) => ({
-  isTabBar: isTabBarNavigation(state),
-});
-
-export default connect(mapStateToProps)(
-  connectStyle(ICON_GRID, undefined, mapPropsToStyleNames)(IconGrid)
-);
+export default connectStyle(
+  ICON_GRID,
+  undefined,
+  mapPropsToStyleNames,
+)(IconGrid);

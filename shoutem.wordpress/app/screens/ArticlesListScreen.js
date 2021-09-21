@@ -4,7 +4,7 @@ import he from 'he';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { RemoteDataListScreen } from 'shoutem.application';
-import { navigateTo as navigateToAction } from 'shoutem.navigation';
+import { getRouteParams, push } from 'shoutem.navigation';
 import { next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
@@ -19,6 +19,7 @@ import {
   fetchCategories,
 } from '../redux';
 import { getLeadImageUrl, getAuthorName } from '../services';
+
 export class ArticlesListScreen extends RemoteDataListScreen {
   static propTypes = {
     ...RemoteDataListScreen.propTypes,
@@ -89,18 +90,21 @@ export class ArticlesListScreen extends RemoteDataListScreen {
   }
 
   openArticle(article) {
-    const nextArticle = this.getNextArticle(article);
-    const route = {
-      screen: ext('ArticleDetailsScreen'),
-      title: he.decode(article.title.rendered),
-      props: {
-        article,
-        nextArticle,
-        openArticle: this.openArticle,
-      },
-    };
+    const { navigation, shortcut } = this.props;
 
-    this.props.navigateToAction(route);
+    const title = he.decode(article.title.rendered);
+    const nextArticle = this.getNextArticle(article);
+
+    const detailsScreen = _.find(shortcut.screens, {
+      canonicalType: ext('ArticleDetailsScreen'),
+    });
+
+    push(navigation, detailsScreen.canonicalName, {
+      title,
+      article,
+      nextArticle,
+      openArticle: this.openArticle,
+    });
   }
 
   openArticleWithId(articleId) {
@@ -122,9 +126,9 @@ export class ArticlesListScreen extends RemoteDataListScreen {
   }
 
   renderFeaturedItem(article) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return hasFeaturedItem && article ? (
+    return screenSettings.hasFeaturedItem && article ? (
       <FeaturedArticleView
         key={article.id}
         articleId={article.id.toString()}
@@ -138,10 +142,14 @@ export class ArticlesListScreen extends RemoteDataListScreen {
   }
 
   renderRow(article) {
+    if (!article) {
+      return null;
+    }
+
     return (
       <ListArticleView
         key={article.id}
-        articleId={article.id.toString()}
+        articleId={article.id}
         date={article.modified}
         imageUrl={getLeadImageUrl(article)}
         onPress={this.openArticleWithId}
@@ -152,8 +160,9 @@ export class ArticlesListScreen extends RemoteDataListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const feedUrl = _.get(ownProps, 'shortcut.settings.feedUrl');
-  const { shortcut } = ownProps;
+  const routeParams = getRouteParams(ownProps);
+  const { shortcut } = routeParams;
+  const feedUrl = _.get(shortcut, 'settings.feedUrl');
 
   return {
     feedUrl,
@@ -164,7 +173,6 @@ export const mapStateToProps = (state, ownProps) => {
 };
 
 export const mapDispatchToProps = {
-  navigateToAction,
   fetchWordpressPosts,
   next,
   fetchCategories,

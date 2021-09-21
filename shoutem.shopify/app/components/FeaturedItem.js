@@ -16,10 +16,10 @@ import {
   Title,
   TouchableOpacity,
   View,
-  ImageBackground
+  ImageBackground,
 } from '@shoutem/ui';
 
-import images from '../assets/images'
+import images from '../assets/images';
 import { getDiscount } from '../services/getDiscount';
 import { ext } from '../const';
 import ListItem from './ListItem';
@@ -43,22 +43,18 @@ const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
           defaultSource={images.fallback}
         >
           <Tile>
-            {(!!oldPrice && newPrice < oldPrice) &&
+            {!!oldPrice && newPrice < oldPrice && (
               <Overlay styleName="image-overlay">
-                <Heading>
-                  {`${getDiscount(newPrice, oldPrice)}%`}
-                </Heading>
+                <Heading>{`${getDiscount(newPrice, oldPrice)}%`}</Heading>
               </Overlay>
-            }
+            )}
             <Title styleName="md-gutter-top">{title}</Title>
-            {(!!oldPrice && newPrice < oldPrice) &&
+            {!!oldPrice && newPrice < oldPrice && (
               <Subtitle styleName="line-through sm-gutter-top">
                 {oldPriceString}
               </Subtitle>
-            }
-            <Heading styleName="md-gutter-top">
-              {newPriceString}
-            </Heading>
+            )}
+            <Heading styleName="md-gutter-top">{newPriceString}</Heading>
             <Button styleName="md-gutter-top" onPress={onAddToCart}>
               <Icon name="cart" />
               <Text>{I18n.t(ext('addToCartNavBarTitle'))}</Text>

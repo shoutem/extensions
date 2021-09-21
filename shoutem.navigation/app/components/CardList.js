@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { CARD_LIST } from '../const';
-import { isTabBarNavigation, resolveScrollViewProps } from '../helpers';
+import { isTabBarNavigation } from '../redux';
 import CardListItem from './CardListItem';
 import FolderBase from './FolderBase';
 
@@ -27,14 +27,12 @@ class CardList extends FolderBase {
     textSize: PropTypes.string,
   };
 
-  resolveScrollViewProps() {
-    return resolveScrollViewProps(this.props);
-  }
-
   resolvePageProps() {
     const { style } = this.props;
-    const { itemGutter, isFullWidth } = this.getLayoutSettings();
-    const { dimensions: { height } } = this.state;
+    const { itemGutter, isFullWidth } = this.getScreenSettings();
+    const {
+      dimensions: { height },
+    } = this.state;
     const styleName = `${itemGutter}-gutter ${isFullWidth ? 'full-width' : ''}`;
 
     return {
@@ -47,11 +45,23 @@ class CardList extends FolderBase {
   }
 
   renderRow(shortcut, index) {
-    const { itemText, backgroundImagesEnabled, cardHeight, itemGutter, textSize } = this.getLayoutSettings();
+    const {
+      itemText,
+      backgroundImagesEnabled,
+      cardHeight,
+      itemGutter,
+      textSize,
+    } = this.getScreenSettings();
     const { style } = this.props;
     const styleName = `${itemText} ${itemGutter}-gutter`;
-    const { dimensions: { width } } = this.state;
-    const heightRatio = _.get(style, ['item', HEIGHT_RATIO_STYLE_KEY, cardHeight], 1);
+    const {
+      dimensions: { width },
+    } = this.state;
+    const heightRatio = _.get(
+      style,
+      ['item', HEIGHT_RATIO_STYLE_KEY, cardHeight],
+      1,
+    );
     const cardItemStyle = {
       item: {
         ...style.item,
@@ -80,14 +90,14 @@ class CardList extends FolderBase {
   }
 }
 
-const mapPropsToStyleNames = (styleNames, props) => {
+const mapPropsToStyleNames = styleNames => {
   return styleNames;
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   isTabBar: isTabBarNavigation(state),
 });
 
 export default connect(mapStateToProps)(
-  connectStyle(CARD_LIST, undefined, mapPropsToStyleNames)(CardList)
+  connectStyle(CARD_LIST, undefined, mapPropsToStyleNames)(CardList),
 );

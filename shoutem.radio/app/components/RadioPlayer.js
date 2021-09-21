@@ -1,9 +1,9 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Animated } from 'react-native';
 import slugify from '@sindresorhus/slugify';
-
 import {
   STATE_NONE, // 0 idle
   STATE_STOPPED, // 1 idle
@@ -14,13 +14,9 @@ import {
   TrackPlayer,
   TrackPlayerBase,
 } from 'shoutem.audio';
-
 import { connectStyle } from '@shoutem/theme';
 import { Icon, Button, Spinner } from '@shoutem/ui';
-
 import { ext, trackPlayerOptions } from '../const';
-
-const { bool, func, string } = PropTypes;
 
 const COMMON_BUBBLE_PARAMS = {
   duration: 200,
@@ -34,18 +30,16 @@ const COMMON_APPEAR_PARAMS = {
 
 class RadioPlayer extends TrackPlayerBase {
   static propTypes = {
-    shouldResetPlayer: bool,
-    onPlaybackStateChange: func,
-    title: string,
-    url: string,
+    shouldResetPlayer: PropTypes.bool,
+    onPlaybackStateChange: PropTypes.func,
+    title: PropTypes.string,
+    url: PropTypes.string,
   };
 
   constructor(props) {
     super(props);
 
-    this.resolveActionIcon = this.resolveActionIcon.bind(this);
-    this.composeBubbleAnimation = this.composeBubbleAnimation.bind(this);
-    this.composeAppearAnimation = this.composeAppearAnimation.bind(this);
+    autoBindReact(this);
 
     this.setTrackPlayerOptions();
 

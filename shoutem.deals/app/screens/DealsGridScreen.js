@@ -2,13 +2,11 @@ import React from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-
 import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow, View } from '@shoutem/ui';
-
 import { I18n } from 'shoutem.i18n';
-
+import { getRouteParams } from 'shoutem.navigation';
 import { ext, TRANSLATIONS } from '../const';
 
 // Components
@@ -33,13 +31,16 @@ export class DealsGridScreen extends DealsScreen {
 
   getNavBarProps() {
     const titleStyle = _.get(this.props, 'style.titleContainer', {});
-    return super.getNavBarProps(I18n.t(TRANSLATIONS.DEALS_GRID_BUTTON), titleStyle);
+    return super.getNavBarProps(
+      I18n.t(TRANSLATIONS.DEALS_GRID_BUTTON),
+      titleStyle,
+    );
   }
 
   renderRow(deals, sectionId, dealId) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    if (hasFeaturedItem && dealId === '0') {
+    if (screenSettings.hasFeaturedItem && dealId === '0') {
       return this.renderFeaturedDeal(deals[0]);
     }
 
@@ -53,9 +54,7 @@ export class DealsGridScreen extends DealsScreen {
 
     return (
       <View styleName="flexible sm-gutter-bottom sm-gutter-left">
-        <GridRow columns={2}>
-          {dealsViews}
-        </GridRow>
+        <GridRow columns={2}>{dealsViews}</GridRow>
       </View>
     );
   }
@@ -70,12 +69,12 @@ export class DealsGridScreen extends DealsScreen {
       return super.renderData(deals);
     }
 
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
     let listData = [...deals];
     let featuredDeal = null;
 
-    if (hasFeaturedItem) {
+    if (screenSettings.hasFeaturedItem) {
       featuredDeal = listData.splice(0, 1);
     }
 
@@ -92,6 +91,7 @@ export class DealsGridScreen extends DealsScreen {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('DealsGridScreen', {}))(DealsGridScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('DealsGridScreen', {}))(DealsGridScreen));

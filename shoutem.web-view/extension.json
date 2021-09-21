@@ -1,7 +1,7 @@
 {
   "name": "web-view",
-  "version": "2.5.2",
-  "platform": "~2.5.2",
+  "version": "3.0.0",
+  "platform": "^3.0.0",
   "title": "Web view",
   "releaseNotes": "* Extend WebView launch capabilities",
   "description": "Show a web page in-app or in a browser",

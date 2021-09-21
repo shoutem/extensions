@@ -5,7 +5,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { I18n } from 'shoutem.i18n';
-import { navigateTo, NavigationBar } from 'shoutem.navigation';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Screen, Title, Text, TextInput, Button, View } from '@shoutem/ui';
 import { ext } from '../const';
@@ -25,6 +25,14 @@ class PasswordRecoveryScreen extends PureComponent {
       email,
       emailError: null,
     };
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({
+      title: I18n.t(ext('passwordRecoveryNavBarTitle')).toUpperCase(),
+    });
   }
 
   handleEmailChange(email) {
@@ -49,17 +57,7 @@ class PasswordRecoveryScreen extends PureComponent {
   }
 
   navigateToChangePasswordScreen(email) {
-    const { navigateTo, navigateToLoginScreen } = this.props;
-
-    const route = {
-      screen: ext('ChangePasswordScreen'),
-      props: {
-        email,
-        navigateToLoginScreen,
-      },
-    };
-
-    navigateTo(route);
+    navigateTo(ext('ChangePasswordScreen'), { email });
   }
 
   render() {
@@ -68,9 +66,6 @@ class PasswordRecoveryScreen extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar
-          title={I18n.t(ext('passwordRecoveryNavBarTitle')).toUpperCase()}
-        />
         <View style={style.textContainer}>
           <Title style={style.title}>
             {I18n.t(ext('changePasswordTitle'))}
@@ -111,19 +106,16 @@ class PasswordRecoveryScreen extends PureComponent {
 
 PasswordRecoveryScreen.propTypes = {
   style: PropTypes.object,
-  navigateTo: PropTypes.func,
   sendVerificationCodeEmail: PropTypes.func,
 };
 
-export const mapDispatchToProps = {
-  navigateTo,
-  sendVerificationCodeEmail,
-};
+export const mapDispatchToProps = { sendVerificationCodeEmail };
 
-export default loginRequired(
-  connect(
-    null,
-    mapDispatchToProps,
-  )(connectStyle(ext('PasswordRecoveryScreen'))(PasswordRecoveryScreen)),
-  false,
-);
+const mapStateToProps = (state, ownProps) => ({
+  ...getRouteParams(ownProps),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('PasswordRecoveryScreen'))(PasswordRecoveryScreen));

@@ -1,13 +1,11 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, closeModal } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Screen, Subtitle, Text, Title, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { closeModal, getRouteParams } from 'shoutem.navigation';
 import { ext } from '../const';
-
-const { func, number, shape } = PropTypes;
 
 /**
  * Informs the user about his transaction details and how much points he was awarded.
@@ -15,43 +13,40 @@ const { func, number, shape } = PropTypes;
 export class PointsEarnedScreen extends PureComponent {
   static propTypes = {
     // Transaction details
-    data: shape({
+    data: PropTypes.shape({
       // Amount spent
-      amount: number,
+      amount: PropTypes.number,
     }),
     // Points earned
-    points: number,
-    // Closes modal dialog in which the assign points flow was started
-    closeModal: func,
+    points: PropTypes.number,
   };
 
   constructor(props) {
     super(props);
 
-    this.handleConfirm = this.handleConfirm.bind(this);
+    autoBindReact(this);
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({ ...this.getNavBarProps() });
   }
 
   // eslint-disable-next-line class-methods-use-this
   getNavBarProps() {
     return {
-      renderLeftComponent: () => null,
+      headerLeft: () => null,
       title: I18n.t(ext('pointsEarnedNavBarTitle')),
     };
   }
 
-  handleConfirm() {
-    const { closeModal } = this.props;
-
-    closeModal();
-  }
-
   render() {
-    const { data, points } = this.props;
+    const { data, points } = getRouteParams(this.props);
     const { amount = 0 } = data;
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <Subtitle styleName="oval-highlight">
             {amount
@@ -74,10 +69,7 @@ export class PointsEarnedScreen extends PureComponent {
           <Subtitle styleName="h-center md-gutter">
             {I18n.t(ext('pointsEarnedMessage'), { count: points || 0 })}
           </Subtitle>
-          <Button
-            styleName="secondary xl-gutter-vertical"
-            onPress={this.handleConfirm}
-          >
+          <Button styleName="secondary xl-gutter-vertical" onPress={closeModal}>
             <Text>{I18n.t(ext('confirmButton'))}</Text>
           </Button>
         </View>
@@ -86,6 +78,4 @@ export class PointsEarnedScreen extends PureComponent {
   }
 }
 
-export default connect(undefined, { closeModal })(
-  connectStyle(ext('PointsEarnedScreen'))(PointsEarnedScreen),
-);
+export default connectStyle(ext('PointsEarnedScreen'))(PointsEarnedScreen);

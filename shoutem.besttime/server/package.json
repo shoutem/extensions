@@ -1,6 +1,6 @@
 {
   "name": "shoutem.besttime",
-  "version": "1.1.0",
+  "version": "3.0.0",
   "description": "Check the busyness of an establishment using BestTime.",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

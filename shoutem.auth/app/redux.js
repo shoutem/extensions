@@ -4,12 +4,15 @@ import {
   getAllShortcuts,
   getExtensionSettings,
   showAllShortcuts,
-  hideShortcut,
+  hideShortcuts as hideShortcutsAction,
   getConfiguration,
   getSubscriptionValidState,
 } from 'shoutem.application';
-import { I18n } from 'shoutem.i18n';
-import { createResetToCurrentRoute, navigateTo } from 'shoutem.navigation';
+import {
+  navigateTo,
+  getCurrentRoute,
+  NavigationStacks,
+} from 'shoutem.navigation';
 import { preventStateRehydration } from 'shoutem.redux';
 import {
   find,
@@ -121,13 +124,6 @@ export const userRegistered = user => ({
 export function logout() {
   return {
     type: LOGOUT,
-  };
-}
-
-export function authenticate(callback) {
-  return {
-    type: AUTHENTICATE,
-    callback,
   };
 }
 
@@ -403,15 +399,33 @@ export function logoutAction() {
   };
 }
 
-export function openProfile(user, title = I18n.t(ext('profileNavBarTitle'))) {
-  const route = {
-    screen: ext('UserProfileScreen'),
-    title,
-    props: {
-      user,
-    },
+export function authenticate(callback) {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    if (isAuthenticated(state)) {
+      const { user } = state[ext()];
+
+      callback(getOne(user, state));
+    } else {
+      const currentRoute = getCurrentRoute();
+
+      NavigationStacks.openStack(ext(), {
+        canGoBack: true,
+        onCancel: () => NavigationStacks.closeStack(ext()),
+        onLoginSuccess: user => {
+          navigateTo(currentRoute.name, {
+            ...currentRoute.params,
+          });
+          callback(user);
+        },
+      });
+    }
   };
-  return navigateTo(route);
+}
+
+export function openProfile(user) {
+  return navigateTo(ext('UserProfileScreen'), { user });
 }
 
 export function hideShortcuts(user) {
@@ -429,35 +443,35 @@ export function hideShortcuts(user) {
       return;
     }
 
-    _.forEach(shortcuts, shortcut => {
-      const shortcutUserGroups = _.get(shortcut, [
-        'settings',
-        _.camelCase(ext()),
-        'userGroups',
-      ]);
-      const userGroupsEmpty = _.isEmpty(shortcutUserGroups);
+    const hiddenShortcuts = _.compact(
+      _.map(shortcuts, shortcut => {
+        const shortcutUserGroups = _.get(shortcut, [
+          'settings',
+          _.camelCase(ext()),
+          'userGroups',
+        ]);
+        const userGroupsEmpty = _.isEmpty(shortcutUserGroups);
 
-      if (userGroupsEmpty) {
-        return;
-      }
+        if (userGroupsEmpty) {
+          return null;
+        }
 
-      const shortcutUserGroupIds = _.map(shortcutUserGroups, 'id');
-      const isShortcutHiddenToUser = _.isEmpty(
-        _.intersection(userGroupsIds, shortcutUserGroupIds),
-      );
+        const shortcutUserGroupIds = _.map(shortcutUserGroups, 'id');
+        const isShortcutHiddenToUser = _.isEmpty(
+          _.intersection(userGroupsIds, shortcutUserGroupIds),
+        );
 
-      if (isShortcutHiddenToUser) {
-        dispatch(hideShortcut(shortcut.id));
-      }
-    });
-  };
-}
+        if (isShortcutHiddenToUser) {
+          return shortcut.id;
+        }
 
-export function createResetToLoginScreen() {
-  return (dispatch, getState) => {
-    const state = getState();
+        return null;
+      }),
+    );
 
-    return createResetToCurrentRoute(state, dispatch);
+    if (!_.isEmpty(hiddenShortcuts)) {
+      return dispatch(hideShortcutsAction(hiddenShortcuts));
+    }
   };
 }
 

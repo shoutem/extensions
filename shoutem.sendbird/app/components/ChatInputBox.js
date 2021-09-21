@@ -1,18 +1,13 @@
 import React, { PureComponent } from 'react';
-import { LayoutAnimation, TextInput, Platform, Keyboard } from 'react-native';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-} from '@shoutem/ui';
-import { I18n } from 'shoutem.i18n';
+import { LayoutAnimation, TextInput, Platform, Keyboard } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
-import { ext } from '../const';
+import { View, TouchableOpacity, Image, Text } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { images } from '../assets';
+import { ext } from '../const';
 import ProgressBar from './ProgressBar';
 
 class ChatInputBox extends PureComponent {
@@ -126,7 +121,10 @@ class ChatInputBox extends PureComponent {
         )}
         <ProgressBar progress={uploadProgress} visible={showUploadProgress} />
         <View style={style.container} styleName="horizontal v-center">
-          <TouchableOpacity onPress={this.handleAttachPress} style={style.attachIcon.wrapper}>
+          <TouchableOpacity
+            onPress={this.handleAttachPress}
+            style={style.attachIcon.wrapper}
+          >
             <Image source={images.add} style={style.attachIcon.icon} />
           </TouchableOpacity>
           <TextInput
@@ -140,7 +138,10 @@ class ChatInputBox extends PureComponent {
             onSubmitEditing={this.handleSendPress}
             value={message}
           />
-          <TouchableOpacity onPress={this.handleSendPress} style={style.sendIcon.wrapper}>
+          <TouchableOpacity
+            onPress={this.handleSendPress}
+            style={style.sendIcon.wrapper}
+          >
             <Image source={images.send} style={style.sendIcon.icon} />
           </TouchableOpacity>
         </View>
@@ -150,4 +151,3 @@ class ChatInputBox extends PureComponent {
 }
 
 export default connectStyle(ext('ChatInputBox'))(ChatInputBox);
-

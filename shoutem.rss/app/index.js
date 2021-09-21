@@ -19,3 +19,4 @@ export {
 } from './shared/resourceSelectors';
 export { default as createRenderAttachment } from './shared/createRenderAttachment';
 export { RssListScreen } from './screens/RssListScreen';
+export { displayLocalNotification } from './shared/handleForegroundNotification';

@@ -60,9 +60,7 @@ export class RssListScreen extends RemoteDataListScreen {
         style: style.emptyState,
       };
 
-      return (
-        <EmptyStateView {...emptyStateViewProps} />
-      );
+      return <EmptyStateView {...emptyStateViewProps} />;
     }
 
     return super.renderPlaceholderView(data);

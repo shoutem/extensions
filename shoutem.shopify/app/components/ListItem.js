@@ -14,12 +14,9 @@ import {
   View,
 } from '@shoutem/ui';
 
-import images from '../assets/images'
+import images from '../assets/images';
 import { ext } from '../const';
-import {
-  product as productShape,
-  shop as shopShape,
-} from './shapes';
+import { product as productShape, shop as shopShape } from './shapes';
 
 const ListItem = ({ item, onAddToCart, onPress, shop }) => {
   const { images, title } = item;
@@ -44,14 +41,10 @@ const ListItem = ({ item, onAddToCart, onPress, shop }) => {
         <View styleName="vertical stretch space-between">
           <Subtitle>{title}</Subtitle>
           <View styleName="horizontal">
-            <Subtitle styleName="md-gutter-right">
-              {newPriceString}
-            </Subtitle>
-            {oldPriceString &&
-              <Caption styleName="line-through">
-                {oldPriceString}
-              </Caption>
-            }
+            <Subtitle styleName="md-gutter-right">{newPriceString}</Subtitle>
+            {oldPriceString && (
+              <Caption styleName="line-through">{oldPriceString}</Caption>
+            )}
           </View>
         </View>
         <Button onPress={onAddToCart} styleName="right-icon">

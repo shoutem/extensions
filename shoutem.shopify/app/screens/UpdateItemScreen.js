@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -14,23 +14,17 @@ import {
   NumberInput,
   Screen,
   ScrollView,
-  Title,
   Subtitle,
   View,
   Text,
 } from '@shoutem/ui';
-
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
-
+import { getRouteParams } from 'shoutem.navigation';
 import {
-  product as productShape,
   shop as shopShape,
   variant as variantShape,
 } from '../components/shapes';
 import { ext } from '../const';
-
-const { func, number, oneOf } = PropTypes;
 
 /*
  * Action types used to determine the context for which
@@ -52,15 +46,13 @@ const actionTypes = {
 const getAvailableValuesForOption = (availableVariants, option) => {
   const availableValues = [];
 
-  _.forEach(availableVariants, (variant) => {
-    _.forEach(variant.selectedOptions, (variantOption) => {
+  _.forEach(availableVariants, variant => {
+    _.forEach(variant.selectedOptions, variantOption => {
       if (option.name === variantOption.name) {
         availableValues.push(variantOption);
       }
     });
   });
-
-  console.log("getAvailableValuesForOption returns:", _.uniqBy(availableValues, 'value'));
 
   return _.uniqBy(availableValues, 'value');
 };
@@ -75,8 +67,8 @@ const getAvailableValuesForOption = (availableVariants, option) => {
  * this brand.
  */
 const getAvailableVariants = (availableVariants, lastSelectedOption) => {
-  return _.filter(availableVariants, (variant) => {
-    return _.some(variant.selectedOptions, { 'value': lastSelectedOption });
+  return _.filter(availableVariants, variant => {
+    return _.some(variant.selectedOptions, { value: lastSelectedOption });
   });
 };
 
@@ -94,17 +86,22 @@ const getFirstAvailableVariant = item =>
  * options are of the form:
  * [{name: 'color', value: 'Navy'}, {name: 'material', value: 'wool'}}]
  */
-const getValuesForVariant = (variant) => {
-  return _.reduce(variant.selectedOptions, (result, option) => {
-    return _.merge({}, result, { [option.name]: option.value });
-  }, {});
+const getValuesForVariant = variant => {
+  return _.reduce(
+    variant.selectedOptions,
+    (result, option) => {
+      return _.merge({}, result, { [option.name]: option.value });
+    },
+    {},
+  );
 };
 
 /**
  * Gets variant and quantity for initial state based on props
  */
-const getInitialStateFromProps = (props) => {
-  const { item, variant, quantity } = props;
+const getInitialStateFromProps = props => {
+  const { variant, quantity } = props;
+  const { item } = getRouteParams(props);
 
   return {
     variant: variant || getFirstAvailableVariant(item),
@@ -126,20 +123,9 @@ const getInitialStateFromProps = (props) => {
 class UpdateItemScreen extends PureComponent {
   static actionTypes = actionTypes;
 
-  /* eslint-disable react/no-unused-prop-types */
   static propTypes = {
-    // Sets the context for which this component is called,
-    // whether the item is added for the first time, or an
-    // existing item is updated
-    actionType: oneOf(_.values(actionTypes)),
-    // The product for which one of its variants is being
-    // added, updated or removed
-    item: productShape,
-    // Callback executed when the item is added, updated or
-    // deleted after the user has done some editing
-    onActionButtonClicked: func.isRequired,
     // Initial quantity
-    quantity: number,
+    quantity: PropTypes.number,
     // Shop details
     shop: shopShape.isRequired,
     // Initial product variant
@@ -149,10 +135,15 @@ class UpdateItemScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.onOptionSelected = this.onOptionSelected.bind(this);
-    this.renderOptionRow = this.renderOptionRow.bind(this);
+    autoBindReact(this);
 
     this.state = getInitialStateFromProps(props);
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({ title: I18n.t(ext('addToCartNavBarTitle')) });
   }
 
   /**
@@ -168,22 +159,26 @@ class UpdateItemScreen extends PureComponent {
 
     selectedValues[option.name] = option.value;
 
-    let newVariant = _.find(product.variants, (variant) => {
+    let newVariant = _.find(product.variants, variant => {
       return _.isEqual(getValuesForVariant(variant), selectedValues);
     });
 
     if (!newVariant) {
-      const optionIndex = _.findIndex(product.options, { 'name': option.name });
-      const optionValuesToSelect =
-        _.map(product.options.slice(0, optionIndex + 1), (option) => {
+      const optionIndex = _.findIndex(product.options, { name: option.name });
+      const optionValuesToSelect = _.map(
+        product.options.slice(0, optionIndex + 1),
+        option => {
           return { name: option.name, value: selectedValues[option.name] };
-        });
+        },
+      );
 
-      newVariant = _.find(product.variants, (variant) => {
+      newVariant = _.find(product.variants, variant => {
         const valuesForVariant = getValuesForVariant(variant);
 
-        return _.every(optionValuesToSelect, option =>
-          option.value === valuesForVariant[option.name]);
+        return _.every(
+          optionValuesToSelect,
+          option => option.value === valuesForVariant[option.name],
+        );
       });
     }
     this.setState({ variant: newVariant || product.variants[0] });
@@ -197,7 +192,7 @@ class UpdateItemScreen extends PureComponent {
    * options for which there are existing variants.
    */
   getAvailableOptions() {
-    const { item } = this.props;
+    const { item } = getRouteParams(this.props);
     const { variant } = this.state;
 
     // if there is only one variant, it is already selected, so we don't render
@@ -208,40 +203,43 @@ class UpdateItemScreen extends PureComponent {
     const availableOptions = [];
     let availableVariants = item.variants;
 
-    _.forEach(item.options, (option) => {
-      const availableValues =
-        getAvailableValuesForOption(availableVariants, option);
+    _.forEach(item.options, option => {
+      const availableValues = getAvailableValuesForOption(
+        availableVariants,
+        option,
+      );
 
       availableOptions.push({
         optionName: option.name,
         values: availableValues,
       });
 
-      const lastSelectedOption = _.find(
-        variant.selectedOptions, { 'name': option.name }
-      ).value;
+      const lastSelectedOption = _.find(variant.selectedOptions, {
+        name: option.name,
+      }).value;
     });
 
     return availableOptions;
   }
 
   renderAddToCartButton() {
-    const { onActionButtonClicked } = this.props;
+    const { onActionButtonClicked } = getRouteParams(this.props);
     const { variant, quantity } = this.state;
     const { availableForSale } = variant;
 
     const { add } = actionTypes;
 
     const canUpdate = availableForSale && quantity;
-    const resolvedStyleName =
-      `horizontal h-end md-gutter ${canUpdate ? '' : 'muted'}`
+    const resolvedStyleName = `horizontal h-end md-gutter ${
+      canUpdate ? '' : 'muted'
+    }`;
 
     return (
       <View styleName={resolvedStyleName}>
         <Button
           styleName="secondary"
-          onPress={() => canUpdate &&
-            onActionButtonClicked(add, { variant, quantity })
+          onPress={() =>
+            canUpdate && onActionButtonClicked(add, { variant, quantity })
           }
         >
           <Text styleName="bold lg-gutter-horizontal">
@@ -253,15 +251,16 @@ class UpdateItemScreen extends PureComponent {
   }
 
   renderUpdateButtons() {
-    const { onActionButtonClicked } = this.props;
+    const { onActionButtonClicked } = getRouteParams(this.props);
     const { variant, quantity } = this.state;
     const { availableForSale } = variant;
 
     const { remove, update } = actionTypes;
 
     const canUpdate = availableForSale && quantity;
-    const resolvedStyleName =
-      `horizontal md-gutter-vertical ${canUpdate ? '' : 'muted'}`
+    const resolvedStyleName = `horizontal md-gutter-vertical ${
+      canUpdate ? '' : 'muted'
+    }`;
 
     return (
       <View styleName={resolvedStyleName}>
@@ -273,8 +272,8 @@ class UpdateItemScreen extends PureComponent {
         </Button>
         <Button
           styleName="confirmation secondary"
-          onPress={() => canUpdate &&
-            onActionButtonClicked(update, { variant, quantity })
+          onPress={() =>
+            canUpdate && onActionButtonClicked(update, { variant, quantity })
           }
         >
           <Text>{I18n.t(ext('cartItemUpdateButton'))}</Text>
@@ -285,7 +284,8 @@ class UpdateItemScreen extends PureComponent {
 
   renderItemDetails() {
     const { variant } = this.state;
-    const { item, shop } = this.props;
+    const { shop } = this.props;
+    const { item } = getRouteParams(this.props);
 
     const { price, compare_at_price: oldPrice } = variant;
     const { images, title } = item;
@@ -293,57 +293,66 @@ class UpdateItemScreen extends PureComponent {
 
     return (
       <View styleName="horizontal solid v-start md-gutter">
-        <Image
-          styleName="small"
-          source={{ uri: (images[0] || {}).src }}
-        />
+        <Image styleName="small" source={{ uri: (images[0] || {}).src }} />
         <View style={{ flex: 7 }} styleName="md-gutter-left">
           <Subtitle>{title}</Subtitle>
         </View>
         <View styleName="h-end sm-gutter-left vertical" style={{ flex: 3 }}>
-          {(oldPrice && oldPrice < price) &&
+          {oldPrice && oldPrice < price && (
             <Caption styleName="line-through">
-              {currency}{oldPrice}
+              {currency}
+              {oldPrice}
             </Caption>
-          }
-          <Subtitle>{currency}{price}</Subtitle>
+          )}
+          <Subtitle>
+            {currency}
+            {price}
+          </Subtitle>
         </View>
       </View>
     );
   }
 
   renderQuantityPicker() {
-    const { quantity, variant: { availableForSale } } = this.state;
+    const {
+      quantity,
+      variant: { availableForSale },
+    } = this.state;
 
-    const viewStyling = 'horizontal v-center space-between'
-      + ' md-gutter-horizontal lg-gutter-vertical';
+    const viewStyling =
+      'horizontal v-center space-between' +
+      ' md-gutter-horizontal lg-gutter-vertical';
 
     return (
-      <View styleName={viewStyling} >
+      <View styleName={viewStyling}>
         <Subtitle>{I18n.t(ext('itemQuantity'))}</Subtitle>
-        {availableForSale ?
+        {availableForSale ? (
           <NumberInput
             min={1}
             onChange={quantity => this.setState({ quantity })}
             step={1}
             value={quantity}
-          /> :
+          />
+        ) : (
           <Subtitle styleName="muted">
             {I18n.t(ext('outOfStockMessage'))}
           </Subtitle>
-        }
+        )}
       </View>
     );
   }
 
   renderStatusRow() {
-    const { shop: { currency } } = this.props;
+    const {
+      shop: { currency },
+    } = this.props;
     const { variant, quantity } = this.state;
 
     const { availableForSale, price } = variant;
     const canUpdate = availableForSale && quantity;
-    const resolvedStyleName =
-      `horizontal md-gutter space-between ${canUpdate ? '' : 'muted'}`
+    const resolvedStyleName = `horizontal md-gutter space-between ${
+      canUpdate ? '' : 'muted'
+    }`;
 
     return (
       <View styleName={resolvedStyleName}>
@@ -356,17 +365,19 @@ class UpdateItemScreen extends PureComponent {
   renderOptionRow({ values, optionName }) {
     const { variant } = this.state;
 
-    const option = _.find(variant.selectedOptions, { 'name': optionName });
-    const selectedOption = _.find(values, { 'value': option.value });
-    const viewStyling = 'horizontal v-center space-between'
-      + ' md-gutter-horizontal lg-gutter-vertical';
+    const option = _.find(variant.selectedOptions, { name: optionName });
+    const selectedOption = _.find(values, { value: option.value });
+    const viewStyling =
+      'horizontal v-center space-between' +
+      ' md-gutter-horizontal lg-gutter-vertical';
 
     return (
       <View>
         <View styleName={viewStyling}>
           <Subtitle>{optionName}</Subtitle>
-          {_.size(values) === 1 ?
-            <Subtitle>{values[0].value}</Subtitle> :
+          {_.size(values) === 1 ? (
+            <Subtitle>{values[0].value}</Subtitle>
+          ) : (
             <DropDownMenu
               onOptionSelected={this.onOptionSelected}
               options={values}
@@ -375,7 +386,7 @@ class UpdateItemScreen extends PureComponent {
               titleProperty={'value'}
               valueProperty={'value'}
             />
-          }
+          )}
         </View>
         <Divider styleName="line" />
       </View>
@@ -383,12 +394,11 @@ class UpdateItemScreen extends PureComponent {
   }
 
   render() {
-    const { actionType } = this.props;
+    const { actionType } = getRouteParams(this.props);
     const { add } = actionTypes;
 
     return (
       <Screen>
-        <NavigationBar title={I18n.t(ext('addToCartNavBarTitle'))} />
         <ScrollView>
           {this.renderItemDetails()}
           <Divider styleName="line" />
@@ -401,16 +411,15 @@ class UpdateItemScreen extends PureComponent {
         </ScrollView>
         <Divider styleName="line" />
         {this.renderStatusRow()}
-        {actionType === add ?
-          this.renderAddToCartButton() :
-          this.renderUpdateButtons()
-        }
+        {actionType === add
+          ? this.renderAddToCartButton()
+          : this.renderUpdateButtons()}
       </Screen>
     );
   }
 }
 
-export const mapStateToProps = (state) => {
+export const mapStateToProps = state => {
   const { shop } = state[ext()];
 
   return {
@@ -418,6 +427,7 @@ export const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {})(
-  connectStyle(ext('UpdateItemScreen'))(UpdateItemScreen),
-);
+export default connect(
+  mapStateToProps,
+  {},
+)(connectStyle(ext('UpdateItemScreen'))(UpdateItemScreen));

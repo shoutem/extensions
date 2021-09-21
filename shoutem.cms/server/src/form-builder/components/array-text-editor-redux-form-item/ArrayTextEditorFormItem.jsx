@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
+import { unsplashAccessKey } from 'environment';
 import i18next from 'i18next';
 import { RichTextEditor } from '@shoutem/react-web-ui';
 import _ from 'lodash';
@@ -38,6 +39,31 @@ export default class ArrayTextEditorFormItem extends Component {
   render() {
     const { value } = this.state;
 
+    const imagePickerLocalization = {
+      footerText: i18next.t(LOCALIZATION.IMAGE_PICKER_FOOTER_TEXT),
+      insertButtonTextSingular: i18next.t(
+        LOCALIZATION.IMAGE_PICKER_INSERT_BUTTON_TEXT_SINGULAR,
+      ),
+      insertButtonTextPlural: i18next.t(
+        LOCALIZATION.IMAGE_PICKER_INSERT_BUTTON_TEXT_PLURAL,
+      ),
+      invalidUnsplashKeyText: i18next.t(
+        LOCALIZATION.IMAGE_PICKER_INVALID_ACCESS_KEY_TEXT,
+      ),
+      modalTitle: i18next.t(LOCALIZATION.IMAGE_PICKER_MODAL_TITLE),
+      imagePreviewOnText: i18next.t(LOCALIZATION.IMAGE_PICKER_ON_TEXT),
+      imagePreviewPhotoByText: i18next.t(
+        LOCALIZATION.IMAGE_PICKER_PHOTO_BY_TEXT,
+      ),
+      imagePreviewUnsplashText: i18next.t(
+        LOCALIZATION.IMAGE_PICKER_UNSPLASH_TEXT,
+      ),
+      searchPlaceholder: i18next.t(
+        LOCALIZATION.IMAGE_PICKER_SEARCH_PLACEHOLDER,
+      ),
+      searchTabTitle: i18next.t(LOCALIZATION.IMAGE_PICKER_SEARCH_TAB_TITLE),
+    };
+
     return (
       <div className="array-text-editor-form-item-container">
         <div className="remove-btn" onClick={this.handleRemoveField}>
@@ -48,6 +74,8 @@ export default class ArrayTextEditorFormItem extends Component {
             {...this.props}
             onChange={this.handleChange}
             value={value}
+            imagePickerLocalization={imagePickerLocalization}
+            imagePickerOptions={{ unsplashAccessKey }}
           />
         </div>
       </div>

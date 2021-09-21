@@ -1,11 +1,8 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getExtensionSettings } from 'shoutem.application';
-import { getUser } from 'shoutem.auth';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { getCollection, invalidate } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -20,6 +17,10 @@ import {
   Text,
   TextInput,
 } from '@shoutem/ui';
+import { getExtensionSettings } from 'shoutem.application';
+import { getUser } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
+import { getRouteParams } from 'shoutem.navigation';
 import { authorizationShape } from '../components/shapes';
 import { ext } from '../const';
 import { fetchRules } from '../redux';
@@ -27,8 +28,6 @@ import { collectPoints } from '../services';
 
 const RULE_VISIT = 'visit';
 const RULE_PURCHASE = 'linearPoint';
-
-const { arrayOf, bool, func, string } = PropTypes;
 
 /**
  * Lets the cashier enter details about the user's shop activity and save the transaction.
@@ -38,15 +37,15 @@ const { arrayOf, bool, func, string } = PropTypes;
 export class AssignPointsScreen extends PureComponent {
   static propTypes = {
     // Collects points for activity
-    collectPoints: func,
+    collectPoints: PropTypes.func,
     // An already verified authorization
     authorization: authorizationShape,
     // Fetches available transaction rules
-    fetchRules: func,
+    fetchRules: PropTypes.func,
     // True if a receipt code is required, false otherwise
-    requireReceiptCode: bool,
+    requireReceiptCode: PropTypes.bool,
     // Availabe rule types
-    rules: arrayOf(string),
+    rules: PropTypes.arrayOf(PropTypes.string),
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -68,8 +67,7 @@ export class AssignPointsScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.renderInput = this.renderInput.bind(this);
-    this.processTransaction = this.processTransaction.bind(this);
+    autoBindReact(this);
 
     this.state = { purchase: false, rules: {}, visit: false };
 
@@ -87,13 +85,17 @@ export class AssignPointsScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { fetchRules } = this.props;
+    const { fetchRules, navigation } = this.props;
 
+    navigation.setOptions({
+      title: I18n.t(ext('cashierPointAwardNavBarTitle')),
+    });
     fetchRules();
   }
 
   processTransaction() {
-    const { collectPoints, authorization } = this.props;
+    const { collectPoints } = this.props;
+    const { authorization } = getRouteParams(this.props);
 
     const data = { ...this.state, amount: parseFloat(this.state.amount) };
 
@@ -203,7 +205,6 @@ export class AssignPointsScreen extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar title={I18n.t(ext('cashierPointAwardNavBarTitle'))} />
         <ScrollView>
           {this.renderActivityDetails()}
           {purchase ? this.renderPurchaseDetails() : null}
@@ -230,7 +231,7 @@ const getAvailableRules = (allRules, place) => {
 export const mapStateToProps = (state, ownProps) => {
   const { requireReceiptCode } = getExtensionSettings(state, ext());
   const { allRules } = state[ext()];
-  const { place } = ownProps;
+  const { place } = getRouteParams(ownProps);
 
   const rules = getCollection(allRules, state);
 
@@ -245,5 +246,4 @@ export default connect(mapStateToProps, {
   collectPoints,
   fetchRules,
   invalidate,
-  navigateTo,
 })(connectStyle(ext('AssignPointsScreen'))(AssignPointsScreen));

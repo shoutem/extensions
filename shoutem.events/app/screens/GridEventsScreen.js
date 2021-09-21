@@ -1,36 +1,35 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
-
+import { connect } from 'react-redux';
+import { currentLocation } from 'shoutem.cms';
+import { getRouteParams } from 'shoutem.navigation';
 import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow, View } from '@shoutem/ui';
-
-import { currentLocation } from 'shoutem.cms';
-
-import GridEventView from '../components/GridEventView';
 import FeaturedEventView from '../components/FeaturedEventView';
+import GridEventView from '../components/GridEventView';
 import { ext } from '../const';
-import { mapDispatchToProps, mapStateToProps, EventsScreen } from './EventsScreen';
+import {
+  mapDispatchToProps,
+  mapStateToProps,
+  EventsScreen,
+} from './EventsScreen';
 
 export class GridEventsScreen extends EventsScreen {
   static propTypes = {
     ...EventsScreen.propTypes,
   };
 
-  getNavBarProps() {
-    return super.getNavBarProps('Grid');
-  }
-
   renderFeaturedItem(event) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return event && hasFeaturedItem ? (
+    return event && screenSettings.hasFeaturedItem ? (
       <FeaturedEventView
         event={event[0]}
         onPress={this.openDetailsScreen}
         action={this.addToCalendar}
-      />) : null;
+      />
+    ) : null;
   }
 
   renderRow(events) {
@@ -45,9 +44,7 @@ export class GridEventsScreen extends EventsScreen {
 
     return (
       <View styleName="flexible">
-        <GridRow columns={2}>
-          {eventsViews}
-        </GridRow>
+        <GridRow columns={2}>{eventsViews}</GridRow>
       </View>
     );
   }
@@ -58,7 +55,9 @@ export class GridEventsScreen extends EventsScreen {
    * @returns {*}
    */
   renderData(events) {
-    const { hasFeaturedItem } = this.props;
+    const {
+      screenSettings: { hasFeaturedItem },
+    } = getRouteParams(this.props);
     const { shouldRenderMap } = this.state;
 
     if (shouldRenderMap) {
@@ -80,6 +79,7 @@ export class GridEventsScreen extends EventsScreen {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('GridEventsScreen'))(currentLocation(GridEventsScreen)),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('GridEventsScreen'))(currentLocation(GridEventsScreen)));

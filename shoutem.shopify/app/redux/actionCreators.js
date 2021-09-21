@@ -1,17 +1,10 @@
 import _ from 'lodash';
-import { Alert, Platform } from 'react-native';
-
-import {
-  navigateTo,
-  openInModal,
-} from 'shoutem.navigation';
+import { Alert } from 'react-native';
 import { I18n } from 'shoutem.i18n';
-
-import { ext, PAGE_SIZE } from '../const';
+import { navigateTo } from 'shoutem.navigation';
 import { ShopifyClient } from '../app';
+import { ext } from '../const';
 import MBBridge from '../MBBridge';
-import { getProducts, getDiscountCode } from './selectors';
-
 import {
   SHOP_LOADING,
   SHOP_LOADED,
@@ -27,6 +20,7 @@ import {
   CHECKOUT_COMPLETED,
   APP_MOUNTED,
 } from './actionTypes';
+import { getDiscountCode } from './selectors';
 
 /**
  * @see SHOP_LOADING
@@ -192,38 +186,25 @@ export function refreshProducts(collectionId, tag, resetMode) {
 
     if (tag) {
       return MBBridge.filterProducts(tag)
-        .then((res) => {
+        .then(res => {
           dispatch(productsLoaded(res, collectionId, tag, 0, resetMode));
-        }).catch((error) => {
+        })
+        .catch(error => {
           dispatch(productsError(collectionId, tag));
         });
     }
 
     /* Shopify.getProducts(nextPage, collectionId, tag && [tag]) */
     return MBBridge.getProductsForCollection(collectionId)
-      .then((res) => {
+      .then(res => {
         // If we got less products than the page size, we need to ask for the same page next time
         // to get recently added products
         // const lastLoadedPage = _.size(products) < PAGE_SIZE ? nextPage - 1 : nextPage;
         dispatch(productsLoaded(res, collectionId, tag, 0, resetMode));
-      }).catch((error) => {
+      })
+      .catch(error => {
         dispatch(productsError(collectionId, tag));
       });
-  };
-}
-
-/**
- * Used to start a checkout
- * @param cart - Cart items
- * @returns {{ type: function }}
- */
-export function startCheckout(cart) {
-  return (dispatch) => {
-    dispatch(openInModal({
-      screen: ext('CheckoutScreen'),
-    }));
-    /*
-    */
   };
 }
 
@@ -234,7 +215,7 @@ export function startCheckout(cart) {
  */
 export function updateCustomerInformation(customer, cart) {
   return async (dispatch, getState) => {
-    const errorHandler = (error) => {
+    const errorHandler = error => {
       Alert.alert(
         I18n.t(ext('checkoutErrorTitle')),
         _.map(JSON.parse(error.message), 'message').join('\n'),
@@ -245,7 +226,10 @@ export function updateCustomerInformation(customer, cart) {
     const discountCode = getDiscountCode(state);
 
     try {
-      const resp = await MBBridge.createCheckoutWithCartAndClientInfo(cart, customer);
+      const resp = await MBBridge.createCheckoutWithCartAndClientInfo(
+        cart,
+        customer,
+      );
 
       if (!_.get(resp, 'checkoutCreate.checkout')) {
         resp.checkoutCreate.checkout = {};
@@ -256,7 +240,10 @@ export function updateCustomerInformation(customer, cart) {
       }
 
       if (!_.isEmpty(discountCode)) {
-        await ShopifyClient.checkout.addDiscount(_.get(resp, 'checkoutCreate.checkout.id'), discountCode);
+        await ShopifyClient.checkout.addDiscount(
+          _.get(resp, 'checkoutCreate.checkout.id'),
+          discountCode,
+        );
       }
 
       const {
@@ -264,9 +251,7 @@ export function updateCustomerInformation(customer, cart) {
           userErrors = [],
           checkout: {
             requiresShipping = true,
-            availableShippingRates: {
-              shippingRates = [],
-            } = {},
+            availableShippingRates: { shippingRates = [] } = {},
             webUrl = '',
           } = {},
         } = {},
@@ -275,19 +260,14 @@ export function updateCustomerInformation(customer, cart) {
       if (userErrors.length > 0) {
         const error = userErrors[0];
 
-        return Alert.alert(
-          I18n.t(ext('checkoutErrorTitle')),
-          error.message
-        );
+        return Alert.alert(I18n.t(ext('checkoutErrorTitle')), error.message);
       }
 
       dispatch(customerInformationUpdated(customer));
-      dispatch(navigateTo({
-        screen: ext('WebCheckoutScreen'),
-        props: {
-          checkoutUrl: webUrl
-        },
-      }));
+
+      navigateTo(ext('WebCheckoutScreen'), {
+        checkoutUrl: webUrl,
+      });
     } catch (e) {
       errorHandler(e);
     }

@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import Svg, { Circle } from 'react-native-svg';
 import { connect } from 'react-redux';
@@ -35,7 +36,7 @@ export class GaugeProgressBar extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.renderGauge = this.renderGauge.bind(this);
+    autoBindReact(this);
   }
 
   renderGauge() {

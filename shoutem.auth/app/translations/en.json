@@ -69,7 +69,7 @@
       "passwordRecoveryNavBarTitle": "PASSWORD RECOVERY",
       "passwordRecoveryDescription": "Please enter the email address you used when creating your account. We will send you an email with a link to reset your password.",
       "emailInputCaption": "Email",
-      "sendEmailButtonText" : "Send Email",
+      "sendEmailButtonText": "Send Email",
       "changePasswordNavBarTitle": "CHANGE YOUR PASSWORD",
       "changePasswordTitle": "Change your password",
       "changePasswordDescription": "Verification code was sent to your email. If you didn’t receive the recovery email, please check your spam folder.\nOnce you receive the recovery email, please enter the verification code and the new password.",
@@ -84,7 +84,9 @@
       "alertConfirmButton": "OK",
       "alertErrorTitle": "Error",
       "alertErrorMessage": "Password change failed. Please try again.",
-      "confirmButtonText": "Confirm"
+      "confirmButtonText": "Confirm",
+      "imagePickerCameraOption": "Take a photo",
+      "imagePickerGalleryOption": "Select photo from gallery"
     }
   }
 }

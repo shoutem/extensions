@@ -2,13 +2,10 @@ import React from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-
 import { find, next } from '@shoutem/redux-io';
 import { isError, shouldRefresh } from '@shoutem/redux-io/status';
-
-import { navigateTo } from 'shoutem.navigation';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
-
 import LargeVimeoView from '../components/LargeVimeoView';
 import { ext } from '../const';
 import { VIMEO_SCHEMA, getVimeoFeed } from '../redux';
@@ -38,17 +35,12 @@ export class VimeoList extends RssListScreen {
   }
 
   openDetailsScreen(video) {
-    const { navigateTo, feedUrl } = this.props;
+    const { feedUrl } = this.props;
 
-    const route = {
-      screen: ext('VimeoDetails'),
-      props: {
-        video,
-        feedUrl,
-      },
-    };
-
-    navigateTo(route);
+    navigateTo(ext('VimeoDetails'), {
+      video,
+      feedUrl, // TODO: I don't see VimeoDetails using this prop, check this out later
+    });
   }
 
   renderRow(video) {
@@ -57,7 +49,8 @@ export class VimeoList extends RssListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const feedUrl = _.get(ownProps, 'shortcut.settings.feedUrl');
+  const { shortcut } = getRouteParams(ownProps);
+  const feedUrl = _.get(shortcut, 'settings.feedUrl');
 
   return {
     feedUrl,
@@ -65,6 +58,6 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = { navigateTo, find, next };
+export const mapDispatchToProps = { find, next };
 
 export default connect(mapStateToProps, mapDispatchToProps)(VimeoList);

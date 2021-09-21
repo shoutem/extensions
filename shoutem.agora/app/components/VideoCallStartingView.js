@@ -6,7 +6,13 @@ import ControlButtonsView from './ControlButtonsView';
 import ProfileImage from './ProfileImage';
 import { ext } from '../const';
 
-function VideoCallStartingView({ fullName, onStartCallPress, style, image }) {
+function VideoCallStartingView({
+  fullName,
+  onStartCallPress,
+  style,
+  image,
+  channelLoading,
+}) {
   return (
     <View style={style.videoCallStartingView}>
       <ProfileImage image={image} />
@@ -18,6 +24,7 @@ function VideoCallStartingView({ fullName, onStartCallPress, style, image }) {
           connectionSuccess={false}
           disabled
           onStartCallPress={onStartCallPress}
+          loading={channelLoading}
         />
       </View>
     </View>
@@ -26,9 +33,13 @@ function VideoCallStartingView({ fullName, onStartCallPress, style, image }) {
 
 VideoCallStartingView.propTypes = {
   fullName: PropTypes.string,
-  image: PropTypes.oneOfType([PropTypes.number, PropTypes.shape({ uri: PropTypes.string })]),
+  image: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.shape({ uri: PropTypes.string }),
+  ]),
   onStartCallPress: PropTypes.func,
   style: PropTypes.object,
+  channelLoading: PropTypes.bool,
 };
 
 export default connectStyle(ext('VideoCallStartingView'))(

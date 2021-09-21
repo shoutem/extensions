@@ -15,9 +15,11 @@ const product = shape({
   // Product description
   body_html: string,
   // Product images, displayed in thumbnails and a gallery in the details page
-  images: arrayOf(shape({
-    src: string,
-  })),
+  images: arrayOf(
+    shape({
+      src: string,
+    }),
+  ),
   // Minimum price of all product variants, returned by the SDK
   newPrice: string,
   // Minimum price of all product variants with competitors, returned by the SDK
@@ -82,7 +84,7 @@ const payment = shape({
     // 3 digit verification value, found on back of the card
     cvv: string,
   }),
-   // True when the payment is being processed by the remote gateway, false otherwise
+  // True when the payment is being processed by the remote gateway, false otherwise
   isProcessing: bool,
 });
 
@@ -103,5 +105,5 @@ export {
   payment,
   product,
   shop,
-  variant
+  variant,
 };

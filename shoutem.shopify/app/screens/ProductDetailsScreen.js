@@ -1,17 +1,9 @@
-import PropTypes from 'prop-types';
+/* eslint-disable camelcase */
 import React, { PureComponent } from 'react';
-import { Modal } from 'react-native';
-import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
-import { I18n } from 'shoutem.i18n';
-import {
-  NavigationBar,
-  navigateTo,
-  closeModal,
-  openInModal,
-} from 'shoutem.navigation';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -30,7 +22,14 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
-
+import { I18n } from 'shoutem.i18n';
+import {
+  navigateTo,
+  closeModal,
+  openInModal,
+  getRouteParams,
+  HeaderCloseButton,
+} from 'shoutem.navigation';
 import CartIcon from '../components/CartIcon';
 import {
   product as productShape,
@@ -41,8 +40,6 @@ import { getCartSize } from '../redux/selectors';
 import { getDiscount } from '../services/getDiscount';
 import { ext } from '../const';
 import UpdateItemScreen from './UpdateItemScreen';
-
-const { func, number } = PropTypes;
 
 const renderPageIndicators = (data, selectedIndex) => {
   if (_.size(data) < 2) {
@@ -66,29 +63,19 @@ const renderPageIndicators = (data, selectedIndex) => {
 class ProductDetailsScreen extends PureComponent {
   static propTypes = {
     // Number of items that the user has added to his cart
-    cartSize: number,
+    cartSize: PropTypes.number,
     // Action dispatched when a product has been added to the cart
-    cartItemAdded: func.isRequired,
-    // Used to close modal after an item has been added to the cart
-    closeModal: func,
-    // Used to navigate to cart
-    navigateTo: func.isRequired,
-    // Used to open the add to cart screen in modal
-    openInModal: func,
+    cartItemAdded: PropTypes.func.isRequired,
     // Product for which details are shown
     item: productShape.isRequired,
     // Shop properties, currently used just to display currency
     shop: shopShape.isRequired,
-  }
+  };
 
   constructor(props) {
     super(props);
 
-    this.closeImageGallery = this.closeImageGallery.bind(this);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.navigateToCart = this.navigateToCart.bind(this);
-    this.onAddToCart = this.onAddToCart.bind(this);
-    this.onIndexSelected = this.onIndexSelected.bind(this);
+    autoBindReact(this);
 
     this.state = {
       selectedImageIndex: 0,
@@ -96,20 +83,55 @@ class ProductDetailsScreen extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
+  }
+
+  componentDidUpdate() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
+  }
+
+  getNavBarProps() {
+    const { cartSize } = this.props;
+    const { shouldRenderImageGallery } = this.state;
+
+    const closeGalleryButton = props => (
+      <HeaderCloseButton {...props} onPress={this.closeImageGallery} />
+    );
+
+    const openCartButton = props => (
+      <View styleName="container">
+        <CartIcon
+          cartSize={cartSize}
+          onPress={this.navigateToCart}
+          iconProps={{ style: props.tintColor }}
+        />
+      </View>
+    );
+
+    const headerRight = shouldRenderImageGallery
+      ? closeGalleryButton
+      : openCartButton;
+
+    return { headerRight, title: '' };
+  }
+
   onAddToCart() {
-    const { item, openInModal } = this.props;
+    const { item } = this.props;
     const { add } = UpdateItemScreen.actionTypes;
 
-    const route = {
-      screen: ext('UpdateItemScreen'),
-      props: {
-        actionType: add,
-        item,
-        onActionButtonClicked: (type, { variant, quantity }) =>
-          this.addItemToCart(variant, quantity),
-      },
+    const routeParams = {
+      actionType: add,
+      item,
+      onActionButtonClicked: (type, { variant, quantity }) =>
+        this.addItemToCart(variant, quantity),
     };
-    openInModal(route);
+
+    openInModal(ext('UpdateItemScreen'), routeParams);
   }
 
   onIndexSelected(index) {
@@ -120,31 +142,8 @@ class ProductDetailsScreen extends PureComponent {
     this.setState({ shouldRenderImageGallery: false });
   }
 
-  getNavBarProps() {
-    const { cartSize } = this.props;
-    const { shouldRenderImageGallery } = this.state;
-
-    const closeGalleryButton = (
-      <Button styleName="clear" onPress={this.closeImageGallery}>
-        <Icon name="close" />
-      </Button>
-    );
-
-    const openCartButton = (
-      <View virtual styleName="container">
-        <CartIcon cartSize={cartSize} onPress={this.navigateToCart} />
-      </View>
-    );
-
-    return {
-      renderRightComponent: () => {
-        return shouldRenderImageGallery ? closeGalleryButton : openCartButton;
-      }
-    }
-  }
-
   addItemToCart(variant, quantity) {
-    const { item, cartItemAdded, closeModal } = this.props;
+    const { item, cartItemAdded } = this.props;
 
     cartItemAdded({ item, variant, quantity });
 
@@ -152,18 +151,19 @@ class ProductDetailsScreen extends PureComponent {
   }
 
   navigateToCart() {
-    const { navigateTo } = this.props;
-
-    navigateTo({ screen: ext('CartScreen') });
+    navigateTo(ext('CartScreen'));
   }
 
   renderFullScreenGallery() {
-    const { item: { images } } = this.props;
-    const { selectedImageIndex, shouldRenderImageGallery } = this.state;
+    const {
+      item: { images },
+    } = this.props;
+    const { selectedImageIndex } = this.state;
 
-    const data = _.map(images, image =>
-      ({ source: { uri: image.src }, title: '' })
-    );
+    const data = _.map(images, image => ({
+      source: { uri: image.src },
+      title: '',
+    }));
 
     return (
       <Screen>
@@ -177,7 +177,9 @@ class ProductDetailsScreen extends PureComponent {
   }
 
   renderGallery() {
-    const { item: { images } } = this.props;
+    const {
+      item: { images },
+    } = this.props;
     const { selectedImageIndex } = this.state;
 
     const data = _.map(images, image => ({ source: { uri: image.src } }));
@@ -214,22 +216,18 @@ class ProductDetailsScreen extends PureComponent {
     return (
       <Tile>
         <View styleName="content vertical h-center">
-          {(!!discount && (newPrice < oldPrice)) &&
+          {!!discount && newPrice < oldPrice && (
             <Overlay styleName="image-overlay">
-              <Heading>
-                  {`${resolvedDiscount}%`}
-              </Heading>
+              <Heading>{`${resolvedDiscount}%`}</Heading>
             </Overlay>
-          }
+          )}
           <Title styleName="h-center md-gutter-top">{title}</Title>
-          {(!!newPrice && newPrice < oldPrice) ?
+          {!!newPrice && newPrice < oldPrice ? (
             <Subtitle styleName="line-through md-gutter-top">
               {oldPriceString}
-            </Subtitle> : null
-          }
-          <Heading styleName="md-gutter-top">
-            {newPriceString}
-          </Heading>
+            </Subtitle>
+          ) : null}
+          <Heading styleName="md-gutter-top">{newPriceString}</Heading>
           <Button
             styleName="secondary md-gutter-vertical"
             onPress={this.onAddToCart}
@@ -249,16 +247,15 @@ class ProductDetailsScreen extends PureComponent {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
-        {!shouldRenderImageGallery ?
+        {!shouldRenderImageGallery ? (
           <ScrollView>
-            <View styleName="placeholder">
-              {this.renderGallery()}
-            </View>
+            <View styleName="placeholder">{this.renderGallery()}</View>
             {this.renderProductHeader()}
             {!!body_html && <Html body={body_html} />}
-          </ScrollView> : this.renderFullScreenGallery()
-        }
+          </ScrollView>
+        ) : (
+          this.renderFullScreenGallery()
+        )}
       </Screen>
     );
   }
@@ -266,7 +263,7 @@ class ProductDetailsScreen extends PureComponent {
 
 const mapStateToProps = (state, ownProps) => {
   const { products, shop } = state[ext()];
-  const { productId } = ownProps;
+  const { productId } = getRouteParams(ownProps);
 
   return {
     cartSize: getCartSize(state),
@@ -277,11 +274,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
   cartItemAdded,
-  closeModal,
-  navigateTo,
-  openInModal
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ProductDetailsScreen'))(ProductDetailsScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('ProductDetailsScreen'))(ProductDetailsScreen));

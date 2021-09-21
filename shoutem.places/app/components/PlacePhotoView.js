@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Favorite } from 'shoutem.favorites';
 import { connectStyle } from '@shoutem/theme';

@@ -4,7 +4,4 @@
 import { appDidMount } from './app';
 import middleware from './middleware';
 
-export {
-  appDidMount,
-  middleware,
-};
+export { appDidMount, middleware };

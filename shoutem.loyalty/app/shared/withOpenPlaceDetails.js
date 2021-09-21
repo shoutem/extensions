@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import { navigateTo } from 'shoutem.navigation';
 import { placeShape } from '../components/shapes';
 import { ext } from '../const';
@@ -19,18 +18,16 @@ export default function withOpenPlaceDetails(RowComponent, prop = 'onPress') {
   class EnhancedComponent extends PureComponent {
     constructor(props) {
       super(props);
-      this.openPlaceDetailsScreen = this.openPlaceDetailsScreen.bind(this);
+
+      autoBindReact(this);
     }
 
     openPlaceDetailsScreen() {
-      const { place, navigateTo } = this.props;
+      const { place } = this.props;
 
-      navigateTo({
-        screen: ext('PlaceDetails'),
+      navigateTo(ext('PlaceDetails'), {
+        place,
         title: place.name,
-        props: {
-          place,
-        },
       });
     }
 
@@ -46,8 +43,7 @@ export default function withOpenPlaceDetails(RowComponent, prop = 'onPress') {
 
   EnhancedComponent.propTypes = {
     place: placeShape.isRequired,
-    navigateTo: PropTypes.func,
   };
 
-  return connect(undefined, { navigateTo })(EnhancedComponent);
+  return EnhancedComponent;
 }

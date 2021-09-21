@@ -17,7 +17,7 @@ import {
 } from '@shoutem/ui';
 import { getShortcut } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-import { navigateBack, NavigationBar } from 'shoutem.navigation';
+import { goBack, getRouteParams } from 'shoutem.navigation';
 import { ext } from '../const';
 
 export class SubmitMessageScreen extends PureComponent {
@@ -37,19 +37,16 @@ export class SubmitMessageScreen extends PureComponent {
     autoBindReact(this);
   }
 
-  getNavBarProps() {
-    const { title } = this.props;
+  componentDidMount() {
+    const { navigation } = this.props;
 
-    return {
-      title,
-      renderLeftComponent: () => null,
-    };
+    navigation.setOptions(this.getNavBarProps());
   }
 
-  goBack() {
-    const { navigateBack } = this.props;
-
-    navigateBack();
+  getNavBarProps() {
+    return {
+      headerLeft: () => null,
+    };
   }
 
   openEmailUrl() {
@@ -75,7 +72,6 @@ export class SubmitMessageScreen extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
         <ScrollView
           contentContainerStyle={contentContainerStyle}
           endFillColor={style.endFillColor}
@@ -112,7 +108,7 @@ export class SubmitMessageScreen extends PureComponent {
             />
           </Button>
         )}
-        <Button onPress={this.goBack} style={style.goBackButton}>
+        <Button onPress={goBack} style={style.goBackButton}>
           <Text style={style.goBackButtonText}>
             {I18n.t(ext('goBackButton'))}
           </Text>
@@ -123,7 +119,7 @@ export class SubmitMessageScreen extends PureComponent {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const { shortcutId } = ownProps;
+  const { shortcutId } = getRouteParams(ownProps);
 
   const shortcut = getShortcut(state, shortcutId);
   const { settings = {} } = shortcut;
@@ -145,9 +141,7 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = { navigateBack };
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  null,
 )(connectStyle(ext('SubmitMessageScreen'))(SubmitMessageScreen));

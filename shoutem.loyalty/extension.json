@@ -1,10 +1,10 @@
 {
   "name": "loyalty",
-  "version": "2.5.7",
-  "platform": "2.5.*",
+  "version": "3.0.5-rc.0",
+  "platform": "~3.0.1",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "releaseNotes": "* Fixed punch cards loading on first Punch cards list screen enter",
+  "releaseNotes": "* Fixed app behavior when loyalty is not enabled",
   "dependencies": ["shoutem.layouts", "shoutem.cms"],
   "categories": ["commerce"],
   "i18n": {

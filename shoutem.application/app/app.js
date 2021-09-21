@@ -4,8 +4,10 @@ import rio, { checkExpiration } from '@shoutem/redux-io';
 import { applyToAll } from '@shoutem/redux-composers';
 import { Image, Html } from '@shoutem/ui';
 
+import { NavigationStacks } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
 
+import SubscriptionMissingScreen from './screens/SubscriptionMissingScreen';
 import { isRelease } from './shared/isRelease';
 import { extractAppActions } from './shared/extractAppActions';
 import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
@@ -57,7 +59,7 @@ export const initializeApp = () => {
 function loadConfiguration(app) {
   const store = app.getStore();
   const { dispatch } = store;
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     // resolve Promise from appWillMount when configuration is available in state
     unsubscribeFromConfigurationLoaded = store.subscribe(() => {
       if (isConfigurationLoaded(store.getState())) {
@@ -105,7 +107,7 @@ function dispatchCheckExpiration(app) {
 }
 
 function createAppStateChangeHandler(app) {
-  return (newAppState) => {
+  return newAppState => {
     if (appState !== newAppState && newAppState === ACTIVE_APP_STATE) {
       dispatchCheckExpiration(app);
     }
@@ -117,6 +119,19 @@ export function appWillMount(app) {
   application = app;
   registerConfigurationSchema();
   extractAppActions(app, appActions);
+
+  NavigationStacks.registerNavigationStack({
+    name: ext(),
+    screens: [
+      {
+        name: ext('SubscriptionMissingScreen'),
+        component: SubscriptionMissingScreen,
+      },
+    ],
+    screenOptions: {
+      headerShown: false,
+    },
+  });
 
   // Handler is saved into variable so it can be removed on unmount
   appStateChangeHandler = createAppStateChangeHandler(app);
@@ -138,7 +153,8 @@ export function appDidMount(app) {
   }
   unsubscribeFromConfigurationLoaded();
 
-  return store.dispatch(fetchAppSubscriptionStatus(appId))
+  return store
+    .dispatch(fetchAppSubscriptionStatus(appId))
     .then(() => store.dispatch(setQueueTargetComplete(ext())));
 }
 

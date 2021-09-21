@@ -1,19 +1,21 @@
 import React from 'react';
 import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
-
 import { Overlay, View } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-
 import DealImageGallery from '../components/DealImageGallery';
 import { getDealImages, isDealImageGallery } from '../services';
 import { ext } from '../const';
-import { DealDetailsScreen, mapStateToProps, mapDispatchToProps } from './DealDetailsScreen';
+import {
+  DealDetailsScreen,
+  mapStateToProps,
+  mapDispatchToProps,
+} from './DealDetailsScreen';
 
 export class LargeDealDetailsScreen extends DealDetailsScreen {
   static propTypes = {
     ...DealDetailsScreen.propTypes,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -34,7 +36,10 @@ export class LargeDealDetailsScreen extends DealDetailsScreen {
             deal={deal}
           />
           <View pointerEvents="box-none" styleName="fill-parent">
-            <View pointerEvents="box-none" styleName="flexible vertical stretch v-center h-center">
+            <View
+              pointerEvents="box-none"
+              styleName="flexible vertical stretch v-center h-center"
+            >
               <Overlay
                 pointerEvents="box-none"
                 styleName="fill-parent image-overlay"
@@ -58,9 +63,9 @@ export class LargeDealDetailsScreen extends DealDetailsScreen {
       </DealImageGallery>
     );
   }
-
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('LargeDealDetailsScreen', {}))(LargeDealDetailsScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('LargeDealDetailsScreen', {}))(LargeDealDetailsScreen));

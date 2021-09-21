@@ -1,24 +1,25 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import moment from 'moment';
 import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import moment from 'moment';
-
-import { RemoteDataListScreen } from 'shoutem.application';
-import { triggerEvent } from 'shoutem.analytics';
-import { currentLocation } from 'shoutem.cms';
-import { I18n } from 'shoutem.i18n';
-import { navigateTo } from 'shoutem.navigation';
-
 import { find, isInitialized, next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import {  Button, EmptyStateView, Text, View } from '@shoutem/ui';
-
-import ListEventView from '../components/ListEventView';
-import FeaturedEventView from '../components/FeaturedEventView';
+import { EmptyStateView } from '@shoutem/ui';
+import { triggerEvent } from 'shoutem.analytics';
+import { RemoteDataListScreen } from 'shoutem.application';
+import { currentLocation } from 'shoutem.cms';
+import { I18n } from 'shoutem.i18n';
+import {
+  getRouteParams,
+  navigateTo,
+  HeaderTextButton,
+} from 'shoutem.navigation';
 import EventsMap from '../components/EventsMap';
+import FeaturedEventView from '../components/FeaturedEventView';
+import ListEventView from '../components/ListEventView';
 import { addToCalendar } from '../services/Calendar';
 import { ext } from '../const';
 import { EVENTS_PROXY_SCHEMA, getIcalFeed } from '../redux';
@@ -26,18 +27,12 @@ import { EVENTS_PROXY_SCHEMA, getIcalFeed } from '../redux';
 export class EventsListScreen extends RemoteDataListScreen {
   static propTypes = {
     ...RemoteDataListScreen.propTypes,
-    navigateTo: PropTypes.func,
   };
 
   constructor(props, context) {
     super(props, context);
 
-    this.fetchData = this.fetchData.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.renderFeaturedItem = this.renderFeaturedItem.bind(this);
-    this.openDetailsScreen = this.openDetailsScreen.bind(this);
-    this.toggleMapMode = this.toggleMapMode.bind(this);
-    this.addToCalendar = this.addToCalendar.bind(this);
+    autoBindReact(this);
 
     this.state = {
       renderCategoriesInline: true,
@@ -45,14 +40,35 @@ export class EventsListScreen extends RemoteDataListScreen {
     };
   }
 
-  componentDidUpdate() {
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
+
+    this.refreshData();
+  }
+
+  componentDidUpdate(prevProps) {
     // check if we need user location
-    const { checkPermissionStatus, currentLocation, sortField } = this.props;
+    const {
+      checkPermissionStatus,
+      currentLocation,
+      sortField,
+      navigation,
+    } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
+
+    this.refreshData(prevProps);
 
     const isSortByLocation = sortField === 'location';
     const isLocationAvailable = !!currentLocation;
 
-    if (isSortByLocation && !isLocationAvailable && _.isFunction(checkPermissionStatus)) {
+    if (
+      isSortByLocation &&
+      !isLocationAvailable &&
+      _.isFunction(checkPermissionStatus)
+    ) {
       checkPermissionStatus();
     }
   }
@@ -78,6 +94,29 @@ export class EventsListScreen extends RemoteDataListScreen {
     );
   }
 
+  getNavBarProps() {
+    return {
+      headerRight: this.renderRightComponent,
+    };
+  }
+
+  renderRightComponent(props) {
+    const { data } = this.props;
+    const { shouldRenderMap } = this.state;
+    const screenTitle = I18n.t('shoutem.cms.navBarListViewButton');
+    const mapTitle = I18n.t('shoutem.cms.navBarMapViewButton');
+
+    if (_.isEmpty(data) || !isInitialized(data)) {
+      return null;
+    }
+
+    const title = shouldRenderMap ? screenTitle : mapTitle;
+
+    return (
+      <HeaderTextButton {...props} title={title} onPress={this.toggleMapMode} />
+    );
+  }
+
   shouldRenderPlaceholderView(data) {
     const { icalUrl } = this.props;
 
@@ -100,21 +139,16 @@ export class EventsListScreen extends RemoteDataListScreen {
         style: style.emptyState,
       };
 
-      return (
-        <EmptyStateView {...emptyStateViewProps} />
-      );
+      return <EmptyStateView {...emptyStateViewProps} />;
     }
 
     return super.renderPlaceholderView(data);
   }
 
   openDetailsScreen(event) {
-    this.props.navigateTo({
-      screen: ext('EventDetailsScreen'),
+    navigateTo(ext('EventDetailsScreen'), {
       title: event.name,
-      props: {
-        event,
-      },
+      event,
     });
   }
 
@@ -126,28 +160,6 @@ export class EventsListScreen extends RemoteDataListScreen {
   toggleMapMode() {
     const { shouldRenderMap } = this.state;
     this.setState({ shouldRenderMap: !shouldRenderMap });
-  }
-
-  getNavigationBarProps(screenTitle = I18n.t('shoutem.cms.navBarListViewButton')) {
-    const { data } = this.props;
-    const { shouldRenderMap } = this.state;
-    const newNavBarProps = super.getNavigationBarProps();
-
-    newNavBarProps.renderRightComponent = () => {
-      if (_.isEmpty(data) || !isInitialized(data)) {
-        return null;
-      }
-
-      return (
-        <View virtual styleName="container">
-          <Button styleName="clear" onPress={this.toggleMapMode}>
-          <Text>{shouldRenderMap ? screenTitle : I18n.t('shoutem.cms.navBarMapViewButton')}</Text>
-          </Button>
-        </View>
-      );
-    };
-
-    return newNavBarProps;
   }
 
   renderEventListItem(event, style = {}) {
@@ -162,9 +174,9 @@ export class EventsListScreen extends RemoteDataListScreen {
   }
 
   renderFeaturedItem(event) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return hasFeaturedItem && event ? (
+    return screenSettings.hasFeaturedItem && event ? (
       <FeaturedEventView
         event={event}
         onPress={this.openDetailsScreen}
@@ -205,16 +217,19 @@ export class EventsListScreen extends RemoteDataListScreen {
 }
 
 export function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    find,
-    next,
-    navigateTo,
-    triggerEvent,
-  }, dispatch);
+  return bindActionCreators(
+    {
+      find,
+      next,
+      triggerEvent,
+    },
+    dispatch,
+  );
 }
 
 export function mapStateToProps(state, ownProps) {
-  const icalUrl = _.get(ownProps, 'shortcut.settings.icalUrl');
+  const { shortcut } = getRouteParams(ownProps);
+  const icalUrl = _.get(shortcut, 'settings.icalUrl');
 
   return {
     icalUrl,
@@ -222,6 +237,7 @@ export function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('EventsListScreen'))(currentLocation(EventsListScreen)),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('EventsListScreen'))(currentLocation(EventsListScreen)));

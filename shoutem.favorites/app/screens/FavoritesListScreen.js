@@ -1,17 +1,14 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { LayoutAnimation } from 'react-native';
-import { bindActionCreators } from 'redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 import { getCollection } from '@shoutem/redux-io';
 import { Screen, ListView, Spinner, EmptyStateView } from '@shoutem/ui';
-
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation'
-
-import { getFavoriteCollection, fetchFavoritesData } from '../helpers';
+import { getRouteParams } from 'shoutem.navigation';
 import { ext } from '../const';
+import { getFavoriteCollection, fetchFavoritesData } from '../helpers';
 
 export class FavoritesListScreen extends PureComponent {
   static propTypes = {
@@ -24,12 +21,12 @@ export class FavoritesListScreen extends PureComponent {
   };
 
   static createMapStateToProps(schema, getStorage) {
-    return (state) => {
+    return state => {
       const favoriteCollection = getFavoriteCollection(schema, state);
       const favoriteIds = _.map(favoriteCollection, 'id');
       const favorites = getCollection(favoriteIds, state, schema);
       const storage = getStorage(state);
-      const itemsLoaded = _.every(favoriteIds, (id) => _.has(storage, id));
+      const itemsLoaded = _.every(favoriteIds, id => _.has(storage, id));
 
       return {
         favorites,
@@ -40,23 +37,20 @@ export class FavoritesListScreen extends PureComponent {
   }
 
   static createMapDispatchToProps(actionCreators) {
-    return (dispatch) => (
+    return dispatch =>
       bindActionCreators(
         {
           ...actionCreators,
           fetchFavoritesData,
         },
         dispatch,
-      )
-    );
+      );
   }
 
   constructor(props, context) {
     super(props, context);
 
-    this.renderData = this.renderData.bind(this);
-    this.shouldLoadFavoriteData = this.shouldLoadFavoriteData.bind(this);
-    this.toggleLoading = this.toggleLoading.bind(this);
+    autoBindReact(this);
 
     this.state = {
       ...this.state,
@@ -65,18 +59,26 @@ export class FavoritesListScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { favoriteCollection, itemsLoaded } = this.props;
+    const { favoriteCollection, itemsLoaded, navigation } = this.props;
     const { schema } = this.state;
+
+    navigation.setOptions(this.getNavBarProps());
 
     if (!itemsLoaded) {
       this.toggleLoading();
-      this.props.fetchFavoritesData(schema, favoriteCollection)
-      .then(() => this.toggleLoading());
+      this.props
+        .fetchFavoritesData(schema, favoriteCollection)
+        .then(() => this.toggleLoading());
     }
   }
 
+  componentDidUpdate() {
+    const { navigation } = this.props;
+    navigation.setOptions(this.getNavBarProps());
+  }
+
   getNavBarProps() {
-    const { title } = this.props;
+    const { title } = getRouteParams(this.props);
 
     return { title };
   }
@@ -90,11 +92,7 @@ export class FavoritesListScreen extends PureComponent {
   shouldLoadFavoriteData() {
     const { favorites } = this.props;
 
-    _.forEach(favorites, (item) => {
-      if (_.isEmpty(item)) return true;
-    });
-
-    return false;
+    _.forEach(favorites, item => _.isEmpty(item));
   }
 
   renderData(favoriteData) {
@@ -124,11 +122,6 @@ export class FavoritesListScreen extends PureComponent {
   render() {
     const { favorites } = this.props;
 
-    return (
-      <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
-        {this.renderData(favorites)}
-      </Screen>
-    );
+    return <Screen>{this.renderData(favorites)}</Screen>;
   }
 }

@@ -1,18 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { InteractionManager } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import { next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { ListScreen } from 'shoutem.application';
+import { navigateTo } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
-import { fetchNotifications, markAsRead, viewNotification } from '../redux';
-import { notificationShape } from '../components/shapes';
-import NotificationView from '../components/NotificationView';
-import { ext } from '../const';
+import { fetchNotifications, markAsRead } from '../redux';
+import { NotificationView } from '../components';
+import { ext, notificationShape } from '../const';
 
 const { arrayOf, func, shape } = PropTypes;
 
@@ -43,6 +42,10 @@ class NotificationsScreen extends ListScreen {
   // resolve this issue properly to avoid unneccessary
   // fetching
   componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
+
     this.fetchData();
   }
 
@@ -69,7 +72,7 @@ class NotificationsScreen extends ListScreen {
       .map(group => group.id);
 
     if (_.isEmpty(groupId)) {
-      return;
+      return {};
     }
 
     return {
@@ -79,21 +82,29 @@ class NotificationsScreen extends ListScreen {
     };
   }
 
-  getNavigationBarProps() {
+  getNavBarProps() {
     return {
       title: I18n.t(ext('notificationListNavBarTitle')),
     };
   }
 
+  handleSettingsPress() {
+    const { navigateTo } = this.props;
+
+    navigateTo({ screen: ext('NotificationSettingsScreen') });
+  }
+
   handleNotificationPress(notification) {
-    const { markAsRead, viewNotification } = this.props;
+    const { markAsRead } = this.props;
     const { read } = notification;
 
     if (!read) {
       markAsRead(notification);
     }
 
-    viewNotification(notification);
+    navigateTo(ext('NotificationDetailsScreen'), {
+      notification,
+    });
   }
 
   getListProps() {
@@ -119,18 +130,8 @@ const mapStateToProps = state => ({
   selectedGroups: state[ext()].selectedGroups,
 });
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      fetchNotifications,
-      markAsRead,
-      next,
-      viewNotification,
-    },
-    dispatch,
-  );
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(connectStyle(ext('NotificationsListScreen'))(NotificationsScreen));
+export default connect(mapStateToProps, {
+  fetchNotifications,
+  markAsRead,
+  next,
+})(connectStyle(ext('NotificationsListScreen'))(NotificationsScreen));

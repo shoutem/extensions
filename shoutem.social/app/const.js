@@ -11,7 +11,7 @@ export const DEFAULT_USER_SETTINGS = {
   commentsOnCommentedStatuses: true,
   commentsOnLikedStatuses: false,
   type: SOCIAL_SETTINGS_SCHEMA,
-}
+};
 
 export function ext(resourceName) {
   return resourceName ? `${pack.name}.${resourceName}` : pack.name;

@@ -6,9 +6,7 @@ import { connect } from 'react-redux';
 
 import { connectStyle } from '@shoutem/theme';
 import { ListView, Screen } from '@shoutem/ui';
-
 import { invalidateLoadedCollections } from 'shoutem.cms';
-import { NavigationBar } from 'shoutem.navigation';
 
 import { LanguageListItem } from '../components';
 import { ext } from '../const';
@@ -28,16 +26,12 @@ export class SelectLanguageScreen extends PureComponent {
     autoBindReact(this);
   }
 
-  getNavigationBarProps() {
-    const { title } = this.props;
-
-    return {
-      title: title.toUpperCase(),
-    };
-  }
-
   handleLocaleChangePress(locale) {
-    const { selectedLocale, setLocale, invalidateLoadedCollections } = this.props;
+    const {
+      selectedLocale,
+      setLocale,
+      invalidateLoadedCollections,
+    } = this.props;
 
     if (locale === selectedLocale || !locale || _.isEmpty(locale)) {
       return;
@@ -66,11 +60,7 @@ export class SelectLanguageScreen extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavigationBarProps()} />
-        <ListView
-          data={locales}
-          renderRow={this.renderLanguageItem}
-        />
+        <ListView data={locales} renderRow={this.renderLanguageItem} />
       </Screen>
     );
   }
@@ -86,6 +76,7 @@ const mapStateToProps = state => ({
   selectedLocale: selectors.getSelectedLocale(state),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('SelectLanguageScreen'))(SelectLanguageScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('SelectLanguageScreen'))(SelectLanguageScreen));

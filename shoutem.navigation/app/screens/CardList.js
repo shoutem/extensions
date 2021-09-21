@@ -1,4 +1,4 @@
-import { createSubNavigationScreen } from '../helpers';
+import { withSubNavigationScreen } from '../hoc';
 import CardList from '../components/CardList';
 
-export default createSubNavigationScreen(CardList);
+export default withSubNavigationScreen(CardList);

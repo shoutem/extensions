@@ -31,11 +31,14 @@ export const DISCOUNT_PERCENTAGE = 'percentage';
 export const DISCOUNT_FIXED = 'fixed';
 
 // Request paths
-export const REDEEM_DEAL_PATH = 'catalogs/{catalogId}/deals/{dealId}/actions/redeem';
-export const REDEEM_COUPON_PATH = 'catalogs/{catalogId}/coupons/{couponId}/actions/redeem';
+export const REDEEM_DEAL_PATH =
+  'catalogs/{catalogId}/deals/{dealId}/actions/redeem';
+export const REDEEM_COUPON_PATH =
+  'catalogs/{catalogId}/coupons/{couponId}/actions/redeem';
 export const CLAIM_COUPON_PATH = 'catalogs/{catalogId}/coupons';
 export const FETCH_COUPON_PATH = 'catalogs/{catalogId}/coupons/{couponId}';
-export const DEAL_TRANSACTIONS_PATH = 'catalogs/{catalogId}/deal-transactions/{dealId}{?query*}';
+export const DEAL_TRANSACTIONS_PATH =
+  'catalogs/{catalogId}/deal-transactions/{dealId}{?query*}';
 export const TRANSACTIONS_PATH = 'catalogs/{catalogId}/transactions';
 
 // Transaction actions
@@ -73,10 +76,15 @@ export const TRANSLATIONS = {
   DEAL_LOCATION_DIRECTIONS_LABEL: ext('dealLocationDirections'),
   COUPON_CLAIMED_TEXT: ext('couponClaimedText'),
   COUPON_REDEEM_TIME_TEXT: ext('couponRedeemTimeText'),
-  COUPON_REDEEM_INSTRUCTIONS_TITLE_TEXT: ext('couponRedeemInstructionsTitleText'),
+  COUPON_REDEEM_INSTRUCTIONS_TITLE_TEXT: ext(
+    'couponRedeemInstructionsTitleText',
+  ),
   COUPON_REDEEM_INSTRUCTIONS_TEXT: ext('couponRedeemInstructions'),
   DEAL_REDEEMED_TEXT: ext('dealRedeemedText'),
+  MY_DEALS_TITLE: ext('myDealsTitle'),
   MY_DEALS_TAB_TEXT: ext('myDealsTabText'),
-  MY_DEALS_AUTHENTICATION_REQUIRED_TEXT: ext('myDealsAuthenticationRequiredText'),
+  MY_DEALS_AUTHENTICATION_REQUIRED_TEXT: ext(
+    'myDealsAuthenticationRequiredText',
+  ),
   FAVORITE_DEALS_TAB_TEXT: ext('favoriteDealsTabText'),
 };

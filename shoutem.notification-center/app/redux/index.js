@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
-
-import notificationsReducer from './notifications';
+import {
+  notificationsReducer,
+  notificationSettingsReducer,
+} from './notifications';
 
 import {
   deviceToken,
@@ -12,9 +14,13 @@ import {
 
 export {
   NOTIFICATIONS_SCHEMA,
-  markAsRead,
   fetchNotifications,
+  getDailyMessagesAppSettings,
+  getNotificationSettings,
+  getReminderAppSettings,
   invalidateNotifications,
+  markAsRead,
+  setNotificationSettings,
   viewNotification,
 } from './notifications';
 
@@ -30,6 +36,7 @@ export { middleware };
 export default combineReducers({
   deviceToken,
   notifications: notificationsReducer(),
+  notificationSettings: notificationSettingsReducer,
   groups,
   manuallyUnsubscribedGroups,
   selectedGroups,

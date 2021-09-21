@@ -1,10 +1,10 @@
 {
   "name": "places",
-  "version": "2.6.0",
-  "platform": "2.5.*",
+  "version": "3.1.0",
+  "platform": "^3.0.0",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "releaseNotes": "* Added new layout - places grid list",
+  "releaseNotes": "* Added details screen layouts with solid navbar",
   "icon": "./server/assets/images/add-places-image.png",
   "dependencies": ["shoutem.layouts", "shoutem.cms"],
   "categories": ["content"],
@@ -88,8 +88,17 @@
     },
     {
       "name": "PlaceDetails",
-      "title": "Large photo details page",
+      "title": "Large photo with transparent navbar details page",
       "image": "./server/assets/images/details_large.png"
+    },
+    {
+      "name": "SolidNavbarPlaceDetails",
+      "title": "Large photo with solid navbar details page",
+      "extends": "@.PlaceDetails",
+      "image": "./server/assets/images/details_large_solid.png",
+      "settings": {
+        "navigationBarStyle": "solid"
+      }
     },
     {
       "name": "FavoritesList",
@@ -105,9 +114,18 @@
     },
     {
       "name": "MediumPlaceDetails",
-      "title": "Medium photo details page",
+      "title": "Medium photo with transparent navbar details page",
       "extends": "@.PlaceDetails",
       "image": "./server/assets/images/details_medium.png"
+    },
+    {
+      "name": "SolidNavbarMediumPlaceDetails",
+      "title": "Medium photo with solid navbar details page",
+      "extends": "@.PlaceDetails",
+      "image": "./server/assets/images/details_medium_solid.png",
+      "settings": {
+        "navigationBarStyle": "solid"
+      }
     },
     {
       "name": "SinglePlaceMap",

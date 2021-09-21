@@ -1,9 +1,16 @@
 import i18next from 'i18next';
+import _ from 'lodash';
 import { TARGET_TYPES, AUDIENCE_TYPES, DELIVERY_TYPES } from '../const';
 import LOCALIZATION from './localization';
 
-function validateRequiredField(fieldValue) {
-  if (!fieldValue) {
+function validateRequiredField(notification) {
+  const { delivery, summary } = notification;
+
+  if (delivery === DELIVERY_TYPES.USER_SCHEDULED) {
+    return null;
+  }
+
+  if (!summary) {
     return i18next.t(LOCALIZATION.VALUE_REQUIRED_TEXT);
   }
 
@@ -11,9 +18,13 @@ function validateRequiredField(fieldValue) {
 }
 
 function validateShortcut(notification) {
-  const { shortcutId, target } = notification;
+  const { delivery, shortcutId, target } = notification;
 
-  if (target === TARGET_TYPES.URL) {
+  if (
+    !target ||
+    target === TARGET_TYPES.URL ||
+    delivery === DELIVERY_TYPES.USER_SCHEDULED
+  ) {
     return null;
   }
 
@@ -52,13 +63,32 @@ function validateDelivery(notification) {
   return null;
 }
 
-export function validateNotification(notification) {
-  const { summary } = notification;
+function validateNumber(notification) {
+  const { delivery, numberOfMessages, summaries } = notification;
 
+  if (delivery !== DELIVERY_TYPES.USER_SCHEDULED) {
+    return null;
+  }
+
+  const summariesEntered = _.filter(summaries, summary => summary !== '');
+
+  if (
+    !numberOfMessages ||
+    numberOfMessages < 1 ||
+    numberOfMessages > summariesEntered.length
+  ) {
+    return i18next.t(LOCALIZATION.NUMBER_NOT_IN_RANGE_TEXT);
+  }
+
+  return null;
+}
+
+export function validateNotification(notification) {
   return {
-    summary: validateRequiredField(summary),
+    summary: validateRequiredField(notification),
     shortcutId: validateShortcut(notification),
     audienceGroupIds: validateGroup(notification),
     deliveryTime: validateDelivery(notification),
+    numberOfMessages: validateNumber(notification),
   };
 }

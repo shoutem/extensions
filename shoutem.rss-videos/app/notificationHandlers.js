@@ -1,16 +1,8 @@
 import _ from 'lodash';
 import { NotificationHandlers } from 'shoutem.firebase';
-import {
-  hasModalOpen,
-  openInModal,
-  navigateTo,
-  getNavigationInitialized,
-} from 'shoutem.navigation';
-import {
-  setPendingNotification,
-  displayLocalNotification,
-  resolveNotificationData,
-} from 'shoutem.push-notifications';
+import { openInModal } from 'shoutem.navigation';
+import { displayLocalNotification } from 'shoutem.rss';
+import { resolveNotificationData } from 'shoutem.push-notifications';
 import { ext, VIDEO_DETAILS_SCREEN, VIDEOS_SCHEMA_ITEM } from './const';
 import { fetchVideosFeed, getFeedUrl } from './redux';
 
@@ -18,8 +10,8 @@ function canHandle(notification) {
   // For now, only rss specific push notifications contain
   // itemSchema property, old notifications don't
   if (
-    !notification.itemSchema
-    || notification.itemSchema !== VIDEOS_SCHEMA_ITEM
+    !notification.itemSchema ||
+    notification.itemSchema !== VIDEOS_SCHEMA_ITEM
   ) {
     return false;
   }
@@ -27,68 +19,29 @@ function canHandle(notification) {
   return true;
 }
 
-function openItemInModal(notification, store) {
-  const state = store.getState();
-  const feedUrl = getFeedUrl(state, notification.shortcutId);
-  generateNavigationAction(notification, feedUrl, store).then(
-    (navigationAction) => {
-      store.dispatch(navigationAction);
-    },
-  );
-}
-
-function resolveNavigationAction(store, id, feedUrl) {
-  const route = {
-    screen: VIDEO_DETAILS_SCREEN,
-    props: {
-      id,
-      feedUrl,
-    },
-  };
-
-  const state = store.getState();
-  const alreadyHasModalOpen = hasModalOpen(state);
-  const navigationAction = alreadyHasModalOpen ? navigateTo : openInModal;
-
-  return navigationAction(route);
-}
-
-function handleNotificationTapped(receivedNotification, store) {
-  const notification = resolveNotificationData(receivedNotification);
-
-  if (!canHandle(notification)) {
-    return;
-  }
-
-  const state = store.getState();
-  const navigationInitialized = getNavigationInitialized(state);
-
-  if (!navigationInitialized) {
-    store.dispatch(setPendingNotification(notification));
-    return;
-  }
-
-  openItemInModal(notification, store);
-}
-
 function getItemId(videos, uuid) {
-  const video = _.find(videos, (video) => {
+  const video = _.find(videos, video => {
     return video.attributes.uuid === uuid;
   });
 
   return _.get(video, 'id');
 }
 
-function generateNavigationAction(notification, feedUrl, store) {
-  return new Promise((resolve) => {
-    store
-      .dispatch(fetchVideosFeed(notification.shortcutId))
-      .then(({ payload: { data: videos } }) => {
-        const id = getItemId(videos, notification.itemId);
+function consumeNotification(notification, store) {
+  if (!canHandle(notification)) {
+    return;
+  }
 
-        resolve(resolveNavigationAction(store, id, feedUrl));
-      });
-  }).catch(err => console.warn('Resolve navigation action failed.', err));
+  const state = store.getState();
+  const feedUrl = getFeedUrl(state, notification.shortcutId);
+
+  store
+    .dispatch(fetchVideosFeed(notification.shortcutId))
+    .then(({ payload: { data: videos } }) => {
+      const id = getItemId(videos, notification.itemId);
+
+      openInModal(VIDEO_DETAILS_SCREEN, { id, feedUrl });
+    });
 }
 
 function handleForegroundNotification(receivedNotification, store) {
@@ -98,38 +51,31 @@ function handleForegroundNotification(receivedNotification, store) {
     return;
   }
 
-  const state = store.getState();
-  const feedUrl = getFeedUrl(state, notification.shortcutId);
-  generateNavigationAction(notification, feedUrl, store).then(
-    (navigationAction) => {
-      displayLocalNotification(
-        notification.title,
-        notification.body,
-        navigationAction,
-        store,
-      );
-    },
+  displayLocalNotification(notification.title, notification.body, () =>
+    consumeNotification(notification, store),
   );
 }
 
-function handlePendingNotification(notification, store) {
+function handleNotificationTapped(receivedNotification, store) {
+  const notification = resolveNotificationData(receivedNotification);
+
   if (!canHandle(notification)) {
     return;
   }
 
-  openItemInModal(notification, store);
+  consumeNotification(notification, store);
 }
 
 export function registerNotificationHandlers(store) {
   NotificationHandlers.registerNotificationReceivedHandlers({
     owner: ext(),
     notificationHandlers: {
-      onNotificationTapped: (notification) =>
+      onNotificationTapped: notification =>
         handleNotificationTapped(notification, store),
-      onNotificationReceivedForeground: (notification) =>
+      onNotificationReceivedForeground: notification =>
         handleForegroundNotification(notification, store),
-      onPendingNotificationDispatched: (notification) =>
-        handlePendingNotification(notification, store),
+      onConsumeNotification: notification =>
+        consumeNotification(notification, store),
     },
   });
 }

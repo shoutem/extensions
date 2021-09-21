@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
-
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 export class BaseEventItem extends PureComponent {
   static propTypes = {
     onPress: PropTypes.func,
@@ -11,8 +11,8 @@ export class BaseEventItem extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.onPress = this.onPress.bind(this);
-    this.action = this.action.bind(this);
+
+    autoBindReact(this);
   }
 
   onPress() {

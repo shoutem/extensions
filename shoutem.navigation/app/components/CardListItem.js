@@ -11,7 +11,9 @@ export default class CardListItem extends NavigationBaseItem {
     const { style, styleName, showBackground } = this.props;
 
     const shortcutSettings = this.getShortcutLayoutSettings('cardList');
-    const backgroundImageUrl = showBackground ? shortcutSettings.normalIconUrl : undefined;
+    const backgroundImageUrl = showBackground
+      ? shortcutSettings.normalIconUrl
+      : undefined;
 
     return (
       <FolderItemContainer

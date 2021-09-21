@@ -18,12 +18,17 @@ import {
   busyStatus,
   STATUS,
 } from '@shoutem/redux-io/status';
+import { USER_SCHEMA } from 'shoutem.auth';
+import { REHYDRATE } from 'redux-persist/constants';
+import { ext, STATUSES_SCHEMA, SOCIAL_SETTINGS_SCHEMA } from '../const';
 import {
-  ext,
-  STATUSES_SCHEMA,
-  SOCIAL_SETTINGS_SCHEMA,
-} from '../const';
-import { CREATE, LIKE, UNLIKE, DELETE } from './actions';
+  CREATE,
+  LIKE,
+  UNLIKE,
+  DELETE,
+  BLOCK_USER,
+  UNBLOCK_USER,
+} from './actions';
 import {
   increaseNumberOfComments,
   decreaseNumberOfComments,
@@ -32,12 +37,12 @@ import {
   updateStatusesAfterLike,
   updateStatusesAfterUnlike,
 } from '../services';
-import { USER_SCHEMA } from 'shoutem.auth';
 
 const DEFAULT_STATE = { data: [] };
+const DEFAULT_BLOCKED_USERS_STATE = {};
 
 function isAppendMode(action) {
-  return !!(_.get(action, ['meta', 'options', APPEND_MODE]));
+  return !!_.get(action, ['meta', 'options', APPEND_MODE]);
 }
 
 function processStatuses(state, action) {
@@ -52,17 +57,17 @@ function processStatuses(state, action) {
   const params = hasNextPage ? _.get(action, 'meta.params') : {};
   const next = hasNextPage ? _.get(action, 'payload.paging.next') : null;
 
-  setStatus(newState, updateStatus(
-    state[STATUS],
-    {
+  setStatus(
+    newState,
+    updateStatus(state[STATUS], {
       validationStatus: validationStatus.VALID,
       busyStatus: busyStatus.IDLE,
       error: false,
       links: { next },
       params,
       schema: STATUSES_SCHEMA,
-    }
-  ));
+    }),
+  );
 
   return newState;
 }
@@ -84,19 +89,19 @@ function statusesReducer(prepend) {
 
       case REFERENCE_STATUS:
         if (schema === STATUSES_SCHEMA) {
-          setStatus(state, updateStatus(
-            state[STATUS],
-            {
+          setStatus(
+            state,
+            updateStatus(state[STATUS], {
               validationStatus: validationStatus.INVALID,
               busyStatus: busyStatus.IDLE,
               error: false,
-            }
-          ));
+            }),
+          );
         }
 
         return state;
 
-      case CREATE_SUCCESS:
+      case CREATE_SUCCESS: {
         const user = _.get(action, 'meta.options.user', {});
         const statusId = _.get(action, 'payload.id');
         const liked = _.get(action, 'payload.liked');
@@ -105,43 +110,53 @@ function statusesReducer(prepend) {
           const newStatuses = appendStatus(state.data, action.payload, prepend);
 
           const newState = { ...state, data: newStatuses };
-          setStatus(newState, updateStatus(
-            state[STATUS],
-            {
+          setStatus(
+            newState,
+            updateStatus(state[STATUS], {
               busyStatus: busyStatus.IDLE,
               error: false,
-            }
-          ));
+            }),
+          );
 
           return newState;
         }
 
         if (operation === LIKE) {
-          const newStatuses = updateStatusesAfterLike(state.data, statusId, user, liked);
+          const newStatuses = updateStatusesAfterLike(
+            state.data,
+            statusId,
+            user,
+            liked,
+          );
           const newState = { ...state, data: newStatuses };
 
-          setStatus(newState, updateStatus(
-            state[STATUS],
-            {
+          setStatus(
+            newState,
+            updateStatus(state[STATUS], {
               busyStatus: busyStatus.IDLE,
               error: false,
-            }
-          ));
+            }),
+          );
 
           return newState;
         }
 
         if (operation === UNLIKE) {
-          const newStatuses = updateStatusesAfterUnlike(state.data, statusId, user.id, liked);
+          const newStatuses = updateStatusesAfterUnlike(
+            state.data,
+            statusId,
+            user.id,
+            liked,
+          );
           const newState = { ...state, data: newStatuses };
 
-          setStatus(newState, updateStatus(
-            state[STATUS],
-            {
+          setStatus(
+            newState,
+            updateStatus(state[STATUS], {
               busyStatus: busyStatus.IDLE,
               error: false,
-            }
-          ));
+            }),
+          );
 
           return newState;
         }
@@ -155,9 +170,45 @@ function statusesReducer(prepend) {
         }
 
         return state;
+      }
       default:
         return defaultResourceReducer(state, action);
     }
+  };
+}
+
+function blockedUsersReducer() {
+  return (state = DEFAULT_BLOCKED_USERS_STATE, action) => {
+    if (action.type === REHYDRATE) {
+      return { ..._.get(action, ['payload', ext(), 'blockedUsers']) };
+    }
+
+    if (action.type === BLOCK_USER) {
+      const { userId, currentUserId } = action.payload;
+
+      if (userId === currentUserId) {
+        return state;
+      }
+
+      const blockedUsers = _.get(state, currentUserId, []);
+
+      return {
+        ...state,
+        [currentUserId]: _.uniq([...blockedUsers, userId]),
+      };
+    }
+
+    if (action.type === UNBLOCK_USER) {
+      const { userId, currentUserId } = action.payload;
+      const blockedUsers = _.get(state, currentUserId, []);
+
+      return {
+        ...state,
+        [currentUserId]: _.without(blockedUsers, userId),
+      };
+    }
+
+    return state;
   };
 }
 
@@ -179,14 +230,14 @@ function wallReducer() {
         const statuses = increaseNumberOfComments(state.data, statusId);
 
         const newState = { ...state, data: statuses };
-        setStatus(newState, updateStatus(
-          state[STATUS],
-          {
+        setStatus(
+          newState,
+          updateStatus(state[STATUS], {
             validationStatus: validationStatus.VALID,
             busyStatus: busyStatus.IDLE,
             error: false,
-          }
-        ));
+          }),
+        );
 
         return newState;
       }
@@ -222,12 +273,10 @@ function commentsReducer() {
 
 export default combineReducers({
   statuses: wallReducer(),
-  comments: mapReducers(
-    'meta.params.in_reply_to_status_id',
-    commentsReducer(),
-  ),
+  comments: mapReducers('meta.params.in_reply_to_status_id', commentsReducer()),
   users: collection(USER_SCHEMA, 'users'),
   usersInGroups: collection(USER_SCHEMA, 'usersInGroups'),
+  blockedUsers: blockedUsersReducer(),
   searchUsers: collection(USER_SCHEMA, 'searchUsers'),
   settings: storage(SOCIAL_SETTINGS_SCHEMA),
   userSettings: one(SOCIAL_SETTINGS_SCHEMA, 'settings'),

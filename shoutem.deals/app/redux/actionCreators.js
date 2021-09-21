@@ -1,14 +1,5 @@
-import _ from 'lodash';
-
-import {
-  create,
-  find,
-  RESOLVED_ENDPOINT,
-} from '@shoutem/redux-io';
-
-import {
-  APPEND_MODE,
-} from '@shoutem/redux-io/actions/find';
+import { create, find, RESOLVED_ENDPOINT } from '@shoutem/redux-io';
+import { APPEND_MODE } from '@shoutem/redux-io/actions/find';
 
 import {
   DEALS_SCHEMA,
@@ -27,14 +18,19 @@ import {
 } from '../const';
 
 export function fetchDeal(dealId) {
-  return find(DEALS_SCHEMA, undefined, {
-    query: {
-      'filter[id]': dealId,
+  return find(
+    DEALS_SCHEMA,
+    undefined,
+    {
+      query: {
+        'filter[id]': dealId,
+      },
     },
-  }, {
-    [APPEND_MODE]: true,
-    [RESOLVED_ENDPOINT]: true,
-  });
+    {
+      [APPEND_MODE]: true,
+      [RESOLVED_ENDPOINT]: true,
+    },
+  );
 }
 
 export function fetchDealTransactions(catalogId, dealId) {
@@ -48,10 +44,13 @@ export function fetchDealTransactions(catalogId, dealId) {
     },
   };
 
-  return dispatch => (dispatch(find(request, '', {
-    catalogId,
-    dealId,
-  })));
+  return dispatch =>
+    dispatch(
+      find(request, '', {
+        catalogId,
+        dealId,
+      }),
+    );
 }
 
 export function fetchDealListTransactions(catalogId, dealIdList) {
@@ -67,27 +66,33 @@ export function fetchDealListTransactions(catalogId, dealIdList) {
     },
   };
 
-  return dispatch => (dispatch(find(request, '', {
-    catalogId,
-    query: {
-      'filter[deal.id]': idList.join(','),
-    },
-  })));
+  return dispatch =>
+    dispatch(
+      find(request, '', {
+        catalogId,
+        query: {
+          'filter[deal.id]': idList.join(','),
+        },
+      }),
+    );
 }
 
 export function fetchMyDealTransactions(catalogId) {
-  return dispatch => (dispatch(find(DEAL_TRANSACTIONS_SCHEMA, MY_DEALS_TAG, {
-    catalogId,
-    query: {
-      'filter[action]': [
-        DEAL_REDEEMED_ACTION,
-        COUPON_CLAIMED_ACTION,
-        COUPON_REDEEMED_ACTION,
-        COUPON_EXPIRED_ACTION,
-      ].join(','),
-      'filter[lastTransactionOnly]': 'true',
-    },
-  })));
+  return dispatch =>
+    dispatch(
+      find(DEAL_TRANSACTIONS_SCHEMA, MY_DEALS_TAG, {
+        catalogId,
+        query: {
+          'filter[action]': [
+            DEAL_REDEEMED_ACTION,
+            COUPON_CLAIMED_ACTION,
+            COUPON_REDEEMED_ACTION,
+            COUPON_EXPIRED_ACTION,
+          ].join(','),
+          'filter[lastTransactionOnly]': 'true',
+        },
+      }),
+    );
 }
 
 export function fetchDealCoupon(catalogId, couponId) {
@@ -122,11 +127,10 @@ export function claimCoupon(catalogId, dealId) {
     },
   };
 
-  return dispatch => (
-    dispatch(create(request, null, { catalogId })).then(() => (
-      dispatch(fetchDealTransactions(catalogId, dealId))
-    ))
-  );
+  return dispatch =>
+    dispatch(create(request, null, { catalogId })).then(() =>
+      dispatch(fetchDealTransactions(catalogId, dealId)),
+    );
 }
 
 export function redeemCoupon(catalogId, dealId, couponId) {
@@ -154,11 +158,10 @@ export function redeemCoupon(catalogId, dealId, couponId) {
     },
   };
 
-  return dispatch => (
-    dispatch(create(request, null, { catalogId, couponId })).then(() => (
-      dispatch(fetchDealTransactions(catalogId, dealId))
-    ))
-  );
+  return dispatch =>
+    dispatch(create(request, null, { catalogId, couponId })).then(() =>
+      dispatch(fetchDealTransactions(catalogId, dealId)),
+    );
 }
 
 export function redeemDeal(catalogId, dealId) {
@@ -178,7 +181,8 @@ export function redeemDeal(catalogId, dealId) {
     },
   };
 
-  return dispatch => dispatch(create(request, null, { catalogId, dealId })).then(() => (
-    dispatch(fetchDealTransactions(catalogId, dealId))
-  ));
+  return dispatch =>
+    dispatch(create(request, null, { catalogId, dealId })).then(() =>
+      dispatch(fetchDealTransactions(catalogId, dealId)),
+    );
 }

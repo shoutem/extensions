@@ -7,6 +7,7 @@ export {
   createUser,
   deleteUser,
   updateUser,
+  changePassword,
   downloadUserData,
 } from './actions';
 

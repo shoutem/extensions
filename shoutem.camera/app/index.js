@@ -1,6 +1,7 @@
-import QRCodeScanner from './components/QRCodeScanner.js';
-import QRCodeScannerScreen from './screens/QRCodeScannerScreen.js';
+import { QRCodeScanner } from './components';
+import { QRCodeScannerScreen } from './screens';
 import enTranslations from './translations/en.json';
+import './navigation';
 
 export const screens = {
   QRCodeScannerScreen,
@@ -14,9 +15,6 @@ export const shoutem = {
   },
 };
 
-export {
-  navigateToQRCodeScannerScreen,
-  scanQRCode,
-} from './redux';
+export { navigateToQRCodeScannerScreen, scanQRCode } from './redux';
 
 export { QRCodeScanner };

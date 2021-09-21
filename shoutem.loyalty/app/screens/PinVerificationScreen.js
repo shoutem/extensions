@@ -1,18 +1,17 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Alert, Keyboard } from 'react-native';
 import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Screen, Subtitle, TextInput, Text, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { getRouteParams } from 'shoutem.navigation';
 import { rewardShape, placeShape } from '../components/shapes';
 import { ext } from '../const';
 import { verifyPin } from '../redux';
 import { authorizePointsByPin, redeemReward } from '../services';
-
-const { bool, func } = PropTypes;
 
 const onWrongPin = () => {
   Alert.alert(
@@ -30,30 +29,35 @@ const onWrongPin = () => {
  */
 export class PinVerificationScreen extends PureComponent {
   static propTypes = {
-    // Authorizes assigning points by PIN
-    authorizePointsByPin: func,
     //
     place: placeShape,
     // Reward being stamped or redeemed
     reward: rewardShape,
     // True if he user want to redeem a reward, false otherwise
-    redeem: bool,
+    redeem: PropTypes.bool,
     // Redeems a reward
-    redeemReward: func,
+    redeemReward: PropTypes.func,
     // Verifies the entered PIN
-    verifyPin: func,
+    verifyPin: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
 
-    this.handleNext = this.handleNext.bind(this);
+    autoBindReact(this);
 
     this.state = {};
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({ title: I18n.t(ext('pinVerificationNavBarTitle')) });
+  }
+
   onPinVerified(pin) {
-    const { redeemReward, redeem, reward } = this.props;
+    const { redeemReward } = this.props;
+    const { redeem, reward } = getRouteParams(this.props);
 
     const authorization = { authorizationType: 'pin', data: { pin } };
 
@@ -68,8 +72,9 @@ export class PinVerificationScreen extends PureComponent {
   }
 
   handleNext() {
-    const { verifyPin, place } = this.props;
+    const { verifyPin } = this.props;
     const { pin } = this.state;
+    const { place } = getRouteParams(this.props);
 
     const locationId = _.get(place, 'id');
 
@@ -84,7 +89,7 @@ export class PinVerificationScreen extends PureComponent {
   }
 
   navigateToNextStep(authorization) {
-    const { authorizePointsByPin, place, reward } = this.props;
+    const { place, reward } = getRouteParams(this.props);
 
     authorizePointsByPin(authorization, place, reward);
   }
@@ -107,7 +112,6 @@ export class PinVerificationScreen extends PureComponent {
   render() {
     return (
       <Screen>
-        <NavigationBar title={I18n.t(ext('pinVerificationNavBarTitle'))} />
         <View styleName="lg-gutter-top vertical">
           <Subtitle styleName="h-center md-gutter-bottom">
             {I18n.t(ext('cashierVerificationMessage'))}
@@ -126,7 +130,6 @@ export class PinVerificationScreen extends PureComponent {
 }
 
 export default connect(undefined, {
-  authorizePointsByPin,
   redeemReward,
   verifyPin,
 })(connectStyle(ext('PinVerificationScreen'))(PinVerificationScreen));

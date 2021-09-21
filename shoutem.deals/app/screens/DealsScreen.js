@@ -4,20 +4,12 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { InteractionManager } from 'react-native';
-
 import { connectStyle } from '@shoutem/theme';
-import {
-  Button,
-  Text,
-  Title,
-  View,
-} from '@shoutem/ui';
-
+import { Button, Text, Title, View } from '@shoutem/ui';
 import { CmsListScreen } from 'shoutem.cms';
 import { isFavoritesSchema } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
-import { navigateTo } from 'shoutem.navigation';
-
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import DealGridView from '../components/DealGridView';
 import DealsMap from '../components/DealsMap';
 import FeaturedDealView from '../components/FeaturedDealView';
@@ -32,7 +24,6 @@ import {
 export class DealsScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    navigateTo: PropTypes.func,
     hasFavorites: PropTypes.bool,
   };
 
@@ -54,36 +45,44 @@ export class DealsScreen extends CmsListScreen {
    * Getter methods
    */
 
-  getNavBarProps(screenTitle = I18n.t(TRANSLATIONS.DEALS_LIST_BUTTON), titleStyle = {}) {
+  getNavBarProps(
+    screenTitle = I18n.t(TRANSLATIONS.DEALS_LIST_BUTTON),
+    titleStyle = {},
+  ) {
     const navBarProps = super.getNavBarProps();
 
-    navBarProps.renderRightComponent = () => {
+    const headerRight = props => {
       const { renderMap } = this.state;
+      const tintColor = _.get(props, 'tintColor');
 
       return (
-        <View styleName="container" virtual>
-          <MyDealsBadge onPress={this.handleOpenMyDeals} />
-
-          <Button onPress={this.handleToggleMap} styleName="clear">
-            <Text>{renderMap ? screenTitle : I18n.t(TRANSLATIONS.DEALS_MAP_BUTTON)}</Text>
+        <View styleName="horizontal h-center v-center">
+          <MyDealsBadge
+            onPress={this.handleOpenMyDeals}
+            style={{ tintColor: tintColor.color }}
+          />
+          <Button onPress={this.handleToggleMap} styleName="clear tight">
+            <Text style={{ color: tintColor.color }}>
+              {renderMap ? screenTitle : I18n.t(TRANSLATIONS.DEALS_MAP_BUTTON)}
+            </Text>
           </Button>
         </View>
       );
     };
 
-    navBarProps.renderTitleComponent = () => {
+    const renderTitleComponent = () => {
       const value = navBarProps.title;
 
       return (
-        <View style={titleStyle} styleName="container" virtual>
-          <Title animationName={navBarProps.animationName} numberOfLines={1} >
+        <View style={titleStyle} styleName="container">
+          <Title animationName={navBarProps.animationName} numberOfLines={1}>
             {value || ''}
           </Title>
         </View>
       );
     };
 
-    return navBarProps;
+    return { ...navBarProps, headerRight, renderTitleComponent };
   }
 
   getNextDeal(deal) {
@@ -103,7 +102,9 @@ export class DealsScreen extends CmsListScreen {
     // so we're excluding this filter for the time being
     // Improvement task in https://fiveminutes.jira.com/browse/SEEXT-8899
 
-    const queryParams = _.omit(super.getQueryParams(options), ['filter[channels]']);
+    const queryParams = _.omit(super.getQueryParams(options), [
+      'filter[channels]',
+    ]);
     const todayStr = new Date().toISOString();
 
     return {
@@ -119,30 +120,29 @@ export class DealsScreen extends CmsListScreen {
    */
 
   fetchData(options) {
-    const {
-      catalogId,
-      find,
-    } = this.props;
+    const { catalogId, find } = this.props;
     const { schema } = this.state;
 
-    InteractionManager.runAfterInteractions(() => find(schema, undefined, {
-      query: { ...this.getQueryParams(options) },
-    }).then(({ payload }) => {
-      if (!payload || !payload.data) {
-        return;
-      }
+    InteractionManager.runAfterInteractions(() =>
+      find(schema, undefined, {
+        query: { ...this.getQueryParams(options) },
+      }).then(({ payload }) => {
+        if (!payload || !payload.data) {
+          return;
+        }
 
-      const dealIdList = _.map(payload.data, 'id');
-      if (!_.isEmpty(dealIdList)) {
-        this.props.fetchDealListTransactions(catalogId, dealIdList);
-      }
-    }));
+        const dealIdList = _.map(payload.data, 'id');
+        if (!_.isEmpty(dealIdList)) {
+          this.props.fetchDealListTransactions(catalogId, dealIdList);
+        }
+      }),
+    );
   }
 
   loadMore() {
     const { catalogId } = this.props;
 
-    this.props.next(this.props.data).then((action) => {
+    this.props.next(this.props.data).then(action => {
       if (!action.payload || !action.payload.data) {
         return;
       }
@@ -159,25 +159,24 @@ export class DealsScreen extends CmsListScreen {
    */
 
   handleOpenDealDetails(deal) {
-    this.props.navigateTo({
-      screen: ext('LargeDealDetailsScreen'),
-      props: {
-        deal,
-        nextDeal: this.getNextDeal(deal),
-        previousDeal: this.getPreviousDeal(deal),
-        onOpenDealDetails: this.handleOpenDealDetails,
-        hasFavoriteButton: this.props.hasFavorites,
-      },
+    const { catalogId } = this.props;
+    const { shortcut } = getRouteParams(this.props);
+
+    navigateTo(ext('LargeDealDetailsScreen'), {
+      deal,
+      nextDeal: this.getNextDeal(deal),
+      previousDeal: this.getPreviousDeal(deal),
+      onOpenDealDetails: this.handleOpenDealDetails,
+      hasFavoriteButton: this.props.hasFavorites,
+      catalogId,
+      shortcut,
     });
   }
 
   handleOpenMyDeals() {
-    this.props.navigateTo({
-      screen: ext('MyDealsScreen'),
-      props: {
-        catalogId: this.props.catalogId,
-        onOpenDealDetails: this.handleOpenDealDetails,
-      },
+    navigateTo(ext('MyDealsScreen'), {
+      catalogId: this.props.catalogId,
+      onOpenDealDetails: this.handleOpenDealDetails,
     });
   }
 
@@ -189,10 +188,7 @@ export class DealsScreen extends CmsListScreen {
 
   renderFeaturedDeal(deal) {
     return (
-      <FeaturedDealView
-        deal={deal}
-        onPress={this.handleOpenDealDetails}
-      />
+      <FeaturedDealView deal={deal} onPress={this.handleOpenDealDetails} />
     );
   }
 
@@ -228,6 +224,7 @@ export class DealsScreen extends CmsListScreen {
 
   renderData(deals) {
     const { renderMap } = this.state;
+
     if (renderMap) {
       return this.renderMap();
     }
@@ -237,9 +234,13 @@ export class DealsScreen extends CmsListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const { shortcut } = ownProps;
+  const { shortcut } = getRouteParams(ownProps);
+
   return {
-    ...CmsListScreen.createMapStateToProps(state => state[ext()][DEALS_TAG])(state, ownProps),
+    ...CmsListScreen.createMapStateToProps(state => state[ext()][DEALS_TAG])(
+      state,
+      ownProps,
+    ),
     catalogId: getCatalogId(shortcut),
     hasFavorites: isFavoritesSchema(state, DEALS_SCHEMA),
   };
@@ -248,9 +249,9 @@ export const mapStateToProps = (state, ownProps) => {
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   fetchDealTransactions,
   fetchDealListTransactions,
-  navigateTo,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('DealsScreen', {}))(DealsScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('DealsScreen', {}))(DealsScreen));

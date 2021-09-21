@@ -1,11 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateBack } from 'shoutem.navigation';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -19,13 +15,12 @@ import {
   Subtitle,
   View,
 } from '@shoutem/ui';
-
+import { I18n } from 'shoutem.i18n';
+import { goBack } from 'shoutem.navigation';
 import ProductsList from '../components/ProductsList';
 import { shop as shopShape } from '../components/shapes';
 import { refreshProducts } from '../redux/actionCreators';
 import { ext } from '../const';
-
-const { func } = PropTypes;
 
 const renderCancelButton = onPress => (
   <Button styleName="clear" onPress={onPress}>
@@ -33,34 +28,32 @@ const renderCancelButton = onPress => (
   </Button>
 );
 
-class SearchProductsScreen extends PureComponent {
+export class SearchProductsScreen extends PureComponent {
   static propTypes = {
-    // Called when the user cancels the search
-    navigateBack: func,
     // Action dispatched when the user searches for a tag
-    refreshProducts: func.isRequired,
+    refreshProducts: PropTypes.func.isRequired,
     // Shop properties, used to get all available tags
     shop: shopShape.isRequired,
-  }
+  };
 
   constructor(props) {
     super(props);
 
-    this.loadProducts = this.loadProducts.bind(this);
-    this.onCancel = this.onCancel.bind(this);
-    this.onFilterChange = this.onFilterChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-    this.renderTagRow = this.renderTagRow.bind(this);
+    autoBindReact(this);
 
     this.state = {
       tagFilter: '',
-    }
+    };
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({ title: '' });
   }
 
   onCancel() {
-    const { navigateBack } = this.props;
-
-    navigateBack();
+    goBack();
   }
 
   onFilterChange(text) {
@@ -68,18 +61,22 @@ class SearchProductsScreen extends PureComponent {
   }
 
   onSubmit() {
-    const { shop: { tags } } = this.props;
     const { tagFilter } = this.state;
 
     const newState = { selectedTag: tagFilter, submitted: false };
-    this.setState(newState, () => this.loadProducts());
+
+    if (tagFilter) {
+      this.setState(newState, () => this.loadProducts());
+    }
+
+    this.setState(newState, () => refreshProducts());
   }
 
   renderSearchField() {
     const { tagFilter } = this.state;
 
     return (
-      <View styleName="horizontal sm-gutter-top sm-gutter-horizontal v-center">
+      <View styleName="horizontal sm-gutter-vertical sm-gutter-horizontal v-center">
         <SearchField
           placeholder={I18n.t(ext('itemSearchPlaceholder'))}
           onChangeText={this.onFilterChange}
@@ -107,7 +104,9 @@ class SearchProductsScreen extends PureComponent {
   renderTagRow(tag) {
     return (
       <TouchableOpacity onPress={() => this.selectTag(tag)}>
-        <Row><Text>{tag}</Text></Row>
+        <Row>
+          <Text>{tag}</Text>
+        </Row>
       </TouchableOpacity>
     );
   }
@@ -127,6 +126,7 @@ class SearchProductsScreen extends PureComponent {
       <ListView
         data={this.autocompleteTagList(tags, tagFilter)}
         renderRow={this.renderTagRow}
+        ListEmptyComponent={() => null}
       />
     ) : null;
   }
@@ -139,7 +139,6 @@ class SearchProductsScreen extends PureComponent {
 
       return (
         <Screen styleName="paper">
-          <NavigationBar />
           {this.renderSearchField()}
           <EmptyStateView icon="search" message={message} />
         </Screen>
@@ -148,24 +147,26 @@ class SearchProductsScreen extends PureComponent {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar />
         {this.renderSearchField()}
-        {(!!tagFilter && !selectedTag) ? this.renderTagSuggestions() : null}
+        {!!tagFilter && !selectedTag ? this.renderTagSuggestions() : null}
         {!!selectedTag && <ProductsList tag={selectedTag} />}
       </Screen>
     );
   }
 }
 
-const mapStateToProps = state => {
+export function mapStateToProps(state) {
   const { shop, tags } = state[ext()];
 
   return {
     shop,
     tags,
   };
-};
+}
 
-export default connect(mapStateToProps, { navigateBack, refreshProducts })(
-  connectStyle(ext('SearchProductsScreen'))(SearchProductsScreen),
-);
+export const mapDispatchToProps = { refreshProducts };
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('SearchProductsScreen'))(SearchProductsScreen));

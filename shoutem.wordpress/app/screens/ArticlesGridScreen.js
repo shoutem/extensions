@@ -3,6 +3,7 @@ import autoBindReact from 'auto-bind/react';
 import he from 'he';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
@@ -28,18 +29,15 @@ class ArticlesGridScreen extends ArticlesListScreen {
   }
 
   getNavigationBarProps() {
-    const navBarTitle = _.get(this.props, 'title', '');
+    const { title } = getRouteParams(this.props);
 
-    return {
-      title: navBarTitle,
-      styleName: 'featured',
-    };
+    return { title, ...composeNavigationStyles(['featured']) };
   }
 
   renderFeaturedItem(article) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return hasFeaturedItem && article ? (
+    return screenSettings.hasFeaturedItem && article ? (
       <FeaturedArticleView
         key={article[0].id}
         articleId={article[0].id.toString()}
@@ -69,10 +67,10 @@ class ArticlesGridScreen extends ArticlesListScreen {
   }
 
   renderData(articles) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
     // Group the articles into rows with 2 columns, except for the
     // first article. The first article is treated as a featured article
-    let isFirstArticle = hasFeaturedItem;
+    let isFirstArticle = screenSettings.hasFeaturedItem;
     const groupedArticles = GridRow.groupByRows(articles, 2, () => {
       if (isFirstArticle) {
         isFirstArticle = false;

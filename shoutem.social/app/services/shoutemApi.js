@@ -1,7 +1,7 @@
-import Uri from 'urijs';
 import autoBindReact from 'auto-bind/react';
+import Uri from 'urijs';
 
-export default class ShoutemApi {
+class ShoutemApi {
   constructor() {
     autoBindReact(this);
 
@@ -29,9 +29,7 @@ export default class ShoutemApi {
   buildCloudUrl(path = '', queryStringParams = '') {
     const endpoint = `${this.cloudHost}${path}`;
 
-    return new Uri(endpoint)
-      .query(`${queryStringParams}`)
-      .toString();
+    return new Uri(endpoint).query(`${queryStringParams}`).toString();
   }
 
   buildAuthUrl(path = '', queryStringParams = '') {

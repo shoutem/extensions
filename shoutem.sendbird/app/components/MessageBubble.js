@@ -1,16 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Animated } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { Animated } from 'react-native';
 import Autolink from 'react-native-autolink';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Text,
-  Image,
-  View,
-  TouchableOpacity,
-} from '@shoutem/ui';
+import { Text, Image, View, TouchableOpacity } from '@shoutem/ui';
 import { ext } from '../const';
 import { formatMessageDate } from '../services';
 import NewMessagesLabel from './NewMessagesLabel';
@@ -69,14 +64,9 @@ class MessageBubble extends PureComponent {
   }
 
   renderText(text) {
-    const {
-      message,
-      currentUserId,
-      style,
-    } = this.props;
-
-    const { _sender } = message;
-    const isOwnMessage = currentUserId === _sender.userId;
+    const { message, currentUserId, style } = this.props;
+    const sender = _.get(message, '_sender', 'admin');
+    const isOwnMessage = currentUserId === sender.userId;
 
     return (
       <Text style={[style.text, !isOwnMessage && style.secondaryText]}>
@@ -96,11 +86,18 @@ class MessageBubble extends PureComponent {
       defaultProfileImage,
     } = this.props;
 
-    const { message: messageText, createdAt, _sender } = message;
-    const profileImage = resolveProfileImage(_.get(_sender, 'profileUrl'), defaultProfileImage);
-    const isOwnMessage = currentUserId === _sender.userId;
+    const { message: messageText, createdAt } = message;
+    const sender = _.get(message, '_sender', 'admin');
+
+    const profileImage = resolveProfileImage(
+      _.get(sender, 'profileUrl'),
+      defaultProfileImage,
+    );
+    const isOwnMessage = currentUserId === sender.userId;
     const isFileMessage = _.get(message, 'messageType') === 'file';
-    const containerStyleName = isOwnMessage ? 'vertical h-end sm-gutter-bottom' : 'vertical h-start sm-gutter-bottom';
+    const containerStyleName = isOwnMessage
+      ? 'vertical h-end sm-gutter-bottom'
+      : 'vertical h-start sm-gutter-bottom';
     const translateYtransform = this.appearValue.interpolate({
       inputRange: [0, 1],
       outputRange: [50, 0],
@@ -121,15 +118,21 @@ class MessageBubble extends PureComponent {
         >
           {showNewLabel && <NewMessagesLabel />}
           <View styleName="horizontal v-start">
-            {showProfileImage && <Image source={{ uri: profileImage }} style={style.profileImage} />}
-            <View style={[
-              style.container,
-              !isOwnMessage && style.secondaryContainer,
-              firstMessage && isOwnMessage && style.firstMessage,
-              firstMessage && !isOwnMessage && style.firstMessageSecondary,
-              isFileMessage && style.fileMessage,
-              showProfileImage && style.withProfileImage,
-            ]}
+            {showProfileImage && (
+              <Image
+                source={{ uri: profileImage }}
+                style={style.profileImage}
+              />
+            )}
+            <View
+              style={[
+                style.container,
+                !isOwnMessage && style.secondaryContainer,
+                firstMessage && isOwnMessage && style.firstMessage,
+                firstMessage && !isOwnMessage && style.firstMessageSecondary,
+                isFileMessage && style.fileMessage,
+                showProfileImage && style.withProfileImage,
+              ]}
             >
               {!isFileMessage && (
                 <Autolink
@@ -140,11 +143,19 @@ class MessageBubble extends PureComponent {
                 />
               )}
               {isFileMessage && (
-                <Image resizeMode="cover" source={{ uri: message.url }} style={style.docImage} />
+                <Image
+                  resizeMode="cover"
+                  source={{ uri: message.url }}
+                  style={style.docImage}
+                />
               )}
             </View>
           </View>
-          {showTimeStamp && <Text style={[style.date, !isOwnMessage && style.dateSecondary]}>{formatMessageDate(createdAt)}</Text>}
+          {showTimeStamp && (
+            <Text style={[style.date, !isOwnMessage && style.dateSecondary]}>
+              {formatMessageDate(createdAt)}
+            </Text>
+          )}
         </AnimatedView>
       </TouchableOpacity>
     );

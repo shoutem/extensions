@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { I18n } from 'shoutem.i18n';
 import {
   TouchableOpacity,
   Subtitle,
@@ -8,6 +7,7 @@ import {
   ImageBackground,
   Tile,
 } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 /**

@@ -15,7 +15,4 @@ const screens = {
 
 export { reducer };
 
-export {
-  appDidMount,
-  screens,
-};
+export { appDidMount, screens };
