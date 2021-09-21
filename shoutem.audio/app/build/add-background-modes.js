@@ -6,7 +6,7 @@ function parsePlist(plistPath) {
   let plistResult = {};
 
   if (!fs.existsSync(plistPath)) {
-    console.log('No path found on ' + plistPath);
+    console.log(`No path found on ${plistPath}`);
     return null;
   }
 
@@ -49,20 +49,23 @@ function updateInfoPlist(appConfiguration) {
     return;
   }
 
-  console.log('[shoutem.audio] - Adding audio background mode to extension Info.plist');
+  console.log(
+    '[shoutem.audio] - Adding audio background mode to extension Info.plist',
+  );
 
   const plistPath = 'ios/Info.plist';
   const currentPlistContents = parsePlist(plistPath);
   const backgroundModePlistData = {
-    UIBackgroundModes: [
-      'audio',
-    ],
+    UIBackgroundModes: ['audio'],
   };
 
-  const audioInfoPlist = Object.assign(currentPlistContents, backgroundModePlistData);
+  const audioInfoPlist = Object.assign(
+    currentPlistContents,
+    backgroundModePlistData,
+  );
 
   fs.writeFileSync(plistPath, plist.build(audioInfoPlist));
-};
+}
 
 module.exports = {
   updateInfoPlist,

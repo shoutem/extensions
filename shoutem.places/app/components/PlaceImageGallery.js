@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { HorizontalPager, PageIndicators } from '@shoutem/ui';
@@ -6,10 +7,6 @@ import { getFirstImage } from '../services/places';
 import PlaceImage from './PlaceImage';
 
 export default class PlaceImageGallery extends PureComponent {
-  static defaultProps = {
-    imageOverlay: true,
-  };
-
   static propTypes = {
     place: PropTypes.object,
     images: PropTypes.array,
@@ -18,12 +15,14 @@ export default class PlaceImageGallery extends PureComponent {
     imageOverlay: PropTypes.bool,
   };
 
+  static defaultProps = {
+    imageOverlay: true,
+  };
+
   constructor(props) {
     super(props);
 
-    this.renderGalleryOverlay = this.renderGalleryOverlay.bind(this);
-    this.renderGalleryPage = this.renderGalleryPage.bind(this);
-    this.setSelectedImageIndex = this.setSelectedImageIndex.bind(this);
+    autoBindReact(this);
 
     this.state = {
       selectedImageIndex: 0,

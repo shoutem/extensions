@@ -1,11 +1,11 @@
 {
   "name": "onboarding",
   "title": "Onboarding",
-  "version": "2.5.1",
+  "version": "3.0.0",
   "description": "Shows a quick tour on the first app launch.",
   "releaseNotes": "* Removed navigation bar from onboarding screens",
   "icon": "server/assets/onboarding-icon.png",
-  "platform": "2.5.*",
+  "platform": "^3.0.0",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

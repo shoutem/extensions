@@ -1,11 +1,10 @@
-import React from 'react';
-
+import { composeNavigationStyles } from 'shoutem.navigation';
 import { VimeoDetails } from './VimeoDetails';
 
 class VimeoDetailsWithoutShare extends VimeoDetails {
-  getNavBarProps(video, videoAttachment) {
+  getNavBarProps(video) {
     return {
-      animationName: 'boxing',
+      ...composeNavigationStyles(['boxing']),
       title: video.title,
     };
   }

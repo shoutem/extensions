@@ -15,6 +15,7 @@ import {
   createUser,
   deleteUser,
   updateUser,
+  changePassword,
   getErrorMessage,
   downloadUserData,
   DEFAULT_LIMIT,
@@ -144,6 +145,11 @@ export class UsersPage extends Component {
     return this.props.deleteUser(appId, userId);
   }
 
+  handleUserChangePassword(userId, password) {
+    const { appId, changePassword } = this.props;
+    return changePassword(appId, userId, password);
+  }
+
   handleFilterChange(filter) {
     const { filter: currentFilter } = this.state;
     const newFilter = {
@@ -186,6 +192,7 @@ export class UsersPage extends Component {
           onUserCreate={this.handleUserCreate}
           onUserDelete={this.handleUserDelete}
           onUserUpdate={this.handleUserUpdate}
+          onUserChangePassword={this.handleUserChangePassword}
           onUserDataDownload={this.handleDownloadUserData}
         />
         <Paging
@@ -211,6 +218,7 @@ UsersPage.propTypes = {
   createUser: PropTypes.func,
   updateUser: PropTypes.func,
   deleteUser: PropTypes.func,
+  changePassword: PropTypes.func,
   downloadUserData: PropTypes.func,
 };
 
@@ -239,6 +247,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     updateUser: (appId, userId, user) =>
       dispatch(updateUser(appId, userId, user, scope)),
     deleteUser: (appId, userId) => dispatch(deleteUser(appId, userId)),
+    changePassword: (appId, userId, password) =>
+      dispatch(changePassword(appId, userId, password)),
   };
 }
 

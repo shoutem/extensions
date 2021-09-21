@@ -1,6 +1,6 @@
 {
   "name": "shoutem.auth",
-  "version": "2.7.8",
+  "version": "3.0.1",
   "description": "Authentication extension that uses the Shoutem authentication backend.",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
@@ -14,19 +14,18 @@
     "is-email": "^1.0.0",
     "plist": "^2.0.1",
     "react-native-fbsdk": "^1.1.0",
-    "react-native-image-picker": "2.3.1",
     "urijs": "^1.18.1"
   },
   "peerDependencies": {
     "@shoutem/redux-composers": "*",
     "@shoutem/redux-io": "*",
     "@shoutem/theme": "*",
-    "@shoutem/ui": "*"
+    "@shoutem/ui": "*",
+    "react-native-image-picker": "*"
   },
   "nativeDependencies": [
     "@invertase/react-native-apple-authentication",
     "@react-native-community/async-storage",
-    "react-native-fbsdk",
-    "react-native-image-picker"
+    "react-native-fbsdk"
   ]
 }

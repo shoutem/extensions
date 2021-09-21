@@ -2,10 +2,11 @@ import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import { CmsListScreen } from 'shoutem.cms';
 import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import {
   isError,
   getCollection,
@@ -19,8 +20,6 @@ import { ext } from '../const';
 
 class MyBooksScreen extends PureComponent {
   static propTypes = {
-    navigateTo: PropTypes.func,
-    title: PropTypes.string,
     data: PropTypes.array.isRequired,
     favorites: PropTypes.object.isRequired,
     fetchFavoritesData: PropTypes.func,
@@ -29,8 +28,7 @@ class MyBooksScreen extends PureComponent {
   constructor(props, context) {
     super(props, context);
 
-    this.openDetailsScreen = this.openDetailsScreen.bind(this);
-    this.renderRow = this.renderRow.bind(this);
+    autoBindReact(this);
 
     this.state = {
       schema: ext('Books'),
@@ -38,7 +36,10 @@ class MyBooksScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { fetchFavoritesData, favorites } = this.props;
+    const { fetchFavoritesData, favorites, navigation } = this.props;
+    const { title } = getRouteParams(this.props);
+
+    navigation.setOptions({ title });
 
     fetchFavoritesData(this.state.schema, favorites[this.state.schema]);
   }
@@ -52,14 +53,9 @@ class MyBooksScreen extends PureComponent {
   }
 
   openDetailsScreen(book) {
-    const { navigateTo } = this.props;
-
-    navigateTo({
-      screen: ext('BooksDetailsScreen'),
-      props: {
-        book,
-        hasFavoriteButton: true,
-      },
+    navigateTo(ext('BooksDetailsScreen'), {
+      book,
+      hasFavoriteButton: true,
     });
   }
 
@@ -107,13 +103,9 @@ class MyBooksScreen extends PureComponent {
   }
 
   render() {
-    const { title, data } = this.props;
-    return (
-      <Screen>
-        <NavigationBar title={title} />
-        {this.renderData(data)}
-      </Screen>
-    );
+    const { data } = this.props;
+
+    return <Screen>{this.renderData(data)}</Screen>;
   }
 }
 
@@ -123,7 +115,6 @@ export const mapStateToProps = state => ({
 });
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
-  navigateTo,
   fetchFavoritesData,
 });
 

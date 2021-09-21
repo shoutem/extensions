@@ -1,10 +1,9 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import autoBindReact from 'auto-bind/react';
-import { NavigationBar } from 'shoutem.navigation';
+import PropTypes from 'prop-types';
 import { loginRequired, getUser } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
+import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
   ListView,
@@ -14,9 +13,8 @@ import {
   Switch,
   Divider,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-import { actions, selectors } from '../redux';
 import { ext } from '../const';
+import { actions, selectors } from '../redux';
 
 function parseSettingsData(settings) {
   return [
@@ -33,73 +31,62 @@ function parseSettingsData(settings) {
   ];
 }
 
-export class NotificationSettingsScreen extends PureComponent {
-  static propTypes = {
-    settings: PropTypes.object,
-    user: PropTypes.object,
-    updateSettings: PropTypes.func,
-  };
+export function NotificationSettingsScreen({
+  updateSettings,
+  settings,
+  user,
+  navigation,
+}) {
+  const [currentSettings, setCurrentSettings] = useState(
+    parseSettingsData(settings),
+  );
 
-  constructor(props) {
-    super(props);
+  useEffect(() => {
+    navigation.setOptions({ title: I18n.t(ext('settingsScreentitle')) });
 
-    autoBindReact(this);
+    const newSettings = parseSettingsData(settings);
+    setCurrentSettings(newSettings);
+  }, [settings]);
 
-    this.state = {
-      settings: parseSettingsData(props.settings),
-    };
-  }
-
-  componentDidUpdate(prevProps) {
-    const { settings } = this.props;
-    const { settings: prevSettings } = prevProps;
-
-    if (settings !== prevSettings) {
-      const newSettings = parseSettingsData(settings);
-
-      this.setState({ settings: newSettings });
-    }
-  }
-
-  handleSettingToggle(setting) {
-    const { updateSettings, settings, user } = this.props;
+  const handleSettingToggle = setting => {
     const { key, value } = setting;
 
     updateSettings({ [key]: !value }, settings.id, user.legacyId);
-  }
+  };
 
-  renderSetting(setting) {
+  const renderSetting = setting => {
     return (
       <View>
         <Row styleName="small space-between">
           <Subtitle>{setting.title}</Subtitle>
           <Switch
-            onValueChange={() => this.handleSettingToggle(setting)}
+            onValueChange={() => handleSettingToggle(setting)}
             value={setting.value}
           />
         </Row>
         <Divider styleName="line" />
       </View>
     );
-  }
+  };
 
-  render() {
-    const { settings } = this.state;
-
-    return (
-      <Screen>
-        <NavigationBar title={I18n.t(ext('settingsScreentitle'))} />
-        <View styleName="md-gutter solid">
-          <Subtitle styleName="h-center">{I18n.t(ext('settingsScreenSubtitle'))}</Subtitle>
-        </View>
-        <ListView
-          data={settings}
-          renderRow={this.renderSetting}
-        />
-      </Screen>
-    );
-  }
+  return (
+    <Screen>
+      <View styleName="md-gutter solid">
+        <Subtitle styleName="h-center">
+          {I18n.t(ext('settingsScreenSubtitle'))}
+        </Subtitle>
+      </View>
+      <ListView data={currentSettings} renderRow={renderSetting} />
+    </Screen>
+  );
 }
+
+NotificationSettingsScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  settings: PropTypes.object,
+  user: PropTypes.object,
+  updateSettings: PropTypes.func,
+};
 
 const mapStateToProps = state => ({
   settings: selectors.getUserSettings(state),
@@ -110,6 +97,10 @@ const mapDispatchToProps = {
   updateSettings: actions.updateSocialSettings,
 };
 
-export default loginRequired(connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('MessageListScreen'))(NotificationSettingsScreen),
-), true);
+export default loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('MessageListScreen'))(NotificationSettingsScreen)),
+  true,
+);

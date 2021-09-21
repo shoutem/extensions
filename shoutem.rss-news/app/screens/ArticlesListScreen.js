@@ -1,8 +1,8 @@
 import React from 'react';
-import autoBind from 'auto-bind';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { navigateTo as navigateToAction } from 'shoutem.navigation';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { RssListScreen, getLeadImageUrl } from 'shoutem.rss';
 import { find, next, shouldRefresh } from '@shoutem/redux-io';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
@@ -22,7 +22,7 @@ export class ArticlesListScreen extends RssListScreen {
       schema: RSS_NEWS_SCHEMA,
     };
 
-    autoBind(this);
+    autoBindReact(this);
   }
 
   componentDidMount() {
@@ -34,18 +34,13 @@ export class ArticlesListScreen extends RssListScreen {
   }
 
   openArticle(id) {
-    const { feedUrl, navigateTo } = this.props;
+    const { feedUrl } = this.props;
 
-    const route = {
-      screen: ext('ArticleDetailsScreen'),
-      props: {
-        id,
-        feedUrl,
-        openArticle: this.openArticle,
-      },
-    };
-
-    navigateTo(route);
+    navigateTo(ext('ArticleDetailsScreen'), {
+      id,
+      feedUrl,
+      openArticle: this.openArticle,
+    });
   }
 
   openArticleWithId(id) {
@@ -66,9 +61,9 @@ export class ArticlesListScreen extends RssListScreen {
   }
 
   renderFeaturedItem(article) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return hasFeaturedItem && article ? (
+    return screenSettings.hasFeaturedItem && article ? (
       <FeaturedArticleView
         key={article.id}
         articleId={article.id}
@@ -96,8 +91,9 @@ export class ArticlesListScreen extends RssListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const shortcutId = _.get(ownProps, 'shortcut.id');
-  const feedUrl = _.get(ownProps, 'shortcut.settings.feedUrl');
+  const { shortcut } = getRouteParams(ownProps);
+  const shortcutId = _.get(shortcut, 'id');
+  const feedUrl = _.get(shortcut, 'settings.feedUrl');
   const data = getNewsFeed(state, feedUrl);
 
   return {
@@ -109,7 +105,6 @@ export const mapStateToProps = (state, ownProps) => {
 
 export const mapDispatchToProps = {
   fetchNewsFeed,
-  navigateTo: navigateToAction,
   find,
   next,
 };

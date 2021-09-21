@@ -1,4 +1,4 @@
-import { createSubNavigationScreen } from '../helpers';
+import { withSubNavigationScreen } from '../hoc';
 import TileGrid from '../components/TileGrid';
 
-export default createSubNavigationScreen(TileGrid);
+export default withSubNavigationScreen(TileGrid);

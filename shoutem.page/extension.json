@@ -1,10 +1,10 @@
 {
   "name": "page",
-  "version": "2.5.2",
-  "platform": "2.5.*",
+  "version": "3.0.3",
+  "platform": "~3.0.1",
   "title": "Page",
   "description": "Show a single screen with info and child items",
-  "releaseNotes": "* Added CMS search feature",
+  "releaseNotes": "* Updated code to match Navigation extension modifications, no user facing changes",
   "icon": "server/assets/add-page-image.png",
   "dependencies": [
     "shoutem.application",
@@ -12,9 +12,7 @@
     "shoutem.layouts",
     "shoutem.navigation"
   ],
-  "categories": [
-    "content"
-  ],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -30,10 +28,7 @@
       "icon": "theme://folder.png",
       "screen": "@.ClearNavbarLargePageScreen",
       "type": "navigation",
-      "capabilities": [
-        "shoutem.cms.search",
-        "shoutem.cms.import-csv"
-      ],
+      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",

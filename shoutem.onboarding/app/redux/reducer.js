@@ -7,7 +7,7 @@ export const onboardingCompletedReducer = (state = false, action) => {
   }
 
   return state;
-}
+};
 
 export default combineReducers({
   onboardingCompleted: onboardingCompletedReducer,

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>NSCameraUsageDescription</key>
+    <string>This app needs access to your camera to show your camera to the person you're speaking to, take your profile image, scan the QR codes, scan loyalty QR codes, take pictures and send them via chat, take pictures and post them to social wall</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app needs to use your microphone to record audio for the video call</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app needs access to your photo library to select profile image from gallery, send images via chat, select images to include in your social posts</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to your location to display location relevant CMS content</string>
+  </dict>
+</plist>

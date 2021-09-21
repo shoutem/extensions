@@ -37,6 +37,7 @@ const DEFAULT_NOTIFICATION = {
   target: TARGET_TYPES.URL,
   audience: AUDIENCE_TYPES.ALL,
   delivery: DELIVERY_TYPES.NOW,
+  summaries: [],
 };
 
 class Notifications extends Component {
@@ -84,19 +85,27 @@ class Notifications extends Component {
   }
 
   handleCreateNotificationClick() {
+    const { onModalShown } = this.props;
+
     this.setState({
       currentNotification: null,
       showNotificationModal: true,
       showNotificationInfoModal: false,
     });
+
+    onModalShown(true);
   }
 
   handleHideNotificationModal() {
+    const { onModalShown } = this.props;
+
     this.setState({
       currentNotification: null,
       showNotificationModal: false,
       showNotificationInfoModal: false,
     });
+
+    onModalShown(false);
   }
 
   handleHideNotificationInfoModal() {
@@ -226,13 +235,30 @@ class Notifications extends Component {
     return page > 0;
   }
 
+  resolveCurrentNotification() {
+    const { currentNotification } = this.state;
+
+    if (currentNotification?.type === 'Silent') {
+      const normalizedCurrentNotification = { ...currentNotification };
+      _.set(
+        normalizedCurrentNotification,
+        'delivery',
+        DELIVERY_TYPES.USER_SCHEDULED,
+      );
+      _.set(normalizedCurrentNotification, 'summary', '');
+
+      return normalizedCurrentNotification;
+    }
+
+    return currentNotification || DEFAULT_NOTIFICATION;
+  }
+
   renderNotificationModal() {
-    const { shortcuts, rawGroups } = this.props;
+    const { shortcuts, rawGroups, settings } = this.props;
     const { currentNotification } = this.state;
 
     const groups = _.get(rawGroups, 'data', []);
-
-    const initialValues = currentNotification || DEFAULT_NOTIFICATION;
+    const initialValues = this.resolveCurrentNotification();
     const isEdit = !!_.get(currentNotification, 'id');
     const title = isEdit
       ? i18next.t(LOCALIZATION.TITLE_EDIT_PUSH_NOTIFICATION_TEXT)
@@ -245,11 +271,13 @@ class Notifications extends Component {
         title={title}
       >
         <NotificationForm
+          isEdit={isEdit}
           groups={groups}
           shortcuts={shortcuts}
           onSubmit={this.handleFormSubmit}
           onCancel={this.handleHideNotificationModal}
           initialValues={initialValues}
+          settings={settings}
         />
       </InlineModal>
     );
@@ -284,20 +312,26 @@ class Notifications extends Component {
     return (
       <div className="notifications">
         <LoaderContainer isOverlay isLoading={isLoading}>
-          <NotificationsTable
-            notifications={data}
-            onRowClick={this.handleRowClick}
-            onAddClick={this.handleCreateNotificationClick}
-            onDeleteClick={this.handleDeleteClick}
-            onEditClick={this.handleEditClick}
-          />
-          <Paging
-            ref="paging"
-            hasNext={this.resolveHasNext()}
-            hasPrevious={this.resolveHasPrev()}
-            onNextPageClick={this.handleNextPageClick}
-            onPreviousPageClick={this.handlePreviousPageClick}
-          />
+          {/* Hiding because if user adds X number of summary fields (user scheduled
+        notifications), this form becomes visible inside modal - broken UI */}
+          {!showNotificationModal && !showNotificationInfoModal && (
+            <>
+              <NotificationsTable
+                notifications={data}
+                onRowClick={this.handleRowClick}
+                onAddClick={this.handleCreateNotificationClick}
+                onDeleteClick={this.handleDeleteClick}
+                onEditClick={this.handleEditClick}
+              />
+              <Paging
+                ref="paging"
+                hasNext={this.resolveHasNext()}
+                hasPrevious={this.resolveHasPrev()}
+                onNextPageClick={this.handleNextPageClick}
+                onPreviousPageClick={this.handlePreviousPageClick}
+              />
+            </>
+          )}
           {showNotificationModal && this.renderNotificationModal()}
           {showNotificationInfoModal && this.renderNotificationInfoModal()}
         </LoaderContainer>
@@ -324,6 +358,8 @@ Notifications.propTypes = {
   loadGroups: PropTypes.func,
   fetchShortcuts: PropTypes.func,
   showAlert: PropTypes.func,
+  onModalShown: PropTypes.func,
+  settings: PropTypes.object,
 };
 
 function mapStateToProps(state) {

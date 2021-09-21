@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
-import { FlatList, LayoutAnimation } from 'react-native';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { FlatList, LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
-import { NavigationBar, isTabBarNavigation } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
 import { CATEGORIES_SCHEMA } from 'shoutem.cms';
+import { isTabBarNavigation, getRouteParams } from 'shoutem.navigation';
+import { connectStyle } from '@shoutem/theme';
 import { Screen, Spinner } from '@shoutem/ui';
 import { QuestionsBar, MessageBubble } from '../components';
 import { ext } from '../const';
@@ -24,7 +24,6 @@ renderMessage.propTypes = { item: PropTypes.object };
 
 export class InteractiveFaqScreen extends PureComponent {
   static propTypes = {
-    title: PropTypes.string,
     isTabBar: PropTypes.bool,
     parentCategoryId: PropTypes.string,
     startingMessage: PropTypes.string,
@@ -45,19 +44,29 @@ export class InteractiveFaqScreen extends PureComponent {
     const { startingMessage } = props;
 
     this.state = {
-      conversationHistory: _.isEmpty(startingMessage) ? [] : [
-        {
-          id: 0,
-          isBotMessage: true,
-          message: startingMessage,
-        },
-      ],
+      conversationHistory: _.isEmpty(startingMessage)
+        ? []
+        : [
+            {
+              id: 0,
+              isBotMessage: true,
+              message: startingMessage,
+            },
+          ],
       loading: true,
     };
   }
 
   componentDidMount() {
-    const { parentCategoryId, loadCategories, loadQuestions } = this.props;
+    const {
+      navigation,
+      parentCategoryId,
+      loadCategories,
+      loadQuestions,
+    } = this.props;
+    const { title } = getRouteParams(this.props);
+
+    navigation.setOptions({ title });
 
     if (!parentCategoryId) {
       LayoutAnimation.easeInEaseOut();
@@ -65,11 +74,12 @@ export class InteractiveFaqScreen extends PureComponent {
       return;
     }
 
-    Promise.all([loadCategories(parentCategoryId), loadQuestions()])
-      .then(() => {
+    Promise.all([loadCategories(parentCategoryId), loadQuestions()]).then(
+      () => {
         LayoutAnimation.easeInEaseOut();
         this.setState({ loading: false });
-      });
+      },
+    );
   }
 
   pushMessage(message, isBotMessage) {
@@ -77,11 +87,14 @@ export class InteractiveFaqScreen extends PureComponent {
     const id = _.get(_.last(conversationHistory), 'id', 0) + 1;
 
     this.setState({
-      conversationHistory: [...conversationHistory, {
-        id,
-        isBotMessage,
-        message,
-      }],
+      conversationHistory: [
+        ...conversationHistory,
+        {
+          id,
+          isBotMessage,
+          message,
+        },
+      ],
     });
 
     _.delay(() => this.list.scrollToEnd({ animated: true }), 250);
@@ -123,17 +136,16 @@ export class InteractiveFaqScreen extends PureComponent {
   }
 
   render() {
-    const { title, questions, categoryPath, style, isTabBar } = this.props;
+    const { questions, categoryPath, style, isTabBar } = this.props;
     const { conversationHistory, loading } = this.state;
     const hasHistory = !_.isEmpty(categoryPath);
     const screenStyle = isTabBar ? 'paper' : 'paper with-notch-padding';
 
     return (
       <Screen styleName={screenStyle}>
-        <NavigationBar title={title.toUpperCase()} />
         {!loading && (
           <FlatList
-            ref={ref => this.list = ref}
+            ref={ref => (this.list = ref)}
             contentContainerStyle={style}
             data={conversationHistory}
             renderItem={renderMessage}
@@ -155,7 +167,9 @@ export class InteractiveFaqScreen extends PureComponent {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { shortcut: { settings } } = ownProps;
+  const {
+    shortcut: { settings },
+  } = getRouteParams(ownProps);
   const parentCategoryId = _.get(settings, 'parentCategory.id', null);
   const startingMessage = _.get(settings, 'startMessage', null);
 
@@ -175,4 +189,7 @@ const mapDispatchToProps = {
   openCategory: actions.openCategory,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(connectStyle(ext('InteractiveFaqScreen'))(InteractiveFaqScreen));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('InteractiveFaqScreen'))(InteractiveFaqScreen));

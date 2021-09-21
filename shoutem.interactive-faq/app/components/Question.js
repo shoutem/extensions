@@ -1,12 +1,9 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
-import {
-  TouchableOpacity,
-  Text,
-} from '@shoutem/ui';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
+import { TouchableOpacity, Text } from '@shoutem/ui';
 import { ext } from '../const';
 
 export class Question extends PureComponent {

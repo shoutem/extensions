@@ -1,5 +1,4 @@
 import { Alert, NativeModules } from 'react-native';
-import _ from 'lodash';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 

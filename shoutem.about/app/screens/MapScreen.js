@@ -1,70 +1,61 @@
-import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Platform, Linking } from 'react-native';
-
-import { Screen, Button, Icon, View } from '@shoutem/ui';
-
+import { Linking } from 'react-native';
 import { MapView } from 'shoutem.application';
-import { NavigationBar } from 'shoutem.navigation';
+import {
+  composeNavigationStyles,
+  getRouteParams,
+  HeaderIconButton,
+} from 'shoutem.navigation';
+import { Screen } from '@shoutem/ui';
+import { getMapUrl } from '../services';
 
-import { getMapUrl } from '../services'
+const handleOpenMaps = marker => {
+  const { latitude, longitude, title } = marker;
 
-export default class MapScreen extends PureComponent {
-  static propTypes = {
-    marker: PropTypes.object,
-    title: PropTypes.string,
+  if (latitude && longitude) {
+    Linking.openURL(getMapUrl(latitude, longitude, title));
+  }
+};
+
+const MapScreen = props => {
+  const { navigation } = props;
+  const { title, marker } = getRouteParams(props);
+
+  useEffect(() => {
+    navigation.setOptions({
+      ...composeNavigationStyles(['noBorder']),
+      headerRight: props => (
+        <HeaderIconButton
+          iconName="directions"
+          onPress={() => handleOpenMaps(marker)}
+          {...props}
+        />
+      ),
+      title,
+    });
+  });
+
+  const region = {
+    latitude: marker.latitude,
+    longitude: marker.longitude,
+    latitudeDelta: 0.03,
+    longitudeDelta: 0.03,
   };
 
-  constructor(props) {
-    super(props);
+  return (
+    <Screen>
+      <MapView
+        markers={[marker]}
+        selectedMarker={marker}
+        initialRegion={region}
+      />
+    </Screen>
+  );
+};
 
-    autoBindReact(this);
-  }
+MapScreen.propTypes = {
+  navigation: PropTypes.object,
+};
 
-  openMaps() {
-    const { marker } = this.props;
-    const { latitude, longitude, title } = marker;
-
-    if (latitude && longitude) {
-      Linking.openURL(getMapUrl(latitude, longitude, title));
-    }
-  }
-
-  renderNavigateButton() {
-    return (
-      <View virtual styleName="container">
-        <Button onPress={this.openMaps}>
-          <Icon name="directions" />
-        </Button>
-      </View>
-    );
-  }
-
-  render() {
-    const { marker, title } = this.props;
-
-    const region = {
-      latitude: marker.latitude,
-      longitude: marker.longitude,
-      latitudeDelta: 0.03,
-      longitudeDelta: 0.03,
-    };
-
-    return (
-      <Screen styleName="full-screen">
-        <NavigationBar
-          styleName="no-border"
-          title={title.toUpperCase()}
-          renderRightComponent={this.renderNavigateButton}
-        />
-
-        <MapView
-          markers={[marker]}
-          selectedMarker={marker}
-          initialRegion={region}
-        />
-      </Screen>
-    );
-  }
-}
+export default MapScreen;

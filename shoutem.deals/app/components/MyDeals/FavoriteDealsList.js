@@ -3,7 +3,6 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import {
   cloneStatus,
   getCollection,
@@ -13,12 +12,10 @@ import {
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow, ListView, View, EmptyStateView } from '@shoutem/ui';
-
 import { CmsListScreen } from 'shoutem.cms';
 import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
-
 import { fetchDealListTransactions, getFavoriteDeals } from '../../redux';
 import { ext, DEALS_SCHEMA } from '../../const';
 import DealGridView from '../DealGridView';
@@ -57,13 +54,12 @@ export class FavoriteDealsList extends PureComponent {
   fetchFavoriteDeals(favorites) {
     const { fetchFavoritesData } = this.props;
 
-    fetchFavoritesData(
-      DEALS_SCHEMA,
-      favorites[DEALS_SCHEMA],
-    ).then(({ payload }) => {
-      const data = _.get(payload, 'data', []);
-      this.fetchFavoriteDealTransactions(data);
-    });
+    fetchFavoritesData(DEALS_SCHEMA, favorites[DEALS_SCHEMA]).then(
+      ({ payload }) => {
+        const data = _.get(payload, 'data', []);
+        this.fetchFavoriteDealTransactions(data);
+      },
+    );
   }
 
   fetchFavoriteDealTransactions(deals) {
@@ -92,27 +88,19 @@ export class FavoriteDealsList extends PureComponent {
       ? I18n.t('shoutem.application.unexpectedErrorMessage')
       : I18n.t('shoutem.application.preview.noContentErrorMessage');
 
-    return (
-      <EmptyStateView icon="deals" message={message} />
-    );
+    return <EmptyStateView icon="deals" message={message} />;
   }
 
   renderRow(deals) {
     const { onOpenDealDetails } = this.props;
 
     const dealsViews = _.map(deals, deal => (
-      <DealGridView
-        deal={deal}
-        key={deal.id}
-        onPress={onOpenDealDetails}
-      />
+      <DealGridView deal={deal} key={deal.id} onPress={onOpenDealDetails} />
     ));
 
     return (
       <View styleName="flexible sm-gutter-bottom sm-gutter-left">
-        <GridRow columns={2}>
-          {dealsViews}
-        </GridRow>
+        <GridRow columns={2}>{dealsViews}</GridRow>
       </View>
     );
   }
@@ -140,13 +128,8 @@ export class FavoriteDealsList extends PureComponent {
       return this.renderPlaceholderView();
     }
 
-    return (
-      <View key="favorite-deals-list">
-        {this.renderData(data)}
-      </View>
-    );
+    return <View key="favorite-deals-list">{this.renderData(data)}</View>;
   }
-
 }
 
 export const mapStateToProps = state => {
@@ -162,6 +145,7 @@ export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   navigateTo,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('FavoriteDealsList'), {})(FavoriteDealsList),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('FavoriteDealsList'), {})(FavoriteDealsList));

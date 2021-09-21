@@ -4,10 +4,14 @@ import _ from 'lodash';
 import { Keyboard, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { currentLocation } from 'shoutem.cms';
-import { navigateTo, NavigationBar } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Image, ListView, Screen } from '@shoutem/ui';
+import { currentLocation } from 'shoutem.cms';
+import {
+  composeNavigationStyles,
+  getRouteParams,
+  navigateTo,
+} from 'shoutem.navigation';
 import {
   GooglePlaceItem,
   GooglePlacesError,
@@ -39,7 +43,11 @@ export class SearchScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { currentLocation, useLocationBiasing } = this.props;
+    const { currentLocation, useLocationBiasing, navigation } = this.props;
+
+    navigation.setOptions({
+      ...composeNavigationStyles(['noBorder']),
+    });
 
     if (!currentLocation && useLocationBiasing) {
       const { checkPermissionStatus } = this.props;
@@ -78,20 +86,15 @@ export class SearchScreen extends PureComponent {
   }
 
   openPlace(autocompletedPlace) {
-    const { addRecentSearch, navigateTo } = this.props;
+    const { addRecentSearch } = this.props;
     const { place_id: placeId } = autocompletedPlace;
-
-    const route = {
-      screen: ext('ForecastScreen'),
-      props: { placeId },
-    };
 
     if (Platform.OS === 'android') {
       Keyboard.dismiss();
     }
 
     addRecentSearch(autocompletedPlace);
-    navigateTo(route);
+    navigateTo(ext('ForecastScreen'), { placeId });
   }
 
   renderRow(autocompletedPlace) {
@@ -106,7 +109,7 @@ export class SearchScreen extends PureComponent {
   }
 
   render() {
-    const { googlePlaces, recentSearches, style, title } = this.props;
+    const { googlePlaces, recentSearches, style } = this.props;
     const { searchInput } = this.state;
 
     const hasGooglePlacesError = googlePlaces.error;
@@ -123,7 +126,6 @@ export class SearchScreen extends PureComponent {
     return (
       <Screen>
         <Image style={style.backgroundImage} source={backgroundImage} />
-        <NavigationBar title={title} styleName="no-border" />
         <SearchInput
           onChangeText={this.updateSearchInput}
           onClearPress={this.clearSearchInput}
@@ -151,11 +153,12 @@ export class SearchScreen extends PureComponent {
 }
 
 export const mapStateToProps = (state, ownProps) => {
+  const { shortcut } = getRouteParams(ownProps);
   return {
     googlePlaces: getGooglePlaces(state),
     recentSearches: getRecentSearches(state),
-    locationBiasingRadius: ownProps.shortcut.settings?.radius || '50000',
-    useLocationBiasing: ownProps.shortcut.settings?.useLocationBiasing,
+    locationBiasingRadius: shortcut.settings?.radius || '50000',
+    useLocationBiasing: shortcut.settings?.useLocationBiasing,
   };
 };
 
@@ -165,7 +168,6 @@ export const mapDispatchToProps = dispatch =>
       addRecentSearch,
       clearGooglePlaces,
       fetchGooglePlaces,
-      navigateTo,
     },
     dispatch,
   );

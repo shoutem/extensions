@@ -1,13 +1,13 @@
-import { connect } from 'react-redux';
 import React from 'react';
 import autoBind from 'auto-bind';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 import { find, next, shouldRefresh } from '@shoutem/redux-io';
-import { navigateTo } from 'shoutem.navigation';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
-import { getVideosFeed, fetchVideosFeed } from '../redux';
-import { ext, RSS_VIDEOS_SCHEMA } from '../const';
 import LargeVideoView from '../components/LargeVideoView';
+import { ext, RSS_VIDEOS_SCHEMA } from '../const';
+import { getVideosFeed, fetchVideosFeed } from '../redux';
 
 export class VideosList extends RssListScreen {
   static propTypes = {
@@ -33,18 +33,13 @@ export class VideosList extends RssListScreen {
   }
 
   openDetailsScreen(video) {
-    const { navigateTo, feedUrl } = this.props;
+    const { feedUrl } = this.props;
     const { id } = video;
 
-    const route = {
-      screen: ext('VideoDetails'),
-      props: {
-        id,
-        feedUrl,
-      },
-    };
-
-    navigateTo(route);
+    navigateTo(ext('VideoDetails'), {
+      id,
+      feedUrl,
+    });
   }
 
   renderRow(video) {
@@ -53,8 +48,9 @@ export class VideosList extends RssListScreen {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const shortcutId = _.get(ownProps, 'shortcut.id');
-  const feedUrl = _.get(ownProps, 'shortcut.settings.feedUrl');
+  const { shortcut } = getRouteParams(ownProps);
+  const shortcutId = _.get(shortcut, 'id');
+  const feedUrl = _.get(shortcut, 'settings.feedUrl');
   const data = getVideosFeed(state, feedUrl);
 
   return {
@@ -65,7 +61,6 @@ export const mapStateToProps = (state, ownProps) => {
 };
 
 export const mapDispatchToProps = {
-  navigateTo,
   find,
   next,
   fetchVideosFeed,

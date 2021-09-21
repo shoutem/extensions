@@ -1,7 +1,7 @@
 export { default as NewChannelListItem } from './NewChannelListItem';
 export { default as ExistingChannelListItem } from './ExistingChannelListItem';
 export { default as SearchBar } from './SearchBar';
-export { default as MemberListItem } from './MemberListItem'
+export { default as MemberListItem } from './MemberListItem';
 export { default as MessageBubble } from './MessageBubble';
 export { default as ChatInputBox } from './ChatInputBox';
 export { default as SectionHeader } from './SectionHeader';

@@ -1,4 +1,4 @@
-import { createSubNavigationScreen } from '../helpers';
+import { withSubNavigationScreen } from '../hoc';
 import List from '../components/List';
 
-export default createSubNavigationScreen(List);
+export default withSubNavigationScreen(List);

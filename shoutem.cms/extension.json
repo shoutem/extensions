@@ -1,15 +1,13 @@
 {
   "name": "cms",
-  "version": "2.5.8",
-  "platform": "2.5.*",
+  "version": "3.1.0",
+  "platform": "^3.0.0",
   "type": "system",
   "title": "CMS",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",
-  "releaseNotes": "* Continuous improvements",
+  "releaseNotes": "* Added Unsplash API integration for searching & inserting images into CMS items - HTML editor\n* Added grid layout with pattern 1-2-2",
   "icon": "server/assets/add-cms-image.png",
-  "categories": [
-    "content"
-  ],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

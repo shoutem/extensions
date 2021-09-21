@@ -1,25 +1,26 @@
 import React from 'react';
 import _ from 'lodash';
 import moment from 'moment';
+import { getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Caption, Icon, ImageBackground, Tile, Title, View } from '@shoutem/ui';
 import { ext } from '../const';
 import { ArticleDetailsScreen } from './ArticleDetailsScreen';
 
 export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
-  renderImage() {
-    const { article } = this.props;
+  renderImageGalleryPage(image) {
+    const { article } = getRouteParams(this.props);
 
     return (
       <ImageBackground
         styleName="large-portrait placeholder"
-        source={{ uri: _.get(article, 'image.url') }}
+        source={{ uri: image }}
         animationName="hero"
       >
         <Tile animationName="hero">
           <Title styleName="centered">{article.title.toUpperCase()}</Title>
           {/* Virtual prop makes View pass Tile color style to Caption */}
-          <View styleName="horizontal md-gutter-top" virtual>
+          <View styleName="horizontal md-gutter-top">
             <Caption styleName="collapsible" numberOfLines={1}>
               {article.newsAuthor}
             </Caption>
@@ -41,3 +42,4 @@ export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
 export default connectStyle(ext('ArticleDetailsScreen'))(
   LargeArticleDetailsScreen,
 );
+

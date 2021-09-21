@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import QRCode from 'react-native-qrcode-svg';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import { TouchableOpacity, Caption, Title, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 /**

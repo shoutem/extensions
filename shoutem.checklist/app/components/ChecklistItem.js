@@ -42,7 +42,11 @@ export class ChecklistItem extends PureComponent {
         <TouchableOpacity disabled={disabled} onPress={this.toggleCheckbox}>
           <Icon fill={fill} name={name} />
         </TouchableOpacity>
-        <SimpleHtml body={item} style={style.simpleHtml} />
+        <SimpleHtml
+          body={item}
+          imagesMaxWidth={style.imagesMaxWidth}
+          style={style.simpleHtml}
+        />
       </View>
     );
   }

@@ -3,18 +3,8 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
+import { Button, Caption, Divider, Image, Text, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-
-import {
-  Button,
-  Caption,
-  Divider,
-  Image,
-  Text,
-  View,
-} from '@shoutem/ui';
-
 import { getLastDealStatusTransaction } from '../redux';
 import {
   dealStatusShape,
@@ -34,7 +24,7 @@ export class DealRedeemContentView extends PureComponent {
     isRedeeming: PropTypes.bool,
     onRedeemCoupon: PropTypes.func,
     onTimerEnd: PropTypes.func,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -68,7 +58,9 @@ export class DealRedeemContentView extends PureComponent {
   }
 
   renderBarcodeImage() {
-    const { deal: { barcode } } = this.props;
+    const {
+      deal: { barcode },
+    } = this.props;
 
     if (!barcode) {
       return null;
@@ -76,28 +68,20 @@ export class DealRedeemContentView extends PureComponent {
 
     return (
       <View styleName="vertical h-center md-gutter-horizontal">
-        <Image
-          source={{ uri: barcode }}
-          styleName="large-ultra-wide"
-        />
+        <Image source={{ uri: barcode }} styleName="large-ultra-wide" />
       </View>
     );
   }
 
   renderClaimedState() {
-    const {
-      activeCoupon,
-      deal,
-    } = this.props;
+    const { activeCoupon, deal } = this.props;
 
     const {
-      dealStatus: {
-        couponClaimed,
-      },
+      dealStatus: { couponClaimed },
     } = this.state;
 
     const couponExpiresAt = _.get(activeCoupon, 'expiresAt');
-    const hasTimer = (activeCoupon && couponClaimed && couponExpiresAt);
+    const hasTimer = activeCoupon && couponClaimed && couponExpiresAt;
 
     return (
       <View styleName="solid vertical v-center h-center sm-gutter-vertical md-gutter-horizontal">
@@ -131,7 +115,9 @@ export class DealRedeemContentView extends PureComponent {
             <Button
               disabled={this.props.isRedeeming}
               onPress={this.props.onRedeemCoupon}
-              styleName={`md-gutter-top ${this.props.isRedeeming ? 'muted' : ''}`}
+              styleName={`md-gutter-top ${
+                this.props.isRedeeming ? 'muted' : ''
+              }`}
             >
               <Text>{I18n.t(TRANSLATIONS.REDEEM_COUPON_BUTTON)}</Text>
             </Button>
@@ -148,9 +134,7 @@ export class DealRedeemContentView extends PureComponent {
           <Text>{I18n.t(TRANSLATIONS.DEAL_REDEEMED_TEXT)}</Text>
         </View>
 
-        <View styleName="md-gutter-vertical">
-          {this.renderBarcodeImage()}
-        </View>
+        <View styleName="md-gutter-vertical">{this.renderBarcodeImage()}</View>
       </View>
     );
   }
@@ -171,7 +155,11 @@ export class DealRedeemContentView extends PureComponent {
       return this.renderRedeemedState();
     }
 
-    if (!couponsEnabled || couponExpired || (!couponClaimed && !couponRedeemed)) {
+    if (
+      !couponsEnabled ||
+      couponExpired ||
+      (!couponClaimed && !couponRedeemed)
+    ) {
       return null;
     }
 
@@ -181,7 +169,10 @@ export class DealRedeemContentView extends PureComponent {
 
 export const mapStateToProps = (state, ownProps) => {
   const { deal } = ownProps;
-  const lastDealStatusTransaction = getLastDealStatusTransaction(state, deal.id);
+  const lastDealStatusTransaction = getLastDealStatusTransaction(
+    state,
+    deal.id,
+  );
   const activeCoupon = getDealActiveCoupon(lastDealStatusTransaction);
 
   return {

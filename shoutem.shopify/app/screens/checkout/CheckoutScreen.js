@@ -1,38 +1,32 @@
 import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { Alert, KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 import countryData from 'world-countries';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
-
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
   Divider,
   DropDownMenu,
   FormGroup,
-  Screen,
   ScrollView,
-  Title,
   TextInput,
   View,
 } from '@shoutem/ui';
-
+import { I18n } from 'shoutem.i18n';
 import CartFooter from '../../components/CartFooter';
 import { customer as customerShape } from '../../components/shapes';
 import { updateCustomerInformation } from '../../redux/actionCreators';
 import { getFieldLabel } from '../../services/getFormFieldLabel';
 import { ext } from '../../const';
 
-const { func } = PropTypes;
-
 const loadCountries = () =>
-  _.sortBy(_.map(countryData, ({ name: { common: name }, cca2 }) =>
-    ({ name, cca2 })), 'name');
+  _.sortBy(
+    _.map(countryData, ({ name: { common: name }, cca2 }) => ({ name, cca2 })),
+    'name',
+  );
 
 const emptyOption = { name: 'Select', cca2: '' };
 const countries = [emptyOption, ...loadCountries()];
@@ -44,7 +38,7 @@ const arrayMove = function(arr, from, to) {
 
 // Reorder Countries in checkout
 ['US', 'CA'].map((country, i) => {
-  const countryIndex = countries.findIndex((c) => c.cca2 === country);
+  const countryIndex = countries.findIndex(c => c.cca2 === country);
 
   // Move country after placeholder option
   arrayMove(countries, countryIndex, 1 + i);
@@ -60,7 +54,7 @@ class CheckoutScreen extends PureComponent {
     // The customer performing the checkout
     customer: customerShape,
     // Action dispatched when proceeding to the next step
-    updateCustomerInformation: func.isRequired,
+    updateCustomerInformation: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -68,38 +62,46 @@ class CheckoutScreen extends PureComponent {
 
     autoBindReact(this);
 
-    this.fields = [{
-      autoCapitalize: 'none',
-      name: 'email',
-      label: getFieldLabel('email'),
-      keyboardType: 'email-address',
-    },
-    {
-      name: 'firstName',
-      label: getFieldLabel('firstName'),
-    },
-    {
-      name: 'lastName',
-      label: getFieldLabel('lastName'),
-    },
-    {
-      name: 'address1',
-      label: getFieldLabel('address1'),
-    },
-    {
-      name: 'city',
-      label: getFieldLabel('city'),
-    },
-    {
-      name: 'province',
-      label: getFieldLabel('province'),
-    },
-    {
-      name: 'zip',
-      label: getFieldLabel('zip'),
-    }];
+    this.fields = [
+      {
+        autoCapitalize: 'none',
+        name: 'email',
+        label: getFieldLabel('email'),
+        keyboardType: 'email-address',
+      },
+      {
+        name: 'firstName',
+        label: getFieldLabel('firstName'),
+      },
+      {
+        name: 'lastName',
+        label: getFieldLabel('lastName'),
+      },
+      {
+        name: 'address1',
+        label: getFieldLabel('address1'),
+      },
+      {
+        name: 'city',
+        label: getFieldLabel('city'),
+      },
+      {
+        name: 'province',
+        label: getFieldLabel('province'),
+      },
+      {
+        name: 'zip',
+        label: getFieldLabel('zip'),
+      },
+    ];
 
     this.state = { ...props.customer };
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({ title: I18n.t(ext('checkoutNavBarTitle')) });
   }
 
   onCountrySelected(country) {
@@ -115,7 +117,7 @@ class CheckoutScreen extends PureComponent {
     if (_.some(values, _.isEmpty) || !countryCode) {
       Alert.alert(
         I18n.t(ext('checkoutFormErrorTitle')),
-        I18n.t(ext('checkoutFormErrorMessage'))
+        I18n.t(ext('checkoutFormErrorMessage')),
       );
 
       return;
@@ -128,7 +130,7 @@ class CheckoutScreen extends PureComponent {
       var item = cart[i];
       cartItems.push({
         id: item.variant.id,
-        quantity: item.quantity
+        quantity: item.quantity,
       });
     }
 
@@ -159,7 +161,7 @@ class CheckoutScreen extends PureComponent {
   renderCountryPicker() {
     const { countryCode } = this.state;
 
-    const selectedCountry = _.find(countries, { 'cca2': countryCode });
+    const selectedCountry = _.find(countries, { cca2: countryCode });
 
     return (
       <FormGroup>
@@ -178,8 +180,7 @@ class CheckoutScreen extends PureComponent {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
-        <NavigationBar title={I18n.t(ext('checkoutNavBarTitle'))} />
+      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
         <View>
           <ScrollView>
             {_.map(this.fields, this.renderInput)}
@@ -196,7 +197,7 @@ class CheckoutScreen extends PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { customer, cart } = state[ext()];
 
   return {

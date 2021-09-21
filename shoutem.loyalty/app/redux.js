@@ -1,9 +1,5 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
-import { getAppId } from 'shoutem.application';
-import { getUser } from 'shoutem.auth';
-import { cmsCollection } from 'shoutem.cms';
-import { preventStateRehydration } from 'shoutem.redux';
 import {
   collection,
   create,
@@ -12,6 +8,10 @@ import {
   storage,
   resource,
 } from '@shoutem/redux-io';
+import { getAppId } from 'shoutem.application';
+import { getUser } from 'shoutem.auth';
+import { cmsCollection } from 'shoutem.cms';
+import { preventStateRehydration } from 'shoutem.redux';
 import {
   AUTHORIZATIONS_SCHEMA,
   CARD_SCHEMA,

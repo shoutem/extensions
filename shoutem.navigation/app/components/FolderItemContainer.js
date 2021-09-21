@@ -10,15 +10,19 @@ import { TouchableOpacity, ImageBackground } from '@shoutem/ui';
  */
 export function FolderItemContainer(props) {
   const { children, backgroundImageUrl, style } = props;
-  const touchableOpacityProps = _.omit(props, ['children', 'backgroundImageUrl']);
+  const touchableOpacityProps = _.omit(props, [
+    'children',
+    'backgroundImageUrl',
+  ]);
   delete touchableOpacityProps.style.backgroundImage;
 
-  const backgroundImageComponent = backgroundImageUrl &&
+  const backgroundImageComponent = backgroundImageUrl && (
     <ImageBackground
       styleName="fill-parent"
       style={style.backgroundImage}
       source={resolveIconSource(backgroundImageUrl)}
-    />;
+    />
+  );
 
   return (
     <TouchableOpacity {...touchableOpacityProps}>

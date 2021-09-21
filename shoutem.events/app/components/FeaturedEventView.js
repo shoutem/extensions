@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { I18n } from 'shoutem.i18n';
 import {
   TouchableOpacity,
   Title,
@@ -11,15 +11,16 @@ import {
   Icon,
   Divider,
 } from '@shoutem/ui';
-
-import { I18n } from 'shoutem.i18n';
-
 import { formatDate } from '../shared/Calendar';
 import { ext } from '../const';
 import { BaseEventItem } from './BaseEventItem';
 import EventImage from './EventImage';
 
 export default class FeaturedEventView extends BaseEventItem {
+  static propTypes = {
+    ...BaseEventItem.propTypes,
+  };
+
   render() {
     const { event, styleName } = this.props;
 
@@ -35,11 +36,10 @@ export default class FeaturedEventView extends BaseEventItem {
               </Title>
               <Caption>{formatDate(event.startTime)}</Caption>
               <Divider styleName="line small center" />
-              <Caption styleName="md-gutter-bottom">{formatDate(event.endTime)}</Caption>
-              <Button
-                onPress={this.action}
-                styleName="md-gutter-top"
-              >
+              <Caption styleName="md-gutter-bottom">
+                {formatDate(event.endTime)}
+              </Caption>
+              <Button onPress={this.action} styleName="md-gutter-top">
                 <Icon name="add-event" />
                 <Text>{I18n.t(ext('addToCalendarButton'))}</Text>
               </Button>

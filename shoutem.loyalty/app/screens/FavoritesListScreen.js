@@ -1,12 +1,13 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
-import { FavoritesListScreen } from 'shoutem.favorites';
-import { I18n } from 'shoutem.i18n';
 import { getCollection } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { Button, View, Text } from '@shoutem/ui';
+import { getRouteParams, HeaderTextButton } from 'shoutem.navigation';
+import { FavoritesListScreen } from 'shoutem.favorites';
+import { I18n } from 'shoutem.i18n';
 import MapList from '../components/MapList';
 import PlaceIconView from '../components/PlaceIconView';
 import { ext } from '../const';
@@ -30,11 +31,7 @@ export class FavoritesList extends FavoritesListScreen {
   constructor(props, context) {
     super(props, context);
 
-    this.renderData = this.renderData.bind(this);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.toggleMapView = this.toggleMapView.bind(this);
-    this.renderFavorite = this.renderFavorite.bind(this);
-    this.shouldRenderMap = this.shouldRenderMap.bind(this);
+    autoBindReact(this);
 
     this.state = {
       schema: ext('places'),
@@ -67,12 +64,11 @@ export class FavoritesList extends FavoritesListScreen {
   }
 
   getNavBarProps() {
-    const { title } = this.props;
+    const { title } = getRouteParams(this.props);
 
     return {
       title,
-      // We use an arrow function here because otherwise the right component doesn't re-render
-      renderRightComponent: () => this.renderRightNavBarComponent(),
+      headerRight: this.renderRightNavBarComponent,
     };
   }
 
@@ -93,7 +89,7 @@ export class FavoritesList extends FavoritesListScreen {
     this.setState({ mapView: !mapView });
   }
 
-  renderRightNavBarComponent() {
+  renderRightNavBarComponent(props) {
     const { mapView } = this.state;
     const { favorites } = this.props;
 
@@ -106,11 +102,11 @@ export class FavoritesList extends FavoritesListScreen {
     }
 
     return (
-      <View virtual styleName="container md-gutter-right">
-        <Button styleName="tight" onPress={this.toggleMapView}>
-          <Text>{actionText}</Text>
-        </Button>
-      </View>
+      <HeaderTextButton
+        {...props}
+        onPress={this.toggleMapView}
+        title={actionText}
+      />
     );
   }
 

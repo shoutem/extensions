@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
-
+import PropTypes from 'prop-types';
 import {
   TouchableOpacity,
   Tile,

@@ -2,12 +2,8 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { StatusBar, InteractionManager } from 'react-native';
+import { StatusBar, InteractionManager, LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
-import { executeShortcut } from 'shoutem.application';
-import { I18n } from 'shoutem.i18n';
-import { IconGrid, List, NavigationBar } from 'shoutem.navigation';
-import { shortcutChildrenRequired } from 'shoutem.navigation/helpers';
 import {
   find,
   getCollection,
@@ -24,11 +20,22 @@ import {
   Image,
   Screen,
   ScrollView,
+  ShareButton,
   SimpleHtml,
   Spinner,
   Title,
   View,
 } from '@shoutem/ui';
+import { executeShortcut } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
+import {
+  IconGrid,
+  List,
+  withChildrenRequired,
+  getRouteParams,
+  HeaderBackground,
+  composeNavigationStyles,
+} from 'shoutem.navigation';
 import { ext, PAGE_SCHEMA } from '../const';
 
 const navigationComponentsForLayoutTypes = {
@@ -43,28 +50,113 @@ export class PageScreen extends PureComponent {
     parentCategoryId: PropTypes.any,
     // Primary CMS data to display
     data: PropTypes.array.isRequired,
-    // The shortcut title
-    title: PropTypes.string.isRequired,
     // actions
     find: PropTypes.func.isRequired,
     // Settings
     navigationLayoutType: PropTypes.string.isRequired,
-    navigationBarStyle: PropTypes.string.isRequired,
-    imageSize: PropTypes.string.isRequired,
   };
 
   constructor(props) {
     super(props);
 
     autoBindReact(this);
+
+    const shouldHideInitialHeader = this.isNavigationBarClear(props);
+
+    this.pushedBarStyle = null;
+
+    props.navigation.setOptions({ headerShown: !shouldHideInitialHeader });
   }
 
   componentDidMount() {
-    const { data } = this.props;
+    const {
+      data,
+      navigation,
+      showTitle,
+      shortcut,
+      navigationBarImage,
+      backgroundImageEnabledFirstScreen,
+    } = this.props;
 
     if (shouldRefresh(data)) {
-      this.fetchData();
+      return this.fetchData();
     }
+
+    const shouldDisplayImage =
+      backgroundImageEnabledFirstScreen && navigationBarImage;
+    const title = showTitle ? _.get(shortcut, 'title', '') : '';
+
+    if (!shouldDisplayImage) {
+      return navigation.setOptions({
+        ...this.getNavBarProps(),
+        headerShown: true,
+      });
+    }
+
+    return navigation.setOptions({
+      ...this.getNavBarProps(),
+      headerBackground: this.headerBackground,
+      headerShown: true,
+      title,
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    const { data: prevData } = prevProps;
+    const {
+      data,
+      navigation,
+      navigationBarImage,
+      backgroundImageEnabledFirstScreen,
+    } = this.props;
+
+    if (!isInitialized(prevData) && isInitialized(data)) {
+      LayoutAnimation.easeInEaseOut();
+
+      const shouldDisplayImage =
+        backgroundImageEnabledFirstScreen && navigationBarImage;
+
+      if (!shouldDisplayImage) {
+        return navigation.setOptions({
+          ...this.getNavBarProps(),
+          headerShown: true,
+        });
+      }
+
+      return navigation.setOptions({
+        ...this.getNavBarProps(),
+        headerBackground: this.headerBackground,
+        headerShown: true,
+      });
+    }
+
+    return null;
+  }
+
+  componentWillUnmount() {
+    if (this.pushedBarStyle) {
+      StatusBar.popStackEntry(this.pushedBarStyle);
+    }
+  }
+
+  headerBackground() {
+    const {
+      navigationBarImage,
+      backgroundImageEnabledFirstScreen,
+      fitContainer,
+      showTitle,
+    } = this.props;
+    return (
+      <HeaderBackground
+        settings={{
+          backgroundImage: navigationBarImage,
+          backgroundImageEnabledFirstScreen,
+          fitContainer,
+          showTitle,
+        }}
+        alwaysShow
+      />
+    );
   }
 
   fetchData(schema) {
@@ -74,73 +166,90 @@ export class PageScreen extends PureComponent {
       return;
     }
 
-    InteractionManager.runAfterInteractions(() => find(schema || PAGE_SCHEMA, undefined, {
-      query: {
-        'filter[categories]': parentCategoryId,
-      },
-    }));
+    InteractionManager.runAfterInteractions(() =>
+      find(schema || PAGE_SCHEMA, undefined, {
+        query: {
+          'filter[categories]': parentCategoryId,
+        },
+      }),
+    );
   }
 
-  isNavigationBarClear() {
-    const { navigationBarStyle } = this.props;
+  isNavigationBarClear(props = this.props) {
+    const { screenSettings } = getRouteParams(props);
 
-    return navigationBarStyle === 'clear';
+    return screenSettings.navigationBarStyle === 'clear';
   }
 
   getNavBarProps() {
-    const {
-      data,
-      title: shortcutTitle,
-      parentCategoryId,
-      navigationBarStyle,
-    } = this.props;
+    const { data, showTitle } = this.props;
+    const { title = '' } = getRouteParams(this.props);
 
-    if (!_.isUndefined(parentCategoryId) && (isBusy(data) || !isInitialized(data))) {
-      // Do not show shortcut title in NavigationBar if still loading
-      return {};
-    }
+    const resolvedTitle = showTitle ? title : '';
 
     if (!data || _.isEmpty(data)) {
       // Show shortcut title if `EmptyStateView` is rendered (no collection or empty collection)
-      return { shortcutTitle };
+      return { title: resolvedTitle };
     }
 
     const profile = _.first(data);
     const hasImage = !!profile.image;
 
     if (hasImage) {
-      StatusBar.setBarStyle('light-content');
+      this.pushedBarStyle = StatusBar.pushStackEntry({
+        barStyle: 'light-content',
+      });
     }
 
-    let styleName = '';
-    let animationName = '';
     if (this.isNavigationBarClear()) {
       if (hasImage) {
         // If navigation bar is clear and image exists, navigation bar should be initially clear
         // with fade effect (to add shadow to image), but after scrolling down navigation bar
         // should appear (solidify animation)
-        styleName = 'fade clear';
-        animationName = 'solidify';
-      } else {
-        // If navigation bar is clear, but there is no image, navigation bar should be set to solid,
-        // but boxing animation should be applied so that title and borders appear
-        animationName = 'boxing';
+        return {
+          ...composeNavigationStyles(['clear', 'fade']),
+          headerRight: this.headerRight,
+          title: '',
+        };
       }
-    }
+      // If navigation bar is clear, but there is no image, navigation bar should be set to solid,
+      // but boxing animation should be applied so that title and borders appear
 
-    const profileTitle = _.get(profile, 'name', '');
-    const profileTitleUpper = profileTitle.toUpperCase();
-    const link = _.get(profile, 'web');
+      return {
+        ...composeNavigationStyles(['boxing']),
+        headerRight: this.headerRight,
+        title: '',
+      };
+    }
 
     return {
       // If navigation bar is clear, show the name that is rendered below the image, so it looks like
       // it is transferred to the navigation bar when scrolling. Otherwise show the screen title
       // (from the shortcut). The screen title is always displayed on solid navigation bars.
-      title: this.isNavigationBarClear() ? profileTitleUpper : shortcutTitle,
-      share: _.isUndefined(link) ? null : { profileTitle, link },
-      styleName,
-      animationName,
+      headerRight: this.headerRight,
+      title: resolvedTitle,
     };
+  }
+
+  headerRight(props) {
+    const { data, title = '' } = this.props;
+
+    const profile = _.first(data);
+    const link = _.get(profile, 'web', '');
+
+    if (!_.isEmpty(link)) {
+      return (
+        <ShareButton
+          // eslint-disable-next-line react/prop-types
+          iconProps={{ style: props.tintColor }}
+          styleName="clear"
+          title={title}
+          url={link}
+        />
+      );
+    }
+
+    return null;
   }
 
   renderLoadingSpinner() {
@@ -151,22 +260,25 @@ export class PageScreen extends PureComponent {
     );
   }
 
-
   renderNameAndSubtitle(profile) {
     const { image, name = '', subtitle } = profile;
 
     const bottomGutter = image ? 'lg-gutter-bottom' : 'xl-gutter-bottom';
 
     return (
-      <View styleName={`vertical xl-gutter-top ${bottomGutter} md-gutter-horizontal`}>
-        <Title styleName="h-center md-gutter-bottom">{name.toUpperCase()}</Title>
+      <View
+        styleName={`vertical xl-gutter-top ${bottomGutter} md-gutter-horizontal`}
+      >
+        <Title styleName="h-center md-gutter-bottom">
+          {name.toUpperCase()}
+        </Title>
         <Caption styleName="h-center">{subtitle}</Caption>
       </View>
     );
   }
 
   renderImage(profile) {
-    const { imageSize } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
     const extraSpace = profile.image ? 'xl-gutter-top' : null;
 
@@ -180,7 +292,7 @@ export class PageScreen extends PureComponent {
 
     return (
       <Image
-        styleName={imageSize || 'large'}
+        styleName={screenSettings.imageSize || 'large'}
         source={{ uri: profile.image.url }}
         animationName="hero"
       />
@@ -192,55 +304,85 @@ export class PageScreen extends PureComponent {
       return null;
     }
 
-    return (
-      <SimpleHtml body={profile.info} />
-    );
+    return <SimpleHtml body={profile.info} />;
   }
 
   renderNavigationOnly() {
-    const { executeShortcut, shortcut, navigationLayoutType } = this.props;
+    const {
+      executeShortcut,
+      shortcut,
+      navigationLayoutType,
+      route,
+    } = this.props;
 
-    const NavigationComponent = navigationComponentsForLayoutTypes[navigationLayoutType];
-    const navigationSettings = this.props[navigationLayoutType];
+    const NavigationComponent =
+      navigationComponentsForLayoutTypes[navigationLayoutType];
+    const { screenSettings } = getRouteParams(this.props);
+    const resolvedRoute = {
+      ...route,
+      params: {
+        ...route.params,
+        screenSettings: screenSettings[navigationLayoutType],
+      },
+    };
 
     return (
       <ScrollView>
-        <View styleName="solid">
-          <NavigationComponent
-            executeShortcut={executeShortcut}
-            shortcut={shortcut}
-            {...navigationSettings}
-          />
-        </View>
+        <NavigationComponent
+          executeShortcut={executeShortcut}
+          shortcut={shortcut}
+          route={resolvedRoute}
+          styleName="paper"
+        />
       </ScrollView>
     );
   }
 
   renderAboutInfo(profile) {
-    const { executeShortcut, shortcut, navigationLayoutType } = this.props;
+    const {
+      executeShortcut,
+      shortcut,
+      navigationLayoutType,
+      route,
+    } = this.props;
 
-    const NavigationComponent = navigationComponentsForLayoutTypes[navigationLayoutType];
-    const navigationSettings = this.props[navigationLayoutType];
+    const hasNavigationItems = !_.isEmpty(shortcut.children);
+    const NavigationComponent =
+      navigationComponentsForLayoutTypes[navigationLayoutType];
+    const { screenSettings } = getRouteParams(this.props);
+    const resolvedRoute = {
+      ...route,
+      params: {
+        ...route.params,
+        screenSettings: screenSettings[navigationLayoutType],
+      },
+    };
 
     return (
       <ScrollView>
         {this.renderImage(profile)}
-        <View styleName="solid">
-          {this.renderNameAndSubtitle(profile)}
-          {this.renderInfo(profile)}
-          <Divider />
-          <NavigationComponent
-            executeShortcut={executeShortcut}
-            shortcut={shortcut}
-            {...navigationSettings}
-          />
-        </View>
+        {this.renderNameAndSubtitle(profile)}
+        {this.renderInfo(profile)}
+        {hasNavigationItems && (
+          <>
+            <Divider />
+            <NavigationComponent
+              executeShortcut={executeShortcut}
+              shortcut={shortcut}
+              route={resolvedRoute}
+              styleName="paper"
+            />
+          </>
+        )}
       </ScrollView>
     );
   }
 
   isCollectionValid(collection) {
-    if ((!isInitialized(collection) && !isError(collection)) || isBusy(collection)) {
+    if (
+      (!isInitialized(collection) && !isError(collection)) ||
+      isBusy(collection)
+    ) {
       // If collection is not initialized but has error it means initialization failed.
       // The collection is loading, treat it as valid for now
       return true;
@@ -264,7 +406,7 @@ export class PageScreen extends PureComponent {
     } else {
       emptyStateViewProps = {
         icon: 'refresh',
-        message: (isError(data))
+        message: isError(data)
           ? I18n.t('shoutem.application.unexpectedErrorMessage')
           : I18n.t('shoutem.application.emptyCollectionErrorMessage'),
         onRetry: this.fetchData,
@@ -272,7 +414,9 @@ export class PageScreen extends PureComponent {
       };
     }
 
-    return <EmptyStateView {...emptyStateViewProps} styleName="wide-subtitle" />;
+    return (
+      <EmptyStateView {...emptyStateViewProps} styleName="wide-subtitle" />
+    );
   }
 
   shouldRenderPlaceholderView() {
@@ -305,21 +449,25 @@ export class PageScreen extends PureComponent {
   render() {
     const { data } = this.props;
 
-    return (
-      <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
-        {this.renderData(data)}
-      </Screen>
-    );
+    return <Screen styleName="paper">{this.renderData(data)}</Screen>;
   }
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const parentCategoryId = _.get(ownProps, 'shortcut.settings.parentCategory.id');
-  const navigationLayoutType = _.get(ownProps, 'shortcut.settings.navigationLayoutType', 'iconGrid');
+  const routeParams = getRouteParams(ownProps);
+  const { shortcut: modifiedShortcut } = ownProps;
+  const { shortcut } = routeParams;
+  const resolvedShortcut = modifiedShortcut || shortcut;
+  const parentCategoryId = _.get(shortcut, 'settings.parentCategory.id');
+  const navigationLayoutType = _.get(
+    shortcut,
+    'settings.navigationLayoutType',
+    'iconGrid',
+  );
   const collection = state[ext()].allPage;
 
   return {
+    shortcut: resolvedShortcut,
     parentCategoryId,
     navigationLayoutType,
     data: getCollection(collection[parentCategoryId], state),
@@ -328,6 +476,9 @@ export const mapStateToProps = (state, ownProps) => {
 
 export const mapDispatchToProps = { executeShortcut, find };
 
-export default shortcutChildrenRequired(
-  connect(mapStateToProps, mapDispatchToProps)(connectStyle(ext('PageScreen'))(PageScreen)),
+export default withChildrenRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('PageScreen'))(PageScreen)),
 );

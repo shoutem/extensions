@@ -5,6 +5,8 @@ import ArticleMediumDetailsScreen from './screens/ArticleMediumDetailsScreen';
 import enTranslations from './translations/en.json';
 import { reducer } from './redux';
 
+import './navigation';
+
 const screens = {
   ArticlesListScreen,
   ArticlesFeaturedListScreen: ArticlesListScreen,

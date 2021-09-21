@@ -7,9 +7,7 @@ import { VideosList, mapStateToProps, mapDispatchToProps } from './VideosList';
 
 class SmallVideosList extends VideosList {
   renderRow(video) {
-    return (
-      <SmallVideoView video={video} onPress={this.openDetailsScreen} />
-    );
+    return <SmallVideoView video={video} onPress={this.openDetailsScreen} />;
   }
 }
 

@@ -1,27 +1,21 @@
-import { ScreenStack, RootScreenStack } from './components/stacks';
-import Drawer from './screens/Drawer';
-import TabBar from './screens/TabBar';
+import 'react-native-gesture-handler';
+import { LogBox } from 'react-native';
 import IconGrid from './screens/IconGrid';
-import Modal from './screens/Modal';
 import List from './screens/List';
 import CardList from './screens/CardList';
 import None from './screens/None';
-import Tab from './screens/Tab';
 import NoScreens from './screens/NoScreens';
 import TileGrid from './screens/TileGrid';
 import enTranslations from './translations/en.json';
-import reducer, { middleware } from './redux';
+
+import './navigation';
 
 export const screens = {
-  TabBar,
-  Tab,
-  Drawer,
   None,
   NoScreens,
   IconGrid,
   List,
   CardList,
-  Modal,
   TileGrid,
 };
 
@@ -35,76 +29,48 @@ export const shoutem = {
   },
 };
 
-export {
-  ROOT_NAVIGATION_STACK,
-  SET_ACTIVE_NAVIGATION_STACK,
-  NAVIGATE,
-  NAVIGATE_BACK,
-  JUMP_TO_INDEX,
-  JUMP_TO_KEY,
-  REPLACE,
-  REPLACE_AT_INDEX,
-  REPLACE_AT_KEY,
-  RESET,
-  RESET_TO_ROUTE,
-  OPEN_MODAL,
-  CLOSE_MODAL,
-  SET_SCREEN_STATE,
-  CLEAR_SCREEN_STATE,
-  NAVIGATION_INITIALIZED,
-  createNavigationAction,
-  navigateTo,
-  navigateBack,
-  redirectTo,
-  jumpToKey,
-  jumpToIndex,
-  replace,
-  reset,
-  resetToRoute,
-  openInModal,
-  closeModal,
-  rewrite,
-  clearScreenState,
-  setActiveNavigationStack,
-  setNavigationInitialized,
-  setScreenState,
-  hasRouteWithKey,
-  isEmptyNavigationState,
-  isEmptyRoute,
-  isNavigationAction,
-  isScreenActive,
-  sanitizeRoute,
-  createActiveNavigationStackReducer,
-  createNavigationReducer,
-  navigationCoreReducer,
-  navigationCoreMiddleware,
-  navigationInitializedReducer,
-  screenStateReducer,
-  coreReducer,
-  getActiveNavigationStack,
-  getActiveNavigationStackState,
-  getActiveRoute,
-  getNavigationInitialized,
-  getScreenState,
-  createResetToCurrentRoute,
-} from './redux/core';
-
 export * from './components/ui';
 
-export { reducer, middleware, ScreenStack, RootScreenStack };
-
-export { appWillMount, appDidMount, render } from './app';
+export { render } from './app';
+export {
+  reducer,
+  getNavInitialized,
+  SET_NAVIGATION_INITIALIZED,
+  isTabBarNavigation,
+} from './redux';
 
 export {
-  createSubNavigationScreen,
-  hasModalOpen,
-  isTabBarNavigation,
-} from './helpers';
+  getRouteParams,
+  HeaderStyles,
+  ModalScreens,
+  openInModal,
+  closeModal,
+  navigateTo,
+  goBack,
+  replace,
+  push,
+  getCurrentRoute,
+  navigate,
+  NavigationStacks,
+  Decorators,
+  composeNavigationStyles,
+} from './services';
 
-export { default as CardList } from './components/CardList';
-export { default as FolderBase } from './components/FolderBase';
-export { default as IconGrid } from './components/IconGrid';
-export { default as List } from './components/List';
-export { default as TileGrid } from './components/TileGrid';
+export {
+  FocusTriggerBase,
+  withIsFocused,
+  withChildrenRequired,
+  withChildrenRequired as shortcutChildrenRequired,
+  withBackHandling,
+  withSubNavigationScreen,
+} from './hoc';
+
+export { MODAL, navigationRef, MAIN_NAVIGATION_SCREEN_TYPES } from './const';
+
+export { List, IconGrid };
 
 export { NavigationBaseItem } from './components/NavigationBaseItem';
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);

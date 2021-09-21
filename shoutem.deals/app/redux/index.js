@@ -1,8 +1,4 @@
-import reducer from './reducers';
-
 export * from './actionCreators';
 export * from './selectors';
 
-export {
-  reducer,
-};
+export { default as reducer } from './reducers';

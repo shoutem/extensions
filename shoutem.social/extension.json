@@ -1,13 +1,16 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "2.5.6",
-  "platform": "2.5.*",
+  "version": "3.1.2",
+  "platform": "^3.0.0",
   "skipClone": false,
-  "releaseNotes": "* Fixed like/unlike updates on Details screen",
+  "releaseNotes": "* Added ability to block users per account level",
   "description": "Let members create posts, comment and like them",
   "categories": [
     "users"
+  ],
+  "dependencies": [
+    "shoutem.camera"
   ],
   "i18n": {
     "locale": "en",
@@ -32,6 +35,9 @@
     },
     {
       "name": "NotificationSettingsScreen"
+    },
+    {
+      "name": "BlockedUsers"
     }
   ],
   "shortcuts": [
@@ -65,6 +71,12 @@
       "settings": {
         "showAllUsers": true
       }
+    },
+    {
+      "name": "BlockedUsers",
+      "title": "Blocked users",
+      "screen": "@.BlockedUsers",
+      "icon": "theme://members.png"
     }
   ],
   "settingsPages": [

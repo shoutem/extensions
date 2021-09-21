@@ -1,19 +1,18 @@
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
-import { loginRequired } from 'shoutem.auth';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Screen, Subtitle, Text, View } from '@shoutem/ui';
+import { loginRequired } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
+import { navigateTo, getRouteParams } from 'shoutem.navigation';
 import { placeShape, rewardShape } from '../components/shapes';
 import { ext } from '../const';
 import { getCardId, isPunchCard } from '../redux';
-
-const { bool, func, string } = PropTypes;
 
 /**
  * Encodes reward values in an array to save space in QR code.
@@ -47,40 +46,40 @@ const getEncodedRewardValues = reward => {
 export class VerificationScreen extends PureComponent {
   static propTypes = {
     // User's loyalty card ID
-    cardId: string,
-    // Navigates to PIN verification screen
-    navigateTo: func,
+    cardId: PropTypes.string,
     // Where the transaction takes place
     place: placeShape,
     // Reward being stamped or redeemed
     reward: rewardShape,
     // True if he user want to redeem a reward, false otherwise
-    redeem: bool,
+    redeem: PropTypes.bool,
   };
 
   constructor(props) {
     super(props);
 
-    this.navigateToPinVerificationScreen = this.navigateToPinVerificationScreen.bind(
-      this,
-    );
+    autoBindReact(this);
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({ title: '' });
   }
 
   navigateToPinVerificationScreen() {
-    const { navigateTo, place, reward, redeem } = this.props;
+    const { place, reward, redeem } = getRouteParams(this.props);
 
-    navigateTo({
-      screen: ext('PinVerificationScreen'),
-      props: {
-        place,
-        reward,
-        redeem,
-      },
+    navigateTo(ext('PinVerificationScreen'), {
+      place,
+      reward,
+      redeem,
     });
   }
 
   render() {
-    const { cardId, reward, redeem, place, style } = this.props;
+    const { place, reward, redeem } = getRouteParams(this.props);
+    const { cardId, style } = this.props;
 
     const rewardData = reward ? getEncodedRewardValues(reward) : '';
     const placeId = _.get(place, 'id');
@@ -94,7 +93,6 @@ export class VerificationScreen extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar />
         <View styleName="sm-gutter flexible vertical h-center v-center">
           <Subtitle styleName="xl-gutter-bottom">
             {I18n.t(ext('cashierVerificationMessage'))}
@@ -127,7 +125,8 @@ export const mapStateToProps = state => {
 };
 
 export default loginRequired(
-  connect(mapStateToProps, { navigateTo })(
+  connect(mapStateToProps)(
     connectStyle(ext('VerificationScreen'))(VerificationScreen),
   ),
+  true,
 );

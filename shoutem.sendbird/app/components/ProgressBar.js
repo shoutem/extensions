@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { View } from '@shoutem/ui';
 import { ext } from '../const';
@@ -12,7 +11,11 @@ function ProgressBar({ visible, progress, style }) {
 
   return (
     <View style={style.container} styleName="horizontal v-center">
-      <View numberOfLines={1} style={[style.progress, { width: `${progress}%` }]} styleName="bold" />
+      <View
+        numberOfLines={1}
+        style={[style.progress, { width: `${progress}%` }]}
+        styleName="bold"
+      />
     </View>
   );
 }

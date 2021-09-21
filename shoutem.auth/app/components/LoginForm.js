@@ -55,6 +55,7 @@ class LoginForm extends PureComponent {
 
     this.setState(
       {
+        password: '',
         usernameError: null,
         passwordError: null,
       },

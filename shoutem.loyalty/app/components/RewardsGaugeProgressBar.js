@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
 import { getCollection, isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Text, Title, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import { refreshCardState, refreshTransactions } from '../services';
 import { getMaxRewardPoints, getRewardCoordinates } from '../shared';
@@ -27,14 +28,7 @@ export class RewardsGaugeProgressBar extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.getMaxRewardsPoints = this.getMaxRewardsPoints.bind(this);
-    this.handleCollectPoints = this.handleCollectPoints.bind(this);
-    this.handleRefreshCardState = this.handleRefreshCardState.bind(this);
-    this.renderButtons = this.renderButtons.bind(this);
-    this.renderGauge = this.renderGauge.bind(this);
-    this.renderGaugeReward = this.renderGaugeReward.bind(this);
-    this.renderGaugeRewards = this.renderGaugeRewards.bind(this);
-    this.renderPointsLabel = this.renderPointsLabel.bind(this);
+    autoBindReact(this);
   }
 
   getMaxRewardsPoints() {

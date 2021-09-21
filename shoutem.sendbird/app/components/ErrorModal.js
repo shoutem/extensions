@@ -1,16 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { View, Image } from 'react-native';
-import autoBindReact from 'auto-bind/react';
 import Modal from 'react-native-modal';
-import _ from 'lodash';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Text,
-  Button,
-} from '@shoutem/ui';
-import { ext } from '../const';
+import { Text, Button } from '@shoutem/ui';
 import { images } from '../assets';
+import { ext } from '../const';
 
 class ErrorModal extends PureComponent {
   static propTypes = {
@@ -48,7 +43,9 @@ class ErrorModal extends PureComponent {
           <View style={style.container}>
             <Image source={images.errorGraphic} style={style.image} />
             {title && <Text style={style.title}>{title}</Text>}
-            {description && <Text style={style.description}>{description}</Text>}
+            {description && (
+              <Text style={style.description}>{description}</Text>
+            )}
             <Button onPress={onButtonPress} style={style.button}>
               <Text style={style.buttonText}>{buttonText}</Text>
             </Button>

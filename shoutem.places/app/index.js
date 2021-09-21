@@ -13,11 +13,13 @@ export { PLACES_SCHEMA, PLACE_DETAILS_SCREEN } from './const';
 
 export const screens = {
   PlaceDetails,
+  SolidNavbarPlaceDetails: PlaceDetails,
   PlacesListScreen,
   PlacesListWithIcons,
   PlacesGridScreen,
   SinglePlaceMap,
   MediumPlaceDetails,
+  SolidNavbarMediumPlaceDetails: MediumPlaceDetails,
   FavoritesList,
   FavoritesListWithIcons,
 };

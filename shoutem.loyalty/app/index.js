@@ -25,6 +25,8 @@ import SinglePlaceMap from './screens/places/SinglePlaceMap';
 
 import enTranslations from './translations/en.json';
 
+import './navigation';
+
 import reducer from './redux';
 
 export { reducer };

@@ -34,7 +34,7 @@ export class FeaturedArticleView extends ArticleView {
           >
             <Tile>
               <Title>{(title || '').toUpperCase()}</Title>
-              <View styleName="horizontal md-gutter-top" virtual>
+              <View styleName="horizontal md-gutter-top">
                 <Caption styleName="collapsible" numberOfLines={1}>
                   {author}
                 </Caption>

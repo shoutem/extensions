@@ -1,7 +1,6 @@
 import React from 'react';
-import _ from 'lodash';
+import { ShareButton } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from 'shoutem.navigation';
 import { currentLocation } from 'shoutem.cms';
 import { WebViewScreen } from './WebViewScreen';
 import { ext } from '../const';
@@ -11,19 +10,21 @@ export class WebViewWithShareScreen extends WebViewScreen {
     ...WebViewScreen.propTypes,
   };
 
-  renderNavigationBar() {
-    const { title } = this.props;
-    const { url } = this.getSettings();
+  getNavBarProps() {
+    const { title = '', url } = this.getSettings();
 
-    const navBarProps = {
-      ...this.getNavBarProps(),
-      share: {
-        title,
-        link: url,
-      },
+    return {
+      title,
+      headerRight: props => (
+        <ShareButton
+          // eslint-disable-next-line react/prop-types
+          iconProps={{ style: props.tintColor }}
+          styleName="clear"
+          title={title}
+          url={url}
+        />
+      ),
     };
-
-    return <NavigationBar {...navBarProps} />;
   }
 }
 

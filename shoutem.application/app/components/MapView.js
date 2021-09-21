@@ -71,16 +71,17 @@ class MapViewAndroid extends MapViewBase {
         onMarkerPress={this.onMarkerPress}
         {...this.props}
       >
-        {markers && markers.map((marker, key) => (
-          <MapView.Marker
-            coordinate={marker}
-            title={marker.title}
-            description={marker.subtitle}
-            key={key}
-            zIndex={this.getZindex(marker, key)}
-            image={this.getMarkerImage(marker)}
-          />
-        ))}
+        {markers &&
+          markers.map((marker, key) => (
+            <MapView.Marker
+              coordinate={marker}
+              title={marker.title}
+              description={marker.subtitle}
+              key={key}
+              zIndex={this.getZindex(marker, key)}
+              image={this.getMarkerImage(marker)}
+            />
+          ))}
       </MapView>
     );
   }
@@ -92,6 +93,4 @@ MapViewAndroid.propTypes = {
 
 const StyledMapView = connectStyle('shoutem.ui.MapView')(MapViewAndroid);
 
-export {
-  StyledMapView as MapView,
-};
+export { StyledMapView as MapView };

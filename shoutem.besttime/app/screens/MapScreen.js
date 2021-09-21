@@ -3,7 +3,6 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Linking, Platform } from 'react-native';
-import { MapView } from 'shoutem.application';
 import {
   Caption,
   Icon,
@@ -12,6 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { MapView } from 'shoutem.application';
+import { getRouteParams } from 'shoutem.navigation';
 
 function createMarker(place) {
   return {
@@ -22,7 +23,7 @@ function createMarker(place) {
 
 export default class MapScreen extends PureComponent {
   static propTypes = {
-    place: PropTypes.object.isRequired,
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -30,7 +31,8 @@ export default class MapScreen extends PureComponent {
 
     autoBindReact(this);
 
-    this.marker = createMarker(props.place);
+    const { place } = getRouteParams(props);
+    this.marker = createMarker(place);
   }
 
   openDirections() {
@@ -41,7 +43,7 @@ export default class MapScreen extends PureComponent {
         },
         formatted_address: formattedAddress,
       },
-    } = this.props;
+    } = getRouteParams(this.props);
 
     const mapUrl =
       Platform.OS === 'ios'
@@ -60,7 +62,7 @@ export default class MapScreen extends PureComponent {
   }
 
   render() {
-    const { place } = this.props;
+    const { place } = getRouteParams(this.props);
     const { formatted_address: formattedAddress, name } = place;
 
     return (

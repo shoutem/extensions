@@ -5,26 +5,22 @@ import DeviceInfo from 'react-native-device-info';
 import WebView from 'react-native-webview';
 import { connect } from 'react-redux';
 import { I18n } from 'shoutem.i18n';
-import { jumpToIndex, NavigationBar, closeModal } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
 import {
-  Button,
-  Icon,
-  Screen,
-  Spinner,
-  Text,
-  View,
-} from '@shoutem/ui';
+  closeModal,
+  getRouteParams,
+  HeaderCloseButton,
+  HeaderTextButton,
+} from 'shoutem.navigation';
+import { connectStyle } from '@shoutem/theme';
+import { Screen, Spinner, View } from '@shoutem/ui';
 import { checkoutCompleted } from '../../redux/actionCreators';
 import { ext } from '../../const';
 
 class WebCheckoutScreen extends PureComponent {
   static propTypes = {
-    // Web checkout URL generated via Storefront API
-    checkoutUrl: PropTypes.string,
     // Redux action - empties cart in redux store
     checkoutCompleted: PropTypes.func,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -35,17 +31,29 @@ class WebCheckoutScreen extends PureComponent {
       shouldStopLoading: false,
       transactionCompleted: false,
       userAgent: null,
-    }
+    };
   }
 
   componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
+
     DeviceInfo.getUserAgent()
-      .then(userAgent => { this.setState({ userAgent }) })
+      .then(userAgent => {
+        this.setState({ userAgent });
+      })
       .catch(error => {
         // no other action taken, as `null` user agent will result with default behavior which is
         // not an issue
         console.error('Failed to get user agent from device info.\n', error);
       });
+  }
+
+  componentDidUpdate() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
   }
 
   stopLoading() {
@@ -66,49 +74,38 @@ class WebCheckoutScreen extends PureComponent {
     );
   }
 
-  returnToCart() {
-    const { closeModal } = this.props;
-
-    closeModal();
-  }
-
-  renderCloseButton() {
-    return (
-      <Button onPress={this.returnToCart}>
-        <Icon name="close" />
-      </Button>
-    );
-  }
-
   completeTransaction() {
     const { checkoutCompleted } = this.props;
 
     checkoutCompleted();
-    this.returnToCart();
-  }
-
-  renderDoneButton() {
-    return (
-      <Button onPress={this.completeTransaction}>
-        <Text>{I18n.t(ext('doneButton'))}</Text>
-      </Button>
-    );
+    closeModal();
   }
 
   getNavBarProps() {
     const { transactionCompleted } = this.state;
 
     return {
-      renderLeftComponent: transactionCompleted ?
-        () => null : this.renderCloseButton,
-      renderRightComponent: transactionCompleted ?
-        this.renderDoneButton : () => null,
+      headerLeft: transactionCompleted
+        ? () => null
+        : props => (
+            <HeaderCloseButton onPress={() => closeModal()} {...props} />
+          ),
+      headerRight: !transactionCompleted
+        ? () => null
+        : props => (
+            <HeaderTextButton
+              title={I18n.t(ext('doneButton'))}
+              onPress={this.completeTransaction}
+              {...props}
+            />
+          ),
+
       title: I18n.t(ext('checkoutNavBarTitle')),
-    }
+    };
   }
 
   getWebViewProps() {
-    const { checkoutUrl } = this.props;
+    const { checkoutUrl } = getRouteParams(this.props);
     const { userAgent } = this.state;
 
     return {
@@ -117,7 +114,7 @@ class WebCheckoutScreen extends PureComponent {
       onLoadEnd: () => this.stopLoading(),
       source: { uri: checkoutUrl },
       startInLoadingState: true,
-    }
+    };
   }
 
   handleNavigationStateChange({ url }) {
@@ -134,11 +131,10 @@ class WebCheckoutScreen extends PureComponent {
   }
 
   render() {
-    const { checkoutUrl } = this.props;
+    const { checkoutUrl } = getRouteParams(this.props);
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
         <WebView
           {...this.getWebViewProps()}
           onNavigationStateChange={this.handleNavigationStateChange}
@@ -148,6 +144,6 @@ class WebCheckoutScreen extends PureComponent {
   }
 }
 
-export default connect(null, { checkoutCompleted, closeModal })(
-  connectStyle(ext('WebCheckoutScreen'))(WebCheckoutScreen)
+export default connect(null, { checkoutCompleted })(
+  connectStyle(ext('WebCheckoutScreen'))(WebCheckoutScreen),
 );

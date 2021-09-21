@@ -40,7 +40,7 @@ export class FeaturedEpisodeView extends EpisodeView {
           >
             <Tile>
               <Title>{(title || '').toUpperCase()}</Title>
-              <View styleName="horizontal md-gutter-top" virtual>
+              <View styleName="horizontal md-gutter-top">
                 <Caption numberOfLines={1} styleName="collapsible">
                   {author}
                 </Caption>

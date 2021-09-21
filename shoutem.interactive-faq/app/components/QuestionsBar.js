@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-import { FlatList, Platform } from 'react-native';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
+import { FlatList, Platform } from 'react-native';
 import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import { ext } from '../const';
@@ -51,10 +51,15 @@ export class QuestionsBar extends PureComponent {
       }
 
       if (Platform.OS === 'android') {
-        this.setState({
-          items: hasHistory ? [{ name: this.BACK_ITEM_NAME }, ...items] : items,
-          ready: false,
-        }, () => this.setState({ ready: true }));
+        this.setState(
+          {
+            items: hasHistory
+              ? [{ name: this.BACK_ITEM_NAME }, ...items]
+              : items,
+            ready: false,
+          },
+          () => this.setState({ ready: true }),
+        );
       }
     }
   }
@@ -78,7 +83,7 @@ export class QuestionsBar extends PureComponent {
 
     return (
       <FlatList
-        ref={ref => this.list = ref}
+        ref={ref => (this.list = ref)}
         contentContainerStyle={style.contentContainer}
         data={items}
         horizontal

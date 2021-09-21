@@ -14,7 +14,7 @@
 
       "dealDescriptionHeading": "Description",
       "dealConditionsHeading": "Conditions",
-      
+
       "previousDealLabel": "PREVIOUS",
       "nextDealLabel": "NEXT",
       "visitWebsiteLabel": "Visit website",
@@ -26,6 +26,7 @@
       "couponRedeemInstructions": "Let the cashier confirm the deal you've claimed. Confirming the deal yourself will render it useless.",
       "dealRedeemedText": "You've redeemed this deal.",
 
+      "myDealsTitle": "My deals",
       "myDealsTabText": "Claimed",
       "myDealsAuthenticationRequiredText": "Sign in to view claimed deals",
       "favoriteDealsTabText": "Favorited"

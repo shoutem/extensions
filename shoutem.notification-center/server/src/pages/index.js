@@ -1,2 +1,3 @@
-export { NotificationsPage } from './notifications-page';
+export { GeneralPage } from './general-page';
 export { GroupsPage } from './groups-page';
+export { NotificationsPage } from './notifications-page';

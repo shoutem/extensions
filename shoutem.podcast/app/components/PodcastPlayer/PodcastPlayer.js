@@ -3,6 +3,8 @@ import slugify from '@sindresorhus/slugify';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import VectorIcon from 'react-native-vector-icons/MaterialIcons';
+import { connectStyle } from '@shoutem/theme';
+import { Icon, Button, Spinner, View } from '@shoutem/ui';
 import {
   STATE_NONE,
   STATE_STOPPED,
@@ -14,8 +16,6 @@ import {
   TrackPlayer,
   TrackPlayerBase,
 } from 'shoutem.audio';
-import { connectStyle } from '@shoutem/theme';
-import { Icon, Button, Spinner, View } from '@shoutem/ui';
 import { ext, trackPlayerOptions } from '../../const';
 import { SKIP_BACK_TIME, SKIP_FORWARD_TIME } from './const';
 import { ProgressControl } from './ProgressControl';

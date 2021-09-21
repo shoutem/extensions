@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-} from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { Text, View } from '@shoutem/ui';
 import { ext } from '../const';
 
 function MessageBubble({ message, isBotMessage, style }) {

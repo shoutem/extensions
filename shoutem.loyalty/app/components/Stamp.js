@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Icon, TouchableOpacity } from '@shoutem/ui';
 import { ext } from '../const';
 
-const { bool, func, number, shape, string } = PropTypes;
-
-const iconStyleShape = shape({
-  color: string,
+const iconStyleShape = PropTypes.shape({
+  color: PropTypes.string,
 });
 
 /**
@@ -19,17 +18,17 @@ export class Stamp extends PureComponent {
     // Sets custom style to stamp icon
     iconStyle: iconStyleShape,
     // True if stamped, false otherwise
-    isStamped: bool,
+    isStamped: PropTypes.bool,
     // Stamp index
-    stampIndex: number,
+    stampIndex: PropTypes.number,
     // Called when a stamp is pressed
-    onPress: func,
+    onPress: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
 
-    this.handlePress = this.handlePress.bind(this);
+    autoBindReact(this);
   }
 
   handlePress() {
@@ -67,9 +66,9 @@ Stamp.propTypes = {
   // Sets custom style to stamp icon
   iconStyle: iconStyleShape,
   // True if stamped, false otherwise
-  isStamped: bool,
+  isStamped: PropTypes.bool,
   // Called when a stamp is pressed
-  onPress: func,
+  onPress: PropTypes.func,
 };
 
 export default connectStyle(ext('Stamp'))(Stamp);

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.shopify",
-  "version": "2.5.2",
+  "version": "3.0.1",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
     "clean": "rimraf ./build/*",

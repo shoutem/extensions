@@ -11,7 +11,11 @@ const { camera } = require('./const');
 function injectAndroid() {
   // app/build.gradle mods
   const appGradlePath = getAppGradlePath({ cwd: projectPath });
-  inject(appGradlePath, ANCHORS.ANDROID.GRADLE.APP.DEFAULT_CONFIG, camera.android.gradle.app.defaultConfig);
+  inject(
+    appGradlePath,
+    ANCHORS.ANDROID.GRADLE.APP.DEFAULT_CONFIG,
+    camera.android.gradle.app.defaultConfig,
+  );
 }
 
 /**

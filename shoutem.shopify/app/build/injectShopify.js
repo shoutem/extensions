@@ -9,10 +9,18 @@ const { shopify } = require('./const');
 
 function injectShopifyAndroid() {
   const appManifest = getAndroidManifestPath({ cwd: projectPath });
-  inject(appManifest, ANCHORS.ANDROID.MANIFEST.ROOT, shopify.android.manifest.root.usesSdk);
+  inject(
+    appManifest,
+    ANCHORS.ANDROID.MANIFEST.ROOT,
+    shopify.android.manifest.root.usesSdk,
+  );
 
   const appGradlePath = getAppGradlePath({ cwd: projectPath });
-  inject(appGradlePath, ANCHORS.ANDROID.GRADLE.APP.ANDROID_END, shopify.android.gradle.app.compileOptions);
+  inject(
+    appGradlePath,
+    ANCHORS.ANDROID.GRADLE.APP.ANDROID_END,
+    shopify.android.gradle.app.compileOptions,
+  );
 }
 
 function injectShopifyIos() {}

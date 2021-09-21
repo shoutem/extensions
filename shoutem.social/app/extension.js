@@ -1,5 +1,6 @@
 // This file is managed by Shoutem CLI
-// You should not change it
+// It exports screens and themes from extension.json
+// You should not change it manually
 
 // screens imports
 import SocialWallScreen from './screens/SocialWallScreen';
@@ -8,6 +9,7 @@ import CreateStatusScreen from './screens/CreateStatusScreen';
 import MembersScreen from './screens/MembersScreen';
 import SearchScreen from './screens/SearchScreen';
 import NotificationSettingsScreen from './screens/NotificationSettingsScreen';
+import BlockedUsers from './screens/BlockedUsers';
 
 export const screens = {
   SocialWallScreen,
@@ -16,4 +18,5 @@ export const screens = {
   MembersScreen,
   SearchScreen,
   NotificationSettingsScreen,
+  BlockedUsers,
 };

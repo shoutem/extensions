@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import autoBind from 'auto-bind';
+import _ from 'lodash';
 import {
   ScrollView,
   Screen,
@@ -14,16 +15,15 @@ import {
 } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
-
-import { formatTimestamp } from '../shared/calendar';
-import { notificationShape } from '../components/shapes';
-import { ext } from '../const';
+import { consumeNotification } from 'shoutem.firebase';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
+import { formatTimestamp } from '../services';
+import { ext, notificationShape } from '../const';
 
 export class NotificationDetailsScreen extends PureComponent {
   static propTypes = {
     notification: notificationShape.isRequired,
-    viewNotification: PropTypes.func.isRequired,
+    consumeNotification: PropTypes.func,
     style: PropTypes.object,
   };
 
@@ -33,18 +33,28 @@ export class NotificationDetailsScreen extends PureComponent {
     autoBind(this);
   }
 
-  handleViewNotification() {
-    const { notification, viewNotification } = this.props;
+  componentDidMount() {
+    const { navigation } = this.props;
 
-    viewNotification(notification);
+    navigation.setOptions({
+      ...composeNavigationStyles(['noBorder']),
+      title: '',
+    });
+  }
+
+  handleViewNotification() {
+    const { notification, consumeNotification } = this.props;
+
+    const resolvedNotification = _.has(notification, 'action')
+      ? { ...notification, ...notification.action }
+      : notification;
+
+    consumeNotification(resolvedNotification);
   }
 
   renderViewNotificationButton() {
     return (
-      <Button
-        onPress={this.handleViewNotification}
-        styleName="secondary"
-      >
+      <Button onPress={this.handleViewNotification} styleName="secondary">
         <Text>{I18n.t(ext('viewNotificationButton'))}</Text>
       </Button>
     );
@@ -76,21 +86,19 @@ export class NotificationDetailsScreen extends PureComponent {
   render() {
     return (
       <Screen styleName="paper">
-        <NavigationBar styleName="no-border" />
-        <ScrollView>
-          {this.renderContent()}
-        </ScrollView>
-      </Screen>
+        <ScrollView>{this.renderContent()}</ScrollView>
+      </Screen >
     );
   }
 }
 
-export const mapDispatchToProps = dispatch => ({
-  viewNotification: (notification) => {
-    dispatch(notification.action);
-  },
+export const mapStateToProps = (state, ownProps) => ({
+  notification: getRouteParams(ownProps).notification,
 });
 
-export default connect(undefined, mapDispatchToProps)(
-  connectStyle(ext('NotificationDetailsScreen'))(NotificationDetailsScreen),
-);
+export const mapDispatchToProps = { consumeNotification };
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('NotificationDetailsScreen'))(NotificationDetailsScreen));

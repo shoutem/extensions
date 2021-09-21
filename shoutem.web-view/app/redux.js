@@ -1,24 +1,6 @@
-import { navigateTo } from 'shoutem.navigation';
-import { getShortcut } from 'shoutem.application';
+import { openInModal } from 'shoutem.navigation';
 
 import { ext } from './const';
-
-const getWebViewRoute = (
-  url,
-  title,
-  showNavigationToolbar = true,
-  requireLocationPermission = false,
-  webViewProps = {},
-) => ({
-  screen: ext('WebViewWithShareScreen'),
-  props: {
-    url,
-    title,
-    showNavigationToolbar,
-    requireLocationPermission,
-    webViewProps,
-  },
-});
 
 export const OPEN_EXTERNAL_BROWSER = 'OPEN_EXTERNAL_BROWSER';
 
@@ -33,24 +15,20 @@ function openExternalBrowserActionCreator(url) {
 export function openURL(
   url,
   title,
-  showNavigationToolbar,
-  requireLocationPermission,
-  webViewProps,
+  showNavigationToolbar = true,
+  requireGeolocationPermission = false,
+  webViewProps = {},
 ) {
-  return navigateTo(
-    getWebViewRoute(
-      url,
-      title,
-      showNavigationToolbar,
-      requireLocationPermission,
-      webViewProps,
-    ),
-  );
+  return openInModal(ext('WebViewWithShareScreen'), {
+    url,
+    title,
+    showNavigationToolbar,
+    requireGeolocationPermission,
+    webViewProps,
+  });
 }
 
-export function openUrlInExternalBrowser(state, action) {
-  const shortcut = getShortcut(state, action.shortcutId);
-
+export function openUrlInExternalBrowser(shortcut) {
   const { url } = shortcut.settings || {};
 
   return openExternalBrowserActionCreator(url);

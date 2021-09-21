@@ -93,15 +93,11 @@ class InlineMap extends PureComponent {
     return (
       <View style={style}>
         <MapView {...mapProps} />
-        <View>
-          {children}
-        </View>
+        <View>{children}</View>
       </View>
     );
   }
 }
 
 const StyledInlineMap = connectStyle('shoutem.ui.InlineMap')(InlineMap);
-export {
-  StyledInlineMap as InlineMap,
-};
+export { StyledInlineMap as InlineMap };

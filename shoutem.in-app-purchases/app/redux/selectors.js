@@ -81,12 +81,11 @@ export function hasProperConfiguration(state) {
   const extensionSettings = getExtensionSettings(state, ext());
   const productId = getSubscriptionProductId(state);
 
-  const {
-    iapHubApiKey,
-    iapHubAppId,
-  } = extensionSettings;
+  const { iapHubApiKey, iapHubAppId } = extensionSettings;
 
-  return !_.isEmpty(iapHubApiKey) && !_.isEmpty(iapHubAppId) && !_.isEmpty(productId);
+  return (
+    !_.isEmpty(iapHubApiKey) && !_.isEmpty(iapHubAppId) && !_.isEmpty(productId)
+  );
 }
 
 export default {

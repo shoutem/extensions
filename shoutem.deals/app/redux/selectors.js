@@ -1,11 +1,5 @@
 import _ from 'lodash';
-
-import {
-  cloneStatus,
-  getOne,
-  getCollection,
-} from '@shoutem/redux-io';
-
+import { cloneStatus, getOne, getCollection } from '@shoutem/redux-io';
 import {
   ext,
   DEALS_STORAGE,
@@ -17,10 +11,7 @@ import {
   MY_DEALS_TAG,
   FAVORITE_DEALS_TAG,
 } from '../const';
-
-import {
-  getTransactionAction,
-} from '../services';
+import { getTransactionAction } from '../services';
 
 export function getCatalogId(shortcut) {
   return _.get(shortcut, 'settings.catalog.id', null);
@@ -63,11 +54,19 @@ export function getTransaction(state, transactionId) {
 export function getDealTransactions(state, dealId) {
   const dealTransactions = _.get(
     state[ext()],
-    [DEAL_TRANSACTIONS_STORAGE, dealId, 'relationships', 'transactions', 'data'],
+    [
+      DEAL_TRANSACTIONS_STORAGE,
+      dealId,
+      'relationships',
+      'transactions',
+      'data',
+    ],
     [],
   );
 
-  return _.map(dealTransactions, dealTransaction => getTransaction(state, dealTransaction.id));
+  return _.map(dealTransactions, dealTransaction =>
+    getTransaction(state, dealTransaction.id),
+  );
 }
 
 export function getLastDealTransaction(state, dealId) {
@@ -75,9 +74,8 @@ export function getLastDealTransaction(state, dealId) {
 }
 
 export function getDealStatusTransactions(state, dealId) {
-  return _.filter(
-    getDealTransactions(state, dealId),
-    transaction => _.includes(DEAL_STATUS_ACTIONS, getTransactionAction(transaction)),
+  return _.filter(getDealTransactions(state, dealId), transaction =>
+    _.includes(DEAL_STATUS_ACTIONS, getTransactionAction(transaction)),
   );
 }
 

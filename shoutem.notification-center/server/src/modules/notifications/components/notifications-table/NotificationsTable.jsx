@@ -113,6 +113,29 @@ export default class NotificationsTable extends Component {
   render() {
     const { notifications, onRowClick, onAddClick } = this.props;
 
+    // Message row descriptor doesn't have access to each notification object,
+    // so we can't dynamically render it's content
+    // Joining summaries into summary value to handle that, just for table preview
+    _.forEach(notifications, notification => {
+      if (notification.type === 'Silent') {
+        try {
+          const body = JSON.parse(notification.content?.body);
+
+          if (body) {
+            const summaries = _.map(body.actions, summary => summary.message);
+
+            if (!_.isEmpty(summaries)) {
+              _.set(notification, 'content.summary', summaries.join(', '));
+              return;
+            }
+          }
+        } catch (ex) {
+          // Catch can occur if someone sent faulty content.body JSON from Postman
+          // Using catch to avoid crashes & spare us a debugging time
+        }
+      }
+    });
+
     return (
       <div className="notifications-table">
         <div className="notifications-table__title">

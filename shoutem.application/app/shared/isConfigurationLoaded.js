@@ -11,4 +11,3 @@ export function isConfigurationLoaded(state) {
   const configuration = getConfiguration(state);
   return configuration && isInitialized(configuration);
 }
-

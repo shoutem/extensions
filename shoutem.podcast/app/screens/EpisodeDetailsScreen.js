@@ -7,26 +7,26 @@ import { Alert, Platform, Share } from 'react-native';
 import ActionSheet from 'react-native-action-sheet';
 import { connect } from 'react-redux';
 import { isBusy, isValid } from '@shoutem/redux-io';
-import { NavigationBar, closeModal } from 'shoutem.navigation';
-import { I18n } from 'shoutem.i18n';
+import { connectStyle } from '@shoutem/theme';
 import {
-  getLeadImageUrl,
-  createRenderAttachment,
-  ext as rssExt,
-} from 'shoutem.rss';
-import {
-  Button,
   Caption,
   Html,
   Icon,
   Image,
   Screen,
   ScrollView,
+  ShareButton,
   Spinner,
   Title,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
+import { closeModal, getRouteParams } from 'shoutem.navigation';
+import { I18n } from 'shoutem.i18n';
+import {
+  getLeadImageUrl,
+  createRenderAttachment,
+  ext as rssExt,
+} from 'shoutem.rss';
 import { PodcastPlayer } from '../components';
 import { ext } from '../const';
 import {
@@ -38,7 +38,7 @@ import {
 
 export class EpisodeDetailsScreen extends PureComponent {
   static propTypes = {
-    id: PropTypes.string.isRequired,
+    navigation: PropTypes.object.isRequired,
     style: PropTypes.object,
   };
 
@@ -56,6 +56,11 @@ export class EpisodeDetailsScreen extends PureComponent {
     }
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+    navigation.setOptions(this.getNavBarProps());
+  }
+
   componentWillReceiveProps(nextProps) {
     const { episodeNotFound: nextEpisodeNotFound } = nextProps;
     const { episodeNotFound } = this.props;
@@ -70,6 +75,8 @@ export class EpisodeDetailsScreen extends PureComponent {
 
     const downloadInProgress = _.get(downloadedEpisode, 'downloadInProgress');
     const url = _.get(episode, 'link', '');
+    const audioAttachmentUrl = episode.audioAttachments[0]?.src || '';
+    const resolvedUrl = url || audioAttachmentUrl;
     const title = _.get(episode, 'title', '');
 
     const options = [
@@ -103,8 +110,8 @@ export class EpisodeDetailsScreen extends PureComponent {
             title,
             // URL property isn't supported on Android, so we are
             // including it as the message for now.
-            message: Platform.OS === 'android' ? url : null,
-            url,
+            message: Platform.OS === 'android' ? resolvedUrl : null,
+            url: resolvedUrl,
           });
         }
 
@@ -124,29 +131,44 @@ export class EpisodeDetailsScreen extends PureComponent {
   }
 
   getNavBarProps() {
-    const { enableDownload, episode, downloadedEpisode } = this.props;
+    return {
+      headerRight: this.headerRight,
+      title: '',
+    };
+  }
 
-    const link = _.get(episode, 'link', '');
+  headerRight(props) {
+    const { enableDownload, episode, downloadedEpisode } = this.props;
+    const url = _.get(episode, 'link', '');
+    const audioAttachmentUrl = episode.audioAttachments[0]?.src || '';
+    const resolvedUrl = url || audioAttachmentUrl;
     const title = _.get(episode, 'title', '');
 
-    return enableDownload || downloadedEpisode
-      ? {
-          renderRightComponent: () => (
-            <Button onPress={this.openActionSheet}>
-              <Icon name="more-horizontal" />
-            </Button>
-          ),
-        }
-      : {
-          share: { link, title },
-        };
+    if (enableDownload || downloadedEpisode) {
+      return (
+        <ShareButton
+          iconProps={{ style: props.tintColor }}
+          onPress={this.openActionSheet}
+          styleName="clear"
+        >
+          <Icon name="more-horizontal" />
+        </ShareButton>
+      );
+    }
+
+    return (
+      <ShareButton
+        iconProps={{ style: props.tintColor }}
+        styleName="clear"
+        title={title}
+        url={resolvedUrl}
+      />
+    );
   }
 
   handleItemNotFound() {
-    const { closeModal } = this.props;
-
     const okButton = {
-      onPress: () => closeModal(),
+      onPress: closeModal,
     };
 
     return Alert.alert(
@@ -202,7 +224,6 @@ export class EpisodeDetailsScreen extends PureComponent {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
         {loading && (
           <View styleName="flexible vertical h-center v-center">
             <Spinner />
@@ -214,7 +235,7 @@ export class EpisodeDetailsScreen extends PureComponent {
               {this.renderHeaderImage()}
               <View styleName="text-centric md-gutter-horizontal md-gutter-top vertical h-center">
                 <Title numberOfLines={2}>{title.toUpperCase()}</Title>
-                <View styleName="horizontal collapsed sm-gutter-top" virtual>
+                <View styleName="horizontal collapsed sm-gutter-top">
                   <Caption numberOfLines={1} styleName="collapsible">
                     {author}
                   </Caption>
@@ -225,7 +246,6 @@ export class EpisodeDetailsScreen extends PureComponent {
                   )}
                 </View>
               </View>
-              {this.renderPlayer()}
               <View styleName="solid">
                 <Html
                   body={body}
@@ -233,6 +253,7 @@ export class EpisodeDetailsScreen extends PureComponent {
                 />
               </View>
             </ScrollView>
+            {this.renderPlayer()}
           </View>
         )}
       </Screen>
@@ -241,8 +262,7 @@ export class EpisodeDetailsScreen extends PureComponent {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const { shortcut, id, feedUrl } = ownProps;
-  const enableDownload = shortcut.settings?.enableDownload;
+  const { id, feedUrl, enableDownload = false } = getRouteParams(ownProps);
 
   const data = getEpisodesFeed(state, feedUrl);
   const downloadedEpisode = getDownloadedEpisode(state, id);
@@ -259,7 +279,6 @@ export const mapStateToProps = (state, ownProps) => {
 };
 
 export const mapDispatchToProps = {
-  closeModal,
   deleteEpisode,
   downloadEpisode,
 };

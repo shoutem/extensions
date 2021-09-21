@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import moment from 'moment';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import { Caption, Divider, Image, Row, Subtitle, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { transactionShape } from '../components/shapes';
 import { ext } from '../const';
 

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   Caption,
   Icon,
@@ -10,28 +9,24 @@ import {
   View,
   Title,
 } from '@shoutem/ui';
-
 import { formatDate } from '../shared/Calendar';
 import { BaseEventItem } from './BaseEventItem';
 import EventImage from './EventImage';
 
 export default class TileEventView extends BaseEventItem {
+  static propTypes = {
+    ...BaseEventItem.propTypes,
+  };
 
   render() {
     const { event } = this.props;
 
     return (
       <TouchableOpacity onPress={this.onPress}>
-        <EventImage
-          styleName="large-banner placeholder"
-          event={event}
-        >
+        <EventImage styleName="large-banner placeholder" event={event}>
           <Tile>
-            <View virtual styleName="actions">
-              <Button
-                styleName="tight clear"
-                onPress={this.action}
-              >
+            <View styleName="actions">
+              <Button styleName="tight clear" onPress={this.action}>
                 <Icon name="add-event" />
               </Button>
             </View>

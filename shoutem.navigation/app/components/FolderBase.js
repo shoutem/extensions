@@ -2,13 +2,9 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Device, Image, ScrollView, View } from '@shoutem/ui';
-import {
-  NAVIGATION_HEADER_HEIGHT,
-  IPHONE_X_NOTCH_PADDING,
-  IPHONE_XR_NOTCH_PADDING,
-} from '../const';
-import { Scaler } from '../helpers';
+import { Image, ScrollView, View } from '@shoutem/ui';
+import { appActions } from 'shoutem.application';
+import { Scaler, navigateTo } from '../services';
 
 const defaultResolution = {
   width: 375,
@@ -53,7 +49,7 @@ export default class FolderBase extends PureComponent {
   };
 
   static mapPropsToStyleNames = (styleNames, props) => {
-    const { showIcon, showText, iconSize, isRootScreen } = props;
+    const { showIcon, showText, iconSize } = props;
 
     styleNames.push(`${iconSize}-icon`);
 
@@ -65,9 +61,11 @@ export default class FolderBase extends PureComponent {
       styleNames.push('icon-hidden');
     }
 
-    if (isRootScreen) {
+    // This should be present, but we're commenting out for backward
+    // compatibility purposes
+    /*     if (isRootScreen) {
       styleNames.push('main-navigation');
-    }
+    } */
 
     return styleNames;
   };
@@ -87,7 +85,9 @@ export default class FolderBase extends PureComponent {
     this.scaler = new Scaler();
     // Android: lineHeight must be an integer, so we're rounding possible float value to integer.
     // https://github.com/facebook/react-native/issues/7877
-    this.scaler.addPropTransformer('lineHeight', oldValue => Math.round(oldValue));
+    this.scaler.addPropTransformer('lineHeight', oldValue =>
+      Math.round(oldValue),
+    );
   }
 
   /**
@@ -96,8 +96,12 @@ export default class FolderBase extends PureComponent {
    * @param props (optional) Used for nextProps
    * @returns {*}
    */
-  getLayoutSettings(props = this.props) {
-    return props;
+  getScreenSettings(props = this.props) {
+    return _.get(props, 'route.params.screenSettings', {});
+  }
+
+  isRootScreen(props = this.props) {
+    return _.get(props, 'route.params.isRootScreen');
   }
 
   /**
@@ -105,22 +109,29 @@ export default class FolderBase extends PureComponent {
    * @param height Page height
    */
   updateDimensions(width, height, callback) {
-    this.setState({
-      dimensions: {
-        width,
-        height,
+    this.setState(
+      {
+        dimensions: {
+          width,
+          height,
+        },
       },
-    }, callback);
+      callback,
+    );
   }
 
-   /**
+  /**
    * Save new page width and height so it can be reused
    * Refresh dimension related state after updating page dimensions.
    * @param width Layout width
    * @param height Layout height
    * @param resolvedHeight Layout height after checking for TabBar navigation
    */
-  layoutChanged({ nativeEvent: { layout: { width, height } } }) {
+  layoutChanged({
+    nativeEvent: {
+      layout: { width, height },
+    },
+  }) {
     this.scaler.resolveRatioByWidth({ width, height }, defaultResolution);
     this.updateDimensions(width, height);
   }
@@ -139,7 +150,23 @@ export default class FolderBase extends PureComponent {
    * @param shortcut
    */
   itemPressed(shortcut) {
-    this.props.executeShortcut(shortcut.id);
+    const shortcutName = _.get(shortcut, 'navigationCanonicalName');
+    const screenName = _.get(shortcut, ['screens', '0', 'canonicalName']);
+
+    const isAction =
+      shortcut.action &&
+      appActions[shortcut.action] &&
+      _.isFunction(appActions[shortcut.action]);
+    const action = appActions[shortcut.action];
+    const handleShortcutPress = isAction
+      ? () => action(shortcut)
+      : () =>
+          navigateTo(shortcutName, {
+            screen: screenName,
+            params: {},
+          });
+
+    handleShortcutPress();
   }
 
   /**
@@ -161,21 +188,12 @@ export default class FolderBase extends PureComponent {
   }
 
   resolveScrollViewProps() {
-    const { navigationBarImage, style } = this.props;
-
-    const navBarPadding = Device.select({
-      iPhoneX: navigationBarImage ? (NAVIGATION_HEADER_HEIGHT + IPHONE_X_NOTCH_PADDING) : 0,
-      iPhoneXR: navigationBarImage ? (NAVIGATION_HEADER_HEIGHT + IPHONE_XR_NOTCH_PADDING) : 0,
-      default: navigationBarImage ? NAVIGATION_HEADER_HEIGHT : 0,
-    });
+    const { style } = this.props;
 
     return {
       style: {
         ...style.scrollView,
       },
-      contentContainerStyle: {
-        paddingTop: navBarPadding,
-      }
     };
   }
 
@@ -221,10 +239,7 @@ export default class FolderBase extends PureComponent {
    */
   renderPage(page, index = 1) {
     return (
-      <View
-        key={`page_${index}`}
-        {...this.resolvePageProps()}
-      >
+      <View key={`page_${index}`} {...this.resolvePageProps()}>
         {this.renderRows(page)}
       </View>
     );
@@ -249,13 +264,16 @@ export default class FolderBase extends PureComponent {
   }
 
   renderContentContainer() {
-    const { dimensions: { width, height } } = this.state;
+    const {
+      dimensions: { width, height },
+    } = this.state;
 
     if (width === null || height === null) {
       return null;
     }
 
-    const { backgroundImage } = this.getLayoutSettings();
+    const { backgroundImage } = this.getScreenSettings();
+
     if (backgroundImage) {
       return (
         <View style={this.props.style.backgroundWrapper}>

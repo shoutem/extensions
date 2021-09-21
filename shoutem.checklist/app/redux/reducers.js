@@ -11,7 +11,19 @@ export function checklistStatuses(state = {}, action) {
   }
 
   if (action.type === SET_CHECKLIST_STATUSES) {
-    return { ...state, ...action.payload.statuses };
+    const startedChecklists = state?.startedChecklists || [];
+    const shortcutId = action.payload.shortcutId;
+    const newStartedChecklists = [...startedChecklists];
+
+    if (!startedChecklists.includes(shortcutId)) {
+      newStartedChecklists.push(shortcutId);
+    }
+
+    return {
+      ...state,
+      ...action.payload.statuses,
+      startedChecklists: newStartedChecklists,
+    };
   }
 
   if (action.type === SUBMIT_CHECKLIST) {

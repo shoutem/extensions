@@ -1,4 +1,5 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { Dimensions } from 'react-native';
 import { connect } from 'react-redux';
@@ -34,7 +35,8 @@ class CompactGridPhotosScreen extends PhotosBaseScreen {
 
   constructor(props) {
     super(props);
-    this.renderCellRow = this.renderCellRow.bind(this);
+
+    autoBindReact(this);
   }
 
   renderCellRow(photo) {

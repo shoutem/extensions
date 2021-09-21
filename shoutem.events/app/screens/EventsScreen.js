@@ -1,29 +1,24 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-
-import { connectStyle } from '@shoutem/theme';
-import { View, Button, Text } from '@shoutem/ui';
-import { isInitialized } from '@shoutem/redux-io';
-
 import { triggerEvent } from 'shoutem.analytics';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
-import { navigateTo } from 'shoutem.navigation';
-
-import { addToCalendar } from '../shared/Calendar';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
+import { isInitialized } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { View, Button, Text } from '@shoutem/ui';
 import EventsMap from '../components/EventsMap';
 import FeaturedEventView from '../components/FeaturedEventView';
 import { createListItem } from '../components/ListItemViewFactory';
+import { addToCalendar } from '../shared/Calendar';
 import { EVENTS_SCHEME, EVENTS_TAG, ext } from '../const';
 
 export class EventsScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    navigateTo: PropTypes.func,
   };
 
   constructor(props, context) {
@@ -59,19 +54,14 @@ export class EventsScreen extends CmsListScreen {
 
     return {
       ...queryParams,
-      'filter[endTime][gt]': (new Date()).toISOString(), // filtering past events
+      'filter[endTime][gt]': new Date().toISOString(), // filtering past events
     };
   }
 
   openDetailsScreen(event) {
-    const { navigateTo } = this.props;
-
-    navigateTo({
-      screen: ext('EventDetailsScreen'),
+    return navigateTo(ext('EventDetailsScreen'), {
       title: event.name,
-      props: {
-        event,
-      },
+      event,
     });
   }
 
@@ -89,52 +79,57 @@ export class EventsScreen extends CmsListScreen {
   }
 
   renderCategoriesDropDown(styleName) {
-    const { data } = this.props;
-
-    let newStyleName = styleName;
-
-    return super.renderCategoriesDropDown(newStyleName);
+    return super.renderCategoriesDropDown(styleName);
   }
 
-  getNavBarProps(screenTitle = 'List') {
+  getNavBarProps() {
+    return {
+      ...super.getNavBarProps(),
+      headerRight: this.headerRight,
+    };
+  }
+
+  headerRight(props) {
     const { data } = this.props;
     const { shouldRenderMap } = this.state;
 
-    const newNavBarProps = super.getNavBarProps();
+    if (_.isEmpty(data) || !isInitialized(data)) {
+      return null;
+    }
 
-    newNavBarProps.renderRightComponent = () => {
-      if (_.isEmpty(data) || !isInitialized(data)) {
-        return null;
-      }
-
-      return (
-        <View virtual styleName="container">
-          <Button styleName="clear" onPress={this.toggleMapMode}>
-            <Text>{shouldRenderMap ? this.navBarViewTitle.list : this.navBarViewTitle.map}</Text>
-          </Button>
-        </View>
-      );
-    };
-
-    return newNavBarProps;
+    return (
+      <Button styleName="clear" onPress={this.toggleMapMode}>
+        <Text style={props.tintColor}>
+          {shouldRenderMap
+            ? this.navBarViewTitle.list
+            : this.navBarViewTitle.map}
+        </Text>
+      </Button>
+    );
   }
 
   renderFeaturedItem(item) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return hasFeaturedItem ? (
+    return screenSettings.hasFeaturedItem ? (
       <FeaturedEventView
         event={item}
         onPress={this.openDetailsScreen}
         action={this.addToCalendar}
-      />) : null;
+      />
+    ) : null;
   }
 
   renderEventListItem(event, style = {}) {
-    const { listType } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return createListItem(listType, event, this.openDetailsScreen,
-      this.addToCalendar, style);
+    return createListItem(
+      screenSettings.listType,
+      event,
+      this.openDetailsScreen,
+      this.addToCalendar,
+      style,
+    );
   }
 
   renderRow(event) {
@@ -170,10 +165,10 @@ export const mapStateToProps = CmsListScreen.createMapStateToProps(
 );
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
-  navigateTo,
   triggerEvent,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('EventsScreen'))(currentLocation(EventsScreen)),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('EventsScreen'))(currentLocation(EventsScreen)));

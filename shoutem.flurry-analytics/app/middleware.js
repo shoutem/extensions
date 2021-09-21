@@ -17,9 +17,6 @@ function trackScreenView(action, store) {
 
   const screenName = action.title || action.screen;
 
-  // This is just a counter for Flurry dashboard on y.flurry.com,
-  // and it isn't available in analytics reporting API.
-  Flurry.onPageView();
   Flurry.logEvent('Screen view', { screenName });
 }
 setPriority(trackScreenView, ANALYTICS_OUT_MIDDLEWARE_PRIORITY);

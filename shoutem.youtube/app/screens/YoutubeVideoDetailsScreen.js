@@ -1,10 +1,10 @@
-import React, { PureComponent } from 'react';
+import React, { useEffect, useState } from 'react';
 import he from 'he';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { AppState, Platform } from 'react-native';
-import { NavigationBar } from 'shoutem.navigation';
+import { Platform, AppState } from 'react-native';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   ScrollView,
@@ -15,82 +15,67 @@ import {
   Tile,
   View,
   SimpleHtml,
+  ShareButton,
 } from '@shoutem/ui';
 import { ext } from '../const';
 
-class YoutubeVideoDetailsScreen extends PureComponent {
-  static propTypes = {
-    video: PropTypes.object,
-  };
+const YoutubeVideoDetailsScreen = props => {
+  const { video } = getRouteParams(props);
+  const title = he.decode(_.get(video, 'snippet.title', ''));
+  // PlaylistItems API returns video ID value inside item.snippet.resourceId.videoId
+  // Search API returns the same in item.id.videoId
+  const videoSource =
+    _.get(video, 'snippet.resourceId.videoId') || _.get(video, 'id.videoId');
+  const titleSource = he.decode(_.get(video, 'snippet.title'));
+  const videoUrl = `https://youtube.com/watch?v=${videoSource}`;
 
-  constructor(props) {
-    super(props);
+  const [appState, setAppState] = useState('active');
 
-    this.handleAppStateChange = this.handleAppStateChange.bind(this);
+  const handleAppStateChange = appState => setAppState(appState);
 
-    this.state = {
-      appState: 'active',
-    };
-  }
+  useEffect(() => {
+    const { navigation } = props;
 
-  componentDidMount() {
-    AppState.addEventListener('change', this.handleAppStateChange);
-  }
-
-  componentWillUnmount() {
-    AppState.removeEventListener('change', this.handleAppStateChange);
-  }
-
-  handleAppStateChange(appState) {
-    this.setState({
-      appState,
+    AppState.addEventListener('change', handleAppStateChange);
+    navigation.setOptions({
+      ...composeNavigationStyles(['boxing']),
+      headerRight: () => (
+        <ShareButton styleName="clear" title={titleSource} url={videoUrl} />
+      ),
+      title,
     });
-  }
 
-  render() {
-    const { video } = this.props;
-    const { appState } = this.state;
+    return () => AppState.removeEventListener('change', handleAppStateChange);
+  }, []);
 
-    // PlaylistItems API returns video ID value inside item.snippet.resourceId.videoId
-    // Search API returns the same in item.id.videoId
-    const videoSource =
-      _.get(video, 'snippet.resourceId.videoId') || _.get(video, 'id.videoId');
-    const titleSource = he.decode(_.get(video, 'snippet.title'));
-    const publishedAt = _.get(video, 'snippet.publishedAt');
-    const descriptionSource = _.get(video, 'snippet.description');
-    const videoUrl = `https://youtube.com/watch?v=${videoSource}`;
+  const publishedAt = _.get(video, 'snippet.publishedAt');
+  const descriptionSource = _.get(video, 'snippet.description');
 
-    // When an iOS device is locked, the video pauses automatically
-    // on android we have to explicitly remove it from component tree
-    const isAppActive = appState === 'active';
-    const isIos = Platform.OS === 'ios';
-    const shouldRenderVideo = isAppActive || isIos;
+  // When an iOS device is locked, the video pauses automatically
+  // on android we have to explicitly remove it from component tree
+  const isAppActive = appState === 'active';
+  const isIos = Platform.OS === 'ios';
+  const shouldRenderVideo = isAppActive || isIos;
 
-    return (
-      <Screen styleName="paper">
-        <NavigationBar
-          animationName="boxing"
-          share={{
-            title: titleSource,
-            link: videoUrl,
-          }}
-          title={titleSource}
-        />
+  return (
+    <Screen styleName="paper">
+      <ScrollView>
+        {shouldRenderVideo && <Video source={{ uri: videoUrl }} />}
+        <Tile styleName="text-centric">
+          <Title styleName="md-gutter-bottom">{titleSource}</Title>
+          <Caption>{moment(publishedAt).fromNow()}</Caption>
+        </Tile>
+        <View styleName="solid">
+          <SimpleHtml body={descriptionSource} />
+        </View>
+      </ScrollView>
+    </Screen>
+  );
+};
 
-        <ScrollView>
-          {shouldRenderVideo && <Video source={{ uri: videoUrl }} />}
-          <Tile styleName="text-centric">
-            <Title styleName="md-gutter-bottom">{titleSource}</Title>
-            <Caption>{moment(publishedAt).fromNow()}</Caption>
-          </Tile>
-          <View styleName="solid">
-            <SimpleHtml body={descriptionSource} />
-          </View>
-        </ScrollView>
-      </Screen>
-    );
-  }
-}
+YoutubeVideoDetailsScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
 
 export default connectStyle(ext('YoutubeVideoDetailsScreen'))(
   YoutubeVideoDetailsScreen,

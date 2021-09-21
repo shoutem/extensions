@@ -4,22 +4,20 @@ import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { AppState, Platform } from 'react-native';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
   Html,
   Screen,
   ScrollView,
+  ShareButton,
   Tile,
   Title,
   Video,
   View,
 } from '@shoutem/ui';
-
-import { NavigationBar } from 'shoutem.navigation';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { createRenderAttachment } from 'shoutem.rss';
-
 import { ext } from '../const';
 
 export class VimeoDetails extends PureComponent {
@@ -39,7 +37,13 @@ export class VimeoDetails extends PureComponent {
   }
 
   componentDidMount() {
+    const { navigation } = this.props;
+    const { video } = getRouteParams(this.props);
+    const videoAttachment = _.head(video.videoAttachments);
+
     AppState.addEventListener('change', this.handleAppStateChange);
+
+    navigation.setOptions(this.getNavBarProps(video, videoAttachment));
   }
 
   componentWillUnmount() {
@@ -51,18 +55,25 @@ export class VimeoDetails extends PureComponent {
   }
 
   getNavBarProps(video, videoAttachment) {
+    const title = _.get(video, 'title');
+    const link = videoAttachment ? _.get(videoAttachment, 'src') : undefined;
+
     return {
-      share: {
-        title: video.title,
-        link: videoAttachment ? _.get(videoAttachment, 'src') : undefined,
-      },
-      animationName: 'boxing',
-      title: video.title,
+      ...composeNavigationStyles(['boxing']),
+      headerRight: props => (
+        <ShareButton
+          iconProps={{ style: props.tintColor }}
+          styleName="clear"
+          title={title}
+          url={link}
+        />
+      ),
+      title,
     };
   }
 
   render() {
-    const { video } = this.props;
+    const { video } = getRouteParams(this.props);
     const { appState } = this.state;
 
     const videoAttachment = _.head(video.videoAttachments);
@@ -73,14 +84,12 @@ export class VimeoDetails extends PureComponent {
     const isIos = Platform.OS === 'ios';
     const shouldRenderVideo = (isAppActive || isIos) && videoAttachment;
 
-
-    const VideoComponent = shouldRenderVideo ?
-      <Video source={{ uri: videoAttachment.src }} /> :
-      null;
+    const VideoComponent = shouldRenderVideo ? (
+      <Video source={{ uri: videoAttachment.src }} />
+    ) : null;
 
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps(video, videoAttachment)} />
         <ScrollView>
           {VideoComponent}
 
@@ -90,7 +99,10 @@ export class VimeoDetails extends PureComponent {
           </Tile>
 
           <View styleName="solid">
-            <Html body={video.summary} renderElement={createRenderAttachment(video, 'video')} />
+            <Html
+              body={video.summary}
+              renderElement={createRenderAttachment(video, 'video')}
+            />
           </View>
         </ScrollView>
       </Screen>

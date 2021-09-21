@@ -11,8 +11,6 @@ import {
   CONNECTION_STATUS_CHANGE,
   CHANNELS_SEARCH_LOADED,
   CLEAR_CHANNEL_SEARCH,
-  QUEUE_NOTIFICATION,
-  CLEAR_NOTIFICATION_QUEUE,
 } from './actions';
 import { CONNECTION_STATUSES } from '../const';
 
@@ -41,10 +39,7 @@ const messages = (state = {}, action) => {
 
     return {
       ...state,
-      [action.payload.channelId]: [
-        action.payload.message,
-        ...previousMessages,
-      ],
+      [action.payload.channelId]: [action.payload.message, ...previousMessages],
     };
   }
 
@@ -54,20 +49,23 @@ const messages = (state = {}, action) => {
 const channels = (state = [], action) => {
   if (action.type === CHANNEL_CREATED) {
     const newChannelId = _.get(action.payload, 'url');
-    const existingChannel = _.find(state, channel => channel.channel.url === newChannelId);
+    const existingChannel = _.find(
+      state,
+      channel => channel.channel.url === newChannelId,
+    );
 
     if (existingChannel) {
       return state;
     }
 
-    return [
-      { channel: action.payload, changedAt: new Date() },
-      ...state,
-    ];
+    return [{ channel: action.payload, changedAt: new Date() }, ...state];
   }
 
   if (action.type === CHANNELS_LOADED && !action.payload.append) {
-    return _.map(action.payload, item => ({ channel: item, changedAt: new Date() }));
+    return _.map(action.payload, item => ({
+      channel: item,
+      changedAt: new Date(),
+    }));
   }
 
   if (action.type === CHANNELS_LOADED && action.payload.append) {
@@ -79,7 +77,10 @@ const channels = (state = [], action) => {
 
   if (action.type === CHANNEL_UPDATED) {
     const updatedChannelUrl = _.get(action.payload, 'url');
-    const updatedChannel = _.find(state, item => item.channel.url === updatedChannelUrl);
+    const updatedChannel = _.find(
+      state,
+      item => item.channel.url === updatedChannelUrl,
+    );
 
     if (!updatedChannel) {
       return [{ channel: action.payload, changedAt: new Date() }, ...state];
@@ -122,25 +123,12 @@ const channelsSearch = (state = [], action) => {
   return state;
 };
 
-const notifications = (state = null, action) => {
-  if (action.type === QUEUE_NOTIFICATION) {
-    return action.payload;
-  }
-
-  if (action.type === CLEAR_NOTIFICATION_QUEUE) {
-    return null;
-  }
-
-  return state;
-};
-
 const reducer = combineReducers({
   messages,
   channels,
   activeChannel,
   connectionStatus,
   channelsSearch,
-  notifications,
 });
 
 export default preventStateRehydration(reducer);

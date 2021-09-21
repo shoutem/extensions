@@ -1,11 +1,10 @@
 import React from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { CmsListScreen } from 'shoutem.cms';
-import { navigateTo } from 'shoutem.navigation';
+import { getRouteParams, push } from 'shoutem.navigation';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
 import {
   createListItem,
@@ -16,9 +15,6 @@ import { ext } from '../const';
 export class ArticlesScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    navigateTo: PropTypes.func.isRequired,
-    listType: PropTypes.string.isRequired,
-    hasFeaturedItem: PropTypes.bool.isRequired,
   };
 
   constructor(props, context) {
@@ -33,27 +29,24 @@ export class ArticlesScreen extends CmsListScreen {
   }
 
   getNavBarProps() {
-    const { hasFeaturedItem } = this.props;
-    const styleName = hasFeaturedItem ? 'featured' : '';
+    const { screenSettings } = getRouteParams(this.props);
+    const styleName = screenSettings.hasFeaturedItem ? 'featured' : '';
 
     return { ...super.getNavBarProps(), styleName };
   }
 
   openArticle(article) {
-    const { navigateTo } = this.props;
+    const { navigation } = this.props;
+    const { shortcut } = getRouteParams(this.props);
     const nextArticle = this.getNextArticle(article);
 
-    const route = {
-      screen: ext('ArticleDetailsScreen'),
+    push(navigation, ext('ArticleDetailsScreen'), {
       title: article.title,
-      props: {
-        article,
-        nextArticle,
-        openArticle: this.openArticle,
-      },
-    };
-
-    navigateTo(route);
+      article,
+      nextArticle,
+      openArticle: this.openArticle,
+      shortcut,
+    });
   }
 
   openArticleWithId(id) {
@@ -84,9 +77,13 @@ export class ArticlesScreen extends CmsListScreen {
   }
 
   renderRow(data) {
-    const { listType } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return createListItem(listType, data, this.openArticleWithId);
+    return createListItem(
+      screenSettings.listType,
+      data,
+      this.openArticleWithId,
+    );
   }
 }
 
@@ -94,9 +91,7 @@ export const mapStateToProps = CmsListScreen.createMapStateToProps(
   state => state[ext()].latestNews,
 );
 
-export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
-  navigateTo,
-});
+export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps();
 
 export default connect(
   mapStateToProps,

@@ -1,19 +1,10 @@
 import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
-import {
-  Screen,
-  Text,
-  TouchableOpacity,
-  View,
-} from '@shoutem/ui';
-
+import { Screen, Text, TouchableOpacity, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
-
+import { getRouteParams } from 'shoutem.navigation';
 import MyDealsList from '../components/MyDeals/MyDealsList';
 import FavoriteDealsList from '../components/MyDeals/FavoriteDealsList';
 import { ext, TRANSLATIONS } from '../const';
@@ -40,10 +31,7 @@ function renderTab(options) {
 
 export class MyDealsScreen extends PureComponent {
   static propTypes = {
-    catalogId: PropTypes.string,
-    onOpenDealDetails: PropTypes.func,
     style: PropTypes.object,
-    title: PropTypes.string,
   };
 
   constructor(props) {
@@ -56,18 +44,14 @@ export class MyDealsScreen extends PureComponent {
     };
   }
 
-  getNavBarProps() {
-    const { title } = this.props;
+  componentDidMount() {
+    const { navigation } = this.props;
 
-    return {
-      title: title || 'MY DEALS',
-    };
+    navigation.setOptions({ title: I18n.t(TRANSLATIONS.MY_DEALS_TITLE) });
   }
 
-  handleActivateTab(tabName) {
-    this.setState({
-      activeTab: tabName,
-    });
+  handleActivateTab(activeTab) {
+    this.setState({ activeTab });
   }
 
   handleActivateMyDealsTab() {
@@ -78,15 +62,20 @@ export class MyDealsScreen extends PureComponent {
     this.handleActivateTab(FAVORITE_DEALS_TAB);
   }
 
+  handleOpenDetails(deal) {
+    const { onOpenDealDetails } = getRouteParams(this.props);
+    onOpenDealDetails(deal);
+  }
+
   render() {
+    const { catalogId } = getRouteParams(this.props);
     const { activeTab } = this.state;
     // Tabs activation status
-    const myDealsTabActive = (activeTab === MY_DEALS_TAB);
-    const favoriteDealsTabActive = (activeTab === FAVORITE_DEALS_TAB);
+    const myDealsTabActive = activeTab === MY_DEALS_TAB;
+    const favoriteDealsTabActive = activeTab === FAVORITE_DEALS_TAB;
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
         <View key="my-deals-tabs" styleName="flexible">
           <View key="my-deals-tabs-controls" styleName="solid horizontal">
             {renderTab({
@@ -102,17 +91,17 @@ export class MyDealsScreen extends PureComponent {
             })}
           </View>
 
-          {(activeTab === FAVORITE_DEALS_TAB) && (
+          {activeTab === FAVORITE_DEALS_TAB && (
             <FavoriteDealsList
-              catalogId={this.props.catalogId}
-              onOpenDealDetails={this.props.onOpenDealDetails}
+              catalogId={catalogId}
+              onOpenDealDetails={this.handleOpenDetails}
             />
           )}
 
-          {(activeTab === MY_DEALS_TAB) && (
+          {activeTab === MY_DEALS_TAB && (
             <MyDealsList
-              catalogId={this.props.catalogId}
-              onOpenDealDetails={this.props.onOpenDealDetails}
+              catalogId={catalogId}
+              onOpenDealDetails={this.handleOpenDetails}
             />
           )}
         </View>
@@ -121,10 +110,4 @@ export class MyDealsScreen extends PureComponent {
   }
 }
 
-export const mapDispatchToProps = dispatch => ({
-  navigateTo: route => dispatch(navigateTo(route)),
-});
-
-export default connect(null, mapDispatchToProps)(
-  connectStyle(ext('MyDealsScreen'), {})(MyDealsScreen),
-);
+export default connectStyle(ext('MyDealsScreen'), {})(MyDealsScreen);

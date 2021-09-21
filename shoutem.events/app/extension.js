@@ -17,9 +17,7 @@ export const screens = {
   SingleEventMapScreen,
 };
 
-export const themes = {
-
-};
+export const themes = {};
 
 export function ext(resourceName) {
   return resourceName ? `${pack.name}.${resourceName}` : pack.name;

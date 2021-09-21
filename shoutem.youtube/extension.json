@@ -1,8 +1,8 @@
 {
   "name": "youtube",
   "title": "YouTube",
-  "version": "2.5.2",
-  "platform": "2.5.*",
+  "version": "3.0.0",
+  "platform": "^3.0.0",
   "description": "Show a video gallery from YouTube channel, user or playlist",
   "releaseNotes": "* Added support for YouTube feeds with custom channel URL\n* Improved parsing YouTube feed URLs\n* Added sort type option for non-playlist type feed URLs",
   "dependencies": [

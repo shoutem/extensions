@@ -18,7 +18,36 @@ export function mapViewToModel(notification) {
     _.set(model, 'id', notification.id);
   }
 
-  if (notification.target === TARGET_TYPES.URL) {
+  const isUserScheduledNotification =
+    notification.delivery === DELIVERY_TYPES.USER_SCHEDULED;
+
+  if (isUserScheduledNotification) {
+    const { action, numberOfMessages } = notification;
+
+    const filteredSummaries = _.filter(
+      notification.summaries,
+      message => !_.isEmpty(message),
+    );
+    const body = {
+      silent: true,
+      isMultiple: true,
+      numberOfMessages,
+      action,
+      actions: _.map(filteredSummaries, message => {
+        return { message };
+      }),
+    };
+
+    _.set(model, 'content.body', JSON.stringify(body));
+    _.set(model, 'type', 'Silent');
+    _.set(notification, 'target.type', null);
+    _.set(model, 'delivery', DELIVERY_TYPES.SCHEDULED);
+  }
+
+  if (
+    !isUserScheduledNotification &&
+    notification.target === TARGET_TYPES.URL
+  ) {
     const action = {
       action: {
         route: {
@@ -38,7 +67,10 @@ export function mapViewToModel(notification) {
     _.set(model, 'content.body', JSON.stringify(action));
   }
 
-  if (notification.target === TARGET_TYPES.SCREEN) {
+  if (
+    !isUserScheduledNotification &&
+    notification.target === TARGET_TYPES.SCREEN
+  ) {
     const action = {
       action: {
         type: ACTION_TYPES.SCREEN,
@@ -56,7 +88,10 @@ export function mapViewToModel(notification) {
     _.set(model, 'audience.groups', groups);
   }
 
-  _.set(model, 'delivery', notification.delivery);
+  // User scheduled delivery is already handled
+  if (!isUserScheduledNotification) {
+    _.set(model, 'delivery', notification.delivery);
+  }
 
   if (notification.delivery !== DELIVERY_TYPES.NOW) {
     const utcTime = moment.utc(notification.deliveryTime).toISOString();
@@ -91,6 +126,17 @@ export function mapModelToView(notification) {
   const view = {};
 
   _.set(view, 'id', notification.id);
+
+  const isUserScheduledNotification = notification.type === 'Silent';
+
+  if (isUserScheduledNotification) {
+    const body = JSON.parse(_.get(notification, 'content.body'));
+    const summaries = _.map(body.actions, summary => summary.message);
+
+    _.set(view, 'summaries', summaries);
+    _.set(view, 'numberOfMessages', body.numberOfMessages);
+    _.set(view, 'type', 'Silent');
+  }
 
   const audienceType = _.get(notification, 'audience.type');
   _.set(view, 'audience', audienceType);
@@ -128,7 +174,6 @@ export function mapModelToView(notification) {
   } else {
     _.set(view, 'deliveryTime', deliveryTime);
   }
-
 
   if (notification.active) {
     _.set(view, 'delivery', DELIVERY_TYPES.SCHEDULED);

@@ -1,11 +1,10 @@
-import WebViewScreen from './screens/WebViewScreen';
 import * as actions from './redux';
 import * as extension from './extension';
-import {
-  openWebViewScreen,
- } from './middleware';
+import { openWebViewScreen } from './middleware';
 
 import enTranslations from './translations/en.json';
+
+import './navigation';
 
 export const shoutem = {
   i18n: {
@@ -15,16 +14,10 @@ export const shoutem = {
   },
 };
 
-const middleware = [
-  openWebViewScreen,
-];
+const middleware = [openWebViewScreen];
 
 const { openURL } = actions;
 
 export const screens = extension.screens;
 
-export {
-  middleware,
-  actions,
-  openURL,
-};
+export { middleware, actions, openURL };

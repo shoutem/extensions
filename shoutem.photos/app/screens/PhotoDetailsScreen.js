@@ -3,13 +3,24 @@ import autoBind from 'auto-bind';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { StatusBar, Platform } from 'react-native';
-import { NavigationBar } from 'shoutem.navigation';
+import {
+  composeNavigationStyles,
+  getRouteParams,
+  HeaderCloseButton,
+} from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-import { ImageGallery, Screen, ImageGalleryOverlay } from '@shoutem/ui';
+import {
+  ImageGallery,
+  Screen,
+  ImageGalleryOverlay,
+  ShareButton,
+} from '@shoutem/ui';
 import { ext } from '../const';
 
 function calculateStartingIndex(photo, photos) {
-  return _.findIndex(photos, ['id', photo.id]) || 0;
+  const id = _.get(photo, 'id');
+
+  return _.findIndex(photos, { id }) || 0;
 }
 
 function renderImageOverlay(imageData) {
@@ -24,9 +35,7 @@ function renderImageOverlay(imageData) {
 
 class PhotoDetailsScreen extends PureComponent {
   static propTypes = {
-    photos: PropTypes.array,
-    photo: PropTypes.object.isRequired,
-    navigateBack: PropTypes.func,
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -34,7 +43,7 @@ class PhotoDetailsScreen extends PureComponent {
 
     autoBind(this);
 
-    const { photo, photos } = props;
+    const { photo, photos } = getRouteParams(props);
 
     this.state = {
       mode: ImageGallery.IMAGE_GALLERY_MODE,
@@ -43,42 +52,64 @@ class PhotoDetailsScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { photo, photos } = this.props;
+    const { navigation } = this.props;
+    const { photo, photos } = getRouteParams(this.props);
+    const id = _.get(photo, 'id');
 
-    const selectedPhotoIndex = _.findIndex(photos, ['id', photo.id]) || 0;
+    const selectedPhotoIndex = _.findIndex(photos, { id }) || 0;
 
     // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({
-      selectedPhotoIndex,
-    });
+    this.setState({ selectedPhotoIndex });
+    navigation.setOptions(this.getNavbarProps(selectedPhotoIndex));
   }
 
-  onBackButton() {
-    const { navigateBack } = this.props;
+  componentDidUpdate() {
+    const { navigation } = this.props;
 
-    navigateBack();
+    navigation.setOptions(this.getNavbarProps());
   }
 
-  getNavbarProps() {
-    const { selectedPhotoIndex, mode } = this.state;
-    const { photos } = this.props;
+  getNavbarProps(selectedPhotoIndex) {
+    const { selectedPhotoIndex: selectedPhotoIndexState, mode } = this.state;
+    const resolvedSelectedPhotoIndex =
+      selectedPhotoIndex || selectedPhotoIndexState;
 
     if (mode === ImageGallery.IMAGE_PREVIEW_MODE) {
       return {
-        styleName: 'clear none',
+        ...composeNavigationStyles(['clear']),
+        headerLeft: null,
+        title: '',
       };
     }
 
-    const selectedPhoto = photos[selectedPhotoIndex];
+    const { photos } = getRouteParams(this.props);
+    const selectedPhoto = photos[resolvedSelectedPhotoIndex];
 
     return {
-      styleName: 'clear',
-      title: `${selectedPhotoIndex + 1} / ${photos.length}`,
-      share: {
-        title: _.get(selectedPhoto, 'title'),
-        link: _.get(selectedPhoto, 'source.uri'),
-      },
+      ...composeNavigationStyles(['clear']),
+      headerLeft: HeaderCloseButton,
+      headerRight: this.renderShare(selectedPhoto),
+
+      title: `${resolvedSelectedPhotoIndex + 1} / ${photos.length}`,
     };
+  }
+
+  renderShare(selectedPhoto) {
+    const title = _.get(selectedPhoto, 'title');
+    const link = _.get(selectedPhoto, 'source.uri');
+
+    if (!link) {
+      return null;
+    }
+
+    return props => (
+      <ShareButton
+        styleName="clear"
+        title={title}
+        url={link}
+        iconProps={{ style: props.tintColor }}
+      />
+    );
   }
 
   handleIndexSelected(index) {
@@ -100,11 +131,10 @@ class PhotoDetailsScreen extends PureComponent {
 
   render() {
     const { selectedPhotoIndex } = this.state;
-    const { photos } = this.props;
+    const { photos } = getRouteParams(this.props);
 
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavbarProps()} />
         <ImageGallery
           data={photos}
           onIndexSelected={this.handleIndexSelected}

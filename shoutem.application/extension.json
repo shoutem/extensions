@@ -1,7 +1,7 @@
 {
   "name": "application",
-  "version": "2.5.2",
-  "platform": "2.5.*",
+  "version": "3.0.0",
+  "platform": "^3.0.0",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",

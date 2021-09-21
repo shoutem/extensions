@@ -13,6 +13,7 @@ export {
   createUser,
   deleteUser,
   updateUser,
+  changePassword,
   downloadUserData,
 } from './redux';
 

@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { StatusBar, Platform } from 'react-native';
-import { NavigationBar } from 'shoutem.navigation';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { ImageGallery, Screen } from '@shoutem/ui';
 import { ext } from '../const';
 
 class PhotoFullScreen extends PureComponent {
   static propTypes = {
-    photo: PropTypes.object.isRequired,
+    navigation: PropTypes.object.isRequired,
     navigateBack: PropTypes.func,
   };
 
@@ -23,18 +23,34 @@ class PhotoFullScreen extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavbarProps());
+  }
+
+  componentDidUpdate() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavbarProps());
+  }
+
   getNavbarProps() {
     const { mode } = this.state;
-    const { photo: { name } } = this.props;
+    const {
+      photo: { name },
+    } = getRouteParams(this.props);
 
     if (mode === ImageGallery.IMAGE_PREVIEW_MODE) {
       return {
-        styleName: 'clear none',
+        headerShown: false,
+        title: '',
       };
     }
 
     return {
-      styleName: 'clear',
+      ...composeNavigationStyles(['clear']),
+      headerShown: true,
       title: name,
     };
   }
@@ -43,7 +59,7 @@ class PhotoFullScreen extends PureComponent {
     const { mode } = this.state;
 
     if (Platform.OS === 'ios') {
-      const isHidden = (newMode === ImageGallery.IMAGE_PREVIEW_MODE);
+      const isHidden = newMode === ImageGallery.IMAGE_PREVIEW_MODE;
       StatusBar.setHidden(isHidden, 'fade');
     }
 
@@ -53,11 +69,10 @@ class PhotoFullScreen extends PureComponent {
   }
 
   render() {
-    const { photo } = this.props;
+    const { photo } = getRouteParams(this.props);
 
     return (
       <Screen styleName="paper full-screen">
-        <NavigationBar {...this.getNavbarProps()} />
         <ImageGallery
           data={[photo]}
           onModeChanged={this.handleGalleryModeChange}

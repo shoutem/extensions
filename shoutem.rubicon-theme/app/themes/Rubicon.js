@@ -283,6 +283,7 @@ export default (customVariables = {}) => {
             variables.mainNavSelectedItemColor,
         },
       },
+
       item: {
         backgroundColor: variables.mainNavItemBackground,
       },
@@ -372,20 +373,23 @@ export default (customVariables = {}) => {
       },
     },
     'shoutem.navigation.TabBar': {
-      screen: {
-        // TabBar container
-        'shoutem.ui.View': {
-          position: 'absolute',
-          borderTopWidth: 1,
-          borderColor: variables.mainNavBorderColor,
-          backgroundColor: variables.mainNavBackground,
-          bottom: 0,
-          left: 0,
-          right: 0,
-        },
-        paddingBottom: TAB_BAR_HEIGHT,
+      activeTintColor:
+        variables.mainNavSelectedItemIconColor ||
+        variables.mainNavSelectedItemColor,
+      inactiveTintColor:
+        variables.mainNavItemIconColor || variables.mainNavItemColor,
+      activeBackgroundColor: variables.mainNavSelectedItemBackground,
+      inactiveBackgroundColor: variables.mainNavItemBackground,
+      container: {
+        borderTopWidth: 1,
+        borderTopColor: variables.mainNavBorderColor,
+        backgroundColor: variables.mainNavBackground,
+        // text / icons not flexing properly for Android. Remove with transition
+        // to RNavigation way of handling icons/text here
+        ...(Platform.OS === 'android' && { minHeight: TAB_BAR_ITEM_HEIGHT }),
       },
     },
+
     'shoutem.navigation.TabBarItem': {
       [INCLUDE]: ['mainNavigation'],
       '.icon-and-text': {
@@ -473,14 +477,8 @@ export default (customVariables = {}) => {
     },
     'shoutem.navigation.Drawer': {
       menu: {
-        // container
-        paddingTop: NAVIGATION_BAR_HEIGHT,
         backgroundColor: variables.mainNavBackground,
-      },
-      underlayScreensWrapper: {
-        marginLeft: -1,
-        borderLeftWidth: 1,
-        borderColor: variables.mainNavBorderColor,
+        width: window.width * 0.8,
       },
       screenStack: {
         cardStack: {
@@ -1409,8 +1407,11 @@ export default (customVariables = {}) => {
 
     'shoutem.auth.LoginScreen': {
       loginScreen: {
-        marginHorizontal: 30,
-        marginTop: 40,
+        paddingHorizontal: 30,
+        paddingTop: 40,
+      },
+      hideComponent: {
+        display: 'none',
       },
     },
 
@@ -1486,7 +1487,8 @@ export default (customVariables = {}) => {
 
     'shoutem.auth.RegisterScreen': {
       registerScreenMargin: {
-        marginHorizontal: 30,
+        paddingHorizontal: 30,
+        paddingTop: 40,
       },
     },
 
@@ -1761,6 +1763,7 @@ export default (customVariables = {}) => {
           paddingHorizontal: 0,
         },
       },
+      imagesMaxWidth: window.width - variables.mediumGutter * 2,
     },
 
     'shoutem.checklist.ChecklistItem': {
@@ -1776,6 +1779,8 @@ export default (customVariables = {}) => {
           flex: 1,
         },
       },
+      imagesMaxWidth:
+        window.width - variables.smallGutter - variables.mediumGutter * 2 - 24,
     },
 
     'shoutem.checklist.ChecklistNavBarButton': {
@@ -2018,6 +2023,48 @@ export default (customVariables = {}) => {
       },
     },
 
+    // CMS
+
+    'shoutem.cms.FullGridRowItemView': {
+      container: {
+        borderColor: 'rgba(68,79,108,0.2)',
+        borderRadius: 4,
+        borderWidth: 1,
+        marginBottom: 8,
+      },
+      imageContainer: { height: dimensionRelativeToIphone(224) },
+      textContainer: {
+        backgroundColor: variables.paperColor,
+        borderTopColor: 'rgba(68,79,108,0.2)',
+        borderTopWidth: 1,
+        height: dimensionRelativeToIphone(92),
+        paddingBottom: 4,
+        paddingLeft: 16,
+        paddingRight: 16,
+        paddingTop: 16,
+      },
+      title: { fontSize: 20, fontWeight: 'bold', lineHeight: 24 },
+      description: {
+        fontSize: 14,
+        lineHeight: 16,
+        paddingBottom: 16,
+        paddingTop: 4,
+      },
+    },
+
+    'shoutem.cms.HalfGridRowItemView': {
+      [INCLUDE]: ['shoutem.cms.FullGridRowItemView'],
+      container: {
+        ...['shoutem.cms.FullGridRowItemView'],
+        marginHorizontal: 4,
+      },
+      imageContainer: { height: dimensionRelativeToIphone(110) },
+      textContainer: {
+        ...['shoutem.cms.FullGridRowItemView'],
+        height: dimensionRelativeToIphone(108),
+      },
+    },
+
     // Places
 
     'shoutem.places.PlacesGridScreen': {
@@ -2103,12 +2150,30 @@ export default (customVariables = {}) => {
       },
     },
     'shoutem.social.StatusView': {
-      reportButton: {
-        width: 16,
-        height: 16,
+      menuButton: {
+        width: 24,
+        height: 24,
         color: '#C4C4C4',
         paddingVertical: 10,
         paddingLeft: 10,
+      },
+    },
+    'shoutem.social.MemberView': {
+      menuButton: {
+        width: 24,
+        height: 24,
+        color: '#C4C4C4',
+        paddingVertical: 10,
+        paddingLeft: 10,
+      },
+      userProfileName: {
+        color: changeColorAlpha(variables.text.subtitle, 0.5),
+        fontFamily: resolveFontFamily(
+          variables.subtitle.fontFamily,
+          variables.subtitle.fontWeight,
+          'italic',
+        ),
+        fontStyle: resolveFontStyle('italic'),
       },
     },
 
@@ -2206,7 +2271,7 @@ export default (customVariables = {}) => {
         margin: 0,
       },
       spinnerStyle: {
-        size: 40,
+        size: 45,
       },
     },
 
@@ -2274,6 +2339,81 @@ export default (customVariables = {}) => {
       },
     },
 
+    'shoutem.radio-player.RadioPlayer': {
+      clearRow: {
+        backgroundColor: 'transparent',
+        width: dimensionRelativeToIphone(375),
+        paddingBottom: variables.largeGutter,
+        paddingHorizontal: variables.largeGutter,
+      },
+      nowPlaying: {
+        backgroundColor: 'transparent',
+        position: 'absolute',
+        bottom: 0,
+      },
+      nowPlayingText: {
+        color: variables.imageOverlayTextColor,
+        paddingBottom: variables.smallGutter * 2,
+        fontSize: 15,
+      },
+      streamTitle: {
+        color: variables.imageOverlayTextColor,
+        fontSize: 15,
+      },
+      hiddenImage: {
+        opacity: 0,
+      },
+      playbackButton: {
+        width: dimensionRelativeToIphone(75),
+        height: dimensionRelativeToIphone(75),
+        fontSize: dimensionRelativeToIphone(36),
+        borderRadius: 200,
+        padding: 0,
+      },
+      playbackMainCircle: {
+        width: dimensionRelativeToIphone(150),
+        height: dimensionRelativeToIphone(150),
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        borderColor: variables.primaryButtonBackgroundColor,
+        borderWidth: 2,
+        position: 'absolute',
+        left: -dimensionRelativeToIphone(37.5),
+        top: -dimensionRelativeToIphone(37.5),
+        borderRadius: 200,
+      },
+      playbackIcon: {
+        width: dimensionRelativeToIphone(36),
+        height: dimensionRelativeToIphone(36),
+        marginLeft: 10,
+      },
+      spinner: {
+        marginTop: Platform.select({
+          ios: 5,
+        }),
+        marginLeft: Platform.select({
+          ios: 5,
+        }),
+        size: Platform.select({
+          ios: 0,
+          default: 18,
+        }),
+      },
+      artistName: {
+        color: variables.imageOverlayTextColor,
+        fontFamily: resolveFontFamily(
+          variables.text.fontFamily,
+          '700',
+          variables.text.fontStyle,
+        ),
+        fontWeight: resolveFontWeight('bold'),
+        fontSize: 14,
+      },
+      songName: {
+        color: variables.imageOverlayTextColor,
+        fontSize: 15,
+      },
+    },
+
     // Notifications
 
     'shoutem.notification-center.NotificationRow': {
@@ -2294,6 +2434,51 @@ export default (customVariables = {}) => {
       },
       timestamp: {
         color: variables.notificationTimestampColor,
+      },
+    },
+
+    'shoutem.notification-center.NotificationDailySettingsScreen': {
+      confirmButton: {
+        borderRadius: 2,
+        marginHorizontal: 'auto',
+        marginTop: 50,
+        width: '40%',
+      },
+      subtitle: {
+        textAlign: 'center',
+      },
+      timePickerButton: {
+        buttonContainer: {
+          backgroundColor: variables.primaryButtonBackgroundColor,
+        },
+      },
+    },
+
+    'shoutem.notification-center.ReminderSettingsScreen': {
+      confirmButton: {
+        borderRadius: 2,
+        marginHorizontal: 'auto',
+        marginTop: 50,
+        width: '40%',
+      },
+      subtitle: {
+        textAlign: 'center',
+      },
+      timePickerButton: {
+        buttonContainer: {
+          backgroundColor: variables.primaryButtonBackgroundColor,
+        },
+      },
+    },
+
+    'shoutem.notification-center.SettingsToggle': {
+      trackColor: variables.primaryButtonBackgroundColor,
+    },
+
+    'shoutem.notification-center.SettingDetailsNavigationItem': {
+      icon: {
+        color: '#BDC0CB',
+        margin: 0,
       },
     },
 
@@ -2981,6 +3166,81 @@ export default (customVariables = {}) => {
       botText: {
         color: '#333333',
       },
+    },
+
+    // News
+
+    'shoutem.news.FeaturedGrid122FullRowView': {
+      container: {
+        borderColor: 'rgba(68,79,108,0.2)',
+        borderRadius: 4,
+        borderWidth: 1,
+        marginTop: 8,
+        marginHorizontal: 8,
+        overflow: 'hidden',
+      },
+      imageContainer: {
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 4,
+        height: dimensionRelativeToIphone(224),
+        overflow: 'hidden',
+      },
+      textContainer: {
+        backgroundColor: variables.newsGrid122ItemBackgroundColor,
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
+        borderTopColor: 'rgba(68,79,108,0.2)',
+        borderTopWidth: 1,
+        height: dimensionRelativeToIphone(92),
+        paddingBottom: 4,
+        paddingLeft: 16,
+        paddingRight: 16,
+        paddingTop: 16,
+      },
+      title: { fontSize: 20, fontWeight: 'bold', lineHeight: 24 },
+      description: {
+        fontSize: 14,
+        lineHeight: 16,
+        paddingBottom: 16,
+        paddingTop: 4,
+      },
+    },
+
+    'shoutem.news.FeaturedGrid122FeaturedRowView': {
+      [INCLUDE]: ['shoutem.news.FeaturedGrid122FullRowView'],
+      container: {
+        borderWidth: 0,
+        overflow: 'visible',
+        shadowColor: 'rgba(0, 0, 0, 0.12)',
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 1,
+        shadowRadius: 2,
+      },
+      description: {
+        fontSize: 16,
+        lineHeight: 24,
+      },
+      imageContainer: {
+        height: dimensionRelativeToIphone(320),
+      },
+      textContainer: {
+        height: dimensionRelativeToIphone(110),
+      },
+    },
+
+    'shoutem.news.FeaturedGrid122HalfRowView': {
+      [INCLUDE]: ['shoutem.news.FeaturedGrid122FullRowView'],
+      container: {
+        marginHorizontal: 4,
+      },
+      imageContainer: { height: dimensionRelativeToIphone(110) },
+      textContainer: {
+        height: dimensionRelativeToIphone(108),
+      },
+    },
+
+    'shoutem.news.ArticleDetailsScreen': {
+      outerPadding: 10,
     },
   });
 };

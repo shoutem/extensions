@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { RtcEngine } from 'react-native-agora';
@@ -6,7 +7,7 @@ import autoBind from 'auto-bind';
 import _ from 'lodash';
 import { View, Screen } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { NavigationBar } from 'shoutem.navigation';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { getUser, isAuthenticated } from 'shoutem.auth';
 import { getExtensionSettings } from 'shoutem.application/redux';
 import {
@@ -23,7 +24,16 @@ import * as Agora from '../services/agora';
 import { images } from '../assets/index';
 import { ext } from '../const';
 
-const { CAMERA, MICROPHONE } = PERMISSION_TYPES;
+const MICROPHONE = Platform.select({
+  ios: PERMISSION_TYPES.IOS_MICROPHONE,
+  default: PERMISSION_TYPES.ANDROID_RECORD_AUDIO,
+});
+
+const CAMERA = Platform.select({
+  ios: PERMISSION_TYPES.IOS_CAMERA,
+  default: PERMISSION_TYPES.ANDROID_CAMERA,
+});
+
 const { GRANTED } = PERMISSION_RESULT_TYPES;
 
 class VideoCallScreen extends PureComponent {
@@ -32,7 +42,8 @@ class VideoCallScreen extends PureComponent {
 
     autoBind(this);
 
-    const { user, localUser, channelName } = props;
+    const { localUser, channelName } = props;
+    const { user } = getRouteParams(props);
     const localUserId = parseInt(_.get(localUser, 'legacyId'));
 
     this.state = {
@@ -47,15 +58,19 @@ class VideoCallScreen extends PureComponent {
       videoMute: false,
       remoteVideoMute: false,
       remoteAudioMute: false,
+      loadingLocalChannel: false,
     };
   }
 
   componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({ ...composeNavigationStyles(['clear']), title: '' });
     // Requesting Mic and Camera permissions
     requestPermissions(CAMERA, MICROPHONE);
 
     // If new user has joined
-    RtcEngine.on(Agora.EVENTS.REMOTE_USER_JOINED, (data) => {
+    RtcEngine.on(Agora.EVENTS.REMOTE_USER_JOINED, data => {
       const { peerIds } = this.state;
 
       this.toggleStopwatch();
@@ -67,7 +82,7 @@ class VideoCallScreen extends PureComponent {
     });
 
     // If remote user leaves
-    RtcEngine.on(Agora.EVENTS.REMOTE_USER_LEFT, (data) => {
+    RtcEngine.on(Agora.EVENTS.REMOTE_USER_LEFT, data => {
       const { peerIds } = this.state;
 
       this.resetStopwatch();
@@ -79,21 +94,22 @@ class VideoCallScreen extends PureComponent {
     });
 
     // If Local user joins RTC channel
-    RtcEngine.on(Agora.EVENTS.LOCAL_USER_JOINED_CHANNEL, (data) => {
+    RtcEngine.on(Agora.EVENTS.LOCAL_USER_JOINED_CHANNEL, () => {
       RtcEngine.startPreview();
 
       this.setState({
+        loadingLocalChannel: false,
         connectionSuccess: true,
       });
     });
 
     // If Local user leaves RTC channel
-    RtcEngine.on(Agora.EVENTS.LOCAL_USER_LEFT_CHANNEL, (data) => {
+    RtcEngine.on(Agora.EVENTS.LOCAL_USER_LEFT_CHANNEL, () => {
       this.resetStopwatch();
     });
 
     // If remote user changes video state
-    RtcEngine.on(Agora.EVENTS.REMOTE_VIDEO_STATE_CHANGED, (data) => {
+    RtcEngine.on(Agora.EVENTS.REMOTE_VIDEO_STATE_CHANGED, data => {
       const { state } = data;
 
       const newStatus = state !== Agora.REMOTE_VIDEO_STATES.NOT_MUTED;
@@ -116,8 +132,11 @@ class VideoCallScreen extends PureComponent {
     const { channelName, uid } = this.state;
 
     RtcEngine.joinChannel(channelName, uid)
-      .then(RtcEngine.enableAudio)
-      .catch(error => Agora.connectionFailedAlert());
+      .then(() => {
+        this.setState({ loadingLocalChannel: true });
+        RtcEngine.enableAudio();
+      })
+      .catch(() => Agora.connectionFailedAlert());
   }
 
   handleEndCallPress() {
@@ -158,8 +177,8 @@ class VideoCallScreen extends PureComponent {
 
     /* this function checks camera and microphone status and opens Settings Page
     if permissions have not been granted */
-    checkPermissions(CAMERA, MICROPHONE)
-      .then((statuses) => {
+    return checkPermissions(CAMERA, MICROPHONE)
+      .then(statuses => {
         const camera = statuses[CAMERA];
         const microphone = statuses[MICROPHONE];
 
@@ -170,15 +189,17 @@ class VideoCallScreen extends PureComponent {
         openDeviceSettings();
         return false;
       })
-      .catch((error) => {
+      .catch(error => {
         console.log('Check permissions failed:', error);
       })
-      .then((permissionsGranted) => {
+      .then(permissionsGranted => {
         if (permissionsGranted) {
           return this.startCall();
         }
+
+        return null;
       })
-      .catch((error) => {
+      .catch(error => {
         console.log('Start call button press failed', error);
       });
   }
@@ -221,19 +242,18 @@ class VideoCallScreen extends PureComponent {
       stopwatchStart,
       remoteVideoMute,
       remoteAudioMute,
+      loadingLocalChannel,
     } = this.state;
-
-    const {
-      user,
-      style,
-      remoteUserFullName,
-      remoteUserProfileImage,
-    } = this.props;
+    const { style, remoteUserFullName, remoteUserProfileImage } = this.props;
+    const { user } = getRouteParams(this.props);
 
     const profileImageUrl = _.get(user, 'profile.image');
-    const image = profileImageUrl ? { uri: profileImageUrl } : images.emptyUserProfile;
+    const image = profileImageUrl
+      ? { uri: profileImageUrl }
+      : images.emptyUserProfile;
     const profileImage = remoteUserProfileImage || image;
-    const userProfileName = _.get(user, 'profile.name') || _.get(user, 'profile.nick', '');
+    const userProfileName =
+      _.get(user, 'profile.name') || _.get(user, 'profile.nick', '');
     const fullName = remoteUserFullName || userProfileName;
     const waitingForPeer = connectionSuccess && peerIds.length === 0;
     const videoCallEstablished = connectionSuccess && peerIds.length === 1;
@@ -241,11 +261,11 @@ class VideoCallScreen extends PureComponent {
     return (
       <Screen>
         <View style={style.agoraScreenContainer}>
-          <NavigationBar styleName="clear" />
           {!connectionSuccess && (
             <VideoCallStartingView
               fullName={fullName}
               image={profileImage}
+              channelLoading={loadingLocalChannel}
               onStartCallPress={this.handleStartCallPress}
             />
           )}
@@ -286,7 +306,10 @@ class VideoCallScreen extends PureComponent {
 VideoCallScreen.propTypes = {
   channelName: PropTypes.string,
   remoteUserFullName: PropTypes.string,
-  image: PropTypes.oneOfType([PropTypes.number, PropTypes.shape({ uri: PropTypes.string })]),
+  image: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.shape({ uri: PropTypes.string }),
+  ]),
   isUserAuthenticated: PropTypes.bool,
   user: PropTypes.object,
   localUser: PropTypes.object,

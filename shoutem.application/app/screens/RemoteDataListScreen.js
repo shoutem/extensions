@@ -1,41 +1,33 @@
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
-
 import {
   isBusy,
   isInitialized,
   isError,
   shouldRefresh,
 } from '@shoutem/redux-io';
-import {
-  EmptyStateView,
-  ListView,
-  Screen,
-} from '@shoutem/ui';
-
+import { EmptyStateView, ListView, Screen } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { getRouteParams } from 'shoutem.navigation';
 import { ext } from '../const';
-
-const { array, func, shape, string } = PropTypes;
 
 /* eslint-disable  class-methods-use-this */
 
 export default class RemoteDataListScreen extends PureComponent {
   static propTypes = {
     // The shortcut title
-    title: string,
+    title: PropTypes.string,
 
     // Data items to display
     // eslint-disable-next-line  react/forbid-prop-types
-    data: array,
+    data: PropTypes.array,
 
     // Actions
-    next: func.isRequired,
+    next: PropTypes.func.isRequired,
     // Component style
-    style: shape({
+    style: PropTypes.shape({
       screen: Screen.propTypes.style,
       list: ListView.propTypes.style,
       emptyState: EmptyStateView.propTypes.style,
@@ -50,11 +42,10 @@ export default class RemoteDataListScreen extends PureComponent {
     },
   };
 
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
 
-    this.fetchData = this.fetchData.bind(this);
-    this.loadMore = this.loadMore.bind(this);
+    autoBindReact(this);
   }
 
   componentDidMount() {
@@ -65,20 +56,12 @@ export default class RemoteDataListScreen extends PureComponent {
     this.refreshData(prevProps);
   }
 
-  refreshData(prevProps = {}) {
+  refreshData() {
     const { data } = this.props;
 
     if (shouldRefresh(data, true)) {
       this.fetchData();
     }
-  }
-
-  getNavigationBarProps() {
-    const { title } = this.props;
-
-    return {
-      title: (title || '').toUpperCase(),
-    };
   }
 
   getListProps() {
@@ -94,13 +77,11 @@ export default class RemoteDataListScreen extends PureComponent {
     this.props.next(this.props.data);
   }
 
- /*
-  * Override this function to implement specific data fetching.
-  * It's empty since it's called to refresh data.
-  */
-  fetchData() {
-
-  }
+  /*
+   * Override this function to implement specific data fetching.
+   * It's empty since it's called to refresh data.
+   */
+  fetchData() { }
 
   shouldRenderPlaceholderView(data) {
     if ((!isInitialized(data) && !isError(data)) || isBusy(data)) {
@@ -117,17 +98,15 @@ export default class RemoteDataListScreen extends PureComponent {
 
     const emptyStateViewProps = {
       icon: 'refresh',
-      message: isError(data) ?
-        I18n.t(ext('unexpectedErrorMessage')) :
-        I18n.t(ext('preview.noContentErrorMessage')),
+      message: isError(data)
+        ? I18n.t(ext('unexpectedErrorMessage'))
+        : I18n.t(ext('preview.noContentErrorMessage')),
       onRetry: this.fetchData,
       retryButtonTitle: I18n.t(ext('tryAgainButton')),
       style: style.emptyState,
     };
 
-    return (
-      <EmptyStateView {...emptyStateViewProps} />
-    );
+    return <EmptyStateView {...emptyStateViewProps} />;
   }
 
   // Override this function if you want custom section headers. Used with getSectionId.
@@ -148,11 +127,15 @@ export default class RemoteDataListScreen extends PureComponent {
   }
 
   renderData(data) {
-    const { hasFeaturedItem } = this.props;
-
     if (this.shouldRenderPlaceholderView(data)) {
       return this.renderPlaceholderView(data);
     }
+
+    const { style } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
+    const renderFeaturedItem = screenSettings.hasFeaturedItem
+      ? this.renderFeaturedItem
+      : null;
 
     return (
       <ListView
@@ -163,9 +146,9 @@ export default class RemoteDataListScreen extends PureComponent {
         onRefresh={this.fetchData}
         onLoadMore={this.loadMore}
         renderSectionHeader={this.renderSectionHeader}
-        hasFeaturedItem={hasFeaturedItem}
-        renderFeaturedItem={this.renderFeaturedItem}
-        style={this.props.style.list}
+        hasFeaturedItem={screenSettings.hasFeaturedItem}
+        renderFeaturedItem={renderFeaturedItem}
+        style={style.list}
         initialListSize={1}
         {...this.getListProps()}
       />
@@ -174,13 +157,7 @@ export default class RemoteDataListScreen extends PureComponent {
 
   render() {
     const { data, style } = this.props;
-    const navigationBarProps = this.getNavigationBarProps();
 
-    return (
-      <Screen style={style.screen}>
-        <NavigationBar {...navigationBarProps} />
-        {this.renderData(data)}
-      </Screen>
-    );
+    return <Screen style={style.screen}>{this.renderData(data)}</Screen>;
   }
 }

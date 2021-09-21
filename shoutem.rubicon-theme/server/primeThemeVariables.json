@@ -402,6 +402,12 @@
       "title": "Places grid layout item - background color",
       "format": "color",
       "default": "#FFFFFF"
+    },
+    "newsGrid122ItemBackgroundColor": {
+      "type": "string",
+      "title": "News grid 1-2-2 layout item - background color",
+      "format": "color",
+      "default": "#FFFFFF"
     }
   },
   "layout": {
@@ -496,7 +502,8 @@
           "lineColor",
           "indicatorColor",
           "sectionHeaderBackgroundColor",
-          "gridItemBackgroundColor"
+          "gridItemBackgroundColor",
+          "newsGrid122ItemBackgroundColor"
         ]
       }
     ]

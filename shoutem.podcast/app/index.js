@@ -4,6 +4,7 @@ import EpisodesListScreen from './screens/EpisodesListScreen';
 import EpisodeDetailsScreen from './screens/EpisodeDetailsScreen';
 import enTranslations from './translations/en.json';
 import { reducer } from './redux';
+import './navigation';
 
 const screens = {
   EpisodesListScreen,

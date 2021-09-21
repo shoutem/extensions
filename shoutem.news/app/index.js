@@ -2,7 +2,9 @@ import reducer from './reducer';
 import * as extension from './extension.js';
 import ArticlesScreen from './screens/ArticlesScreen';
 import GridArticlesScreen from './screens/GridArticlesScreen';
+import FeaturedGrid122ArticlesScreen from './screens/FeaturedGrid122ArticlesScreen';
 import ArticleDetailsScreen from './screens/ArticleDetailsScreen';
+import MediumDetailsNoDateScreen from './screens/MediumDetailsNoDateScreen';
 import LargeArticleDetailsScreen from './screens/LargeArticleDetailsScreen';
 import enTranslations from './translations/en.json';
 
@@ -21,8 +23,10 @@ export const screens = {
   MediumListArticlesScreen: ArticlesScreen,
   FeaturedMediumListArticlesScreen: ArticlesScreen,
   TileListArticlesScreen: ArticlesScreen,
+  FeaturedGrid122ArticlesScreen,
   ArticleDetailsScreen: LargeArticleDetailsScreen,
   SolidNavbarMediumArticleDetailsScreen: ArticleDetailsScreen,
+  SolidNavbarMediumArticleDetailsNoDateScreen: MediumDetailsNoDateScreen,
   SolidNavbarLargeArticleDetailsScreen: LargeArticleDetailsScreen,
   ClearNavbarMediumArticleDetailsScreen: ArticleDetailsScreen,
 };

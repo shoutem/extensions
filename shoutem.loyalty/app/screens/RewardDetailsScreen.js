@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateBack, openInModal } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -16,13 +14,17 @@ import {
   Text,
   View,
 } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import {
+  openInModal,
+  getRouteParams,
+  composeNavigationStyles,
+} from 'shoutem.navigation';
 import RewardProgressBar from '../components/RewardProgressBar';
-import { cardStateShape, rewardShape } from '../components/shapes';
+import { cardStateShape } from '../components/shapes';
 import Stamps from '../components/Stamps';
 import { ext } from '../const';
 import { getCardStateForPlace, isPunchCard } from '../redux';
-
-const { func } = PropTypes;
 
 /**
  * Shows details for a reward or a punch card.
@@ -33,43 +35,32 @@ export class RewardDetailsScreen extends PureComponent {
   static propTypes = {
     // User's loyalty card state
     cardState: cardStateShape,
-    // Reward description
-    reward: rewardShape.isRequired,
-    // Opens the redeem reward or stamp a punch card flow in a new modal screen
-    openInModal: func,
-    // Navigates back to list of rewards when the redeem or stamp flow starts
-    navigateBack: func,
   };
 
   constructor(props) {
     super(props);
 
-    this.handleAction = this.handleAction.bind(this);
+    autoBindReact(this);
   }
 
   // eslint-disable-next-line class-methods-use-this
   getNavBarProps() {
     return {
-      styleName: 'clear',
-      animationName: 'solidify',
+      ...composeNavigationStyles(['clear', 'solidify']),
     };
   }
 
   handleAction(redeem) {
-    const { reward, navigateBack, openInModal } = this.props;
+    const { reward } = getRouteParams(this.props);
 
-    navigateBack();
-    openInModal({
-      screen: ext('VerificationScreen'),
-      props: {
-        reward,
-        redeem,
-      },
+    openInModal(ext('VerificationScreen'), {
+      reward,
+      redeem,
     });
   }
 
   renderImage() {
-    const { reward } = this.props;
+    const { reward } = getRouteParams(this.props);
     const { image } = reward;
 
     return (
@@ -84,8 +75,8 @@ export class RewardDetailsScreen extends PureComponent {
   renderSummary() {
     const {
       cardState: { points = 0 },
-      reward,
     } = this.props;
+    const { reward } = getRouteParams(this.props);
     const { pointsRequired, title } = reward;
 
     return (
@@ -121,8 +112,8 @@ export class RewardDetailsScreen extends PureComponent {
   renderActionButton() {
     const {
       cardState: { points: cardPoints = 0 },
-      reward,
     } = this.props;
+    const { reward } = getRouteParams(this.props);
     const { points = 0, pointsRequired } = reward;
 
     if (!isPunchCard(reward) && cardPoints < pointsRequired) {
@@ -148,12 +139,11 @@ export class RewardDetailsScreen extends PureComponent {
   }
 
   render() {
-    const { reward } = this.props;
+    const { reward } = getRouteParams(this.props);
     const { description } = reward;
 
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderImage()}
           {this.renderSummary()}
@@ -167,7 +157,7 @@ export class RewardDetailsScreen extends PureComponent {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const { place } = ownProps;
+  const { place } = getRouteParams(ownProps);
   const placeId = place ? place.id : null;
 
   return {
@@ -175,6 +165,6 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, { navigateBack, openInModal })(
+export default connect(mapStateToProps)(
   connectStyle(ext('RewardDetailsScreen'))(RewardDetailsScreen),
 );

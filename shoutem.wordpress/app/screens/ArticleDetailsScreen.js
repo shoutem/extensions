@@ -4,7 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Dimensions } from 'react-native';
-import { NavigationBar } from 'shoutem.navigation';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
@@ -13,6 +13,7 @@ import {
   ImageGallery,
   Screen,
   ScrollView,
+  ShareButton,
   SimpleHtml,
   Tile,
   Title,
@@ -24,26 +25,38 @@ import { getLeadImageUrl, getAuthorName } from '../services';
 
 export class ArticleDetailsScreen extends PureComponent {
   static propTypes = {
-    // The news article to display
-    article: PropTypes.object.isRequired,
-    // The next article, if this article is defined, the
-    // up next view will be displayed on this screen
-    nextArticle: PropTypes.object,
-    // A function that will open the given article, this
-    // function is required to show the up next view
-    openArticle: PropTypes.func,
-    // Whether the inline gallery should be displayed on the
-    // details screen. Inline gallery displays the image
-    // attachments that are not directly referenced in the
-    // article body.
-    showInlineGallery: PropTypes.bool,
-    openNextArticle: PropTypes.func,
+    navigation: PropTypes.object.isRequired,
   };
 
-  renderUpNext() {
-    const { nextArticle, openArticle } = this.props;
+  componentDidMount() {
+    const { navigation } = this.props;
+    navigation.setOptions(this.getNavBarProps());
+  }
 
-    if (!nextArticle || !openArticle) {
+  getNavBarProps() {
+    const { article } = getRouteParams(this.props);
+    const shareTitle = he.decode(article.title.rendered) || '';
+    const url = article.link;
+
+    return {
+      ...composeNavigationStyles(['clear', 'solidify']),
+      headerRight: props => (
+        <ShareButton
+          // eslint-disable-next-line react/prop-types
+          iconProps={{ style: props.tintColor }}
+          styleName="clear"
+          title={shareTitle}
+          url={url}
+        />
+      ),
+      title: '',
+    };
+  }
+
+  renderUpNext() {
+    const { nextArticle, openArticle } = getRouteParams(this.props);
+
+    if (!nextArticle || !_.isFunction(openArticle)) {
       return null;
     }
 
@@ -57,12 +70,7 @@ export class ArticleDetailsScreen extends PureComponent {
   }
 
   renderInlineGallery() {
-    const { article, showInlineGallery } = this.props;
-
-    if (!showInlineGallery) {
-      return null;
-    }
-
+    const { article } = this.props;
     const images = _.map(article.wp.attachments.href, 'url');
 
     return (
@@ -75,7 +83,7 @@ export class ArticleDetailsScreen extends PureComponent {
   }
 
   render() {
-    const { article } = this.props;
+    const { article, showInlineGallery } = getRouteParams(this.props);
 
     const articleImageUrl = getLeadImageUrl(article);
     const resolvedTitle = he.decode(article.title.rendered);
@@ -87,15 +95,6 @@ export class ArticleDetailsScreen extends PureComponent {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar
-          animationName="solidify"
-          share={{
-            title: resolvedTitle,
-            link: article.link,
-          }}
-          styleName="clear"
-          title={article.title.rendered}
-        />
         <ScrollView>
           <ImageBackground
             animationName="hero"
@@ -104,7 +103,7 @@ export class ArticleDetailsScreen extends PureComponent {
           >
             <Tile animationName="hero">
               <Title styleName="centered">{resolvedTitle.toUpperCase()}</Title>
-              <View styleName="horizontal collapsed" virtual>
+              <View styleName="horizontal collapsed">
                 <Caption numberOfLines={1} styleName="collapsible">
                   {getAuthorName(article)}
                 </Caption>
@@ -115,7 +114,7 @@ export class ArticleDetailsScreen extends PureComponent {
           </ImageBackground>
           <View styleName="solid">
             <SimpleHtml body={article.content.rendered} />
-            {this.renderInlineGallery()}
+            {showInlineGallery && this.renderInlineGallery()}
             {this.renderUpNext()}
           </View>
         </ScrollView>

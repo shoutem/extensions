@@ -1,10 +1,9 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import ActionSheet from 'react-native-action-sheet';
-import { Alert } from 'react-native';
-import autoBindReact from 'auto-bind/react';
-import moment from 'moment';
+import React from 'react';
 import _ from 'lodash';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import { I18n } from 'shoutem.i18n';
+import { connectStyle } from '@shoutem/theme';
 import {
   View,
   Image,
@@ -16,8 +15,6 @@ import {
   Button,
   Icon,
 } from '@shoutem/ui';
-import { I18n } from 'shoutem.i18n';
-import { connectStyle } from '@shoutem/theme';
 import { ext } from '../const';
 import { adaptSocialUserForProfileScreen, formatLikeText } from '../services';
 import CommentButton from './CommentButton';
@@ -25,132 +22,77 @@ import HtmlTextView from './HtmlTextView';
 import LikeButton from './LikeButton';
 import { post as postShape } from './shapes';
 
-const { func, bool } = PropTypes;
-
-function handleClickOnReport() {
-  const OPTIONS = [
-    I18n.t(ext('reportOptionSpam')),
-    I18n.t(ext('reportOptionInappropriate')),
-    I18n.t(ext('reportOptionAbuse')),
-    I18n.t(ext('reportOptionCancel')),
-  ];
-
-  ActionSheet.showActionSheetWithOptions(
-    {
-      options: OPTIONS,
-      cancelButtonIndex: 3,
-      title: I18n.t(ext('reportActionSheetTitle')),
-      message: I18n.t(ext('reportActionSheetMessage')),
-      tintColor: 'black',
-    },
-    (index) => {
-      if (index >= 0 && index <= 2) {
-        Alert.alert(
-          I18n.t(ext('reportSuccessTitle')),
-          I18n.t(ext('reportSuccessMessage')),
-        );
-      }
-    },
-  );
-}
-
-class StatusView extends PureComponent {
-  static propTypes = {
-    status: postShape.isRequired,
-    addComment: func.isRequired,
-    openUserLikes: func.isRequired,
-    openStatusDetails: func,
-    onLikeAction: func,
-    openProfile: func,
-    showUsersWhoLiked: bool,
-    enableImageFullScreen: bool,
-    enableInteractions: bool,
-    enableComments: bool,
-  };
-
-  static defaultProps = {
-    openStatusDetails: _.noop,
-    enableImageFullScreen: false,
-    enableInteractions: true,
-    enableComments: true,
-  };
-
-  constructor(props) {
-    super(props);
-
-    autoBindReact(this);
-  }
-
-  handleClickOnStatus() {
-    const { status, openStatusDetails } = this.props;
-
+function StatusView({
+  status,
+  enableImageFullScreen,
+  enableInteractions,
+  enableComments,
+  showUsersWhoLiked,
+  openProfile,
+  openStatusDetails,
+  onMenuPress,
+  openUserLikes,
+  addComment,
+  onLikeAction,
+  style,
+}) {
+  const handleOpenStatusDetails = () => {
     openStatusDetails(status.id);
-  }
+  };
 
-  handleClickOnComments() {
-    this.handleClickOnStatus();
-  }
-
-  handleClickOnUser() {
-    const { status, openProfile } = this.props;
-
-    const { user } = status;
+  const handleClickOnUser = () => {
+    const user = _.get(status, 'user');
 
     openProfile(adaptSocialUserForProfileScreen(user));
-  }
+  };
 
-  handleClickOnLikes() {
-    const { status, openUserLikes } = this.props;
-
+  const handleClickOnLikes = () => {
     openUserLikes(status);
-  }
+  };
 
-  renderHeader() {
-    const { status, style } = this.props;
+  const renderHeader = () => {
+    const created_at = _.get(status, 'user');
+    const user = _.get(status, 'user');
 
-    const { user, created_at } = status;
-    const userProfileImage = user.profile_image_url || undefined;
+    const userProfileImage = user?.profile_image_url || undefined;
+
+    const handleMenuPress = () => onMenuPress(status);
 
     return (
       <View styleName="horizontal v-center space-between stretch">
         <View styleName="horizontal v-center">
-          <TouchableOpacity onPress={this.handleClickOnUser}>
+          <TouchableOpacity onPress={handleClickOnUser}>
             <Image
               source={{ uri: userProfileImage }}
               styleName="small-avatar placeholder"
             />
           </TouchableOpacity>
           <View styleName="vertical md-gutter-left">
-            <Subtitle>{`${user.name}`}</Subtitle>
+            <Subtitle>{`${user?.name}`}</Subtitle>
             <Caption>{moment(created_at).fromNow()}</Caption>
           </View>
         </View>
-        <Button onPress={handleClickOnReport} styleName="clear tight">
-          <Icon name="error" style={style.reportButton} />
+        <Button onPress={handleMenuPress} styleName="clear tight">
+          <Icon name="more-horizontal" style={style.menuButton} />
         </Button>
       </View>
     );
-  }
+  };
 
-  renderStatusText() {
-    const { status: { text } } = this.props;
+  const renderStatusText = () => {
+    const text = _.get(status, 'text');
 
     return (
-      <TouchableOpacity onPress={this.handleClickOnStatus}>
+      <TouchableOpacity onPress={handleOpenStatusDetails}>
         <View>
-          <HtmlTextView
-            styleName="md-gutter-top"
-            text={text}
-          />
+          <HtmlTextView styleName="md-gutter-top" text={text} />
         </View>
       </TouchableOpacity>
     );
-  }
+  };
 
-  renderStatusAttachments() {
-    const { status, enableImageFullScreen } = this.props;
-
-    const { shoutem_attachments: attachments } = status;
+  const renderStatusAttachments = () => {
+    const attachments = _.get(status, 'shoutem_attachments');
     const hasPicture = _.get(attachments, [0, 'type']) === 'picture';
 
     if (!hasPicture) {
@@ -174,16 +116,9 @@ class StatusView extends PureComponent {
         styleName="large-wide"
       />
     );
-  }
+  };
 
-  renderLikesAndCommentsInfo() {
-    const {
-      status,
-      enableInteractions,
-      enableComments,
-      showUsersWhoLiked,
-    } = this.props;
-
+  const renderLikesAndCommentsInfo = () => {
     const likesDisplayLabel = formatLikeText(status, showUsersWhoLiked);
     const numOfComments = _.get(status, 'shoutem_reply_count', 0);
     const commentsDisplayLabel = I18n.t(ext('numberOfComments'), {
@@ -197,63 +132,69 @@ class StatusView extends PureComponent {
     return (
       <View styleName="horizontal solid space-between md-gutter">
         {enableInteractions && (
-          <TouchableOpacity onPress={this.handleClickOnLikes}>
+          <TouchableOpacity onPress={handleClickOnLikes}>
             <Caption>{likesDisplayLabel}</Caption>
           </TouchableOpacity>
         )}
         {enableComments && (
-          <TouchableOpacity onPress={this.handleClickOnComments}>
+          <TouchableOpacity onPress={handleOpenStatusDetails}>
             <Caption>{commentsDisplayLabel}</Caption>
           </TouchableOpacity>
         )}
       </View>
     );
-  }
+  };
 
-  renderButtons() {
-    const {
-      status,
-      addComment,
-      onLikeAction,
-      enableComments,
-      enableInteractions,
-    } = this.props;
-
+  const renderButtons = () => {
     return (
       <View styleName="horizontal flexible">
         <Divider styleName="line" />
         {enableInteractions && (
-          <LikeButton
-            onLikeAction={onLikeAction}
-            status={status}
-          />
+          <LikeButton onLikeAction={onLikeAction} status={status} />
         )}
         {enableComments && (
-          <CommentButton
-            addComment={addComment}
-            status={status}
-          />
+          <CommentButton addComment={addComment} status={status} />
         )}
         <Divider styleName="line" />
       </View>
     );
-  }
+  };
 
-  render() {
-    return (
-      <View styleName="vertical">
-        <View styleName="vertical solid md-gutter">
-          {this.renderHeader()}
-          {this.renderStatusText()}
-        </View>
-        <TouchableOpacity onPress={this.handleClickOnStatus}>
-          {this.renderStatusAttachments()}
-        </TouchableOpacity>
-        {this.renderLikesAndCommentsInfo()}
-        {this.renderButtons()}
+  return (
+    <View styleName="vertical">
+      <View styleName="vertical solid md-gutter">
+        {renderHeader()}
+        {renderStatusText()}
       </View>
-    );
-  }
+      <TouchableOpacity onPress={handleOpenStatusDetails}>
+        {renderStatusAttachments()}
+      </TouchableOpacity>
+      {renderLikesAndCommentsInfo()}
+      {renderButtons()}
+    </View>
+  );
+}
+
+StatusView.propTypes = {
+  status: postShape.isRequired,
+  addComment: PropTypes.func.isRequired,
+  openUserLikes: PropTypes.func.isRequired,
+  openStatusDetails: PropTypes.func,
+  onLikeAction: PropTypes.func,
+  openProfile: PropTypes.func,
+  showUsersWhoLiked: PropTypes.bool,
+  onMenuPress: PropTypes.func,
+  enableImageFullScreen: PropTypes.bool,
+  enableInteractions: PropTypes.bool,
+  enableComments: PropTypes.bool,
+  style: PropTypes.object,
+};
+
+StatusView.defaultProps = {
+  enableImageFullScreen: false,
+  enableInteractions: true,
+  enableComments:true,
+  openStatusDetails : _.noop,
 }
 
 export default connectStyle(ext('StatusView'))(StatusView);

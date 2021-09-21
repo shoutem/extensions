@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
@@ -12,7 +11,6 @@ import {
   Subtitle,
   View,
 } from '@shoutem/ui';
-
 import { ext } from '../const';
 import {
   getDeal,
@@ -52,11 +50,7 @@ export class DealGridView extends PureComponent {
   }
 
   render() {
-    const {
-      activeCoupon,
-      deal,
-      dealStatus,
-    } = this.props;
+    const { activeCoupon, deal, dealStatus } = this.props;
 
     return (
       <TouchableOpacity onPress={this.handlePress}>
@@ -73,9 +67,7 @@ export class DealGridView extends PureComponent {
             <View styleName="md-gutter-top flexbox">
               <View styleName="flexible horizontal space-between">
                 <Text>
-                  <Text>
-                    {formatPrice(deal.discountPrice, deal.currency)}
-                  </Text>
+                  <Text>{formatPrice(deal.discountPrice, deal.currency)}</Text>
                   &nbsp;
                   <Caption styleName="line-through">
                     {formatPrice(deal.regularPrice, deal.currency)}
@@ -93,7 +85,10 @@ export class DealGridView extends PureComponent {
 export const mapStateToProps = (state, ownProps) => {
   const { deal } = ownProps;
   const lastDealTransaction = getLastDealTransaction(state, deal.id);
-  const lastDealStatusTransaction = getLastDealStatusTransaction(state, deal.id);
+  const lastDealStatusTransaction = getLastDealStatusTransaction(
+    state,
+    deal.id,
+  );
   const lastDealAction = getLastDealAction(state, deal.id);
   const activeCoupon = getDealActiveCoupon(lastDealStatusTransaction);
 

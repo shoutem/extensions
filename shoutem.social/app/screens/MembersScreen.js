@@ -5,6 +5,13 @@ import PropTypes from 'prop-types';
 import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { RemoteDataListScreen } from 'shoutem.application';
+import { getUser, authenticate } from 'shoutem.auth/redux';
+import {
+  getRouteParams,
+  navigateTo,
+  HeaderIconButton,
+} from 'shoutem.navigation';
 import { isBusy, isInitialized, next } from '@shoutem/redux-io';
 import {
   setStatus,
@@ -13,21 +20,17 @@ import {
   validationStatus,
 } from '@shoutem/redux-io/status';
 import { connectStyle } from '@shoutem/theme';
-import { ListView, View, Button, Icon } from '@shoutem/ui';
-import { RemoteDataListScreen } from 'shoutem.application';
-import { navigateTo } from 'shoutem.navigation';
+import { ListView } from '@shoutem/ui';
 import MemberView from '../components/MemberView';
-import { user as userShape } from '../components/shapes';
 import { getUsers, getUsersInGroups } from '../redux/selectors';
 import { ext } from '../const';
-import { loadUsers, loadUsersInGroups } from '../redux';
-import { openProfileForLegacyUser } from '../services';
+import { loadUsers, loadUsersInGroups, blockUser } from '../redux';
+import { openProfileForLegacyUser, openBlockActionSheet } from '../services';
 
 export class MembersScreen extends RemoteDataListScreen {
   static propTypes = {
     ...RemoteDataListScreen.propTypes,
-    title: PropTypes.string.isRequired,
-    data: PropTypes.arrayOf(userShape),
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -36,7 +39,14 @@ export class MembersScreen extends RemoteDataListScreen {
     autoBindReact(this);
   }
 
+  getNavBarProps() {
+    return { headerRight: this.headerRight };
+  }
+
   componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
     this.fetchData();
   }
 
@@ -55,12 +65,19 @@ export class MembersScreen extends RemoteDataListScreen {
     }
   }
 
+  handleMenuPress(user) {
+    const { blockUser, authenticate } = this.props;
+
+    const handleBlockPress = () =>
+      authenticate(currentUser =>
+        blockUser(user.legacyId, currentUser.legacyId),
+      );
+
+    return openBlockActionSheet(handleBlockPress);
+  }
+
   openSearchScreen() {
-    const { navigateTo } = this.props;
-
-    const route = { screen: ext('SearchScreen') };
-
-    navigateTo(route);
+    navigateTo(ext('SearchScreen'));
   }
 
   fetchData() {
@@ -83,30 +100,28 @@ export class MembersScreen extends RemoteDataListScreen {
     }
   }
 
-  getNavigationBarProps() {
-    const { title } = this.props;
-
-    return {
-      title: title.toUpperCase(),
-      renderRightComponent: this.renderRightComponent,
-    };
-  }
-
-  renderRightComponent() {
+  headerRight(props) {
     return (
-      <Button onPress={() => this.openSearchScreen()}>
-        <Icon name="search" />
-      </Button>
+      <HeaderIconButton
+        {...props}
+        iconName="search"
+        onPress={this.openSearchScreen}
+      />
     );
   }
 
   renderRow(user) {
-    const { openProfile } = this.props;
+    const { openProfile, currentUser } = this.props;
+
+    const isCurrentUser = currentUser.legacyId === user.legacyId;
 
     return (
-      <View>
-        <MemberView openProfile={openProfile} user={user} />
-      </View>
+      <MemberView
+        openProfile={openProfile}
+        user={user}
+        showMenuIcon={!isCurrentUser}
+        onMenuPress={this.handleMenuPress}
+      />
     );
   }
 
@@ -133,7 +148,8 @@ export class MembersScreen extends RemoteDataListScreen {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const users = _.get(ownProps, 'users');
+  const routeParams = getRouteParams(ownProps);
+  const users = _.get(routeParams, 'users');
   const userGroups = _.get(ownProps, 'shortcut.settings.userGroups', []);
   const visibleGroups = userGroups.length
     ? userGroups.filter(group => group.visible)
@@ -157,16 +173,18 @@ const mapStateToProps = (state, ownProps) => {
     data: users || visibleUsers,
     visibleGroups: visibleGroupIds,
     showAllUsers,
+    currentUser: getUser(state) || {},
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   ...bindActionCreators(
     {
-      navigateTo,
       loadUsers: ownProps.users ? undefined : loadUsers,
       loadUsersInGroups: ownProps.users ? undefined : loadUsersInGroups,
       next,
+      blockUser,
+      authenticate,
     },
     dispatch,
   ),

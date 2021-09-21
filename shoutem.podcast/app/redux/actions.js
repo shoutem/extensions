@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { buildFeedUrlWithEndpoint, ext as rssExt } from 'shoutem.rss';
-import { getExtensionSettings, getShortcut } from 'shoutem.application';
 import { find } from '@shoutem/redux-io';
+import { getExtensionSettings, getShortcut } from 'shoutem.application';
+import { buildFeedUrlWithEndpoint, ext as rssExt } from 'shoutem.rss';
 import {
   DOWNLOADED_EPISODE_ADDED,
   DOWNLOADED_EPISODE_REMOVED,
@@ -9,7 +9,7 @@ import {
   SET_DOWNLOAD_IN_PROGRESS,
 } from '../const';
 import { episodeDownloadManager } from '../services';
-import { getDownloadedEpisode, getEpisodesFeed } from './selectors';
+import { getEpisodesFeed } from './selectors';
 
 export function addDownloadedEpisode(path, id) {
   return { type: DOWNLOADED_EPISODE_ADDED, payload: { id, path } };

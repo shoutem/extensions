@@ -28,16 +28,23 @@
     "image": {
       "type": "object",
       "format": "attachment",
-      "title": "Image",
+      "title": "Lead Image",
       "referencedSchema": "shoutem.core.image-attachments",
       "displayPriority": 5
+    },
+    "gallery": {
+      "format": "entity-reference-array",
+      "title": "Image Gallery",
+      "type": "object",
+      "referencedSchema": "shoutem.core.image-attachments",
+      "displayPriority": 6
     },
     "link": {
       "type": "string",
       "format": "uri",
       "title": "Article URL",
       "pattern": "^(https?|bundle|shoutem|tel|sms|mail|itms)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]$",
-      "displayPriority": 6
+      "displayPriority": 7
     }
   }
 }

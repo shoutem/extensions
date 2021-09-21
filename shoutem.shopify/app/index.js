@@ -13,16 +13,17 @@ import WebCheckoutScreen from './screens/checkout/WebCheckoutScreen';
 
 import enTranslations from './translations/en.json';
 
+import './navigation';
 import { actions, reducer } from './redux';
 
 export const screens = {
   CartScreen,
   ProductsFeaturedGridScreen: ProductsGridScreen,
-  ProductsGridScreen: ProductsGridScreen,
+  ProductsGridScreen,
   ProductsFeaturedTallGridScreen: ProductsGridScreen,
   ProductsTallGridScreen: ProductsGridScreen,
   ProductsFeaturedListScreen: ProductsListScreen,
-  ProductsListScreen: ProductsListScreen,
+  ProductsListScreen,
   SearchProductsScreen,
   ProductDetailsScreen,
   UpdateItemScreen,
@@ -40,7 +41,4 @@ export const shoutem = {
 
 export { appDidMount } from './app';
 
-export {
-  actions,
-  reducer,
-};
+export { actions, reducer };

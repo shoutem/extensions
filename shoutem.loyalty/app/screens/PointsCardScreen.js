@@ -1,13 +1,9 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import QRCode from 'react-native-qrcode-svg';
 import { connect } from 'react-redux';
-import { getExtensionSettings } from 'shoutem.application';
-import { getUser, loginRequired } from 'shoutem.auth';
-import { QRCodeScanner, navigateToQRCodeScannerScreen } from 'shoutem.camera';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateTo, openInModal } from 'shoutem.navigation';
 import {
   getCollection,
   isBusy,
@@ -17,7 +13,6 @@ import {
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
-  Icon,
   Caption,
   Screen,
   ScrollView,
@@ -27,6 +22,16 @@ import {
   View,
   TouchableOpacity,
 } from '@shoutem/ui';
+import { getExtensionSettings } from 'shoutem.application';
+import { getUser, loginRequired } from 'shoutem.auth';
+import { QRCodeScanner, navigateToQRCodeScannerScreen } from 'shoutem.camera';
+import { I18n } from 'shoutem.i18n';
+import {
+  navigateTo,
+  openInModal,
+  HeaderBackButton,
+  HeaderIconButton,
+} from 'shoutem.navigation';
 import { cashierShape, transactionShape } from '../components/shapes';
 import TransactionHistoryView from '../components/TransactionHistoryView';
 import { ext } from '../const';
@@ -39,65 +44,44 @@ import {
 } from '../services';
 import NoProgramScreen from './NoProgramScreen';
 
-const { array, arrayOf, bool, func, number, shape, string, object } = PropTypes;
-
-const renderNone = () => null;
-
 /**
  * Shows points card details for a single card loyalty program
  */
 export class PointsCardScreen extends PureComponent {
   static propTypes = {
     // Assigns points to card when the user scans a bar code
-    authorizeTransactionByBarCode: func.isRequired,
+    authorizeTransactionByBarCode: PropTypes.func.isRequired,
     // Assigns points to card when cashier scans a QR code
-    authorizeTransactionByQRCode: func.isRequired,
+    authorizeTransactionByQRCode: PropTypes.func.isRequired,
     // Card ID for user's loyalty card
-    cardId: string,
+    cardId: PropTypes.string,
     // Card state, with points
-    cardState: shape({
-      points: number,
+    cardState: PropTypes.shape({
+      points: PropTypes.number,
     }),
     // Cashier info for this user, empty if he's not a cashier.
     // A cashier can scan a QR code and a user can see his points card info.
     cashierInfo: cashierShape,
     // True if the user can collect points by scanning a bar code, false otherwise
-    enableBarcodeScan: bool,
-    // Navigates to points history screen
-    navigateTo: func,
-    // Opens the assign points flow in a modal dialog
-    openInModal: func,
+    enableBarcodeScan: PropTypes.bool,
     // ID of loyalty program for this extension
-    programId: string,
+    programId: PropTypes.string,
     // Refreshes loyalty card points
-    refreshCardState: func,
+    refreshCardState: PropTypes.func,
     // Refreshes loyalty card transactions
-    refreshTransactions: func,
-    navigateToQRCodeScannerScreen: func,
+    refreshTransactions: PropTypes.func,
     // Recent transactions
-    transactions: arrayOf(transactionShape),
+    transactions: PropTypes.arrayOf(transactionShape),
     // logged in user
-    user: object,
-    cardStates: array,
-    style: object,
+    user: PropTypes.object,
+    cardStates: PropTypes.array,
+    style: PropTypes.object,
   };
 
   constructor(props) {
     super(props);
 
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.assignPoints = this.assignPoints.bind(this);
-    this.handleScanCode = this.handleScanCode.bind(this);
-    this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(
-      this,
-    );
-    this.onBarCodeScanned = this.onBarCodeScanned.bind(this);
-    this.refreshCardState = this.refreshCardState.bind(this);
-    this.scanBarCode = this.scanBarCode.bind(this);
-    this.checkData = this.checkData.bind(this);
-    this.toggleScanner = this.toggleScanner.bind(this);
-    this.renderQRCodeScanner = this.renderQRCodeScanner.bind(this);
-    this.renderCloseScannerButton = this.renderCloseScannerButton.bind(this);
+    autoBindReact(this);
 
     this.state = {
       isScannerActive: true,
@@ -106,14 +90,30 @@ export class PointsCardScreen extends PureComponent {
   }
 
   componentDidMount() {
+    const { navigation } = this.props;
+
     this.checkData(this.props);
+
+    navigation.setOptions({ ...this.getNavBarProps() });
   }
 
   componentDidUpdate(prevProps) {
-    this.checkData(this.props, prevProps);
+    const { navigation, programId } = this.props;
+
+    if (programId) {
+      this.checkData(this.props, prevProps);
+    }
+
+    navigation.setOptions({ ...this.getNavBarProps() });
   }
 
   checkData(props = this.props, prevProps) {
+    const { programId } = props;
+
+    if (!programId) {
+      return;
+    }
+
     const { user } = props;
     const prevUser = _.get(prevProps, 'user');
 
@@ -122,13 +122,13 @@ export class PointsCardScreen extends PureComponent {
     }
   }
 
-  renderCloseScannerButton() {
+  renderCloseScannerButton(props) {
     return (
-      <View styleName="container" virtual>
-        <Button onPress={this.toggleScanner}>
-          <Icon name="close" />
-        </Button>
-      </View>
+      <HeaderIconButton
+        {...props}
+        onPress={this.toggleScanner}
+        iconName="close"
+      />
     );
   }
 
@@ -140,40 +140,29 @@ export class PointsCardScreen extends PureComponent {
     const titleKey = isUserACashier ? 'scanQrTitle' : 'myCardScreenNavBarTitle';
     const title = I18n.t(ext(titleKey)).toUpperCase();
 
-    // leaving these two undefined will default them
-    let renderLeftComponent;
-    let renderRightComponent;
-
-    if (isUserACashier) {
-      renderRightComponent = renderNone;
-
-      if (isScannerActive || isProcessingQRCodeData) {
-        renderLeftComponent = renderNone;
-      }
-
-      if (isScannerActive) {
-        renderRightComponent = this.renderCloseScannerButton;
-      }
-    }
+    const hideLeftButton =
+      isUserACashier && (isScannerActive || isProcessingQRCodeData);
+    const showCloseScannerButton = isUserACashier && isScannerActive;
+    const headerLeft = hideLeftButton
+      ? () => null
+      : props => <HeaderBackButton {...props} />;
+    const headerRight = showCloseScannerButton
+      ? this.renderCloseScannerButton
+      : () => null;
 
     return {
       title,
-      renderLeftComponent,
-      renderRightComponent,
+      headerLeft,
+      headerRight,
     };
   }
 
   assignPoints() {
-    const { openInModal } = this.props;
-
-    openInModal({
-      screen: ext('PinVerificationScreen'),
-    });
+    openInModal(ext('PinVerificationScreen'));
   }
 
   async handleScanCode(code) {
     const { isProcessingQRCodeData } = this.state;
-    const { authorizeTransactionByQRCode } = this.props;
 
     if (isProcessingQRCodeData) {
       return;
@@ -184,26 +173,22 @@ export class PointsCardScreen extends PureComponent {
       isScannerActive: false,
     });
 
+    const { authorizeTransactionByQRCode } = this.props;
+
     await authorizeTransactionByQRCode(code.data);
 
-    // Delay the state change so that the screen change
-    // animations have enough time to finish
+    // Delay the state change so that the screen change animations have enough
+    // time to finish.
     setTimeout(() => {
       this.setState({ isProcessingQRCodeData: false });
     }, 2000);
   }
 
   navigateToPointsHistoryScreen() {
-    const { navigateTo } = this.props;
-
-    navigateTo({
-      screen: ext('PointsHistoryScreen'),
-    });
+    navigateTo(ext('PointsHistoryScreen'));
   }
 
   scanBarCode() {
-    const { navigateToQRCodeScannerScreen } = this.props;
-
     navigateToQRCodeScannerScreen(
       this.onBarCodeScanned,
       I18n.t(ext('scanBarcodeNavBarTitle')),
@@ -221,10 +206,12 @@ export class PointsCardScreen extends PureComponent {
   }
 
   refreshCardState() {
-    const { refreshCardState, refreshTransactions } = this.props;
+    const { refreshCardState, refreshTransactions, programId } = this.props;
 
-    refreshCardState();
-    refreshTransactions();
+    if (programId) {
+      refreshCardState();
+      refreshTransactions();
+    }
   }
 
   renderBarcodeScanButton() {
@@ -342,18 +329,17 @@ export class PointsCardScreen extends PureComponent {
   }
 
   renderScreen() {
-    return (
-      <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
-        {this.renderContent()}
-      </Screen>
-    );
+    return <Screen>{this.renderContent()}</Screen>;
   }
 
   render() {
-    const { programId } = this.props;
+    const { programId, navigation } = this.props;
 
-    return programId ? this.renderScreen() : <NoProgramScreen />;
+    if (!programId) {
+      return <NoProgramScreen navigation={navigation} />;
+    }
+
+    return this.renderScreen();
   }
 }
 
@@ -381,12 +367,9 @@ export const mapStateToProps = state => {
 export const mapDispatchToProps = {
   authorizeTransactionByBarCode,
   authorizeTransactionByQRCode,
-  navigateToQRCodeScannerScreen,
   fetchCashierInfo,
   refreshCardState,
   refreshTransactions,
-  navigateTo,
-  openInModal,
 };
 
 export default loginRequired(

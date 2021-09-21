@@ -1,17 +1,16 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Screen, View, Text, Title } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { getRouteParams } from 'shoutem.navigation';
 import { authorizationShape, rewardShape } from '../components/shapes';
 import Stamps from '../components/Stamps';
 import { ext } from '../const';
 import { collectPoints } from '../services';
-
-const { func } = PropTypes;
 
 /**
  * Lets the cashier stamp a punch card and process the transaction.
@@ -19,7 +18,7 @@ const { func } = PropTypes;
 export class StampCardScreen extends PureComponent {
   static propTypes = {
     // Stamps the card
-    collectPoints: func,
+    collectPoints: PropTypes.func,
     // An already verified authorization
     authorization: authorizationShape,
     // Reward being stamped
@@ -29,10 +28,17 @@ export class StampCardScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleDone = this.handleDone.bind(this);
-    this.stampCard = this.stampCard.bind(this);
+    autoBindReact(this);
 
     this.state = { points: 0 };
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({
+      title: I18n.t(ext('punchCardStampingNavBarTitle')),
+    });
   }
 
   handleDone() {
@@ -50,7 +56,8 @@ export class StampCardScreen extends PureComponent {
   }
 
   processTransaction() {
-    const { collectPoints, authorization, reward } = this.props;
+    const { collectPoints } = this.props;
+    const { authorization, reward } = getRouteParams(this.props);
     const { points } = this.state;
 
     collectPoints({ points }, authorization, reward);
@@ -59,7 +66,7 @@ export class StampCardScreen extends PureComponent {
   stampCard(stampIndex) {
     const {
       reward: { points = 0 },
-    } = this.props;
+    } = getRouteParams(this.props);
 
     const addedPoints = stampIndex - points + 1;
 
@@ -69,7 +76,7 @@ export class StampCardScreen extends PureComponent {
   }
 
   render() {
-    const { reward: originalReward } = this.props;
+    const { reward: originalReward } = getRouteParams(this.props);
     const { points } = this.state;
 
     const reward = {
@@ -80,7 +87,6 @@ export class StampCardScreen extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar title={I18n.t(ext('punchCardStampingNavBarTitle'))} />
         <View styleName="vertical flexible h-center v-center xl-gutter-horizontal">
           <Title styleName="h-center xl-gutter-top md-gutter-bottom">
             {title}

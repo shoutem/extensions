@@ -23,14 +23,11 @@ class ProductsGrid extends ProductsList {
   };
 
   renderProductRow(products, sectionId, index) {
-    const gridProducts =
-      _.map(products, product => this.renderGridProduct(product));
-
-    return (
-      <GridRow columns={2}>
-        {gridProducts}
-      </GridRow>
+    const gridProducts = _.map(products, product =>
+      this.renderGridProduct(product),
     );
+
+    return <GridRow columns={2}>{gridProducts}</GridRow>;
   }
 
   renderGridProduct(item) {
@@ -67,6 +64,7 @@ class ProductsGrid extends ProductsList {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('ProductsGrid'), {})(ProductsGrid),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('ProductsGrid'), {})(ProductsGrid));

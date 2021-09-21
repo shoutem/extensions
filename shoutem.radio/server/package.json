@@ -1,6 +1,6 @@
 {
   "name": "shoutem.radio",
-  "version": "2.5.1",
+  "version": "3.0.0",
   "description": "Radio extension",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

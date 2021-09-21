@@ -8,15 +8,12 @@ import MapScreen from './screens/MapScreen';
 
 // themes imports
 
-
 export const screens = {
   MapScreen,
-  AboutScreen
+  AboutScreen,
 };
 
-export const themes = {
-
-};
+export const themes = {};
 
 export function ext(resourceName) {
   return resourceName ? `${pack.name}.${resourceName}` : pack.name;

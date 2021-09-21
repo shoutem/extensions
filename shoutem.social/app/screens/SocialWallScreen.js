@@ -1,20 +1,22 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { InteractionManager } from 'react-native';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
+import { InteractionManager } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { getExtensionSettings } from 'shoutem.application/redux';
+import { RemoteDataListScreen } from 'shoutem.application';
+import { getUser, isAuthenticated } from 'shoutem.auth/redux';
+import { authenticate } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
+import {
+  navigateTo,
+  getRouteParams,
+  HeaderIconButton,
+} from 'shoutem.navigation';
 import { next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import {
-  NavigationBar,
-  navigateTo,
-  openInModal,
-  closeModal,
-  navigateBack,
-} from 'shoutem.navigation';
 import {
   Screen,
   Row,
@@ -22,28 +24,28 @@ import {
   Text,
   View,
   Divider,
-  Button,
-  Icon,
   TouchableOpacity,
 } from '@shoutem/ui';
-
-import { RemoteDataListScreen } from 'shoutem.application';
-import { getExtensionSettings } from 'shoutem.application/redux';
-import { authenticate } from 'shoutem.auth';
-import { getUser, isAuthenticated } from 'shoutem.auth/redux';
-import { I18n } from 'shoutem.i18n';
-
 import StatusView from '../components/StatusView';
-import { loadStatuses, createStatus, likeStatus, unlikeStatus } from '../redux';
-import { openProfileForLegacyUser } from '../services';
 import { ext } from '../const';
-
-const { object } = PropTypes;
+import {
+  loadStatuses,
+  createStatus,
+  likeStatus,
+  unlikeStatus,
+  selectors,
+  blockUser,
+} from '../redux';
+import {
+  openProfileForLegacyUser,
+  currentUserOwnsStatus,
+  openBlockOrReportActionSheet,
+} from '../services';
 
 export class SocialWallScreen extends RemoteDataListScreen {
   static propTypes = {
     ...RemoteDataListScreen.propTypes,
-    data: object, // overriden because data is object that contains property "data" which is array
+    data: PropTypes.object, // overriden because data is object that contains property "data" which is array
   };
 
   constructor(props, context) {
@@ -52,34 +54,43 @@ export class SocialWallScreen extends RemoteDataListScreen {
     autoBindReact(this);
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
+
+    super.componentDidMount();
+  }
+
+  getNavBarProps() {
+    return { headerRight: this.renderSettingsButton };
+  }
+
   openStatusDetails(statusId, scrollDownOnOpen = false) {
     const {
-      navigateTo,
       user,
       statusMaxLength,
       enableComments,
       enableInteractions,
       enablePhotoAttachments,
     } = this.props;
+    const { title } = getRouteParams(this.props);
 
-    const route = {
-      screen: ext('StatusDetailsScreen'),
-      title: I18n.t(ext('postDetailsTitle')),
-      props: {
-        user,
-        statusId,
-        addComment: this.addComment,
-        openUserLikes: this.openUserLikes,
-        onLikeAction: this.onLikeAction,
-        statusMaxLength,
-        enableComments,
-        enableInteractions,
-        enablePhotoAttachments,
-        scrollDownOnOpen,
-      },
+    const routeParams = {
+      title,
+      user,
+      statusId,
+      addComment: this.addComment,
+      openUserLikes: this.openUserLikes,
+      onLikeAction: this.onLikeAction,
+      statusMaxLength,
+      enableComments,
+      enableInteractions,
+      enablePhotoAttachments,
+      scrollDownOnOpen,
     };
 
-    navigateTo(route);
+    navigateTo(ext('StatusDetailsScreen'), routeParams);
   }
 
   addComment(statusId) {
@@ -88,37 +99,43 @@ export class SocialWallScreen extends RemoteDataListScreen {
 
   newStatus() {
     const {
-      navigateTo,
-      navigateBack,
+      navigation,
       user,
       createStatus,
       statusMaxLength,
-      enableComments,
-      enableInteractions,
       enablePhotoAttachments,
     } = this.props;
 
-    const route = {
-      screen: ext('CreateStatusScreen'),
+    const routeParams = {
       title: I18n.t(ext('newStatusTitle')),
-      props: {
-        title: I18n.t(ext('newStatusTitle')),
-        placeholder: I18n.t(ext('newStatusPlaceholder')),
-        user,
-        enablePhotoAttachments,
-        statusMaxLength,
-        onStatusCreated: (status, attachment) => {
-          createStatus(status, attachment)
-            .then(navigateBack())
-        },
+      placeholder: I18n.t(ext('newStatusPlaceholder')),
+      user,
+      enablePhotoAttachments,
+      statusMaxLength,
+      onStatusCreated: (status, attachment) => {
+        createStatus(status, attachment).then(navigation.goBack());
       },
     };
 
-    navigateTo(route);
+    navigateTo(ext('CreateStatusScreen'), routeParams);
+  }
+
+  handleMenuPress(status) {
+    const { blockUser, user, authenticate } = this.props;
+    const statusOwner = _.get(status, 'user');
+
+    const handleBlockUser = () =>
+      authenticate(currentUser =>
+        blockUser(statusOwner.id, currentUser.legacyId),
+      );
+
+    const isBlockAllowed = !currentUserOwnsStatus(user, statusOwner);
+
+    return openBlockOrReportActionSheet(isBlockAllowed, handleBlockUser);
   }
 
   onLikeAction(status) {
-    const { navigateTo, likeStatus, unlikeStatus, authenticate } = this.props;
+    const { likeStatus, unlikeStatus, authenticate } = this.props;
 
     if (!status.liked) {
       authenticate(() => likeStatus(status.id));
@@ -127,20 +144,18 @@ export class SocialWallScreen extends RemoteDataListScreen {
     }
   }
 
-  renderSettingsButton() {
+  renderSettingsButton(props) {
     return (
-      <View styleName="container" virtual>
-        <Button onPress={this.handleSettingsPress}>
-          <Icon name="settings" />
-        </Button>
-      </View>
+      <HeaderIconButton
+        {...props}
+        iconName="settings"
+        onPress={this.handleSettingsPress}
+      />
     );
   }
 
   handleSettingsPress() {
-    const { navigateTo } = this.props;
-
-    navigateTo({ screen: ext('NotificationSettingsScreen') });
+    navigateTo(ext('NotificationSettingsScreen'));
   }
 
   getUsersWhoLiked(status) {
@@ -148,18 +163,12 @@ export class SocialWallScreen extends RemoteDataListScreen {
   }
 
   openUserLikes(status) {
-    const { navigateTo } = this.props;
-
-    const route = {
-      screen: ext('MembersScreen'),
+    const routeParams = {
       title: I18n.t(ext('viewStatusLikes')),
-      props: {
-        users: this.getUsersWhoLiked(status),
-        title: I18n.t(ext('viewStatusLikes')),
-      },
+      users: this.getUsersWhoLiked(status),
     };
 
-    navigateTo(route);
+    navigateTo(ext('MembersScreen'), routeParams);
   }
 
   openMyProfile() {
@@ -193,6 +202,7 @@ export class SocialWallScreen extends RemoteDataListScreen {
           openUserLikes={this.openUserLikes}
           addComment={this.addComment}
           onLikeAction={this.onLikeAction}
+          onMenuPress={this.handleMenuPress}
           openProfile={openProfile}
           enableComments={enableComments}
           enableInteractions={enableInteractions}
@@ -202,16 +212,18 @@ export class SocialWallScreen extends RemoteDataListScreen {
   }
 
   getListProps() {
-    const { data } = this.props;
+    const {
+      statuses: { data },
+    } = this.props;
 
     return {
-      data: this.props.data.data,
+      data,
     };
   }
 
   renderAddNewStatusSection() {
     const { user } = this.props;
-
+    // eslint-disable-next-line camelcase
     const { profile_image_url } = user;
 
     return (
@@ -224,7 +236,9 @@ export class SocialWallScreen extends RemoteDataListScreen {
                 source={{ uri: profile_image_url }}
               />
             </TouchableOpacity>
-            <Text styleName="sm-gutter-right md-gutter-left">{I18n.t(ext('newStatusPlaceholder'))}</Text>
+            <Text styleName="sm-gutter-right md-gutter-left">
+              {I18n.t(ext('newStatusPlaceholder'))}
+            </Text>
           </Row>
         </View>
       </TouchableOpacity>
@@ -232,14 +246,10 @@ export class SocialWallScreen extends RemoteDataListScreen {
   }
 
   render() {
-    const { data, style, title } = this.props;
+    const { data, style } = this.props;
 
     return (
       <Screen style={style.screen}>
-        <NavigationBar
-          renderRightComponent={this.renderSettingsButton}
-          title={title.toUpperCase()}
-        />
         <Divider styleName="line" />
         {this.renderAddNewStatusSection()}
         {this.renderData(data)}
@@ -248,36 +258,38 @@ export class SocialWallScreen extends RemoteDataListScreen {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const extension = getExtensionSettings(state, ext());
 
   return {
-    data: state[ext()].statuses,
+    data: selectors.getStatuses(state),
+    statuses: selectors.getStatusesForUser(state),
     user: getUser(state) || {},
     statusMaxLength: Number(_.get(extension, 'maxStatusLength', 140)),
     enablePhotoAttachments: _.get(extension, 'enablePhotoAttachments', true),
     enableComments: _.get(extension, 'enableComments', true),
     enableInteractions: _.get(extension, 'enableInteractions', true),
-  }
+  };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({
-    navigateTo,
-    navigateBack,
-    next,
-    openInModal,
-    closeModal,
-    loadStatuses,
-    createStatus,
-    likeStatus,
-    unlikeStatus,
-    authenticate,
-    isAuthenticated,
-  }, dispatch),
+const mapDispatchToProps = dispatch => ({
+  ...bindActionCreators(
+    {
+      next,
+      loadStatuses,
+      createStatus,
+      likeStatus,
+      unlikeStatus,
+      authenticate,
+      isAuthenticated,
+      blockUser,
+    },
+    dispatch,
+  ),
   openProfile: openProfileForLegacyUser(dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('SocialWallScreen'))(SocialWallScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('SocialWallScreen'))(SocialWallScreen));

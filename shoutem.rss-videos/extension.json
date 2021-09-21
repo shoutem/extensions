@@ -1,8 +1,8 @@
 {
   "name": "rss-videos",
   "title": "Videos RSS",
-  "version": "2.5.0",
-  "platform": "2.5.*",
+  "version": "3.0.0",
+  "platform": "^3.0.0",
   "description": "Show a video gallery from an RSS feed",
   "icon": "server/assets/add-videos-image.png",
   "categories": [

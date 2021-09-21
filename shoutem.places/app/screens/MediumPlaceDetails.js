@@ -1,12 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import { Favorite } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateTo } from 'shoutem.navigation';
-import { openURL } from 'shoutem.web-view';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
-import { ScrollView, Caption, Title, Screen, Tile, View } from '@shoutem/ui';
+import { ScrollView, Caption, Title, Screen, Tile } from '@shoutem/ui';
 import { getPlaceImages } from '../services/places';
 import { PlaceImageGallery } from '../components';
 import { ext } from '../const';
@@ -18,19 +16,41 @@ class MediumPlaceDetails extends PlaceDetails {
   };
 
   getNavBarProps() {
-    const { place } = this.props;
+    const { place, screenSettings } = getRouteParams(this.props);
     const { schema } = this.state;
+
+    const title = place.name || '';
+    const headerRight = props => (
+      <Favorite
+        // eslint-disable-next-line react/prop-types
+        iconProps={{ style: props.tintColor }}
+        item={place}
+        navBarButton
+        schema={schema}
+      />
+    );
+
+    if (screenSettings.navigationBarStyle === 'solid') {
+      return {
+        headerRight,
+        title,
+      };
+    }
+
     const images = getPlaceImages(place);
+    const resolvedStyle =
+      _.size(images) >= 1
+        ? { ...composeNavigationStyles(['clear', 'solidify']) }
+        : { ...composeNavigationStyles(['noBorder', 'solidify']) };
+    const resolvedAnimation = !place.image
+      ? { ...composeNavigationStyles(['boxing']) }
+      : {};
 
     return {
-      renderRightComponent: () => (
-        <View styleName="container" virtual>
-          <Favorite item={place} navBarButton schema={schema} />
-        </View>
-      ),
-      styleName: _.size(images) >= 1 ? 'clear' : 'no-border',
-      animationName: place.image ? 'solidify' : 'boxing',
-      title: place.name,
+      ...resolvedAnimation,
+      ...resolvedStyle,
+      headerRight,
+      title,
     };
   }
 
@@ -66,11 +86,11 @@ class MediumPlaceDetails extends PlaceDetails {
   }
 
   render() {
-    const { place } = this.props;
-    const { location = {} } = place;
+    const { place } = getRouteParams(this.props);
+    const location = _.get(place, 'location', {});
+
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderLeadImage(place)}
           {this.renderPlaceInfo(place)}
@@ -108,6 +128,4 @@ class MediumPlaceDetails extends PlaceDetails {
   }
 }
 
-export default connect(undefined, { navigateTo, openURL })(
-  connectStyle(ext('MediumPlaceDetails'))(MediumPlaceDetails),
-);
+export default connectStyle(ext('MediumPlaceDetails'))(MediumPlaceDetails);

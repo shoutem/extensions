@@ -1,7 +1,4 @@
-import {
-  Dimensions,
-  PixelRatio,
-} from 'react-native';
+import { Dimensions, PixelRatio } from 'react-native';
 
 const window = Dimensions.get('window');
 
@@ -22,17 +19,25 @@ export const resizeImageSource = imageProps => {
     return imageProps;
   }
 
-  const imageWidth = PixelRatio.getPixelSizeForLayoutSize(style.width || window.width);
-  const imageHeight = PixelRatio.getPixelSizeForLayoutSize(style.height || window.height);
+  const imageWidth = PixelRatio.getPixelSizeForLayoutSize(
+    style.width || window.width,
+  );
+  const imageHeight = PixelRatio.getPixelSizeForLayoutSize(
+    style.height || window.height,
+  );
 
   // weserv service expects the URL without a protocol, so we strip the protocol here,
   // the ssl: prefix can be used to force the secure connection when fetching images
-  const imageUrl = imageProps.source.uri.replace('https://', 'ssl:').replace(/^.*:\/\//g, '');
+  const imageUrl = imageProps.source.uri
+    .replace('https://', 'ssl:')
+    .replace(/^.*:\/\//g, '');
   const props = {
     ...imageProps,
     source: {
       ...imageProps.source,
-      uri: `https://images.weserv.nl/?url=${encodeURIComponent(imageUrl)}&w=${imageWidth}&t=fit&h=${imageHeight}`,
+      uri: `https://images.weserv.nl/?url=${encodeURIComponent(
+        imageUrl,
+      )}&w=${imageWidth}&t=fit&h=${imageHeight}`,
     },
   };
 

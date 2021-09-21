@@ -2,12 +2,9 @@ import React from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { Text, View } from 'react-native';
-
 import { connectStyle } from '@shoutem/theme';
-
 import { I18n } from 'shoutem.i18n';
-
+import { getRouteParams } from 'shoutem.navigation';
 import { ext, TRANSLATIONS } from '../const';
 
 // Components
@@ -32,13 +29,16 @@ export class DealsListScreen extends DealsScreen {
 
   getNavBarProps() {
     const titleStyle = _.get(this.props, 'style.titleContainer', {});
-    return super.getNavBarProps(I18n.t(TRANSLATIONS.DEALS_LIST_BUTTON), titleStyle);
+    return super.getNavBarProps(
+      I18n.t(TRANSLATIONS.DEALS_LIST_BUTTON),
+      titleStyle,
+    );
   }
 
   renderRow(deal, sectionId, dealId) {
-    const { hasFeaturedItem } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    if (hasFeaturedItem && dealId === '0') {
+    if (screenSettings.hasFeaturedItem && dealId === '0') {
       return this.renderFeaturedDeal(deal);
     }
 
@@ -52,6 +52,7 @@ export class DealsListScreen extends DealsScreen {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('DealsListScreen', {}))(DealsListScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('DealsListScreen', {}))(DealsListScreen));

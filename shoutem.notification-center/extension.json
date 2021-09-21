@@ -1,10 +1,10 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "2.5.4",
-  "platform": "2.5.*",
+  "version": "3.0.1",
+  "platform": "^3.0.0",
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* Tap on notification in notification center UX improvements",
+  "releaseNotes": "* Fixed bug when sometimes a user would receive daily reminder notification while it is not enabled",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": ["users"],
   "i18n": {
@@ -37,6 +37,17 @@
         "defaultShortcutTitle": "Group settings",
         "extensionTitle": "Notifications"
       }
+    },
+    {
+      "title": "Notification settings",
+      "description": "Notification settings",
+      "name": "openNotificationSettingsScreen",
+      "icon": "theme://settings.png",
+      "screen": "@.NotificationSettingsScreen",
+      "settings": {
+        "defaultShortcutTitle": "Notification settings",
+        "extensionTitle": "Notifications"
+      }
     }
   ],
   "screens": [
@@ -45,6 +56,15 @@
     },
     {
       "name": "PushGroupsScreen"
+    },
+    {
+      "name": "NotificationSettingsScreen"
+    },
+    {
+      "name": "NotificationDailySettingsScreen"
+    },
+    {
+      "name": "ReminderSettingsScreen"
     }
   ],
   "settingsPages": [
@@ -57,6 +77,11 @@
       "page": "@.GroupsPage",
       "title": "Groups",
       "categories": ["push"]
+    },
+    {
+      "page": "@.GeneralPage",
+      "title": "General",
+      "categories": ["push"]
     }
   ],
   "pages": [
@@ -66,6 +91,10 @@
     },
     {
       "name": "GroupsPage",
+      "type": "react-page"
+    },
+    {
+      "name": "GeneralPage",
       "type": "react-page"
     }
   ]

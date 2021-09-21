@@ -1,19 +1,19 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
-import { Button, View, Text } from '@shoutem/ui';
+import { View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { HeaderTextButton } from 'shoutem.navigation';
+import PlacePointsRewardListView from '../../components/PlacePointsRewardListView';
+import RewardsGaugeProgressBar from '../../components/RewardsGaugeProgressBar';
 import { ext } from '../../const';
-
 import {
   PlaceDetails,
   mapStateToProps,
   mapDispatchToProps,
 } from './PlaceDetails';
-
-import RewardsGaugeProgressBar from '../../components/RewardsGaugeProgressBar';
-import PlacePointsRewardListView from '../../components/PlacePointsRewardListView';
 
 const gaugeContainerStyleNames =
   'flexible vertical h-center v-center md-gutter-horizontal lg-gutter-vertical';
@@ -26,13 +26,7 @@ export class NoImageGaugeRewardsPlaceDetails extends PlaceDetails {
   constructor(props) {
     super(props);
 
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.renderLeadImage = this.renderLeadImage.bind(this);
-    this.renderPoints = this.renderPoints.bind(this);
-    this.renderRewardRow = this.renderRewardRow.bind(this);
-    this.renderRightNavBarComponent = this.renderRightNavBarComponent.bind(
-      this,
-    );
+    autoBindReact(this);
   }
 
   getNavBarProps() {
@@ -41,21 +35,25 @@ export class NoImageGaugeRewardsPlaceDetails extends PlaceDetails {
 
     return {
       title: name.toUpperCase(),
-      renderRightComponent: () => this.renderRightNavBarComponent(),
+      headerRight: this.renderRightNavBarComponent,
     };
   }
 
-  renderRightNavBarComponent() {
+  renderRightNavBarComponent(props) {
     const { transactions } = this.props;
 
+    const hasTransactions = !!_.size(transactions);
+
+    if (!hasTransactions) {
+      return null;
+    }
+
     return (
-      <View virtual styleName="container">
-        {_.size(transactions) ? (
-          <Button onPress={this.navigateToPointsHistoryScreen}>
-            <Text>{I18n.t(ext('navigationHistoryButton'))}</Text>
-          </Button>
-        ) : null}
-      </View>
+      <HeaderTextButton
+        {...props}
+        onPress={this.navigateToPointsHistoryScreen}
+        title={I18n.t(ext('navigationHistoryButton'))}
+      />
     );
   }
 

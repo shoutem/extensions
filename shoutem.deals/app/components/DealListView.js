@@ -3,7 +3,6 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
@@ -15,7 +14,6 @@ import {
   Text,
   View,
 } from '@shoutem/ui';
-
 import { ext } from '../const';
 import {
   getDeal,
@@ -41,7 +39,7 @@ export class DealListView extends PureComponent {
   };
 
   static defaultProps = {
-    onPress: () => { },
+    onPress: () => {},
   };
 
   constructor(props) {
@@ -55,9 +53,7 @@ export class DealListView extends PureComponent {
   }
 
   renderClaimedIcon() {
-    return (
-      <Icon name="checkbox-on" styleName="disclosure" />
-    );
+    return <Icon name="checkbox-on" styleName="disclosure" />;
   }
 
   render() {
@@ -81,9 +77,7 @@ export class DealListView extends PureComponent {
           <View styleName="vertical stretch space-between md-gutter-horizontal">
             <Subtitle>{deal.title}</Subtitle>
             <View styleName="flexible horizontal v-center">
-              <Text>
-                {formatPrice(deal.discountPrice, deal.currency)}
-              </Text>
+              <Text>{formatPrice(deal.discountPrice, deal.currency)}</Text>
               <Caption styleName="line-through">
                 {formatPrice(deal.regularPrice, deal.currency)}
               </Caption>
@@ -101,7 +95,10 @@ export class DealListView extends PureComponent {
 export const mapStateToProps = (state, ownProps) => {
   const { deal } = ownProps;
   const lastDealTransaction = getLastDealTransaction(state, deal.id);
-  const lastDealStatusTransaction = getLastDealStatusTransaction(state, deal.id);
+  const lastDealStatusTransaction = getLastDealStatusTransaction(
+    state,
+    deal.id,
+  );
   const lastDealAction = getLastDealAction(state, deal.id);
   const activeCoupon = getDealActiveCoupon(lastDealStatusTransaction);
 

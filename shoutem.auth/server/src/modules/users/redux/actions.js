@@ -112,6 +112,35 @@ export function deleteUser(appId, userId, scope = {}) {
   return remove(config, user, scope);
 }
 
+export function changePassword(appId, userId, password) {
+  const body = {
+    data: {
+      type: 'shoutem.auth.set-password-actions',
+      id: userId,
+      attributes: {
+        password,
+      },
+    },
+  };
+
+  const config = {
+    schema: 'shoutem.auth.set-password-actions',
+    request: {
+      endpoint: shoutemUrls.buildAuthUrl(
+        `/v1/realms/externalReference:${appId}/users/${userId}/actions/set-password`,
+      ),
+      method: 'POST',
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
+      body: JSON.stringify(body),
+    },
+  };
+
+  return find(config, 'set-user-password');
+}
+
 export function updateUser(appId, userId, userPatch, scope = {}) {
   const config = {
     schema: USERS,

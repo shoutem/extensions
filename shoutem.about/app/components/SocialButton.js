@@ -1,31 +1,13 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
 import { Linking, Alert } from 'react-native';
-
+import { I18n } from 'shoutem.i18n';
 import { Button, Icon, Text } from '@shoutem/ui';
 
-import { I18n } from 'shoutem.i18n';
-
-export default class SocialButton extends PureComponent {
-  static propTypes = {
-    url: PropTypes.string,
-    title: PropTypes.string,
-    icon: PropTypes.string.isRequired,
-    openURL: PropTypes.func,
-  }
-
-  constructor(props) {
-    super(props);
-
-    autoBindReact(this);
-  }
-
-  buttonPressHandle() {
-    const { icon, openURL, url, title } = this.props;
-
+const SocialButton = ({ icon, openURL, url, title }) => {
+  const buttonPressHandle = () => {
     if (icon === 'call' || icon === 'email') {
-      Linking.canOpenURL(url).then((supported) => {
+      Linking.canOpenURL(url).then(supported => {
         if (supported) {
           Linking.openURL(url);
         } else {
@@ -40,20 +22,25 @@ export default class SocialButton extends PureComponent {
     }
 
     openURL(url, title);
+  };
+
+  if (!url) {
+    return null;
   }
 
-  render() {
-    const { icon, title, url } = this.props;
+  return (
+    <Button styleName="stacked clear tight" onPress={buttonPressHandle}>
+      <Icon name={icon} />
+      <Text>{title}</Text>
+    </Button>
+  );
+};
 
-    if (!url) {
-      return null;
-    }
+SocialButton.propTypes = {
+  url: PropTypes.string,
+  title: PropTypes.string,
+  icon: PropTypes.string.isRequired,
+  openURL: PropTypes.func,
+};
 
-    return (
-      <Button styleName="stacked clear tight" onPress={this.buttonPressHandle}>
-        <Icon name={icon} />
-        <Text>{title}</Text>
-      </Button>
-    );
-  }
-}
+export default SocialButton;

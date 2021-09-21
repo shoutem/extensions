@@ -4,9 +4,6 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Platform, StatusBar, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, closeModal } from 'shoutem.navigation';
-import { ext as rssExt } from 'shoutem.rss';
 import { isBusy, isValid } from '@shoutem/redux-io';
 import {
   Screen,
@@ -14,7 +11,11 @@ import {
   ImageGalleryOverlay,
   View,
   Spinner,
+  ShareButton,
 } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { closeModal, HeaderStyles, getRouteParams } from 'shoutem.navigation';
+import { ext as rssExt } from 'shoutem.rss';
 import { getPhotosFeed } from '../redux';
 import { remapAndFilterPhotos } from '../services';
 
@@ -34,8 +35,7 @@ function renderImageOverlay(imageData) {
 
 class PhotoDetails extends PureComponent {
   static propTypes = {
-    id: PropTypes.string.isRequired,
-    closeModal: PropTypes.func,
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -51,7 +51,9 @@ class PhotoDetails extends PureComponent {
   }
 
   componentDidMount() {
-    const { photos, photo, photoNotFound } = this.props;
+    const { photos, photo, photoNotFound, navigation } = this.props;
+
+    navigation.setOptions(this.getNavbarProps());
 
     if (photoNotFound) {
       this.handleItemNotFound();
@@ -66,33 +68,42 @@ class PhotoDetails extends PureComponent {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { data, photoNotFound } = this.props;
+  componentDidUpdate(prevProps, prevState) {
     const {
-      data: nextData,
-      photos: nextPhotos,
-      photo: nextPhoto,
-      photoNotFound: nextPhotoNotFound,
-    } = nextProps;
+      selectedPhotoIndex: prevSelectedPhotoIndex,
+      photos: prevPhotosState,
+    } = prevState;
+    const { selectedPhotoIndex, photos: photosState } = this.state;
 
-    if (!photoNotFound && nextPhotoNotFound) {
+    const { data, photos, photo, photoNotFound, navigation } = this.props;
+    const { data: prevData, photoNotFound: prevPhotoNotFound } = prevProps;
+
+    if (!prevPhotoNotFound && photoNotFound) {
       this.handleItemNotFound();
     }
 
-    if (nextPhoto && nextData !== data) {
-      this.setState({
-        photos: nextPhotos,
-        mode: ImageGallery.IMAGE_GALLERY_MODE,
-        selectedPhotoIndex: calculateStartingIndex(nextPhoto, nextPhotos),
-      });
+    if (photo && prevData !== data) {
+      this.setState(
+        {
+          photos,
+          mode: ImageGallery.IMAGE_GALLERY_MODE,
+          selectedPhotoIndex: calculateStartingIndex(photo, photos),
+        },
+        () => navigation.setOptions(this.getNavbarProps()),
+      );
+    }
+
+    if (
+      prevSelectedPhotoIndex !== selectedPhotoIndex ||
+      prevPhotosState !== photosState
+    ) {
+      navigation.setOptions(this.getNavbarProps());
     }
   }
 
   handleItemNotFound() {
-    const { closeModal } = this.props;
-
     const okButton = {
-      onPress: () => closeModal(),
+      onPress: closeModal,
     };
 
     return Alert.alert(
@@ -107,19 +118,26 @@ class PhotoDetails extends PureComponent {
 
     if (mode === ImageGallery.IMAGE_PREVIEW_MODE) {
       return {
-        styleName: 'clear none',
+        ...HeaderStyles.clear,
+        title: '',
       };
     }
 
     const selectedPhoto = photos[selectedPhotoIndex];
+    const title = _.get(selectedPhoto, 'title');
+    const link = _.get(selectedPhoto, 'source.uri');
 
     return {
-      styleName: 'clear',
+      headerRight: props => (
+        <ShareButton
+          styleName="clear"
+          iconProps={{ style: props.tintColor }}
+          title={title}
+          url={link}
+        />
+      ),
+      ...HeaderStyles.clear,
       title: `${selectedPhotoIndex + 1} / ${photos.length}`,
-      share: {
-        title: _.get(selectedPhoto, 'title'),
-        link: _.get(selectedPhoto, 'source.uri'),
-      },
     };
   }
 
@@ -148,7 +166,6 @@ class PhotoDetails extends PureComponent {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavbarProps()} />
         {loading && (
           <View styleName="flexible vertical h-center v-center">
             <Spinner />
@@ -169,7 +186,7 @@ class PhotoDetails extends PureComponent {
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const { id, feedUrl } = ownProps;
+  const { id, feedUrl } = getRouteParams(ownProps);
 
   const data = getPhotosFeed(state, feedUrl);
   const photos = remapAndFilterPhotos(data);
@@ -184,6 +201,4 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = { closeModal };
-
-export default connect(mapStateToProps, mapDispatchToProps)(PhotoDetails);
+export default connect(mapStateToProps, null)(PhotoDetails);

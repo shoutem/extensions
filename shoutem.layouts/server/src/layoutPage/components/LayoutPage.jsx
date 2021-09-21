@@ -27,6 +27,7 @@ export class LayoutPage extends Component {
     this.checkData = this.checkData.bind(this);
     this.handleScreenSelected = this.handleScreenSelected.bind(this);
     this.renderScreenHierarchy = this.renderScreenHierarchy.bind(this);
+    this.getDefaultScreenSettings = this.getDefaultScreenSettings.bind(this);
   }
 
   componentWillMount() {
@@ -47,6 +48,16 @@ export class LayoutPage extends Component {
     );
   }
 
+  getDefaultScreenSettings(canonicalType, canonicalName) {
+    const { hierarchy } = this.props;
+
+    const originalScreens = _.get(hierarchy, 'originalScreens');
+    const originScreen = _.find(originalScreens, { canonicalType });
+    const alternativeScreens = _.get(originScreen, 'alternativeScreens');
+
+    return _.get(_.find(alternativeScreens, { canonicalName }), 'settings');
+  }
+
   checkData(props) {
     const { hierarchy, shortcut, loadHierarchy } = props;
 
@@ -62,19 +73,23 @@ export class LayoutPage extends Component {
       canonicalType: selectedCanonicalType,
     } = event;
 
-    // When switching screens, we just need to change canonicalName.
-    // Other settings (user's and default) will be handled on server side.
-    // We also need to send the complete screen array to server, modifying only
-    // canonicalName for screen of corresponding canonicalType.
     const screens = _.get(shortcut, 'screens', []);
     const newScreens = _.map(screens, screen => {
       const { canonicalType, canonicalName } = screen;
 
       if (canonicalType === selectedCanonicalType) {
-        return {
+        const data = {
           canonicalType: selectedCanonicalType,
           canonicalName: selectedCanonicalName,
-        };
+        }
+        
+        // finding default settings for the screen so we can override previous settings saved in DB
+        const settings = this.getDefaultScreenSettings(selectedCanonicalType, selectedCanonicalName);
+        if (settings) {
+          data.settings = settings;
+        }
+
+        return data;
       }
 
       return {

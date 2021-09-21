@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 
 export class BaseEventItem extends PureComponent {
   static propTypes = {

@@ -1,9 +1,6 @@
 import { combineReducers } from 'redux';
-
-import { storage, getCollection } from '@shoutem/redux-io';
-
 import { rssFeed } from 'shoutem.rss';
-
+import { storage, getCollection } from '@shoutem/redux-io';
 import { ext } from './const';
 
 export const VIMEO_SCHEMA = 'shoutem.proxy.videos';

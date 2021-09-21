@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { getShortcut } from 'shoutem.application';
 import { getCollection } from '@shoutem/redux-io';
+import { getShortcut } from 'shoutem.application';
 import { ext } from '../const';
 
 function getModuleState(state) {

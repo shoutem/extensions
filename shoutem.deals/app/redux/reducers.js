@@ -1,6 +1,5 @@
-import { storage, collection } from '@shoutem/redux-io';
 import { combineReducers } from 'redux';
-
+import { storage, collection } from '@shoutem/redux-io';
 import { cmsCollection } from 'shoutem.cms';
 import {
   COUPONS_SCHEMA,

@@ -1,15 +1,11 @@
 import React, { PureComponent } from 'react';
-import { Animated, TouchableOpacity } from 'react-native';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
-import { I18n } from 'shoutem.i18n';
-import {
-  View,
-  TextInput,
-  Icon,
-} from '@shoutem/ui';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { Animated, TouchableOpacity } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
+import { View, TextInput, Icon } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -75,10 +71,7 @@ class SearchBar extends PureComponent {
     const { style, ...props } = this.props;
     const { focused, searchQuery } = this.state;
 
-    const transform = [
-      { scale: this.animationValue },
-      { perspective: 1000 },
-    ];
+    const transform = [{ scale: this.animationValue }, { perspective: 1000 }];
 
     return (
       <View style={style.container}>
@@ -93,10 +86,7 @@ class SearchBar extends PureComponent {
         />
         <AnimatedTouchable
           onPress={this.handleClosePress}
-          style={[
-            style.iconWrapper,
-            { transform },
-          ]}
+          style={[style.iconWrapper, { transform }]}
         >
           <Icon name="clear-text" style={style.icon} />
         </AnimatedTouchable>

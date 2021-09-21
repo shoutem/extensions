@@ -8,7 +8,6 @@ export function loadNotifications(appId, offset = 0, limit = 10) {
     q: {
       limit: limit,
       offset: offset,
-      type: 'manual',
     },
   };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import { CmsListScreen } from 'shoutem.cms';
 import { isFavoritesSchema, getFavoriteCollection } from 'shoutem.favorites';
 import { navigateTo } from 'shoutem.navigation';
@@ -10,14 +11,13 @@ import { ext } from '../const';
 export class BooksListScreen extends CmsListScreen {
   static propTypes = {
     ...CmsListScreen.propTypes,
-    navigateTo: PropTypes.func,
     hasFavorites: PropTypes.bool,
   };
 
   constructor(props, context) {
     super(props, context);
-    this.openDetailsScreen = this.openDetailsScreen.bind(this);
-    this.renderRow = this.renderRow.bind(this);
+
+    autoBindReact(this);
 
     const schema = ext('Books');
     this.state = {
@@ -27,14 +27,11 @@ export class BooksListScreen extends CmsListScreen {
   }
 
   openDetailsScreen(book) {
-    const { navigateTo } = this.props;
+    const { hasFavorites } = this.props;
 
-    navigateTo({
-      screen: ext('BooksDetailsScreen'),
-      props: {
-        book,
-        hasFavoriteButton: this.props.hasFavorites,
-      },
+    navigateTo(ext('BooksDetailsScreen'), {
+      book,
+      hasFavoriteButton: hasFavorites,
     });
   }
 
@@ -59,8 +56,6 @@ export const mapStateToProps = (state, ownProps) => ({
   favoriteBooks: getFavoriteCollection(ext('Books'), state),
 });
 
-export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
-  navigateTo,
-});
+export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(BooksListScreen);

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.about",
-  "version": "2.5.3",
+  "version": "3.0.1",
   "description": "Shoutem Extension with basic information about business",
   "peerDependencies": {
     "@shoutem/redux-io": "*",

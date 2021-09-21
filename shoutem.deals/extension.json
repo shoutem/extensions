@@ -1,8 +1,8 @@
 {
   "name": "deals",
   "title": "Deals",
-  "version": "2.5.1",
-  "platform": "2.5.*",
+  "version": "3.0.0",
+  "platform": "^3.0.0",
   "description": "Create special deals and redeem them with coupons",
   "releaseNotes": "* Fixed navigation header overlapping screen content on 'My deals' screen",
   "icon": "server/assets/add-deals-image.png",

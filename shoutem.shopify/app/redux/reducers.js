@@ -21,8 +21,10 @@ import {
 } from './actionTypes';
 
 const addItemToCart = (cart, { item, variant, quantity }) => {
-  const variantIndex =
-    _.findIndex(cart, cartItem => cartItem.variant.id === variant.id);
+  const variantIndex = _.findIndex(
+    cart,
+    cartItem => cartItem.variant.id === variant.id,
+  );
 
   if (variantIndex > -1) {
     return cart.map((item, index) => {
@@ -30,7 +32,7 @@ const addItemToCart = (cart, { item, variant, quantity }) => {
         const existingCartItem = cart[index];
         return {
           ...existingCartItem,
-          quantity: existingCartItem.quantity + quantity
+          quantity: existingCartItem.quantity + quantity,
         };
       }
       return item;
@@ -40,18 +42,22 @@ const addItemToCart = (cart, { item, variant, quantity }) => {
 };
 
 const removeItemFromCart = (cart, { variant }) => {
-  const variantIndex =
-    _.findIndex(cart, cartItem => cartItem.variant.id === variant.id);
+  const variantIndex = _.findIndex(
+    cart,
+    cartItem => cartItem.variant.id === variant.id,
+  );
 
   return cart.filter((item, index) => index !== variantIndex);
 };
 
 const updateCartItem = (
   cart,
-  { cartItem: originalItem, variant, quantity }
+  { cartItem: originalItem, variant, quantity },
 ) => {
-  const variantIndex = _.findIndex(cart, cartItem =>
-    cartItem.variant.id === originalItem.variant.id);
+  const variantIndex = _.findIndex(
+    cart,
+    cartItem => cartItem.variant.id === originalItem.variant.id,
+  );
 
   return cart.map((item, index) => {
     if (index === variantIndex) {
@@ -89,7 +95,7 @@ const customer = (state = {}, action) => {
 const products = (state = {}, action) => {
   switch (action.type) {
     case PRODUCTS_LOADED:
-      return { ...state, ...(_.keyBy(action.payload.products, 'id')) };
+      return { ...state, ..._.keyBy(action.payload.products, 'id') };
     default:
       return state;
   }
@@ -103,9 +109,9 @@ const productIdsForKey = (state = {}, { products, page, resetMode }, key) => {
     ...state,
     [key]: {
       page,
-      productIds: resetMode ?
-        newProductIds :
-        _.union(existingProductIds, newProductIds),
+      productIds: resetMode
+        ? newProductIds
+        : _.union(existingProductIds, newProductIds),
     },
   };
 };
@@ -145,7 +151,7 @@ const productsForKey = keyName => (state = {}, action) => {
   }
 };
 
-const resetPages = (state) => {
+const resetPages = state => {
   return _.mapValues(state, productsStatus => ({ ...productsStatus, page: 0 }));
 };
 
@@ -153,11 +159,11 @@ const checkoutOrder = (state = {}, action) => {
   switch (action.type) {
     case ORDER_NUMBER_LOADED:
       return {
-        orderNumber: action.payload
+        orderNumber: action.payload,
       };
     case CHECKOUT_COMPLETED:
       return {
-        orderNumber: ""
+        orderNumber: '',
       };
     default:
       return state;

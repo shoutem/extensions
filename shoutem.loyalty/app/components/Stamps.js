@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
@@ -32,8 +33,7 @@ export class Stamps extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleStampPress = this.handleStampPress.bind(this);
-    this.renderRow = this.renderRow.bind(this);
+    autoBindReact(this);
   }
 
   handleStampPress(stampIndex) {

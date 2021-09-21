@@ -12,7 +12,7 @@ import {
   View,
 } from '@shoutem/ui';
 
-import images from '../assets/images'
+import images from '../assets/images';
 import { ext } from '../const';
 import ListItem from './ListItem';
 
@@ -43,11 +43,9 @@ const GridItem = ({ item, isTall, onAddToCart, onPress, shop }) => {
             <Subtitle styleName="md-gutter-right bold">
               {newPriceString}
             </Subtitle>
-            {oldPriceString &&
-              <Caption styleName="line-through">
-                {oldPriceString}
-              </Caption>
-            }
+            {oldPriceString && (
+              <Caption styleName="line-through">{oldPriceString}</Caption>
+            )}
             <Button onPress={onAddToCart} styleName="tight clear">
               <Icon name="add-to-cart" />
             </Button>

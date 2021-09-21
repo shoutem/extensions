@@ -1,10 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
 import { ImageBackground } from '@shoutem/ui';
 
-function EventImage(props) {
+const EventImage = props => {
   return (
     <ImageBackground
       {...props}
@@ -14,7 +13,7 @@ function EventImage(props) {
       {props.children}
     </ImageBackground>
   );
-}
+};
 
 EventImage.propTypes = {
   event: PropTypes.object,

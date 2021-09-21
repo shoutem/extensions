@@ -9,11 +9,9 @@ import {
   getOne,
   getCollection,
 } from '@shoutem/redux-io';
-
-import { getActiveRoute } from 'shoutem.navigation/redux/core';
 import { preventStateRehydration } from 'shoutem.redux';
 
-import { AppInitQueue } from './services'
+import { AppInitQueue } from './services';
 import configuration from './configuration.json';
 import {
   ext,
@@ -33,11 +31,12 @@ import {
 
 export const EXECUTE_SHORTCUT = 'shoutem.application.EXECUTE_SHORTCUT';
 export const SET_ACTIVE_SHORTCUT = 'shoutem.application.SET_ACTIVE_SHORTCUT';
-export const HIDE_SHORTCUT = 'shoutem.application.HIDE_SHORTCUT';
+export const HIDE_SHORTCUTS = 'shoutem.application.HIDE_SHORTCUTS';
 export const SHOW_SHORTCUT = 'shoutem.application.SHOW_SHORTCUT';
 export const SHOW_ALL_SHORTCUTS = 'shoutem.application.SHOW_ALL_SHORTCUTS';
 export const RESTART_APP = 'shoutem.application.RESTART_APP';
-export const QUEUE_TARGET_COMPLETED = 'shoutem.application.QUEUE_TARGET_COMPLETED';
+export const QUEUE_TARGET_COMPLETED =
+  'shoutem.application.QUEUE_TARGET_COMPLETED';
 
 export function restartApp() {
   return {
@@ -71,25 +70,18 @@ export function getShortcut(state, shortcutId) {
   return getOne(shortcutId, state, 'shoutem.core.shortcuts');
 }
 
-export function getActiveShortcut(state, action) {
-  const activeRoute = _.get(action, 'route') || getActiveRoute(state);
-  const activeShortcutId = _.get(activeRoute, 'context.shortcutId');
-
-  if (!activeShortcutId) {
-    return undefined;
-  }
-
-  return getShortcut(state, activeShortcutId);
-}
-
 export function isShortcutVisible(state, shortcutId) {
   return !_.find(state[ext()].hiddenShortcuts, id => shortcutId === id);
 }
 
-export function hideShortcut(shortcutId) {
+export function getHiddenShortcuts(state) {
+  return state[ext()].hiddenShortcuts;
+}
+
+export function hideShortcuts(shortcutIds) {
   return {
-    type: HIDE_SHORTCUT,
-    shortcutId,
+    type: HIDE_SHORTCUTS,
+    shortcutIds,
   };
 }
 
@@ -117,11 +109,17 @@ export function getAppInitQueue(state) {
   return state[ext()].appInitQueue;
 }
 
+export function getAppInitQueueComplete(state) {
+  const queue = getAppInitQueue(state);
+
+  return _.every(queue, item => item === true);
+}
+
 export function hiddenShortcuts(state = [], action) {
-  const { type, shortcutId } = action;
+  const { type, shortcutId, shortcutIds } = action;
   switch (type) {
-    case HIDE_SHORTCUT:
-      return [...state, shortcutId];
+    case HIDE_SHORTCUTS:
+      return _.uniq([...state, ...shortcutIds]);
     case SHOW_SHORTCUT:
       return _.without(state, shortcutId);
     case SHOW_ALL_SHORTCUTS:
@@ -147,34 +145,13 @@ export function appInitQueue(
 }
 
 /**
- * Creates a redux action that is used to execute shortcuts provided by configuration
- * @param shortcutId {string} an Id of a shortcut
- * @param navigationAction The navigation action type to use (navigate, replace,
- * reset to route, open in modal etc.)
- * Shoutem core will resolve the navigation action from this type,
- * with a sensible default if none is provided.
- * @param navigationStack The navigation stack to execute the shortcutId on.
- * @returns {{type: string, shortcutId: *}} a redux action with type EXECUTE_SHORTCUT
- */
-export const executeShortcut = (
-  shortcutId,
-  navigationAction,
-  navigationStack,
-) => ({
-  type: EXECUTE_SHORTCUT,
-  navigationStack,
-  navigationAction,
-  shortcutId,
-});
-
-/**
  * A selector that returns extension settings of the currently running application.
  *
  * @param state The redux state
  * @param extensionName The name of the currently running application
  * @returns {*} Settings of application
  */
-export const getExtensionSettings = function (state, extensionName) {
+export const getExtensionSettings = (state, extensionName) => {
   return _.get(
     state[ext()],
     ['extensions', extensionName, 'attributes', 'settings'],
@@ -183,10 +160,15 @@ export const getExtensionSettings = function (state, extensionName) {
 };
 
 export function getExtensionCloudUrl(state, extensionName) {
-  return _.get(
-    state[ext()],
-    ['extensions', extensionName, 'attributes', 'settings', 'services', 'self', 'cloud'],
-  );
+  return _.get(state[ext()], [
+    'extensions',
+    extensionName,
+    'attributes',
+    'settings',
+    'services',
+    'self',
+    'cloud',
+  ]);
 }
 
 /**
@@ -195,8 +177,9 @@ export function getExtensionCloudUrl(state, extensionName) {
  * @param state The redux state
  * @returns {Array} Shortcuts of the application
  */
-export const getAllShortcuts = (state) => {
+export const getAllShortcuts = state => {
   const allShortcuts = _.keys(state[ext()].shortcuts);
+
   return getCollection(allShortcuts, state, SHORTCUTS_SCHEMA);
 };
 

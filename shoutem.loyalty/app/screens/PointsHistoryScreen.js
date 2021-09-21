@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
 import { getCollection } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { Screen } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { transactionShape } from '../components/shapes';
 import TransactionHistoryView from '../components/TransactionHistoryView';
 import { ext } from '../const';
@@ -24,6 +23,12 @@ export class PointsHistoryScreen extends PureComponent {
     transactions: arrayOf(transactionShape),
   };
 
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({ ...this.getNavBarProps() });
+  }
+
   getNavBarProps() {
     return {
       title: I18n.t(ext('pointsHistoryNavBarTitle')),
@@ -35,7 +40,6 @@ export class PointsHistoryScreen extends PureComponent {
 
     return (
       <Screen>
-        <NavigationBar {...this.getNavBarProps()} />
         <TransactionHistoryView transactions={transactions} />
       </Screen>
     );

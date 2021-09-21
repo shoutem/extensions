@@ -19,7 +19,7 @@ function getRootQuestions(state) {
 function getCategoryQuestions(categoryId, state) {
   const questions = getQuestions(state);
 
-  return _.filter(questions, (question) => {
+  return _.filter(questions, question => {
     const matchingCategory = _.find(question.categories, { id: categoryId });
 
     if (matchingCategory) {
@@ -35,7 +35,10 @@ function getActiveCategoryId(state) {
 }
 
 function getCategories(state) {
-  const allCategories = getCollection(getExtensionState(state).categories, state);
+  const allCategories = getCollection(
+    getExtensionState(state).categories,
+    state,
+  );
 
   return _.filter(allCategories, { autoCreated: false });
 }

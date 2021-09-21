@@ -1,19 +1,15 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Platform, Linking } from 'react-native';
 import autoBindReact from 'auto-bind/react';
-
+import PropTypes from 'prop-types';
+import { Linking } from 'react-native';
 import { Screen, Icon, Button, View } from '@shoutem/ui';
-
 import { MapView } from 'shoutem.application';
-import { NavigationBar } from 'shoutem.navigation';
-
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { getMapUrl } from '../shared/getMapUrl';
 
 export default class SingleEventMapScreen extends PureComponent {
   static propTypes = {
-    marker: PropTypes.object,
-    title: PropTypes.string.isRequired,
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -22,8 +18,23 @@ export default class SingleEventMapScreen extends PureComponent {
     autoBindReact(this);
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+    const {
+      event: { title = '' },
+    } = getRouteParams(this.props);
+
+    navigation.setOptions({
+      ...composeNavigationStyles(['noBorder']),
+      headerRight: this.headerRight,
+      title,
+    });
+  }
+
   openMaps() {
-    const { marker, title } = this.props;
+    const {
+      event: { marker, title },
+    } = getRouteParams(this.props);
     const { latitude, longitude } = marker;
 
     if (latitude && longitude) {
@@ -31,26 +42,23 @@ export default class SingleEventMapScreen extends PureComponent {
     }
   }
 
-  renderNavigateButton() {
+  headerRight(props) {
     return (
-      <View styleName="container" virtual>
-        <Button onPress={this.openMaps}>
-          <Icon name="directions" />
+      <View styleName="container">
+        <Button styleName="clear" onPress={this.openMaps}>
+          <Icon name="directions" style={props.tintColor} />
         </Button>
       </View>
     );
   }
 
   render() {
-    const { marker, title } = this.props;
+    const {
+      event: { marker },
+    } = getRouteParams(this.props);
 
     return (
-      <Screen styleName="full-screen">
-        <NavigationBar
-          renderRightComponent={this.renderNavigateButton}
-          styleName="no-border"
-          title={title.toUpperCase()}
-        />
+      <Screen>
         <MapView
           initialRegion={marker}
           markers={[marker]}

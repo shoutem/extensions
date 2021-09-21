@@ -1,10 +1,11 @@
 import React from 'react';
+import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
+import { connectStyle } from '@shoutem/theme';
+import { Button, Text, View } from '@shoutem/ui';
 import { loginRequired } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
-import { Button, Subtitle, Text, View } from '@shoutem/ui';
+import { HeaderTextButton } from 'shoutem.navigation';
 import SmallPointCardView from '../components/SmallPointCardView';
 import { ext } from '../const';
 import {
@@ -20,25 +21,20 @@ export class PointsSmallCardScreen extends PointsCardScreen {
   constructor(props) {
     super(props);
 
-    this.assignPoints = this.assignPoints.bind(this);
-    this.handleScanCode = this.handleScanCode.bind(this);
-    this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(
-      this,
-    );
-    this.onBarCodeScanned = this.onBarCodeScanned.bind(this);
-    this.refreshCardState = this.refreshCardState.bind(this);
-    this.scanBarCode = this.scanBarCode.bind(this);
-    this.renderRightComponent = this.renderRightComponent.bind(this);
+    autoBindReact(this);
   }
 
-  renderRightComponent() {
-    return (
-      <View virtual styleName="container">
-        <Button styleName="clear" onPress={this.navigateToPointsHistoryScreen}>
-          <Subtitle>{I18n.t(ext('navigationHistoryButton'))}</Subtitle>
-        </Button>
-      </View>
-    );
+  getNavBarProps() {
+    return {
+      title: I18n.t(ext('myCardScreenNavBarTitle')),
+      headerRight: props => (
+        <HeaderTextButton
+          {...props}
+          onPress={this.navigateToPointsHistoryScreen}
+          title={I18n.t(ext('navigationHistoryButton'))}
+        />
+      ),
+    };
   }
 
   renderBarcodeScanButton() {
@@ -59,10 +55,6 @@ export class PointsSmallCardScreen extends PointsCardScreen {
 
     return (
       <View styleName="flexible vertical space-around md-gutter">
-        <NavigationBar
-          title={I18n.t(ext('myCardScreenNavBarTitle'))}
-          renderRightComponent={this.renderRightComponent}
-        />
         <SmallPointCardView
           points={points}
           cardId={cardId}

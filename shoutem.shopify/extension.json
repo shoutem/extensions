@@ -1,21 +1,17 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "2.5.2",
-  "platform": "~2.5.2",
+  "version": "3.0.1",
+  "platform": "^3.0.0",
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "releaseNotes": "* Added a script for calling and debugging prebuild script",
+  "releaseNotes": "* Fixed search input text visibility",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
   },
-  "dependencies": [
-    "shoutem.layouts"
-  ],
-  "categories": [
-    "commerce"
-  ],
+  "dependencies": ["shoutem.layouts"],
+  "categories": ["commerce"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"

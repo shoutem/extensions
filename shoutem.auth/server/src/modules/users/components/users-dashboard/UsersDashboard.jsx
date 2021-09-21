@@ -128,15 +128,22 @@ export default class UsersDashboard extends Component {
   }
 
   renderUserModal() {
-    const { userGroups, ownerId, onUserUpdate, onUserCreate } = this.props;
+    const {
+      userGroups,
+      ownerId,
+      onUserUpdate,
+      onUserCreate,
+      onUserChangePassword,
+    } = this.props;
 
     return (
       <UserModal
+        ref="userModal"
+        ownerId={ownerId}
+        userGroups={userGroups}
         onUserCreate={onUserCreate}
         onUserUpdate={onUserUpdate}
-        ownerId={ownerId}
-        ref="userModal"
-        userGroups={userGroups}
+        onUserChangePassword={onUserChangePassword}
       />
     );
   }
@@ -200,6 +207,7 @@ UsersDashboard.propTypes = {
   onUserCreate: PropTypes.func,
   onUserUpdate: PropTypes.func,
   onUserDelete: PropTypes.func,
+  onUserChangePassword: PropTypes.func,
   onUserDataDownload: PropTypes.func,
   ownerId: PropTypes.string,
 };

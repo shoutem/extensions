@@ -1,27 +1,30 @@
 import _ from 'lodash';
-import { NAVIGATION_INITIALIZED, openInModal } from 'shoutem.navigation';
 import { getExtensionSettings } from 'shoutem.application';
-import { getOnboardingCompleted } from './selector';
+import {
+  NavigationStacks,
+  SET_NAVIGATION_INITIALIZED,
+} from 'shoutem.navigation';
 import { ext } from '../const';
+import { getOnboardingCompleted } from '../redux';
 
-export const onboardingMiddleware = store => next => (action) => {
-  if (action.type === NAVIGATION_INITIALIZED) {
+export const showOnboardingMiddleware = store => next => action => {
+  if (action.type === SET_NAVIGATION_INITIALIZED) {
     const state = store.getState();
-    const { dispatch } = store;
-
     const extensionSettings = getExtensionSettings(state, ext());
-    const isOnboardingConfigured = !_.isEmpty(_.get(extensionSettings, 'pageSettings'));
+    const isOnboardingConfigured = !_.isEmpty(
+      _.get(extensionSettings, 'pageSettings'),
+    );
     const isOnboardingCompleted = getOnboardingCompleted(state);
-    const shouldDisplayOnboarding = isOnboardingConfigured && !isOnboardingCompleted;
+
+    const shouldDisplayOnboarding =
+      isOnboardingConfigured && !isOnboardingCompleted;
 
     if (shouldDisplayOnboarding) {
-      dispatch(openInModal({
-        screen: ext('OnboardingScreen'),
-        props: {
-          customNavigationBar: true,
-        },
-      }));
+      NavigationStacks.openStack(ext(), {
+        onCompleted: () => NavigationStacks.closeStack(ext()),
+      });
     }
   }
+
   return next(action);
 };

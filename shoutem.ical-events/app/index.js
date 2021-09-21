@@ -1,26 +1,25 @@
 // Reference for app/index.js can be found here:
 // http://shoutem.github.io/docs/extensions/reference/extension-exports
 
-import rio, { storage, collection } from '@shoutem/redux-io';
+import rio from '@shoutem/redux-io';
 import reducer, { EVENTS_PROXY_SCHEMA } from './redux';
-import enTranslations from './translations/en.json';
-
 import EventsGridScreen from './screens/EventsGridScreen';
 import EventsListScreen from './screens/EventsListScreen';
 import EventDetailsScreen from './screens/EventDetailsScreen';
+import EventMapScreen from './screens/EventMapScreen';
+import enTranslations from './translations/en.json';
 
 export const screens = {
   EventsFeaturedGridScreen: EventsGridScreen,
-  EventsGridScreen: EventsGridScreen,
+  EventsGridScreen,
   EventsFeaturedListScreen: EventsListScreen,
-  EventsListScreen: EventsListScreen,
-  EventDetailsScreen: EventDetailsScreen,
+  EventsListScreen,
+  EventDetailsScreen,
   EventDetailsScreenWithTransparentNavbar: EventDetailsScreen,
+  EventMapScreen,
 };
 
-export const themes = {
-
-};
+export const themes = {};
 
 export const shoutem = {
   i18n: {

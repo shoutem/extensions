@@ -20,12 +20,9 @@ const ProfileImage = ({ isEditable, onPress, uri }) => (
         source={{ uri: uri || undefined }}
         borderRadius={dimensionRelativeToIphone(145) / 2}
       >
-        {isEditable &&
-          <Icon
-            name="take-a-photo"
-            style={uri ? { color: '#ffffff' } : {}}
-          />
-        }
+        {isEditable && (
+          <Icon name="take-a-photo" style={uri ? { color: '#ffffff' } : {}} />
+        )}
       </ImageBackground>
     </TouchableOpacity>
   </View>

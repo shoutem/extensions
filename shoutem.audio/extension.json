@@ -1,10 +1,10 @@
 {
   "name": "audio",
   "title": "Audio",
-  "version": "2.5.2",
+  "version": "3.0.1-rc.1",
   "description": "Track player components for other extensions to utilize. NOTE: Lock screen controls will not be visible in the preview.",
-  "releaseNotes": "* Fixed script for background mode injection for background audio",
-  "platform": "2.5.*",
+  "releaseNotes": "* Fixed radio stream stopping playback if user receives notification",
+  "platform": "^3.0.0",
   "icon": "server/assets/add-audio-image.png",
   "type": "system"
 }

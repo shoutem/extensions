@@ -3,14 +3,14 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { find, isValid, next, shouldRefresh } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { EmptyStateView } from '@shoutem/ui';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
 import { getUser, loginRequired } from 'shoutem.auth';
 import { CmsListScreen } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
-import { find, isValid, next, shouldRefresh } from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
-import { EmptyStateView } from '@shoutem/ui';
 import RewardListView from '../components/RewardListView';
 import {
   REWARDS_SCHEMA,
@@ -41,10 +41,8 @@ export class RewardsListScreen extends CmsListScreen {
     user: PropTypes.shape({
       id: PropTypes.string,
     }),
-
     // Actions
     find: PropTypes.func,
-    navigateTo: PropTypes.func,
     next: PropTypes.func,
     // Refreshes the loyalty card
     refreshCard: PropTypes.func,
@@ -62,6 +60,12 @@ export class RewardsListScreen extends CmsListScreen {
   }
 
   refreshData(prevProps) {
+    const { programId } = this.props;
+
+    if (!programId) {
+      return null;
+    }
+
     const { card, user } = this.props;
 
     const prevCard = _.get(prevProps, 'card');
@@ -92,7 +96,13 @@ export class RewardsListScreen extends CmsListScreen {
   }
 
   fetchData(newCardId) {
-    const { card, find, refreshCard } = this.props;
+    const { programId } = this.props;
+
+    if (!programId) {
+      return;
+    }
+
+    const { card, find, refreshCard, channelId } = this.props;
     const { cmsSchema, schema } = this.state;
 
     const cardId = _.get(card, 'id', newCardId);
@@ -110,6 +120,7 @@ export class RewardsListScreen extends CmsListScreen {
           'filter[app]': getAppId(),
           'filter[schema]': cmsSchema,
           'filter[card]': cardId,
+          'filter[channels]': channelId,
         },
       });
 
@@ -120,13 +131,10 @@ export class RewardsListScreen extends CmsListScreen {
   }
 
   navigateToRewardDetails(reward) {
-    const { navigateTo, parentCategoryId } = this.props;
+    const { parentCategoryId } = this.props;
 
-    navigateTo({
-      screen: ext('RewardDetailsScreen'),
-      props: {
-        reward: { ...reward, parentCategoryId },
-      },
+    navigateTo(ext('RewardDetailsScreen'), {
+      reward: { ...reward, parentCategoryId },
     });
   }
 
@@ -166,9 +174,13 @@ export class RewardsListScreen extends CmsListScreen {
   }
 
   render() {
-    const { programId } = this.props;
+    const { programId, navigation } = this.props;
 
-    return programId ? super.render() : <NoProgramScreen />;
+    if (!programId) {
+      return <NoProgramScreen navigation={navigation} />;
+    }
+
+    return super.render();
   }
 }
 
@@ -189,7 +201,6 @@ export const mapStateToProps = (state, ownProps) => {
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   find,
-  navigateTo,
   next,
   refreshCard,
 });

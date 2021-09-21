@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { Linking } from 'react-native';
-import { connect } from 'react-redux';
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { openURL } from 'shoutem.web-view';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -20,28 +19,33 @@ import {
 } from '@shoutem/ui';
 import { ext } from '../const';
 
-class PeopleDetailsScreen extends PureComponent {
-  static propTypes = {
-    person: PropTypes.object.isRequired,
-    openURL: PropTypes.func,
-  };
-
+export class PeopleDetailsScreen extends PureComponent {
   constructor(props) {
     super(props);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
+
+    autoBindReact(this);
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+    navigation.setOptions(this.getNavBarProps());
   }
 
   getNavBarProps() {
-    const { person } = this.props;
+    const { person } = getRouteParams(this.props);
+
+    const navBarStyles = person.image
+      ? { ...composeNavigationStyles(['clear', 'solidify']) }
+      : { ...composeNavigationStyles(['boxing']) };
+
     return {
-      styleName: person.image ? 'clear' : 'no-border',
-      animationName: person.image ? 'solidify' : 'boxing',
-      title: `${person.firstName} ${person.lastName}`.toUpperCase(),
+      ...navBarStyles,
+      title: '',
     };
   }
 
   renderImage() {
-    const { person } = this.props;
+    const { person } = getRouteParams(this.props);
 
     return person.image ? (
       <Image
@@ -55,7 +59,7 @@ class PeopleDetailsScreen extends PureComponent {
   }
 
   renderFooterButtons() {
-    const { person } = this.props;
+    const { person } = getRouteParams(this.props);
 
     return (
       <View styleName="horizontal h-center">
@@ -94,7 +98,7 @@ class PeopleDetailsScreen extends PureComponent {
   renderLinkButton(icon, name, url) {
     if (!url) return null; // field is empty
 
-    const { openURL, person } = this.props;
+    const { person } = getRouteParams(this.props);
     const fullName = `${person.firstName} ${person.lastName}`;
 
     if (icon === 'email' || icon === 'call') {
@@ -121,15 +125,13 @@ class PeopleDetailsScreen extends PureComponent {
   }
 
   render() {
-    const { person } = this.props;
+    const { person } = getRouteParams(this.props);
     const fullName = `${person.firstName} ${person.lastName}`.toUpperCase();
 
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderImage()}
-
           <View styleName="solid">
             <View styleName="vertical xl-gutter-top lg-gutter-bottom md-gutter-horizontal">
               <Title styleName="h-center md-gutter-bottom">{fullName}</Title>
@@ -146,6 +148,4 @@ class PeopleDetailsScreen extends PureComponent {
   }
 }
 
-export default connect(undefined, { openURL })(
-  connectStyle(ext('PeopleDetailsScreen'))(PeopleDetailsScreen),
-);
+export default connectStyle(ext('PeopleDetailsScreen'))(PeopleDetailsScreen);

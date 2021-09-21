@@ -1,8 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-
 import PropTypes from 'prop-types';
-
 import {
   COUPON_CLAIMED_ACTION,
   COUPON_REDEEMED_ACTION,
@@ -25,15 +23,18 @@ export function getTransactionAction(transaction) {
 }
 
 export function getDealImages(deal) {
-  return _.filter([
-    _.get(deal, 'image1', null),
-    _.get(deal, 'image2', null),
-    _.get(deal, 'image3', null),
-  ], image => !_.isEmpty(image));
+  return _.filter(
+    [
+      _.get(deal, 'image1', null),
+      _.get(deal, 'image2', null),
+      _.get(deal, 'image3', null),
+    ],
+    image => !_.isEmpty(image),
+  );
 }
 
 export function dealCouponsEnabled(deal) {
-  return (_.get(deal, 'couponsEnabled') === true);
+  return _.get(deal, 'couponsEnabled') === true;
 }
 
 /**
@@ -43,7 +44,7 @@ export function dealCouponsEnabled(deal) {
  * @param {String} buyLink
  */
 export function resolveDealBuyDisplayLink(buyLink) {
-  return (_.truncate(buyLink, { 'length': 30 }));
+  return _.truncate(buyLink, { length: 30 });
 }
 
 /**
@@ -51,19 +52,13 @@ export function resolveDealBuyDisplayLink(buyLink) {
  * @param {Object} deal
  */
 export function isDealActive(deal) {
-  const {
-    startTime: startTimeString,
-    endTime: endTimeString,
-  } = deal;
+  const { startTime: startTimeString, endTime: endTimeString } = deal;
 
   const today = moment();
   const startTime = moment(startTimeString);
   const endTime = moment(endTimeString);
 
-  return (
-    startTime.isBefore(today) &&
-    endTime.isAfter(today)
-  );
+  return startTime.isBefore(today) && endTime.isAfter(today);
 }
 
 export function isDealCouponExpired(lastDealTransaction) {
@@ -94,17 +89,17 @@ export function isDealCouponExpired(lastDealTransaction) {
 
 export function isDealCouponClaimed(lastDealTransaction) {
   return (
-    (getTransactionAction(lastDealTransaction) === COUPON_CLAIMED_ACTION) &&
+    getTransactionAction(lastDealTransaction) === COUPON_CLAIMED_ACTION &&
     !isDealCouponExpired(lastDealTransaction)
   );
 }
 
 export function isDealCouponRedeemed(lastDealTransaction) {
-  return (getTransactionAction(lastDealTransaction) === COUPON_REDEEMED_ACTION);
+  return getTransactionAction(lastDealTransaction) === COUPON_REDEEMED_ACTION;
 }
 
 export function isDealRedeemed(lastDealTransaction) {
-  return (getTransactionAction(lastDealTransaction) === DEAL_REDEEMED_ACTION);
+  return getTransactionAction(lastDealTransaction) === DEAL_REDEEMED_ACTION;
 }
 
 export function isCouponStatusAvailable(coupon) {
@@ -122,7 +117,7 @@ export function isCouponStatusExpired(coupon) {
 export function isDealImageGallery(deal) {
   const images = getDealImages(deal);
 
-  return (_.size(images) > 1);
+  return _.size(images) > 1;
 }
 
 export function getDealStatus(deal, lastDealTransaction) {

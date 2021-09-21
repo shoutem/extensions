@@ -1,17 +1,16 @@
 import moment from 'moment';
+import _ from 'lodash';
 import { Platform } from 'react-native';
 import SendBird from 'sendbird';
-import _ from 'lodash';
 
-const requiredConfigKeys = [
-  'appId',
-  'user',
-];
+const requiredConfigKeys = ['appId', 'user'];
 
 let SendBirdInstance = null;
 let pushToken = null;
 
-const SENDBIRD_NOT_INITIALIZED_ERROR = new Error('SendBird not yet initialized');
+const SENDBIRD_NOT_INITIALIZED_ERROR = new Error(
+  'SendBird not yet initialized',
+);
 
 export function formatMessageDate(timestamp) {
   const time = moment(timestamp);
@@ -76,16 +75,13 @@ function createGroupChat(userIds, config) {
     });
     params.addUserIds(userIds);
 
-    SendBirdInstance.GroupChannel.createChannel(
-      params,
-      (channel, error) => {
-        if (error) {
-          reject(error);
-        }
+    SendBirdInstance.GroupChannel.createChannel(params, (channel, error) => {
+      if (error) {
+        reject(error);
+      }
 
-        resolve(channel);
-      },
-    );
+      resolve(channel);
+    });
   });
 }
 
@@ -167,14 +163,20 @@ function markMessagesRead(channelUrl) {
 function createUserMetadata(metadata) {
   return new Promise((resolve, reject) => {
     if (_.isEmpty(metadata) || !SendBirdInstance) {
-      reject(new Error('Calling update on non-configured SendBird instance or with empty metadata'));
+      reject(
+        new Error(
+          'Calling update on non-configured SendBird instance or with empty metadata',
+        ),
+      );
     }
 
     const user = SendBirdInstance.currentUser;
     const currentMeta = _.get(user, 'metaData');
 
     if (!_.isEmpty(currentMeta)) {
-      resolve(console.log('Metadata already exists. Skipping metadata creation'));
+      resolve(
+        console.log('Metadata already exists. Skipping metadata creation'),
+      );
     }
 
     user.createMetaData(metadata, (computedData, error) => {
@@ -190,7 +192,11 @@ function createUserMetadata(metadata) {
 function updateUserMetadata(metadata) {
   return new Promise((resolve, reject) => {
     if (_.isEmpty(metadata) || !SendBirdInstance) {
-      reject(new Error('Calling update on non-configured SendBird instance or with empty metadata'));
+      reject(
+        new Error(
+          'Calling update on non-configured SendBird instance or with empty metadata',
+        ),
+      );
     }
 
     const user = SendBirdInstance.currentUser;
@@ -216,15 +222,21 @@ function updateUserInfo(nickname, profileUrl) {
       reject(SENDBIRD_NOT_INITIALIZED_ERROR);
     }
 
-    const resolvedProfileUrl = _.isEmpty(profileUrl) ? SendBirdInstance.currentUser.profileUrl : profileUrl;
+    const resolvedProfileUrl = _.isEmpty(profileUrl)
+      ? SendBirdInstance.currentUser.profileUrl
+      : profileUrl;
 
-    SendBirdInstance.updateCurrentUserInfo(nickname, resolvedProfileUrl, (response, error) => {
-      if (error) {
-        reject(error);
-      }
+    SendBirdInstance.updateCurrentUserInfo(
+      nickname,
+      resolvedProfileUrl,
+      (response, error) => {
+        if (error) {
+          reject(error);
+        }
 
-      resolve(response);
-    });
+        resolve(response);
+      },
+    );
   });
 }
 
@@ -257,17 +269,13 @@ function sendFileMessage(source, channel, uploadProgressHandler) {
       size: source.fileSize,
     };
 
-    channel.sendFileMessage(
-      file,
-      uploadProgressHandler,
-      (message, error) => {
-        if (error) {
-          reject(error);
-        }
+    channel.sendFileMessage(file, uploadProgressHandler, (message, error) => {
+      if (error) {
+        reject(error);
+      }
 
-        resolve(message);
-      },
-    );
+      resolve(message);
+    });
   });
 }
 
@@ -307,7 +315,10 @@ function registerConnectionHandlers(connectionHandlers) {
     ConnectionHandler[handlerName] = handler;
   });
 
-  SendBirdInstance.addConnectionHandler('CONNECTION_HANDLER', ConnectionHandler);
+  SendBirdInstance.addConnectionHandler(
+    'CONNECTION_HANDLER',
+    ConnectionHandler,
+  );
 }
 
 /**
@@ -325,10 +336,7 @@ function init(config) {
     return new Error('SendBird config invalid');
   }
 
-  const {
-    appId,
-    user,
-  } = config;
+  const { appId, user } = config;
 
   SendBirdInstance = new SendBird({ appId });
   const userId = composeSendBirdId(user);
@@ -381,20 +389,26 @@ function registerPushToken(token = pushToken) {
   }
 
   if (Platform.OS === 'ios') {
-    return SendBirdInstance.registerAPNSPushTokenForCurrentUser(token, (response) => {
+    return SendBirdInstance.registerAPNSPushTokenForCurrentUser(
+      token,
+      response => {
+        if (response === 'success') {
+          setPushTriggerOption();
+          pushToken = null;
+        }
+      },
+    );
+  }
+
+  return SendBirdInstance.registerGCMPushTokenForCurrentUser(
+    token,
+    response => {
       if (response === 'success') {
         setPushTriggerOption();
         pushToken = null;
       }
-    });
-  }
-
-  return SendBirdInstance.registerGCMPushTokenForCurrentUser(token, (response) => {
-    if (response === 'success') {
-      setPushTriggerOption();
-      pushToken = null;
-    }
-  });
+    },
+  );
 }
 
 function getChannelPerId(channelId) {
@@ -422,9 +436,7 @@ function getChannelPartner(channel, currentUser) {
     return null;
   }
 
-  const {
-    members,
-  } = channel;
+  const { members } = channel;
   const currentUserId = composeSendBirdId(currentUser);
 
   if (!currentUserId) {

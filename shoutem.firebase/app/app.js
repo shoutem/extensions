@@ -9,6 +9,7 @@ import {
   handleNotificationReceivedForeground,
   handleNotificationReceivedBackground,
   handleNotificationTapped,
+  handleNotification,
 } from './services';
 
 function formatiOSNotificationPayload(message) {
@@ -28,40 +29,45 @@ export function appDidFinishLaunching(app) {
   const { dispatch } = store;
 
   if (Platform.OS === 'ios') {
-    messaging().onNotificationOpenedApp(message => handleNotificationTapped(
-      formatiOSNotificationPayload(message),
-      dispatch,
-    ));
+    messaging().onNotificationOpenedApp(message =>
+      handleNotificationTapped(formatiOSNotificationPayload(message), store),
+    );
   }
 
-  messaging().registerDeviceForRemoteMessages().then(() => {
-    Firebase.obtainFCMToken()(dispatch);
-    Firebase.obtainAPNSToken()(dispatch);
-  });
+  messaging()
+    .registerDeviceForRemoteMessages()
+    .then(() => {
+      Firebase.obtainFCMToken()(dispatch);
+      Firebase.obtainAPNSToken()(dispatch);
+    });
 
   PushNotifications.configure({
-    onNotification: (notif) => {
+    onNotification: notif => {
       const { foreground, userInteraction } = notif;
 
       const isForegroundNotification = foreground && userInteraction !== true;
-
-      if (Platform.OS === 'ios' && !isForegroundNotification) {
-        notif.finish(PushNotificationIOS.FetchResult.NoData);
-      }
 
       if (isForegroundNotification) {
         handleNotificationReceivedForeground(notif, dispatch);
       }
 
-      if (foreground === false && Platform.OS === 'ios') {
+      if (
+        foreground === false &&
+        userInteraction !== true &&
+        Platform.OS === 'ios'
+      ) {
         handleNotificationReceivedBackground(notif, dispatch);
       }
 
-      if (
-        (userInteraction === true && Platform.OS !== 'ios') ||
-        (userInteraction === undefined && !foreground)
-      ) {
-        handleNotificationTapped(notif, dispatch);
+      if (userInteraction === true && Platform.OS !== 'ios') {
+        handleNotificationTapped(notif, store);
+      }
+
+      // GENERIC Handler ( Use if you have custom logic or your library has some false positives with ShoutEm logic)
+      handleNotification(notif, dispatch);
+
+      if (Platform.OS === 'ios') {
+        notif.finish(PushNotificationIOS.FetchResult.NoData);
       }
     },
     permissions: {

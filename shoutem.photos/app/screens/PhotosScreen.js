@@ -1,5 +1,6 @@
 import { connectStyle } from '@shoutem/theme';
 import { connect } from 'react-redux';
+import { getRouteParams } from 'shoutem.navigation';
 import { createListItem } from '../components/ListItemViewFactory';
 import { ext } from '../const';
 import {
@@ -14,9 +15,13 @@ export class PhotosScreen extends PhotosBaseScreen {
   };
 
   renderRow(photo) {
-    const { listType } = this.props;
+    const { screenSettings } = getRouteParams(this.props);
 
-    return createListItem(listType, photo, this.openDetailsScreen);
+    return createListItem(
+      screenSettings.listType,
+      photo,
+      this.openDetailsScreen,
+    );
   }
 
   renderData() {

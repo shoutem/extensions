@@ -29,11 +29,9 @@ export class NavigationBaseItem extends PureComponent {
   }
 
   onPress() {
-    // Delay the onPress handler so that we can
-    // display the touch animations without blocking ui
+    const { onPress, shortcut } = this.props;
 
-    /* eslint-disable-next-line no-undef */
-    requestAnimationFrame(() => this.props.onPress(this.props.shortcut));
+    onPress(shortcut);
   }
 
   getShortcutLayoutSettings(layoutName, props = this.props) {

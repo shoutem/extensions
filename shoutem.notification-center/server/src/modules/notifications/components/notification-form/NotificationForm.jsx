@@ -32,6 +32,7 @@ import {
   TARGET_TYPES,
 } from '../../const';
 import { ShortcutsDropdown } from '../shortcuts-dropdown';
+import { SummaryFields } from '../summary-fields';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -70,6 +71,27 @@ class NotificationForm extends Component {
         label: i18next.t(LOCALIZATION.DELIVERY_SCHEDULED_LABEL),
       },
     ];
+
+    if (props.settings?.scheduledNotificationsEnabled) {
+      this.DELIVERY_OPTIONS.push({
+        value: DELIVERY_TYPES.USER_SCHEDULED,
+        label: i18next.t(LOCALIZATION.DELIVERY_USER_SCHEDULED_LABEL),
+      });
+    }
+  }
+
+  componentDidMount() {
+    const {
+      fields: { delivery, summaries },
+      isEdit,
+    } = this.props;
+
+    // Delivery remains saved if user navigates somehwhere else by
+    // *not* using Cancel or Back buttons in InlineModal
+    // We don't want to clear if it's in edit mode tho
+    if (!isEdit && delivery.value === DELIVERY_TYPES.USER_SCHEDULED) {
+      summaries.onChange(['']);
+    }
   }
 
   handleTargetChanged(item) {
@@ -106,9 +128,33 @@ class NotificationForm extends Component {
 
   handleDeliverySelect(item) {
     const {
-      fields: { delivery },
+      fields: { delivery, summaries, target },
+      isEdit,
+      touch,
     } = this.props;
-    delivery.onChange(item);
+
+    if (
+      item.value === DELIVERY_TYPES.USER_SCHEDULED &&
+      delivery.value !== DELIVERY_TYPES.USER_SCHEDULED
+    ) {
+      summaries.onChange(['']);
+
+      if (isEdit) {
+        touch('numberOfMessages');
+      }
+    }
+
+    if (item.value !== DELIVERY_TYPES.USER_SCHEDULED) {
+      target.onChange(TARGET_TYPES.URL);
+      summaries.onChange([]);
+    }
+
+    delivery.onChange(item.value);
+  }
+
+  handleSummariesChange() {
+    const { touch } = this.props;
+    touch('numberOfMessages');
   }
 
   render() {
@@ -117,6 +163,7 @@ class NotificationForm extends Component {
       shortcuts,
       submitting,
       invalid,
+      fields,
       fields: {
         id,
         target,
@@ -126,6 +173,7 @@ class NotificationForm extends Component {
         audienceGroupIds,
         title,
         summary,
+        numberOfMessages,
         delivery,
         deliveryTime,
       },
@@ -138,7 +186,15 @@ class NotificationForm extends Component {
 
     const audienceGroupsDisabled = audience.value === AUDIENCE_TYPES.ALL;
     const deliveryTimeDisabled = delivery.value === DELIVERY_TYPES.NOW;
+    const notificationActionDisabled =
+      delivery.value === DELIVERY_TYPES.USER_SCHEDULED;
+    const numberOfMessagesDisabled =
+      delivery.value !== DELIVERY_TYPES.USER_SCHEDULED;
     const showShortcuts = target.value === TARGET_TYPES.SCREEN;
+    const resolvedTimeFormat =
+      delivery.value === DELIVERY_TYPES.USER_SCHEDULED
+        ? false
+        : DISPLAY_TIME_FORMAT;
 
     return (
       <form className="notification-form" onSubmit={handleSubmit}>
@@ -149,9 +205,10 @@ class NotificationForm extends Component {
                 {i18next.t(LOCALIZATION.TARGET_LABEL)}
               </ControlLabel>
               <Select
-                name="target"
-                elementId="target"
                 clearable={false}
+                disabled={submitting || notificationActionDisabled}
+                elementId="target"
+                name="target"
                 onChange={this.handleTargetChanged}
                 options={this.TARGET_OPTIONS}
                 value={target.value}
@@ -161,18 +218,18 @@ class NotificationForm extends Component {
           <Col xs={7}>
             {!showShortcuts && (
               <ReduxFormElement
+                disabled={submitting || notificationActionDisabled}
                 elementId="contentUrl"
-                name={i18next.t(LOCALIZATION.CONTENT_URL_INPUT_LABEL)}
-                disabled={submitting}
                 field={contentUrl}
+                name={i18next.t(LOCALIZATION.CONTENT_URL_INPUT_LABEL)}
               />
             )}
             {showShortcuts && (
               <ReduxFormElement
-                disabled={submitting}
+                disabled={submitting || notificationActionDisabled}
                 elementId="shortcutId"
-                name={i18next.t(LOCALIZATION.SCREEN_INPUT_LABEL)}
                 field={shortcutId}
+                name={i18next.t(LOCALIZATION.SCREEN_INPUT_LABEL)}
               >
                 <ShortcutsDropdown
                   shortcuts={shortcuts}
@@ -219,12 +276,14 @@ class NotificationForm extends Component {
               <ControlLabel>
                 {i18next.t(LOCALIZATION.DELIVERY_LABEL)}
               </ControlLabel>
-              <RadioSelector
-                className="notification-form__radio-selector"
-                groupName="delivery"
+              <Select
+                className="notification-form__delivery-selector"
+                clearable={false}
+                elementId="delivery"
+                name="delivery"
+                onChange={this.handleDeliverySelect}
                 options={this.DELIVERY_OPTIONS}
-                activeValue={delivery.value}
-                onSelect={this.handleDeliverySelect}
+                value={delivery.value}
               />
             </FormGroup>
           </Col>
@@ -242,7 +301,7 @@ class NotificationForm extends Component {
                   disabled: submitting || deliveryTimeDisabled,
                 }}
                 dateFormat={DISPLAY_DATE_FORMAT}
-                timeFormat={DISPLAY_TIME_FORMAT}
+                timeFormat={resolvedTimeFormat}
               />
             </ReduxFormElement>
           </Col>
@@ -258,22 +317,49 @@ class NotificationForm extends Component {
             />
           </Col>
         </Row>
-        <Row>
-          <Col xs={12}>
-            <ReduxFormElement
-              disabled={submitting}
-              elementId="summary"
-              name={i18next.t(LOCALIZATION.SUMMARY_INPUT_LABEL)}
-              field={summary}
-            >
-              <FormControl
-                componentClass="textarea"
-                maxLength={255}
-                {...summary}
+        {delivery.value !== DELIVERY_TYPES.USER_SCHEDULED && (
+          <Row>
+            <Col xs={12}>
+              <ReduxFormElement
+                disabled={submitting}
+                elementId="summary"
+                name={i18next.t(LOCALIZATION.SUMMARY_INPUT_LABEL)}
+                field={summary}
+              >
+                <FormControl
+                  componentClass="textarea"
+                  maxLength={255}
+                  {...summary}
+                />
+              </ReduxFormElement>
+            </Col>
+          </Row>
+        )}
+        {delivery.value === DELIVERY_TYPES.USER_SCHEDULED && (
+          <>
+            <FormGroup>
+              <SummaryFields
+                fields={fields}
+                name={i18next.t(LOCALIZATION.SUMMARY_INPUT_LABEL)}
+                onSummariesChange={this.handleSummariesChange}
+                submitting={submitting}
               />
-            </ReduxFormElement>
-          </Col>
-        </Row>
+            </FormGroup>
+            <Row>
+              <Col xs={12}>
+                <ReduxFormElement
+                  className="notification-form__daily-number"
+                  disabled={submitting || numberOfMessagesDisabled}
+                  elementId="numberOfMessages"
+                  name={i18next.t(LOCALIZATION.NUMBER_OF_NOTIFICATIONS)}
+                  field={numberOfMessages}
+                >
+                  <FormControl type="number" min={1} {...numberOfMessages} />
+                </ReduxFormElement>
+              </Col>
+            </Row>
+          </>
+        )}
         <ButtonToolbar>
           <Button
             bsSize="large"
@@ -311,6 +397,9 @@ NotificationForm.propTypes = {
   onCancel: PropTypes.func,
   touch: PropTypes.func,
   error: PropTypes.string,
+  isEdit: PropTypes.bool,
+  settings: PropTypes.object,
+  scheduledNotificationsEnabled: PropTypes.bool,
 };
 
 // iconUrl and imageUrl fields are necessary even we don't use it
@@ -318,7 +407,7 @@ NotificationForm.propTypes = {
 // we need to pass them back to the server
 export default reduxForm({
   getFormState,
-  form: 'groupForm',
+  form: 'notificationForm',
   fields: [
     'id',
     'target',
@@ -328,6 +417,8 @@ export default reduxForm({
     'audienceGroupIds',
     'title',
     'summary',
+    'summaries',
+    'numberOfMessages',
     'delivery',
     'deliveryTime',
     'iconUrl',

@@ -11,6 +11,7 @@ import {
 } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import { Checkbox, LoaderContainer } from '@shoutem/react-web-ui';
 import { updateShortcutSettings } from '@shoutem/redux-api-sdk';
 import LOCALIZATION from './localization';
@@ -29,8 +30,8 @@ class LocationBiasingPage extends PureComponent {
       error: '',
       hasChanges: false,
       inProgress: false,
-      radius: props.shortcut.settings?.radius || '50000',
-      useLocationBiasing: props.shortcut.settings?.useLocationBiasing,
+      radius: _.get(props, 'shortcut.settings?.radius', '50000'),
+      useLocationBiasing: _.get(props, 'shortcut.settings.useLocationBiasing'),
     };
   }
 

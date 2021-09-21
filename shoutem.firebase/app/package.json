@@ -1,16 +1,16 @@
 {
   "name": "shoutem.firebase",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "description": "Firebase SDK bridge",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
-    "@react-native-community/push-notification-ios": "1.7.1",
+    "@react-native-community/push-notification-ios": "1.8.0",
     "@react-native-firebase/app": "7.1.0",
     "@react-native-firebase/messaging": "7.1.0",
     "colors": "^1.4.0",
-    "react-native-push-notification": "3.5.2",
+    "react-native-push-notification": "7.3.1",
     "request": "2.79.0",
     "urijs": "1.18.5",
     "xcode": "0.8.9"

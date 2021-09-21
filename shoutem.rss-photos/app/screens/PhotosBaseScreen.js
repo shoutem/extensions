@@ -1,9 +1,8 @@
 import autoBind from 'auto-bind';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
-import { openInModal } from 'shoutem.navigation';
-import { RssListScreen } from 'shoutem.rss';
 import { find, next, shouldRefresh } from '@shoutem/redux-io';
+import { getRouteParams, openInModal } from 'shoutem.navigation';
+import { RssListScreen } from 'shoutem.rss';
 import { ext, RSS_PHOTOS_SCHEMA } from '../const';
 import { getPhotosFeed, fetchPhotosFeed } from '../redux';
 import { remapAndFilterPhotos } from '../services';
@@ -11,7 +10,6 @@ import { remapAndFilterPhotos } from '../services';
 export class PhotosBaseScreen extends RssListScreen {
   static propTypes = {
     ...RssListScreen.propTypes,
-    openInModal: PropTypes.func.isRequired,
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -49,24 +47,20 @@ export class PhotosBaseScreen extends RssListScreen {
   }
 
   openDetailsScreen(photo) {
-    const { openInModal, feedUrl } = this.props;
+    const { feedUrl } = this.props;
     const { id } = photo;
 
-    const route = {
-      screen: ext('PhotoDetails'),
-      props: {
-        id,
-        feedUrl,
-      },
-    };
-
-    openInModal(route);
+    openInModal(ext('PhotoDetails'), {
+      id,
+      feedUrl,
+    });
   }
 }
 
 export const mapStateToProps = (state, ownProps) => {
-  const shortcutId = _.get(ownProps, 'shortcut.id');
-  const feedUrl = _.get(ownProps, 'shortcut.settings.feedUrl');
+  const { shortcut } = getRouteParams(ownProps);
+  const shortcutId = _.get(shortcut, 'id');
+  const feedUrl = _.get(shortcut, 'settings.feedUrl');
   const data = getPhotosFeed(state, feedUrl);
 
   return {
@@ -78,7 +72,6 @@ export const mapStateToProps = (state, ownProps) => {
 
 export const mapDispatchToProps = {
   fetchPhotosFeed,
-  openInModal,
   find,
   next,
 };

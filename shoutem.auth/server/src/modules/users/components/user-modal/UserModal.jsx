@@ -36,14 +36,21 @@ export default class UserModal extends Component {
   }
 
   handleUserFormSubmit(user) {
-    const { currentUser } = this.state;
+    const { onUserUpdate, onUserChangePassword, onUserCreate } = this.props;
+    const { currentUser, passwordOnly } = this.state;
+
     if (currentUser) {
-      return this.props
-        .onUserUpdate(currentUser.id, user)
-        .then(this.handleHide);
+      if (passwordOnly) {
+        const password = _.get(user, 'password');
+        return onUserChangePassword(currentUser.id, password).then(
+          this.handleHide,
+        );
+      }
+
+      return onUserUpdate(currentUser.id, user).then(this.handleHide);
     }
 
-    return this.props.onUserCreate(user).then(this.handleHide);
+    return onUserCreate(user).then(this.handleHide);
   }
 
   render() {
@@ -92,4 +99,5 @@ UserModal.propTypes = {
   userGroups: PropTypes.array,
   onUserUpdate: PropTypes.func,
   onUserCreate: PropTypes.func,
+  onUserChangePassword: PropTypes.func,
 };

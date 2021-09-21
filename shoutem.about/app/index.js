@@ -14,7 +14,7 @@ export const screens = {
   AboutScreen,
   SolidNavbarLargeAboutScreen: AboutScreen,
   ClearNavbarMediumAboutScreen: AboutScreen,
-  SolidNavbarMediumAboutScreen: AboutScreen
+  SolidNavbarMediumAboutScreen: AboutScreen,
 };
 
 export const themes = extension.themes;

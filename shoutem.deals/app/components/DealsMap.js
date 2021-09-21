@@ -3,14 +3,9 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { LayoutAnimation } from 'react-native';
-import { connect } from 'react-redux';
-
-import { navigateTo } from 'shoutem.navigation';
-import { MapView } from 'shoutem.application';
-
 import { connectStyle } from '@shoutem/theme';
 import { View } from '@shoutem/ui';
-
+import { MapView } from 'shoutem.application';
 import { getMarkersAndRegionFromDeals } from '../services';
 import { ext } from '../const';
 import DealListView from './DealListView';
@@ -20,7 +15,6 @@ export class DealsMap extends PureComponent {
     data: PropTypes.array.isRequired,
     style: PropTypes.object.isRequired,
     onOpenDealDetails: PropTypes.func.isRequired,
-    navigateTo: PropTypes.func,
   };
 
   constructor(props) {
@@ -99,10 +93,4 @@ export class DealsMap extends PureComponent {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  navigateTo: route => dispatch(navigateTo(route)),
-});
-
-export default connect(null, mapDispatchToProps)(
-  connectStyle(ext('DealsMap', {}))(DealsMap),
-);
+export default connectStyle(ext('DealsMap', {}))(DealsMap);

@@ -1,0 +1,31 @@
+.chime-file-preview {
+  display: flex;
+
+  .btn {
+    background-color: rgba(189, 192, 203, 0.5);
+    border-radius: 0px 4px 4px 0px;
+    min-width: 48px;
+    padding: 0px;
+    width: 48px;
+  }
+
+  .chime-file-preview__play-pause {
+    background-color: #eeeeee;
+    height: 48px;
+    padding: 12px 32px 12px 12px;
+  }
+
+  .chime-file-preview__pause_icon {
+    width: 12px;
+    height: 24px;
+    display: flex;
+    flex-direction: column;
+    transform: rotate(90deg);
+    align-items: center;
+    justify-content: center;
+
+    .se-icon-separator {
+      height: 5px;
+    }
+  }
+}

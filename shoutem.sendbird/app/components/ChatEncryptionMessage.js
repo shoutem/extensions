@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { I18n } from 'shoutem.i18n';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Text, View, Image } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { images } from '../assets';
 import { ext } from '../const';
 
@@ -21,4 +21,6 @@ ChatEncryptionMessage.propTypes = {
   style: PropTypes.object,
 };
 
-export default connectStyle(ext('ChatEncryptionMessage'))(ChatEncryptionMessage);
+export default connectStyle(ext('ChatEncryptionMessage'))(
+  ChatEncryptionMessage,
+);

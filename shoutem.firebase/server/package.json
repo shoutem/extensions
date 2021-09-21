@@ -1,6 +1,6 @@
 {
   "name": "shoutem.firebase",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "description": "Firebase SDK used for push notifications.",
   "main": "index.js",
   "scripts": {

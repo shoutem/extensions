@@ -1,7 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Favorite } from 'shoutem.favorites';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import {
   TouchableOpacity,
@@ -12,6 +10,8 @@ import {
   Subtitle,
   View,
 } from '@shoutem/ui';
+import { Favorite } from 'shoutem.favorites';
+import { I18n } from 'shoutem.i18n';
 import { ext, PLACES_SCHEMA } from '../const';
 import { withOpenPlaceDetails } from '../shared';
 import { placeShape } from './shapes';

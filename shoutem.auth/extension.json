@@ -1,14 +1,13 @@
 {
   "name": "auth",
-  "version": "2.7.8",
-  "platform": "2.5.*",
+  "version": "3.0.1",
+  "platform": "^3.0.0",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Properly hide shortcuts upon new user registration, for respective user groups",
+  "releaseNotes": "* Removed login username input text clearance after user presses Login button",
   "description": "Show user profile, sign out user",
-  "categories": [
-    "users"
-  ],
+  "dependencies": ["shoutem.camera"],
+  "categories": ["users"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

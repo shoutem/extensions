@@ -34,8 +34,7 @@ const TermsAndPolicy = ({
       )}
     </Text>
   );
-}
-
+};
 
 TermsAndPolicy.propTypes = {
   privacyPolicyUrl: PropTypes.string,

@@ -1,16 +1,15 @@
 import { Alert } from 'react-native';
 import _ from 'lodash';
-import { getActiveShortcut } from 'shoutem.application';
 import { NotificationHandlers } from 'shoutem.firebase';
 import { I18n } from 'shoutem.i18n';
-import { hasModalOpen, NAVIGATE, OPEN_MODAL } from 'shoutem.navigation';
+import { getCurrentRoute, openInModal } from 'shoutem.navigation';
+import { getShortcut } from 'shoutem.application';
 import { ext, DEFAULT_PUSH_NOTIFICATION_GROUP } from './const';
-import {
-  selectPushNotificationGroups,
-  deviceTokenReceived,
-  notificationReceived,
-} from './redux';
+import { selectPushNotificationGroups, deviceTokenReceived } from './redux';
 import { resolveNotificationData } from './services';
+
+const OPEN_IN_MODAL_ACTION_TYPE = 'shoutem.navigation.OPEN_MODAL';
+const NAVIGATE_ACTION_TYPE = 'shoutem.application.EXECUTE_SHORTCUT';
 
 function isRssPN(notification) {
   // For now, only rss specific push notifications contain
@@ -20,43 +19,61 @@ function isRssPN(notification) {
 
 function canHandle(notification) {
   return (
+    !notification.silent &&
     !isRssPN(notification) &&
     (!!notification.action || (!!notification.action && !!notification.body))
   );
 }
 
-function navigatesToSameShortcut(action, state) {
-  const targetShortcutId = _.get(action, 'shortcutId');
-  const { id: activeShortcutId } = getActiveShortcut(state);
+function navigatesToSameShortcut(action) {
+  const currentRoute = getCurrentRoute();
+  const currentRouteShortcut = _.get(currentRoute, 'params.shortcut');
 
-  return targetShortcutId === activeShortcutId;
+  if (!currentRouteShortcut) {
+    return false;
+  }
+
+  const targetShortcutId = _.get(action, 'shortcutId');
+
+  return currentRouteShortcut.id === targetShortcutId;
 }
 
-function resolveActionNavigation(action, state) {
-  const alreadyHasModalOpen = hasModalOpen(state);
+function consumeNotification(notificationContent, state) {
+  const action = _.get(notificationContent, 'action');
 
-  // Actions that open screens have a navigationAction property which actions
-  // that open URLs do not have.
-  if (action.navigationAction && navigatesToSameShortcut(action, state)) {
-    // If the notification points to the screen a user is already on, the
-    // notification won't do anything. We safely catch this later in
-    // handleNotificationTapped()
-    return { ...action, navigationAction: null };
+  if (!canHandle(notificationContent)) {
+    return null;
   }
 
-  if (action.navigationAction === OPEN_MODAL && alreadyHasModalOpen) {
-    return { ...action, navigationAction: NAVIGATE };
+  const { type } = action;
+
+  if (type === NAVIGATE_ACTION_TYPE && !navigatesToSameShortcut(action)) {
+    const shortcutId = _.get(action, 'shortcutId');
+    const shortcut = getShortcut(state, shortcutId);
+    const screenSettings = _.get(
+      _.find(shortcut.screens, { canonicalName: shortcut.screen }),
+      'screenSettings',
+      {},
+    );
+
+    if (shortcut && shortcut.screen) {
+      return openInModal(shortcut.screen, {
+        shortcut,
+        screenSettings,
+        title: shortcut.title,
+        screenId: _.uniqueId(shortcut.screen),
+      });
+    }
   }
 
-  // Actions that open URLs have type set as 'shoutem.navigation.OPEN_MODAL',
-  // this differs from actions that open screens which have a type property of
-  // 'shoutem.navigation.EXECUTE_SHORTCUT'
-  const actionType = _.get(action, 'type');
-  if (actionType === OPEN_MODAL && alreadyHasModalOpen) {
-    return { ...action, type: NAVIGATE };
+  if (type === OPEN_IN_MODAL_ACTION_TYPE) {
+    const { route } = action;
+    const { screen, props } = route;
+
+    return openInModal(screen, props);
   }
 
-  return action;
+  return null;
 }
 
 function handleTokenReceived(token, dispatch) {
@@ -68,27 +85,10 @@ function handleTokenReceived(token, dispatch) {
   );
 }
 
-function handleViewButtonPress(store, navigationAction) {
-  const state = store.getState();
-  const { dispatch } = store;
-  const alreadyHasModalOpen = hasModalOpen(state);
-
-  navigationAction.type = alreadyHasModalOpen ? NAVIGATE : OPEN_MODAL;
-
-  dispatch(navigationAction);
-}
-
-export function displayLocalNotification(
-  title,
-  message,
-  navigationAction,
-  store,
-) {
-  const state = store.getState();
-
+export function displayLocalNotification(title, message, notification, store) {
   const viewAction = {
     text: I18n.t(ext('messageReceivedAlertView')),
-    onPress: () => handleViewButtonPress(store, navigationAction),
+    onPress: () => consumeNotification(notification, store.getState()),
   };
 
   const defaultAction = {
@@ -96,18 +96,16 @@ export function displayLocalNotification(
     onPress: () => null,
   };
 
-  // If the notification has an action and the user is already on the screen
-  // the action would navigate them to, we don't show the View action in the
-  // alert, instead we only allow them to Dismiss the notification.
+  const action = _.get(notification, 'action');
   const alertOptions =
-    navigationAction && !navigatesToSameShortcut(navigationAction, state)
+    action && !navigatesToSameShortcut(action)
       ? [defaultAction, viewAction]
       : [defaultAction];
 
   Alert.alert(title, message, alertOptions);
 }
 
-function handleNotificationTapped(receivedNotification, dispatch, store) {
+function handleNotificationTapped(receivedNotification, store) {
   // TODO: Improve handlers logic with queue, priorities, shouldHandle
   // and isConsumed flags
   // https://fiveminutes.jira.com/browse/SEEXT-8463
@@ -117,33 +115,21 @@ function handleNotificationTapped(receivedNotification, dispatch, store) {
     return;
   }
 
-  try {
-    notification.action = resolveActionNavigation(
-      notification.action,
-      store.getState(),
-    );
-  } catch (e) {
-    console.log('Unable to parse notification action object', e);
-  }
+  const state = store.getState();
 
-  if (notification.title || notification.body) {
-    dispatch(notificationReceived(notification));
-  }
+  consumeNotification(notification, state);
 }
 
-function handleForegroundNotification(receivedNotification, dispatch, store) {
+function handleForegroundNotification(receivedNotification, store) {
   const notification = resolveNotificationData(receivedNotification);
 
   if (!canHandle(notification)) {
     return;
   }
 
-  const state = store.getState();
   const title = I18n.t(ext('messageReceivedAlert'));
-  const resolvedAction =
-    notification.action && resolveActionNavigation(notification.action, state);
 
-  displayLocalNotification(title, notification.body, resolvedAction, store);
+  displayLocalNotification(title, notification.body, notification, store);
 }
 
 export function registerNotificationHandlers(store) {
@@ -155,10 +141,12 @@ export function registerNotificationHandlers(store) {
   NotificationHandlers.registerNotificationReceivedHandlers({
     owner: ext(),
     notificationHandlers: {
-      onNotificationTapped: (notification, dispatch) =>
-        handleNotificationTapped(notification, dispatch, store),
-      onNotificationReceivedForeground: (notification, dispatch) =>
-        handleForegroundNotification(notification, dispatch, store),
+      onNotificationTapped: notification =>
+        handleNotificationTapped(notification, store),
+      onNotificationReceivedForeground: notification =>
+        handleForegroundNotification(notification, store),
+      onConsumeNotification: notification =>
+        consumeNotification(notification, store.getState()),
     },
   });
 }

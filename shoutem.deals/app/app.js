@@ -1,9 +1,7 @@
 import _ from 'lodash';
 import URI from 'urijs';
-
 import rio from '@shoutem/redux-io';
 import { getExtensionSettings } from 'shoutem.application';
-
 import {
   ext,
   // APPLICATION_EXTENSION,

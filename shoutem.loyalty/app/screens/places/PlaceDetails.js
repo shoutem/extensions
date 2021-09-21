@@ -1,12 +1,9 @@
 import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { InteractionManager, Linking, Platform } from 'react-native';
 import { connect } from 'react-redux';
-import { InlineMap } from 'shoutem.application';
-import { I18n } from 'shoutem.i18n';
-import { NavigationBar, navigateTo, openInModal } from 'shoutem.navigation';
-import { openURL } from 'shoutem.web-view';
 import { find, getCollection, isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -27,6 +24,16 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { openURL } from 'shoutem.web-view';
+import { InlineMap } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
+import {
+  getRouteParams,
+  composeNavigationStyles,
+  navigateTo,
+  openInModal,
+  HeaderTextButton,
+} from 'shoutem.navigation';
 import PlaceRewardListView from '../../components/PlaceRewardListView';
 import PlaceLoyaltyPointsView from '../../components/PlaceLoyaltyPointsView';
 import {
@@ -38,48 +45,25 @@ import { ext } from '../../const';
 import { fetchPlaceRewards, getCardStateForPlace } from '../../redux';
 import { refreshTransactions } from '../../services';
 
-/* eslint-disable class-methods-use-this */
-
-const { arrayOf, func } = PropTypes;
-
 export class PlaceDetails extends PureComponent {
   static propTypes = {
     // The place
     place: placeShape.isRequired,
     // Rewards for this place
-    rewards: arrayOf(rewardShape),
+    rewards: PropTypes.arrayOf(rewardShape),
     /* Actions */
-    find: func,
+    find: PropTypes.func,
     // Opens the assign points flow in a modal dialog
-    openInModal: func,
-    openURL: func,
-    navigateTo: func,
-    fetchPlaceRewards: func,
-    refreshTransactions: func,
+    fetchPlaceRewards: PropTypes.func,
+    refreshTransactions: PropTypes.func,
     // Transactions for this place
-    transactions: arrayOf(transactionShape),
+    transactions: PropTypes.arrayOf(transactionShape),
   };
 
   constructor(props) {
     super(props);
 
-    this.collectPoints = this.collectPoints.bind(this);
-    this.getNavBarProps = this.getNavBarProps.bind(this);
-    this.navigateToPointsHistoryScreen = this.navigateToPointsHistoryScreen.bind(
-      this,
-    );
-    this.navigateToRewardDetailsScreen = this.navigateToRewardDetailsScreen.bind(
-      this,
-    );
-    this.openWebLink = this.openWebLink.bind(this);
-    this.openMapLink = this.openMapLink.bind(this);
-    this.openEmailLink = this.openEmailLink.bind(this);
-    this.openPhoneLink = this.openPhoneLink.bind(this);
-    this.openMapScreen = this.openMapScreen.bind(this);
-    this.openURL = this.openURL.bind(this);
-
-    this.renderRewardRow = this.renderRewardRow.bind(this);
-    this.renderLeadImage = this.renderLeadImage.bind(this);
+    autoBindReact(this);
 
     this.state = {
       animateLeadImage: false,
@@ -87,36 +71,41 @@ export class PlaceDetails extends PureComponent {
   }
 
   componentDidMount() {
-    const { fetchPlaceRewards, place, refreshTransactions } = this.props;
+    const {
+      fetchPlaceRewards,
+      place,
+      refreshTransactions,
+      navigation,
+    } = this.props;
 
     InteractionManager.runAfterInteractions(() => {
       this.setState({ animateLeadImage: true });
     });
     fetchPlaceRewards(place.id);
     refreshTransactions();
+    navigation.setOptions({ ...this.getNavBarProps() });
   }
 
   getNavBarProps() {
     const {
       place: { image, name = '' },
     } = this.props;
+    const navBarStyle = image
+      ? ['clear', 'solidify']
+      : ['noBorder', 'solidify'];
 
     return {
-      styleName: image ? 'clear' : 'no-border',
-      animationName: 'solidify',
+      ...composeNavigationStyles([navBarStyle]),
       title: name.toUpperCase(),
-      renderRightComponent: () => this.renderRightNavBarComponent(),
+      headerRight: this.renderRightNavBarComponent,
     };
   }
 
   navigateToPointsHistoryScreen() {
-    const { navigateTo, place } = this.props;
+    const { place } = this.props;
 
-    navigateTo({
-      screen: ext('PointsHistoryScreen'),
-      props: {
-        place,
-      },
+    navigateTo(ext('PointsHistoryScreen'), {
+      place,
     });
   }
 
@@ -124,39 +113,33 @@ export class PlaceDetails extends PureComponent {
     const { place } = this.props;
     const { placeRewardsParentCategoryId: parentCategoryId } = place;
 
-    this.props.navigateTo({
-      screen: ext('RewardDetailsScreen'),
-      props: {
-        reward: { ...reward, parentCategoryId, location: place.id },
-        place,
-      },
+    navigateTo(ext('RewardDetailsScreen'), {
+      reward: { ...reward, parentCategoryId, location: place.id },
+      place,
     });
   }
 
   collectPoints() {
-    const { openInModal, place } = this.props;
+    const { place } = this.props;
 
-    openInModal({
-      screen: ext('VerificationScreen'),
-      props: {
-        place,
-      },
+    openInModal(ext('VerificationScreen'), {
+      place,
     });
   }
 
   openURL() {
     const {
-      openURL,
       place: { rsvpLink, name },
     } = this.props;
+
     openURL(rsvpLink, name);
   }
 
   openWebLink() {
     const {
-      openURL,
       place: { url },
     } = this.props;
+
     openURL(url);
   }
 
@@ -189,31 +172,27 @@ export class PlaceDetails extends PureComponent {
   openMapScreen() {
     const { place } = this.props;
 
-    this.props.navigateTo({
-      screen: ext('SinglePlaceMap'),
-      props: {
-        place,
-        title: place.name,
-      },
+    navigateTo(ext('SinglePlaceMap'), {
+      place,
+      title: place.name,
     });
   }
 
-  renderRightNavBarComponent() {
+  renderRightNavBarComponent(props) {
     const { transactions } = this.props;
 
     const hasTransactions = !!_.size(transactions);
 
+    if (!hasTransactions) {
+      return null;
+    }
+
     return (
-      <View virtual styleName="container">
-        {hasTransactions && (
-          <Button
-            onPress={this.navigateToPointsHistoryScreen}
-            styleName="clear"
-          >
-            <Text>{I18n.t(ext('navigationHistoryButton'))}</Text>
-          </Button>
-        )}
-      </View>
+      <HeaderTextButton
+        {...props}
+        onPress={this.navigateToPointsHistoryScreen}
+        title={I18n.t(ext('navigationHistoryButton'))}
+      />
     );
   }
 
@@ -414,7 +393,6 @@ export class PlaceDetails extends PureComponent {
 
     return (
       <Screen styleName="paper">
-        <NavigationBar {...this.getNavBarProps()} />
         <ScrollView>
           {this.renderLeadImage()}
           {this.renderPoints()}
@@ -463,7 +441,7 @@ const getTransactionsForPlace = (transactions, place) =>
 export const mapStateToProps = (state, ownProps) => {
   const { allPlaceRewards, allTransactions } = state[ext()];
 
-  const { place } = ownProps;
+  const { place } = getRouteParams(ownProps);
 
   const cardState = getCardStateForPlace(state, place.id);
   const points = cardState ? cardState.points : 0;
@@ -480,9 +458,6 @@ export const mapStateToProps = (state, ownProps) => {
 export const mapDispatchToProps = {
   fetchPlaceRewards,
   find,
-  navigateTo,
-  openInModal,
-  openURL,
   refreshTransactions,
 };
 

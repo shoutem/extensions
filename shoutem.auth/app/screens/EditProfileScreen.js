@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Alert, KeyboardAvoidingView } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
+import autoBindReact from 'auto-bind/react';
+import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-
 import { isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
-  Button,
   Caption,
   Divider,
   FormGroup,
@@ -16,20 +15,37 @@ import {
   Screen,
   ScrollView,
   Spinner,
-  Subtitle,
   TextInput,
   View,
+  ActionSheet,
 } from '@shoutem/ui';
-
 import { I18n } from 'shoutem.i18n';
-import { NavigationBar } from 'shoutem.navigation';
-
+import { HeaderTextButton } from 'shoutem.navigation';
+import {
+  requestPermissions,
+  PERMISSION_TYPES,
+  RESULTS,
+} from 'shoutem.permissions';
 import ProfileImage from '../components/ProfileImage';
 import { user as userShape } from '../components/shapes';
 import { getUser, updateProfile } from '../redux';
 import { ext } from '../const';
 
 const { func } = PropTypes;
+
+const CAMERA_PERMISSION = Platform.select({
+  ios: PERMISSION_TYPES.IOS_CAMERA,
+  default: PERMISSION_TYPES.ANDROID_CAMERA,
+});
+
+const IMAGE_PICKER_OPTIONS = {
+  mediaType: 'photo',
+  allowsEditing: true,
+  includeBase64: true,
+  saveToPhotos: false,
+  maxHeight: 500,
+  maxWidth: 500,
+};
 
 const renderSavingChangesMessage = () => (
   <View styleName="xl-gutter-top">
@@ -42,8 +58,6 @@ const renderSavingChangesMessage = () => (
  */
 class EditProfileScreen extends PureComponent {
   static propTypes = {
-    // Called when updating the profile is cancelled or done
-    onClose: func.isRequired,
     // Dispatched with new user information when updating the profile
     updateProfile: func.isRequired,
     // User that's editing his profile
@@ -53,10 +67,9 @@ class EditProfileScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.changeProfileImage = this.changeProfileImage.bind(this);
-    this.onDone = this.onDone.bind(this);
+    autoBindReact(this);
 
-    this.state = { ..._.get(props.user, 'profile', {}) };
+    this.state = { ..._.get(props.user, 'profile', {}), pickerActive: false };
 
     this.fields = {
       name: I18n.t(ext('userNameAndSurname')),
@@ -72,8 +85,26 @@ class EditProfileScreen extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({
+      ...this.getNavbarProps(),
+    });
+  }
+
+  handleFinish() {
+    const { navigation } = this.props;
+
+    navigation.goBack();
+  }
+
+  handlePickerClosePress() {
+    this.setState({ pickerActive: false });
+  }
+
   onDone() {
-    const { onClose, updateProfile, user } = this.props;
+    const { updateProfile, user } = this.props;
     const { updatedImage } = this.state;
     const image = _.get(updatedImage, 'data');
 
@@ -82,9 +113,12 @@ class EditProfileScreen extends PureComponent {
       image,
     };
 
-    const hasChanges = _.some(_.keys(updates), key => user[key] !== updates[key]);
+    const hasChanges = _.some(
+      _.keys(updates),
+      key => user[key] !== updates[key],
+    );
     if (!hasChanges) {
-      return onClose();
+      return this.handleFinish();
     }
 
     const newUser = {
@@ -94,51 +128,68 @@ class EditProfileScreen extends PureComponent {
     delete newUser.userGroups;
 
     return updateProfile(newUser)
-      .then(onClose)
-      .catch((error) => {
-        console.log(error);
+      .then(this.handleFinish)
+      .catch(() => {
         Alert.alert(
           I18n.t(ext('profileUpdatingErrorTitle')),
-          I18n.t(ext('profileUpdatingErrorMessage'))
+          I18n.t(ext('profileUpdatingErrorMessage')),
         );
       });
   }
 
   getNavbarProps() {
     return {
-      renderRightComponent: () => (
-        <View
-          styleName="container"
-          virtual
-        >
-          <Button onPress={this.onDone}>
-            <Subtitle>{I18n.t(ext('doneNavBarButton'))}</Subtitle>
-          </Button>
-        </View>
+      headerRight: props => (
+        <HeaderTextButton
+          title={I18n.t(ext('doneNavBarButton'))}
+          onPress={this.onDone}
+          {...props}
+        />
       ),
       title: I18n.t(ext('editProfileNavBarTitle')),
     };
   }
 
-  changeProfileImage() {
-    const options = {
-      allowsEditing: true,
-      maxHeight: 500,
-      maxWidth: 500,
+  handleImagePickerResponse(response) {
+    if (response.errorCode) {
+      Alert.alert(
+        I18n.t(ext('imageSelectErrorMessage')),
+        response.errorMessage,
+      );
+      return;
+    }
+
+    if (response.didCancel) {
+      this.setState({ pickerActive: false });
+      return;
+    }
+
+    const { assets } = response;
+    const updatedImage = {
+      uri: `data:image/jpeg;base64,${assets[0].base64}`,
+      data: assets[0].base64,
     };
 
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.error) {
-        Alert.alert(I18n.t(ext('imageSelectErrorMessage')), response.error);
-      } else if (!response.didCancel) {
-        const { data } = response;
-        const updatedImage = {
-          uri: `data:image/jpeg;base64,${data}`,
-          data,
-        };
-        this.setState({ updatedImage });
+    this.setState({ updatedImage, pickerActive: false });
+  }
+
+  handleCameraPickerPress() {
+    requestPermissions(CAMERA_PERMISSION).then(result => {
+      if (result[CAMERA_PERMISSION] === RESULTS.GRANTED) {
+        return launchCamera(
+          IMAGE_PICKER_OPTIONS,
+          this.handleImagePickerResponse,
+        );
       }
     });
+  }
+
+  handleGalleryPickerPress() {
+    launchImageLibrary(IMAGE_PICKER_OPTIONS, this.handleImagePickerResponse);
+  }
+
+  handleChangeProfileImagePress() {
+    this.setState({ pickerActive: true });
   }
 
   renderInput(name, label, options) {
@@ -167,9 +218,8 @@ class EditProfileScreen extends PureComponent {
   }
 
   renderForm() {
-    return _.map(
-      _.keys(this.fields),
-      key => this.renderInput(key, this.fields[key], this.fieldOptions[key]),
+    return _.map(_.keys(this.fields), key =>
+      this.renderInput(key, this.fields[key], this.fieldOptions[key]),
     );
   }
 
@@ -185,34 +235,50 @@ class EditProfileScreen extends PureComponent {
     // updated image takes precedence, it will be set if user is currently
     // editing profile and changed the image
     const image = _.get(updatedImage, 'uri') || _.get(user, 'profile.image');
-    const keyboardOffset = Keyboard.calculateKeyboardOffset();
+
+    return (
+      <ScrollView>
+        <ProfileImage
+          isEditable
+          onPress={this.handleChangeProfileImagePress}
+          uri={image}
+        />
+        {this.renderForm()}
+        <Caption styleName="h-center">
+          {I18n.t(ext('loggedInUserInfo'), { username })}
+        </Caption>
+      </ScrollView>
+    );
+  }
+
+  render() {
+    const { pickerActive } = this.state;
+    const keyboardOffset =
+      Platform.OS === 'ios' ? Keyboard.calculateKeyboardOffset() : 0;
+    const pickerOptions = [
+      {
+        title: I18n.t(ext('imagePickerCameraOption')),
+        onPress: this.handleCameraPickerPress,
+      },
+      {
+        title: I18n.t(ext('imagePickerGalleryOption')),
+        onPress: this.handleGalleryPickerPress,
+      },
+    ];
 
     return (
       <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={keyboardOffset}
+        style={{ flex: 1 }}
       >
-        <ScrollView>
-          <ProfileImage
-            isEditable
-            onPress={this.changeProfileImage}
-            uri={image}
-          />
-          {this.renderForm()}
-          <Caption styleName="h-center">
-            {I18n.t(ext('loggedInUserInfo'), { username })}
-          </Caption>
-        </ScrollView>
+        <Screen>{this.renderContent()}</Screen>
+        <ActionSheet
+          confirmOptions={pickerOptions}
+          active={pickerActive}
+          onDismiss={this.handlePickerClosePress}
+        />
       </KeyboardAvoidingView>
-    );
-  }
-
-  render() {
-    return (
-      <Screen>
-        <NavigationBar {...this.getNavbarProps()} />
-        {this.renderContent()}
-      </Screen>
     );
   }
 }
@@ -223,6 +289,7 @@ export const mapStateToProps = state => ({
 
 export const mapDispatchToProps = { updateProfile };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectStyle(ext('EditProfileScreen'))(EditProfileScreen),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('EditProfileScreen'))(EditProfileScreen));

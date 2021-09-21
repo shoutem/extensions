@@ -10,7 +10,7 @@ import { View, EmptyStateView, Screen, Keyboard } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
 import { currentLocation } from 'shoutem.cms';
-import { NavigationBar } from 'shoutem.navigation';
+import { getRouteParams } from 'shoutem.navigation';
 import NavigationToolbar from '../components/NavigationToolbar';
 import { ext } from '../const';
 
@@ -23,18 +23,8 @@ const KEYBOARD_OFFSET = Keyboard.calculateKeyboardOffset();
 
 export class WebViewScreen extends PureComponent {
   static propTypes = {
-    title: PropTypes.string,
     checkPermissionStatus: PropTypes.func,
-    shortcut: PropTypes.shape({
-      settings: PropTypes.shape({
-        requireGeolocationPermission: PropTypes.bool,
-        showNavigationToolbar: PropTypes.bool,
-        url: PropTypes.string,
-        title: PropTypes.string,
-      }),
-    }),
-    // received via openURL, when other extensions open in-app browsers
-    requireLocationPermission: PropTypes.bool,
+    route: PropTypes.object,
     currentLocation: PropTypes.object,
     style: PropTypes.object,
   };
@@ -50,20 +40,24 @@ export class WebViewScreen extends PureComponent {
 
     // Since WebView rerenders after every change, check for
     // permission is done in the constructor
-    const { checkPermissionStatus, requireLocationPermission } = props;
+    const { checkPermissionStatus } = props;
+    const { requireGeolocationPermission } = this.getSettings();
 
     if (!_.isFunction(checkPermissionStatus)) {
       return;
     }
 
-    const settingsPath = 'shortcut.settings.requireGeolocationPermission';
-    const requirePermission =
-      _.get(props, settingsPath, false) || requireLocationPermission;
     const isLocationAvailable = !!props.currentLocation;
 
-    if (requirePermission && !isLocationAvailable) {
+    if (requireGeolocationPermission && !isLocationAvailable) {
       checkPermissionStatus();
     }
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+
+    navigation.setOptions(this.getNavBarProps());
   }
 
   onNavigationStateChange(webState) {
@@ -73,9 +67,19 @@ export class WebViewScreen extends PureComponent {
   }
 
   getSettings() {
-    const { shortcut } = this.props;
+    const { route } = this.props;
+    const routeParams = getRouteParams(this.props);
+    const shortcut = routeParams.shortcut;
 
-    return shortcut ? shortcut.settings || {} : this.props;
+    if (shortcut) {
+      return { ...shortcut.settings, title: shortcut.title };
+    }
+
+    if (route) {
+      return routeParams || {};
+    }
+
+    return {};
   }
 
   setWebViewRef(ref) {
@@ -83,7 +87,7 @@ export class WebViewScreen extends PureComponent {
   }
 
   getNavBarProps() {
-    const { title } = this.props;
+    const { title } = this.getSettings();
 
     return { title };
   }
@@ -136,10 +140,6 @@ export class WebViewScreen extends PureComponent {
     }
 
     return { ...defaultWebViewProps, ...webViewProps };
-  }
-
-  renderNavigationBar() {
-    return <NavigationBar {...this.getNavBarProps()} />;
   }
 
   renderWebView() {
@@ -204,7 +204,6 @@ export class WebViewScreen extends PureComponent {
           keyboardVerticalOffset={KEYBOARD_OFFSET}
           enabled={KEYBOARD_AVOIDING_ENABLED}
         >
-          {this.renderNavigationBar()}
           {this.renderBrowser()}
         </KeyboardAvoidingView>
       </Screen>

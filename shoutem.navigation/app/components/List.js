@@ -1,18 +1,12 @@
 import React from 'react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import { connectStyle } from '@shoutem/theme';
 import { dimensionRelativeToIphone, Device } from '@shoutem/ui';
-import {
-  LIST,
-  ext,
-  IPHONE_X_NOTCH_PADDING,
-  IPHONE_XR_NOTCH_PADDING,
-  IPHONE_X_HOME_INDICATOR_PADDING,
-  NAVIGATION_HEADER_HEIGHT,
-} from '../const';
-import { isTabBarNavigation, resolveScrollViewProps } from '../helpers';
+import { LIST, IPHONE_X_HOME_INDICATOR_PADDING } from '../const';
+import { isTabBarNavigation } from '../redux';
+import { getRouteParams } from '../services';
 import ListItem from './ListItem';
 import FolderBase from './FolderBase';
 
@@ -26,13 +20,11 @@ class List extends FolderBase {
     textSize: PropTypes.string,
   };
 
-  resolveScrollViewProps() {
-    return resolveScrollViewProps(this.props);
-  }
-
   resolvePageProps() {
-    const { topOffset, listAlignment } = this.getLayoutSettings();
-    const { dimensions: { height } } = this.state;
+    const { topOffset, listAlignment } = this.getScreenSettings();
+    const {
+      dimensions: { height },
+    } = this.state;
     const { style, isTabBar } = this.props;
 
     const homeBarHeight = Device.select({
@@ -52,10 +44,18 @@ class List extends FolderBase {
   }
 
   renderRow(shortcut, index) {
-    const { showText, showIcon, inItemAlignment, textSize } = this.getLayoutSettings();
+    const {
+      showText,
+      showIcon,
+      inItemAlignment,
+      textSize,
+    } = this.getScreenSettings();
     const { style } = this.props;
 
-    const listItemStyle = { ...style, text: { ...style.text, ...style[`${textSize}-text`] } };
+    const listItemStyle = {
+      ...style,
+      text: { ...style.text, ...style[`${textSize}-text`] },
+    };
 
     return (
       <ListItem
@@ -72,18 +72,21 @@ class List extends FolderBase {
 }
 
 const mapPropsToStyleNames = (styleNames, props) => {
-  const { inItemAlignment } = props;
+  const { inItemAlignment } = _.get(getRouteParams(props), 'screenSettings');
 
   // Add inItemAlignment as style name to align content
   styleNames.push(`in-item-alignment-${inItemAlignment}`);
 
-  return FolderBase.mapPropsToStyleNames(styleNames, props);
+  return FolderBase.mapPropsToStyleNames(styleNames, {
+    ...getRouteParams(props).screenSettings,
+    isRootScreen: getRouteParams(props).isRootScreen,
+  });
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   isTabBar: isTabBarNavigation(state),
 });
 
-export default connect(mapStateToProps, undefined)(
-  connectStyle(LIST, undefined, mapPropsToStyleNames)(List)
+export default connect(mapStateToProps)(
+  connectStyle(LIST, undefined, mapPropsToStyleNames)(List),
 );

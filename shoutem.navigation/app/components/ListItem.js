@@ -12,10 +12,7 @@ export default class ListItem extends NavigationBaseItem {
     const { style } = this.props;
 
     return (
-      <FolderItemContainer
-        onPress={this.onPress}
-        style={style.item}
-      >
+      <FolderItemContainer onPress={this.onPress} style={style.item}>
         <View style={style.iconAndTextContainer}>
           {this.renderIcon()}
           {this.renderText()}

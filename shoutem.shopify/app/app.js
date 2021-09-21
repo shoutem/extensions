@@ -36,7 +36,10 @@ export function appDidMount(app) {
   Promise.all([MBBridge.getCollections(), MBBridge.getShop()])
     .then(([collections, shop]) => {
       shop.collections = collections;
-      shop.currency = shop.moneyFormat.replace('{{amount}}', '').replace(/<\/?[^>]+(>|$)/g, '').trim()
+      shop.currency = shop.moneyFormat
+        .replace('{{amount}}', '')
+        .replace(/<\/?[^>]+(>|$)/g, '')
+        .trim();
       dispatch(shopLoaded(collections, shop, []));
       // TODO: Figure out why only the first item of a collection is refreshed
       dispatch(refreshProducts(collections[0].id));

@@ -1,13 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import {
-  Row,
-  Image,
-  Text,
-  TouchableOpacity,
-} from '@shoutem/ui';
+import PropTypes from 'prop-types';
+import { Row, Image, Text, TouchableOpacity } from '@shoutem/ui';
 import { images } from '../assets';
 
 export default class NewChannelListItem extends PureComponent {
@@ -40,10 +35,7 @@ export default class NewChannelListItem extends PureComponent {
     return (
       <TouchableOpacity onPress={this.handleUserPress}>
         <Row styleName="small">
-          <Image
-            source={source}
-            styleName="small-avatar"
-          />
+          <Image source={source} styleName="small-avatar" />
           <Text>{name}</Text>
         </Row>
       </TouchableOpacity>

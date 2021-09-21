@@ -2,7 +2,7 @@
   "shoutem": {
     "notification-center": {
       "viewNotificationButton": "VIEW",
-      "notificationListNavBarTitle": "NOTIFICATIONS",
+      "notificationListNavBarTitle": "Notification settings",
       "pushGroupsSettingsNavBarTitle": "SETTINGS",
       "noGroupsErrorMessage": "There are no push groups defined.",
       "pushGroupsPreviewAlertTitle": "Preview mode",
@@ -11,7 +11,27 @@
       "notificationPermissionsAlertMessage": "You disabled push notifications for this application. Do you want to enable them in settings now?",
       "notificationPermissionsSettings": "Go to Settings",
       "notificationPermissionsCancel": "Cancel",
-      "subscribeToPushGroups": "Send me push notifications for"
+      "subscribeToPushGroups": "Send me push notifications for",
+      "reminders": "Reminders",
+      "reminderToggleTitle": "Remind me to use the app",
+      "reminderNavigationItemTitle": "Set a time of reminder",
+      "dailyMessagesSectionTitle": "Daily notification messages",
+      "dailyMessagesToggleTitle": "Daily notification messages",
+      "dailyMessagesNavigationItemTitle": "Set a daily notification messages settings",
+      "dailySettingsTitle": "Set a timeframe",
+      "dailySettingsDescription": "Set a timeframe in which the app will send you notification messages",
+      "timePickerDescription": "What time works for you the best?",
+      "confirmButtonTitle": "Confirm",
+      "beginsAt": "Begins at",
+      "endsAt": "Ends at",
+      "timeframeErrorMessage": "Invalid timeframe",
+      "reminderSettingsTitle": "Set a time reminder",
+      "reminderSettingDescription": "Set a time when you want to be reminded to use the app, if you haven’t that day",
+      "reminderMeAt": "Remind me at",
+      "dailyMessagesAlertTitle": "Warning",
+      "dailyMessagesAlertMessage": "Unsubscribing from daily notification messages will stop all incoming messages for today. Are you sure you want to unsubscribe?",
+      "alertCancelButton": "Cancel",
+      "alertConfirmButton": "Unsubscribe"
     }
   }
 }

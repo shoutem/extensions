@@ -11,6 +11,8 @@ export const screens = {
   SolidNavbarMediumPageScreen: PageScreen,
 };
 
+export { PAGE_SHORTCUT_NAME } from './const';
+
 export const themes = extension.themes;
 
 export { reducer };

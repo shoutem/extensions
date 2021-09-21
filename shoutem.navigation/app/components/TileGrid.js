@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { GridRow, View, defaultThemeVariables, Device } from '@shoutem/ui';
+import { GridRow, defaultThemeVariables } from '@shoutem/ui';
 import { TILE_GRID } from '../const';
-import { isTabBarNavigation, resolveScrollViewProps } from '../helpers';
+import { isTabBarNavigation } from '../redux';
 import TileItem from './TileItem';
 import FolderBase from './FolderBase';
 
@@ -23,14 +23,12 @@ class TileGrid extends FolderBase {
     textSize: PropTypes.string,
   };
 
-  resolveScrollViewProps() {
-    return resolveScrollViewProps(this.props);
-  }
-
   resolvePageProps() {
     const { style } = this.props;
-    const { itemGutter } = this.getLayoutSettings();
-    const { dimensions: { height } } = this.state;
+    const { itemGutter } = this.getScreenSettings();
+    const {
+      dimensions: { height },
+    } = this.state;
     const styleName = `${itemGutter}-gutter`;
 
     return {
@@ -43,13 +41,22 @@ class TileGrid extends FolderBase {
   }
 
   renderRow(row, rowIndex) {
-    const { itemText, itemGutter, backgroundImagesEnabled, textSize } = this.getLayoutSettings();
+    const {
+      itemText,
+      itemGutter,
+      backgroundImagesEnabled,
+      textSize,
+    } = this.getScreenSettings();
     const { style } = this.props;
-    const styleName = itemGutter === 'noGutter' ? `${itemText} no-gutter` : `${itemText} ${itemGutter}-gutter`;
+    const styleName =
+      itemGutter === 'noGutter'
+        ? `${itemText} no-gutter`
+        : `${itemText} ${itemGutter}-gutter`;
     const tileItemStyle = {
       item: {
         ...style.item,
-        marginLeft: itemGutter === 'noGutter' ? 0 : defaultThemeVariables.SmallGutter,
+        marginLeft:
+          itemGutter === 'noGutter' ? 0 : defaultThemeVariables.SmallGutter,
       },
       text: { ...style.text, ...style[`${textSize}-text`] },
     };
@@ -81,14 +88,14 @@ class TileGrid extends FolderBase {
   }
 }
 
-const mapPropsToStyleNames = (styleNames, props) => {
+const mapPropsToStyleNames = styleNames => {
   return styleNames;
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   isTabBar: isTabBarNavigation(state),
 });
 
 export default connect(mapStateToProps)(
-  connectStyle(TILE_GRID, undefined, mapPropsToStyleNames)(TileGrid)
+  connectStyle(TILE_GRID, undefined, mapPropsToStyleNames)(TileGrid),
 );

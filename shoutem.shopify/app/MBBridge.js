@@ -54,14 +54,16 @@ const getNodesFromEdgesProperties = (container, ...properties) => {
 const productsResolver = accept => container => {
   let p2 = _.map(
     _.get(cleanUp(container, true), 'node.products.edges'),
-    product => getNodesFromEdgesProperties(product.node, 'images', 'variants')
+    product => getNodesFromEdgesProperties(product.node, 'images', 'variants'),
   );
   accept(p2);
 };
 
 const productsSearchResolver = accept => shop => {
   let products = _.map(_.get(cleanUp(shop, true), 'products.edges'), 'node');
-  let p2 = _.map(products, p => getNodesFromEdgesProperties(p, 'images', 'variants'))
+  let p2 = _.map(products, p =>
+    getNodesFromEdgesProperties(p, 'images', 'variants'),
+  );
   accept(p2);
 };
 
@@ -70,42 +72,54 @@ export default {
   initStore: (shop, apiKey, callback = () => {}) => {
     MBBridge.initStore(shop, apiKey, callback);
   },
-  getShop: () => new Promise((accept, reject) => {
-    MBBridge.getShop().then(o => accept(cleanUp(o, true))).catch(reject);
-  }),
-  getCollections: () => new Promise((accept, reject) => {
-    var collections = [];
-    const addCollections = shop => {
-      var response = cleanUp(shop, true);
-      var edges = _.get(response, 'collections.edges');
-      var data = _.map(edges, 'node');
+  getShop: () =>
+    new Promise((accept, reject) => {
+      MBBridge.getShop()
+        .then(o => accept(cleanUp(o, true)))
+        .catch(reject);
+    }),
+  getCollections: () =>
+    new Promise((accept, reject) => {
+      var collections = [];
+      const addCollections = shop => {
+        var response = cleanUp(shop, true);
+        var edges = _.get(response, 'collections.edges');
+        var data = _.map(edges, 'node');
 
-      if (data.length > 0) {
-        collections = _.concat(collections, data);
-      }
+        if (data.length > 0) {
+          collections = _.concat(collections, data);
+        }
 
-      if (response.collections.pageInfo.hasNextPage) {
-        const cursor = _.last(edges).cursor;
-        MBBridge.getCollections(cursor).then(addCollections).catch(reject);
-      }
-      else {
-        accept(collections);
-      }
-    };
+        if (response.collections.pageInfo.hasNextPage) {
+          const cursor = _.last(edges).cursor;
+          MBBridge.getCollections(cursor)
+            .then(addCollections)
+            .catch(reject);
+        } else {
+          accept(collections);
+        }
+      };
 
-    MBBridge.getCollections("")
-      .then(addCollections)
-      .catch(reject);
-  }),
-  getProductsForCollection: (collectionId) => new Promise((accept, reject) => {
-    MBBridge.getProductsForCollection(collectionId)
-    .then(productsResolver(accept)).catch(reject);
-  }),
-  filterProducts: (filter) => new Promise((accept, reject) => {
-    MBBridge.filterProducts(filter).then(productsSearchResolver(accept)).catch(reject);
-  }),
-  createCheckoutWithCartAndClientInfo: (cart, userInfo) => new Promise((accept, reject) => {
-    MBBridge.createCheckoutWithCartAndClientInfo(cart, userInfo)
-      .then(o => accept(cleanUp(o, true))).catch(reject);
-  }),
+      MBBridge.getCollections('')
+        .then(addCollections)
+        .catch(reject);
+    }),
+  getProductsForCollection: collectionId =>
+    new Promise((accept, reject) => {
+      MBBridge.getProductsForCollection(collectionId)
+        .then(productsResolver(accept))
+        .catch(reject);
+    }),
+  filterProducts: filter =>
+    new Promise((accept, reject) => {
+      MBBridge.filterProducts(filter)
+        .then(productsSearchResolver(accept))
+        .catch(reject);
+    }),
+  createCheckoutWithCartAndClientInfo: (cart, userInfo) =>
+    new Promise((accept, reject) => {
+      MBBridge.createCheckoutWithCartAndClientInfo(cart, userInfo)
+        .then(o => accept(cleanUp(o, true)))
+        .catch(reject);
+    }),
 };

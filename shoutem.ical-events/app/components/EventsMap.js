@@ -1,12 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { LayoutAnimation } from 'react-native';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-
-import { View } from '@shoutem/ui';
-
+import PropTypes from 'prop-types';
+import { LayoutAnimation } from 'react-native';
 import { MapView } from 'shoutem.application';
-
+import { View } from '@shoutem/ui';
 import ListEventView from '../components/ListEventView';
 import isValidEvent from '../services/isValidEvent';
 
@@ -36,15 +34,17 @@ function getMarkersFromEvents(events) {
  */
 
 function getCoordinatesDelta(events, coordinateName) {
-  return _.maxBy(events, coordinateName)[coordinateName] -
-          _.minBy(events, coordinateName)[coordinateName];
+  return (
+    _.maxBy(events, coordinateName)[coordinateName] -
+    _.minBy(events, coordinateName)[coordinateName]
+  );
 }
 
 function getInitialRegionFromEvents(events) {
   const defaultLatitudeDelta = 0.01;
   const defaultLongitudeDelta = 0.01;
 
-  const validEvents = _.map(_.filter(events, isValidEvent), (event) => {
+  const validEvents = _.map(_.filter(events, isValidEvent), event => {
     return {
       latitude: parseFloat(_.get(event, 'geo.lat')),
       longitude: parseFloat(_.get(event, 'geo.lon')),
@@ -52,11 +52,13 @@ function getInitialRegionFromEvents(events) {
   });
 
   if (_.isEmpty(validEvents)) {
-    return;
+    return null;
   }
 
-  const latitudeDelta = getCoordinatesDelta(validEvents, 'latitude') || defaultLatitudeDelta;
-  const longitudeDelta = getCoordinatesDelta(validEvents, 'longitude') || defaultLongitudeDelta;
+  const latitudeDelta =
+    getCoordinatesDelta(validEvents, 'latitude') || defaultLatitudeDelta;
+  const longitudeDelta =
+    getCoordinatesDelta(validEvents, 'longitude') || defaultLongitudeDelta;
 
   return {
     latitude: _.meanBy(validEvents, 'latitude'),
@@ -98,12 +100,14 @@ export default class EventsMap extends PureComponent {
         ...getMarkersAndRegionFromEvents(props.data),
       };
     }
+
+    return state;
   }
 
   constructor(props, context) {
     super(props, context);
 
-    this.handleMapPress = this.handleMapPress.bind(this);
+    autoBindReact(this);
 
     this.state = {
       selectedEvent: null,
@@ -140,7 +144,7 @@ export default class EventsMap extends PureComponent {
       <MapView
         markers={markers}
         initialRegion={region}
-        onMarkerPressed={(marker) => {
+        onMarkerPressed={marker => {
           LayoutAnimation.easeInEaseOut();
           this.setState({ selectedEvent: marker.event });
         }}
@@ -156,7 +160,9 @@ export default class EventsMap extends PureComponent {
     return (
       <View styleName="flexible">
         {this.renderEventsMap()}
-        {selectedEvent ? this.renderEventListItem(selectedEvent, style.eventDetails) : null}
+        {selectedEvent
+          ? this.renderEventListItem(selectedEvent, style.eventDetails)
+          : null}
       </View>
     );
   }

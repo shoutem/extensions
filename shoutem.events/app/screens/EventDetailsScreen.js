@@ -1,9 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
+import { InlineMap } from 'shoutem.application';
 import { connectStyle } from '@shoutem/theme';
 import {
   ScrollView,
@@ -19,16 +18,18 @@ import {
   TouchableOpacity,
   Row,
   Subtitle,
+  ShareButton,
 } from '@shoutem/ui';
-
-import { NavigationBar, navigateTo as navigateToAction } from 'shoutem.navigation';
-import { openURL as openUrlAction } from 'shoutem.web-view';
-import { InlineMap } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-
+import {
+  composeNavigationStyles,
+  getRouteParams,
+  navigateTo,
+} from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
 import { formatDate, addToCalendar } from '../shared/Calendar';
-import { ext } from '../const';
 import isValidEvent from '../shared/isValidEvent';
+import { ext } from '../const';
 
 /**
  * Extracts `coordinate` value for given event.
@@ -36,9 +37,8 @@ import isValidEvent from '../shared/isValidEvent';
  * @param event
  * @returns {*}
  */
-const getEventLocationCoordinate = (event, coordinate) => (
-  parseFloat(_.get(event, `location.${coordinate}`))
-);
+const getEventLocationCoordinate = (event, coordinate) =>
+  parseFloat(_.get(event, `location.${coordinate}`));
 
 /**
  * Extracts location into marker out of event.
@@ -55,10 +55,7 @@ const getEventLocation = event => ({
 
 export class EventDetailsScreen extends PureComponent {
   static propTypes = {
-    event: PropTypes.object.isRequired,
-    openURL: PropTypes.func.isRequired,
-    navigateTo: PropTypes.func.isRequired,
-    navigationBarStyle: PropTypes.string.isRequired,
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props, context) {
@@ -67,55 +64,95 @@ export class EventDetailsScreen extends PureComponent {
     autoBindReact(this);
   }
 
-  isNavigationBarClear() {
-    const { navigationBarStyle } = this.props;
+  componentDidMount() {
+    const { navigation } = this.props;
 
-    return navigationBarStyle === 'clear';
+    navigation.setOptions(this.getNavBarProps());
   }
 
-  resolveNavBarProps(options = {}) {
-    const { event } = this.props;
+  isNavigationBarClear() {
+    const { screenSettings } = getRouteParams(this.props);
+    return screenSettings.navigationBarStyle === 'clear';
+  }
 
-    let styleName = '';
-    let animationName = '';
+  getNavBarProps() {
+    const { event, title = '' } = getRouteParams(this.props);
+
     if (this.isNavigationBarClear()) {
       if (event.image) {
         // If navigation bar is clear and image exists, navigation bar should be initially clear
         // but after scrolling down navigation bar should appear (solidify animation)
-        styleName = 'clear';
-        animationName = 'solidify';
-      } else {
-        // If navigation bar is clear, but there is no image, navigation bar should be set to solid,
-        // but boxing animation should be applied so title appears after scrolling down
-        animationName = 'boxing';
+
+        return {
+          ...composeNavigationStyles(['clear', 'solidify']),
+          headerRight: props => {
+            if (!event.rsvpLink) {
+              return null;
+            }
+
+            return (
+              <ShareButton
+                // eslint-disable-next-line react/prop-types
+                iconProps={{ style: props.tintColor }}
+                styleName="clear"
+                title={event.name}
+                url={event.rsvpLink}
+              />
+            );
+          },
+          title,
+        };
       }
+
+      // If navigation bar is clear, but there is no image, navigation bar should be set to solid,
+      // but boxing animation should be applied so title appears after scrolling down
+      return {
+        ...composeNavigationStyles(['boxing']),
+        headerRight: props => {
+          if (!event.rsvpLink) {
+            return null;
+          }
+
+          return (
+            <ShareButton
+              // eslint-disable-next-line react/prop-types
+              iconProps={{ style: props.tintColor }}
+              styleName="clear"
+              title={event.name}
+              url={event.rsvpLink}
+            />
+          );
+        },
+        title,
+      };
     }
 
     return {
-      share: {
-        title: event.name,
-        link: event.rsvpLink,
-      },
-      styleName,
-      animationName,
+      headerRight: props => (
+        <ShareButton
+          // eslint-disable-next-line react/prop-types
+          iconProps={{ style: props.tintColor }}
+          styleName="clear"
+          title={event.name}
+          url={event.rsvpLink}
+        />
+      ),
       title: event.name,
-      ...options,
     };
   }
 
   addToCalendar() {
-    const { event } = this.props;
+    const { event } = getRouteParams(this.props);
 
     addToCalendar(event);
   }
 
   openMapScreen() {
-    const { event, navigateTo } = this.props;
+    const { event } = getRouteParams(this.props);
 
-    navigateTo({
-      screen: ext('SingleEventMapScreen'),
+    navigateTo(ext('SingleEventMapScreen'), {
       title: `Map View - ${event.name}`,
-      props: {
+      event: {
         title: _.get(event, 'name'),
         marker: getEventLocation(event),
       },
@@ -123,8 +160,7 @@ export class EventDetailsScreen extends PureComponent {
   }
 
   openURL() {
-    const { event, openURL } = this.props;
-
+    const { event } = getRouteParams(this.props);
     openURL(event.rsvpLink, event.name);
   }
 
@@ -155,7 +191,7 @@ export class EventDetailsScreen extends PureComponent {
     const textColorStyle = darkened ? '' : 'bright';
 
     return (
-      <View virtual>
+      <View styleName="vertical h-center">
         <Title styleName={`${textColorStyle} md-gutter-bottom`}>
           {event.name.toUpperCase()}
         </Title>
@@ -218,14 +254,9 @@ export class EventDetailsScreen extends PureComponent {
   }
 
   renderScreen() {
-    const { event } = this.props;
+    const { event } = getRouteParams(this.props);
 
-    return (
-      <Screen styleName="paper">
-        <NavigationBar {...this.resolveNavBarProps()} />
-        {this.renderData(event)}
-      </Screen>
-    );
+    return <Screen styleName="paper">{this.renderData(event)}</Screen>;
   }
 
   render() {
@@ -233,11 +264,4 @@ export class EventDetailsScreen extends PureComponent {
   }
 }
 
-export const mapDispatchToProps = {
-  openURL: openUrlAction,
-  navigateTo: navigateToAction,
-};
-
-export default connect(undefined, mapDispatchToProps)(
-  connectStyle(ext('EventDetailsScreen'))(EventDetailsScreen),
-);
+export default connectStyle(ext('EventDetailsScreen'))(EventDetailsScreen);

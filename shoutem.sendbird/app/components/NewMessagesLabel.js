@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { I18n } from 'shoutem.i18n';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Text, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 function NewMessagesLabel({ style }) {
