@@ -119,11 +119,12 @@ class PlacesGridScreen extends CmsListScreen {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, isSearchSettingEnabled } = this.props;
     const { renderCategoriesInline } = this.state;
 
     return (
       <Screen>
+        {isSearchSettingEnabled && this.renderSearch()}
         {renderCategoriesInline && this.renderCategoriesDropDown('horizontal')}
         {this.renderData(data)}
       </Screen>

@@ -1,12 +1,20 @@
 {
   "name": "auth",
-  "version": "3.0.1",
+  "version": "3.0.3",
   "platform": "^3.0.0",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Removed login username input text clearance after user presses Login button",
+  "releaseNotes": "* Added delete user account feature\n* Code improvements",
   "description": "Show user profile, sign out user",
-  "dependencies": ["shoutem.camera"],
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.camera",
+    "shoutem.i18n",
+    "shoutem.navigation",
+    "shoutem.permissions",
+    "shoutem.redux",
+    "shoutem.web-view"
+  ],
   "categories": ["users"],
   "i18n": {
     "locale": "en",
@@ -37,6 +45,9 @@
     },
     {
       "name": "ChangePasswordScreen"
+    },
+    {
+      "name": "ConfirmDeletionScreen"
     }
   ],
   "shortcuts": [

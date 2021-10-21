@@ -1,17 +1,13 @@
 {
   "name": "wordpress",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "platform": "^3.0.0",
   "title": "WordPress",
   "description": "Show news articles from WordPress blog.",
-  "releaseNotes": "* Fixed loading WordPress items cover photos",
+  "releaseNotes": "* Code improvements",
   "icon": "server/assets/extension-icon.png",
-  "dependencies": [
-    "shoutem.layouts"
-  ],
-  "categories": [
-    "content"
-  ],
+  "dependencies": ["shoutem.layouts"],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -57,9 +53,7 @@
       "title": "Grid with a featured article",
       "image": "./server/assets/screens/featuredgrid.png",
       "groupTitle": "Choose List screen layout",
-      "navigatesTo": [
-        "@.ArticleDetailsScreen"
-      ],
+      "navigatesTo": ["@.ArticleDetailsScreen"],
       "settings": {
         "listType": "fixed-grid",
         "hasFeaturedItem": true
@@ -99,13 +93,15 @@
       "name": "ArticleDetailsScreen",
       "title": "Large photo details",
       "groupTitle": "Choose Details screen layout",
-      "image": "./server/assets/screens/large-details.png"
+      "image": "./server/assets/screens/large-details.png",
+      "settings": { "disableAdBanner": true }
     },
     {
       "name": "ArticleMediumDetailsScreen",
       "title": "Regular details",
       "image": "./server/assets/screens/medium-details.png",
-      "extends": "@.ArticleDetailsScreen"
+      "extends": "@.ArticleDetailsScreen",
+      "settings": { "disableAdBanner": true }
     }
   ]
 }

@@ -150,21 +150,28 @@ export class MembersScreen extends RemoteDataListScreen {
 const mapStateToProps = (state, ownProps) => {
   const routeParams = getRouteParams(ownProps);
   const users = _.get(routeParams, 'users');
-  const userGroups = _.get(ownProps, 'shortcut.settings.userGroups', []);
+  const userGroups = _.get(routeParams, 'shortcut.settings.userGroups', []);
+  const showAllUsers = _.get(
+    routeParams,
+    'shortcut.settings.showAllUsers',
+    true,
+  );
+
   const visibleGroups = userGroups.length
     ? userGroups.filter(group => group.visible)
     : [];
   const visibleGroupIds = visibleGroups.length
     ? visibleGroups.map(group => group.id)
     : [];
-  const showAllUsers = _.get(ownProps, 'shortcut.settings.showAllUsers', true);
   const visibleUsers = showAllUsers ? getUsers(state) : getUsersInGroups(state);
 
   // update status to valid to initialize data
   const initializedStatus = updateStatus(createStatus(), {
     validationStatus: validationStatus.VALID,
   });
+
   setStatus(visibleUsers, initializedStatus);
+
   if (users) {
     setStatus(users, initializedStatus);
   }

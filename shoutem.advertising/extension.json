@@ -1,11 +1,16 @@
 {
   "name": "advertising",
   "title": "Advertising",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "description": "Integrate AdMob and embed ads to your application",
-  "releaseNotes": "* Added a script for calling and debugging prebuild script",
+  "releaseNotes": "* Resolve if Ad banner should be hidden from screen settings",
   "icon": "server/assets/add-advertising-image.png",
   "platform": "^3.0.0",
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.navigation",
+    "shoutem.preview"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

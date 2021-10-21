@@ -32,26 +32,40 @@ import {
 } from './schema';
 import LOCALIZATION from './localization';
 
+export function resolveTimezoneKey(key) {
+  return key + 'TimezoneId';
+}
+
 export function fieldInError(formField) {
   return formField.touched && formField.error;
 }
 
 export function getFormPropertyKeys(schema) {
   const propertyKeys = getSchemaPropertyKeys(schema);
+  const formKeys = [];
 
-  return _.map(propertyKeys, propertyKey => {
+  _.forEach(propertyKeys, propertyKey => {
     const property = getSchemaProperty(schema, propertyKey);
 
     if (property.format === PROPERTY_FORMATS.ENTITY_REFERENCE_ARRAY) {
-      return `${propertyKey}[]`;
+      formKeys.push(`${propertyKey}[]`);
+      return;
     }
 
     if (property.type === PROPERTY_TYPES.ARRAY) {
-      return `${propertyKey}[]`;
+      formKeys.push(`${propertyKey}[]`);
+      return;
     }
 
-    return propertyKey;
+    if (property.format === PROPERTY_FORMATS.DATE_TIME) {
+      // add timezone form key as an extra
+      formKeys.push(resolveTimezoneKey(propertyKey));
+    }
+
+    formKeys.push(propertyKey);
   });
+
+  return formKeys;
 }
 
 export function resolveReactComponent(Component, props = {}) {
@@ -78,6 +92,13 @@ export function mapViewToModel(schema, resource) {
   _.forOwn(schema.properties, (value, key) => {
     const resourceValue = _.get(resource, key);
     const propertyType = _.get(value, 'type');
+    const propertyFormat = _.get(value, 'format');
+
+    // add timezone as an extra for date time property
+    if (propertyFormat === PROPERTY_FORMATS.DATE_TIME) {
+      const timezoneValue = _.get(resource, resolveTimezoneKey(key));
+      _.set(model, resolveTimezoneKey(key), timezoneValue);
+    }
 
     switch (propertyType) {
       case PROPERTY_TYPES.STRING:
@@ -126,6 +147,13 @@ export function mapModelToView(schema, resource) {
   _.forOwn(schema.properties, (value, key) => {
     const resourceValue = _.get(resource, key);
     const propertyType = _.get(value, 'type');
+    const propertyFormat = _.get(value, 'format');
+
+    // add timezone as an extra for date time property
+    if (propertyFormat === PROPERTY_FORMATS.DATE_TIME) {
+      const timezoneValue = _.get(resource, resolveTimezoneKey(key));
+      _.set(view, resolveTimezoneKey(key), timezoneValue);
+    }
 
     switch (propertyType) {
       case PROPERTY_TYPES.STRING:
@@ -286,9 +314,14 @@ export function resolveFormElement(sectionProperty, schema, fields, options) {
     schemaProperty.type === PROPERTY_TYPES.OBJECT &&
     schemaProperty.format === PROPERTY_FORMATS.DATE_TIME
   ) {
+    // try to get timezoneId (needed to be more precise with timezones selector so server is
+    // returning timezoneId as an extra to the datetime schema property)
+    const timezoneField = _.get(fields, resolveTimezoneKey(propertyKey));
+
     const props = {
       elementId: propertyKey,
       field: propertyField,
+      timezoneField: timezoneField,
       name: schemaProperty.title,
       timezoneName: i18next.t(LOCALIZATION.DATE_TIME_TIMEZONE_LABEL),
       touch: options.touch,

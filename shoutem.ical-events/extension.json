@@ -1,16 +1,13 @@
 {
   "name": "ical-events",
   "title": "iCal Events",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "platform": "^3.0.0",
   "description": "Shoutem extension for managing iCal events",
+  "releaseNotes": "* Code improvements",
   "icon": "server/assets/add-events-image.png",
-  "dependencies": [
-    "shoutem.layouts"
-  ],
-  "categories": [
-    "content"
-  ],
+  "dependencies": ["shoutem.layouts"],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -27,9 +24,7 @@
       "name": "EventsListScreen",
       "title": "List",
       "image": "./server/assets/images/list-no-image.png",
-      "navigatesTo": [
-        "@.EventDetailsScreen"
-      ],
+      "navigatesTo": ["@.EventDetailsScreen"],
       "settings": {
         "listType": "list",
         "hasFeaturedItem": false
@@ -46,16 +41,6 @@
       }
     },
     {
-      "name": "EventsGridScreen",
-      "title": "Grid",
-      "image": "./server/assets/images/grid-no-image.png",
-      "extends": "@.EventsListScreen",
-      "settings": {
-        "listType": "fixed-grid",
-        "hasFeaturedItem": false
-      }
-    },
-    {
       "name": "EventsFeaturedGridScreen",
       "title": "Grid with featured event",
       "image": "./server/assets/images/featured-grid-no-image.png",
@@ -63,6 +48,16 @@
       "settings": {
         "listType": "fixed-grid",
         "hasFeaturedItem": true
+      }
+    },
+    {
+      "name": "EventsGridScreen",
+      "title": "Grid",
+      "image": "./server/assets/images/grid-no-image.png",
+      "extends": "@.EventsListScreen",
+      "settings": {
+        "listType": "fixed-grid",
+        "hasFeaturedItem": false
       }
     },
     {
@@ -81,6 +76,9 @@
       "settings": {
         "navigationBarStyle": "clear"
       }
+    },
+    {
+      "name": "EventMapScreen"
     }
   ],
   "shortcuts": [

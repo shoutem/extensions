@@ -116,9 +116,7 @@ export class LoginScreen extends PureComponent {
     saveSession(JSON.stringify({ access_token }));
     userLoggedIn({ user, access_token }).then(() => {
       InteractionManager.runAfterInteractions(() => {
-        const { settings } = this.props;
-
-        hideShortcuts(user, settings);
+        hideShortcuts(user);
         onLoginSuccess(user);
       });
     });

@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { getExtensionInstallation } from 'environment';
-import { Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { getExtensionInstallation } from 'environment';
 import { updateExtensionSettings } from '../builder-sdk';
 import { trackEvent } from '../providers/analytics';
-import NavigationBarBackgroundImage from './components/NavigationBarBackgroundImage';
 import NavigationBarFirstScreenImageToggle from './components/NavigationBarFirstScreenImageToggle';
+import NavigationBarBackgroundImages from './components/NavigationBarBackgroundImages';
 import NavigationBarTitleToggle from './components/NavigationBarTitleToggle';
 import NavigationBarBackgroundSize from './components/NavigationBarBackgroundSize';
-
-// Import styles
 import './style.scss';
 
-const BACKGROUND_IMAGE = 'backgroundImage';
 const BACKGROUND_IMAGE_ENABLED_FIRST_SCREEN =
   'backgroundImageEnabledFirstScreen';
 const SHOW_TITLE = 'showTitle';
@@ -23,28 +20,21 @@ export class NavigationBarPage extends Component {
   constructor(props) {
     super(props);
 
-    // Bind handler methods to preserve real "this" reference
-    this.handleBackgroundImageChange = this.handleBackgroundImageChange.bind(
-      this,
-    );
-    this.handleBackgroundImageToggle = this.handleBackgroundImageToggle.bind(
-      this,
-    );
-    this.handleBackgroundSizeToggle = this.handleBackgroundSizeToggle.bind(
-      this,
-    );
-    this.handleTitleToggle = this.handleTitleToggle.bind(this);
+    autoBindReact(this);
   }
 
   /**
    * Handle background image upload or delete
    * @param {void} backgroundImage
    */
-  handleBackgroundImageChange(backgroundImage = null) {
+  handleBackgroundImageChange(
+    backgroundImagePropertyName,
+    backgroundImage = null,
+  ) {
     trackEvent('screens', 'main-navigation-background-image-added');
 
     this.updateExtensionSettings({
-      [BACKGROUND_IMAGE]: backgroundImage,
+      [backgroundImagePropertyName]: backgroundImage,
     });
   }
 
@@ -113,8 +103,10 @@ export class NavigationBarPage extends Component {
     const {
       extensionInstallation: { settings },
     } = this.props;
+
     const {
-      backgroundImage,
+      backgroundImage: withoutNotchNavbarBackgroundImage,
+      withNotchBackgroundImage,
       backgroundImageEnabledFirstScreen,
       showTitle,
       fitContainer,
@@ -123,38 +115,25 @@ export class NavigationBarPage extends Component {
     return (
       <div className="navigation-bar-page">
         <form>
-          <Row>
-            <Col md={12}>
-              <NavigationBarBackgroundImage
-                backgroundImage={backgroundImage}
-                onBackgroundImageChange={this.handleBackgroundImageChange}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6}>
-              <NavigationBarFirstScreenImageToggle
-                backgroundImageEnabledFirstScreen={
-                  backgroundImageEnabledFirstScreen
-                }
-                onBackgroundImageToggle={this.handleBackgroundImageToggle}
-              />
-            </Col>
-            <Col md={6}>
-              <NavigationBarBackgroundSize
-                fitContainer={fitContainer}
-                onBackgroundSizeToggle={this.handleBackgroundSizeToggle}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6}>
-              <NavigationBarTitleToggle
-                showTitle={showTitle}
-                onTitleToggle={this.handleTitleToggle}
-              />
-            </Col>
-          </Row>
+          <NavigationBarBackgroundImages
+            withoutNotchBackgroundImage={withoutNotchNavbarBackgroundImage}
+            withNotchBackgroundImage={withNotchBackgroundImage}
+            onBackgroundImageChange={this.handleBackgroundImageChange}
+          />
+          <NavigationBarFirstScreenImageToggle
+            backgroundImageEnabledFirstScreen={
+              backgroundImageEnabledFirstScreen
+            }
+            onBackgroundImageToggle={this.handleBackgroundImageToggle}
+          />
+          <NavigationBarBackgroundSize
+            fitContainer={fitContainer}
+            onBackgroundSizeToggle={this.handleBackgroundSizeToggle}
+          />
+          <NavigationBarTitleToggle
+            showTitle={showTitle}
+            onTitleToggle={this.handleTitleToggle}
+          />
         </form>
       </div>
     );

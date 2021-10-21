@@ -1,6 +1,6 @@
 {
   "name": "shoutem.audio",
-  "version": "3.0.1-rc.1",
+  "version": "3.0.1",
   "description": "Track player components for other extensions to utilize.",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

@@ -1,10 +1,10 @@
 {
   "name": "rubicon-theme",
-  "version": "3.0.5",
+  "version": "3.1.1",
   "platform": "^3.0.0",
   "type": "system",
   "title": "Rubicon Theme",
-  "releaseNotes": "* Added style changes for Social extension",
+  "releaseNotes": "* Added theme properties for CMS's inline category dropdown - background & text colors\n* Added style for CMS search UI",
   "description": "Rubicon theme",
   "icon": "server/assets/add-rubicon-theme-image.png",
   "categories": [],

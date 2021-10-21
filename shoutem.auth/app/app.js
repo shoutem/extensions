@@ -3,15 +3,16 @@ import rio from '@shoutem/redux-io';
 import { shoutemApi } from './services/shoutemApi';
 import { ext } from './const';
 import {
-  USER_SCHEMA,
-  REAUTHENTICATE_FAILED,
   AUTH_TOKEN_SCHEMA,
   fetchUser,
-  restoreSession,
   getAccessToken,
-  isAuthenticated,
   getUser,
   hideShortcuts,
+  isAuthenticated,
+  LOGOUT,
+  REAUTHENTICATE_FAILED,
+  restoreSession,
+  USER_SCHEMA,
 } from './redux';
 import { getSession } from './session';
 import {
@@ -20,29 +21,37 @@ import {
   setQueueTargetComplete,
 } from 'shoutem.application';
 
-function refreshUser(dispatch, getState) {
-  return getSession()
-    .then(session => {
-      if (session) {
-        return dispatch(restoreSession(session));
-      }
+async function refreshUser(dispatch, getState) {
+  const session = await getSession();
 
-      return dispatch({ type: REAUTHENTICATE_FAILED });
-    })
-    .then(() => getAccessToken(getState()) && dispatch(fetchUser('me')))
-    .then(() => {
-      const state = getState();
-      if (isAuthenticated(state)) {
-        const user = getUser(state);
+  if (session) {
+    dispatch(restoreSession(session));
+  } else {
+    dispatch({ type: REAUTHENTICATE_FAILED });
+  }
 
-        dispatch(hideShortcuts(user));
-        dispatch(setQueueTargetComplete(ext()));
-        return null;
-      }
+  const accessToken = getAccessToken(getState());
 
-      dispatch(setQueueTargetComplete(ext()));
-      return null;
-    });
+  if (accessToken) {
+    try {
+      await dispatch(fetchUser('me'));
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error("Error fetching user 'me': ", e);
+      dispatch({ type: LOGOUT });
+    }
+  }
+
+  const state = getState();
+
+  if (isAuthenticated(state)) {
+    const user = getUser(state);
+
+    dispatch(hideShortcuts(user));
+  }
+
+  dispatch(setQueueTargetComplete(ext()));
+  return null;
 }
 
 const createHandleAppStateChange = (dispatch, getState) => appState => {
@@ -63,6 +72,7 @@ export function appDidMount(app) {
   const { authApiEndpoint } = getExtensionSettings(state, ext());
 
   if (!authApiEndpoint) {
+    // eslint-disable-next-line no-console
     console.error(`Authentication API endpoint not set in ${ext()} settings.`);
   }
 

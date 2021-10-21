@@ -1,12 +1,19 @@
 {
   "name": "places",
-  "version": "3.1.0",
+  "version": "3.2.1",
   "platform": "^3.0.0",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "releaseNotes": "* Added details screen layouts with solid navbar",
+  "releaseNotes": "* Code improvements",
   "icon": "./server/assets/images/add-places-image.png",
-  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.cms",
+    "shoutem.favorites",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.web-view"
+  ],
   "categories": ["content"],
   "i18n": {
     "locale": "en",
@@ -89,7 +96,8 @@
     {
       "name": "PlaceDetails",
       "title": "Large photo with transparent navbar details page",
-      "image": "./server/assets/images/details_large.png"
+      "image": "./server/assets/images/details_large.png",
+      "settings": { "disableAdBanner": true }
     },
     {
       "name": "SolidNavbarPlaceDetails",
@@ -116,7 +124,8 @@
       "name": "MediumPlaceDetails",
       "title": "Medium photo with transparent navbar details page",
       "extends": "@.PlaceDetails",
-      "image": "./server/assets/images/details_medium.png"
+      "image": "./server/assets/images/details_medium.png",
+      "settings": { "disableAdBanner": true }
     },
     {
       "name": "SolidNavbarMediumPlaceDetails",

@@ -163,7 +163,7 @@ export class PlacesList extends CmsListScreen {
   }
 
   render() {
-    const { data, navigation, programId } = this.props;
+    const { data, isSearchSettingEnabled, navigation, programId } = this.props;
     const { renderCategoriesInline } = this.state;
 
     if (!programId) {
@@ -172,9 +172,8 @@ export class PlacesList extends CmsListScreen {
 
     return (
       <Screen>
-        {renderCategoriesInline
-          ? this.renderCategoriesDropDown('horizontal')
-          : null}
+        {isSearchSettingEnabled && this.renderSearch()}
+        {renderCategoriesInline && this.renderCategoriesDropDown('horizontal')}
         {this.renderData(data)}
       </Screen>
     );

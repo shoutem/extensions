@@ -1,11 +1,21 @@
 {
   "name": "loyalty",
-  "version": "3.0.5-rc.0",
+  "version": "3.1.1",
   "platform": "~3.0.1",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "releaseNotes": "* Fixed app behavior when loyalty is not enabled",
-  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "releaseNotes": "* Code improvements",
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.auth",
+    "shoutem.cms",
+    "shoutem.favorites",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.redux",
+    "shoutem.web-view"
+  ],
   "categories": ["commerce"],
   "i18n": {
     "locale": "en",
@@ -207,6 +217,39 @@
       "screen": "@.NoImageGaugeRewardsPlaceDetails",
       "extends": "@.PlaceDetails",
       "image": "./server/assets/images/details-gauge-no-photo.png"
+    },
+    {
+      "name": "AssignPointsScreen"
+    },
+    {
+      "name": "SinglePlaceMap"
+    },
+    {
+      "name": "FavoritesListScreen"
+    },
+    {
+      "name": "NoProgramScreen"
+    },
+    {
+      "name": "PinVerificationScreen"
+    },
+    {
+      "name": "PointsEarnedScreen"
+    },
+    {
+      "name": "PointsHistoryScreen"
+    },
+    {
+      "name": "RedeemOrContinueScreen"
+    },
+    {
+      "name": "RewardDetailsScreen"
+    },
+    {
+      "name": "TransactionProcessedScreen"
+    },
+    {
+      "name": "VerificationScreen"
     }
   ],
   "settingsPages": [

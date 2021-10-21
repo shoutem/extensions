@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { FormGroup, ControlLabel, Dropdown, MenuItem } from 'react-bootstrap';
 import i18next from 'i18next';
 import LOCALIZATION from './localization';
+import autoBindReact from 'auto-bind/react';
 
 const ORIGINAL_SIZE_OPTION = 0;
 const FIT_CONTAINER_OPTION = 1;
@@ -21,9 +22,7 @@ export default class NavigationBarBackgroundSize extends Component {
   constructor(props) {
     super(props);
 
-    this.handleBackgroundSizeToggle = this.handleBackgroundSizeToggle.bind(
-      this,
-    );
+    autoBindReact(this);
   }
 
   /**

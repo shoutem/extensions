@@ -1,13 +1,14 @@
 {
   "name": "application",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "platform": "^3.0.0",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "releaseNotes": "* Added script for increasing available JVM memory for Android builds",
+  "releaseNotes": "* Updated major version of react-native-device-info, no breaking changes",
   "icon": "server/assets/add-application-image.png",
   "categories": [],
+  "dependencies": ["shoutem.i18n", "shoutem.navigation", "shoutem.redux"],
   "native": true,
   "screens": [
     {

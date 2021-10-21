@@ -116,7 +116,7 @@ export class ChecklistScreen extends CmsListScreen {
   }
 
   render() {
-    const { data, isSubmitted, style } = this.props;
+    const { data, isSearchSettingEnabled, isSubmitted, style } = this.props;
     const { hasChanges, statuses } = this.state;
 
     const contentContainerStyle = isSubmitted ? {} : style.scrollViewContainer;
@@ -127,6 +127,7 @@ export class ChecklistScreen extends CmsListScreen {
 
     return (
       <Screen>
+        {isSearchSettingEnabled && this.renderSearch()}
         <ScrollView
           contentContainerStyle={contentContainerStyle}
           endFillColor={style.endFillColor}

@@ -1,31 +1,24 @@
 {
   "name": "rss-news",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "platform": "^3.0.0",
   "title": "News RSS",
   "description": "Show news articles from an RSS feed",
-  "releaseNotes": "* Added support for HTML tables",
+  "releaseNotes": "* Code improvements",
   "icon": "server/assets/extension-icon.png",
-  "categories": [
-    "content"
-  ],
+  "categories": ["content"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.rss"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.rss"],
   "shortcuts": [
     {
       "name": "news-shortcut",
       "title": "News RSS",
       "icon": "theme://news.png",
       "screen": "@.ArticlesFeaturedGridScreen",
-      "capabilities": [
-        "shoutem.rss.feed"
-      ],
+      "capabilities": ["shoutem.rss.feed"],
       "adminPages": [
         {
           "page": "shoutem.rss.RssPage",
@@ -52,9 +45,7 @@
       "title": "Grid with a featured article",
       "image": "./server/assets/screens/featuredgrid.png",
       "groupTitle": "Choose List screen layout",
-      "navigatesTo": [
-        "@.ArticleDetailsScreen"
-      ],
+      "navigatesTo": ["@.ArticleDetailsScreen"],
       "settings": {
         "listType": "fixed-grid",
         "hasFeaturedItem": true
@@ -95,13 +86,15 @@
       "name": "ArticleDetailsScreen",
       "title": "Large photo details",
       "groupTitle": "Choose Details screen layout",
-      "image": "./server/assets/screens/large-details.png"
+      "image": "./server/assets/screens/large-details.png",
+      "settings": { "disableAdBanner": true }
     },
     {
       "name": "ArticleMediumDetailsScreen",
       "title": "Regular details",
       "image": "./server/assets/screens/medium-details.png",
-      "extends": "@.ArticleDetailsScreen"
+      "extends": "@.ArticleDetailsScreen",
+      "settings": { "disableAdBanner": true }
     }
   ]
 }

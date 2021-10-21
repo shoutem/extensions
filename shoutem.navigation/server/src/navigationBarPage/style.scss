@@ -1,31 +1,96 @@
 .navigation-bar-page {
-  .image-preview-custom,
-  .image-uploader__custom {
-    background-size: cover;
-    width: 100%;
-    height: 72px;
+  .navigation-bar-page-background-image__alert {
+    font-size: 14px;
+    padding: 24px;
+    line-height: 17px;
 
-    .circular-loader {
-      padding-top: 10px;
+    .navigation-bar-page-background-image__alert-title {
+      color: #46506a;
+      margin: 0px;
+      font-weight: bold;
     }
 
+    .navigation-bar-page-background-image__alert-description {
+      margin-top: 16px;
 
-    &.no-img,
-    &.image-preview__delete {
-      .se-icon {
-        padding-top: 10px;
+      a {
+        color: #4aa8da;
       }
     }
   }
 
-  .icon-popover {
-    vertical-align: middle;
-    margin: 0 8px;
-    color: #bdc0cb;
+  .navigation-bar-page-background-image__labels-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    .control-label {
+      width: 292px;
+      text-align: center;
+    }
   }
 
-  .radio-inline {
-    display: inline-block;
-    width: auto;
+  .navigation-bar-page-background-image__uploader-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 25px;
+
+    .navigation-bar-page-background-image__uploader {
+      height: 108px;
+      width: 292px;
+
+      &.navigation-bar-page-background-image__with-notch {
+        background-image: url('../../assets/iphone-with-notch.svg');
+        background-repeat: no-repeat;
+      }
+
+      &.navigation-bar-page-background-image__without-notch {
+        background-image: url('../../assets/iphone-without-notch.svg');
+        background-repeat: no-repeat;
+      }
+
+      &:hover {
+        background-color: #ecf9fd;
+      }
+    }
+
+    .image-preview.no-img {
+      border: none;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+
+    .image-preview-custom,
+    .image-uploader__custom {
+      height: 108px;
+      width: 292px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .circular-loader {
+        padding-top: 30px;
+      }
+
+      &:hover {
+        .se-icon-delete {
+          align-items: center;
+          display: flex;
+          justify-content: center;
+          padding: 0px;
+        }
+      }
+    }
+
+    .se-icon-add {
+      display: none;
+    }
+
+    .text-error {
+      text-align: center;
+    }
   }
 }

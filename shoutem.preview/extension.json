@@ -1,9 +1,10 @@
 {
   "name": "preview",
-  "version": "3.0.0",
-  "platform": "^3.0.0",
+  "version": "3.1.0",
+  "platform": "~3.0.2",
   "type": "system",
   "title": "Builder Preview",
+  "release-notes": "* Updated react-native-device-info package, no breaking changes",
   "description": "Provides the support for app preview in the builder",
   "icon": "server/assets/add-preview-image.png",
   "categories": []

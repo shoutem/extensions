@@ -1,18 +1,18 @@
 {
   "name": "news",
-  "version": "3.2.1-rc.0",
+  "version": "3.2.3",
   "platform": "^3.0.0",
   "title": "News",
   "description": "Show news articles",
-  "releaseNotes": "* Added new layout - Medium photo with solid navbar without the date\n* Added image gallery feature",
+  "releaseNotes": "* Code improvements",
   "icon": "server/assets/add-news-image.png",
   "dependencies": [
+    "shoutem.cms",
+    "shoutem.i18n",
     "shoutem.layouts",
-    "shoutem.cms"
+    "shoutem.navigation"
   ],
-  "categories": [
-    "content"
-  ],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -56,9 +56,7 @@
       "name": "ArticlesScreen",
       "title": "Fixed grid with a featured item",
       "image": "./server/assets/screens/grid.png",
-      "navigatesTo": [
-        "@.ArticleDetailsScreen"
-      ],
+      "navigatesTo": ["@.ArticleDetailsScreen"],
       "settings": {
         "listType": "fixed-grid",
         "hasFeaturedItem": true
@@ -139,7 +137,8 @@
       "title": "Large photo with transparent navbar",
       "image": "./server/assets/screens/large-photo-clear-navbar-details.png",
       "settings": {
-        "navigationBarStyle": "clear"
+        "navigationBarStyle": "clear",
+        "disableAdBanner": true
       }
     },
     {
@@ -175,7 +174,8 @@
       "image": "./server/assets/screens/medium-photo-clear-navbar-details.png",
       "extends": "@.ArticleDetailsScreen",
       "settings": {
-        "navigationBarStyle": "clear"
+        "navigationBarStyle": "clear",
+        "disableAdBanner": true
       }
     },
     {

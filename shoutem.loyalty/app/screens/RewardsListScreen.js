@@ -56,6 +56,7 @@ export class RewardsListScreen extends CmsListScreen {
     this.state = {
       cmsSchema: REWARDS_SCHEMA,
       schema: POINT_REWARDS_SCHEMA,
+      searchEnabled: false, // loyalty API doesn't support query param
     };
   }
 

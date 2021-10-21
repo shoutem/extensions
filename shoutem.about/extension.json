@@ -1,12 +1,18 @@
 {
   "name": "about",
-  "version": "3.0.1",
+  "version": "3.0.3",
   "platform": "~3.0.1",
   "title": "About",
   "description": "Show info about your app or your business",
-  "releaseNotes": "* Fixed Phone and Email buttons not opening respective apps on Android 11\n* Fixed errors when there is no CMS data",
+  "releaseNotes": "* Code improvements",
   "icon": "server/assets/add-about-image.png",
-  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "dependencies": [
+    "shoutem.cms",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.web-view"
+  ],
   "categories": ["content"],
   "i18n": {
     "locale": "en",
@@ -49,7 +55,8 @@
       "image": "./server/assets/images/large-photo-clear-navbar.png",
       "settings": {
         "navigationBarStyle": "clear",
-        "imageSize": "large-portrait"
+        "imageSize": "large-portrait",
+        "disableAdBanner": true
       }
     },
     {
@@ -69,7 +76,8 @@
       "extends": "@.AboutScreen",
       "settings": {
         "navigationBarStyle": "clear",
-        "imageSize": "large"
+        "imageSize": "large",
+        "disableAdBanner": true
       }
     },
     {

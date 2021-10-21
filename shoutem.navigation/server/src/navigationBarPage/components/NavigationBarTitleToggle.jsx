@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { FormGroup, ControlLabel, Dropdown, MenuItem } from 'react-bootstrap';
 import i18next from 'i18next';
@@ -25,7 +26,7 @@ export default class NavigationBarTitleToggle extends Component {
   constructor(props) {
     super(props);
 
-    this.handleTitleToggle = this.handleTitleToggle.bind(this);
+    autoBindReact(this);
   }
 
   handleTitleToggle(selectedValue) {

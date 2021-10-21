@@ -1,10 +1,10 @@
 {
   "name": "page",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "platform": "~3.0.1",
   "title": "Page",
   "description": "Show a single screen with info and child items",
-  "releaseNotes": "* Updated code to match Navigation extension modifications, no user facing changes",
+  "releaseNotes": "* Code improvements",
   "icon": "server/assets/add-page-image.png",
   "dependencies": [
     "shoutem.application",
@@ -58,6 +58,7 @@
         "page": "@.PageSettings"
       },
       "settings": {
+        "disableAdBanner": true,
         "iconGrid": {
           "scrolling": "continuous",
           "gridAlignment": "bottomCenter",
@@ -106,7 +107,8 @@
       },
       "settings": {
         "navigationBarStyle": "clear",
-        "imageSize": "large"
+        "imageSize": "large",
+        "disableAdBanner": true
       },
       "extends": "@.ClearNavbarLargePageScreen"
     },

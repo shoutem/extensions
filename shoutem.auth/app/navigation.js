@@ -32,6 +32,7 @@ NavigationStacks.registerNavigationStack({
 
 ModalScreens.registerModalScreens([
   ext('EditProfileScreen'),
+  ext('ConfirmDeletionScreen'),
   AGORA_SCREEN_ID,
   SENDBIRD_SCREEN_ID,
 ]);

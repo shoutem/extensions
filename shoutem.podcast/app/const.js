@@ -25,7 +25,7 @@ export const EPISODE_DETAILS_SCREEN = ext('EpisodeDetailsScreen');
 
 export const trackPlayerOptions = {
   stopWithApp: true,
-  alwaysPauseOnInterruption: true,
+  alwaysPauseOnInterruption: false,
   capabilities: [
     CAPABILITY_SEEK_TO,
     CAPABILITY_JUMP_FORWARD,

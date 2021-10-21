@@ -1,0 +1,26 @@
+{
+  "shoutem": {
+    "geo-restrictions": {
+      "empty-placeholder-message": "The app doesn't contain screens yet",
+      "enable-geo-restrictions": "Enable geo restriction feature",
+      "info-container-text": "Location is required for geo-restriction to work properly. If user doesn’t share their location, they won’t be able to acces restricted screens of the app.",
+      "info-container-warning-text": "Please note that this feature currently works only in the United States!",
+      "info-container-title": "Geo-restriction requirements",
+      "edit-button-title": "Edit list of States",
+      "restricted-screens-table-title": "Set which screens are locked behind restricted area",
+      "restricted-screens-table-header-name": "Navigation item",
+      "title": "Geo restriction",
+      "modal-title": "List of Allowed States",
+      "modal-subtitle": "Please select states where restricted content will be available.",
+      "select-label": "SELECT:",
+      "all-button-label": "All",
+      "none-button-label": "None",
+      "save-button-label": "Save",
+      "save-button": "Save",
+      "label": "We use HERE service to make Geocoding & Location Lookup calls in your application. An API key is needed for the proper work of this extension. ",
+      "instructions-message": "Please enter your API key by following instructions",
+      "instructions-link-description": "on this link.",
+      "name": "HERE Geocoding"
+    }
+  }
+}

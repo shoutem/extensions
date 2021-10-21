@@ -1,0 +1,11 @@
+{
+  "shoutem": {
+    "geo-restrictions": {
+      "missingPermissionsTitle": "Missing Location Permission",
+      "missingPermissionsMessage": "Please enable necessary permissions in device settings to proceed.",
+      "invalidConfigurationTitle": "Error",
+      "emptyStateTitle": "Screen not available",
+      "emptyStateMessage": "Sorry, this feature is not available in your county."
+    }
+  }
+}

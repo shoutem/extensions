@@ -1,0 +1,10 @@
+.state-row {
+  height: 64px;
+  cursor: pointer;
+  border-bottom-style: ridge;
+  border-bottom-width: 1px;
+
+  .checkbox {
+    padding-top: 6px;
+  }
+}
