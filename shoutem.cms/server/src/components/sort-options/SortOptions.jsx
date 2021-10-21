@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
@@ -31,7 +31,7 @@ export function getAlwaysAvailableSortFormats() {
 const resolveDisplayOrderIcon = currentOrder =>
   currentOrder === 'ascending' ? 'order-ascending' : 'order-descending';
 
-class SortOptions extends Component {
+export default class SortOptions extends PureComponent {
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -193,5 +193,3 @@ SortOptions.propTypes = {
 SortOptions.defaultProps = {
   onSortOptionsChange: _.noop(),
 };
-
-export default SortOptions;

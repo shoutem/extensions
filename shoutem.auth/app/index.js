@@ -11,6 +11,7 @@ import EditProfileScreen from './screens/EditProfileScreen';
 import MyProfileScreen from './screens/MyProfileScreen';
 import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
 import ChangePasswordScreen from './screens/ChangePasswordScreen';
+import ConfirmDeletionScreen from './screens/ConfirmDeletionScreen';
 import reducer, {
   getUser,
   getUserGroups,
@@ -63,6 +64,7 @@ export const screens = {
   MyProfileScreen,
   PasswordRecoveryScreen,
   ChangePasswordScreen,
+  ConfirmDeletionScreen,
 };
 
 export { reducer };

@@ -1,18 +1,13 @@
 {
   "name": "sendbird",
   "title": "SendBird Chat",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "platform": "^3.0.0",
   "icon": "./server/assets/chat.png",
   "description": "Connect your users with real-time chat!",
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.auth",
-    "shoutem.camera"
-  ],
-  "categories": [
-    "users"
-  ],
+  "releaseNotes": "* Code improvements",
+  "dependencies": ["shoutem.layouts", "shoutem.auth", "shoutem.camera"],
+  "categories": ["users"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -36,7 +31,11 @@
       "title": "List of previous conversations and option to start a new one"
     },
     {
-      "name": "ChatWindowScreen"
+      "name": "ChatWindowScreen",
+      "settings": { "disableAdBanner": true }
+    },
+    {
+      "name": "PhotoFullScreen"
     }
   ],
   "pages": [

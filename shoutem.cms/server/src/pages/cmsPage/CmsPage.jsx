@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
@@ -15,7 +15,7 @@ import { url, appId, googleApiKey, getShortcut } from 'environment';
 import i18next from 'i18next';
 import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { ControlLabel } from 'react-bootstrap';
+import { Checkbox, ControlLabel } from 'react-bootstrap';
 import {
   getCategories,
   getChildCategories,
@@ -46,6 +46,7 @@ import {
   loadSchema,
   updateShortcutSortOptions,
 } from '../../actions';
+import { updateShortcutSettings } from '../../builder-sdk';
 import {
   ManageContentButton,
   SortOptions,
@@ -69,7 +70,7 @@ import {
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export class CmsPage extends Component {
+export class CmsPage extends PureComponent {
   constructor(props, context) {
     super(props, context);
     autoBindReact(this);
@@ -97,6 +98,11 @@ export class CmsPage extends Component {
     const showImporters = !_.isEmpty(importerCapabilites);
     const visibleCategoryIds = getVisibleCategoryIds(shortcut);
     const showAdvancedSetup = !_.isEmpty(visibleCategoryIds);
+    const isInAppContentSearchEnabled = _.get(
+      props,
+      'shortcut.settings.isInAppContentSearchEnabled',
+      true,
+    );
 
     // create parent category if not exist !!!
     const parentCategoryId = getParentCategoryId(shortcut);
@@ -113,6 +119,7 @@ export class CmsPage extends Component {
       currentResource: null,
       parentCategoryId,
       selectedCategoryId: null,
+      isInAppContentSearchEnabled,
     };
   }
 
@@ -271,6 +278,20 @@ export class CmsPage extends Component {
     );
   }
 
+  handleToggleEnableSearch() {
+    const { shortcut, updateShortcutSettings } = this.props;
+    const { isInAppContentSearchEnabled } = this.state;
+
+    this.setState(
+      { isInAppContentSearchEnabled: !isInAppContentSearchEnabled },
+      () =>
+        updateShortcutSettings(shortcut, {
+          ...shortcut.settings,
+          isInAppContentSearchEnabled: !isInAppContentSearchEnabled,
+        }),
+    );
+  }
+
   resolveShortcutTitle(shortcut) {
     const defaultShortcutTitle = _.get(
       shortcut,
@@ -327,6 +348,7 @@ export class CmsPage extends Component {
       showAdditionalOptions,
       showImporters,
       selectedCategoryId,
+      isInAppContentSearchEnabled,
     } = this.state;
 
     const hasLanguages = resolveHasLanguages(languageModuleStatus, languages);
@@ -341,6 +363,14 @@ export class CmsPage extends Component {
     return (
       <div>
         {extensionInfo && <ControlLabel>{extensionInfo}</ControlLabel>}
+        <Checkbox
+          className="cms__checkbox-enable-search"
+          checked={isInAppContentSearchEnabled}
+          name="isInAppContentSearchEnabled"
+          onChange={this.handleToggleEnableSearch}
+        >
+          {i18next.t(LOCALIZATION.ENABLE_SEARCH_IN_APP)}
+        </Checkbox>
         <div className="cms__header">
           <SortOptions
             className="pull-left"
@@ -561,6 +591,8 @@ function mapDispatchToProps(dispatch) {
     createCategory: shortcut => dispatch(createCategory(shortcut)),
     updateSortOptions: (shortcut, sortOptions) =>
       dispatch(updateShortcutSortOptions(shortcut, sortOptions)),
+    updateShortcutSettings: (shortcut, settings) =>
+      dispatch(updateShortcutSettings(shortcut, settings)),
   };
 }
 

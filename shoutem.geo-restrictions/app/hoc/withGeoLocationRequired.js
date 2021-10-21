@@ -1,0 +1,80 @@
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
+import { connect } from 'react-redux';
+import { getExtensionSettings } from 'shoutem.application';
+import { NavigationStacks, navigateTo } from 'shoutem.navigation';
+import { selectors } from '../redux';
+import { ext } from '../const';
+
+function isShortcutRestricted(route) {
+  return _.get(
+    route,
+    ['params', 'shortcut', 'settings', _.camelCase(ext()), 'restricted'],
+    false,
+  );
+}
+
+export function withGeoLocationRequired(WrappedComponent) {
+  class GeoRestrictionComponent extends PureComponent {
+    static propTypes = {
+      route: PropTypes.object,
+    };
+
+    constructor(props) {
+      super(props);
+
+      autoBindReact(this);
+
+      this.state = {
+        restricted: null,
+      };
+    }
+
+    componentDidMount() {
+      const { extensionSettings, route, userCurrentLocation } = this.props;
+
+      const userState = _.get(userCurrentLocation, 'state');
+      const missingPermissions = _.get(userCurrentLocation, 'missingPermissions');
+      const allowedStates = _.get(extensionSettings, 'allowedStates');
+      const geoRestrictionsEnabled = _.get(extensionSettings, 'geoRestrictionsEnabled');
+
+      const isUserLocationRestricted = (userState && _.indexOf(allowedStates, userState) === -1) || missingPermissions;
+      const isScreenRestricted = isShortcutRestricted(route);
+
+      if (
+        geoRestrictionsEnabled &&
+        isUserLocationRestricted &&
+        isScreenRestricted
+      ) {
+        const previousRoute = _.get(route, 'params.previousRoute');
+
+        return NavigationStacks.openStack(ext(), {
+          onCancel: () =>
+            NavigationStacks.closeStack(ext(), () =>
+              navigateTo(previousRoute.name, {
+                ...previousRoute.params,
+              }),
+            ),
+          canGoBack: !!previousRoute,
+        });
+      }
+
+      return null;
+    }
+
+    render() {
+      return <WrappedComponent {...this.props} />;
+    }
+  }
+
+  const mapStateToProps = state => ({
+    extensionSettings: getExtensionSettings(state, ext()),
+    userCurrentLocation: selectors.getUserCurrentLocation(state),
+  });
+
+  const ResultComponent = connect(mapStateToProps)(GeoRestrictionComponent);
+
+  return ResultComponent;
+}

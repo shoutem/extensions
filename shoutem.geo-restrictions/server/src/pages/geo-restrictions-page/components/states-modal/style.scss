@@ -1,0 +1,67 @@
+.state-table {
+  padding-top: 16;
+  height: 500px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.modal-dialog{
+  position: absolute;
+  top:10px;
+  left: 70px;
+  width: 440px !important;
+  margin: 10px;
+}
+
+.modal-content {
+  .modal-header {
+    padding-left:48px;
+    padding-right:32px;
+    padding-top:32px;
+    padding-bottom:22px;
+    .close {
+      font-size: 24px;
+  }
+  }
+  .modal-footer {
+    padding-top: 16px;
+    padding-left: 10px;
+    padding-right: 12px;
+    height: 72px;
+    background-color: #f6f7f8;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+    border-top: 1px solid #e5e5e5;
+    .select-button{
+      padding: 0px;
+      margin-left: 8px;
+      min-width: fit-content;
+      font-size: 12x;
+      .icon-label__label {
+        font-size: 12px;
+        color: #444f6c;
+        align-self: flex-end;
+      }
+      .icon-label__icon.is-left {
+        margin-right: 4px;
+      }
+      .icon-label__icon {
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+.select-container {
+  font-size: 12px;
+}
+
+.state-modal-save-button{
+  min-width: 80px;
+  min-height: 40px;
+  padding-top: 4px;
+  padding-left: 16px;
+  padding-right: 16px;
+}

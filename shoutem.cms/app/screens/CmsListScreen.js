@@ -24,9 +24,10 @@ import {
   getCollection,
   getOne,
 } from '@shoutem/redux-io';
-import { getRouteParams } from 'shoutem.navigation';
 import { selectors as i18nSelectors, I18n } from 'shoutem.i18n';
-
+import { getRouteParams } from 'shoutem.navigation';
+import SearchInput from '../components/SearchInput';
+import { ext } from '../const';
 import {
   CATEGORIES_SCHEMA,
   getCategories,
@@ -130,6 +131,11 @@ export class CmsListScreen extends PureComponent {
       );
       const sortField = _.get(navigationProps, 'shortcut.settings.sortField');
       const sortOrder = _.get(navigationProps, 'shortcut.settings.sortOrder');
+      const isSearchSettingEnabled = _.get(
+        navigationProps,
+        'shortcut.settings.isInAppContentSearchEnabled',
+        true,
+      );
 
       const allCategories = getCategories(state, parentCategoryId);
       const categoriesToDisplay = getCategoriesToDisplay(
@@ -141,8 +147,8 @@ export class CmsListScreen extends PureComponent {
       const collection = getCmsCollection(state);
       if (!collection) {
         throw new Error(
-          'Invalid collection selector passed to createMapStateToProps ' +
-          `of the CmsListScreen. Expected an array but the selector returned: ${collection}`,
+          `Invalid collection selector passed to createMapStateToProps of the 
+           CmsListScreen. Expected an array but the selector returned: ${collection}`,
         );
       }
 
@@ -152,6 +158,7 @@ export class CmsListScreen extends PureComponent {
         parentCategoryId,
         sortField,
         sortOrder,
+        isSearchSettingEnabled,
         ...(channelId && { channelId }),
         data: getCollection(collection[selectedCategoryId], state),
         categories: categoriesToDisplay,
@@ -189,7 +196,12 @@ export class CmsListScreen extends PureComponent {
 
     autoBindReact(this);
 
-    this.state = {};
+    this.debouncedSearchData = _.debounce(this.searchData, 500);
+
+    this.state = {
+      searchEnabled: true,
+      searchText: '',
+    };
   }
 
   componentDidMount() {
@@ -201,8 +213,8 @@ export class CmsListScreen extends PureComponent {
 
     if (!this.state.schema) {
       throw Error(
-        'Invalid Screen state "schema". Screen that extends CMSListScreen ' +
-        'must define (content) "schema" property in the state.',
+        `Invalid Screen state "schema". Screen that extends CMSListScreen must define 
+         (content) "schema" property in the state.`,
       );
     }
     this.refreshInvalidContent(this.props, true);
@@ -262,11 +274,17 @@ export class CmsListScreen extends PureComponent {
       sortOrder,
     } = this.props;
     const { screenId } = getRouteParams(this.props);
+    const { searchText } = this.state;
 
     if (selectedCategory.id === category.id) {
       // The category is already selected.
       return;
     }
+
+    // When we do search, only currently selected collection/category is updated with
+    // search results in RIO storage. If we switch category, we have to do search for
+    // newly selected category, otherwise RIO will just return last (wrong) state of it.
+    this.searchData(searchText, category);
 
     setScreenState(screenId, {
       selectedCategoryId: category.id,
@@ -278,6 +296,7 @@ export class CmsListScreen extends PureComponent {
   getNavBarProps() {
     const { title } = getRouteParams(this.props);
     const { renderCategoriesInline } = this.state;
+
     const inlineCategories = renderCategoriesInline
       ? null
       : this.renderCategoriesDropDown('navBar');
@@ -294,6 +313,7 @@ export class CmsListScreen extends PureComponent {
 
   getQueryParams(options) {
     const { channelId } = this.props;
+    const { searchText } = this.state;
 
     const sortField = _.get(options, 'sortField');
     const sortOrder = _.get(options, 'sortOrder');
@@ -301,6 +321,7 @@ export class CmsListScreen extends PureComponent {
     const params = {
       'filter[categories]': _.get(options, 'category.id'),
       'filter[channels]': channelId,
+      query: searchText,
     };
 
     if (!sortField) {
@@ -334,11 +355,13 @@ export class CmsListScreen extends PureComponent {
     const category = props.selectedCategory;
     const sortField = props.sortField;
     const sortOrder = props.sortOrder;
+    const searchText = props.searchText;
 
     return {
       category,
       sortField,
       sortOrder,
+      searchText,
     };
   }
 
@@ -428,6 +451,7 @@ export class CmsListScreen extends PureComponent {
 
   shouldRenderPlaceholderView() {
     const { parentCategoryId, categories, data } = this.props;
+
     return (
       _.isUndefined(parentCategoryId) ||
       !this.isCollectionValid(categories) ||
@@ -471,6 +495,27 @@ export class CmsListScreen extends PureComponent {
     this.fetchData(this.getFetchDataOptions(this.props));
   }
 
+  searchData(searchTerm, category) {
+    const { selectedCategory } = this.props;
+    const { searchText } = this.state;
+
+    const resolvedSearchData = {
+      ...this.props,
+      searchText: searchTerm || searchText,
+      selectedCategory: category || selectedCategory,
+    };
+
+    this.fetchData({ ...this.getFetchDataOptions(resolvedSearchData) });
+  }
+
+  handleSearchTextChange(searchText) {
+    this.setState({ searchText }, () => this.debouncedSearchData());
+  }
+
+  handleClearSearchText() {
+    this.setState({ searchText: '' }, () => this.searchData());
+  }
+
   renderPlaceholderView() {
     const { categories, data, parentCategoryId, style } = this.props;
 
@@ -481,6 +526,20 @@ export class CmsListScreen extends PureComponent {
         <EmptyStateView
           icon="error"
           message={I18n.t('shoutem.application.preview.noContentErrorMessage')}
+          style={style.emptyState}
+        />
+      );
+    }
+
+    const { searchEnabled, searchText } = this.state;
+
+    const emptySearchResults = searchEnabled && !_.isEmpty(searchText);
+
+    if (emptySearchResults) {
+      return (
+        <EmptyStateView
+          icon="search"
+          message={I18n.t(ext('noSearchResultsText'))}
           style={style.emptyState}
         />
       );
@@ -508,6 +567,7 @@ export class CmsListScreen extends PureComponent {
 
   renderCategoriesDropDown(styleName) {
     const { selectedCategory, categories, style } = this.props;
+
     if (categories.length <= 1 || !this.isCategoryValid(selectedCategory)) {
       return null;
     }
@@ -520,14 +580,26 @@ export class CmsListScreen extends PureComponent {
         valueProperty={'id'}
         onOptionSelected={this.onCategorySelected}
         selectedOption={selectedCategory}
-        showSelectedOption={false}
+        showSelectedOption
         iconName="down-arrow"
         style={style.categories}
       />
     );
   }
 
-  renderFeaturedItem() { }
+  renderSearch() {
+    const { searchText } = this.state;
+
+    return (
+      <SearchInput
+        onChangeText={this.handleSearchTextChange}
+        onClearPress={this.handleClearSearchText}
+        input={searchText}
+      />
+    );
+  }
+
+  renderFeaturedItem() {}
 
   renderData(data) {
     const { style } = this.props;
@@ -561,17 +633,15 @@ export class CmsListScreen extends PureComponent {
   }
 
   render() {
-    const { data, style } = this.props;
+    const { data, isSearchSettingEnabled, style } = this.props;
+    const { renderCategoriesInline, searchEnabled } = this.state;
 
     return (
       <Screen style={style.screen}>
-        {
-          this.state.renderCategoriesInline
-            ? this.renderCategoriesDropDown('horizontal')
-            : null
-        }
+        {isSearchSettingEnabled && searchEnabled && this.renderSearch()}
+        {renderCategoriesInline && this.renderCategoriesDropDown('horizontal')}
         {this.renderData(data)}
-      </Screen >
+      </Screen>
     );
   }
 }

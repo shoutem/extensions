@@ -1,0 +1,21 @@
+body.extension-sandbox-container {
+  .settings-page {
+    max-width: 552px;
+    margin: auto;
+
+    &.is-wide {
+      max-width: 808px;
+    }
+  }
+}
+
+.edit-button {
+  padding-top: 20px;
+}
+
+.text-area {
+  background-color: #F2F2F5;
+  padding:20px;
+  border-radius: 10px;
+}
+

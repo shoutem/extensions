@@ -1,0 +1,43 @@
+{
+  "name": "geo-restrictions",
+  "title": "Geo Restrictions",
+  "version": "1.0.0",
+  "description": "Restricts access to specific content based upon the user's geographical location",
+  "platform": "^3.0.2",
+  "icon": "server/assets/geo.png",
+  "native": true,
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
+  "screens": [
+    {
+      "name": "RestrictedScreen"
+    }
+  ],
+  "pages": [
+    {
+      "name": "GeoRestrictionsPage",
+      "type": "react-page"
+    },
+    {
+      "name": "ApiKeyPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.GeoRestrictionsPage",
+      "title": "General"
+    },
+    {
+      "page": "@.ApiKeyPage",
+      "title": "API Key"
+    }
+  ],
+  "settings": {
+    "allowedStates": [],
+    "geocoderApiKey": "",
+    "geoRestrictionsEnabled": false
+  }
+}

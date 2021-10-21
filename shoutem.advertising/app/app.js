@@ -1,15 +1,17 @@
 import React from 'react';
+import _ from 'lodash';
 import { Platform } from 'react-native';
 import { priorities, setPriority, after } from 'shoutem-core';
 import admob, { TestIds } from '@react-native-firebase/admob';
 import { getExtensionSettings } from 'shoutem.application/redux';
+import { MAIN_NAVIGATION_SCREEN_TYPES } from 'shoutem.navigation';
 import { isPreviewApp } from 'shoutem.preview';
 import { AdProvider } from './providers';
 import { ext } from './const';
 
 let ads;
 
-function formatContextData(extensionSettings) {
+function formatContextData(extensionSettings, appScreens) {
   const {
     iOSBannerAdId,
     AndroidBannerAdId,
@@ -40,10 +42,23 @@ function formatContextData(extensionSettings) {
     ? TestIds.INTERSTITIAL
     : liveInterstitialAdId;
 
+  const disabledBanner = _.reduce(
+    appScreens,
+    (result, screen) => {
+      if (screen.attributes.settings?.disableAdBanner) {
+        result.push(screen.attributes.canonicalName);
+      }
+
+      return result;
+    },
+    [...MAIN_NAVIGATION_SCREEN_TYPES, 'root_layout'],
+  );
+
   ads = {
     bannerAdId,
     interstitialAdId,
     keywords,
+    disabledBanner,
   };
 }
 
@@ -51,14 +66,14 @@ export const appDidMount = setPriority(app => {
   const store = app.getStore();
   const state = store.getState();
   const extensionSettings = getExtensionSettings(state, ext());
-
   const {
     maxAdContentRating,
     tagForChildDirectedTreatment,
     tagForUnderAgeOfConsent,
   } = extensionSettings;
+  const appScreens = state['shoutem.application'].screens;
 
-  formatContextData(extensionSettings);
+  formatContextData(extensionSettings, appScreens);
 
   admob().setRequestConfiguration({
     // Update all future requests suitable for parental guidance

@@ -9,6 +9,7 @@ import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import { Screen, Spinner, ScrollView, View } from '@shoutem/ui';
+import HorizontalSeparator from '../components/HorizontalSeparator';
 import {
   RegisterForm,
   AppleSignInButton,
@@ -19,22 +20,23 @@ import { ext } from '../const';
 import { getErrorCode, getErrorMessage } from '../errorMessages';
 import { loginRequired } from '../loginRequired';
 import {
+  getAccessToken,
+  hideShortcuts,
+  loginWithFacebook,
   register,
   userRegistered,
-  getAccessToken,
-  loginWithFacebook,
 } from '../redux';
 import { saveSession } from '../session';
-import HorizontalSeparator from '../components/HorizontalSeparator';
 
 const AUTH_ERROR = 'auth_auth_notAuthorized_userAuthenticationError';
 const EMAIL_TAKEN_ERROR = 'auth_user_validation_usernameTaken';
 
 export class RegisterScreen extends PureComponent {
   static propTypes = {
-    register: PropTypes.func,
-    manualApprovalActive: PropTypes.bool,
+    hideShortcuts: PropTypes.func,
     loginWithFacebook: PropTypes.func,
+    manualApprovalActive: PropTypes.bool,
+    register: PropTypes.func,
   };
 
   constructor(props) {
@@ -58,14 +60,24 @@ export class RegisterScreen extends PureComponent {
   }
 
   handleRegistrationSuccess({ payload }) {
-    // eslint-disable-next-line camelcase
-    const { access_token, onRegisterSuccess, userRegistered } = this.props;
-    const createdUser = { id: payload?.data?.id, ...payload?.data?.attributes };
+    const {
+      // eslint-disable-next-line camelcase
+      access_token,
+      hideShortcuts,
+      onRegisterSuccess,
+      userRegistered,
+    } = this.props;
+    const createdUser = {
+      id: payload.data?.id,
+      userGroups: payload.data?.relationships?.userGroups?.data,
+      ...payload.data?.attributes,
+    };
 
     saveSession(JSON.stringify({ access_token }));
     userRegistered(payload);
 
     onRegisterSuccess(createdUser);
+    hideShortcuts(createdUser);
 
     this.setState({ inProgress: false });
   }
@@ -77,21 +89,14 @@ export class RegisterScreen extends PureComponent {
     this.setState({ inProgress: false });
 
     const code = _.get(response, 'errors[0].code');
-    const errorCode = getErrorCode(code);
-    const errorMessage = getErrorMessage(errorCode);
 
     if (code === EMAIL_TAKEN_ERROR) {
-      this.setState({
-        emailTaken: true,
-      });
+      this.setState({ emailTaken: true });
 
       return;
     }
 
-    this.setState({
-      emailTaken: false,
-      email: '',
-    });
+    this.setState({ emailTaken: false, email: '' });
 
     if (code === AUTH_ERROR && manualApprovalActive) {
       Alert.alert(
@@ -99,6 +104,9 @@ export class RegisterScreen extends PureComponent {
         I18n.t(ext('manualApprovalMessage')),
       );
     } else {
+      const errorCode = getErrorCode(code);
+      const errorMessage = getErrorMessage(errorCode);
+
       Alert.alert(I18n.t(ext('registrationFailedErrorTitle')), errorMessage);
     }
   }
@@ -116,23 +124,33 @@ export class RegisterScreen extends PureComponent {
     gdprConsentGiven = false,
     newsletterConsentGiven = false,
   ) {
-    this.setState({ inProgress: true, email });
+    const { register } = this.props;
 
-    this.props
-      .register(
-        email,
-        username,
-        password,
-        gdprConsentGiven,
-        newsletterConsentGiven,
-      )
+    this.setState({ inProgress: true, email });
+    register(
+      email,
+      username,
+      password,
+      gdprConsentGiven,
+      newsletterConsentGiven,
+    )
       .then(this.handleRegistrationSuccess)
       .catch(this.handleRegistrationFailed);
   }
 
   render() {
-    const { emailTaken, inProgress, email } = this.state;
+    const { inProgress } = this.state;
+
+    if (inProgress) {
+      return (
+        <Screen>
+          <Spinner styleName="xl-gutter-top" />
+        </Screen>
+      );
+    }
+
     const { settings, style } = this.props;
+    const { emailTaken, email } = this.state;
 
     const isFacebookAuthEnabled = _.get(settings, 'providers.facebook.enabled');
     const isAppleAuthEnabled = _.get(settings, 'providers.apple.enabled');
@@ -142,14 +160,6 @@ export class RegisterScreen extends PureComponent {
     const platformVersion = parseInt(Platform.Version, 10);
     const isEligibleForAppleSignIn =
       isAppleAuthEnabled && Platform.OS === 'ios' && platformVersion >= 13;
-
-    if (inProgress) {
-      return (
-        <Screen>
-          <Spinner styleName="xl-gutter-top" />
-        </Screen>
-      );
-    }
 
     return (
       <Screen style={style.registerScreenMargin}>
@@ -197,12 +207,13 @@ export class RegisterScreen extends PureComponent {
 }
 
 export const mapDispatchToProps = {
+  hideShortcuts,
+  loginWithFacebook,
   register,
   userRegistered,
-  loginWithFacebook,
 };
 
-function mapStateToProps(state, ownProps) {
+export function mapStateToProps(state, ownProps) {
   return {
     user: state[ext()].user,
     appId: getAppId(),

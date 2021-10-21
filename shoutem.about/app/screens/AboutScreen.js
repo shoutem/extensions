@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { InteractionManager, LayoutAnimation, StatusBar } from 'react-native';
 import { connect } from 'react-redux';
 import { InlineMap } from 'shoutem.application';
-import { I18n } from 'shoutem.i18n';
+import { I18n, selectors as i18nSelectors } from 'shoutem.i18n';
 import {
   composeNavigationStyles,
   getRouteParams,
@@ -20,6 +20,7 @@ import {
   shouldRefresh,
   getCollection,
 } from '@shoutem/redux-io';
+import { STATUS } from '@shoutem/redux-io/status';
 import { connectStyle } from '@shoutem/theme';
 import {
   Screen,
@@ -67,9 +68,13 @@ export class AboutScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { data, navigation } = this.props;
+    const { channelId: currentChannelId, data, navigation } = this.props;
 
-    if (shouldRefresh(data)) {
+    // compare latest channelId used to fetch collection to current state channelId
+    // shouldRefresh won't compare query objects - will return false for channelId change
+    const latestChannelId = data[STATUS]?.params?.query['filter[channels]'];
+
+    if (latestChannelId !== currentChannelId || shouldRefresh(data)) {
       this.fetchData();
       return;
     }
@@ -83,8 +88,12 @@ export class AboutScreen extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { navigation, data } = this.props;
-    const { data: prevData } = prevProps;
+    const { channelId, navigation, data } = this.props;
+    const { channelId: prevChannelId, data: prevData } = prevProps;
+
+    if (prevChannelId !== channelId) {
+      this.fetchData();
+    }
 
     if (!isInitialized(prevData) && isInitialized(data)) {
       LayoutAnimation.easeInEaseOut();
@@ -131,12 +140,23 @@ export class AboutScreen extends PureComponent {
   }
 
   shouldRenderPlaceholderView() {
-    const { parentCategoryId, data } = this.props;
-    return _.isUndefined(parentCategoryId) || !this.isCollectionValid(data);
+    const { parentCategoryId, channelId: prevChannelId, data } = this.props;
+
+    // Returning placeholder view if channelId changed since the last time data
+    // was loaded (screen was rendered) because it was showing old screen (diff
+    // channelId) before it fetched new data
+    const latestChannelId = data[STATUS]?.params?.query['filter[channels]'];
+    const channelIdChanged = latestChannelId !== prevChannelId;
+
+    return (
+      _.isUndefined(parentCategoryId) ||
+      !this.isCollectionValid(data) ||
+      channelIdChanged
+    );
   }
 
   fetchData(schema) {
-    const { find, parentCategoryId } = this.props;
+    const { channelId, find, parentCategoryId } = this.props;
     const { schema: defaultSchema } = this.state;
 
     if (!parentCategoryId) {
@@ -147,6 +167,7 @@ export class AboutScreen extends PureComponent {
       find(schema || defaultSchema, undefined, {
         query: {
           'filter[categories]': parentCategoryId,
+          'filter[channels]': channelId,
         },
       }),
     );
@@ -437,6 +458,7 @@ export class AboutScreen extends PureComponent {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const channelId = i18nSelectors.getActiveChannelId(state);
   const parentCategoryId = _.get(
     ownProps,
     'route.params.shortcut.settings.parentCategory.id',
@@ -445,6 +467,7 @@ const mapStateToProps = (state, ownProps) => {
   const collection = state[ext()].allAbout;
 
   return {
+    channelId,
     parentCategoryId,
     imageSize: screenSettings.imageSize,
     data: getCollection(collection[parentCategoryId], state),

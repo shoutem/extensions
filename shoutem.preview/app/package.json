@@ -1,10 +1,10 @@
 {
   "name": "shoutem.preview",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Shoutem preview extension",
   "license": "ISC",
   "dependencies": {
-    "react-native-device-info": "~5.4.0"
+    "react-native-device-info": "~8.3.1"
   },
   "nativeDependencies": [
     "react-native-device-info"

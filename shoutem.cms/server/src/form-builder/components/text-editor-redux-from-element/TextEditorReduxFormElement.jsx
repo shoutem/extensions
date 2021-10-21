@@ -54,6 +54,11 @@ export default class TextEditorReduxFormElement extends Component {
     const isError = fieldInError(field);
     const helpBlockText = isError ? field.error : helpText;
     const imagePickerLocalization = {
+      emptySearchTermTitle: LOCALIZATION.EMPTY_SEARCH_TERM_TITLE,
+      emptySearchTermDescription: LOCALIZATION.EMPTY_SEARCH_TERM_DESCRITION,
+      emptySearchResultsTitle: LOCALIZATION.EMPTY_SEARCH_RESULTS_TITLE,
+      emptySearchResultsDescription:
+        LOCALIZATION.EMPTY_SEARCH_RESULTS_DESCRIPTION,
       footerText: i18next.t(LOCALIZATION.IMAGE_PICKER_FOOTER_TEXT),
       insertButtonTextSingular: i18next.t(
         LOCALIZATION.IMAGE_PICKER_INSERT_BUTTON_TEXT_SINGULAR,
@@ -64,14 +69,11 @@ export default class TextEditorReduxFormElement extends Component {
       invalidUnsplashKeyText: i18next.t(
         LOCALIZATION.IMAGE_PICKER_INVALID_ACCESS_KEY_TEXT,
       ),
+      maxText: i18next.t(LOCALIZATION.MAX_TEXT),
       modalTitle: i18next.t(LOCALIZATION.IMAGE_PICKER_MODAL_TITLE),
-      imagePreviewOnText: i18next.t(LOCALIZATION.IMAGE_PICKER_ON_TEXT),
-      imagePreviewPhotoByText: i18next.t(
-        LOCALIZATION.IMAGE_PICKER_PHOTO_BY_TEXT,
-      ),
-      imagePreviewUnsplashText: i18next.t(
-        LOCALIZATION.IMAGE_PICKER_UNSPLASH_TEXT,
-      ),
+      OnText: i18next.t(LOCALIZATION.IMAGE_PICKER_ON_TEXT),
+      PhotoByText: i18next.t(LOCALIZATION.IMAGE_PICKER_PHOTO_BY_TEXT),
+      UnsplashText: i18next.t(LOCALIZATION.IMAGE_PICKER_UNSPLASH_TEXT),
       searchPlaceholder: i18next.t(
         LOCALIZATION.IMAGE_PICKER_SEARCH_PLACEHOLDER,
       ),

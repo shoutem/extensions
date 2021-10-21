@@ -7,6 +7,7 @@ const {
   EventsScreen,
   MediumEventDetailsScreen,
   LargeEventDetailsScreen,
+  SingleEventMapScreen,
 } = extension.screens;
 
 export const screens = {
@@ -23,6 +24,7 @@ export const screens = {
   SolidNavbarMediumEventDetailsScreen: MediumEventDetailsScreen,
   SolidNavbarLargeEventDetailsScreen: LargeEventDetailsScreen,
   ClearNavbarMediumEventDetailsScreen: MediumEventDetailsScreen,
+  SingleEventMapScreen,
 };
 
 export const shoutem = {

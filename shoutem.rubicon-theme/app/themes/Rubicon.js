@@ -1536,6 +1536,28 @@ export default (customVariables = {}) => {
       },
     },
 
+    'shoutem.auth.EditProfileScreen': {
+      container: { flex: 1 },
+      username: { bottom: 0 },
+      deleteAccountButtonText: { color: variables.errorText.color },
+    },
+
+    'shoutem.auth.ConfirmDeletionScreen': {
+      deleteAccountButtonContainer: {
+        marginTop: 30,
+        height: 55,
+      },
+      deleteAccountButtonText: {
+        disabled: { color: changeColorAlpha(variables.errorText.color, 0.5) },
+        enabled: { color: variables.errorText.color },
+      },
+      deleteAccountDescription: { textAlign: 'center' },
+      textInput: {
+        borderWidth: 0,
+        wiggleAnimation: { paddingHorizontal: 0 },
+      },
+    },
+
     'shoutem.auth.ChangePasswordScreen': {
       keyboardAvoidingViewContainer: {
         flex: 1,
@@ -2024,6 +2046,43 @@ export default (customVariables = {}) => {
     },
 
     // CMS
+
+    'shoutem.cms.SearchInput': {
+      container: {
+        backgroundColor: variables.navBarBackground,
+        height: 44,
+        justifyContent: 'center',
+      },
+      searchBackground: {
+        backgroundColor: variables.searchInputBackgroundColor || '#F0F0F0',
+        borderRadius: 4,
+        marginHorizontal: variables.smallGutter,
+        height: 30,
+      },
+      searchIcon: {
+        color: variables.searchTextColor || '#666666',
+        marginHorizontal: 10,
+        marginVertical: 5,
+      },
+      searchTextInput: {
+        backgroundColor: variables.searchInputBackgroundColor || '#F0F0F0',
+        color: variables.searchTextColor || '#666666',
+        height: 30,
+        marginLeft: 0,
+        paddingVertical: 0,
+        paddingLeft: 0,
+        placeholderTextColor: variables.searchTextColor || '#666666',
+        selectionColor: variables.searchTextColor || '#666666',
+        width: window.width - dimensionRelativeToIphone(110),
+      },
+      clearSearchContainer: {
+        height: 30,
+        width: 44,
+      },
+      clearSearchIcon: {
+        color: variables.searchTextColor || '#666666',
+      },
+    },
 
     'shoutem.cms.FullGridRowItemView': {
       container: {

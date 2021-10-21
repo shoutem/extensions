@@ -53,6 +53,7 @@ export class PhotosBaseScreen extends CmsListScreen {
       data: null,
       photos,
       schema: ext('Photos'),
+      searchEnabled: true,
     };
   }
 

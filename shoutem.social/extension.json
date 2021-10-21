@@ -1,16 +1,20 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "3.1.2",
+  "version": "3.1.4",
   "platform": "^3.0.0",
   "skipClone": false,
-  "releaseNotes": "* Added ability to block users per account level",
+  "releaseNotes": "* Code improvements",
   "description": "Let members create posts, comment and like them",
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "dependencies": [
-    "shoutem.camera"
+    "shoutem.application",
+    "shoutem.auth",
+    "shoutem.camera",
+    "shoutem.firebase",
+    "shoutem.i18n",
+    "shoutem.navigation",
+    "shoutem.permissions"
   ],
   "i18n": {
     "locale": "en",
@@ -22,10 +26,12 @@
       "name": "SocialWallScreen"
     },
     {
-      "name": "StatusDetailsScreen"
+      "name": "StatusDetailsScreen",
+      "settings": { "disableAdBanner": true }
     },
     {
-      "name": "CreateStatusScreen"
+      "name": "CreateStatusScreen",
+      "settings": { "disableAdBanner": true }
     },
     {
       "name": "MembersScreen"

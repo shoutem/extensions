@@ -8,6 +8,8 @@ import _ from 'lodash';
 import { isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
+  ActionSheet,
+  Button,
   Caption,
   Divider,
   FormGroup,
@@ -16,11 +18,11 @@ import {
   ScrollView,
   Spinner,
   TextInput,
+  Text,
   View,
-  ActionSheet,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { HeaderTextButton } from 'shoutem.navigation';
+import { HeaderTextButton, openInModal } from 'shoutem.navigation';
 import {
   requestPermissions,
   PERMISSION_TYPES,
@@ -181,6 +183,8 @@ class EditProfileScreen extends PureComponent {
           this.handleImagePickerResponse,
         );
       }
+
+      return null;
     });
   }
 
@@ -190,6 +194,10 @@ class EditProfileScreen extends PureComponent {
 
   handleChangeProfileImagePress() {
     this.setState({ pickerActive: true });
+  }
+
+  handleOpenConfirmDeletionScreen() {
+    openInModal(ext('ConfirmDeletionScreen'));
   }
 
   renderInput(name, label, options) {
@@ -224,7 +232,7 @@ class EditProfileScreen extends PureComponent {
   }
 
   renderContent() {
-    const { user } = this.props;
+    const { style, user } = this.props;
     const { updatedImage } = this.state;
 
     if (isBusy(user)) {
@@ -237,21 +245,37 @@ class EditProfileScreen extends PureComponent {
     const image = _.get(updatedImage, 'uri') || _.get(user, 'profile.image');
 
     return (
-      <ScrollView>
-        <ProfileImage
-          isEditable
-          onPress={this.handleChangeProfileImagePress}
-          uri={image}
-        />
-        {this.renderForm()}
-        <Caption styleName="h-center">
-          {I18n.t(ext('loggedInUserInfo'), { username })}
-        </Caption>
-      </ScrollView>
+      <Screen>
+        <ScrollView>
+          <ProfileImage
+            isEditable
+            onPress={this.handleChangeProfileImagePress}
+            uri={image}
+          />
+          {this.renderForm()}
+          <View styleName="flexible">
+            <Caption
+              styleName="h-center md-gutter-bottom"
+              style={style.username}
+            >
+              {I18n.t(ext('loggedInUserInfo'), { username })}
+            </Caption>
+            <Button
+              styleName="clear"
+              onPress={this.handleOpenConfirmDeletionScreen}
+            >
+              <Text style={style.deleteAccountButtonText}>
+                {I18n.t(ext('deleteAccountText')).toUpperCase()}
+              </Text>
+            </Button>
+          </View>
+        </ScrollView>
+      </Screen>
     );
   }
 
   render() {
+    const { style } = this.props;
     const { pickerActive } = this.state;
     const keyboardOffset =
       Platform.OS === 'ios' ? Keyboard.calculateKeyboardOffset() : 0;
@@ -270,9 +294,9 @@ class EditProfileScreen extends PureComponent {
       <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={keyboardOffset}
-        style={{ flex: 1 }}
+        style={style.container}
       >
-        <Screen>{this.renderContent()}</Screen>
+        {this.renderContent()}
         <ActionSheet
           confirmOptions={pickerOptions}
           active={pickerActive}

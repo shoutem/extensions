@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { FormGroup, ControlLabel, Dropdown, MenuItem } from 'react-bootstrap';
 import { FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
@@ -23,9 +24,7 @@ export default class NavigationBarFirstScreenImageToggle extends Component {
   constructor(props) {
     super(props);
 
-    this.handleBackgroundImageToggle = this.handleBackgroundImageToggle.bind(
-      this,
-    );
+    autoBindReact(this);
   }
 
   /**

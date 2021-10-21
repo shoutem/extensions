@@ -1,11 +1,11 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "platform": "^3.0.0",
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "releaseNotes": "* Fixed search input text visibility",
+  "releaseNotes": "* Code improvements",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -118,6 +118,9 @@
     },
     {
       "name": "WebCheckoutScreen"
+    },
+    {
+      "name": "UpdateItemScreen"
     }
   ],
   "pages": [

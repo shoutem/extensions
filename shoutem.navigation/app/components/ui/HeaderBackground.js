@@ -1,4 +1,5 @@
 import React from 'react';
+import DeviceInfo from 'react-native-device-info';
 import { Animated, StyleSheet, ImageBackground } from 'react-native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -9,8 +10,14 @@ const AnimatedImageBackground = Animated.createAnimatedComponent(
 );
 
 export default function HeaderBackground({ style, settings, alwaysShow }) {
-  const hasBackground = !_.isEmpty(settings.backgroundImage);
+  // If device has a notch, use withNotchBackgroundImage.
+  // If it is empty, default to 135px height image - backgroundImage.
+  const backgroundImage = DeviceInfo.hasNotch()
+    ? settings.withNotchBackgroundImage || settings.backgroundImage
+    : settings.backgroundImage;
+  const hasBackground = !_.isEmpty(backgroundImage);
   const hasGradient = !!_.get(style, 'gradient');
+
   if (!style && !hasBackground) {
     return null;
   }
@@ -28,7 +35,7 @@ export default function HeaderBackground({ style, settings, alwaysShow }) {
     return (
       <>
         <AnimatedImageBackground
-          source={{ uri: settings.backgroundImage }}
+          source={{ uri: backgroundImage }}
           style={[StyleSheet.absoluteFillObject, style, { zIndex: 5 }]}
           resizeMode={resizeMode}
         />

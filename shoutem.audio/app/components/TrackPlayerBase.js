@@ -1,4 +1,5 @@
 import { PureComponent } from 'react';
+import autoBind from 'auto-bind';
 import TrackPlayer from 'react-native-track-player';
 import _ from 'lodash';
 import { trackPlayerService } from '../services/trackPlayerService';
@@ -13,10 +14,7 @@ class TrackPlayerBase extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handlePlaybackError = this.handlePlaybackError.bind(this);
-    this.handleActionButtonPress = this.handleActionButtonPress.bind(this);
-    this.handlePlaybackStateChange = this.handlePlaybackStateChange.bind(this);
-    this.handleRemoteStop = this.handleRemoteStop.bind(this);
+    autoBind(this);
 
     this.setPlaybackState = _.throttle(this.setPlaybackState.bind(this), 100);
 
@@ -118,6 +116,7 @@ class TrackPlayerBase extends PureComponent {
   handleRemoteStop() {
     this.firstPlay = true;
     this.setPlaybackState(STATE_STOPPED);
+    trackPlayerService.setShouldResumeAfterDuck(false);
   }
 
   async handleReturnToPlayer() {
@@ -153,16 +152,13 @@ class TrackPlayerBase extends PureComponent {
 
     if (this.firstPlay && playbackState !== STATE_PLAYING) {
       this.handleFirstPlay();
-      trackPlayerService.setShouldResumeAfterDuck(true);
       return;
     }
 
     if (playbackState === STATE_PLAYING) {
       this.pause();
-      trackPlayerService.setShouldResumeAfterDuck(false);
     } else {
       this.play();
-      trackPlayerService.setShouldResumeAfterDuck(true);
     }
   }
 
@@ -184,18 +180,21 @@ class TrackPlayerBase extends PureComponent {
     this.setPlaybackState(STATE_PLAYING);
 
     await TrackPlayer.play();
+    trackPlayerService.setShouldResumeAfterDuck(true);
   }
 
   async pause() {
     this.setPlaybackState(STATE_PAUSED);
 
     await TrackPlayer.pause();
+    trackPlayerService.setShouldResumeAfterDuck(false);
   }
 
   async reset() {
     this.setPlaybackState(STATE_STOPPED);
 
     await TrackPlayer.reset();
+    trackPlayerService.setShouldResumeAfterDuck(false);
   }
 }
 

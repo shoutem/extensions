@@ -1,10 +1,10 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "platform": "^3.0.0",
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* Fixed bug when sometimes a user would receive daily reminder notification while it is not enabled",
+  "releaseNotes": "* Code improvements",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": ["users"],
   "i18n": {
@@ -65,6 +65,9 @@
     },
     {
       "name": "ReminderSettingsScreen"
+    },
+    {
+      "name": "NotificationDetailsScreen"
     }
   ],
   "settingsPages": [

@@ -1,10 +1,11 @@
 {
   "name": "audio",
   "title": "Audio",
-  "version": "3.0.1-rc.1",
+  "version": "3.0.1",
   "description": "Track player components for other extensions to utilize. NOTE: Lock screen controls will not be visible in the preview.",
-  "releaseNotes": "* Fixed radio stream stopping playback if user receives notification",
-  "platform": "^3.0.0",
+  "releaseNotes": "* Fixed track player not resuming playback after interruptions",
+  "dependencies": ["shoutem.application"],
+  "platform": "~3.0.2",
   "icon": "server/assets/add-audio-image.png",
   "type": "system"
 }

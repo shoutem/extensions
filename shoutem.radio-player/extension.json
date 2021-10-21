@@ -1,13 +1,17 @@
 {
   "name": "radio-player",
   "title": "Radio+",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
-  "releaseNotes": "",
-  "platform": "^3.0.0",
+  "releaseNotes": "* Code improvements",
+  "platform": "~3.0.2",
   "icon": "server/assets/add-radio-image.png",
-  "categories": [
-    "media"
+  "categories": ["media"],
+  "dependencies": [
+    "shoutem.audio",
+    "shoutem.i18n",
+    "shoutem.navigation",
+    "shoutem.redux"
   ],
   "i18n": {
     "locale": "en",
@@ -15,7 +19,8 @@
   },
   "screens": [
     {
-      "name": "Radio"
+      "name": "Radio",
+      "settings": { "disableAdBanner": true }
     }
   ],
   "shortcuts": [

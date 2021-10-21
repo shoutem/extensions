@@ -1,10 +1,10 @@
 {
   "name": "in-app-purchases",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "platform": "^3.0.0",
   "title": "In App Purchases",
   "description": "Add Apple/Google Play subscriptions to your app",
-  "releaseNotes": "* Added a script for calling and debugging prebuild script",
+  "releaseNotes": "* Updated major version of react-native-device-info, no breaking changes",
   "icon": "server/assets/iap.png",
   "repository": {
     "type": "git",
@@ -14,6 +14,14 @@
     "locale": "en",
     "translationPath": "server/translations/en.json"
   },
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.i18n",
+    "shoutem.navigation",
+    "shoutem.preview",
+    "shoutem.redux",
+    "shoutem.web-view"
+  ],
   "screens": [
     {
       "name": "SubscriptionsScreen"

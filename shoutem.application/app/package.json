@@ -1,11 +1,11 @@
 {
   "name": "shoutem.application",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
-    "react-native-device-info": "~5.4.0",
+    "react-native-device-info": "~8.3.1",
     "react-native-maps": "~0.26.0",
     "react-native-splash-screen": "^3.2.0"
   },

@@ -1,0 +1,1 @@
+export { withGeoLocationRequired } from './withGeoLocationRequired';

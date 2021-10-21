@@ -1,0 +1,12 @@
+{
+  "shoutem": {
+    "geo-restrictions": {
+      "extension-page.save-button": "Save",
+      "extension-page.enter-company-name": "Enter company name",
+      "extension-page.company": "Company:",
+      "shortcut-page.save-button": "Save",
+      "shortcut-page.choose-your-greeting": "Choose your greeting",
+      "shortcut-page.name": "Name:"
+    }
+  }
+}

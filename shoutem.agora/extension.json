@@ -1,22 +1,20 @@
 {
   "name": "agora",
   "title": "Agora video calls",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "icon": "server/assets/add-videos-image.png",
   "description": "Connect your users with real-time video conferencing!",
   "platform": "^3.0.0",
-  "releaseNotes": "* Added a script for calling and debugging prebuild script",
+  "releaseNotes": "* Code improvements",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
   },
-  "dependencies": [
-    "shoutem.auth",
-    "shoutem.permissions"
-  ],
+  "dependencies": ["shoutem.auth", "shoutem.permissions"],
   "screens": [
     {
-      "name": "VideoCallScreen"
+      "name": "VideoCallScreen",
+      "settings": { "disableAdBanner": true }
     }
   ],
   "pages": [

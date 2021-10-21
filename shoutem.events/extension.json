@@ -1,17 +1,12 @@
 {
   "name": "events",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "platform": "^3.0.0",
   "title": "Events",
   "description": "Show items with location and time",
-  "releaseNotes": "* Added CMS search feature",
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.cms"
-  ],
-  "categories": [
-    "content"
-  ],
+  "releaseNotes": "* Code improvements",
+  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -27,10 +22,7 @@
       "title": "Events",
       "name": "events-shortcut",
       "icon": "theme://events.png",
-      "capabilities": [
-        "shoutem.cms.search",
-        "shoutem.cms.import-csv"
-      ],
+      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
       "settings": {
         "defaultShortcutTitle": "Events",
         "extensionTitle": "Events",
@@ -57,10 +49,7 @@
       "name": "EventsScreen",
       "title": "Fixed grid",
       "image": "./server/assets/images/fixed-grid.png",
-      "navigatesTo": [
-        "@.EventDetailsScreen",
-        "@.SingleEventMapScreen"
-      ],
+      "navigatesTo": ["@.EventDetailsScreen", "@.SingleEventMapScreen"],
       "settings": {
         "listType": "grid-list",
         "hasFeaturedItem": false
@@ -82,7 +71,8 @@
       "image": "./server/assets/images/details-medium-transparent.png",
       "extends": "@.EventDetailsScreen",
       "settings": {
-        "navigationBarStyle": "clear"
+        "navigationBarStyle": "clear",
+        "disableAdBanner": true
       }
     },
     {
@@ -90,7 +80,8 @@
       "title": "Large photo with transparent navbar",
       "image": "./server/assets/images/details-large-transparent.png",
       "settings": {
-        "navigationBarStyle": "clear"
+        "navigationBarStyle": "clear",
+        "disableAdBanner": true
       }
     },
     {
@@ -170,6 +161,9 @@
         "listType": "large-list",
         "hasFeaturedItem": false
       }
+    },
+    {
+      "name": "SingleEventMapScreen"
     }
   ],
   "dataSchemas": [

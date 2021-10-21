@@ -3,26 +3,26 @@ import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
-import timezones from 'timezones.json';
 import moment from 'moment-timezone';
 import { DateTimePicker, ReduxFormElement } from '@shoutem/react-web-ui';
 import SelectReduxFormElement from '../select-redux-form-element';
+import { TIMEZONES } from './const';
 import './style.scss';
 
-export function getISODateFromDatetimeAndZone(datetime, timezone) {
+function getISODateFromDatetimeAndZone(datetime, timezone) {
   // check if moment supports that zone
   if (moment.tz.zone(timezone)) {
     return moment.tz(datetime, timezone).format();
   }
 
   // if we are here that means timezone is not supported by moment
-  const rawTimezone = _.find(timezones, { value: timezone });
+  const rawTimezone = _.find(TIMEZONES, { value: timezone });
   const similarTimezone = _.find(rawTimezone.utc, item => moment.tz.zone(item));
 
   return moment.tz(datetime, similarTimezone).format();
 }
 
-export function getDateTimeFromISODate(isoDate) {
+function getDateTimeFromISODate(isoDate) {
   if (!isoDate) {
     return null;
   }
@@ -31,23 +31,34 @@ export function getDateTimeFromISODate(isoDate) {
   return date.format('YYYY-MM-DDTHH:mm:ss');
 }
 
-export function getTimezoneFromISODate(isoDate) {
+function getTimezoneFromISODate(isoDate) {
   if (!isoDate) {
     return null;
   }
 
   const offset = moment.parseZone(isoDate).format('Z');
-  const timezone = _.find(timezones, timezone =>
-    _.includes(timezone.text, offset),
+  const timezone = _.find(TIMEZONES, timezone =>
+    _.includes(timezone.label, offset),
   );
 
   return _.get(timezone, 'value');
 }
 
-const TIMEZONE_OPTIONS = _.map(timezones, timezone => ({
-  value: timezone.value,
-  label: timezone.text,
-}));
+function isTimezoneSupported(timezone) {
+  return !!_.find(TIMEZONES, item => item.value === timezone);
+}
+
+function resoloveTimezone(timezoneField, field) {
+  if (timezoneField && timezoneField.value) {
+    if (isTimezoneSupported(timezoneField.value)) {
+      return timezoneField.value;
+    }
+  }
+
+  const fieldValue = _.get(field, 'value');
+
+  return getTimezoneFromISODate(fieldValue) || 'UTC';
+}
 
 export default class DateTimeReduxFormElement extends Component {
   static propTypes = {
@@ -55,6 +66,7 @@ export default class DateTimeReduxFormElement extends Component {
     name: PropTypes.string,
     timezoneName: PropTypes.string,
     field: PropTypes.object,
+    timezoneField: PropTypes.object,
     touch: PropTypes.func,
   };
 
@@ -62,20 +74,16 @@ export default class DateTimeReduxFormElement extends Component {
     super(props);
     autoBindReact(this);
 
-    const { elementId, field } = props;
-    const timezoneElementId = `${elementId}-timezone`;
-
-    const fieldValue = _.get(field, 'value');
-    const timezone = getTimezoneFromISODate(fieldValue) || 'UTC';
+    const { field, timezoneField } = props;
+    const timezone = resoloveTimezone(timezoneField, field);
 
     this.state = {
-      timezoneElementId,
       timezone,
     };
   }
 
-  handleSelectionChanged(option) {
-    const { field, touch } = this.props;
+  handleTimezoneChanged(option) {
+    const { field, timezoneField, touch } = this.props;
 
     const timezone = _.get(option, 'value');
     const fieldValue = _.get(field, 'value');
@@ -84,6 +92,7 @@ export default class DateTimeReduxFormElement extends Component {
       const datetime = getDateTimeFromISODate(fieldValue);
       const value = getISODateFromDatetimeAndZone(datetime, timezone);
 
+      timezoneField.onChange(timezone);
       field.onChange(value);
     }
 
@@ -116,8 +125,9 @@ export default class DateTimeReduxFormElement extends Component {
 
   render() {
     const { elementId, field, name, timezoneName } = this.props;
-    const { timezoneElementId, timezone } = this.state;
+    const { timezone, timezoneOptions } = this.state;
 
+    const timezoneElementId = `${elementId}-timezone`;
     const fieldValue = _.get(field, 'value');
     const datetime = getDateTimeFromISODate(fieldValue);
 
@@ -153,8 +163,8 @@ export default class DateTimeReduxFormElement extends Component {
             name={timezoneName}
             field={timezoneField}
             clearable={false}
-            options={TIMEZONE_OPTIONS}
-            onChange={this.handleSelectionChanged}
+            options={TIMEZONES}
+            onChange={this.handleTimezoneChanged}
           />
         </Col>
       </Row>

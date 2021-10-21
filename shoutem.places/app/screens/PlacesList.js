@@ -90,14 +90,13 @@ export class PlacesList extends CmsListScreen {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, isSearchSettingEnabled } = this.props;
     const { renderCategoriesInline } = this.state;
 
     return (
       <Screen>
-        {renderCategoriesInline
-          ? this.renderCategoriesDropDown('horizontal')
-          : null}
+        {isSearchSettingEnabled && this.renderSearch()}
+        {renderCategoriesInline && this.renderCategoriesDropDown('horizontal')}
         {this.renderData(data)}
       </Screen>
     );

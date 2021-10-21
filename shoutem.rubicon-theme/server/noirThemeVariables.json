@@ -413,6 +413,30 @@
       "title": "News grid 1-2-2 layout item - background color",
       "format": "color",
       "default": "#FFFFFF"
+    },
+    "categoryDropdownBackgroundColor": {
+      "type": "string",
+      "title": "Category dropdown background color",
+      "format": "color",
+      "default": "#171717"
+    },
+    "categoryDropdownTextColor": {
+      "type": "string",
+      "title": "Category dropdown text color",
+      "format": "color",
+      "default": "rgba(255, 255, 255, 0.5)"
+    },
+    "searchInputBackgroundColor": {
+      "type": "string",
+      "title": "Search input background color",
+      "format": "color",
+      "default": "#F0F0F0"
+    },
+    "searchTextColor": {
+      "type": "string",
+      "title": "Search input text,placeholder,icons & selection color",
+      "format": "color",
+      "default": "#666666"
     }
   },
   "layout": {
@@ -508,7 +532,11 @@
           "indicatorColor",
           "sectionHeaderBackgroundColor",
           "gridItemBackgroundColor",
-          "newsGrid122ItemBackgroundColor"
+          "newsGrid122ItemBackgroundColor",
+          "categoryDropdownBackgroundColor",
+          "categoryDropdownTextColor",
+          "searchInputBackgroundColor",
+          "searchTextColor"
         ]
       }
     ]

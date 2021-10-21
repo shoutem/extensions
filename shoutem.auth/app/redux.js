@@ -197,7 +197,10 @@ export function fetchFacebookUserInfo(userAccessToken) {
 
   return fetch(request)
     .then(response => response.json())
-    .catch(error => console.log('Fetch Facebook user info failed: ', error));
+    .catch(error => {
+      // eslint-disable-next-line no-console
+      console.log('Fetch Facebook user info failed: ', error);
+    });
 }
 
 export function login(email, password) {
@@ -432,10 +435,6 @@ export function hideShortcuts(user) {
   return (dispatch, getState) => {
     const state = getState();
     const { allScreensProtected } = getExtensionSettings(state, ext());
-    const shortcuts = getAllShortcuts(state);
-
-    const userGroups = _.get(user, 'userGroups');
-    const userGroupsIds = _.map(userGroups, 'id');
 
     dispatch(showAllShortcuts());
 
@@ -443,6 +442,10 @@ export function hideShortcuts(user) {
       return;
     }
 
+    const shortcuts = getAllShortcuts(state);
+
+    const userGroups = _.get(user, 'userGroups');
+    const userGroupsIds = _.map(userGroups, 'id');
     const hiddenShortcuts = _.compact(
       _.map(shortcuts, shortcut => {
         const shortcutUserGroups = _.get(shortcut, [
@@ -470,7 +473,7 @@ export function hideShortcuts(user) {
     );
 
     if (!_.isEmpty(hiddenShortcuts)) {
-      return dispatch(hideShortcutsAction(hiddenShortcuts));
+      dispatch(hideShortcutsAction(hiddenShortcuts));
     }
   };
 }
@@ -521,4 +524,25 @@ export function resetPassword(code, email, newPassword) {
   };
 
   return create(config);
+}
+
+export function deleteUser() {
+  const config = {
+    schema: USER_SCHEMA,
+    request: {
+      endpoint: shoutemApi.buildAuthUrl(`users/me/actions/delete-user`),
+      body: JSON.stringify({
+        data: {
+          type: USER_SCHEMA,
+        },
+      }),
+      method: 'POST',
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
+    },
+  };
+
+  return find(config);
 }

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.notification-center",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Manage push notification settings within the app",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

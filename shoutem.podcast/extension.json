@@ -1,17 +1,27 @@
 {
   "name": "podcast",
-  "version": "3.0.1",
-  "platform": "^3.0.0",
+  "version": "3.0.2",
+  "platform": "~3.0.2",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* Fixed app slowdown after podcast is played for more than 15 minutes\n* Add share functionality for rss feeds without link in episode info",
+  "releaseNotes": "* Fixed podcast episode not resuming playback after interruption",
   "icon": "server/assets/extension-icon.png",
   "categories": ["media"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": ["shoutem.layouts", "shoutem.permissions", "shoutem.rss"],
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.audio",
+    "shoutem.firebase",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.permissions",
+    "shoutem.push-notifications",
+    "shoutem.rss"
+  ],
   "shortcuts": [
     {
       "name": "podcast-shortcut",

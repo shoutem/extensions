@@ -19,7 +19,8 @@
       "websiteButton": "Visit webpage",
       "rsvpButton": "RSVP",
       "navBarListViewButton": "List",
-      "navBarMapViewButton": "Map"
+      "navBarMapViewButton": "Map",
+      "noSearchResultsText": "No results found"
     }
   }
 }

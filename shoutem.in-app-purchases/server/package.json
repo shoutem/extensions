@@ -1,6 +1,6 @@
 {
   "name": "shoutem.in-app-purchases",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
     "clean": "rimraf ./build/*",

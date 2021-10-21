@@ -1,16 +1,17 @@
 {
   "name": "youtube",
   "title": "YouTube",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "platform": "^3.0.0",
   "description": "Show a video gallery from YouTube channel, user or playlist",
-  "releaseNotes": "* Added support for YouTube feeds with custom channel URL\n* Improved parsing YouTube feed URLs\n* Added sort type option for non-playlist type feed URLs",
+  "releaseNotes": "* Code improvements",
   "dependencies": [
-    "shoutem.layouts"
+    "shoutem.application",
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.rss"
   ],
-  "categories": [
-    "media"
-  ],
+  "categories": ["media"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -69,7 +70,8 @@
       "extends": "@.YoutubeVideosScreen"
     },
     {
-      "name": "YoutubeVideoDetailsScreen"
+      "name": "YoutubeVideoDetailsScreen",
+      "settings": { "disableAdBanner": true }
     }
   ]
 }

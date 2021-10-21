@@ -1,11 +1,11 @@
 {
   "name": "people",
   "title": "People",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "platform": "~3.0.1",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
-  "releaseNotes": "* Fixed Phone and Email buttons not opening respective apps on Android 11",
+  "releaseNotes": "* Code improvements",
   "dependencies": [
     "shoutem.cms",
     "shoutem.i18n",
@@ -58,7 +58,8 @@
     {
       "name": "PeopleDetailsScreen",
       "title": "Large square photo with transparent navbar",
-      "image": "./server/assets/screens/large-square-photo-clear-navbar-details.png"
+      "image": "./server/assets/screens/large-square-photo-clear-navbar-details.png",
+      "settings": { "disableAdBanner": true }
     }
   ],
   "dataSchemas": [

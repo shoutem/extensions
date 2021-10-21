@@ -51,6 +51,7 @@ function StatusView({
   };
 
   const renderHeader = () => {
+    // eslint-disable-next-line camelcase
     const created_at = _.get(status, 'user');
     const user = _.get(status, 'user');
 
@@ -68,7 +69,7 @@ function StatusView({
             />
           </TouchableOpacity>
           <View styleName="vertical md-gutter-left">
-            <Subtitle>{`${user?.name}`}</Subtitle>
+            <Subtitle>{`${user?.screen_name || user?.name}`}</Subtitle>
             <Caption>{moment(created_at).fromNow()}</Caption>
           </View>
         </View>
@@ -193,8 +194,8 @@ StatusView.propTypes = {
 StatusView.defaultProps = {
   enableImageFullScreen: false,
   enableInteractions: true,
-  enableComments:true,
-  openStatusDetails : _.noop,
-}
+  enableComments: true,
+  openStatusDetails: _.noop,
+};
 
 export default connectStyle(ext('StatusView'))(StatusView);

@@ -1,19 +1,13 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "platform": "^3.0.0",
   "description": "Show a video gallery",
-  "releaseNotes": "* Stability improvements",
+  "releaseNotes": "* Code improvements",
   "icon": "server/assets/add-videos-image.png",
-  "dependencies": [
-    "shoutem.cms",
-    "shoutem.layouts",
-    "shoutem.navigation"
-  ],
-  "categories": [
-    "media"
-  ],
+  "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
+  "categories": ["media"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -28,10 +22,7 @@
       "title": "Videos",
       "icon": "theme://play.png",
       "screen": "@.VideosList",
-      "capabilities": [
-        "shoutem.cms.search",
-        "shoutem.cms.import-csv"
-      ],
+      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
@@ -62,16 +53,15 @@
       "name": "VideosList",
       "title": "Big list",
       "image": "server/assets/screens/big-list.png",
-      "navigatesTo": [
-        "@.VideoDetails"
-      ]
+      "navigatesTo": ["@.VideoDetails"]
     },
     {
       "name": "VideoDetails",
       "title": "Details",
       "image": "server/assets/screens/details.png",
       "settings": {
-        "shareable": true
+        "shareable": true,
+        "disableAdBanner": true
       }
     },
     {
@@ -80,7 +70,8 @@
       "image": "server/assets/screens/details-without-share.png",
       "extends": "@.VideoDetails",
       "settings": {
-        "shareable": false
+        "shareable": false,
+        "disableAdBanner": true
       }
     }
   ],

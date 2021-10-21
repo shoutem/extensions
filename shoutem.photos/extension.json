@@ -1,18 +1,13 @@
 {
   "name": "photos",
-  "version": "3.0.1",
+  "version": "3.1.1",
   "platform": "^3.0.0",
   "title": "Photos",
   "description": "Show a photo gallery",
-  "releaseNotes": "* Added CMS search feature",
+  "releaseNotes": "* Code improvements",
   "icon": "server/assets/add-photos-image.png",
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.cms"
-  ],
-  "categories": [
-    "media"
-  ],
+  "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
+  "categories": ["media"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -27,10 +22,7 @@
       "title": "Manual photos",
       "screen": "@.PhotosScreen",
       "icon": "theme://photo.png",
-      "capabilities": [
-        "shoutem.cms.search",
-        "shoutem.cms.import-csv"
-      ],
+      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
@@ -54,9 +46,7 @@
     {
       "name": "PhotosScreen",
       "title": "Large list",
-      "navigatesTo": [
-        "@.PhotoDetailsScreen"
-      ],
+      "navigatesTo": ["@.PhotoDetailsScreen"],
       "image": "./server/assets/screens/layout-photos-large-list.png",
       "settings": {
         "listType": "large-list"
@@ -103,7 +93,8 @@
     },
     {
       "name": "PhotoDetailsScreen",
-      "title": "PhotoDetailsScreen"
+      "title": "PhotoDetailsScreen",
+      "settings": { "disableAdBanner": true }
     }
   ],
   "dataSchemas": [
