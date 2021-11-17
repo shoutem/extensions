@@ -1,8 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import classNames from 'classnames';
+import i18next from 'i18next';
 import _ from 'lodash';
 import moment from 'moment';
-import i18next from 'i18next';
-import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import { getDisplayDateFormat, getDisplayTimeFormat } from 'src/services';
 import LOCALIZATION from './localization';
 import './style.scss';
@@ -24,7 +26,7 @@ function getDealStat(deal, stat, showUnlimited) {
     : statValue;
 }
 
-export default class DealStatsRow extends Component {
+export default class DealStatsRow extends PureComponent {
   static propTypes = {
     dealStat: PropTypes.object,
     isSelected: PropTypes.bool,
@@ -34,7 +36,7 @@ export default class DealStatsRow extends Component {
   constructor(props) {
     super(props);
 
-    this.handleDealSelect = this.handleDealSelect.bind(this);
+    autoBindReact(this);
   }
 
   handleDealSelect() {
@@ -51,7 +53,7 @@ export default class DealStatsRow extends Component {
     });
 
     const dateFormat = `${getDisplayDateFormat()} ${getDisplayTimeFormat()}`;
-    const startLabel = moment(startTime).format(dateFormat);
+    const startLabel = !!startTime ? moment(startTime).format(dateFormat) : '';
     const endLabel = moment(endTime).format(dateFormat);
 
     return (

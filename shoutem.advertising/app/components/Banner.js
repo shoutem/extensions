@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+import { BannerAd, BannerAdSize } from '@react-native-admob/admob';
 import { AdContext } from '../providers';
 
 export function Banner(props) {
@@ -15,7 +15,7 @@ export function Banner(props) {
 
         return (
           <BannerAd
-            size={BannerAdSize.SMART_BANNER}
+            size={BannerAdSize.ADAPTIVE_BANNER}
             unitId={adUnitId}
             {...props}
           />

@@ -1,7 +1,8 @@
 {
   "name": "shoutem.permissions",
-  "version": "3.0.0",
+  "version": "4.0.1",
   "description": "Extension for app permission management. ",
+  "releaseNotes": "* Added ability to overwrite permission rationales via settings page",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },

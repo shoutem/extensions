@@ -1,4 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import { getTableHeaders } from '../../services';
 import Table from '../table';
@@ -17,22 +19,15 @@ export default class CmsTable extends Component {
     onDeleteClick: PropTypes.func,
     additionalActions: PropTypes.array,
     actionsInline: PropTypes.bool,
+    languages: PropTypes.array,
     categories: PropTypes.array,
     onUpdateItemCategories: PropTypes.func,
+    onUpdateItemLanguages: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
-
-    this.renderItem = this.renderItem.bind(this);
-    this.renderActionsMenu = this.renderActionsMenu.bind(this);
-
-    const { schema } = props;
-    const headers = getTableHeaders(schema);
-
-    this.state = {
-      headers,
-    };
+    autoBindReact(this);
   }
 
   renderActionsMenu(item) {
@@ -57,26 +52,37 @@ export default class CmsTable extends Component {
   }
 
   renderItem(item) {
-    const { headers } = this.state;
-    const { categories, onUpdateItemCategories, mainCategoryId } = this.props;
+    const {
+      schema,
+      languages,
+      categories,
+      mainCategoryId,
+      onUpdateItemCategories,
+      onUpdateItemLanguages,
+    } = this.props;
+
+    const headers = getTableHeaders(schema, categories, languages);
 
     return (
       <CmsTableRow
         actionsMenu={this.renderActionsMenu(item)}
+        languages={languages}
         categories={categories}
         headers={headers}
         item={item}
         key={item.id}
         mainCategoryId={mainCategoryId}
         onUpdateItemCategories={onUpdateItemCategories}
+        onUpdateItemLanguages={onUpdateItemLanguages}
       />
     );
   }
 
   render() {
-    const { headers } = this.state;
+    const { schema, categories, languages } = this.props;
     const { items, className } = this.props;
     const classes = classNames('cms-table', className);
+    const headers = getTableHeaders(schema, categories, languages);
 
     return (
       <Table

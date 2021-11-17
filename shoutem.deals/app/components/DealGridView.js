@@ -28,15 +28,11 @@ import DealImage from './DealImage';
 
 export class DealGridView extends PureComponent {
   static propTypes = {
-    activeCoupon: PropTypes.object,
-    dealId: PropTypes.string,
-    deal: PropTypes.object,
+    activeCoupon: PropTypes.object.isRequired,
+    dealId: PropTypes.string.isRequired,
+    deal: PropTypes.object.isRequired,
     dealStatus: dealStatusShape,
-    onPress: PropTypes.func,
-  };
-
-  static defaultProps = {
-    onPress: () => {},
+    onPress: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -46,11 +42,18 @@ export class DealGridView extends PureComponent {
   }
 
   handlePress() {
-    this.props.onPress(this.props.deal);
+    const { deal, onPress } = this.props;
+
+    onPress(deal);
   }
 
   render() {
     const { activeCoupon, deal, dealStatus } = this.props;
+    const { currency, discountPrice, regularPrice, title } = deal;
+
+    const hasDiscountPrice = !!discountPrice;
+    const hasRegularPrice = !!regularPrice;
+    const hasDiscount = hasDiscountPrice && hasRegularPrice;
 
     return (
       <TouchableOpacity onPress={this.handlePress}>
@@ -63,15 +66,21 @@ export class DealGridView extends PureComponent {
           />
 
           <View styleName="content space-between">
-            <Subtitle numberOfLines={3}>{deal.title}</Subtitle>
+            <Subtitle numberOfLines={3}>{title}</Subtitle>
             <View styleName="md-gutter-top flexbox">
               <View styleName="flexible horizontal space-between">
                 <Text>
-                  <Text>{formatPrice(deal.discountPrice, deal.currency)}</Text>
-                  &nbsp;
-                  <Caption styleName="line-through">
-                    {formatPrice(deal.regularPrice, deal.currency)}
-                  </Caption>
+                  {hasRegularPrice && !hasDiscount && (
+                    <Text>{formatPrice(regularPrice, currency)}</Text>
+                  )}
+                  {hasDiscount && (
+                    <>
+                      <Text>{`${formatPrice(discountPrice, currency)} `}</Text>
+                      <Caption styleName={!!discountPrice && 'line-through'}>
+                        {formatPrice(regularPrice, currency)}
+                      </Caption>
+                    </>
+                  )}
                 </Text>
               </View>
             </View>
@@ -82,7 +91,7 @@ export class DealGridView extends PureComponent {
   }
 }
 
-export const mapStateToProps = (state, ownProps) => {
+export function mapStateToProps(state, ownProps) {
   const { deal } = ownProps;
   const lastDealTransaction = getLastDealTransaction(state, deal.id);
   const lastDealStatusTransaction = getLastDealStatusTransaction(
@@ -100,7 +109,7 @@ export const mapStateToProps = (state, ownProps) => {
     lastDealTransaction,
     lastDealStatusTransaction,
   };
-};
+}
 
 export default connect(mapStateToProps)(
   connectStyle(ext('DealGridView'), {})(DealGridView),

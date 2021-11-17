@@ -1,8 +1,9 @@
 import _ from 'lodash';
+import autoBind from 'auto-bind';
 
-export default class Types {
+class Types {
   constructor() {
-    this.init = this.init.bind(this);
+    autoBind(this);
 
     this.CATALOGS = 'shoutem.deal.catalogs';
     this.TRANSACTIONS = 'shoutem.deal.transactions';
@@ -16,3 +17,7 @@ export default class Types {
     this.DEALS = _.get(page, 'parameters.schema');
   }
 }
+
+const types = new Types();
+
+export default types;

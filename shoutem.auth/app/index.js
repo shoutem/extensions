@@ -13,6 +13,8 @@ import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
 import ChangePasswordScreen from './screens/ChangePasswordScreen';
 import ConfirmDeletionScreen from './screens/ConfirmDeletionScreen';
 import reducer, {
+  fetchToken,
+  fetchUser,
   getUser,
   getUserGroups,
   getAccessToken,
@@ -26,6 +28,7 @@ import reducer, {
   LOGIN,
   LOGOUT,
   REGISTER,
+  setAccessToken,
   USER_SCHEMA,
   updateProfile,
   userRegistered,
@@ -55,6 +58,8 @@ function appWillMount(app) {
     appScreens[screenName] = Screen;
   });
 }
+
+export { authProviders } from './services/authProviders';
 
 export const screens = {
   LoginScreen,
@@ -93,6 +98,8 @@ export {
   appWillMount,
   appScreens,
   middleware,
+  fetchToken,
+  fetchUser,
   getUser,
   getUserGroups,
   getAccessToken,
@@ -107,6 +114,7 @@ export {
   userRegistered,
   isUserUpdateAction,
   openProfile,
+  setAccessToken,
   updateProfile,
   LOGIN,
   LOGOUT,

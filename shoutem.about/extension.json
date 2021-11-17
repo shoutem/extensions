@@ -1,10 +1,10 @@
 {
   "name": "about",
-  "version": "3.0.3",
-  "platform": "~3.0.1",
+  "version": "4.0.0",
+  "platform": "~4.0.0",
   "title": "About",
   "description": "Show info about your app or your business",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Properly resolve loading and empty content of About screen",
   "icon": "server/assets/add-about-image.png",
   "dependencies": [
     "shoutem.cms",

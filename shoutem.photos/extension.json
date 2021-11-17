@@ -1,7 +1,7 @@
 {
   "name": "photos",
-  "version": "3.1.1",
-  "platform": "^3.0.0",
+  "version": "4.0.0",
+  "platform": "^4.0.0",
   "title": "Photos",
   "description": "Show a photo gallery",
   "releaseNotes": "* Code improvements",

@@ -1,11 +1,13 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
 import Select from 'react-select';
 import classNames from 'classnames';
 import { fieldInError } from '../services';
 
-export default class SelectReduxFormElement extends Component {
+export default class SelectReduxFormElement extends PureComponent {
   static propTypes = {
     elementId: PropTypes.string,
     name: PropTypes.string,
@@ -23,12 +25,13 @@ export default class SelectReduxFormElement extends Component {
   constructor(props) {
     super(props);
 
-    this.handleSelectionChanged = this.handleSelectionChanged.bind(this);
+    autoBindReact(this);
   }
 
   handleSelectionChanged(newSelectedItem) {
     const { field, valueKey } = this.props;
     const value = _.get(newSelectedItem, valueKey);
+
     field.onChange(value);
   }
 
@@ -40,7 +43,7 @@ export default class SelectReduxFormElement extends Component {
       options,
       helpText,
       className,
-      ...otherProps,
+      ...otherProps
     } = this.props;
 
     const classes = classNames('select-redux-from-element', className);

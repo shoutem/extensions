@@ -1,7 +1,7 @@
 {
   "name": "books",
-  "version": "3.0.1",
-  "platform": "^3.0.0",
+  "version": "4.0.0",
+  "platform": "^4.0.0",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",
   "description": "Show books and authors",

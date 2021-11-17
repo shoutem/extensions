@@ -1,9 +1,12 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
 import { ConfirmModal, NestedSortable } from '@shoutem/react-web-ui';
 import CategoryNameModal from '../category-name-modal';
 import CategoryTreeItem from '../category-tree-item';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 const CREATE_CATEGORY_TEMPLATE = {
@@ -38,12 +41,7 @@ export default class CategoryTree extends Component {
 
   constructor(props) {
     super(props);
-
-    this.refreshData = this.refreshData.bind(this);
-    this.handleCategorySelected = this.handleCategorySelected.bind(this);
-    this.handleCategoryRenameClick = this.handleCategoryRenameClick.bind(this);
-    this.handleCategoryDeleteClick = this.handleCategoryDeleteClick.bind(this);
-    this.renderCategoryItem = this.renderCategoryItem.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {
@@ -88,11 +86,15 @@ export default class CategoryTree extends Component {
     const { id, name } = category;
 
     this.refs.confirm.show({
-      title: i18next.t('Delete category'),
-      message: i18next.t('Are you sure you want to delete this category?'),
-      confirmLabel: i18next.t('Delete'),
-      abortLabel: i18next.t('Cancel'),
+      title: i18next.t(LOCALIZATION.DELETE_CATEGORY_MODAL_TITLE),
+      message: i18next.t(LOCALIZATION.DELETE_CATEGORY_MODAL_MESSAGE, { name }),
+      confirmLabel: i18next.t(
+        LOCALIZATION.DELETE_CATEGORY_MODAL_BUTTON_CONFIRM_LABEL,
+      ),
       confirmBsStyle: 'danger',
+      abortLabel: i18next.t(
+        LOCALIZATION.DELETE_CATEGORY_MODAL_BUTTON_ABORT_LABEL,
+      ),
       onConfirm: () => this.props.onCategoryDelete(id),
     });
   }

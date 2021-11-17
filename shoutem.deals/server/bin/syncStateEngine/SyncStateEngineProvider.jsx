@@ -1,10 +1,11 @@
-import React, { PropTypes, Component, Children } from 'react';
+import { Children, PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import sandbox from '@shoutem/extension-sandbox';
 import { ext } from '../../src/const';
 
-export class SyncStateEngineProvider extends Component {
+export class SyncStateEngineProvider extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -72,16 +73,14 @@ export class SyncStateEngineProvider extends Component {
 }
 
 SyncStateEngineProvider.propTypes = {
-  state: React.PropTypes.object,
-  syncStateEngine: React.PropTypes.object,
-  syncAction: React.PropTypes.func,
+  state: PropTypes.object,
+  syncStateEngine: PropTypes.object,
+  syncAction: PropTypes.func,
   children: PropTypes.node,
 };
 
 function mapStateToProps(state) {
-  return {
-    state,
-  };
+  return { state };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -90,4 +89,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SyncStateEngineProvider);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SyncStateEngineProvider);

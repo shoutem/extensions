@@ -1,9 +1,12 @@
 import _ from 'lodash';
-import React, { PropTypes, Component } from 'react';
-import i18next from 'i18next';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { MenuItem } from 'react-bootstrap';
 import classNames from 'classnames';
+import i18next from 'i18next';
 import { FontIcon, ActionsMenu, IconLabel } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class CategoryTreeItem extends Component {
@@ -15,12 +18,7 @@ export default class CategoryTreeItem extends Component {
 
   constructor(props) {
     super(props);
-
-    this.handleCategoryRenameClick = this.handleCategoryRenameClick.bind(this);
-    this.handleCategoryDeleteClick = this.handleCategoryDeleteClick.bind(this);
-    this.renderMenuOptions = this.renderMenuOptions.bind(this);
-    this.renderRenameOption = this.renderRenameOption.bind(this);
-    this.renderDeleteOption = this.renderDeleteOption.bind(this);
+    autoBindReact(this);
   }
 
   handleCategoryRenameClick() {
@@ -36,7 +34,9 @@ export default class CategoryTreeItem extends Component {
   renderRenameOption() {
     return (
       <MenuItem onClick={this.handleCategoryRenameClick}>
-        <IconLabel iconName="edit">{i18next.t('Rename')}</IconLabel>
+        <IconLabel iconName="edit">
+          {i18next.t(LOCALIZATION.BUTTON_RENAME_LABEL)}
+        </IconLabel>
       </MenuItem>
     );
   }
@@ -44,7 +44,9 @@ export default class CategoryTreeItem extends Component {
   renderDeleteOption() {
     return (
       <MenuItem onClick={this.handleCategoryDeleteClick}>
-        <IconLabel iconName="delete">{i18next.t('Delete')}</IconLabel>
+        <IconLabel iconName="delete">
+          {i18next.t(LOCALIZATION.BUTTON_DELETE_LABEL)}
+        </IconLabel>
       </MenuItem>
     );
   }
@@ -85,9 +87,7 @@ export default class CategoryTreeItem extends Component {
       <div className={classes}>
         {icon && <FontIcon name={icon} size="24px" />}
         {name && (
-          <div className="category-tree-item__name text-ellipsis">
-            {i18next.t(name)}
-          </div>
+          <div className="category-tree-item__name text-ellipsis">{name}</div>
         )}
         {hasActions && this.renderMenuOptions(!isStatic, actionWhitelist)}
       </div>

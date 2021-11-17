@@ -4,25 +4,35 @@ const reactNativeFbSdkDependencies = `
   pod 'FBSDKLoginKit'
 `;
 
+const appDelegateImport = `#import <React/RCTLinkingManager.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>`;
 const appDelegateOpenUrl = `
-- (BOOL)application:(UIApplication *)application
+- (BOOL)application:(UIApplication *)app
             openURL:(NSURL *)url
-            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-
-  BOOL handled = [[FBSDKApplicationDelegate sharedInstance] application:application
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+  if ([[FBSDKApplicationDelegate sharedInstance] application:app
     openURL:url
     sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
     annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
-  ];
-  return handled;
+  ]) {
+    return YES;
+  }
+
+  if ([RCTLinkingManager application:app openURL:url options:options]) {
+    return YES;
+  }
+
+  return NO;
 }
 `;
 
 const fbSdk = {
   ios: {
     appDelegate: {
-      import: '#import <FBSDKCoreKit/FBSDKCoreKit.h>',
-      didFinishLaunchingWithOptions: '[[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];',
+      import: appDelegateImport,
+      didFinishLaunchingWithOptions:
+        '[[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];',
       body: appDelegateOpenUrl,
     },
     podfile: {
@@ -36,11 +46,13 @@ const fbSdk = {
     },
     gradle: {
       app: {
-        dependencies: 'implementation project(\':react-native-fbsdk\')',
+        dependencies: "implementation project(':react-native-fbsdk')",
       },
-      settings: 'include \':react-native-fbsdk\'\nproject(\':react-native-fbsdk\').projectDir = new File(rootProject.projectDir, \'../node_modules/react-native-fbsdk/android\')',
+      settings:
+        "include ':react-native-fbsdk'\nproject(':react-native-fbsdk').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fbsdk/android')",
     },
-    manifest: '<meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>',
+    manifest:
+      '<meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>',
   },
 };
 

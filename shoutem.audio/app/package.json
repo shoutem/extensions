@@ -1,12 +1,12 @@
 {
   "name": "shoutem.audio",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "Track player components for other extensions to utilize.",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
-    "react-native-track-player": "2.0.0-rc15",
+    "react-native-track-player": "2.1.1",
     "xcode": "~3.0.0"
   },
   "peerDependencies": {

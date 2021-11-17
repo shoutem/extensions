@@ -1,0 +1,13 @@
+{
+  "shoutem": {
+    "permissions": {
+      "permissions-overwrite-description": "Please enter only desired permission types and rationales. Make sure you've input valid JSON. To get an idea of how it should look like, please download the example JSON from a link below the input area.",
+      "download-dummy-json-text": "To download the example permissions JSON file click <2>here</2>",
+      "invalid-json-error-text": "Invalid JSON.",
+      "save-button": "Save",
+      "settings-update-error": "Something went wrong. Pleaase try again in few moments",
+      "permissions-rationale-title": "Change permissions rationales",
+      "update-success-text":"Successfully updated!"
+    }
+  }
+}

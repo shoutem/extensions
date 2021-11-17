@@ -1,0 +1,31 @@
+.permissions-settings-page {
+  max-width: 552px;
+  margin: auto;
+
+  &.is-wide {
+    max-width: 808px;
+  }
+
+  .permissions-settings-page__dummy_json {
+    display: flex;
+    justify-content: center;
+  }
+
+  .permissions-settings-page__permissions-overwrite-textarea {
+    height: 300px;
+    margin-top: 20px;
+  }
+
+  .permissions-settings-page__footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0px;
+  }
+
+  .permissions-settings-page__text-success {
+    color: #444f6c;
+    margin: 5px 0px 10px 0px;
+  }
+}

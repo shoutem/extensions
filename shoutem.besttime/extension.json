@@ -1,10 +1,10 @@
 {
   "name": "besttime",
   "title": "BestTime",
-  "version": "3.0.0",
+  "version": "4.0.0",
+  "platform": "^4.0.0",
   "description": "Check the busyness of an establishment using BestTime.",
   "releaseNotes": "* Added location biasing for search results\n* Added directions capability to map view\n* Added loading animations for forecast screen\n* Added AM/PM and 24 hour clock notations depending on device settings\n* Adjusted styling and UX\n* Added background image to search screen",
-  "platform": "^3.0.0",
   "icon": "server/assets/add-besttime-image.png",
   "screens": [
     {

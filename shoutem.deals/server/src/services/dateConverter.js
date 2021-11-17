@@ -1,5 +1,5 @@
-import moment from 'moment-timezone';
 import _ from 'lodash';
+import moment from 'moment-timezone';
 import timezones from 'timezones.json';
 
 export const DEFAULT_TIMEZONE_ID = 'UTC';

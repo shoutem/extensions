@@ -17,14 +17,25 @@ import DealRedeemTimer from './DealRedeemTimer';
 
 export class DealRedeemContentView extends PureComponent {
   static propTypes = {
-    activeCoupon: PropTypes.object,
-    deal: PropTypes.object,
+    activeCoupon: PropTypes.object.isRequired,
+    deal: PropTypes.object.isRequired,
     dealStatus: dealStatusShape,
-    isDealActive: PropTypes.bool,
-    isRedeeming: PropTypes.bool,
-    onRedeemCoupon: PropTypes.func,
+    isDealActive: PropTypes.bool.isRequired,
+    isRedeeming: PropTypes.bool.isRequired,
+    onRedeemCoupon: PropTypes.func.isRequired,
     onTimerEnd: PropTypes.func,
   };
+
+  static getDerivedStateFromProps(props, state) {
+    const { dealStatus } = props;
+    const { dealStatus: oldDealStatus } = state;
+
+    if (_.isEqual(oldDealStatus, dealStatus)) {
+      return state;
+    }
+
+    return { ...state, dealStatus };
+  }
 
   constructor(props) {
     super(props);
@@ -36,14 +47,8 @@ export class DealRedeemContentView extends PureComponent {
     };
   }
 
-  componentDidUpdate() {
-    const { dealStatus } = this.props;
-
-    this.setState({ dealStatus });
-  }
-
   handleTimerEnd() {
-    const { dealStatus } = this.props;
+    const { dealStatus, onTimerEnd } = this.props;
 
     this.setState({
       dealStatus: {
@@ -52,8 +57,8 @@ export class DealRedeemContentView extends PureComponent {
       },
     });
 
-    if (_.isFunction(this.props.onTimerEnd)) {
-      this.props.onTimerEnd();
+    if (_.isFunction(onTimerEnd)) {
+      onTimerEnd();
     }
   }
 
@@ -67,31 +72,35 @@ export class DealRedeemContentView extends PureComponent {
     }
 
     return (
-      <View styleName="vertical h-center md-gutter-horizontal">
+      <View styleName="vertical h-center md-gutter">
         <Image source={{ uri: barcode }} styleName="large-ultra-wide" />
       </View>
     );
   }
 
   renderClaimedState() {
-    const { activeCoupon, deal } = this.props;
+    const {
+      activeCoupon,
+      deal,
+      isDealActive,
+      isRedeeming,
+      onRedeemCoupon,
+    } = this.props;
 
     const {
       dealStatus: { couponClaimed },
     } = this.state;
 
-    const couponExpiresAt = _.get(activeCoupon, 'expiresAt');
+    const couponExpiresAt = activeCoupon?.expiresAt;
     const hasTimer = activeCoupon && couponClaimed && couponExpiresAt;
 
     return (
       <View styleName="solid vertical v-center h-center sm-gutter-vertical md-gutter-horizontal">
         <Divider styleName="line md-gutter-horizontal" />
-
         <Text styleName="lg-gutter-top sm-gutter-bottom">
           {I18n.t(TRANSLATIONS.COUPON_CLAIMED_TEXT)}
         </Text>
         <Caption>{I18n.t(TRANSLATIONS.COUPON_REDEEM_TIME_TEXT)}</Caption>
-
         {hasTimer && (
           <View styleName="md-gutter-vertical">
             <DealRedeemTimer
@@ -102,22 +111,18 @@ export class DealRedeemContentView extends PureComponent {
             />
           </View>
         )}
-
         <View styleName="flexible vertical stretch md-gutter-top">
           <Text styleName="bold sm-gutter-bottom">
             {I18n.t(TRANSLATIONS.COUPON_REDEEM_INSTRUCTIONS_TITLE_TEXT)}
           </Text>
           <Text>{I18n.t(TRANSLATIONS.COUPON_REDEEM_INSTRUCTIONS_TEXT)}</Text>
         </View>
-
-        {this.props.isDealActive && (
+        {isDealActive && (
           <View styleName="md-gutter-top lg-gutter-bottom">
             <Button
-              disabled={this.props.isRedeeming}
-              onPress={this.props.onRedeemCoupon}
-              styleName={`md-gutter-top ${
-                this.props.isRedeeming ? 'muted' : ''
-              }`}
+              disabled={isRedeeming}
+              onPress={onRedeemCoupon}
+              styleName={`md-gutter-top ${isRedeeming ? 'muted' : ''}`}
             >
               <Text>{I18n.t(TRANSLATIONS.REDEEM_COUPON_BUTTON)}</Text>
             </Button>
@@ -133,8 +138,7 @@ export class DealRedeemContentView extends PureComponent {
         <View styleName="lg-gutter-top md-gutter-bottom">
           <Text>{I18n.t(TRANSLATIONS.DEAL_REDEEMED_TEXT)}</Text>
         </View>
-
-        <View styleName="md-gutter-vertical">{this.renderBarcodeImage()}</View>
+        {this.renderBarcodeImage()}
       </View>
     );
   }
@@ -167,7 +171,7 @@ export class DealRedeemContentView extends PureComponent {
   }
 }
 
-export const mapStateToProps = (state, ownProps) => {
+export function mapStateToProps(state, ownProps) {
   const { deal } = ownProps;
   const lastDealStatusTransaction = getLastDealStatusTransaction(
     state,
@@ -180,6 +184,6 @@ export const mapStateToProps = (state, ownProps) => {
     isDealActive: isDealActive(deal),
     dealStatus: getDealStatus(deal, lastDealStatusTransaction),
   };
-};
+}
 
 export default connect(mapStateToProps)(DealRedeemContentView);

@@ -25,6 +25,10 @@ function scheduleRepeatingNotifications(message, date) {
       body: message,
       title: '',
       repeats: true,
+      repeatsComponent: {
+        hour: true,
+        minute: true,
+      },
       sound: chimeSoundName || 'default',
     };
 
@@ -55,9 +59,9 @@ function cancelReminderNotifications() {
         );
 
         if (!!scheduledReminderNotification) {
-          await PushNotifications.cancelLocalNotifications({
-            id: scheduledReminderNotification.id,
-          });
+          await PushNotifications.cancelLocalNotification(
+            scheduledReminderNotification.id,
+          );
         }
 
         resolve();

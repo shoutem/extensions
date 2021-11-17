@@ -1,19 +1,19 @@
-import { createScopedReducer } from '@shoutem/redux-api-sdk';
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
 import { reducer as cmsReducer } from '@shoutem/cms-dashboard';
+import { createScopedReducer } from '@shoutem/redux-api-sdk';
 import { storage } from '@shoutem/redux-io';
-import { types } from './services';
-import statsReducer, {
-  moduleName as stats,
-  createCatalog,
-} from './modules/stats';
 import dealsReducer, {
   moduleName as deals,
   createDealCategory,
 } from './modules/deals';
+import statsReducer, {
+  moduleName as stats,
+  createCatalog,
+} from './modules/stats';
 import { ext } from './const';
+import { types } from './services';
 
 function getExtensionState(state) {
   return _.get(state, ext(), {});
@@ -21,6 +21,7 @@ function getExtensionState(state) {
 
 export function getFormState(state) {
   const extensionState = getExtensionState(state);
+
   return extensionState.form;
 }
 

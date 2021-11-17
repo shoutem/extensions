@@ -40,10 +40,12 @@ const androidManifestApplication = `
 </service>
 `;
 
-const androidRootGradle = "classpath('com.google.gms:google-services:4.3.3')";
+const androidRootGradle = "classpath('com.google.gms:google-services:4.3.10')";
 const androidPlugins = "apply plugin: 'com.google.gms.google-services'";
-const androidGradleDependencies =
-  "implementation 'com.google.firebase:firebase-analytics:17.3.0'";
+const androidGradleDependencies = `
+  implementation platform('com.google.firebase:firebase-bom:28.4.2')
+  implementation 'com.google.firebase:firebase-analytics'
+`;
 
 const appDelegateHeaderImport =
   '#import <UserNotifications/UNUserNotificationCenter.h>';

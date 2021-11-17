@@ -6,12 +6,14 @@ function resolveDevServer() {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+      'Access-Control-Allow-Headers':
+        'X-Requested-With, content-type, Authorization',
     },
     historyApiFallback: true,
     port: 4790,
     compress: isProduction,
     inline: !isProduction,
+    disableHostCheck: true,
     hot: !isProduction,
     host: '0.0.0.0',
     https: true,

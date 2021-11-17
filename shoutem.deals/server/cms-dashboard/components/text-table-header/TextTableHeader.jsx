@@ -1,6 +1,6 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import i18next from 'i18next';
 import { FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
 import './style.scss';
 
@@ -10,7 +10,7 @@ export default function TextTableHeader({ header, className }) {
 
   return (
     <th className={classes}>
-      {i18next.t(value)}
+      {value}
       {helpText && (
         <FontIconPopover
           className="text-table-header__popover"

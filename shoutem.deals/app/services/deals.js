@@ -34,7 +34,7 @@ export function getDealImages(deal) {
 }
 
 export function dealCouponsEnabled(deal) {
-  return _.get(deal, 'couponsEnabled') === true;
+  return deal?.couponsEnabled === true;
 }
 
 /**
@@ -54,19 +54,22 @@ export function resolveDealBuyDisplayLink(buyLink) {
 export function isDealActive(deal) {
   const { startTime: startTimeString, endTime: endTimeString } = deal;
 
-  const today = moment();
-  const startTime = moment(startTimeString);
+  const now = moment();
   const endTime = moment(endTimeString);
 
-  return startTime.isBefore(today) && endTime.isAfter(today);
+  if (!startTimeString) {
+    return endTime.isAfter(now);
+  }
+
+  const startTime = moment(startTimeString);
+
+  return startTime.isBefore(now) && endTime.isAfter(now);
 }
 
 export function isDealCouponExpired(lastDealTransaction) {
   if (getTransactionAction(lastDealTransaction) === COUPON_EXPIRED_ACTION) {
     return true;
   }
-
-  // return false;
 
   if (getTransactionAction(lastDealTransaction) === COUPON_REDEEMED_ACTION) {
     return false;
@@ -76,7 +79,7 @@ export function isDealCouponExpired(lastDealTransaction) {
    * There is no need to check coupon status because coupon status and
    * transaction action are always in sync.
    */
-  const coupon = _.get(lastDealTransaction, 'coupon');
+  const coupon = lastDealTransaction?.coupon;
   if (_.isEmpty(coupon)) {
     return false;
   }
@@ -103,15 +106,15 @@ export function isDealRedeemed(lastDealTransaction) {
 }
 
 export function isCouponStatusAvailable(coupon) {
-  return _.get(coupon, 'status') === COUPON_AVAILABLE_STATUS;
+  return coupon?.status === COUPON_AVAILABLE_STATUS;
 }
 
 export function isCouponStatusRedeemed(coupon) {
-  return _.get(coupon, 'status') === COUPON_REDEEMED_STATUS;
+  return coupon?.status === COUPON_REDEEMED_STATUS;
 }
 
 export function isCouponStatusExpired(coupon) {
-  return _.get(coupon, 'status') === COUPON_EXPIRED_STATUS;
+  return coupon?.status === COUPON_EXPIRED_STATUS;
 }
 
 export function isDealImageGallery(deal) {
@@ -141,7 +144,7 @@ export function getDealActiveCoupon(lastDealTransaction) {
     return null;
   }
 
-  return _.get(lastDealTransaction, ['coupon']);
+  return lastDealTransaction?.coupon;
 }
 
 export function getTimeLeft(initialSecondsLeft) {

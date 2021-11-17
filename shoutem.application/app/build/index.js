@@ -2,11 +2,11 @@ const {
   getAppConfiguration,
   getBuildConfiguration,
 } = require('@shoutem/build-tools');
+const configuration = require('./configuration');
+const files = require('./files');
 const increaseJvmMemory = require('./increaseJvmMemory');
 const injectReactNativeMaps = require('./injectMaps');
 const injectReactNativeSplashScreen = require('./injectSplashScreen');
-const files = require('./files');
-const configuration = require('./configuration');
 
 const { writeJsonToFile } = files;
 

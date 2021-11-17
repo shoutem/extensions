@@ -1,6 +1,6 @@
 {
   "name": "shoutem.sendbird",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "Allow your app users to interact directly via 1-on-1 chat, using the SendBird service",
   "dependencies": {
     "moment": "2.24.0",

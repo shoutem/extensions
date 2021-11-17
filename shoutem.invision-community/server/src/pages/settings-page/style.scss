@@ -1,0 +1,14 @@
+body.extension-sandbox-container {
+  .settings-page {
+    max-width: 552px;
+    margin: auto;
+
+    &.is-wide {
+      max-width: 808px;
+    }
+  }
+}
+
+.save-button {
+  padding-top: 20px;
+}

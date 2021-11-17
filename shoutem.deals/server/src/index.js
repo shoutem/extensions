@@ -6,6 +6,7 @@ import './style.scss';
 // export everything from extension.js
 export * from './extension';
 
+// eslint-disable-next-line import/no-mutable-exports
 let pageReducer = null;
 
 export function pageWillMount(page) {

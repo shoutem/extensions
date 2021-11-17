@@ -7,7 +7,7 @@ import { ext } from '../const';
 
 export class DealFeaturedView extends PureComponent {
   static propTypes = {
-    deal: PropTypes.object,
+    deal: PropTypes.object.isRequired,
     onPress: PropTypes.func,
   };
 
@@ -22,7 +22,9 @@ export class DealFeaturedView extends PureComponent {
   }
 
   handlePress() {
-    this.props.onPress(this.props.deal);
+    const { deal, onPress } = this.props;
+
+    onPress(deal);
   }
 
   render() {

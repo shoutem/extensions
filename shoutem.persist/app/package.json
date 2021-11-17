@@ -1,6 +1,6 @@
 {
   "name": "shoutem.persist",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "dependencies": {
     "@react-native-community/async-storage": "~1.6.3",
     "@shoutem/redux-io": "3.0.1-beta.3",

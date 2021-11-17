@@ -1,10 +1,10 @@
 {
   "name": "navigation",
-  "version": "3.1.0",
-  "platform": "~3.0.1",
+  "version": "4.0.0",
+  "platform": "^4.0.0",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "* Settings page - added new navbar background image uploader, with minimum height of 165px, for devices with notch\n* Mobile - devices with notch will now use navbar background image of 165px height",
+  "releaseNotes": "* Adjusted per react-redux v7 updates",
   "description": "App-level navigation",
   "dependencies": [
     "shoutem.application",

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.agora",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "Connect your users with real-time video conferencing!",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

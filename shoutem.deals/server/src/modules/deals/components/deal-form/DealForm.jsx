@@ -1,10 +1,12 @@
-import React, { PropTypes } from 'react';
-import _ from 'lodash';
-import { reduxForm } from 'redux-form';
-import i18next from 'i18next';
+import React from 'react';
 import currencies from 'currency-formatter/currencies.json';
-import timezones from 'timezones.json';
+import i18next from 'i18next';
+import _ from 'lodash';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import { reduxForm } from 'redux-form';
 import { Row, Col, Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
+import timezones from 'timezones.json';
 import {
   DateTimePicker,
   LoaderContainer,
@@ -48,41 +50,43 @@ const TIMEZONE_OPTIONS = _.map(timezones, timezone => ({
   label: timezone.text,
 }));
 
-export function DealForm({
-  assetManager,
-  submitting,
-  pristine,
-  fields: {
-    id,
-    title,
-    description,
-    image1,
-    image2,
-    image3,
-    condition,
-    regularPrice,
-    currency,
-    discountType,
-    discountPrice,
-    publishTime,
-    startTime,
-    endTime,
-    timezone,
-    buyLink,
-    buyLinkTitle,
-    couponsEnabled,
-    couponsExpirationTime,
-    claimedCoupons,
-    redeemedCoupons,
-    remainingCoupons,
-    barcode,
-    place,
-  },
-  onCancel,
-  handleSubmit,
-  error,
-  places,
-}) {
+export function DealForm(props) {
+  const {
+    assetManager,
+    submitting,
+    pristine,
+    fields: {
+      id,
+      title,
+      description,
+      image1,
+      image2,
+      image3,
+      condition,
+      regularPrice,
+      currency,
+      discountType,
+      discountPrice,
+      publishTime,
+      startTime,
+      endTime,
+      timezone,
+      buyLink,
+      buyLinkTitle,
+      hideRedeemButton,
+      couponsEnabled,
+      couponsExpirationTime,
+      claimedCoupons,
+      redeemedCoupons,
+      remainingCoupons,
+      barcode,
+      place,
+    },
+    onCancel,
+    handleSubmit,
+    error,
+    places,
+  } = props;
   const inEditMode = !_.isEmpty(id.value);
   const displayCoupons = !!couponsEnabled.value;
 
@@ -272,6 +276,16 @@ export function DealForm({
           valueKey="id"
         />
       </Row>
+      <Row className="deal-form__hide-redeem-button">
+        <ReduxFormElement
+          disabled={submitting}
+          elementId="hideRedeemButton"
+          field={hideRedeemButton}
+          name={i18next.t(LOCALIZATION.FORM_HIDE_REDEEM_BUTTON_TITLE)}
+        >
+          <Switch value={!!hideRedeemButton.value} />
+        </ReduxFormElement>
+      </Row>
       <Row className="deal-form__coupons-enabled">
         <ReduxFormElement
           disabled={submitting}
@@ -401,6 +415,7 @@ export default reduxForm({
     'endTime',
     'buyLink',
     'buyLinkTitle',
+    'hideRedeemButton',
     'couponsEnabled',
     'totalCoupons',
     'couponsExpirationTime',

@@ -1,9 +1,9 @@
 {
   "name": "shoutem.theme",
-  "version": "3.0.5",
+  "version": "4.0.0",
   "dependencies": {
-    "@shoutem/theme": "~0.12.0",
-    "@shoutem/ui": "4.6.4",
+    "@shoutem/theme": "~0.12.2",
+    "@shoutem/ui": "4.6.5",
     "react-native-svg-transformer": "~0.14.3"
   },
   "peerDependencies": {

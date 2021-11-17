@@ -1,4 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
 import { ImageUploader } from '@shoutem/file-upload';
 import classNames from 'classnames';
@@ -6,10 +8,11 @@ import { fieldInError } from '../services';
 
 function resolveFilename(file) {
   const timestamp = new Date().getTime();
+
   return `${timestamp}-${file.name}`;
 }
 
-export default class ImageUploaderReduxFormElement extends Component {
+export default class ImageUploaderReduxFormElement extends PureComponent {
   static propTypes = {
     elementId: PropTypes.string,
     assetManager: PropTypes.object,
@@ -23,9 +26,7 @@ export default class ImageUploaderReduxFormElement extends Component {
   constructor(props) {
     super(props);
 
-    this.handleImageDrop = this.handleImageDrop.bind(this);
-    this.handleImageUploadSuccess = this.handleImageUploadSuccess.bind(this);
-    this.handleImageDeleteSuccess = this.handleImageDeleteSuccess.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,
@@ -38,12 +39,14 @@ export default class ImageUploaderReduxFormElement extends Component {
 
   handleImageUploadSuccess(imageUrl) {
     const { field } = this.props;
+
     this.setState({ inProgress: false });
     field.onChange(imageUrl);
   }
 
   handleImageDeleteSuccess() {
     const { field } = this.props;
+
     field.onChange('');
   }
 
@@ -56,7 +59,7 @@ export default class ImageUploaderReduxFormElement extends Component {
       helpText,
       className,
       folderName,
-      ...otherProps,
+      ...otherProps
     } = this.props;
 
     const classes = classNames('select-redux-from-element', className);

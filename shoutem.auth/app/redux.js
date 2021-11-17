@@ -71,7 +71,7 @@ const sessionReducer = (state = {}, { type, payload }) => {
   }
 };
 
-function setAccessToken(token) {
+export function setAccessToken(token) {
   return {
     type: SET_ACCESS_TOKEN,
     payload: {

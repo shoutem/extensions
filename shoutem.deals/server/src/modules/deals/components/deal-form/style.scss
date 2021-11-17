@@ -1,72 +1,91 @@
-:global {
-  .deal-form {
-    max-width: 552px;
-    margin: auto;
-    padding-bottom: 12px;
+.deal-form {
+  max-width: 552px;
+  margin: auto;
+  padding-bottom: 12px;
 
-    .row {
-      margin: 0;
+  .row {
+    margin: 0;
 
-      > :first-child {
-        padding-left: 0;
-      }
-
-      > :last-child {
-        padding-right: 0;
-      }
-    }
-
-    .btn-toolbar {
-      margin: 48px -12px 12px;
-    }
-
-    .image-uploader,
-    .image-upload-placeholder {
-      width: 150px;
-      height: 150px;
-
-      .circular-loader {
-        padding-top: 48px;
-      }
-    }
-
-    .se-icon {
-      opacity: 0.5;
-      vertical-align: middle;
-      padding-left: 4px;
-      margin-top: -3px;
-    }
-  }
-
-  .deal-form__coupons-enabled {
-    padding-top: 36px;
-
-    .form-group .control-label {
+    > :first-child {
       padding-left: 0;
-      padding-top: 12px;
-      font-size: 18px;
-      color: #444f6c;
     }
 
-    .switch {
-      float: right;
-    }
-
-    .switch__button {
-      margin-top: 16px;
-      margin-right: 16px;
-      z-index: 1;
+    > :last-child {
+      padding-right: 0;
     }
   }
 
-  .deal-form__stats {
-    label {
-      font-size: 13px;
-      padding: 24px 12px 12px 0;
+  .btn-toolbar {
+    margin: 48px -12px 12px;
+  }
+
+  .image-uploader,
+  .image-upload-placeholder {
+    width: 150px;
+    height: 150px;
+
+    .circular-loader {
+      padding-top: 48px;
     }
   }
 
-  .deal-form__image {
-    margin-bottom: 16px;
+  .se-icon {
+    opacity: 0.5;
+    vertical-align: middle;
+    padding-left: 4px;
+    margin-top: -3px;
   }
+}
+
+.deal-form__hide-redeem-button {
+  padding-top: 36px;
+
+  .form-group .control-label {
+    padding-left: 0;
+    padding-top: 12px;
+    font-size: 18px;
+    color: #444f6c;
+  }
+
+  .switch {
+    float: right;
+  }
+
+  .switch__button {
+    margin-top: 16px;
+    margin-right: 16px;
+    z-index: 1;
+  }
+}
+
+.deal-form__coupons-enabled {
+  padding-top: 36px;
+
+  .form-group .control-label {
+    padding-left: 0;
+    padding-top: 12px;
+    font-size: 18px;
+    color: #444f6c;
+  }
+
+  .switch {
+    float: right;
+  }
+
+  .switch__button {
+    margin-top: 16px;
+    margin-right: 16px;
+    z-index: 1;
+  }
+}
+
+.deal-form__stats {
+  label {
+    font-size: 13px;
+    padding: 24px 12px 12px 0;
+  }
+}
+
+.deal-form__image {
+  margin-bottom: 16px;
 }

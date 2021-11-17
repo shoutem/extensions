@@ -1,21 +1,24 @@
-import React, { Component, PropTypes } from 'react';
-import _ from 'lodash';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button } from 'react-bootstrap';
 import { ConfirmModal, IconLabel } from '@shoutem/react-web-ui';
 import {
+  CategoryTree,
+  CmsTable,
   getMainCategoryId,
   updateResourceCategories,
 } from '@shoutem/cms-dashboard';
-import { CategoryTree, CmsTable } from 'cms-dashboard';
 import { createTransaction, TRANSACTION_ACTIONS } from 'src/modules/stats';
 import DealFormModal from '../../components/deal-form-modal';
 import { createDeal, updateDeal, deleteDeal } from '../../redux';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export class DealsCmsPage extends Component {
+export class DealsCmsPage extends PureComponent {
   static propTypes = {
     assetManager: PropTypes.object,
     catalogId: PropTypes.string,
@@ -38,35 +41,32 @@ export class DealsCmsPage extends Component {
   constructor(props) {
     super(props);
 
-    this.refreshData = this.refreshData.bind(this);
-    this.handleAddDealClick = this.handleAddDealClick.bind(this);
-    this.handleUpdateDealClick = this.handleUpdateDealClick.bind(this);
-    this.handleDeleteDealClick = this.handleDeleteDealClick.bind(this);
-    this.handleDealCreate = this.handleDealCreate.bind(this);
-    this.handleDealUpdate = this.handleDealUpdate.bind(this);
-    this.handleDealDelete = this.handleDealDelete.bind(this);
+    autoBindReact(this);
+
+    this.state = {
+      mainCategoryId: undefined,
+    };
   }
 
-  componentWillMount() {
-    this.refreshData(this.props);
+  componentDidMount() {
+    this.refreshData();
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.refreshData(nextProps, this.props);
+  componentDidUpdate(prevProps) {
+    this.refreshData(prevProps);
   }
 
-  refreshData(nextProps, props = {}) {
-    const { categories } = props;
-    const {
-      parentCategoryId: nextParentCategoryId,
-      categories: nextCategories,
-    } = nextProps;
+  refreshData(prevProps = {}) {
+    const { parentCategoryId, categories } = this.props;
+    const { prevCategories } = prevProps;
 
-    if (!_.isEqual(categories, nextCategories)) {
-      const mainCategoryId = getMainCategoryId(
-        nextParentCategoryId,
-        nextCategories,
-      );
+    if (!prevCategories) {
+      const mainCategoryId = getMainCategoryId(parentCategoryId, categories);
+    }
+
+    if (!_.isEqual(prevCategories, categories)) {
+      const mainCategoryId = getMainCategoryId(parentCategoryId, categories);
+
       this.setState({ mainCategoryId });
     }
   }
@@ -93,27 +93,29 @@ export class DealsCmsPage extends Component {
   }
 
   handleDealCreate(deal, placeId) {
+    const { createDeal, catalogId, selectedCategoryId } = this.props;
     const { mainCategoryId } = this.state;
-    const { catalogId, selectedCategoryId } = this.props;
 
     const categoryIds = [mainCategoryId, selectedCategoryId];
-    return this.props.createDeal(categoryIds, placeId, deal, catalogId);
+
+    return createDeal(categoryIds, placeId, deal, catalogId);
   }
 
   handleDealUpdate(deal, placeId, categories) {
-    const { catalogId } = this.props;
+    const { catalogId, updateDeal } = this.props;
 
     const categoryIds = _.map(categories, 'id');
-    return this.props.updateDeal(categoryIds, placeId, deal, catalogId);
+
+    return updateDeal(categoryIds, placeId, deal, catalogId);
   }
 
   handleDealDelete(dealId) {
-    const { catalogId } = this.props;
-    return this.props.deleteDeal(dealId, catalogId);
+    const { catalogId, deleteDeal } = this.props;
+
+    return deleteDeal(dealId, catalogId);
   }
 
   render() {
-    const { mainCategoryId } = this.state;
     const {
       catalogId,
       selectedCategoryId,
@@ -128,6 +130,7 @@ export class DealsCmsPage extends Component {
       onCategoryDelete,
       onCategoryUpdate,
     } = this.props;
+    const { mainCategoryId } = this.state;
 
     const categoryActionWhitelist = {
       [mainCategoryId]: ['rename'],

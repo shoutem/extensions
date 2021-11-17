@@ -1,12 +1,15 @@
-import React, { PropTypes, Component } from 'react';
-import _ from 'lodash';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { InlineModal } from '@shoutem/react-web-ui';
 import DealForm from '../deal-form';
 import { mapModelToView, mapViewToModel } from '../../services';
 import LOCALIZATION from './localization';
+import './styles.scss';
 
-export default class DealFormModal extends Component {
+export default class DealFormModal extends PureComponent {
   static propTypes = {
     assetManager: PropTypes.object,
     catalogId: PropTypes.string,
@@ -18,10 +21,7 @@ export default class DealFormModal extends Component {
   constructor(props) {
     super(props);
 
-    this.show = this.show.bind(this);
-    this.handleHide = this.handleHide.bind(this);
-    this.handleSaveDeal = this.handleSaveDeal.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,
@@ -81,7 +81,7 @@ export default class DealFormModal extends Component {
 
     return (
       <InlineModal
-        className="deal-form-modal settings-page-modal"
+        className="deal-form-modal"
         onHide={this.handleHide}
         show={show}
         title={modalTitle}

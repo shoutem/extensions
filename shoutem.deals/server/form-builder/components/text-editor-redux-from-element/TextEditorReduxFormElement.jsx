@@ -1,15 +1,17 @@
-import React, { Component, PropTypes } from 'react';
-import _ from 'lodash';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import classNames from 'classnames';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
 import RichTextEditor from 'react-rte';
-import classNames from 'classnames';
 import { fieldInError } from '../services';
 import LOCALIZATION from './localization';
 import './style.scss';
 
 function getToolbarConfig() {
-  return  {
+  return {
     display: [
       'INLINE_STYLE_BUTTONS',
       'BLOCK_TYPE_BUTTONS',
@@ -18,24 +20,52 @@ function getToolbarConfig() {
       'HISTORY_BUTTONS',
     ],
     INLINE_STYLE_BUTTONS: [
-      { label: i18next.t(LOCALIZATION.TEXT_STYLE_BOLD_TITLE), style: 'BOLD', className: 'custom-css-class' },
-      { label: i18next.t(LOCALIZATION.TEXT_STYLE_ITALIC_TITLE), style: 'ITALIC' },
-      { label: i18next.t(LOCALIZATION.TEXT_STYLE_UNDERLINE_TITLE), style: 'UNDERLINE' },
+      {
+        label: i18next.t(LOCALIZATION.TEXT_STYLE_BOLD_TITLE),
+        style: 'BOLD',
+        className: 'custom-css-class',
+      },
+      {
+        label: i18next.t(LOCALIZATION.TEXT_STYLE_ITALIC_TITLE),
+        style: 'ITALIC',
+      },
+      {
+        label: i18next.t(LOCALIZATION.TEXT_STYLE_UNDERLINE_TITLE),
+        style: 'UNDERLINE',
+      },
     ],
     BLOCK_TYPE_DROPDOWN: [
-      { label: i18next.t(LOCALIZATION.HEADING_STYLE_NORMAL_TITLE), style: 'unstyled' },
-      { label: i18next.t(LOCALIZATION.HEADING_STYLE_LARGE_TITLE), style: 'header-one' },
-      { label: i18next.t(LOCALIZATION.HEADING_STYLE_MEDIUM_TITLE), style: 'header-two' },
-      { label: i18next.t(LOCALIZATION.HEADING_STYLE_SMALL_TITLE), style: 'header-three' },
+      {
+        label: i18next.t(LOCALIZATION.HEADING_STYLE_NORMAL_TITLE),
+        style: 'unstyled',
+      },
+      {
+        label: i18next.t(LOCALIZATION.HEADING_STYLE_LARGE_TITLE),
+        style: 'header-one',
+      },
+      {
+        label: i18next.t(LOCALIZATION.HEADING_STYLE_MEDIUM_TITLE),
+        style: 'header-two',
+      },
+      {
+        label: i18next.t(LOCALIZATION.HEADING_STYLE_SMALL_TITLE),
+        style: 'header-three',
+      },
     ],
     BLOCK_TYPE_BUTTONS: [
-      { label: i18next.t(LOCALIZATION.UNORDERED_LIST_TITLE), style: 'unordered-list-item' },
-      { label: i18next.t(LOCALIZATION.ORDERED_LIST_TITLE), style: 'ordered-list-item' },
+      {
+        label: i18next.t(LOCALIZATION.UNORDERED_LIST_TITLE),
+        style: 'unordered-list-item',
+      },
+      {
+        label: i18next.t(LOCALIZATION.ORDERED_LIST_TITLE),
+        style: 'ordered-list-item',
+      },
     ],
   };
 }
 
-export default class TextEditorReduxFormElement extends Component {
+export default class TextEditorReduxFormElement extends PureComponent {
   static propTypes = {
     elementId: PropTypes.string,
     name: PropTypes.string,
@@ -47,8 +77,7 @@ export default class TextEditorReduxFormElement extends Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
+    autoBindReact(this);
 
     const { field } = props;
     const initialValue = _.get(field, 'value', '');
@@ -63,8 +92,9 @@ export default class TextEditorReduxFormElement extends Component {
   }
 
   handleBlur() {
-    const { value } = this.state;
     const { field } = this.props;
+    const { value } = this.state;
+
     field.onChange(value.toString('html'));
   }
 
@@ -75,8 +105,9 @@ export default class TextEditorReduxFormElement extends Component {
       name,
       helpText,
       className,
-      ...otherProps,
+      ...otherProps
     } = this.props;
+    const { value } = this.state;
 
     const classes = classNames('text-editor-redux-from-element', className);
     const isError = fieldInError(field);
@@ -93,7 +124,7 @@ export default class TextEditorReduxFormElement extends Component {
           onBlur={this.handleBlur}
           onChange={this.handleChange}
           toolbarConfig={getToolbarConfig()}
-          value={this.state.value}
+          value={value}
           {...otherProps}
         />
         {helpBlockText && <HelpBlock>{helpBlockText}</HelpBlock>}

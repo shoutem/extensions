@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { Alert, InteractionManager, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import autoBind from 'auto-bind';
+import autoBindReact from 'auto-bind/react';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
 import {
   getRouteParams,
@@ -12,15 +12,20 @@ import {
 } from 'shoutem.navigation';
 import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
-import { Screen, Spinner, ScrollView } from '@shoutem/ui';
-import { loginRequired } from '../loginRequired';
-import FacebookButton from '../components/FacebookButton';
-import AppleSignInButton from '../components/AppleSignInButton';
-import LoginForm from '../components/LoginForm';
-import RegisterButton from '../components/RegisterButton';
-import HorizontalSeparator from '../components/HorizontalSeparator';
+import { Screen, ScrollView, Spinner, View } from '@shoutem/ui';
+import { authProviders } from '../services/authProviders';
+import {
+  AppleSignInButton,
+  FacebookButton,
+  HorizontalSeparator,
+  LoginForm,
+  RegisterButton,
+  TermsAndPrivacy,
+} from '../components';
 import { ext } from '../const';
+import { ThirdPartyProviders } from '../fragments';
 import { getErrorCode, getErrorMessage } from '../errorMessages';
+import { loginRequired } from '../loginRequired';
 import {
   login,
   isAuthenticated,
@@ -66,7 +71,7 @@ export class LoginScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    autoBind(this);
+    autoBindReact(this);
 
     this.state = { inProgress: false };
   }
@@ -80,6 +85,17 @@ export class LoginScreen extends PureComponent {
         ? props => <HeaderBackButton {...props} onPress={this.handleCancel} />
         : null,
     });
+  }
+
+  componentDidUpdate() {
+    const { user } = this.props;
+
+    if (user && user?.id) {
+      const { hideShortcuts, onLoginSuccess } = this.props;
+
+      hideShortcuts(user);
+      onLoginSuccess(user);
+    }
   }
 
   handleCancel() {
@@ -145,27 +161,33 @@ export class LoginScreen extends PureComponent {
   }
 
   render() {
+    const { isUserAuthenticated, settings, style } = this.props;
     const { inProgress } = this.state;
 
-    const { isUserAuthenticated, settings, style } = this.props;
     const platformVersion = parseInt(Platform.Version, 10);
-
+    const gdprSettings = _.get(settings, 'gdpr', {});
     const isEmailAuthEnabled = _.get(settings, 'providers.email.enabled');
     const isFacebookAuthEnabled = _.get(settings, 'providers.facebook.enabled');
     const isAppleAuthEnabled = _.get(settings, 'providers.apple.enabled');
     const isSignupEnabled = _.get(settings, 'signupEnabled');
     const isEligibleForAppleSignIn =
       isAppleAuthEnabled && Platform.OS === 'ios' && platformVersion >= 13;
+    const { termsOfServiceLink, privacyPolicyLink } = gdprSettings;
 
-    // We want to display the authenticating state if the
-    // auth request is in progress, or if we are already
-    // authenticated. The latter case can happen if the
-    // login screen is left in the navigation stack history,
-    // but the user authenticated successfully in another
-    // part of the app. E.g. open one protected tab login screen will
-    // appear, now open a second tab again a loading screen will apear
-    // if you log in on any stack, on other stacks spinner will be shown
-    // instead of login form
+    // As per Apple's regulation, if a user is registering a new account, terms
+    // and conditions and a privacy policy must be provided. When a user signs
+    // in with a third party provider for the first time, they're also creating
+    // a Shoutem account, so we have to provide terms and conditions and a
+    // privacy policy.
+    const hasThirdPartyProviders = authProviders.hasThirdPartyProviders();
+
+    // We want to display the authenticating state if the auth request is in
+    // progress, or if we are already authenticated. The latter case can happen
+    // if the login screen is left in the navigation stack history, but the user
+    // authenticated successfully in another part of the app. E.g. open one
+    // protected tab login screen will appear, now open a second tab again a
+    // loading screen will apear if you log in on any stack, on other stacks
+    // spinner will be shown instead of login form.
     const isLoading = inProgress || isUserAuthenticated;
     const resolvedSpinnerStyle = !isLoading ? style.hideComponent : {};
     const resolvedLoginScreenStyle = isLoading ? style.hideComponent : {};
@@ -186,9 +208,10 @@ export class LoginScreen extends PureComponent {
             />
           )}
 
-          {(isEligibleForAppleSignIn || isFacebookAuthEnabled) && (
-            <HorizontalSeparator />
-          )}
+          {isEmailAuthEnabled &&
+            (isEligibleForAppleSignIn || isFacebookAuthEnabled) && (
+              <HorizontalSeparator />
+            )}
 
           {isEligibleForAppleSignIn && (
             <AppleSignInButton
@@ -203,8 +226,19 @@ export class LoginScreen extends PureComponent {
             />
           )}
 
+          <ThirdPartyProviders />
+
           {isSignupEnabled && (
             <RegisterButton onPress={this.handleRegisterPress} />
+          )}
+
+          {hasThirdPartyProviders && (
+            <View styleName="lg-gutter-bottom">
+              <TermsAndPrivacy
+                termsOfServiceLink={termsOfServiceLink}
+                privacyPolicyLink={privacyPolicyLink}
+              />
+            </View>
           )}
         </ScrollView>
       </Screen>

@@ -59,7 +59,7 @@ ShortcutChildrenRequired.propTypes = {
   shortcut: PropTypes.object.isRequired,
   firstShortcut: PropTypes.object,
   hiddenShortcuts: PropTypes.array,
-  WrappedComponent: PropTypes.func,
+  WrappedComponent: PropTypes.elementType,
 };
 
 const mapStateToProps = (state, ownProps) => ({

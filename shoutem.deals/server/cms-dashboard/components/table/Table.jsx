@@ -1,19 +1,20 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import _ from 'lodash';
 import i18next from 'i18next';
+import { HEADER_TYPES } from '../../services';
 import TextTableHeader from '../text-table-header';
 import InputTableHeader from '../input-table-header';
 import SelectTableHeader from '../select-table-header';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class Table extends Component {
   constructor(props) {
     super(props);
-
-    this.handleTableFilterChange = this.handleTableFilterChange.bind(this);
-    this.renderEmptyTableRow = this.renderEmptyTableRow.bind(this);
-    this.renderTableHeader = this.renderTableHeader.bind(this);
+    autoBindReact(this);
   }
 
   handleTableFilterChange(filterId, value) {
@@ -29,9 +30,12 @@ export default class Table extends Component {
     const { emptyPlaceholderText, columnHeaders } = this.props;
     const colSpan = _.size(columnHeaders);
 
+    const text =
+      emptyPlaceholderText || i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_LABEL);
+
     return (
       <tr className="table__empty-row">
-        <td colSpan={colSpan}>{i18next.t(emptyPlaceholderText)}</td>
+        <td colSpan={colSpan}>{text}</td>
       </tr>
     );
   }
@@ -39,7 +43,7 @@ export default class Table extends Component {
   renderTableHeader(columnHeader) {
     const { type, className, id } = columnHeader;
 
-    if (type === 'input') {
+    if (type === HEADER_TYPES.INPUT) {
       return (
         <InputTableHeader
           className={className}
@@ -50,7 +54,7 @@ export default class Table extends Component {
       );
     }
 
-    if (type === 'select') {
+    if (type === HEADER_TYPES.SELECT) {
       return (
         <SelectTableHeader
           className={className}
@@ -61,9 +65,13 @@ export default class Table extends Component {
       );
     }
 
-    return (
-      <TextTableHeader className={className} header={columnHeader} key={id} />
-    );
+    if (type === HEADER_TYPES.TEXT) {
+      return (
+        <TextTableHeader className={className} header={columnHeader} key={id} />
+      );
+    }
+
+    return <th></th>;
   }
 
   render() {
@@ -115,8 +123,4 @@ Table.propTypes = {
    * Callback function called when filter is changed
    */
   onFilterChange: PropTypes.func,
-};
-
-Table.defaultProps = {
-  emptyPlaceholderText: 'No data to display',
 };

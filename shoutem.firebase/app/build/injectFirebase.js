@@ -17,7 +17,11 @@ function injectIos() {
   // appDelegate.m mods
   const appDelegatePath = getAppDelegatePath({ cwd: projectPath });
   inject(appDelegatePath, ANCHORS.IOS.APP_DELEGATE.IMPORT, appDelegateImport);
-  inject(appDelegatePath, ANCHORS.IOS.APP_DELEGATE.DID_FINISH_LAUNCHING_WITH_OPTIONS, appDelegateHasFinishedLaunching);
+  inject(
+    appDelegatePath,
+    ANCHORS.IOS.APP_DELEGATE.DID_FINISH_LAUNCHING_WITH_OPTIONS,
+    appDelegateHasFinishedLaunching,
+  );
 }
 
 function injectFirebase() {

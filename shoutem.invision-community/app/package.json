@@ -1,0 +1,13 @@
+{
+  "name": "shoutem.invision-community",
+  "version": "1.0.0",
+  "description": "Allow Invision Community to grant limited access to your app",
+  "scripts": {
+    "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
+  },
+  "peerDependencies": {
+    "@react-native-community/async-storage": "*",
+    "@shoutem/theme": "*",
+    "@shoutem/ui": "*"
+  }
+}

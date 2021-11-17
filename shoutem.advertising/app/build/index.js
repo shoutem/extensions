@@ -1,9 +1,9 @@
 const { getAppConfiguration } = require('@shoutem/build-tools');
-const { injectFirebaseSettings } = require('./injectFirebaseSettings');
+const { injectAndroid } = require('./injectAndroid');
 const { injectAdMobPlistData } = require('./injectAdMobPlistData');
 
 function preBuild(appConfiguration) {
-  injectFirebaseSettings(appConfiguration);
+  injectAndroid(appConfiguration);
   injectAdMobPlistData(appConfiguration);
 }
 

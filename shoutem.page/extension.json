@@ -1,7 +1,7 @@
 {
   "name": "page",
-  "version": "3.0.4",
-  "platform": "~3.0.1",
+  "version": "4.0.0",
+  "platform": "^4.0.0",
   "title": "Page",
   "description": "Show a single screen with info and child items",
   "releaseNotes": "* Code improvements",

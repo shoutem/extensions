@@ -7,10 +7,7 @@
     "discountType": {
       "default": "Percentage",
       "constraints": {
-        "enum": [
-          "Percentage",
-          "Fixed"
-        ]
+        "enum": ["Percentage", "Fixed"]
       }
     },
     "currency": {
@@ -55,8 +52,7 @@
     "regularPrice": {
       "format": "number",
       "title": "Regular price",
-      "type": "number",
-      "required": true
+      "type": "number"
     },
     "currency": {
       "format": "currency",
@@ -72,8 +68,7 @@
     "discountPrice": {
       "format": "number",
       "title": "Discounted price",
-      "type": "number",
-      "required": true
+      "type": "number"
     },
     "publishTime": {
       "type": "object",
@@ -83,8 +78,7 @@
     "startTime": {
       "type": "object",
       "format": "date-time",
-      "title": "Start of validity",
-      "required": true
+      "title": "Start of validity"
     },
     "endTime": {
       "type": "object",
@@ -106,6 +100,11 @@
       "format": "single-line",
       "title": "Buy link title",
       "type": "string"
+    },
+    "hideRedeemButton": {
+      "type": "boolean",
+      "format": "boolean",
+      "title": "Hide redeem button"
     },
     "couponsEnabled": {
       "type": "boolean",

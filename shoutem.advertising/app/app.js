@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { Platform } from 'react-native';
 import { priorities, setPriority, after } from 'shoutem-core';
-import admob, { TestIds } from '@react-native-firebase/admob';
+import AdMob, { TestIds } from '@react-native-admob/admob';
 import { getExtensionSettings } from 'shoutem.application/redux';
 import { MAIN_NAVIGATION_SCREEN_TYPES } from 'shoutem.navigation';
 import { isPreviewApp } from 'shoutem.preview';
@@ -75,7 +75,7 @@ export const appDidMount = setPriority(app => {
 
   formatContextData(extensionSettings, appScreens);
 
-  admob().setRequestConfiguration({
+  AdMob.setRequestConfiguration({
     // Update all future requests suitable for parental guidance
     maxAdContentRating,
 
@@ -86,6 +86,8 @@ export const appDidMount = setPriority(app => {
     // manner suitable for users under the age of consent.
     tagForUnderAgeOfConsent,
   });
+
+  return AdMob.initialize();
 }, after(priorities.INIT));
 
 export function renderProvider(children) {

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.onboarding",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Shows a quick tour on the first app launch. ",
   "scripts": {
     "clean": "rimraf ./build/*",

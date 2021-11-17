@@ -1,6 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { SearchInput, LoaderContainer } from '@shoutem/react-web-ui';
 import { shouldLoad, shouldRefresh, isInitialized } from '@shoutem/redux-io';
@@ -18,7 +20,7 @@ import {
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export class DealsStatisticsPage extends Component {
+export class DealsStatisticsPage extends PureComponent {
   static propTypes = {
     dealStats: PropTypes.array,
     transactionStats: PropTypes.array,
@@ -31,12 +33,7 @@ export class DealsStatisticsPage extends Component {
   constructor(props) {
     super(props);
 
-    this.refreshData = this.refreshData.bind(this);
-    this.loadTransactionStats = this.loadTransactionStats.bind(this);
-    this.handleSearchTermChange = this.handleSearchTermChange.bind(this);
-    this.handleDateFilterChange = this.handleDateFilterChange.bind(this);
-    this.handleSelectedDealChange = this.handleSelectedDealChange.bind(this);
-    this.handleClearDealSelection = this.handleClearDealSelection.bind(this);
+    autoBindReact(this);
 
     const { extension } = props;
     const dealsEndpoint = _.get(extension, 'settings.dealsEndpoint');
@@ -49,20 +46,22 @@ export class DealsStatisticsPage extends Component {
     };
   }
 
-  componentWillMount() {
-    this.refreshData(this.props);
+  componentDidMount() {
+    this.refreshData(this.props, true);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.refreshData(nextProps, this.props);
+  componentDidUpdate(prevProps) {
+    this.refreshData(prevProps);
   }
 
-  refreshData(nextProps, props = {}) {
+  refreshData(prevProps, forceLoading) {
+    const { transactionStats } = this.props;
     const { filter, selectedDeal } = this.state;
-    const { transactionStats } = nextProps;
 
-    if (shouldLoad(nextProps, props, 'dealStats')) {
-      this.props.loadDealStats(filter);
+    if (shouldLoad(this.props, prevProps, 'dealStats') || forceLoading) {
+      const { loadDealStats } = this.props;
+
+      loadDealStats(filter);
     }
 
     if (selectedDeal && shouldRefresh(transactionStats)) {
@@ -71,14 +70,17 @@ export class DealsStatisticsPage extends Component {
   }
 
   loadTransactionStats() {
+    const { loadTransactionStats } = this.props;
     const { selectedDeal, filter } = this.state;
     const { id, catalog } = selectedDeal;
 
-    this.props.loadTransactionStats(catalog, id, filter);
+    loadTransactionStats(catalog, id, filter);
   }
 
   handleSearchTermChange(searchTerm) {
+    const { invalidateStats } = this.props;
     const { filter } = this.state;
+
     this.setState(
       {
         selectedDeal: null,
@@ -87,12 +89,14 @@ export class DealsStatisticsPage extends Component {
           searchTerm: searchTerm.value,
         },
       },
-      this.props.invalidateStats,
+      invalidateStats,
     );
   }
 
   handleDateFilterChange(startTime, endTime) {
+    const { invalidateStats } = this.props;
     const { filter } = this.state;
+
     this.setState(
       {
         filter: {
@@ -101,7 +105,7 @@ export class DealsStatisticsPage extends Component {
           endTime,
         },
       },
-      this.props.invalidateStats,
+      invalidateStats,
     );
   }
 
@@ -114,8 +118,8 @@ export class DealsStatisticsPage extends Component {
   }
 
   render() {
-    const { filter, selectedDeal } = this.state;
     const { dealStats } = this.props;
+    const { filter, selectedDeal } = this.state;
 
     const selectedDealId = _.get(selectedDeal, 'id');
     const selectedDealTitle = _.get(selectedDeal, 'title');

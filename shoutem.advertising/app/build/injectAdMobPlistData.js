@@ -20,7 +20,7 @@ function parsePlist(plistPath) {
 }
 
 const getExtension = (appConfiguration, extensionName) => {
-  const includedResources = _.get(appConfiguration, 'included');
+  const includedResources = appConfiguration?.included;
   const extension = _.find(includedResources, {
     type: 'shoutem.core.extensions',
     id: extensionName,
@@ -31,13 +31,14 @@ const getExtension = (appConfiguration, extensionName) => {
 
 const getExtensionSettings = (appConfiguration, extensionName) => {
   const extension = getExtension(appConfiguration, extensionName);
-  return _.get(extension, 'attributes.settings');
+  return extension?.attributes?.settings;
 };
 
 /**
- * Adding GADApplicationIdentifier and SKAdNetworkItems keys per AdMob instructions. 
+ * Adding GADApplicationIdentifier and SKAdNetworkItems keys per AdMob instructions.
  * https://developers.google.com/admob/ios/quick-start#update_your_infoplist
- */ 
+ */
+
 function injectAdMobPlistData(appConfiguration) {
   const plistPath = 'ios/Info.plist';
   const currentPlistContents = parsePlist(plistPath);
@@ -46,16 +47,13 @@ function injectAdMobPlistData(appConfiguration) {
 
   const adMobPlistData = {
     GADApplicationIdentifier: iOSAdAppId,
-    SKAdNetworkItems: [
-      { SKAdNetworkIdentifier: 'cstr6suwn9.skadnetwork' }
-    ]
+    SKAdNetworkItems: [{ SKAdNetworkIdentifier: 'cstr6suwn9.skadnetwork' }],
   };
 
   const adInfoPlist = Object.assign(currentPlistContents, adMobPlistData);
 
   fs.writeFileSync(plistPath, plist.build(adInfoPlist));
 }
-
 
 module.exports = {
   injectAdMobPlistData,

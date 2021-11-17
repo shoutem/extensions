@@ -1,18 +1,20 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import _ from 'lodash';
 import moment from 'moment';
-import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
-import { isBusy, hasNext, hasPrev } from '@shoutem/redux-io';
+import { connect } from 'react-redux';
+import { Table } from '@shoutem/cms-dashboard';
 import { Paging, LoaderContainer, FontIcon } from '@shoutem/react-web-ui';
-import { Table } from 'src/components';
+import { isBusy, hasNext, hasPrev } from '@shoutem/redux-io';
+import { TRANSACTION_ACTIONS } from '../../const';
 import {
   getTransactionStats,
   loadNextPage,
   loadPreviousPage,
 } from '../../redux';
-import { TRANSACTION_ACTIONS } from '../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -57,7 +59,7 @@ function getDisplayActionName(action) {
   return action;
 }
 
-export class TransactionStatsDashboard extends Component {
+export class TransactionStatsDashboard extends PureComponent {
   static propTypes = {
     transactionStats: PropTypes.array,
     selectedDealTitle: PropTypes.string,
@@ -69,19 +71,19 @@ export class TransactionStatsDashboard extends Component {
   constructor(props) {
     super(props);
 
-    this.handleNextPageClick = this.handleNextPageClick.bind(this);
-    this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
-    this.renderTransactionStatRow = this.renderTransactionStatRow.bind(this);
+    autoBindReact(this);
   }
 
   handleNextPageClick() {
-    const { transactionStats } = this.props;
-    this.props.loadNextPage(transactionStats);
+    const { loadNextPage, transactionStats } = this.props;
+
+    loadNextPage(transactionStats);
   }
 
   handlePreviousPageClick() {
-    const { transactionStats } = this.props;
-    this.props.loadPreviousPage(transactionStats);
+    const { loadPreviousPage, transactionStats } = this.props;
+
+    loadPreviousPage(transactionStats);
   }
 
   renderTransactionStatRow(transactionStat) {

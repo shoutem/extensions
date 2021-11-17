@@ -1,32 +1,30 @@
-import Uri from 'urijs';
 import i18next from 'i18next';
+import Uri from 'urijs';
 import LOCALIZATION from './localization';
 
-export default class DealsApi {
-  constructor() {
-    this.init = this.init.bind(this);
-    this.isInitialized = this.isInitialized.bind(this);
-    this.buildUrl = this.buildUrl.bind(this);
+let endpoint = null;
 
-    this.endpoint = null;
-  }
-
-  init(endpoint) {
-    if (!endpoint) {
-      throw new Error(i18next.t(LOCALIZATION.EMPTY_DEALS_ENDPOINT_TITLE));
-    }
-
-    this.endpoint = endpoint;
-  }
-
-  isInitialized() {
-    return !!this.endpoint;
-  }
-
-  buildUrl(path = '') {
-    return new Uri(path)
-      .protocol(location.protocol)
-      .host(this.endpoint)
-      .toString();
-  }
+function buildUrl(path = '') {
+  return new Uri(path)
+    .protocol(location.protocol)
+    .host(endpoint)
+    .toString();
 }
+
+function init(newEndpoint) {
+  if (!newEndpoint) {
+    throw new Error(i18next.t(LOCALIZATION.EMPTY_DEALS_ENDPOINT_TITLE));
+  }
+
+  endpoint = newEndpoint;
+}
+
+function isInitialized() {
+  return !!endpoint;
+}
+
+export default {
+  buildUrl,
+  init,
+  isInitialized,
+};

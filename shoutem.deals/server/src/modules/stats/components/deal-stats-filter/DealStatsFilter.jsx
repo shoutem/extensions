@@ -1,12 +1,14 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind';
 import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import { ControlLabel, FormGroup, Button } from 'react-bootstrap';
 import { DateTimePicker } from '@shoutem/react-web-ui';
 import { getDisplayDateFormat, getDisplayTimeFormat } from 'src/services';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export default class DealStatsFilter extends Component {
+export default class DealStatsFilter extends PureComponent {
   static propTypes = {
     onFilterChange: PropTypes.func,
     startTime: PropTypes.string,
@@ -16,11 +18,10 @@ export default class DealStatsFilter extends Component {
   constructor(props) {
     super(props);
 
-    this.handleStartTimeChange = this.handleStartTimeChange.bind(this);
-    this.handleEndTimeChange = this.handleEndTimeChange.bind(this);
-    this.handleFilterApplyClick = this.handleFilterApplyClick.bind(this);
+    autoBindReact(this);
 
     const { startTime, endTime } = props;
+
     this.state = {
       startTime,
       endTime,
@@ -36,8 +37,8 @@ export default class DealStatsFilter extends Component {
   }
 
   handleFilterApplyClick() {
-    const { startTime, endTime } = this.state;
     const { onFilterChange } = this.props;
+    const { startTime, endTime } = this.state;
 
     onFilterChange(startTime, endTime);
   }

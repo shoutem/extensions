@@ -1,10 +1,10 @@
 {
   "name": "radio-player",
   "title": "Radio+",
-  "version": "3.0.2",
+  "version": "4.0.0",
+  "platform": "^4.0.0",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
   "releaseNotes": "* Code improvements",
-  "platform": "~3.0.2",
   "icon": "server/assets/add-radio-image.png",
   "categories": ["media"],
   "dependencies": [

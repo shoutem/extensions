@@ -1,23 +1,27 @@
 import _ from 'lodash';
+import i18next from 'i18next';
+import { getLayoutsTable } from './schema';
+import LOCALIZATION from './localization';
 
-const HEADER_TYPES = {
+export const HEADER_TYPES = {
   TEXT: 'text',
   INPUT: 'input',
   SELECT: 'select',
-};
-
-const CATEGORY_HEADER = {
-  id: 'categories',
-  title: 'Categories',
-  component: 'CategorySelector',
-  format: 'categories',
 };
 
 function getDefaultTableLayout(schema) {
   const { titleProperty } = schema;
 
   return {
-    columns: [titleProperty],
+    columns: [
+      titleProperty,
+      {
+        name: 'languages',
+      },
+      {
+        name: 'categories',
+      },
+    ],
   };
 }
 
@@ -45,10 +49,37 @@ function getTableHeaderType(type) {
   return HEADER_TYPES.TEXT;
 }
 
-function getTableHeader(column, properties) {
-  const isCategoryColumn = column.name === 'categories';
-  if (isCategoryColumn) {
-    return CATEGORY_HEADER;
+function getTableHeader(column, properties, categories, languages) {
+  const columnName = _.get(column, 'name');
+
+  if (columnName === 'categories') {
+    if (_.isEmpty(categories)) {
+      return null;
+    }
+
+    return {
+      id: 'categories',
+      value: i18next.t(LOCALIZATION.CATEGORY_SELECTOR_TITLE),
+      title: i18next.t(LOCALIZATION.CATEGORY_SELECTOR_TITLE),
+      type: HEADER_TYPES.TEXT,
+      component: 'CategorySelector',
+      format: 'categories',
+    };
+  }
+
+  if (columnName === 'languages') {
+    if (_.isEmpty(languages)) {
+      return null;
+    }
+
+    return {
+      id: 'channels',
+      value: i18next.t(LOCALIZATION.LANGUAGE_SELECTOR_TITLE),
+      title: i18next.t(LOCALIZATION.LANGUAGE_SELECTOR_TITLE),
+      type: HEADER_TYPES.TEXT,
+      component: 'LanguageSelector',
+      format: 'languages',
+    };
   }
 
   const columnOptions = getColumnOptions(column, properties);
@@ -66,12 +97,20 @@ function getTableHeader(column, properties) {
   };
 }
 
-export function getTableHeaders(schema) {
-  const tableLayout =
-    _.get(schema, 'layouts.table') || getDefaultTableLayout(schema);
+export function getTableHeaders(schema, categories, languages) {
+  const tableLayout = getLayoutsTable(schema) || getDefaultTableLayout(schema);
 
   const { properties } = schema;
   const { columns } = tableLayout;
 
-  return _.map(columns, column => getTableHeader(column, properties));
+  const tableHeaders = _.compact(
+    _.map(columns, column =>
+      getTableHeader(column, properties, categories, languages),
+    ),
+  );
+
+  // added one extra empty table header for cms actions
+  tableHeaders.push({ id: 'actions', format: 'actions' });
+
+  return tableHeaders;
 }

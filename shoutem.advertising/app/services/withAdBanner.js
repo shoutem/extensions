@@ -1,5 +1,5 @@
 import React from 'react';
-import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
+import { TestIds, BannerAd, BannerAdSize } from '@react-native-admob/admob';
 import { View } from '@shoutem/ui';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -51,14 +51,14 @@ export function withAdBanner(WrappedComponent) {
             <View styleName="flexible">
               {bannerPlacementTop && (
                 <BannerAd
-                  size={BannerAdSize.SMART_BANNER}
+                  size={BannerAdSize.ADAPTIVE_BANNER}
                   unitId={bannerAdId}
                 />
               )}
               <WrappedComponent {...props} />
               {!bannerPlacementTop && (
                 <BannerAd
-                  size={BannerAdSize.SMART_BANNER}
+                  size={BannerAdSize.ADAPTIVE_BANNER}
                   unitId={bannerAdId}
                 />
               )}

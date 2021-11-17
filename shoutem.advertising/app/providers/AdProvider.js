@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import { InterstitialAd, AdEventType } from '@react-native-firebase/admob';
+import { InterstitialAd } from '@react-native-admob/admob';
 
 export const AdContext = React.createContext();
 
@@ -32,15 +32,16 @@ export class AdProvider extends PureComponent {
 
     if (!prevContext && context) {
       const parsedKeywords = _.isEmpty(keywords) ? [] : _.split(keywords, ',');
-      this.interstitial = InterstitialAd.createForAdRequest(interstitialAdId, {
-        requestNonPersonalizedAdsOnly: true,
-        keywords: parsedKeywords,
+      this.interstitial = InterstitialAd.createAd(interstitialAdId, {
+        loadOnMounted: false,
+        requestOptions: {
+          requestNonPersonalizedAdsOnly: true,
+          keywords: parsedKeywords,
+        },
       });
 
-      this.removeAdListener = this.interstitial.onAdEvent(type => {
-        if (type === AdEventType.LOADED) {
-          this.interstitial.show();
-        }
+      this.interstitial.addEventListener('adLoaded', () => {
+        this.interstitial.show();
       });
 
       this.interstitial.load();
@@ -48,8 +49,8 @@ export class AdProvider extends PureComponent {
   }
 
   componentWillUnmount() {
-    if (this.removeAdListener) {
-      this.removeAdListener();
+    if (this.interstitial) {
+      this.interstitial.removeAllListeners();
     }
   }
 

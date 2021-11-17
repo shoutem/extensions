@@ -1,14 +1,12 @@
-:global {
-  .transaction-stats-dashboard {
-    padding-top: 24px;
-  }
+.transaction-stats-dashboard {
+  padding-top: 24px;
+}
 
-  .transaction-stats-dashboard__title {
-    margin-top: 80px;
+.transaction-stats-dashboard__title {
+  margin-top: 80px;
 
-    h3 {
-      float: left;
-      margin: 8px 0 24px 12px;
-    }
+  h3 {
+    float: left;
+    margin: 8px 0 24px 12px;
   }
 }

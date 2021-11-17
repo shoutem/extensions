@@ -27,6 +27,7 @@ const FORM_CLAIM_REDEEM_TITLE = `${key}.form-claim-redeem-title`;
 const FORM_CLAIM_REDEEM_HELP_MESSAGE = `${key}.form-claim-redeem-help-message`;
 const FORM_CLAIMED_TITLE = `${key}.form-claimed-title`;
 const FORM_CLAIMED_MESSAGE = `${key}.form-claimed-message`;
+const FORM_HIDE_REDEEM_BUTTON_TITLE = `${key}.form-hide-redeem-button-title`;
 const FORM_REDEEMED_TITLE = `${key}.form-redeemed-title`;
 const FORM_REDEEMED_MESSAGE = `${key}.form-redeemed-message`;
 const FORM_NUMBER_OF_COUPONS_TITLE = `${key}.form-number-of-coupons-title`;
@@ -66,6 +67,7 @@ export default {
   FORM_CLAIM_REDEEM_HELP_MESSAGE,
   FORM_CLAIMED_TITLE,
   FORM_CLAIMED_MESSAGE,
+  FORM_HIDE_REDEEM_BUTTON_TITLE,
   FORM_REDEEMED_TITLE,
   FORM_REDEEMED_MESSAGE,
   FORM_NUMBER_OF_COUPONS_TITLE,

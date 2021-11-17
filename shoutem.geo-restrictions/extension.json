@@ -1,9 +1,9 @@
 {
   "name": "geo-restrictions",
   "title": "Geo Restrictions",
-  "version": "1.0.0",
+  "version": "4.0.0",
+  "platform": "^4.0.0",
   "description": "Restricts access to specific content based upon the user's geographical location",
-  "platform": "^3.0.2",
   "icon": "server/assets/geo.png",
   "native": true,
   "i18n": {

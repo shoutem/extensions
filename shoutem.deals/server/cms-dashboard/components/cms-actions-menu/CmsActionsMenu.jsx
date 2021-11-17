@@ -1,8 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { MenuItem, Button } from 'react-bootstrap';
 import i18next from 'i18next';
+import { MenuItem, Button } from 'react-bootstrap';
 import { IconLabel, ActionsMenu, FontIcon } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class CmsActionsMenu extends Component {
@@ -31,10 +34,7 @@ export default class CmsActionsMenu extends Component {
 
   constructor(props) {
     super(props);
-
-    this.renderAsDropdown = this.renderAsDropdown.bind(this);
-    this.renderAsInline = this.renderAsInline.bind(this);
-    this.resolveActions = this.resolveActions.bind(this);
+    autoBindReact(this);
   }
 
   componentWillMount() {
@@ -55,7 +55,7 @@ export default class CmsActionsMenu extends Component {
       actions.push({
         icon: 'edit',
         handleClick: () => this.handleActionClick(onUpdateClick),
-        label: 'Edit',
+        label: i18next.t(LOCALIZATION.EDIT_ACTION_LABEL),
       });
     }
 
@@ -63,7 +63,7 @@ export default class CmsActionsMenu extends Component {
       actions.push({
         icon: 'delete',
         handleClick: () => this.handleActionClick(onDeleteClick),
-        label: 'Delete',
+        label: i18next.t(LOCALIZATION.DELETE_ACTION_LABEL),
       });
     }
 
@@ -85,9 +85,7 @@ export default class CmsActionsMenu extends Component {
       >
         {_.map(actions, action => (
           <MenuItem key={action.label} onClick={action.handleClick}>
-            <IconLabel iconName={action.icon}>
-              {i18next.t(action.label)}
-            </IconLabel>
+            <IconLabel iconName={action.icon}>{action.label}</IconLabel>
           </MenuItem>
         ))}
       </ActionsMenu>
@@ -103,7 +101,7 @@ export default class CmsActionsMenu extends Component {
             key={action.label}
             onClick={action.handleClick}
           >
-            <FontIcon name={action.icon} size="24" />
+            <FontIcon name={action.icon} size={24} />
           </Button>
         ))}
       </div>
@@ -119,10 +117,10 @@ export default class CmsActionsMenu extends Component {
     }
 
     return (
-      <td className="cms-actions-menu">
+      <div className="cms-actions-menu">
         {inline && this.renderAsInline(actions)}
         {!inline && this.renderAsDropdown(actions)}
-      </td>
+      </div>
     );
   }
 }

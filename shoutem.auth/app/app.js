@@ -1,6 +1,13 @@
 import { AppState } from 'react-native';
 import rio from '@shoutem/redux-io';
+import {
+  getAppId,
+  getExtensionSettings,
+  setQueueTargetComplete,
+} from 'shoutem.application';
+import { getCurrentRoute } from 'shoutem.navigation';
 import { shoutemApi } from './services/shoutemApi';
+import { authProviders } from './services/authProviders';
 import { ext } from './const';
 import {
   AUTH_TOKEN_SCHEMA,
@@ -15,11 +22,6 @@ import {
   USER_SCHEMA,
 } from './redux';
 import { getSession } from './session';
-import {
-  getAppId,
-  getExtensionSettings,
-  setQueueTargetComplete,
-} from 'shoutem.application';
 
 async function refreshUser(dispatch, getState) {
   const session = await getSession();
@@ -55,7 +57,9 @@ async function refreshUser(dispatch, getState) {
 }
 
 const createHandleAppStateChange = (dispatch, getState) => appState => {
-  if (appState === 'active') {
+  const activeRoute = getCurrentRoute();
+
+  if (appState === 'active' && activeRoute.name !== ext('EditProfileScreen')) {
     refreshUser(dispatch, getState);
   }
 };
@@ -69,7 +73,22 @@ export function appDidMount(app) {
 
   const appId = getAppId();
 
-  const { authApiEndpoint } = getExtensionSettings(state, ext());
+  const { authApiEndpoint, providers } = getExtensionSettings(state, ext());
+
+  const providerKeys = Object.keys(providers);
+
+  // TODO: Set up proper provider objects for Apple and Facebook authentication.
+  // Twitter and "email" providers will receive dummy / name only providers.
+  // Email is our own provider and we have to add it because we use it to
+  // determine whether or not the privacy policy and ToS should be displayed.
+  // Twitter cannot be enabled by app owners.
+  providerKeys.forEach(key => {
+    if (providers[key].enabled) {
+      authProviders.addProvider({ name: ext(`provider.${key}`) });
+    } else {
+      authProviders.removeProvider(ext(`provider.${key}`));
+    }
+  });
 
   if (!authApiEndpoint) {
     // eslint-disable-next-line no-console

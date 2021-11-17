@@ -1,8 +1,11 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 import i18next from 'i18next';
+import autoBindReact from 'auto-bind/react';
 import { Modal, Button, FormGroup, ControlLabel } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 
 export default class CategoryNameModal extends Component {
   static propTypes = {
@@ -12,13 +15,7 @@ export default class CategoryNameModal extends Component {
 
   constructor(props) {
     super(props);
-
-    this.show = this.show.bind(this);
-    this.handleHide = this.handleHide.bind(this);
-    this.handleModalEnter = this.handleModalEnter.bind(this);
-    this.handleSaveClick = this.handleSaveClick.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
-    this.handleCategoryNameChange = this.handleCategoryNameChange.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,
@@ -75,8 +72,8 @@ export default class CategoryNameModal extends Component {
     const initialCategoryName = _.get(currentCategory, 'name');
     const hasChanges = name && initialCategoryName !== name;
     const modalTitle = initialCategoryName
-      ? 'Rename category'
-      : 'Create category';
+      ? i18next.t(LOCALIZATION.RENAME_CATEGORY_BUTTON)
+      : i18next.t(LOCALIZATION.CREATE_CATEGORY_BUTTON);
 
     return (
       <Modal
@@ -86,12 +83,14 @@ export default class CategoryNameModal extends Component {
         show={show}
       >
         <Modal.Header>
-          <Modal.Title>{i18next.t(modalTitle)}</Modal.Title>
+          <Modal.Title>{modalTitle}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleFormSubmit}>
             <FormGroup>
-              <ControlLabel>{i18next.t('Enter category name')}</ControlLabel>
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.ENTER_CATEGORY_NAME)}
+              </ControlLabel>
               <input
                 autoFocus
                 className="form-control"
@@ -104,14 +103,16 @@ export default class CategoryNameModal extends Component {
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this.handleHide}>{i18next.t('Cancel')}</Button>
+          <Button onClick={this.handleHide}>
+            {i18next.t(LOCALIZATION.BUTTON_ABORT_LABEL)}
+          </Button>
           <Button
             bsStyle="primary"
             disabled={!hasChanges}
             onClick={this.handleSaveClick}
           >
             <LoaderContainer isLoading={inProgress}>
-              {i18next.t('Save')}
+              {i18next.t(LOCALIZATION.BUTTON_CONFIRM_LABEL)}
             </LoaderContainer>
           </Button>
         </Modal.Footer>

@@ -83,6 +83,7 @@ export function createDeal(appId, categoryIds, placeId, resource, scope = {}) {
     scope,
   );
 }
+
 export function updateDeal(appId, categoryIds, placeId, resource, scope = {}) {
   const relatedResources = placeId
     ? {

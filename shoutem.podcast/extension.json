@@ -1,7 +1,7 @@
 {
   "name": "podcast",
-  "version": "3.0.2",
-  "platform": "~3.0.2",
+  "version": "4.0.0",
+  "platform": "^4.0.0",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
   "releaseNotes": "* Fixed podcast episode not resuming playback after interruption",

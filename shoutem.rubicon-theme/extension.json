@@ -1,10 +1,10 @@
 {
   "name": "rubicon-theme",
-  "version": "3.1.1",
-  "platform": "^3.0.0",
+  "version": "4.0.1",
+  "platform": "~4.0.1",
   "type": "system",
   "title": "Rubicon Theme",
-  "releaseNotes": "* Added theme properties for CMS's inline category dropdown - background & text colors\n* Added style for CMS search UI",
+  "releaseNotes": "* Added styling for Invision Community extension",
   "description": "Rubicon theme",
   "icon": "server/assets/add-rubicon-theme-image.png",
   "categories": [],

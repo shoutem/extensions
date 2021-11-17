@@ -14,9 +14,11 @@ import {
 import { openURL } from 'shoutem.web-view';
 import {
   find,
+  invalidate,
   isBusy,
   isInitialized,
   isError,
+  isValid,
   shouldRefresh,
   getCollection,
 } from '@shoutem/redux-io';
@@ -38,7 +40,7 @@ import {
   ShareButton,
 } from '@shoutem/ui';
 import SocialButton from '../components/SocialButton';
-import { ext } from '../const';
+import { ext, schema } from '../const';
 
 export class AboutScreen extends PureComponent {
   static propTypes = {
@@ -61,30 +63,40 @@ export class AboutScreen extends PureComponent {
     props.navigation.setOptions({ headerShown: !shouldHideInitialHeader });
 
     this.pushedBarStyle = null;
-
-    this.state = {
-      schema: ext('About'),
-    };
   }
 
   componentDidMount() {
-    const { channelId: currentChannelId, data, navigation } = this.props;
+    const {
+      channelId: currentChannelId,
+      data,
+      invalidate,
+      navigation,
+    } = this.props;
 
-    // compare latest channelId used to fetch collection to current state channelId
-    // shouldRefresh won't compare query objects - will return false for channelId change
-    const latestChannelId = data[STATUS]?.params?.query['filter[channels]'];
+    // Forcing invalidate to prevent flickering of empty view - data view.
+    // If users opens AbouScreen, collection is set & is valid.
+    // Then user goes to language change, screen gets unmounted.
+    // When coming back, collection still has valid status, shows empty
+    // data because there is none for current locale & then starts fetching.
+    // This is non-tabbar navigation fix.
+    invalidate(schema).then(() => {
+      // compare latest channelId used to fetch collection to current state channelId
+      // shouldRefresh won't compare query objects - will return false for channelId change
+      // Also, this works only for tab navigation where screen doesn't unmount on leaving
+      const latestChannelId = data[STATUS]?.params?.query['filter[channels]'];
 
-    if (latestChannelId !== currentChannelId || shouldRefresh(data)) {
-      this.fetchData();
-      return;
-    }
+      if (latestChannelId !== currentChannelId || shouldRefresh(data)) {
+        this.fetchData();
+        return;
+      }
 
-    if (isInitialized(data)) {
-      navigation.setOptions({
-        ...this.getNavBarProps(),
-        headerShown: true,
-      });
-    }
+      if (isInitialized(data)) {
+        navigation.setOptions({
+          ...this.getNavBarProps(),
+          headerShown: true,
+        });
+      }
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -155,16 +167,15 @@ export class AboutScreen extends PureComponent {
     );
   }
 
-  fetchData(schema) {
+  fetchData(forwardedSchema) {
     const { channelId, find, parentCategoryId } = this.props;
-    const { schema: defaultSchema } = this.state;
 
     if (!parentCategoryId) {
       return;
     }
 
     InteractionManager.runAfterInteractions(() =>
-      find(schema || defaultSchema, undefined, {
+      find(forwardedSchema || schema, undefined, {
         query: {
           'filter[categories]': parentCategoryId,
           'filter[channels]': channelId,
@@ -246,9 +257,11 @@ export class AboutScreen extends PureComponent {
   }
 
   renderLoadingSpinner() {
+    const { style } = this.props;
+
     return (
-      <View styleName="xl-gutter-top">
-        <Spinner styleName="lg-gutter-top" />
+      <View styleName="flexible" style={style.spinnerContainer}>
+        <Spinner style={style.spinner} />
       </View>
     );
   }
@@ -434,14 +447,14 @@ export class AboutScreen extends PureComponent {
   }
 
   renderData(data) {
+    // If data is still loading, render loading spinner
+    if (isBusy(data) || !isInitialized(data) || !isValid(data)) {
+      return this.renderLoadingSpinner();
+    }
+
     // If no data is available, render placeholder view
     if (this.shouldRenderPlaceholderView()) {
       return this.renderPlaceholderView();
-    }
-
-    // If data is still loading, render loading spinner
-    if (isBusy(data) || !isInitialized(data)) {
-      return this.renderLoadingSpinner();
     }
 
     // If valid data is retrieved, take first input only
@@ -474,7 +487,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = { find };
+const mapDispatchToProps = { find, invalidate };
 
 export default connect(
   mapStateToProps,

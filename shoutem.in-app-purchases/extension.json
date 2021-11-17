@@ -1,10 +1,10 @@
 {
   "name": "in-app-purchases",
-  "version": "3.1.0",
-  "platform": "^3.0.0",
+  "version": "4.0.1",
+  "platform": "^4.0.0",
   "title": "In App Purchases",
   "description": "Add Apple/Google Play subscriptions to your app",
-  "releaseNotes": "* Updated major version of react-native-device-info, no breaking changes",
+  "releaseNotes": "* Fix back handling on Subscription screen",
   "icon": "server/assets/iap.png",
   "repository": {
     "type": "git",

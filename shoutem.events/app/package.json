@@ -1,6 +1,6 @@
 {
   "name": "shoutem.events",
-  "version": "3.0.2",
+  "version": "4.0.0",
   "dependencies": {
     "@shoutem/react-native-calendar-manager": "~1.1.0",
     "react-native-localize": "~1.3.0"

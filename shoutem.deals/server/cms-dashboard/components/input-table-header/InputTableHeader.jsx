@@ -1,4 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import DebounceInput from 'react-debounce-input';
@@ -10,8 +12,7 @@ import './style.scss';
 export default class InputTableHeader extends Component {
   constructor(props) {
     super(props);
-
-    this.handleInputChange = this.handleInputChange.bind(this);
+    autoBindReact(this);
   }
 
   handleInputChange(event) {

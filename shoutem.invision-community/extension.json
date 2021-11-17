@@ -1,0 +1,27 @@
+{
+  "name": "invision-community",
+  "title": "Invision community",
+  "version": "1.0.0",
+  "description": "Allow Invision Community to grant limited access to your app",
+  "platform": "~4.0.1",
+  "icon": "./server/assets/add-invision-image.png",
+  "capabilities": ["shoutem.auth.provider", "shoutem.auth.invision-comunity"],
+  "dependencies": ["shoutem.application", "shoutem.auth", "shoutem.i18n"],
+  "pages": [
+    {
+      "name": "SettingsPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.SettingsPage",
+      "title": "Settings"
+    }
+  ],
+  "screens": [
+    {
+      "name": "LoginScreen"
+    }
+  ]
+}

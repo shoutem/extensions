@@ -1,11 +1,13 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { isBusy, hasNext, hasPrev } from '@shoutem/redux-io';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Table } from '@shoutem/cms-dashboard';
 import { Paging, LoaderContainer } from '@shoutem/react-web-ui';
-import { Table } from 'src/components';
-import { getDealStats, loadNextPage, loadPreviousPage } from '../../redux';
+import { isBusy, hasNext, hasPrev } from '@shoutem/redux-io';
 import { DealStatsRow } from '../../components';
+import { getDealStats, loadNextPage, loadPreviousPage } from '../../redux';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -54,7 +56,7 @@ function getColumnHeaders() {
   ];
 }
 
-export class DealStatsDashboard extends Component {
+export class DealStatsDashboard extends PureComponent {
   static propTypes = {
     dealStats: PropTypes.array,
     selectedDealId: PropTypes.string,
@@ -66,19 +68,19 @@ export class DealStatsDashboard extends Component {
   constructor(props) {
     super(props);
 
-    this.handleNextPageClick = this.handleNextPageClick.bind(this);
-    this.handlePreviousPageClick = this.handlePreviousPageClick.bind(this);
-    this.renderDealStatRow = this.renderDealStatRow.bind(this);
+    autoBindReact(this);
   }
 
   handleNextPageClick() {
-    const { dealStats } = this.props;
-    this.props.loadNextPage(dealStats);
+    const { dealStats, loadNextPage } = this.props;
+
+    loadNextPage(dealStats);
   }
 
   handlePreviousPageClick() {
-    const { dealStats } = this.props;
-    this.props.loadPreviousPage(dealStats);
+    const { dealStats, loadPreviousPage } = this.props;
+
+    loadPreviousPage(dealStats);
   }
 
   renderDealStatRow(dealStat) {

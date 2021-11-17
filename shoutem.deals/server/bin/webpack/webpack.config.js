@@ -2,9 +2,11 @@ const path = require('path');
 const resolvePlugins = require('./plugins');
 const resolveModuleRules = require('./moduleRules');
 const resolveDevServer = require('./devServer');
+const resolveOptimizations = require('./optimizations');
 const isProduction = require('./env');
 
 module.exports = {
+  mode: isProduction ? 'production' : 'development',
   devtool: isProduction ? 'false' : '#source-maps',
   context: path.join(__dirname, '../../'),
   entry: {
@@ -19,16 +21,15 @@ module.exports = {
     rules: resolveModuleRules(),
   },
   plugins: resolvePlugins(),
+  optimization: resolveOptimizations(),
   resolve: {
-    modules: [
-      path.join(__dirname, '../..'),
-      'node_modules',
-    ],
+    modules: [path.join(__dirname, '../..'), 'node_modules'],
     extensions: ['.js', '.jsx', '.json', '.css', '.sass', '.scss', '.html'],
     alias: {
-      '@shoutem/file-upload': path.join(__dirname, '../../file-upload'),
-      '@shoutem/form-builder': path.join(__dirname, '../../form-builder'),
-    }
+      '@shoutem/file-upload': path.resolve('./file-upload'),
+      '@shoutem/form-builder': path.resolve('./form-builder'),
+      '@shoutem/cms-dashboard': path.resolve('./cms-dashboard'),
+    },
   },
   devServer: resolveDevServer(),
 };

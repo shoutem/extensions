@@ -1,8 +1,8 @@
 {
   "name": "menu",
   "title": "Restaurant menu",
-  "version": "3.0.0",
-  "platform": "^3.0.0",
+  "version": "4.0.0",
+  "platform": "^4.0.0",
   "icon": "./server/assets/images/add-menu-items-image.png",
   "description": "Show a restaurant menu",
   "releaseNotes": "* Added CMS search feature",

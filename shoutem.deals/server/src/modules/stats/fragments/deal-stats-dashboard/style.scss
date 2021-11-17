@@ -1,40 +1,38 @@
-:global {
-  .deal-stats-dashboard {
-    padding-top: 36px;
-  }
+.deal-stats-dashboard {
+  padding-top: 36px;
+}
 
-  .deal-stats-table {
-    &.table {
-      > tbody > tr > td {
-        padding: 14px 8px 14px 0;
-      }
+.deal-stats-table {
+  &.table {
+    > tbody > tr > td {
+      padding: 14px 8px 14px 0;
+    }
 
-      > thead > tr > th {
-        padding-left: 0;
-        vertical-align: middle;
-      }
+    > thead > tr > th {
+      padding-left: 0;
+      vertical-align: middle;
+    }
 
-      > tbody > tr > td:last-child,
-      > thead > tr > th:last-child {
-        padding-right: 8px;
-      }
+    > tbody > tr > td:last-child,
+    > thead > tr > th:last-child {
+      padding-right: 8px;
+    }
 
-      td {
-        width: 80px;
-      }
+    td {
+      width: 80px;
     }
   }
+}
 
-  .deal-stats__total,
-  .deal-stats__stat {
-    text-align: right;
-  }
+.deal-stats__total,
+.deal-stats__stat {
+  text-align: right;
+}
 
-  .deal-stats__deal {
-    width: 120px;
-  }
+.deal-stats__deal {
+  width: 120px;
+}
 
-  .deal-stats__total {
-    width: 64px;
-  }
+.deal-stats__total {
+  width: 64px;
 }

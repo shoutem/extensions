@@ -1,6 +1,8 @@
-import _ from 'lodash';
 import convert from 'convert-units';
+import _ from 'lodash';
+import moment from 'moment';
 import { dateToString, DEFAULT_TIMEZONE_ID } from 'src/services';
+import { DEFAULT_START_TIME } from '../const';
 
 const EXPIRATION_TIME_REGEX = /^0|(\d{1,3})(h|min)$/; // 0 or 15h or 15min
 const MILLISECONDS = 'ms';
@@ -20,8 +22,11 @@ function toServerExpirationTime(expirationTime) {
     return 0;
   }
 
+  // eslint-disable-next-line no-unused-vars
   const [__, value, unit] = expirationTimeString.match(EXPIRATION_TIME_REGEX);
-  return convert(value).from(unit).to(MILLISECONDS);
+  return convert(value)
+    .from(unit)
+    .to(MILLISECONDS);
 }
 
 function toDisplayExpirationTime(expirationTime) {
@@ -29,10 +34,9 @@ function toDisplayExpirationTime(expirationTime) {
     return '0';
   }
 
-  const display =
-    convert(expirationTime)
-      .from(MILLISECONDS)
-      .toBest({ exclude: ['d', 'week', 'month', 'year'] });
+  const display = convert(expirationTime)
+    .from(MILLISECONDS)
+    .toBest({ exclude: ['d', 'week', 'month', 'year'] });
 
   return `${display.val}${display.unit}`;
 }
@@ -45,9 +49,6 @@ function isCouponsLimited(deal) {
 }
 
 function calculateTotalCoupons(deal) {
-  const remainingCoupons = _.get(deal, 'remainingCoupons', null);
-  const claimedCoupons = _.get(deal, 'claimedCoupons', null);
-  const redeemedCoupons = _.get(deal, 'redeemedCoupons', null);
   const couponsEnabled = _.get(deal, 'couponsEnabled', false);
 
   if (!couponsEnabled) {
@@ -57,6 +58,10 @@ function calculateTotalCoupons(deal) {
   if (!isCouponsLimited(deal)) {
     return null;
   }
+
+  const remainingCoupons = _.get(deal, 'remainingCoupons', null);
+  const claimedCoupons = _.get(deal, 'claimedCoupons', null);
+  const redeemedCoupons = _.get(deal, 'redeemedCoupons', null);
 
   return (
     _.toNumber(remainingCoupons) +
@@ -76,6 +81,7 @@ export function mapViewToModel(deal, catalog) {
     claimedCoupons,
     redeemedCoupons,
     remainingCoupons,
+    hideRedeemButton,
     couponsEnabled,
     startTime: viewStartTime,
     endTime: viewEndTime,
@@ -86,15 +92,16 @@ export function mapViewToModel(deal, catalog) {
   const totalCoupons = calculateTotalCoupons(deal);
   const couponsLimited = isCouponsLimited(deal);
 
-  const available = (
-    !couponsEnabled ||
-    !couponsLimited ||
-    _.toNumber(remainingCoupons) > 0
-  );
+  const available =
+    !couponsEnabled || !couponsLimited || _.toNumber(remainingCoupons) > 0;
 
-  const startTime = dateToString(viewStartTime, timezone);
+  const startTime = !!viewStartTime
+    ? dateToString(viewStartTime, timezone)
+    : null;
   const endTime = dateToString(viewEndTime, timezone);
-  const publishTime = viewPublishTime ? dateToString(viewPublishTime, timezone) : startTime;
+  const publishTime = viewPublishTime
+    ? dateToString(viewPublishTime, timezone)
+    : dateToString(moment(DEFAULT_START_TIME), timezone);
 
   return {
     ..._.omit(deal, ['place', 'categories']),
@@ -105,6 +112,7 @@ export function mapViewToModel(deal, catalog) {
     startTime,
     endTime,
     publishTime,
+    hideRedeemButton,
     timezone: timezone || DEFAULT_TIMEZONE_ID,
     claimedCoupons: claimedCoupons || 0,
     redeemedCoupons: redeemedCoupons || 0,
@@ -122,10 +130,12 @@ export function mapModelToView(deal) {
     couponsEnabled,
     couponsExpirationTime,
     place,
-    ...otherDealProps,
+    ...otherDealProps
   } = deal;
 
-  const expirationTime = couponsEnabled ? toDisplayExpirationTime(couponsExpirationTime) : null;
+  const expirationTime = couponsEnabled
+    ? toDisplayExpirationTime(couponsExpirationTime)
+    : null;
   const placeId = _.get(place, 'id');
 
   return {

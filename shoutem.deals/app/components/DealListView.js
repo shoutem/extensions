@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
@@ -31,15 +30,11 @@ import DealImage from './DealImage';
 
 export class DealListView extends PureComponent {
   static propTypes = {
-    activeCoupon: PropTypes.object,
-    deal: PropTypes.object,
+    activeCoupon: PropTypes.object.isRequired,
+    deal: PropTypes.object.isRequired,
     dealStatus: dealStatusShape,
-    onPress: PropTypes.func,
+    onPress: PropTypes.func.isRequired,
     style: PropTypes.object,
-  };
-
-  static defaultProps = {
-    onPress: () => {},
   };
 
   constructor(props) {
@@ -49,7 +44,9 @@ export class DealListView extends PureComponent {
   }
 
   handlePress() {
-    this.props.onPress(this.props.deal);
+    const { deal, onPress } = this.props;
+
+    onPress(deal);
   }
 
   renderClaimedIcon() {
@@ -58,15 +55,15 @@ export class DealListView extends PureComponent {
 
   render() {
     const { deal, dealStatus, style } = this.props;
+    const { currency, discountPrice, id, regularPrice, title } = deal;
     const { couponRedeemed, dealRedeemed } = dealStatus;
 
+    const hasDiscountPrice = !!discountPrice;
+    const hasRegularPrice = !!regularPrice;
+    const hasDiscount = hasDiscountPrice && hasRegularPrice;
+
     return (
-      <TouchableOpacity
-        disabled={!_.isFunction(this.props.onPress)}
-        key={deal.id}
-        onPress={this.handlePress}
-        style={style}
-      >
+      <TouchableOpacity key={id} onPress={this.handlePress} style={style}>
         <Row>
           <DealImage
             styleName="small rounded-corners"
@@ -75,15 +72,21 @@ export class DealListView extends PureComponent {
             renderTimer={false}
           />
           <View styleName="vertical stretch space-between md-gutter-horizontal">
-            <Subtitle>{deal.title}</Subtitle>
+            <Subtitle>{title}</Subtitle>
             <View styleName="flexible horizontal v-center">
-              <Text>{formatPrice(deal.discountPrice, deal.currency)}</Text>
-              <Caption styleName="line-through">
-                {formatPrice(deal.regularPrice, deal.currency)}
-              </Caption>
+              {hasRegularPrice && !hasDiscount && (
+                <Text>{formatPrice(regularPrice, currency)}</Text>
+              )}
+              {hasDiscount && (
+                <View styleName="horizontal v-center">
+                  <Text>{`${formatPrice(discountPrice, currency)} `}</Text>
+                  <Caption styleName="line-through">
+                    {formatPrice(regularPrice, currency)}
+                  </Caption>
+                </View>
+              )}
             </View>
           </View>
-
           {(couponRedeemed || dealRedeemed) && this.renderClaimedIcon()}
         </Row>
         <Divider styleName="line" />

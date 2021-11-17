@@ -1,5 +1,3 @@
-export * from '@react-native-firebase/admob';
-
 export * from './extension';
 
 export { Banner } from './components';

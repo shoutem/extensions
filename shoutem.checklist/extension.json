@@ -1,11 +1,11 @@
 {
   "name": "checklist",
   "title": "Checklist",
-  "version": "3.1.0",
+  "version": "4.0.0",
+  "platform": "^4.0.0",
   "description": "Create to-do list, onboarding tasklist and more.",
   "releaseNotes": "* Added checklist search feature",
   "icon": "server/assets/images/add-checklist-image.png",
-  "platform": "~3.0.1",
   "dependencies": [
     "shoutem.application",
     "shoutem.i18n",

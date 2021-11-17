@@ -75,13 +75,13 @@ class SubscriptionsScreen extends PureComponent {
   }
 
   renderBackButton(props) {
-    const { canGoBack } = getRouteParams(this.props);
+    const { canGoBack, onCancel } = getRouteParams(this.props);
 
     if (!canGoBack) {
       return null;
     }
 
-    return <HeaderBackButton {...props} />;
+    return <HeaderBackButton {...props} onPress={onCancel} />;
   }
 
   setLoadingState(loading) {

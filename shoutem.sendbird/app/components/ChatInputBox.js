@@ -25,12 +25,15 @@ class ChatInputBox extends PureComponent {
 
     autoBindReact(this);
 
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this.handleFocus,
+    );
+
     this.state = {
       message: '',
       showUploadProgress: false,
     };
-
-    Keyboard.addListener('keyboardDidShow', this.handleFocus);
   }
 
   componentDidUpdate(prevProps) {
@@ -49,7 +52,7 @@ class ChatInputBox extends PureComponent {
   }
 
   componentWillUnmount() {
-    Keyboard.removeListener('keyboardDidShow', this.handleFocus);
+    this.keyboardDidShowListener.remove();
   }
 
   handleTextChange(message) {

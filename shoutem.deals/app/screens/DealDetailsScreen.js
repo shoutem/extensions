@@ -67,6 +67,7 @@ const styles = {
 
 const formatDealDate = dealDateStr => {
   const dealDate = moment(dealDateStr);
+
   return dealDate.format('MMMM DD  • h:mm a');
 };
 
@@ -87,8 +88,9 @@ export class DealDetailsScreen extends PureComponent {
     redeemDeal: PropTypes.func,
   };
 
-  static getDerivedStateFromProps(props) {
+  static getDerivedStateFromProps(props, state) {
     const newState = {
+      ...state,
       dealStatus: props.dealStatus,
     };
 
@@ -124,10 +126,6 @@ export class DealDetailsScreen extends PureComponent {
     navigation.setOptions(this.getNavBarProps());
     fetchDealTransactions(catalogId, id);
   }
-
-  /**
-   * Getters and setters
-   */
 
   getNavBarProps() {
     const { deal } = this.props;
@@ -177,18 +175,10 @@ export class DealDetailsScreen extends PureComponent {
     );
   }
 
-  /**
-   * Checkers
-   */
-
   isNavigationBarClear() {
     const { screenSettings } = getRouteParams(this.props);
     return screenSettings.navigationBarStyle === 'clear';
   }
-
-  /**
-   * Handler methods
-   */
 
   handleClaimCoupon() {
     const { authenticate, claimCoupon, deal } = this.props;
@@ -274,10 +264,6 @@ export class DealDetailsScreen extends PureComponent {
     });
   }
 
-  /**
-   * Render methods
-   */
-
   renderBarcodeImage() {
     const {
       deal: { barcode },
@@ -321,8 +307,8 @@ export class DealDetailsScreen extends PureComponent {
   }
 
   renderClaimButton() {
+    const { deal, isDealActive } = this.props;
     const {
-      deal,
       dealStatus: {
         couponsEnabled,
         couponClaimed,
@@ -330,7 +316,6 @@ export class DealDetailsScreen extends PureComponent {
         dealRedeemed,
       },
     } = this.state;
-    const { isDealActive } = this.props;
 
     const remainingCoupons = _.get(deal, 'remainingCoupons');
 
@@ -370,7 +355,7 @@ export class DealDetailsScreen extends PureComponent {
       return null;
     }
 
-    if (dealRedeemed) {
+    if (deal?.hideRedeemButton || dealRedeemed) {
       return null;
     }
 
@@ -452,30 +437,55 @@ export class DealDetailsScreen extends PureComponent {
       endTime,
     } = deal;
 
+    const hasDiscountPrice = !!discountPrice;
+    const hasRegularPrice = !!regularPrice;
+    const hasDiscount = hasDiscountPrice && hasRegularPrice;
+
     return (
       <View styleName="lg-gutter-bottom middleCenter" pointerEvents="box-none">
-        <Overlay styleName="rounded-corners">
-          <Title styleName={`h-center ${textColorStyle}`}>
-            {getFormattedDiscount(deal)}
-          </Title>
-        </Overlay>
+        {hasDiscount && (
+          <Overlay styleName="rounded-corners">
+            <Title styleName={`h-center ${textColorStyle}`}>
+              {getFormattedDiscount(deal)}
+            </Title>
+          </Overlay>
+        )}
 
         <Title styleName={`lg-gutter-vertical h-center ${textColorStyle}`}>
           {_.toUpper(title)}
         </Title>
+        {hasDiscount && (
+          <>
+            <Text
+              styleName={`sm-gutter-bottom h-center line-through ${textColorStyle}`}
+            >
+              {formatPrice(regularPrice, currency)}
+            </Text>
+            <Title styleName={`lg-gutter-bottom h-center ${textColorStyle}`}>
+              {formatPrice(discountPrice, currency)}
+            </Title>
+          </>
+        )}
+        {hasRegularPrice && !hasDiscount && (
+          <Title styleName={`lg-gutter-bottom h-center ${textColorStyle}`}>
+            {formatPrice(discountPrice, currency)}
+          </Title>
+        )}
+        {!!startTime && (
+          <>
+            <Text
+              styleName={`h-center dimmed md-gutter-bottom ${textColorStyle}`}
+            >
+              {formatDealDate(startTime)}
+            </Text>
+            <Divider styleName="line small md-gutter-vertical center" />
+          </>
+        )}
         <Text
-          styleName={`sm-gutter-bottom h-center line-through ${textColorStyle}`}
+          styleName={`h-center dimmed ${
+            !!startTime ? 'md-gutter-top' : ''
+          } ${textColorStyle}`}
         >
-          {formatPrice(regularPrice, currency)}
-        </Text>
-        <Title styleName={`lg-gutter-bottom h-center ${textColorStyle}`}>
-          {formatPrice(discountPrice, currency)}
-        </Title>
-        <Text styleName={`h-center dimmed md-gutter-bottom ${textColorStyle}`}>
-          {formatDealDate(startTime)}
-        </Text>
-        <Divider styleName="line small md-gutter-vertical center" />
-        <Text styleName={`h-center dimmed md-gutter-top ${textColorStyle}`}>
           {formatDealDate(endTime)}
         </Text>
 
@@ -585,7 +595,7 @@ export class DealDetailsScreen extends PureComponent {
   }
 }
 
-export const mapStateToProps = (state, ownProps) => {
+export function mapStateToProps(state, ownProps) {
   const { deal } = getRouteParams(ownProps);
   const lastDealTransaction = getLastDealTransaction(state, deal.id);
   const lastDealStatusTransaction = getLastDealStatusTransaction(
@@ -605,17 +615,20 @@ export const mapStateToProps = (state, ownProps) => {
     lastDealStatusTransaction,
     dealStatus: getDealStatus(deal, lastDealStatusTransaction),
   };
-};
+}
 
-export const mapDispatchToProps = dispatch => ({
-  authenticate: callback => dispatch(authenticate(callback)),
-  claimCoupon: (catalogId, dealId) => dispatch(claimCoupon(catalogId, dealId)),
-  fetchDealTransactions: (catalogId, dealId) =>
-    dispatch(fetchDealTransactions(catalogId, dealId)),
-  redeemCoupon: (catalogId, dealId, couponId) =>
-    dispatch(redeemCoupon(catalogId, dealId, couponId)),
-  redeemDeal: (catalogId, dealId) => dispatch(redeemDeal(catalogId, dealId)),
-});
+export function mapDispatchToProps(dispatch) {
+  return {
+    authenticate: callback => dispatch(authenticate(callback)),
+    claimCoupon: (catalogId, dealId) =>
+      dispatch(claimCoupon(catalogId, dealId)),
+    fetchDealTransactions: (catalogId, dealId) =>
+      dispatch(fetchDealTransactions(catalogId, dealId)),
+    redeemCoupon: (catalogId, dealId, couponId) =>
+      dispatch(redeemCoupon(catalogId, dealId, couponId)),
+    redeemDeal: (catalogId, dealId) => dispatch(redeemDeal(catalogId, dealId)),
+  };
+}
 
 export default withIsFocused(
   connect(

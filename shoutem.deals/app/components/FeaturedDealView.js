@@ -60,6 +60,12 @@ export class FeaturedDealView extends PureComponent {
       deal,
       styleName,
     } = this.props;
+    const { currency, discountPrice, regularPrice, title } = deal;
+
+    const hasDiscountPrice = !!discountPrice;
+    const hasRegularPrice = !!regularPrice;
+    const hasDiscount = hasDiscountPrice && hasRegularPrice;
+
     const containerStyleName = `sm-gutter ${styleName || ''}`;
     const couponExpiresAt = _.get(activeCoupon, 'expiresAt');
     const hasTimer = activeCoupon && couponClaimed && couponExpiresAt;
@@ -69,20 +75,31 @@ export class FeaturedDealView extends PureComponent {
         <View styleName={containerStyleName}>
           <DealImage styleName="featured" deal={deal} renderTimer={false}>
             <Tile styleName="h-center">
-              <Overlay>
-                <Title styleName="h-center">{getFormattedDiscount(deal)}</Title>
-              </Overlay>
-
+              {hasDiscount && (
+                <Overlay>
+                  <Title styleName="h-center">
+                    {getFormattedDiscount(deal)}
+                  </Title>
+                </Overlay>
+              )}
               <Title styleName="lg-gutter-vertical h-center">
-                {_.toUpper(deal.title)}
+                {_.toUpper(title)}
               </Title>
-              <Text styleName="sm-gutter-bottom line-through h-center">
-                {formatPrice(deal.regularPrice, deal.currency)}
-              </Text>
-              <Title styleName="lg-gutter-bottom h-center">
-                {formatPrice(deal.discountPrice, deal.currency)}
-              </Title>
-
+              {hasDiscount && (
+                <>
+                  <Text styleName="sm-gutter-bottom line-through h-center">
+                    {formatPrice(regularPrice, currency)}
+                  </Text>
+                  <Title styleName="lg-gutter-bottom h-center">
+                    {formatPrice(discountPrice, currency)}
+                  </Title>
+                </>
+              )}
+              {hasRegularPrice && !hasDiscount && (
+                <Title styleName="lg-gutter-bottom h-center">
+                  {formatPrice(regularPrice, currency)}
+                </Title>
+              )}
               {hasTimer && (
                 <DealRedeemTimer
                   deal={deal}
@@ -90,7 +107,6 @@ export class FeaturedDealView extends PureComponent {
                   styleName="md-gutter-vertical"
                 />
               )}
-
               {(couponRedeemed || dealRedeemed) && <Icon name="checkbox-on" />}
             </Tile>
           </DealImage>
@@ -100,7 +116,7 @@ export class FeaturedDealView extends PureComponent {
   }
 }
 
-export const mapStateToProps = (state, ownProps) => {
+export function mapStateToProps(state, ownProps) {
   const { deal } = ownProps;
   const lastDealTransaction = getLastDealTransaction(state, deal.id);
   const lastDealStatusTransaction = getLastDealStatusTransaction(
@@ -117,7 +133,7 @@ export const mapStateToProps = (state, ownProps) => {
     lastDealStatusTransaction,
     dealStatus: getDealStatus(deal, lastDealStatusTransaction),
   };
-};
+}
 
 export default connect(mapStateToProps)(
   connectStyle(ext('FeaturedDealView'), {})(FeaturedDealView),

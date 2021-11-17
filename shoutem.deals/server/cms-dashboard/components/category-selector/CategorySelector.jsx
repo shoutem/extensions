@@ -1,7 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
 import { LoaderContainer, MultiselectDropdown } from '@shoutem/react-web-ui';
+import LOCALIZATION from './localization';
 import './style.scss';
 
 export function createCategoryOptions(categories, mainCategoryId) {
@@ -39,9 +42,7 @@ export default class CategorySelector extends Component {
 
   constructor(props) {
     super(props);
-
-    this.refreshData = this.refreshData.bind(this);
-    this.handleSelectionChanged = this.handleSelectionChanged.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: false,
@@ -108,10 +109,10 @@ export default class CategorySelector extends Component {
       >
         <MultiselectDropdown
           displayLabelMaxSelectedOptions={1}
-          emptyText={i18next.t('None')}
+          emptyText={i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_LABEL)}
           onSelectionChanged={this.handleSelectionChanged}
           options={categoryOptions}
-          selectNoneText={i18next.t('None')}
+          selectNoneText={i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_LABEL)}
           selectedValues={selectedCategories}
           showSelectNoneOption
         />

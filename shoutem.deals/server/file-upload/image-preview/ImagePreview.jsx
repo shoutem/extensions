@@ -1,13 +1,15 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import { FontIcon } from '@shoutem/react-web-ui';
 import './style.scss';
 
-export default class ImagePreview extends Component {
+export default class ImagePreview extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleClick = this.handleClick.bind(this);
+    autoBindReact(this);
   }
 
   handleClick(event) {
@@ -24,13 +26,9 @@ export default class ImagePreview extends Component {
       onDeleteClick,
     } = this.props;
 
-    const classes = classNames(
-      className,
-      'image-preview',
-      {
-        'is-deletable': canBeDeleted,
-      },
-    );
+    const classes = classNames(className, 'image-preview', {
+      'is-deletable': canBeDeleted,
+    });
 
     const style = { width, height };
     if (!!src) {
@@ -38,11 +36,7 @@ export default class ImagePreview extends Component {
     }
 
     return (
-      <div
-        className={classes}
-        onClick={this.handleClick}
-        style={style}
-      >
+      <div className={classes} onClick={this.handleClick} style={style}>
         {canBeDeleted && (
           <FontIcon
             className="file-preview__delete"
@@ -75,11 +69,11 @@ ImagePreview.propTypes = {
   /**
    * Preview width
    */
-  width: React.PropTypes.string,
+  width: PropTypes.string,
   /**
    * Preview height
    */
-  height: React.PropTypes.string,
+  height: PropTypes.string,
 };
 
 ImagePreview.defaultProps = {

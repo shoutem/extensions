@@ -65,6 +65,7 @@ export class NotificationSettingsScreen extends PureComponent {
 
     this.setState({ remindMeToUseApp }, async () => {
       setNotificationSettings(newNotificationSettings);
+      notifications.cancelReminderNotifications();
 
       if (
         !remindMeToUseApp ||
