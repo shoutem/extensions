@@ -1,19 +1,19 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Favorite } from 'shoutem.favorites';
 import { connectStyle } from '@shoutem/theme';
 import {
-  TouchableOpacity,
   Caption,
-  Image,
   Divider,
+  Image,
   Row,
   Subtitle,
+  TouchableOpacity,
   View,
 } from '@shoutem/ui';
-import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
-import { getFirstImage } from '../services/places';
+import { Favorite } from 'shoutem.favorites';
 import { ext } from '../const';
+import { getFirstImage } from '../services/places';
+import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
 
 const DEFAULT_IMAGE = require('../assets/data/no_image.png');
 

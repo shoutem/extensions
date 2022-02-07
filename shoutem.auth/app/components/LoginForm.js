@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
-import { Button, Text, TextInput, View } from '@shoutem/ui';
+import { Button, Spinner, Text, TextInput, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
 import PasswordTextInput from './PasswordTextInput';
@@ -55,7 +55,6 @@ class LoginForm extends PureComponent {
 
     this.setState(
       {
-        password: '',
         usernameError: null,
         passwordError: null,
       },
@@ -63,7 +62,9 @@ class LoginForm extends PureComponent {
         const validationPassed = this.validateInputs(username, password);
 
         if (onSubmit && validationPassed) {
-          onSubmit(username, password);
+          onSubmit(username, password).then(() =>
+            this.setState({ password: '' }),
+          );
         }
       },
     );
@@ -78,7 +79,7 @@ class LoginForm extends PureComponent {
   }
 
   render() {
-    const { style, onForgotPasswordPress } = this.props;
+    const { inProgress, style, onForgotPasswordPress } = this.props;
     const { username, password, usernameError, passwordError } = this.state;
 
     return (
@@ -109,8 +110,15 @@ class LoginForm extends PureComponent {
           password={password}
           errorMessage={passwordError}
         />
-        <Button onPress={this.handleLoginButtonPress} style={style.loginButton}>
-          <Text allowFontScaling={false}>{I18n.t(ext('logInButton'))}</Text>
+        <Button
+          onPress={this.handleLoginButtonPress}
+          style={style.loginButton}
+          disabled={inProgress}
+        >
+          {inProgress && <Spinner />}
+          {!inProgress && (
+            <Text allowFontScaling={false}>{I18n.t(ext('logInButton'))}</Text>
+          )}
         </Button>
       </View>
     );

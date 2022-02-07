@@ -1,7 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
@@ -10,9 +10,9 @@ import PlacePointsRewardListView from '../../components/PlacePointsRewardListVie
 import RewardsGaugeProgressBar from '../../components/RewardsGaugeProgressBar';
 import { ext } from '../../const';
 import {
-  PlaceDetails,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
+  PlaceDetails,
 } from './PlaceDetails';
 
 const gaugeContainerStyleNames =

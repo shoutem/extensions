@@ -1,47 +1,41 @@
 import React, { useEffect } from 'react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { connectStyle } from '@shoutem/theme';
+import {
+  Caption,
+  Divider,
+  Heading,
+  ImageBackground,
+  Screen,
+  ScrollView,
+  ShareButton,
+  SimpleHtml,
+  Subtitle,
+  Tile,
+  Title,
+  View,
+} from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { openURL } from 'shoutem.web-view';
-import { connectStyle } from '@shoutem/theme';
-import {
-  View,
-  Screen,
-  Subtitle,
-  ImageBackground,
-  Button,
-  Icon,
-  Text,
-  Tile,
-  Heading,
-  ScrollView,
-  Title,
-  Caption,
-  Divider,
-  TouchableOpacity,
-  Row,
-  SimpleHtml,
-  ShareButton,
-} from '@shoutem/ui';
+import { BuyButton, DisclosureBuyButton } from '../components';
 import { ext } from '../const';
 
 function ProductDetails(props) {
   const { navigation } = props;
-  const { product } = getRouteParams(props);
+  const { addAuthHeaderToBuyLink, product } = getRouteParams(props);
 
-  const getNavBarProps = () => {
-    return {
+  useEffect(() => {
+    const navBarProps = {
       ...composeNavigationStyles(['clear', 'solidify']),
-      headerRight: props => {
+      headerRight: headerProps => {
         if (!product.link) {
           return null;
         }
 
         return (
           <ShareButton
-            // eslint-disable-next-line react/prop-types
-            iconProps={{ style: props.tintColor }}
+            iconProps={{ style: headerProps?.tintColor }}
             styleName="clear"
             title={product.name}
             url={product.link}
@@ -50,18 +44,25 @@ function ProductDetails(props) {
       },
       title: product.name || '',
     };
-  };
 
-  useEffect(() => {
-    navigation.setOptions(getNavBarProps());
-  }, []);
+    navigation.setOptions(navBarProps);
+  }, [product, navigation]);
 
-  const onBuyPress = () => {
+  function onBuyPress(accessToken) {
+    if (addAuthHeaderToBuyLink && accessToken) {
+      const url = {
+        uri: product.link,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      };
+
+      openURL(url, product.name);
+    }
+
     openURL(product.link, product.name);
-  };
+  }
 
-  const renderProductPriceInfo = () => {
-    const oldPrice = product.oldPrice;
+  function renderProductPriceInfo() {
+    const { oldPrice } = product;
 
     if (!oldPrice) {
       return (
@@ -75,27 +76,15 @@ function ProductDetails(props) {
         <Heading styleName="sm-gutter-bottom">{product.currentPrice}</Heading>
       </View>
     );
-  };
+  }
 
-  const renderBuyField = () => {
-    if (!product.link) {
-      return null;
-    }
-
-    return (
-      <Button styleName="md-gutter-top" onPress={onBuyPress}>
-        <Text>{product.buyTitle}</Text>
-      </Button>
-    );
-  };
-
-  const renderNoImage = () => {
+  function renderNoImage() {
     if (product.image) {
       return (
         <ImageBackground
           animationName="hero"
           styleName="large-square placeholder"
-          source={{ uri: _.get(product, 'image.url') }}
+          source={{ uri: product.image.url }}
           key={product.name}
         >
           <Tile animationName="hero" styleName="text-centric fill-parent">
@@ -106,7 +95,7 @@ function ProductDetails(props) {
               {product.name.toUpperCase()}
             </Title>
             {renderProductPriceInfo()}
-            {renderBuyField()}
+            <BuyButton onBuyPress={onBuyPress} product={product} />
           </Tile>
         </ImageBackground>
       );
@@ -122,13 +111,13 @@ function ProductDetails(props) {
             {product.name.toUpperCase()}
           </Subtitle>
           {renderProductPriceInfo()}
-          {renderBuyField()}
+          <BuyButton onBuyPress={onBuyPress} product={product} />
         </Tile>
       </ImageBackground>
     );
-  };
+  }
 
-  const renderInformation = () => {
+  function renderInformation() {
     if (!product.description) {
       return null;
     }
@@ -141,36 +130,16 @@ function ProductDetails(props) {
         <SimpleHtml body={product.description} />
       </View>
     );
-  };
-
-  const renderDisclosureBuyLink = () => {
-    if (!product.link) {
-      return null;
-    }
-
-    return (
-      <TouchableOpacity onPress={onBuyPress}>
-        <Divider styleName="section-header">
-          <Caption />
-        </Divider>
-        <Row>
-          <Icon styleName="indicator" name="laptop" />
-          <View styleName="vertical">
-            <Subtitle>{product.buyTitle}</Subtitle>
-            <Text numberOfLines={1}>{product.link}</Text>
-          </View>
-          <Icon styleName="indicator disclosure" name="right-arrow" />
-        </Row>
-      </TouchableOpacity>
-    );
-  };
+  }
 
   return (
     <Screen styleName="paper">
       <ScrollView>
         {renderNoImage()}
         {renderInformation()}
-        {renderDisclosureBuyLink()}
+        {product?.link && (
+          <DisclosureBuyButton onBuyPress={onBuyPress} product={product} />
+        )}
         <Divider styleName="section-header" />
       </ScrollView>
     </Screen>

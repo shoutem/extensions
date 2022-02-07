@@ -1,11 +1,11 @@
 {
   "name": "agora",
   "title": "Agora video calls",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "icon": "server/assets/add-videos-image.png",
   "description": "Connect your users with real-time video conferencing!",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

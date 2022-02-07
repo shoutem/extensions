@@ -1,11 +1,11 @@
 {
   "name": "people",
   "title": "People",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.2",
+  "platform": "^5",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Replaced loading spinner with animated placeholder",
   "dependencies": [
     "shoutem.cms",
     "shoutem.i18n",
@@ -53,7 +53,11 @@
       "name": "PeopleListScreen",
       "title": "Compact list",
       "image": "./server/assets/screens/compact-list.png",
-      "navigatesTo": ["@.PeopleDetailsScreen"]
+      "navigatesTo": ["@.PeopleDetailsScreen"],
+      "settings": {
+        "hasFeaturedItem": false,
+        "listType": "compact-list"
+      }
     },
     {
       "name": "PeopleDetailsScreen",

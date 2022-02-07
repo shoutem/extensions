@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
-import { find, storage, remove } from '@shoutem/redux-io';
 import { RSAA } from 'redux-api-middleware';
-import { setShortcutScope, setExtensionScope } from '@shoutem/redux-api-sdk';
+import { setExtensionScope, setShortcutScope } from '@shoutem/redux-api-sdk';
+import { find, remove, storage } from '@shoutem/redux-io';
 import ext from '../../const';
-import { rsaaPromise, getCmsUrl } from './services';
+import { getCmsUrl, rsaaPromise } from './services';
 
 // CONST
 export const moduleName = 'cms';

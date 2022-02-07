@@ -2,6 +2,7 @@ const key = 'iap-settings-page';
 
 const GENERAL_SETTINGS_TITLE = `${key}.general-settings-title`;
 const STORE_PRODUCTS_TITLE = `${key}.store-products-title`;
+const SETUP_INSTRUCTIONS = `${key}.setup-instructions`;
 const IOS_PRODUCT_ID = `${key}.ios-product-id`;
 const ANDROD_PRODUCT_ID = `${key}.android-product-id`;
 const IAPHUB_SETTINGS_TITLE = `${key}.iaphub-settings-title`;
@@ -14,6 +15,7 @@ const SAVE_BUTTON = `${key}.save-button`;
 export default {
   GENERAL_SETTINGS_TITLE,
   STORE_PRODUCTS_TITLE,
+  SETUP_INSTRUCTIONS,
   IOS_PRODUCT_ID,
   ANDROD_PRODUCT_ID,
   IAPHUB_SETTINGS_TITLE,

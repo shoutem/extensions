@@ -12,18 +12,25 @@ import LOCALIZATION from './localization';
 import './style.scss';
 
 export class FeedPreview extends Component {
-  componentWillMount() {
-    this.props.loadFeed(this.props.feedUrl);
+  componentDidMount() {
+    const { feedUrl, loadFeed } = this.props;
+
+    loadFeed(feedUrl);
   }
 
-  componentWillReceiveProps(newProps) {
-    if (this.props.feedUrl !== newProps.feedUrl && newProps.feedUrl) {
-      this.props.loadFeed(newProps.feedUrl);
+  componentDidUpdate(prevProps) {
+    const { feedUrl } = this.props;
+
+    if (feedUrl !== prevProps.feedUrl && feedUrl) {
+      const { loadFeed } = this.props;
+
+      loadFeed(feedUrl);
     }
   }
 
   render() {
     const { feedUrl, onRemoveClick, feedItems } = this.props;
+
     const loading = isBusy(feedItems);
 
     return (

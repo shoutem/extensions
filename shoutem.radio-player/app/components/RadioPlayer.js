@@ -1,24 +1,24 @@
 import React from 'react';
+import { Animated } from 'react-native';
+import { connect } from 'react-redux';
+import slugify from '@sindresorhus/slugify';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Animated } from 'react-native';
-import slugify from '@sindresorhus/slugify';
+import { connectStyle } from '@shoutem/theme';
+import { Button, Icon, Spinner } from '@shoutem/ui';
 import {
+  STATE_BUFFERING, // 6 buffering
   STATE_NONE, // 0 idle
-  STATE_STOPPED, // 1 idle
   STATE_PAUSED, // 2 paused
   STATE_PLAYING, // 3 playing
   STATE_READY, // undefined ready
-  STATE_BUFFERING, // 6 buffering
+  STATE_STOPPED, // 1 idle
   TrackPlayer,
   TrackPlayerBase,
 } from 'shoutem.audio';
-import { getTrackMetadata } from '../redux';
-import { connectStyle } from '@shoutem/theme';
-import { Icon, Button, Spinner } from '@shoutem/ui';
 import { ext, trackPlayerOptions } from '../const';
+import { getTrackMetadata } from '../redux';
 
 const COMMON_BUBBLE_PARAMS = {
   duration: 200,
@@ -31,15 +31,6 @@ const COMMON_APPEAR_PARAMS = {
 };
 
 class RadioPlayer extends TrackPlayerBase {
-  static propTypes = {
-    shouldResetPlayer: PropTypes.bool,
-    onPlaybackStateChange: PropTypes.func,
-    onMetadataStateChange: PropTypes.func,
-    title: PropTypes.string,
-    url: PropTypes.string,
-    metadata: PropTypes.object,
-  };
-
   constructor(props) {
     super(props);
 
@@ -368,6 +359,19 @@ class RadioPlayer extends TrackPlayerBase {
     );
   }
 }
+
+RadioPlayer.propTypes = {
+  metadata: PropTypes.object.isRequired,
+  shouldResetPlayer: PropTypes.bool.isRequired,
+  url: PropTypes.string.isRequired,
+  onMetadataStateChange: PropTypes.func.isRequired,
+  onPlaybackStateChange: PropTypes.func.isRequired,
+  title: PropTypes.string,
+};
+
+RadioPlayer.defaultProps = {
+  title: '',
+};
 
 const mapStateToProps = (state, ownProps) => {
   const { url } = ownProps;

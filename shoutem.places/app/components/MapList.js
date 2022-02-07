@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
+import { LayoutAnimation } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { LayoutAnimation } from 'react-native';
+import { connectStyle } from '@shoutem/theme';
+import { EmptyStateView, View } from '@shoutem/ui';
 import { MapView } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-import { connectStyle } from '@shoutem/theme';
-import { View, EmptyStateView } from '@shoutem/ui';
-import { PlaceIconView } from '../components';
 import { ext } from '../const';
+import PlaceIconView from './PlaceIconView';
 
 function findSelectedPlace(places, marker) {
   if (_.isEmpty(places) || !marker) {

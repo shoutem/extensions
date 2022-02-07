@@ -3,7 +3,6 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { InteractionManager } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Text, Title, View } from '@shoutem/ui';
 import { CmsListScreen } from 'shoutem.cms';
@@ -123,20 +122,18 @@ export class DealsScreen extends CmsListScreen {
     const { catalogId, find } = this.props;
     const { schema } = this.state;
 
-    InteractionManager.runAfterInteractions(() =>
-      find(schema, undefined, {
-        query: { ...this.getQueryParams(options) },
-      }).then(({ payload }) => {
-        if (!payload || !payload.data) {
-          return;
-        }
+    find(schema, undefined, {
+      query: { ...this.getQueryParams(options) },
+    }).then(({ payload }) => {
+      if (!payload || !payload.data) {
+        return;
+      }
 
-        const dealIdList = _.map(payload.data, 'id');
-        if (!_.isEmpty(dealIdList)) {
-          this.props.fetchDealListTransactions(catalogId, dealIdList);
-        }
-      }),
-    );
+      const dealIdList = _.map(payload.data, 'id');
+      if (!_.isEmpty(dealIdList)) {
+        this.props.fetchDealListTransactions(catalogId, dealIdList);
+      }
+    });
   }
 
   loadMore() {

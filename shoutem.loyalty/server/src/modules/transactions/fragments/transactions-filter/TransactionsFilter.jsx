@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Col, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import Select from 'react-select';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import Select from 'react-select';
-import { Row, Col } from 'react-bootstrap';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LOYALTY_TYPES } from 'src/const';
-import { createSelectOptions } from 'src/services';
-import { getLoyaltyPlaces, getUsers } from 'src/modules/program';
 import { getCashiers } from 'src/modules/cashiers';
+import { getLoyaltyPlaces, getUsers } from 'src/modules/program';
 import { getPunchRewards } from 'src/modules/punch-rewards';
+import { createSelectOptions } from 'src/services';
 import {
-  formatUserLabel,
-  formatRewardLabel,
-  formatPlaceLabel,
   formatCashierLabel,
+  formatPlaceLabel,
+  formatRewardLabel,
+  formatUserLabel,
 } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';

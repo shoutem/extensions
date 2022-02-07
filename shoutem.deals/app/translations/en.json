@@ -11,6 +11,8 @@
       "dealsMapButton": "Map",
       "dealsGridButton": "Grid",
       "dealsListButton": "List",
+      "validUntilLabelWithTime": "Valid until {{time}} on {{weekdayAndDate}}",
+      "validUntilLabelWithoutTime": "Valid until {{weekdayAndDate}}",
 
       "dealDescriptionHeading": "Description",
       "dealConditionsHeading": "Conditions",

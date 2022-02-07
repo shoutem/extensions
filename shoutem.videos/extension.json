@@ -1,12 +1,18 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "5.0.1",
+  "platform": "^5",
   "description": "Show a video gallery",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Replaced loading spinner with animated placeholder\n* Added My Videos screen for favorites\n* NOTE: If you have a custom extension extending this one, you may need to update it as there are breaking changes",
   "icon": "server/assets/add-videos-image.png",
-  "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
+  "dependencies": [
+    "shoutem.cms",
+    "shoutem.favorites",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.navigation"
+  ],
   "categories": ["media"],
   "i18n": {
     "locale": "en",
@@ -37,22 +43,47 @@
         }
       ],
       "settings": {
+        "hasFavorites": true,
         "defaultShortcutTitle": "Videos",
         "extensionTitle": "Videos"
+      }
+    },
+    {
+      "name": "MyVideosShortcut",
+      "title": "My Videos",
+      "icon": "theme://play.png",
+      "description": "List of favorited videos.",
+      "screen": "@.MyVideosList",
+      "adminPages": [
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        }
+      ],
+      "settings": {
+        "favoritesSchemas": ["@.Videos"]
       }
     }
   ],
   "screens": [
     {
-      "name": "VideosSmallList",
-      "title": "Small list",
-      "image": "server/assets/screens/small-list.png",
+      "name": "VideosCompactList",
+      "title": "Compact list",
+      "image": "server/assets/screens/compact-list.png",
+      "settings": {
+        "hasFeaturedItem": false,
+        "listType": "compact-list"
+      },
       "extends": "@.VideosList"
     },
     {
       "name": "VideosList",
-      "title": "Big list",
-      "image": "server/assets/screens/big-list.png",
+      "title": "Tile list",
+      "image": "server/assets/screens/tile-list.png",
+      "settings": {
+        "hasFeaturedItem": false,
+        "listType": "tile-list"
+      },
       "navigatesTo": ["@.VideoDetails"]
     },
     {
@@ -73,6 +104,19 @@
         "shareable": false,
         "disableAdBanner": true
       }
+    },
+    {
+      "name": "MyVideosList",
+      "title": "Tile favorites list",
+      "image": "server/assets/screens/tile-list.png",
+      "navigatesTo": ["@.VideoDetails"]
+    },
+    {
+      "name": "MyVideosCompactList",
+      "title": "Compact favorites list",
+      "image": "server/assets/screens/compact-list.png",
+      "extends": "@.MyVideosList",
+      "navigatesTo": ["@.VideoDetails"]
     }
   ],
   "dataSchemas": [

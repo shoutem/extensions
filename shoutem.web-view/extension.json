@@ -1,13 +1,16 @@
 {
   "name": "web-view",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.2.0",
+  "platform": "^4 || ^5",
   "title": "Web view",
-  "releaseNotes": "* Extend WebView launch capabilities",
+  "releaseNotes": "* Added support for providing headers for URLs",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "dependencies": [
-    "shoutem.layouts"
+    "shoutem.cms",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.navigation"
   ],
   "categories": [],
   "i18n": {

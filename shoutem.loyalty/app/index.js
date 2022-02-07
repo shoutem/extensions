@@ -1,32 +1,27 @@
-import PointsCardScreen from './screens/PointsCardScreen';
-import PointsSmallCardScreen from './screens/PointsSmallCardScreen';
-import PunchCardListScreen from './screens/PunchCardListScreen';
-import StampCardScreen from './screens/StampCardScreen';
-import PinVerificationScreen from './screens/PinVerificationScreen';
-import VerificationScreen from './screens/VerificationScreen';
+import './navigation';
 import AssignPointsScreen from './screens/AssignPointsScreen';
-import PointsEarnedScreen from './screens/PointsEarnedScreen';
-import RedeemOrContinueScreen from './screens/RedeemOrContinueScreen';
-import TransactionProcessedScreen from './screens/TransactionProcessedScreen';
-import RewardsListScreen from './screens/RewardsListScreen';
-import RewardsProgressScreen from './screens/RewardsProgressScreen';
-import RewardDetailsScreen from './screens/RewardDetailsScreen';
-import PointsHistoryScreen from './screens/PointsHistoryScreen';
-import NoProgramScreen from './screens/NoProgramScreen';
 import FavoritesListScreen from './screens/FavoritesListScreen';
-
+import NoProgramScreen from './screens/NoProgramScreen';
+import PinVerificationScreen from './screens/PinVerificationScreen';
 import { PlacesListScreen } from './screens/places';
-
-import PlaceDetails from './screens/places/PlaceDetails';
 import GaugeRewardsPlaceDetails from './screens/places/GaugeRewardsPlaceDetails';
 import LargeImageGaugeRewardsPlaceDetails from './screens/places/LargeImageGaugeRewardsPlaceDetails';
 import NoImageGaugeRewardsPlaceDetails from './screens/places/NoImageGaugeRewardsPlaceDetails';
+import PlaceDetails from './screens/places/PlaceDetails';
 import SinglePlaceMap from './screens/places/SinglePlaceMap';
-
+import PointsCardScreen from './screens/PointsCardScreen';
+import PointsEarnedScreen from './screens/PointsEarnedScreen';
+import PointsHistoryScreen from './screens/PointsHistoryScreen';
+import PointsSmallCardScreen from './screens/PointsSmallCardScreen';
+import PunchCardListScreen from './screens/PunchCardListScreen';
+import RedeemOrContinueScreen from './screens/RedeemOrContinueScreen';
+import RewardDetailsScreen from './screens/RewardDetailsScreen';
+import RewardsListScreen from './screens/RewardsListScreen';
+import RewardsProgressScreen from './screens/RewardsProgressScreen';
+import StampCardScreen from './screens/StampCardScreen';
+import TransactionProcessedScreen from './screens/TransactionProcessedScreen';
+import VerificationScreen from './screens/VerificationScreen';
 import enTranslations from './translations/en.json';
-
-import './navigation';
-
 import reducer from './redux';
 
 export { reducer };
@@ -64,8 +59,6 @@ export const shoutem = {
   },
 };
 
-export { refreshCard, refreshCardState } from './services';
-
-export { CARD_SCHEMA } from './const';
-
 export { appDidMount } from './app';
+export { CARD_SCHEMA } from './const';
+export { refreshCard, refreshCardState } from './services';

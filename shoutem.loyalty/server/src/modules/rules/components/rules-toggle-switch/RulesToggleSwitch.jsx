@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import i18next from 'i18next';
 import { ControlLabel } from 'react-bootstrap';
+import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import { Switch } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';

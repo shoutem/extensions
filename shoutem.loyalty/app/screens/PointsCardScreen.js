@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
+import QRCode from 'react-native-qrcode-svg';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import QRCode from 'react-native-qrcode-svg';
-import { connect } from 'react-redux';
 import {
   getCollection,
   isBusy,
@@ -17,20 +17,20 @@ import {
   Screen,
   ScrollView,
   Spinner,
-  Title,
   Text,
-  View,
+  Title,
   TouchableOpacity,
+  View,
 } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
 import { getUser, loginRequired } from 'shoutem.auth';
-import { QRCodeScanner, navigateToQRCodeScannerScreen } from 'shoutem.camera';
+import { navigateToQRCodeScannerScreen, QRCodeScanner } from 'shoutem.camera';
 import { I18n } from 'shoutem.i18n';
 import {
-  navigateTo,
-  openInModal,
   HeaderBackButton,
   HeaderIconButton,
+  navigateTo,
+  openInModal,
 } from 'shoutem.navigation';
 import { cashierShape, transactionShape } from '../components/shapes';
 import TransactionHistoryView from '../components/TransactionHistoryView';

@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Button, Caption, Divider, Image, Text, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
+import { TRANSLATIONS } from '../const';
 import { getLastDealStatusTransaction } from '../redux';
 import {
   dealStatusShape,
@@ -12,7 +13,6 @@ import {
   getDealStatus,
   isDealActive,
 } from '../services';
-import { TRANSLATIONS } from '../const';
 import DealRedeemTimer from './DealRedeemTimer';
 
 export class DealRedeemContentView extends PureComponent {
@@ -20,6 +20,7 @@ export class DealRedeemContentView extends PureComponent {
     activeCoupon: PropTypes.object.isRequired,
     deal: PropTypes.object.isRequired,
     dealStatus: dealStatusShape,
+    hideRedeemButton: PropTypes.bool,
     isDealActive: PropTypes.bool.isRequired,
     isRedeeming: PropTypes.bool.isRequired,
     onRedeemCoupon: PropTypes.func.isRequired,
@@ -82,6 +83,7 @@ export class DealRedeemContentView extends PureComponent {
     const {
       activeCoupon,
       deal,
+      hideRedeemButton,
       isDealActive,
       isRedeeming,
       onRedeemCoupon,
@@ -117,7 +119,7 @@ export class DealRedeemContentView extends PureComponent {
           </Text>
           <Text>{I18n.t(TRANSLATIONS.COUPON_REDEEM_INSTRUCTIONS_TEXT)}</Text>
         </View>
-        {isDealActive && (
+        {isDealActive && !hideRedeemButton && (
           <View styleName="md-gutter-top lg-gutter-bottom">
             <Button
               disabled={isRedeeming}

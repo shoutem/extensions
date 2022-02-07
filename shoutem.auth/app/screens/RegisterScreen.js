@@ -1,44 +1,36 @@
 import React, { PureComponent } from 'react';
+import { Alert, Platform } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Alert, Platform } from 'react-native';
-import { connect } from 'react-redux';
-import { getAppId, getExtensionSettings } from 'shoutem.application';
-import { getRouteParams, navigateTo } from 'shoutem.navigation';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
-import { Screen, Spinner, ScrollView, View } from '@shoutem/ui';
-import HorizontalSeparator from '../components/HorizontalSeparator';
+import { Screen, ScrollView, View } from '@shoutem/ui';
+import { getExtensionSettings } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
+import { getRouteParams, goBack, navigateTo } from 'shoutem.navigation';
 import {
-  RegisterForm,
   AppleSignInButton,
   FacebookButton,
+  RegisterForm,
   TermsAndPrivacy,
 } from '../components';
+import HorizontalSeparator from '../components/HorizontalSeparator';
 import { ext } from '../const';
 import { getErrorCode, getErrorMessage } from '../errorMessages';
 import { loginRequired } from '../loginRequired';
 import {
   getAccessToken,
   hideShortcuts,
-  loginWithFacebook,
   register,
+  userAuthenticatedLimited,
   userRegistered,
 } from '../redux';
 import { saveSession } from '../session';
 
-const AUTH_ERROR = 'auth_auth_notAuthorized_userAuthenticationError';
 const EMAIL_TAKEN_ERROR = 'auth_user_validation_usernameTaken';
 
 export class RegisterScreen extends PureComponent {
-  static propTypes = {
-    hideShortcuts: PropTypes.func,
-    loginWithFacebook: PropTypes.func,
-    manualApprovalActive: PropTypes.bool,
-    register: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
 
@@ -65,6 +57,7 @@ export class RegisterScreen extends PureComponent {
       access_token,
       hideShortcuts,
       onRegisterSuccess,
+      userAuthenticatedLimited,
       userRegistered,
     } = this.props;
     const createdUser = {
@@ -73,17 +66,25 @@ export class RegisterScreen extends PureComponent {
       ...payload.data?.attributes,
     };
 
-    saveSession(JSON.stringify({ access_token }));
-    userRegistered(payload);
+    if (!createdUser.approved) {
+      this.setState({ inProgress: false });
 
-    onRegisterSuccess(createdUser);
-    hideShortcuts(createdUser);
+      return userAuthenticatedLimited(goBack);
+    }
 
-    this.setState({ inProgress: false });
+    return userRegistered({
+      user: createdUser,
+      access_token,
+      callback: onRegisterSuccess,
+    })
+      .then(() => {
+        saveSession(JSON.stringify({ access_token }));
+        hideShortcuts(createdUser);
+      })
+      .finally(() => this.setState({ inProgress: false }));
   }
 
   handleRegistrationFailed({ payload }) {
-    const { manualApprovalActive } = this.props;
     const { response } = payload;
 
     this.setState({ inProgress: false });
@@ -93,22 +94,18 @@ export class RegisterScreen extends PureComponent {
     if (code === EMAIL_TAKEN_ERROR) {
       this.setState({ emailTaken: true });
 
-      return;
+      return null;
     }
 
     this.setState({ emailTaken: false, email: '' });
 
-    if (code === AUTH_ERROR && manualApprovalActive) {
-      Alert.alert(
-        I18n.t(ext('manualApprovalTitle')),
-        I18n.t(ext('manualApprovalMessage')),
-      );
-    } else {
-      const errorCode = getErrorCode(code);
-      const errorMessage = getErrorMessage(errorCode);
+    const errorCode = getErrorCode(code);
+    const errorMessage = getErrorMessage(errorCode);
 
-      Alert.alert(I18n.t(ext('registrationFailedErrorTitle')), errorMessage);
-    }
+    return Alert.alert(
+      I18n.t(ext('registrationFailedErrorTitle')),
+      errorMessage,
+    );
   }
 
   handleOpenPasswordRecoveryScreen() {
@@ -141,14 +138,6 @@ export class RegisterScreen extends PureComponent {
   render() {
     const { inProgress } = this.state;
 
-    if (inProgress) {
-      return (
-        <Screen>
-          <Spinner styleName="xl-gutter-top" />
-        </Screen>
-      );
-    }
-
     const { settings, style } = this.props;
     const { emailTaken, email } = this.state;
 
@@ -170,6 +159,7 @@ export class RegisterScreen extends PureComponent {
           <RegisterForm
             email={email}
             gdprSettings={gdprSettings}
+            inProgress={inProgress}
             newsletterSettings={newsletterSettings}
             emailTaken={emailTaken}
             onRecoverPasswordPress={this.handleOpenPasswordRecoveryScreen}
@@ -180,15 +170,12 @@ export class RegisterScreen extends PureComponent {
             <View>
               <HorizontalSeparator />
               {isEligibleForAppleSignIn && (
-                <AppleSignInButton
-                  onLoginFailed={this.handleRegistrationFailed}
-                  onLoginSuccess={this.handleRegistrationSuccess}
-                />
+                <AppleSignInButton disabled={inProgress} />
               )}
               {isFacebookAuthEnabled && (
                 <FacebookButton
+                  disabled={inProgress}
                   onLoginFailed={this.handleRegistrationFailed}
-                  onLoginSuccess={this.handleRegistrationSuccess}
                 />
               )}
             </View>
@@ -206,17 +193,31 @@ export class RegisterScreen extends PureComponent {
   }
 }
 
+RegisterScreen.propTypes = {
+  access_token: PropTypes.string.isRequired,
+  hideShortcuts: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  register: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired,
+  style: PropTypes.object.isRequired,
+  userAuthenticatedLimited: PropTypes.func.isRequired,
+  userRegistered: PropTypes.func.isRequired,
+  onRegisterSuccess: PropTypes.func,
+};
+
+RegisterScreen.defaultProps = {
+  onRegisterSuccess: _.noop(),
+};
+
 export const mapDispatchToProps = {
   hideShortcuts,
-  loginWithFacebook,
   register,
+  userAuthenticatedLimited,
   userRegistered,
 };
 
 export function mapStateToProps(state, ownProps) {
   return {
-    user: state[ext()].user,
-    appId: getAppId(),
     access_token: getAccessToken(state),
     settings: getExtensionSettings(state, ext()),
     ...getRouteParams(ownProps),

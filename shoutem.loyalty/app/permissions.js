@@ -2,8 +2,7 @@ const {
   PERMISSION_TYPES,
 } = require('../../shoutem.permissions/app/build/const');
 
-const cameraPermissionRationale =
-  'scan loyalty QR codes';
+const cameraPermissionRationale = 'scan loyalty QR codes';
 
 const permissions = [
   {

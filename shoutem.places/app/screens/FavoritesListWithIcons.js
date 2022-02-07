@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
-import {
-  FavoritesList,
-  mapStateToProps,
-  mapDispatchToProps,
-} from '../screens/FavoritesList';
 import { PlaceIconView } from '../components';
 import { ext } from '../const';
+import {
+  FavoritesList,
+  mapDispatchToProps,
+  mapStateToProps,
+} from './FavoritesList';
 
 class FavoritesListWithIcons extends FavoritesList {
   static propTypes = {

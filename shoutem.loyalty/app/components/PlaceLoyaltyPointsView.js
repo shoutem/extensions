@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { getCollection, isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Caption, Text, Tile, Title, View } from '@shoutem/ui';

@@ -1,21 +1,21 @@
 {
   "name": "shoutem.shopify",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
-    "apollo-cache-inmemory": "^1.1.12",
-    "apollo-client": "^2.2.8",
-    "apollo-client-preset": "^1.0.8",
-    "apollo-link-context": "^1.0.8",
-    "apollo-link-http": "^1.5.4",
-    "axios": "^0.18.0",
-    "graphql": "^0.13.2",
-    "graphql-tag": "^2.9.1",
-    "react-native-webview": "~11.0.0",
+    "apollo-cache-inmemory": "1.6.6",
+    "apollo-client": "2.6.10",
+    "apollo-client-preset": "1.0.8",
+    "apollo-link-context": "1.0.20",
+    "apollo-link-http": "1.5.17",
+    "axios": "0.18.1",
+    "graphql": "0.13.2",
+    "graphql-tag": "2.12.6",
+    "react-native-webview": "11.0.3",
     "shopify-buy": "2.11.0",
-    "world-countries": "^1.8.1"
+    "world-countries": "1.8.1"
   },
   "peerDependencies": {
     "@shoutem/redux-io": "*",

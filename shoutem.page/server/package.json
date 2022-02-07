@@ -1,6 +1,6 @@
 {
   "name": "shoutem.page",
-  "version": "4.0.0",
+  "version": "4.0.2",
   "description": "Page",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
@@ -11,6 +11,7 @@
     "dev": "run-p watch serve"
   },
   "dependencies": {
+    "auto-bind": "^4.0.0",
     "i18next": "^19.8.2"
   },
   "devDependencies": {

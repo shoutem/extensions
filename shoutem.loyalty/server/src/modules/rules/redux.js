@@ -1,18 +1,18 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
+import { createSelector } from 'reselect';
+import ext from 'src/const';
+import { getLoyaltyUrl } from 'src/services';
 import {
   cloneStatus,
-  find,
-  create,
-  update,
-  getCollection,
-  storage,
   collection,
+  create,
+  find,
+  getCollection,
   remove,
+  storage,
+  update,
 } from '@shoutem/redux-io';
-import { createSelector } from 'reselect';
-import { getLoyaltyUrl } from 'src/services';
-import ext from 'src/const';
 import {
   getRulesToCreate,
   getRulesToDelete,

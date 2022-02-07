@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { ControlLabel, FormGroup } from 'react-bootstrap';
 import i18next from 'i18next';
-import { FormGroup, ControlLabel } from 'react-bootstrap';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LOYALTY_TYPES } from 'src/const';
 import LoyaltyTypeRadio from '../loyalty-type-radio';
 import LOCALIZATION from './localization';

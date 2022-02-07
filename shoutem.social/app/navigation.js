@@ -1,12 +1,4 @@
 import { ModalScreens } from 'shoutem.navigation';
-import { screens as authScreens } from 'shoutem.auth';
-import { ext } from './const';
+import { ext as userProfileExt } from 'shoutem.user-profile';
 
-const UserProfileScreen = authScreens.UserProfileScreen;
-
-ModalScreens.registerModalScreens([
-  {
-    name: ext('UserProfileScreen'),
-    component: UserProfileScreen,
-  },
-]);
+ModalScreens.registerModalScreens([userProfileExt('UserProfileScreen')]);

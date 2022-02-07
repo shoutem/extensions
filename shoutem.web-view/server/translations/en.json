@@ -5,6 +5,7 @@
       "web-page.form-website-settings": "Website settings",
       "web-page.form-location-permissions": "This website requires location permissions",
       "web-page.form-navigation-bar": "Show navigation toolbar",
+      "web-page.form-forward-auth-header": "Forward Shoutem authentication header",
       "web-page.button-continue": "Continue",
       "web-page.invalid-url": "Invalid URL."
     }

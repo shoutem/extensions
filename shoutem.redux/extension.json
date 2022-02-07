@@ -1,10 +1,12 @@
 {
   "name": "redux",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.1.1",
+  "platform": "^4.0.5 || ^5.0.0",
   "title": "Redux",
   "description": "Redux integration",
+  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
   "icon": "server/assets/add-redux-image.png",
+  "dependencies": [],
   "type": "system",
   "categories": [],
   "repository": {

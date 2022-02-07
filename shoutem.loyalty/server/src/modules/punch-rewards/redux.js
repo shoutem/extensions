@@ -1,7 +1,7 @@
-import ext from 'src/const';
 import { combineReducers } from 'redux';
-import { find, storage, collection, getCollection } from '@shoutem/redux-io';
+import ext from 'src/const';
 import { getLoyaltyUrl } from 'src/services';
+import { collection, find, getCollection, storage } from '@shoutem/redux-io';
 
 // CONST
 export const moduleName = 'punchRewards';
@@ -14,7 +14,7 @@ export function getPunchRewardsState(state) {
 }
 
 export function getPunchRewards(state) {
-  const punchRewards = getPunchRewardsState(state).punchRewards;
+  const { punchRewards } = getPunchRewardsState(state);
   return getCollection(punchRewards, state);
 }
 

@@ -3,13 +3,13 @@ import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
-  TouchableOpacity,
   Caption,
+  Divider,
   Icon,
   Image,
-  Divider,
   Row,
   Subtitle,
+  TouchableOpacity,
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';

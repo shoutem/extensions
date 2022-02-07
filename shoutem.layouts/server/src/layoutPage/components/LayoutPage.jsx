@@ -53,9 +53,17 @@ export class LayoutPage extends Component {
 
     const originalScreens = _.get(hierarchy, 'originalScreens');
     const originScreen = _.find(originalScreens, { canonicalType });
-    const alternativeScreens = _.get(originScreen, 'alternativeScreens');
 
-    return _.get(_.find(alternativeScreens, { canonicalName }), 'settings');
+    // If it's base screen layout - return it's settings.
+    // Otherwise, look for it in alternativeScreens and then return settings.
+    if (originScreen?.canonicalName === canonicalName) {
+      return originScreen?.settings || {};
+    }
+
+    const alternativeScreens = originScreen?.alternativeScreens || [];
+    const resultScreen = _.find(alternativeScreens, { canonicalName });
+
+    return resultScreen?.settings || {};
   }
 
   checkData(props) {

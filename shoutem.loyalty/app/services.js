@@ -1,29 +1,28 @@
-import _ from 'lodash';
 import { Alert } from 'react-native';
+import _ from 'lodash';
 import { invalidate } from '@shoutem/redux-io';
 import { getAppId } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo, openInModal } from 'shoutem.navigation';
 import {
-  ext,
   CMS_PUNCHCARDS_SCHEMA,
-  REWARDS_SCHEMA,
+  ext,
   PLACE_REWARDS_SCHEMA,
   PUNCH_REWARDS_SCHEMA,
+  REWARDS_SCHEMA,
 } from './const';
 import {
   createCardForUser,
+  createTransaction,
   fetchCard,
   fetchCardState,
   fetchCashierInfo,
   fetchTransactions,
-  getCashierInfo,
   getCardId,
+  getCashierInfo,
   isPunchCard,
-  createTransaction,
 } from './redux';
-
 import { getErrorMessage } from './translations';
 
 const showTransactionError = error => {

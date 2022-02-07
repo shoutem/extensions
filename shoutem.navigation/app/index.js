@@ -54,6 +54,7 @@ export {
   NavigationStacks,
   Decorators,
   composeNavigationStyles,
+  BackHandlerAndroid,
 } from './services';
 
 export {

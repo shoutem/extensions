@@ -1,14 +1,15 @@
 {
   "name": "page",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.2",
+  "platform": "^5",
   "title": "Page",
   "description": "Show a single screen with info and child items",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Fixed title and description scrolling over image\n* Fixed status bar styling getting \"stuck\"",
   "icon": "server/assets/add-page-image.png",
   "dependencies": [
     "shoutem.application",
     "shoutem.cms",
+    "shoutem.i18n",
     "shoutem.layouts",
     "shoutem.navigation"
   ],

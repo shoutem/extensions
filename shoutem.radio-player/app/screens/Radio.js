@@ -1,44 +1,44 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
-import PropTypes from 'prop-types';
+import { Dimensions, LayoutAnimation, PixelRatio } from 'react-native';
 import { connect } from 'react-redux';
 import slugify from '@sindresorhus/slugify';
-import { Dimensions, PixelRatio, LayoutAnimation } from 'react-native';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
   EmptyStateView,
   Image,
   ImageBackground,
+  NAVIGATION_HEADER_HEIGHT,
   Overlay,
   Row,
   Screen,
+  ShareButton,
   Subtitle,
   Tile,
   View,
-  NAVIGATION_HEADER_HEIGHT,
-  ShareButton,
 } from '@shoutem/ui';
 import {
+  STATE_BUFFERING, // 6 buffering
+  STATE_CONNECTING, // 8 connecting
   STATE_NONE, // 0 idle
-  STATE_STOPPED, // 1 idle
   STATE_PAUSED, // 2 paused
   STATE_PLAYING, // 3 playing
   STATE_READY, // undefined ready
-  STATE_BUFFERING, // 6 buffering
-  STATE_CONNECTING, // 8 connecting
+  STATE_STOPPED, // 1 idle
 } from 'shoutem.audio';
 import { I18n } from 'shoutem.i18n';
 import {
-  getRouteParams,
   composeNavigationStyles,
   getCurrentRoute,
+  getRouteParams,
 } from 'shoutem.navigation';
-import RadioPlayer from '../components/RadioPlayer';
-import getWeServUrl from '../services/getWeServUrl';
-import { setTrackMetadata } from '../redux';
-import { getTrackArtwork } from '../services/itunes';
-import { ext } from '../const';
 import { images } from '../assets';
+import RadioPlayer from '../components/RadioPlayer';
+import { ext } from '../const';
+import { setTrackMetadata } from '../redux';
+import getWeServUrl from '../services/getWeServUrl';
+import { getTrackArtwork } from '../services/itunes';
 
 const overlayStyle = { marginBottom: 0 };
 
@@ -63,12 +63,6 @@ function renderPlaceholderView() {
 }
 
 export class Radio extends PureComponent {
-  static propTypes = {
-    shortcut: PropTypes.object,
-    style: PropTypes.any,
-    setTrackMetadata: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
 
@@ -183,7 +177,7 @@ export class Radio extends PureComponent {
     const { style } = this.props;
     const { shortcut } = getRouteParams(this.props);
     const {
-      settings: { backgroundImageUrl, streamTitle, streamUrl },
+      settings: { backgroundImageUrl, streamTitle, streamUrl, showArtwork },
     } = shortcut;
     const { playbackState, artist, songName, musicImage } = this.state;
 
@@ -214,11 +208,13 @@ export class Radio extends PureComponent {
           <View style={style.nowPlaying} styleName="vertical h-center">
             <Subtitle style={style.nowPlayingText}>{statusText}</Subtitle>
             <Row style={style.clearRow}>
-              <Image
-                source={musicImage}
-                style={musicImageStyle}
-                styleName="small"
-              />
+              {!!showArtwork && (
+                <Image
+                  source={musicImage}
+                  style={musicImageStyle}
+                  styleName="small"
+                />
+              )}
               <View styleName="vertical stretch v-center">
                 {isPlaying && (
                   <View styleName="vertical stretch v-start">
@@ -234,6 +230,17 @@ export class Radio extends PureComponent {
     );
   }
 }
+
+Radio.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired,
+  setTrackMetadata: PropTypes.func.isRequired,
+  style: PropTypes.object,
+};
+
+Radio.defaultProps = {
+  style: {},
+};
 
 const mapDispatchToProps = {
   setTrackMetadata,

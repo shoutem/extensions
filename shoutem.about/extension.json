@@ -1,16 +1,18 @@
 {
   "name": "about",
-  "version": "4.0.0",
-  "platform": "~4.0.0",
+  "version": "5.0.0",
+  "platform": "^5",
   "title": "About",
   "description": "Show info about your app or your business",
-  "releaseNotes": "* Properly resolve loading and empty content of About screen",
+  "releaseNotes": "* Fixed status bar styling behavior\n* Replaced loading spinner with animated placeholder",
   "icon": "server/assets/add-about-image.png",
   "dependencies": [
+    "shoutem.application",
     "shoutem.cms",
     "shoutem.i18n",
     "shoutem.layouts",
     "shoutem.navigation",
+    "shoutem.redux",
     "shoutem.web-view"
   ],
   "categories": ["content"],

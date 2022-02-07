@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
+import emptyImage from 'assets/images/empty-state-loyalty.svg';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import {
-  LoaderContainer,
   EmptyResourcePlaceholder,
+  LoaderContainer,
 } from '@shoutem/react-web-ui';
-import emptyImage from 'assets/images/empty-state-loyalty.svg';
 import LOCALIZATION from './localization';
 import './style.scss';
 

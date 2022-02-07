@@ -1,15 +1,14 @@
 {
   "name": "rss",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "type": "system",
   "title": "RSS",
   "description": "Integrate with RSS feed source",
-  "releaseNotes": "* Continuous improvements",
+  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
   "icon": "server/assets/add-rss-image.png",
-  "categories": [
-    "content"
-  ],
+  "dependencies": ["shoutem.application", "shoutem.i18n"],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

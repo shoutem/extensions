@@ -22,6 +22,7 @@
         "one": "{{count}} Like",
         "other": "{{count}} Likes"
       },
+      "imageSizeWarning": "Image size exceedes the maximum size of 50MB",
       "blankPostWarning": "This post appears to be blank. Please write something.",
       "charactersLeft": "{{numOfCharacters}} characters left",
       "numberOfComments": {

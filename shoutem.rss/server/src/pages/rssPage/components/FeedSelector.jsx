@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import {
   Button,
   ButtonToolbar,
@@ -11,11 +12,11 @@ import { Radio } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export default class FeedSelector extends Component {
+export default class FeedSelector extends PureComponent {
   constructor(props) {
     super(props);
-    this.onFeedChange = this.onFeedChange.bind(this);
-    this.onAddClick = this.onAddClick.bind(this);
+
+    autoBindReact(this);
 
     this.state = { feed: null };
   }
@@ -27,11 +28,16 @@ export default class FeedSelector extends Component {
   }
 
   onAddClick() {
-    this.props.onAddClick(this.state.feed);
+    const { onAddClick } = this.props;
+    const { feed } = this.state;
+
+    onAddClick(feed);
   }
 
   render() {
     const { discoveredFeeds, onCancelClick } = this.props;
+    const { feed } = this.state;
+
     return (
       <div>
         <form>
@@ -59,11 +65,7 @@ export default class FeedSelector extends Component {
           </FormGroup>
         </form>
         <ButtonToolbar>
-          <Button
-            bsStyle="primary"
-            disabled={!this.state.feed}
-            onClick={this.onAddClick}
-          >
+          <Button bsStyle="primary" disabled={!feed} onClick={this.onAddClick}>
             {i18next.t(LOCALIZATION.BUTTON_ADD_FEED)}
           </Button>
           <Button bsStyle="default" onClick={onCancelClick}>
@@ -76,7 +78,7 @@ export default class FeedSelector extends Component {
 }
 
 FeedSelector.propTypes = {
-  discoveredFeeds: PropTypes.array,
-  onAddClick: PropTypes.func,
-  onCancelClick: PropTypes.func,
+  discoveredFeeds: PropTypes.array.isRequired,
+  onAddClick: PropTypes.func.isRequired,
+  onCancelClick: PropTypes.func.isRequired,
 };

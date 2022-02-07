@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { getErrorCode } from 'src/services';
 import { InlineModal } from '@shoutem/react-web-ui';
 import { shouldLoad } from '@shoutem/redux-io';
-import _ from 'lodash';
-import { getErrorCode } from 'src/services';
-import { CashiersTable, CashierForm } from '../../components';
+import { CashierForm, CashiersTable } from '../../components';
 import {
-  loadCashiers,
   createCashier,
-  updateCashier,
   deleteCashier,
   getCashiersWithPlace,
+  loadCashiers,
+  updateCashier,
 } from '../../redux';
 import { getErrorMessage } from '../../services';
 import LOCALIZATION from './localization';

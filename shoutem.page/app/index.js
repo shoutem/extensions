@@ -1,5 +1,4 @@
-import reducer from './reducers';
-import * as extension from './extension.js';
+import * as extension from './extension';
 
 const { PageScreen } = extension.screens;
 
@@ -12,7 +11,6 @@ export const screens = {
 };
 
 export { PAGE_SHORTCUT_NAME } from './const';
+export { reducer } from './redux';
 
-export const themes = extension.themes;
-
-export { reducer };
+export const { themes } = extension;

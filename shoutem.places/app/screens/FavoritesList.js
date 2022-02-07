@@ -1,12 +1,12 @@
 import React from 'react';
-import autoBindReact from 'auto-bind';
-import _ from 'lodash';
 import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind';
+import _ from 'lodash';
+import { connectStyle } from '@shoutem/theme';
 import { FavoritesListScreen } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams, HeaderTextButton } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
 import { MapList, PlacePhotoView } from '../components';
 import { ext } from '../const';
 import { getAllPlaces } from '../redux';

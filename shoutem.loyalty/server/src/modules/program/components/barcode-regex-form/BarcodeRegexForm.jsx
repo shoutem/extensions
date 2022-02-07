@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { reduxForm } from 'redux-form';
+import { Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
+import { Trans } from 'react-i18next';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { Trans } from 'react-i18next';
+import PropTypes from 'prop-types';
+import { reduxForm } from 'redux-form';
+import { getFormState } from 'src/redux';
 import {
-  LoaderContainer,
-  ReduxFormElement,
   FontIcon,
   FontIconPopover,
+  LoaderContainer,
+  ReduxFormElement,
 } from '@shoutem/react-web-ui';
-import { Row, Col, Button, ButtonToolbar } from 'react-bootstrap';
-import { getFormState } from 'src/redux';
 import LOCALIZATION from './localization';
 import './style.scss';
 

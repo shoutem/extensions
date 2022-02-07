@@ -1,20 +1,18 @@
 export {
-  enableLoyalty,
-  loadLoyaltyPlaces,
-  loadCards,
-  loadUsers,
-  loadAuthorizations,
   createAuthorization,
-  updateAuthorization,
   createCard,
+  enableLoyalty,
+  loadAuthorizations,
+  loadCards,
+  loadLoyaltyPlaces,
+  loadUsers,
+  updateAuthorization,
 } from './actions';
-
-export {
-  getLoyaltyPlaces,
-  getCards,
-  getUsers,
-  getCardsByUserId,
-  getAuthorizationByType,
-} from './selectors';
-
 export { reducer } from './reducer';
+export {
+  getAuthorizationByType,
+  getCards,
+  getCardsByUserId,
+  getLoyaltyPlaces,
+  getUsers,
+} from './selectors';

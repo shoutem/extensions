@@ -1,0 +1,1 @@
+export { contactsRouter } from './router';

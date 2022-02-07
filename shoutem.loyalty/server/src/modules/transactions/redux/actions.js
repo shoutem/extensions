@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import { find, next, prev, create, remove } from '@shoutem/redux-io';
-import { getLoyaltyUrl } from 'src/services';
 import ext, { LOYALTY_TYPES } from 'src/const';
 import { PUNCH_CARDS } from 'src/modules/punch-rewards';
-import { CARD_TYPES, TRANSACTIONS, TRANSACTION_STATS } from '../const';
+import { getLoyaltyUrl } from 'src/services';
+import { create, find, next, prev, remove } from '@shoutem/redux-io';
+import { CARD_TYPES, TRANSACTION_STATS, TRANSACTIONS } from '../const';
 
 function generateTransactionsFilter(loyaltyType, filter) {
   const { cardId, rewardId, cashierId, placeId } = filter;

@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import { Platform } from 'react-native';
+import _ from 'lodash';
 import { getExtensionSettings } from 'shoutem.application/redux';
 import { ext } from '../const';
 

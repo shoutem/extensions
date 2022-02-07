@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { LoaderContainer } from '@shoutem/react-web-ui';
-import { shouldLoad, isInitialized } from '@shoutem/redux-io';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { ToggleSwitch } from 'src/components';
 import { navigateToUrl } from 'src/redux';
+import { LoaderContainer } from '@shoutem/react-web-ui';
+import { isInitialized, shouldLoad } from '@shoutem/redux-io';
 import { BarcodeRegexForm } from '../../components';
 import {
-  loadAuthorizations,
   createAuthorization,
-  updateAuthorization,
   getAuthorizationByType,
+  loadAuthorizations,
+  updateAuthorization,
 } from '../../redux';
 import LOCALIZATION from './localization';
 

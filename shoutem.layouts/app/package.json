@@ -1,4 +1,12 @@
 {
   "name": "shoutem.layouts",
-  "version": "4.0.0"
+  "version": "4.1.0",
+  "peerDependencies": {
+    "@shoutem/theme": "*",
+    "@shoutem/ui": "*",
+    "react-native-linear-gradient": "*"
+  },
+  "dependencies": {
+    "react-native-shimmer-placeholder": "2.0.8"
+  }
 }

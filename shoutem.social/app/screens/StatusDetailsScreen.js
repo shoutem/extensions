@@ -1,39 +1,39 @@
 import React, { useEffect, useRef, useState } from 'react';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import {
   Alert,
-  KeyboardAvoidingView,
   Keyboard as RNKeyboard,
-  TextInput,
+  KeyboardAvoidingView,
   Platform,
+  TextInput,
 } from 'react-native';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import ActionSheet from 'react-native-action-sheet';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { hasNext, isBusy, isInitialized, next } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import {
+  ActionSheet as ShoutemActionSheet,
+  Button,
+  Divider,
+  Icon,
+  ImageBackground,
+  Keyboard,
+  ListView,
+  Row,
+  Screen,
+  Text,
+  View,
+} from '@shoutem/ui';
 import { authenticate } from 'shoutem.auth';
 import { getUser } from 'shoutem.auth/redux';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams, HeaderIconButton } from 'shoutem.navigation';
-import { isBusy, isInitialized, next, hasNext } from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
 import {
-  Button,
-  ListView,
-  Screen,
-  View,
-  Divider,
-  Text,
-  Icon,
-  ImageBackground,
-  Keyboard,
-  Row,
-  ActionSheet as ShoutemActionSheet,
-} from '@shoutem/ui';
-import {
-  requestPermissions,
   PERMISSION_TYPES,
+  requestPermissions,
   RESULTS,
 } from 'shoutem.permissions';
 import CommentView from '../components/CommentView';
@@ -41,17 +41,17 @@ import { user as userShape } from '../components/shapes';
 import StatusView from '../components/StatusView';
 import { ext } from '../const';
 import {
-  loadComments,
-  createComment,
-  deleteStatus,
-  deleteComment,
-  selectors,
   blockUser,
+  createComment,
+  deleteComment,
+  deleteStatus,
+  loadComments,
+  selectors,
 } from '../redux';
 import {
-  openProfileForLegacyUser,
   currentUserOwnsStatus,
   openBlockOrReportActionSheet,
+  openProfileForLegacyUser,
 } from '../services';
 
 const CAMERA_PERMISSION = Platform.select({
@@ -59,6 +59,7 @@ const CAMERA_PERMISSION = Platform.select({
   default: PERMISSION_TYPES.ANDROID_CAMERA,
 });
 
+const MAX_IMAGE_SIZE = 50 * 1024 * 1024;
 const IMAGE_PICKER_OPTIONS = {
   includeBase64: true,
   maxHeight: 1024,
@@ -194,6 +195,8 @@ export function StatusDetailsScreen(props) {
   const handleImageSelected = response => {
     if (response.errorCode) {
       Alert.alert(response.errorMessage);
+    } else if (response.assets[0].fileSize > MAX_IMAGE_SIZE) {
+      Alert.alert(I18n.t(ext('imageSizeWarning')));
     } else if (!response.didCancel) {
       setImage64Data(response.assets[0].base64);
     }
@@ -231,6 +234,11 @@ export function StatusDetailsScreen(props) {
     return authenticate(() =>
       blockUser(blockUserId, currentUserId).then(() => navigation.goBack()),
     );
+  }
+
+  function handleImageButtonPress() {
+    RNKeyboard.dismiss();
+    setPickerActive(true);
   }
 
   function handleMenuPress() {
@@ -306,7 +314,7 @@ export function StatusDetailsScreen(props) {
     const keyboardOffset = Keyboard.calculateKeyboardOffset();
 
     const addPhotoButton = enablePhotoAttachments && (
-      <Button styleName="clear" onPress={() => setPickerActive(true)}>
+      <Button styleName="clear" onPress={handleImageButtonPress}>
         <Icon name="take-a-photo" />
       </Button>
     );

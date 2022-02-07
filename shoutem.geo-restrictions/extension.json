@@ -1,9 +1,16 @@
 {
   "name": "geo-restrictions",
   "title": "Geo Restrictions",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "description": "Restricts access to specific content based upon the user's geographical location",
+  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.i18n",
+    "shoutem.navigation",
+    "shoutem.permission"
+  ],
   "icon": "server/assets/geo.png",
   "native": true,
   "i18n": {

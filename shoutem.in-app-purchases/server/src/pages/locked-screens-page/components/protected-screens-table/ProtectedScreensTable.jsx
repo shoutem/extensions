@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import { Table } from 'src/components';
 import { buildShortcutTree } from 'src/services';
 import { ProtectedScreenRow } from '../protected-screen-row';
@@ -12,27 +12,34 @@ function getColumnHeader() {
   return [{ id: 'name', value: i18next.t(LOCALIZATION.HEADER_NAME_TITLE) }];
 }
 
-export default class ProtectedScreensTable extends Component {
+export default class ProtectedScreensTable extends PureComponent {
   constructor(props) {
     super(props);
+
     autoBindReact(this);
+
+    const shortcuts = props?.shortcuts;
+
+    this.state = {
+      shortcutTree: shortcuts ? buildShortcutTree(shortcuts) : undefined,
+    };
   }
 
-  componentWillMount() {
-    this.checkData(this.props);
+  componentDidMount() {
+    this.checkData();
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.checkData(nextProps, this.props);
+  componentDidUpdate(prevProps) {
+    this.checkData(prevProps);
   }
 
-  checkData(nextProps, props = {}) {
-    const { shortcuts } = props;
-    const { shortcuts: nextShortcuts } = nextProps;
+  checkData(prevProps = {}) {
+    const { shortcuts } = this.props;
+    const { shortcuts: prevShortcuts } = prevProps;
 
-    if (nextShortcuts !== shortcuts) {
+    if (shortcuts && prevShortcuts !== shortcuts) {
       this.setState({
-        shortcutTree: buildShortcutTree(nextShortcuts),
+        shortcutTree: buildShortcutTree(shortcuts),
       });
     }
   }

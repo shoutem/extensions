@@ -1,20 +1,26 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
-import { ThemeShape } from '@shoutem/theme';
-import { DriverShape } from '@shoutem/animation';
 import { NavigationContainer } from '@react-navigation/native';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { DriverShape } from '@shoutem/animation';
+import { ThemeShape } from '@shoutem/theme';
+import { ScrollView } from '@shoutem/ui';
 import {
-  getHiddenShortcuts,
   getAppInitQueueComplete,
+  getHiddenShortcuts,
 } from 'shoutem.application/redux';
-import { createNavigatonStyles, ModalScreens } from '../services';
 import { HeaderTitle } from '../components';
 import { navigationRef } from '../const';
-import { setNavigationInitialized } from '../redux';
 import { NavigationTree } from '../navigators';
+import { setNavigationInitialized } from '../redux';
+import {
+  collectShortcutScreens,
+  createNavigatonStyles,
+  Decorators,
+  ModalScreens,
+} from '../services';
 
 let normalizedShortcuts = [];
 
@@ -50,44 +56,29 @@ function normalizeShortcuts(shortcuts) {
 }
 
 export class RouteConfigProvider extends PureComponent {
-  static propTypes = {
-    shortcuts: PropTypes.array,
-    firstShortcut: PropTypes.object,
-    screens: PropTypes.object,
-    initQueueComplete: PropTypes.bool,
-  };
-
-  static contextTypes = {
-    theme: ThemeShape,
-    animationDriver: DriverShape,
-  };
-
   constructor(props) {
     super(props);
 
     autoBindReact(this);
 
-    this.state = { normalizedShortcuts: [], navReady: false };
+    Decorators.createGlobalDecorator();
+
+    const decoratedScreens = Decorators.decorateScreens(props.screens);
+
+    this.state = {
+      decoratedScreens,
+      normalizedShortcuts: [],
+      navReady: false,
+    };
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      firstShortcut,
-      shortcuts,
-      hiddenShortcuts,
-      navBarSettings,
-    } = this.props;
-
+    const { firstShortcut, shortcuts, hiddenShortcuts } = this.props;
+    const { decoratedScreens } = this.state;
     const {
       shortcuts: prevShortcuts,
       hiddenShortcuts: prevHiddenShortcuts,
     } = prevProps;
-
-    createNavigatonStyles({
-      theme: this.context.theme,
-      animationDriver: this.context.animationDriver,
-      navBarSettings,
-    });
 
     const shortcutsLoaded = _.isEmpty(prevShortcuts) && !_.isEmpty(shortcuts);
 
@@ -103,27 +94,45 @@ export class RouteConfigProvider extends PureComponent {
     if (shortcutsLoaded || (hiddenShortcutsUpdated && !_.isEmpty(shortcuts))) {
       const cleanShortcuts = [...shortcuts];
       _.remove(cleanShortcuts, { id: firstShortcut.id });
+
       ModalScreens.registerModalScreens(
-        _.compact(
-          _.map(cleanShortcuts, shortcut => {
+        _.reduce(
+          cleanShortcuts,
+          (result, shortcut) => {
             if (!_.get(shortcut, 'screen')) {
-              return undefined;
+              return result;
             }
 
-            return {
-              name: _.get(shortcut, 'screen'),
-              options: {
-                // eslint-disable-next-line react/prop-types
-                headerTitle: ({ style, children }) => (
-                  <HeaderTitle
-                    style={style}
-                    shortcut={shortcut}
-                    title={children}
-                  />
-                ),
-              },
-            };
-          }),
+            const screens = collectShortcutScreens(shortcut, decoratedScreens);
+
+            return [
+              ...result,
+              ...screens.map(screen => {
+                // screens(collectShortcutScreens result) returns only name & component
+                // We need whole screen object here, to extract it's settings
+                const shortcutScreen = _.find(shortcut.screens, {
+                  canonicalName: screen.name,
+                });
+                const screenSettings = shortcutScreen?.settings || {};
+
+                return {
+                  name: screen.name,
+                  initialParams: { shortcut, screenSettings },
+                  options: {
+                    // eslint-disable-next-line react/prop-types
+                    headerTitle: ({ style, children }) => (
+                      <HeaderTitle
+                        style={style}
+                        shortcut={shortcut}
+                        title={children}
+                      />
+                    ),
+                  },
+                };
+              }),
+            ];
+          },
+          [],
         ),
       );
 
@@ -138,38 +147,72 @@ export class RouteConfigProvider extends PureComponent {
     setNavigationInitialized();
   }
 
+  handleAnimationDriverChange(animationDriver) {
+    const { navBarSettings } = this.props;
+    const { theme } = this.context;
+
+    createNavigatonStyles({
+      animationDriver,
+      navBarSettings,
+      theme,
+    });
+  }
+
   render() {
-    const { normalizedShortcuts, navReady } = this.state;
     const {
       firstShortcut,
-      screens,
       hiddenShortcuts,
       initQueueComplete,
     } = this.props;
+    const { decoratedScreens, normalizedShortcuts, navReady } = this.state;
 
     if (!navReady || !initQueueComplete) {
       return null;
     }
 
     return (
-      <NavigationContainer ref={navigationRef} onReady={this.handleReady}>
-        <NavigationTree
-          firstShortcut={firstShortcut}
-          shortcuts={normalizedShortcuts}
-          screens={screens}
-          hiddenShortcuts={hiddenShortcuts}
-        />
-      </NavigationContainer>
+      <ScrollView.DriverProvider
+        onAnimationDriverChange={this.handleAnimationDriverChange}
+      >
+        <NavigationContainer ref={navigationRef} onReady={this.handleReady}>
+          <NavigationTree
+            firstShortcut={firstShortcut}
+            shortcuts={normalizedShortcuts}
+            screens={decoratedScreens}
+            hiddenShortcuts={hiddenShortcuts}
+          />
+        </NavigationContainer>
+      </ScrollView.DriverProvider>
     );
   }
 }
 
+RouteConfigProvider.propTypes = {
+  hiddenShortcuts: PropTypes.array.isRequired,
+  initQueueComplete: PropTypes.bool.isRequired,
+  navBarSettings: PropTypes.object.isRequired,
+  screens: PropTypes.object.isRequired,
+  setNavigationInitialized: PropTypes.func.isRequired,
+  shortcuts: PropTypes.array.isRequired,
+  firstShortcut: PropTypes.object,
+};
+
+RouteConfigProvider.defaultProps = {
+  firstShortcut: undefined,
+};
+
+RouteConfigProvider.contextTypes = {
+  theme: ThemeShape,
+};
+
 const mapDispatchToProps = { setNavigationInitialized };
 
-const mapStateToProps = state => ({
-  hiddenShortcuts: getHiddenShortcuts(state),
-  initQueueComplete: getAppInitQueueComplete(state),
-});
+function mapStateToProps(state) {
+  return {
+    hiddenShortcuts: getHiddenShortcuts(state),
+    initQueueComplete: getAppInitQueueComplete(state),
+  };
+}
 
 export default connect(
   mapStateToProps,

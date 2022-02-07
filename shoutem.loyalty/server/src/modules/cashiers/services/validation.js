@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
 import { isEmail } from 'validator';
 import CASHIER_FORM_LOCALIZATION from '../components/cashier-form/localization';
 import LOCALIZATION from './localization';

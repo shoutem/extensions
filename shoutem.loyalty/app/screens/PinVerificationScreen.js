@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
+import { Alert, Keyboard } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Alert, Keyboard } from 'react-native';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
-import { Button, Screen, Subtitle, TextInput, Text, View } from '@shoutem/ui';
+import { Button, Screen, Subtitle, Text, TextInput, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
-import { rewardShape, placeShape } from '../components/shapes';
+import { placeShape, rewardShape } from '../components/shapes';
 import { ext } from '../const';
 import { verifyPin } from '../redux';
 import { authorizePointsByPin, redeemReward } from '../services';

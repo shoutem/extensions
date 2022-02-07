@@ -1,13 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Platform } from 'react-native';
-import _ from 'lodash';
 import {
   createStackNavigator,
   TransitionPresets,
 } from '@react-navigation/stack';
-import { HeaderTitle, HeaderBackButton } from '../components';
-import { HeaderStyles, createChildNavigators } from '../services';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { HeaderBackButton, HeaderTitle } from '../components';
+import { createChildNavigators, HeaderStyles } from '../services';
 
 const GridStack = createStackNavigator();
 
@@ -19,11 +19,7 @@ function screenOptions() {
   };
 }
 
-export function StackNavigator({
-  parentShortcut,
-  hiddenShortcuts,
-  decoratedScreens,
-}) {
+export function StackNavigator({ parentShortcut, hiddenShortcuts, screens }) {
   const parentScreen = _.get(parentShortcut, 'screens[0]');
   const layoutType = _.get(parentScreen, 'canonicalName');
 
@@ -33,7 +29,7 @@ export function StackNavigator({
     screenOptions,
     false,
     hiddenShortcuts,
-    decoratedScreens,
+    screens,
     { headerShown: false },
   );
 
@@ -48,7 +44,7 @@ export function StackNavigator({
     >
       <GridStack.Screen
         name="root_layout"
-        component={decoratedScreens[layoutType]}
+        component={screens[layoutType]}
         options={{
           ...(Platform.OS !== 'ios' && {
             safeAreaInsets: { top: 0 },
@@ -77,5 +73,5 @@ export function StackNavigator({
 StackNavigator.propTypes = {
   parentShortcut: PropTypes.object,
   hiddenShortcuts: PropTypes.array,
-  decoratedScreens: PropTypes.object,
+  screens: PropTypes.object,
 };

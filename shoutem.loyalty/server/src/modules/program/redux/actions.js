@@ -1,10 +1,10 @@
 import _ from 'lodash';
-import { find, create, update } from '@shoutem/redux-io';
-import { createRule } from 'src/modules/rules';
-import { loadResources } from 'src/modules/cms';
-import { getLoyaltyUrl, shoutemUrls } from 'src/services';
 import ext from 'src/const';
-import { PROGRAMS, PLACES, AUTHORIZATIONS, CARDS, USERS } from '../const';
+import { loadResources } from 'src/modules/cms';
+import { createRule } from 'src/modules/rules';
+import { getLoyaltyUrl, shoutemUrls } from 'src/services';
+import { create, find, update } from '@shoutem/redux-io';
+import { AUTHORIZATIONS, CARDS, PLACES, PROGRAMS, USERS } from '../const';
 
 const MAX_PAGE_SIZE = 10000;
 

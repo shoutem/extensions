@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Button } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { Button } from 'react-bootstrap';
 import RulesTable from '../rules-table';
 import LOCALIZATION from './localization';
 import './style.scss';

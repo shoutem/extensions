@@ -1,10 +1,10 @@
 {
   "name": "shoutem.social",
-  "version": "4.0.0",
+  "version": "4.1.1",
   "description": "Social wall",
   "dependencies": {
     "react-native-action-sheet": "2.2.0",
-    "showdown": "^1.8.6"
+    "showdown": "1.9.1"
   },
   "peerDependencies": {
     "@shoutem/redux-composers": "*",

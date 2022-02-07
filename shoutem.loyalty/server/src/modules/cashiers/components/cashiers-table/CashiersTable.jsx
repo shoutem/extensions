@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
 import i18next from 'i18next';
-import { IconLabel, EditableTable } from '@shoutem/react-web-ui';
+import PropTypes from 'prop-types';
+import { EditableTable, IconLabel } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 

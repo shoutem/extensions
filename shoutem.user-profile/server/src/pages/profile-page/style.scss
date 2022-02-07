@@ -1,0 +1,22 @@
+.profile-page {
+  max-width: 552px;
+  margin: auto;
+
+  &.is-wide {
+    max-width: 808px;
+  }
+
+  .profile-page__form {
+    .form-control {
+      height: 200px;
+    }
+  }
+
+  .save-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0px;
+  }
+}

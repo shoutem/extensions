@@ -1,20 +1,17 @@
 import React from 'react';
-import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
-import { CmsListScreen } from 'shoutem.cms';
-import { navigateTo } from 'shoutem.navigation';
-import { openURL } from 'shoutem.web-view';
+import autoBindReact from 'auto-bind/react';
 import { connectStyle } from '@shoutem/theme';
-import ListProductView from '../components/ListProductView';
+import { CmsListScreen } from 'shoutem.cms';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
+import { openURL } from 'shoutem.web-view';
+import { ListProductView } from '../components';
 import { ext } from '../const';
 
 export class ProductsList extends CmsListScreen {
-  static propTypes = {
-    ...CmsListScreen.propTypes,
-  };
-
   constructor(props, context) {
     super(props, context);
+
     autoBindReact(this);
 
     this.state = {
@@ -24,7 +21,13 @@ export class ProductsList extends CmsListScreen {
   }
 
   openDetailsScreen(product) {
-    navigateTo(ext('ProductDetails'), { product });
+    const {
+      shortcut: {
+        settings: { addAuthHeaderToBuyLink },
+      },
+    } = getRouteParams(this.props);
+
+    navigateTo(ext('ProductDetails'), { addAuthHeaderToBuyLink, product });
   }
 
   renderRow(product) {
@@ -33,6 +36,14 @@ export class ProductsList extends CmsListScreen {
     );
   }
 }
+
+ProductsList.propTypes = {
+  ...CmsListScreen.propTypes,
+};
+
+ProductsList.defaultProps = {
+  ...CmsListScreen.defaultProps,
+};
 
 export const mapStateToProps = CmsListScreen.createMapStateToProps(
   state => state[ext()].latestProducts,

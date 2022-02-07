@@ -1,6 +1,6 @@
-import Uri from 'urijs';
 import autoBind from 'auto-bind';
 import i18next from 'i18next';
+import Uri from 'urijs';
 import LOCALIZATION from './localization';
 
 export default class LoyaltyApi {

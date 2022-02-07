@@ -1,10 +1,10 @@
 import React from 'react';
+import { Alert, LayoutAnimation } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { LayoutAnimation, Alert } from 'react-native';
-import { connect } from 'react-redux';
-import { find, isBusy, isInitialized, getCollection } from '@shoutem/redux-io';
+import { find, getCollection, isBusy, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { ListView, Screen } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
@@ -14,8 +14,8 @@ import { I18n } from 'shoutem.i18n';
 import { getRouteParams, HeaderTextButton } from 'shoutem.navigation';
 import MapList from '../../components/MapList';
 import PlaceIconView from '../../components/PlaceIconView';
-import { refreshCardState } from '../../services';
 import { ext } from '../../const';
+import { refreshCardState } from '../../services';
 import NoProgramScreen from '../NoProgramScreen';
 
 /**
@@ -73,14 +73,22 @@ export class PlacesList extends CmsListScreen {
   }
 
   fetchData(options) {
-    LayoutAnimation.easeInEaseOut();
+    // Commenting out use of LayoutAnimation because of issues with
+    // @shoutem/ui's DropDownModal component.
+    // TODO: Use LayoutAnimation once its conflict with Modal is resolved:
+    // https://github.com/facebook/react-native/issues/32504
+    // LayoutAnimation.easeInEaseOut();
     return super.fetchData(options);
   }
 
   toggleMapView() {
     const { mapView } = this.state;
 
-    LayoutAnimation.easeInEaseOut();
+    // Commenting out use of LayoutAnimation because of issues with
+    // @shoutem/ui's DropDownModal component.
+    // TODO: Use LayoutAnimation once its conflict with Modal is resolved:
+    // https://github.com/facebook/react-native/issues/32504
+    // LayoutAnimation.easeInEaseOut();
     this.setState({ mapView: !mapView });
   }
 

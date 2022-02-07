@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
+import { InteractionManager, LayoutAnimation, StatusBar } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { StatusBar, InteractionManager, LayoutAnimation } from 'react-native';
-import { connect } from 'react-redux';
 import {
   find,
   getCollection,
@@ -29,12 +29,13 @@ import {
 import { executeShortcut } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import {
+  composeNavigationStyles,
+  getRouteParams,
+  HeaderBackground,
   IconGrid,
   List,
   withChildrenRequired,
-  getRouteParams,
-  HeaderBackground,
-  composeNavigationStyles,
+  withIsFocused,
 } from 'shoutem.navigation';
 import { ext, PAGE_SCHEMA } from '../const';
 
@@ -44,18 +45,6 @@ const navigationComponentsForLayoutTypes = {
 };
 
 export class PageScreen extends PureComponent {
-  static propTypes = {
-    // The parent category that is used to display
-    // the available categories in the drop down menu
-    parentCategoryId: PropTypes.any,
-    // Primary CMS data to display
-    data: PropTypes.array.isRequired,
-    // actions
-    find: PropTypes.func.isRequired,
-    // Settings
-    navigationLayoutType: PropTypes.string.isRequired,
-  };
-
   constructor(props) {
     super(props);
 
@@ -63,9 +52,10 @@ export class PageScreen extends PureComponent {
 
     const shouldHideInitialHeader = this.isNavigationBarClear(props);
 
-    this.pushedBarStyle = null;
-
     props.navigation.setOptions({ headerShown: !shouldHideInitialHeader });
+
+    this.pushedBarStyle = null;
+    this.isScrolledDown = false;
   }
 
   componentDidMount() {
@@ -105,10 +95,24 @@ export class PageScreen extends PureComponent {
     const { data: prevData } = prevProps;
     const {
       data,
+      isFocused,
       navigation,
       navigationBarImage,
       backgroundImageEnabledFirstScreen,
     } = this.props;
+
+    if (!!_.head(data)?.image && this.isNavigationBarClear()) {
+      if (isFocused && !this.pushedBarStyle && !this.isScrolledDown) {
+        this.pushedBarStyle = StatusBar.pushStackEntry({
+          barStyle: 'light-content',
+        });
+      }
+
+      if (!isFocused && this.pushedBarStyle) {
+        StatusBar.popStackEntry(this.pushedBarStyle);
+        this.pushedBarStyle = null;
+      }
+    }
 
     if (!isInitialized(prevData) && isInitialized(data)) {
       LayoutAnimation.easeInEaseOut();
@@ -131,12 +135,6 @@ export class PageScreen extends PureComponent {
     }
 
     return null;
-  }
-
-  componentWillUnmount() {
-    if (this.pushedBarStyle) {
-      StatusBar.popStackEntry(this.pushedBarStyle);
-    }
   }
 
   headerBackground() {
@@ -192,16 +190,10 @@ export class PageScreen extends PureComponent {
       return { title: resolvedTitle };
     }
 
-    const profile = _.first(data);
-    const hasImage = !!profile.image;
-
-    if (hasImage) {
-      this.pushedBarStyle = StatusBar.pushStackEntry({
-        barStyle: 'light-content',
-      });
-    }
-
     if (this.isNavigationBarClear()) {
+      const profile = _.head(data);
+      const hasImage = !!profile.image;
+
       if (hasImage) {
         // If navigation bar is clear and image exists, navigation bar should be initially clear
         // with fade effect (to add shadow to image), but after scrolling down navigation bar
@@ -231,10 +223,41 @@ export class PageScreen extends PureComponent {
     };
   }
 
-  headerRight(props) {
-    const { data, title = '' } = this.props;
+  handleScroll(event) {
+    const { data } = this.props;
 
-    const profile = _.first(data);
+    if (!_.head(data)?.image || !this.isNavigationBarClear()) {
+      return;
+    }
+
+    // TODO: Dynamically support sizes via theme instead of hardcoded numbers.
+    // We currently use 300 as this is the interpolation end-value for the
+    // 'solidify' animation as defined in @shoutem/ui's theme.js.
+    const targetYOffset = 300;
+    const {
+      nativeEvent: {
+        contentOffset: { y: yOffset },
+      },
+    } = event;
+
+    if (!this.pushedBarStyle && yOffset < targetYOffset) {
+      this.pushedBarStyle = StatusBar.pushStackEntry({
+        barStyle: 'light-content',
+      });
+      this.isScrolledDown = false;
+    }
+
+    if (this.pushedBarStyle && yOffset > targetYOffset) {
+      StatusBar.popStackEntry(this.pushedBarStyle);
+      this.pushedBarStyle = null;
+      this.isScrolledDown = true;
+    }
+  }
+
+  headerRight(props) {
+    const { data, title } = this.props;
+
+    const profile = _.head(data);
     const link = _.get(profile, 'web', '');
 
     if (!_.isEmpty(link)) {
@@ -310,9 +333,10 @@ export class PageScreen extends PureComponent {
   renderNavigationOnly() {
     const {
       executeShortcut,
-      shortcut,
+      isFocused,
       navigationLayoutType,
       route,
+      shortcut,
     } = this.props;
 
     const NavigationComponent =
@@ -327,7 +351,7 @@ export class PageScreen extends PureComponent {
     };
 
     return (
-      <ScrollView>
+      <ScrollView onScroll={this.handleScroll}>
         <NavigationComponent
           executeShortcut={executeShortcut}
           shortcut={shortcut}
@@ -341,6 +365,7 @@ export class PageScreen extends PureComponent {
   renderAboutInfo(profile) {
     const {
       executeShortcut,
+      isFocused,
       shortcut,
       navigationLayoutType,
       route,
@@ -359,21 +384,23 @@ export class PageScreen extends PureComponent {
     };
 
     return (
-      <ScrollView>
+      <ScrollView onScroll={this.handleScroll}>
         {this.renderImage(profile)}
-        {this.renderNameAndSubtitle(profile)}
-        {this.renderInfo(profile)}
-        {hasNavigationItems && (
-          <>
-            <Divider />
-            <NavigationComponent
-              executeShortcut={executeShortcut}
-              shortcut={shortcut}
-              route={resolvedRoute}
-              styleName="paper"
-            />
-          </>
-        )}
+        <View styleName="solid">
+          {this.renderNameAndSubtitle(profile)}
+          {this.renderInfo(profile)}
+          {hasNavigationItems && (
+            <>
+              <Divider />
+              <NavigationComponent
+                executeShortcut={executeShortcut}
+                shortcut={shortcut}
+                route={resolvedRoute}
+                styleName="paper"
+              />
+            </>
+          )}
+        </View>
       </ScrollView>
     );
   }
@@ -442,7 +469,7 @@ export class PageScreen extends PureComponent {
 
     // If valid data is retrieved, take first input only
     // And finally, proceed with rendering actual About content
-    const profile = _.first(data);
+    const profile = _.head(data);
     return this.renderAboutInfo(profile);
   }
 
@@ -453,7 +480,38 @@ export class PageScreen extends PureComponent {
   }
 }
 
-export const mapStateToProps = (state, ownProps) => {
+PageScreen.propTypes = {
+  // Primary CMS data to display
+  data: PropTypes.array.isRequired,
+  executeShortcut: PropTypes.func.isRequired,
+  // actions
+  find: PropTypes.func.isRequired,
+  isFocused: PropTypes.bool.isRequired,
+  navigation: PropTypes.object.isRequired,
+  // Settings
+  navigationLayoutType: PropTypes.string.isRequired,
+  // The parent category that is used to display
+  // the available categories in the drop down menu
+  parentCategoryId: PropTypes.string.isRequired,
+  shortcut: PropTypes.object.isRequired,
+  backgroundImageEnabledFirstScreen: PropTypes.bool,
+  fitContainer: PropTypes.bool,
+  navigationBarImage: PropTypes.string,
+  route: PropTypes.object,
+  showTitle: PropTypes.bool,
+  title: PropTypes.string,
+};
+
+PageScreen.defaultProps = {
+  fitContainer: false,
+  backgroundImageEnabledFirstScreen: false,
+  navigationBarImage: undefined,
+  route: undefined,
+  showTitle: false,
+  title: '',
+};
+
+export function mapStateToProps(state, ownProps) {
   const routeParams = getRouteParams(ownProps);
   const { shortcut: modifiedShortcut } = ownProps;
   const { shortcut } = routeParams;
@@ -472,13 +530,15 @@ export const mapStateToProps = (state, ownProps) => {
     navigationLayoutType,
     data: getCollection(collection[parentCategoryId], state),
   };
-};
+}
 
 export const mapDispatchToProps = { executeShortcut, find };
 
-export default withChildrenRequired(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(connectStyle(ext('PageScreen'))(PageScreen)),
+export default withIsFocused(
+  withChildrenRequired(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps,
+    )(connectStyle(ext('PageScreen'))(PageScreen)),
+  ),
 );

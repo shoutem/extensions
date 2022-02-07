@@ -1,27 +1,26 @@
 import { CmsSelect } from './components';
+import {
+  CATEGORIES,
+  createCategory,
+  deleteResource,
+  loadResources,
+  moduleName,
+  navigateToCms,
+  reducer,
+  SCHEMAS,
+} from './redux';
 import { cmsApi } from './services';
 
-import {
-  reducer,
-  moduleName,
-  CATEGORIES,
-  SCHEMAS,
-  loadResources,
-  createCategory,
-  deleteResource,
-  navigateToCms,
-} from './redux';
-
 export {
-  moduleName,
-  cmsApi,
   CATEGORIES,
-  SCHEMAS,
-  loadResources,
+  cmsApi,
+  CmsSelect,
   createCategory,
   deleteResource,
+  loadResources,
+  moduleName,
   navigateToCms,
-  CmsSelect,
+  SCHEMAS,
 };
 
 export default reducer;

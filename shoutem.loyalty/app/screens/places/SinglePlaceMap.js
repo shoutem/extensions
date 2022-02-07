@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
 import { Linking, Platform } from 'react-native';
-import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { Screen } from '@shoutem/ui';
-import { HeaderIconButton, getRouteParams } from 'shoutem.navigation';
+import { getRouteParams, HeaderIconButton } from 'shoutem.navigation';
 import MapList from '../../components/MapList';
 import { placeShape } from '../../components/shapes';
 

@@ -4,7 +4,6 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { isBusy, isError, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-
 import {
   Button,
   Caption,
@@ -17,8 +16,8 @@ import {
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
-import TransactionItem from './TransactionItem';
 import { transactionShape } from './shapes';
+import TransactionItem from './TransactionItem';
 
 const NO_ACTIVITY_ICON = require('../assets/icons/no-activity.png');
 

@@ -1,0 +1,12 @@
+{
+  "shoutem": {
+    "affiliate": {
+      "level": "level",
+      "numberOfPoints": "{{numberOfPoints}} points",
+      "points": "points",
+      "refreshButton": "REFRESH",
+      "shareCodeButton": "Share code",
+      "collectPointsButton": "Collect"
+    }
+  }
+}

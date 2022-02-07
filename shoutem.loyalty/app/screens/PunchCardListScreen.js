@@ -1,7 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import { find, next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -15,7 +15,7 @@ import { getExtensionSettings } from 'shoutem.application';
 import { getUser, loginRequired } from 'shoutem.auth';
 import { CmsListScreen } from 'shoutem.cms';
 import Stamps from '../components/Stamps';
-import { CMS_PUNCHCARDS_SCHEMA, PUNCH_REWARDS_SCHEMA, ext } from '../const';
+import { CMS_PUNCHCARDS_SCHEMA, ext, PUNCH_REWARDS_SCHEMA } from '../const';
 import { refreshCard } from '../services';
 import { RewardsListScreen } from './RewardsListScreen';
 

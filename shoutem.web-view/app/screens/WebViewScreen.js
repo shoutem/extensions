@@ -1,16 +1,16 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { Dimensions, Platform, KeyboardAvoidingView } from 'react-native';
-import WebView from 'react-native-webview';
+import { Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
 import Pdf from 'react-native-pdf';
-import _ from 'lodash';
+import WebView from 'react-native-webview';
 import autoBindReact from 'auto-bind/react';
-import { View, EmptyStateView, Screen, Keyboard } from '@shoutem/ui';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { I18n } from 'shoutem.i18n';
+import { EmptyStateView, Keyboard, Screen, View } from '@shoutem/ui';
 import { currentLocation } from 'shoutem.cms';
+import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
+import { AppContextProvider } from 'shoutem-core';
 import NavigationToolbar from '../components/NavigationToolbar';
 import { ext } from '../const';
 
@@ -22,13 +22,6 @@ const KEYBOARD_AVOIDING_ENABLED = Platform.OS === 'android';
 const KEYBOARD_OFFSET = Keyboard.calculateKeyboardOffset();
 
 export class WebViewScreen extends PureComponent {
-  static propTypes = {
-    checkPermissionStatus: PropTypes.func,
-    route: PropTypes.object,
-    currentLocation: PropTypes.object,
-    style: PropTypes.object,
-  };
-
   constructor(props) {
     super(props);
 
@@ -69,7 +62,7 @@ export class WebViewScreen extends PureComponent {
   getSettings() {
     const { route } = this.props;
     const routeParams = getRouteParams(this.props);
-    const shortcut = routeParams.shortcut;
+    const { shortcut } = routeParams;
 
     if (shortcut) {
       return { ...shortcut.settings, title: shortcut.title };
@@ -113,18 +106,43 @@ export class WebViewScreen extends PureComponent {
     return showNavigationToolbar && webNavigation;
   }
 
-  resolveWebViewProps() {
+  resolveWebViewProps(appContext) {
     const {
-      url,
+      headers,
+      forwardAuthHeader,
       requireGeolocationPermission,
+      url,
       webViewProps,
     } = this.getSettings();
+
+    const accessToken = _.get(appContext, ['shoutem.auth', 'accessToken']);
+    const shouldInsertAuthHeader = accessToken && forwardAuthHeader;
+    const defaultSource = _.isObject(url)
+      ? {
+          ...url,
+          headers: {
+            ...url.headers,
+            ...(shouldInsertAuthHeader && {
+              Authorization: `Bearer ${accessToken}`,
+            }),
+            ...headers,
+          },
+        }
+      : {
+          uri: url,
+          headers: {
+            ...(shouldInsertAuthHeader && {
+              Authorization: `Bearer ${accessToken}`,
+            }),
+            ...headers,
+          },
+        };
 
     const defaultWebViewProps = {
       ref: this.setWebViewRef,
       startInLoadingState: true,
       onNavigationStateChange: this.onNavigationStateChange,
-      source: _.isObject(url) ? url : { uri: url },
+      source: defaultSource,
       scalesPageToFit: true,
       allowsInlineMediaPlayback: true,
       showsVerticalScrollIndicator: false,
@@ -144,18 +162,20 @@ export class WebViewScreen extends PureComponent {
 
   renderWebView() {
     const { url } = this.getSettings();
-    const resolvedUrl = _.isObject(url) ? url.uri : url;
+    const resolvedUrl = url?.uri || url;
 
     if (resolvedUrl.includes('.pdf')) {
-      return (
-        <Pdf
-          source={{ uri: url }}
-          style={{ flex: 1, width: Dimensions.get('window').width }}
-        />
-      );
+      // TODO: Move to and then get from theme.
+      const pdfStyle = { flex: 1, width: Dimensions.get('window').width };
+
+      return <Pdf source={{ uri: url }} style={pdfStyle} />;
     }
 
-    return <WebView {...this.resolveWebViewProps()} />;
+    return (
+      <AppContextProvider>
+        {context => <WebView {...this.resolveWebViewProps(context)} />}
+      </AppContextProvider>
+    );
   }
 
   renderWebNavigation() {
@@ -211,6 +231,20 @@ export class WebViewScreen extends PureComponent {
   }
 }
 
-export default connect()(
-  connectStyle(ext('WebViewScreen'))(currentLocation(WebViewScreen)),
+WebViewScreen.propTypes = {
+  currentLocation: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired,
+  style: PropTypes.object.isRequired,
+  checkPermissionStatus: PropTypes.func,
+  headers: PropTypes.object,
+};
+
+WebViewScreen.defaultProps = {
+  checkPermissionStatus: undefined,
+  headers: {},
+};
+
+export default connectStyle(ext('WebViewScreen'))(
+  currentLocation(WebViewScreen),
 );

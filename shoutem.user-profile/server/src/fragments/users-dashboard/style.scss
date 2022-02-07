@@ -1,0 +1,36 @@
+.users-dashboard {
+  .table {
+    margin-top: 24px;
+
+    > thead > tr > th {
+      padding: 14px 10px 8px 10px;
+      vertical-align: middle;
+    }
+
+    > tbody > tr > td {
+      padding: 16px 10px;
+    }
+  }
+
+  .table-header__status {
+    width: 100%;
+    text-align: left;
+  }
+
+  .table-header__profile {
+    width: 184px;
+  }
+
+  .table-header__username {
+    padding-right: 24px;
+    max-width: 200px;
+    width: 200px;
+    min-width: 200px;
+  }
+}
+
+.users-dashboard__title {
+  font-size: 18px;
+  line-height: 24px;
+  margin: 0px 16px 0px 0px;
+}

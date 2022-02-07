@@ -1,19 +1,20 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Alert, InteractionManager, Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { connectStyle } from '@shoutem/theme';
+import { Screen, ScrollView, View } from '@shoutem/ui';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
 import {
+  BackHandlerAndroid,
   getRouteParams,
   HeaderBackButton,
   navigateTo,
+  withIsFocused,
 } from 'shoutem.navigation';
-import { I18n } from 'shoutem.i18n';
-import { connectStyle } from '@shoutem/theme';
-import { Screen, ScrollView, Spinner, View } from '@shoutem/ui';
-import { authProviders } from '../services/authProviders';
 import {
   AppleSignInButton,
   FacebookButton,
@@ -23,51 +24,22 @@ import {
   TermsAndPrivacy,
 } from '../components';
 import { ext } from '../const';
-import { ThirdPartyProviders } from '../fragments';
 import { getErrorCode, getErrorMessage } from '../errorMessages';
+import { ThirdPartyProviders } from '../fragments';
 import { loginRequired } from '../loginRequired';
 import {
-  login,
-  isAuthenticated,
-  userLoggedIn,
-  getUser,
+  clearAuthState,
   getAccessToken,
+  getUser,
   hideShortcuts,
+  login,
+  userAuthenticatedLimited,
+  userLoggedIn,
 } from '../redux';
-import { saveSession } from '../session';
+import { authProviders } from '../services/authProviders';
+import { clearSession, saveSession } from '../session';
 
 export class LoginScreen extends PureComponent {
-  static propTypes = {
-    login: PropTypes.func,
-    loginWithFacebook: PropTypes.func,
-    isUserAuthenticated: PropTypes.bool,
-    inProgress: PropTypes.bool,
-    onLoginSuccess: PropTypes.func,
-    isAuthenticated: PropTypes.bool,
-    hideShortcuts: PropTypes.func,
-    user: PropTypes.shape({
-      id: PropTypes.string,
-    }),
-    access_token: PropTypes.string,
-    settings: PropTypes.shape({
-      providers: PropTypes.shape({
-        email: PropTypes.shape({
-          enabled: PropTypes.bool,
-        }),
-        facebook: PropTypes.shape({
-          appId: PropTypes.string,
-          appName: PropTypes.string,
-          enabled: PropTypes.bool,
-        }),
-      }),
-      signupEnabled: PropTypes.bool,
-    }),
-    // Dispatched with user data returned from server when user has logged in
-    userLoggedIn: PropTypes.func,
-  };
-
-  static defaultPropTypes = { onLoginSuccess: _.noop };
-
   constructor(props) {
     super(props);
 
@@ -77,7 +49,9 @@ export class LoginScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { navigation, canGoBack } = this.props;
+    const { canGoBack, clearAuthState, navigation, user } = this.props;
+
+    BackHandlerAndroid.addListener(this.handleAndroidBackPress);
 
     navigation.setOptions({
       title: I18n.t(ext('logInNavBarTitle')),
@@ -85,17 +59,40 @@ export class LoginScreen extends PureComponent {
         ? props => <HeaderBackButton {...props} onPress={this.handleCancel} />
         : null,
     });
+
+    if (!!user && !user.approved) {
+      clearSession();
+      clearAuthState();
+    }
   }
 
-  componentDidUpdate() {
-    const { user } = this.props;
+  componentDidUpdate(prevProps) {
+    const { isFocused, user } = this.props;
+    const { user: prevUser } = prevProps;
 
-    if (user && user?.id) {
-      const { hideShortcuts, onLoginSuccess } = this.props;
-
-      hideShortcuts(user);
-      onLoginSuccess(user);
+    if (isFocused && _.isEmpty(prevUser.id) && !_.isEmpty(user.id)) {
+      this.handleLoginSuccess();
     }
+  }
+
+  componentWillUnmount() {
+    BackHandlerAndroid.removeListener(this.handleAndroidBackPress);
+  }
+
+  handleAndroidBackPress() {
+    const { canGoBack } = this.props;
+
+    if (!canGoBack && !BackHandlerAndroid.isAlertDisplayed()) {
+      BackHandlerAndroid.displayAlert();
+      return true;
+    }
+
+    if (!canGoBack) {
+      BackHandlerAndroid.exitApp();
+      return true;
+    }
+
+    return false;
   }
 
   handleCancel() {
@@ -109,9 +106,7 @@ export class LoginScreen extends PureComponent {
 
     const resolvedUsername = username.toLowerCase();
     this.setState({ inProgress: true });
-    login(resolvedUsername, password)
-      .then(this.handleLoginSuccess)
-      .catch(this.handleLoginFailed);
+    return login(resolvedUsername, password).catch(this.handleLoginFailed);
   }
 
   handleForgotPasswordPress() {
@@ -126,16 +121,26 @@ export class LoginScreen extends PureComponent {
       userLoggedIn,
       hideShortcuts,
       onLoginSuccess,
+      settings,
+      userAuthenticatedLimited,
     } = this.props;
 
-    this.setState({ inProgress: false });
-    saveSession(JSON.stringify({ access_token }));
-    userLoggedIn({ user, access_token }).then(() => {
-      InteractionManager.runAfterInteractions(() => {
+    if (settings.manuallyApproveMembers && !user.approved) {
+      this.setState({ inProgress: false });
+
+      return userAuthenticatedLimited();
+    }
+
+    return userLoggedIn({
+      user,
+      access_token,
+      callback: onLoginSuccess,
+    })
+      .then(() => {
+        saveSession(JSON.stringify({ access_token }));
         hideShortcuts(user);
-        onLoginSuccess(user);
-      });
-    });
+      })
+      .finally(() => this.setState({ inProgress: false }));
   }
 
   handleLoginFailed({ payload }) {
@@ -150,18 +155,15 @@ export class LoginScreen extends PureComponent {
   }
 
   handleRegisterPress() {
-    const { onLoginSuccess, settings } = this.props;
-
-    const manuallyApproveMembers = _.get(settings, 'manuallyApproveMembers');
+    const { onLoginSuccess } = this.props;
 
     navigateTo(ext('RegisterScreen'), {
-      manualApprovalActive: manuallyApproveMembers,
       onRegisterSuccess: onLoginSuccess,
     });
   }
 
   render() {
-    const { isUserAuthenticated, settings, style } = this.props;
+    const { settings, style } = this.props;
     const { inProgress } = this.state;
 
     const platformVersion = parseInt(Platform.Version, 10);
@@ -181,28 +183,15 @@ export class LoginScreen extends PureComponent {
     // privacy policy.
     const hasThirdPartyProviders = authProviders.hasThirdPartyProviders();
 
-    // We want to display the authenticating state if the auth request is in
-    // progress, or if we are already authenticated. The latter case can happen
-    // if the login screen is left in the navigation stack history, but the user
-    // authenticated successfully in another part of the app. E.g. open one
-    // protected tab login screen will appear, now open a second tab again a
-    // loading screen will apear if you log in on any stack, on other stacks
-    // spinner will be shown instead of login form.
-    const isLoading = inProgress || isUserAuthenticated;
-    const resolvedSpinnerStyle = !isLoading ? style.hideComponent : {};
-    const resolvedLoginScreenStyle = isLoading ? style.hideComponent : {};
-
     return (
       <Screen style={style.loginScreen}>
-        <Spinner styleName="xl-gutter-top" style={resolvedSpinnerStyle} />
-
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          style={resolvedLoginScreenStyle}
         >
           {isEmailAuthEnabled && (
             <LoginForm
+              inProgress={inProgress}
               onSubmit={this.handlePerformLogin}
               onForgotPasswordPress={this.handleForgotPasswordPress}
             />
@@ -214,15 +203,12 @@ export class LoginScreen extends PureComponent {
             )}
 
           {isEligibleForAppleSignIn && (
-            <AppleSignInButton
-              onLoginFailed={this.handleLoginFailed}
-              onLoginSuccess={this.handleLoginSuccess}
-            />
+            <AppleSignInButton disabled={inProgress} />
           )}
           {isFacebookAuthEnabled && (
             <FacebookButton
+              disabled={inProgress}
               onLoginFailed={this.handleLoginFailed}
-              onLoginSuccess={this.handleLoginSuccess}
             />
           )}
 
@@ -246,28 +232,66 @@ export class LoginScreen extends PureComponent {
   }
 }
 
+LoginScreen.propTypes = {
+  access_token: PropTypes.string.isRequired,
+  canGoBack: PropTypes.bool.isRequired,
+  clearAuthState: PropTypes.func.isRequired,
+  hideShortcuts: PropTypes.func.isRequired,
+  isFocused: PropTypes.bool.isRequired,
+  login: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  settings: PropTypes.shape({
+    manuallyApproveMembers: PropTypes.bool,
+    providers: PropTypes.shape({
+      email: PropTypes.shape({
+        enabled: PropTypes.bool,
+      }),
+      facebook: PropTypes.shape({
+        appId: PropTypes.string,
+        appName: PropTypes.string,
+        enabled: PropTypes.bool,
+      }),
+    }),
+    signupEnabled: PropTypes.bool,
+  }).isRequired,
+  style: PropTypes.object.isRequired,
+  user: PropTypes.shape({
+    approved: PropTypes.bool,
+    id: PropTypes.string,
+  }).isRequired,
+  // Dispatched with user data returned from server when user has logged in
+  userAuthenticatedLimited: PropTypes.func.isRequired,
+  userLoggedIn: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onLoginSuccess: PropTypes.func,
+};
+
+LoginScreen.defaultProps = { onLoginSuccess: _.noop };
+
 const mapDispatchToProps = {
+  clearAuthState,
   login,
   userLoggedIn,
   hideShortcuts,
+  userAuthenticatedLimited,
 };
 
 function mapStateToProps(state, ownProps) {
   return {
     user: getUser(state),
-    isUserAuthenticated: isAuthenticated(state),
     appId: getAppId(),
     settings: getExtensionSettings(state, ext()),
     access_token: getAccessToken(state),
-    isAuthenticated: isAuthenticated(state),
     ...getRouteParams(ownProps),
   };
 }
 
 export default loginRequired(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(connectStyle(ext('LoginScreen'))(LoginScreen)),
-  false,
+  withIsFocused(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps,
+    )(connectStyle(ext('LoginScreen'))(LoginScreen)),
+    false,
+  ),
 );

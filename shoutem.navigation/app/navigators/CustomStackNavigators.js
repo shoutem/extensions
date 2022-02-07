@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { createStackNavigator } from '@react-navigation/stack';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { HeaderBackButton } from '../components';
-import { NavigationStacks, HeaderStyles } from '../services';
+import { HeaderStyles, NavigationStacks } from '../services';
 
 export function CustomStack({ stackConfig }) {
   if (!stackConfig) {

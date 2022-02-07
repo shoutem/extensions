@@ -1,17 +1,22 @@
-import _ from 'lodash';
 import {
+  Dimensions,
   Platform,
+  StatusBar,
   StyleSheet,
   TouchableNativeFeedback,
-  Dimensions,
 } from 'react-native';
-import { INCLUDE, changeColorAlpha } from '@shoutem/theme';
+import _ from 'lodash';
 import {
-  getTheme,
-  defaultThemeVariables as defaultUiThemeVariables,
-  dimensionRelativeToIphone,
-  Device,
+  changeColorAlpha,
+  getSizeRelativeToReference,
+  INCLUDE,
+} from '@shoutem/theme';
+import {
   calculateLineHeight,
+  defaultThemeVariables as defaultUiThemeVariables,
+  Device,
+  dimensionRelativeToIphone,
+  getTheme,
   resolveFontFamily,
   resolveFontStyle,
   resolveFontWeight,
@@ -29,6 +34,7 @@ const window = Dimensions.get('window');
 const NAVIGATION_BAR_HEIGHT = Device.select({
   iPhoneX: NAVIGATION_HEADER_HEIGHT + IPHONE_X_NOTCH_PADDING,
   iPhoneXR: NAVIGATION_HEADER_HEIGHT + IPHONE_XR_NOTCH_PADDING,
+  notchedAndroid: NAVIGATION_HEADER_HEIGHT + StatusBar.currentHeight,
   default: NAVIGATION_HEADER_HEIGHT,
 });
 
@@ -384,9 +390,7 @@ export default (customVariables = {}) => {
         borderTopWidth: 1,
         borderTopColor: variables.mainNavBorderColor,
         backgroundColor: variables.mainNavBackground,
-        // text / icons not flexing properly for Android. Remove with transition
-        // to RNavigation way of handling icons/text here
-        ...(Platform.OS === 'android' && { minHeight: TAB_BAR_ITEM_HEIGHT }),
+        minHeight: TAB_BAR_ITEM_HEIGHT,
       },
     },
 
@@ -1036,10 +1040,218 @@ export default (customVariables = {}) => {
       },
     },
 
+    // Affiliate
+    'shoutem.affiliate.About': {
+      spinnerContainer: { justifyContent: 'center', alignItems: 'center' },
+      spinner: { justifyContent: 'center', alignItems: 'center' },
+    },
+
+    'shoutem.affiliate.LevelProgressBar': {
+      '.short': {
+        container: {
+          marginTop: -2,
+          marginRight: 12,
+          marginLeft: -12,
+        },
+      },
+
+      container: {
+        height: 5,
+        borderRadius: 100,
+        backgroundColor: variables.backgroundColor,
+      },
+
+      earnedPoints: {
+        borderRadius: 100,
+        height: 5,
+        backgroundColor: variables.featuredColor,
+      },
+    },
+
+    'shoutem.affiliate.LevelGaugeProgressBar': {
+      '.secondary': {
+        pointsLabel: {
+          position: 'absolute',
+          top: '40%',
+
+          'shoutem.ui.Text': {
+            color: '#ffffff',
+          },
+
+          'shoutem.ui.Title': {
+            color: '#ffffff',
+          },
+        },
+
+        progressBar: {
+          opacity: 0.5,
+          stroke: '#ffffff',
+        },
+
+        progressBarCompleted: {
+          stroke: '#ffffff',
+        },
+      },
+
+      container: {
+        height: 275,
+        width: 275,
+      },
+
+      pointsLabel: {
+        position: 'absolute',
+        top: '40%',
+      },
+
+      progressContainer: {
+        height: 260,
+        width: 260,
+      },
+
+      progressRadius: 120,
+
+      reward: {
+        position: 'absolute',
+        marginLeft: -9,
+        marginTop: -9,
+      },
+    },
+
+    'shoutem.affiliate.RewardIcon': {
+      reward: {
+        backgroundColor: '#ffffff',
+        borderColor: variables.lineColor,
+        borderRadius: 36,
+        borderWidth: 3,
+        height: 36,
+        padding: 2,
+        width: 36,
+
+        'shoutem.ui.Icon': {
+          color: variables.lineColor,
+        },
+      },
+
+      rewardReached: {
+        backgroundColor: variables.indicatorColor,
+        borderColor: '#ffffff',
+
+        'shoutem.ui.Icon': {
+          color: '#ffffff',
+        },
+      },
+    },
+
     // About
     'shoutem.about.About': {
       spinnerContainer: { justifyContent: 'center', alignItems: 'center' },
       spinner: { justifyContent: 'center', alignItems: 'center' },
+    },
+
+    // Affiliate
+    'shoutem.affiliate.Banner': {
+      divider: { height: 5, padding: 0 },
+    },
+
+    'shoutem.affiliate.LevelsListScreen': {
+      gaugeContainer: {
+        width: '100%',
+        marginBottom: variables.mediumGutter,
+        alignItems: 'center',
+      },
+      spinner: {
+        marginTop: 50,
+      },
+    },
+
+    'shoutem.affiliate.LevelItem': {
+      divider: { height: 5, padding: 0 },
+      icon: { height: 35, width: 35, opacity: 0.75 },
+      pointsReached: { opacity: 1 },
+    },
+
+    'shoutem.affiliate.ProgressBar': {
+      container: {
+        height: 275,
+        width: 275,
+      },
+
+      pointsLabel: {
+        position: 'absolute',
+        top: '35%',
+      },
+
+      progressContainer: {
+        height: 260,
+        width: 260,
+      },
+
+      progressRadius: 120,
+
+      level: {
+        position: 'absolute',
+        marginLeft: -9,
+        marginTop: -9,
+      },
+
+      shareCodeButton: {},
+    },
+
+    'shoutem.affiliate.GaugeProgressBar': {
+      progressContainer: {
+        transform: [{ rotate: '135deg' }],
+      },
+
+      progressBar: {
+        fill: 'none',
+        stroke: variables.lineColor,
+        strokeLinecap: 'round',
+        strokeWidth: 10,
+      },
+
+      progressBarCompleted: {
+        fill: 'none',
+        stroke: variables.secondaryButtonBackgroundColor,
+        strokeLinecap: 'round',
+        strokeWidth: 10,
+      },
+
+      refreshIcon: {
+        width: 18,
+      },
+    },
+
+    'shoutem.affiliate.LevelIcon': {
+      level: {
+        backgroundColor: variables.primaryButtonBackgroundColor,
+        borderColor: variables.secondaryButtonBackgroundColor,
+        borderWidth: 1,
+        borderRadius: 50,
+        height: 30,
+        opacity: 0.75,
+        padding: 5,
+        paddingBottom: 6,
+        width: 30,
+      },
+
+      levelReached: {
+        backgroundColor: variables.secondaryButtonBackgroundColor,
+        borderRadius: 50,
+        height: 30,
+        opacity: 1,
+        padding: 5,
+        paddingBottom: 6,
+        width: 30,
+      },
+
+      icon: {
+        color: variables.secondaryButtonBackgroundColor,
+        fontSize: 18,
+      },
+
+      iconLevelReached: {
+        color: variables.primaryButtonBackgroundColor,
+      },
     },
 
     // Agora Video Call Screen
@@ -1171,6 +1383,7 @@ export default (customVariables = {}) => {
         top: Device.select({
           iPhoneX: 34 + IPHONE_X_NOTCH_PADDING,
           iPhoneXR: 30 + IPHONE_XR_NOTCH_PADDING,
+          notchedAndroid: 30 + StatusBar.currentHeight,
           default: 30,
         }),
         right: 15,
@@ -1415,9 +1628,6 @@ export default (customVariables = {}) => {
       loginScreen: {
         paddingHorizontal: 30,
         paddingTop: 40,
-      },
-      hideComponent: {
-        display: 'none',
       },
     },
 
@@ -3309,7 +3519,9 @@ export default (customVariables = {}) => {
         lineHeight: 24,
       },
       imageContainer: {
-        height: dimensionRelativeToIphone(320),
+        // Image has to be a square, 1:1 ratio. Using (-16) because
+        // shoutem.news.FeaturedGrid122FullRowView.container.marginHorizontal = 8
+        height: window.width - 16,
       },
       textContainer: {
         height: dimensionRelativeToIphone(110),
@@ -3329,6 +3541,402 @@ export default (customVariables = {}) => {
 
     'shoutem.news.ArticleDetailsScreen': {
       outerPadding: 10,
+    },
+
+    'shoutem.layouts.CompactListSkeletonPlaceholder': {
+      featuredItem: {
+        width: dimensionRelativeToIphone(365),
+        height: dimensionRelativeToIphone(345),
+        alignSelf: 'center',
+        paddingVertical: variables.smallGutter,
+      },
+      image: {
+        height: 67,
+        width: 67,
+        borderRadius: 2,
+        marginRight: variables.mediumGutter,
+      },
+      shortLine: {
+        marginBottom: variables.smallGutter,
+        height: 15,
+        width: Dimensions.get('window').width / 2,
+      },
+      longLine: {
+        marginBottom: variables.mediumGutter,
+        height: 15,
+        width: Dimensions.get('window').width / 2 + 30,
+      },
+      dateStampLine: {
+        marginVertical: variables.smallGutter,
+        height: 10,
+        width: 100,
+      },
+    },
+
+    'shoutem.layouts.DetailsSkeletonPlaceholder': {
+      image: { height: 300, width: '100%' },
+      contentContainer: { flexDirection: 'column', alignItems: 'center' },
+      titleLine: {
+        height: 30,
+        width: 200,
+        marginTop: variables.largeGutter,
+        marginBottom: variables.mediumGutter,
+      },
+      shortLine: {
+        marginTop: variables.smallGutter,
+        height: 15,
+        width: Dimensions.get('window').width - variables.extraLargeGutter,
+      },
+      longLine: {
+        marginTop: variables.smallGutter,
+        height: 15,
+        width: Dimensions.get('window').width - variables.largeGutter,
+      },
+    },
+
+    'shoutem.layouts.FixedGridSkeletonPlaceholder': {
+      card: {
+        borderWidth: 1,
+        borderColor: 'rgba(102, 102, 102, 0.1)',
+        overflow: 'hidden',
+        height: 200,
+        width: '48%',
+      },
+      featuredItem: {
+        width: dimensionRelativeToIphone(365),
+        height: dimensionRelativeToIphone(345),
+      },
+      image: { height: 88 },
+      shortLine: { width: 80, marginBottom: variables.smallGutter },
+      longLine: { width: 100, marginBottom: variables.smallGutter },
+      dateStampLine: {
+        height: 10,
+        width: 70,
+        marginTop: variables.mediumGutter,
+      },
+    },
+
+    'shoutem.layouts.LargeListSkeletonPlaceholder': {
+      image: { width: window.width, height: dimensionRelativeToIphone(238) },
+      shortLine: {
+        marginBottom: variables.smallGutter,
+        height: 15,
+        width: Dimensions.get('window').width / 2,
+      },
+      longLine: {
+        marginBottom: variables.mediumGutter,
+        height: 15,
+        width: Dimensions.get('window').width / 2 + variables.largeGutter,
+      },
+      dateStampLine: {
+        marginVertical: variables.smallGutter,
+        height: 10,
+        width: 100,
+      },
+    },
+
+    'shoutem.layouts.TileListSkeletonPlaceholder': {
+      itemContainer: { flex: 1, width: '100%', marginBottom: 1 },
+    },
+
+    // User-profile
+    'shoutem.user-profile.FormInput': {
+      textInput: {
+        borderColor: variables.text.color,
+        borderRadius: 6,
+        paddingHorizontal: variables.mediumGutter,
+        paddingVertical: variables.smallGutter,
+        textAlignVertical: 'center',
+      },
+
+      multilineTextInput: {
+        height: 70,
+        textAlignVertical: 'top',
+      },
+
+      label: {
+        fontSize: variables.text.fontSize,
+        paddingHorizontal: variables.smallGutter,
+        paddingVertical: variables.smallGutter,
+      },
+    },
+
+    'shoutem.user-profile.SubmitButton': {
+      container: {
+        marginTop: variables.largeGutter,
+        marginBottom: Device.select({
+          iPhoneX: IPHONE_X_HOME_INDICATOR_PADDING,
+          iPhoneXR: IPHONE_X_HOME_INDICATOR_PADDING,
+          default: variables.smallGutter,
+        }),
+        marginHorizontal: variables.smallGutter,
+      },
+
+      button: {
+        borderRadius: 6,
+      },
+    },
+
+    'shoutem.user-profile.ImageUpload': {
+      label: {
+        fontSize: variables.text.fontSize,
+        paddingHorizontal: variables.smallGutter,
+        paddingVertical: variables.smallGutter,
+        marginBottom: variables.mediumGutter,
+      },
+
+      imageCarousel: {
+        container: { marginBottom: variables.mediumGutter },
+      },
+
+      actionSheet: {
+        tintColor: 'black',
+        userInterfaceStyle: 'light',
+      },
+    },
+
+    'shoutem.user-profile.TextValue': {
+      labelContainer: {
+        width: '30%',
+      },
+
+      divider: {
+        borderBottomWidth: 1,
+      },
+
+      label: {
+        fontSize: variables.text.fontSize,
+        paddingHorizontal: variables.smallGutter,
+        paddingVertical: variables.smallGutter,
+      },
+
+      pressableLink: {
+        textDecorationLine: 'underline',
+      },
+
+      pressedLink: {
+        opacity: 0.5,
+      },
+    },
+
+    'shoutem.user-profile.EditProfileScreen': {
+      padding: {
+        padding: variables.mediumGutter,
+        marginBottom: Device.select({
+          iPhoneX: IPHONE_X_HOME_INDICATOR_PADDING,
+          iPhoneXR: IPHONE_X_HOME_INDICATOR_PADDING,
+          default: variables.smallGutter,
+        }),
+      },
+    },
+
+    'shoutem.user-profile.SubmissionCompletedScreen': {
+      title: {
+        fontWeight: 'bold',
+        fontSize: 18,
+        textAlign: 'center',
+      },
+      description: { textAlign: 'center', fontSize: 15 },
+    },
+
+    'shoutem.user-profile.EmptyImagesView': {
+      icon: { width: 66, height: 66 },
+      uploadContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: dimensionRelativeToIphone(275),
+      },
+      uploadMessage: {
+        paddingTop: variables.largeGutter,
+      },
+    },
+
+    'shoutem.user-profile.ImageCarousel': {
+      container: {
+        justifyContent: 'center',
+      },
+      galleryContainer: {
+        height: getSizeRelativeToReference(250, 812, window.height),
+        width: '100%',
+      },
+      overlayContainer: {
+        width: '100%',
+        zIndex: 1,
+        position: 'absolute',
+        bottom: 18,
+      },
+      roundedImageContainer: {
+        alignSelf: 'center',
+        width: getSizeRelativeToReference(250, 812, window.height),
+        height: getSizeRelativeToReference(250, 812, window.height),
+      },
+      roundedImage: {
+        width: getSizeRelativeToReference(250, 812, window.height),
+        height: getSizeRelativeToReference(250, 812, window.height),
+        borderRadius: getSizeRelativeToReference(125, 812, window.height),
+      },
+      loadingContainer: { height: '70%' },
+      imageGalleryShown: { opacity: 1 },
+      imageGalleryHidden: { opacity: 0 },
+      overlayText: { paddingBottom: 26, fontSize: 11, color: '#FFFFFF' },
+      image: { flex: 1 },
+      carouselButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        alignSelf: 'flex-end',
+        position: 'absolute',
+        top: variables.mediumGutter,
+        right: variables.mediumGutter,
+        borderColor: 'transparent',
+        backgroundColor: changeColorAlpha('gray', 0.1),
+      },
+      carouselIcon: { color: '#FFFFFF', width: 20, height: 20 },
+      uploadButton: {
+        marginVertical: variables.mediumGutter,
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+      },
+      uploadText: {
+        color: variables.primaryButtonText.color,
+        fontSize: 15,
+        fontWeight: 'bold',
+      },
+      pageIndicators: {
+        indicatorContainer: {
+          'shoutem.ui.View': {
+            backgroundColor: changeColorAlpha(
+              variables.imageOverlayTextColor,
+              0.4,
+            ),
+
+            '.selected': {
+              backgroundColor: variables.imageOverlayTextColor,
+            },
+          },
+        },
+      },
+    },
+
+    'shoutem.user-profile.MyProfileScreen': {
+      container: {
+        paddingBottom: Device.select({
+          iPhoneX: IPHONE_X_HOME_INDICATOR_PADDING,
+          iPhoneXR: IPHONE_X_HOME_INDICATOR_PADDING,
+          notchedAndroid: variables.smallGutter,
+          default: variables.smallGutter,
+        }),
+        paddingTop: variables.mediumGutter,
+      },
+    },
+
+    'shoutem.user-profile.UserProfileScreen': {
+      container: {
+        paddingBottom: Device.select({
+          iPhoneX: IPHONE_X_HOME_INDICATOR_PADDING,
+          iPhoneXR: IPHONE_X_HOME_INDICATOR_PADDING,
+          notchedAndroid: variables.smallGutter,
+          default: variables.smallGutter,
+        }),
+      },
+    },
+
+    'shoutem.user-profile.ImagesPreview': {
+      container: {
+        justifyContent: 'center',
+      },
+      galleryContainer: {
+        height: getSizeRelativeToReference(250, 812, window.height),
+        width: '100%',
+        marginTop: variables.mediumGutter,
+      },
+      overlayContainer: {
+        width: '100%',
+        zIndex: 1,
+        position: 'absolute',
+        bottom: 18,
+      },
+      overlayText: { paddingBottom: 26, fontSize: 11, color: '#FFFFFF' },
+      label: {
+        fontSize: variables.text.fontSize,
+        paddingHorizontal: variables.smallGutter,
+        paddingVertical: variables.smallGutter,
+        marginBottom: variables.mediumGutter,
+      },
+      imageContainer: {
+        // Not flexible
+        alignSelf: 'center',
+        width: '100%',
+        height: '100%',
+      },
+      roundedImageContainer: {
+        width: getSizeRelativeToReference(250, 812, window.height),
+      },
+      roundedImage: {
+        borderRadius: getSizeRelativeToReference(125, 812, window.height),
+      },
+      pageIndicators: {
+        indicatorContainer: {
+          'shoutem.ui.View': {
+            backgroundColor: changeColorAlpha(
+              variables.imageOverlayTextColor,
+              0.4,
+            ),
+
+            '.selected': {
+              backgroundColor: variables.imageOverlayTextColor,
+            },
+          },
+        },
+      },
+      galleryHeaderContainer: {
+        height: dimensionRelativeToIphone(90),
+        zIndex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: variables.mediumGutter,
+        paddingTop: Device.select({
+          iPhoneX: variables.extraLargeGutter,
+          iPhoneXR: variables.extraLargeGutter,
+          notchedAndroid: variables.extraLargeGutter,
+          default: 10,
+        }),
+      },
+      emptyGalleryContainer: {
+        paddingVertical: variables.extraLargeGutter,
+      },
+      closeGalleryIcon: {
+        color: '#FFFFFF',
+      },
+      galleryHeaderTitle: {
+        alignSelf: 'center',
+        color: '#FFFFFF',
+        fontWeight: 'bold',
+      },
+      imageGallery: {
+        container: {
+          marginTop: -NAVIGATION_BAR_HEIGHT,
+          backgroundColor: 'rgba(0,0,0,0.9)',
+        },
+      },
+      divider: {
+        borderBottomWidth: 1,
+      },
+    },
+
+    'shoutem.user-profile.BaseUserProfile': {
+      name: {
+        fontSize: 16,
+        lineHeight: calculateLineHeight(16),
+      },
+      nick: {
+        fontSize: 13,
+        lineHeight: calculateLineHeight(13),
+        opacity: 0.6,
+      },
+      profileImage: {
+        borderRadius: dimensionRelativeToIphone(145 / 2),
+      },
     },
   });
 };

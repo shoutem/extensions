@@ -22,7 +22,12 @@ import {
   DEFAULT_LANGUAGE_URL_ZIP,
   LOCALIZATION_TUTORIAL_URL,
 } from 'src/const';
-import { LANGUAGES, migrateChannels } from 'src/services';
+import {
+  LANGUAGES,
+  migrateChannels,
+  getActiveLanguageCodes,
+  getNumberOfActiveTranslations,
+} from 'src/services';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -56,21 +61,14 @@ class LanguagePage extends Component {
   }
 
   handleLocaleChange(languageOption) {
-    const { updateExtensionSettings, extension } = this.props;
+    const { updateExtensionSettings } = this.props;
     const { value: locale } = languageOption;
-
-    const translations = _.cloneDeep(_.get(extension, 'settings.translations'));
 
     const patchSettings = {
       locale,
-      isMultilanguage: true,
-      translations,
-      disabled: {
-        [locale]: false,
-      },
     };
 
-    updateExtensionSettings(patchSettings);
+    return updateExtensionSettings(patchSettings);
   }
 
   handleTranslationChange(translation) {
@@ -103,7 +101,6 @@ class LanguagePage extends Component {
     const channelId = _.get(response, 'payload.id');
 
     await updateExtensionSettings({
-      isMultilanguage: true,
       translations: {
         [languageCode]: translationUrl,
       },
@@ -126,6 +123,17 @@ class LanguagePage extends Component {
     const currentLocale = _.get(extension, 'settings.locale');
     const useDefaultLocale = languageCode === currentLocale;
 
+    // get current number of active translations and if translation that
+    // we are currently deleting, is active then subtract one active
+    let numberOfActive = getNumberOfActiveTranslations(extension);
+    const isActive = !_.get(extension, `settings.disabled.${languageCode}`);
+    if (isActive) {
+      numberOfActive -= 1;
+    }
+
+    // if there is at least two active languages, multilanguage will be true
+    const isMultilanguage = numberOfActive > 1;
+
     const channelId = _.get(extension, `settings.channels.${languageCode}`);
     try {
       await deleteChannel(appId, channelId);
@@ -138,6 +146,7 @@ class LanguagePage extends Component {
 
     await updateExtensionSettings({
       locale: useDefaultLocale ? DEFAULT_LANGUAGE_CODE : currentLocale,
+      isMultilanguage,
       translations: {
         [languageCode]: null,
       },
@@ -168,11 +177,20 @@ class LanguagePage extends Component {
       disabled,
     };
 
+    let numberOfActive = getNumberOfActiveTranslations(extension);
+    if (disabled) {
+      numberOfActive -= 1;
+    } else {
+      numberOfActive += 1;
+    }
+
+    // if there is at least two active languages, multilanguage will be true
+    const isMultilanguage = numberOfActive > 1;
     updateChannel(appId, channelId, data);
 
     await updateExtensionSettings({
       locale,
-      isMultilanguage: true,
+      isMultilanguage,
       translations,
       disabled: {
         [languageCode]: disabled,
@@ -187,7 +205,7 @@ class LanguagePage extends Component {
     const translations = _.get(extension, 'settings.translations');
     const disabledTranslations = _.get(extension, 'settings.disabled');
     const locale = _.get(extension, 'settings.locale', DEFAULT_LANGUAGE_CODE);
-    const translationLanguageCodes = _.keys(translations);
+    const availableLanguageCodes = getActiveLanguageCodes(extension);
 
     return (
       <div className="languages-page settings-page">
@@ -198,7 +216,7 @@ class LanguagePage extends Component {
             <LanguageSelect
               onChange={this.handleLocaleChange}
               value={locale}
-              availableLanguageCodes={translationLanguageCodes}
+              availableLanguageCodes={availableLanguageCodes}
             />
           </FormGroup>
           <TranslationsDashboard

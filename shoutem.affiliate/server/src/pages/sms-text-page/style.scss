@@ -1,0 +1,29 @@
+.sharing-page {
+  max-width: 552px;
+  margin: auto;
+
+  &.is-wide {
+    max-width: 808px;
+  }
+
+  // There's 50px of unused space somehow...
+  .form-input__container {
+    margin-top: -50px;
+  }
+
+  .sharing-page__label-popover-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+
+    label {
+      padding: 0px;
+      padding-top: 15px;
+      margin-right: 5px;
+    }
+  }
+}
+
+.btn-toolbar {
+  margin-top: 24px;
+}

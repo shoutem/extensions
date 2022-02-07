@@ -1,120 +1,155 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
+import React, { PureComponent } from 'react';
 import {
   Button,
   ButtonToolbar,
   ControlLabel,
-  FormGroup,
   FormControl,
+  FormGroup,
 } from 'react-bootstrap';
-import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
-import {
-  fetchExtension,
-  updateExtensionSettings,
-  getExtension,
-} from '@shoutem/redux-api-sdk';
-import { shouldRefresh } from '@shoutem/redux-io';
+import { Trans } from 'react-i18next';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
+import { getExtension, updateExtensionSettings } from '@shoutem/redux-api-sdk';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-class IAPSettingsPage extends Component {
-  static propTypes = {
-    extension: PropTypes.object,
-    settings: PropTypes.object,
-    fetchExtensionAction: PropTypes.func,
-    updateExtensionSettingsAction: PropTypes.func,
-  };
+const SETTINGS_KEYS = [
+  'androidProductId',
+  'iOSProductId',
+  'iapHubAppId',
+  'iapHubApiKey',
+  'iapHubEnvironment',
+  'subscriptionRequired',
+];
+
+class IAPSettingsPage extends PureComponent {
+  static getDerivedStateFromProps(props, state) {
+    const { settings } = props.extension;
+
+    const prevSettings = _.pick(settings, SETTINGS_KEYS);
+    const newSettings = _.pick(state.settings, SETTINGS_KEYS);
+
+    if (!_.isEqual(prevSettings, newSettings)) {
+      return {
+        ...state,
+        settings: newSettings,
+      };
+    }
+
+    return state;
+  }
 
   constructor(props) {
     super(props);
 
     autoBindReact(this);
 
-    props.fetchExtensionAction();
+    const { settings } = props.extension;
 
     this.state = {
       loading: false,
-      ..._.get(props, 'settings', {}),
+      settings: _.pick(settings, SETTINGS_KEYS),
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { extension, fetchExtensionAction } = this.props;
-    const { extension: nextExtension } = nextProps;
-
-    if (extension !== nextExtension && shouldRefresh(nextExtension)) {
-      fetchExtensionAction();
-    }
   }
 
   saveEnabled() {
     const {
       loading,
-      iOSProductId,
-      androidProductId,
-      iapHubAppId,
-      iapHubApiKey,
-      iapHubEnvironment,
+      settings: {
+        androidProductId,
+        iOSProductId,
+        iapHubAppId,
+        iapHubApiKey,
+        iapHubEnvironment,
+      },
     } = this.state;
-    const { settings: oldSettings } = this.props;
 
-    const newSettings = _.omit(this.state, 'loading');
     const iapHubConfigured =
-      !_.isEmpty(iapHubAppId) && !_.isEmpty(iapHubEnvironment) && !_.isEmpty(iapHubApiKey);
+      !!iapHubAppId && !!iapHubEnvironment && !!iapHubApiKey;
 
-    return (
-      !_.isEqual(newSettings, oldSettings) &&
-      (!_.isEmpty(iOSProductId) || !_.isEmpty(androidProductId)) &&
-      iapHubConfigured &&
-      !loading
+    if (loading || !iapHubConfigured || (!iOSProductId && !androidProductId)) {
+      return false;
+    }
+
+    const { settings } = this.state;
+    const {
+      extension: { settings: prevSettings },
+    } = this.props;
+
+    return !_.isEqual(
+      _.pick(prevSettings, SETTINGS_KEYS),
+      _.pick(settings, SETTINGS_KEYS),
     );
   }
 
   handleTextSettingChange(fieldName) {
+    const { settings } = this.state;
+
     return event => {
       const newText = event.target.value;
 
-      this.setState({ [fieldName]: newText });
+      this.setState({ settings: { ...settings, [fieldName]: newText } });
     };
   }
 
   handleSubscriptionScreenToggle() {
-    const { subscriptionRequired } = this.state;
+    const { settings } = this.state;
 
-    this.setState({ subscriptionRequired: !subscriptionRequired });
+    this.setState({
+      settings: {
+        ...settings,
+        subscriptionRequired: !settings.subscriptionRequired,
+      },
+    });
   }
 
   handleSave() {
     const { extension, updateExtensionSettingsAction } = this.props;
+    const { settings } = this.state;
 
     this.setState({ loading: true });
 
-    updateExtensionSettingsAction(extension, {
-      ..._.omit(this.state, 'loading'),
-    })
-      .then(() => this.setState({ loading: false }))
-      .catch(() => this.setState({ loading: false }));
+    updateExtensionSettingsAction(extension, settings).finally(() =>
+      this.setState({ loading: false }),
+    );
   }
 
   render() {
     const {
       loading,
-      iOSProductId,
-      androidProductId,
-      iapHubAppId,
-      iapHubApiKey,
-      iapHubEnvironment,
-      subscriptionRequired,
+      settings: {
+        iOSProductId,
+        androidProductId,
+        iapHubAppId,
+        iapHubApiKey,
+        iapHubEnvironment,
+        subscriptionRequired,
+      },
     } = this.state;
 
     const saveEnabled = this.saveEnabled();
 
     return (
       <div className="chat-settings-page">
+        <div className="instructions-container">
+          <p className="instructions">
+            <Trans i18nKey={LOCALIZATION.SETUP_INSTRUCTIONS}>
+              Learn how to properly set up IAP products
+              <a
+                href="https://shoutem.com/support/in-app-purchases/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                here
+              </a>
+              .
+            </Trans>
+          </p>
+        </div>
         <form onSubmit={this.handleSubmit}>
           <h3>{i18next.t(LOCALIZATION.GENERAL_SETTINGS_TITLE)}</h3>
           <FormGroup className="switch-form-group">
@@ -192,22 +227,22 @@ class IAPSettingsPage extends Component {
   }
 }
 
+IAPSettingsPage.propTypes = {
+  extension: PropTypes.object.isRequired,
+  updateExtensionSettingsAction: PropTypes.func.isRequired,
+};
+
 function mapStateToProps(state, ownProps) {
   const { extensionName } = ownProps;
   const extension = getExtension(state, extensionName);
-  const settings = _.get(extension, 'settings', {});
 
   return {
     extension,
-    settings,
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const { extensionName } = ownProps;
-
+function mapDispatchToProps(dispatch) {
   return {
-    fetchExtensionAction: () => dispatch(fetchExtension(extensionName)),
     updateExtensionSettingsAction: (extension, settings) =>
       dispatch(updateExtensionSettings(extension, settings)),
   };

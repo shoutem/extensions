@@ -1,1 +1,1 @@
-export { default as ProtectedScreensTable } from './ProtectedScreensTable';;
+export { default as ProtectedScreensTable } from './ProtectedScreensTable';

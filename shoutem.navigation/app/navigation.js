@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
-import { Decorators, withBackHandling } from './services';
+import { Decorators } from './services';
+import { withBackHandling } from './hoc';
 
 if (Platform.OS !== 'ios') {
   Decorators.registerDecorator(withBackHandling);

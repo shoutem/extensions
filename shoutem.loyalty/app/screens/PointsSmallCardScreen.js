@@ -1,6 +1,6 @@
 import React from 'react';
-import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Text, View } from '@shoutem/ui';
 import { loginRequired } from 'shoutem.auth';
@@ -9,9 +9,9 @@ import { HeaderTextButton } from 'shoutem.navigation';
 import SmallPointCardView from '../components/SmallPointCardView';
 import { ext } from '../const';
 import {
-  PointsCardScreen,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
+  PointsCardScreen,
 } from './PointsCardScreen';
 
 /**

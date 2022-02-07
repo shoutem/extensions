@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { getCollection, invalidate } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -13,9 +13,9 @@ import {
   Screen,
   ScrollView,
   Switch,
-  View,
   Text,
   TextInput,
+  View,
 } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
@@ -57,7 +57,8 @@ export class AssignPointsScreen extends PureComponent {
 
     if (_.includes(rules, RULE_PURCHASE)) {
       return { purchase: true };
-    } else if (_.includes(rules, RULE_VISIT)) {
+    }
+    if (_.includes(rules, RULE_VISIT)) {
       return { visit: true };
     }
 

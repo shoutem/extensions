@@ -31,3 +31,24 @@ export function resolveTranslationRows(
     .sortBy(['name'])
     .value();
 }
+
+export function getActiveLanguageCodes(extension) {
+  const translations = _.keys(_.get(extension, 'settings.translations'));
+  const disabledTranslations = _.get(extension, 'settings.disabled');
+
+  _.forEach(disabledTranslations, (value, key) => {
+    if (value) {
+      const index = translations.indexOf(key);
+      if (index !== -1) {
+        translations.splice(index, 1);
+      }
+    }
+  });
+
+  return translations;
+}
+
+export function getNumberOfActiveTranslations(extension) {
+  const translations = getActiveLanguageCodes(extension);
+  return translations.length;
+}

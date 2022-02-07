@@ -1,0 +1,9 @@
+.modal.settings-page-modal .modal-dialog:not(.modal-lg) {
+  width: 100%;
+
+  .modal-header,
+  .modal-body {
+    max-width: 552px;
+    margin: auto;
+  }
+}

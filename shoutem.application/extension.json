@@ -1,14 +1,19 @@
 {
   "name": "application",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "releaseNotes": "* Updated major version of react-native-device-info, no breaking changes",
+  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
   "icon": "server/assets/add-application-image.png",
   "categories": [],
-  "dependencies": ["shoutem.i18n", "shoutem.navigation", "shoutem.redux"],
+  "dependencies": [
+    "shoutem.i18n",
+    "shoutem.navigation",
+    "shoutem.redux",
+    "shoutem.theme"
+  ],
   "native": true,
   "screens": [
     {

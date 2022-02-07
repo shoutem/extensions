@@ -4,6 +4,7 @@ import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
 import { DEFAULT_LANGUAGE_CODE, DEFAULT_LANGUAGE_URL } from 'src/const';
 import { LANGUAGES } from 'src/services';
 import { enableChannelsModule, createChannel } from 'src/modules/channels';
+import { getNumberOfActiveTranslations } from './translations';
 
 export function migrateChannels(appId, extension) {
   return async dispatch => {
@@ -68,10 +69,17 @@ export function migrateChannels(appId, extension) {
       }
     }
 
+    const oldIsMultilanguage = _.get(extension, 'settings.isMultilanguage');
+    const tempExt = { settings: { translations, disabled } };
+    const isMultilanguage = getNumberOfActiveTranslations(tempExt) > 1;
+    if (oldIsMultilanguage !== isMultilanguage) {
+      hasChanges = true;
+    }
+
     // update extension settings with new channels
     if (hasChanges) {
       const patchSettings = {
-        isMultilanguage: false,
+        isMultilanguage,
         channels,
         translations,
         disabled,

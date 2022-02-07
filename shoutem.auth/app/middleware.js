@@ -1,12 +1,22 @@
+import { Alert } from 'react-native';
 import _ from 'lodash';
 import { isRSAA, RSAA } from 'redux-api-middleware';
 import URI from 'urijs';
-
 import { UPDATE_SUCCESS } from '@shoutem/redux-io';
-import { priorities, setPriority, before } from 'shoutem-core';
-
 import { getExtensionSettings, RESTART_APP } from 'shoutem.application';
-import { isUserUpdateAction, getUser, LOGOUT, getAccessToken } from './redux';
+import { I18n } from 'shoutem.i18n';
+import { before, priorities, setPriority } from 'shoutem-core';
+import { ext } from './const';
+import {
+  AUTHENTICATE_LIMITED,
+  clearAuthState,
+  getAccessToken,
+  getUser,
+  isUserUpdateAction,
+  LOGIN,
+  LOGOUT,
+  REGISTER,
+} from './redux';
 import { clearSession, getSession, saveSession } from './session.js';
 
 function getAuthHeader(state) {
@@ -77,6 +87,60 @@ export const logoutMiddleware = setPriority(
         reason => console.warn(reason),
       );
     }
+    return next(action);
+  },
+  priorities.AUTH,
+);
+
+export const authenticateMiddleware = setPriority(
+  store => next => action => {
+    const { type } = action;
+
+    // If user profile ext is installed & user profile is required
+    // this won't trigger
+    if (type === LOGIN || type === REGISTER) {
+      const {
+        payload: { callback: onAuthSuccessCallback, user },
+      } = action;
+
+      if (!!onAuthSuccessCallback) {
+        onAuthSuccessCallback(user);
+      }
+    }
+
+    return next(action);
+  },
+  priorities.AUTH,
+);
+
+// Triggers if user profile extension is not required & manually approve members is active
+export const authenticateLimitedMiddleware = setPriority(
+  store => next => action => {
+    const { type } = action;
+
+    // User approved: false
+    if (type === AUTHENTICATE_LIMITED) {
+      const { payload: callback } = action;
+
+      return Alert.alert(
+        I18n.t(ext('manualApprovalTitle')),
+        I18n.t(ext('manualApprovalMessage')),
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              store.dispatch(clearAuthState()).then(() => {
+                if (!!callback) {
+                  callback();
+                }
+              });
+            },
+          },
+        ],
+        { cancelable: false },
+      );
+    }
+
     return next(action);
   },
   priorities.AUTH,

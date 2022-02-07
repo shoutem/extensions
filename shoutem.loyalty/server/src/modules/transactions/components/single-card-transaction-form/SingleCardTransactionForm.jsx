@@ -1,11 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import i18next from 'i18next';
-import { Row, Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
+import { Button, ButtonToolbar, HelpBlock, Row } from 'react-bootstrap';
 import Select from 'react-select';
+import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import { reduxForm } from 'redux-form';
-import { LoaderContainer, ReduxFormElement } from '@shoutem/react-web-ui';
 import { getFormState } from 'src/redux';
+import { LoaderContainer, ReduxFormElement } from '@shoutem/react-web-ui';
 import { validateSingleCardTransaction } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';

@@ -1,0 +1,14 @@
+.table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+
+  > tbody > tr.table__empty-row {
+    border-bottom: none;
+    color: #888fa1;
+
+    > td {
+      padding-top: 8px;
+    }
+  }
+}

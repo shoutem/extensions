@@ -1,7 +1,6 @@
 import React from 'react';
 import { Image } from 'react-native';
 import _ from 'lodash';
-import { ScrollView } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application/redux';
 import { getAllShortcuts, getFirstShortcut } from 'shoutem.application';
 import { ext } from './const';
@@ -21,14 +20,12 @@ export function render(app) {
   }
 
   return (
-    <ScrollView.DriverProvider>
-      <RouteConfigProvider
-        key="route_provider"
-        screens={screens}
-        shortcuts={shortcuts}
-        firstShortcut={firstShortcut}
-        navBarSettings={settings}
-      />
-    </ScrollView.DriverProvider>
+    <RouteConfigProvider
+      key="route_provider"
+      screens={screens}
+      shortcuts={shortcuts}
+      firstShortcut={firstShortcut}
+      navBarSettings={settings}
+    />
   );
 }

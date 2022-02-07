@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { Col, Row } from 'react-bootstrap';
 import i18next from 'i18next';
-import { Row, Col } from 'react-bootstrap';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LOYALTY_TYPES } from 'src/const';
 import LOCALIZATION from './localization';
 import './style.scss';

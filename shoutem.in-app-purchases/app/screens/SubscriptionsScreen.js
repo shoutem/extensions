@@ -1,32 +1,32 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Alert, ScrollView } from 'react-native';
-import _ from 'lodash';
-import autoBind from 'auto-bind';
 import { connect } from 'react-redux';
-import {
-  Screen,
-  Button,
-  Text,
-  Image,
-  View,
-  Spinner,
-  LinearGradient,
-} from '@shoutem/ui';
+import autoBind from 'auto-bind';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
+import {
+  Button,
+  Image,
+  LinearGradient,
+  Screen,
+  Spinner,
+  Text,
+  View,
+} from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { getRouteParams, HeaderBackButton } from 'shoutem.navigation';
 import { isPreviewApp } from 'shoutem.preview';
-import { I18n } from 'shoutem.i18n';
 import { openURL } from 'shoutem.web-view';
-import { TermsAndPolicy, SuccessModal } from '../components';
+import { SuccessModal, TermsAndPolicy } from '../components';
+import { ext } from '../const';
 import { actions, selectors } from '../redux';
 import {
-  formatTrialDuration,
-  formatSubscribeMessage,
   formatPurchaseError,
   formatRestoreError,
+  formatSubscribeMessage,
+  formatTrialDuration,
 } from '../services';
-import { ext } from '../const';
 
 class SubscriptionsScreen extends PureComponent {
   static propTypes = {
@@ -131,13 +131,27 @@ class SubscriptionsScreen extends PureComponent {
   handleTermsPress() {
     const { termsOfServiceUrl } = this.props;
 
-    openURL(termsOfServiceUrl);
+    openURL(
+      termsOfServiceUrl,
+      '',
+      true,
+      false,
+      {},
+      { skipSubscriptionPrompt: true },
+    );
   }
 
   handlePrivacyPolicyPress() {
     const { privacyPolicyUrl } = this.props;
 
-    openURL(privacyPolicyUrl);
+    openURL(
+      privacyPolicyUrl,
+      '',
+      true,
+      false,
+      {},
+      { skipSubscriptionPrompt: true },
+    );
   }
 
   render() {

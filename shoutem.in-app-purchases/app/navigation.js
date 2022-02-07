@@ -1,7 +1,7 @@
-import { NavigationStacks, Decorators } from 'shoutem.navigation';
+import { Decorators, NavigationStacks } from 'shoutem.navigation';
+import { ext } from './const';
 import { SubscriptionsScreen } from './screens';
 import { withSubscriptionRequired } from './services';
-import { ext } from './const';
 
 Decorators.registerDecorator(withSubscriptionRequired);
 

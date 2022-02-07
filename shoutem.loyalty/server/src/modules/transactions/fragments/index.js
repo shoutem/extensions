@@ -1,5 +1,5 @@
-import TransactionsDashboard from './transactions-dashboard';
 import AddTransactionFragment from './add-transaction-fragment';
+import TransactionsDashboard from './transactions-dashboard';
 import TransactionsFilter from './transactions-filter';
 
-export { TransactionsDashboard, AddTransactionFragment, TransactionsFilter };
+export { AddTransactionFragment, TransactionsDashboard, TransactionsFilter };

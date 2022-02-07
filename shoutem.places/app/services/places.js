@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import { Platform } from 'react-native';
+import _ from 'lodash';
 
 export function getPlaceImages(place) {
   const allImages = _.pick(place, [

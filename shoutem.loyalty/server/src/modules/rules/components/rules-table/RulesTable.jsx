@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { ControlLabel } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { ControlLabel } from 'react-bootstrap';
-import { validateNumericRule, transformNumericRule } from '../../services';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { transformNumericRule, validateNumericRule } from '../../services';
 import RuleTableRow from '../rule-table-row';
 import LOCALIZATION from './localization';
 import './style.scss';

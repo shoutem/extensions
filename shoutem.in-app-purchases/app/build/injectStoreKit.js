@@ -1,6 +1,9 @@
 const fs = require('fs-extra');
 const xcode = require('xcode');
-const { getXcodeProjectPath, prependProjectPath } = require('@shoutem/build-tools');
+const {
+  getXcodeProjectPath,
+  prependProjectPath,
+} = require('@shoutem/build-tools');
 
 function injectStoreKit() {
   const iOSdirPath = prependProjectPath('ios');

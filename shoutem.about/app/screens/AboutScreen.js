@@ -1,56 +1,47 @@
 import React, { PureComponent } from 'react';
+import { LayoutAnimation, StatusBar } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { InteractionManager, LayoutAnimation, StatusBar } from 'react-native';
-import { connect } from 'react-redux';
-import { InlineMap } from 'shoutem.application';
+import {
+  find,
+  getCollection,
+  isBusy,
+  isError,
+  isInitialized,
+  isValid,
+} from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { Image, Screen, ShareButton, SimpleHtml } from '@shoutem/ui';
 import { I18n, selectors as i18nSelectors } from 'shoutem.i18n';
+import { DetailsLayout } from 'shoutem.layouts';
 import {
   composeNavigationStyles,
   getRouteParams,
   navigateTo,
+  withIsFocused,
 } from 'shoutem.navigation';
 import { openURL } from 'shoutem.web-view';
-import {
-  find,
-  invalidate,
-  isBusy,
-  isInitialized,
-  isError,
-  isValid,
-  shouldRefresh,
-  getCollection,
-} from '@shoutem/redux-io';
-import { STATUS } from '@shoutem/redux-io/status';
-import { connectStyle } from '@shoutem/theme';
-import {
-  Screen,
-  Spinner,
-  Title,
-  Image,
-  View,
-  Divider,
-  Caption,
-  Subtitle,
-  TouchableOpacity,
-  ScrollView,
-  SimpleHtml,
-  EmptyStateView,
-  ShareButton,
-} from '@shoutem/ui';
-import SocialButton from '../components/SocialButton';
+import { FooterButtons, Map, OpeningHours } from '../components';
 import { ext, schema } from '../const';
 
 export class AboutScreen extends PureComponent {
   static propTypes = {
-    // The parent category that is used to display
-    // the available categories in the drop down menu
-    parentCategoryId: PropTypes.any,
-    // Primary CMS data to display
+    channelId: PropTypes.number.isRequired,
     data: PropTypes.array.isRequired,
-    // actions
     find: PropTypes.func.isRequired,
+    isFocused: PropTypes.bool.isRequired,
+    navigation: PropTypes.object.isRequired,
+    imageSize: PropTypes.string,
+    parentCategoryId: PropTypes.string,
+    profile: PropTypes.object,
+  };
+
+  static defaultProps = {
+    imageSize: 'large',
+    parentCategoryId: undefined,
+    profile: {},
   };
 
   constructor(props, context) {
@@ -63,45 +54,36 @@ export class AboutScreen extends PureComponent {
     props.navigation.setOptions({ headerShown: !shouldHideInitialHeader });
 
     this.pushedBarStyle = null;
+    this.isScrolledDown = false;
   }
 
   componentDidMount() {
-    const {
-      channelId: currentChannelId,
-      data,
-      invalidate,
-      navigation,
-    } = this.props;
+    const { navigation } = this.props;
 
-    // Forcing invalidate to prevent flickering of empty view - data view.
-    // If users opens AbouScreen, collection is set & is valid.
-    // Then user goes to language change, screen gets unmounted.
-    // When coming back, collection still has valid status, shows empty
-    // data because there is none for current locale & then starts fetching.
-    // This is non-tabbar navigation fix.
-    invalidate(schema).then(() => {
-      // compare latest channelId used to fetch collection to current state channelId
-      // shouldRefresh won't compare query objects - will return false for channelId change
-      // Also, this works only for tab navigation where screen doesn't unmount on leaving
-      const latestChannelId = data[STATUS]?.params?.query['filter[channels]'];
-
-      if (latestChannelId !== currentChannelId || shouldRefresh(data)) {
-        this.fetchData();
-        return;
-      }
-
-      if (isInitialized(data)) {
-        navigation.setOptions({
-          ...this.getNavBarProps(),
-          headerShown: true,
-        });
-      }
-    });
+    this.fetchData()
+      .then(() => navigation.setOptions({ headerShown: true }))
+      .then(() => {
+        LayoutAnimation.easeInEaseOut();
+        navigation.setOptions(this.getNavBarProps());
+      });
   }
 
   componentDidUpdate(prevProps) {
-    const { channelId, navigation, data } = this.props;
+    const { channelId, data, isFocused, navigation } = this.props;
     const { channelId: prevChannelId, data: prevData } = prevProps;
+
+    if (!!_.head(data)?.image && this.isNavigationBarClear()) {
+      if (isFocused && !this.pushedBarStyle && !this.isScrolledDown) {
+        this.pushedBarStyle = StatusBar.pushStackEntry({
+          barStyle: 'light-content',
+        });
+      }
+
+      if (!isFocused && this.pushedBarStyle) {
+        StatusBar.popStackEntry(this.pushedBarStyle);
+        this.pushedBarStyle = null;
+      }
+    }
 
     if (prevChannelId !== channelId) {
       this.fetchData();
@@ -113,17 +95,10 @@ export class AboutScreen extends PureComponent {
     }
   }
 
-  componentWillUnmount() {
-    if (this.pushedBarStyle) {
-      StatusBar.popStackEntry(this.pushedBarStyle);
-    }
-  }
-
   headerRight(props) {
-    const { data } = this.props;
-    const profile = _.first(data);
+    const { profile } = this.props;
 
-    if (_.isEmpty(profile?.web)) {
+    if (!profile.web) {
       return null;
     }
 
@@ -131,8 +106,8 @@ export class AboutScreen extends PureComponent {
       <ShareButton
         styleName="clear"
         iconProps={{ style: props.tintColor }}
-        title={_.get(profile, 'name')}
-        url={_.get(profile, 'web')}
+        title={profile.name}
+        url={profile.web}
       />
     );
   }
@@ -152,36 +127,24 @@ export class AboutScreen extends PureComponent {
   }
 
   shouldRenderPlaceholderView() {
-    const { parentCategoryId, channelId: prevChannelId, data } = this.props;
+    const { parentCategoryId, data } = this.props;
 
-    // Returning placeholder view if channelId changed since the last time data
-    // was loaded (screen was rendered) because it was showing old screen (diff
-    // channelId) before it fetched new data
-    const latestChannelId = data[STATUS]?.params?.query['filter[channels]'];
-    const channelIdChanged = latestChannelId !== prevChannelId;
-
-    return (
-      _.isUndefined(parentCategoryId) ||
-      !this.isCollectionValid(data) ||
-      channelIdChanged
-    );
+    return !parentCategoryId || !this.isCollectionValid(data);
   }
 
   fetchData(forwardedSchema) {
     const { channelId, find, parentCategoryId } = this.props;
 
     if (!parentCategoryId) {
-      return;
+      return null;
     }
 
-    InteractionManager.runAfterInteractions(() =>
-      find(forwardedSchema || schema, undefined, {
-        query: {
-          'filter[categories]': parentCategoryId,
-          'filter[channels]': channelId,
-        },
-      }),
-    );
+    return find(forwardedSchema || schema, undefined, {
+      query: {
+        'filter[categories]': parentCategoryId,
+        'filter[channels]': channelId,
+      },
+    });
   }
 
   isNavigationBarClear(props = this.props) {
@@ -190,138 +153,79 @@ export class AboutScreen extends PureComponent {
     return screenSettings.navigationBarStyle === 'clear';
   }
 
-  getNavBarProps() {
-    const { data } = this.props;
-
-    const profile = _.first(data);
-    const hasImage = !!profile?.image;
-
-    if (hasImage) {
-      this.pushedBarStyle = StatusBar.pushStackEntry({
-        barStyle: 'light-content',
-      });
+  resolveNavigationStyles(isNavigationBarClear, hasImage) {
+    if (isNavigationBarClear) {
+      return hasImage
+        ? composeNavigationStyles(['clear', 'fade'])
+        : composeNavigationStyles(['boxing']);
     }
 
-    if (this.isNavigationBarClear()) {
-      if (hasImage) {
-        // If navigation bar is clear and image exists, navigation bar should be initially clear
-        // with fade effect (to add shadow to image), but after scrolling down navigation bar
-        // should appear (solidify animation)
-        return {
-          ...composeNavigationStyles(['clear', 'fade']),
-          headerRight: this.headerRight,
-        };
-      }
-      // If navigation bar is clear, but there is no image, navigation bar should be set to solid,
-      // but boxing animation should be applied so that title and borders appear
+    return {};
+  }
 
+  getNavBarProps() {
+    const { profile } = this.props;
+    const {
+      shortcut: { title },
+    } = getRouteParams(this.props);
+
+    const isNavigationBarClear = this.isNavigationBarClear();
+    const hasImage = !!profile.image;
+    // If navigation bar is clear, show the name that is rendered below the image, so it looks like
+    // it is transferred to the navigation bar when scrolling. Otherwise show the screen title
+    // (from the shortcut). The screen title is always displayed on solid navigation bars.
+    const resolvedTitle = isNavigationBarClear
+      ? profile.name?.toUpperCase() || title
+      : title;
+
+    return {
+      headerRight: this.headerRight,
+      title: resolvedTitle,
+      ...this.resolveNavigationStyles(isNavigationBarClear, hasImage),
+    };
+  }
+
+  resolveEmptyStateViewProps() {
+    if (!this.shouldRenderPlaceholderView()) {
+      return null;
+    }
+
+    const { data, parentCategoryId } = this.props;
+
+    if (!parentCategoryId) {
+      // If collection doesn't exist (`parentCategoryId` is undefined), notify user to create
+      // content and reload app, because `parentCategoryId` is retrieved through app configuration
       return {
-        ...composeNavigationStyles(['boxing']),
-        headerRight: this.headerRight,
+        icon: 'error',
+        message: I18n.t('shoutem.application.preview.noContentErrorMessage'),
       };
     }
 
     return {
-      // If navigation bar is clear, show the name that is rendered below the image, so it looks like
-      // it is transferred to the navigation bar when scrolling. Otherwise show the screen title
-      // (from the shortcut). The screen title is always displayed on solid navigation bars.
-      headerRight: this.headerRight,
+      icon: 'refresh',
+      message: isError(data)
+        ? I18n.t('shoutem.application.unexpectedErrorMessage')
+        : I18n.t('shoutem.application.emptyCollectionErrorMessage'),
+      onRetry: this.fetchData,
+      retryButtonTitle: I18n.t('shoutem.application.tryAgainButton'),
     };
   }
 
-  renderShare(profile) {}
+  resolveMapProps() {
+    const { profile } = this.props;
 
-  renderPlaceholderView() {
-    const { data, parentCategoryId } = this.props;
-    let emptyStateViewProps;
-
-    if (_.isUndefined(parentCategoryId)) {
-      // If collection doesn't exist (`parentCategoryId` is undefined), notify user to create
-      // content and reload app, because `parentCategoryId` is retrieved through app configuration
-      emptyStateViewProps = {
-        icon: 'error',
-        message: I18n.t('shoutem.application.preview.noContentErrorMessage'),
-      };
-    } else {
-      emptyStateViewProps = {
-        icon: 'refresh',
-        message: isError(data)
-          ? I18n.t('shoutem.application.unexpectedErrorMessage')
-          : I18n.t('shoutem.application.emptyCollectionErrorMessage'),
-        onRetry: this.fetchData,
-        retryButtonTitle: I18n.t('shoutem.application.tryAgainButton'),
-      };
-    }
-
-    return <EmptyStateView {...emptyStateViewProps} />;
-  }
-
-  renderLoadingSpinner() {
-    const { style } = this.props;
-
-    return (
-      <View styleName="flexible" style={style.spinnerContainer}>
-        <Spinner style={style.spinner} />
-      </View>
-    );
-  }
-
-  renderImage(profile, styleName) {
-    const extraSpace = profile?.image ? 'xl-gutter-top' : null;
-
-    if (!_.get(profile, 'image')) {
-      return (
-        <View styleName={extraSpace}>
-          <Divider />
-        </View>
-      );
-    }
-
-    return (
-      <Image
-        styleName={styleName || 'large'}
-        source={{ uri: profile?.image.url }}
-        animationName="hero"
-      />
-    );
-  }
-
-  renderTitle(profile) {
-    if (!_.get(profile, 'name')) {
-      return null;
-    }
-
-    const extraSpace = profile?.image ? null : 'lg-gutter-bottom';
-
-    return (
-      <View styleName={extraSpace}>
-        <Title styleName="xl-gutter-top md-gutter-bottom h-center">
-          {profile?.name.toUpperCase()}
-        </Title>
-      </View>
-    );
-  }
-
-  renderInfo(profile) {
-    if (!_.get(profile, 'info')) {
-      return null;
-    }
-
-    return <SimpleHtml body={profile?.info} />;
-  }
-
-  renderMap(profile) {
     if (
-      !_.get(profile, 'location.latitude') ||
-      !_.get(profile, 'location.longitude')
+      !profile.location ||
+      !profile.location.latitude ||
+      !profile.location.longitude
     ) {
       return null;
     }
 
     const marker = {
-      latitude: parseFloat(profile?.location.latitude),
-      longitude: parseFloat(profile?.location.longitude),
-      title: _.get(profile, 'location.formattedAddress'),
+      latitude: parseFloat(profile.location.latitude),
+      longitude: parseFloat(profile.location.longitude),
+      title: profile.location.formattedAddress,
     };
 
     const region = {
@@ -331,165 +235,177 @@ export class AboutScreen extends PureComponent {
       longitudeDelta: 0.03,
     };
 
-    const openMap = () =>
+    function handleMapPress() {
       navigateTo(ext('MapScreen'), {
         marker,
-        title: profile?.name,
+        title: profile.name,
       });
-
-    return (
-      <View>
-        <Divider styleName="section-header">
-          <Caption>{I18n.t('shoutem.cms.mapTitle')}</Caption>
-        </Divider>
-        <TouchableOpacity onPress={openMap}>
-          <InlineMap
-            initialRegion={region}
-            markers={[marker]}
-            selectedMarker={marker}
-            styleName="medium-tall"
-          >
-            <View styleName="overlay vertical v-center h-center fill-parent">
-              <Subtitle>{profile?.name}</Subtitle>
-              <Caption>{_.get(profile, 'location.formattedAddress')}</Caption>
-            </View>
-          </InlineMap>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  renderOpeningHours(profile) {
-    if (!_.get(profile, 'hours')) {
-      return null;
     }
 
-    return (
-      <View styleName="vertical">
-        <Divider styleName="section-header">
-          <Caption>{I18n.t('shoutem.cms.openHours')}</Caption>
-        </Divider>
-        <SimpleHtml body={profile?.hours} />
-        <Divider />
-      </View>
-    );
+    return {
+      caption: profile.location.formattedAddress,
+      marker,
+      onMapPress: handleMapPress,
+      region,
+      subtitle: profile.name,
+    };
   }
 
-  renderFooterButtons(profile) {
+  handleScroll(event) {
+    const { data } = this.props;
+
+    if (!_.head(data)?.image || !this.isNavigationBarClear()) {
+      return;
+    }
+
+    // TODO: Dynamically support sizes via theme instead of hardcoded numbers.
+    // We currently use 300 as this is the interpolation end-value for the
+    // 'solidify' animation as defined in @shoutem/ui's theme.js.
+    const targetYOffset = 300;
+    const {
+      nativeEvent: {
+        contentOffset: { y: yOffset },
+      },
+    } = event;
+
+    if (!this.pushedBarStyle && yOffset < targetYOffset) {
+      this.pushedBarStyle = StatusBar.pushStackEntry({
+        barStyle: 'light-content',
+      });
+      this.isScrolledDown = false;
+    }
+
+    if (this.pushedBarStyle && yOffset > targetYOffset) {
+      StatusBar.popStackEntry(this.pushedBarStyle);
+      this.pushedBarStyle = null;
+      this.isScrolledDown = true;
+    }
+  }
+
+  resolveFooterButtons(profile) {
     if (!profile) {
       return null;
     }
 
-    return (
-      <View styleName="horizontal h-center">
-        <View styleName="horizontal h-start wrap">
-          <SocialButton
-            icon="web"
-            url={profile?.web}
-            title={I18n.t('shoutem.cms.websiteButton')}
-            openURL={openURL}
-          />
-          <SocialButton
-            icon="call"
-            url={profile?.phone && `tel:${profile?.phone}`}
-            title={I18n.t('shoutem.cms.phoneButton')}
-          />
-          <SocialButton
-            icon="tweet"
-            url={profile?.twitter}
-            title="Twitter"
-            openURL={openURL}
-          />
-          <SocialButton
-            icon="email"
-            url={profile?.mail && `mailto:${profile?.mail}`}
-            title={I18n.t('shoutem.cms.emailButton')}
-          />
-          <SocialButton
-            icon="linkedin"
-            url={profile?.linkedin}
-            title="LinkedIn"
-            openURL={openURL}
-          />
-          <SocialButton
-            icon="facebook"
-            url={profile?.facebook}
-            title="Facebook"
-            openURL={openURL}
-          />
-          <SocialButton
-            icon="instagram"
-            url={profile?.instagram}
-            title="Instagram"
-            openURL={openURL}
-          />
-        </View>
-      </View>
-    );
+    const webButton = {
+      icon: 'web',
+      url: profile.web,
+      title: I18n.t('shoutem.cms.websiteButton'),
+      openURL,
+    };
+
+    const callButton = {
+      icon: 'call',
+      url: profile.phone ? `tel:${profile.phone}` : null,
+      title: I18n.t('shoutem.cms.phoneButton'),
+    };
+
+    const tweetButton = {
+      icon: 'tweet',
+      url: profile.twitter,
+      title: 'Twitter',
+      openURL,
+    };
+
+    const emailButton = {
+      icon: 'email',
+      url: profile.mail ? `mailto:${profile.mail}` : null,
+      title: I18n.t('shoutem.cms.emailButton'),
+    };
+
+    const linkedinButton = {
+      icon: 'linkedin',
+      url: profile.linkedin,
+      title: 'LinkedIn',
+      openURL,
+    };
+
+    const facebookButton = {
+      icon: 'facebook',
+      url: profile.facebook,
+      title: 'Facebook',
+      openURL,
+    };
+
+    const instagramButton = {
+      icon: 'instagram',
+      url: profile.instagram,
+      title: 'Instagram',
+      openURL,
+    };
+
+    return [
+      webButton,
+      callButton,
+      tweetButton,
+      emailButton,
+      linkedinButton,
+      facebookButton,
+      instagramButton,
+    ];
   }
 
-  renderAboutInfo(profile) {
-    const { imageSize } = this.props;
+  renderLeadImage() {
+    const { imageSize, profile } = this.props;
 
     return (
-      <ScrollView>
-        {this.renderImage(profile, imageSize)}
-        <View styleName="solid">
-          {this.renderTitle(profile)}
-          {this.renderInfo(profile)}
-          {this.renderMap(profile)}
-          {this.renderOpeningHours(profile)}
-          {this.renderFooterButtons(profile)}
-          <Divider />
-        </View>
-      </ScrollView>
+      <Image
+        styleName={imageSize}
+        source={{ uri: profile.image?.url }}
+        animationName="hero"
+      />
     );
-  }
-
-  renderData(data) {
-    // If data is still loading, render loading spinner
-    if (isBusy(data) || !isInitialized(data) || !isValid(data)) {
-      return this.renderLoadingSpinner();
-    }
-
-    // If no data is available, render placeholder view
-    if (this.shouldRenderPlaceholderView()) {
-      return this.renderPlaceholderView();
-    }
-
-    // If valid data is retrieved, take first input only
-    // And finally, proceed with rendering actual About content
-    const profile = _.first(data);
-    return this.renderAboutInfo(profile);
   }
 
   render() {
-    const { data } = this.props;
+    const { data, isFocused, profile } = this.props;
 
-    return <Screen styleName="paper">{this.renderData(data)}</Screen>;
+    const isLoading = isBusy(data) || !isInitialized(data) || !isValid(data);
+    const detailsStyle = { screenStyleName: 'paper' };
+
+    return (
+      <Screen styleName="paper">
+        <DetailsLayout
+          isLoading={isLoading}
+          emptyStateViewProps={this.resolveEmptyStateViewProps()}
+          LeadImage={this.renderLeadImage}
+          onScroll={this.handleScroll}
+          style={detailsStyle}
+          title={profile.name?.toUpperCase()}
+        >
+          <SimpleHtml body={profile.info} />
+          <Map {...this.resolveMapProps(profile)} />
+          <OpeningHours htmlContent={profile.info} />
+          <FooterButtons buttons={this.resolveFooterButtons(profile)} />
+        </DetailsLayout>
+      </Screen>
+    );
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+export function mapStateToProps(state, ownProps) {
   const channelId = i18nSelectors.getActiveChannelId(state);
-  const parentCategoryId = _.get(
-    ownProps,
-    'route.params.shortcut.settings.parentCategory.id',
-  );
+  const parentCategoryId =
+    ownProps.route.params.shortcut.settings.parentCategory?.id;
   const { screenSettings } = getRouteParams(ownProps);
   const collection = state[ext()].allAbout;
+  const data = getCollection(collection[parentCategoryId], state);
+  const profile = data[0];
 
   return {
     channelId,
-    parentCategoryId,
+    data,
     imageSize: screenSettings.imageSize,
-    data: getCollection(collection[parentCategoryId], state),
+    parentCategoryId,
+    profile,
   };
-};
+}
 
-const mapDispatchToProps = { find, invalidate };
+export const mapDispatchToProps = { find };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(connectStyle(ext('About'))(AboutScreen));
+export default withIsFocused(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('About'))(AboutScreen)),
+);

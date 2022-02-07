@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Screen, EmptyStateView } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { EmptyStateView, Screen } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 

@@ -1,11 +1,12 @@
 {
   "name": "camera",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.1.0",
+  "platform": "^4 || ^5",
   "title": "Camera",
   "type": "system",
   "description": "Shoutem camera extension",
-  "releaseNotes": "* Optimize scanning behaviour",
+  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
+  "dependencies": ["shoutem.i18n", "shoutem.navigation", "shoutem.theme"],
   "icon": "server/assets/add-camera-image.png",
   "screens": [
     {

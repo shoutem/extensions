@@ -5,8 +5,8 @@ import {
   create,
   find,
   getCollection,
-  storage,
   resource,
+  storage,
 } from '@shoutem/redux-io';
 import { getAppId } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
@@ -15,13 +15,13 @@ import { preventStateRehydration } from 'shoutem.redux';
 import {
   AUTHORIZATIONS_SCHEMA,
   CARD_SCHEMA,
-  CASHIERS_SCHEMA,
   CARD_STATE_SCHEMA,
+  CASHIERS_SCHEMA,
   ext,
-  PLACES_SCHEMA,
   PLACE_REWARDS_SCHEMA,
-  PUNCH_REWARDS_SCHEMA,
+  PLACES_SCHEMA,
   POINT_REWARDS_SCHEMA,
+  PUNCH_REWARDS_SCHEMA,
   REWARDS_SCHEMA,
   RULES_SCHEMA,
   TRANSACTIONS_SCHEMA,

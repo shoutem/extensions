@@ -3,16 +3,17 @@ import autoBindReact from 'auto-bind/react';
 import isEmail from 'is-email';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
+  Caption,
+  Spinner,
   Text,
   TextInput,
-  View,
-  Caption,
   TouchableOpacity,
+  View,
 } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
 import ConsentCheckbox from './ConsentCheckbox';
@@ -20,6 +21,7 @@ import PasswordTextInput from './PasswordTextInput';
 
 class RegisterForm extends PureComponent {
   static propTypes = {
+    inProgress: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func,
     style: PropTypes.object,
     gdprSettings: PropTypes.object,
@@ -161,6 +163,7 @@ class RegisterForm extends PureComponent {
     const {
       style,
       gdprSettings,
+      inProgress,
       newsletterSettings,
       emailTaken,
       onRecoverPasswordPress,
@@ -249,8 +252,14 @@ class RegisterForm extends PureComponent {
           onPress={this.handleRegisterButtonPress}
           style={style.registerButton}
           styleName="confirmation inflexible"
+          disabled={inProgress}
         >
-          <Text allowFontScaling={false}>{I18n.t(ext('registerButton'))}</Text>
+          {inProgress && <Spinner />}
+          {!inProgress && (
+            <Text allowFontScaling={false}>
+              {I18n.t(ext('registerButton'))}
+            </Text>
+          )}
         </Button>
       </>
     );

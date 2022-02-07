@@ -1,16 +1,16 @@
 import React, { PureComponent } from 'react';
+import { Linking } from 'react-native';
+import { uses24HourClock } from 'react-native-localize';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { Linking } from 'react-native';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
   Divider,
-  SimpleHtml,
   Icon,
   Image,
   Overlay,
@@ -18,6 +18,7 @@ import {
   Screen,
   ScrollView,
   ShareButton,
+  SimpleHtml,
   Text,
   Title,
   TouchableOpacity,
@@ -27,21 +28,22 @@ import { authenticate } from 'shoutem.auth';
 import { Favorite } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
 import {
-  getRouteParams,
   composeNavigationStyles,
+  getRouteParams,
   withIsFocused,
 } from 'shoutem.navigation';
 import { openURL } from 'shoutem.web-view';
 import DealRedeemContentView from '../components/DealRedeemContentView';
 import FooterDealView from '../components/FooterDealView';
+import { ext, TRANSLATIONS } from '../const';
 import {
   claimCoupon,
   fetchDealTransactions,
-  getLastDealTransaction,
+  getDeal,
   getLastDealStatusTransaction,
+  getLastDealTransaction,
   redeemCoupon,
   redeemDeal,
-  getDeal,
 } from '../redux';
 import {
   dealStatusShape,
@@ -50,10 +52,9 @@ import {
   getDealStatus,
   getFormattedDiscount,
   isDealActive,
-  resolveMapScheme,
   resolveDealBuyDisplayLink,
+  resolveMapScheme,
 } from '../services';
-import { ext, TRANSLATIONS } from '../const';
 
 const styles = {
   dealCoupons: {
@@ -65,29 +66,31 @@ const styles = {
   },
 };
 
-const formatDealDate = dealDateStr => {
+function formatDealDate(dealDateStr, isOnlyEndDate) {
   const dealDate = moment(dealDateStr);
+  const timeFormat = uses24HourClock() ? 'H:mm' : 'h:mm a';
 
-  return dealDate.format('MMMM DD  • h:mm a');
-};
+  if (!isOnlyEndDate) {
+    return dealDate.format(`MMMM DD  • ${timeFormat}`);
+  }
+
+  const isMidnight = dealDate.isSame(
+    moment(dealDateStr).startOf('day'),
+    'hour',
+  );
+  const weekdayAndDate = dealDate.format('dddd Do MMMM');
+
+  if (isMidnight) {
+    return I18n.t(ext('validUntilLabelWithoutTime'), { weekdayAndDate });
+  }
+
+  return I18n.t(ext('validUntilLabelWithTime'), {
+    time: dealDate.format(timeFormat),
+    weekdayAndDate,
+  });
+}
 
 export class DealDetailsScreen extends PureComponent {
-  static propTypes = {
-    activeCoupon: PropTypes.object,
-    authenticate: PropTypes.func,
-    claimCoupon: PropTypes.func,
-    deal: PropTypes.object,
-    dealStatus: dealStatusShape,
-    fetchDealTransactions: PropTypes.func,
-    isDealActive: PropTypes.bool,
-    isFocused: PropTypes.bool,
-    hasFavoriteButton: PropTypes.bool,
-    nextDeal: PropTypes.object,
-    previousDeal: PropTypes.object,
-    redeemCoupon: PropTypes.func,
-    redeemDeal: PropTypes.func,
-  };
-
   static getDerivedStateFromProps(props, state) {
     const newState = {
       ...state,
@@ -486,7 +489,7 @@ export class DealDetailsScreen extends PureComponent {
             !!startTime ? 'md-gutter-top' : ''
           } ${textColorStyle}`}
         >
-          {formatDealDate(endTime)}
+          {formatDealDate(endTime, !startTime)}
         </Text>
 
         {this.renderClaimButton()}
@@ -576,6 +579,7 @@ export class DealDetailsScreen extends PureComponent {
       <DealRedeemContentView
         deal={deal}
         isRedeeming={isRedeeming}
+        hideRedeemButton={deal?.hideRedeemButton}
         onRedeemCoupon={this.handleRedeemCoupon}
         onTimerEnd={this.handleTimerEnd}
       />
@@ -594,6 +598,39 @@ export class DealDetailsScreen extends PureComponent {
     );
   }
 }
+
+DealDetailsScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  activeCoupon: PropTypes.object,
+  authenticate: PropTypes.func,
+  claimCoupon: PropTypes.func,
+  deal: PropTypes.object,
+  dealStatus: dealStatusShape,
+  fetchDealTransactions: PropTypes.func,
+  hasFavoriteButton: PropTypes.bool,
+  isDealActive: PropTypes.bool,
+  isFocused: PropTypes.bool,
+  nextDeal: PropTypes.object,
+  previousDeal: PropTypes.object,
+  redeemCoupon: PropTypes.func,
+  redeemDeal: PropTypes.func,
+};
+
+DealDetailsScreen.defaultProps = {
+  activeCoupon: {},
+  authenticate: undefined,
+  claimCoupon: undefined,
+  deal: {},
+  dealStatus: undefined,
+  fetchDealTransactions: undefined,
+  hasFavoriteButton: true,
+  isDealActive: false,
+  isFocused: false,
+  nextDeal: {},
+  previousDeal: {},
+  redeemCoupon: undefined,
+  redeemDeal: undefined,
+};
 
 export function mapStateToProps(state, ownProps) {
   const { deal } = getRouteParams(ownProps);

@@ -1,9 +1,9 @@
-import { SubscriptionsScreen } from './screens';
-import enTranslations from './translations/en.json';
 import './navigation';
+import enTranslations from './translations/en.json';
+import { SubscriptionsScreen } from './screens';
 
 export { appDidMount } from './app';
-export { reducer, actions, selectors } from './redux';
+export { actions, reducer, selectors } from './redux';
 
 export const screens = { SubscriptionsScreen };
 

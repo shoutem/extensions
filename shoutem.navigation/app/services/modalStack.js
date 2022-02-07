@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { MODAL } from '../const';
-import { openStack, closeStack } from './navigationStacks';
+import { closeStack, openStack } from './navigationStacks';
 
 const ModalScreens = [];
 
@@ -39,6 +39,7 @@ export function openInModal(screen, params) {
   const registeredScreen = _.find(ModalScreens, { name: screen });
 
   if (!registeredScreen) {
+    // eslint-disable-next-line no-console
     console.warn(
       'Attempting to navigate to modal screen that is not registered',
     );

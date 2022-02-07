@@ -1,10 +1,10 @@
 {
   "name": "auth",
-  "version": "4.0.1",
-  "platform": "~4.0.1",
+  "version": "4.0.6",
+  "platform": "^4.0.5 || ^5",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Fixed profile picture failing to update sometimes",
+  "releaseNotes": "* Fixed Facebook login/sign up button functionality",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",
@@ -15,7 +15,9 @@
     "shoutem.redux",
     "shoutem.web-view"
   ],
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

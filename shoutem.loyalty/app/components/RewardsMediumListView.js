@@ -3,11 +3,11 @@ import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
-  TouchableOpacity,
+  Caption,
   Image,
   Tile,
   Title,
-  Caption,
+  TouchableOpacity,
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
@@ -57,9 +57,9 @@ export class RewardMediumListView extends PureComponent {
           <View styleName="content">
             <Title>{title}</Title>
             <View styleName="horizontal space-between">
-              <Caption>{`${pointsRequired}${I18n.t(
-                ext('pointsRequiredRewards'),
-              )}`}</Caption>
+              <Caption>
+                {`${pointsRequired}${I18n.t(ext('pointsRequiredRewards'))}`}
+              </Caption>
             </View>
           </View>
         </Tile>

@@ -1,10 +1,12 @@
 {
   "name": "persist",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "type": "system",
   "title": "Persist",
   "description": "Extensions that persist redux state",
+  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
   "icon": "server/assets/add-persist-image.png",
+  "dependencies": [],
   "categories": []
 }

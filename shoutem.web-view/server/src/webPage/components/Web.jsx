@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
 import { getShortcut } from 'environment';
 import { data } from 'context';
@@ -15,19 +16,8 @@ const ACTIVE_SCREEN_EDIT = 1;
 export class Web extends Component {
   constructor(props) {
     super(props);
-    this.getActiveScreen = this.getActiveScreen.bind(this);
-    this.getShortcutSettings = this.getShortcutSettings.bind(this);
-    this.setShortcutSettings = this.setShortcutSettings.bind(this);
-    this.handleUrlInputContinueClick = this.handleUrlInputContinueClick.bind(
-      this,
-    );
-    this.handleUrlRemoveClick = this.handleUrlRemoveClick.bind(this);
-    this.handleShowNavigationToolbarChange = this.handleShowNavigationToolbarChange.bind(
-      this,
-    );
-    this.handleGeolocationPermissionChange = this.handleGeolocationPermissionChange.bind(
-      this,
-    );
+
+    autoBindReact(this);
   }
 
   getActiveScreen() {
@@ -46,6 +36,7 @@ export class Web extends Component {
       url: '',
       showNavigationToolbar: false,
       requireGeolocationPermission: false,
+      forwardAuthHeader: false,
     };
   }
 
@@ -76,6 +67,10 @@ export class Web extends Component {
     this.setShortcutSettings({ url: null });
   }
 
+  handleForwardAuthHeaderChange(checked) {
+    this.setShortcutSettings({ forwardAuthHeader: checked });
+  }
+
   handleShowNavigationToolbarChange(checked) {
     this.setShortcutSettings({ showNavigationToolbar: checked });
   }
@@ -90,6 +85,7 @@ export class Web extends Component {
       url,
       showNavigationToolbar,
       requireGeolocationPermission,
+      forwardAuthHeader,
     } = this.getShortcutSettings();
 
     const { hasWebsiteSettings } = data.params;
@@ -104,11 +100,13 @@ export class Web extends Component {
             hasWebsiteSettings={hasWebsiteSettings}
             url={url}
             showNavigationToolbar={showNavigationToolbar}
+            forwardAuthHeader={forwardAuthHeader}
             requireGeolocationPermission={requireGeolocationPermission}
             onRemoveClick={this.handleUrlRemoveClick}
             onShowNavigationToolbarChange={
               this.handleShowNavigationToolbarChange
             }
+            onForwardAuthHeaderChange={this.handleForwardAuthHeaderChange}
             onRequireGeolocationPermissionChange={
               this.handleGeolocationPermissionChange
             }

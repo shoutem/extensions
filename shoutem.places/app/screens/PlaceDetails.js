@@ -1,36 +1,36 @@
 import React, { PureComponent } from 'react';
+import { Linking } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Linking } from 'react-native';
+import { connectStyle } from '@shoutem/theme';
+import {
+  Button,
+  Caption,
+  Divider,
+  Icon,
+  Row,
+  Screen,
+  ScrollView,
+  SimpleHtml,
+  Subtitle,
+  Text,
+  Tile,
+  TouchableOpacity,
+  View,
+} from '@shoutem/ui';
 import { InlineMap } from 'shoutem.application';
 import { Favorite } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
 import {
-  navigateTo,
-  getRouteParams,
   composeNavigationStyles,
+  getRouteParams,
+  navigateTo,
 } from 'shoutem.navigation';
 import { openURL } from 'shoutem.web-view';
-import { connectStyle } from '@shoutem/theme';
-import {
-  ScrollView,
-  TouchableOpacity,
-  Icon,
-  Row,
-  Subtitle,
-  Caption,
-  Text,
-  View,
-  Divider,
-  Tile,
-  Screen,
-  Button,
-  SimpleHtml,
-} from '@shoutem/ui';
 import { PlaceImageGallery } from '../components';
 import { ext } from '../const';
-import { getPlaceImages, getMapUrl } from '../services/places';
+import { getMapUrl, getPlaceImages } from '../services/places';
 
 export class PlaceDetails extends PureComponent {
   static propTypes = {

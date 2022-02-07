@@ -1,11 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import { connectStyle } from '@shoutem/theme';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { connectStyle } from '@shoutem/theme';
 import { HeaderBackButton } from '../components';
-import { getRouteParams, createChildNavigators } from '../services';
 import { ext } from '../const';
+import NoScreens from '../screens/NoScreens';
+import { createChildNavigators, getRouteParams } from '../services';
 
 const TabBarStack = createBottomTabNavigator();
 
@@ -24,20 +25,19 @@ function screenOptions(props) {
   };
 }
 
-function Navigator({
-  parentShortcut,
-  hiddenShortcuts,
-  decoratedScreens,
-  style,
-}) {
+function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
   const TabComponents = createChildNavigators(
     parentShortcut,
     TabBarStack,
     screenOptions,
     false,
     hiddenShortcuts,
-    decoratedScreens,
+    screens,
   );
+
+  if (_.size(TabComponents) < 1) {
+    return <NoScreens />;
+  }
 
   return (
     <TabBarStack.Navigator
@@ -55,10 +55,15 @@ function Navigator({
 }
 
 Navigator.propTypes = {
-  parentShortcut: PropTypes.object,
+  parentShortcut: PropTypes.object.isRequired,
+  screens: PropTypes.object.isRequired,
   hiddenShortcuts: PropTypes.array,
-  decoratedScreens: PropTypes.object,
   style: PropTypes.object,
+};
+
+Navigator.defaultProps = {
+  hiddenShortcuts: [],
+  style: {},
 };
 
 export const TabBarNavigator = connectStyle(ext('TabBar'))(Navigator);

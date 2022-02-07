@@ -1,12 +1,13 @@
 {
   "name": "permissions",
   "title": "Permissions",
-  "version": "4.0.1",
-  "platform": "^4.0.0",
+  "version": "4.0.2",
+  "platform": "^4 || ^5",
   "type": "system",
   "description": "Extension for app permission management. ",
   "icon": "server/assets/permissions-icon.png",
-  "releaseNotes": "* Added ability to overwrite permission rationales via settings page",
+  "dependencies": ["shoutem.i18n"],
+  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
   "pages": [
     {
       "name": "SettingsPage",

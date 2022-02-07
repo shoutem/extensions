@@ -1,8 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { find, isValid, next, shouldRefresh } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { EmptyStateView } from '@shoutem/ui';
@@ -13,10 +13,10 @@ import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
 import RewardListView from '../components/RewardListView';
 import {
-  REWARDS_SCHEMA,
   CARD_STATE_SCHEMA,
-  POINT_REWARDS_SCHEMA,
   ext,
+  POINT_REWARDS_SCHEMA,
+  REWARDS_SCHEMA,
 } from '../const';
 import { refreshCard } from '../services';
 import NoProgramScreen from './NoProgramScreen';
@@ -58,6 +58,18 @@ export class RewardsListScreen extends CmsListScreen {
       schema: POINT_REWARDS_SCHEMA,
       searchEnabled: false, // loyalty API doesn't support query param
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { user } = this.props;
+    const { user: prevUser } = prevProps;
+
+    if (user.id && user.id !== prevUser.id) {
+      this.refreshData(prevProps);
+      return;
+    }
+
+    super.componentDidUpdate(prevProps);
   }
 
   refreshData(prevProps) {
@@ -103,18 +115,18 @@ export class RewardsListScreen extends CmsListScreen {
       return;
     }
 
-    const { card, find, refreshCard, channelId } = this.props;
+    const { card, find, refreshCard, channelId, user } = this.props;
     const { cmsSchema, schema } = this.state;
 
     const cardId = _.get(card, 'id', newCardId);
     const categoryId = _.get(this.props, 'selectedCategory.id');
 
-    if (!cardId) {
+    if (!cardId && user?.id) {
       refreshCard();
       return;
     }
 
-    if (_.isString(cardId)) {
+    if (_.isString(cardId) && categoryId) {
       find(schema, undefined, {
         query: {
           'filter[categories]': categoryId,
@@ -185,7 +197,7 @@ export class RewardsListScreen extends CmsListScreen {
   }
 }
 
-export const mapStateToProps = (state, ownProps) => {
+export function mapStateToProps(state, ownProps) {
   const extensionSettings = getExtensionSettings(state, ext());
   const programId = _.get(extensionSettings, 'program.id');
   const card = _.get(state[ext()], 'card.data', {});
@@ -198,7 +210,7 @@ export const mapStateToProps = (state, ownProps) => {
     programId,
     user: getUser(state),
   };
-};
+}
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   find,

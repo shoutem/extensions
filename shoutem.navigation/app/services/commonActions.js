@@ -54,6 +54,9 @@ function resolveNavigationParams(screen, navigationParams) {
     return { resolvedScreen, routeParams: { previousRoute } };
   }
 
+  const screenSettings =
+    matchingShortcutScreen?.settings || navigationParams?.screenSettings || {};
+
   const routeParams = {
     ...(_.has(navigationParams, 'params') && {
       ...navigationParams,
@@ -65,6 +68,7 @@ function resolveNavigationParams(screen, navigationParams) {
     ...(!_.has(navigationParams, 'params') && {
       ...navigationParams,
       previousRoute,
+      screenSettings,
     }),
   };
 
@@ -76,6 +80,7 @@ function resolveNavigationParams(screen, navigationParams) {
 
 export function replace(navigation, screen, navigationParams) {
   if (!navigation || !_.isObject(navigation)) {
+    // eslint-disable-next-line no-console
     return console.warn(`'navigation' param is missing.`);
   }
 
@@ -85,6 +90,7 @@ export function replace(navigation, screen, navigationParams) {
   );
 
   if (!_.isFunction(navigation.replace)) {
+    // eslint-disable-next-line no-console
     return console.warn(
       `You are trying to use replace function on non-stack navigator`,
     );
@@ -112,6 +118,7 @@ export function navigateTo(screen, navigationParams) {
 
 export function push(navigation, screen, navigationParams) {
   if (!navigation || !_.isObject(navigation)) {
+    // eslint-disable-next-line no-console
     return console.warn(`'navigation' param is missing.`);
   }
 
@@ -121,6 +128,7 @@ export function push(navigation, screen, navigationParams) {
   );
 
   if (!_.isFunction(navigation.replace)) {
+    // eslint-disable-next-line no-console
     return console.warn(
       `You are trying to use replace function on non-stack navigator`,
     );

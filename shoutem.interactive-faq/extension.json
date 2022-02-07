@@ -1,17 +1,18 @@
 {
   "name": "interactive-faq",
   "title": "Interactive FAQ",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "icon": "./server/assets/faq.png",
   "description": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
-  "releaseNotes": "* Added CMS search feature",
+  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
   "dependencies": [
-    "shoutem.cms"
+    "shoutem.cms",
+    "shoutem.i18n",
+    "shoutem.navigation",
+    "shoutem.redux"
   ],
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -27,10 +28,7 @@
       "icon": "theme://comment.png",
       "name": "faq-shortcut",
       "screen": "@.InteractiveFaqScreen",
-      "capabilities": [
-        "shoutem.cms.search",
-        "shoutem.cms.import-csv"
-      ],
+      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
       "adminPages": [
         {
           "page": "@.FaqSettings",

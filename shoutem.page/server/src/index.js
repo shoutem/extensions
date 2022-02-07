@@ -1,5 +1,5 @@
 import PageSettings from './pages';
-import reducer from './reducer';
+import reducer from './redux';
 
 const adminPages = {
   PageSettings,

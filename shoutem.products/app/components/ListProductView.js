@@ -1,27 +1,26 @@
 import React from 'react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import {
-  TouchableOpacity,
-  Image,
-  View,
-  Subtitle,
   Caption,
-  Row,
   Divider,
+  Image,
+  Row,
+  Subtitle,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
 
 export default function ListProductView({ product, onPress }) {
-  const handleItemPress = () => {
+  function handleItemPress() {
     onPress(product);
-  };
+  }
 
   return (
     <TouchableOpacity onPress={handleItemPress}>
       <Row>
         <Image
           styleName="small placeholder"
-          source={{ uri: _.get(product, 'image.url') }}
+          source={{ uri: product?.image?.url }}
         />
         <View styleName="vertical stretch space-between">
           <Subtitle numberOfLines={2}>{product.name}</Subtitle>

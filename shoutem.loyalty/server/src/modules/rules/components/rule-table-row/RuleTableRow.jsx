@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import classNames from 'classnames';
-import autoBindReact from 'auto-bind/react';
 import { FormGroup } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import classNames from 'classnames';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { Switch } from '@shoutem/react-web-ui';
 import './style.scss';
 
@@ -33,7 +33,7 @@ export default class RuleTableRow extends Component {
 
   handleInputChange(event) {
     const { validateRule } = this.props;
-    const value = event.target.value;
+    const { value } = event.target;
 
     const isValid = validateRule(value);
     this.setState({ value, isValid });

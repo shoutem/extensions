@@ -1,0 +1,35 @@
+{
+  "name": "levels",
+  "title": "Levels",
+  "titleProperty": "title",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "format": "single-line",
+      "title": "Title",
+      "required": true,
+      "displayPriority": 1
+    },
+    "numberOfPoints": {
+      "type": "number",
+      "format": "number",
+      "title": "Number of points required",
+      "required": true,
+      "displayPriority": 2
+    },
+    "description": {
+      "type": "string",
+      "format": "html",
+      "title": "Description",
+      "displayPriority": 3
+    },
+    "image": {
+      "type": "object",
+      "format": "attachment",
+      "title": "Lead Image",
+      "referencedSchema": "shoutem.core.image-attachments",
+      "displayPriority": 4
+    }
+  }
+}

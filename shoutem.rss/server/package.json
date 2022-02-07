@@ -1,6 +1,6 @@
 {
   "name": "shoutem.rss",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Shoutem RSS extensions",
   "author": "Shoutem",
   "scripts": {
@@ -12,6 +12,7 @@
     "dev": "run-p watch serve"
   },
   "dependencies": {
+    "auto-bind": "^4.0.0",
     "dayjs": "^1.8.23",
     "i18next": "^19.8.2",
     "normalize-url": "^1.6.0",

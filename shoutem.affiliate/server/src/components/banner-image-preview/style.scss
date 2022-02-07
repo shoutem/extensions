@@ -1,0 +1,38 @@
+.banner-image-preview__container {
+  position: relative;
+  max-width: 200px;
+  margin-top: 50px;
+}
+
+.banner-image-preview__image {
+  display: block;
+  width: 100%;
+}
+
+.banner-image-preview__overlay {
+  position: absolute; 
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  bottom: 0; 
+  background: rgba(49, 60, 89, 0.8);
+  transition: .2s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 24px;
+}
+
+.banner-image-preview__container:hover .banner-image-preview__overlay {
+  opacity: 1;
+}
+
+.banner-image-preview__icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

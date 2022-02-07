@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
-import { storage, collection, one } from '@shoutem/redux-io';
 import ext from 'src/const';
-import { TRANSACTIONS, TRANSACTION_STATS } from '../const';
+import { collection, one, storage } from '@shoutem/redux-io';
+import { TRANSACTION_STATS, TRANSACTIONS } from '../const';
 
 export const reducer = combineReducers({
   [TRANSACTIONS]: storage(TRANSACTIONS),

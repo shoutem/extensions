@@ -1,13 +1,13 @@
 import React from 'react';
-import { TestIds, BannerAd, BannerAdSize } from '@react-native-admob/admob';
-import { View } from '@shoutem/ui';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import { Platform } from 'react-native';
 import { connect } from 'react-redux';
+import { BannerAd, BannerAdSize, TestIds } from '@react-native-admob/admob';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { View } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
 import { isPreviewApp } from 'shoutem.preview';
-import { ext } from '../const';
+import { BANNER_REQUEST_OPTIONS, ext } from '../const';
 import { AdContext } from '../providers';
 
 export function withAdBanner(WrappedComponent) {
@@ -31,7 +31,7 @@ export function withAdBanner(WrappedComponent) {
 
           const isConfigured = isIOS ? iOSConfigured : AndroidConfigured;
           const isExcludedScreen = _.includes(
-            context.disabledBanner,
+            context?.disabledBanner,
             route.name,
           );
 
@@ -53,6 +53,7 @@ export function withAdBanner(WrappedComponent) {
                 <BannerAd
                   size={BannerAdSize.ADAPTIVE_BANNER}
                   unitId={bannerAdId}
+                  requestOptions={BANNER_REQUEST_OPTIONS}
                 />
               )}
               <WrappedComponent {...props} />
@@ -60,6 +61,7 @@ export function withAdBanner(WrappedComponent) {
                 <BannerAd
                   size={BannerAdSize.ADAPTIVE_BANNER}
                   unitId={bannerAdId}
+                  requestOptions={BANNER_REQUEST_OPTIONS}
                 />
               )}
             </View>

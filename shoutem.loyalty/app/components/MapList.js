@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
+import { LayoutAnimation } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { LayoutAnimation } from 'react-native';
-import { View, EmptyStateView } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { EmptyStateView, View } from '@shoutem/ui';
 import { MapView } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';

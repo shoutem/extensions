@@ -1,10 +1,10 @@
 {
   "name": "places",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.1.1",
+  "platform": "^5",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Replaced loading spinner with animated placeholder",
   "icon": "./server/assets/images/add-places-image.png",
   "dependencies": [
     "shoutem.application",
@@ -12,6 +12,7 @@
     "shoutem.favorites",
     "shoutem.i18n",
     "shoutem.layouts",
+    "shoutem.navigation",
     "shoutem.web-view"
   ],
   "categories": ["content"],
@@ -76,21 +77,33 @@
   "screens": [
     {
       "name": "PlacesListWithIcons",
-      "title": "Icon List",
+      "title": "Compact List",
       "extends": "@.PlacesListScreen",
-      "image": "./server/assets/images/layout_icon.png"
+      "image": "./server/assets/images/layout_icon.png",
+      "settings": {
+        "hasFeaturedItem": false,
+        "listType": "compact-list"
+      }
     },
     {
       "name": "PlacesListScreen",
-      "title": "Photo List",
+      "title": "Tile List",
       "image": "./server/assets/images/layout_photo.png",
+      "settings": {
+        "hasFeaturedItem": false,
+        "listType": "tile-list"
+      },
       "navigatesTo": ["@.PlaceDetails"]
     },
     {
       "name": "PlacesGridScreen",
-      "title": "Grid list",
+      "title": "1-2-2 pattern grid with a featured item",
       "extends": "@.PlacesListScreen",
       "image": "./server/assets/images/layout_grid.png",
+      "settings": {
+        "hasFeaturedItem": true,
+        "listType": "1-2-2-grid"
+      },
       "navigatesTo": ["@.PlaceDetails"]
     },
     {
@@ -110,13 +123,13 @@
     },
     {
       "name": "FavoritesList",
-      "title": "Photo list",
+      "title": "Tile list",
       "image": "./server/assets/images/layout_photo.png",
       "navigatesTo": ["@.PlaceDetails"]
     },
     {
       "name": "FavoritesListWithIcons",
-      "title": "Icon List",
+      "title": "Compact List",
       "extends": "@.FavoritesList",
       "image": "./server/assets/images/layout_icon.png"
     },

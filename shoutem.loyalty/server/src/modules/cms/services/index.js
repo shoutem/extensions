@@ -1,6 +1,6 @@
-import rsaaPromise from './rsaaPromise';
 import CmsApi from './cmsApi';
+import rsaaPromise from './rsaaPromise';
 const cmsApi = new CmsApi();
 const getCmsUrl = cmsApi.getUrl;
 
-export { rsaaPromise, cmsApi, getCmsUrl };
+export { cmsApi, getCmsUrl, rsaaPromise };

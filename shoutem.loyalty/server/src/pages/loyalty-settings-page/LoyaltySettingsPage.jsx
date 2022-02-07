@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
-import { shouldLoad } from '@shoutem/redux-io';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { LoyaltyDisabledPlaceholder } from 'src/components';
+import { CashierSettings } from 'src/modules/cashiers';
+import { CmsSelect } from 'src/modules/cms';
 import {
-  PROGRAMS,
-  ProgramSettings,
   enableLoyalty,
   getLoyaltyPlaces,
   loadLoyaltyPlaces,
+  PROGRAMS,
+  ProgramSettings,
 } from 'src/modules/program';
-import { LoyaltyDisabledPlaceholder } from 'src/components';
-import { getProgramId, initializeApiEndpoints } from 'src/services';
-import { CashierSettings } from 'src/modules/cashiers';
 import { RulesSettings } from 'src/modules/rules';
-import { CmsSelect } from 'src/modules/cms';
+import { getProgramId, initializeApiEndpoints } from 'src/services';
+import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
+import { shouldLoad } from '@shoutem/redux-io';
 import LOCALIZATION from './localization';
 import './style.scss';
 

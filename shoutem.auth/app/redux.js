@@ -1,37 +1,37 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
+import { chainReducers } from '@shoutem/redux-composers';
+import {
+  create,
+  find,
+  getOne,
+  one,
+  resource,
+  storage,
+  update,
+} from '@shoutem/redux-io';
 import {
   getAllShortcuts,
-  getExtensionSettings,
-  showAllShortcuts,
-  hideShortcuts as hideShortcutsAction,
   getConfiguration,
+  getExtensionSettings,
   getSubscriptionValidState,
+  hideShortcuts as hideShortcutsAction,
+  showAllShortcuts,
 } from 'shoutem.application';
 import {
-  navigateTo,
   getCurrentRoute,
+  navigateTo,
   NavigationStacks,
 } from 'shoutem.navigation';
 import { preventStateRehydration } from 'shoutem.redux';
-import {
-  find,
-  resource,
-  update,
-  one,
-  storage,
-  getOne,
-  create,
-} from '@shoutem/redux-io';
-import { chainReducers } from '@shoutem/redux-composers';
-import { ext } from './const';
-import encodeToBase64 from './shared/encodeToBase64';
 import { shoutemApi } from './services/shoutemApi';
+import encodeToBase64 from './shared/encodeToBase64';
+import { ext } from './const';
 
 export const LOGIN = 'shoutem.auth.LOGIN';
+export const AUTHENTICATE_LIMITED = 'shoutem.auth.AUTHENTICATE_LIMITED';
 export const LOGOUT = 'shoutem.auth.LOGOUT';
-export const AUTHENTICATE = 'shoutem.auth.AUTHENTICATE';
-export const REAUTHENTICATE_FAILED = 'shoutem.auth.REAUTHENTICATE_FAILED';
+export const CLEAR_AUTH_STATE = 'shoutem.auth.CLEAR_AUTH_STATE';
 export const RESTORE_SESSION = 'shoutem.auth.RESTORE_SESSION';
 export const REGISTER = 'shoutem.auth.REGISTER';
 export const SET_ACCESS_TOKEN = 'shoutem.auth.SET_ACCESS_TOKEN';
@@ -64,6 +64,8 @@ const sessionReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case RESTORE_SESSION:
       return { ...state, ...payload };
+    case CLEAR_AUTH_STATE:
+      return {};
     case LOGOUT:
       return {};
     default:
@@ -77,6 +79,13 @@ export function setAccessToken(token) {
     payload: {
       token,
     },
+  };
+}
+
+export function userAuthenticatedLimited(callback) {
+  return {
+    type: AUTHENTICATE_LIMITED,
+    payload: callback,
   };
 }
 
@@ -111,14 +120,14 @@ export function updateProfile(updates) {
     dispatch(update(USER_SCHEMA, newUser, { userId: updates.id }));
 }
 
-export const userLoggedIn = user => ({
+export const userLoggedIn = payload => ({
   type: LOGIN,
-  payload: user,
+  payload,
 });
 
-export const userRegistered = user => ({
+export const userRegistered = payload => ({
   type: REGISTER,
-  payload: user,
+  payload,
 });
 
 export function logout() {
@@ -127,22 +136,45 @@ export function logout() {
   };
 }
 
-export function fetchToken(tokenType, authHeader) {
-  const schemeConfig = {
-    schema: AUTH_TOKEN_SCHEMA,
-    request: {
-      headers: {
-        Authorization: authHeader,
-      },
-    },
+export function clearAuthState() {
+  return {
+    type: CLEAR_AUTH_STATE,
   };
-  const token = {
-    type: AUTH_TOKEN_SCHEMA,
-    tokenType,
-    subjectType: 'user',
-  };
+}
 
-  return create(schemeConfig, token);
+function getTokenScope(state) {
+  const { manuallyApproveMembers } = getExtensionSettings(state, ext());
+  const user = getUser(state);
+
+  if (manuallyApproveMembers && !user.approved) {
+    return { scope: 'profile' };
+  }
+
+  return {};
+}
+
+export function fetchToken(tokenType, authHeader) {
+  return (dispatch, getState) => {
+    const tokenScope = getTokenScope(getState());
+
+    const schemeConfig = {
+      schema: AUTH_TOKEN_SCHEMA,
+      request: {
+        headers: {
+          Authorization: authHeader,
+        },
+      },
+    };
+
+    const token = {
+      type: AUTH_TOKEN_SCHEMA,
+      tokenType,
+      subjectType: 'user',
+      ...tokenScope,
+    };
+
+    return dispatch(create(schemeConfig, token));
+  };
 }
 
 export function fetchAccessToken(email, password) {
@@ -387,8 +419,12 @@ export function isAgoraConfigured(state) {
  * @param {Object} state App state
  */
 export function isAuthenticated(state) {
+  const user = getUser(state);
+  const userApproved = _.get(user, 'approved', false);
+
   const accessToken = getAccessToken(state);
-  return !!accessToken;
+
+  return !!accessToken && userApproved;
 }
 
 export function getUserGroups(state) {
@@ -409,21 +445,22 @@ export function authenticate(callback) {
     if (isAuthenticated(state)) {
       const { user } = state[ext()];
 
-      callback(getOne(user, state));
-    } else {
-      const currentRoute = getCurrentRoute();
-
-      NavigationStacks.openStack(ext(), {
-        canGoBack: true,
-        onCancel: () => NavigationStacks.closeStack(ext()),
-        onLoginSuccess: user => {
-          navigateTo(currentRoute.name, {
-            ...currentRoute.params,
-          });
-          callback(user);
-        },
-      });
+      return callback(getOne(user, state));
     }
+
+    const currentRoute = getCurrentRoute();
+
+    return NavigationStacks.openStack(ext(), {
+      canGoBack: true,
+      onCancel: () => NavigationStacks.closeStack(ext()),
+      onLoginSuccess: user => {
+        navigateTo(currentRoute.name, {
+          ...currentRoute.params,
+        });
+
+        callback(user);
+      },
+    });
   };
 }
 

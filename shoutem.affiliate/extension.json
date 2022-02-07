@@ -1,0 +1,106 @@
+{
+  "name": "affiliate",
+  "title": "Affiliate",
+  "version": "2.0.0",
+  "platform": "^4.0.5 || ^5",
+  "description": "Create affiliate program in your app and expand your advertising reach",
+  "releaseNotes": "* Added analytics for affiliate partner performance tracking\n* For devs: Moved 'reselect' from 'dependencies' to 'peerDependencies', provided by Redux extension",
+  "icon": "server/assets/images/add-affiliate-image.png",
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.auth",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.redux"
+  ],
+  "screens": [
+    {
+      "name": "LevelsListScreen",
+      "title": "Large rewards progress control & compact list",
+      "image": "./server/assets/images/levels-compact-list.png",
+      "navigatesTo": ["@.LevelDetailsScreen"],
+      "settings": {
+        "listType": "compact-list",
+        "hasFeaturedItem": false
+      }
+    },
+    {
+      "name": "LevelDetailsScreen",
+      "title": "Medium photo with transparent navbar",
+      "image": "./server/assets/images/medium-photo-clear-navbar.png",
+      "settings": {
+        "navigationBarStyle": "clear",
+        "imageSize": "large",
+        "disableAdBanner": true
+      }
+    },
+    {
+      "name": "SolidNavbarLargeLevelDetailsScreen",
+      "title": "Medium photo with solid navbar",
+      "image": "./server/assets/images/medium-photo-solid-navbar.png",
+      "extends": "@.LevelDetailsScreen",
+      "settings": {
+        "navigationBarStyle": "solid",
+        "imageSize": "large",
+        "disableAdBanner": true
+      }
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "LevelsListScreen",
+      "title": "Affiliate",
+      "description": "Show info about your progress on affiliate levels",
+      "screen": "@.LevelsListScreen",
+      "icon": "theme://affiliate.png",
+      "adminPages": [
+        {
+          "page": "shoutem.cms.CmsPage",
+          "title": "Content",
+          "parameters": {
+            "schema": "@.levels"
+          }
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
+        },
+        {
+          "page": "@.SmsTextPage",
+          "title": "Sms/Text"
+        },
+        {
+          "page": "@.BannerPage",
+          "title": "Banner"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "PointsPage",
+      "type": "react-page"
+    },
+    {
+      "name": "SmsTextPage",
+      "type": "react-page"
+    },
+    {
+      "name": "BannerPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.PointsPage",
+      "title": "Points"
+    }
+  ],
+  "dataSchemas": [
+    {
+      "name": "levels",
+      "path": "./server/data-schemas/levels.json"
+    }
+  ]
+}

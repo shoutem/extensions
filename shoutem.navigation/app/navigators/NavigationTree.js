@@ -1,51 +1,35 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { StatusBar } from 'react-native';
-import _ from 'lodash';
-import hoistNonReactStatics from 'hoist-non-react-statics';
 import {
   createStackNavigator,
   TransitionPresets,
 } from '@react-navigation/stack';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
-  NO_SCREENS,
-  NO_CONTENT,
   DRAWER,
-  MODAL,
-  TAB_BAR,
   GRID_STACK,
+  MODAL,
+  NO_CONTENT,
+  NO_SCREENS,
   NONE,
+  TAB_BAR,
 } from '../const';
-import { NoScreens, NoContent } from '../screens';
-import { HeaderStyles, Decorators } from '../services';
+import { NoContent, NoScreens } from '../screens';
+import { HeaderStyles } from '../services';
 import {
-  DrawerNavigator,
-  TabBarNavigator,
-  ModalNavigator,
-  StackNavigator,
-  NoneStackNavigator,
   createCustomStackNavigators,
+  DrawerNavigator,
+  ModalNavigator,
+  NoneStackNavigator,
+  StackNavigator,
+  TabBarNavigator,
 } from '.';
 
 // Used to differentiate main app tree and the modal stack
 const ParentStack = createStackNavigator();
 // Root navigation stack that contains all other stacks
 const RootStack = createStackNavigator();
-
-// Collect all registered screen decorators and
-// create one that holds all of the logic, that
-// will be applied to each screen contained in any child navigator
-function createScreenDecorator() {
-  const decorators = Decorators.getDecorators();
-
-  return _.reduce(
-    decorators,
-    (result, decorator) => {
-      return screen => hoistNonReactStatics(decorator(result(screen)), screen);
-    },
-    screen => screen,
-  );
-}
 
 export function NavigationTree({
   firstShortcut,
@@ -61,17 +45,6 @@ export function NavigationTree({
   const isTabBarLayout = layoutType === TAB_BAR;
   const isNoneLayout = layoutType === NONE;
   const isStackLayout = !isDrawerLayout && !isTabBarLayout && !isNoneLayout;
-
-  const screenDecorator = createScreenDecorator();
-
-  const decoratedScreens = _.reduce(
-    screens,
-    (result, screen, name) => ({
-      ...result,
-      [name]: screenDecorator(screen),
-    }),
-    {},
-  );
 
   const CustomStackNavigators = createCustomStackNavigators(RootStack);
 
@@ -98,7 +71,7 @@ export function NavigationTree({
                     <StackNavigator
                       parentShortcut={parentShortcut}
                       hiddenShortcuts={hiddenShortcuts}
-                      decoratedScreens={decoratedScreens}
+                      screens={screens}
                     />
                   )}
                 </RootStack.Screen>
@@ -109,7 +82,7 @@ export function NavigationTree({
                     <DrawerNavigator
                       parentShortcut={parentShortcut}
                       hiddenShortcuts={hiddenShortcuts}
-                      decoratedScreens={decoratedScreens}
+                      screens={screens}
                     />
                   )}
                 </RootStack.Screen>
@@ -120,7 +93,7 @@ export function NavigationTree({
                     <TabBarNavigator
                       parentShortcut={parentShortcut}
                       hiddenShortcuts={hiddenShortcuts}
-                      decoratedScreens={decoratedScreens}
+                      screens={screens}
                     />
                   )}
                 </RootStack.Screen>
@@ -131,7 +104,7 @@ export function NavigationTree({
                     <NoneStackNavigator
                       parentShortcut={parentShortcut}
                       hiddenShortcuts={hiddenShortcuts}
-                      decoratedScreens={decoratedScreens}
+                      screens={screens}
                     />
                   )}
                 </RootStack.Screen>
@@ -143,7 +116,7 @@ export function NavigationTree({
           )}
         </ParentStack.Screen>
         <ParentStack.Screen name={MODAL}>
-          {() => <ModalNavigator decoratedScreens={decoratedScreens} />}
+          {() => <ModalNavigator screens={screens} />}
         </ParentStack.Screen>
       </ParentStack.Navigator>
     </>
@@ -151,8 +124,8 @@ export function NavigationTree({
 }
 
 NavigationTree.propTypes = {
-  firstShortcut: PropTypes.object,
-  shortcuts: PropTypes.array,
-  screens: PropTypes.object,
-  hiddenShortcuts: PropTypes.array,
+  firstShortcut: PropTypes.object.isRequired,
+  hiddenShortcuts: PropTypes.array.isRequired,
+  screens: PropTypes.object.isRequired,
+  shortcuts: PropTypes.array.isRequired,
 };

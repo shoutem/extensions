@@ -1,12 +1,19 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": ["users"],
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.firebase",
+    "shoutem.i18n",
+    "shoutem.permissions",
+    "shoutem.push-notification"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

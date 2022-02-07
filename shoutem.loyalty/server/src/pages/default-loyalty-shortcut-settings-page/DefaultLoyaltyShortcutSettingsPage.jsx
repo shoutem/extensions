@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Trans } from 'react-i18next';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { navigateToSettings } from '../../redux';
 import LOCALIZATION from './localization';
 

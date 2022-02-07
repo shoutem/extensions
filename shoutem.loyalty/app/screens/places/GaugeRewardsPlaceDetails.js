@@ -1,15 +1,15 @@
 import React from 'react';
-import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import { connectStyle } from '@shoutem/theme';
 import { View } from '@shoutem/ui';
-import { ext } from '../../const';
-import RewardsGaugeProgressBar from '../../components/RewardsGaugeProgressBar';
 import PlacePointsRewardListView from '../../components/PlacePointsRewardListView';
+import RewardsGaugeProgressBar from '../../components/RewardsGaugeProgressBar';
+import { ext } from '../../const';
 import {
-  PlaceDetails,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
+  PlaceDetails,
 } from './PlaceDetails';
 
 const gaugeContainerStyleNames =

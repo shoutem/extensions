@@ -1,23 +1,23 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import _ from 'lodash';
-import { connect } from 'react-redux';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
+import React, { PureComponent } from 'react';
 import {
+  Alert,
   Button,
   ButtonToolbar,
   ControlLabel,
-  FormGroup,
   FormControl,
-  Alert,
+  FormGroup,
 } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { updateExtensionSettings, getExtension } from '@shoutem/redux-api-sdk';
+import { getExtension, updateExtensionSettings } from '@shoutem/redux-api-sdk';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export class PrivacyPolicyPage extends Component {
+export class PrivacyPolicyPage extends PureComponent {
   constructor(props) {
     super(props);
 
