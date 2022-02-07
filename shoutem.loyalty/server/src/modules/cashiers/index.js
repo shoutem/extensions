@@ -1,8 +1,8 @@
-import { moduleName, reducer } from './redux';
 import CashierSettings from './fragments/cashier-settings';
+import { moduleName, reducer } from './redux';
 
-export { moduleName, CashierSettings };
+export { CashierSettings, moduleName };
 
-export { loadCashiers, getCashiers } from './redux';
+export { getCashiers, loadCashiers } from './redux';
 
 export default reducer;

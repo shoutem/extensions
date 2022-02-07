@@ -1,0 +1,23 @@
+.user-table-row {
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ecf9fd;
+  }
+}
+
+.user-table-row__username {
+  max-width: 200px;
+  width: 200px;
+  min-width: 200px;
+}
+
+.user-table-row__status {
+  text-align: center;
+  font-weight: bold;
+  color: #75c51d;
+
+  &.blocked {
+    color: #d0021b;
+  }
+}

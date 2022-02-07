@@ -1,20 +1,19 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { InteractionManager } from 'react-native';
-import { connect } from 'react-redux';
+import { isInitialized } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
+import { Button, Text } from '@shoutem/ui';
 import { triggerEvent } from 'shoutem.analytics';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
-import { isInitialized } from '@shoutem/redux-io';
-import { connectStyle } from '@shoutem/theme';
-import { View, Button, Text } from '@shoutem/ui';
 import EventsMap from '../components/EventsMap';
 import FeaturedEventView from '../components/FeaturedEventView';
 import { createListItem } from '../components/ListItemViewFactory';
-import { addToCalendar } from '../shared/Calendar';
 import { EVENTS_SCHEME, EVENTS_TAG, ext } from '../const';
+import { addToCalendar } from '../shared/Calendar';
 
 export class EventsScreen extends CmsListScreen {
   static propTypes = {
@@ -42,11 +41,9 @@ export class EventsScreen extends CmsListScreen {
     const { find } = this.props;
     const { schema } = this.state;
 
-    InteractionManager.runAfterInteractions(() =>
-      find(schema, undefined, {
-        query: this.getQueryParams(options),
-      }),
-    );
+    find(schema, undefined, {
+      query: this.getQueryParams(options),
+    });
   }
 
   getQueryParams(options) {

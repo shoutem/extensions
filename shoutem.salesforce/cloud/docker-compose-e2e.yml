@@ -1,0 +1,43 @@
+version: "3"
+services:
+  app_test:
+    build:
+      context: .
+      dockerfile: ./docker/app/app.Dockerfile
+    env_file: ./config/.env-e2e
+    depends_on:
+      - postgres_test
+      - redis_test
+    command: sh -c "npm run migrate && npm run start:debug:docker"
+    networks:
+      - test
+
+  postgres_test:
+    build:
+      context: ./docker/db
+      dockerfile: db.Dockerfile
+    env_file: ./config/.env-e2e
+    command: -p 5450 # needs to be synced manually to same value as POSTGRES_PORT in ./config/.env-e2e
+    networks:
+      - test
+
+  redis_test:
+    image: redis
+    env_file: ./config/.env-e2e
+    networks:
+      - test
+
+  api-tester:
+    env_file: ./config/.env-e2e
+    build:
+      context: .
+      dockerfile: ./docker/test/test.Dockerfile
+    command: sh -c "sleep 10 && npm run test:e2e:internal"
+    environment:
+      - API_HOST=app_test
+    depends_on:
+      - app_test
+    networks:
+      - test
+networks:
+  test:

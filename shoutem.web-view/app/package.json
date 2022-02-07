@@ -1,13 +1,13 @@
 {
   "name": "shoutem.web-view",
-  "version": "4.0.0",
+  "version": "4.2.0",
   "dependencies": {
-    "@shoutem/animation": "~0.12.4",
-    "react-native-pdf": "~6.1.0",
-    "react-native-webview": "~11.0.0",
-    "rn-fetch-blob": "^0.11.0"
+    "react-native-pdf": "6.1.2",
+    "react-native-webview": "11.0.3",
+    "rn-fetch-blob": "0.11.2"
   },
   "peerDependencies": {
+    "@shoutem/animation": "*",
     "@shoutem/theme": "*",
     "@shoutem/ui": "*"
   },

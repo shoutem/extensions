@@ -1,10 +1,10 @@
 {
   "name": "loyalty",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.4",
+  "platform": "^5",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Fix issues with loading reward categories",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",
@@ -16,7 +16,9 @@
     "shoutem.redux",
     "shoutem.web-view"
   ],
-  "categories": ["commerce"],
+  "categories": [
+    "commerce"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -32,7 +34,10 @@
       "title": "Punch Card",
       "name": "punch-card-shortcut",
       "icon": "theme://gift.png",
-      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
+      "capabilities": [
+        "shoutem.cms.search",
+        "shoutem.cms.import-csv"
+      ],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
@@ -76,7 +81,10 @@
       "title": "Rewards",
       "name": "rewards-shortcut",
       "icon": "theme://gift.png",
-      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
+      "capabilities": [
+        "shoutem.cms.search",
+        "shoutem.cms.import-csv"
+      ],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
@@ -100,7 +108,10 @@
       "title": "Stores",
       "name": "stores-shortcut",
       "icon": "theme://address-full.png",
-      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
+      "capabilities": [
+        "shoutem.cms.search",
+        "shoutem.cms.import-csv"
+      ],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
@@ -144,7 +155,9 @@
       "settings": {
         "defaultShortcutTitle": "My Stores",
         "extensionTitle": "Loyalty",
-        "favoritesSchemas": ["@.places"]
+        "favoritesSchemas": [
+          "@.places"
+        ]
       }
     }
   ],
@@ -180,7 +193,9 @@
       "name": "PlacesListScreen",
       "title": "Stores",
       "image": "./server/assets/images/layout-compact-list.png",
-      "navigatesTo": ["@.PlaceDetails"]
+      "navigatesTo": [
+        "@.PlaceDetails"
+      ]
     },
     {
       "name": "FavoritesList",

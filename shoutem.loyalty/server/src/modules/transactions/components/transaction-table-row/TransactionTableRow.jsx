@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import i18next from 'i18next';
 import { Button } from 'react-bootstrap';
-import { FontIcon } from '@shoutem/react-web-ui';
+import i18next from 'i18next';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 import { LOYALTY_TYPES } from 'src/const';
+import { FontIcon } from '@shoutem/react-web-ui';
 import {
-  formatUserLabel,
-  formatRewardLabel,
-  formatPlaceLabel,
   formatCashierLabel,
+  formatPlaceLabel,
+  formatRewardLabel,
+  formatUserLabel,
 } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';

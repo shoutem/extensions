@@ -1,3 +1,3 @@
-export { setTrackMetadata, SET_TRACK_METADATA } from './actions';
+export { SET_TRACK_METADATA, setTrackMetadata } from './actions';
 export { default as reducer } from './reducers';
 export { getTrackMetadata } from './selectors';

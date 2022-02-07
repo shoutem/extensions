@@ -1,24 +1,24 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
   Image,
-  SimpleHtml,
   Screen,
   ScrollView,
+  SimpleHtml,
+  Text,
   Tile,
   Title,
-  Text,
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import {
-  openInModal,
-  getRouteParams,
   composeNavigationStyles,
+  getRouteParams,
+  openInModal,
 } from 'shoutem.navigation';
 import RewardProgressBar from '../components/RewardProgressBar';
 import { cardStateShape } from '../components/shapes';

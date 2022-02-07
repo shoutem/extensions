@@ -1,36 +1,36 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { connect } from 'react-redux';
-import { LoaderContainer } from '@shoutem/react-web-ui';
-import { shouldLoad, isInitialized } from '@shoutem/redux-io';
-import { getProgramId, initializeApiEndpoints } from 'src/services';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { LOYALTY_TYPES } from 'src/const';
 import { getCashiers, loadCashiers } from 'src/modules/cashiers';
 import {
+  getCardsByUserId,
+  getLoyaltyPlaces,
+  getUsers,
+  loadCards,
+  loadLoyaltyPlaces,
+  loadUsers,
+} from 'src/modules/program';
+import { getPunchRewards, loadPunchRewards } from 'src/modules/punch-rewards';
+import {
+  getGeneralStats,
+  getTransactions,
+  loadGeneralStats,
+  loadTransactions,
   LoyaltyTypeRadioGroup,
   TransactionsDashboard,
   TransactionsFilter,
-  getTransactions,
-  getGeneralStats,
-  loadTransactions,
-  loadGeneralStats,
 } from 'src/modules/transactions';
-import { getPunchRewards, loadPunchRewards } from 'src/modules/punch-rewards';
-import {
-  getLoyaltyPlaces,
-  getCardsByUserId,
-  getUsers,
-  loadLoyaltyPlaces,
-  loadCards,
-  loadUsers,
-} from 'src/modules/program';
-import { LOYALTY_TYPES } from 'src/const';
+import { getProgramId, initializeApiEndpoints } from 'src/services';
+import { LoaderContainer } from '@shoutem/react-web-ui';
+import { isInitialized, shouldLoad } from '@shoutem/redux-io';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export class TransactionsPage extends Component {
+export class TransactionsPage extends PureComponent {
   constructor(props) {
     super(props);
     autoBindReact(this);

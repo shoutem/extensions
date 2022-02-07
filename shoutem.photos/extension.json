@@ -1,10 +1,10 @@
 {
   "name": "photos",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.1.0",
+  "platform": "^5",
   "title": "Photos",
   "description": "Show a photo gallery",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Replaced loading spinner with animated placeholder",
   "icon": "server/assets/add-photos-image.png",
   "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
   "categories": ["media"],
@@ -62,7 +62,10 @@
       "name": "FixedGridPhotosScreen",
       "title": "Fixed grid",
       "extends": "@.PhotosScreen",
-      "image": "./server/assets/screens/layout-photos-fixed-grid.png"
+      "image": "./server/assets/screens/layout-photos-fixed-grid.png",
+      "settings": {
+        "listType": "fixed-grid"
+      }
     },
     {
       "name": "PhotosTileList",

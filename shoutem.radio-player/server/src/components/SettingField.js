@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
 import './style.scss';
 

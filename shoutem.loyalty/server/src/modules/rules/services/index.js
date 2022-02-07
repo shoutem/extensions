@@ -1,7 +1,7 @@
 export {
-  validateNumericRule,
-  transformNumericRule,
   getRulesToCreate,
   getRulesToDelete,
   getRulesToUpdate,
+  transformNumericRule,
+  validateNumericRule,
 } from './rules';

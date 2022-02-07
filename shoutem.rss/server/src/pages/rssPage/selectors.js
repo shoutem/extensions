@@ -1,9 +1,9 @@
-import { denormalizeCollection } from 'denormalizer';
-import { cloneStatus } from '@shoutem/redux-io';
 import _ from 'lodash';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { cloneStatus } from '@shoutem/redux-io';
+import { denormalizeCollection } from 'denormalizer';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);

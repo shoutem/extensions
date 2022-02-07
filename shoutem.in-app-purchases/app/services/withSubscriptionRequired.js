@@ -1,16 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { getExtensionSettings } from 'shoutem.application';
 import {
-  withIsFocused,
   FocusTriggerBase,
+  getRouteParams,
   navigateTo,
   NavigationStacks,
+  withIsFocused,
 } from 'shoutem.navigation';
-import { selectors } from '../redux';
 import { ext } from '../const';
+import { selectors } from '../redux';
 
 function isShortcutProtected(route) {
   return _.get(
@@ -39,9 +40,11 @@ export function withSubscriptionRequired(WrappedComponent) {
         hasProperConfiguration,
         allScreensProtected,
       } = this.props;
+      const { skipSubscriptionPrompt } = getRouteParams(this.props);
 
       const shouldPromptForSubscription =
-        isShortcutProtected(route) || allScreensProtected;
+        !skipSubscriptionPrompt &&
+        (isShortcutProtected(route) || allScreensProtected);
 
       if (
         shouldPromptForSubscription &&

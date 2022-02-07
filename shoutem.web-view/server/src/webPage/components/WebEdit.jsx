@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import i18next from 'i18next';
+import autoBindReact from 'auto-bind/react';
 import { FormGroup, ControlLabel } from 'react-bootstrap';
 import { Checkbox, FontIcon } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
@@ -10,17 +11,18 @@ export default class WebEdit extends Component {
   constructor(props) {
     super(props);
 
-    this.handleShowNavigationToolbarChange = this.handleShowNavigationToolbarChange.bind(
-      this,
-    );
-    this.handleGeolocationPermissionChange = this.handleGeolocationPermissionChange.bind(
-      this,
-    );
+    autoBindReact(this);
   }
 
   handleShowNavigationToolbarChange(event) {
     if (event.target) {
       this.props.onShowNavigationToolbarChange(event.target.checked);
+    }
+  }
+
+  handleForwardAuthHeaderChange(event) {
+    if (event.target) {
+      this.props.onForwardAuthHeaderChange(event.target.checked);
     }
   }
 
@@ -36,6 +38,7 @@ export default class WebEdit extends Component {
       showNavigationToolbar,
       requireGeolocationPermission,
       hasWebsiteSettings,
+      forwardAuthHeader,
       onRemoveClick,
     } = this.props;
 
@@ -79,6 +82,14 @@ export default class WebEdit extends Component {
                     {i18next.t(LOCALIZATION.FORM_NAVIGATION_BAR)}
                   </Checkbox>
                 </div>
+                <div>
+                  <Checkbox
+                    checked={forwardAuthHeader}
+                    onChange={this.handleForwardAuthHeaderChange}
+                  >
+                    {i18next.t(LOCALIZATION.FORM_FORWARD_AUTH_HEADER)}
+                  </Checkbox>
+                </div>
               </div>
             )}
           </FormGroup>
@@ -93,7 +104,9 @@ WebEdit.propTypes = {
   url: PropTypes.string,
   showNavigationToolbar: PropTypes.bool,
   requireGeolocationPermission: PropTypes.bool,
+  forwardAuthHeader: PropTypes.bool,
   onRemoveClick: PropTypes.func,
   onShowNavigationToolbarChange: PropTypes.func,
+  onForwardAuthHeaderChange: PropTypes.func,
   onRequireGeolocationPermissionChange: PropTypes.func,
 };

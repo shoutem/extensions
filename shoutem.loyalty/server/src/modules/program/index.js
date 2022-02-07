@@ -1,26 +1,24 @@
 import ProgramSettings from './fragments/program-settings';
-
 import { reducer } from './redux';
 
 export {
-  moduleName,
-  PROGRAMS,
   AUTHORIZATIONS,
   CARDS,
-  USERS,
+  moduleName,
   PLACES,
+  PROGRAMS,
+  USERS,
 } from './const';
-
 export {
-  enableLoyalty,
-  loadLoyaltyPlaces,
-  loadCards,
-  loadUsers,
   createCard,
-  getLoyaltyPlaces,
+  enableLoyalty,
   getCards,
   getCardsByUserId,
+  getLoyaltyPlaces,
   getUsers,
+  loadCards,
+  loadLoyaltyPlaces,
+  loadUsers,
 } from './redux';
 export { ProgramSettings };
 export default reducer;

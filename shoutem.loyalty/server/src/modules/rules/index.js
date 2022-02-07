@@ -1,6 +1,6 @@
-import { moduleName, createRule, reducer } from './redux';
 import RulesSettings from './fragments/rules-settings';
+import { createRule, moduleName, reducer } from './redux';
 
-export { moduleName, createRule, RulesSettings };
+export { createRule, moduleName, RulesSettings };
 
 export default reducer;

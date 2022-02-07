@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ControlLabel } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { Switch } from '@shoutem/react-web-ui';
 import './style.scss';
 

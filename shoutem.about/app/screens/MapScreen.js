@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { Linking } from 'react-native';
+import PropTypes from 'prop-types';
+import { Screen } from '@shoutem/ui';
 import { MapView } from 'shoutem.application';
 import {
   composeNavigationStyles,
   getRouteParams,
   HeaderIconButton,
 } from 'shoutem.navigation';
-import { Screen } from '@shoutem/ui';
 import { getMapUrl } from '../services';
 
 const handleOpenMaps = marker => {

@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { currentLocation } from 'shoutem.cms';
 import { connectStyle } from '@shoutem/theme';
+import { currentLocation } from 'shoutem.cms';
 import { PlaceIconView } from '../components';
 import { ext } from '../const';
-import { PlacesList, mapStateToProps, mapDispatchToProps } from './PlacesList';
+import { mapDispatchToProps, mapStateToProps, PlacesList } from './PlacesList';
 
 class PlacesListWithIcons extends PlacesList {
   static propTypes = {

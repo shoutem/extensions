@@ -2,13 +2,13 @@ import _ from 'lodash';
 import rio from '@shoutem/redux-io';
 import { getExtensionSettings } from 'shoutem.application';
 import {
-  ext,
   AUTHORIZATIONS_SCHEMA,
   CARD_SCHEMA,
   CARD_STATE_SCHEMA,
   CASHIERS_SCHEMA,
-  PUNCH_REWARDS_SCHEMA,
+  ext,
   POINT_REWARDS_SCHEMA,
+  PUNCH_REWARDS_SCHEMA,
   RULES_SCHEMA,
   TRANSACTIONS_SCHEMA,
 } from './const';

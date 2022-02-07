@@ -1,10 +1,10 @@
-import Iaphub from 'react-native-iaphub';
 import DeviceInfo from 'react-native-device-info';
+import Iaphub from 'react-native-iaphub';
+import { AppInitQueue, setQueueTargetComplete } from 'shoutem.application';
 import { getExtensionSettings } from 'shoutem.application/redux';
 import { isPreviewApp } from 'shoutem.preview';
-import { AppInitQueue, setQueueTargetComplete } from 'shoutem.application';
-import { actions, selectors } from './redux';
 import { ext } from './const';
+import { actions, selectors } from './redux';
 
 AppInitQueue.addExtension(ext());
 

@@ -5,6 +5,7 @@
       "iap-settings-page.enable-subscription-screen": "Enable subscription in-app screen",
       "iap-settings-page.save-button": "Save",
       "iap-settings-page.store-products-title": "Store products",
+      "iap-settings-page.setup-instructions": "Learn how to properly setup IAP products <1>here<1/>.",
       "iap-settings-page.ios-product-id": "iOS Product ID",
       "iap-settings-page.android-product-id": "Android Product ID",
       "iap-settings-page.iaphub-settings-title": "IAPHub Settings",

@@ -1,0 +1,8 @@
+{
+  "name": "shoutem.affiliate",
+  "version": "2.0.0",
+  "description": "Create affiliate program in your app and expand your advertising reach",
+  "peerDependencies": {
+    "reselect": "*"
+  }
+}

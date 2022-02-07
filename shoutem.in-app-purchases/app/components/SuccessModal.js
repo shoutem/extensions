@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { View } from 'react-native';
 import Modal from 'react-native-modal';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Text, Button } from '@shoutem/ui';
+import { Button, Text } from '@shoutem/ui';
 import { ext } from '../const';
 
 class SuccessModal extends PureComponent {

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { FontIcon } from '@shoutem/react-web-ui';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LOYALTY_TYPES } from 'src/const';
+import { FontIcon } from '@shoutem/react-web-ui';
 import TransactionTableRow from '../transaction-table-row';
 import LOCALIZATION from './localization';
 import './style.scss';

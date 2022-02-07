@@ -1,12 +1,12 @@
 {
   "name": "shoutem.agora",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
-    "react-native-agora": "~2.9.1-alpha.4",
-    "react-native-stopwatch-timer": "~0.0.21"
+    "react-native-agora": "2.9.1-alpha.7",
+    "react-native-stopwatch-timer": "0.0.21"
   },
   "peerDependencies": {
     "@shoutem/ui": "*"

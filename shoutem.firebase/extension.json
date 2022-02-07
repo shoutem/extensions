@@ -1,14 +1,19 @@
 {
   "name": "firebase",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.1.0",
+  "platform": "^4 || ^5",
   "type": "system",
   "skipClone": false,
   "title": "Firebase",
   "native": true,
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
-  "releaseNotes": "* Updated push notifications dependencies\n* Added local notifications feature",
+  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
   "icon": "server/assets/add-firebase-image.png",
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.navigation",
+    "shoutem.redux"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

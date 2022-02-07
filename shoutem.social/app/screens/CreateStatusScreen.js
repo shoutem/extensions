@@ -1,42 +1,43 @@
-import React, { useEffect, useState, useRef } from 'react';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
-  KeyboardAvoidingView,
-  TextInput,
-  Platform,
   Keyboard as RNKeyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TextInput,
 } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { connect } from 'react-redux';
-import { authenticate } from 'shoutem.auth';
-import { I18n } from 'shoutem.i18n';
-import {
-  requestPermissions,
-  PERMISSION_TYPES,
-  RESULTS,
-} from 'shoutem.permissions';
-import { getRouteParams, HeaderTextButton } from 'shoutem.navigation';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
-  Screen,
-  Row,
-  Text,
+  ActionSheet,
+  Button,
+  Caption,
+  Divider,
+  Icon,
   Image,
   ImageBackground,
-  Button,
-  View,
-  Divider,
-  Caption,
-  Icon,
-  TouchableOpacity,
   Keyboard,
+  Row,
+  Screen,
   ScrollView,
-  ActionSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
+import { authenticate } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
+import { getRouteParams, HeaderTextButton } from 'shoutem.navigation';
+import {
+  PERMISSION_TYPES,
+  requestPermissions,
+  RESULTS,
+} from 'shoutem.permissions';
 import { ext } from '../const';
 
+const MAX_IMAGE_SIZE = 50 * 1024 * 1024;
 const CAMERA_PERMISSION = Platform.select({
   ios: PERMISSION_TYPES.IOS_CAMERA,
   default: PERMISSION_TYPES.ANDROID_CAMERA,
@@ -103,6 +104,8 @@ export function CreateStatusScreen(props) {
   const handleImageSelected = response => {
     if (response.errorCode) {
       Alert.alert(response.errorMessage);
+    } else if (response.assets[0].fileSize > MAX_IMAGE_SIZE) {
+      Alert.alert(I18n.t(ext('imageSizeWarning')));
     } else if (!response.didCancel) {
       setImageData(response.assets[0].base64);
       setPickerActive(false);

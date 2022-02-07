@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';

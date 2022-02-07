@@ -1,0 +1,28 @@
+{
+  "shoutem": {
+    "user-profile": {
+      "enter-profile-title": "Enter user profile",
+      "general-error": "Something went wrong. Pleaase try again in few moments",
+      "invalid-json": "Invalid JSON.",
+      "profile-label": "User profile",
+      "save": "Save",
+      "user-profile-required-title": "User profile settings",
+      "user-profile-required-toggle-label": "Require user profile at sign up",
+      "user-table-row.status-approved-title": "Approved",
+      "user-table-row.status-blocked-title": "Blocked",
+      "user-table-row.button-approved-user-title": "Approve this user",
+      "user-table-row.button-block-user-title": "Block this user",
+      "user-table-row.button-edit-title": "Edit",
+      "user-table-row.button-change-password-title": "Change password",
+      "user-table-row.button-delete-title": "Delete",
+      "users-table-header-filter-by-email-title": "Filter by mail",
+      "users-table-header-filter-by-group-title": "Filter by group",
+      "users-table-header-status-title": "Status",
+      "users-table-empty-placeholder-message": "No users yet.",
+      "users-title": "List of users",
+      "status-blocked-title": "Blocked",
+      "status-approved-title": "Approved",
+      "view-modal-title": "View app user"
+    }
+  }
+}

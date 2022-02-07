@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { createStackNavigator } from '@react-navigation/stack';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { HeaderBackButton, HeaderCloseButton } from '../components';
-import { getModalScreens, closeModal, goBack, HeaderStyles } from '../services';
+import { closeModal, getModalScreens, goBack, HeaderStyles } from '../services';
 
 const ModalStack = createStackNavigator();
 
@@ -22,20 +22,25 @@ function screenOptions(navigationProps) {
   };
 }
 
-export function ModalNavigator({ decoratedScreens }) {
+export function ModalNavigator({ screens }) {
   const ModalComponents = _.map(getModalScreens(), screen => {
-    const resolvedComponent = screen.component || decoratedScreens[screen.name];
-    const screenOptions = screen.options || {};
+    const { name, component, initialParams = {}, ...otherProps } = screen;
+
+    const resolvedComponent = component || screens[name];
 
     if (!resolvedComponent) {
       return null;
     }
 
+    const screenId = _.uniqueId(name);
+
     return (
       <ModalStack.Screen
-        name={screen.name}
+        name={name}
         component={resolvedComponent}
-        options={screenOptions}
+        initialParams={{ ...initialParams, screenId }}
+        key={screenId}
+        {...otherProps}
       />
     );
   });
@@ -48,5 +53,5 @@ export function ModalNavigator({ decoratedScreens }) {
 }
 
 ModalNavigator.propTypes = {
-  decoratedScreens: PropTypes.object,
+  screens: PropTypes.object.isRequired,
 };

@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import { ControlLabel, Dropdown, MenuItem } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import { getShortcut } from 'environment';
 import i18next from 'i18next';
 import _ from 'lodash';
-import { ControlLabel, Dropdown, MenuItem } from 'react-bootstrap';
-import { getShortcut } from 'environment';
-import { updateShortcutSettings } from '../reducer';
+import PropTypes from 'prop-types';
+import { updateShortcutSettings } from '../redux';
 import LOCALIZATION from './localization';
 
 function getNavigationLayoutTypes() {
@@ -15,16 +16,13 @@ function getNavigationLayoutTypes() {
   };
 }
 
-export class PageSettings extends Component {
+export class PageSettings extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.navigationLayoutTypes = getNavigationLayoutTypes();
+    autoBindReact(this);
 
-    this.getShortcutSettings = this.getShortcutSettings.bind(this);
-    this.handleLayoutOptionSelected = this.handleLayoutOptionSelected.bind(
-      this,
-    );
+    this.navigationLayoutTypes = getNavigationLayoutTypes();
   }
 
   getShortcutSettings() {
@@ -72,18 +70,20 @@ export class PageSettings extends Component {
   }
 }
 
-const { func, shape, string } = PropTypes;
-
 PageSettings.propTypes = {
-  shortcut: shape({
-    navigationLayoutType: string,
-  }),
-  updateShortcutSettings: func,
+  shortcut: PropTypes.shape({
+    id: PropTypes.string,
+    navigationLayoutType: PropTypes.string,
+    settings: PropTypes.object,
+  }).isRequired,
+  updateShortcutSettings: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => ({
-  shortcut: getShortcut(),
-});
+function mapStateToProps() {
+  return {
+    shortcut: getShortcut(),
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {

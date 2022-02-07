@@ -1,18 +1,19 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import { i18n } from 'environment';
 import i18next from 'i18next';
 import _ from 'lodash';
-import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { i18n } from 'environment';
-import translation from '../../../translations/en.json';
 import pack from '../../../package.json';
+import translation from '../../../translations/en.json';
 
-export class LocalizationProvider extends Component {
+export class LocalizationProvider extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleInjection = this.handleInjection.bind(this);
+    autoBindReact(this);
 
     this.state = {
       inProgress: true,
@@ -40,15 +41,15 @@ export class LocalizationProvider extends Component {
     this.handleInjection(locale, translationUrl);
   }
 
-  componentWillReceiveProps(nextProps) {
-    const {
-      locale: nextLocale,
-      translationUrl: nextTranslationUrl,
-    } = nextProps;
+  componentDidUpdate(prevProps) {
     const { locale, translationUrl } = this.props;
+    const {
+      locale: prevLocale,
+      translationUrl: prevTranslationUrl,
+    } = prevProps;
 
-    if (translationUrl !== nextTranslationUrl || nextLocale !== locale) {
-      this.handleInjection(nextLocale, nextTranslationUrl);
+    if (translationUrl !== prevTranslationUrl || prevLocale !== locale) {
+      this.handleInjection(locale, translationUrl);
     }
   }
 
@@ -87,9 +88,16 @@ export class LocalizationProvider extends Component {
 
 LocalizationProvider.propTypes = {
   children: PropTypes.node,
-  ownExtensionName: PropTypes.string,
   locale: PropTypes.string,
+  ownExtensionName: PropTypes.string,
   translationUrl: PropTypes.string,
+};
+
+LocalizationProvider.defaultProps = {
+  children: undefined,
+  locale: undefined,
+  ownExtensionName: undefined,
+  translationUrl: undefined,
 };
 
 function mapStateToProps() {

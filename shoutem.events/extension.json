@@ -1,11 +1,19 @@
 {
   "name": "events",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.1.0",
+  "platform": "^5",
   "title": "Events",
   "description": "Show items with location and time",
-  "releaseNotes": "* Code improvements",
-  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "releaseNotes": "* Replaced loading spinner with animated placeholder\n* Set specific dependency versions instead of using semver ranges",
+  "dependencies": [
+    "shoutem.analytics",
+    "shoutem.application",
+    "shoutem.cms",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.web-view"
+  ],
   "categories": ["content"],
   "i18n": {
     "locale": "en",

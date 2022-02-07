@@ -1,0 +1,4 @@
+template/**
+src/sequelize/migrations/*
+src/sequelize/seeders/*
+node_modules/**

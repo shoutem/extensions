@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import CashierForm from './CashierForm';
 
 export default class CashierFormWrapper extends Component {

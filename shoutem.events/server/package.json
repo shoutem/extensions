@@ -1,6 +1,4 @@
 {
   "name": "shoutem.events",
-  "version": "4.0.0",
-  "private": true,
-  "main": "index.js"
+  "version": "4.1.0"
 }

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.rss-monitoring",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "private": true,
   "scripts": {
     "@comment init": "Generates env files for all workflow types - should work out of the box",

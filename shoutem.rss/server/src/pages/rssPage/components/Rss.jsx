@@ -1,57 +1,53 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isBusy, clear } from '@shoutem/redux-io';
 import { ControlLabel } from 'react-bootstrap';
 import i18next from 'i18next';
+import { isBusy, clear } from '@shoutem/redux-io';
+import { ext } from 'context';
+import { denormalizeCollection } from 'denormalizer';
+import { getShortcut } from 'environment';
+import normalizeUrl from 'normalize-url';
 import {
   updateShortcutSettings,
   discoverFeeds,
   DISCOVERED_FEEDS,
 } from './../reducer';
-import { denormalizeCollection } from 'denormalizer';
-import _ from 'lodash';
-import normalizeUrl from 'normalize-url';
 import FeedUrlInput from './FeedUrlInput';
 import FeedSelector from './FeedSelector';
 import FeedPreview from './FeedPreview';
-import { ext } from 'context';
-import { getShortcut } from 'environment';
 import LOCALIZATION from './localization';
 
 const ACTIVE_SCREEN_INPUT = 0;
 const ACTIVE_SCREEN_SELECT = 1;
 const ACTIVE_SCREEN_PREVIEW = 2;
 
-export class Rss extends Component {
+export class Rss extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.getActiveScreen = this.getActiveScreen.bind(this);
-    this.getFeedUrl = this.getFeedUrl.bind(this);
-    this.setFeedUrl = this.setFeedUrl.bind(this);
-    this.onFeedUrlInputContinueClick = this.onFeedUrlInputContinueClick.bind(
-      this,
-    );
-    this.onFeedRemoveClick = this.onFeedRemoveClick.bind(this);
-    this.onFeedSelectAddClick = this.onFeedSelectAddClick.bind(this);
-    this.onFeedSelectCancelClick = this.onFeedSelectCancelClick.bind(this);
+    autoBindReact(this);
 
     this.state = { discoverInProgress: false, error: '' };
   }
 
-  componentWillReceiveProps(newProps) {
+  componentDidUpdate(prevProps) {
+    const { discoveredFeeds } = this.props;
+    const { discoverInProgress } = this.state;
+
     if (
-      this.props.discoveredFeeds !== newProps.discoveredFeeds &&
-      !isBusy(newProps.discoveredFeeds)
+      discoveredFeeds !== prevProps.discoveredFeeds &&
+      !isBusy(discoveredFeeds)
     ) {
-      if (newProps.discoveredFeeds.length === 1) {
-        this.onFeedSelectAddClick(newProps.discoveredFeeds[0].url);
+      if (discoveredFeeds.length === 1) {
+        this.onFeedSelectAddClick(discoveredFeeds[0].url);
         this.setState({
           discoverInProgress: false,
           error: '',
         });
-      } else if (newProps.discoveredFeeds.length > 1) {
+      } else if (discoveredFeeds.length > 1) {
         this.setState({
           discoverInProgress: false,
           error: '',
@@ -59,7 +55,7 @@ export class Rss extends Component {
       } else {
         this.setState({
           discoverInProgress: false,
-          error: this.state.discoverInProgress
+          error: discoverInProgress
             ? i18next.t(LOCALIZATION.INVALID_RSS_FEED)
             : '',
         });
@@ -68,59 +64,67 @@ export class Rss extends Component {
   }
 
   onFeedUrlInputContinueClick(feedUrl) {
+    const { discoverFeeds } = this.props;
+
     this.setState({ discoverInProgress: true, error: '' });
-    this.props.discoverFeeds(feedUrl);
+    discoverFeeds(feedUrl);
   }
 
   onFeedRemoveClick() {
-    const id = this.props.shortcut.id;
+    const {
+      clearDiscoverFeeds,
+      shortcut: { id },
+      updateShortcutSettings,
+    } = this.props;
     const settings = { feedUrl: null };
-    this.props.updateShortcutSettings(id, settings);
-    this.props.clearDiscoverFeeds();
+
+    updateShortcutSettings(id, settings);
+    clearDiscoverFeeds();
   }
 
   onFeedSelectAddClick(feedUrl) {
+    const { clearDiscoverFeeds } = this.props;
+
     this.setFeedUrl(feedUrl);
-    this.props.clearDiscoverFeeds();
+    clearDiscoverFeeds();
   }
 
   onFeedSelectCancelClick() {
-    this.props.clearDiscoverFeeds();
+    const { clearDiscoverFeeds } = this.props;
+
+    clearDiscoverFeeds();
   }
 
   getActiveScreen() {
-    if (_.has(this.props, 'shortcut.settings.feedUrl')) {
+    const { discoveredFeeds, shortcut } = this.props;
+
+    if (shortcut.settings?.feedUrl) {
       return ACTIVE_SCREEN_PREVIEW;
-    } else if (this.props.discoveredFeeds.length > 1) {
+    } else if (discoveredFeeds.length > 1) {
       return ACTIVE_SCREEN_SELECT;
     }
 
     return ACTIVE_SCREEN_INPUT;
   }
 
-  getFeedUrl() {
-    if (this.props.shortcut && this.props.shortcut.settings) {
-      return this.props.shortcut.settings.feedUrl;
-    }
-    return '';
-  }
-
-  getFeedType() {
-    return _.get(this.props, 'shortcut.settings.feedType', false);
-  }
-
   setFeedUrl(feedUrl) {
-    const id = this.props.shortcut.id;
+    const {
+      shortcut: { id },
+      updateShortcutSettings,
+    } = this.props;
     const normalizedFeedUrl = normalizeUrl(feedUrl, { stripWWW: false });
 
     const settings = { feedUrl: normalizedFeedUrl };
-    this.props.updateShortcutSettings(id, settings);
+    updateShortcutSettings(id, settings);
   }
 
   render() {
+    const { discoveredFeeds, shortcut } = this.props;
+    const { error } = this.state;
+
     const activeScreen = this.getActiveScreen();
-    const feedUrl = this.getFeedUrl();
-    const feedType = this.getFeedType();
+    const feedUrl = shortcut.settings?.feedUrl;
+    const feedType = shortcut.settings?.feedType;
 
     return (
       <div>
@@ -131,14 +135,14 @@ export class Rss extends Component {
         )}
         {activeScreen === ACTIVE_SCREEN_INPUT && (
           <FeedUrlInput
-            inProgress={isBusy(this.props.discoveredFeeds)}
-            error={this.state.error}
+            inProgress={isBusy(discoveredFeeds)}
+            error={error}
             onContinueClick={this.onFeedUrlInputContinueClick}
           />
         )}
         {activeScreen === ACTIVE_SCREEN_SELECT && (
           <FeedSelector
-            discoveredFeeds={this.props.discoveredFeeds}
+            discoveredFeeds={discoveredFeeds}
             onAddClick={this.onFeedSelectAddClick}
             onCancelClick={this.onFeedSelectCancelClick}
           />
@@ -163,13 +167,16 @@ Rss.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const discoveredFeeds = denormalizeCollection(
+    state[ext()].rssPage.discoveredFeeds,
+    undefined,
+    DISCOVERED_FEEDS,
+  );
+  const shortcut = getShortcut();
+
   return {
-    shortcut: getShortcut(),
-    discoveredFeeds: denormalizeCollection(
-      state[ext()].rssPage.discoveredFeeds,
-      undefined,
-      DISCOVERED_FEEDS,
-    ),
+    discoveredFeeds,
+    shortcut,
   };
 }
 

@@ -1,11 +1,12 @@
 {
   "name": "preview",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "type": "system",
   "title": "Builder Preview",
-  "release-notes": "* Updated react-native-device-info package, no breaking changes",
+  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
   "description": "Provides the support for app preview in the builder",
   "icon": "server/assets/add-preview-image.png",
+  "dependencies": ["shoutem.application"],
   "categories": []
 }

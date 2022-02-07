@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import { Text } from '@shoutem/ui';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
+import { Text } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 

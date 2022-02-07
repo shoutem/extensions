@@ -1,13 +1,10 @@
 {
   "name": "sub-navigation",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "title": "Navigation",
   "description": "Shows sub-navigation for the nested screen",
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.navigation"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.navigation"],
   "categories": [],
   "repository": {
     "type": "git",

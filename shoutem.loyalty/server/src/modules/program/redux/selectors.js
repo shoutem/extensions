@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
-import { getCollection, cloneStatus } from '@shoutem/redux-io';
 import ext from 'src/const';
+import { cloneStatus, getCollection } from '@shoutem/redux-io';
 import { moduleName } from '../const';
 
 // SELECTORS
@@ -15,7 +15,7 @@ export function getLoyaltyPlaces(state) {
 }
 
 export function getAuthorizations(state) {
-  const authorizations = getProgramState(state).authorizations;
+  const { authorizations } = getProgramState(state);
   return getCollection(authorizations, state);
 }
 
@@ -36,12 +36,12 @@ export function getAuthorizationByType(state, authorizationType) {
 }
 
 export function getCards(state) {
-  const cards = getProgramState(state).cards;
+  const { cards } = getProgramState(state);
   return getCollection(cards, state);
 }
 
 export function getUsers(state) {
-  const users = getProgramState(state).users;
+  const { users } = getProgramState(state);
   return getCollection(users, state);
 }
 

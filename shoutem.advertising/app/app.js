@@ -1,13 +1,13 @@
 import React from 'react';
-import _ from 'lodash';
 import { Platform } from 'react-native';
-import { priorities, setPriority, after } from 'shoutem-core';
 import AdMob, { TestIds } from '@react-native-admob/admob';
+import _ from 'lodash';
 import { getExtensionSettings } from 'shoutem.application/redux';
 import { MAIN_NAVIGATION_SCREEN_TYPES } from 'shoutem.navigation';
 import { isPreviewApp } from 'shoutem.preview';
-import { AdProvider } from './providers';
+import { after, priorities, setPriority } from 'shoutem-core';
 import { ext } from './const';
+import { AdProvider } from './providers';
 
 let ads;
 
@@ -86,8 +86,6 @@ export const appDidMount = setPriority(app => {
     // manner suitable for users under the age of consent.
     tagForUnderAgeOfConsent,
   });
-
-  return AdMob.initialize();
 }, after(priorities.INIT));
 
 export function renderProvider(children) {

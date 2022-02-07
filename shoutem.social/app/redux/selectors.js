@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { getCollection, getOne } from '@shoutem/redux-io';
+import { cloneStatus, getCollection, getOne } from '@shoutem/redux-io';
+import { getUser } from 'shoutem.auth';
 import { ext } from '../const';
-import { getUser } from 'shoutem.auth/redux';
 
 export function getBlockedUsers(state) {
   return state[ext()].blockedUsers;
@@ -22,13 +22,17 @@ export function getBlockedUsersData(state) {
   return _.filter(users, user => _.includes(blockedUsers, user.legacyId));
 }
 
-function filterBlockedUsers(state, collection, userIdPath) {
+function filterBlockedUsers(state, collection = [], userIdPath) {
   const blockedUsers = getBlockedUsersForCurrentUser(state);
 
-  return _.filter(collection, item => {
+  const filteredUsers = _.filter(collection, item => {
     const userId = _.get(item, userIdPath);
     return !_.includes(blockedUsers, _.toString(userId));
   });
+
+  cloneStatus(collection, filteredUsers);
+
+  return filteredUsers;
 }
 
 export function getAllUsers(state) {
@@ -38,10 +42,10 @@ export function getAllUsers(state) {
 }
 
 export function getUsers(state) {
-  const userState = state[ext()].users;
-  const users = getCollection(userState, state);
+  const users = getAllUsers(state);
+  const filteredUsers = filterBlockedUsers(state, users, 'legacyId');
 
-  return filterBlockedUsers(state, users, 'legacyId');
+  return filteredUsers;
 }
 
 export function getSearchUsers(state) {
@@ -78,7 +82,7 @@ export function getStatusesForUser(state) {
 }
 
 export function getCommentsForStatus(state, statusId) {
-  const comments = state[ext()].comments;
+  const { comments } = state[ext()];
 
   return _.get(comments, statusId, {});
 }

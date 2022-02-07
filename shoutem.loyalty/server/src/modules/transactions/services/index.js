@@ -1,13 +1,12 @@
 export {
+  formatCashierLabel,
+  formatPlaceLabel,
+  formatRewardLabel,
+  formatUserLabel,
+} from './services';
+export {
   getTransactionCount,
-  validateSingleCardTransaction,
   validateMultiCardTransaction,
   validatePunchCardTransaction,
+  validateSingleCardTransaction,
 } from './transactions';
-
-export {
-  formatRewardLabel,
-  formatPlaceLabel,
-  formatUserLabel,
-  formatCashierLabel,
-} from './services';

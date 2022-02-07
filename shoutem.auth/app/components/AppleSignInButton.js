@@ -1,22 +1,21 @@
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import { Alert } from 'react-native';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBind from 'auto-bind';
+import { connect } from 'react-redux';
 import {
   appleAuth,
   AppleButton,
 } from '@invertase/react-native-apple-authentication';
+import autoBind from 'auto-bind';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { View, Spinner } from '@shoutem/ui';
-import { getExtensionSettings, getAppId } from 'shoutem.application';
+import { getAppId, getExtensionSettings } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-import { getUser, loginWithApple, registerWithApple } from '../redux';
-import * as Storage from '../services/storage';
-import { resolveAppleErrorMessage } from '../services/apple';
-import { getErrorCode, resolveErrorMessage } from '../errorMessages';
 import { ext } from '../const';
+import { getErrorCode, resolveErrorMessage } from '../errorMessages';
+import { getUser, loginWithApple, registerWithApple } from '../redux';
+import { resolveAppleErrorMessage } from '../services/apple';
+import * as Storage from '../services/storage';
 
 const APPLE_AUTH_OPTIONS = {
   requestedOperation: appleAuth.Operation.LOGIN,
@@ -47,12 +46,20 @@ class AppleSignInButton extends PureComponent {
   }
 
   handleAppleButtonPress() {
+    const { disabled } = this.props;
+    const { inProgress } = this.state;
+
+    if (disabled || inProgress) {
+      return null;
+    }
+
     this.setState({ inProgress: true });
 
     return appleAuth
       .performRequest(APPLE_AUTH_OPTIONS)
       .then(this.handleAppleAuthRequest)
-      .catch(this.handleAppleAuthError);
+      .catch(this.handleAppleAuthError)
+      .finally(() => this.setState({ inProgress: false }));
   }
 
   handleAppleAuthRequest(results) {
@@ -73,21 +80,17 @@ class AppleSignInButton extends PureComponent {
   }
 
   handleAppleLoginRequest(results) {
-    const { loginWithApple, onLoginSuccess } = this.props;
+    const { loginWithApple } = this.props;
     const { idToken } = this.state;
 
     if (results === appleAuth.State.AUTHORIZED) {
-      return loginWithApple(idToken)
-        .then(onLoginSuccess)
-        .catch(this.handleAppleLoginFailed);
+      return loginWithApple(idToken).catch(this.handleAppleLoginFailed);
     }
 
     return Alert.alert(LOGIN_ERROR_TITLE(), UNEXPECTED_ERROR());
   }
 
   handleAppleAuthError(error) {
-    this.setState({ inProgress: false });
-
     const errorCode = _.get(error, 'code');
     const resolvedMessage = resolveAppleErrorMessage(errorCode);
 
@@ -104,7 +107,7 @@ class AppleSignInButton extends PureComponent {
   }
 
   performAppleRegistration() {
-    const { onLoginSuccess, registerWithApple } = this.props;
+    const { registerWithApple } = this.props;
     const { idToken } = this.state;
 
     Promise.all([
@@ -114,13 +117,10 @@ class AppleSignInButton extends PureComponent {
       .then(([storageFirstName, storageLastName]) =>
         registerWithApple(idToken, storageFirstName, storageLastName),
       )
-      .then(onLoginSuccess)
       .catch(this.resolveError);
   }
 
   resolveError({ payload }) {
-    this.setState({ inProgress: false });
-
     const { response } = payload;
 
     const payloadErrorCode = _.get(response, 'errors[0].code');
@@ -131,7 +131,6 @@ class AppleSignInButton extends PureComponent {
   }
 
   render() {
-    const { inProgress } = this.state;
     const { settings, style } = this.props;
 
     const darkModeEnabled = _.get(
@@ -142,14 +141,6 @@ class AppleSignInButton extends PureComponent {
     const buttonStyle = darkModeEnabled
       ? AppleButton.Style.BLACK
       : AppleButton.Style.WHITE;
-
-    if (inProgress) {
-      return (
-        <View>
-          <Spinner styleName="xl-gutter-top" />
-        </View>
-      );
-    }
 
     return (
       <AppleButton
@@ -163,9 +154,16 @@ class AppleSignInButton extends PureComponent {
 }
 
 AppleSignInButton.propTypes = {
-  onLoginSuccess: PropTypes.func,
-  settings: PropTypes.object,
+  loginWithApple: PropTypes.func.isRequired,
+  registerWithApple: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired,
+  disabled: PropTypes.bool,
   style: PropTypes.object,
+};
+
+AppleSignInButton.defaultProps = {
+  disabled: false,
+  style: {},
 };
 
 const mapDispatchToProps = {

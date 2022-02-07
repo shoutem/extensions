@@ -1,0 +1,14 @@
+
+
+.banner-page {
+  max-width: 552px;
+  margin: auto;
+
+  &.is-wide {
+    max-width: 808px;
+  }
+
+  .banner-page__footer {
+    margin-top: 50px;
+  }
+}

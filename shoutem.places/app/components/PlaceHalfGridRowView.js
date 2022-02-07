@@ -1,6 +1,6 @@
 import { connectStyle } from '@shoutem/theme';
-import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
 import { ext } from '../const';
+import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
 import { PlaceFullGridRowView } from './PlaceFullGridRowView';
 
 const PlaceHalfGridRowView = withOpenPlaceDetails(

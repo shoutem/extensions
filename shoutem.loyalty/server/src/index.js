@@ -1,16 +1,15 @@
 // Constants `screens`, `actions` and `reducer` are exported via named export
 // It is important to use those exact names
 
+import { cmsApi } from './modules/cms';
 import {
-  LoyaltySettingsPage,
   DefaultLoyaltyShortcutSettingsPage,
+  LoyaltySettingsPage,
   TransactionsPage,
 } from './pages';
-import { cmsApi } from './modules/cms';
+import { reducer } from './redux';
 import { shoutemUrls } from './services';
 import './style.scss';
-
-import { reducer } from './redux';
 
 export const pages = {
   LoyaltySettingsPage,

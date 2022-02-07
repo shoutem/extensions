@@ -1,15 +1,15 @@
 {
   "name": "shoutem.podcast",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
-    "@react-native-community/slider": "~2.0.0",
+    "@react-native-community/slider": "2.0.9",
     "@sindresorhus/slugify": "0.9.1",
     "moment": "2.24.0",
     "react-native-action-sheet": "2.2.0",
-    "rn-fetch-blob": "^0.11.0"
+    "rn-fetch-blob": "0.11.2"
   },
   "peerDepencies": {
     "@shoutem/ui": "*"

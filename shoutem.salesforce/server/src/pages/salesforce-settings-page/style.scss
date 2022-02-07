@@ -1,0 +1,47 @@
+.salesforce-settings-page {
+  padding-left: 48px;
+  padding-right: 48px;
+  margin: auto;
+  padding-bottom: 48px;
+
+  .btn-toolbar {
+    margin-top: 24px;
+  }
+
+  .form-group .control-label {
+    padding-top: 16px;
+  }
+
+  .label-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .redirect-title-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .salesforce-popover-icon {
+    margin-left: 14px;
+  }
+
+  .salesforce-copy-icon {
+    cursor: pointer;
+  }
+
+  span.label.label-primary {
+    align-self: flex-start;
+    font-size: 100%;
+    margin-right: 14px;
+  }
+}
+
+img {
+  width: 26px;
+  height: 26px;
+  margin-top: 7px;
+  margin-left: 30px;
+}

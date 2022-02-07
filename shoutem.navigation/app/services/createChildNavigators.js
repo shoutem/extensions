@@ -1,57 +1,22 @@
 import React from 'react';
-import _ from 'lodash';
 import {
   createStackNavigator,
   TransitionPresets,
 } from '@react-navigation/stack';
+import _ from 'lodash';
 import { appActions } from 'shoutem.application';
-import { HeaderTitle, HeaderBackButton } from '../components';
+import { HeaderBackButton, HeaderTitle } from '../components';
 import TabBarItem from '../components/TabBarItem';
 import { navigateTo } from './commonActions';
 import { HeaderStyles } from './createNavigationStyles';
+import { collectShortcutScreens } from './helpers';
 
-const stackScreenOptions = () => {
+function stackScreenOptions() {
   return {
     ...TransitionPresets.SlideFromRightIOS,
     headerLeft: props => <HeaderBackButton {...props} />,
     headerTitleAlign: 'center',
   };
-};
-
-function getExtensionNameByScreenName(screenName) {
-  const extensionName = _.split(screenName, '.');
-
-  return `${extensionName[0]}.${extensionName[1]}`;
-}
-
-export function collectShortcutScreens(shortcut, screens) {
-  const shortcutCanonicalName = _.get(shortcut, 'canonicalName');
-  const extension = getExtensionNameByScreenName(shortcutCanonicalName);
-
-  const shortcutScreenName = _.get(shortcut, 'screens[0].canonicalName');
-  const shortcutScreen = screens[shortcutScreenName];
-
-  const resolvedShortcutScreen = shortcutScreenName
-    ? { name: shortcutScreenName, component: shortcutScreen }
-    : null;
-
-  const collectedScreens = _.reduce(
-    screens,
-    (result, screen, name) => {
-      const ownerExtension = getExtensionNameByScreenName(name);
-
-      if (ownerExtension === extension) {
-        result.push({ name, component: screen });
-      }
-
-      return result;
-    },
-    [],
-  );
-
-  return _.compact(
-    _.uniqBy([...collectedScreens, resolvedShortcutScreen], 'name'),
-  );
 }
 
 export function createChildNavigators(

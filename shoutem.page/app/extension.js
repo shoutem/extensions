@@ -1,8 +1,7 @@
 // This file is managed by Shoutem CLI
 // You should not change it
-import pack from './package.json';
-
 import PageScreen from './screens/PageScreen';
+import pack from './package.json';
 
 export const screens = {
   PageScreen,

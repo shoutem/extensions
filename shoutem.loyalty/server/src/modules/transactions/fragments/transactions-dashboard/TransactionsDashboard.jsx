@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { ConfirmModal, LoaderContainer, Paging } from '@shoutem/react-web-ui';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { isBusy, invalidate } from '@shoutem/redux-io';
+import PropTypes from 'prop-types';
+import { ConfirmModal, LoaderContainer, Paging } from '@shoutem/react-web-ui';
+import { invalidate, isBusy } from '@shoutem/redux-io';
 import { GeneralStats, TransactionsTable } from '../../components';
-import { getTransactionCount } from '../../services';
-import AddTransactionFragment from '../add-transaction-fragment';
 import {
-  getTransactionInfos,
-  getGeneralStats,
   deleteTransaction,
+  getGeneralStats,
+  getTransactionInfos,
   loadNextTransactionsPage,
   loadPreviousTransactionsPage,
   TRANSACTION_STATS,
 } from '../../redux';
+import { getTransactionCount } from '../../services';
+import AddTransactionFragment from '../add-transaction-fragment';
 import LOCALIZATION from './localization';
 
 export class TransactionsDashboard extends Component {

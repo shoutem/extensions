@@ -1,9 +1,9 @@
 import _ from 'lodash';
+import { combineReducers } from 'redux';
 import URI from 'urijs';
 import { one, collection, find, update } from '@shoutem/redux-io';
-import { url, appId } from 'environment';
 import { ext, data as contextData } from 'context';
-import { combineReducers } from 'redux';
+import { url, appId } from 'environment';
 
 export const SHORTCUTS = 'shoutem.core.shortcuts';
 export const DISCOVERED_FEEDS = 'shoutem.proxy.feeds';

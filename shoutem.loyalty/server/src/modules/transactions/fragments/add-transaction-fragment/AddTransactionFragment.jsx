@@ -1,37 +1,37 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import React, { PureComponent } from 'react';
+import { Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { connect } from 'react-redux';
-import { Button } from 'react-bootstrap';
-import { invalidate } from '@shoutem/redux-io';
-import { IconLabel, InlineModal } from '@shoutem/react-web-ui';
-import { createSelectOptions } from 'src/services';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LOYALTY_TYPES } from 'src/const';
+import { getCashiers } from 'src/modules/cashiers';
 import {
+  createCard,
+  getCardsByUserId,
   getLoyaltyPlaces,
   getUsers,
-  getCardsByUserId,
-  createCard,
 } from 'src/modules/program';
-import { getCashiers } from 'src/modules/cashiers';
 import { getPunchRewards } from 'src/modules/punch-rewards';
-import { createTransaction, TRANSACTION_STATS } from '../../redux';
+import { createSelectOptions } from 'src/services';
+import { IconLabel, InlineModal } from '@shoutem/react-web-ui';
+import { invalidate } from '@shoutem/redux-io';
 import {
-  formatRewardLabel,
-  formatPlaceLabel,
-  formatUserLabel,
-} from '../../services';
-import {
-  SingleCardTransactionForm,
   MultiCardTransactionForm,
   PunchCardTransactionForm,
+  SingleCardTransactionForm,
 } from '../../components';
+import { createTransaction, TRANSACTION_STATS } from '../../redux';
+import {
+  formatPlaceLabel,
+  formatRewardLabel,
+  formatUserLabel,
+} from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export class AddTransactionFragment extends Component {
+export class AddTransactionFragment extends PureComponent {
   constructor(props) {
     super(props);
     autoBindReact(this);

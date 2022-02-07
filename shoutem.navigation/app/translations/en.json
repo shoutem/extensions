@@ -1,6 +1,7 @@
 {
   "shoutem": {
     "navigation": {
+      "noContentScreenName": "No content",
       "noScreensMessage": "Sorry, this app doesn't have any screens to open.",
       "androidExitMessage": "Press the back button again to exit."
     }

@@ -1,9 +1,8 @@
-import * as extension from './extension.js';
-import reducer from './reducers';
-
 import AboutScreen, {
   AboutScreen as AboutScreenComponent,
 } from './screens/AboutScreen';
+import * as extension from './extension.js';
+import reducer from './reducers';
 
 export const components = {
   AboutScreen: AboutScreenComponent,
@@ -17,6 +16,6 @@ export const screens = {
   SolidNavbarMediumAboutScreen: AboutScreen,
 };
 
-export const themes = extension.themes;
+export const { themes } = extension;
 
 export { reducer };

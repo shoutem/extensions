@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
-import { storage, collection } from '@shoutem/redux-io';
 import ext from 'src/const';
-import { PLACES, AUTHORIZATIONS, CARDS, USERS } from '../const';
+import { collection, storage } from '@shoutem/redux-io';
+import { AUTHORIZATIONS, CARDS, PLACES, USERS } from '../const';
 
 // REDUCER
 export const reducer = combineReducers({

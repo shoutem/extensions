@@ -1,7 +1,7 @@
+import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { preventStateRehydration } from 'shoutem.redux';
-import _ from 'lodash';
-import { SET_TRACK_METADATA, REMOVE_TRACK_METADATA } from './actions';
+import { REMOVE_TRACK_METADATA, SET_TRACK_METADATA } from './actions';
 
 const trackMetadata = (state = {}, action) => {
   if (action.type === SET_TRACK_METADATA) {

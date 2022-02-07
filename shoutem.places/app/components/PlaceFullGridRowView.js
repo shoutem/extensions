@@ -1,20 +1,20 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
   Divider,
   ImageBackground,
+  Text,
   Tile,
   Title,
   TouchableOpacity,
   View,
-  Text,
 } from '@shoutem/ui';
 import { Favorite } from 'shoutem.favorites';
+import { ext } from '../const';
 import { getFirstImage } from '../services/places';
 import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
-import { ext } from '../const';
 
 export function PlaceFullGridRowView({ place, onPress, style, numberOfLines }) {
   const address = _.get(place, 'location.formattedAddress', '');

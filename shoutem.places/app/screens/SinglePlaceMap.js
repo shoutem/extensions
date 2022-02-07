@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
+import { Linking } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Linking } from 'react-native';
-import { View, Screen, TouchableOpacity, Icon } from '@shoutem/ui';
+import { Icon, Screen, TouchableOpacity, View } from '@shoutem/ui';
+import { getRouteParams } from 'shoutem.navigation';
 import { MapList } from '../components';
 import { getMapUrl } from '../services/places';
-import { getRouteParams } from 'shoutem.navigation';
 
 const openMapLink = place => {
   const location = _.get(place, 'location', {});

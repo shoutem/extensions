@@ -1,0 +1,16 @@
+const DISABLED_PLACEHOLDER_TITLE = 'disabled-placeholder-title';
+const DISABLED_PLACEHOLDER_DESCRIPTION = 'disabled-placeholder-description';
+const DISABLED_PLACEHOLDER_BUTTON_TRY_AGAIN_TITLE =
+  'disabled-placeholder-button-try-again-title';
+const DISABLED_PLACEHOLDER_BUTTON_GET_STARTED_TITLE =
+  'disabled-placeholder-button-get-started-title';
+const DISABLED_PLACEHOLDER_FAILED_TO_ENABLE_MESSAGE =
+  'disabled-placeholder-failed-to-enable-message';
+
+export default {
+  DISABLED_PLACEHOLDER_TITLE,
+  DISABLED_PLACEHOLDER_DESCRIPTION,
+  DISABLED_PLACEHOLDER_BUTTON_TRY_AGAIN_TITLE,
+  DISABLED_PLACEHOLDER_BUTTON_GET_STARTED_TITLE,
+  DISABLED_PLACEHOLDER_FAILED_TO_ENABLE_MESSAGE,
+};

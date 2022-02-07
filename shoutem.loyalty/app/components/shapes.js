@@ -62,7 +62,7 @@ export {
   authorizationShape,
   cardStateShape,
   cashierShape,
-  rewardShape,
   placeShape,
+  rewardShape,
   transactionShape,
 };

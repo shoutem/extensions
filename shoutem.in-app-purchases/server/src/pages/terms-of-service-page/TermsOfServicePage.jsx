@@ -1,23 +1,23 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
+import {
+  Alert,
+  Button,
+  ButtonToolbar,
+  ControlLabel,
+  FormControl,
+  FormGroup,
+} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import _ from 'lodash';
-import {
-  Button,
-  ButtonToolbar,
-  ControlLabel,
-  FormGroup,
-  FormControl,
-  Alert,
-} from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { updateExtensionSettings, getExtension } from '@shoutem/redux-api-sdk';
+import { getExtension, updateExtensionSettings } from '@shoutem/redux-api-sdk';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export class TermsOfServicePage extends Component {
+export class TermsOfServicePage extends PureComponent {
   constructor(props) {
     super(props);
 

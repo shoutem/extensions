@@ -1,9 +1,9 @@
 {
   "name": "shoutem.favorites",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Favorites extension",
   "dependencies": {
-    "@react-native-community/async-storage": "~1.6.3"
+    "@react-native-community/async-storage": "1.6.3"
   },
   "peerDependencies": {
     "@shoutem/redux-io": "*",

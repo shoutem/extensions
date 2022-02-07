@@ -1,3 +1,4 @@
+import React from 'react';
 import { AppState } from 'react-native';
 import rio from '@shoutem/redux-io';
 import {
@@ -6,9 +7,10 @@ import {
   setQueueTargetComplete,
 } from 'shoutem.application';
 import { getCurrentRoute } from 'shoutem.navigation';
-import { shoutemApi } from './services/shoutemApi';
 import { authProviders } from './services/authProviders';
+import { shoutemApi } from './services/shoutemApi';
 import { ext } from './const';
+import { AuthProvider } from './providers';
 import {
   AUTH_TOKEN_SCHEMA,
   fetchUser,
@@ -17,7 +19,6 @@ import {
   hideShortcuts,
   isAuthenticated,
   LOGOUT,
-  REAUTHENTICATE_FAILED,
   restoreSession,
   USER_SCHEMA,
 } from './redux';
@@ -28,8 +29,6 @@ async function refreshUser(dispatch, getState) {
 
   if (session) {
     dispatch(restoreSession(session));
-  } else {
-    dispatch({ type: REAUTHENTICATE_FAILED });
   }
 
   const accessToken = getAccessToken(getState());
@@ -59,7 +58,7 @@ async function refreshUser(dispatch, getState) {
 const createHandleAppStateChange = (dispatch, getState) => appState => {
   const activeRoute = getCurrentRoute();
 
-  if (appState === 'active' && activeRoute.name !== ext('EditProfileScreen')) {
+  if (appState === 'active' && activeRoute?.name !== ext('EditProfileScreen')) {
     refreshUser(dispatch, getState);
   }
 };
@@ -153,4 +152,8 @@ export function appDidMount(app) {
 
 export function appWillUnmount() {
   AppState.removeEventListener('change', handleAppStateChange);
+}
+
+export function renderProvider(children) {
+  return <AuthProvider content={children} />;
 }

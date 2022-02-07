@@ -1,16 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { getExtensionSettings } from 'shoutem.application';
 import {
-  withIsFocused,
   FocusTriggerBase,
-  NavigationStacks,
   navigateTo,
+  NavigationStacks,
+  withIsFocused,
 } from 'shoutem.navigation';
-import { isAuthenticated } from './redux';
 import { ext } from './const';
+import { isAuthenticated } from './redux';
 
 // function that decorates given Screen with loginRequired property
 // Screen decorated with that property should first open LoginScreen if user isn't logged in
@@ -31,9 +31,9 @@ export function withLoginRequired(WrappedComponent) {
   class AuthComponent extends FocusTriggerBase {
     static propTypes = {
       ...FocusTriggerBase.propTypes,
-      route: PropTypes.object,
       allScreensProtected: PropTypes.bool,
       isAuthenticated: PropTypes.bool,
+      route: PropTypes.object,
     };
 
     handleFocus() {
@@ -79,7 +79,7 @@ export function withLoginRequired(WrappedComponent) {
     mapStateToProps,
   );
 
-  const ResultComponent = connect(resolvedMapStateToProps)(AuthComponent);
+  const ResultComponent = connect(resolvedMapStateToProps, null)(AuthComponent);
 
   return withIsFocused(ResultComponent);
 }

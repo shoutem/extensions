@@ -1,11 +1,11 @@
 {
   "name": "books",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.1.0",
+  "platform": "^5",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",
   "description": "Show books and authors",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Replaced loading spinner with animated placeholder in List & Small list layouts",
   "categories": ["content"],
   "i18n": {
     "locale": "en",
@@ -15,7 +15,15 @@
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": ["shoutem.layouts", "shoutem.cms"],
+  "dependencies": [
+    "shoutem.cms",
+    "shoutem.favorites",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.redux",
+    "shoutem.web-view"
+  ],
   "shortcuts": [
     {
       "title": "Books",
@@ -55,13 +63,21 @@
     {
       "name": "BooksListScreen",
       "title": "List",
-      "image": "./server/assets/images/screens/large-photo-list.png"
+      "image": "./server/assets/images/screens/large-photo-list.png",
+      "settings": {
+        "listType": "tile-list",
+        "hasFeaturedItem": false
+      }
     },
     {
       "name": "BooksSmallListScreen",
       "title": "Small List",
       "extends": "@.BooksListScreen",
-      "image": "./server/assets/images/screens/small-photo-list.png"
+      "image": "./server/assets/images/screens/small-photo-list.png",
+      "settings": {
+        "listType": "compact-list",
+        "hasFeaturedItem": false
+      }
     },
     {
       "name": "BooksDetailsScreen",

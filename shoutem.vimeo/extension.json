@@ -1,19 +1,13 @@
 {
   "name": "vimeo",
   "title": "Vimeo",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "description": "Show videos from Vimeo",
-  "releaseNotes": "* Fixed infinite spinner",
+  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
   "icon": "server/assets/add-videos-vimeo-image.png",
-  "dependencies": [
-    "shoutem.layouts",
-    "shoutem.navigation",
-    "shoutem.rss"
-  ],
-  "categories": [
-    "media"
-  ],
+  "dependencies": ["shoutem.layouts", "shoutem.navigation", "shoutem.rss"],
+  "categories": ["media"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -52,9 +46,7 @@
       "name": "VimeoList",
       "title": "Big list",
       "image": "server/assets/screens/big-list.png",
-      "navigatesTo": [
-        "@.VimeoDetails"
-      ],
+      "navigatesTo": ["@.VimeoDetails"],
       "groupTitle": "Choose List screen layout"
     },
     {
@@ -84,6 +76,6 @@
     }
   ],
   "settings": {
-    "baseApiEndpoint": "http://api.dev.sauros.hr"
+    "baseApiEndpoint": "http://api.shoutem.com"
   }
 }

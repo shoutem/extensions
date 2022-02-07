@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBind from 'auto-bind';
-import { connect } from 'react-redux';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
-import { View, Button, Icon, Text } from '@shoutem/ui';
+import { connect } from 'react-redux';
+import autoBind from 'auto-bind';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
+import { Button, Icon, Text } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
@@ -22,14 +22,18 @@ class FacebookButton extends PureComponent {
     autoBind(this);
 
     this.state = {
-      accesssToken: null,
+      accessToken: null,
+      inProgress: false,
     };
   }
 
   loginOrSignup() {
+    this.setState({ inProgress: true });
+
     this.refreshFacebookToken()
       .then(this.parseAccessToken)
-      .catch(this.openFacebookSignup);
+      .catch(this.openFacebookSignup)
+      .finally(() => this.setState({ inProgress: false }));
   }
 
   parseAccessToken(result) {
@@ -44,7 +48,7 @@ class FacebookButton extends PureComponent {
   }
 
   handleFacebookRegistration(result) {
-    const { onLoginSuccess, registerWithFacebook } = this.props;
+    const { registerWithFacebook } = this.props;
 
     const accessToken = _.get(result, 'accessToken');
 
@@ -54,9 +58,9 @@ class FacebookButton extends PureComponent {
       const firstName = _.get(results, 'first_name', '');
       const lastName = _.get(results, 'last_name', '');
 
-      registerWithFacebook(accessToken, firstName, lastName)
-        .then(onLoginSuccess)
-        .catch(this.handleRegistrationFailed);
+      registerWithFacebook(accessToken, firstName, lastName).catch(
+        this.handleRegistrationFailed,
+      );
     });
   }
 
@@ -90,11 +94,9 @@ class FacebookButton extends PureComponent {
 
   handleFacebookLogin() {
     const { accessToken } = this.state;
-    const { loginWithFacebook, onLoginSuccess, onLoginFailed } = this.props;
+    const { loginWithFacebook, onLoginFailed } = this.props;
 
-    return loginWithFacebook(accessToken)
-      .then(onLoginSuccess)
-      .catch(onLoginFailed);
+    return loginWithFacebook(accessToken).catch(onLoginFailed);
   }
 
   handleRegistrationFailed(error) {
@@ -111,31 +113,38 @@ class FacebookButton extends PureComponent {
   }
 
   render() {
-    const { style } = this.props;
+    const { disabled, style } = this.props;
+    const { inProgress } = this.state;
+
+    const resolvedInProgress = disabled || inProgress;
 
     return (
-      <View>
-        <Button
-          onPress={this.loginOrSignup}
-          style={style.facebookButton}
-          styleName="full-width inflexible"
-        >
-          <Icon name="facebook-logo" />
-          <Text allowFontScaling={false}>
-            {I18n.t(ext('facebookLogInButton'))}
-          </Text>
-        </Button>
-      </View>
+      <Button
+        onPress={this.loginOrSignup}
+        style={style.facebookButton}
+        styleName="full-width inflexible"
+        disabled={resolvedInProgress}
+      >
+        <Icon name="facebook-logo" />
+        <Text allowFontScaling={false}>
+          {I18n.t(ext('facebookLogInButton'))}
+        </Text>
+      </Button>
     );
   }
 }
 
 FacebookButton.propTypes = {
-  onLoginSuccess: PropTypes.func,
-  onLoginFailed: PropTypes.func,
-  loginWithFacebook: PropTypes.func,
-  registerWithFacebook: PropTypes.func,
+  loginWithFacebook: PropTypes.func.isRequired,
+  registerWithFacebook: PropTypes.func.isRequired,
+  onLoginFailed: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
   style: PropTypes.object,
+};
+
+FacebookButton.defaultProps = {
+  disabled: false,
+  style: {},
 };
 
 const mapDispatchToProps = {

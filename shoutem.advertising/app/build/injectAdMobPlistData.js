@@ -20,7 +20,7 @@ function parsePlist(plistPath) {
 }
 
 const getExtension = (appConfiguration, extensionName) => {
-  const includedResources = appConfiguration?.included;
+  const includedResources = _.get(appConfiguration, 'included');
   const extension = _.find(includedResources, {
     type: 'shoutem.core.extensions',
     id: extensionName,
@@ -31,7 +31,8 @@ const getExtension = (appConfiguration, extensionName) => {
 
 const getExtensionSettings = (appConfiguration, extensionName) => {
   const extension = getExtension(appConfiguration, extensionName);
-  return extension?.attributes?.settings;
+
+  return _.get(extension, 'attributes.settings');
 };
 
 /**

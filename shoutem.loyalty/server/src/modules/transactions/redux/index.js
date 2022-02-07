@@ -1,23 +1,20 @@
 export {
-  loadTransactions,
-  loadNextTransactionsPage,
-  loadPreviousTransactionsPage,
+  CARD_TYPES,
+  moduleName,
+  TRANSACTION_STATS,
+  TRANSACTIONS,
+} from '../const';
+export {
   createTransaction,
   deleteTransaction,
   loadGeneralStats,
+  loadNextTransactionsPage,
+  loadPreviousTransactionsPage,
+  loadTransactions,
 } from './actions';
-
-export {
-  moduleName,
-  TRANSACTIONS,
-  TRANSACTION_STATS,
-  CARD_TYPES,
-} from '../const';
-
-export {
-  getTransactions,
-  getTransactionInfos,
-  getGeneralStats,
-} from './selectors';
-
 export { reducer } from './reducer';
+export {
+  getGeneralStats,
+  getTransactionInfos,
+  getTransactions,
+} from './selectors';

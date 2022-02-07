@@ -7,6 +7,7 @@ const FORM_BACKGROUND_FIELD_POPOVER = `${key}.form-background-field-popover`;
 const FORM_STREAM_URL_FIELD_TITLE = `${key}.form-stream-url-field-title`;
 const FORM_STREAM_FIELD_TITLE = `${key}.form-stream-field-title`;
 const FORM_SHARING_CHECKBOX_TITLE = `${key}.form-sharing-checkbox-title`;
+const FORM_ARTWORK_CHECKBOX_TITLE = `${key}.form-artwork-checkbox-title`;
 const BUTTON_SAVE = `${key}.form-button-save`;
 
 export default {
@@ -17,5 +18,6 @@ export default {
   FORM_STREAM_URL_FIELD_TITLE,
   FORM_STREAM_FIELD_TITLE,
   FORM_SHARING_CHECKBOX_TITLE,
+  FORM_ARTWORK_CHECKBOX_TITLE,
   BUTTON_SAVE,
 };

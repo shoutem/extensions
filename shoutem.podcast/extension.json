@@ -1,10 +1,10 @@
 {
   "name": "podcast",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* Fixed podcast episode not resuming playback after interruption",
+  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
   "icon": "server/assets/extension-icon.png",
   "categories": ["media"],
   "repository": {

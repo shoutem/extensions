@@ -1,9 +1,8 @@
-import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { preventStateRehydration } from 'shoutem.redux';
 import {
-  PRODUCTS_LOADED_ACTION,
   ACTIVE_PRODUCTS_LOADED_ACTION,
+  PRODUCTS_LOADED_ACTION,
 } from './actions';
 
 const availableProducts = (state = [], action) => {

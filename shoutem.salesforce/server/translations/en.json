@@ -1,0 +1,21 @@
+{
+  "shoutem": {
+    "salesforce": {
+      "api-configuration-title": "API Integration settings",
+      "api-client-id": "Client ID",
+      "api-auth-base-uri": "Base authentication URI",
+      "api-rest-base-uri": "Base REST URI",
+      "api-redirect-uri": "Redirect URI",
+      "api-redirect-uri-popover": "Copy and use this value when configuring Salesforce API Package",
+      "app-configuration-title": "MC App settings",
+      "app-access-token": "Access token",
+      "app-app-endpoint": "App endpoint",
+      "app-fcm-sender-id": "FCM sender id",
+      "app-app-id": "App id",
+      "button-save-title": "Save",
+      "salesforce-configuration-title": "Authorize your SalesForce integration",
+      "button-reauthorize-title": "Re-Authorize",
+      "button-authorize-title": "Authorize"
+    }
+  }
+}

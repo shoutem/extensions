@@ -1,8 +1,4 @@
 import React, { Component } from 'react';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import {
   Button,
   ButtonToolbar,
@@ -12,6 +8,10 @@ import {
   HelpBlock,
 } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { updateShortcutSettings } from '@shoutem/redux-api-sdk';
 import SettingField from '../../components/SettingField';
@@ -20,35 +20,32 @@ import LOCALIZATION from './localization';
 import './style.scss';
 
 class RadioShortcutPage extends Component {
-  static propTypes = {
-    shortcut: PropTypes.object,
-    updateSettings: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
+
+    const {
+      shortcut: { settings = {} },
+    } = props;
 
     this.state = {
       errorBackgroundImageUrl: null,
       errorStreamTitle: null,
       errorStreamUrl: null,
       errorSharing: null,
-      streamTitle: _.get(props.shortcut, 'settings.streamTitle'),
-      streamUrl: _.get(props.shortcut, 'settings.streamUrl'),
-      showSharing: _.get(props.shortcut, 'settings.showSharing'),
-      backgroundImageUrl: _.get(props.shortcut, 'settings.backgroundImageUrl'),
+      errorArtwork: null,
+      streamTitle: settings.streamTitle,
+      streamUrl: settings.streamUrl,
+      showSharing: settings.showSharing || false,
+      showArtwork: settings.showArtwork || false,
+      backgroundImageUrl: settings.backgroundImageUrl,
       isLoading: false,
     };
   }
 
   componentWillReceiveProps(nextProps) {
     const { shortcut: nextShortcut } = nextProps;
-    const {
-      streamTitle,
-      backgroundImageUrl,
-      streamUrl,
-    } = this.state;
+    const { streamTitle, backgroundImageUrl, streamUrl } = this.state;
 
     if (_.isEmpty(backgroundImageUrl)) {
       this.setState({
@@ -85,6 +82,12 @@ class RadioShortcutPage extends Component {
     const { showSharing } = this.state;
 
     this.setState({ showSharing: !showSharing });
+  }
+
+  handleToggleArtwork() {
+    const { showArtwork } = this.state;
+
+    this.setState({ showArtwork: !showArtwork });
   }
 
   async saveBackgroundImageUrl() {
@@ -124,6 +127,17 @@ class RadioShortcutPage extends Component {
     }
   }
 
+  async saveShowArtwork() {
+    const { shortcut, updateSettings } = this.props;
+    const { showArtwork } = this.state;
+
+    try {
+      await updateSettings(shortcut, { showArtwork });
+    } catch (err) {
+      this.setState({ errorArtwork: err });
+    }
+  }
+
   async saveStreamTitle() {
     const { shortcut, updateSettings } = this.props;
     const { streamTitle } = this.state;
@@ -143,6 +157,7 @@ class RadioShortcutPage extends Component {
     await this.saveStreamTitle();
     await this.saveStreamUrl();
     await this.saveShowSharing();
+    await this.saveShowArtwork();
     await this.saveBackgroundImageUrl();
 
     this.setState({ isLoading: false });
@@ -167,12 +182,14 @@ class RadioShortcutPage extends Component {
 
   render() {
     const {
+      errorArtwork,
       errorBackgroundImageUrl,
       errorStreamTitle,
       errorStreamUrl,
       errorSharing,
       streamTitle,
       streamUrl,
+      showArtwork,
       showSharing,
       isLoading,
       backgroundImageUrl,
@@ -208,8 +225,18 @@ class RadioShortcutPage extends Component {
         >
           {i18next.t(LOCALIZATION.FORM_SHARING_CHECKBOX_TITLE)}
         </Checkbox>
-        {errorSharing && (
+        {!!errorSharing && (
           <HelpBlock className="text-error">{errorSharing}</HelpBlock>
+        )}
+        <Checkbox
+          checked={showArtwork}
+          name="Display artwork"
+          onChange={this.handleToggleArtwork}
+        >
+          {i18next.t(LOCALIZATION.FORM_ARTWORK_CHECKBOX_TITLE)}
+        </Checkbox>
+        {!!errorArtwork && (
+          <HelpBlock className="text-error">{errorArtwork}</HelpBlock>
         )}
         <ButtonToolbar>
           <Button bsStyle="primary" onClick={this.handleSaveSettings}>
@@ -222,6 +249,11 @@ class RadioShortcutPage extends Component {
     );
   }
 }
+
+RadioShortcutPage.propTypes = {
+  shortcut: PropTypes.object.isRequired,
+  updateSettings: PropTypes.func.isRequired,
+};
 
 export default connect(null, { updateSettings: updateShortcutSettings })(
   RadioShortcutPage,

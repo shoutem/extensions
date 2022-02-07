@@ -1,0 +1,46 @@
+{
+  "name": "salesforce",
+  "title": "Salesforce MC",
+  "version": "1.0.1",
+  "description": "Salesforce Marketing Cloud",
+  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
+  "platform": "^4 || ^5",
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.auth",
+    "shoutem.firebase",
+    "shoutem.preview"
+  ],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
+  "settings": {
+    "clientId": null,
+    "authBaseUri": null,
+    "restBaseUri": null,
+    "salesforceAuthorized": false,
+    "appId": null,
+    "accessToken": null,
+    "appEndpoint": null,
+    "fcmSenderId": null
+  },
+  "pages": [
+    {
+      "name": "SalesforceSettingsPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.SalesforceSettingsPage",
+      "title": "Settings"
+    }
+  ],
+  "cloud": [
+    {
+      "type": "api",
+      "script": "npm run migrate:docker && npm run start:server:docker"
+    }
+  ]
+}

@@ -124,10 +124,9 @@ class EditProfileScreen extends PureComponent {
     }
 
     const newUser = {
-      ...user,
+      id: user.id,
       profile: { ...updates },
     };
-    delete newUser.userGroups;
 
     return updateProfile(newUser)
       .then(this.handleFinish)

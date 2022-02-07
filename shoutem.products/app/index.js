@@ -1,10 +1,9 @@
-import ProductsList from './screens/ProductsList';
 import ProductDetails from './screens/ProductDetails';
-import reducer from './reducers';
+import ProductsList from './screens/ProductsList';
 
 export const screens = {
   ProductsList,
   ProductDetails,
 };
 
-export { reducer };
+export { reducer } from './redux';

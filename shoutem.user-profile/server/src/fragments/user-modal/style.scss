@@ -1,0 +1,30 @@
+.modal-backdrop {
+  background-color: #ffffff;
+
+  .in {
+    opacity: 0.8;
+  }
+}
+
+.settings-page {
+  max-width: 552px;
+  margin: auto;
+
+  &.is-wide {
+    max-width: 808px;
+  }
+}
+
+.inline-modal .modal-dialog {
+  height: auto;
+}
+
+.modal.settings-page-modal .modal-dialog:not(.modal-lg) {
+  width: 100%;
+
+  .modal-header,
+  .modal-body {
+    max-width: 552px;
+    margin: auto;
+  }
+}

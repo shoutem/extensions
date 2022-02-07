@@ -3,51 +3,48 @@
 
 import _ from 'lodash';
 import { AppInitQueue } from 'shoutem.application';
-import { ext } from './const';
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import UserProfileScreen from './screens/UserProfileScreen';
-import EditProfileScreen from './screens/EditProfileScreen';
-import MyProfileScreen from './screens/MyProfileScreen';
-import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
+import './navigation';
 import ChangePasswordScreen from './screens/ChangePasswordScreen';
 import ConfirmDeletionScreen from './screens/ConfirmDeletionScreen';
-import reducer, {
-  fetchToken,
-  fetchUser,
-  getUser,
-  getUserGroups,
-  getAccessToken,
-  authenticate,
-  logoutAction,
-  isAuthenticated,
-  isUserUpdateAction,
-  openProfile,
-  register,
-  RESTORE_SESSION,
-  LOGIN,
-  LOGOUT,
-  REGISTER,
-  setAccessToken,
-  USER_SCHEMA,
-  updateProfile,
-  userRegistered,
-  REAUTHENTICATE_FAILED,
-} from './redux';
-
+import EditProfileScreen from './screens/EditProfileScreen';
+import LoginScreen from './screens/LoginScreen';
+import MyProfileScreen from './screens/MyProfileScreen';
+import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import UserProfileScreen from './screens/UserProfileScreen';
+import enTranslations from './translations/en.json';
+import { ext } from './const';
+import { getErrorCode, getErrorMessage } from './errorMessages';
+import { loginRequired, withLoginRequired } from './loginRequired';
 import {
-  networkRequestMiddleware,
+  authenticateLimitedMiddleware,
+  authenticateMiddleware,
   logoutMiddleware,
+  networkRequestMiddleware,
   userUpdatedMiddleware,
 } from './middleware';
-
-import { loginRequired, withLoginRequired } from './loginRequired';
+import reducer, {
+  authenticate,
+  fetchToken,
+  fetchUser,
+  getAccessToken,
+  getUser,
+  getUserGroups,
+  isAuthenticated,
+  isUserUpdateAction,
+  LOGIN,
+  LOGOUT,
+  logoutAction,
+  openProfile,
+  REGISTER,
+  register,
+  RESTORE_SESSION,
+  setAccessToken,
+  updateProfile,
+  USER_SCHEMA,
+  userRegistered,
+} from './redux';
 import { saveSession } from './session';
-import { getErrorCode, getErrorMessage } from './errorMessages';
-
-import enTranslations from './translations/en.json';
-
-import './navigation';
 
 AppInitQueue.addExtension(ext());
 
@@ -82,6 +79,8 @@ const middleware = [
   networkRequestMiddleware,
   logoutMiddleware,
   userUpdatedMiddleware,
+  authenticateMiddleware,
+  authenticateLimitedMiddleware,
 ];
 
 export const shoutem = {
@@ -92,34 +91,35 @@ export const shoutem = {
   },
 };
 
-export { appDidMount, appWillUnmount } from './app';
+export { appDidMount, appWillUnmount, renderProvider } from './app';
+export { AuthContext as context } from './providers';
 
 export {
-  appWillMount,
   appScreens,
-  middleware,
+  appWillMount,
+  authenticate,
+  ext,
   fetchToken,
   fetchUser,
-  getUser,
-  getUserGroups,
   getAccessToken,
   getErrorCode,
   getErrorMessage,
-  authenticate,
-  loginRequired,
-  withLoginRequired,
+  getUser,
+  getUserGroups,
   isAuthenticated,
-  register,
-  saveSession,
-  userRegistered,
   isUserUpdateAction,
+  LOGIN,
+  loginRequired,
+  LOGOUT,
+  middleware,
   openProfile,
+  REGISTER,
+  register,
+  RESTORE_SESSION,
+  saveSession,
   setAccessToken,
   updateProfile,
-  LOGIN,
-  LOGOUT,
-  REGISTER,
-  RESTORE_SESSION,
-  REAUTHENTICATE_FAILED,
   USER_SCHEMA,
+  userRegistered,
+  withLoginRequired,
 };

@@ -1,19 +1,19 @@
-import { combineReducers } from 'redux';
-import {
-  find,
-  create,
-  update,
-  remove,
-  getCollection,
-  storage,
-  collection,
-  cloneStatus,
-} from '@shoutem/redux-io';
 import _ from 'lodash';
+import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
-import { getLoyaltyUrl } from 'src/services';
-import { getLoyaltyPlaces } from 'src/modules/program';
 import ext from 'src/const';
+import { getLoyaltyPlaces } from 'src/modules/program';
+import { getLoyaltyUrl } from 'src/services';
+import {
+  cloneStatus,
+  collection,
+  create,
+  find,
+  getCollection,
+  remove,
+  storage,
+  update,
+} from '@shoutem/redux-io';
 
 // CONST
 export const moduleName = 'cashiers';

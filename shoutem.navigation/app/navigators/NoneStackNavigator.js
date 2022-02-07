@@ -1,16 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import {
   createStackNavigator,
   TransitionPresets,
 } from '@react-navigation/stack';
-import { NoContent } from '../screens';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { I18n } from 'shoutem.i18n';
 import { HeaderBackButton, HeaderTitle } from '../components';
+import { ext } from '../const';
+import { NoContent } from '../screens';
 import {
-  HeaderStyles,
-  createChildNavigators,
   collectShortcutScreens,
+  createChildNavigators,
+  HeaderStyles,
 } from '../services';
 
 const NoneStack = createStackNavigator();
@@ -26,7 +28,7 @@ const stackScreenOptions = () => {
 export function NoneStackNavigator({
   parentShortcut,
   hiddenShortcuts,
-  decoratedScreens,
+  screens,
 }) {
   const initialShortcutId = _.get(
     parentShortcut,
@@ -46,7 +48,10 @@ export function NoneStackNavigator({
   if (!designatedShortcut) {
     return (
       <NoneStack.Navigator>
-        <NoneStack.Screen name={'No content'} component={NoContent} />
+        <NoneStack.Screen
+          name={I18n.t(ext('noContentScreenName'))}
+          component={NoContent}
+        />
       </NoneStack.Navigator>
     );
   }
@@ -57,11 +62,11 @@ export function NoneStackNavigator({
     'canonicalName',
   );
 
-  const screens = collectShortcutScreens(designatedShortcut, decoratedScreens);
+  const shortcutScreens = collectShortcutScreens(designatedShortcut, screens);
 
   return (
     <NoneStack.Navigator initialRouteName={firstScreenName}>
-      {_.map(screens, screen => {
+      {_.map(shortcutScreens, screen => {
         const matchingShortcutScreen = _.find(designatedShortcutScreens, {
           canonicalName: screen.name,
         });
@@ -101,14 +106,14 @@ export function NoneStackNavigator({
           stackScreenOptions,
           true,
           hiddenShortcuts,
-          decoratedScreens,
+          screens,
         )}
     </NoneStack.Navigator>
   );
 }
 
 NoneStackNavigator.propTypes = {
-  parentShortcut: PropTypes.object,
-  hiddenShortcuts: PropTypes.array,
-  decoratedScreens: PropTypes.object,
+  hiddenShortcuts: PropTypes.array.isRequired,
+  parentShortcut: PropTypes.object.isRequired,
+  screens: PropTypes.object.isRequired,
 };

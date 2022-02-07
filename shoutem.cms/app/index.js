@@ -1,6 +1,5 @@
 export { CmsListScreen } from './screens/CmsListScreen';
 export { default as currentLocation } from './components/CurrentLocation';
-export { Grid122Layout } from './components/layouts';
 export {
   reducer,
   invalidateLoadedCollections,

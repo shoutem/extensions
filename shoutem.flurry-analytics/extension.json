@@ -1,13 +1,13 @@
 {
   "name": "flurry-analytics",
   "title": "Flurry analytics",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "description": "Measure and analyze activity across your app with Flurry analytics",
+  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
   "icon": "server/assets/add-analytics-image.png",
-  "categories": [
-    "analytics"
-  ],
+  "categories": ["analytics"],
+  "dependencies": ["shoutem.analytics", "shoutem.application"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

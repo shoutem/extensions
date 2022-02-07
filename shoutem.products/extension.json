@@ -1,13 +1,11 @@
 {
   "name": "products",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.2.0",
+  "platform": "^5",
   "title": "Products",
   "description": "Show products with purchase link",
-  "releaseNotes": "* Added layout images",
-  "categories": [
-    "commerce"
-  ],
+  "releaseNotes": "* Added option to open item buy link with authorization header",
+  "categories": ["commerce"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -30,10 +28,7 @@
       "title": "Products",
       "screen": "@.ProductsList",
       "icon": "theme://cart.png",
-      "capabilities": [
-        "shoutem.cms.search",
-        "shoutem.cms.import-csv"
-      ],
+      "capabilities": ["shoutem.cms.search", "shoutem.cms.import-csv"],
       "adminPages": [
         {
           "page": "shoutem.cms.CmsPage",
@@ -45,9 +40,14 @@
         {
           "page": "shoutem.layouts.LayoutPage",
           "title": "Layout"
+        },
+        {
+          "page": "@.BuyLinkHeaderPage",
+          "title": "Buy link header"
         }
       ],
       "settings": {
+        "addAuthHeaderToBuyLink": false,
         "defaultShortcutTitle": "Products",
         "extensionTitle": "Products"
       }
@@ -58,10 +58,12 @@
       "name": "ProductsList",
       "title": "Compact list",
       "image": "./server/assets/screens/compact-list.png",
+      "settings": {
+        "hasFeaturedItem": false,
+        "listType": "compact-list"
+      },
       "groupTitle": "Choose list layout",
-      "navigatesTo": [
-        "@.ProductDetails"
-      ]
+      "navigatesTo": ["@.ProductDetails"]
     },
     {
       "name": "ProductDetails",
@@ -74,6 +76,12 @@
     {
       "name": "Products",
       "path": "./server/data-schemas/Products.json"
+    }
+  ],
+  "pages": [
+    {
+      "name": "BuyLinkHeaderPage",
+      "type": "react-page"
     }
   ]
 }

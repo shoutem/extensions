@@ -1,12 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Icon } from '@shoutem/ui';
-import { HeaderBackButton, Drawer } from '../components';
-import { getRouteParams, createChildNavigators } from '../services';
-import { ext } from '../const';
+import { Drawer, HeaderBackButton } from '../components';
+import { ext, NO_SCREENS } from '../const';
+import NoScreens from '../screens/NoScreens';
+import { createChildNavigators, getRouteParams } from '../services';
 
 const DrawerStack = createDrawerNavigator();
 
@@ -34,12 +35,7 @@ function screenOptions(navigationProps) {
   };
 }
 
-function Navigator({
-  parentShortcut,
-  hiddenShortcuts,
-  decoratedScreens,
-  style,
-}) {
+function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
   const initialShortcutId = _.get(
     parentShortcut,
     'screens[0].settings.startingScreen',
@@ -55,7 +51,11 @@ function Navigator({
     screenOptions,
     true,
     hiddenShortcuts,
-    decoratedScreens,
+    screens,
+  );
+
+  const NoScreensComponent = (
+    <DrawerStack.Screen name={NO_SCREENS} component={NoScreens} />
   );
 
   return (
@@ -71,16 +71,21 @@ function Navigator({
       )}
       drawerStyle={style.menu}
     >
-      {DrawerComponents}
+      {[...DrawerComponents, NoScreensComponent]}
     </DrawerStack.Navigator>
   );
 }
 
 Navigator.propTypes = {
-  parentShortcut: PropTypes.object,
+  parentShortcut: PropTypes.object.isRequired,
+  screens: PropTypes.object.isRequired,
   hiddenShortcuts: PropTypes.array,
-  decoratedScreens: PropTypes.object,
   style: PropTypes.object,
+};
+
+Navigator.defaultProps = {
+  hiddenShortcuts: [],
+  style: {},
 };
 
 export const DrawerNavigator = connectStyle(ext('Drawer'))(Navigator);

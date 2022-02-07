@@ -54,6 +54,8 @@ export function resolveErrorMessage(errorCode) {
       return I18n.t(ext('invalidPasswordFormatErrorMessage'));
     case 'EMPTY_FIELDS':
       return I18n.t(ext('formNotFilledErrorMessage'));
+    case 'EMAIL_TAKEN':
+      return I18n.t(ext('emailTakenErrorMessage'));
     case 'USERNAME_TAKEN':
       return I18n.t(ext('usernameTakenErrorMessage'));
     case 'MANUAL_APPROVAL':
@@ -68,7 +70,8 @@ export function resolveErrorMessage(errorCode) {
 export const getErrorMessage = errorCode => resolveErrorMessage(errorCode);
 
 export const apiCodeToErrorMessage = {
-  auth_auth_validation_usernameTaken: 'USERNAME_TAKEN',
+  auth_auth_validation_usernameTaken: 'EMAIL_TAKEN',
+  auth_user_validation_nickTaken: 'USERNAME_TAKEN',
   auth_auth_notAuthorized_userAuthenticationError: 'UNEXPECTED_ERROR',
   auth_token_validation_userNotApproved: 'USER_NOT_APPROVED',
 };

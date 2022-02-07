@@ -11,16 +11,21 @@ export function formatTrialDuration(product) {
     return null;
   }
 
-  return `${moment.duration(trialDuration).asDays()} ${I18n.t(ext('subscriptionTrialDuration'))}`;
+  return `${moment.duration(trialDuration).asDays()} ${I18n.t(
+    ext('subscriptionTrialDuration'),
+  )}`;
 }
 
 export function formatSubscribeMessage(product) {
   const localisedPrice = _.get(product, 'price');
   const subsscriptionDuration = _.get(product, 'subscriptionDuration');
   const durationInMonths = moment.duration(subsscriptionDuration).asMonths();
-  const monthsText = durationInMonths < 2
-    ? I18n.t(ext('subscribeButtonDurationMonth'))
-    : `${durationInMonths} ${I18n.t(ext('subscribeButtonDurationMonth'))}`
+  const monthsText =
+    durationInMonths < 2
+      ? I18n.t(ext('subscribeButtonDurationMonth'))
+      : `${durationInMonths} ${I18n.t(ext('subscribeButtonDurationMonth'))}`;
 
-  return `${I18n.t(ext('subscribeButtonPrefix'))} ${localisedPrice} / ${monthsText}`;
+  return `${I18n.t(
+    ext('subscribeButtonPrefix'),
+  )} ${localisedPrice} / ${monthsText}`;
 }

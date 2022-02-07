@@ -1,25 +1,25 @@
 /* eslint-disable camelcase */
 import _ from 'lodash';
-import { getAppId } from 'shoutem.application/app';
-import { getUser, USER_SCHEMA } from 'shoutem.auth';
-import { openInModal } from 'shoutem.navigation';
 import {
-  find,
   create,
-  update,
+  find,
   invalidate,
   next,
   REFERENCE_FETCHED,
+  update,
 } from '@shoutem/redux-io';
-import { shoutemApi } from '../services/shoutemApi';
+import { getAppId } from 'shoutem.application/app';
+import { getUser, USER_SCHEMA } from 'shoutem.auth';
+import { openInModal } from 'shoutem.navigation';
+import { ext as userProfileExt } from 'shoutem.user-profile';
 import { apiVersion } from '../app';
 import {
+  DEFAULT_USER_SETTINGS,
+  SOCIAL_SETTINGS_SCHEMA,
   STATUSES_SCHEMA,
   USERS_SEARCH_SCHEMA,
-  SOCIAL_SETTINGS_SCHEMA,
-  DEFAULT_USER_SETTINGS,
-  ext,
 } from '../const';
+import { shoutemApi } from '../services/shoutemApi';
 import { getStatus } from './selectors';
 
 export const CREATE = 'CREATE';
@@ -31,7 +31,7 @@ export const BLOCK_USER = 'BLOCK_USER';
 export const UNBLOCK_USER = 'UNBLOCK_USER';
 
 export function openProfile(user) {
-  return openInModal(ext('UserProfileScreen'), { user });
+  return openInModal(userProfileExt('UserProfileScreen'), { user });
 }
 
 function resolveUsername(user) {
@@ -407,7 +407,7 @@ export function createComment(statusId, text, imageData) {
     };
 
     if (imageData) {
-      body.imageData = imageData;
+      body.data.imageData = imageData;
     }
 
     const rioConfig = {

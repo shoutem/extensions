@@ -1,13 +1,13 @@
 {
   "name": "shoutem.notification-center",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Manage push notification settings within the app",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
-    "react-native-localize": "~1.3.0",
-    "xcode": "~3.0.0"
+    "react-native-localize": "1.3.4",
+    "xcode": "3.0.1"
   },
   "peerDependencies": {
     "@shoutem/redux-composers": "*",

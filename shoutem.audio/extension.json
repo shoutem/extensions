@@ -1,10 +1,10 @@
 {
   "name": "audio",
   "title": "Audio",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "description": "Track player components for other extensions to utilize. NOTE: Lock screen controls will not be visible in the preview.",
-  "releaseNotes": "* Updated react-native-track-player to v2. No breaking changes were introduced\n* Fixed builds on XCode 13 & iOS 15 devices",
+  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
   "dependencies": ["shoutem.application"],
   "icon": "server/assets/add-audio-image.png",
   "type": "system"

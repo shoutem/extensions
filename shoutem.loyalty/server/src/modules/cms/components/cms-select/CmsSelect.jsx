@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { ControlLabel, FormGroup } from 'react-bootstrap';
 import Select from 'react-select';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { isBusy } from '@shoutem/redux-io';
-import { FormGroup, ControlLabel } from 'react-bootstrap';
 import LOCALIZATION from './localization';
 
 const getDefaultFilerItem = allItemsLabel => ({

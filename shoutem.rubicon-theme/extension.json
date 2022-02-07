@@ -1,10 +1,10 @@
 {
   "name": "rubicon-theme",
-  "version": "4.0.1",
-  "platform": "~4.0.1",
+  "version": "4.2.0",
+  "platform": "^5",
   "type": "system",
   "title": "Rubicon Theme",
-  "releaseNotes": "* Added styling for Invision Community extension",
+  "releaseNotes": "* Add new styles for user-profile extension",
   "description": "Rubicon theme",
   "icon": "server/assets/add-rubicon-theme-image.png",
   "categories": [],

@@ -48,14 +48,14 @@ export function createNavigatonStyles(config) {
     !showTitle &&
     !backgroundImageEnabledFirstScreen;
 
-  if (HeaderStyles) {
-    return;
-  }
-
   const headerStyle = _.get(theme, [
     '@@shoutem.theme/themeStyle',
     'shoutem.ui.NavigationBar',
   ]);
+
+  if (!headerStyle) {
+    return;
+  }
 
   const statusBarStyle = _.get(
     headerStyle,
@@ -73,9 +73,9 @@ export function createNavigatonStyles(config) {
   const headerRightContainerStyle = _.get(headerStyle, 'rightContainer');
 
   const headerClearStyle = _.get(headerStyle, ['.clear', 'container']);
-  const headerSolidifyStyle = _.get(headerStyle, 'solidifyAnimation', () => { });
-  const headerBoxingAnimation = _.get(headerStyle, 'boxingAnimation', () => { });
-  const headerFadeAnimation = _.get(headerStyle, 'fadeAnimation', () => { });
+  const headerSolidifyStyle = _.get(headerStyle, 'solidifyAnimation', () => {});
+  const headerBoxingAnimation = _.get(headerStyle, 'boxingAnimation', () => {});
+  const headerFadeAnimation = _.get(headerStyle, 'fadeAnimation', () => {});
   const headerTitleClearStyle = _.get(headerStyle, ['.clear', 'title']);
 
   const headerNoBorderStyle = _.get(headerStyle, ['.no-border', 'container']);

@@ -4,6 +4,7 @@ const FORM_WEBSITE_URL = `${key}.form-website-url`;
 const FORM_WEBSITE_SETTINGS = `${key}.form-website-settings`;
 const FORM_LOCATION_PERMISSIONS = `${key}.form-location-permissions`;
 const FORM_NAVIGATION_BAR = `${key}.form-navigation-bar`;
+const FORM_FORWARD_AUTH_HEADER = `${key}.form-forward-auth-header`;
 const BUTTON_CONTINUE = `${key}.button-continue`;
 const INVALID_URL = `${key}.invalid-url`;
 
@@ -12,6 +13,7 @@ export default {
   FORM_WEBSITE_SETTINGS,
   FORM_LOCATION_PERMISSIONS,
   FORM_NAVIGATION_BAR,
+  FORM_FORWARD_AUTH_HEADER,
   BUTTON_CONTINUE,
   INVALID_URL,
 };

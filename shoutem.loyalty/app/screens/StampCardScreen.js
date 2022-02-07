@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
-import PropTypes from 'prop-types';
 import { Alert } from 'react-native';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Button, Screen, View, Text, Title } from '@shoutem/ui';
+import { Button, Screen, Text, Title, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
 import { authorizationShape, rewardShape } from '../components/shapes';

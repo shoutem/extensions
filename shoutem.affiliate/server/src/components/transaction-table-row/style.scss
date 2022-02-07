@@ -1,0 +1,16 @@
+.transaction-table-row {
+  .btn-icon {
+    opacity: 0.8;
+    padding: 0 7px;
+
+    &:hover {
+      color: #888fa1;
+    }
+  }
+}
+
+.transaction-table-row__time,
+.transaction-table-row__points {
+  text-align: right;
+  min-width: 100px;
+}

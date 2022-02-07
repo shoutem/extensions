@@ -1,13 +1,13 @@
 import React from 'react';
 import _ from 'lodash';
+import { connectStyle } from '@shoutem/theme';
+import { Caption, Screen, ScrollView, Tile, Title } from '@shoutem/ui';
 import { Favorite } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
-import { ScrollView, Caption, Title, Screen, Tile } from '@shoutem/ui';
-import { getPlaceImages } from '../services/places';
 import { PlaceImageGallery } from '../components';
 import { ext } from '../const';
+import { getPlaceImages } from '../services/places';
 import { PlaceDetails } from './PlaceDetails';
 
 class MediumPlaceDetails extends PlaceDetails {

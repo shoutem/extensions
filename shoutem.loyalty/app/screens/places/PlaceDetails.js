@@ -1,22 +1,22 @@
 import React, { PureComponent } from 'react';
+import { InteractionManager, Linking, Platform } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { InteractionManager, Linking, Platform } from 'react-native';
-import { connect } from 'react-redux';
 import { find, getCollection, isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
   Divider,
-  SimpleHtml,
-  ListView,
   Icon,
   ImageBackground,
+  ListView,
   Row,
   Screen,
   ScrollView,
+  SimpleHtml,
   Subtitle,
   Text,
   Tile,
@@ -24,18 +24,18 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-import { openURL } from 'shoutem.web-view';
 import { InlineMap } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import {
-  getRouteParams,
   composeNavigationStyles,
+  getRouteParams,
+  HeaderTextButton,
   navigateTo,
   openInModal,
-  HeaderTextButton,
 } from 'shoutem.navigation';
-import PlaceRewardListView from '../../components/PlaceRewardListView';
+import { openURL } from 'shoutem.web-view';
 import PlaceLoyaltyPointsView from '../../components/PlaceLoyaltyPointsView';
+import PlaceRewardListView from '../../components/PlaceRewardListView';
 import {
   placeShape,
   rewardShape,

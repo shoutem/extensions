@@ -1,38 +1,42 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
+import { ControlLabel, FormGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
-import { ControlLabel, FormGroup } from 'react-bootstrap';
+import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
-import { shouldLoad, isInitialized } from '@shoutem/redux-io';
 import {
   fetchShortcuts,
-  updateShortcutSettings,
   getShortcuts,
   updateExtensionSettings,
+  updateShortcutSettings,
 } from '@shoutem/redux-api-sdk';
-import i18next from 'i18next';
+import { isInitialized, shouldLoad } from '@shoutem/redux-io';
 import { ProtectedScreensTable } from './components';
-import './style.scss';
 import LOCALIZATION from './localization';
+import './style.scss';
 
-export class LockedScreensPage extends Component {
+export class LockedScreensPage extends PureComponent {
   constructor(props) {
     super(props);
     autoBindReact(this);
   }
 
-  componentWillMount() {
-    this.checkData(this.props);
+  componentDidMount() {
+    const { fetchShortcuts } = this.props;
+
+    fetchShortcuts();
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.checkData(nextProps, this.props);
+  componentDidUpdate(prevProps) {
+    this.checkData(prevProps);
   }
 
-  checkData(nextProps, props = {}) {
-    if (shouldLoad(nextProps, props, 'shortcuts')) {
-      this.props.fetchShortcuts();
+  checkData(prevProps) {
+    if (shouldLoad(this.props, prevProps, 'shortcuts')) {
+      const { fetchShortcuts } = this.props;
+
+      fetchShortcuts();
     }
   }
 
@@ -50,7 +54,7 @@ export class LockedScreensPage extends Component {
   }
 
   render() {
-    const { shortcuts, extension } = this.props;
+    const { extension, shortcuts, updateShortcutSettings } = this.props;
     const { settings: extensionSettings } = extension;
     const { allScreensProtected } = extensionSettings;
 
@@ -69,7 +73,7 @@ export class LockedScreensPage extends Component {
           </FormGroup>
           <ProtectedScreensTable
             shortcuts={shortcuts}
-            onShortcutSettingsUpdate={this.props.updateShortcutSettings}
+            onShortcutSettingsUpdate={updateShortcutSettings}
             allScreensProtected={allScreensProtected}
           />
         </LoaderContainer>

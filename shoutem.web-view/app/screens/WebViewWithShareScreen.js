@@ -1,32 +1,35 @@
 import React from 'react';
-import { ShareButton } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { ShareButton } from '@shoutem/ui';
 import { currentLocation } from 'shoutem.cms';
-import { WebViewScreen } from './WebViewScreen';
 import { ext } from '../const';
+import { WebViewScreen } from './WebViewScreen';
 
 export class WebViewWithShareScreen extends WebViewScreen {
-  static propTypes = {
-    ...WebViewScreen.propTypes,
-  };
-
   getNavBarProps() {
     const { title = '', url } = this.getSettings();
 
     return {
       title,
-      headerRight: props => (
+      headerRight: headerProps => (
         <ShareButton
-          // eslint-disable-next-line react/prop-types
-          iconProps={{ style: props.tintColor }}
+          iconProps={{ style: headerProps.tintColor }}
           styleName="clear"
           title={title}
-          url={url}
+          url={url?.uri || url}
         />
       ),
     };
   }
 }
+
+WebViewWithShareScreen.propTypes = {
+  ...WebViewScreen.propTypes,
+};
+
+WebViewWithShareScreen.defaultProps = {
+  ...WebViewScreen.defaultProps,
+};
 
 export default connectStyle(ext('WebViewWithShareScreen'))(
   currentLocation(WebViewWithShareScreen),

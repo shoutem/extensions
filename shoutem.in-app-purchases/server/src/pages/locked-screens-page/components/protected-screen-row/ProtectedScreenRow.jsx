@@ -1,19 +1,15 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import _ from 'lodash';
+import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { Checkbox } from '@shoutem/react-web-ui';
 import './style.scss';
 
 function isShortcutProtected(shortcut) {
-  return _.get(
-    shortcut,
-    'settings.shoutemInAppPurchases.protected',
-    false,
-  );
+  return _.get(shortcut, 'settings.shoutemInAppPurchases.protected', false);
 }
 
-export default class ProtectedScreenRow extends Component {
+export default class ProtectedScreenRow extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -47,13 +43,12 @@ export default class ProtectedScreenRow extends Component {
     const indentationStyle = {
       paddingLeft: `${indentation}px`,
     };
-    const className = !disabled ? "protected-screen-row" : "protected-screen-row-disabled";
+    const className = !disabled
+      ? 'protected-screen-row'
+      : 'protected-screen-row-disabled';
 
     return (
-      <tr
-        className={className}
-        onClick={this.handleShortcutSelected}
-      >
+      <tr className={className} onClick={this.handleShortcutSelected}>
         <td style={indentationStyle}>
           <Checkbox checked={isProtected}>{shortcut.title}</Checkbox>
         </td>

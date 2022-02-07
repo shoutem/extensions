@@ -1,31 +1,31 @@
 import React from 'react';
+import { InteractionManager } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { InteractionManager } from 'react-native';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { RemoteDataListScreen } from 'shoutem.application';
-import { getUser, authenticate } from 'shoutem.auth/redux';
-import {
-  getRouteParams,
-  navigateTo,
-  HeaderIconButton,
-} from 'shoutem.navigation';
 import { isBusy, isInitialized, next } from '@shoutem/redux-io';
 import {
-  setStatus,
   createStatus,
+  setStatus,
   updateStatus,
   validationStatus,
 } from '@shoutem/redux-io/status';
 import { connectStyle } from '@shoutem/theme';
 import { ListView } from '@shoutem/ui';
+import { RemoteDataListScreen } from 'shoutem.application';
+import { authenticate, getUser } from 'shoutem.auth/redux';
+import {
+  getRouteParams,
+  HeaderIconButton,
+  navigateTo,
+} from 'shoutem.navigation';
 import MemberView from '../components/MemberView';
-import { getUsers, getUsersInGroups } from '../redux/selectors';
 import { ext } from '../const';
-import { loadUsers, loadUsersInGroups, blockUser } from '../redux';
-import { openProfileForLegacyUser, openBlockActionSheet } from '../services';
+import { blockUser, loadUsers, loadUsersInGroups } from '../redux';
+import { getUsers, getUsersInGroups } from '../redux/selectors';
+import { openBlockActionSheet, openProfileForLegacyUser } from '../services';
 
 export class MembersScreen extends RemoteDataListScreen {
   static propTypes = {
@@ -147,7 +147,7 @@ export class MembersScreen extends RemoteDataListScreen {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+export function mapStateToProps(state, ownProps) {
   const routeParams = getRouteParams(ownProps);
   const users = _.get(routeParams, 'users');
   const userGroups = _.get(routeParams, 'shortcut.settings.userGroups', []);
@@ -170,7 +170,9 @@ const mapStateToProps = (state, ownProps) => {
     validationStatus: validationStatus.VALID,
   });
 
-  setStatus(visibleUsers, initializedStatus);
+  if (!showAllUsers) {
+    setStatus(visibleUsers, initializedStatus);
+  }
 
   if (users) {
     setStatus(users, initializedStatus);
@@ -182,21 +184,23 @@ const mapStateToProps = (state, ownProps) => {
     showAllUsers,
     currentUser: getUser(state) || {},
   };
-};
+}
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  ...bindActionCreators(
-    {
-      loadUsers: ownProps.users ? undefined : loadUsers,
-      loadUsersInGroups: ownProps.users ? undefined : loadUsersInGroups,
-      next,
-      blockUser,
-      authenticate,
-    },
-    dispatch,
-  ),
-  openProfile: openProfileForLegacyUser(dispatch),
-});
+export function mapDispatchToProps(dispatch, ownProps) {
+  return {
+    ...bindActionCreators(
+      {
+        loadUsers: ownProps.users ? undefined : loadUsers,
+        loadUsersInGroups: ownProps.users ? undefined : loadUsersInGroups,
+        next,
+        blockUser,
+        authenticate,
+      },
+      dispatch,
+    ),
+    openProfile: openProfileForLegacyUser(dispatch),
+  };
+}
 
 export default connect(
   mapStateToProps,

@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
-import { getCollection, getOne, cloneStatus } from '@shoutem/redux-io';
 import ext from 'src/const';
 import { getCashiers } from 'src/modules/cashiers';
+import { getCards, getLoyaltyPlaces, getUsers } from 'src/modules/program';
 import { getPunchRewards } from 'src/modules/punch-rewards';
-import { getUsers, getCards, getLoyaltyPlaces } from 'src/modules/program';
+import { cloneStatus, getCollection, getOne } from '@shoutem/redux-io';
 import { moduleName } from '../const';
 
 export function getTransactionsState(state) {
@@ -17,7 +17,7 @@ export function getTransactions(state) {
 }
 
 export function getGeneralStats(state) {
-  const generalStats = getTransactionsState(state).generalStats;
+  const { generalStats } = getTransactionsState(state);
   return getOne(generalStats, state);
 }
 

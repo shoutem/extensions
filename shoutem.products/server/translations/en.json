@@ -8,7 +8,9 @@
       "Buy title": "Buy title",
       "Buy link": "Buy link",
       "Description": "Description",
-      "Image": "Image"
+      "Image": "Image",
+      "access-token-header-explanation": "Enabling this option will add the app user's access token as a header to when opening the buy link URL of product. This only happens if the access token exists, i.e. a user is logged in.",
+      "add-buy-link-header-label": "Add user access token to buy link header"
     }
   }
 }

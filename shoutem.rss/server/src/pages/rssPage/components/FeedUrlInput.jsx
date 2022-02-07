@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+import autoBindReact from 'auto-bind';
 import _ from 'lodash';
 import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import {
   Button,
-  ButtonToolbar,
-  FormGroup,
   ControlLabel,
   FormControl,
+  FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
@@ -17,13 +17,11 @@ import './style.scss';
 
 const validateUrl = url => validator.isURL(url, { require_protocol: false });
 
-export default class FeedUrlInput extends Component {
+export default class FeedUrlInput extends PureComponent {
   constructor(props) {
     super(props);
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleContinue = this.handleContinue.bind(this);
-    this.getValidationState = this.getValidationState.bind(this);
+
+    autoBindReact(this);
 
     this.state = {
       feedUrl: '',
@@ -31,12 +29,10 @@ export default class FeedUrlInput extends Component {
     };
   }
 
-  componentWillReceiveProps(newProps) {
-    this.setState({ error: newProps.error });
-  }
-
   getValidationState() {
-    return this.state.error ? 'error' : null;
+    const { error } = this.state;
+
+    return error ? 'error' : null;
   }
 
   handleTextChange(event) {
@@ -46,58 +42,55 @@ export default class FeedUrlInput extends Component {
     });
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    if (this.state.feedUrl) {
-      this.handleContinue();
-    }
-  }
-
   handleContinue() {
-    const feedUrl = _.trim(this.state.feedUrl);
+    const { onContinueClick } = this.props;
+    const { feedUrl: untrimmedFeedUrl } = this.state;
+
+    const feedUrl = _.trim(untrimmedFeedUrl);
+
     if (validateUrl(feedUrl)) {
-      this.props.onContinueClick(feedUrl);
+      onContinueClick(feedUrl);
     } else {
       this.setState({ error: i18next.t(LOCALIZATION.INVALID_URL) });
     }
   }
 
   render() {
+    const { inProgress } = this.props;
+    const { error, feedUrl } = this.state;
+
     return (
       <div>
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup validationState={this.getValidationState()}>
-            <ControlLabel>{i18next.t(LOCALIZATION.FORM_FEED)}</ControlLabel>
-            <FormControl
-              type="text"
-              className="form-control"
-              onChange={this.handleTextChange}
-            />
-            <HelpBlock className="text-error">{this.state.error}</HelpBlock>
-          </FormGroup>
-        </form>
-        <ButtonToolbar>
-          <Button
-            bsStyle="primary"
-            disabled={!this.state.feedUrl}
-            onClick={this.handleContinue}
-          >
-            <LoaderContainer isLoading={this.props.inProgress}>
-              {i18next.t(LOCALIZATION.BUTTON_CONTINUE)}
-            </LoaderContainer>
-          </Button>
-        </ButtonToolbar>
+        <FormGroup validationState={this.getValidationState()}>
+          <ControlLabel>{i18next.t(LOCALIZATION.FORM_FEED)}</ControlLabel>
+          <FormControl
+            type="text"
+            className="form-control"
+            onChange={this.handleTextChange}
+          />
+          <HelpBlock className="text-error">{error}</HelpBlock>
+        </FormGroup>
+        <Button
+          bsStyle="primary"
+          disabled={!feedUrl}
+          onClick={this.handleContinue}
+        >
+          <LoaderContainer isLoading={inProgress}>
+            {i18next.t(LOCALIZATION.BUTTON_CONTINUE)}
+          </LoaderContainer>
+        </Button>
       </div>
     );
   }
 }
 
 FeedUrlInput.propTypes = {
-  inProgress: PropTypes.bool,
-  onContinueClick: PropTypes.func,
   error: PropTypes.string,
+  inProgress: PropTypes.bool,
+  onContinueClick: PropTypes.func.isRequired,
 };
 
 FeedUrlInput.defaultProps = {
   inProgress: false,
+  error: undefined,
 };

@@ -1,17 +1,17 @@
 import React from 'react';
-import autoBindReact from 'auto-bind/react';
-import { LayoutAnimation } from 'react-native';
+// import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import { isBusy, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { Screen, GridRow, ListView } from '@shoutem/ui';
+import { GridRow, ListView, Screen } from '@shoutem/ui';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import { HeaderTextButton } from 'shoutem.navigation';
 import {
   MapList,
-  PlaceHalfGridRowView,
   PlaceFullGridRowView,
+  PlaceHalfGridRowView,
 } from '../components';
 import { ext } from '../const';
 import { getAllPlaces } from '../redux';
@@ -35,14 +35,22 @@ class PlacesGridScreen extends CmsListScreen {
   }
 
   fetchData(options) {
-    LayoutAnimation.easeInEaseOut();
+    // Commenting out use of LayoutAnimation because of issues with
+    // @shoutem/ui's DropDownModal component.
+    // TODO: Use LayoutAnimation once its conflict with Modal is resolved:
+    // https://github.com/facebook/react-native/issues/32504
+    // LayoutAnimation.easeInEaseOut();
     return super.fetchData(options);
   }
 
   toggleMapView() {
     const { mapView } = this.state;
 
-    LayoutAnimation.easeInEaseOut();
+    // Commenting out use of LayoutAnimation because of issues with
+    // @shoutem/ui's DropDownModal component.
+    // TODO: Use LayoutAnimation once its conflict with Modal is resolved:
+    // https://github.com/facebook/react-native/issues/32504
+    // LayoutAnimation.easeInEaseOut();
     this.setState({ mapView: !mapView });
   }
 
@@ -94,12 +102,17 @@ class PlacesGridScreen extends CmsListScreen {
   }
 
   renderData(data) {
-    const { mapView } = this.state;
     const loading = isBusy(data) || !isInitialized(data);
+
+    if (loading) {
+      return this.renderLoading();
+    }
 
     if (this.shouldRenderPlaceholderView()) {
       return this.renderPlaceholderView();
     }
+
+    const { mapView } = this.state;
 
     if (mapView) {
       return <MapList places={data} />;
@@ -110,7 +123,6 @@ class PlacesGridScreen extends CmsListScreen {
         data={data}
         getSectionId={this.getSectionId}
         initialListSize={1}
-        loading={loading}
         onLoadMore={this.loadMore}
         onRefresh={this.refreshData}
         renderRow={this.renderRow}

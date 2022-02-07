@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { connect } from 'react-redux';
-import { shouldLoad } from '@shoutem/redux-io';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { ToggleSwitch } from 'src/components';
+import { shouldLoad } from '@shoutem/redux-io';
 import { RulesForm } from '../../components';
 import {
-  loadRules,
   createRules,
-  updateRules,
   deleteRules,
   getRulesById,
+  loadRules,
+  updateRules,
 } from '../../redux';
 import LOCALIZATION from './localization';
 

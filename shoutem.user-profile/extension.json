@@ -1,0 +1,78 @@
+{
+  "name": "user-profile",
+  "title": "User Profile",
+  "version": "2.0.1",
+  "platform": "^4.0.5 || ^5",
+  "type": "system",
+  "description": "Add extended user profile",
+  "releaseNotes": "* Make User profile system extension",
+  "icon": "server/assets/add-user-profile-image.png",
+  "native": true,
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.auth",
+    "shoutem.i18n",
+    "shoutem.navigation",
+    "shoutem.redux"
+  ],
+  "categories": [
+    "users"
+  ],
+  "pages": [
+    {
+      "name": "UsersPage",
+      "type": "react-page"
+    },
+    {
+      "name": "ProfilePage",
+      "type": "react-page"
+    },
+    {
+      "name": "SettingsPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.UsersPage",
+      "title": "Users"
+    },
+    {
+      "page": "@.ProfilePage",
+      "title": "Profile"
+    },
+    {
+      "page": "@.SettingsPage",
+      "title": "Settings"
+    }
+  ],
+  "screens": [
+    {
+      "name": "SubmissionCompletedScreen"
+    },
+    {
+      "name": "EditProfileScreen"
+    },
+    {
+      "name": "MyProfileScreen",
+      "settings": {
+        "disableAdBanner": true
+      }
+    },
+    {
+      "name": "UserProfileScreen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "MyProfileScreen",
+      "icon": "theme://profile.png",
+      "title": "My profile",
+      "description": "View and edit extended user profile",
+      "screen": "@.MyProfileScreen"
+    }
+  ],
+  "settings": {
+    "profileForm": "{ \"name\": { \"type\": \"string\", \"format\": \"string\", \"variant\": \"single-line\", \"title\": \"Name and surname\", \"displayPriority\": 0 }, \"image\": { \"type\": \"image\", \"format\": \"image\", \"variant\": \"circle\", \"title\": \"Profile image\", \"displayPriority\": 1 }, \"nick\": { \"type\": \"string\", \"format\": \"string\", \"variant\": \"single-line\", \"displayPriority\": 2, \"title\": \"Nick\", \"editable\": false }, \"location\": { \"type\": \"string\", \"format\": \"string\", \"variant\": \"single-line\", \"title\": \"Location\", \"displayPriority\": 3 }, \"description\": { \"type\": \"string\", \"format\": \"string\", \"variant\": \"multi-line\", \"title\": \"Bio\", \"displayPriority\": 4 }, \"url\": { \"type\": \"string\", \"format\": \"enum\", \"variant\": \"url\", \"title\": \"Website\", \"displayPriority\": 5 } }"
+  }
+}

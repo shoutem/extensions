@@ -18,7 +18,23 @@
   font-size: 14px;
   line-height: 17px;
   letter-spacing: 0.1px;
-  color: #D05C5C;
+  color: #d05c5c;
+}
+
+.instructions-container {
+  display: flex;
+  background: #e4e6e966;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 6px;
+}
+
+.instructions {
+  color: #444f6c;
+  padding: 0;
+  margin: 0;
 }
 
 .invitation-alert {
@@ -26,5 +42,5 @@
   margin-bottom: 10px;
   font-size: 14px;
   line-height: 17px;
-  color: #7C8395;
+  color: #7c8395;
 }

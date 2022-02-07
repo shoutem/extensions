@@ -1,7 +1,7 @@
-import Uri from 'urijs';
-import _ from 'lodash';
 import autoBind from 'auto-bind';
 import i18next from 'i18next';
+import _ from 'lodash';
+import Uri from 'urijs';
 import LOCALIZATION from './localization';
 
 export default class CmsApi {

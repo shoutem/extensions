@@ -1,16 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import { reduxForm } from 'redux-form';
+import { Button, ButtonToolbar, HelpBlock, Row } from 'react-bootstrap';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { reduxForm } from 'redux-form';
+import { CmsSelect } from 'src/modules/cms';
+import { getFormState } from 'src/redux';
 import {
-  PasswordBox,
   LoaderContainer,
+  PasswordBox,
   ReduxFormElement,
 } from '@shoutem/react-web-ui';
-import { Row, Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
-import { getFormState } from 'src/redux';
-import { CmsSelect } from 'src/modules/cms';
 import { validateCashier } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';

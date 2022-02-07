@@ -1,10 +1,10 @@
 {
   "name": "deals",
   "title": "Deals",
-  "version": "5.0.0",
-  "platform": "^4.0.0",
+  "version": "5.0.3",
+  "platform": "^5",
   "description": "Create special deals and redeem them with coupons",
-  "releaseNotes": "* Removed requirement for regular and discounted price\n* Removed requirement for start date\n* Added toggle to hide redeem button",
+  "releaseNotes": "* Replaced loading spinner with animated placeholder\n* Set specific dependency versions instead of using semver ranges",
   "icon": "server/assets/add-deals-image.png",
   "dependencies": [
     "shoutem.application",
@@ -12,8 +12,8 @@
     "shoutem.cms",
     "shoutem.favorites",
     "shoutem.i18n",
-    "shoutem.navigation",
     "shoutem.layouts",
+    "shoutem.navigation",
     "shoutem.web-view"
   ],
   "categories": ["commerce"],

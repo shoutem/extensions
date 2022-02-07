@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
-import PropTypes from 'prop-types';
 import Svg, { Circle } from 'react-native-svg';
 import { connect } from 'react-redux';
-import { View } from '@shoutem/ui';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
+import { View } from '@shoutem/ui';
 import { ext } from '../const';
 import {
-  getProgressCircleCircumference,
   getFullCircleCircumference,
   getGaugeCircleCircumference,
+  getProgressCircleCircumference,
 } from '../shared';
 
 export class GaugeProgressBar extends PureComponent {
@@ -80,7 +80,7 @@ export class GaugeProgressBar extends PureComponent {
             cy={cy}
             r={radius}
             strokeDasharray={progressStrokeDasharray}
-            strokeDashoffset={'100%'}
+            strokeDashoffset="100%"
             {...style.progressBarCompleted}
           />
         )}

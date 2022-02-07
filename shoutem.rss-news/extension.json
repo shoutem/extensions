@@ -1,17 +1,24 @@
 {
   "name": "rss-news",
-  "version": "4.0.0",
-  "platform": "^4.0.0",
+  "version": "4.0.1",
+  "platform": "^4 || ^5",
   "title": "News RSS",
   "description": "Show news articles from an RSS feed",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
   "icon": "server/assets/extension-icon.png",
   "categories": ["content"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": ["shoutem.layouts", "shoutem.rss"],
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.firebase",
+    "shoutem.i18n",
+    "shoutem.layouts",
+    "shoutem.navigation",
+    "shoutem.rss"
+  ],
   "shortcuts": [
     {
       "name": "news-shortcut",

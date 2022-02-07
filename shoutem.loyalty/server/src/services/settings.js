@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { loyaltyApi } from 'src/services';
 import { cmsApi } from 'src/modules/cms';
+import { loyaltyApi } from 'src/services';
 
 export function getProgramId(settings) {
   const program = _.get(settings, 'program', {});

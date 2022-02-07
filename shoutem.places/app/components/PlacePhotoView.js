@@ -1,20 +1,20 @@
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Favorite } from 'shoutem.favorites';
 import { connectStyle } from '@shoutem/theme';
 import {
-  TouchableOpacity,
   Caption,
-  ImageBackground,
   Divider,
+  ImageBackground,
   Tile,
   Title,
+  TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { Favorite } from 'shoutem.favorites';
+import { ext } from '../const';
 import { getFirstImage } from '../services/places';
 import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
-import { ext } from '../const';
 
 export class PlacePhotoView extends PureComponent {
   static propTypes = {

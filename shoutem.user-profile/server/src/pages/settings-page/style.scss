@@ -1,0 +1,12 @@
+.user-profile-settings-page {
+  max-width: 552px;
+  margin: auto;
+
+  &.is-wide {
+    max-width: 808px;
+  }
+
+  .save-button {
+    padding-top: 50px;
+  }
+}

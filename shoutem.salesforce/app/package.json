@@ -1,0 +1,16 @@
+{
+  "name": "shoutem.salesforce",
+  "version": "1.0.1",
+  "description": "Salesforce Marketing Cloud",
+  "dependencies": {
+    "react-native-marketingcloudsdk": "7.4.0"
+  },
+  "peerDependencies": {
+    "@shoutem/redux-io": "*",
+    "@shoutem/theme": "*",
+    "@shoutem/ui": "*"
+  },
+  "nativeDependencies": [
+    "react-native-marketingcloudsdk"
+  ]
+}

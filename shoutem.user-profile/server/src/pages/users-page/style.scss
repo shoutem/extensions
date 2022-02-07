@@ -1,0 +1,9 @@
+.user-profile-settings-page {
+  padding-top: 32px;
+  max-width: 552px;
+  margin: auto;
+
+  &.is-wide {
+    max-width: 808px;
+  }
+}

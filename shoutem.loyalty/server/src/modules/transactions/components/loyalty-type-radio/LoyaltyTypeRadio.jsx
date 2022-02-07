@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { Radio } from '@shoutem/react-web-ui';
-import autoBindReact from 'auto-bind/react';
 
 export default class LoyaltyTypeRadio extends Component {
   constructor(props) {

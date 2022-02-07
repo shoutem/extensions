@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
 import { isNumeric } from 'validator';
 import { getMeta } from '@shoutem/redux-io';
 import LOCALIZATION from './localization';

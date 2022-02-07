@@ -1,9 +1,21 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import { AppState, Platform } from 'react-native';
 import autoBindReact from 'auto-bind/react';
-import { bindActionCreators } from 'redux';
-import { AppState, InteractionManager, Platform } from 'react-native';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import {
+  clear,
+  cloneStatus,
+  find as findAction,
+  getCollection,
+  getOne,
+  isBusy,
+  isError,
+  isInitialized,
+  next,
+  shouldRefresh,
+} from '@shoutem/redux-io';
 import {
   DropDownMenu,
   EmptyStateView,
@@ -11,21 +23,9 @@ import {
   Screen,
   View,
 } from '@shoutem/ui';
-
-import {
-  find as findAction,
-  clear,
-  next,
-  shouldRefresh,
-  isBusy,
-  isInitialized,
-  isError,
-  cloneStatus,
-  getCollection,
-  getOne,
-} from '@shoutem/redux-io';
-import { selectors as i18nSelectors, I18n } from 'shoutem.i18n';
+import { I18n, selectors as i18nSelectors } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
+import { SkeletonLoading } from '../components';
 import SearchInput from '../components/SearchInput';
 import { ext } from '../const';
 import {
@@ -74,30 +74,40 @@ function getCategoriesToDisplay(allCategories, visibleCategories) {
  */
 export class CmsListScreen extends PureComponent {
   static propTypes = {
-    // The parent category that is used to display
-    // the available categories in the drop down menu
-    parentCategory: PropTypes.any,
-    // CMS categories of the primary data
     categories: PropTypes.array.isRequired,
-    // Primary CMS data to display
-    data: PropTypes.array.isRequired,
-    // The currently selected category on this screen
-    selectedCategory: PropTypes.object,
-    style: PropTypes.shape({
-      screen: Screen.propTypes.style,
-      list: ListView.propTypes.style,
-      emptyState: EmptyStateView.propTypes.style,
-      categories: DropDownMenu.propTypes.style,
-    }),
-
-    // actions
-    find: PropTypes.func.isRequired,
-    next: PropTypes.func.isRequired,
     clear: PropTypes.func.isRequired,
+    data: PropTypes.array.isRequired,
+    find: PropTypes.func.isRequired,
+    navigation: PropTypes.object.isRequired,
+    next: PropTypes.func.isRequired,
     setScreenState: PropTypes.func.isRequired,
+    channelId: PropTypes.number,
+    currentLocation: PropTypes.object,
+    isSearchSettingEnabled: PropTypes.bool,
+    parentCategory: PropTypes.object,
+    parentCategoryId: PropTypes.string,
+    screenSettings: PropTypes.object,
+    selectedCategory: PropTypes.object,
+    sortField: PropTypes.string,
+    sortOrder: PropTypes.string,
+    style: PropTypes.shape({
+      categories: DropDownMenu.propTypes.style,
+      emptyState: EmptyStateView.propTypes.style,
+      list: ListView.propTypes.style,
+      screen: Screen.propTypes.style,
+    }),
   };
 
   static defaultProps = {
+    channelId: undefined,
+    currentLocation: undefined,
+    isSearchSettingEnabled: false,
+    parentCategory: undefined,
+    parentCategoryId: undefined,
+    screenSettings: {},
+    selectedCategory: undefined,
+    sortField: undefined,
+    sortOrder: undefined,
     style: {
       screen: {},
       list: {},
@@ -153,6 +163,7 @@ export class CmsListScreen extends PureComponent {
       }
 
       const { selectedCategoryId } = getScreenState(state, screenId);
+      const { screenSettings } = getRouteParams(ownProps);
 
       return {
         parentCategoryId,
@@ -162,6 +173,7 @@ export class CmsListScreen extends PureComponent {
         ...(channelId && { channelId }),
         data: getCollection(collection[selectedCategoryId], state),
         categories: categoriesToDisplay,
+        screenSettings,
         selectedCategory: getOne(selectedCategoryId, state, CATEGORIES_SCHEMA),
       };
     };
@@ -206,12 +218,13 @@ export class CmsListScreen extends PureComponent {
 
   componentDidMount() {
     const { navigation } = this.props;
+    const { schema } = this.state;
 
     navigation.setOptions({
       ...this.getNavBarProps(),
     });
 
-    if (!this.state.schema) {
+    if (!schema) {
       throw Error(
         `Invalid Screen state "schema". Screen that extends CMSListScreen must define 
          (content) "schema" property in the state.`,
@@ -352,10 +365,12 @@ export class CmsListScreen extends PureComponent {
   }
 
   getFetchDataOptions(props) {
-    const category = props.selectedCategory;
-    const sortField = props.sortField;
-    const sortOrder = props.sortOrder;
-    const searchText = props.searchText;
+    const {
+      searchText,
+      selectedCategory: category,
+      sortField,
+      sortOrder,
+    } = props;
 
     return {
       category,
@@ -375,17 +390,22 @@ export class CmsListScreen extends PureComponent {
    * @param initialization {bool} - Is screen initializing
    */
   refreshInvalidContent(prevProps = this.props, initialization = false) {
-    const { categories, data, selectedCategory } = this.props;
+    const {
+      categories,
+      currentLocation,
+      data,
+      parentCategoryId,
+      selectedCategory,
+      sortField,
+      sortOrder,
+    } = this.props;
 
     if (isBusy(categories)) {
       // Do not do anything related to categories until they are loaded.
       return;
     }
 
-    if (
-      this.props.parentCategoryId &&
-      shouldRefresh(categories, initialization)
-    ) {
+    if (parentCategoryId && shouldRefresh(categories, initialization)) {
       // Expired case.
       this.fetchCategories();
       return;
@@ -401,21 +421,18 @@ export class CmsListScreen extends PureComponent {
     // either selectedCategory or data for selected category.
     if (
       !this.isCategoryValid(selectedCategory) ||
-      (categories !== this.props.categories &&
+      (prevProps.categories !== categories &&
         !this.isSelectedCategoryValid(this.props))
     ) {
       this.onCategorySelected(categories[0]);
     }
 
-    const category = this.props.selectedCategory;
-
     const shouldRefreshData =
-      this.isCategoryValid(category) && shouldRefresh(data);
+      this.isCategoryValid(selectedCategory) && shouldRefresh(data);
     const hasOrderingChanged =
-      this.props.sortField !== prevProps.sortField ||
-      this.props.sortOrder !== prevProps.sortOrder;
+      sortField !== prevProps.sortField || sortOrder !== prevProps.sortOrder;
     const hasLocationChanged = !_.isEqual(
-      this.props.currentLocation,
+      currentLocation,
       prevProps.currentLocation,
     );
 
@@ -466,29 +483,27 @@ export class CmsListScreen extends PureComponent {
       return;
     }
 
-    InteractionManager.runAfterInteractions(() =>
-      find(CATEGORIES_SCHEMA, undefined, {
-        query: {
-          'filter[parent]': parentCategoryId,
-          'page[limit]': CATEGORIES_PAGE_LIMIT,
-        },
-      }),
-    );
+    find(CATEGORIES_SCHEMA, undefined, {
+      query: {
+        'filter[parent]': parentCategoryId,
+        'page[limit]': CATEGORIES_PAGE_LIMIT,
+      },
+    });
   }
 
   fetchData(options) {
     const { find } = this.props;
     const { schema } = this.state;
 
-    InteractionManager.runAfterInteractions(() =>
-      find(schema, undefined, {
-        query: { ...this.getQueryParams(options) },
-      }),
-    );
+    find(schema, undefined, {
+      query: { ...this.getQueryParams(options) },
+    });
   }
 
   loadMore() {
-    this.props.next(this.props.data);
+    const { data, next } = this.props;
+
+    next(data);
   }
 
   refreshData() {
@@ -576,8 +591,8 @@ export class CmsListScreen extends PureComponent {
       <DropDownMenu
         styleName={styleName}
         options={categories}
-        titleProperty={'name'}
-        valueProperty={'id'}
+        titleProperty="name"
+        valueProperty="id"
         onOptionSelected={this.onCategorySelected}
         selectedOption={selectedCategory}
         showSelectedOption
@@ -601,18 +616,33 @@ export class CmsListScreen extends PureComponent {
 
   renderFeaturedItem() {}
 
+  renderLoading() {
+    const { screenSettings } = this.props;
+
+    return (
+      <SkeletonLoading
+        hasFeaturedItem={screenSettings.hasFeaturedItem}
+        listType={screenSettings.listType}
+      />
+    );
+  }
+
   renderData(data) {
-    const { style } = this.props;
+    const { screenSettings, style } = this.props;
+
+    const loading = isBusy(data) || !isInitialized(data);
+
+    if (loading) {
+      return this.renderLoading();
+    }
 
     if (this.shouldRenderPlaceholderView()) {
       return this.renderPlaceholderView();
     }
 
-    const { screenSettings } = getRouteParams(this.props);
     const renderFeaturedItem = screenSettings.hasFeaturedItem
       ? this.renderFeaturedItem
       : null;
-    const loading = isBusy(data) || !isInitialized(data);
 
     return (
       <ListView
@@ -636,9 +666,11 @@ export class CmsListScreen extends PureComponent {
     const { data, isSearchSettingEnabled, style } = this.props;
     const { renderCategoriesInline, searchEnabled } = this.state;
 
+    const shouldRenderSearch = isSearchSettingEnabled && searchEnabled;
+
     return (
       <Screen style={style.screen}>
-        {isSearchSettingEnabled && searchEnabled && this.renderSearch()}
+        {shouldRenderSearch && this.renderSearch()}
         {renderCategoriesInline && this.renderCategoriesDropDown('horizontal')}
         {this.renderData(data)}
       </Screen>

@@ -1,0 +1,36 @@
+{
+  "shoutem": {
+    "user-profile": {
+      "defaultErrorMessage": "Something went wrong",
+      "goBackToAppButton": "GO BACK TO APP",
+      "userProfileCompletedTitle": "Thank you for submitting your application! Your submission will be reviewed by our team.",
+      "userProfileCompletedDescription": "You will be notified once you are approved.",
+      "myProfileScreenTitle": "MY PROFILE",
+      "userProfileScreenTitle": "PROFILE",
+      "editUserProfileTitle": "Edit profile",
+      "editButtonText": "Edit",
+      "submissionCompletedTitle": "SUBMITION COMPLETED",
+      "editRequestButton": "Edit request",
+      "okButton": "OK",
+      "takePhoto": "Take a photo",
+      "chooseFromLibrary": "Choose from library",
+      "cancel": "Cancel",
+      "cannotAccessCameraTitle": "Cannot access camera",
+      "cannotAccessCameraMessage": "Please allow access in settings if you want to take photos",
+      "galleryPermissionErrorTitle": "Cannot access image library",
+      "galleryPermissionErrorMessage": "Please allow access if you want to be able to select images",
+      "errorTitle": "Error",
+      "errorMessage": "Something went wrong",
+      "addMorePhotos": "+ ADD MORE PHOTOS",
+      "removeItemTitle": "Remove item",
+      "removeItemMessage": "Are you sure you want to remove this item from the gallery?",
+      "confirm": "Yes",
+      "selectImagesToUpload": "Select images to upload",
+      "submitFormButtonTitle": "Send form",
+      "noImagesUploaded": "No images uploaded yet",
+      "chat": "Chat",
+      "video": "Video",
+      "logout": "Logout"
+    }
+  }
+}
