@@ -1,21 +1,21 @@
-import 'fetch-everywhere';
-
-import '@shoutem/react-web-ui/lib/styles/index.scss';
-import '@shoutem/extension-sandbox';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
 import URI from 'urijs';
-import api from '@shoutem/redux-api-sdk';
 import { LoaderContainer } from '@shoutem/react-web-ui';
+import api from '@shoutem/redux-api-sdk';
 import { RioStateSerializer } from '@shoutem/redux-io';
 import { SyncStateEngine } from '@shoutem/redux-sync-state-engine';
+import 'fetch-everywhere';
+import '@shoutem/extension-sandbox';
 import * as extension from '../src/index';
-import { PageProvider, connectPage, Page } from './page';
-import { LocalizationProvider } from './localization';
-import { SyncStateEngineProvider } from './syncStateEngine';
 import configureStore from './configureStore';
+import { LocalizationProvider } from './localization';
+import { connectPage, Page, PageProvider } from './page';
+import { SyncStateEngineProvider } from './syncStateEngine';
+import '@shoutem/react-web-ui/lib/styles/index.scss';
+
 require('es6-promise').polyfill();
 
 const uri = new URI(window.location.href);

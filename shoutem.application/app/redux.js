@@ -1,29 +1,27 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
-
 import {
-  storage,
   find,
+  getCollection,
+  getOne,
   loaded,
   one,
-  getOne,
-  getCollection,
+  storage,
 } from '@shoutem/redux-io';
 import { preventStateRehydration } from 'shoutem.redux';
-
-import { AppInitQueue } from './services';
 import configuration from './configuration.json';
 import {
-  ext,
-  CONFIGURATION_SCHEMA,
-  CONFIGURATION_TAG,
-  APPLICATION_SCHEMA,
-  SHORTCUTS_SCHEMA,
-  SCREENS_SCHEMA,
-  EXTENSIONS_SCHEMA,
   APP_SUBSCRIPTION_SCHEMA,
   APP_SUBSCRIPTION_TAG,
+  APPLICATION_SCHEMA,
+  CONFIGURATION_SCHEMA,
+  CONFIGURATION_TAG,
+  ext,
+  EXTENSIONS_SCHEMA,
+  SCREENS_SCHEMA,
+  SHORTCUTS_SCHEMA,
 } from './const';
+import { AppInitQueue } from './services';
 
 // Because of chrome inspection bug we are exporting function as constants
 // Bug is we can not set breakpoint in files which export function directly

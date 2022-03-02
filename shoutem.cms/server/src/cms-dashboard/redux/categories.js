@@ -152,3 +152,52 @@ export function renameCategory(
     });
   };
 }
+
+export function dragAndDropCategory(
+  appId,
+  parentCategoryId,
+  categoryId,
+  index,
+  scope = {},
+) {
+  return dispatch => {
+    const cmsEndpoint = `/api/modules/0/groups/${parentCategoryId}/sections/${categoryId}/update`;
+    const endpoint = shoutemUrls.buildLegacyUrl(
+      `${cmsEndpoint}?nid=${appId}&version=58`,
+    );
+
+    const createCategoryAction = {
+      [RSAA]: {
+        endpoint,
+        method: 'POST',
+        body: JSON.stringify({
+          index,
+        }),
+        headers: {
+          Accept: 'application/vnd.api+json',
+          'Content-Type': 'application/vnd.api+json',
+        },
+        types: [
+          '@@cms-dashboard/UPDATE_CATEGORY_REQUEST',
+          '@@cms-dashboard/UPDATE_CATEGORY_SUCCESS',
+          '@@cms-dashboard/UPDATE_CATEGORY_ERROR',
+        ],
+      },
+    };
+
+    const extensionName = _.get(scope, 'extensionName');
+    if (extensionName) {
+      setExtensionScope(createCategoryAction, extensionName);
+    }
+
+    const shortcutId = _.get(scope, 'shortcutId');
+    if (shortcutId) {
+      setShortcutScope(createCategoryAction, shortcutId);
+    }
+
+    return dispatch(rsaaPromise(createCategoryAction)).then(category => {
+      dispatch(invalidate(CATEGORIES));
+      return category;
+    });
+  };
+}

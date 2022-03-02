@@ -6,5 +6,5 @@
 import OnboardingSettingsPage from './pages/onboarding-settings-page';
 
 export const pages = {
-  OnboardingSettingsPage
+  OnboardingSettingsPage,
 };

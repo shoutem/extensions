@@ -29,6 +29,7 @@ import encodeToBase64 from './shared/encodeToBase64';
 import { ext } from './const';
 
 export const LOGIN = 'shoutem.auth.LOGIN';
+export const LOGIN_INITIALIZED = 'shoutem.auth.LOGIN_INITALIZED';
 export const AUTHENTICATE_LIMITED = 'shoutem.auth.AUTHENTICATE_LIMITED';
 export const LOGOUT = 'shoutem.auth.LOGOUT';
 export const CLEAR_AUTH_STATE = 'shoutem.auth.CLEAR_AUTH_STATE';
@@ -44,6 +45,8 @@ export const USER_FORGOT_PASSWORD_ACTIONS_SCHEMA =
   'shoutem.auth.user-forgot-password-actions';
 export const USER_RESET_PASSWORD_ACTIONS_SCHEMA =
   'shoutem.auth.user-reset-password-actions';
+export const CHECK_USERNAME_AVAILABILITY_SCHEMA =
+  'shoutem.auth.check-username-availability-actions';
 export const AUTH_TOKEN_SCHEMA = 'shoutem.auth.tokens';
 export const USER_FACEBOOK_CREDENTIALS_SCHEMA =
   'shoutem.auth.user-facebook-credentials';
@@ -438,7 +441,14 @@ export function logoutAction() {
   };
 }
 
-export function authenticate(callback) {
+export function loginInitialized(payload) {
+  return {
+    type: LOGIN_INITIALIZED,
+    payload,
+  };
+}
+
+export function authenticate(callback, cancelCallback) {
   return (dispatch, getState) => {
     const state = getState();
 
@@ -450,17 +460,39 @@ export function authenticate(callback) {
 
     const currentRoute = getCurrentRoute();
 
-    return NavigationStacks.openStack(ext(), {
-      canGoBack: true,
-      onCancel: () => NavigationStacks.closeStack(ext()),
-      onLoginSuccess: user => {
-        navigateTo(currentRoute.name, {
-          ...currentRoute.params,
-        });
+    const loginSuccessCallback = user => {
+      navigateTo(currentRoute.name, {
+        ...currentRoute.params,
+      });
 
-        callback(user);
-      },
-    });
+      callback(user);
+    };
+
+    return dispatch(
+      loginInitialized({
+        openAuthFlow: () =>
+          NavigationStacks.openStack(ext(), {
+            canGoBack: true,
+            onCancel: () => {
+              NavigationStacks.closeStack(ext());
+              if (cancelCallback) {
+                cancelCallback();
+              }
+            },
+            onLoginSuccess: loginSuccessCallback,
+          }),
+        loginSuccessCallback,
+        onCancel: () => {
+          navigateTo(currentRoute.name, {
+            ...currentRoute.params,
+          });
+
+          if (cancelCallback) {
+            cancelCallback();
+          }
+        },
+      }),
+    );
   };
 }
 
@@ -513,6 +545,31 @@ export function hideShortcuts(user) {
       dispatch(hideShortcutsAction(hiddenShortcuts));
     }
   };
+}
+
+export function checkUsernameAvailability(username) {
+  const config = {
+    schema: CHECK_USERNAME_AVAILABILITY_SCHEMA,
+    request: {
+      endpoint: shoutemApi.buildAuthUrl(
+        'users/actions/check-username-availability',
+      ),
+      body: JSON.stringify({
+        data: {
+          type: CHECK_USERNAME_AVAILABILITY_SCHEMA,
+          attributes: {
+            username,
+          },
+        },
+      }),
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
+    },
+  };
+
+  return create(config);
 }
 
 export function sendVerificationCodeEmail(email) {

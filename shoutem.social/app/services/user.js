@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { openProfile, loadUser } from '../redux/actions';
+import { loadUser, openProfile } from '../redux/actions';
 
 export function openProfileForLegacyUser(dispatch) {
   return legacyUser => {

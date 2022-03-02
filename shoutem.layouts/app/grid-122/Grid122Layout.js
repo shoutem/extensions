@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { EmptyStateView, GridRow, ListView } from '@shoutem/ui';
+import { EmptyStateView, ListView, View } from '@shoutem/ui';
 import { ext } from '../const';
-import { resolveProp } from '../services';
-import { FullGridRowItemView, HalfGridRowItemView } from './components';
-
-let row = [];
+import { mapDataFor122Layout } from './services';
 
 export function Grid122Layout({
   data,
@@ -16,56 +13,16 @@ export function Grid122Layout({
   emptyStateAction,
   emptyStateIconName,
   emptyStateMessage,
+  hasFeaturedItem,
   imageUrlResolver,
   subtitleResolver,
   titleResolver,
   ...otherProps
 }) {
-  function renderRow(item, index) {
-    const title = resolveProp(item, titleResolver, '');
-    const subtitle = resolveProp(item, subtitleResolver, '');
-    const imageUrl = resolveProp(item, imageUrlResolver, null);
-
-    if (index === 0 || index % 5 === 0) {
-      return (
-        <FullGridRowItemView
-          key={item.id}
-          item={item}
-          title={title}
-          subtitle={subtitle}
-          imageUrl={imageUrl}
-          onPress={onPress}
-          renderActions={renderActions}
-        />
-      );
-    }
-
-    if (row.length === 0 || row.length === 1) {
-      row.push(
-        <HalfGridRowItemView
-          key={item.id}
-          item={item}
-          title={title}
-          subtitle={subtitle}
-          imageUrl={imageUrl}
-          onPress={onPress}
-          renderActions={renderActions}
-        />,
-      );
-    }
-
-    if (row.length === 2 || index === data.length - 1) {
-      const itemsRow = row;
-      row = [];
-
-      return (
-        <GridRow styleName="no-padding" columns={2}>
-          {itemsRow}
-        </GridRow>
-      );
-    }
-
-    return null;
+  function renderRow(rowItems) {
+    return (
+      <View styleName="flexible horizontal space-between">{rowItems}</View>
+    );
   }
 
   if ((!data || !data.length) && emptyStateMessage) {
@@ -78,9 +35,21 @@ export function Grid122Layout({
     );
   }
 
+  const mappedData = mapDataFor122Layout(
+    data,
+    onPress,
+    hasFeaturedItem,
+    {
+      imageUrlResolver,
+      subtitleResolver,
+      titleResolver,
+    },
+    renderActions,
+  );
+
   return (
     <ListView
-      data={data}
+      data={mappedData}
       renderRow={customRenderRow || renderRow}
       {...otherProps}
     />
@@ -94,6 +63,7 @@ Grid122Layout.propTypes = {
   emptyStateAction: PropTypes.func,
   emptyStateIconName: PropTypes.string,
   emptyStateMessage: PropTypes.string,
+  hasFeaturedItem: PropTypes.bool,
   loading: PropTypes.bool,
   renderActions: PropTypes.func,
   renderRow: PropTypes.func,
@@ -107,6 +77,7 @@ Grid122Layout.defaultProps = {
   emptyStateAction: undefined,
   emptyStateIconName: undefined,
   emptyStateMessage: undefined,
+  hasFeaturedItem: false,
   loading: false,
   renderActions: undefined,
   renderRow: undefined,

@@ -1,8 +1,8 @@
 import {
+  CAPABILITY_JUMP_BACKWARD,
+  CAPABILITY_JUMP_FORWARD,
   CAPABILITY_PAUSE,
   CAPABILITY_PLAY,
-  CAPABILITY_JUMP_FORWARD,
-  CAPABILITY_JUMP_BACKWARD,
   CAPABILITY_SEEK_TO,
 } from 'shoutem.audio';
 import pack from './package.json';
@@ -21,6 +21,8 @@ export const SET_DOWNLOAD_IN_PROGRESS = ext('SET_DOWNLOAD_IN_PROGRESS');
 // (https://fiveminutes.jira.com/browse/SEEXT-8462)
 export const RSS_PODCAST_SCHEMA = 'shoutem.proxy.news';
 export const PODCAST_SCHEMA_ITEM = 'Podcast';
+export const DEFAULT_PAGE_LIMIT = 20;
+export const EPISODES_LIST_SCREEN = ext('EpisodesListScreen');
 export const EPISODE_DETAILS_SCREEN = ext('EpisodeDetailsScreen');
 
 export const trackPlayerOptions = {

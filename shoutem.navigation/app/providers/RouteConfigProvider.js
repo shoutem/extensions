@@ -4,7 +4,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { DriverShape } from '@shoutem/animation';
 import { ThemeShape } from '@shoutem/theme';
 import { ScrollView } from '@shoutem/ui';
 import {
@@ -34,7 +33,7 @@ function normalizeShortcuts(shortcuts) {
       const hasNameAdded = _.has(EXISTING_ROUTE_NAMES, id);
       const navigationName = hasNameAdded
         ? EXISTING_ROUTE_NAMES[id]
-        : _.uniqueId(canonicalName);
+        : `${canonicalName}.${id}`;
       EXISTING_ROUTE_NAMES = {
         ...EXISTING_ROUTE_NAMES,
         ...(!hasNameAdded && { [id]: navigationName }),
@@ -159,11 +158,7 @@ export class RouteConfigProvider extends PureComponent {
   }
 
   render() {
-    const {
-      firstShortcut,
-      hiddenShortcuts,
-      initQueueComplete,
-    } = this.props;
+    const { firstShortcut, hiddenShortcuts, initQueueComplete } = this.props;
     const { decoratedScreens, normalizedShortcuts, navReady } = this.state;
 
     if (!navReady || !initQueueComplete) {

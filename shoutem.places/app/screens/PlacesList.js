@@ -2,7 +2,7 @@ import React from 'react';
 // import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind';
-import { find, isBusy, isInitialized } from '@shoutem/redux-io';
+import { find, isBusy, isInitialized, isValid } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { ListView, Screen } from '@shoutem/ui';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
@@ -73,9 +73,11 @@ export class PlacesList extends CmsListScreen {
   }
 
   renderData(data) {
-    const loading = isBusy(data) || !isInitialized(data);
+    const initialLoad =
+      !isValid(data) ||
+      (isBusy(data) && (!data || data?.length === 0 || !isInitialized(data)));
 
-    if (loading) {
+    if (initialLoad) {
       return this.renderLoading();
     }
 
@@ -94,6 +96,7 @@ export class PlacesList extends CmsListScreen {
         data={data}
         getSectionId={this.getSectionId}
         initialListSize={1}
+        loading={isBusy(data)}
         onLoadMore={this.loadMore}
         onRefresh={this.refreshData}
         renderRow={this.renderRow}

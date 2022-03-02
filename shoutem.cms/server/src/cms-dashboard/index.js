@@ -19,6 +19,7 @@ export {
   createCategory,
   deleteCategory,
   renameCategory,
+  dragAndDropCategory,
   reducer,
 } from './redux';
 

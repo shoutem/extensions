@@ -6,6 +6,7 @@ export { getDropdownOptions, getSelectedOptionLabel } from './dropdown';
 
 export {
   ALL_CATEGORIES_OPTION_KEY,
+  getCategoryName,
   getAllCategoryName,
   getAllCategoriesOption,
   isAllCategoriesSelected,

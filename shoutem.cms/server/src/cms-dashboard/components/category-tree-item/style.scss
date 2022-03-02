@@ -1,17 +1,20 @@
+.nested-sortable__node-header {
+  &.is-selected {
+    .category-tree-item__name {
+      max-width: unset;
+    }
+  }
+}
+
 .category-tree-item {
-  max-width: 140px;
-  min-width: 100px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  min-width: 60px;
 
   &.has-actions {
-    .category-tree-item__name {
-      padding-top: 14px;
-      padding-left: 8px;
-    }
-
     .se-icon {
       padding-right: 0;
-      margin-top: 3px;
+      margin-top: 10px;
     }
   }
 
@@ -28,7 +31,6 @@
 }
 
 .category-tree__create-category {
-  padding-left: 16px;
-  padding-top: 8px;
-  min-width: 48px;
+  padding-top: 10px;
+  min-width: 38px;
 }

@@ -12,8 +12,8 @@ import { getAppId } from 'shoutem.application/app';
 import { getUser, USER_SCHEMA } from 'shoutem.auth';
 import { openInModal } from 'shoutem.navigation';
 import { ext as userProfileExt } from 'shoutem.user-profile';
-import { apiVersion } from '../app';
 import {
+  apiVersion,
   DEFAULT_USER_SETTINGS,
   SOCIAL_SETTINGS_SCHEMA,
   STATUSES_SCHEMA,

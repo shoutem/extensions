@@ -1,10 +1,10 @@
 {
   "name": "news",
-  "version": "4.0.1",
-  "platform": "^5",
+  "version": "5.0.0",
+  "platform": "^5.2.0",
   "title": "News",
   "description": "Show news articles",
-  "releaseNotes": "* Replaced loading spinner with animated placeholder",
+  "releaseNotes": "* Optimized big list performance of 1-2-2 pattern grid with a featured item layout\n\n For developers: \n* renamed FeaturedGrid122ArticlesScreen to Grid122ArticlesScreen\n* Deleted components that were used by this screen\n* Grid122ArticlesScreen is now using shoutem.layouts Grid122Layout to render screen",
   "icon": "server/assets/add-news-image.png",
   "dependencies": [
     "shoutem.cms",
@@ -179,12 +179,13 @@
       }
     },
     {
-      "name": "FeaturedGrid122ArticlesScreen",
+      "name": "Grid122ArticlesScreen",
       "title": "1-2-2 pattern grid with a featured item",
       "image": "./server/assets/screens/1-2-2-grid-with-featured.png",
       "extends": "@.ArticlesScreen",
       "settings": {
-        "hasFeaturedItem": true
+        "hasFeaturedItem": true,
+        "listType": "1-2-2-grid"
       }
     }
   ],

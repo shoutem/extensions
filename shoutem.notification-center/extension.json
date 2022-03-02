@@ -1,10 +1,14 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "platform": "^4 || ^5",
+  "nativeChanges": {
+    "lastVersion": null,
+    "settingsKeys": ["chime"]
+  },
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
+  "releaseNotes": "* App build adjustment - store resubmission (new native build) will be required if new chime was uploaded",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": ["users"],
   "dependencies": [

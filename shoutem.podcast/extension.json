@@ -1,10 +1,10 @@
 {
   "name": "podcast",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "platform": "^4 || ^5",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
+  "releaseNotes": "* Added details layout without share button\n* Improved opening items from push notifications",
   "icon": "server/assets/extension-icon.png",
   "categories": ["media"],
   "repository": {
@@ -120,7 +120,19 @@
     {
       "name": "EpisodeDetailsScreen",
       "title": "Episode details",
-      "image": "./server/assets/screens/large-details.png"
+      "image": "./server/assets/screens/large-details.png",
+      "settings": {
+        "enableSharing": true
+      }
+    },
+    {
+      "name": "EpisodeDetailsWithoutShareScreen",
+      "title": "Episode details without share button",
+      "image": "./server/assets/screens/large-details-no-share.png",
+      "extends": "@.EpisodeDetailsScreen",
+      "settings": {
+        "enableSharing": false
+      }
     }
   ],
   "pages": [

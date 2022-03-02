@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import moment from 'moment';
-import { isBusy, isInitialized } from '@shoutem/redux-io';
+import { isBusy, isInitialized, isValid } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { Icon } from '@shoutem/ui';
 import { CmsListScreen } from 'shoutem.cms';
@@ -44,9 +44,11 @@ export class VideosList extends CmsListScreen {
   }
 
   renderData(data) {
-    const loading = isBusy(data) || !isInitialized(data);
+    const initialLoad =
+      !isValid(data) ||
+      (isBusy(data) && (!data || data?.length === 0 || !isInitialized(data)));
 
-    if (loading) {
+    if (initialLoad) {
       return this.renderLoading();
     }
 
@@ -62,6 +64,7 @@ export class VideosList extends CmsListScreen {
       <LargeListLayout
         data={data}
         hasOverlay
+        loading={isBusy(data)}
         onLoadMore={this.loadMore}
         onPress={this.openDetailsScreen}
         onRefresh={this.refreshData}

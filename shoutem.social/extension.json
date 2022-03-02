@@ -1,10 +1,10 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "4.1.1",
+  "version": "5.0.0",
   "platform": "^5.0.1",
   "skipClone": false,
-  "releaseNotes": "* Fix builds failing if no User profile extension was installed",
+  "releaseNotes": "* Implemented new improved social wall design",
   "description": "Let members create posts, comment and like them",
   "categories": [
     "users"

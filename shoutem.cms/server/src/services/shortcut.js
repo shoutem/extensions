@@ -35,12 +35,28 @@ export function getParentCategoryProperty() {
   return _.get(data, ['params', 'parentCategoryProperty']) || 'parentCategory';
 }
 
+export function getOriginParentCategoryProperty() {
+  return (
+    _.get(data, ['params', 'originParentCategoryProperty']) ||
+    'originParentCategory'
+  );
+}
+
 export function getParentCategoryId(shortcut) {
   const parentCategoryProperty = getParentCategoryProperty();
   return _.get(shortcut, `settings.${parentCategoryProperty}.id`);
 }
 
+export function getOriginParentCategoryId(shortcut) {
+  const originParentCategoryProperty = getOriginParentCategoryProperty();
+  return _.get(shortcut, `settings.${originParentCategoryProperty}.id`);
+}
+
 export function getVisibleCategoryIds(shortcut) {
   const visibleCategories = _.get(shortcut, 'settings.visibleCategories', []);
   return _.map(visibleCategories, 'id');
+}
+
+export function getShortcutTitle(shortcut) {
+  return _.get(shortcut, 'title');
 }

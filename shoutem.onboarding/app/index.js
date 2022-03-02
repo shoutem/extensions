@@ -1,10 +1,14 @@
-import { screens } from './extension.js';
-import enTranslations from './translations/en.json';
-import { showOnboardingMiddleware } from './redux';
-
 import './navigation';
+import enTranslations from './translations/en.json';
+import { screens } from './extension.js';
+import {
+  completeOnboardingMiddleware,
+  getOnboardingCompleted,
+  ONBOARDING_FINISHED,
+  showOnboardingMiddleware,
+} from './redux';
 
-export { screens };
+export { getOnboardingCompleted, ONBOARDING_FINISHED, screens };
 
 export const shoutem = {
   i18n: {
@@ -12,8 +16,9 @@ export const shoutem = {
   },
 };
 
-export const middleware = [showOnboardingMiddleware];
+export const middleware = [
+  showOnboardingMiddleware,
+  completeOnboardingMiddleware,
+];
 
 export { default as reducer } from './redux';
-
-export { appWillMount } from './app';

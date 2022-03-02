@@ -10,7 +10,8 @@
       "radio-shortcut-page.form-stream-field-title": "Stream title:",
       "radio-shortcut-page.form-sharing-checkbox-title": "Enable Sharing",
       "radio-shortcut-page.form-artwork-checkbox-title": "Display artwork",
-      "radio-shortcut-page.form-button-save": "Save"
+      "radio-shortcut-page.form-button-save": "Save",
+      "radio-shortcut-page.layout-specific-properties-alert": "The following settings only apply to the static background layout"
     }
   }
 }

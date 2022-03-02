@@ -13,6 +13,7 @@ import {
   isBusy,
   isError,
   isInitialized,
+  isValid,
   next,
   shouldRefresh,
 } from '@shoutem/redux-io';
@@ -630,9 +631,12 @@ export class CmsListScreen extends PureComponent {
   renderData(data) {
     const { screenSettings, style } = this.props;
 
-    const loading = isBusy(data) || !isInitialized(data);
+    const loading = isBusy(data);
+    const initialLoad =
+      !isValid(data) ||
+      (isBusy(data) && (!data || data?.length === 0 || !isInitialized(data)));
 
-    if (loading) {
+    if (initialLoad) {
       return this.renderLoading();
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.salesforce",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Salesforce Marketing Cloud",
   "dependencies": {
     "react-native-marketingcloudsdk": "7.4.0"

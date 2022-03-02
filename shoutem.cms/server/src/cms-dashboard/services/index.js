@@ -5,7 +5,7 @@ const shoutemUrls = new ShoutemUrls();
 export { shoutemUrls, rsaaPromise };
 
 export { getTableHeaders, HEADER_TYPES } from './tableSchemaTransformer';
-export { getMainCategoryId } from './categories';
+export * from './categories';
 export * from './resource';
 export * from './form';
 export * from './validation';

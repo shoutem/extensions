@@ -1,10 +1,10 @@
 {
   "name": "rss-photos",
   "title": "Photos RSS",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "platform": "^4 || ^5",
   "description": "Show a photo gallery from an RSS feed",
-  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
+  "releaseNotes": "* Improved opening items from push notifications",
   "icon": "server/assets/add-photos-image.png",
   "dependencies": [
     "shoutem.firebase",

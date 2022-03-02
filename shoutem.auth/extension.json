@@ -1,10 +1,10 @@
 {
   "name": "auth",
-  "version": "4.0.6",
-  "platform": "^4.0.5 || ^5",
+  "version": "4.1.0",
+  "platform": "^5.1.0",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Fixed Facebook login/sign up button functionality",
+  "releaseNotes": "* Added username availability check request\n* Exported additional redux actions & selectors\n* Generalize start of authentication flows, allowing other extensions to plug into / override standard flow",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",

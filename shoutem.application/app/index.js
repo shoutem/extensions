@@ -1,63 +1,58 @@
+import './navigation';
 import SubscriptionMissingScreen from './screens/SubscriptionMissingScreen';
 import enTranslations from './translations/en.json';
 import { initializeApp } from './app';
 import {
+  appInitQueueMiddleware,
   noInternetMiddleware,
   restartAppMiddleware,
-  appInitQueueMiddleware,
 } from './middleware';
-import './navigation';
-
-export { AppInitQueue } from './services';
-export { default as configuration } from './configuration.json';
-export { default as buildConfig } from './buildConfig.json';
 
 export {
-  default as RemoteDataListScreen,
-  // For backwards compatibility only,
-  // remove this when all extensions have been updated.
-  default as ListScreen,
-} from './screens/RemoteDataListScreen';
-
-export { isConfigurationLoaded } from './shared/isConfigurationLoaded';
-export { resolveAppEndpoint } from './shared/resolveAppEndpoint';
-export { openInitialScreen } from './shared/openInitialScreen';
-export { getFirstShortcut } from './shared/getFirstShortcut';
-export { isProduction } from './shared/isProduction';
-export { isRelease } from './shared/isRelease';
-
-export { InlineMap } from './components/InlineMap';
-export { MapView } from './components/MapView';
-
-export { CONFIGURATION_SCHEMA, EXTENSIONS_SCHEMA, ext } from './const';
-
-export {
-  appWillMount,
+  appActions,
   appDidMount,
+  appWillMount,
   appWillUnmount,
   getAppId,
   isDevelopment,
-  appActions,
 } from './app';
-
+export { default as buildConfig } from './buildConfig.json';
+export { InlineMap } from './components/InlineMap';
+export { MapView } from './components/MapView';
+export { default as configuration } from './configuration.json';
+export { CONFIGURATION_SCHEMA, ext, EXTENSIONS_SCHEMA } from './const';
 export {
+  getAllShortcuts,
+  getAppInitQueueComplete,
+  getConfiguration,
+  getExtensionCloudUrl,
+  getExtensionSettings,
+  getHiddenShortcuts,
+  getShortcut,
+  getSubscriptionValidState,
+  hideShortcuts,
+  isShortcutVisible,
+  QUEUE_TARGET_COMPLETED,
   default as reducer,
   RESTART_APP,
-  getExtensionSettings,
-  getConfiguration,
-  getSubscriptionValidState,
-  showAllShortcuts,
-  showShortcut,
-  hideShortcuts,
-  getShortcut,
-  getAllShortcuts,
-  isShortcutVisible,
   restartApp,
   setQueueTargetComplete,
-  getExtensionCloudUrl,
-  getHiddenShortcuts,
-  getAppInitQueueComplete,
+  showAllShortcuts,
+  showShortcut,
 } from './redux';
+export {
+  // For backwards compatibility only,
+  // remove this when all extensions have been updated.
+  default as ListScreen,
+  default as RemoteDataListScreen,
+} from './screens/RemoteDataListScreen';
+export { AppInitQueue } from './services';
+export { getFirstShortcut } from './shared/getFirstShortcut';
+export { isConfigurationLoaded } from './shared/isConfigurationLoaded';
+export { isProduction } from './shared/isProduction';
+export { isRelease } from './shared/isRelease';
+export { openInitialScreen } from './shared/openInitialScreen';
+export { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 
 export const middleware = [
   noInternetMiddleware,

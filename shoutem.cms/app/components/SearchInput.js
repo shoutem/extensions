@@ -1,8 +1,8 @@
 import React from 'react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Icon, TextInput, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 export function SearchInput({ input, onChangeText, onClearPress, style }) {
@@ -18,14 +18,14 @@ export function SearchInput({ input, onChangeText, onClearPress, style }) {
           onChangeText={onChangeText}
           returnKeyType="done"
           value={input}
-          placeholder="Search"
+          placeholder={I18n.t(ext('searchPlaceholder'))}
           style={style.searchTextInput}
         />
         <View
           styleName="horizontal v-center h-end"
           style={style.clearSearchContainer}
         >
-          {!_.isEmpty(input) && (
+          {!!input && (
             <Button styleName="clear" onPress={onClearPress}>
               <Icon name="clear-text" style={style.clearSearchIcon} />
             </Button>

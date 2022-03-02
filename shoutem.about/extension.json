@@ -1,10 +1,10 @@
 {
   "name": "about",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "platform": "^5",
   "title": "About",
   "description": "Show info about your app or your business",
-  "releaseNotes": "* Fixed status bar styling behavior\n* Replaced loading spinner with animated placeholder",
+  "releaseNotes": "* Fixed opening hours rendering",
   "icon": "server/assets/add-about-image.png",
   "dependencies": [
     "shoutem.application",

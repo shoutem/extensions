@@ -1,10 +1,10 @@
 {
   "name": "navigation",
-  "version": "4.0.5",
+  "version": "4.0.7",
   "platform": "^5",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "* Fixed scrolling animations occasionally getting stuck when using Tab Bar layout",
+  "releaseNotes": "* Adjusted styling of icons in builder settings page",
   "description": "App-level navigation",
   "dependencies": [
     "shoutem.application",

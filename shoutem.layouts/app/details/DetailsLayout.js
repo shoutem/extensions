@@ -18,7 +18,7 @@ export function DetailsLayout({
     return <DetailsSkeletonPlaceholder />;
   }
 
-  if (!!emptyStateViewProps) {
+  if (emptyStateViewProps) {
     const defaultEmptyStateViewProps = {
       icon: 'error',
       message: I18n.t('shoutem.application.preview.noContentErrorMessage'),
@@ -31,7 +31,7 @@ export function DetailsLayout({
     );
   }
 
-  const resolvedStyleName = !!LeadImage ? '' : 'lg-gutter-bottom';
+  const resolvedStyleName = LeadImage ? '' : 'lg-gutter-bottom';
 
   return (
     <ScrollView onScroll={onScroll}>
@@ -60,19 +60,19 @@ DetailsLayout.propTypes = {
   emptyStateViewProps: PropTypes.object,
   isLoading: PropTypes.bool,
   LeadImage: PropTypes.func,
-  onScroll: PropTypes.func,
   style: PropTypes.object,
   title: PropTypes.string,
+  onScroll: PropTypes.func,
 };
 
 DetailsLayout.defaultProps = {
   children: undefined,
   emptyStateViewProps: undefined,
   isLoading: false,
-  onScroll: undefined,
   style: {},
   title: '',
   LeadImage: undefined,
+  onScroll: undefined,
 };
 
 export default connectStyle(ext('DetailsLayout'))(DetailsLayout);

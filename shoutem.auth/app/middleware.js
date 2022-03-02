@@ -14,6 +14,7 @@ import {
   getUser,
   isUserUpdateAction,
   LOGIN,
+  LOGIN_INITIALIZED,
   LOGOUT,
   REGISTER,
 } from './redux';
@@ -96,6 +97,11 @@ export const authenticateMiddleware = setPriority(
   store => next => action => {
     const { type } = action;
 
+    if (type === LOGIN_INITIALIZED) {
+      const { openAuthFlow } = action.payload;
+      openAuthFlow();
+    }
+
     // If user profile ext is installed & user profile is required
     // this won't trigger
     if (type === LOGIN || type === REGISTER) {
@@ -103,7 +109,7 @@ export const authenticateMiddleware = setPriority(
         payload: { callback: onAuthSuccessCallback, user },
       } = action;
 
-      if (!!onAuthSuccessCallback) {
+      if (onAuthSuccessCallback) {
         onAuthSuccessCallback(user);
       }
     }
@@ -130,7 +136,7 @@ export const authenticateLimitedMiddleware = setPriority(
             text: 'OK',
             onPress: () => {
               store.dispatch(clearAuthState()).then(() => {
-                if (!!callback) {
+                if (callback) {
                   callback();
                 }
               });

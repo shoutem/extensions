@@ -1,9 +1,16 @@
+import { Alert } from 'react-native';
 import _ from 'lodash';
 import { NotificationHandlers } from 'shoutem.firebase';
+import { I18n } from 'shoutem.i18n';
 import { openInModal } from 'shoutem.navigation';
 import { resolveNotificationData } from 'shoutem.push-notifications';
-import { displayLocalNotification } from 'shoutem.rss';
-import { ext, PHOTO_DETAILS_SCREEN, PHOTOS_SCHEMA_ITEM } from './const';
+import { displayLocalNotification, ext as rssExt } from 'shoutem.rss';
+import {
+  ext,
+  PHOTO_DETAILS_SCREEN,
+  PHOTOS_LIST_SCREEN,
+  PHOTOS_SCHEMA_ITEM,
+} from './const';
 import { fetchPhotosFeed, getFeedUrl, getPhotosFeed } from './redux';
 import { remapAndFilterPhotos } from './services';
 
@@ -27,7 +34,7 @@ function getItemId(state, feedUrl, uuid) {
     return photo.uuid === uuid;
   });
 
-  return _.get(photo, 'id');
+  return photo?.id;
 }
 
 function consumeNotification(notification, store) {
@@ -35,11 +42,24 @@ function consumeNotification(notification, store) {
     return;
   }
 
+  const { itemId, shortcutId } = notification;
+  const { dispatch } = store;
   const state = store.getState();
-  const feedUrl = getFeedUrl(state, notification.shortcutId);
+  const feedUrl = getFeedUrl(state, shortcutId);
 
-  store.dispatch(fetchPhotosFeed(notification.shortcutId)).then(() => {
-    const id = getItemId(state, feedUrl, notification.itemId);
+  dispatch(fetchPhotosFeed(shortcutId, { pageLimit: 100 })).then(() => {
+    const id = getItemId(state, feedUrl, itemId);
+
+    if (!id) {
+      openInModal(PHOTOS_LIST_SCREEN, { shortcutId });
+
+      Alert.alert(
+        I18n.t(rssExt('itemNotFoundTitle')),
+        I18n.t(rssExt('itemNotFoundMessage')),
+      );
+
+      return;
+    }
 
     openInModal(PHOTO_DETAILS_SCREEN, { id, feedUrl });
   });

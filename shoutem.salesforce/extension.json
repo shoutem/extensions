@@ -1,7 +1,7 @@
 {
   "name": "salesforce",
   "title": "Salesforce MC",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Salesforce Marketing Cloud",
   "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
   "platform": "^4 || ^5",

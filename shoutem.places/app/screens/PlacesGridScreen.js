@@ -2,7 +2,7 @@ import React from 'react';
 // import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
-import { isBusy, isInitialized } from '@shoutem/redux-io';
+import { isBusy, isInitialized, isValid } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow, ListView, Screen } from '@shoutem/ui';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
@@ -102,9 +102,11 @@ class PlacesGridScreen extends CmsListScreen {
   }
 
   renderData(data) {
-    const loading = isBusy(data) || !isInitialized(data);
+    const initialLoad =
+      !isValid(data) ||
+      (isBusy(data) && (!data || data?.length === 0 || !isInitialized(data)));
 
-    if (loading) {
+    if (initialLoad) {
       return this.renderLoading();
     }
 
@@ -123,6 +125,7 @@ class PlacesGridScreen extends CmsListScreen {
         data={data}
         getSectionId={this.getSectionId}
         initialListSize={1}
+        loading={isBusy(data)}
         onLoadMore={this.loadMore}
         onRefresh={this.refreshData}
         renderRow={this.renderRow}

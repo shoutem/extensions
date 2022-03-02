@@ -9,6 +9,8 @@
         "noContentErrorMessage": "Please create content and reload your app."
       },
       "emptyCollectionErrorMessage": "Nothing here at this moment.",
+      "emptyListMessage": "We couldn't find anything to show...",
+      "emptyListTitle": "It's empty in here",
       "unexpectedErrorMessage": "Unexpected error occurred.",
       "tryAgainButton": "TRY AGAIN",
       "configurationLoadErrorMessage": "App configuration failed to load.",

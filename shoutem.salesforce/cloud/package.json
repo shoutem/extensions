@@ -1,6 +1,6 @@
 {
   "name": "shoutem.salesforce",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "private": true,
   "scripts": {
     "@comment init": "Generates env files for all workflow types - should work out of the box",

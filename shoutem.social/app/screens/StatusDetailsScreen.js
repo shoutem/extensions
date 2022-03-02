@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   Alert,
   Keyboard as RNKeyboard,
@@ -28,7 +28,6 @@ import {
   View,
 } from '@shoutem/ui';
 import { authenticate } from 'shoutem.auth';
-import { getUser } from 'shoutem.auth/redux';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams, HeaderIconButton } from 'shoutem.navigation';
 import {
@@ -37,7 +36,6 @@ import {
   RESULTS,
 } from 'shoutem.permissions';
 import CommentView from '../components/CommentView';
-import { user as userShape } from '../components/shapes';
 import StatusView from '../components/StatusView';
 import { ext } from '../const';
 import {
@@ -48,11 +46,7 @@ import {
   loadComments,
   selectors,
 } from '../redux';
-import {
-  currentUserOwnsStatus,
-  openBlockOrReportActionSheet,
-  openProfileForLegacyUser,
-} from '../services';
+import { openProfileForLegacyUser } from '../services';
 
 const CAMERA_PERMISSION = Platform.select({
   ios: PERMISSION_TYPES.IOS_CAMERA,
@@ -78,21 +72,17 @@ export function StatusDetailsScreen(props) {
     deleteComment,
     status,
     filteredComments,
-    user,
     deleteStatus,
     navigation,
-    blockUser,
     style,
   } = props;
   const {
-    statusId,
-    enableInteractions,
-    statusMaxLength,
-    enablePhotoAttachments,
-    scrollDownOnOpen,
-    openUserLikes,
-    onLikeAction,
+    focusAddCommentInput,
     enableComments,
+    enableInteractions,
+    enablePhotoAttachments,
+    statusId,
+    statusMaxLength,
   } = getRouteParams(props);
 
   const [text, setText] = useState('');
@@ -102,66 +92,57 @@ export function StatusDetailsScreen(props) {
   const scrollViewRef = useRef(null);
   const textInputRef = useRef(null);
 
-  const focusOnComment = () => {
-    if (textInputRef) {
-      textInputRef.current.focus();
-    }
-  };
-
-  const fetchData = () => {
-    loadComments(statusId).then(() => {
-      if (scrollDownOnOpen) {
-        focusOnComment();
-      }
-    });
-  };
-
-  const isStatusAuthorOrAppOwner = () => {
-    return _.get(status, 'deletable') === 'yes';
-  };
-
-  const openActionSheet = () => {
-    ActionSheet.showActionSheetWithOptions(
-      {
-        options: [
-          I18n.t(ext('deleteStatusOption')),
-          I18n.t(ext('cancelStatusSelectionOption')),
-        ],
-        destructiveButtonIndex: 0,
-        cancelButtonIndex: 1,
-      },
-      index => {
-        if (index === 0) {
-          return deleteStatus(status).then(navigation.goBack);
-        }
-
+  useLayoutEffect(() => {
+    function headerRight(props) {
+      // If it's status owner
+      if (_.get(status, 'deletable') !== 'yes') {
         return null;
-      },
-    );
-  };
+      }
 
-  const headerRight = props => {
-    if (!isStatusAuthorOrAppOwner()) {
-      return null;
+      return (
+        <HeaderIconButton
+          iconName="more-horizontal"
+          onPress={openActionSheet}
+          {...props}
+        />
+      );
     }
 
-    return (
-      <HeaderIconButton
-        iconName="more-horizontal"
-        onPress={openActionSheet}
-        {...props}
-      />
-    );
-  };
+    function openActionSheet() {
+      ActionSheet.showActionSheetWithOptions(
+        {
+          options: [
+            I18n.t(ext('deleteStatusOption')),
+            I18n.t(ext('cancelStatusSelectionOption')),
+          ],
+          destructiveButtonIndex: 0,
+          cancelButtonIndex: 1,
+        },
+        index => {
+          if (index === 0) {
+            return deleteStatus(status).then(navigation.goBack);
+          }
 
-  useEffect(() => {
-    fetchData();
+          return null;
+        },
+      );
+    }
 
-    navigation.setOptions({
+    return navigation.setOptions({
       title: I18n.t(ext('postDetailsNavBarTitle')),
       headerRight,
     });
-  }, []);
+  }, [deleteStatus, navigation, status]);
+
+  useEffect(() => {
+    loadComments(statusId);
+  }, [loadComments, statusId]);
+
+  useEffect(() => {
+    if (focusAddCommentInput) {
+      textInputRef.current?.focus();
+    }
+  }, [focusAddCommentInput]);
 
   const onSubmit = () => {
     setText('');
@@ -172,21 +153,12 @@ export function StatusDetailsScreen(props) {
     setText(text);
   };
 
-  const getCommentsLength = () => {
-    return comments.data.length;
-  };
-
-  const scrollDownOnComment = () => {
-    if (getCommentsLength() > 3) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
-    }
-  };
-
   const handleStatusCommentClick = () => {
     authenticate(() => {
       createComment(statusId, text, image64Data)
-        .then(onSubmit())
-        .then(scrollDownOnComment());
+        .then(() => onSubmit())
+        .then(() => scrollViewRef.current.scrollToEnd({ animated: true }));
+
       RNKeyboard.dismiss();
       setText('');
     });
@@ -208,6 +180,8 @@ export function StatusDetailsScreen(props) {
       if (result[CAMERA_PERMISSION] === RESULTS.GRANTED) {
         return launchCamera(IMAGE_PICKER_OPTIONS, handleImageSelected);
       }
+
+      return null;
     });
   };
 
@@ -224,28 +198,9 @@ export function StatusDetailsScreen(props) {
     next(comments);
   };
 
-  function handleBlockUser() {
-    const {
-      authenticate,
-      user: { legacyId: currentUserId },
-    } = props;
-    const blockUserId = status?.user?.id;
-
-    return authenticate(() =>
-      blockUser(blockUserId, currentUserId).then(() => navigation.goBack()),
-    );
-  }
-
   function handleImageButtonPress() {
     RNKeyboard.dismiss();
     setPickerActive(true);
-  }
-
-  function handleMenuPress() {
-    const statusOwner = status?.user;
-    const isBlockAllowed = !currentUserOwnsStatus(user, statusOwner);
-
-    return openBlockOrReportActionSheet(isBlockAllowed, handleBlockUser);
   }
 
   const renderLoadingMoreText = () => {
@@ -263,14 +218,11 @@ export function StatusDetailsScreen(props) {
 
   const renderRow = comment => {
     return (
-      <View>
-        <CommentView
-          openProfile={openProfile}
-          comment={comment}
-          deleteComment={deleteComment}
-        />
-        <Divider styleName="line" />
-      </View>
+      <CommentView
+        openProfile={openProfile}
+        comment={comment}
+        deleteComment={deleteComment}
+      />
     );
   };
 
@@ -312,6 +264,7 @@ export function StatusDetailsScreen(props) {
     const postButtonDisabled = text.length === 0 && !image64Data;
     const resolvedBehavior = Platform.OS === 'ios' ? 'padding' : '';
     const keyboardOffset = Keyboard.calculateKeyboardOffset();
+    const resolvedStyle = Platform.OS === 'android' ? style.container : null;
 
     const addPhotoButton = enablePhotoAttachments && (
       <Button styleName="clear" onPress={handleImageButtonPress}>
@@ -323,6 +276,7 @@ export function StatusDetailsScreen(props) {
       <KeyboardAvoidingView
         behavior={resolvedBehavior}
         keyboardVerticalOffset={keyboardOffset}
+        style={resolvedStyle}
       >
         {renderAttachedImage()}
         <Divider styleName="line" />
@@ -343,18 +297,15 @@ export function StatusDetailsScreen(props) {
 
   const renderStatus = () => {
     return (
-      <View>
+      <View styleName="lg-gutter-bottom">
         <StatusView
           status={status}
-          openUserLikes={openUserLikes}
-          addComment={focusOnComment}
-          onLikeAction={onLikeAction}
-          onMenuPress={handleMenuPress}
-          openProfile={openProfile}
-          showUsersWhoLiked
+          showNewCommentInput={false}
           enableImageFullScreen
-          enableInteractions={enableInteractions}
           enableComments={enableComments}
+          enableInteractions={enableInteractions}
+          enablePhotoAttachments={enablePhotoAttachments}
+          goBackAfterBlock
         />
       </View>
     );
@@ -362,7 +313,6 @@ export function StatusDetailsScreen(props) {
 
   const commentsData = _.get(filteredComments, 'data', []);
   const areCommentsLoading = isBusy(comments) && !isInitialized(comments);
-  const showAddCommentSection = !areCommentsLoading && enableComments;
 
   const pickerOptions = [
     {
@@ -376,8 +326,7 @@ export function StatusDetailsScreen(props) {
   ];
 
   return (
-    <Screen styleName="paper with-notch-padding">
-      <Divider styleName="line" />
+    <Screen styleName="paper">
       <ListView
         data={commentsData}
         ref={scrollViewRef}
@@ -386,8 +335,10 @@ export function StatusDetailsScreen(props) {
         renderRow={renderRow}
         renderFooter={renderLoadingMoreText}
         onLoadMore={loadMoreComments}
+        ListEmptyComponent={() => null}
+        style={style.list}
       />
-      {showAddCommentSection && renderAddCommentSection()}
+      {enableComments && renderAddCommentSection()}
       <ShoutemActionSheet
         confirmOptions={pickerOptions}
         active={pickerActive}
@@ -398,29 +349,23 @@ export function StatusDetailsScreen(props) {
 }
 
 StatusDetailsScreen.propTypes = {
-  user: userShape.isRequired,
-  comments: PropTypes.shape({
-    data: PropTypes.array,
-  }).isRequired,
-  filteredComments: PropTypes.shape({
-    data: PropTypes.array,
-  }).isRequired,
-  statusId: PropTypes.number.isRequired,
-  status: PropTypes.object.isRequired,
-  openUserLikes: PropTypes.func.isRequired,
-  addComment: PropTypes.func.isRequired,
-  onLikeAction: PropTypes.func.isRequired,
-  loadComments: PropTypes.func.isRequired,
-  scrollDownOnOpen: PropTypes.bool.isRequired,
-  next: PropTypes.func.isRequired,
-  blockUser: PropTypes.func.isRequired,
-  createComment: PropTypes.func.isRequired,
   authenticate: PropTypes.func.isRequired,
-  openProfile: PropTypes.func.isRequired,
+  blockUser: PropTypes.func.isRequired,
+  comments: PropTypes.object.isRequired,
+  createComment: PropTypes.func.isRequired,
   deleteComment: PropTypes.func.isRequired,
   deleteStatus: PropTypes.func.isRequired,
+  filteredComments: PropTypes.object.isRequired,
+  loadComments: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
+  next: PropTypes.func.isRequired,
+  openProfile: PropTypes.func.isRequired,
+  status: PropTypes.object.isRequired,
   style: PropTypes.object,
+};
+
+StatusDetailsScreen.defaultProps = {
+  style: {},
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -430,7 +375,6 @@ const mapStateToProps = (state, ownProps) => {
     status: selectors.getStatus(state, statusId),
     comments: selectors.getCommentsForStatus(state, statusId),
     filteredComments: selectors.getFilteredCommentsForStatus(state, statusId),
-    user: getUser(state) || {},
   };
 };
 

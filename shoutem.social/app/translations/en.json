@@ -9,22 +9,13 @@
       "emptySearchListMessage": "Your search '{{text}}' did not match any profiles.",
       "emptyStartSearchListMessage": "You can find user profiles by typing their name.",
       "loadingMoreComments": "Loading more comments...",
-      "likeButton": "LIKE",
-      "unlikeButton": "UNLIKE",
-      "numberOfLikesMessage": {
-        "one": "{{firstUser}} likes this"
-      },
-      "numberOfOtherUserLikesMessage": {
-        "one": "{{firstUser}} and 1 other like this",
-        "other": "{{firstUser}} and {{count}} others like this"
-      },
+      "noLikes": "No likes",
       "numberOfLikes": {
         "one": "{{count}} Like",
         "other": "{{count}} Likes"
       },
       "imageSizeWarning": "Image size exceedes the maximum size of 50MB",
       "blankPostWarning": "This post appears to be blank. Please write something.",
-      "charactersLeft": "{{numOfCharacters}} characters left",
       "numberOfComments": {
         "one": "{{count}} Comment",
         "other": "{{count}} Comments",
@@ -35,12 +26,12 @@
       "searchCancelButton": "Cancel",
       "postDetailsTitle": "POST DETAILS",
       "newStatusTitle": "NEW STATUS",
-      "newStatusPlaceholder": "Share your thoughts",
+      "newStatusPlaceholder": "Share your thoughts...",
       "viewStatusLikes": "LIKES",
       "deleteStatusOption": "Delete",
       "cancelStatusSelectionOption": "Cancel",
       "postStatusButton": "Post",
-      "newCommentPlaceholder": "Add new comment...",
+      "newCommentPlaceholder": "Add a comment",
       "postDetailsNavBarTitle": "POST DETAILS",
       "reportOptionSpam": "It's a spam",
       "reportOptionInappropriate": "It's inappropriate",
@@ -59,8 +50,16 @@
       "settingsScreenSubtitle": "Send me a push notification for",
       "commentsOnMyStatuses": "Comments on my statuses",
       "likesOnMyStatuses": "Likes on my statuses",
-      "imagePickerCameraOption": "Take a photo",
-      "imagePickerGalleryOption": "Select photo from gallery"
+      "noPermissionsAlertTitle": "Limited access",
+      "noMediaPermissionsAlertText": "To choose photo to upload, you will need to grant permissions to the app",
+      "noCameraPermissionsAlertText": "To take a photo using camera, you will need to grant permissions to the app",
+      "openSettingsButtonLabel": "Open settings",
+      "cancelButtonLabel": "Cancel",
+      "discardStatusAlertTitle": "Discard status",
+      "discardStatusAlertMessage": "Your status will be discarded. Are you sure?",
+      "discardAlertButtonLabel": "Discard",
+      "keepEditingButtonLabel": "Keep editing",
+      "cancelHeaderButtonText": "Cancel"
     }
   }
 }

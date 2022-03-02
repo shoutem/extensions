@@ -1,11 +1,11 @@
 {
   "name": "cms",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "platform": "^5",
   "type": "system",
   "title": "CMS",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",
-  "releaseNotes": "* Replaced loading spinner with animated placeholder for certain CMS screen layouts\n* Set specific dependency versions instead of using semver ranges",
+  "releaseNotes": "* Added option for reordering categories in settings page\n* Removed animated loading placeholder when loading more list items in-app",
   "icon": "server/assets/add-cms-image.png",
   "categories": ["content"],
   "dependencies": [

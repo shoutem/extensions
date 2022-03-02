@@ -435,6 +435,84 @@
       "title": "Search input text,placeholder,icons & selection color",
       "format": "color",
       "default": "#666666"
+    },
+    "onboardingTitleTextColor": {
+      "type": "string",
+      "title": "Onboarding title text color",
+      "format": "color",
+      "default": "#000000"
+    },
+    "onboardingDescriptionTextColor": {
+      "type": "string",
+      "title": "Onboarding description text color",
+      "format": "color",
+      "default": "#000000"
+    },
+    "screenBackgroundColor": {
+      "type": "string",
+      "title": "Screen background color",
+      "format": "color",
+      "default": "#111111"
+    },
+    "screenOverlayColor": {
+      "type": "string",
+      "title": "Screen overlay color",
+      "format": "color",
+      "default": "rgba(0,0,0,0.5)"
+    },
+    "streamTitleColor": {
+      "type": "string",
+      "title": "Stream title color",
+      "format": "color",
+      "default": "#bbbbbb"
+    },
+    "artistTitleColor": {
+      "type": "string",
+      "title": "Artist title color",
+      "format": "color",
+      "default": "#bbbbbb"
+    },
+    "artworkCircularImageBorderColor": {
+      "type": "string",
+      "title": "Artwork circular image border color",
+      "format": "color",
+      "default": "#a6a6a6"
+    },
+    "songNameTitleColor": {
+      "type": "string",
+      "title": "Song name title color",
+      "format": "color",
+      "default": "#a6a6a6"
+    },
+    "shareButtonColor": {
+      "type": "string",
+      "title": "Share button color",
+      "format": "color",
+      "default": "#bbbbbb"
+    },
+    "playbackButtonBorderColor": {
+      "type": "string",
+      "title": "Playback button border color",
+      "format": "color",
+      "default": "#a6a6a6"
+    },
+    "playbackIconColor": {
+      "type": "string",
+      "title": "Playback icon color",
+      "format": "color",
+      "default": "#a6a6a6"
+    },
+    "playbackAnimatedCircleColor": {
+      "type": "string",
+      "title": "Playback animated circle color",
+      "format": "color",
+      "default": "#a6a6a6"
+    },
+    "likeButtonFillColor": {
+      "type": "string",
+      "title": "Color of like button when status is liked",
+      "format": "color",
+      "default": "rgba(200, 0, 0, 0.8)"
     }
   },
   "layout": {
@@ -520,6 +598,33 @@
           "notificationTitleColor",
           "notificationMessageColor",
           "notificationTimestampColor"
+        ]
+      },
+      {
+        "title": "Onboarding",
+        "properties": [
+          "onboardingTitleTextColor",
+          "onboardingDescriptionTextColor"
+        ]
+      },{
+        "title": "Radio+ (artwork background layout)",
+        "properties": [
+          "screenBackgroundColor",
+          "screenOverlayColor",
+          "streamTitleColor",
+          "artistTitleColor",
+          "artworkCircularImageBorderColor",
+          "songNameTitleColor",
+          "shareButtonColor",
+          "playbackButtonBorderColor",
+          "playbackIconColor",
+          "playbackAnimatedCircleColor"
+        ]
+      },
+      {
+        "title": "Social",
+        "properties": [
+          "likeButtonFillColor"
         ]
       },
       {

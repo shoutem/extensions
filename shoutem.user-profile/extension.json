@@ -1,11 +1,11 @@
 {
   "name": "user-profile",
   "title": "User Profile",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "platform": "^4.0.5 || ^5",
   "type": "system",
   "description": "Add extended user profile",
-  "releaseNotes": "* Make User profile system extension",
+  "releaseNotes": "* Fixed issues with opening edit profile screen",
   "icon": "server/assets/add-user-profile-image.png",
   "native": true,
   "dependencies": [

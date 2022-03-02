@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   Button,
   ButtonToolbar,
   Checkbox,
@@ -198,14 +199,6 @@ class RadioShortcutPage extends Component {
     return (
       <FormGroup>
         <ControlLabel>{i18next.t(LOCALIZATION.FORM_LABEL_NOTE)}</ControlLabel>
-        {this.renderImage()}
-        <SettingField
-          errorText={errorBackgroundImageUrl}
-          onChange={this.handleBackgroundImageUrlChange}
-          textValue={backgroundImageUrl}
-          title={i18next.t(LOCALIZATION.FORM_BACKGROUND_FIELD_TITLE)}
-          popoverMessage={i18next.t(LOCALIZATION.FORM_BACKGROUND_FIELD_POPOVER)}
-        />
         <SettingField
           errorText={errorStreamUrl}
           onChange={this.handleStreamUrlChange}
@@ -217,6 +210,17 @@ class RadioShortcutPage extends Component {
           onChange={this.handleStreamTitleChange}
           textValue={streamTitle}
           title={i18next.t(LOCALIZATION.FORM_STREAM_FIELD_TITLE)}
+        />
+        <Alert className="specific-layout-note">
+          {i18next.t(LOCALIZATION.LAYOUT_SPECIFIC_PROPERTIES_ALERT)}
+        </Alert>
+        {this.renderImage()}
+        <SettingField
+          errorText={errorBackgroundImageUrl}
+          onChange={this.handleBackgroundImageUrlChange}
+          textValue={backgroundImageUrl}
+          title={i18next.t(LOCALIZATION.FORM_BACKGROUND_FIELD_TITLE)}
+          popoverMessage={i18next.t(LOCALIZATION.FORM_BACKGROUND_FIELD_POPOVER)}
         />
         <Checkbox
           checked={showSharing}

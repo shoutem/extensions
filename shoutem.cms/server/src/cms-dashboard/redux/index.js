@@ -3,6 +3,7 @@ export {
   createCategory,
   deleteCategory,
   renameCategory,
+  dragAndDropCategory,
 } from './categories';
 
 export {

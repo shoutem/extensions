@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import request from 'request-promise';
 import { asyncMiddleware } from '../../shared/express';
 import { errors, generateErrorCode } from '../../shared/error';
+import { ALLOWED_CANONICAL_NAMES } from '../../const';
 import { getAppId } from '../../main';
 import tokensRepository from '../data/tokens-repository';
 import {
@@ -16,12 +17,19 @@ export class TokensController {
     return asyncMiddleware(async (req: Request, res: Response) => {
       const appId = getAppId(req);
       const grantCode = _.get(req, 'query.code');
+      const canonicalName = _.get(req, 'query.canonicalName', 'shoutem.salesforce');
+
+      if (!_.includes(ALLOWED_CANONICAL_NAMES, canonicalName)) {
+        throw new errors.ForbiddenError('Forbidden',
+          generateErrorCode('tokens', 'forbidden', 'canonicalNameNotFound'));
+      }
 
       if (!appId || !grantCode) {
         throw new errors.NotFoundError('App not found or ready',
           generateErrorCode('tokens', 'notFound', 'appNotFound'));
       }
-      const extensionInstallationRequest = getFetchExtensionInstallationRequest(appId.id);
+      
+      const extensionInstallationRequest = getFetchExtensionInstallationRequest(appId.id, canonicalName);
 
       try {
         const installationResponse = await request(extensionInstallationRequest);

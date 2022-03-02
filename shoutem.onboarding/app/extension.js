@@ -6,5 +6,5 @@
 import { OnboardingScreen } from './screens';
 
 export const screens = {
-  OnboardingScreen
+  OnboardingScreen,
 };

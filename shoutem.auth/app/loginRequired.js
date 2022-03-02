@@ -10,7 +10,7 @@ import {
   withIsFocused,
 } from 'shoutem.navigation';
 import { ext } from './const';
-import { isAuthenticated } from './redux';
+import { isAuthenticated, loginInitialized } from './redux';
 
 // function that decorates given Screen with loginRequired property
 // Screen decorated with that property should first open LoginScreen if user isn't logged in
@@ -37,7 +37,12 @@ export function withLoginRequired(WrappedComponent) {
     };
 
     handleFocus() {
-      const { route, isAuthenticated, allScreensProtected } = this.props;
+      const {
+        route,
+        isAuthenticated,
+        allScreensProtected,
+        loginInitialized,
+      } = this.props;
 
       const screenProtected =
         WrappedComponent.loginRequired !== false &&
@@ -48,14 +53,23 @@ export function withLoginRequired(WrappedComponent) {
       if (screenProtected && !isAuthenticated) {
         const previousRoute = _.get(route, 'params.previousRoute');
 
-        NavigationStacks.openStack(ext(), {
-          onLoginSuccess: () => NavigationStacks.closeStack(ext()),
+        loginInitialized({
+          openAuthFlow: () =>
+            NavigationStacks.openStack(ext(), {
+              onLoginSuccess: () => NavigationStacks.closeStack(ext()),
+              onCancel: () =>
+                NavigationStacks.closeStack(ext(), () =>
+                  navigateTo(previousRoute.name, {
+                    ...previousRoute.params,
+                  }),
+                ),
+              canGoBack: !!previousRoute,
+            }),
+          loginSuccessCallback: undefined,
           onCancel: () =>
-            NavigationStacks.closeStack(ext(), () =>
-              navigateTo(previousRoute.name, {
-                ...previousRoute.params,
-              }),
-            ),
+            navigateTo(previousRoute.name, {
+              ...previousRoute.params,
+            }),
           canGoBack: !!previousRoute,
         });
       }
@@ -75,11 +89,18 @@ export function withLoginRequired(WrappedComponent) {
     ),
   });
 
+  const mapDispatchToProps = {
+    loginInitialized,
+  };
+
   const resolvedMapStateToProps = FocusTriggerBase.createMapStateToProps(
     mapStateToProps,
   );
 
-  const ResultComponent = connect(resolvedMapStateToProps, null)(AuthComponent);
+  const ResultComponent = connect(
+    resolvedMapStateToProps,
+    mapDispatchToProps,
+  )(AuthComponent);
 
   return withIsFocused(ResultComponent);
 }

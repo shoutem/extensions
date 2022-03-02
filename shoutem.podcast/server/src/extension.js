@@ -6,5 +6,5 @@
 import DownloadPage from './pages/download-page';
 
 export const pages = {
-  DownloadPage,
+  DownloadPage
 };

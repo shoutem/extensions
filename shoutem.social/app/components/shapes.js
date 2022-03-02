@@ -39,4 +39,4 @@ const comment = shape({
   text: string,
 });
 
-export { user, post, comment };
+export { comment, post, user };

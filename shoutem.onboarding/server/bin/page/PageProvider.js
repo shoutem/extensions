@@ -1,4 +1,4 @@
-import { Component, Children } from 'react';
+import { Children, Component } from 'react';
 import PropTypes from 'prop-types';
 
 export default class PageProvider extends Component {

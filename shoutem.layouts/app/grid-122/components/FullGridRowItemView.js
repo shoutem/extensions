@@ -13,18 +13,18 @@ import {
 import { ext } from '../../const';
 
 export function FullGridRowItemView({
+  id,
   imageUrl,
-  item,
-  numberOfLines,
-  onPress,
-  renderActions,
-  style,
   subtitle,
   title,
+  onPress,
+  renderActions,
+  numberOfLines,
+  style,
 }) {
   function handlePress() {
     if (onPress) {
-      onPress(item);
+      onPress(id);
     }
   }
 
@@ -38,7 +38,7 @@ export function FullGridRowItemView({
       <ImageBackground style={style.imageContainer} source={{ uri: imageUrl }}>
         <Tile>
           <View styleName="actions" virtual>
-            {renderActions && renderActions(item)}
+            {!!renderActions && renderActions(id)}
           </View>
         </Tile>
       </ImageBackground>
@@ -56,7 +56,7 @@ export function FullGridRowItemView({
 }
 
 FullGridRowItemView.propTypes = {
-  item: PropTypes.object.isRequired,
+  id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   imageUrl: PropTypes.string,
   numberOfLines: PropTypes.number,

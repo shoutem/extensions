@@ -6,7 +6,6 @@ import { clear, isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
   Divider,
-  EmptyListImage,
   ListView,
   SearchField,
   Screen,
@@ -106,16 +105,12 @@ export function SearchScreen({
       <Divider styleName="line" />
       <ListView
         data={searchData}
+        emptyListMessage={resolveEmptyListMessage(text)}
+        emptyListTitle={resolveEmptyListTitle(text)}
         loading={isBusy(searchData)}
         contentContainerStyle={style.contentContainerStyle}
         onLoadMore={loadMore}
         renderRow={renderRow}
-        ListEmptyComponent={
-          <EmptyListImage
-            title={resolveEmptyListTitle(text)}
-            message={resolveEmptyListMessage(text)}
-          />
-        }
       />
     </Screen>
   );

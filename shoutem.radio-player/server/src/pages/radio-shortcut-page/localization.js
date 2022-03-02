@@ -9,6 +9,7 @@ const FORM_STREAM_FIELD_TITLE = `${key}.form-stream-field-title`;
 const FORM_SHARING_CHECKBOX_TITLE = `${key}.form-sharing-checkbox-title`;
 const FORM_ARTWORK_CHECKBOX_TITLE = `${key}.form-artwork-checkbox-title`;
 const BUTTON_SAVE = `${key}.form-button-save`;
+const LAYOUT_SPECIFIC_PROPERTIES_ALERT = `${key}.layout-specific-properties-alert`;
 
 export default {
   BACKGROUND_IMAGE_ALT_TEXT,
@@ -20,4 +21,5 @@ export default {
   FORM_SHARING_CHECKBOX_TITLE,
   FORM_ARTWORK_CHECKBOX_TITLE,
   BUTTON_SAVE,
+  LAYOUT_SPECIFIC_PROPERTIES_ALERT,
 };

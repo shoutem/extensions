@@ -8,16 +8,10 @@ import MyVideosList from './screens/MyVideosList';
 import VideoDetails from './screens/VideoDetails';
 import VideosCompactList from './screens/VideosCompactList';
 import VideosList from './screens/VideosList';
-// TODO: Remove VideosLargeList for next major release, currently deprecated
-import VideosLargeList from './screens/VideosLargeList';
-// TODO: Remove VideosSmallList for next major release, currently deprecated
-import VideosSmallList from './screens/VideosSmallList';
 
 export const screens = {
   VideosCompactList,
-  VideosSmallList,
   VideosList,
-  VideosLargeList,
   VideoDetails,
   VideoDetailsWithoutShare: VideoDetails,
   MyVideosList,

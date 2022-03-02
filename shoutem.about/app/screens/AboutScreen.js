@@ -358,7 +358,7 @@ export class AboutScreen extends PureComponent {
   }
 
   render() {
-    const { data, isFocused, profile } = this.props;
+    const { data, profile } = this.props;
 
     const isLoading = isBusy(data) || !isInitialized(data) || !isValid(data);
     const detailsStyle = { screenStyleName: 'paper' };
@@ -375,7 +375,7 @@ export class AboutScreen extends PureComponent {
         >
           <SimpleHtml body={profile.info} />
           <Map {...this.resolveMapProps(profile)} />
-          <OpeningHours htmlContent={profile.info} />
+          <OpeningHours htmlContent={profile.hours} />
           <FooterButtons buttons={this.resolveFooterButtons(profile)} />
         </DetailsLayout>
       </Screen>

@@ -1,161 +1,141 @@
-import React, { PureComponent } from 'react';
-import autoBind from 'auto-bind/react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connectStyle } from '@shoutem/theme';
 import {
+  Button,
   EmptyListImage,
   HorizontalPager,
   ImageBackground,
   PageIndicators,
-  Subtitle,
   Text,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
 import { getExtensionSettings } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-import { composeNavigationStyles, HeaderTextButton } from 'shoutem.navigation';
+import { composeNavigationStyles, goBack } from 'shoutem.navigation';
+import { images } from '../assets';
+import { ImageContent, TextContent } from '../components';
 import { ext } from '../const';
 import { setOnboardingCompleted } from '../redux';
-import { StyleOptions } from '../services';
 
-export class OnboardingScreen extends PureComponent {
-  static propTypes = {
-    closeModal: PropTypes.func,
-    pages: PropTypes.array,
-    style: PropTypes.object,
-  };
+function OnboardingScreen({
+  navigation,
+  route: {
+    params: { onOnboardingCompleted },
+  },
+  style,
+}) {
+  const dispatch = useDispatch();
 
-  constructor(props) {
-    super(props);
+  const extensionSettings = useSelector(state =>
+    getExtensionSettings(state, ext()),
+  );
+  const pages = _.get(extensionSettings, 'pageSettings', []);
 
-    autoBind(this);
+  const [currentPage, setCurrentPage] = useState(0);
 
-    this.state = {
-      currentPage: 0,
-    };
-  }
-
-  componentDidMount() {
-    const { navigation } = this.props;
-
+  useEffect(() => {
     navigation.setOptions({
-      ...this.getNavbarProps(),
-    });
-  }
-
-  componentDidUpdate() {
-    const { navigation } = this.props;
-
-    navigation.setOptions({
-      ...this.getNavbarProps(),
-    });
-  }
-
-  getNavbarProps() {
-    const { currentPage } = this.state;
-    const { pages } = this.props;
-
-    const lastPage = _.size(pages) === currentPage + 1;
-    const navBarText = lastPage
-      ? I18n.t(ext('continueButtonLabel'))
-      : I18n.t(ext('skipButtonLabel'));
-
-    return {
       ...composeNavigationStyles(['clear']),
       headerLeft: null,
-      headerRight: props => (
-        <HeaderTextButton
-          {...props}
-          onPress={this.closeModal}
-          title={navBarText}
-        />
-      ),
       title: '',
-    };
+    });
+  }, [navigation]);
+
+  useEffect(() => {
+    navigation.addListener('beforeRemove', e => {
+      e.preventDefault();
+    });
+  }, [navigation]);
+
+  function closeModal() {
+    goBack();
+    dispatch(setOnboardingCompleted({ onOnboardingCompleted }));
   }
 
-  closeModal() {
-    const { navigation, setOnboardingCompleted } = this.props;
-
-    setOnboardingCompleted().then(navigation.goBack);
-  }
-
-  setIndex(index) {
-    this.setState({ currentPage: index });
-  }
-
-  renderOverlay() {
-    const { currentPage } = this.state;
-    const { style, pages } = this.props;
-
+  function renderOverlay() {
     return (
-      <PageIndicators
-        activeIndex={currentPage}
-        count={_.size(pages)}
-        style={style.pageIndicators}
-      />
+      <View style={style.footerContainer}>
+        <PageIndicators
+          activeIndex={currentPage}
+          count={pages.length}
+          style={style.pageIndicators}
+        />
+        <Button style={style.button} onPress={closeModal}>
+          <Text>{I18n.t(ext('getStartedLabel'))}</Text>
+        </Button>
+      </View>
     );
   }
 
-  renderPage(page) {
-    const { style } = this.props;
-    const { title, description, imageUrl, textPosition } = page;
-
-    const textPositionStyle = StyleOptions.resolveTextPositionStyle(
-      textPosition,
-      style,
-    );
+  function renderPage(page, index) {
+    const { title, description, featuredImageUrl = null, textPosition } = page;
+    const hasFeaturedImage = !!featuredImageUrl;
 
     return (
-      <ImageBackground source={{ uri: imageUrl }} style={style.imageBackground}>
-        <View style={textPositionStyle} styleName="fill-parent md-gutter">
-          <Subtitle numberOfLines={1} styleName="sm-gutter-bottom h-center">
-            {title.toUpperCase()}
-          </Subtitle>
-          <Text numberOfLines={3} styleName="h-center">
-            {description}
-          </Text>
+      <ImageBackground
+        source={images[`image${index}`]}
+        style={style.imageBackground}
+        imageStyle={style.image}
+      >
+        <View styleName="fill-parent" style={style.container}>
+          {hasFeaturedImage && (
+            <ImageContent
+              title={title}
+              description={description}
+              featuredImage={images[`featuredImage${index}`]}
+              textPosition={textPosition}
+            />
+          )}
+          {!hasFeaturedImage && (
+            <TextContent
+              title={title}
+              description={description}
+              textPosition={textPosition}
+            />
+          )}
         </View>
       </ImageBackground>
     );
   }
 
-  render() {
-    const { currentPage } = this.state;
-    const { pages } = this.props;
-
-    if (_.isEmpty(pages)) {
-      return <EmptyListImage />;
-    }
-
+  if (pages.length === 0) {
     return (
-      <View>
-        <HorizontalPager
-          bounces
-          data={pages}
-          onIndexSelected={this.setIndex}
-          renderOverlay={this.renderOverlay}
-          renderPage={this.renderPage}
-          selectedIndex={currentPage}
-        />
-      </View>
+      <EmptyListImage
+        title={I18n.t(ext('noPagesTitle'))}
+        message={I18n.t(ext('noPagesMessage'))}
+      />
     );
   }
+
+  return (
+    <View>
+      <HorizontalPager
+        bounces
+        data={pages}
+        onIndexSelected={setCurrentPage}
+        renderOverlay={renderOverlay}
+        renderPage={renderPage}
+        selectedIndex={currentPage}
+      />
+    </View>
+  );
 }
 
-function mapStateToProps(state) {
-  const extensionSettings = getExtensionSettings(state, ext());
-  const pages = _.get(extensionSettings, 'pageSettings', []);
+OnboardingScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      onOnboardingCompleted: PropTypes.func.isRequired,
+    }).isRequired,
+  }).isRequired,
+  style: PropTypes.object,
+};
 
-  return {
-    pages,
-  };
-}
-const mapDispatchToProps = { setOnboardingCompleted };
+OnboardingScreen.defaultProps = {
+  style: {},
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(connectStyle(ext('OnboardingScreen'))(OnboardingScreen));
+export default connectStyle(ext('OnboardingScreen'))(OnboardingScreen);

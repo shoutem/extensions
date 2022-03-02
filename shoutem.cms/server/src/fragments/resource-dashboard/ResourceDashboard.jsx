@@ -17,6 +17,7 @@ import {
   renameCategory,
   deleteCategory,
   deleteResource,
+  dragAndDropCategory,
   getMainCategoryId,
   getIncludeProperties,
   updateResourceCategories,
@@ -201,6 +202,11 @@ export class ResourceDashboard extends Component {
     );
   }
 
+  handleCategoryDragAndDrop(categoryId, index) {
+    const { dragAndDropCategory, parentCategoryId } = this.props;
+    return dragAndDropCategory(parentCategoryId, categoryId, index);
+  }
+
   handleDeleteResourceClick(resource) {
     const { id, title } = resource;
 
@@ -246,6 +252,7 @@ export class ResourceDashboard extends Component {
             onCategoryUpdate={this.handleCategoryRename}
             onCategoryDelete={this.handleCategoryDelete}
             onCategorySelected={this.props.onCategorySelected}
+            onDragAndDropComplete={this.handleCategoryDragAndDrop}
             selectedCategoryId={selectedCategoryId}
             staticCategories={[mainCategoryId]}
           />
@@ -318,6 +325,8 @@ function mapDispatchToProps(dispatch, ownProps) {
         renameCategory(appId, parentCategoryId, categoryId, categoryName),
       ),
     deleteCategory: categoryId => dispatch(deleteCategory(appId, categoryId)),
+    dragAndDropCategory: (parentCategoryId, categoryId, index) =>
+      dispatch(dragAndDropCategory(appId, parentCategoryId, categoryId, index)),
     deleteResource: resourceId =>
       dispatch(deleteResource(appId, resourceId, canonicalName)),
     updateResourceCategories: (categoryIds, resource) =>

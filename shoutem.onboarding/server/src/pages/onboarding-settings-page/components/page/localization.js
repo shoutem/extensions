@@ -2,6 +2,7 @@ const key = 'onboarding-components-page';
 
 const PAGE_DESCRIPTION = `${key}.page-description`;
 const PAGE_IMAGE = `${key}.page-image`;
+const FEATURED_IMAGE = `${key}.page-featured-image`;
 const PAGE_TITLE = `${key}.page-title`;
 const DELETE_TITLE = `${key}.delete-title`;
 const DELETE_MESSAGE = `${key}.delete-message`;
@@ -17,6 +18,7 @@ export default {
   DELETE_MESSAGE,
   DELETE_BTN_LABEL,
   DELETE_BTN_MESSAGE,
+  FEATURED_IMAGE,
   PAGE_DESCRIPTION,
   PAGE_IMAGE,
   PAGE_TITLE,

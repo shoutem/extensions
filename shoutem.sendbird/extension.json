@@ -1,11 +1,11 @@
 {
   "name": "sendbird",
   "title": "SendBird Chat",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "platform": "^4 || ^5",
   "icon": "./server/assets/chat.png",
   "description": "Connect your users with real-time chat!",
-  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
+  "releaseNotes": "* Added translation strings for empty search results",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",
