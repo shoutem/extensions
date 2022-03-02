@@ -6,6 +6,7 @@ export async function getTrackArtwork(songName) {
   )}&media=music&limit=1`;
 
   try {
+    // eslint-disable-next-line no-undef
     const response = await fetch(itunesEndpoint).then(res => res.json());
 
     return _.get(response, ['results', 0, 'artworkUrl100'], null);

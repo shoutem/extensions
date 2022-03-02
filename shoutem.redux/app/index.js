@@ -1,8 +1,8 @@
 import React from 'react';
 import { priorities, setPriority } from 'shoutem-core';
-import { StoreProvider } from './providers';
-import { createStore } from './services/store';
 import { preventStateRehydration } from './services/state';
+import { createStore } from './services/store';
+import { StoreProvider } from './providers';
 
 let store = null;
 
@@ -12,17 +12,11 @@ export const appWillMount = setPriority(app => {
 }, priorities.INIT);
 
 export function renderProvider(children) {
-  return (
-    <StoreProvider store={store}>
-      {children}
-    </StoreProvider>
-  );
-};
+  return <StoreProvider store={store}>{children}</StoreProvider>;
+}
 
 export function getStore() {
   return store;
 }
 
-export {
-  preventStateRehydration,
-};
+export { preventStateRehydration };

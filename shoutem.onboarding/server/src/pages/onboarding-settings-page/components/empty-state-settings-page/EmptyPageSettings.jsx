@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
-import i18next from 'i18next';
 import autoBindReact from 'auto-bind/react';
-import { LoaderContainer, EmptyResourcePlaceholder } from '@shoutem/react-web-ui';
+import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import emptyImage from 'src/assets/empty-state.svg';
+import {
+  EmptyResourcePlaceholder,
+  LoaderContainer,
+} from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -46,9 +49,7 @@ export default class EmptyPageSettings extends Component {
         imageSrc={emptyImage}
         title={i18next.t(LOCALIZATION.TITLE)}
       >
-        <p>
-          {i18next.t(LOCALIZATION.MESSAGE)}
-        </p>
+        <p>{i18next.t(LOCALIZATION.MESSAGE)}</p>
         <Button
           bsSize="large"
           bsStyle="primary"
@@ -58,8 +59,10 @@ export default class EmptyPageSettings extends Component {
             {i18next.t(LOCALIZATION.BUTTON_LABEL)}
           </LoaderContainer>
         </Button>
-        { error && <p className="text-error">{i18next.t(LOCALIZATION.ERROR_MESSAGE)}</p>}
-      </EmptyResourcePlaceholder >
+        {error && (
+          <p className="text-error">{i18next.t(LOCALIZATION.ERROR_MESSAGE)}</p>
+        )}
+      </EmptyResourcePlaceholder>
     );
   }
 }

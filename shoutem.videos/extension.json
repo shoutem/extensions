@@ -1,10 +1,10 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "5.0.1",
+  "version": "6.0.0",
   "platform": "^5",
   "description": "Show a video gallery",
-  "releaseNotes": "* Replaced loading spinner with animated placeholder\n* Added My Videos screen for favorites\n* NOTE: If you have a custom extension extending this one, you may need to update it as there are breaking changes",
+  "releaseNotes": "* Removed deprecated VideosSmallList and VideosLargeList screens. Use VideosCompactList and VideosList instead, respectively\n* Removed animated loading placeholder when loading more list items",
   "icon": "server/assets/add-videos-image.png",
   "dependencies": [
     "shoutem.cms",

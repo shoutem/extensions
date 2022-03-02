@@ -1,6 +1,6 @@
 {
   "name": "shoutem.user-profile",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "description": "Add extended user profile",
   "scripts": {
     "lint": "eslint --no-eslintrc src/**/*.{js,jsx}",
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "^0.16.3",
+    "@shoutem/react-web-ui": "0.16.8",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-composers": "^0.1.6",
     "@shoutem/redux-io": "^3.2.1",

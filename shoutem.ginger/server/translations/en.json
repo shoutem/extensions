@@ -1,0 +1,16 @@
+{
+  "shoutem": {
+    "ginger": {
+      "general-settings-title": "Settings",
+      "general-settings-api-key-title": "Store API key",
+      "general-settings-save-button": "SAVE",
+      "general-settings-reatilers-title": "List of retailers (JSON)",
+      "general-settings-retailers-placeholder": "[{ 'name': 'RetailerName', 'licence': 'ABCD123-45' }]",
+      "general-settings-support-email-title": "Support email",
+      "general-settings-page-background-image-title": "Background image",
+      "general-settings-invalid-json": "Invalid JSON.",
+      "terms-of-service": "Terms of Service",
+      "privacy-policy": "Privacy policy"
+    }
+  }
+}

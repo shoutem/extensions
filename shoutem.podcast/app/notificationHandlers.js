@@ -1,9 +1,17 @@
+import { Alert } from 'react-native';
 import _ from 'lodash';
+import { getShortcut } from 'shoutem.application';
 import { NotificationHandlers } from 'shoutem.firebase';
-import { displayLocalNotification } from 'shoutem.rss';
+import { I18n } from 'shoutem.i18n';
 import { openInModal } from 'shoutem.navigation';
 import { resolveNotificationData } from 'shoutem.push-notifications';
-import { ext, EPISODE_DETAILS_SCREEN, PODCAST_SCHEMA_ITEM } from './const';
+import { displayLocalNotification, ext as rssExt } from 'shoutem.rss';
+import {
+  EPISODE_DETAILS_SCREEN,
+  EPISODES_LIST_SCREEN,
+  ext,
+  PODCAST_SCHEMA_ITEM,
+} from './const';
 import { fetchEpisodesFeed, getFeedUrl } from './redux';
 
 function canHandle(notification) {
@@ -32,16 +40,33 @@ function consumeNotification(notification, store) {
     return;
   }
 
+  const { itemId, shortcutId } = notification;
+  const { dispatch } = store;
   const state = store.getState();
-  const feedUrl = getFeedUrl(state, notification.shortcutId);
+  const feedUrl = getFeedUrl(state, shortcutId);
 
-  store
-    .dispatch(fetchEpisodesFeed(notification.shortcutId))
-    .then(({ payload: { data: episodes } }) => {
-      const id = getItemId(episodes, notification.itemId);
+  dispatch(fetchEpisodesFeed(shortcutId)).then(
+    ({ payload: { data: episodes } }) => {
+      const id = getItemId(episodes, itemId);
+
+      // When we can't find notification item in the feed, we want to at least
+      // open the relevant Podcast list screen for a better UX.
+      if (!id) {
+        const shortcut = getShortcut(state, shortcutId);
+
+        openInModal(EPISODES_LIST_SCREEN, { shortcut });
+
+        Alert.alert(
+          I18n.t(rssExt('itemNotFoundTitle')),
+          I18n.t(rssExt('itemNotFoundMessage')),
+        );
+
+        return;
+      }
 
       openInModal(EPISODE_DETAILS_SCREEN, { id, feedUrl });
-    });
+    },
+  );
 }
 
 function handleForegroundNotification(receivedNotification, store) {

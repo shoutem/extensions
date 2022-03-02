@@ -8,8 +8,10 @@ export {
 } from './resource';
 export { loadSchema } from './schema';
 export {
+  initializeShortcutCategories,
   updateShortcutCategories,
   updateShortcutSortOptions,
+  updateShortcutOriginParentCategory,
 } from './shortcut';
 export { loadLanguages, loadLanguageModuleStatus } from './language';
 export {

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Dimensions, LayoutAnimation, PixelRatio } from 'react-native';
+import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 import slugify from '@sindresorhus/slugify';
 import autoBindReact from 'auto-bind/react';
@@ -9,7 +9,6 @@ import {
   EmptyStateView,
   Image,
   ImageBackground,
-  NAVIGATION_HEADER_HEIGHT,
   Overlay,
   Row,
   Screen,
@@ -37,26 +36,9 @@ import { images } from '../assets';
 import RadioPlayer from '../components/RadioPlayer';
 import { ext } from '../const';
 import { setTrackMetadata } from '../redux';
-import getWeServUrl from '../services/getWeServUrl';
-import { getTrackArtwork } from '../services/itunes';
+import { getResizedImageSource, getTrackArtwork } from '../services';
 
 const overlayStyle = { marginBottom: 0 };
-
-function getResizedImageSource(backgroundImageUrl) {
-  if (!backgroundImageUrl) {
-    return null;
-  }
-
-  const { width, height } = Dimensions.get('window');
-  const imageWidth = PixelRatio.getPixelSizeForLayoutSize(width);
-  const imageHeight = PixelRatio.getPixelSizeForLayoutSize(
-    height - NAVIGATION_HEADER_HEIGHT,
-  );
-
-  return {
-    uri: getWeServUrl(backgroundImageUrl, imageWidth, imageHeight),
-  };
-}
 
 function renderPlaceholderView() {
   return <EmptyStateView message={I18n.t(ext('missingStreamUrl'))} />;
@@ -72,6 +54,7 @@ export class Radio extends PureComponent {
       playbackState: STATE_STOPPED,
       artist: '',
       songName: '',
+      artwork: '',
     };
   }
 
@@ -100,9 +83,9 @@ export class Radio extends PureComponent {
     }
     return (
       <ShareButton
-        message={`Stream address: ${streamUrl}`}
+        message={I18n.t(ext('shareMessage'), { streamUrl })}
         styleName="clear"
-        title={`Currently listening to ${streamTitle}`}
+        title={I18n.t(ext('shareTitle'), { streamTitle })}
         url={streamUrl}
         iconProps={{ style: props.tintColor }}
       />
@@ -129,12 +112,12 @@ export class Radio extends PureComponent {
     }
 
     const artwork = await getTrackArtwork(title);
-    const resolvedImage = !!artwork ? { uri: artwork } : images.music;
+    const resolvedImage = artwork ? { uri: artwork } : images.music;
 
     const updates = {
       artist,
       songName: title,
-      musicImage: resolvedImage,
+      artwork: resolvedImage,
     };
 
     const id = slugify(`${streamUrl}`);
@@ -179,7 +162,7 @@ export class Radio extends PureComponent {
     const {
       settings: { backgroundImageUrl, streamTitle, streamUrl, showArtwork },
     } = shortcut;
-    const { playbackState, artist, songName, musicImage } = this.state;
+    const { playbackState, artist, songName, artwork } = this.state;
 
     if (!streamUrl) {
       return renderPlaceholderView();
@@ -189,7 +172,7 @@ export class Radio extends PureComponent {
     const isPlaying = playbackState === STATE_PLAYING;
     const bgImage = getResizedImageSource(backgroundImageUrl);
     // eslint-disable-next-line global-require
-    const musicImageStyle = isPlaying ? {} : style.hiddenImage;
+    const artworkStyle = isPlaying ? {} : style.hiddenImage;
 
     return (
       <Screen>
@@ -210,8 +193,8 @@ export class Radio extends PureComponent {
             <Row style={style.clearRow}>
               {!!showArtwork && (
                 <Image
-                  source={musicImage}
-                  style={musicImageStyle}
+                  source={artwork}
+                  style={artworkStyle}
                   styleName="small"
                 />
               )}

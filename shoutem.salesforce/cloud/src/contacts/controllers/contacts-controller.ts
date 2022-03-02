@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import request from 'request-promise';
 import { asyncMiddleware } from '../../shared/express';
 import { errors, generateErrorCode } from '../../shared/error';
+import { ALLOWED_CANONICAL_NAMES } from '../../const';
 import { getAppId } from '../../main';
 import { tokensRepository } from '../../tokens';
 import { getFetchExtensionInstallationRequest } from '../../tokens';
@@ -13,13 +14,19 @@ export class ContactsController {
     return asyncMiddleware(async (req: Request, res: Response) => {
       const appId = getAppId(req);
       const email = _.get(req, 'body.email');
+      const canonicalName = _.get(req, 'body.canonicalName', 'shoutem.salesforce');
+
+      if (!_.includes(ALLOWED_CANONICAL_NAMES, canonicalName)) {
+        throw new errors.ForbiddenError('Forbidden',
+          generateErrorCode('tokens', 'forbidden', 'canonicalNameNotFound'));
+      }
 
       if (!appId || !email) {
         throw new errors.NotFoundError('Wrong appId or no email provided',
           generateErrorCode('contacts', 'notFound', 'appNotFound'));
       }
 
-      const extensionInstallationRequest = getFetchExtensionInstallationRequest(appId.id);
+      const extensionInstallationRequest = getFetchExtensionInstallationRequest(appId.id, canonicalName);
       const installationResponse = await request(extensionInstallationRequest);
       const installationResponseJson = JSON.parse(installationResponse.body);
       const extensionSettings = _.get(installationResponseJson, 'data.attributes.settings', {});
@@ -42,13 +49,19 @@ export class ContactsController {
     return asyncMiddleware(async (req: Request, res: Response) => {
       const appId = getAppId(req);
       const email = _.get(req, 'body.email');
+      const canonicalName = _.get(req, 'body.canonicalName', 'shoutem.salesforce');
+
+      if (!_.includes(ALLOWED_CANONICAL_NAMES, canonicalName)) {
+        throw new errors.ForbiddenError('Forbidden',
+          generateErrorCode('tokens', 'forbidden', 'canonicalNameNotFound'));
+      }
 
       if (!appId || !email) {
         throw new errors.NotFoundError('Wrong appId or no email provided',
           generateErrorCode('contacts', 'notFound', 'appNotFound'));
       }
 
-      const extensionInstallationRequest = getFetchExtensionInstallationRequest(appId.id);
+      const extensionInstallationRequest = getFetchExtensionInstallationRequest(appId.id, canonicalName);
       const installationResponse = await request(extensionInstallationRequest);
       const installationResponseJson = JSON.parse(installationResponse.body);
       const extensionSettings = _.get(installationResponseJson, 'data.attributes.settings', {});

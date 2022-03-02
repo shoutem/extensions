@@ -1,201 +1,127 @@
+/* eslint-disable camelcase */
 import React from 'react';
-import _ from 'lodash';
-import moment from 'moment';
+import { Pressable } from 'react-native';
 import PropTypes from 'prop-types';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
-import {
-  View,
-  Image,
-  Subtitle,
-  Caption,
-  Divider,
-  TouchableOpacity,
-  Lightbox,
-  Button,
-  Icon,
-} from '@shoutem/ui';
+import { Text, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { navigateTo } from 'shoutem.navigation';
 import { ext } from '../const';
-import { adaptSocialUserForProfileScreen, formatLikeText } from '../services';
-import CommentButton from './CommentButton';
-import HtmlTextView from './HtmlTextView';
-import LikeButton from './LikeButton';
-import { post as postShape } from './shapes';
+import Interactions from './Interactions';
+import StatusContent from './StatusContent';
+import StatusHeader from './StatusHeader';
 
 function StatusView({
   status,
+  enableComments,
   enableImageFullScreen,
   enableInteractions,
-  enableComments,
-  showUsersWhoLiked,
-  openProfile,
-  openStatusDetails,
-  onMenuPress,
-  openUserLikes,
-  addComment,
-  onLikeAction,
+  enablePhotoAttachments,
+  goBackAfterBlock,
+  showNewCommentInput,
   style,
 }) {
-  const handleOpenStatusDetails = () => {
-    openStatusDetails(status.id);
-  };
+  if (!status) {
+    return null;
+  }
 
-  const handleClickOnUser = () => {
-    const user = _.get(status, 'user');
+  const {
+    id,
+    created_at,
+    liked,
+    shoutem_attachments,
+    shoutem_favorited_by,
+    shoutem_reply_count,
+    text,
+    user,
+  } = status;
+  const {
+    id: userId,
+    first_name,
+    last_name,
+    profile_image_url,
+    screen_name,
+  } = user;
 
-    openProfile(adaptSocialUserForProfileScreen(user));
-  };
-
-  const handleClickOnLikes = () => {
-    openUserLikes(status);
-  };
-
-  const renderHeader = () => {
-    // eslint-disable-next-line camelcase
-    const created_at = _.get(status, 'user');
-    const user = _.get(status, 'user');
-
-    const userProfileImage = user?.profile_image_url || undefined;
-
-    const handleMenuPress = () => onMenuPress(status);
-
-    return (
-      <View styleName="horizontal v-center space-between stretch">
-        <View styleName="horizontal v-center">
-          <TouchableOpacity onPress={handleClickOnUser}>
-            <Image
-              source={{ uri: userProfileImage }}
-              styleName="small-avatar placeholder"
-            />
-          </TouchableOpacity>
-          <View styleName="vertical md-gutter-left">
-            <Subtitle>{`${user?.screen_name || user?.name}`}</Subtitle>
-            <Caption>{moment(created_at).fromNow()}</Caption>
-          </View>
-        </View>
-        <Button onPress={handleMenuPress} styleName="clear tight">
-          <Icon name="more-horizontal" style={style.menuButton} />
-        </Button>
-      </View>
-    );
-  };
-
-  const renderStatusText = () => {
-    const text = _.get(status, 'text');
-
-    return (
-      <TouchableOpacity onPress={handleOpenStatusDetails}>
-        <View>
-          <HtmlTextView styleName="md-gutter-top" text={text} />
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
-  const renderStatusAttachments = () => {
-    const attachments = _.get(status, 'shoutem_attachments');
-    const hasPicture = _.get(attachments, [0, 'type']) === 'picture';
-
-    if (!hasPicture) {
-      return null;
-    }
-
-    if (enableImageFullScreen) {
-      return (
-        <Lightbox activeProps={{ styleName: 'preview' }}>
-          <Image
-            source={{ uri: attachments[0].url_large }}
-            styleName="large-wide"
-          />
-        </Lightbox>
-      );
-    }
-
-    return (
-      <Image
-        source={{ uri: attachments[0].url_large }}
-        styleName="large-wide"
-      />
-    );
-  };
-
-  const renderLikesAndCommentsInfo = () => {
-    const likesDisplayLabel = formatLikeText(status, showUsersWhoLiked);
-    const numOfComments = _.get(status, 'shoutem_reply_count', 0);
-    const commentsDisplayLabel = I18n.t(ext('numberOfComments'), {
-      count: numOfComments,
+  function handleOpenDetails() {
+    navigateTo(ext('StatusDetailsScreen'), {
+      statusId: id,
+      enableComments,
+      enableInteractions,
+      enablePhotoAttachments,
+      focusAddCommentInput: true,
     });
+  }
 
-    if (!enableInteractions && !enableComments) {
-      return <View styleName="sm-gutter" />;
-    }
-
-    return (
-      <View styleName="horizontal solid space-between md-gutter">
-        {enableInteractions && (
-          <TouchableOpacity onPress={handleClickOnLikes}>
-            <Caption>{likesDisplayLabel}</Caption>
-          </TouchableOpacity>
-        )}
-        {enableComments && (
-          <TouchableOpacity onPress={handleOpenStatusDetails}>
-            <Caption>{commentsDisplayLabel}</Caption>
-          </TouchableOpacity>
-        )}
-      </View>
-    );
-  };
-
-  const renderButtons = () => {
-    return (
-      <View styleName="horizontal flexible">
-        <Divider styleName="line" />
-        {enableInteractions && (
-          <LikeButton onLikeAction={onLikeAction} status={status} />
-        )}
-        {enableComments && (
-          <CommentButton addComment={addComment} status={status} />
-        )}
-        <Divider styleName="line" />
-      </View>
-    );
-  };
+  const resolvedShowNewCommentInput = enableComments && showNewCommentInput;
 
   return (
-    <View styleName="vertical">
-      <View styleName="vertical solid md-gutter">
-        {renderHeader()}
-        {renderStatusText()}
-      </View>
-      <TouchableOpacity onPress={handleOpenStatusDetails}>
-        {renderStatusAttachments()}
-      </TouchableOpacity>
-      {renderLikesAndCommentsInfo()}
-      {renderButtons()}
+    <View style={style.container}>
+      <StatusHeader
+        createdAt={created_at}
+        firstName={first_name}
+        goBackAfterBlock={goBackAfterBlock}
+        lastName={last_name}
+        profileImageUrl={profile_image_url}
+        screenName={screen_name}
+        userId={userId}
+      />
+      <StatusContent
+        enableComments={enableComments}
+        enableImageFullScreen={enableImageFullScreen}
+        enableInteractions={enableInteractions}
+        enablePhotoAttachments={enablePhotoAttachments}
+        text={text}
+        leadAttachmentUrl={shoutem_attachments[0]?.url_large}
+        statusId={id}
+      />
+      <Interactions
+        commentCount={shoutem_reply_count}
+        enableComments={enableComments}
+        enableInteractions={enableInteractions}
+        enablePhotoAttachments={enablePhotoAttachments}
+        statusId={id}
+        statusLiked={liked}
+        usersWhoLiked={shoutem_favorited_by.users}
+        likedCount={shoutem_favorited_by.count}
+      />
+      {resolvedShowNewCommentInput && (
+        <Pressable style={style.newComment} onPress={handleOpenDetails}>
+          <Text style={style.placeholderText}>
+            {I18n.t(ext('newCommentPlaceholder'))}
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
 }
 
 StatusView.propTypes = {
-  status: postShape.isRequired,
-  addComment: PropTypes.func.isRequired,
-  openUserLikes: PropTypes.func.isRequired,
-  openStatusDetails: PropTypes.func,
-  onLikeAction: PropTypes.func,
-  openProfile: PropTypes.func,
-  showUsersWhoLiked: PropTypes.bool,
-  onMenuPress: PropTypes.func,
+  enableComments: PropTypes.bool.isRequired,
+  enableInteractions: PropTypes.bool.isRequired,
+  enablePhotoAttachments: PropTypes.bool.isRequired,
   enableImageFullScreen: PropTypes.bool,
-  enableInteractions: PropTypes.bool,
-  enableComments: PropTypes.bool,
+  goBackAfterBlock: PropTypes.bool,
+  showNewCommentInput: PropTypes.bool,
+  status: PropTypes.shape({
+    created_at: PropTypes.string,
+    id: PropTypes.number,
+    liked: PropTypes.bool,
+    shoutem_attachments: PropTypes.array,
+    shoutem_favorited_by: PropTypes.object,
+    shoutem_reply_count: PropTypes.number,
+    text: PropTypes.string,
+    user: PropTypes.object,
+  }),
   style: PropTypes.object,
 };
 
 StatusView.defaultProps = {
   enableImageFullScreen: false,
-  enableInteractions: true,
-  enableComments: true,
-  openStatusDetails: _.noop,
+  goBackAfterBlock: false,
+  showNewCommentInput: true,
+  status: undefined,
+  style: {},
 };
 
 export default connectStyle(ext('StatusView'))(StatusView);

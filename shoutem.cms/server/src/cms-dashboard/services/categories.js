@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-function isMainCategory(category) {
+export function isMainCategory(category) {
   const { index, autoCreated } = category;
   return autoCreated && index === 0;
 }
@@ -11,9 +11,11 @@ function isChildCategory(category, parentCategoryId) {
 }
 
 export function getMainCategoryId(parentCategoryId, categories) {
-  const mainCategory = _.find(categories, category => (
-    isMainCategory(category) && isChildCategory(category, parentCategoryId)
-  ));
+  const mainCategory = _.find(
+    categories,
+    category =>
+      isMainCategory(category) && isChildCategory(category, parentCategoryId),
+  );
 
   return _.get(mainCategory, 'id', null);
 }

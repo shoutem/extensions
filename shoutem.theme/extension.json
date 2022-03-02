@@ -1,11 +1,11 @@
 {
   "name": "theme",
-  "version": "4.0.3",
+  "version": "4.1.1",
   "platform": "^5",
   "type": "system",
   "title": "Theme",
   "description": "Resolve and store theme related configuration",
-  "releaseNotes": "* Updated UI library version\n* Set specific dependency versions instead of using semver ranges",
+  "releaseNotes": "* Updated UI library version to 4.9.1",
   "icon": "server/assets/add-theme-image.png",
   "categories": []
 }

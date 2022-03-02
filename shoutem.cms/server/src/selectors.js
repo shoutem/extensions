@@ -27,6 +27,10 @@ export function getChildCategories(state) {
   return getCategories(state, 'child');
 }
 
+export function getCategory(categoryId) {
+  return denormalizeItem(categoryId, undefined, CATEGORIES);
+}
+
 export function getLanguageModuleStatus(state) {
   const cmsState = getCmsState(state);
   const rawLanguageModule = _.get(cmsState, 'rawLanguageModule');

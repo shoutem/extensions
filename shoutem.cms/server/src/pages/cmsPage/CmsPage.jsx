@@ -8,6 +8,7 @@ import {
   shouldLoad,
   shouldRefresh,
   isBusy,
+  isValid,
   isInitialized,
 } from '@shoutem/redux-io';
 import { AssetManager } from '@shoutem/assets-sdk';
@@ -17,6 +18,7 @@ import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { Checkbox, ControlLabel } from 'react-bootstrap';
 import {
+  getCategory,
   getCategories,
   getChildCategories,
   getImporters,
@@ -30,6 +32,7 @@ import { addSchemasToDenormalizer } from '../../denormalizer';
 import { trackEvent } from '../../providers/analytics';
 import {
   shoutemUrls,
+  renameCategory,
   createResourceWithRelationships,
   updateResourceWithRelationships,
   getMainCategoryId,
@@ -45,6 +48,7 @@ import {
   loadReferenceResources,
   loadSchema,
   updateShortcutSortOptions,
+  updateShortcutOriginParentCategory,
 } from '../../actions';
 import { updateShortcutSettings } from '../../builder-sdk';
 import {
@@ -62,10 +66,13 @@ import {
   translateSchema,
   getSortOptions,
   getParentCategoryId,
+  getOriginParentCategoryId,
   getVisibleCategoryIds,
   checkStatusOfImporters,
   getImporterCapabilities,
   canExportData,
+  getShortcutTitle,
+  getCategoryName,
 } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';
@@ -144,6 +151,8 @@ export class CmsPage extends PureComponent {
     const { schema } = props;
     const { showImporters, selectedCategoryId, parentCategoryId } = this.state;
 
+    const originParentCategoryId = getOriginParentCategoryId(nextShortcut);
+
     const nextParentCategoryId = getParentCategoryId(nextShortcut);
     if (parentCategoryId !== nextParentCategoryId && nextParentCategoryId) {
       this.setState({
@@ -210,6 +219,33 @@ export class CmsPage extends PureComponent {
       );
       if (selectedCategoryId === null && mainCategoryId) {
         this.setState({ selectedCategoryId: mainCategoryId });
+      }
+    }
+
+    // sync origin parent category with parent category if origin doesn't exist
+    if (!originParentCategoryId && parentCategoryId && !isBusy(nextShortcut)) {
+      this.props.updateShortcutOriginParentCategory(
+        nextShortcut,
+        parentCategoryId,
+      );
+    }
+
+    // sync parent category name with shortcut title only if it is origin parent category
+    const shortcutTitle = getShortcutTitle(nextShortcut);
+    const parentCategory = getCategory(nextParentCategoryId);
+    const categoryName = getCategoryName(parentCategory);
+    if (
+      originParentCategoryId === nextParentCategoryId &&
+      isInitialized(parentCategory) &&
+      !isBusy(nextCategories) &&
+      isValid(nextCategories)
+    ) {
+      if (shortcutTitle !== categoryName) {
+        this.props.renameCategory(
+          nextParentCategoryId,
+          nextParentCategoryId,
+          shortcutTitle,
+        );
       }
     }
   }
@@ -286,7 +322,6 @@ export class CmsPage extends PureComponent {
       { isInAppContentSearchEnabled: !isInAppContentSearchEnabled },
       () =>
         updateShortcutSettings(shortcut, {
-          ...shortcut.settings,
           isInAppContentSearchEnabled: !isInAppContentSearchEnabled,
         }),
     );
@@ -503,6 +538,7 @@ CmsPage.propTypes = {
   loadLanguages: PropTypes.func,
   loadCategories: PropTypes.func,
   createCategory: PropTypes.func,
+  renameCategory: PropTypes.func,
   loadSchema: PropTypes.func,
   updateSortOptions: PropTypes.func,
   createResourceWithRelationships: PropTypes.func,
@@ -513,6 +549,7 @@ CmsPage.propTypes = {
   canonicalName: PropTypes.string,
   childCategories: PropTypes.array,
   loadChildCategories: PropTypes.func,
+  updateShortcutOriginParentCategory: PropTypes.func,
 };
 
 function mapStateToProps(state) {
@@ -591,8 +628,16 @@ function mapDispatchToProps(dispatch) {
     createCategory: shortcut => dispatch(createCategory(shortcut)),
     updateSortOptions: (shortcut, sortOptions) =>
       dispatch(updateShortcutSortOptions(shortcut, sortOptions)),
+    updateShortcutOriginParentCategory: (shortcut, originParentCategoryId) =>
+      dispatch(
+        updateShortcutOriginParentCategory(shortcut, originParentCategoryId),
+      ),
     updateShortcutSettings: (shortcut, settings) =>
       dispatch(updateShortcutSettings(shortcut, settings)),
+    renameCategory: (parentCategoryId, categoryId, categoryName) =>
+      dispatch(
+        renameCategory(appId, parentCategoryId, categoryId, categoryName),
+      ),
   };
 }
 

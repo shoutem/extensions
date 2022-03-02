@@ -4,6 +4,7 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import i18next from 'i18next';
 import { ConfirmModal, NestedSortable } from '@shoutem/react-web-ui';
+import { isMainCategory } from '../../services';
 import CategoryNameModal from '../category-name-modal';
 import CategoryTreeItem from '../category-tree-item';
 import LOCALIZATION from './localization';
@@ -14,6 +15,8 @@ const CREATE_CATEGORY_TEMPLATE = {
   icon: 'add',
   className: 'category-tree__create-category',
   isStatic: true,
+  isDraggable: false,
+  doesAllowDrop: false,
 };
 
 function generateTree(categories, staticCategories, categoryActionWhitelist) {
@@ -21,6 +24,8 @@ function generateTree(categories, staticCategories, categoryActionWhitelist) {
     id: category.id,
     actionWhitelist: _.get(categoryActionWhitelist, category.id, []),
     name: category.name,
+    doesAllowDrop: !isMainCategory(category),
+    isDraggable: !isMainCategory(category),
     isStatic: _.includes(staticCategories, category.id),
   }));
 
@@ -37,6 +42,7 @@ export default class CategoryTree extends Component {
     onCategoryUpdate: PropTypes.func,
     onCategoryCreate: PropTypes.func,
     onCategoryDelete: PropTypes.func,
+    onDragAndDropComplete: PropTypes.func,
   };
 
   constructor(props) {
@@ -99,6 +105,18 @@ export default class CategoryTree extends Component {
     });
   }
 
+  handleDragAndDropComplete(source, target) {
+    const index = _.get(target, 'index');
+    const categoryId = _.get(target, 'id');
+
+    // don't allow drop on index zero (zero index is main category)
+    if (index === 0) {
+      return;
+    }
+
+    this.props.onDragAndDropComplete(categoryId, index);
+  }
+
   renderCategoryItem(categoryItem) {
     return (
       <CategoryTreeItem
@@ -120,11 +138,11 @@ export default class CategoryTree extends Component {
     return (
       <div>
         <NestedSortable
-          className="category-tree"
-          disableDropIntoRoot
           isHorizontal
+          className="category-tree"
           nodeHeaderTemplate={this.renderCategoryItem}
           onSelect={this.handleCategorySelected}
+          onDragAndDropComplete={this.handleDragAndDropComplete}
           selectedId={selectedCategoryId}
           tree={tree}
         />

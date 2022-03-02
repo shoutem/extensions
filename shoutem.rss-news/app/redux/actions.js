@@ -1,17 +1,18 @@
-import _ from 'lodash';
+import { find } from '@shoutem/redux-io';
 import { getExtensionSettings, getShortcut } from 'shoutem.application';
 import { buildFeedUrlWithEndpoint, ext as rssExt } from 'shoutem.rss';
-import { find } from '@shoutem/redux-io';
-import { RSS_NEWS_SCHEMA } from '../const';
+import { DEFAULT_PAGE_LIMIT, RSS_NEWS_SCHEMA } from '../const';
 
-export function fetchNewsFeed(shortcutId) {
+export function fetchNewsFeed(
+  shortcutId,
+  options = { pageLimit: DEFAULT_PAGE_LIMIT },
+) {
   return (dispatch, getState) => {
     return new Promise(resolve => {
       const state = getState();
-      const settings = getExtensionSettings(state, rssExt());
-      const baseApiEndpoint = _.get(settings, 'baseApiEndpoint');
+      const { baseApiEndpoint } = getExtensionSettings(state, rssExt());
       const shortcut = getShortcut(state, shortcutId);
-      const feedUrl = _.get(shortcut, 'settings.feedUrl');
+      const feedUrl = shortcut?.settings?.feedUrl;
 
       const config = {
         schema: RSS_NEWS_SCHEMA,
@@ -28,6 +29,7 @@ export function fetchNewsFeed(shortcutId) {
           find(config, 'latestNews', {
             query: {
               'filter[url]': feedUrl,
+              'page[limit]': options.pageLimit,
             },
           }),
         ),

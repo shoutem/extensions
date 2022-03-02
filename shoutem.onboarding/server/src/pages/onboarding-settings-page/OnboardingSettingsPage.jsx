@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import {
-  Button,
-  FormGroup,
-  HelpBlock,
-} from 'react-bootstrap';
+import { Button, FormGroup, HelpBlock } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import _ from 'lodash';
-import { LoaderContainer } from '@shoutem/react-web-ui';
-import { fetchExtension, updateExtensionSettings, getExtension } from '@shoutem/redux-api-sdk';
-import { isBusy } from '@shoutem/redux-io';
+import PropTypes from 'prop-types';
 import { AssetManager } from '@shoutem/assets-sdk';
-import { connect } from 'react-redux';
-import { Page } from './components/page';
+import { LoaderContainer } from '@shoutem/react-web-ui';
+import {
+  fetchExtension,
+  getExtension,
+  updateExtensionSettings,
+} from '@shoutem/redux-api-sdk';
+import { isBusy } from '@shoutem/redux-io';
 import { EmptyPageSettings } from './components/empty-state-settings-page';
+import { Page } from './components/page';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -38,18 +38,6 @@ function textPositionOptions() {
 }
 
 class OnboardingSettingsPage extends Component {
-  static propTypes = {
-    appId: PropTypes.string,
-    extension: PropTypes.object,
-    extensionSettings: PropTypes.object,
-    fetchExtension: PropTypes.func,
-    updateExtensionSettings: PropTypes.func,
-  };
-
-  static contextTypes = {
-    page: PropTypes.object.isRequired,
-  };
-
   constructor(props, context) {
     super(props, context);
 
@@ -62,7 +50,12 @@ class OnboardingSettingsPage extends Component {
     const appsUrl = _.get(page, 'pageContext.url.apps', {});
 
     this.textPositionOptions = textPositionOptions();
-    this.EMPTY_PAGE = { title: undefined, description: undefined, imageUrl: undefined, textPosition: this.textPositionOptions[1] };
+    this.EMPTY_PAGE = {
+      title: undefined,
+      description: undefined,
+      imageUrl: undefined,
+      textPosition: this.textPositionOptions[1],
+    };
 
     this.assetManager = new AssetManager({
       scopeType: 'application',
@@ -81,7 +74,7 @@ class OnboardingSettingsPage extends Component {
     const { extension, updateExtensionSettings } = this.props;
     const newPageSettings = [...pageSettings];
 
-    _.remove(newPageSettings, (page, key) => (key === index));
+    _.remove(newPageSettings, (_page, key) => key === index);
 
     this.setState({ pageSettings: newPageSettings });
 
@@ -132,7 +125,13 @@ class OnboardingSettingsPage extends Component {
   isFormValid() {
     const { pageSettings } = this.state;
 
-    const findEmptyFields = _.filter(pageSettings, page => _.isEmpty(page.imageUrl) || _.isEmpty(page.description) || _.isEmpty(page.title));
+    const findEmptyFields = _.filter(
+      pageSettings,
+      page =>
+        _.isEmpty(page.imageUrl) ||
+        _.isEmpty(page.description) ||
+        _.isEmpty(page.title),
+    );
 
     return _.isEmpty(findEmptyFields);
   }
@@ -181,13 +180,23 @@ class OnboardingSettingsPage extends Component {
             </LoaderContainer>
           </Button>
         </div>
-        <HelpBlock className="text-error">
-          {error}
-        </HelpBlock>
+        <HelpBlock className="text-error">{error}</HelpBlock>
       </div>
     );
   }
 }
+
+OnboardingSettingsPage.propTypes = {
+  appId: PropTypes.string.isRequired,
+  extension: PropTypes.object.isRequired,
+  extensionSettings: PropTypes.object.isRequired,
+  fetchExtension: PropTypes.func.isRequired,
+  updateExtensionSettings: PropTypes.func.isRequired,
+};
+
+OnboardingSettingsPage.contextTypes = {
+  page: PropTypes.object.isRequired,
+};
 
 function mapStateToProps(state, ownProps) {
   const { extensionName } = ownProps;
@@ -205,11 +214,12 @@ function mapDispatchToProps(dispatch, ownProps) {
 
   return {
     fetchExtension: () => dispatch(fetchExtension(extensionName)),
-    updateExtensionSettings: (extension, settings) => (
-      dispatch(updateExtensionSettings(extension, settings))
-    ),
+    updateExtensionSettings: (extension, settings) =>
+      dispatch(updateExtensionSettings(extension, settings)),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OnboardingSettingsPage);
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(OnboardingSettingsPage);

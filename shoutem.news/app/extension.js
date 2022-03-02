@@ -2,9 +2,9 @@
 // You should not change it
 
 // screens imports
+import ArticleDetailsScreen from './screens/ArticleDetailsScreen';
 import ArticlesScreen from './screens/ArticlesScreen';
 import GridArticlesScreen from './screens/GridArticlesScreen';
-import ArticleDetailsScreen from './screens/ArticleDetailsScreen';
 import LargeArticleDetailsScreen from './screens/LargeArticleDetailsScreen';
 
 export const screens = {

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { ListView, Screen } from '@shoutem/ui';
 import { invalidateLoadedCollections } from 'shoutem.cms';
-
+import { I18n } from 'shoutem.i18n';
 import { LanguageListItem } from '../components';
 import { ext } from '../const';
 import { actions, selectors } from '../redux';
@@ -58,9 +58,17 @@ export class SelectLanguageScreen extends PureComponent {
   render() {
     const { locales } = this.props;
 
+    // TODO: Create extension-level translations for i18n specifically
+    // This would mean replacing 'shoutem.application' with 'ext()'
+    // Currently not possible as we don't have a way to merge en.json files
     return (
       <Screen>
-        <ListView data={locales} renderRow={this.renderLanguageItem} />
+        <ListView
+          data={locales}
+          emptyListMessage={I18n.t('shoutem.application.emptyListMessage')}
+          emptyListTitle={I18n.t('shoutem.application.emptyListTitle')}
+          renderRow={this.renderLanguageItem}
+        />
       </Screen>
     );
   }

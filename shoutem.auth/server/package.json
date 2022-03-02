@@ -1,6 +1,6 @@
 {
   "name": "shoutem.auth",
-  "version": "4.0.6",
+  "version": "4.1.0",
   "description": "Shoutem user authentication",
   "author": "Shoutem",
   "scripts": {

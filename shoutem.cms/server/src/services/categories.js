@@ -18,3 +18,7 @@ export function isAllCategoriesSelected(selectedCategories) {
 export function getAllCategoryName() {
   return i18next.t(LOCALIZATION.ALL_CATEGORY);
 }
+
+export function getCategoryName(category) {
+  return _.get(category, 'name');
+}

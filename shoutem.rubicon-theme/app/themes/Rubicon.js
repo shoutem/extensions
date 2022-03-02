@@ -10,6 +10,7 @@ import {
   changeColorAlpha,
   getSizeRelativeToReference,
   INCLUDE,
+  inverseColorBrightnessForAmount,
 } from '@shoutem/theme';
 import {
   calculateLineHeight,
@@ -2411,10 +2412,9 @@ export default (customVariables = {}) => {
 
     // Social
     'shoutem.social.CreateStatusScreen': {
-      footer: {
-        backgroundColor: variables.paperColor,
-      },
       textInput: {
+        width: '90%',
+        height: '100%',
         ...variables.text,
         fontFamily: resolveFontFamily(
           variables.text.fontFamily,
@@ -2425,6 +2425,14 @@ export default (customVariables = {}) => {
         fontStyle: resolveFontStyle(variables.text.fontStyle),
         padding: variables.mediumGutter,
       },
+      profileAvatar: {
+        width: getSizeRelativeToReference(40, 375, window.width),
+        height: getSizeRelativeToReference(40, 375, window.width),
+        borderRadius: getSizeRelativeToReference(20, 375, window.width),
+      },
+      attachedImage: { width: '100%' },
+      overlay: { backgroundColor: variables.imageOverlayColor },
+      removeImageIcon: { color: 'rgba(255,255,255,0.8)' },
     },
 
     'shoutem.social.SearchScreen': {
@@ -2433,6 +2441,7 @@ export default (customVariables = {}) => {
       },
     },
     'shoutem.social.StatusDetailsScreen': {
+      container: { height: getSizeRelativeToReference(80, 812, window.height) },
       textInput: {
         ...variables.text,
         fontFamily: resolveFontFamily(
@@ -2443,19 +2452,17 @@ export default (customVariables = {}) => {
         fontWeight: resolveFontWeight(variables.text.fontWeight),
         fontStyle: resolveFontStyle(variables.text.fontStyle),
         flex: 1,
-        margin: 15,
+        margin: getSizeRelativeToReference(15, 375, window.width),
         maxHeight: 100,
       },
-    },
-    'shoutem.social.StatusView': {
-      menuButton: {
-        width: 24,
-        height: 24,
-        color: '#C4C4C4',
-        paddingVertical: 10,
-        paddingLeft: 10,
+      list: {
+        listContent: {
+          backgroundColor: variables.paperColor,
+          marginTop: getSizeRelativeToReference(6, 812, window.height),
+        },
       },
     },
+
     'shoutem.social.MemberView': {
       menuButton: {
         width: 24,
@@ -2472,6 +2479,189 @@ export default (customVariables = {}) => {
           'italic',
         ),
         fontStyle: resolveFontStyle('italic'),
+      },
+    },
+
+    'shoutem.social.SocialWallScreen': {
+      screen: {
+        backgroundColor: variables.paperColor,
+      },
+      list: {
+        listContent: {
+          backgroundColor: variables.paperColor,
+          marginTop: getSizeRelativeToReference(15, 812, window.height),
+        },
+      },
+      newStatusInput: {
+        backgroundColor: variables.searchInputBackgroundColor,
+        height: getSizeRelativeToReference(40, 812, window.height),
+        borderRadius: 10,
+        justifyContent: 'center',
+      },
+      newStatusPlaceholderText: { opacity: 0.5 },
+      profileAvatar: {
+        height: getSizeRelativeToReference(40, 812, window.height),
+        width: getSizeRelativeToReference(40, 812, window.height),
+        borderRadius: getSizeRelativeToReference(20, 812, window.height),
+      },
+    },
+
+    'shoutem.social.StatusView': {
+      container: {
+        backgroundColor: variables.paperColor,
+        marginHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        marginBottom: getSizeRelativeToReference(6, 812, window.height),
+        borderColor: variables.paperColor,
+        borderRadius: 12,
+        borderWidth: 1,
+        shadowColor: '#000000',
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        shadowOffset: { width: 1, height: 2 },
+        elevation: 2,
+      },
+      newComment: {
+        backgroundColor: variables.searchInputBackgroundColor,
+        borderRadius: 10,
+        height: getSizeRelativeToReference(38, 812, window.height),
+        padding: getSizeRelativeToReference(10, 812, window.height),
+        marginTop: getSizeRelativeToReference(10, 812, window.height),
+        marginBottom: getSizeRelativeToReference(15, 812, window.height),
+        marginHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      placeholderText: { opacity: 0.5 },
+    },
+
+    'shoutem.social.StatusHeader': {
+      profileImage: {
+        height: getSizeRelativeToReference(40, 812, window.height),
+        width: getSizeRelativeToReference(40, 812, window.height),
+        borderRadius: 20,
+      },
+      moreIcon: {
+        color: variables.navBarIconsColor,
+      },
+    },
+
+    'shoutem.social.StatusContent': {
+      image: { width: '100%' },
+    },
+
+    'shoutem.social.Interactions': {
+      button: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: getSizeRelativeToReference(5, 375, window.width),
+      },
+      likeButtonWidth: {
+        width: getSizeRelativeToReference(80, 375, window.width),
+      },
+      commentsButtonWidth: {
+        width: getSizeRelativeToReference(110, 375, window.width),
+      },
+      icon: {
+        color: variables.text.color,
+      },
+      iconText: {
+        marginLeft: getSizeRelativeToReference(5, 375, window.width),
+        fontFamily: resolveFontFamily(
+          variables.text.fontFamily,
+          '500',
+          variables.text.fontStyle,
+        ),
+      },
+    },
+
+    'shoutem.social.Like': {
+      heartIcon: {
+        color: variables.paperColor,
+        stroke: variables.text.color,
+      },
+      heartIconLiked: {
+        color: variables.likeButtonFillColor,
+        stroke: variables.likeButtonFillColor,
+      },
+    },
+
+    'shoutem.social.CommentView': {
+      container: {
+        flexDirection: 'row',
+        marginVertical: getSizeRelativeToReference(5, 812, window.height),
+        marginHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      profileImage: {
+        marginRight: getSizeRelativeToReference(10, 375, window.width),
+        marginTop: getSizeRelativeToReference(10, 375, window.width),
+      },
+      contentContainer: {
+        flex: 1,
+        backgroundColor: variables.paperColor,
+        padding: getSizeRelativeToReference(3, 375, window.width),
+        marginHorizontal: 0,
+        marginBottom: getSizeRelativeToReference(6, 812, window.height),
+        borderRadius: 12,
+        borderColor: variables.paperColor,
+        borderWidth: 1,
+        shadowColor: '#000000',
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        shadowOffset: { width: 1, height: 2 },
+        elevation: 1,
+      },
+      row: { paddingTop: getSizeRelativeToReference(10, 812, window.height) },
+      contentInnerContainer: { padding: 0 },
+      username: {
+        fontFamily: resolveFontFamily(
+          variables.text.fontFamily,
+          '500',
+          variables.text.fontStyle,
+        ),
+      },
+      timeAgo: { fontSize: 10, lineHeight: calculateLineHeight(10) },
+      comment: {
+        container: {
+          paddingHorizontal: getSizeRelativeToReference(5, 375, window.width),
+          paddingBottom: 0,
+        },
+        tags: {
+          p: {
+            fontSize: 13,
+            lineHeight: calculateLineHeight(13),
+            marginVertical: 0,
+          },
+          a: {
+            fontSize: 13,
+            lineHeight: calculateLineHeight(13),
+            // TODO: SimpleHtml blocks font changes. For now, this works for iOS only
+            fontWeight: '400',
+            color: '#0000EE',
+          },
+        },
+      },
+      attachment: {
+        width: '100%',
+        height: getSizeRelativeToReference(163, 812, window.height),
+      },
+    },
+
+    'shoutem.social.NewStatusFooter': {
+      container: {
+        flexDirection: 'row',
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        paddingTop: getSizeRelativeToReference(5, 812, window.height),
+        paddingBottom: getSizeRelativeToReference(10, 812, window.height),
+      },
+      attachmentIcon: {
+        color: variables.text.color,
+      },
+      button: {
+        justifyContent: 'center',
+        padding: variables.mediumGutter,
+        backgroundColor: 'rgba(136, 143, 161, 0.1)',
+        borderRadius: 10,
+      },
+      buttonMargin: {
+        marginRight: variables.smallGutter,
       },
     },
 
@@ -2712,6 +2902,57 @@ export default (customVariables = {}) => {
       },
     },
 
+    'shoutem.radio-player.ArtworkRadioScreen': {
+      screen: { backgroundColor: variables.screenBackgroundColor },
+      blurRadius: 7,
+      overlay: {
+        backgroundColor: variables.screenOverlayColor,
+      },
+      streamTitleContainer: {
+        bottom: variables.extraLargeGutter + variables.extraLargeGutter,
+      },
+      streamTitle: {
+        color: variables.streamTitleColor,
+        fontWeight: '700',
+      },
+      artworkContainer: {
+        width: getSizeRelativeToReference(250, 812, window.height),
+        height: getSizeRelativeToReference(250, 812, window.height),
+        overflow: 'hidden',
+      },
+      artworkCircularImage: {
+        width: getSizeRelativeToReference(245, 812, window.height),
+        height: getSizeRelativeToReference(245, 812, window.height),
+        borderRadius: getSizeRelativeToReference(245 / 2, 812, window.height),
+        borderColor: variables.artworkCircularImageBorderColor,
+        borderWidth: variables.smallGutter,
+      },
+      radioPlayer: {
+        playbackMainCircle: {
+          borderColor: variables.playbackAnimatedCircleColor,
+        },
+        playbackButton: {
+          backgroundColor: 'rgba(0,0,0,0.7)',
+          borderColor: variables.playbackButtonBorderColor,
+        },
+        playbackIcon: { color: variables.playbackIconColor },
+        spinner: { color: '#bbbbbb', margin: 0 },
+      },
+      nowPlayingContainer: { top: variables.extraLargeGutter },
+      artistTitle: { color: variables.artistTitleColor, fontWeight: '700' },
+      songNameTitle: { color: variables.songNameTitleColor },
+      shareIcon: {
+        style: {
+          color: variables.shareButtonColor,
+          width: getSizeRelativeToReference(40, 812, window.height),
+          height: getSizeRelativeToReference(40, 812, window.height),
+        },
+      },
+      shareButton: {
+        paddingHorizontal: variables.smallGutter,
+      },
+    },
+
     // Notifications
 
     'shoutem.notification-center.NotificationRow': {
@@ -2787,24 +3028,36 @@ export default (customVariables = {}) => {
         width: '100%',
         height: '100%',
       },
-      textContainerTop: {
-        justifyContent: 'flex-start',
-        paddingTop: NAVIGATION_BAR_HEIGHT,
+      image: {
+        resizeMode: 'stretch',
       },
-      textContainerMiddle: {
-        justifyContent: 'center',
+      container: {
+        flex: 1,
+        marginHorizontal: getSizeRelativeToReference(
+          variables.largeGutter,
+          375,
+          window.width,
+        ),
+        marginTop: getSizeRelativeToReference(80, 812, window.height),
+        marginBottom:
+          variables.largeGutter +
+          getSizeRelativeToReference(48, 812, window.height),
       },
-      textContainerBottom: {
-        justifyContent: 'flex-end',
-        paddingBottom: TAB_BAR_HEIGHT,
+      footerContainer: {
+        position: 'absolute',
+        bottom: getSizeRelativeToReference(40, 812, window.height),
+        left: variables.largeGutter,
+        right: variables.largeGutter,
+      },
+      button: {
+        height: getSizeRelativeToReference(48, 812, window.height),
       },
       pageIndicators: {
         container: {
-          paddingVertical: Device.select({
-            iPhoneX: 10 + IPHONE_X_HOME_INDICATOR_PADDING,
-            iPhoneXR: 10 + IPHONE_X_HOME_INDICATOR_PADDING,
-            default: 20,
-          }),
+          // Manually offset bottom for button height
+          marginBottom:
+            variables.mediumGutter +
+            getSizeRelativeToReference(48, 812, window.height),
         },
         indicatorContainer: {
           'shoutem.ui.View': {
@@ -2818,6 +3071,79 @@ export default (customVariables = {}) => {
             },
           },
         },
+      },
+    },
+
+    'shoutem.onboarding.ImageContent': {
+      container: {
+        flex: 1,
+        // Manually offset bottom for footer height
+        marginBottom:
+          variables.largeGutter +
+          getSizeRelativeToReference(48, 812, window.height),
+      },
+      featuredImage: {
+        flex: 1,
+        alignSelf: 'center',
+        width: getSizeRelativeToReference(285, 375, window.width),
+        height: getSizeRelativeToReference(285, 812, window.height),
+        marginVertical: getSizeRelativeToReference(40, 812, window.height),
+        resizeMode: 'contain',
+      },
+      topTextContainer: {
+        flex: 1,
+        justifyContent: 'center',
+      },
+      bottomTextContainer: {
+        flex: 1,
+      },
+      title: {
+        color: variables.onboardingTitleTextColor,
+        alignSelf: 'center',
+        textAlign: 'center',
+        fontSize: 32,
+        lineHeight: calculateLineHeight(32),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        marginBottom: getSizeRelativeToReference(10, 812, window.height),
+      },
+      description: {
+        color: variables.onboardingDescriptionTextColor,
+        textAlign: 'center',
+        fontSize: 15,
+        lineHeight: calculateLineHeight(15),
+      },
+    },
+
+    'shoutem.onboarding.TextContent': {
+      textContainerTop: {
+        flex: 1,
+        justifyContent: 'flex-start',
+      },
+      textContainerMiddle: {
+        flex: 1,
+        justifyContent: 'center',
+      },
+      textContainerBottom: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        marginBottom: TAB_BAR_HEIGHT,
+      },
+      title: {
+        color: variables.onboardingTitleTextColor,
+        alignSelf: 'center',
+        textAlign: 'center',
+        fontSize: 32,
+        lineHeight: calculateLineHeight(32),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        marginBottom: getSizeRelativeToReference(10, 812, window.height),
+      },
+      description: {
+        color: variables.onboardingDescriptionTextColor,
+        textAlign: 'center',
+        fontSize: 15,
+        lineHeight: calculateLineHeight(15),
       },
     },
 
@@ -3468,25 +3794,22 @@ export default (customVariables = {}) => {
 
     // News
 
-    'shoutem.news.FeaturedGrid122FullRowView': {
+    'shoutem.news.ArticleDetailsScreen': {
+      outerPadding: 10,
+    },
+
+    // Layouts
+
+    'shoutem.layouts.FullGridRowItemView': {
       container: {
         borderColor: 'rgba(68,79,108,0.2)',
         borderRadius: 4,
         borderWidth: 1,
-        marginTop: 8,
-        marginHorizontal: 8,
-        overflow: 'hidden',
+        marginBottom: 8,
       },
-      imageContainer: {
-        borderTopLeftRadius: 4,
-        borderTopRightRadius: 4,
-        height: dimensionRelativeToIphone(224),
-        overflow: 'hidden',
-      },
+      imageContainer: { height: dimensionRelativeToIphone(224) },
       textContainer: {
         backgroundColor: variables.newsGrid122ItemBackgroundColor,
-        borderBottomLeftRadius: 4,
-        borderBottomRightRadius: 4,
         borderTopColor: 'rgba(68,79,108,0.2)',
         borderTopWidth: 1,
         height: dimensionRelativeToIphone(92),
@@ -3504,8 +3827,8 @@ export default (customVariables = {}) => {
       },
     },
 
-    'shoutem.news.FeaturedGrid122FeaturedRowView': {
-      [INCLUDE]: ['shoutem.news.FeaturedGrid122FullRowView'],
+    'shoutem.layouts.FeaturedGridRowItemView': {
+      [INCLUDE]: ['shoutem.layouts.FullGridRowItemView'],
       container: {
         borderWidth: 0,
         overflow: 'visible',
@@ -3520,7 +3843,7 @@ export default (customVariables = {}) => {
       },
       imageContainer: {
         // Image has to be a square, 1:1 ratio. Using (-16) because
-        // shoutem.news.FeaturedGrid122FullRowView.container.marginHorizontal = 8
+        // shoutem.layouts.Grid122FullRowView.container.marginHorizontal = 8
         height: window.width - 16,
       },
       textContainer: {
@@ -3528,19 +3851,17 @@ export default (customVariables = {}) => {
       },
     },
 
-    'shoutem.news.FeaturedGrid122HalfRowView': {
-      [INCLUDE]: ['shoutem.news.FeaturedGrid122FullRowView'],
+    'shoutem.layouts.HalfGridRowItemView': {
+      [INCLUDE]: ['shoutem.layouts.FullGridRowItemView'],
       container: {
+        ...['shoutem.layouts.FullGridRowItemView'],
         marginHorizontal: 4,
       },
       imageContainer: { height: dimensionRelativeToIphone(110) },
       textContainer: {
+        ...['shoutem.layouts.FullGridRowItemView'],
         height: dimensionRelativeToIphone(108),
       },
-    },
-
-    'shoutem.news.ArticleDetailsScreen': {
-      outerPadding: 10,
     },
 
     'shoutem.layouts.CompactListSkeletonPlaceholder': {
@@ -3936,6 +4257,1895 @@ export default (customVariables = {}) => {
       },
       profileImage: {
         borderRadius: dimensionRelativeToIphone(145 / 2),
+      },
+    },
+
+    'shoutem.ginger.CheckoutScreen': {
+      scrollContainer: {
+        flexGrow: 1,
+        paddingHorizontal: getSizeRelativeToReference(10, 375, window.width),
+        paddingTop: getSizeRelativeToReference(5, 375, window.width),
+        backgroundColor: variables.paperColor,
+      },
+      buttonContainer: {
+        backgroundColor: variables.paperColor,
+        paddingHorizontal: getSizeRelativeToReference(30, 375, window.width),
+        paddingVertical: getSizeRelativeToReference(30, 375, window.width),
+      },
+      infoSection: {
+        flexDirection: 'row',
+        paddingHorizontal: getSizeRelativeToReference(10, 375, window.width),
+        paddingVertical: getSizeRelativeToReference(15, 375, window.width),
+        backgroundColor: '#F3F4F6',
+      },
+      infoIcon: {
+        width: getSizeRelativeToReference(24, 375, window.width),
+        height: getSizeRelativeToReference(24, 375, window.width),
+        color: variables.text.color,
+      },
+      infoText: {
+        fontSize: 12,
+        lineHeight: 16,
+        marginLeft: 10,
+        flexShrink: 1,
+      },
+      addressSection: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      },
+      sectionTitle: {
+        color: variables.text.color,
+        fontSize: 15,
+        lineHeight: 18,
+        letterSpacing: 0.361,
+        marginBottom: 3,
+        marginTop: 10,
+        opacity: 1,
+      },
+      sectionValue: {
+        fontSize: 13,
+        lineHeight: 16,
+        letterSpacing: 0.361,
+        opacity: 0.7,
+        paddingLeft: getSizeRelativeToReference(15, 375, window.width),
+        paddingVertical: 5,
+      },
+      dropdownContainer: {
+        paddingTop: 0,
+        paddingHorizontal: 0,
+        paddingBottom: 0,
+      },
+      dropdownSelectedOptionContainer: {
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.12)',
+        height: getSizeRelativeToReference(50, 812, window.height),
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      dropdownSelectedOption: {
+        fontSize: 13,
+        lineHeight: 16,
+        letterSpacing: 0.361,
+        opacity: 0.7,
+      },
+      textInput: {
+        padding: getSizeRelativeToReference(15, 375, window.width),
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.12)',
+        minHeight: getSizeRelativeToReference(90, 812, window.height),
+      },
+      spinner: {
+        color: variables.primaryButtonText.color,
+      },
+    },
+
+    'shoutem.ginger.CartIcon': {
+      outerContainer: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        height: 12,
+        width: 12,
+        borderRadius: 6,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      innerContainer: {
+        height: 10,
+        width: 10,
+        borderRadius: 5,
+        backgroundColor: variables.indicatorColor,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      indicatorText: {
+        fontSize: 7,
+        color: '#FFFFFF',
+      },
+    },
+
+    'shoutem.ginger.LargeProductListItem': {
+      container: {
+        backgroundColor: variables.paperColor,
+        shadowColor: variables.shadowColor,
+        shadowOffset: { width: 1, height: 2 },
+        shadowRadius: 10,
+        shadowOpacity: 1,
+        borderRadius: 4,
+        padding: getSizeRelativeToReference(15, 375, window.width),
+        marginBottom: getSizeRelativeToReference(10, 812, window.height),
+      },
+      textContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      },
+      image: {
+        borderRadius: 4,
+        width: getSizeRelativeToReference(200, 375, window.width),
+        height: getSizeRelativeToReference(200, 375, window.width),
+        marginBottom: getSizeRelativeToReference(23, 812, window.height),
+        alignSelf: 'center',
+      },
+      title: {
+        flexShrink: 1,
+        fontSize: 15,
+        lineHeight: 18,
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        marginBottom: getSizeRelativeToReference(23, 812, window.height),
+      },
+      subtitle: {
+        fontFamily: resolveFontFamily(variables.subtitle.fontFamily, '500'),
+        fontWeight: resolveFontWeight('500'),
+        fontSize: 14,
+        lineHeight: 18,
+        letterSpacing: -0.165,
+      },
+      price: {
+        fontFamily: resolveFontFamily(variables.subtitle.fontFamily, '500'),
+        fontWeight: resolveFontWeight('500'),
+        fontSize: 20,
+        lineHeight: 24,
+        letterSpacing: -0.165,
+      },
+      button: {
+        marginTop: getSizeRelativeToReference(12, 812, window.height),
+        height: getSizeRelativeToReference(48, 812, window.height),
+      },
+    },
+
+    'shoutem.ginger.SmallProductListItem': {
+      container: {
+        backgroundColor: variables.paperColor,
+        shadowColor: variables.shadowColor,
+        shadowOffset: { width: 1, height: 2 },
+        shadowRadius: 10,
+        shadowOpacity: 1,
+        borderRadius: 4,
+        marginBottom: getSizeRelativeToReference(10, 812, window.height),
+      },
+      infoContainer: {
+        alignSelf: 'stretch',
+        justifyContent: 'space-between',
+        borderRadius: 4,
+        padding: getSizeRelativeToReference(16, 375, window.width),
+        maxWidth: getSizeRelativeToReference(185, 375, window.width),
+      },
+      image: {
+        borderRadius: 4,
+        width: getSizeRelativeToReference(160, 375, window.width),
+        height: getSizeRelativeToReference(128, 812, window.height),
+      },
+      title: {
+        fontSize: 20,
+        lineHeight: 24,
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        marginBottom: 8,
+      },
+      subtitle: {
+        fontFamily: resolveFontFamily(variables.subtitle.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        fontSize: 12,
+        lineHeight: 14,
+        letterSpacing: 0.5,
+      },
+      button: {
+        borderRadius: 4,
+        height: getSizeRelativeToReference(40, 812, window.height),
+      },
+      buttonIcon: {
+        width: 24,
+        height: 24,
+      },
+      buttonText: {
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        lineHeight: 14,
+      },
+      spinner: {
+        color: variables.primaryButtonText.color,
+      },
+    },
+
+    'shoutem.ginger.Category': {
+      container: {
+        marginHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      category: {
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        letterSpacing: -0.165,
+        fontSize: 15,
+        lineHeight: 24,
+      },
+      selectedCategory: {
+        color: changeColorAlpha(variables.text.color, 0.5),
+      },
+    },
+
+    'shoutem.ginger.CategoryPicker': {
+      container: {
+        paddingHorizontal: getSizeRelativeToReference(8, 375, window.width),
+        paddingVertical: getSizeRelativeToReference(15, 375, window.width),
+        flexGrow: 1,
+        justifyContent: 'center',
+        backgroundColor: variables.paperColor,
+      },
+    },
+
+    'shoutem.ginger.ProductDetailsScreen': {
+      container: {
+        paddingVertical: getSizeRelativeToReference(24, 812, window.height),
+        paddingHorizontal: getSizeRelativeToReference(30, 375, window.width),
+      },
+      image: {
+        width: getSizeRelativeToReference(200, 375, window.width),
+        height: getSizeRelativeToReference(200, 375, window.width),
+        marginBottom: getSizeRelativeToReference(12, 812, window.height),
+      },
+      title: {
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        fontSize: 16,
+        lineHeight: 19,
+        marginBottom: getSizeRelativeToReference(16, 812, window.height),
+      },
+      subtitle: {
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        fontSize: 12,
+        lineHeight: 14,
+        letterSpacing: 0.5,
+        marginBottom: getSizeRelativeToReference(16, 812, window.height),
+        opacity: 0.5,
+      },
+      price: {
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        fontSize: 24,
+        lineHeight: 28,
+        marginBottom: getSizeRelativeToReference(15, 812, window.height),
+      },
+      quantityIcon: {
+        width: getSizeRelativeToReference(16, 375, window.width),
+        height: getSizeRelativeToReference(16, 375, window.width),
+        color: changeColorAlpha(variables.text.color, 0.5),
+        marginRight: getSizeRelativeToReference(5, 375, window.width),
+        marginBottom: getSizeRelativeToReference(16, 812, window.height),
+      },
+      button: {
+        marginLeft: getSizeRelativeToReference(10, 375, window.width),
+        flex: 1,
+      },
+      spinner: {
+        color: variables.primaryButtonText.color,
+      },
+      buttonText: {
+        fontSize: 13,
+        lineHeight: 13,
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+      },
+      description: {
+        marginTop: getSizeRelativeToReference(15, 812, window.height),
+        fontSize: 13,
+        lineHeight: 16,
+      },
+      paginationContainer: {
+        paddingHorizontal: 0,
+        paddingVertical: 0,
+        marginBottom: getSizeRelativeToReference(15, 812, window.height),
+      },
+      paginationDotContainer: {
+        marginHorizontal: 0,
+      },
+      paginationDot: {
+        width: getSizeRelativeToReference(10, 375, window.width),
+        height: getSizeRelativeToReference(10, 375, window.width),
+        borderRadius: getSizeRelativeToReference(10, 375, window.width) / 2,
+        marginHorizontal: getSizeRelativeToReference(7, 375, window.width),
+        backgroundColor: variables.primaryButtonBackgroundColor,
+      },
+    },
+
+    'shoutem.ginger.OrderCancellationScreen': {
+      container: {
+        paddingTop: getSizeRelativeToReference(15, 812, window.height),
+        paddingBottom: getSizeRelativeToReference(30, 812, window.height),
+        paddingHorizontal: getSizeRelativeToReference(30, 375, window.width),
+        flexGrow: 1,
+      },
+      infoContainer: {
+        marginBottom: getSizeRelativeToReference(30, 812, window.height),
+      },
+      sectionContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: getSizeRelativeToReference(15, 812, window.height),
+      },
+      imageContainer: {
+        paddingHorizontal: getSizeRelativeToReference(4, 375, window.width),
+        marginTop: getSizeRelativeToReference(10, 812, window.height),
+      },
+      image: {
+        width: getSizeRelativeToReference(57, 375, window.width),
+        height: getSizeRelativeToReference(57, 375, window.width),
+        marginRight: getSizeRelativeToReference(23, 375, window.width),
+      },
+      sectionTitle: {
+        fontWeight: resolveFontWeight('500'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '500'),
+        fontSize: 15,
+        lineHeight: 26,
+      },
+      dropdownContainer: {
+        paddingTop: 0,
+        paddingHorizontal: 0,
+        paddingBottom: 0,
+      },
+      dropdownSelectedOptionContainer: {
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.12)',
+        height: getSizeRelativeToReference(50, 812, window.height),
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      dropdownSelectedOption: {
+        fontSize: 13,
+        lineHeight: 16,
+        letterSpacing: 0.361,
+        opacity: 0.7,
+      },
+      dropdownSectionTitle: {
+        color: variables.text.color,
+        fontSize: 15,
+        lineHeight: 18,
+        letterSpacing: 0.361,
+        marginBottom: 3,
+        marginTop: 10,
+        opacity: 1,
+      },
+      textInput: {
+        padding: getSizeRelativeToReference(15, 375, window.width),
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.12)',
+        minHeight: getSizeRelativeToReference(90, 812, window.height),
+      },
+      buttonContainer: {
+        backgroundColor: variables.paperColor,
+        paddingHorizontal: getSizeRelativeToReference(30, 375, window.width),
+        paddingBottom: getSizeRelativeToReference(30, 375, window.width),
+      },
+      button: {
+        marginTop: getSizeRelativeToReference(10, 812, window.height),
+      },
+    },
+
+    'shoutem.ginger.OrderCompleteScreen': {
+      container: {
+        paddingBottom: getSizeRelativeToReference(30, 375, window.width),
+        flexGrow: 1,
+      },
+      titleContainer: {
+        paddingVertical: getSizeRelativeToReference(15, 812, window.height),
+        flexDirection: 'row',
+        justifyContent: 'center',
+      },
+      title: {
+        fontSize: 20,
+        lineHeight: 25,
+        letterSpacing: 0.5,
+      },
+      confirmationText: {
+        fontSize: 14,
+        lineHeight: 26,
+        paddingTop: getSizeRelativeToReference(30, 812, window.height),
+        paddingBottom: getSizeRelativeToReference(15, 812, window.height),
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      orderContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: getSizeRelativeToReference(15, 812, window.height),
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      orderText: {
+        fontWeight: resolveFontWeight('500'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '500'),
+        fontSize: 15,
+        lineHeight: 26,
+      },
+      infoText: {
+        fontSize: 14,
+        lineHeight: 26,
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      priceText: {
+        fontSize: 14,
+        lineHeight: 26,
+        fontWeight: resolveFontWeight('700'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        marginBottom: getSizeRelativeToReference(15, 812, window.height),
+        marginTop: getSizeRelativeToReference(30, 812, window.height),
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      actionRow: {
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        flex: 1,
+        height: getSizeRelativeToReference(56, 812, window.height),
+        flexDirection: 'row',
+        alignItems: 'center',
+      },
+      icon: {
+        width: getSizeRelativeToReference(24, 375, window.width),
+        height: getSizeRelativeToReference(24, 375, window.width),
+        marginRight: getSizeRelativeToReference(10, 375, window.width),
+      },
+      actionText: {
+        fontSize: 15,
+        lineHeight: 24,
+      },
+      separator: {
+        height: 1,
+        flexDirection: 'row',
+        flex: 1,
+        backgroundColor: variables.lineColor,
+      },
+      buttonContainer: {
+        backgroundColor: variables.paperColor,
+        paddingHorizontal: getSizeRelativeToReference(30, 375, window.width),
+        paddingBottom: getSizeRelativeToReference(30, 375, window.width),
+      },
+      button: {
+        height: getSizeRelativeToReference(44, 812, window.height),
+        marginTop: getSizeRelativeToReference(10, 812, window.height),
+        borderRadius: 4,
+      },
+      map: {
+        width: window.width,
+        height: getSizeRelativeToReference(160, 812, window.height),
+      },
+      mapTextContainer: {
+        backgroundColor: variables.imageOverlayColor,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        flex: 1,
+      },
+      mapText: {
+        textAlign: 'center',
+        flexShrink: 1,
+        color: variables.primaryButtonText.color,
+        marginBottom: getSizeRelativeToReference(24, 812, window.height),
+        fontSize: 12,
+        lineHeight: 14,
+      },
+    },
+
+    'shoutem.ginger.OrderDetailsScreen': {
+      container: {
+        paddingTop: getSizeRelativeToReference(15, 375, window.width),
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      mainScrollContainer: {
+        flexGrow: 0,
+      },
+      scrollContainer: {
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        paddingVertical: getSizeRelativeToReference(30, 375, window.width),
+      },
+      sectionRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: getSizeRelativeToReference(10, 812, window.height),
+      },
+      sectionHeading: {
+        fontWeight: resolveFontWeight('500'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '500'),
+        fontSize: 15,
+        lineHeight: 26,
+        color: '#666666',
+      },
+      sectionInfo: {
+        fontWeight: resolveFontWeight('500'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '500'),
+        fontSize: 15,
+        lineHeight: 26,
+      },
+      sectionInfoPositive: {
+        color: '#19A68F',
+      },
+      sectionInfoNegative: {
+        color: variables.errorText.color,
+      },
+      sectionIcon: {
+        width: getSizeRelativeToReference(24, 375, window.width),
+        height: getSizeRelativeToReference(24, 375, window.width),
+        marginRight: getSizeRelativeToReference(4, 375, window.width),
+        color: '#666666',
+      },
+      itemsHeading: {
+        marginBottom: getSizeRelativeToReference(10, 812, window.height),
+        fontWeight: resolveFontWeight('600'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '600'),
+        fontSize: 16,
+        lineHeight: 18,
+        letterSpacing: -0.165,
+      },
+      actionRow: {
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        height: getSizeRelativeToReference(56, 812, window.height),
+        flexDirection: 'row',
+        alignItems: 'center',
+      },
+      icon: {
+        width: getSizeRelativeToReference(24, 375, window.width),
+        height: getSizeRelativeToReference(24, 375, window.width),
+        marginRight: getSizeRelativeToReference(10, 375, window.width),
+      },
+      actionText: {
+        fontSize: 15,
+        lineHeight: 24,
+      },
+      separator: {
+        height: 1,
+        flexDirection: 'row',
+        backgroundColor: variables.lineColor,
+      },
+    },
+
+    'shoutem.ginger.SelectLocationScreen': {
+      container: {
+        flex: 1,
+        backgroundColor: variables.paperColor,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      image: {
+        height: getSizeRelativeToReference(285, 375, window.width),
+        width: getSizeRelativeToReference(285, 375, window.width),
+      },
+      autocompleteContainer: {
+        paddingVertical: getSizeRelativeToReference(15, 812, window.height),
+        paddingHorizontal: getSizeRelativeToReference(10, 375, window.width),
+      },
+      autocompleteStyles: {
+        container: {
+          flex: 1,
+        },
+        textInputContainer: {
+          flexDirection: 'row',
+          marginBottom: getSizeRelativeToReference(10, 812, window.height),
+        },
+        textInput: {
+          fontSize: 13,
+          lineHeight: 16,
+          justifyContent: 'center',
+          borderRadius: 10,
+          backgroundColor: 'rgba(136, 143, 161, 0.1)',
+          height: getSizeRelativeToReference(48, 812, window.height),
+          paddingLeft: getSizeRelativeToReference(16, 375, window.width),
+          // Take clear button into account
+          paddingRight: getSizeRelativeToReference(32, 375, window.width),
+          flex: 1,
+        },
+        row: {
+          height: getSizeRelativeToReference(48, 812, window.height),
+          flexDirection: 'row',
+          justifyContent: 'center',
+          borderRadius: 10,
+        },
+        loader: {
+          marginTop: getSizeRelativeToReference(15, 375, window.width),
+          height: getSizeRelativeToReference(15, 375, window.width),
+        },
+        separator: {
+          height: getSizeRelativeToReference(1, 812, window.height),
+          backgroundColor: variables.paperColor,
+        },
+      },
+      placeholderColor: changeColorAlpha(variables.text.color, 0.6),
+      closeIconContainer: {
+        position: 'absolute',
+        right: getSizeRelativeToReference(16, 375, window.width),
+        height: getSizeRelativeToReference(48, 812, window.height),
+        justifyContent: 'center',
+        zIndex: 2,
+        elevation: 2,
+      },
+      closeIcon: {
+        color: variables.primaryButtonBackgroundColor,
+        width: getSizeRelativeToReference(15, 375, window.width),
+        height: getSizeRelativeToReference(15, 375, window.width),
+      },
+      currentLocationContainer: {
+        alignItems: 'center',
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      currentLocationIcon: {
+        flexDirection: 'row',
+        height: getSizeRelativeToReference(16, 375, window.width),
+        width: getSizeRelativeToReference(16, 375, window.width),
+        marginRight: getSizeRelativeToReference(4, 375, window.width),
+      },
+      listItem: {
+        fontSize: 13,
+        lineHeight: 16,
+      },
+      listItemContainer: {
+        justifyContent: 'center',
+        backgroundColor: variables.backgroundColor,
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        marginBottom: 1,
+        marginTop: 1,
+      },
+      firstItemContainer: {
+        marginTop: 0,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+      },
+      lastItemContainer: {
+        marginBottom: 0,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+      },
+    },
+
+    'shoutem.ginger.OrderListScreen': {
+      container: {
+        padding: getSizeRelativeToReference(15, 375, window.width),
+        paddingBottom: getSizeRelativeToReference(15, 375, window.width),
+      },
+      sectionHeaderContainer: {
+        flexDirection: 'row',
+        flex: 1,
+        paddingVertical: getSizeRelativeToReference(10, 812, window.height),
+      },
+      sectionHeaderText: {
+        fontSize: 16,
+        lineHeight: 18,
+        letterSpacing: -0.165,
+        fontWeight: resolveFontWeight('600'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '600'),
+      },
+    },
+
+    'shoutem.ginger.OrderListItem': {
+      container: {
+        backgroundColor: variables.paperColor,
+        padding: getSizeRelativeToReference(10, 375, window.width),
+        flexDirection: 'row',
+        shadowColor: 'rgba(0, 0, 0, 0.1)',
+        shadowOpacity: 1,
+        shadowRadius: 10,
+        shadowOffset: { width: 1, height: 2 },
+        borderRadius: 12,
+        marginTop: getSizeRelativeToReference(5, 375, window.width),
+        marginBottom: getSizeRelativeToReference(5, 375, window.width),
+      },
+      contentContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flex: 1,
+        marginLeft: getSizeRelativeToReference(18, 375, window.width),
+      },
+      image: {
+        width: getSizeRelativeToReference(62, 375, window.width),
+        height: getSizeRelativeToReference(62, 375, window.width),
+        borderRadius: 8,
+        overflow: 'hidden',
+      },
+      icon: {
+        marginLeft: getSizeRelativeToReference(10, 375, window.width),
+        width: getSizeRelativeToReference(16, 375, window.width),
+        height: getSizeRelativeToReference(16, 375, window.width),
+      },
+      countIndicator: {
+        fontWeight: resolveFontWeight('700'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontSize: 20,
+        lineHeight: 24,
+        letterSpacing: 0.5,
+        color: variables.paperColor,
+      },
+      orderIdText: {
+        fontWeight: resolveFontWeight('500'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '500'),
+        fontSize: 14,
+        lineHeight: 18,
+        letterSpacing: -0.165,
+        opacity: 0.7,
+      },
+      dateText: {
+        fontWeight: resolveFontWeight('500'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '500'),
+        fontSize: 14,
+        lineHeight: 18,
+        letterSpacing: -0.165,
+        marginTop: getSizeRelativeToReference(10, 812, window.height),
+        opacity: 0.7,
+      },
+      orderStatusPositive: {
+        color: '#19A68F',
+        opacity: 1,
+      },
+      orderStatusNegative: {
+        color: variables.errorText.color,
+        opacity: 1,
+      },
+      priceText: {
+        fontWeight: resolveFontWeight('600'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '600'),
+        fontSize: 17,
+        lineHeight: 24,
+        letterSpacing: -0.17,
+      },
+      paginationContainer: {
+        paddingHorizontal: 0,
+        paddingVertical: 0,
+        marginBottom: getSizeRelativeToReference(15, 812, window.height),
+      },
+      paginationDotContainer: {
+        marginHorizontal: 0,
+      },
+      paginationDot: {
+        width: getSizeRelativeToReference(10, 375, window.width),
+        height: getSizeRelativeToReference(10, 375, window.width),
+        borderRadius: getSizeRelativeToReference(10, 375, window.width) / 2,
+        marginHorizontal: getSizeRelativeToReference(7, 375, window.width),
+        backgroundColor: variables.primaryButtonBackgroundColor,
+      },
+      overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: variables.imageOverlayColor,
+      },
+    },
+
+    'shoutem.ginger.CancelOrderScreen': {
+      container: {
+        paddingTop: getSizeRelativeToReference(15, 812, window.height),
+        paddingBottom: getSizeRelativeToReference(30, 812, window.height),
+        paddingHorizontal: getSizeRelativeToReference(30, 375, window.width),
+        flexGrow: 1,
+      },
+      infoContainer: {
+        marginBottom: getSizeRelativeToReference(30, 812, window.height),
+      },
+      sectionContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: getSizeRelativeToReference(15, 812, window.height),
+      },
+      imageContainer: {
+        paddingHorizontal: getSizeRelativeToReference(4, 375, window.width),
+        marginTop: getSizeRelativeToReference(10, 812, window.height),
+      },
+      image: {
+        width: getSizeRelativeToReference(57, 375, window.width),
+        height: getSizeRelativeToReference(57, 375, window.width),
+        marginRight: getSizeRelativeToReference(23, 375, window.width),
+      },
+      sectionTitle: {
+        fontWeight: resolveFontWeight('500'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '500'),
+        fontSize: 15,
+        lineHeight: 26,
+      },
+      dropdownContainer: {
+        paddingTop: 0,
+        paddingHorizontal: 0,
+        paddingBottom: 0,
+      },
+      dropdownSelectedOptionContainer: {
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.12)',
+        height: getSizeRelativeToReference(50, 812, window.height),
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      dropdownSelectedOption: {
+        fontSize: 13,
+        lineHeight: 16,
+        letterSpacing: 0.361,
+        opacity: 0.7,
+      },
+      dropdownSectionTitle: {
+        color: variables.text.color,
+        fontSize: 15,
+        lineHeight: 18,
+        letterSpacing: 0.361,
+        marginBottom: 3,
+        marginTop: 10,
+        opacity: 1,
+      },
+      textInput: {
+        padding: getSizeRelativeToReference(15, 375, window.width),
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.12)',
+        minHeight: getSizeRelativeToReference(90, 812, window.height),
+      },
+      buttonContainer: {
+        backgroundColor: variables.paperColor,
+        paddingHorizontal: getSizeRelativeToReference(30, 375, window.width),
+        paddingBottom: getSizeRelativeToReference(30, 375, window.width),
+      },
+      button: {
+        marginTop: getSizeRelativeToReference(10, 812, window.height),
+      },
+      map: {
+        width: window.width,
+        height: getSizeRelativeToReference(160, 812, window.height),
+      },
+    },
+
+    'shoutem.ginger.QuantitySelector': {
+      container: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: getSizeRelativeToReference(10, 375, window.width),
+        height: getSizeRelativeToReference(44, 812, window.height),
+        width: getSizeRelativeToReference(116, 375, window.width),
+        borderRadius: 4,
+        backgroundColor: '#EDEDED',
+      },
+      containerCompact: {
+        padding: 0,
+        backgroundColor: 'transparent',
+        height: getSizeRelativeToReference(16, 812, window.height),
+        width: getSizeRelativeToReference(80, 375, window.width),
+      },
+      control: {
+        width: getSizeRelativeToReference(24, 375, window.width),
+        height: getSizeRelativeToReference(24, 375, window.width),
+      },
+      controlCompact: {
+        width: getSizeRelativeToReference(16, 375, window.width),
+        height: getSizeRelativeToReference(16, 375, window.width),
+      },
+      count: {
+        fontSize: 15,
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        lineHeight: 24,
+      },
+      countCompact: {
+        fontWeight: 'normal',
+        lineHeight: 16,
+        letterSpacing: 0.5,
+      },
+    },
+
+    'shoutem.ginger.CartListItem': {
+      mainContainer: {
+        padding: getSizeRelativeToReference(15, 375, window.width),
+        borderRadius: 4,
+        backgroundColor: variables.paperColor,
+        marginTop: getSizeRelativeToReference(10, 375, window.width),
+      },
+      container: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: variables.paperColor,
+      },
+      image: {
+        width: getSizeRelativeToReference(65, 375, window.width),
+        height: getSizeRelativeToReference(57, 812, window.height),
+        marginRight: getSizeRelativeToReference(10, 375, window.width),
+      },
+      contentContainer: {
+        flexDirection: 'row',
+        flex: 1,
+        alignSelf: 'stretch',
+        justifyContent: 'space-between',
+      },
+      infoContainer: {
+        justifyContent: 'space-between',
+      },
+      priceContainer: {
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+      },
+      title: {
+        fontSize: 15,
+        lineHeight: 18,
+      },
+      units: {
+        fontSize: 12,
+        lineHeight: 15,
+      },
+      price: {
+        fontSize: 15,
+        lineHeight: 18,
+      },
+      discountPrice: {
+        fontSize: 12,
+        lineHeight: 15,
+        textDecorationLine: 'line-through',
+        opacity: 0.3,
+      },
+      lowQuantityText: {
+        color: variables.errorText.color,
+        marginLeft: getSizeRelativeToReference(75, 375, window.width),
+        marginTop: getSizeRelativeToReference(5, 375, window.width),
+        fontSize: 12,
+        lineHeight: 15,
+      },
+      removeButton: {
+        fontSize: 12,
+        lineHeight: 16,
+        letterSpacing: 0.5,
+        opacity: 0.5,
+      },
+      bonusImage: {
+        width: getSizeRelativeToReference(16, 375, window.width),
+        height: getSizeRelativeToReference(16, 375, window.width),
+        marginLeft: getSizeRelativeToReference(4, 375, window.width),
+      },
+    },
+
+    'shoutem.ginger.PromoCodeModal': {
+      container: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        justifyContent: 'flex-end',
+      },
+      contentContainer: {
+        paddingTop: getSizeRelativeToReference(15, 812, window.height),
+        paddingBottom: getSizeRelativeToReference(30, 812, window.height),
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+        backgroundColor: variables.paperColor,
+      },
+      headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        paddingVertical: getSizeRelativeToReference(13, 812, window.height),
+        height: getSizeRelativeToReference(44, 812, window.height),
+      },
+      title: {
+        fontSize: 15,
+        lineHeight: 18,
+        letterSpacing: -0.165,
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+      },
+      iconContainer: {
+        position: 'absolute',
+        top: getSizeRelativeToReference(10, 812, window.height),
+        left: getSizeRelativeToReference(15, 375, window.width),
+      },
+      icon: {
+        width: getSizeRelativeToReference(24, 375, window.width),
+        height: getSizeRelativeToReference(24, 375, window.width),
+      },
+      label: {
+        fontSize: 15,
+        lineHeight: 18,
+        letterSpacing: 0.361,
+        paddingLeft: getSizeRelativeToReference(10, 375, window.width),
+        marginTop: getSizeRelativeToReference(15, 812, window.height),
+        marginBottom: getSizeRelativeToReference(3, 812, window.height),
+      },
+      info: {
+        marginTop: getSizeRelativeToReference(5, 812, window.height),
+        paddingHorizontal: getSizeRelativeToReference(10, 375, window.width),
+        fontSize: 13,
+        lineHeight: 16,
+        letterSpacing: 0.361,
+        opacity: 0.6,
+      },
+      infoError: {
+        opacity: 1,
+        color: variables.errorText.color,
+      },
+      input: {
+        marginHorizontal: getSizeRelativeToReference(10, 375, window.width),
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        paddingVertical: getSizeRelativeToReference(17, 812, window.height),
+        borderRadius: 6,
+        borderColor: 'rgba(0, 0, 0, 0.12)',
+        borderWidth: 1,
+        fontSize: 13,
+        lineHeight: 16,
+        letterSpacing: 0.361,
+      },
+      button: {
+        marginTop: getSizeRelativeToReference(15, 812, window.height),
+        marginHorizontal: getSizeRelativeToReference(30, 375, window.width),
+        marginBottom: getSizeRelativeToReference(10, 812, window.height),
+      },
+      clearButton: {
+        marginTop: 0,
+        backgroundColor: variables.errorText.color,
+        borderColor: variables.errorText.color,
+        borderRadius: 4,
+      },
+    },
+
+    'shoutem.ginger.RetailerListModal': {
+      container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+      },
+      contentContainer: {
+        padding: getSizeRelativeToReference(15, 375, window.width),
+        backgroundColor: variables.paperColor,
+        borderRadius: 8,
+        width: getSizeRelativeToReference(325, 375, window.width),
+      },
+      titleContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      },
+      licencesContainer: {
+        flexDirection: 'row',
+      },
+      rowContainer: {
+        width: getSizeRelativeToReference(295 / 2, 375, window.width),
+      },
+      title: {
+        fontWeight: resolveFontWeight('500'),
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        letterSpacing: -0.165,
+        fontSize: 13,
+        lineHeight: 24,
+        marginBottom: getSizeRelativeToReference(10, 812, window.height),
+      },
+      text: {
+        letterSpacing: -0.165,
+        fontSize: 13,
+        lineHeight: 24,
+        marginBottom: getSizeRelativeToReference(10, 812, window.height),
+        flexShrink: 1,
+      },
+      closeIcon: {
+        width: getSizeRelativeToReference(24, 375, window.width),
+        height: getSizeRelativeToReference(24, 375, window.width),
+        color: variables.title.color,
+      },
+    },
+
+    'shoutem.ginger.ConfirmationModal': {
+      container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+      },
+      contentContainer: {
+        padding: getSizeRelativeToReference(15, 375, window.width),
+        backgroundColor: variables.paperColor,
+        borderRadius: 8,
+        width: getSizeRelativeToReference(275, 375, window.width),
+      },
+      caption: {
+        letterSpacing: 0.5,
+        fontSize: 15,
+        lineHeight: 24,
+        textAlign: 'center',
+        marginBottom: getSizeRelativeToReference(15, 375, window.width),
+      },
+      buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      },
+      button: {
+        flex: 1,
+        flexDirection: 'row',
+        minWidth: getSizeRelativeToReference(120, 375, window.width),
+        height: getSizeRelativeToReference(44, 812, window.height),
+        borderRadius: 4,
+      },
+      confirmButton: {
+        flex: 1,
+        flexDirection: 'row',
+        minWidth: getSizeRelativeToReference(120, 375, window.width),
+        marginLeft: getSizeRelativeToReference(5, 375, window.width),
+        backgroundColor: variables.errorText.color,
+        borderColor: variables.errorText.color,
+      },
+    },
+
+    'shoutem.ginger.ForgotPasswordScreen': {
+      emailInput: {
+        borderRadius: 6,
+      },
+      label: {
+        paddingLeft: 5,
+        fontSize: 15,
+        lineHeight: 18,
+      },
+      confirmButton: {
+        marginBottom: Device.select({
+          iPhoneX: IPHONE_X_HOME_INDICATOR_PADDING,
+          iPhoneXR: IPHONE_X_HOME_INDICATOR_PADDING,
+          default: variables.largeGutter,
+        }),
+        marginHorizontal: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+      },
+      headerTitle: {
+        color: '#FFFFFF',
+      },
+      headerBackButton: {
+        color: '#FFFFFF',
+      },
+      titleContainer: {
+        marginHorizontal: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+        marginVertical: getSizeRelativeToReference(
+          variables.largeGutter,
+          812,
+          window.height,
+        ),
+      },
+      title: {
+        color: '#FFFFFF',
+      },
+      subtitle: {
+        color: '#FFFFFF',
+        marginTop: getSizeRelativeToReference(
+          variables.mediumGutter,
+          812,
+          window.height,
+        ),
+      },
+      inputContainer: {
+        marginHorizontal: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+      },
+    },
+
+    'shoutem.ginger.OrderInformation': {
+      container: {
+        borderRadius: 4,
+        backgroundColor: variables.paperColor,
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        paddingBottom: getSizeRelativeToReference(15, 375, window.width),
+        marginTop: getSizeRelativeToReference(15, 375, window.width),
+      },
+      containerWithBorder: {
+        borderWidth: 1,
+        borderColor: 'rgba(136, 143, 161, 0.1)',
+      },
+      row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: getSizeRelativeToReference(15, 375, window.width),
+      },
+      subRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: getSizeRelativeToReference(10, 375, window.width),
+        paddingLeft: getSizeRelativeToReference(10, 375, window.width),
+      },
+      title: {
+        fontSize: 15,
+        lineHeight: 16,
+        letterSpacing: 0.361,
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+      },
+      discountTitle: {
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '400'),
+        fontWeight: resolveFontWeight('400'),
+        textDecorationLine: 'line-through',
+        opacity: 0.5,
+        marginRight: getSizeRelativeToReference(10, 375, window.width),
+      },
+      caption: {
+        fontSize: 15,
+        lineHeight: 16,
+        letterSpacing: 0.361,
+      },
+      subCaption: {
+        fontSize: 12,
+        lineHeight: 13,
+        letterSpacing: 0.361,
+      },
+      error: {
+        fontSize: 12,
+        lineHeight: 16,
+        letterSpacing: 0.36,
+        color: variables.errorText.color,
+        marginTop: getSizeRelativeToReference(10, 812, window.height),
+      },
+      separator: {
+        height: 1,
+        flexDirection: 'row',
+        flex: 1,
+        backgroundColor: variables.lineColor,
+        marginTop: getSizeRelativeToReference(15, 375, window.width),
+      },
+    },
+
+    'shoutem.ginger.CartFooterButtons': {
+      gradient: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: -getSizeRelativeToReference(15, 812, window.height),
+        height: getSizeRelativeToReference(15, 812, window.height),
+      },
+      gradientColors: [
+        changeColorAlpha(variables.backgroundColor, 0),
+        variables.backgroundColor,
+      ],
+      container: {
+        backgroundColor: variables.backgroundColor,
+        paddingHorizontal: getSizeRelativeToReference(30, 375, window.width),
+        paddingBottom: getSizeRelativeToReference(30, 375, window.width),
+      },
+      button: {
+        height: getSizeRelativeToReference(44, 812, window.height),
+        marginTop: getSizeRelativeToReference(10, 812, window.height),
+        borderRadius: 4,
+      },
+    },
+
+    'shoutem.ginger.RegisterScreen': {
+      button: {
+        margin: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+      },
+      existingAccountLabel: {
+        color: '#FFFFFF',
+      },
+      headerTitle: {
+        color: '#FFFFFF',
+      },
+      headerBackButton: {
+        color: '#FFFFFF',
+      },
+      loginLabel: {
+        color: '#FFFFFF',
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '600'),
+        fontWeight: resolveFontWeight('600'),
+      },
+    },
+
+    'shoutem.ginger.KeyboardAwareContainer': {
+      container: {
+        flex: 1,
+      },
+      contentContainer: {
+        paddingHorizontal: variables.smallGutter,
+        paddingTop: variables.smallGutter,
+        paddingBottom: Device.select({
+          iPhoneX: variables.largeGutter + IPHONE_X_HOME_INDICATOR_PADDING,
+          iPhoneXR: variables.largeGutter + IPHONE_X_HOME_INDICATOR_PADDING,
+          default: variables.mediumGutter,
+        }),
+      },
+    },
+
+    'shoutem.ginger.LoadingButton': {
+      button: {
+        height: getSizeRelativeToReference(44, 812, window.height),
+        borderRadius: 4,
+        backgroundColor: variables.primaryButtonBackgroundColor,
+        borderColor: variables.primaryButtonBorderColor,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+      },
+      animationFilters: [
+        {
+          keypath: '*',
+          color: variables.primaryButtonText.color,
+        },
+      ],
+      buttonContent: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      buttonIcon: {
+        width: getSizeRelativeToReference(24, 375, window.width),
+        height: getSizeRelativeToReference(24, 375, window.width),
+        color: variables.primaryButtonText.color,
+        marginRight: getSizeRelativeToReference(5, 375, window.width),
+      },
+      buttonText: {
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '700'),
+        fontWeight: resolveFontWeight('700'),
+        lineHeight: 14,
+        fontSize: 12,
+        color: variables.primaryButtonText.color,
+      },
+      buttonBackgroundAnimation: (animatedValue, errorMode) => ({
+        backgroundColor: animatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [
+            variables.primaryButtonBackgroundColor,
+            errorMode ? variables.errorText.color : 'rgb(25, 166, 143)',
+          ],
+        }),
+        borderColor: animatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [
+            variables.primaryButtonBorderColor,
+            errorMode ? variables.errorText.color : 'rgb(25, 166, 143)',
+          ],
+        }),
+      }),
+    },
+
+    'shoutem.ginger.LoginScreen': {
+      divider: {
+        height: 1,
+        alignSelf: 'center',
+        backgroundColor: variables.lineColor,
+        marginHorizontal: variables.mediumGutter,
+      },
+      headerTitle: {
+        color: '#FFFFFF',
+      },
+      headerBackButton: {
+        color: '#FFFFFF',
+      },
+      skipButton: {
+        color: '#FFFFFF',
+      },
+      orLabel: {
+        color: '#FFFFFF',
+        fontSize: 10,
+      },
+      forgotPasswordButton: {
+        color: '#FFFFFF',
+        fontSize: 11,
+        fontWeight: resolveFontWeight('400'),
+        margin: 0,
+      },
+      button: {
+        height: getSizeRelativeToReference(44, 812, window.height),
+        borderRadius: 4,
+        margin: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+      },
+      buttonText: {
+        lineHeight: 14,
+        fontSize: 12,
+      },
+    },
+
+    'shoutem.ginger.AgeVerificationScreen': {
+      container: {
+        flex: 1,
+        marginBottom: getSizeRelativeToReference(
+          variables.largeGutter,
+          812,
+          window.height,
+        ),
+      },
+      mainContent: {
+        marginHorizontal: getSizeRelativeToReference(
+          variables.largeGutter,
+          375,
+          window.width,
+        ),
+      },
+      title: {
+        color: '#FFFFFF',
+        marginTop: getSizeRelativeToReference(
+          variables.largeGutter,
+          812,
+          window.height,
+        ),
+      },
+      buttonContainer: {
+        marginHorizontal: getSizeRelativeToReference(
+          variables.largeGutter,
+          375,
+          window.width,
+        ),
+        marginVertical: getSizeRelativeToReference(
+          variables.smallGutter,
+          812,
+          window.height,
+        ),
+      },
+      confirmButton: {
+        height: getSizeRelativeToReference(44, 812, window.height),
+        borderRadius: 4,
+        backgroundColor: variables.primaryButtonBackgroundColor,
+        borderColor: variables.primaryButtonBorderColor,
+        borderWidth: 1,
+        marginVertical: getSizeRelativeToReference(
+          variables.smallGutter,
+          812,
+          window.height,
+        ),
+      },
+      exitButton: {
+        height: getSizeRelativeToReference(44, 812, window.height),
+        borderRadius: 4,
+        backgroundColor: variables.secondaryButtonBackgroundColor,
+        borderColor: variables.secondaryButtonBorderColor,
+        borderWidth: 1,
+      },
+    },
+
+    'shoutem.ginger.PhoneVerificationScreen': {
+      verifyButton: {
+        width: '100%',
+        margin: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+      },
+      headerBackButton: {
+        color: '#FFFFFF',
+      },
+      text: {
+        color: '#FFFFFF',
+      },
+      boldText: {
+        color: '#FFFFFF',
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '600'),
+        fontWeight: resolveFontWeight('600'),
+      },
+      phoneIcon: {
+        width: getSizeRelativeToReference(110, 812, window.height),
+        height: getSizeRelativeToReference(110, 812, window.height),
+        marginVertical: variables.largeGutter,
+      },
+    },
+
+    'shoutem.ginger.CodeInput': {
+      cell: {
+        height: getSizeRelativeToReference(54, 812, window.height),
+        width: getSizeRelativeToReference(40, 375, window.width),
+        backgroundColor: variables.paperColor,
+        borderRadius: 10,
+        marginHorizontal: variables.smallGutter,
+        textAlign: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      filledCell: {
+        backgroundColor: changeColorAlpha(
+          variables.primaryButtonBackgroundColor,
+          0.2,
+        ),
+        color: variables.primaryButtonText,
+      },
+      focusedCell: {
+        borderWidth: 1,
+        borderColor: variables.primaryButtonBackgroundColor,
+      },
+      code: {
+        fontSize: 28,
+      },
+      textInput: {
+        position: 'relative',
+        top: -getSizeRelativeToReference(54, 812, window.height),
+        width: getSizeRelativeToReference(190, 375, window.width),
+        opacity: 0,
+        fontSize: 1,
+      },
+    },
+
+    'shoutem.ginger.DatePicker': {
+      container: {
+        paddingVertical: variables.smallGutter,
+      },
+      label: {
+        color: '#FFFFFF',
+        paddingLeft: variables.smallGutter,
+        paddingBottom: 3,
+      },
+      datePickerButton: {
+        textContainer: {
+          borderTopLeftRadius: 6,
+          borderBottomLeftRadius: 6,
+          backgroundColor: variables.paperColor,
+          marginLeft: variables.smallGutter,
+        },
+        buttonContainer: {
+          borderTopRightRadius: 6,
+          borderBottomRightRadius: 6,
+          marginRight: variables.smallGutter,
+        },
+      },
+    },
+
+    'shoutem.ginger.ImageBackgroundContainer': {
+      container: {
+        flex: 1,
+        paddingTop: NAVIGATION_BAR_HEIGHT,
+      },
+    },
+
+    'shoutem.ginger.ChangePhoneNumberScreen': {
+      phoneIcon: {
+        width: getSizeRelativeToReference(110, 812, window.height),
+        height: getSizeRelativeToReference(110, 812, window.height),
+        marginVertical: variables.largeGutter,
+      },
+      input: {
+        width: '100%',
+      },
+      title: {
+        color: '#FFFFFF',
+      },
+      button: {
+        marginHorizontal: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+        marginBottom: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+      },
+    },
+
+    'shoutem.ginger.FormInput': {
+      container: {
+        paddingVertical: variables.smallGutter,
+      },
+      labelContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingBottom: 5,
+      },
+      label: {
+        color: '#FFFFFF',
+        paddingLeft: variables.smallGutter,
+        paddingBottom: 3,
+      },
+      textInput: {
+        borderRadius: 6,
+        errorText: {
+          color: '#161616',
+        },
+      },
+      iconContainer: {
+        position: 'absolute',
+        right: 0,
+        top: variables.mediumGutter,
+        paddingHorizontal: variables.smallGutter,
+      },
+      icon: {
+        color: variables.primaryButtonBackgroundColor,
+      },
+    },
+
+    'shoutem.ginger.FormInputButton': {
+      container: {
+        paddingVertical: variables.smallGutter,
+        marginVertical: variables.smallGutter,
+      },
+      label: {
+        color: '#FFFFFF',
+        paddingLeft: variables.smallGutter,
+        paddingBottom: 3,
+      },
+      inputContainer: {
+        height: 50,
+        borderRadius: 6,
+        backgroundColor: variables.paperColor,
+        justifyContent: 'center',
+        paddingHorizontal: variables.mediumGutter,
+        marginLeft: variables.smallGutter,
+        marginRight: variables.smallGutter,
+      },
+    },
+
+    'shoutem.ginger.AdditionalInformation': {
+      row: {
+        marginTop: getSizeRelativeToReference(15, 812, window.height),
+        flexDirection: 'row',
+      },
+      rowImage: {
+        marginRight: getSizeRelativeToReference(10, 375, window.width),
+        width: getSizeRelativeToReference(16, 375, window.width),
+        height: getSizeRelativeToReference(16, 375, window.width),
+        color: variables.text.color,
+      },
+      rowText: {
+        fontSize: 12,
+        lineHeight: 16,
+        letterSpacing: 0.5,
+        flexShrink: 1,
+      },
+      links: {
+        color: variables.links.color,
+        textDecorationLine: 'underline',
+      },
+    },
+
+    'shoutem.ginger.ProductListScreen': {
+      scrollContainer: {
+        flexGrow: 1,
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        paddingTop: getSizeRelativeToReference(10, 812, window.height),
+        backgroundColor: variables.paperColor,
+      },
+    },
+
+    'shoutem.ginger.CartScreen': {
+      scrollContainer: {
+        paddingHorizontal: getSizeRelativeToReference(10, 375, window.width),
+        paddingBottom: getSizeRelativeToReference(25, 812, window.height),
+      },
+      promoCodeContainer: {
+        marginTop: getSizeRelativeToReference(15, 812, window.height),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: getSizeRelativeToReference(10, 375, window.width),
+      },
+      promoCodeIcon: {
+        height: getSizeRelativeToReference(24, 375, window.width),
+        width: getSizeRelativeToReference(15, 375, window.width),
+      },
+      promoCodeText: {
+        fontSize: 15,
+        lineHeight: 18,
+      },
+    },
+
+    'shoutem.ginger.PlaceholderView': {
+      container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      image: {
+        width: getSizeRelativeToReference(285, 375, window.width),
+        height: getSizeRelativeToReference(285, 375, window.width),
+      },
+      button: {
+        height: getSizeRelativeToReference(44, 812, window.height),
+        marginHorizontal: getSizeRelativeToReference(30, 375, window.width),
+        marginBottom: getSizeRelativeToReference(44, 812, window.height),
+        borderRadius: 4,
+      },
+      buttonText: {
+        fontFamily: resolveFontFamily(variables.text.fontFamily, '500'),
+        fontWeight: resolveFontWeight('500'),
+        fontSize: 13,
+        lineHeight: 24,
+      },
+    },
+
+    'shoutem.ginger.ChangePasswordScreen': {
+      headerTitle: {
+        color: '#FFFFFF',
+      },
+      headerBackButton: {
+        color: '#FFFFFF',
+      },
+      titleContainer: {
+        marginVertical: getSizeRelativeToReference(
+          variables.mediumGutter,
+          812,
+          window.height,
+        ),
+        marginHorizontal: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+      },
+      inputContainer: {
+        marginVertical: getSizeRelativeToReference(
+          variables.smallGutter,
+          812,
+          window.height,
+        ),
+        marginHorizontal: getSizeRelativeToReference(
+          variables.smallGutter,
+          375,
+          window.width,
+        ),
+      },
+      buttonContainer: {
+        marginTop: getSizeRelativeToReference(
+          variables.smallGutter,
+          812,
+          window.height,
+        ),
+        marginBottom: Device.select({
+          iPhoneX: IPHONE_X_HOME_INDICATOR_PADDING,
+          iPhoneXR: IPHONE_X_HOME_INDICATOR_PADDING,
+          default: variables.largeGutter,
+        }),
+        marginHorizontal: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+      },
+      text: {
+        color: '#FFFFFF',
+      },
+    },
+
+    'shoutem.ginger.AgeVerificationSubtitle': {
+      container: {
+        color: variables.onboardingDescriptionTextColor,
+        marginTop: getSizeRelativeToReference(15, 812, window.height),
+      },
+      text: {
+        color: variables.onboardingDescriptionTextColor,
+      },
+      bold: {
+        color: variables.onboardingDescriptionTextColor,
+        fontFamily: resolveFontFamily(
+          variables.text.fontFamily,
+          '700',
+          variables.text.fontStyle,
+        ),
+        fontWeight: resolveFontWeight('700'),
+      },
+    },
+
+    'shoutem.ginger.EditProfileScreen': {
+      container: {
+        marginHorizontal: getSizeRelativeToReference(
+          variables.smallGutter,
+          375,
+          window.width,
+        ),
+      },
+      formInputLabelColor: variables.text.color,
+      button: {
+        marginHorizontal: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+        marginBottom: getSizeRelativeToReference(
+          variables.largeGutter,
+          812,
+          window.height,
+        ),
+      },
+      actionSheet: {
+        container: {
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 10,
+          elevation: 10,
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+        },
+      },
+    },
+
+    'shoutem.ginger.MyProfileScreen': {
+      container: {
+        marginHorizontal: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+        marginBottom: getSizeRelativeToReference(
+          variables.largeGutter,
+          812,
+          window.height,
+        ),
+      },
+      mainContainer: {
+        marginBottom: getSizeRelativeToReference(
+          variables.mediumGutter,
+          812,
+          window.height,
+        ),
+      },
+      headerButton: {
+        color: variables.text.color,
+      },
+      logoutButton: {
+        height: getSizeRelativeToReference(44, 812, window.height),
+        borderRadius: 4,
+        backgroundColor: variables.primaryButtonBackgroundColor,
+        borderColor: variables.primaryButtonBorderColor,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+      },
+    },
+
+    'shoutem.ginger.ProfileTextItem': {
+      name: {
+        fontSize: 16,
+        lineHeight: calculateLineHeight(16),
+      },
+      nick: {
+        fontSize: 13,
+        lineHeight: calculateLineHeight(13),
+        opacity: 0.6,
+      },
+      labelContainer: {
+        width: '30%',
+      },
+      label: {
+        fontSize: variables.text.fontSize,
+        paddingHorizontal: variables.smallGutter,
+        paddingVertical: variables.smallGutter,
+      },
+      divider: {
+        borderBottomWidth: 1,
+      },
+    },
+
+    'shoutem.ginger.ProfileImage': {
+      placeholder: {
+        color: variables.paperColor,
+      },
+      image: {
+        width: getSizeRelativeToReference(145, 812, window.height),
+        height: getSizeRelativeToReference(145, 812, window.height),
+        borderRadius: getSizeRelativeToReference(145 / 2, 812, window.height),
+        borderWidth: 0,
+        backgroundColor: inverseColorBrightnessForAmount(
+          variables.paperColor,
+          10,
+        ),
       },
     },
   });

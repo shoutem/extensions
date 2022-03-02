@@ -112,9 +112,12 @@ export default class CategorySelector extends Component {
           emptyText={i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_LABEL)}
           onSelectionChanged={this.handleSelectionChanged}
           options={categoryOptions}
-          selectNoneText={i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_LABEL)}
+          selectNoneText={i18next.t(LOCALIZATION.SELECT_NONE_LABEL)}
+          selectAllText={i18next.t(LOCALIZATION.SELECT_ALL_LABEL)}
+          selectText={i18next.t(LOCALIZATION.SELECT_LABEL)}
           selectedValues={selectedCategories}
           showSelectNoneOption
+          showSelectAllOption
         />
       </LoaderContainer>
     );

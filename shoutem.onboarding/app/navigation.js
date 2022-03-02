@@ -1,6 +1,6 @@
 import { NavigationStacks } from 'shoutem.navigation';
-import { OnboardingScreen } from './screens';
 import { ext } from './const';
+import { OnboardingScreen } from './screens';
 
 NavigationStacks.registerNavigationStack({
   name: ext(),

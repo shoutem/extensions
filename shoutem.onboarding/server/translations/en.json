@@ -15,6 +15,7 @@
       "onboarding-components-page.cancel-btn-label": "Cancel",
       "onboarding-components-page.page-description": "Page Description",
       "onboarding-components-page.page-image": "Background image (1080x1920px)",
+      "onboarding-components-page.page-featured-image": "Featured image (300x300px)",
       "onboarding-components-page.page-title": "Page Title",
       "onboarding-components-page.text-position-label": "Text position",
       "onboarding-components-page.upload-fail-message": "Upload failed! Please make sure you're using correct format and size.",

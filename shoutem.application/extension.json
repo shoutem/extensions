@@ -1,11 +1,11 @@
 {
   "name": "application",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "platform": "^4 || ^5",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
+  "releaseNotes": "* Added default translation strings for empty lists",
   "icon": "server/assets/add-application-image.png",
   "categories": [],
   "dependencies": [

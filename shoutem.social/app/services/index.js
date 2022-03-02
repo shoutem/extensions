@@ -1,23 +1,20 @@
+export {
+  openBlockActionSheet,
+  openBlockAndReportActionSheet,
+  openBlockOrReportActionSheet,
+  openUnblockActionSheet,
+} from './reporting';
 export { shoutemApi } from './shoutemApi';
 export {
-  increaseNumberOfComments,
-  decreaseNumberOfComments,
   appendStatus,
+  decreaseNumberOfComments,
+  increaseNumberOfComments,
   removeStatus,
   updateStatusesAfterLike,
   updateStatusesAfterUnlike,
-  formatLikeText,
-  currentUserOwnsStatus,
 } from './status';
+export { convertToHtml } from './textConverter';
 export {
   adaptSocialUserForProfileScreen,
   openProfileForLegacyUser,
 } from './user';
-
-export {
-  openBlockActionSheet,
-  openBlockOrReportActionSheet,
-  openReportActionSheet,
-  openBlockAndReportActionSheet,
-  openUnblockActionSheet,
-} from './reporting';

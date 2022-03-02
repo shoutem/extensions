@@ -1,9 +1,17 @@
+import { Alert } from 'react-native';
 import _ from 'lodash';
+import { getShortcut } from 'shoutem.application';
 import { NotificationHandlers } from 'shoutem.firebase';
+import { I18n } from 'shoutem.i18n';
 import { openInModal } from 'shoutem.navigation';
-import { displayLocalNotification } from 'shoutem.rss';
 import { resolveNotificationData } from 'shoutem.push-notifications';
-import { ext, VIDEO_DETAILS_SCREEN, VIDEOS_SCHEMA_ITEM } from './const';
+import { displayLocalNotification, ext as rssExt } from 'shoutem.rss';
+import {
+  ext,
+  VIDEO_DETAILS_SCREEN,
+  VIDEOS_LIST_SCREEN,
+  VIDEOS_SCHEMA_ITEM,
+} from './const';
 import { fetchVideosFeed, getFeedUrl } from './redux';
 
 function canHandle(notification) {
@@ -24,7 +32,7 @@ function getItemId(videos, uuid) {
     return video.attributes.uuid === uuid;
   });
 
-  return _.get(video, 'id');
+  return video?.id;
 }
 
 function consumeNotification(notification, store) {
@@ -32,16 +40,31 @@ function consumeNotification(notification, store) {
     return;
   }
 
+  const { itemId, shortcutId } = notification;
+  const { dispatch } = store;
   const state = store.getState();
-  const feedUrl = getFeedUrl(state, notification.shortcutId);
+  const feedUrl = getFeedUrl(state, shortcutId);
 
-  store
-    .dispatch(fetchVideosFeed(notification.shortcutId))
-    .then(({ payload: { data: videos } }) => {
-      const id = getItemId(videos, notification.itemId);
+  dispatch(fetchVideosFeed(shortcutId)).then(
+    ({ payload: { data: videos } }) => {
+      const id = getItemId(videos, itemId);
+
+      if (!id) {
+        const shortcut = getShortcut(state, shortcutId);
+
+        openInModal(VIDEOS_LIST_SCREEN, { shortcut });
+
+        Alert.alert(
+          I18n.t(rssExt('itemNotFoundTitle')),
+          I18n.t(rssExt('itemNotFoundMessage')),
+        );
+
+        return;
+      }
 
       openInModal(VIDEO_DETAILS_SCREEN, { id, feedUrl });
-    });
+    },
+  );
 }
 
 function handleForegroundNotification(receivedNotification, store) {

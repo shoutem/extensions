@@ -8,10 +8,10 @@ function createEndpoint(appId: string, path: string): string {
   return new URI(config.servicesAppBackendDebug).segment(endpointSuffix).toString();
 }
 
-export function getFetchExtensionInstallationRequest(appId: string): object {
+export function getFetchExtensionInstallationRequest(appId: string, canonicalName: string): object {
   return {
     method: 'GET',
-    uri: createEndpoint(appId, 'shoutem.salesforce'),
+    uri: createEndpoint(appId, canonicalName),
     headers: {
       Accept: 'application/vnd.api+json',
       authorization: `Bearer ${config.servicesApiToken}`,

@@ -11,6 +11,7 @@ const screens = {
   EpisodesGridScreen,
   EpisodesLargeGridScreen,
   EpisodeDetailsScreen,
+  EpisodeDetailsWithoutShareScreen: EpisodeDetailsScreen,
   EpisodesFeaturedListScreen: EpisodesListScreen,
   EpisodesFeaturedGridScreen: EpisodesGridScreen,
   EpisodesFeaturedLargeGridScreen: EpisodesLargeGridScreen,

@@ -4,7 +4,9 @@
       "buffering": "Buffering...",
       "missingStreamUrl": "Please enter a valid stream URL and reload your app.",
       "nowPlaying": "Now playing",
-      "pressToPlay": "Press play to start the stream"
+      "pressToPlay": "Press play to start the stream",
+      "shareMessage": "Stream address: {{streamUrl}}",
+      "shareTitle": "Currently listening to {{streamTitle}}"
     }
   }
 }

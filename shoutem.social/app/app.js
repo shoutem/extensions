@@ -1,8 +1,8 @@
 import rio from '@shoutem/redux-io';
 import { getAppId } from 'shoutem.application/app';
 import {
-  getExtensionSettings,
   getExtensionCloudUrl,
+  getExtensionSettings,
 } from 'shoutem.application/redux';
 import { getUser, isAuthenticated } from 'shoutem.auth';
 import { Firebase } from 'shoutem.firebase';
@@ -12,8 +12,6 @@ import { initUserSettings } from './redux';
 
 const APPLICATION_EXTENSION = 'shoutem.application';
 const AUTH_EXTENSION = 'shoutem.auth';
-
-export const apiVersion = '59';
 
 export function appDidMount(app) {
   const store = app.getStore();

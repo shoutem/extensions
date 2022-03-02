@@ -1,46 +1,4 @@
 import _ from 'lodash';
-import { I18n } from 'shoutem.i18n';
-import { ext } from '../const';
-
-function truncateUsername(userName, maxLength = 12) {
-  return _.truncate(userName, { length: maxLength });
-}
-
-export function currentUserOwnsStatus(user, statusOwner) {
-  const userId = _.get(user, 'legacyId');
-  const statusOwnerId = _.get(statusOwner, 'id');
-
-  return _.toString(userId) === _.toString(statusOwnerId);
-}
-
-export function formatLikeText(status, showUsersWhoLiked = true) {
-  const count = _.get(status, 'shoutem_favorited_by.count', 0);
-
-  if (count === 0) {
-    return null;
-  }
-
-  if (!showUsersWhoLiked) {
-    return I18n.t(ext('numberOfLikes'), { count });
-  }
-
-  const users = _.get(status, 'shoutem_favorited_by.users');
-  const userNames = _.map(users, 'first_name');
-  const firstUser = truncateUsername(_.get(userNames, 0));
-
-  if (count === 1) {
-    return I18n.t(ext('numberOfLikesMessage'), {
-      firstUser,
-      count,
-    });
-  }
-
-  const remainingCount = count - 1;
-  return I18n.t(ext('numberOfOtherUserLikesMessage'), {
-    firstUser,
-    count: remainingCount,
-  });
-}
 
 export function increaseNumberOfComments(statuses, statusId) {
   return _.map(statuses, status => {

@@ -1,12 +1,12 @@
-import reducer from './reducer';
-import * as extension from './extension.js';
-import ArticlesScreen from './screens/ArticlesScreen';
-import GridArticlesScreen from './screens/GridArticlesScreen';
-import FeaturedGrid122ArticlesScreen from './screens/FeaturedGrid122ArticlesScreen';
 import ArticleDetailsScreen from './screens/ArticleDetailsScreen';
-import MediumDetailsNoDateScreen from './screens/MediumDetailsNoDateScreen';
+import ArticlesScreen from './screens/ArticlesScreen';
+import Grid122ArticlesScreen from './screens/Grid122ArticlesScreen';
+import GridArticlesScreen from './screens/GridArticlesScreen';
 import LargeArticleDetailsScreen from './screens/LargeArticleDetailsScreen';
+import MediumDetailsNoDateScreen from './screens/MediumDetailsNoDateScreen';
 import enTranslations from './translations/en.json';
+import * as extension from './extension.js';
+import reducer from './reducer';
 
 export { FeaturedArticleView } from './components/FeaturedArticleView';
 export { GridArticleView } from './components/GridArticleView';
@@ -23,7 +23,7 @@ export const screens = {
   MediumListArticlesScreen: ArticlesScreen,
   FeaturedMediumListArticlesScreen: ArticlesScreen,
   TileListArticlesScreen: ArticlesScreen,
-  FeaturedGrid122ArticlesScreen,
+  Grid122ArticlesScreen,
   ArticleDetailsScreen: LargeArticleDetailsScreen,
   SolidNavbarMediumArticleDetailsScreen: ArticleDetailsScreen,
   SolidNavbarMediumArticleDetailsNoDateScreen: MediumDetailsNoDateScreen,
@@ -31,7 +31,7 @@ export const screens = {
   ClearNavbarMediumArticleDetailsScreen: ArticleDetailsScreen,
 };
 
-export const themes = extension.themes;
+export const { themes } = extension;
 
 export const shoutem = {
   i18n: {

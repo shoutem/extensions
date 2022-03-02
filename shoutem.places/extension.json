@@ -1,10 +1,10 @@
 {
   "name": "places",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "platform": "^5",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "releaseNotes": "* Replaced loading spinner with animated placeholder",
+  "releaseNotes": "* Removed animated loading placeholder when loading more list items",
   "icon": "./server/assets/images/add-places-image.png",
   "dependencies": [
     "shoutem.application",

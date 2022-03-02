@@ -1,0 +1,25 @@
+{
+  "name": "shoutem.ginger",
+  "version": "1.0.2",
+  "description": "Ginger commerce integration",
+  "scripts": {
+    "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
+  },
+  "dependencies": {
+    "pluralize": "8.0.0",
+    "react-native-exit-app": "1.1.0",
+    "react-native-google-places-autocomplete": "2.4.1",
+    "react-native-snap-carousel": "3.9.1",
+    "lottie-react-native": "5.0.1",
+    "lottie-ios": "3.2.3"
+  },
+  "peerDependencies": {
+    "react-native-image-picker": "*",
+    "react-native-linear-gradient": "*"
+  },
+  "nativeDependencies": [
+    "lottie-react-native",
+    "lottie-ios",
+    "react-native-exit-app"
+  ]
+}

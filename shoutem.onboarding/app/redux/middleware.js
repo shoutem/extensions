@@ -5,7 +5,8 @@ import {
   SET_NAVIGATION_INITIALIZED,
 } from 'shoutem.navigation';
 import { ext } from '../const';
-import { getOnboardingCompleted } from '../redux';
+import { ONBOARDING_FINISHED } from './action';
+import { getOnboardingCompleted } from './selector';
 
 export const showOnboardingMiddleware = store => next => action => {
   if (action.type === SET_NAVIGATION_INITIALIZED) {
@@ -21,9 +22,19 @@ export const showOnboardingMiddleware = store => next => action => {
 
     if (shouldDisplayOnboarding) {
       NavigationStacks.openStack(ext(), {
-        onCompleted: () => NavigationStacks.closeStack(ext()),
+        onOnboardingCompleted: () => NavigationStacks.closeStack(ext()),
       });
     }
+  }
+
+  return next(action);
+};
+
+export const completeOnboardingMiddleware = () => next => action => {
+  if (action.type === ONBOARDING_FINISHED) {
+    const { onOnboardingCompleted } = action.payload;
+
+    onOnboardingCompleted();
   }
 
   return next(action);

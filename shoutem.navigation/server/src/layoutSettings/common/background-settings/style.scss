@@ -8,13 +8,6 @@
     .circular-loader {
       padding-top: 210px;
     }
-
-    &.no-img,
-    &.image-preview__delete {
-      .se-icon {
-        padding-top: 210px;
-      }
-    }
   }
 
   .image-preview-tablet,
@@ -25,13 +18,6 @@
 
     .circular-loader {
       padding-top: 151px;
-    }
-
-    &.no-img,
-    &.image-preview__delete {
-      .se-icon {
-        padding-top: 151px;
-      }
     }
   }
 }

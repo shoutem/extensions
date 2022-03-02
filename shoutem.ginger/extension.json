@@ -1,0 +1,115 @@
+{
+  "name": "ginger",
+  "title": "Ginger D2C",
+  "version": "1.0.2",
+  "description": "Ginger commerce integration",
+  "platform": "^5.1.0",
+  "hidden": true,
+  "capabilities": [
+    "shoutem.ginger.places-api"
+  ],
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.camera",
+    "shoutem.redux",
+    "shoutem.web-view",
+    "shoutem.user-profile",
+    "shoutem.auth",
+    "shoutem.onboarding",
+    "shoutem.permissions"
+  ],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
+  "shortcuts": [
+    {
+      "screen": "@.ProductListScreen",
+      "title": "Shop",
+      "name": "shop-shortcut",
+      "icon": "theme://store.png"
+    },
+    {
+      "screen": "@.OrderListScreen",
+      "title": "Orders",
+      "name": "orders-shortcut",
+      "icon": "theme://orders.png"
+    },
+    {
+      "screen": "@.MyProfileScreen",
+      "title": "Profile",
+      "name": "profile-shortcut",
+      "icon": "theme://profile.png"
+    }
+  ],
+  "screens": [
+    {
+      "name": "ProductListScreen",
+      "title": "Product list"
+    },
+    {
+      "name": "ProductDetailsScreen",
+      "title": "Product details"
+    },
+    {
+      "name": "RegisterScreen",
+      "title": "Register"
+    },
+    {
+      "name": "LoginScreen",
+      "title": "Login"
+    },
+    {
+      "name": "PhoneVerificationScreen",
+      "title": "Phone verification"
+    },
+    {
+      "name": "ChangePhoneNumberScreen",
+      "title": "Change phone number"
+    },
+    {
+      "name": "OrderListScreen",
+      "title": "My Orders"
+    },
+    {
+      "name": "PrivacyPolicyScreen",
+      "title": "Privacy Policy"
+    },
+    {
+      "name": "TermsOfServiceScreen",
+      "title": "Terms of service"
+    },
+    {
+      "name": "MyProfileScreen",
+      "title": "My profile"
+    },
+    {
+      "name": "EditProfileScreen",
+      "title": "Edit profile"
+    }
+  ],
+  "pages": [
+    {
+      "name": "GeneralSettingsPage",
+      "type": "react-page"
+    },
+    {
+      "name": "LegalPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.GeneralSettingsPage",
+      "title": "Settings"
+    },
+    {
+      "page": "@.LegalPage",
+      "title": "Legal"
+    }
+  ],
+  "settings": {
+    "storeApiKey": null,
+    "retailerList": null
+  }
+}

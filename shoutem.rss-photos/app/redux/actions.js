@@ -1,17 +1,19 @@
-import _ from 'lodash';
+import { find } from '@shoutem/redux-io';
 import { getExtensionSettings, getShortcut } from 'shoutem.application';
 import { buildFeedUrlWithEndpoint, ext as rssExt } from 'shoutem.rss';
-import { find } from '@shoutem/redux-io';
-import { RSS_PHOTOS_SCHEMA } from '../const';
+import { DEFAULT_PAGE_LIMIT, RSS_PHOTOS_SCHEMA } from '../const';
 
-export function fetchPhotosFeed(shortcutId) {
+export function fetchPhotosFeed(
+  shortcutId,
+  options = { pageLimit: DEFAULT_PAGE_LIMIT },
+) {
   return (dispatch, getState) => {
     return new Promise(resolve => {
       const state = getState();
       const settings = getExtensionSettings(state, rssExt());
-      const baseApiEndpoint = _.get(settings, 'baseApiEndpoint');
+      const { baseApiEndpoint } = settings;
       const shortcut = getShortcut(state, shortcutId);
-      const feedUrl = _.get(shortcut, 'settings.feedUrl');
+      const feedUrl = shortcut?.settings?.feedUrl;
 
       const config = {
         schema: RSS_PHOTOS_SCHEMA,
@@ -31,10 +33,12 @@ export function fetchPhotosFeed(shortcutId) {
           find(config, 'allPhotos', {
             query: {
               'filter[url]': feedUrl,
+              'page[limit]': options.pageLimit,
             },
           }),
         ),
       );
+      // eslint-disable-next-line no-console
     }).catch(err => console.warn('Fetch photo feed failed.', err));
   };
 }

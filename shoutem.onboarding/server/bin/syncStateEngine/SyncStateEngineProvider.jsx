@@ -1,7 +1,7 @@
-import { Component, Children } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { Children, Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import sandbox from '@shoutem/extension-sandbox';
 import { ext } from '../../src/const';
 
@@ -91,4 +91,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SyncStateEngineProvider);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SyncStateEngineProvider);

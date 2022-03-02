@@ -261,7 +261,12 @@ export class MessageListScreen extends PureComponent {
       );
     }
 
-    return <EmptyListImage />;
+    return (
+      <EmptyListImage
+        title={I18n.t(ext('emptyChatSearchResultTitle'))}
+        message={I18n.t(ext('emptyChatSearchResultMessage'), { searchQuery })}
+      />
+    );
   }
 
   renderRow(item) {

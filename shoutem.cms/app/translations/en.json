@@ -20,7 +20,8 @@
       "rsvpButton": "RSVP",
       "navBarListViewButton": "List",
       "navBarMapViewButton": "Map",
-      "noSearchResultsText": "No results found"
+      "noSearchResultsText": "No results found",
+      "searchPlaceholder": "Search"
     }
   }
 }

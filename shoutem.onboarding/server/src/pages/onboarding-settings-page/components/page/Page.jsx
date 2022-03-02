@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import {
-  FormControl,
-  ControlLabel,
-  Button,
-  HelpBlock,
-} from 'react-bootstrap';
+import { Button, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
+import Select from 'react-select';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import Select from 'react-select';
-import {
-  FontIconPopover,
-  FontIcon,
-  ImageUploader,
-  ConfirmModal,
-} from '@shoutem/react-web-ui';
+import PropTypes from 'prop-types';
 import { ext } from 'src/const';
+import {
+  ConfirmModal,
+  FontIcon,
+  FontIconPopover,
+  ImageUploader,
+} from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -27,22 +22,14 @@ function resolveFilename(file) {
 }
 
 export default class PageSettings extends Component {
-  static propTypes = {
-    page: PropTypes.object,
-    assetManager: PropTypes.object,
-    textPositionOptions: PropTypes.array,
-    onSettingsChange: PropTypes.func,
-    onDelete: PropTypes.func,
-    index: PropTypes.number,
-  };
-
   constructor(props) {
     super(props);
 
     autoBindReact(this);
 
     this.state = {
-      error: false,
+      imageError: false,
+      featuredImageError: false,
     };
   }
 
@@ -76,20 +63,38 @@ export default class PageSettings extends Component {
 
   handleImageUpload(imageUrl) {
     this.setState({
-      error: false,
+      imageError: false,
     });
 
     this.handlePageUpdate('imageUrl', imageUrl);
   }
 
+  handleFeaturedImageUpload(imageUrl) {
+    this.setState({
+      featuredImageError: false,
+    });
+
+    this.handlePageUpdate('featuredImageUrl', imageUrl);
+  }
+
   handleImageUploadFailed() {
     this.setState({
-      error: true,
+      imageError: true,
+    });
+  }
+
+  handleFeaturedImageUploadFailed() {
+    this.setState({
+      imageError: true,
     });
   }
 
   handleImageDelete() {
     this.handlePageUpdate('imageUrl', null);
+  }
+
+  handleFeaturedImageDelete() {
+    this.handlePageUpdate('featuredImageUrl', null);
   }
 
   handleTextPositionChange(option) {
@@ -98,18 +103,20 @@ export default class PageSettings extends Component {
 
   render() {
     const { assetManager, index, textPositionOptions, page } = this.props;
-    const { imageUrl, title, description, textPosition } = page;
-    const { error } = this.state;
+    const {
+      imageUrl,
+      featuredImageUrl,
+      title,
+      description,
+      textPosition,
+    } = page;
+    const { imageError, featuredImageError } = this.state;
 
     return (
       <div className="page-container">
-        <ControlLabel>
-          {`#${index + 1}`}
-        </ControlLabel>
+        <ControlLabel>{`#${index + 1}`}</ControlLabel>
         <div className="title-button">
-          <ControlLabel>
-            {i18next.t(LOCALIZATION.PAGE_TITLE)}
-          </ControlLabel>
+          <ControlLabel>{i18next.t(LOCALIZATION.PAGE_TITLE)}</ControlLabel>
           <ConfirmModal ref="confirm" className="settings-page-modal-small" />
           <Button
             bsStyle="link"
@@ -148,25 +155,64 @@ export default class PageSettings extends Component {
             value={textPosition}
           />
         </div>
-        <ControlLabel>{i18next.t(LOCALIZATION.PAGE_IMAGE)}</ControlLabel>
-        <ImageUploader
-          assetManager={assetManager}
-          className="image-uploader"
-          elementId="imageUrl"
-          folderName={ext()}
-          height={1920}
-          onDeleteSuccess={this.handleImageDelete}
-          onDrop={this.handleImageDrop}
-          onError={this.handleImageUploadFailed}
-          onUploadSuccess={this.handleImageUpload}
-          preview={imageUrl}
-          previewSize="custom"
-          resolveFilename={resolveFilename}
-          src={imageUrl}
-          width={1080}
-        />
-        {error && <HelpBlock className="text-error">{i18next.t(LOCALIZATION.UPLOAD_FAILED_MESSAGE)}</HelpBlock>}
-      </div >
+
+        <div className="image-upload__container">
+          <div>
+            <ControlLabel>{i18next.t(LOCALIZATION.PAGE_IMAGE)}</ControlLabel>
+            <ImageUploader
+              assetManager={assetManager}
+              className="image-uploader-background"
+              elementId="imageUrl"
+              folderName={ext()}
+              height={1920}
+              onDeleteSuccess={this.handleImageDelete}
+              onDrop={this.handleImageUpload}
+              onError={this.handleImageUploadFailed}
+              onUploadSuccess={this.handleImageUpload}
+              preview={imageUrl}
+              previewSize="custom"
+              resolveFilename={resolveFilename}
+              src={imageUrl}
+              width={1080}
+            />
+          </div>
+          <div className="image-uploader-featured__container">
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FEATURED_IMAGE)}
+            </ControlLabel>
+            <ImageUploader
+              assetManager={assetManager}
+              className="image-uploader-featured"
+              elementId="featuredImageUrl"
+              folderName={ext()}
+              minHeight={300}
+              minWidth={300}
+              onDeleteSuccess={this.handleFeaturedImageDelete}
+              onDrop={this.handleFeaturedImageUpload}
+              onError={this.handleImageUploadFailed}
+              onUploadSuccess={this.handleFeaturedImageUpload}
+              preview={featuredImageUrl}
+              previewSize="featured"
+              resolveFilename={resolveFilename}
+              src={featuredImageUrl}
+            />
+          </div>
+        </div>
+        {(imageError || featuredImageError) && (
+          <HelpBlock className="text-error">
+            {i18next.t(LOCALIZATION.UPLOAD_FAILED_MESSAGE)}
+          </HelpBlock>
+        )}
+      </div>
     );
   }
 }
+
+PageSettings.propTypes = {
+  assetManager: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
+  page: PropTypes.object.isRequired,
+  textPositionOptions: PropTypes.array.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onSettingsChange: PropTypes.func.isRequired,
+};

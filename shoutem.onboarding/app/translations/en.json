@@ -1,8 +1,9 @@
 {
   "shoutem": {
     "onboarding": {
-      "continueButtonLabel": "Continue",
-      "skipButtonLabel": "Skip"
+      "getStartedLabel": "Get Started",
+      "noPagesTitle": "No instructions found",
+      "noPagesMessage": "Add instructions to your onboarding to help users understand the app"
     }
   }
 }

@@ -1,0 +1,1 @@
+export { getArticleImages } from './images';

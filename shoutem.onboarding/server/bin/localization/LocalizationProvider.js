@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import _ from 'lodash';
 import { connect } from 'react-redux';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import translation from '../../translations/en.json';
 

@@ -1,12 +1,16 @@
 {
   "name": "onboarding",
   "title": "Onboarding",
-  "version": "4.0.1",
+  "version": "4.1.1",
   "platform": "^4 || ^5",
   "description": "Shows a quick tour on the first app launch.",
-  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
+  "releaseNotes": "* Fixed onboarding finish scenario",
   "icon": "server/assets/onboarding-icon.png",
-  "dependencies": ["shoutem.application", "shoutem.i18n", "shoutem.navigation"],
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.i18n",
+    "shoutem.navigation"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

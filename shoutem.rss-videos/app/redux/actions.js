@@ -2,9 +2,12 @@ import _ from 'lodash';
 import { find } from '@shoutem/redux-io';
 import { getExtensionSettings, getShortcut } from 'shoutem.application';
 import { buildFeedUrlWithEndpoint, ext as rssExt } from 'shoutem.rss';
-import { RSS_VIDEOS_SCHEMA } from '../const';
+import { DEFAULT_PAGE_LIMIT, RSS_VIDEOS_SCHEMA } from '../const';
 
-export function fetchVideosFeed(shortcutId) {
+export function fetchVideosFeed(
+  shortcutId,
+  options = { pageLimit: DEFAULT_PAGE_LIMIT },
+) {
   return (dispatch, getState) => {
     return new Promise(resolve => {
       const state = getState();
@@ -31,10 +34,12 @@ export function fetchVideosFeed(shortcutId) {
           find(config, 'allVideos', {
             query: {
               'filter[url]': feedUrl,
+              'page[limit]': options.pageLimit,
             },
           }),
         ),
       );
+      // eslint-disable-next-line no-console
     }).catch(err => console.warn('Fetch video feed failed.', err));
   };
 }

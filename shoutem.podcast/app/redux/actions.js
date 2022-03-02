@@ -3,6 +3,7 @@ import { find } from '@shoutem/redux-io';
 import { getExtensionSettings, getShortcut } from 'shoutem.application';
 import { buildFeedUrlWithEndpoint, ext as rssExt } from 'shoutem.rss';
 import {
+  DEFAULT_PAGE_LIMIT,
   DOWNLOADED_EPISODE_ADDED,
   DOWNLOADED_EPISODE_REMOVED,
   RSS_PODCAST_SCHEMA,
@@ -57,7 +58,10 @@ export function deleteEpisode(id, path) {
   };
 }
 
-export function fetchEpisodesFeed(shortcutId) {
+export function fetchEpisodesFeed(
+  shortcutId,
+  options = { pageLimit: DEFAULT_PAGE_LIMIT },
+) {
   return (dispatch, getState) => {
     return new Promise(resolve => {
       const state = getState();
@@ -84,6 +88,7 @@ export function fetchEpisodesFeed(shortcutId) {
           find(config, 'latestEpisodes', {
             query: {
               'filter[url]': feedUrl,
+              'page[limit]': options.pageLimit,
             },
           }),
         ),

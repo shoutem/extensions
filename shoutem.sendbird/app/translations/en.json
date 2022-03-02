@@ -12,6 +12,8 @@
       "textInputPlaceholder": "Type a message...",
       "emptyChatListTitle": "It’s empty in here",
       "emptyChatListMessage": "You can start a conversation by looking for person you want to chat with",
+      "emptyChatSearchResultTitle": "No chats found",
+      "emptyChatSearchResultMessage": "Could not find any chats including '{{searchQuery}}'",
       "newMessagesLabel": "NEW",
       "searchBarPlaceholder": "Search conversations or start a new one...",
       "subscriptionInvalidMessage": "Chat feature won't be available until this app has a valid subscription."

@@ -1,16 +1,17 @@
 {
   "name": "radio-player",
   "title": "Radio+",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "platform": "^4 || ^5",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
-  "releaseNotes": "* Added option to disable displaying metadata artwork",
+  "releaseNotes": "* Added new layout - artwork background",
   "icon": "server/assets/add-radio-image.png",
   "categories": ["media"],
   "dependencies": [
     "shoutem.audio",
     "shoutem.i18n",
     "shoutem.navigation",
+    "shoutem.layouts",
     "shoutem.redux"
   ],
   "i18n": {
@@ -20,6 +21,15 @@
   "screens": [
     {
       "name": "Radio",
+      "title": "Radio with chosen static background image",
+      "image": "./server/assets/layouts/static-background-image-radio.png",
+      "settings": { "disableAdBanner": true }
+    },
+    {
+      "name": "ArtworkRadioScreen",
+      "title": "Radio with dynamic artwork background image",
+      "image": "./server/assets/layouts/dynamic-artwork-background-image-radio.png",
+      "extends": "@.Radio",
       "settings": { "disableAdBanner": true }
     }
   ],
@@ -34,6 +44,10 @@
         {
           "page": "@.RadioShortcutPage",
           "title": "RADIO SETTINGS"
+        },
+        {
+          "page": "shoutem.layouts.LayoutPage",
+          "title": "Layout"
         }
       ],
       "settings": {

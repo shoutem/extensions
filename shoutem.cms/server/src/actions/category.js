@@ -6,7 +6,7 @@ import { find, invalidate } from '@shoutem/redux-io';
 import { ext } from 'context';
 import { CATEGORIES, CURRENT_SCHEMA } from '../types';
 import { rsaaPromise, getAllCategoryName } from '../services';
-import { updateShortcutCategories } from './shortcut';
+import { initializeShortcutCategories } from './shortcut';
 
 const CREATE_CATEGORY_REQUEST = '@@cms/CREATE_CATEGORY_REQUEST';
 const CREATE_CATEGORY_SUCCESS = '@@cms/CREATE_CATEGORY_SUCCESS';
@@ -79,7 +79,7 @@ export function createCategory(shortcut, schema = CURRENT_SCHEMA) {
     return dispatch(rsaaPromise(createCategoryAction)).then(response => {
       const categoryId = _.toString(response.payload.id);
 
-      return dispatch(updateShortcutCategories(shortcut, categoryId)).then(
+      return dispatch(initializeShortcutCategories(shortcut, categoryId)).then(
         () => {
           dispatch(invalidate(CATEGORIES));
           return categoryId;
