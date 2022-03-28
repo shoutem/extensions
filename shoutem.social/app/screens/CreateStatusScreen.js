@@ -5,16 +5,27 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Alert, Keyboard as RNKeyboard, TextInput } from 'react-native';
+import {
+  Alert,
+  Keyboard as RNKeyboard,
+  KeyboardAvoidingView,
+  LayoutAnimation,
+  Pressable,
+  TextInput,
+} from 'react-native';
 import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
+  Divider,
   Icon,
   Image,
   ImageBackground,
+  Keyboard,
+  LoadingContainer,
+  Row,
   Screen,
   View,
 } from '@shoutem/ui';
@@ -23,15 +34,17 @@ import { I18n } from 'shoutem.i18n';
 import { HeaderTextButton } from 'shoutem.navigation';
 import { images } from '../assets';
 import NewStatusFooter from '../components/NewStatusFooter';
-import { ext, MAX_IMAGE_SIZE } from '../const';
+import { ext } from '../const';
+import { MAX_IMAGE_SIZE } from '../services';
 
 export function CreateStatusScreen({ navigation, route, style }) {
   const {
     params: {
+      selectedImage: selectedImageAttachment,
       user,
       placeholder,
       enablePhotoAttachments = true,
-      statusMaxLength,
+      maxStatusLength,
       onStatusCreated,
     },
   } = route;
@@ -39,36 +52,52 @@ export function CreateStatusScreen({ navigation, route, style }) {
   const dispatch = useDispatch();
 
   const [text, setText] = useState('');
-  const [imageData, setImageData] = useState(undefined);
+  const [selectedImage, setSelectedImage] = useState(selectedImageAttachment);
+  const [isPostingStatus, setPostingStatus] = useState(false);
 
   const textInputRef = useRef(null);
 
   const debouncedHandleTextChange = _.debounce(setText, 250);
 
   const addNewStatus = useCallback(() => {
-    if (text.length === 0) {
-      Alert.alert(I18n.t(ext('blankPostWarning')));
+    if (text.length > 0) {
+      setPostingStatus(true);
+
+      dispatch(
+        authenticate(() => {
+          onStatusCreated(text, selectedImage, setStatusPosted);
+        }),
+      );
     } else {
-      dispatch(authenticate(() => onStatusCreated(text, imageData)));
+      Alert.alert(I18n.t(ext('blankPostWarning')));
     }
-  }, [dispatch, imageData, onStatusCreated, text]);
+  }, [dispatch, selectedImage, onStatusCreated, setStatusPosted, text]);
+
+  const setStatusPosted = useCallback(() => setPostingStatus(false), []);
 
   const headerRight = useCallback(
     props => {
       return (
-        <HeaderTextButton
-          title={I18n.t(ext('postCommentButton'))}
-          onPress={addNewStatus}
-          {...props}
-        />
+        <LoadingContainer loading={isPostingStatus}>
+          <HeaderTextButton
+            title={I18n.t(ext('postCommentButton'))}
+            onPress={addNewStatus}
+            {...props}
+          />
+        </LoadingContainer>
       );
     },
-    [addNewStatus],
+    [addNewStatus, isPostingStatus],
   );
 
+  const navigateBack = useCallback(() => {
+    setSelectedImage(undefined);
+    navigation.goBack();
+  }, [navigation]);
+
   const cancelNewPost = useCallback(() => {
-    if (text.length === 0 && !imageData) {
-      return navigation.goBack();
+    if (text.length === 0 && !selectedImage) {
+      return navigateBack();
     }
 
     return Alert.alert(
@@ -78,14 +107,14 @@ export function CreateStatusScreen({ navigation, route, style }) {
         {
           text: I18n.t(ext('discardAlertButtonLabel')),
           style: 'destructive',
-          onPress: navigation.goBack,
+          onPress: navigateBack,
         },
         {
           text: I18n.t(ext('keepEditingButtonLabel')),
         },
       ],
     );
-  }, [navigation, text.length, imageData]);
+  }, [navigateBack, text.length, selectedImage]);
 
   const headerLeft = useCallback(
     props => {
@@ -101,31 +130,39 @@ export function CreateStatusScreen({ navigation, route, style }) {
   );
 
   useLayoutEffect(() => {
+    textInputRef?.current?.focus();
+  }, []);
+
+  useLayoutEffect(() => {
     const {
       params: { title },
     } = route;
 
-    textInputRef?.current?.focus();
-
     navigation.setOptions({ title, headerLeft, headerRight });
   }, [headerLeft, headerRight, navigation, route]);
 
-  const handleImageSelected = useCallback(response => {
-    if (response.didCancel) {
-      return;
+  const handleImageSelected = useCallback(image => {
+    if (image.size > MAX_IMAGE_SIZE) {
+      Alert.alert(
+        I18n.t(
+          ext('imageSizeWarning', { maxSize: MAX_IMAGE_SIZE / (1024 * 1024) }),
+        ),
+      );
     }
 
-    if (response.errorCode) {
-      Alert.alert(response.errorMessage);
-    } else if (response.assets[0].fileSize > MAX_IMAGE_SIZE) {
-      Alert.alert(I18n.t(ext('imageSizeWarning')));
-    } else if (!response.didCancel) {
-      setImageData(response.assets[0].base64);
-    }
+    LayoutAnimation.easeInEaseOut();
+
+    setSelectedImage({
+      uri: image.path,
+      // Only iOS has filename property. For Android, we get the last segment of file path
+      fileName:
+        image.filename || image.path.substring(image.path.lastIndexOf('/') + 1),
+    });
   }, []);
 
-  function removeImage() {
-    setImageData(undefined);
+  function discardImage() {
+    LayoutAnimation.easeInEaseOut();
+    setSelectedImage(undefined);
   }
 
   const profileImage = user?.profile?.image || user?.profile_image_url;
@@ -137,53 +174,66 @@ export function CreateStatusScreen({ navigation, route, style }) {
 
   const attachmentSource = useMemo(
     () => ({
-      uri: `data:image/png;base64,${imageData}`,
+      uri: selectedImage?.uri,
     }),
-    [imageData],
+    [selectedImage],
   );
 
+  const keyboardOffset = Keyboard.calculateKeyboardOffset();
+
   return (
-    <Screen styleName="paper md-gutter-top">
-      <View styleName="flexible horizontal md-gutter-horizontal v-start">
-        <Image
-          styleName="small-avatar"
-          source={resolvedProfileAvatar}
-          style={style.profileAvatar}
-        />
+    <Screen styleName="paper">
+      <View style={style.keyboardDismissContainer}>
+        <Pressable onPress={RNKeyboard.dismiss}>
+          <Image
+            styleName="small-avatar"
+            source={resolvedProfileAvatar}
+            style={style.profileAvatar}
+          />
+        </Pressable>
         <TextInput
           ref={textInputRef}
           style={style.textInput}
           multiline
           textAlignVertical="top"
-          maxLength={statusMaxLength}
+          maxLength={maxStatusLength}
           placeholder={placeholder}
           onChangeText={debouncedHandleTextChange}
           returnKeyType="next"
-          onSubmitEditing={RNKeyboard.dismiss}
         />
       </View>
-      {imageData && (
-        <View styleName="md-gutter-horizontal sm-gutter-bottom">
-          <ImageBackground
-            source={attachmentSource}
-            styleName="large-banner"
-            style={style.attachedImage}
-          >
-            <View
-              styleName="fill-parent horizontal v-start h-end sm-gutter-right sm-gutter-top"
-              style={style.overlay}
+      {!!selectedImage && (
+        <View style={style.attachmentContainer}>
+          <Divider styleName="line" />
+          <Row style={style.attachmentRow}>
+            <ImageBackground
+              source={attachmentSource}
+              style={style.image}
+              imageStyle={[style.image]}
             >
-              <Button styleName="tight clear" onPress={removeImage}>
-                <Icon name="close" style={style.removeImageIcon} />
-              </Button>
-            </View>
-          </ImageBackground>
+              <View
+                styleName="fill-parent horizontal v-start h-end sm-gutter-right sm-gutter-top"
+                style={style.overlay}
+              >
+                <Button styleName="tight clear" onPress={discardImage}>
+                  <Icon name="close" style={style.removeImageIcon} />
+                </Button>
+              </View>
+            </ImageBackground>
+          </Row>
         </View>
       )}
-      <NewStatusFooter
-        enablePhotoAttachments={enablePhotoAttachments}
-        onImageSelected={handleImageSelected}
-      />
+      <KeyboardAvoidingView
+        behavior="padding"
+        keyboardVerticalOffset={keyboardOffset}
+      >
+        {!selectedImage && (
+          <NewStatusFooter
+            enablePhotoAttachments={enablePhotoAttachments}
+            onImageSelected={handleImageSelected}
+          />
+        )}
+      </KeyboardAvoidingView>
     </Screen>
   );
 }

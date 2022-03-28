@@ -61,7 +61,7 @@ function MyProfileScreen({ navigation, style }) {
           <BaseUserProfile user={ownUser} />
           <DataPreview values={ownUser.profile} schema={userProfileSchema} />
           <Button
-            styleName="secondary xl-gutter-vertical xl-gutter-horizontal"
+            styleName="xl-gutter-vertical xl-gutter-horizontal"
             onPress={logoutUser}
           >
             <Text>{I18n.t(ext('logout'))}</Text>

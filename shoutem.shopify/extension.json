@@ -1,11 +1,11 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "platform": "^4 || ^5",
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
+  "releaseNotes": "* Added placeholder for list items with no image",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

@@ -17,19 +17,24 @@
     margin-left: 40px;
   }
 
+  .image-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .image-preview-featured,
   .image-uploader__featured {
     background-size: contain;
-    vertical-align: center;
     width: 170px;
     height: 170px;
+    .se-icon {
+      opacity: 0.5;
+    }
     .circular-loader {
       width: 25px;
       height: 25px;
-      }
-    .se-icon {
-      opacity: 0.5;
-      padding-top: 60px;
+      padding-top: 70px;
     }
     .image-error {
       height: 15px;
@@ -40,17 +45,15 @@
   .image-preview-custom,
   .image-uploader__custom {
     background-size: contain;
-    vertical-align: center;
     width: 168px;
     height: 300px;
+    .se-icon {
+      opacity: 0.5;
+    }
     .circular-loader {
       width: 25px;
       height: 25px;
       padding-top: 120px;
-      }
-    .se-icon {
-      padding-top: 120px;
-      opacity: 0.5;
     }
     .image-error {
       height: 15px;

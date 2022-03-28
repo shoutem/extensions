@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { I18n } from 'shoutem.i18n';
 import {
-  TouchableOpacity,
-  Subtitle,
   Caption,
   ImageBackground,
+  Subtitle,
   Tile,
+  TouchableOpacity,
 } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 
 /**
@@ -15,19 +16,18 @@ import { ext } from '../const';
  * the article details screen.
  */
 export class NextArticle extends PureComponent {
-  static propTypes = {
-    title: PropTypes.string,
-    imageUrl: PropTypes.string,
-    openArticle: PropTypes.func.isRequired,
-  };
-
   render() {
     const { title, imageUrl, openArticle } = this.props;
+
+    const nextArticleImage = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
+
     return (
       <TouchableOpacity onPress={openArticle}>
         <ImageBackground
           styleName="large-ultra-wide placeholder"
-          source={{ uri: imageUrl }}
+          source={nextArticleImage}
         >
           <Tile styleName="fill-parent md-gutter space-between">
             <Caption styleName="bold h-left">{I18n.t(ext('upNext'))}</Caption>
@@ -40,3 +40,14 @@ export class NextArticle extends PureComponent {
     );
   }
 }
+
+NextArticle.propTypes = {
+  openArticle: PropTypes.func.isRequired,
+  imageUrl: PropTypes.string,
+  title: PropTypes.string,
+};
+
+NextArticle.defaultProps = {
+  imageUrl: undefined,
+  title: '',
+};

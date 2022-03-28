@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { EmptyStateView, ListView, View } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import { mapDataFor122Layout } from './services';
 
@@ -15,6 +16,7 @@ export function Grid122Layout({
   emptyStateMessage,
   hasFeaturedItem,
   imageUrlResolver,
+  style,
   subtitleResolver,
   titleResolver,
   ...otherProps
@@ -49,6 +51,7 @@ export function Grid122Layout({
 
   return (
     <ListView
+      contentContainerStyle={style.list}
       data={mappedData}
       renderRow={customRenderRow || renderRow}
       {...otherProps}
@@ -67,6 +70,7 @@ Grid122Layout.propTypes = {
   loading: PropTypes.bool,
   renderActions: PropTypes.func,
   renderRow: PropTypes.func,
+  style: PropTypes.object,
   // eslint-disable-next-line react/sort-prop-types
   imageUrlResolver: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   subtitleResolver: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
@@ -81,6 +85,7 @@ Grid122Layout.defaultProps = {
   loading: false,
   renderActions: undefined,
   renderRow: undefined,
+  style: {},
   imageUrlResolver: undefined,
   subtitleResolver: undefined,
   onPress: undefined,

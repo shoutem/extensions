@@ -44,6 +44,7 @@ function ReminderSettingsScreen({
         {...props}
         iconName="restore"
         onPress={handleRestoreDefaultTimeframe}
+        tintColor={[style.restoreIconTintColor, props?.tintColor]}
       />
     );
   }

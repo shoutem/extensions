@@ -3,7 +3,7 @@ import { LayoutAnimation } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Image, Screen, ScrollView, SimpleHtml } from '@shoutem/ui';
+import { Image, Screen, ScrollView, SimpleHtml, View } from '@shoutem/ui';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { ext } from '../const';
 
@@ -56,16 +56,17 @@ export class LevelDetailsScreen extends PureComponent {
 
   render() {
     const { level, screenSettings } = getRouteParams(this.props);
-    const imageSize = `lg-gutter-bottom ${screenSettings.imageSize || 'large'}`;
+    const imageSize = `${screenSettings.imageSize || 'large'}`;
 
     return (
       <Screen>
         <ScrollView>
-          <Image
-            styleName={imageSize}
-            source={{ uri: level.image?.url || '' }}
-          />
-          <SimpleHtml body={level.description} />
+          {level.image && (
+            <Image styleName={imageSize} source={{ uri: level.image.url }} />
+          )}
+          <View styleName="lg-gutter-top">
+            <SimpleHtml body={level.description} />
+          </View>
         </ScrollView>
       </Screen>
     );

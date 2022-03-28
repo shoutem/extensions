@@ -90,8 +90,6 @@
       "alertErrorMessage": "Password change failed. Please try again.",
       "alertTryAgainMessage": "Something went wrong. Please try again in few moments",
       "confirmButtonText": "Confirm",
-      "imagePickerCameraOption": "Take a photo",
-      "imagePickerGalleryOption": "Select photo from gallery",
       "typeHerePlaceholder": "Type here...",
       "deleteText": "delete"
     }

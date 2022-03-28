@@ -2,6 +2,7 @@ import rio from '@shoutem/redux-io';
 import { getAppId } from 'shoutem.application/app';
 import {
   getExtensionCloudUrl,
+  getExtensionServiceUrl,
   getExtensionSettings,
 } from 'shoutem.application/redux';
 import { getUser, isAuthenticated } from 'shoutem.auth';
@@ -19,6 +20,7 @@ export function appDidMount(app) {
   const apiEndpoint = getExtensionSettings(state, APPLICATION_EXTENSION)
     .legacyApiEndpoint;
   const cloudHost = getExtensionCloudUrl(state, ext());
+  const appsHost = getExtensionServiceUrl(state, APPLICATION_EXTENSION, 'apps');
 
   const { authApiEndpoint } = getExtensionSettings(state, AUTH_EXTENSION);
   if (!authApiEndpoint) {
@@ -26,7 +28,7 @@ export function appDidMount(app) {
   }
 
   const appId = getAppId();
-  shoutemApi.init(apiEndpoint, authApiEndpoint, cloudHost, appId);
+  shoutemApi.init(apiEndpoint, authApiEndpoint, cloudHost, appsHost, appId);
 
   const apiRequestOptions = {
     resourceType: 'JSON',

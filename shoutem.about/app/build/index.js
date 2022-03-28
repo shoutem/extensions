@@ -1,4 +1,3 @@
-const { getAppConfiguration } = require('@shoutem/build-tools');
 const {
   injectAndroidManifestQueries,
 } = require('./injectAndroidManifestQueries');

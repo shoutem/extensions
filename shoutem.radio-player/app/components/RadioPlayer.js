@@ -49,12 +49,6 @@ class RadioPlayer extends TrackPlayerBase {
     this.state = { ...this.state, appearAnimationActive: false };
   }
 
-  handleMetadataChange(metadata) {
-    const { onMetadataStateChange } = this.props;
-
-    onMetadataStateChange(metadata);
-  }
-
   componentDidMount() {
     this.metadataListener = TrackPlayer.addEventListener(
       'playback-metadata-received',
@@ -77,20 +71,26 @@ class RadioPlayer extends TrackPlayerBase {
     });
   }
 
-  async componentDidUpdate() {
-    const { onPlaybackStateChange, shouldResetPlayer } = this.props;
-    const { playbackState } = this.state;
+  async componentDidUpdate(prevProps) {
+    const { onSleepTriggered, triggerSleep, shouldResetPlayer } = this.props;
 
     const isCurrentTrack = await this.isCurrentTrack();
-    const isPlaying = playbackState === STATE_PLAYING;
+
+    if (!isCurrentTrack) {
+      return;
+    }
+
+    if (!prevProps.triggerSleep && triggerSleep) {
+      TrackPlayer.pause();
+      this.handlePlaybackStateChange({ state: STATE_PAUSED });
+      onSleepTriggered();
+    }
 
     if (isCurrentTrack && shouldResetPlayer) {
       this.firstPlay = true;
-      onPlaybackStateChange(STATE_STOPPED);
 
-      if (isPlaying) {
-        TrackPlayer.reset();
-      }
+      this.handlePlaybackStateChange({ state: STATE_STOPPED });
+      TrackPlayer.reset();
     }
   }
 
@@ -98,6 +98,14 @@ class RadioPlayer extends TrackPlayerBase {
     if (this.metadataListener) {
       this.metadataListener.remove();
     }
+
+    super.componentWillUnmount();
+  }
+
+  handleMetadataChange(metadata) {
+    const { onMetadataStateChange } = this.props;
+
+    onMetadataStateChange(metadata);
   }
 
   composeBubbleAnimation() {
@@ -234,7 +242,7 @@ class RadioPlayer extends TrackPlayerBase {
         this.appearAnimation.reset();
       }
 
-      const wasPlaying = state === STATE_PAUSED;
+      const wasPlaying = state === STATE_PAUSED || state === STATE_STOPPED;
 
       this.composeAppearAnimation(!wasPlaying);
 
@@ -251,7 +259,7 @@ class RadioPlayer extends TrackPlayerBase {
     }
 
     super.handlePlaybackStateChange(data);
-    onPlaybackStateChange(data.state);
+    onPlaybackStateChange(state);
   }
 
   handleActionButtonPress() {
@@ -280,11 +288,7 @@ class RadioPlayer extends TrackPlayerBase {
   }
 
   async handleReturnToPlayer() {
-    const {
-      onPlaybackStateChange,
-      onMetadataStateChange,
-      metadata,
-    } = this.props;
+    const { onMetadataStateChange, metadata } = this.props;
 
     const currentTrack = await TrackPlayer.getCurrentTrack();
 
@@ -303,8 +307,6 @@ class RadioPlayer extends TrackPlayerBase {
     }
 
     this.addEventListeners();
-
-    onPlaybackStateChange(playbackState);
   }
 
   resolveActionIcon() {
@@ -363,9 +365,11 @@ class RadioPlayer extends TrackPlayerBase {
 RadioPlayer.propTypes = {
   metadata: PropTypes.object.isRequired,
   shouldResetPlayer: PropTypes.bool.isRequired,
+  triggerSleep: PropTypes.bool.isRequired,
   url: PropTypes.string.isRequired,
   onMetadataStateChange: PropTypes.func.isRequired,
   onPlaybackStateChange: PropTypes.func.isRequired,
+  onSleepTriggered: PropTypes.func.isRequired,
   title: PropTypes.string,
 };
 

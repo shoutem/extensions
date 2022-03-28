@@ -9,19 +9,21 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 
 export default function ListProductView({ product, onPress }) {
   function handleItemPress() {
     onPress(product);
   }
 
+  const productImage = product?.image
+    ? { uri: product.image.url }
+    : assets.noImagePlaceholder;
+
   return (
     <TouchableOpacity onPress={handleItemPress}>
       <Row>
-        <Image
-          styleName="small placeholder"
-          source={{ uri: product?.image?.url }}
-        />
+        <Image styleName="small placeholder" source={productImage} />
         <View styleName="vertical stretch space-between">
           <Subtitle numberOfLines={2}>{product.name}</Subtitle>
           <View styleName="horizontal">

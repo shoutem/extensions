@@ -30,6 +30,7 @@ export default class PageSettings extends Component {
     this.state = {
       imageError: false,
       featuredImageError: false,
+      errorMessage: i18next.t(LOCALIZATION.UPLOAD_FAILED_MESSAGE),
     };
   }
 
@@ -77,9 +78,10 @@ export default class PageSettings extends Component {
     this.handlePageUpdate('featuredImageUrl', imageUrl);
   }
 
-  handleImageUploadFailed() {
+  handleImageUploadFailed(error) {
     this.setState({
       imageError: true,
+      errorMessage: error || i18next.t(LOCALIZATION.UPLOAD_FAILED_MESSAGE),
     });
   }
 
@@ -110,7 +112,7 @@ export default class PageSettings extends Component {
       description,
       textPosition,
     } = page;
-    const { imageError, featuredImageError } = this.state;
+    const { imageError, errorMessage, featuredImageError } = this.state;
 
     return (
       <div className="page-container">
@@ -158,8 +160,13 @@ export default class PageSettings extends Component {
 
         <div className="image-upload__container">
           <div>
-            <ControlLabel>{i18next.t(LOCALIZATION.PAGE_IMAGE)}</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.PAGE_IMAGE)}
+              <br />
+              {i18next.t(LOCALIZATION.PAGE_IMAGE_SIZE)}
+            </ControlLabel>
             <ImageUploader
+              acceptType="image/png"
               assetManager={assetManager}
               className="image-uploader-background"
               elementId="imageUrl"
@@ -179,8 +186,11 @@ export default class PageSettings extends Component {
           <div className="image-uploader-featured__container">
             <ControlLabel>
               {i18next.t(LOCALIZATION.FEATURED_IMAGE)}
+              <br />
+              {i18next.t(LOCALIZATION.FEATURED_IMAGE_SIZE)}
             </ControlLabel>
             <ImageUploader
+              acceptType="image/png"
               assetManager={assetManager}
               className="image-uploader-featured"
               elementId="featuredImageUrl"
@@ -199,9 +209,7 @@ export default class PageSettings extends Component {
           </div>
         </div>
         {(imageError || featuredImageError) && (
-          <HelpBlock className="text-error">
-            {i18next.t(LOCALIZATION.UPLOAD_FAILED_MESSAGE)}
-          </HelpBlock>
+          <HelpBlock className="text-error">{errorMessage}</HelpBlock>
         )}
       </div>
     );

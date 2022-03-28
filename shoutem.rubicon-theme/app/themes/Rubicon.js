@@ -1247,7 +1247,8 @@ export default (customVariables = {}) => {
 
       icon: {
         color: variables.secondaryButtonBackgroundColor,
-        fontSize: 18,
+        height: 17,
+        width: 17,
       },
 
       iconLevelReached: {
@@ -2430,9 +2431,39 @@ export default (customVariables = {}) => {
         height: getSizeRelativeToReference(40, 375, window.width),
         borderRadius: getSizeRelativeToReference(20, 375, window.width),
       },
-      attachedImage: { width: '100%' },
-      overlay: { backgroundColor: variables.imageOverlayColor },
-      removeImageIcon: { color: 'rgba(255,255,255,0.8)' },
+      image: {
+        width: getSizeRelativeToReference(145, 375, window.width),
+        height: getSizeRelativeToReference(92, 812, window.height),
+        borderRadius: 10,
+      },
+      overlay: {
+        backgroundColor: variables.imageOverlayColor,
+        borderRadius: 10,
+      },
+      removeImageIcon: {
+        color: '#FFFFFF',
+        height: getSizeRelativeToReference(18, 375, window.width),
+        width: getSizeRelativeToReference(18, 375, window.width),
+      },
+      attachmentContainer: {
+        height: getSizeRelativeToReference(135, 812, window.height),
+        backgroundColor: variables.paperColor,
+      },
+      attachmentRow: {
+        maxHeight: getSizeRelativeToReference(100, 812, window.height),
+        justifyContent: 'center',
+        position: 'absolute',
+        left: getSizeRelativeToReference(30, 375, window.width),
+        bottom: getSizeRelativeToReference(20, 812, window.height),
+        padding: 0,
+        margin: 0,
+      },
+      keyboardDismissContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        alignItems: 'flex-start',
+      },
     },
 
     'shoutem.social.SearchScreen': {
@@ -2441,26 +2472,19 @@ export default (customVariables = {}) => {
       },
     },
     'shoutem.social.StatusDetailsScreen': {
-      container: { height: getSizeRelativeToReference(80, 812, window.height) },
-      textInput: {
-        ...variables.text,
-        fontFamily: resolveFontFamily(
-          variables.text.fontFamily,
-          variables.text.fontWeight,
-          variables.text.fontStyle,
-        ),
-        fontWeight: resolveFontWeight(variables.text.fontWeight),
-        fontStyle: resolveFontStyle(variables.text.fontStyle),
-        flex: 1,
-        margin: getSizeRelativeToReference(15, 375, window.width),
-        maxHeight: 100,
-      },
       list: {
         listContent: {
           backgroundColor: variables.paperColor,
           marginTop: getSizeRelativeToReference(6, 812, window.height),
         },
       },
+      headerContainer: {
+        backgroundColor: '#000',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        paddingLeft: getSizeRelativeToReference(15, 375, window.width),
+      },
+      closeIcon: { color: '#FFF' },
     },
 
     'shoutem.social.MemberView': {
@@ -2479,6 +2503,15 @@ export default (customVariables = {}) => {
           'italic',
         ),
         fontStyle: resolveFontStyle('italic'),
+      },
+      avatar: {
+        backgroundColor: inverseColorBrightnessForAmount(
+          variables.paperColor,
+          10,
+        ),
+        width: getSizeRelativeToReference(65, 812, window.height),
+        height: getSizeRelativeToReference(65, 812, window.height),
+        borderRadius: getSizeRelativeToReference(33, 812, window.height),
       },
     },
 
@@ -2503,6 +2536,22 @@ export default (customVariables = {}) => {
         height: getSizeRelativeToReference(40, 812, window.height),
         width: getSizeRelativeToReference(40, 812, window.height),
         borderRadius: getSizeRelativeToReference(20, 812, window.height),
+      },
+      attachmentsContainer: {
+        position: 'absolute',
+        right: getSizeRelativeToReference(10, 375, window.width),
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+      },
+      button: {
+        maxHeight: 100,
+        justifyContent: 'flex-end',
+        padding: getSizeRelativeToReference(5, 375, window.width),
+      },
+      attachmentIcon: {
+        width: getSizeRelativeToReference(20, 375, window.width),
+        height: getSizeRelativeToReference(20, 812, window.height),
+        color: variables.text.color,
       },
     },
 
@@ -2530,6 +2579,54 @@ export default (customVariables = {}) => {
         marginHorizontal: getSizeRelativeToReference(15, 375, window.width),
       },
       placeholderText: { opacity: 0.5 },
+    },
+
+    'shoutem.social.StatusViewSkeleton': {
+      statusItemContainerSkeleton: {
+        backgroundColor: variables.paperColor,
+        marginHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        marginTop: getSizeRelativeToReference(15, 812, window.height),
+        marginBottom: getSizeRelativeToReference(6, 812, window.height),
+        borderColor: variables.paperColor,
+        borderRadius: 12,
+        borderWidth: 1,
+        shadowColor: '#000000',
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        shadowOffset: { width: 1, height: 2 },
+        elevation: 2,
+      },
+      profileImageSkeleton: {
+        width: getSizeRelativeToReference(40, 375, window.width),
+        height: getSizeRelativeToReference(40, 375, window.width),
+        borderRadius: getSizeRelativeToReference(20, 375, window.width),
+        marginRight: getSizeRelativeToReference(15, 375, window.width),
+      },
+      userNameSkeleton: {
+        height: getSizeRelativeToReference(12, 812, window.height),
+        width: '60%',
+        marginBottom: getSizeRelativeToReference(5, 375, window.width),
+      },
+      timeAgoSkeleton: {
+        height: getSizeRelativeToReference(10, 812, window.height),
+        width: '50%',
+        marginBottom: getSizeRelativeToReference(5, 375, window.width),
+      },
+      contentLineSkeleton: {
+        height: 10,
+        marginTop: getSizeRelativeToReference(15, 812, window.height),
+        marginHorizontal: getSizeRelativeToReference(15, 375, window.width),
+        marginBottom: getSizeRelativeToReference(-10, 812, window.height),
+      },
+      longLine: {
+        width: '80%',
+      },
+      shortLine: {
+        width: '60%',
+      },
+      emptySpace: {
+        marginBottom: getSizeRelativeToReference(70, 812, window.height),
+      },
     },
 
     'shoutem.social.StatusHeader': {
@@ -2642,16 +2739,66 @@ export default (customVariables = {}) => {
         width: '100%',
         height: getSizeRelativeToReference(163, 812, window.height),
       },
+      attachmentMargin: {
+        marginTop: getSizeRelativeToReference(25, 812, window.height),
+      },
+    },
+
+    'shoutem.social.CommentViewSkeleton': {
+      container: {
+        flexDirection: 'row',
+        marginVertical: getSizeRelativeToReference(5, 812, window.height),
+        marginHorizontal: getSizeRelativeToReference(15, 375, window.width),
+      },
+      profileImageSkeleton: {
+        width: getSizeRelativeToReference(30, 375, window.width),
+        height: getSizeRelativeToReference(30, 375, window.width),
+        borderRadius: getSizeRelativeToReference(15, 375, window.width),
+        marginRight: getSizeRelativeToReference(10, 375, window.width),
+        marginTop: getSizeRelativeToReference(10, 375, window.width),
+      },
+      contentContainer: {
+        flex: 1,
+        backgroundColor: variables.paperColor,
+        padding: getSizeRelativeToReference(3, 375, window.width),
+        marginHorizontal: 0,
+        marginBottom: getSizeRelativeToReference(6, 812, window.height),
+        borderRadius: 12,
+        borderColor: variables.paperColor,
+        borderWidth: 1,
+        shadowColor: '#000000',
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        shadowOffset: { width: 1, height: 2 },
+        elevation: 1,
+      },
+      row: { paddingTop: getSizeRelativeToReference(10, 812, window.height) },
+      contentInnerContainer: { padding: 0 },
+      userNameSkeleton: {
+        height: getSizeRelativeToReference(12, 812, window.height),
+        width: '40%',
+      },
+      captionLineSkeleton: {
+        height: getSizeRelativeToReference(10, 812, window.height),
+        marginBottom: getSizeRelativeToReference(3, 812, window.height),
+      },
+      timeAgoWidth: { width: '20%' },
+      longContentLineWidth: { width: '90%' },
+      shortContentLineWidth: { width: '80%' },
     },
 
     'shoutem.social.NewStatusFooter': {
       container: {
+        width: '100%',
         flexDirection: 'row',
+        justifyContent: 'center',
         paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
         paddingTop: getSizeRelativeToReference(5, 812, window.height),
         paddingBottom: getSizeRelativeToReference(10, 812, window.height),
       },
       attachmentIcon: {
+        width: getSizeRelativeToReference(24, 375, window.width),
+        height: getSizeRelativeToReference(24, 375, window.width),
         color: variables.text.color,
       },
       button: {
@@ -2660,8 +2807,83 @@ export default (customVariables = {}) => {
         backgroundColor: 'rgba(136, 143, 161, 0.1)',
         borderRadius: 10,
       },
-      buttonMargin: {
-        marginRight: variables.smallGutter,
+      cameraButton: {
+        marginRight: getSizeRelativeToReference(5, 375, window.width),
+      },
+      galleryButton: {
+        marginRight: getSizeRelativeToReference(10, 375, window.width),
+      },
+    },
+
+    'shoutem.social.RecentImages': {
+      image: {
+        width: getSizeRelativeToReference(54, 375, window.width),
+        height: getSizeRelativeToReference(54, 375, window.width),
+        borderRadius: 10,
+        marginRight: getSizeRelativeToReference(10, 375, window.width),
+      },
+      recentImagesList: {
+        listContent: {
+          backgroundColor: variables.paperColor,
+        },
+      },
+    },
+
+    'shoutem.social.NewCommentFooter': {
+      textInput: {
+        flex: 1,
+        maxHeight: 100,
+        justifyContent: 'center',
+        padding: getSizeRelativeToReference(10, 812, window.height),
+        margin: getSizeRelativeToReference(5, 812, window.height),
+        backgroundColor: variables.searchInputBackgroundColor,
+        borderRadius: 10,
+        ...variables.text,
+        fontFamily: resolveFontFamily(
+          variables.text.fontFamily,
+          variables.text.fontWeight,
+          variables.text.fontStyle,
+        ),
+        fontWeight: resolveFontWeight(variables.text.fontWeight),
+        fontStyle: resolveFontStyle(variables.text.fontStyle),
+      },
+      textInputMarginLeft: {
+        marginLeft: getSizeRelativeToReference(15, 375, window.width),
+      },
+      attachmentsContainer: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+      },
+      button: {
+        maxHeight: 100,
+        justifyContent: 'flex-end',
+        paddingHorizontal: getSizeRelativeToReference(5, 375, window.width),
+        paddingVertical: getSizeRelativeToReference(15, 812, window.height),
+      },
+      overlay: {
+        [INCLUDE]: ['fillParent'],
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-start',
+        paddingRight: getSizeRelativeToReference(5, 375, window.width),
+        paddingTop: getSizeRelativeToReference(5, 815, window.height),
+        backgroundColor: variables.imageOverlayColor,
+        borderRadius: 10,
+      },
+      deleteAttachmentIcon: {
+        color: '#FFFFFF',
+        height: getSizeRelativeToReference(18, 375, window.width),
+        width: getSizeRelativeToReference(18, 375, window.width),
+      },
+      image: {
+        width: getSizeRelativeToReference(145, 375, window.width),
+        height: getSizeRelativeToReference(92, 812, window.height),
+        borderRadius: 10,
+      },
+      postButtonContainer: {
+        height: getSizeRelativeToReference(48, 812, window.height),
+        paddingRight: getSizeRelativeToReference(10, 375, window.width),
+        paddingLeft: getSizeRelativeToReference(5, 375, window.width),
       },
     },
 
@@ -2739,8 +2961,9 @@ export default (customVariables = {}) => {
       },
       skipIcon: {
         color: variables.primaryButtonText.color,
+        height: 30,
+        width: 30,
       },
-      skipIconSize: 30,
       timeDisplay: {
         lineHeight: 15,
         fontSize: 12,
@@ -2787,31 +3010,36 @@ export default (customVariables = {}) => {
       hiddenImage: {
         opacity: 0,
       },
+      overlayStyle: {
+        marginBottom: 0,
+      },
     },
 
     'shoutem.radio.RadioPlayer': {
-      playbackButton: {
-        width: dimensionRelativeToIphone(75),
-        height: dimensionRelativeToIphone(75),
-        fontSize: dimensionRelativeToIphone(36),
-        borderRadius: 200,
-        padding: 0,
-      },
-      playbackMainCircle: {
-        width: dimensionRelativeToIphone(150),
-        height: dimensionRelativeToIphone(150),
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-        borderColor: variables.primaryButtonBackgroundColor,
-        borderWidth: 2,
-        position: 'absolute',
-        left: -dimensionRelativeToIphone(37.5),
-        top: -dimensionRelativeToIphone(37.5),
-        borderRadius: 200,
-      },
       playbackIcon: {
         width: dimensionRelativeToIphone(36),
         height: dimensionRelativeToIphone(36),
         marginLeft: 10,
+      },
+      radioPlayer: {
+        playbackMainCircle: {
+          width: dimensionRelativeToIphone(150),
+          height: dimensionRelativeToIphone(150),
+          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+          borderColor: variables.primaryButtonBackgroundColor,
+          borderWidth: 2,
+          position: 'absolute',
+          left: -dimensionRelativeToIphone(37.5),
+          top: -dimensionRelativeToIphone(37.5),
+          borderRadius: 200,
+        },
+        playbackButton: {
+          width: dimensionRelativeToIphone(75),
+          height: dimensionRelativeToIphone(75),
+          fontSize: dimensionRelativeToIphone(36),
+          borderRadius: 200,
+          padding: 0,
+        },
       },
       spinner: {
         marginTop: Platform.select({
@@ -2830,9 +3058,17 @@ export default (customVariables = {}) => {
     'shoutem.radio-player.RadioPlayer': {
       clearRow: {
         backgroundColor: 'transparent',
-        width: dimensionRelativeToIphone(375),
-        paddingBottom: variables.largeGutter,
-        paddingHorizontal: variables.largeGutter,
+        width: window.width,
+        paddingBottom: getSizeRelativeToReference(
+          variables.largeGutter,
+          812,
+          window.height,
+        ),
+        paddingHorizontal: getSizeRelativeToReference(
+          variables.largeGutter,
+          375,
+          window.width,
+        ),
       },
       nowPlaying: {
         backgroundColor: 'transparent',
@@ -2841,7 +3077,12 @@ export default (customVariables = {}) => {
       },
       nowPlayingText: {
         color: variables.imageOverlayTextColor,
-        paddingBottom: variables.smallGutter * 2,
+        paddingBottom:
+          getSizeRelativeToReference(
+            variables.smallGutter,
+            812,
+            window.height,
+          ) * 2,
         fontSize: 15,
       },
       streamTitle: {
@@ -2872,18 +3113,18 @@ export default (customVariables = {}) => {
       playbackIcon: {
         width: dimensionRelativeToIphone(36),
         height: dimensionRelativeToIphone(36),
-        marginLeft: 10,
+        marginLeft: getSizeRelativeToReference(10, 375, window.width),
       },
       spinner: {
         marginTop: Platform.select({
-          ios: 5,
+          ios: getSizeRelativeToReference(5, 812, window.height),
         }),
         marginLeft: Platform.select({
-          ios: 5,
+          ios: getSizeRelativeToReference(5, 375, window.width),
         }),
         size: Platform.select({
           ios: 0,
-          default: 18,
+          default: getSizeRelativeToReference(18, 812, window.height),
         }),
       },
       artistName: {
@@ -2900,32 +3141,13 @@ export default (customVariables = {}) => {
         color: variables.imageOverlayTextColor,
         fontSize: 15,
       },
+      activeSleepIconFill: variables.featuredColor,
+      inactiveSleepIconFill: variables.navBarIconsColor,
     },
 
     'shoutem.radio-player.ArtworkRadioScreen': {
-      screen: { backgroundColor: variables.screenBackgroundColor },
-      blurRadius: 7,
-      overlay: {
-        backgroundColor: variables.screenOverlayColor,
-      },
-      streamTitleContainer: {
-        bottom: variables.extraLargeGutter + variables.extraLargeGutter,
-      },
-      streamTitle: {
-        color: variables.streamTitleColor,
-        fontWeight: '700',
-      },
-      artworkContainer: {
-        width: getSizeRelativeToReference(250, 812, window.height),
-        height: getSizeRelativeToReference(250, 812, window.height),
-        overflow: 'hidden',
-      },
-      artworkCircularImage: {
-        width: getSizeRelativeToReference(245, 812, window.height),
-        height: getSizeRelativeToReference(245, 812, window.height),
-        borderRadius: getSizeRelativeToReference(245 / 2, 812, window.height),
-        borderColor: variables.artworkCircularImageBorderColor,
-        borderWidth: variables.smallGutter,
+      screen: {
+        backgroundColor: variables.screenBackgroundColor,
       },
       radioPlayer: {
         playbackMainCircle: {
@@ -2938,18 +3160,198 @@ export default (customVariables = {}) => {
         playbackIcon: { color: variables.playbackIconColor },
         spinner: { color: '#bbbbbb', margin: 0 },
       },
-      nowPlayingContainer: { top: variables.extraLargeGutter },
-      artistTitle: { color: variables.artistTitleColor, fontWeight: '700' },
-      songNameTitle: { color: variables.songNameTitleColor },
-      shareIcon: {
-        style: {
-          color: variables.shareButtonColor,
-          width: getSizeRelativeToReference(40, 812, window.height),
-          height: getSizeRelativeToReference(40, 812, window.height),
-        },
+      artistTitle: {
+        color: variables.artistTitleColor,
+        fontWeight: '700',
+      },
+      songNameTitle: {
+        color: variables.songNameTitleColor,
       },
       shareButton: {
-        paddingHorizontal: variables.smallGutter,
+        paddingHorizontal: getSizeRelativeToReference(
+          variables.smallGutter,
+          375,
+          window.width,
+        ),
+      },
+      blurRadius: 7,
+      overlay: {
+        backgroundColor: changeColorAlpha(variables.tagOverlayColor, 0.5),
+      },
+      streamTitleContainer: {
+        alignItems: 'flex-end',
+        display: 'flex',
+        position: 'absolute',
+        top:
+          window.height / 2 -
+          getSizeRelativeToReference(250, 812, window.height) -
+          getSizeRelativeToReference(40, 812, window.height) +
+          getSizeRelativeToReference(
+            variables.extraLargeGutter,
+            812,
+            window.height,
+          ),
+      },
+      streamTitle: {
+        color: variables.streamTitleColor,
+        fontWeight: '700',
+      },
+      artworkContainer: {
+        position: 'absolute',
+        top:
+          window.height / 2 -
+          getSizeRelativeToReference(250, 812, window.height) / 2,
+        width: getSizeRelativeToReference(250, 812, window.height),
+        height: getSizeRelativeToReference(250, 812, window.height),
+        overflow: 'hidden',
+      },
+      artworkCircularImage: {
+        width: getSizeRelativeToReference(245, 812, window.height),
+        height: getSizeRelativeToReference(245, 812, window.height),
+        borderRadius: getSizeRelativeToReference(245 / 2, 812, window.height),
+        borderColor: changeColorAlpha(
+          variables.secondaryButtonBackgroundColor,
+          0.4,
+        ),
+        borderWidth: variables.smallGutter,
+      },
+      playbackButton: {
+        opacity: 0.7,
+      },
+      playbackMainCircle: {
+        borderColor: variables.secondaryButtonBackgroundColor,
+      },
+      nowPlayingContainer: {
+        position: 'absolute',
+        bottom: getSizeRelativeToReference(125, 812, window.height),
+        height: getSizeRelativeToReference(40, 812, window.height),
+      },
+      nowPlayingContainerTabBar: {
+        position: 'absolute',
+        bottom: getSizeRelativeToReference(170, 812, window.height),
+        height: getSizeRelativeToReference(40, 812, window.height),
+      },
+      sleepTimerActiveText: {
+        color: variables.featuredColor,
+      },
+      smallActionButton: {
+        paddingHorizontal: getSizeRelativeToReference(
+          variables.smallGutter,
+          375,
+          window.width,
+        ),
+      },
+      smallActionIconFill: variables.streamTitleColor,
+      smallActionRow: {
+        position: 'absolute',
+        bottom: 0,
+        height: getSizeRelativeToReference(80, 812, window.height),
+        width: window.width,
+        paddingBottom: getSizeRelativeToReference(
+          variables.largeGutter,
+          812,
+          window.height,
+        ),
+      },
+      smallActionContainerLeft: {
+        width: window.width / 2,
+        paddingLeft: getSizeRelativeToReference(
+          variables.largeGutter,
+          375,
+          window.width,
+        ),
+      },
+      smallActionContainerRight: {
+        width: window.width / 2,
+        paddingRight: getSizeRelativeToReference(
+          variables.largeGutter,
+          375,
+          window.width,
+        ),
+      },
+      smallActionText: {
+        color: variables.streamTitleColor,
+      },
+    },
+
+    'shoutem.radio-player.SheetHeader': {
+      container: {
+        borderTopLeftRadius: getSizeRelativeToReference(10, 812, window.height),
+        borderTopRightRadius: getSizeRelativeToReference(
+          10,
+          812,
+          window.height,
+        ),
+      },
+      iconFill: variables.text.color,
+    },
+
+    'shoutem.radio-player.TimerOptions': {
+      optionContainer: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        paddingHorizontal: getSizeRelativeToReference(
+          variables.mediumGutter,
+          375,
+          window.width,
+        ),
+        paddingVertical: getSizeRelativeToReference(
+          variables.mediumGutter,
+          812,
+          window.height,
+        ),
+      },
+      optionText: {
+        fontSize: 15,
+        letterSpacing: 0.38,
+        color: variables.text.color,
+        lineHeight: 24,
+        paddingLeft: getSizeRelativeToReference(
+          variables.smallGutter,
+          375,
+          window.width,
+        ),
+      },
+    },
+
+    'shoutem.radio-player.RadioActionSheet': {
+      container: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+      },
+      optionContainer: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        padding: getSizeRelativeToReference(
+          variables.mediumGutter,
+          812,
+          window.height,
+        ),
+      },
+      optionText: {
+        fontSize: 15,
+        letterSpacing: 0.38,
+        color: variables.text.color,
+        lineHeight: 24,
+        paddingLeft: getSizeRelativeToReference(
+          variables.smallGutter,
+          375,
+          window.width,
+        ),
+      },
+      segmentContainer: {
+        overflow: 'hidden',
+        backgroundColor: variables.paperColor,
+        paddingVertical: getSizeRelativeToReference(
+          variables.mediumGutter,
+          812,
+          window.height,
+        ),
       },
     },
 
@@ -2983,6 +3385,9 @@ export default (customVariables = {}) => {
         marginTop: 50,
         width: '40%',
       },
+      restoreIconTintColor: {
+        color: changeColorAlpha(variables.navBarIconsColor, 0.6),
+      },
       subtitle: {
         textAlign: 'center',
       },
@@ -2999,6 +3404,9 @@ export default (customVariables = {}) => {
         marginHorizontal: 'auto',
         marginTop: 50,
         width: '40%',
+      },
+      restoreIconTintColor: {
+        color: changeColorAlpha(variables.navBarIconsColor, 0.6),
       },
       subtitle: {
         textAlign: 'center',
@@ -3061,11 +3469,11 @@ export default (customVariables = {}) => {
         },
         indicatorContainer: {
           'shoutem.ui.View': {
-            backgroundColor: variables.imageOverlayTextColor,
+            backgroundColor: variables.onboardingTitleTextColor,
 
             '.selected': {
               backgroundColor: changeColorAlpha(
-                variables.imageOverlayTextColor,
+                variables.onboardingTitleTextColor,
                 0.7,
               ),
             },
@@ -3796,39 +4204,18 @@ export default (customVariables = {}) => {
 
     'shoutem.news.ArticleDetailsScreen': {
       outerPadding: 10,
+      title: { textAlign: 'center' },
     },
 
     // Layouts
 
-    'shoutem.layouts.FullGridRowItemView': {
-      container: {
-        borderColor: 'rgba(68,79,108,0.2)',
-        borderRadius: 4,
-        borderWidth: 1,
-        marginBottom: 8,
-      },
-      imageContainer: { height: dimensionRelativeToIphone(224) },
-      textContainer: {
-        backgroundColor: variables.newsGrid122ItemBackgroundColor,
-        borderTopColor: 'rgba(68,79,108,0.2)',
-        borderTopWidth: 1,
-        height: dimensionRelativeToIphone(92),
-        paddingBottom: 4,
-        paddingLeft: 16,
-        paddingRight: 16,
-        paddingTop: 16,
-      },
-      title: { fontSize: 20, fontWeight: 'bold', lineHeight: 24 },
-      description: {
-        fontSize: 14,
-        lineHeight: 16,
-        paddingBottom: 16,
-        paddingTop: 4,
+    'shoutem.layouts.Grid122Layout': {
+      list: {
+        paddingHorizontal: getSizeRelativeToReference(8, 375, window.width),
       },
     },
 
-    'shoutem.layouts.FeaturedGridRowItemView': {
-      [INCLUDE]: ['shoutem.layouts.FullGridRowItemView'],
+    'shoutem.layouts.FullGridRowItemView': {
       container: {
         borderWidth: 0,
         overflow: 'visible',
@@ -3836,7 +4223,38 @@ export default (customVariables = {}) => {
         shadowOffset: { width: 1, height: 2 },
         shadowOpacity: 1,
         shadowRadius: 2,
+        marginBottom: getSizeRelativeToReference(8, 812, window.height),
       },
+      imageContainer: {
+        width: window.width - getSizeRelativeToReference(16, 375, window.width),
+        height:
+          (window.width - getSizeRelativeToReference(16, 375, window.width)) *
+          (2 / 3),
+      },
+      textContainer: {
+        height: dimensionRelativeToIphone(92),
+        paddingHorizontal: getSizeRelativeToReference(16, 375, window.width),
+        paddingBottom: getSizeRelativeToReference(4, 812, window.height),
+        paddingTop: getSizeRelativeToReference(16, 812, window.height),
+        backgroundColor: variables.newsGrid122ItemBackgroundColor,
+        borderTopColor: 'rgba(68,79,108,0.2)',
+        borderTopWidth: 1,
+      },
+      title: {
+        fontSize: 20,
+        lineHeight: 24,
+        fontWeight: resolveFontWeight('bold'),
+      },
+      description: {
+        fontSize: 14,
+        lineHeight: 16,
+        paddingBottom: getSizeRelativeToReference(16, 812, window.height),
+        paddingTop: getSizeRelativeToReference(4, 812, window.height),
+      },
+    },
+
+    'shoutem.layouts.FeaturedGridRowItemView': {
+      [INCLUDE]: ['shoutem.layouts.FullGridRowItemView'],
       description: {
         fontSize: 16,
         lineHeight: 24,
@@ -3844,23 +4262,34 @@ export default (customVariables = {}) => {
       imageContainer: {
         // Image has to be a square, 1:1 ratio. Using (-16) because
         // shoutem.layouts.Grid122FullRowView.container.marginHorizontal = 8
-        height: window.width - 16,
+        height:
+          window.width - getSizeRelativeToReference(16, 375, window.width),
       },
       textContainer: {
-        height: dimensionRelativeToIphone(110),
+        height: getSizeRelativeToReference(110, 812, window.height),
       },
     },
 
     'shoutem.layouts.HalfGridRowItemView': {
       [INCLUDE]: ['shoutem.layouts.FullGridRowItemView'],
       container: {
-        ...['shoutem.layouts.FullGridRowItemView'],
-        marginHorizontal: 4,
+        borderColor: 'rgba(68,79,108,0.2)',
+        borderWidth: 1,
+        borderTopLeftRadius: 4,
+        borderTopRightRadius: 4,
+        marginBottom: getSizeRelativeToReference(8, 375, window.width),
       },
-      imageContainer: { height: dimensionRelativeToIphone(110) },
+      imageContainer: {
+        height: getSizeRelativeToReference(110, 812, window.height),
+        width:
+          window.width / 2 - getSizeRelativeToReference(14, 375, window.width),
+      },
+      image: { borderTopLeftRadius: 4, borderTopRightRadius: 4 },
       textContainer: {
         ...['shoutem.layouts.FullGridRowItemView'],
-        height: dimensionRelativeToIphone(108),
+        height: getSizeRelativeToReference(110, 812, window.height),
+        width:
+          window.width / 2 - getSizeRelativeToReference(14, 375, window.width),
       },
     },
 
@@ -4329,11 +4758,17 @@ export default (customVariables = {}) => {
         opacity: 0.7,
       },
       textInput: {
-        padding: getSizeRelativeToReference(15, 375, window.width),
+        paddingVertical:
+          Platform.OS === 'ios'
+            ? getSizeRelativeToReference(15, 812, window.height)
+            : 0,
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
         borderRadius: 6,
         borderWidth: 1,
         borderColor: 'rgba(0, 0, 0, 0.12)',
         minHeight: getSizeRelativeToReference(90, 812, window.height),
+        textAlignVertical: 'top',
+        color: variables.text.color,
       },
       spinner: {
         color: variables.primaryButtonText.color,
@@ -4636,6 +5071,7 @@ export default (customVariables = {}) => {
         borderWidth: 1,
         borderColor: 'rgba(0, 0, 0, 0.12)',
         minHeight: getSizeRelativeToReference(90, 812, window.height),
+        color: variables.text.color,
       },
       buttonContainer: {
         backgroundColor: variables.paperColor,
@@ -5090,11 +5526,17 @@ export default (customVariables = {}) => {
         opacity: 1,
       },
       textInput: {
-        padding: getSizeRelativeToReference(15, 375, window.width),
+        paddingVertical:
+          Platform.OS === 'ios'
+            ? getSizeRelativeToReference(15, 812, window.height)
+            : 0,
+        paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
         borderRadius: 6,
         borderWidth: 1,
         borderColor: 'rgba(0, 0, 0, 0.12)',
         minHeight: getSizeRelativeToReference(90, 812, window.height),
+        textAlignVertical: 'top',
+        color: variables.text.color,
       },
       buttonContainer: {
         backgroundColor: variables.paperColor,
@@ -5172,9 +5614,11 @@ export default (customVariables = {}) => {
         justifyContent: 'space-between',
       },
       infoContainer: {
+        flex: 2,
         justifyContent: 'space-between',
       },
       priceContainer: {
+        flex: 1,
         justifyContent: 'space-between',
         alignItems: 'flex-end',
       },
@@ -5185,6 +5629,11 @@ export default (customVariables = {}) => {
       units: {
         fontSize: 12,
         lineHeight: 15,
+        marginVertical: getSizeRelativeToReference(
+          variables.smallGutter,
+          812,
+          window.height,
+        ),
       },
       price: {
         fontSize: 15,
@@ -5912,7 +6361,7 @@ export default (customVariables = {}) => {
       },
     },
 
-    'shoutem.ginger.ProductListScreen': {
+    'shoutem.ginger.CategoryScrollView': {
       scrollContainer: {
         flexGrow: 1,
         paddingHorizontal: getSizeRelativeToReference(15, 375, window.width),
@@ -5964,6 +6413,7 @@ export default (customVariables = {}) => {
         fontWeight: resolveFontWeight('500'),
         fontSize: 13,
         lineHeight: 24,
+        marginVertical: 0,
       },
     },
 
@@ -6039,7 +6489,7 @@ export default (customVariables = {}) => {
       },
     },
 
-    'shoutem.ginger.EditProfileScreen': {
+    'shoutem.ginger.EditDeliveryInfoScreen': {
       container: {
         marginHorizontal: getSizeRelativeToReference(
           variables.smallGutter,
@@ -6075,7 +6525,7 @@ export default (customVariables = {}) => {
       },
     },
 
-    'shoutem.ginger.MyProfileScreen': {
+    'shoutem.ginger.DeliveryInformationScreen': {
       container: {
         marginHorizontal: getSizeRelativeToReference(
           variables.mediumGutter,
@@ -6095,18 +6545,9 @@ export default (customVariables = {}) => {
           window.height,
         ),
       },
-      headerButton: {
-        color: variables.text.color,
-      },
-      logoutButton: {
-        height: getSizeRelativeToReference(44, 812, window.height),
-        borderRadius: 4,
-        backgroundColor: variables.primaryButtonBackgroundColor,
-        borderColor: variables.primaryButtonBorderColor,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 1,
+      nameText: {
+        fontSize: 20,
+        lineHeight: 24,
       },
     },
 

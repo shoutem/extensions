@@ -1,6 +1,6 @@
 {
   "name": "shoutem.podcast",
-  "version": "4.1.0",
+  "version": "4.2.1",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
@@ -12,6 +12,8 @@
     "rn-fetch-blob": "0.11.2"
   },
   "peerDepencies": {
+    "@shoutem/redux-io": "*",
+    "@shoutem/theme": "*",
     "@shoutem/ui": "*"
   },
   "nativeDependencies": [

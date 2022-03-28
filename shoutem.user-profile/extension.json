@@ -1,11 +1,11 @@
 {
   "name": "user-profile",
   "title": "User Profile",
-  "version": "2.0.3",
+  "version": "2.0.5",
   "platform": "^4.0.5 || ^5",
   "type": "system",
   "description": "Add extended user profile",
-  "releaseNotes": "* Fixed issues with opening edit profile screen",
+  "releaseNotes": "* Adjusted checkmark icons on progress bar (no visual difference, code-side improvement)",
   "icon": "server/assets/add-user-profile-image.png",
   "native": true,
   "dependencies": [
@@ -15,9 +15,7 @@
     "shoutem.navigation",
     "shoutem.redux"
   ],
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "pages": [
     {
       "name": "UsersPage",

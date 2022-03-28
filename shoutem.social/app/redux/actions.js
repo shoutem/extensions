@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { Alert } from 'react-native';
 import _ from 'lodash';
 import {
   create,
@@ -10,17 +11,31 @@ import {
 } from '@shoutem/redux-io';
 import { getAppId } from 'shoutem.application/app';
 import { getUser, USER_SCHEMA } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
 import { openInModal } from 'shoutem.navigation';
 import { ext as userProfileExt } from 'shoutem.user-profile';
 import {
   apiVersion,
   DEFAULT_USER_SETTINGS,
+  ext,
   SOCIAL_SETTINGS_SCHEMA,
   STATUSES_SCHEMA,
   USERS_SEARCH_SCHEMA,
 } from '../const';
 import { shoutemApi } from '../services/shoutemApi';
 import { getStatus } from './selectors';
+
+const ASSET_POLICIES = 'shoutem.core.asset-policies';
+const IMAGE_PARAMS = {
+  key: 'key',
+  acl: 'acl',
+  'Content-Type': 'Content-Type',
+  'X-Amz-Credential': 'x-amz-credential',
+  'X-Amz-Algorithm': 'x-amz-algorithm',
+  'X-Amz-Date': 'x-amz-date',
+  Policy: 'policy',
+  'X-Amz-Signature': 'x-amz-signature',
+};
 
 export const CREATE = 'CREATE';
 export const LOAD = 'LOAD';
@@ -250,29 +265,37 @@ export function deleteStatus(status) {
   return create(rioConfig, null, { id }, { operation: DELETE });
 }
 
-export function createStatus(text, imageData) {
-  const body = {
-    status: text,
-    include_shoutem_fields: true,
-  };
+export function createStatus(text, image) {
+  return async dispatch => {
+    const body = {
+      status: text,
+      include_shoutem_fields: true,
+    };
 
-  if (imageData) {
-    body.file_attachment = imageData;
-  }
+    if (image) {
+      try {
+        const imageUri = await dispatch(uploadImage(image));
+        body.link_attachment = imageUri;
+      } catch (error) {
+        Alert.alert(I18n.t(ext('postStatusError')));
+        return null;
+      }
+    }
 
-  const rioConfig = {
-    schema: STATUSES_SCHEMA,
-    request: {
-      body: formatParams(body),
-      endpoint: shoutemApi.buildUrl('/api/statuses/update.json'),
-      resourceType: 'JSON',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+    const rioConfig = {
+      schema: STATUSES_SCHEMA,
+      request: {
+        body: formatParams(body),
+        endpoint: shoutemApi.buildUrl('/api/statuses/update.json'),
+        resourceType: 'JSON',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       },
-    },
-  };
+    };
 
-  return create(rioConfig, null, null, { operation: CREATE });
+    return dispatch(create(rioConfig, null, null, { operation: CREATE }));
+  };
 }
 
 export function likeStatus(statusId) {
@@ -373,6 +396,7 @@ export function loadComments(statusId) {
 
 export function deleteComment(comment) {
   const { id, in_reply_to_status_id } = comment;
+
   const params = formatParams({ in_reply_to_status_id });
 
   const rioConfig = {
@@ -390,8 +414,8 @@ export function deleteComment(comment) {
   return create(rioConfig, null, { id }, { operation: DELETE });
 }
 
-export function createComment(statusId, text, imageData) {
-  return (dispatch, getState) => {
+export function createComment(statusId, text, imagePath) {
+  return async (dispatch, getState) => {
     const state = getState();
     const user = getUser(state);
     const authorId = getStatus(state, statusId).user.id;
@@ -406,8 +430,16 @@ export function createComment(statusId, text, imageData) {
       },
     };
 
-    if (imageData) {
-      body.data.imageData = imageData;
+    if (imagePath) {
+      try {
+        // TODO - modify selectedImage to be plain uri string instead of object in
+        // CreateStatusScreen. We're not using filename and fileSize any more
+        const imageUri = await dispatch(uploadImage({ uri: imagePath }));
+        body.data.imageUrl = imageUri;
+      } catch (error) {
+        Alert.alert(I18n.t(ext('postCommentError')));
+        return null;
+      }
     }
 
     const rioConfig = {
@@ -430,4 +462,73 @@ export function createComment(statusId, text, imageData) {
       }),
     );
   };
+}
+
+export function uploadImage(image) {
+  return dispatch => {
+    return dispatch(
+      createAssetPolicy(`shoutem.social/${Date.now()}.jpg`),
+    ).then(assetPolicy => uploadImageToS3(image, assetPolicy));
+  };
+}
+
+export function createAssetPolicy(path) {
+  return dispatch => {
+    const config = {
+      schema: ASSET_POLICIES,
+      request: {
+        endpoint: shoutemApi.buildAppsUrl('/v1/asset-policies'),
+        headers: {
+          Accept: 'application/vnd.api+json',
+          'Content-Type': 'application/vnd.api+json',
+        },
+      },
+    };
+    const newAsset = {
+      type: ASSET_POLICIES,
+      attributes: {
+        scopeType: 'application',
+        scopeId: getAppId(),
+        path,
+        action: 'upload',
+        contentType: 'image/jpg',
+      },
+    };
+    return dispatch(create(config, newAsset));
+  };
+}
+
+export function uploadImageToS3(image, assetPolicy) {
+  const { endpoint, formData: uploadData } = _.get(
+    assetPolicy,
+    'payload.data.attributes.signedRequest',
+  );
+  // eslint-disable-next-line no-undef
+  const formData = new FormData();
+  _.forOwn(IMAGE_PARAMS, (uploadDataKey, key) =>
+    formData.append(key, uploadData[uploadDataKey]),
+  );
+
+  formData.append('file', {
+    uri: image.uri,
+    type: 'image/jpg',
+    name: `${Date.now()}.jpg`,
+  });
+
+  return new Promise((resolve, reject) => {
+    return (
+      // eslint-disable-next-line no-undef
+      fetch(endpoint, { method: 'POST', body: formData })
+        .then(res => {
+          if (res.status !== 204) {
+            reject(res);
+          } else {
+            const location = _.get(res, 'headers.map.location');
+
+            resolve(location);
+          }
+        })
+        .catch(error => reject(error))
+    );
+  });
 }

@@ -1,10 +1,8 @@
 import React from 'react';
-
-import { I18n } from 'shoutem.i18n';
-
 import { connectStyle } from '@shoutem/theme';
 import { Caption, Image, Row, Subtitle, View } from '@shoutem/ui';
-
+import { I18n } from 'shoutem.i18n';
+import { images as localImages } from '../assets';
 import { ext } from '../const';
 import { cartItem as cartItemShape, shop as shopShape } from './shapes';
 
@@ -41,9 +39,12 @@ const CartItem = ({ cartItem, shop }) => {
   const { images, title: itemTitle } = item;
   const resolvedVariantTitle = title === item.title ? '' : `${title}  ·  `;
 
+  const productImage =
+    images.length > 0 ? { uri: images[0].src } : localImages.fallback;
+
   return (
     <Row>
-      <Image styleName="small" source={{ uri: (images[0] || {}).src }} />
+      <Image styleName="small" source={productImage} />
       <View styleName="horizontal">
         <View styleName="space-between" style={{ flex: 7 }}>
           <Subtitle>{itemTitle}</Subtitle>

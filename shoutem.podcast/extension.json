@@ -1,10 +1,10 @@
 {
   "name": "podcast",
-  "version": "4.1.0",
-  "platform": "^4 || ^5",
+  "version": "4.2.1",
+  "platform": ">=5.3.0",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* Added details layout without share button\n* Improved opening items from push notifications",
+  "releaseNotes": "* Added placeholder for list items with no image",
   "icon": "server/assets/extension-icon.png",
   "categories": ["media"],
   "repository": {

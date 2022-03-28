@@ -1,17 +1,17 @@
 import React, { PureComponent } from 'react';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Favorite } from 'shoutem.favorites';
+import PropTypes from 'prop-types';
 import {
-  Image,
-  Subtitle,
-  Row,
-  View,
-  Divider,
-  TouchableOpacity,
   Caption,
+  Divider,
+  Image,
+  Row,
+  Subtitle,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
+import { Favorite } from 'shoutem.favorites';
+import { assets } from 'shoutem.layouts';
 import { formatBookCaption } from '../shared/formatBookCaption';
 import LinkIconButton from './LinkIconButton';
 
@@ -37,13 +37,16 @@ class SmallListBooksView extends PureComponent {
       <Favorite item={book} schema={book.type} />
     ) : null;
     const addToCartButton = <LinkIconButton book={book} />;
+    const bookImage = book.image
+      ? { uri: book.image.url }
+      : assets.noImagePlaceholder;
 
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Row>
           <Image
             styleName="small rounded-corners placeholder"
-            source={{ uri: _.get(book, 'image.url') }}
+            source={bookImage}
           />
 
           <View styleName="vertical stretch space-between">

@@ -11,7 +11,6 @@ export {
   initializeShortcutCategories,
   updateShortcutCategories,
   updateShortcutSortOptions,
-  updateShortcutOriginParentCategory,
 } from './shortcut';
 export { loadLanguages, loadLanguageModuleStatus } from './language';
 export {

@@ -1,25 +1,45 @@
 import React from 'react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { ImageBackground } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 
-const EventImage = props => {
+export default function EventImage({
+  animationName,
+  event,
+  children,
+  isListItemImage,
+  styleName,
+}) {
+  const resolvedPlaceholderSource = isListItemImage
+    ? assets.noImagePlaceholder
+    : null;
+
+  const resolvedEventImage = event.image
+    ? { uri: event.image.url }
+    : resolvedPlaceholderSource;
+
   return (
     <ImageBackground
-      {...props}
-      styleName={`placeholder ${props.styleName}`}
-      source={{ uri: _.get(props.event, 'image.url') }}
+      event={event}
+      animationName={animationName}
+      styleName={`placeholder ${styleName}`}
+      source={resolvedEventImage}
     >
-      {props.children}
+      {children}
     </ImageBackground>
   );
-};
+}
 
 EventImage.propTypes = {
-  event: PropTypes.object,
-  styleName: PropTypes.string,
+  event: PropTypes.object.isRequired,
+  styleName: PropTypes.string.isRequired,
   animationName: PropTypes.string,
   children: PropTypes.node,
+  isListItemImage: PropTypes.bool,
 };
 
-export default EventImage;
+EventImage.defaultProps = {
+  animationName: '',
+  isListItemImage: true,
+  children: undefined,
+};

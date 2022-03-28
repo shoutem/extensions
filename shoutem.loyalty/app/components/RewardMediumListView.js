@@ -11,6 +11,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import RewardProgressBar from './RewardProgressBar';
 import { rewardShape } from './shapes';
@@ -42,13 +43,12 @@ export class RewardMediumListView extends PureComponent {
     const { reward, points } = this.props;
     const { id, image, pointsRequired, title } = reward;
 
+    const rewardImage = image ? { uri: image.url } : assets.noImagePlaceholder;
+
     return (
       <TouchableOpacity key={id} onPress={this.onPress}>
         <Tile>
-          <Image
-            styleName="large-banner"
-            source={{ uri: image ? image.url : '' }}
-          />
+          <Image styleName="large-banner" source={rewardImage} />
           <RewardProgressBar
             pointsRequired={pointsRequired}
             points={points}

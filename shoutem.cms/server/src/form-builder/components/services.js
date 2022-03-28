@@ -1,3 +1,3 @@
 export function fieldInError(formField) {
-  return formField.touched && formField.error;
+  return formField && formField.touched && formField.error;
 }

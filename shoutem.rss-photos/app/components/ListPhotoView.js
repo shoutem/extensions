@@ -3,23 +3,19 @@ import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import {
-  TouchableOpacity,
-  View,
-  Title,
   Caption,
   Image,
   Tile,
+  Title,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 
 /**
  * A component used to render a single list photo item
  */
 export default class ListPhotoView extends PureComponent {
-  static propTypes = {
-    onPress: PropTypes.func,
-    photo: PropTypes.object.isRequired,
-  };
-
   constructor(props) {
     super(props);
     this.onPress = this.onPress.bind(this);
@@ -37,14 +33,15 @@ export default class ListPhotoView extends PureComponent {
     const { photo } = this.props;
 
     const title = _.get(photo, 'title');
-    const source = _.get(photo, 'source');
+    const photoImage = _.get(photo, 'source');
     const timeUpdated = _.get(photo, 'timeUpdated') !== '1900-01-01T00:00:00';
+    const photoSource = photoImage || assets.noImagePlaceholder;
 
     return (
       <View key={photo.id}>
         <TouchableOpacity onPress={this.onPress}>
           <Tile>
-            <Image styleName="large-banner" source={source} />
+            <Image styleName="large-banner" source={photoSource} />
             <View styleName="content md-gutter">
               <Title numberOfLines={2}>{title.toUpperCase()}</Title>
               <Caption>
@@ -57,3 +54,8 @@ export default class ListPhotoView extends PureComponent {
     );
   }
 }
+
+ListPhotoView.propTypes = {
+  photo: PropTypes.object.isRequired,
+  onPress: PropTypes.func.isRequired,
+};

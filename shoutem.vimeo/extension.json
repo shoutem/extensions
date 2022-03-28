@@ -1,10 +1,10 @@
 {
   "name": "vimeo",
   "title": "Vimeo",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "platform": "^4 || ^5",
   "description": "Show videos from Vimeo",
-  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
+  "releaseNotes": "* Added placeholder for list items with no image",
   "icon": "server/assets/add-videos-vimeo-image.png",
   "dependencies": ["shoutem.layouts", "shoutem.navigation", "shoutem.rss"],
   "categories": ["media"],

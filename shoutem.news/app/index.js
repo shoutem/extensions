@@ -23,6 +23,7 @@ export const screens = {
   MediumListArticlesScreen: ArticlesScreen,
   FeaturedMediumListArticlesScreen: ArticlesScreen,
   TileListArticlesScreen: ArticlesScreen,
+  FeaturedGrid122ArticlesScreen: Grid122ArticlesScreen,
   Grid122ArticlesScreen,
   ArticleDetailsScreen: LargeArticleDetailsScreen,
   SolidNavbarMediumArticleDetailsScreen: ArticleDetailsScreen,

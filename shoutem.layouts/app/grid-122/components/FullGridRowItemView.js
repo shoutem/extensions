@@ -5,7 +5,6 @@ import {
   Divider,
   ImageBackground,
   Text,
-  Tile,
   Title,
   TouchableOpacity,
   View,
@@ -13,13 +12,13 @@ import {
 import { ext } from '../../const';
 
 export function FullGridRowItemView({
+  imageSource,
+  numberOfLines,
   id,
-  imageUrl,
   subtitle,
   title,
   onPress,
   renderActions,
-  numberOfLines,
   style,
 }) {
   function handlePress() {
@@ -32,15 +31,12 @@ export function FullGridRowItemView({
     <TouchableOpacity
       activeOpacity={!onPress && 1}
       onPress={handlePress}
-      styleName="flexible"
       style={style.container}
     >
-      <ImageBackground style={style.imageContainer} source={{ uri: imageUrl }}>
-        <Tile>
-          <View styleName="actions" virtual>
-            {!!renderActions && renderActions(id)}
-          </View>
-        </Tile>
+      <ImageBackground source={imageSource} style={style.imageContainer}>
+        <View styleName="actions" virtual>
+          {!!renderActions && renderActions(id)}
+        </View>
       </ImageBackground>
       <View style={style.textContainer}>
         <Title numberOfLines={1} style={style.title}>
@@ -58,7 +54,7 @@ export function FullGridRowItemView({
 FullGridRowItemView.propTypes = {
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  imageUrl: PropTypes.string,
+  imageSource: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   numberOfLines: PropTypes.number,
   renderActions: PropTypes.func,
   style: PropTypes.object,
@@ -67,7 +63,7 @@ FullGridRowItemView.propTypes = {
 };
 
 FullGridRowItemView.defaultProps = {
-  imageUrl: null,
+  imageSource: null,
   numberOfLines: 2,
   subtitle: '',
   style: {},

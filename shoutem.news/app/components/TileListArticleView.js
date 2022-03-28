@@ -8,11 +8,16 @@ import {
   Title,
   TouchableOpacity,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { ArticleView } from './ArticleView';
 
 export class TileListArticleView extends ArticleView {
   render() {
     const { title, imageUrl, date } = this.props;
+
+    const articleImage = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
 
     const momentDate = moment(date);
     const dateInfo = momentDate.isAfter(0) ? (
@@ -23,7 +28,7 @@ export class TileListArticleView extends ArticleView {
       <TouchableOpacity onPress={this.onPress}>
         <ImageBackground
           styleName="large-banner placeholder"
-          source={{ uri: imageUrl }}
+          source={articleImage}
         >
           <Tile>
             <Title numberOfLines={3}>{title.toUpperCase()}</Title>

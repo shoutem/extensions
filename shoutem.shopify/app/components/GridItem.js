@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -11,8 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-
-import images from '../assets/images';
+import { images as localImages } from '../assets';
 import { ext } from '../const';
 import ListItem from './ListItem';
 
@@ -27,13 +25,17 @@ const GridItem = ({ item, isTall, onAddToCart, onPress, shop }) => {
   const newPriceString = `${currency}${newPrice}`;
   const oldPriceString = oldPrice ? `${currency}${oldPrice}` : null;
 
+  const productImage = images[0]
+    ? { uri: images[0].src }
+    : localImages.fallback;
+
   return (
     <TouchableOpacity onPress={onPress}>
       <Card styleName="flexible">
         <View styleName="horizontal h-center v-start">
           <Image
             styleName={isTall ? 'medium-square' : 'medium-wide'}
-            source={{ uri: (images[0] || {}).src }}
+            source={productImage}
             defaultSource={images.fallback}
           />
         </View>

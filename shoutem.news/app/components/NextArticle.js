@@ -3,23 +3,28 @@ import PropTypes from 'prop-types';
 import {
   Caption,
   ImageBackground,
+  Subtitle,
   Tile,
   TouchableOpacity,
-  Subtitle,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 
 /**
  * A component used to render the next article info on
  * the article details screen.
  */
-export const NextArticle = ({ title, imageUrl, openArticle }) => {
+export function NextArticle({ title, imageUrl, openArticle }) {
+  const nextArticleImage = imageUrl
+    ? { uri: imageUrl }
+    : assets.noImagePlaceholder;
+
   return (
     <TouchableOpacity onPress={openArticle}>
       <ImageBackground
         styleName="large-ultra-wide placeholder"
-        source={{ uri: imageUrl }}
+        source={nextArticleImage}
       >
         <Tile styleName="fill-parent md-gutter space-between">
           <Caption styleName="bold h-left">{I18n.t(ext('upNext'))}</Caption>
@@ -30,7 +35,7 @@ export const NextArticle = ({ title, imageUrl, openArticle }) => {
       </ImageBackground>
     </TouchableOpacity>
   );
-};
+}
 
 NextArticle.propTypes = {
   title: PropTypes.string,

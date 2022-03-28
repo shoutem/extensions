@@ -1,10 +1,10 @@
 {
   "name": "affiliate",
   "title": "Affiliate",
-  "version": "2.0.0",
-  "platform": "^4.0.5 || ^5",
+  "version": "2.1.1",
+  "platform": ">=5.3.0",
   "description": "Create affiliate program in your app and expand your advertising reach",
-  "releaseNotes": "* Added analytics for affiliate partner performance tracking\n* For devs: Moved 'reselect' from 'dependencies' to 'peerDependencies', provided by Redux extension",
+  "releaseNotes": "* Added placeholder for list items with no image",
   "icon": "server/assets/images/add-affiliate-image.png",
   "dependencies": [
     "shoutem.application",

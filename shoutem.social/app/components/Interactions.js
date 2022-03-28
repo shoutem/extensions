@@ -14,7 +14,6 @@ function Interactions({
   commentCount,
   enableComments,
   enableInteractions,
-  enablePhotoAttachments,
   statusId,
   statusLiked,
   usersWhoLiked,
@@ -49,15 +48,6 @@ function Interactions({
     }
   }, [dispatch, statusId, statusLiked]);
 
-  function handleOpenComments() {
-    navigateTo(ext('StatusDetailsScreen'), {
-      statusId,
-      enableComments,
-      enableInteractions,
-      enablePhotoAttachments,
-    });
-  }
-
   const commentsCountText = I18n.t(ext('numberOfComments'), {
     count: commentCount,
   });
@@ -80,15 +70,12 @@ function Interactions({
         </TouchableOpacity>
       )}
       {enableComments && (
-        <TouchableOpacity
-          onPress={handleOpenComments}
-          style={[style.button, style.commentsButtonWidth]}
-        >
+        <View style={[style.button, style.commentsButtonWidth]}>
           <Icon name="comments" style={style.icon} />
           <Caption numberOfLines={1} style={style.iconText}>
             {commentsCountText}
           </Caption>
-        </TouchableOpacity>
+        </View>
       )}
     </View>
   );
@@ -98,7 +85,6 @@ Interactions.propTypes = {
   commentCount: PropTypes.number.isRequired,
   enableComments: PropTypes.bool.isRequired,
   enableInteractions: PropTypes.bool.isRequired,
-  enablePhotoAttachments: PropTypes.bool.isRequired,
   likedCount: PropTypes.number.isRequired,
   statusId: PropTypes.number.isRequired,
   statusLiked: PropTypes.bool.isRequired,

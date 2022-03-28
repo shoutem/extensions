@@ -1,8 +1,11 @@
 {
   "name": "shoutem.affiliate",
-  "version": "2.0.0",
+  "version": "2.1.1",
   "description": "Create affiliate program in your app and expand your advertising reach",
   "peerDependencies": {
+    "@shoutem/redux-io": "*",
+    "@shoutem/theme": "*",
+    "@shoutem/ui": "*",
     "reselect": "*"
   }
 }

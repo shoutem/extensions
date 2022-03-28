@@ -15,9 +15,7 @@
     "shoutem.redux",
     "shoutem.web-view"
   ],
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

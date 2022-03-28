@@ -1,19 +1,22 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "5.0.0",
-  "platform": "^5.0.1",
+  "version": "6.0.1",
+  "platform": ">=5.3.0",
   "skipClone": false,
-  "releaseNotes": "* Implemented new improved social wall design",
+  "releaseNotes": "* Improved various UX and UI elements\n* For developers - switched to pre-uploading attachments to s3, then sending image link to create status/comment",
+  "nativeChanges": {
+    "lastVersion": "6.0.0",
+    "settingsKeys": []
+  },
   "description": "Let members create posts, comment and like them",
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",
     "shoutem.firebase",
     "shoutem.i18n",
+    "shoutem.layouts",
     "shoutem.navigation",
     "shoutem.permissions",
     "shoutem.user-profile"

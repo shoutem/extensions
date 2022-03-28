@@ -1,10 +1,10 @@
 {
   "name": "about",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "platform": "^5",
   "title": "About",
   "description": "Show info about your app or your business",
-  "releaseNotes": "* Fixed opening hours rendering",
+  "releaseNotes": "* Removed map when no location provided",
   "icon": "server/assets/add-about-image.png",
   "dependencies": [
     "shoutem.application",

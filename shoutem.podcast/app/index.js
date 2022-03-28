@@ -25,6 +25,6 @@ const shoutem = {
   },
 };
 
-export { appDidMount, appWillMount } from './app';
+export { appDidMount } from './app';
 
 export { reducer, screens, shoutem };

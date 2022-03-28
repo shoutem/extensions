@@ -27,23 +27,6 @@ import { FooterButtons, Map, OpeningHours } from '../components';
 import { ext, schema } from '../const';
 
 export class AboutScreen extends PureComponent {
-  static propTypes = {
-    channelId: PropTypes.number.isRequired,
-    data: PropTypes.array.isRequired,
-    find: PropTypes.func.isRequired,
-    isFocused: PropTypes.bool.isRequired,
-    navigation: PropTypes.object.isRequired,
-    imageSize: PropTypes.string,
-    parentCategoryId: PropTypes.string,
-    profile: PropTypes.object,
-  };
-
-  static defaultProps = {
-    imageSize: 'large',
-    parentCategoryId: undefined,
-    profile: {},
-  };
-
   constructor(props, context) {
     super(props, context);
 
@@ -214,11 +197,7 @@ export class AboutScreen extends PureComponent {
   resolveMapProps() {
     const { profile } = this.props;
 
-    if (
-      !profile.location ||
-      !profile.location.latitude ||
-      !profile.location.longitude
-    ) {
+    if (!profile.location.latitude || !profile.location.longitude) {
       return null;
     }
 
@@ -374,7 +353,9 @@ export class AboutScreen extends PureComponent {
           title={profile.name?.toUpperCase()}
         >
           <SimpleHtml body={profile.info} />
-          <Map {...this.resolveMapProps(profile)} />
+          {!_.isEmpty(profile.location) && (
+            <Map {...this.resolveMapProps(profile)} />
+          )}
           <OpeningHours htmlContent={profile.hours} />
           <FooterButtons buttons={this.resolveFooterButtons(profile)} />
         </DetailsLayout>
@@ -382,6 +363,23 @@ export class AboutScreen extends PureComponent {
     );
   }
 }
+
+AboutScreen.propTypes = {
+  channelId: PropTypes.number.isRequired,
+  data: PropTypes.array.isRequired,
+  find: PropTypes.func.isRequired,
+  isFocused: PropTypes.bool.isRequired,
+  navigation: PropTypes.object.isRequired,
+  imageSize: PropTypes.string,
+  parentCategoryId: PropTypes.string,
+  profile: PropTypes.object,
+};
+
+AboutScreen.defaultProps = {
+  imageSize: 'large',
+  parentCategoryId: undefined,
+  profile: {},
+};
 
 export function mapStateToProps(state, ownProps) {
   const channelId = i18nSelectors.getActiveChannelId(state);

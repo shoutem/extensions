@@ -1,7 +1,9 @@
+export { assets } from './assets';
 export {
   CompactListLayout,
   CompactListSkeletonPlaceholder,
 } from './compact-list';
+export { ShimmerPlaceholder } from './components';
 export { LAYOUT_TYPES } from './const';
 export { DetailsLayout, DetailsSkeletonPlaceholder } from './details';
 export { FixedGridSkeletonPlaceholder } from './fixed-grid';

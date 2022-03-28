@@ -1,15 +1,7 @@
-import { registerIcons } from '@shoutem/ui';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
-import { UploadImage } from './form-builder/components/image-upload/assets';
 import { ext } from './const';
 import { setProfileSchema } from './redux';
 import { resolveUserProfileSchema, shoutemApi } from './services';
-
-export function appWillMount() {
-  const iconConfigs = [{ name: 'upload-image', icon: UploadImage }];
-
-  registerIcons(iconConfigs);
-}
 
 export function appDidMount(app) {
   const store = app.getStore();

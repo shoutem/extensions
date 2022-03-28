@@ -1,8 +1,7 @@
 import React from 'react';
-import VectorIcon from 'react-native-vector-icons/MaterialIcons';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { View } from '@shoutem/ui';
+import { Icon, View } from '@shoutem/ui';
 import { ext } from '../../const';
 
 export function LevelIcon(props) {
@@ -21,7 +20,7 @@ export function LevelIcon(props) {
 
   return (
     <View style={resolvedStyle}>
-      <VectorIcon name="check" style={resolvedIconStyle} />
+      <Icon name="checkbox-on" style={resolvedIconStyle} />
     </View>
   );
 }

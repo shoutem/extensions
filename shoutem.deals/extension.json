@@ -1,10 +1,10 @@
 {
   "name": "deals",
   "title": "Deals",
-  "version": "5.0.3",
+  "version": "5.1.0",
   "platform": "^5",
   "description": "Create special deals and redeem them with coupons",
-  "releaseNotes": "* Replaced loading spinner with animated placeholder\n* Set specific dependency versions instead of using semver ranges",
+  "releaseNotes": "* Added placeholder for list items with no image",
   "icon": "server/assets/add-deals-image.png",
   "dependencies": [
     "shoutem.application",

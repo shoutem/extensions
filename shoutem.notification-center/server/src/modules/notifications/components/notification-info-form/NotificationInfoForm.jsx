@@ -28,6 +28,59 @@ export default class NotificationInfoForm extends Component {
     autoBindReact(this);
   }
 
+  renderTarget() {
+    const {
+      shortcuts,
+      notification: { target, contentUrl, shortcutId },
+    } = this.props;
+
+    // undefined will be when target is type of APP
+    if (_.isUndefined(target)) {
+      return null;
+    }
+
+    if (target === TARGET_TYPES.URL) {
+      return (
+        <Row>
+          <Col xs={12}>
+            <FormGroup controlId="target">
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.URL_INPUT_LABEL)}
+              </ControlLabel>
+              <FormControl value={contentUrl} />
+            </FormGroup>
+          </Col>
+        </Row>
+      );
+    }
+
+    if (target === TARGET_TYPES.SCREEN) {
+      const shortcutTree = buildShortcutTree(shortcuts);
+      const shortcutOptions = createOptions(
+        shortcutTree,
+        'shortcut.key',
+        'shortcut.title',
+      );
+      const shortcut = _.find(shortcutOptions, { value: shortcutId });
+      const url = _.get(shortcut, 'label');
+
+      return (
+        <Row>
+          <Col xs={12}>
+            <FormGroup controlId="target">
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.SCREEN_INPUT_LABEL)}
+              </ControlLabel>
+              <FormControl value={url} />
+            </FormGroup>
+          </Col>
+        </Row>
+      );
+    }
+
+    return null;
+  }
+
   render() {
     const {
       shortcuts,
@@ -73,14 +126,7 @@ export default class NotificationInfoForm extends Component {
 
     return (
       <form className="notification-info-form">
-        <Row>
-          <Col xs={12}>
-            <FormGroup controlId="target">
-              <ControlLabel>{targetTitle}</ControlLabel>
-              <FormControl value={url} />
-            </FormGroup>
-          </Col>
-        </Row>
+        {this.renderTarget()}
         <Row>
           <Col xs={12}>
             <FormGroup controlId="audience">

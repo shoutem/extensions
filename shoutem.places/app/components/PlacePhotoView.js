@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -12,6 +11,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { Favorite } from 'shoutem.favorites';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import { getFirstImage } from '../services/places';
 import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
@@ -36,7 +36,9 @@ export class PlacePhotoView extends PureComponent {
     const { location = {} } = place;
     const { formattedAddress = '' } = location;
     const leadImage = getFirstImage(place);
-    const imageSource = leadImage ? { uri: leadImage.url } : undefined;
+    const imageSource = leadImage
+      ? { uri: leadImage.url }
+      : assets.noImagePlaceholder;
     const placeName = place?.name?.toUpperCase() || '';
 
     return (

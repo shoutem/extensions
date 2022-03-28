@@ -34,7 +34,7 @@ import LOCALIZATION from './localization';
 import './style.scss';
 
 const DEFAULT_NOTIFICATION = {
-  target: TARGET_TYPES.URL,
+  target: TARGET_TYPES.APP,
   audience: AUDIENCE_TYPES.ALL,
   delivery: DELIVERY_TYPES.NOW,
   summaries: [],
@@ -239,13 +239,20 @@ class Notifications extends Component {
     const { currentNotification } = this.state;
 
     if (currentNotification?.type === 'Silent') {
-      const normalizedCurrentNotification = { ...currentNotification };
+      const normalizedCurrentNotification = _.cloneDeep(currentNotification);
       _.set(
         normalizedCurrentNotification,
         'delivery',
         DELIVERY_TYPES.USER_SCHEDULED,
       );
       _.set(normalizedCurrentNotification, 'summary', '');
+
+      return normalizedCurrentNotification;
+    }
+
+    if (currentNotification && currentNotification.target === undefined) {
+      const normalizedCurrentNotification = _.cloneDeep(currentNotification);
+      _.set(normalizedCurrentNotification, 'target', TARGET_TYPES.APP);
 
       return normalizedCurrentNotification;
     }

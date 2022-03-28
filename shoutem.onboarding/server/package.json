@@ -1,6 +1,6 @@
 {
   "name": "shoutem.onboarding",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "Shows a quick tour on the first app launch. ",
   "scripts": {
     "clean": "rimraf ./build/*",
@@ -48,7 +48,7 @@
   "dependencies": {
     "@shoutem/assets-sdk": "^1.0.1",
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "0.16.8",
+    "@shoutem/react-web-ui": "^1.0.0",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-composers": "^0.1.6",
     "@shoutem/redux-io": "^3.2.1",

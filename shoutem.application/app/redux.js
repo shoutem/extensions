@@ -169,6 +169,18 @@ export function getExtensionCloudUrl(state, extensionName) {
   ]);
 }
 
+export function getExtensionServiceUrl(state, extensionName, serviceName) {
+  return _.get(state[ext()], [
+    'extensions',
+    extensionName,
+    'attributes',
+    'settings',
+    'services',
+    'core',
+    serviceName,
+  ]);
+}
+
 /**
  * A selector that returns shortcuts
  *

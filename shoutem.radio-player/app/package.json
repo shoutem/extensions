@@ -1,11 +1,15 @@
 {
   "name": "shoutem.radio-player",
-  "version": "4.2.0",
+  "version": "5.0.1",
   "description": "Radio extension",
   "dependencies": {
-    "@sindresorhus/slugify": "0.9.1"
+    "@sindresorhus/slugify": "0.9.1",
+    "react-native-background-timer": "2.4.1"
   },
   "peerDependencies": {
     "@shoutem/ui": "*"
-  }
+  },
+  "nativeDependencies": [
+    "react-native-background-timer"
+  ]
 }

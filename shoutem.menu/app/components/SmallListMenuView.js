@@ -1,23 +1,24 @@
 import React from 'react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import {
-  Image,
-  Subtitle,
-  Row,
-  View,
   Divider,
+  Image,
+  Row,
+  Subtitle,
   TouchableOpacity,
+  View,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 
-const SmallListMenuView = ({ item, onPress }) => {
+export default function SmallListMenuView({ item, onPress }) {
+  const menuImage = item.image
+    ? { uri: item.image.url }
+    : assets.noImagePlaceholder;
+
   return (
     <TouchableOpacity onPress={() => onPress(item)} key={item.id}>
       <Row>
-        <Image
-          styleName="small placeholder"
-          source={{ uri: _.get(item, 'image.url') }}
-        />
+        <Image styleName="small placeholder" source={menuImage} />
         <View styleName="vertical stretch space-between">
           <Subtitle numberOfLines={2}>{item.name}</Subtitle>
           <Subtitle>{item.price}</Subtitle>
@@ -26,11 +27,9 @@ const SmallListMenuView = ({ item, onPress }) => {
       <Divider styleName="line" />
     </TouchableOpacity>
   );
-};
+}
 
 SmallListMenuView.propTypes = {
-  onPress: PropTypes.func,
   item: PropTypes.object.isRequired,
+  onPress: PropTypes.func.isRequired,
 };
-
-export default SmallListMenuView;

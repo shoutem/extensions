@@ -7,7 +7,7 @@ import { formatParams } from './params';
 
 export function createCommentRequest(req: Request, status: Status): object {
   const { data } = req.body;
-  const { appId, text, imageData } = data;
+  const { appId, text, imageData, imageUrl } = data;
 
   const params = formatParams({
     nid: appId,
@@ -24,6 +24,10 @@ export function createCommentRequest(req: Request, status: Status): object {
   if (imageData) {
     _.set(body, 'file_attachment', imageData);
   }
+
+  if (imageUrl) {
+    _.set(body, 'link_attachment', imageUrl);
+  }  
 
   const endpointSuffix = '/api/statuses/update.json';
 

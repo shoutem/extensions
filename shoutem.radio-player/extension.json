@@ -1,10 +1,10 @@
 {
   "name": "radio-player",
   "title": "Radio+",
-  "version": "4.2.0",
-  "platform": "^4 || ^5",
+  "version": "5.0.1",
+  "platform": ">=5.3.0",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
-  "releaseNotes": "* Added new layout - artwork background",
+  "releaseNotes": "* Added sleep timer functionality\n* Breaking change for developers - Radio screen is now functional component, class inheritance no longer possible (can't extend)",
   "icon": "server/assets/add-radio-image.png",
   "categories": ["media"],
   "dependencies": [

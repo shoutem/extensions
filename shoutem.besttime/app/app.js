@@ -1,6 +1,4 @@
-import { registerIcons } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
-import Clock from './assets/clock.svg';
 import { ext } from './const';
 import { bestTime, googlePlaces } from './services';
 
@@ -16,7 +14,4 @@ export function appDidMount(app) {
 
   bestTime.init(bestTimePrivateKey);
   googlePlaces.init(googlePlacesKey, locale);
-
-  const iconConfig = { name: 'clock', icon: Clock };
-  registerIcons(iconConfig);
 }

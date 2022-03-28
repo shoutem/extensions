@@ -1,12 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { CmsListScreen } from 'shoutem.cms';
-import { isFavoritesSchema, getFavoriteCollection } from 'shoutem.favorites';
+import { getFavoriteCollection, isFavoritesSchema } from 'shoutem.favorites';
 import { navigateTo } from 'shoutem.navigation';
 import ListBooksView from '../components/ListBooksView';
 import { ext } from '../const';
+
+const schema = ext('Books');
 
 export class BooksListScreen extends CmsListScreen {
   static propTypes = {
@@ -19,7 +21,6 @@ export class BooksListScreen extends CmsListScreen {
 
     autoBindReact(this);
 
-    const schema = ext('Books');
     this.state = {
       ...this.state,
       schema,

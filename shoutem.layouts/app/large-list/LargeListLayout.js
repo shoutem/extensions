@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { ListView } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import { resolveProp } from '../services';
 import { LargeListItem } from './components';
@@ -28,10 +29,14 @@ export function LargeListLayout({
     const subtitleRight = resolveProp(item, subtitleRightResolver, '');
     const title = resolveProp(item, titleResolver, '');
 
+    const imageSource = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
+
     return (
       <LargeListItem
         hasOverlay={hasOverlay}
-        imageUrl={imageUrl}
+        imageSource={imageSource}
         item={item}
         onPress={onPress}
         overlayStyleName={overlayStyleName}

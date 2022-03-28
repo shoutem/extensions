@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import {
@@ -13,17 +12,13 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 
 /**
  * A component used to render a single list video item with a large
  * video preview thumbnail.
  */
 export default class LargeVimeoView extends PureComponent {
-  static propTypes = {
-    onPress: PropTypes.func,
-    video: PropTypes.object.isRequired,
-  };
-
   constructor(props) {
     super(props);
 
@@ -39,12 +34,16 @@ export default class LargeVimeoView extends PureComponent {
   render() {
     const { video } = this.props;
 
+    const thumbnail = video.videoAttachments
+      ? { uri: video.videoAttachments[0].thumbnailUrl }
+      : assets.noImagePlaceholder;
+
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Tile>
           <ImageBackground
             styleName="large-wide placeholder"
-            source={{ uri: _.get(video, 'videoAttachments[0].thumbnailUrl') }}
+            source={thumbnail}
           >
             <Overlay styleName="rounded-small">
               <Icon name="play" />
@@ -60,3 +59,8 @@ export default class LargeVimeoView extends PureComponent {
     );
   }
 }
+
+LargeVimeoView.propTypes = {
+  video: PropTypes.object.isRequired,
+  onPress: PropTypes.func.isRequired,
+};

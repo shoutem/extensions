@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { ArticleView } from './ArticleView';
 
 /**
@@ -16,7 +17,11 @@ import { ArticleView } from './ArticleView';
  */
 export class FeaturedArticleView extends ArticleView {
   render() {
-    const { title, imageUrl, date, author } = this.props;
+    const { title = '', imageUrl, date, author } = this.props;
+
+    const articleImage = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
 
     const momentDate = moment(date);
     const dateInfo = momentDate.isAfter(0) ? (
@@ -28,10 +33,10 @@ export class FeaturedArticleView extends ArticleView {
         <View styleName="sm-gutter featured">
           <ImageBackground
             styleName="featured placeholder"
-            source={{ uri: imageUrl }}
+            source={articleImage}
           >
             <Tile>
-              <Title>{(title || '').toUpperCase()}</Title>
+              <Title>{title.toUpperCase()}</Title>
               <View styleName="horizontal md-gutter-top">
                 <Caption styleName="collapsible" numberOfLines={1}>
                   {author}

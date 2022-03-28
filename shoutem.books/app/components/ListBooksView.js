@@ -1,17 +1,18 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import {
+  Caption,
+  Divider,
+  ImageBackground,
+  Tile,
+  Title,
+  TouchableOpacity,
+  View,
+} from '@shoutem/ui';
 import { CmsListScreen } from 'shoutem.cms';
 import { Favorite } from 'shoutem.favorites';
-import {
-  ImageBackground,
-  Title,
-  View,
-  Divider,
-  TouchableOpacity,
-  Caption,
-  Tile,
-} from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { formatBookCaption } from '../shared/formatBookCaption';
 import LinkIconButton from './LinkIconButton';
 
@@ -38,12 +39,15 @@ class ListBooksView extends PureComponent {
       <Favorite item={book} schema={book.type} />
     ) : null;
     const addToCartButton = <LinkIconButton book={book} />;
+    const bookImage = book.image
+      ? { uri: book.image.url }
+      : assets.noImagePlaceholder;
 
     return (
       <TouchableOpacity virtual onPress={this.openDetailsScreen}>
         <ImageBackground
           styleName="large-banner placeholder"
-          source={{ uri: book.image ? book.image.url : undefined }}
+          source={bookImage}
         >
           <Tile>
             <View virtual styleName="actions horizontal">

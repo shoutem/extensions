@@ -26,6 +26,7 @@ export {
   getAppInitQueueComplete,
   getConfiguration,
   getExtensionCloudUrl,
+  getExtensionServiceUrl,
   getExtensionSettings,
   getHiddenShortcuts,
   getShortcut,

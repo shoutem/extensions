@@ -18,7 +18,7 @@ export const shoutem = {
 };
 
 // list of exports supported by shoutem can be found here: https://shoutem.github.io/docs/extensions/reference/extension-exports
-export { appDidMount, appWillMount } from './app';
+export { appDidMount } from './app';
 export { ext } from './const';
 export { reducer, updateProfile } from './redux';
 

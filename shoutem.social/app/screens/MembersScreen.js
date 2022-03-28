@@ -23,7 +23,7 @@ import {
 } from 'shoutem.navigation';
 import MemberView from '../components/MemberView';
 import { ext } from '../const';
-import { blockUser, loadUser, loadUsers, loadUsersInGroups } from '../redux';
+import { blockUser, loadUsers, loadUsersInGroups } from '../redux';
 import { getUsers, getUsersInGroups } from '../redux/selectors';
 import { openBlockActionSheet, openProfileForLegacyUser } from '../services';
 
@@ -84,7 +84,6 @@ export class MembersScreen extends RemoteDataListScreen {
 
   fetchData() {
     const {
-      loadUser,
       loadUsers,
       loadUsersInGroups,
       showAllUsers,
@@ -95,26 +94,12 @@ export class MembersScreen extends RemoteDataListScreen {
     if (!users) {
       InteractionManager.runAfterInteractions(() => {
         if (showAllUsers) {
-          loadUsers().then(() => {
-            loadUser('me');
-          });
+          loadUsers();
         } else {
-          loadUsersInGroups(visibleGroups).then(() => {
-            loadUser('me');
-          });
+          loadUsersInGroups(visibleGroups);
         }
       });
     }
-  }
-
-  loadMore() {
-    // We have to load current user again, because response from next link (user schema)
-    // doesn't return all data current user needs (approved e.g.)
-    const { data, loadUser, next } = this.props;
-
-    next(data).then(() => {
-      loadUser('me');
-    });
   }
 
   headerRight(props) {
@@ -207,7 +192,6 @@ export function mapDispatchToProps(dispatch, ownProps) {
   return {
     ...bindActionCreators(
       {
-        loadUser,
         loadUsers: ownProps.users ? undefined : loadUsers,
         loadUsersInGroups: ownProps.users ? undefined : loadUsersInGroups,
         next,

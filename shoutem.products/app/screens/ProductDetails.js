@@ -137,7 +137,7 @@ function ProductDetails(props) {
       <ScrollView>
         {renderNoImage()}
         {renderInformation()}
-        {product?.link && (
+        {!!product?.link && (
           <DisclosureBuyButton onBuyPress={onBuyPress} product={product} />
         )}
         <Divider styleName="section-header" />

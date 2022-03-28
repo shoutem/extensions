@@ -3,7 +3,6 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
@@ -18,15 +17,12 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { NextArticle } from '../components/NextArticle';
-import { getArticleImages } from '../services/images';
 import { ext } from '../const';
+import { getArticleImages } from '../services/images';
 
 export class ArticleDetailsScreen extends PureComponent {
-  static propTypes = {
-    navigation: PropTypes.object.isRequired,
-  };
-
   constructor(props) {
     super(props);
 
@@ -143,11 +139,7 @@ export class ArticleDetailsScreen extends PureComponent {
 
   renderImageGalleryPage(image) {
     return (
-      <Image
-        styleName="large"
-        source={{ uri: image }}
-        animationName="hero"
-      />
+      <Image styleName="large" source={{ uri: image }} animationName="hero" />
     );
   }
 
@@ -169,7 +161,6 @@ export class ArticleDetailsScreen extends PureComponent {
         surroundingPagesToLoad={1}
       />
     );
-
   }
 
   renderHeader() {
@@ -208,5 +199,14 @@ export class ArticleDetailsScreen extends PureComponent {
     );
   }
 }
+
+ArticleDetailsScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  style: PropTypes.object,
+};
+
+ArticleDetailsScreen.defaultProps = {
+  style: {},
+};
 
 export default connectStyle(ext('ArticleDetailsScreen'))(ArticleDetailsScreen);

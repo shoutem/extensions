@@ -1,6 +1,6 @@
 {
   "name": "shoutem.loyalty",
-  "version": "4.0.4",
+  "version": "4.1.0",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
     "clean": "rimraf ./build/*",
@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "0.12.4",
+    "@shoutem/react-web-ui": "^1.0.0",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-composers": "^0.1.6",
     "@shoutem/redux-io": "^3.2.0",

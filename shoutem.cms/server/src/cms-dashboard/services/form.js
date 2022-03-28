@@ -37,7 +37,7 @@ export function resolveTimezoneKey(key) {
 }
 
 export function fieldInError(formField) {
-  return formField.touched && formField.error;
+  return formField && formField.touched && formField.error;
 }
 
 export function getFormPropertyKeys(schema) {

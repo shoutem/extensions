@@ -1,18 +1,19 @@
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { connectStyle } from '@shoutem/theme';
 import {
-  Image,
-  Subtitle,
-  Row,
-  View,
+  Button,
   Caption,
   Divider,
-  TouchableOpacity,
-  Button,
   Icon,
+  Image,
+  Row,
+  Subtitle,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
+import { images } from '../assets';
 import { ext } from '../const';
 import { user as userShape } from './shapes';
 
@@ -59,7 +60,9 @@ export function MemberView({
 
   // this is here because Image causes a crash if it receives null as url
   const imageUrl = _.get(user, 'profile.image');
-  const resolvedImageUrl = imageUrl === null ? undefined : imageUrl;
+  const resolvedImageSource = imageUrl
+    ? { uri: imageUrl }
+    : images.defaultProfileAvatar;
   const resolvedIconName = isBlocked ? 'close' : 'more-horizontal';
 
   const handleButtonPress = () => onMenuPress(user);
@@ -68,10 +71,7 @@ export function MemberView({
     <TouchableOpacity key={user.id} onPress={handleOpenProfile}>
       <View>
         <Row>
-          <Image
-            styleName="small rounded-corners placeholder"
-            source={{ uri: resolvedImageUrl }}
-          />
+          <Image style={style.avatar} source={resolvedImageSource} />
           <View styleName="vertical stretch space-between">
             <Subtitle>{_.get(user, 'profile.nick')}</Subtitle>
             <Subtitle style={style.userProfileName}>

@@ -1,6 +1,6 @@
 import React from 'react';
-import moment from 'moment';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import { EpisodeView, mapDispatchToProps } from './EpisodeView';
 
@@ -30,13 +31,17 @@ export class ListEpisodeView extends EpisodeView {
     const handleDownloadManagerPress = path
       ? this.onDeletePress
       : this.onDownloadPress;
+    const imageUrl = this.getImageUrl(episode);
+    const episodeImage = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
 
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Divider styleName="line" />
         <Row>
           <Image
-            source={{ uri: this.getImageUrl(episode) }}
+            source={episodeImage}
             styleName="small rounded-corners placeholder"
           />
           <View styleName="horizontal v-center">

@@ -1,8 +1,8 @@
 import AboutScreen, {
   AboutScreen as AboutScreenComponent,
 } from './screens/AboutScreen';
-import * as extension from './extension.js';
-import reducer from './reducers';
+import * as extension from './extension';
+import { reducer } from './redux';
 
 export const components = {
   AboutScreen: AboutScreenComponent,

@@ -1,7 +1,8 @@
 /* eslint-disable camelcase */
-import React, { useMemo, useState } from 'react';
-import { LayoutAnimation } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import { LayoutAnimation, Pressable } from 'react-native';
 import ActionSheet from 'react-native-action-sheet';
+import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -9,7 +10,6 @@ import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
   Image,
-  Lightbox,
   Row,
   SimpleHtml,
   Subtitle,
@@ -22,16 +22,24 @@ import { ext } from '../const';
 import { adaptSocialUserForProfileScreen, convertToHtml } from '../services';
 import { comment as commentShape } from './shapes';
 
-function CommentView({ comment, openProfile, deleteComment, style }) {
+function CommentView({
+  comment,
+  openProfile,
+  deleteComment,
+  onImagePress,
+  style,
+}) {
+  const dispatch = useDispatch();
+
   const [isDeleted, setDeleted] = useState(false);
 
-  function handleClickOnUser() {
+  const handleClickOnUser = useCallback(() => {
     const { user } = comment;
 
-    openProfile(adaptSocialUserForProfileScreen(user));
-  }
+    openProfile(dispatch)(adaptSocialUserForProfileScreen(user));
+  }, [comment, dispatch, openProfile]);
 
-  function showActionSheet() {
+  const showActionSheet = useCallback(() => {
     if (_.get(comment, 'deletable') !== 'yes') {
       return;
     }
@@ -56,12 +64,14 @@ function CommentView({ comment, openProfile, deleteComment, style }) {
         }
       },
     );
-  }
+  }, [comment, deleteComment]);
 
   const { user, created_at, text } = comment;
+  const { shoutem_attachments } = comment;
   const { profile_image_url, name: userName } = user;
 
   const timeAgo = useMemo(() => moment(created_at).fromNow(), [created_at]);
+
   const resolvedProfileAvatar = useMemo(
     () =>
       profile_image_url
@@ -71,9 +81,30 @@ function CommentView({ comment, openProfile, deleteComment, style }) {
   );
 
   const commentHtml = useMemo(() => convertToHtml(text), [text]);
+  // Before, we used image (base64) attachments when creating post.
+  // Now we'll use link as an attachment when creating post.
+  // Keeping shoutem_attachments[0]?.url_large for backwards compatibility.
+  const attachmentSource = useMemo(
+    () => ({
+      uri: shoutem_attachments?.[0]?.url || shoutem_attachments?.[0]?.url_large,
+    }),
+    [shoutem_attachments],
+  );
 
-  const { shoutem_attachments: attachments } = comment;
-  const hasPicture = _.get(attachments, [0, 'type']) === 'picture';
+  const resolvedAttachmentStyle = useMemo(
+    () => [style.attachment, !!commentHtml && style.attachmentMargin],
+    [commentHtml, style.attachment, style.attachmentMargin],
+  );
+
+  const handleImagePress = useCallback(() => {
+    const imageGalleryData = [
+      {
+        source: attachmentSource,
+      },
+    ];
+
+    onImagePress(imageGalleryData);
+  }, [attachmentSource, onImagePress]);
 
   if (isDeleted) {
     return null;
@@ -92,19 +123,19 @@ function CommentView({ comment, openProfile, deleteComment, style }) {
         style={style.contentContainer}
       >
         <Row style={style.row}>
-          <View styleName="vertical" style={style.contentInnerContainer}>
+          <View style={style.contentInnerContainer}>
             <View styleName="horizontal space-between">
               <Subtitle style={style.username}>{userName}</Subtitle>
               <Caption style={style.timeAgo}>{timeAgo}</Caption>
             </View>
             <SimpleHtml body={commentHtml} style={style.comment} />
-            {hasPicture && (
-              <Lightbox activeProps={{ styleName: 'preview' }}>
+            {!!attachmentSource.uri && (
+              <Pressable onPress={handleImagePress}>
                 <Image
-                  style={style.attachment}
-                  source={{ uri: attachments[0].url_large }}
+                  style={resolvedAttachmentStyle}
+                  source={attachmentSource}
                 />
-              </Lightbox>
+              </Pressable>
             )}
           </View>
         </Row>
@@ -117,6 +148,7 @@ CommentView.propTypes = {
   comment: commentShape.isRequired,
   deleteComment: PropTypes.func.isRequired,
   openProfile: PropTypes.func.isRequired,
+  onImagePress: PropTypes.func.isRequired,
   style: PropTypes.object,
 };
 

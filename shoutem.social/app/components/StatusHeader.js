@@ -52,7 +52,7 @@ function StatusHeader({
     return openBlockOrReportActionSheet(isBlockAllowed, handleBlockUser);
   }
 
-  function handleOpenOwnProfile() {
+  function handleOpenProfile() {
     openProfileForLegacyUser(dispatch)({ id: userId });
   }
 
@@ -63,7 +63,7 @@ function StatusHeader({
   return (
     <View styleName="horizontal v-center space-between md-gutter">
       <View styleName="horizontal flex-start v-center">
-        <Pressable onPress={handleOpenOwnProfile}>
+        <Pressable onPress={handleOpenProfile}>
           <Image
             styleName="small-avatar placeholder md-gutter-right"
             source={resolvedProfileImage}
@@ -71,7 +71,9 @@ function StatusHeader({
           />
         </Pressable>
         <View styleName="vertical">
-          <Text>{resolvedName}</Text>
+          <Pressable onPress={handleOpenProfile}>
+            <Text>{resolvedName}</Text>
+          </Pressable>
           <Caption>{moment(createdAt).fromNow()}</Caption>
         </View>
       </View>

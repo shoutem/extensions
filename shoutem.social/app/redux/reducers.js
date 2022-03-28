@@ -1,42 +1,42 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
-import { APPEND_MODE } from '@shoutem/redux-io/actions/find';
+import { REHYDRATE } from 'redux-persist/constants';
 import { mapReducers } from '@shoutem/redux-composers';
 import {
-  resource,
-  LOAD_SUCCESS,
-  CREATE_SUCCESS,
-  REFERENCE_STATUS,
   collection,
-  storage,
+  CREATE_SUCCESS,
+  LOAD_SUCCESS,
   one,
+  REFERENCE_STATUS,
+  resource,
+  storage,
 } from '@shoutem/redux-io';
+import { APPEND_MODE } from '@shoutem/redux-io/actions/find';
 import {
+  busyStatus,
   setStatus,
+  STATUS,
   updateStatus,
   validationStatus,
-  busyStatus,
-  STATUS,
 } from '@shoutem/redux-io/status';
 import { USER_SCHEMA } from 'shoutem.auth';
-import { REHYDRATE } from 'redux-persist/constants';
-import { ext, STATUSES_SCHEMA, SOCIAL_SETTINGS_SCHEMA } from '../const';
+import { ext, SOCIAL_SETTINGS_SCHEMA, STATUSES_SCHEMA } from '../const';
 import {
-  CREATE,
-  LIKE,
-  UNLIKE,
-  DELETE,
-  BLOCK_USER,
-  UNBLOCK_USER,
-} from './actions';
-import {
-  increaseNumberOfComments,
-  decreaseNumberOfComments,
   appendStatus,
+  decreaseNumberOfComments,
+  increaseNumberOfComments,
   removeStatus,
   updateStatusesAfterLike,
   updateStatusesAfterUnlike,
 } from '../services';
+import {
+  BLOCK_USER,
+  CREATE,
+  DELETE,
+  LIKE,
+  UNBLOCK_USER,
+  UNLIKE,
+} from './actions';
 
 const DEFAULT_STATE = { data: [] };
 const DEFAULT_BLOCKED_USERS_STATE = {};
@@ -165,7 +165,13 @@ function statusesReducer(prepend) {
           const newStatuses = removeStatus(state.data, statusId);
           const newState = { ...state, data: newStatuses };
 
-          setStatus(newState, state[STATUS]);
+          setStatus(
+            newState,
+            updateStatus(state[STATUS], {
+              busyStatus: busyStatus.IDLE,
+              error: false,
+            }),
+          );
           return newState;
         }
 

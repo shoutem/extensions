@@ -11,6 +11,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import { rewardShape } from './shapes';
 
@@ -20,13 +21,6 @@ const { func } = PropTypes;
  * Renders a single reward, in a list of rewards for places.
  */
 export class RewardListView extends PureComponent {
-  static propTypes = {
-    // The reward
-    reward: rewardShape.isRequired,
-    // Called when reward is pressed
-    onPress: func,
-  };
-
   constructor(props) {
     super(props);
 
@@ -34,20 +28,21 @@ export class RewardListView extends PureComponent {
   }
 
   onPress() {
-    this.props.onPress(this.props.reward);
+    const { onPress, reward } = this.props;
+
+    onPress(reward);
   }
 
   render() {
     const { reward } = this.props;
     const { id, image, pointsRequired, title } = reward;
 
+    const rewardImage = image ? { uri: image.url } : assets.noImagePlaceholder;
+
     return (
       <TouchableOpacity key={id} onPress={this.onPress}>
         <Row>
-          <Image
-            styleName="small placeholder"
-            source={{ uri: image ? image.url : '' }}
-          />
+          <Image styleName="small placeholder" source={rewardImage} />
           <View styleName="vertical stretch space-between">
             <Subtitle>{title}</Subtitle>
             <Subtitle>
@@ -62,5 +57,12 @@ export class RewardListView extends PureComponent {
     );
   }
 }
+
+RewardListView.propTypes = {
+  // The reward
+  reward: rewardShape.isRequired,
+  // Called when reward is pressed
+  onPress: func.isRequired,
+};
 
 export default connectStyle(ext('RewardListView'))(RewardListView);

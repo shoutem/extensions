@@ -13,7 +13,7 @@ import ItemSubtitle from '../../components/ItemSubtitle';
 import { ext } from '../../const';
 
 export function CompactListItem({
-  imageUrl,
+  imageSource,
   item,
   onPress,
   renderActions,
@@ -39,7 +39,7 @@ export function CompactListItem({
         <Image
           styleName="small"
           style={style.imageContainer}
-          source={{ uri: imageUrl }}
+          source={imageSource}
         />
         <View styleName="vertical space-between">
           <Subtitle numberOfLines={2} style={style.title}>
@@ -62,7 +62,7 @@ export function CompactListItem({
 CompactListItem.propTypes = {
   item: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
-  imageUrl: PropTypes.string,
+  imageSource: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   renderActions: PropTypes.func,
   style: PropTypes.object,
   subtitle: PropTypes.string,
@@ -72,7 +72,7 @@ CompactListItem.propTypes = {
 };
 
 CompactListItem.defaultProps = {
-  imageUrl: null,
+  imageSource: null,
   subtitle: '',
   subtitleLeft: '',
   subtitleRight: '',

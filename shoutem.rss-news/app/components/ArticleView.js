@@ -1,15 +1,8 @@
+/* eslint-disable react/no-unused-prop-types */
 import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-export class ArticleView extends PureComponent {
-  static propTypes = {
-    onPress: PropTypes.func,
-    articleId: PropTypes.string,
-    title: PropTypes.string,
-    author: PropTypes.string,
-    imageUrl: PropTypes.string,
-    date: PropTypes.string,
-  };
 
+export class ArticleView extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -22,3 +15,19 @@ export class ArticleView extends PureComponent {
     onPress(articleId);
   }
 }
+
+ArticleView.propTypes = {
+  articleId: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+  author: PropTypes.string,
+  date: PropTypes.string,
+  imageUrl: PropTypes.string,
+  title: PropTypes.string,
+};
+
+ArticleView.defaultProps = {
+  author: '',
+  date: undefined,
+  imageUrl: undefined,
+  title: '',
+};

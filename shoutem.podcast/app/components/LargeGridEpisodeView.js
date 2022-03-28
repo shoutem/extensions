@@ -1,6 +1,6 @@
 import React from 'react';
-import moment from 'moment';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import { EpisodeView, mapDispatchToProps } from './EpisodeView';
 
@@ -29,14 +30,15 @@ export class LargeGridEpisodeView extends EpisodeView {
     const handleDownloadManagerPress = path
       ? this.onDeletePress
       : this.onDownloadPress;
+    const imageUrl = this.getImageUrl(episode);
+    const episodeImage = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
 
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Card styleName="flexible">
-          <Image
-            source={{ uri: this.getImageUrl(episode) }}
-            styleName="placeholder"
-          />
+          <Image source={episodeImage} styleName="placeholder" />
           <View styleName="flexible space-between clear">
             <Subtitle numberOfLines={2}>{title}</Subtitle>
             <View styleName="horizontal space-between sm-gutter-top">

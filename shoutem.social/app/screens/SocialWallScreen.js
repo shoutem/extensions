@@ -1,11 +1,12 @@
 /* eslint-disable camelcase */
 import React from 'react';
+import { LayoutAnimation } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import { next } from '@shoutem/redux-io';
+import { isBusy, isInitialized, isValid, next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { Image, Screen, Text, TouchableOpacity, View } from '@shoutem/ui';
 import { RemoteDataListScreen } from 'shoutem.application';
@@ -15,6 +16,8 @@ import { getUser, isAuthenticated } from 'shoutem.auth/redux';
 import { I18n } from 'shoutem.i18n';
 import { HeaderIconButton, navigateTo } from 'shoutem.navigation';
 import { images } from '../assets';
+import AddAttachmentButtons from '../components/AddAttachmentButtons';
+import { SocialWallSkeleton } from '../components/skeleton-loading';
 import StatusView from '../components/StatusView';
 import { ext } from '../const';
 import {
@@ -46,13 +49,12 @@ export class SocialWallScreen extends RemoteDataListScreen {
     return { headerRight: this.renderSettingsButton };
   }
 
-  handleNewStatusPress() {
+  handleOpenCreateStatus(selectedImage = null) {
     const {
       navigation,
       user,
       createStatus,
-      statusMaxLength,
-      extension: { enablePhotoAttachments },
+      extension: { enablePhotoAttachments, maxStatusLength = 140 },
     } = this.props;
 
     const routeParams = {
@@ -60,13 +62,25 @@ export class SocialWallScreen extends RemoteDataListScreen {
       placeholder: I18n.t(ext('newStatusPlaceholder')),
       user,
       enablePhotoAttachments,
-      statusMaxLength,
-      onStatusCreated: (status, attachment) => {
-        createStatus(status, attachment).then(() => navigation.goBack());
+      maxStatusLength,
+      selectedImage,
+      onStatusCreated: (status, attachment, callback) => {
+        createStatus(status, attachment).then(() => {
+          if (callback) {
+            callback();
+          }
+
+          this.fetchData();
+          navigation.goBack();
+        });
       },
     };
 
     navigateTo(ext('CreateStatusScreen'), routeParams);
+  }
+
+  handleNavigateToCreateStatus() {
+    this.handleOpenCreateStatus();
   }
 
   renderSettingsButton(props) {
@@ -103,7 +117,12 @@ export class SocialWallScreen extends RemoteDataListScreen {
 
   renderRow(data) {
     const {
-      extension: { enableComments, enableInteractions, enablePhotoAttachments },
+      extension: {
+        enableComments,
+        enableInteractions,
+        enablePhotoAttachments,
+        maxStatusLength = 140,
+      },
     } = this.props;
 
     return (
@@ -112,6 +131,7 @@ export class SocialWallScreen extends RemoteDataListScreen {
         enableComments={enableComments}
         enableInteractions={enableInteractions}
         enablePhotoAttachments={enablePhotoAttachments}
+        maxStatusLength={maxStatusLength}
       />
     );
   }
@@ -123,13 +143,27 @@ export class SocialWallScreen extends RemoteDataListScreen {
 
     return {
       data,
-      renderHeader: this.renderAddNewStatusSection,
       showsVerticalScrollIndicator: false,
     };
   }
 
-  renderAddNewStatusSection() {
-    const { style, user } = this.props;
+  renderData(data) {
+    const initialLoad =
+      !isValid(data) || (isBusy(data) && !isInitialized(data));
+
+    if (initialLoad) {
+      LayoutAnimation.easeInEaseOut();
+
+      return <SocialWallSkeleton />;
+    }
+
+    LayoutAnimation.easeInEaseOut();
+
+    return super.renderData(data);
+  }
+
+  render() {
+    const { data, user, style } = this.props;
 
     const profileImageUrl = user?.profile?.image || user?.profile_image_url;
 
@@ -138,32 +172,30 @@ export class SocialWallScreen extends RemoteDataListScreen {
       : images.defaultProfileAvatar;
 
     return (
-      <View styleName="horizontal md-gutter">
-        <TouchableOpacity onPress={this.handleNewStatusPress}>
-          <Image
-            styleName="small-avatar md-gutter-right"
-            source={resolvedProfileAvatar}
-            style={style.profileAvatar}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={this.handleNewStatusPress}
-          styleName="flexible sm-gutter-vertical md-gutter-left"
-          style={style.newStatusInput}
-        >
-          <Text style={style.newStatusPlaceholderText}>
-            {I18n.t(ext('newStatusPlaceholder'))}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  render() {
-    const { data, style } = this.props;
-
-    return (
       <Screen styleName="paper" style={style.screen}>
+        <View styleName="horizontal md-gutter">
+          <TouchableOpacity onPress={this.openMyProfile}>
+            <Image
+              styleName="small-avatar md-gutter-right"
+              source={resolvedProfileAvatar}
+              style={style.profileAvatar}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this.handleNavigateToCreateStatus}
+            styleName="flexible sm-gutter-vertical md-gutter-left"
+            style={style.newStatusInput}
+          >
+            <Text style={style.newStatusPlaceholderText}>
+              {I18n.t(ext('newStatusPlaceholder'))}
+            </Text>
+            <AddAttachmentButtons
+              onAddAttachmentCancel={_.noop}
+              onAttachmentSelected={this.handleOpenCreateStatus}
+              style={style}
+            />
+          </TouchableOpacity>
+        </View>
         {this.renderData(data)}
       </Screen>
     );
@@ -178,7 +210,6 @@ const mapStateToProps = state => {
     data: selectors.getStatuses(state),
     statuses: selectors.getStatusesForUser(state),
     user: getUser(state),
-    statusMaxLength: Number(_.get(extension, 'maxStatusLength', 140)),
   };
 };
 

@@ -49,6 +49,7 @@ export default class DealImageGallery extends PureComponent {
       <DealImage
         animationName={resolvedAnimation}
         deal={deal}
+        isListItemImage={false}
         styleName={imageStyleName}
       >
         {!_.isEmpty(children) && (

@@ -1,19 +1,19 @@
-import React, { PureComponent } from 'react';
-import { LayoutAnimation } from 'react-native';
-import { connect } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { LayoutAnimation, Platform, Share } from 'react-native';
+import { useDispatch } from 'react-redux';
 import slugify from '@sindresorhus/slugify';
-import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
+  Button,
   EmptyStateView,
+  Icon,
   Image,
   ImageBackground,
   Overlay,
   Row,
   Screen,
-  ShareButton,
-  Subtitle,
+  Text,
   Tile,
   View,
 } from '@shoutem/ui';
@@ -33,81 +33,110 @@ import {
   getRouteParams,
 } from 'shoutem.navigation';
 import { images } from '../assets';
-import RadioPlayer from '../components/RadioPlayer';
+import { RadioActionSheet, RadioPlayer } from '../components';
 import { ext } from '../const';
+import { useTimer } from '../hooks';
 import { setTrackMetadata } from '../redux';
 import { getResizedImageSource, getTrackArtwork } from '../services';
 
-const overlayStyle = { marginBottom: 0 };
+function Radio(props) {
+  const { navigation, route, style } = props;
+  const { shortcut } = getRouteParams(props);
+  const {
+    settings: {
+      backgroundImageUrl,
+      showArtwork,
+      showSharing,
+      streamTitle,
+      streamUrl,
+      title = '',
+    },
+  } = shortcut;
 
-function renderPlaceholderView() {
-  return <EmptyStateView message={I18n.t(ext('missingStreamUrl'))} />;
-}
+  const dispatch = useDispatch();
 
-export class Radio extends PureComponent {
-  constructor(props) {
-    super(props);
+  const [clearTimer, startTimer, timeRemaining] = useTimer(60000);
 
-    autoBindReact(this);
+  const [actionSheetActive, setActionSheetActive] = useState(false);
+  const [artist, setArtist] = useState('');
+  const [artwork, setArtwork] = useState('');
+  const [playbackState, setPlaybackState] = useState(STATE_STOPPED);
+  const [shouldSleep, setShouldSleep] = useState(false);
+  const [songName, setSongName] = useState('');
 
-    this.state = {
-      playbackState: STATE_STOPPED,
-      artist: '',
-      songName: '',
-      artwork: '',
-    };
-  }
+  const isPlaying = playbackState === STATE_PLAYING;
+  const isTimerActive = timeRemaining && timeRemaining > 0;
 
-  componentDidMount() {
-    const { navigation } = this.props;
-    const { shortcut } = getRouteParams(this.props);
-    const {
-      settings: { navbarTitle: title = '' },
-    } = shortcut;
+  const renderHeaderRight = useCallback(() => {
+    const { activeSleepIconFill, inactiveSleepIconFill } = style;
+    const iconName = showSharing ? 'more-horizontal' : 'sleep';
+    const iconFill =
+      timeRemaining && !showSharing
+        ? activeSleepIconFill
+        : inactiveSleepIconFill;
 
+    return (
+      <Button
+        disabled={!showSharing && !(isPlaying || isTimerActive)}
+        onPress={() => setActionSheetActive(true)}
+        styleName="tight clear"
+      >
+        <Icon name={iconName} fill={iconFill} />
+      </Button>
+    );
+  }, [
+    isPlaying,
+    isTimerActive,
+    setActionSheetActive,
+    showSharing,
+    style,
+    timeRemaining,
+  ]);
+
+  useEffect(() => {
     navigation.setOptions({
       ...composeNavigationStyles(['clear']),
-      headerRight: this.renderShare,
+      headerRight: renderHeaderRight,
       title,
+    });
+  }, [navigation, renderHeaderRight, title]);
+
+  useEffect(() => {
+    if (timeRemaining === 0) {
+      setShouldSleep(true);
+      clearTimer();
+    }
+  }, [clearTimer, timeRemaining]);
+
+  function hideActionSheet() {
+    setActionSheetActive(false);
+  }
+
+  function shareStream() {
+    const {
+      settings: { streamTitle, streamUrl },
+    } = shortcut;
+
+    const shareMessage = I18n.t(ext('shareMessage'), { streamUrl });
+
+    Share.share({
+      title: I18n.t(ext('shareTitle'), { streamTitle }),
+      // URL property isn't supported on Android, so we are
+      // including it as the message for now.
+      message: Platform.OS === 'android' ? streamUrl : shareMessage,
+      streamUrl,
     });
   }
 
-  renderShare(props) {
-    const { shortcut } = getRouteParams(this.props);
-    const {
-      settings: { streamTitle, streamUrl, showSharing },
-    } = shortcut;
-
-    if (!showSharing) {
-      return null;
-    }
-    return (
-      <ShareButton
-        message={I18n.t(ext('shareMessage'), { streamUrl })}
-        styleName="clear"
-        title={I18n.t(ext('shareTitle'), { streamTitle })}
-        url={streamUrl}
-        iconProps={{ style: props.tintColor }}
-      />
-    );
+  function handleSleep() {
+    setShouldSleep(false);
   }
 
-  handleUpdatePlaybackState(playbackState) {
-    this.setState({ playbackState });
-  }
-
-  async handleMetadataChange(metadata, manually = false) {
-    const { setTrackMetadata } = this.props;
-    const {
-      shortcut: {
-        settings: { streamUrl },
-      },
-    } = getRouteParams(this.props);
+  async function handleMetadataChange(metadata, manually = false) {
     const { artist = '', title = '' } = metadata;
 
     if (manually) {
       LayoutAnimation.easeInEaseOut();
-      this.setState(metadata);
       return;
     }
 
@@ -122,15 +151,15 @@ export class Radio extends PureComponent {
 
     const id = slugify(`${streamUrl}`);
 
-    setTrackMetadata(`radio-${id}`, updates);
+    dispatch(setTrackMetadata(`radio-${id}`, updates));
 
     LayoutAnimation.easeInEaseOut();
-    this.setState(updates);
+    setArtist(artist);
+    setSongName(title);
+    setArtwork(resolvedImage);
   }
 
-  resolveStatusText() {
-    const { playbackState } = this.state;
-
+  function resolveStatusText() {
     const statusTexts = {
       [STATE_NONE]: I18n.t(ext('buffering')),
       [STATE_BUFFERING]: I18n.t(ext('buffering')),
@@ -144,8 +173,7 @@ export class Radio extends PureComponent {
     return statusTexts[playbackState] || I18n.t(ext('buffering'));
   }
 
-  shouldResetPlayer() {
-    const { route } = this.props;
+  function shouldResetPlayer() {
     const activeRoute = getCurrentRoute();
 
     if (activeRoute) {
@@ -156,68 +184,65 @@ export class Radio extends PureComponent {
     return false;
   }
 
-  render() {
-    const { style } = this.props;
-    const { shortcut } = getRouteParams(this.props);
-    const {
-      settings: { backgroundImageUrl, streamTitle, streamUrl, showArtwork },
-    } = shortcut;
-    const { playbackState, artist, songName, artwork } = this.state;
-
-    if (!streamUrl) {
-      return renderPlaceholderView();
-    }
-
-    const statusText = this.resolveStatusText();
-    const isPlaying = playbackState === STATE_PLAYING;
-    const bgImage = getResizedImageSource(backgroundImageUrl);
-    // eslint-disable-next-line global-require
-    const artworkStyle = isPlaying ? {} : style.hiddenImage;
-
-    return (
-      <Screen>
-        <ImageBackground source={bgImage} styleName="fill-parent">
-          <Tile styleName="clear text-centric">
-            <Overlay style={overlayStyle} styleName="fill-parent image-overlay">
-              <RadioPlayer
-                onPlaybackStateChange={this.handleUpdatePlaybackState}
-                onMetadataStateChange={this.handleMetadataChange}
-                shouldResetPlayer={this.shouldResetPlayer()}
-                title={streamTitle}
-                url={streamUrl}
-              />
-            </Overlay>
-          </Tile>
-          <View style={style.nowPlaying} styleName="vertical h-center">
-            <Subtitle style={style.nowPlayingText}>{statusText}</Subtitle>
-            <Row style={style.clearRow}>
-              {!!showArtwork && (
-                <Image
-                  source={artwork}
-                  style={artworkStyle}
-                  styleName="small"
-                />
-              )}
-              <View styleName="vertical stretch v-center">
-                {isPlaying && (
-                  <View styleName="vertical stretch v-start">
-                    <Subtitle style={style.artistName}>{artist}</Subtitle>
-                    <Subtitle style={style.songName}>{songName}</Subtitle>
-                  </View>
-                )}
-              </View>
-            </Row>
-          </View>
-        </ImageBackground>
-      </Screen>
-    );
+  if (!streamUrl) {
+    return <EmptyStateView message={I18n.t(ext('missingStreamUrl'))} />;
   }
+
+  const statusText = resolveStatusText();
+  const bgImage = getResizedImageSource(backgroundImageUrl);
+  const artworkStyle = isPlaying ? {} : style.hiddenImage;
+
+  return (
+    <Screen>
+      <ImageBackground source={bgImage} styleName="fill-parent">
+        <Tile styleName="clear text-centric">
+          <Overlay
+            style={style.overlayStyle}
+            styleName="fill-parent image-overlay"
+          >
+            <RadioPlayer
+              onMetadataStateChange={handleMetadataChange}
+              onPlaybackStateChange={setPlaybackState}
+              onSleepTriggered={handleSleep}
+              shouldResetPlayer={shouldResetPlayer()}
+              triggerSleep={shouldSleep}
+              title={streamTitle}
+              url={streamUrl}
+            />
+          </Overlay>
+        </Tile>
+        <View style={style.nowPlaying} styleName="vertical h-center">
+          <Text style={style.nowPlayingText}>{statusText}</Text>
+          <Row style={style.clearRow}>
+            {!!showArtwork && (
+              <Image source={artwork} style={artworkStyle} styleName="small" />
+            )}
+            {isPlaying && (
+              <View styleName="vertical">
+                <Text style={style.artistName}>{artist}</Text>
+                <Text style={style.songName}>{songName}</Text>
+              </View>
+            )}
+          </Row>
+        </View>
+        <RadioActionSheet
+          active={actionSheetActive}
+          isPlaying={isPlaying}
+          timeRemaining={isTimerActive ? timeRemaining : 0}
+          onClearPress={clearTimer}
+          onDismiss={hideActionSheet}
+          onSharePress={shareStream}
+          onTimerSet={startTimer}
+          showSharing={showSharing}
+        />
+      </ImageBackground>
+    </Screen>
+  );
 }
 
 Radio.propTypes = {
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
-  setTrackMetadata: PropTypes.func.isRequired,
   style: PropTypes.object,
 };
 
@@ -225,11 +250,4 @@ Radio.defaultProps = {
   style: {},
 };
 
-const mapDispatchToProps = {
-  setTrackMetadata,
-};
-
-export default connect(
-  null,
-  mapDispatchToProps,
-)(connectStyle(ext('RadioPlayer'))(Radio));
+export default connectStyle(ext('RadioPlayer'))(Radio);

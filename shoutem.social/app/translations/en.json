@@ -14,7 +14,7 @@
         "one": "{{count}} Like",
         "other": "{{count}} Likes"
       },
-      "imageSizeWarning": "Image size exceedes the maximum size of 50MB",
+      "imageSizeWarning": "Image size exceeds the maximum size of {{maxSize}}MB",
       "blankPostWarning": "This post appears to be blank. Please write something.",
       "numberOfComments": {
         "one": "{{count}} Comment",
@@ -59,7 +59,9 @@
       "discardStatusAlertMessage": "Your status will be discarded. Are you sure?",
       "discardAlertButtonLabel": "Discard",
       "keepEditingButtonLabel": "Keep editing",
-      "cancelHeaderButtonText": "Cancel"
+      "cancelHeaderButtonText": "Cancel",
+      "postCommentError": "Failed to post a comment. Please try again later.",
+      "postStatusError": "Failed to post a comment. Please try again later."
     }
   }
 }

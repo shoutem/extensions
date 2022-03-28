@@ -6,6 +6,7 @@ export const DISPLAY_TIME_FORMAT = 'HH:mm';
 export const DISPLAY_DATE_TIME_FORMAT = 'DD MMM YYYY HH:mm';
 
 export const TARGET_TYPES = {
+  APP: 'none',
   URL: 'url',
   SCREEN: 'screen',
 };

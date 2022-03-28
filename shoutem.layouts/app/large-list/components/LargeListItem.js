@@ -17,7 +17,7 @@ export function LargeListItem({
   item,
   title,
   hasOverlay,
-  imageUrl,
+  imageSource,
   numberOfLines,
   overlayStyleName,
   style,
@@ -43,7 +43,7 @@ export function LargeListItem({
       <Tile>
         <ImageBackground
           styleName="large-wide placeholder"
-          source={{ uri: imageUrl }}
+          source={imageSource}
           style={style.imageContainer}
         >
           {hasOverlay && (
@@ -73,13 +73,13 @@ LargeListItem.propTypes = {
   item: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
   hasOverlay: PropTypes.bool,
-  imageUrl: PropTypes.string,
+  imageSource: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   numberOfLines: PropTypes.number,
   overlayStyleName: PropTypes.string,
   renderActions: PropTypes.func,
   renderOverlayChild: PropTypes.func,
   style: PropTypes.object,
-  subtitle: PropTypes.object,
+  subtitle: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   subtitleLeft: PropTypes.string,
   subtitleRight: PropTypes.string,
   onPress: PropTypes.func,
@@ -87,7 +87,7 @@ LargeListItem.propTypes = {
 
 LargeListItem.defaultProps = {
   hasOverlay: false,
-  imageUrl: null,
+  imageSource: null,
   numberOfLines: 2,
   overlayStyleName: '',
   renderActions: undefined,

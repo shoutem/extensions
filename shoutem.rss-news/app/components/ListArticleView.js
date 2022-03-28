@@ -1,31 +1,27 @@
 import React from 'react';
 import moment from 'moment';
-import PropTypes from 'prop-types';
 import {
-  TouchableOpacity,
-  Subtitle,
   Caption,
-  View,
+  Divider,
   Image,
   Row,
-  Divider,
+  Subtitle,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { ArticleView } from './ArticleView';
 
 /**
  * A component used to render a single list article item
  */
 export class ListArticleView extends ArticleView {
-  static propTypes = {
-    onPress: PropTypes.func,
-    articleId: PropTypes.string,
-    title: PropTypes.string,
-    imageUrl: PropTypes.string,
-    date: PropTypes.string,
-  };
-
   render() {
     const { title, imageUrl, date } = this.props;
+
+    const articleImage = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
 
     const momentDate = moment.utc(date);
     const dateInfo = moment.utc(momentDate).isAfter(0) ? (
@@ -38,7 +34,7 @@ export class ListArticleView extends ArticleView {
         <Row>
           <Image
             styleName="small rounded-corners placeholder"
-            source={{ uri: imageUrl }}
+            source={articleImage}
           />
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={2}>{title}</Subtitle>
@@ -50,3 +46,11 @@ export class ListArticleView extends ArticleView {
     );
   }
 }
+
+ListArticleView.propTypes = {
+  ...ArticleView.propTypes,
+};
+
+ListArticleView.defaultProps = {
+  ...ArticleView.defaultProps,
+};

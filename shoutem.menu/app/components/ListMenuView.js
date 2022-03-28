@@ -1,23 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  ImageBackground,
-  Title,
   Divider,
-  TouchableOpacity,
+  ImageBackground,
   Tile,
+  Title,
+  TouchableOpacity,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { PriceOverlay } from './PriceOverlay';
 
-const ListMenuView = props => {
-  const { onPress, item } = props;
+export default function ListMenuView({ item, onPress }) {
+  const menuImage = item.image
+    ? { uri: item.image.url }
+    : assets.noImagePlaceholder;
 
   return (
     <TouchableOpacity key={item.id} onPress={() => onPress(item)}>
-      <ImageBackground
-        styleName="large-banner placeholder"
-        source={{ uri: item.image ? item.image.url : undefined }}
-      >
+      <ImageBackground styleName="large-banner placeholder" source={menuImage}>
         <Tile>
           <Title styleName="md-gutter-bottom">{item.name.toUpperCase()}</Title>
           <PriceOverlay price={item.price} />
@@ -26,11 +26,9 @@ const ListMenuView = props => {
       <Divider styleName="line" />
     </TouchableOpacity>
   );
-};
+}
 
 ListMenuView.propTypes = {
-  onPress: PropTypes.func,
   item: PropTypes.object.isRequired,
+  onPress: PropTypes.func.isRequired,
 };
-
-export default ListMenuView;

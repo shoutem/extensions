@@ -12,6 +12,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { Favorite } from 'shoutem.favorites';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import { getFirstImage } from '../services/places';
 import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
@@ -19,7 +20,9 @@ import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
 export function PlaceFullGridRowView({ place, onPress, style, numberOfLines }) {
   const address = _.get(place, 'location.formattedAddress', '');
   const leadImage = getFirstImage(place);
-  const imageSource = leadImage ? { uri: leadImage.url } : undefined;
+  const placeImage = leadImage
+    ? { uri: leadImage.url }
+    : assets.noImagePlaceholder;
 
   return (
     <TouchableOpacity
@@ -27,7 +30,7 @@ export function PlaceFullGridRowView({ place, onPress, style, numberOfLines }) {
       styleName="flexible"
       style={style.container}
     >
-      <ImageBackground style={style.imageContainer} source={imageSource}>
+      <ImageBackground style={style.imageContainer} source={placeImage}>
         <Tile>
           <View styleName="actions" virtual>
             <Favorite item={place} schema={ext('places')} />
@@ -49,8 +52,8 @@ export function PlaceFullGridRowView({ place, onPress, style, numberOfLines }) {
 
 PlaceFullGridRowView.propTypes = {
   place: PropTypes.object.isRequired,
-  onPress: PropTypes.func.isRequired,
   style: PropTypes.object.isRequired,
+  onPress: PropTypes.func.isRequired,
   numberOfLines: PropTypes.number,
 };
 

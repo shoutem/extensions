@@ -1,11 +1,11 @@
 {
   "name": "shoutem.code-push",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
-    "react-native-code-push": "6.2.1"
+    "react-native-code-push": "7.0.4"
   },
   "nativeDependencies": [
     "react-native-code-push"

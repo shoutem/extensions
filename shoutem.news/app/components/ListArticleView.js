@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { ArticleView } from './ArticleView';
 
 /**
@@ -17,15 +18,19 @@ import { ArticleView } from './ArticleView';
  */
 export class ListArticleView extends ArticleView {
   static propTypes = {
-    onPress: PropTypes.func,
-    articleId: PropTypes.string,
-    title: PropTypes.string,
-    imageUrl: PropTypes.string,
+    articleId: PropTypes.string.isRequired,
+    onPress: PropTypes.func.isRequired,
     date: PropTypes.string,
+    imageUrl: PropTypes.string,
+    title: PropTypes.string,
   };
 
   render() {
     const { title, imageUrl, date } = this.props;
+
+    const articleImage = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
 
     const momentDate = moment(date);
     const dateInfo = momentDate.isAfter(0) ? (
@@ -38,7 +43,7 @@ export class ListArticleView extends ArticleView {
         <Row>
           <Image
             styleName="small rounded-corners placeholder"
-            source={{ uri: imageUrl }}
+            source={articleImage}
           />
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={2}>{title}</Subtitle>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import { find, next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -14,6 +13,7 @@ import {
 import { getExtensionSettings } from 'shoutem.application';
 import { getUser, loginRequired } from 'shoutem.auth';
 import { CmsListScreen } from 'shoutem.cms';
+import { assets } from 'shoutem.layouts';
 import Stamps from '../components/Stamps';
 import { CMS_PUNCHCARDS_SCHEMA, ext, PUNCH_REWARDS_SCHEMA } from '../const';
 import { refreshCard } from '../services';
@@ -41,17 +41,20 @@ export class PunchCardListScreen extends RewardsListScreen {
   }
 
   onCategorySelected(category) {
+    const { card } = this.props;
+
     super.onCategorySelected(category);
 
-    const cardId = _.get(this.props, 'card.id');
-
-    this.fetchData(cardId);
+    // Base class will return data = [] if no card. No need to fetch again
+    if (card) {
+      this.fetchData(card.id);
+    }
   }
 
   renderRow(reward) {
-    const title = _.get(reward, 'title', '');
-    const image = _.get(reward, 'image');
-    const id = _.get(reward, 'id');
+    const { id, image, title = '' } = reward;
+
+    const rewardImage = image ? { uri: image.url } : assets.noImagePlaceholder;
 
     const iconStyle = { color: '#ffffff' };
 
@@ -61,7 +64,7 @@ export class PunchCardListScreen extends RewardsListScreen {
         onPress={() => this.navigateToRewardDetails(reward)}
       >
         <ImageBackground
-          source={{ uri: image && image.url }}
+          source={rewardImage}
           styleName="large-banner placeholder"
         >
           <Tile>
@@ -77,8 +80,8 @@ export class PunchCardListScreen extends RewardsListScreen {
 
 export const mapStateToProps = (state, ownProps) => {
   const extensionSettings = getExtensionSettings(state, ext());
-  const programId = _.get(extensionSettings, 'program.id');
-  const card = _.get(state[ext()], 'card.data', {});
+  const programId = extensionSettings.program?.id;
+  const card = state[ext()]?.card?.data;
 
   return {
     ...CmsListScreen.createMapStateToProps(state => state[ext()].allPunchCards)(

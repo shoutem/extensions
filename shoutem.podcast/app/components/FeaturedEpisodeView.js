@@ -1,21 +1,22 @@
 import React from 'react';
-import moment from 'moment';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
   Divider,
-  ImageBackground,
   Icon,
+  ImageBackground,
   Spinner,
   Tile,
   Title,
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-import { EpisodeView, mapDispatchToProps } from './EpisodeView';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
+import { EpisodeView, mapDispatchToProps } from './EpisodeView';
 
 /**
  * A component used to render featured podcast episode
@@ -30,12 +31,16 @@ export class FeaturedEpisodeView extends EpisodeView {
     const handleDownloadManagerPress = path
       ? this.onDeletePress
       : this.onDownloadPress;
+    const imageUrl = this.getImageUrl(episode);
+    const episodeImage = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
 
     return (
       <TouchableOpacity onPress={this.onPress}>
         <View styleName="sm-gutter featured">
           <ImageBackground
-            source={{ uri: this.getImageUrl(episode) }}
+            source={episodeImage}
             styleName="featured placeholder"
           >
             <Tile>

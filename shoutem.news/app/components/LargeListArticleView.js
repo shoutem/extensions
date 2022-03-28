@@ -8,11 +8,16 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { ArticleView } from './ArticleView';
 
 export class LargeListArticleView extends ArticleView {
   render() {
     const { title, imageUrl, date } = this.props;
+
+    const articleImage = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
 
     const momentDate = moment(date);
     const dateInfo = momentDate.isAfter(0) ? (
@@ -22,10 +27,7 @@ export class LargeListArticleView extends ArticleView {
     return (
       <TouchableOpacity onPress={this.onPress}>
         <View styleName="md-gutter-bottom">
-          <Image
-            styleName="large-wide placeholder"
-            source={{ uri: imageUrl }}
-          />
+          <Image styleName="large-wide placeholder" source={articleImage} />
           <Row>
             <View styleName="vertical stretch space-between">
               <Title numberOfLines={2}>{title}</Title>

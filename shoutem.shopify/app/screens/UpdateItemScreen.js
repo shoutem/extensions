@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -15,11 +15,12 @@ import {
   Screen,
   ScrollView,
   Subtitle,
-  View,
   Text,
+  View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
+import { images as localImages } from '../assets';
 import {
   shop as shopShape,
   variant as variantShape,
@@ -201,7 +202,7 @@ class UpdateItemScreen extends PureComponent {
     }
 
     const availableOptions = [];
-    let availableVariants = item.variants;
+    const availableVariants = item.variants;
 
     _.forEach(item.options, option => {
       const availableValues = getAvailableValuesForOption(
@@ -239,8 +240,7 @@ class UpdateItemScreen extends PureComponent {
         <Button
           styleName="secondary"
           onPress={() =>
-            canUpdate && onActionButtonClicked(add, { variant, quantity })
-          }
+            canUpdate && onActionButtonClicked(add, { variant, quantity })}
         >
           <Text styleName="bold lg-gutter-horizontal">
             {I18n.t(ext('addItemConfirmButton'))}
@@ -273,8 +273,7 @@ class UpdateItemScreen extends PureComponent {
         <Button
           styleName="confirmation secondary"
           onPress={() =>
-            canUpdate && onActionButtonClicked(update, { variant, quantity })
-          }
+            canUpdate && onActionButtonClicked(update, { variant, quantity })}
         >
           <Text>{I18n.t(ext('cartItemUpdateButton'))}</Text>
         </Button>
@@ -291,9 +290,13 @@ class UpdateItemScreen extends PureComponent {
     const { images, title } = item;
     const { currency } = shop;
 
+    const productImage = images[0]
+      ? { uri: images[0].src }
+      : localImages.fallback;
+
     return (
       <View styleName="horizontal solid v-start md-gutter">
-        <Image styleName="small" source={{ uri: (images[0] || {}).src }} />
+        <Image styleName="small" source={productImage} />
         <View style={{ flex: 7 }} styleName="md-gutter-left">
           <Subtitle>{title}</Subtitle>
         </View>
@@ -383,8 +386,8 @@ class UpdateItemScreen extends PureComponent {
               options={values}
               selectedOption={selectedOption}
               styleName="large"
-              titleProperty={'value'}
-              valueProperty={'value'}
+              titleProperty="value"
+              valueProperty="value"
             />
           )}
         </View>

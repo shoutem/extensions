@@ -1,11 +1,11 @@
 {
   "name": "application",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "platform": "^4 || ^5",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "releaseNotes": "* Added default translation strings for empty lists",
+  "releaseNotes": "* For developers - created generic function for extracting host part of service url",
   "icon": "server/assets/add-application-image.png",
   "categories": [],
   "dependencies": [

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.radio-player",
-  "version": "4.2.0",
+  "version": "5.0.1",
   "description": "Radio extension",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "0.16.8",
+    "@shoutem/react-web-ui": "^1.0.0",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-composers": "^0.1.6",
     "@shoutem/redux-io": "^3.2.0",

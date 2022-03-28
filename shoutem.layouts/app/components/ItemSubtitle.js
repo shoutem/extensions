@@ -10,7 +10,7 @@ export default function ItemSubtitle({
 }) {
   if (subtitle) {
     if (typeof subtitle === 'string') {
-      <Caption numberOfLines={1}>{subtitle}</Caption>;
+      return <Caption numberOfLines={1}>{subtitle}</Caption>;
     }
 
     return subtitle;

@@ -138,7 +138,7 @@ ImageUpload.propTypes = {
 };
 
 ImageUpload.defaultProps = {
-  icon: 'upload-image',
+  icon: 'attach-media',
   maxItems: 5,
   onInputChange: null,
   onPermissionDenied: undefined,

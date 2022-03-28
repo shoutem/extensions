@@ -41,8 +41,8 @@ function EditProfileScreen({ navigation, route, style }) {
     () =>
       navigation.setOptions({
         title: I18n.t(ext('editUserProfileTitle')),
-        headerLeft: () =>
-          canGoBack ? <HeaderBackButton onPress={onCancel} /> : null,
+        headerLeft: props =>
+          canGoBack ? <HeaderBackButton {...props} onPress={onCancel} /> : null,
       }),
     [canGoBack, navigation, onCancel],
   );

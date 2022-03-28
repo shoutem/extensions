@@ -18,6 +18,7 @@
       "groups.add-group-modal-title": "Add group",
       "groups-services.value-required-text": "Value is required",
       "groups-dropdown.dropdown-placeholder": "Select group",
+      "notification-form.target-app-label": "App",
       "notification-form.target-url-label": "URL",
       "notification-form.target-screen-label": "Screen",
       "notification-form.audience-all-label": "All",

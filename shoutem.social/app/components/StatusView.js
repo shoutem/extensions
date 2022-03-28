@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable } from 'react-native';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Text, View } from '@shoutem/ui';
+import { Text } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
 import { ext } from '../const';
@@ -19,8 +19,24 @@ function StatusView({
   enablePhotoAttachments,
   goBackAfterBlock,
   showNewCommentInput,
+  maxStatusLength,
   style,
 }) {
+  // status can be undefined if we're deleting it
+  const shoutem_attachments = status?.shoutem_attachments;
+
+  const resolvedShowNewCommentInput = useMemo(
+    () => enableComments && showNewCommentInput,
+    [enableComments, showNewCommentInput],
+  );
+  // Before, we used image (base64) attachments when creating post.
+  // Now we'll use link as an attachment when creating post.
+  // Keeping shoutem_attachments[0]?.url_large for backwards compatibility.
+  const resolvedAttachment = useMemo(
+    () => shoutem_attachments?.[0]?.url || shoutem_attachments?.[0]?.url_large,
+    [shoutem_attachments],
+  );
+
   if (!status) {
     return null;
   }
@@ -29,7 +45,6 @@ function StatusView({
     id,
     created_at,
     liked,
-    shoutem_attachments,
     shoutem_favorited_by,
     shoutem_reply_count,
     text,
@@ -49,14 +64,23 @@ function StatusView({
       enableComments,
       enableInteractions,
       enablePhotoAttachments,
-      focusAddCommentInput: true,
+      maxStatusLength,
     });
   }
 
-  const resolvedShowNewCommentInput = enableComments && showNewCommentInput;
+  function handleOpenDetailsAndFocusInput() {
+    navigateTo(ext('StatusDetailsScreen'), {
+      statusId: id,
+      enableComments,
+      enableInteractions,
+      enablePhotoAttachments,
+      focusAddCommentInput: true,
+      maxStatusLength,
+    });
+  }
 
   return (
-    <View style={style.container}>
+    <Pressable style={style.container} onPress={handleOpenDetails}>
       <StatusHeader
         createdAt={created_at}
         firstName={first_name}
@@ -67,32 +91,30 @@ function StatusView({
         userId={userId}
       />
       <StatusContent
-        enableComments={enableComments}
         enableImageFullScreen={enableImageFullScreen}
-        enableInteractions={enableInteractions}
-        enablePhotoAttachments={enablePhotoAttachments}
         text={text}
-        leadAttachmentUrl={shoutem_attachments[0]?.url_large}
-        statusId={id}
+        leadAttachmentUrl={resolvedAttachment}
       />
       <Interactions
         commentCount={shoutem_reply_count}
         enableComments={enableComments}
         enableInteractions={enableInteractions}
-        enablePhotoAttachments={enablePhotoAttachments}
         statusId={id}
         statusLiked={liked}
         usersWhoLiked={shoutem_favorited_by.users}
         likedCount={shoutem_favorited_by.count}
       />
       {resolvedShowNewCommentInput && (
-        <Pressable style={style.newComment} onPress={handleOpenDetails}>
+        <Pressable
+          style={style.newComment}
+          onPress={handleOpenDetailsAndFocusInput}
+        >
           <Text style={style.placeholderText}>
             {I18n.t(ext('newCommentPlaceholder'))}
           </Text>
         </Pressable>
       )}
-    </View>
+    </Pressable>
   );
 }
 
@@ -100,6 +122,7 @@ StatusView.propTypes = {
   enableComments: PropTypes.bool.isRequired,
   enableInteractions: PropTypes.bool.isRequired,
   enablePhotoAttachments: PropTypes.bool.isRequired,
+  maxStatusLength: PropTypes.number.isRequired,
   enableImageFullScreen: PropTypes.bool,
   goBackAfterBlock: PropTypes.bool,
   showNewCommentInput: PropTypes.bool,

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { EmptyStateView, ListView } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import { resolveProp } from '../services';
 import { CompactListItem } from './components';
@@ -28,9 +29,13 @@ export function CompactListLayout({
     const subtitleRight = resolveProp(item, subtitleRightResolver, '');
     const title = resolveProp(item, titleResolver, '');
 
+    const imageSource = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
+
     return (
       <CompactListItem
-        imageUrl={imageUrl}
+        imageSource={imageSource}
         item={item}
         onPress={onPress}
         renderActions={renderActions}

@@ -1,9 +1,10 @@
 {
   "name": "shoutem.social",
-  "version": "5.0.0",
+  "version": "6.0.1",
   "description": "Social wall",
   "dependencies": {
-    "react-native-action-sheet": "2.2.0",
+    "@react-native-community/cameraroll": "4.1.2",
+    "react-native-image-resizer": "1.4.5",
     "showdown": "1.9.1"
   },
   "peerDependencies": {
@@ -11,9 +12,13 @@
     "@shoutem/redux-io": "*",
     "@shoutem/theme": "*",
     "@shoutem/ui": "*",
-    "react-native-image-picker": "*"
+    "lottie-react-native": "*",
+    "react-native-action-sheet": "*",
+    "react-native-image-crop-picker": "*"
   },
   "nativeDependencies": [
-    "react-native-action-sheet"
+    "@react-native-community/cameraroll",
+    "react-native-action-sheet",
+    "react-native-image-resizer"
   ]
 }

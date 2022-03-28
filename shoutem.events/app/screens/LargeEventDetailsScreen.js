@@ -9,7 +9,12 @@ import { EventDetailsScreen, mapDispatchToProps } from './EventDetailsScreen';
 export class LargeEventDetailsScreen extends EventDetailsScreen {
   renderHeader(event) {
     return (
-      <EventImage animationName="hero" styleName="large-portrait" event={event}>
+      <EventImage
+        animationName="hero"
+        styleName="large-portrait"
+        event={event}
+        isListItemImage={false}
+      >
         <Tile animationName="hero" styleName="text-centric">
           {this.renderHeadlineDetails(event, false)}
           {this.renderAddToCalendarButton(false)}

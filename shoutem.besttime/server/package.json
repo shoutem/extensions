@@ -1,6 +1,6 @@
 {
   "name": "shoutem.besttime",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Check the busyness of an establishment using BestTime.",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "0.12.4",
+    "@shoutem/react-web-ui": "^1.0.0",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-io": "^3.2.1",
     "@shoutem/redux-sync-state-engine": "^0.0.2",

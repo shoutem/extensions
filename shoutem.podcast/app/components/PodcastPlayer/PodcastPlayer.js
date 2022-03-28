@@ -2,17 +2,16 @@ import React from 'react';
 import slugify from '@sindresorhus/slugify';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import VectorIcon from 'react-native-vector-icons/MaterialIcons';
 import { connectStyle } from '@shoutem/theme';
-import { Icon, Button, Spinner, View } from '@shoutem/ui';
+import { Button, Icon, Spinner, View } from '@shoutem/ui';
 import {
+  STATE_BUFFERING,
+  STATE_CONNECTING,
   STATE_NONE,
-  STATE_STOPPED,
   STATE_PAUSED,
   STATE_PLAYING,
   STATE_READY,
-  STATE_BUFFERING,
-  STATE_CONNECTING,
+  STATE_STOPPED,
   TrackPlayer,
   TrackPlayerBase,
 } from 'shoutem.audio';
@@ -147,20 +146,12 @@ class PodcastPlayer extends TrackPlayerBase {
   }
 
   renderSkipIcon(iconName) {
+    const { style } = this.props;
     const { currentlyActiveTrack } = this.state;
-    const {
-      style: { skipIcon, skipIconSize },
-    } = this.props;
 
     const opacity = currentlyActiveTrack ? 1.0 : 0.5;
 
-    return (
-      <VectorIcon
-        name={iconName}
-        size={skipIconSize}
-        style={{ ...skipIcon, opacity }}
-      />
-    );
+    return <Icon name={iconName} style={{ ...style.skipIcon, opacity }} />;
   }
 
   renderActionButton() {
@@ -204,7 +195,7 @@ class PodcastPlayer extends TrackPlayerBase {
           <Button
             onPress={this.handleSkipBack}
             style={skipButton}
-            styleName="clear md-gutter-right"
+            styleName="clear"
           >
             {this.renderSkipIcon('replay-10')}
           </Button>
@@ -230,9 +221,9 @@ class PodcastPlayer extends TrackPlayerBase {
 PodcastPlayer.propTypes = {
   downloadedEpisode: PropTypes.object,
   episode: PropTypes.object,
+  podcastTitle: PropTypes.string,
   style: PropTypes.object,
   url: PropTypes.string,
-  podcastTitle: PropTypes.string,
 };
 
 PodcastPlayer.defaultProps = {

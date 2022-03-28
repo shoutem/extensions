@@ -1,9 +1,8 @@
 import React from 'react';
-import _ from 'lodash';
 import moment from 'moment';
-import { getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Caption, Icon, ImageBackground, Tile, Title, View } from '@shoutem/ui';
+import { getRouteParams } from 'shoutem.navigation';
 import { ext } from '../const';
 import { ArticleDetailsScreen } from './ArticleDetailsScreen';
 
@@ -35,11 +34,31 @@ export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
   }
 
   renderHeader() {
-    return null;
+    const { style } = this.props;
+    const { article } = getRouteParams(this.props);
+
+    if (article.image) {
+      return null;
+    }
+
+    return (
+      <View styleName="vertical h-center v-center md-gutter">
+        <Title style={style.title}>{article.title.toUpperCase()}</Title>
+        <View styleName="horizontal md-gutter-top">
+          <Caption styleName="collapsible" numberOfLines={1}>
+            {article.newsAuthor}
+          </Caption>
+          <Caption styleName="md-gutter-left">
+            {moment(article.timeUpdated).fromNow()}
+          </Caption>
+        </View>
+      </View>
+    );
   }
 }
+
+LargeArticleDetailsScreen.propTypes = { ...ArticleDetailsScreen.propTypes };
 
 export default connectStyle(ext('ArticleDetailsScreen'))(
   LargeArticleDetailsScreen,
 );
-

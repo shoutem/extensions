@@ -43,6 +43,10 @@ class NotificationForm extends Component {
 
     this.TARGET_OPTIONS = [
       {
+        value: TARGET_TYPES.APP,
+        label: i18next.t(LOCALIZATION.TARGET_APP_LABEL),
+      },
+      {
         value: TARGET_TYPES.URL,
         label: i18next.t(LOCALIZATION.TARGET_URL_LABEL),
       },
@@ -145,7 +149,6 @@ class NotificationForm extends Component {
     }
 
     if (item.value !== DELIVERY_TYPES.USER_SCHEDULED) {
-      target.onChange(TARGET_TYPES.URL);
       summaries.onChange([]);
     }
 
@@ -186,10 +189,11 @@ class NotificationForm extends Component {
 
     const audienceGroupsDisabled = audience.value === AUDIENCE_TYPES.ALL;
     const deliveryTimeDisabled = delivery.value === DELIVERY_TYPES.NOW;
-    const notificationActionDisabled =
-      delivery.value === DELIVERY_TYPES.USER_SCHEDULED;
+    const showNotifcationActions =
+      delivery.value !== DELIVERY_TYPES.USER_SCHEDULED;
     const numberOfMessagesDisabled =
       delivery.value !== DELIVERY_TYPES.USER_SCHEDULED;
+    const showUrl = target.value === TARGET_TYPES.URL;
     const showShortcuts = target.value === TARGET_TYPES.SCREEN;
     const resolvedTimeFormat =
       delivery.value === DELIVERY_TYPES.USER_SCHEDULED
@@ -198,47 +202,6 @@ class NotificationForm extends Component {
 
     return (
       <form className="notification-form" onSubmit={handleSubmit}>
-        <Row>
-          <Col xs={5}>
-            <FormGroup controlId="target">
-              <ControlLabel>
-                {i18next.t(LOCALIZATION.TARGET_LABEL)}
-              </ControlLabel>
-              <Select
-                clearable={false}
-                disabled={submitting || notificationActionDisabled}
-                elementId="target"
-                name="target"
-                onChange={this.handleTargetChanged}
-                options={this.TARGET_OPTIONS}
-                value={target.value}
-              />
-            </FormGroup>
-          </Col>
-          <Col xs={7}>
-            {!showShortcuts && (
-              <ReduxFormElement
-                disabled={submitting || notificationActionDisabled}
-                elementId="contentUrl"
-                field={contentUrl}
-                name={i18next.t(LOCALIZATION.CONTENT_URL_INPUT_LABEL)}
-              />
-            )}
-            {showShortcuts && (
-              <ReduxFormElement
-                disabled={submitting || notificationActionDisabled}
-                elementId="shortcutId"
-                field={shortcutId}
-                name={i18next.t(LOCALIZATION.SCREEN_INPUT_LABEL)}
-              >
-                <ShortcutsDropdown
-                  shortcuts={shortcuts}
-                  shortcut={shortcutId.value}
-                />
-              </ReduxFormElement>
-            )}
-          </Col>
-        </Row>
         <Row>
           <Col xs={5}>
             <FormGroup controlId="audience">
@@ -306,6 +269,49 @@ class NotificationForm extends Component {
             </ReduxFormElement>
           </Col>
         </Row>
+        {showNotifcationActions && (
+          <Row>
+            <Col xs={5}>
+              <FormGroup controlId="target">
+                <ControlLabel>
+                  {i18next.t(LOCALIZATION.TARGET_LABEL)}
+                </ControlLabel>
+                <Select
+                  clearable={false}
+                  disabled={submitting}
+                  elementId="target"
+                  name="target"
+                  onChange={this.handleTargetChanged}
+                  options={this.TARGET_OPTIONS}
+                  value={target.value}
+                />
+              </FormGroup>
+            </Col>
+            <Col xs={7}>
+              {showUrl && (
+                <ReduxFormElement
+                  disabled={submitting}
+                  elementId="contentUrl"
+                  field={contentUrl}
+                  name={i18next.t(LOCALIZATION.CONTENT_URL_INPUT_LABEL)}
+                />
+              )}
+              {showShortcuts && (
+                <ReduxFormElement
+                  disabled={submitting}
+                  elementId="shortcutId"
+                  field={shortcutId}
+                  name={i18next.t(LOCALIZATION.SCREEN_INPUT_LABEL)}
+                >
+                  <ShortcutsDropdown
+                    shortcuts={shortcuts}
+                    shortcut={shortcutId.value}
+                  />
+                </ReduxFormElement>
+              )}
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col xs={12}>
             <ReduxFormElement

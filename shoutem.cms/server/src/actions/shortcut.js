@@ -72,24 +72,6 @@ export function updateShortcutCategories(
   };
 }
 
-export function updateShortcutOriginParentCategory(
-  shortcut,
-  originParentCategoryId,
-) {
-  const originParentCategoryProperty = getOriginParentCategoryProperty();
-
-  return dispatch => {
-    const patch = {
-      [originParentCategoryProperty]: {
-        type: CATEGORIES,
-        id: originParentCategoryId,
-      },
-    };
-
-    return dispatch(updateShortcutSettings(shortcut, patch));
-  };
-}
-
 export function updateShortcutSortOptions(
   shortcut,
   sortOptions,

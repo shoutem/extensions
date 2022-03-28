@@ -5,7 +5,6 @@ import {
   Divider,
   ImageBackground,
   Text,
-  Tile,
   Title,
   TouchableOpacity,
   View,
@@ -32,15 +31,16 @@ export function HalfGridRowItemView({
     <TouchableOpacity
       activeOpacity={!onPress && 1}
       onPress={handlePress}
-      styleName="flexible"
       style={style.container}
     >
-      <ImageBackground style={style.imageContainer} source={{ uri: imageUrl }}>
-        <Tile>
-          <View styleName="actions" virtual>
-            {!!renderActions && renderActions(id)}
-          </View>
-        </Tile>
+      <ImageBackground
+        source={{ uri: imageUrl }}
+        style={style.imageContainer}
+        imageStyle={style.image}
+      >
+        <View styleName="actions" virtual>
+          {!!renderActions && renderActions(id)}
+        </View>
       </ImageBackground>
       <View style={style.textContainer}>
         <Title numberOfLines={1} style={style.title}>

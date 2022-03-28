@@ -1,14 +1,11 @@
 import React from 'react';
-
-import { I18n } from 'shoutem.i18n';
-
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Divider,
   Heading,
   Icon,
-  Image,
+  ImageBackground,
   Overlay,
   Subtitle,
   Text,
@@ -16,12 +13,11 @@ import {
   Title,
   TouchableOpacity,
   View,
-  ImageBackground,
 } from '@shoutem/ui';
-
-import images from '../assets/images';
-import { getDiscount } from '../services/getDiscount';
+import { I18n } from 'shoutem.i18n';
+import { images as localImages } from '../assets';
 import { ext } from '../const';
+import { getDiscount } from '../services/getDiscount';
 import ListItem from './ListItem';
 
 const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
@@ -34,17 +30,22 @@ const FeaturedItem = ({ item, onAddToCart, onPress, shop }) => {
   const newPriceString = `${currency}${newPrice}`;
   const oldPriceString = oldPrice ? `${currency}${oldPrice}` : null;
 
+  const productImage = images[0]
+    ? { uri: images[0].src }
+    : localImages.fallback;
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View styleName="sm-gutter featured">
         <ImageBackground
           styleName="featured"
-          source={{ uri: (images[0] || {}).src }}
+          source={productImage}
           defaultSource={images.fallback}
         >
           <Tile>
             {!!oldPrice && newPrice < oldPrice && (
               <Overlay styleName="image-overlay">
+                {/* eslint-disable-next-line react-native/no-raw-text */}
                 <Heading>{`${getDiscount(newPrice, oldPrice)}%`}</Heading>
               </Overlay>
             )}

@@ -6,6 +6,7 @@ import { connectStyle } from '@shoutem/theme';
 import { Button, Icon, ImageBackground, Text, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { openInModal } from 'shoutem.navigation';
+import { images } from '../assets';
 import {
   AGORA_SCREEN_ID,
   ext,
@@ -47,15 +48,15 @@ function BaseUserProfile({ style, user }) {
     openInModal(SENDBIRD_SCREEN_ID, { user });
   }
 
+  const source = image ? { uri: image } : images.defaultAvatar;
+
   return (
     <View styleName="flexible vertical h-center v-center md-gutter-bottom">
-      {!_.isEmpty(image) && (
-        <ImageBackground
-          styleName="medium-avatar placeholder md-gutter-bottom"
-          source={{ uri: image }}
-          borderRadius={style.profileImage?.borderRadius}
-        />
-      )}
+      <ImageBackground
+        styleName="medium-avatar placeholder md-gutter-bottom"
+        source={source}
+        borderRadius={style.profileImage?.borderRadius}
+      />
       {!_.isEmpty(name) && <Text style={style.name}>{name}</Text>}
       {!!nick && <Text style={style.nick}>{nick}</Text>}
       {!isProfileOwner && (

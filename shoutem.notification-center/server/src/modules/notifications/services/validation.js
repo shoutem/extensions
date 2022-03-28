@@ -23,6 +23,7 @@ function validateShortcut(notification) {
   if (
     !target ||
     target === TARGET_TYPES.URL ||
+    target === TARGET_TYPES.APP ||
     delivery === DELIVERY_TYPES.USER_SCHEDULED
   ) {
     return null;

@@ -1,11 +1,11 @@
 {
   "name": "people",
   "title": "People",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "platform": "^5",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
-  "releaseNotes": "* Replaced loading spinner with animated placeholder",
+  "releaseNotes": "* Added placeholder for list items with no image",
   "dependencies": [
     "shoutem.cms",
     "shoutem.i18n",

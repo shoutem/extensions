@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { LayoutAnimation } from 'react-native';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useMemo, useState } from 'react';
+import { LayoutAnimation, Platform, Share } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import slugify from '@sindresorhus/slugify';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
+  Button,
   EmptyListImage,
+  Icon,
   ImageBackground,
   Screen,
-  ShareButton,
   Subtitle,
   Title,
   View,
@@ -18,10 +19,15 @@ import {
   STATE_STOPPED, // 1 idle
 } from 'shoutem.audio';
 import { I18n } from 'shoutem.i18n';
-import { composeNavigationStyles, getCurrentRoute } from 'shoutem.navigation';
+import {
+  composeNavigationStyles,
+  getCurrentRoute,
+  isTabBarNavigation,
+} from 'shoutem.navigation';
 import { images } from '../assets';
-import RadioPlayer from '../components/RadioPlayer';
+import { RadioActionSheet, RadioPlayer } from '../components';
 import { ext } from '../const';
+import { useTimer } from '../hooks';
 import { setTrackMetadata } from '../redux';
 import { getResizedImageSource, getTrackArtwork } from '../services';
 
@@ -35,17 +41,49 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
 
   const dispatch = useDispatch();
 
+  const isTabBar = useSelector(isTabBarNavigation);
+
+  const [clearTimer, startTimer, timeRemaining] = useTimer(60000);
+
   const [playbackState, setPlaybackState] = useState(STATE_STOPPED);
   const [artist, setArtist] = useState('');
   const [songName, setSongName] = useState('');
   const [artwork, setArtwork] = useState({ uri: '' });
+  const [shouldSleep, setShouldSleep] = useState(false);
+  const [shouldShowActionSheet, setShouldShowActionSheet] = useState(false);
+
+  const isTimerActive = useMemo(() => timeRemaining && timeRemaining > 0, [
+    timeRemaining,
+  ]);
+  const nowPlayingContainerStyle = useMemo(() => {
+    return isTabBar
+      ? style.nowPlayingContainer
+      : style.nowPlayingContainerTabBar;
+  }, [isTabBar, style.nowPlayingContainer, style.nowPlayingContainerTabBar]);
 
   useEffect(() => {
+    if (timeRemaining === 0) {
+      setShouldSleep(true);
+      clearTimer();
+    }
+
     navigation.setOptions({
       ...composeNavigationStyles(['clear']),
       title: '',
     });
-  }, [navigation, navbarTitle]);
+  }, [clearTimer, navigation, navbarTitle, timeRemaining]);
+
+  function handleActionSheetDismiss() {
+    setShouldShowActionSheet(false);
+  }
+
+  function handleSleep() {
+    setShouldSleep(false);
+  }
+
+  function handleSleepTimerPress() {
+    setShouldShowActionSheet(true);
+  }
 
   function handleUpdatePlaybackState(playbackState) {
     setPlaybackState(playbackState);
@@ -97,6 +135,18 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
     return false;
   }
 
+  function shareStream() {
+    const shareMessage = I18n.t(ext('shareMessage'), { streamUrl });
+
+    Share.share({
+      title: I18n.t(ext('shareTitle'), { streamTitle }),
+      // URL property isn't supported on Android, so we are
+      // including it as the message for now.
+      message: Platform.OS === 'android' ? streamUrl : shareMessage,
+      streamUrl,
+    });
+  }
+
   if (!streamUrl) {
     return <EmptyListImage message={I18n.t(ext('missingStreamUrl'))} />;
   }
@@ -113,10 +163,7 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
         blurRadius={style.blurRadius}
       >
         <View styleName="fill-parent vertical h-center" style={style.overlay}>
-          <View
-            styleName="flexible vertical v-end"
-            style={style.streamTitleContainer}
-          >
+          <View style={style.streamTitleContainer}>
             <Title style={style.streamTitle}>{streamTitle}</Title>
           </View>
           <ImageBackground
@@ -125,37 +172,71 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
             imageStyle={style.artworkCircularImage}
           >
             <RadioPlayer
-              onPlaybackStateChange={handleUpdatePlaybackState}
               onMetadataStateChange={handleMetadataChange}
+              onPlaybackStateChange={handleUpdatePlaybackState}
+              onSleepTriggered={handleSleep}
+              triggerSleep={shouldSleep}
               shouldResetPlayer={shouldResetPlayer()}
               title={streamTitle}
               url={streamUrl}
               style={style.radioPlayer}
             />
           </ImageBackground>
-          <View styleName="flexible" style={style.nowPlayingContainer}>
-            <View styleName="flexible">
-              {isPlaying && (
-                <View styleName="vertical v-center h-center">
-                  <Title style={style.artistTitle} styleName="sm-gutter-bottom">
-                    {artist}
+          <View style={nowPlayingContainerStyle}>
+            {!!isPlaying && (
+              <View styleName="vertical v-center h-center">
+                <Title style={style.artistTitle} styleName="sm-gutter-bottom">
+                  {artist}
+                </Title>
+                <Subtitle style={style.songNameTitle}>{songName}</Subtitle>
+              </View>
+            )}
+          </View>
+          <View style={style.smallActionRow} styleName="horizontal">
+            <View style={style.smallActionContainerLeft}>
+              {!!isTimerActive && (
+                <Button onPress={handleSleepTimerPress} styleName="clear">
+                  <Icon name="sleep" fill={style.sleepTimerActiveText.color} />
+                  <Title style={style.sleepTimerActiveText}>
+                    {I18n.t(ext('cancelSleepTimerArtworkLayout'), {
+                      count: timeRemaining / 60000,
+                    })}
                   </Title>
-                  <Subtitle style={style.songNameTitle}>{songName}</Subtitle>
-                </View>
+                </Button>
+              )}
+              {!isTimerActive && (
+                <Button
+                  onPress={handleSleepTimerPress}
+                  disabled={!isPlaying}
+                  styleName="clear tight"
+                >
+                  <Icon name="sleep" fill={style.smallActionIconFill} />
+                  <Title style={style.smallActionText}>
+                    {I18n.t(ext('sleepTimerLabel'))}
+                  </Title>
+                </Button>
               )}
             </View>
-            <View styleName="flexible">
-              <ShareButton
-                message={I18n.t(ext('shareMessage'), { streamUrl })}
-                styleName="clear"
-                title={I18n.t(ext('shareTitle'), { streamTitle })}
-                url={streamUrl}
-                iconProps={style.shareIcon}
-                style={style.shareButton}
-              />
+            <View style={style.smallActionContainerRight}>
+              <Button onPress={shareStream} styleName="clear">
+                <Icon name="share" fill={style.smallActionIconFill} />
+                <Title style={style.smallActionText}>
+                  {I18n.t(ext('shareButtonLabel'))}
+                </Title>
+              </Button>
             </View>
           </View>
         </View>
+        <RadioActionSheet
+          active={shouldShowActionSheet}
+          canStartTimer={isPlaying}
+          timeRemaining={timeRemaining}
+          onClearPress={clearTimer}
+          onDismiss={handleActionSheetDismiss}
+          onSharePress={shareStream}
+          onTimerSet={startTimer}
+          showSharing={false}
+        />
       </ImageBackground>
     </Screen>
   );

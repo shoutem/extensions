@@ -48,7 +48,6 @@ import {
   loadReferenceResources,
   loadSchema,
   updateShortcutSortOptions,
-  updateShortcutOriginParentCategory,
 } from '../../actions';
 import { updateShortcutSettings } from '../../builder-sdk';
 import {
@@ -77,6 +76,8 @@ import {
 import LOCALIZATION from './localization';
 import './style.scss';
 
+const DEBOUNCE = 5000;
+
 export class CmsPage extends PureComponent {
   constructor(props, context) {
     super(props, context);
@@ -98,6 +99,13 @@ export class CmsPage extends PureComponent {
       scopeId: appId,
       assetPolicyHost: this.appsUrl,
     });
+
+    // debounce to avoid multiple API calls
+    this.handleRenameCategory = _.debounce(
+      this.handleRenameCategory,
+      DEBOUNCE,
+      { leading: true, trailing: false },
+    );
 
     const { shortcut, createCategory } = props;
 
@@ -222,14 +230,6 @@ export class CmsPage extends PureComponent {
       }
     }
 
-    // sync origin parent category with parent category if origin doesn't exist
-    if (!originParentCategoryId && parentCategoryId && !isBusy(nextShortcut)) {
-      this.props.updateShortcutOriginParentCategory(
-        nextShortcut,
-        parentCategoryId,
-      );
-    }
-
     // sync parent category name with shortcut title only if it is origin parent category
     const shortcutTitle = getShortcutTitle(nextShortcut);
     const parentCategory = getCategory(nextParentCategoryId);
@@ -241,13 +241,13 @@ export class CmsPage extends PureComponent {
       isValid(nextCategories)
     ) {
       if (shortcutTitle !== categoryName) {
-        this.props.renameCategory(
-          nextParentCategoryId,
-          nextParentCategoryId,
-          shortcutTitle,
-        );
+        this.handleRenameCategory(nextParentCategoryId, shortcutTitle);
       }
     }
+  }
+
+  handleRenameCategory(categoryId, name) {
+    return this.props.renameCategory(categoryId, categoryId, name);
   }
 
   handleCreateCategory() {
@@ -549,7 +549,6 @@ CmsPage.propTypes = {
   canonicalName: PropTypes.string,
   childCategories: PropTypes.array,
   loadChildCategories: PropTypes.func,
-  updateShortcutOriginParentCategory: PropTypes.func,
 };
 
 function mapStateToProps(state) {
@@ -628,10 +627,6 @@ function mapDispatchToProps(dispatch) {
     createCategory: shortcut => dispatch(createCategory(shortcut)),
     updateSortOptions: (shortcut, sortOptions) =>
       dispatch(updateShortcutSortOptions(shortcut, sortOptions)),
-    updateShortcutOriginParentCategory: (shortcut, originParentCategoryId) =>
-      dispatch(
-        updateShortcutOriginParentCategory(shortcut, originParentCategoryId),
-      ),
     updateShortcutSettings: (shortcut, settings) =>
       dispatch(updateShortcutSettings(shortcut, settings)),
     renameCategory: (parentCategoryId, categoryId, categoryName) =>

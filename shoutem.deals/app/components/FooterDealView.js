@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import { Dimensions } from 'react-native';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import {
   Caption,
   ImageBackground,
@@ -10,6 +9,7 @@ import {
   Tile,
   TouchableOpacity,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 
 const imageWidth = Dimensions.get('window').width / 2 - 1;
 const imageHeight = imageWidth - imageWidth / 3;
@@ -22,12 +22,6 @@ const styles = {
 };
 
 export default class FooterDealView extends PureComponent {
-  static propTypes = {
-    deal: PropTypes.object,
-    label: PropTypes.string,
-    onPress: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
 
@@ -35,21 +29,27 @@ export default class FooterDealView extends PureComponent {
   }
 
   handlePress() {
-    this.props.onPress(this.props.deal);
+    const { deal, onPress } = this.props;
+
+    onPress(deal);
   }
 
   render() {
-    const { deal } = this.props;
+    const { deal, label } = this.props;
+
+    const dealImage = deal.image1
+      ? { uri: deal.image1 }
+      : assets.noImagePlaceholder;
 
     return (
       <TouchableOpacity onPress={this.handlePress}>
         <ImageBackground
           style={styles.image}
           styleName="placeholder"
-          source={{ uri: _.get(deal, 'image1') }}
+          source={dealImage}
         >
           <Tile styleName="fill-parent md-gutter space-between">
-            <Caption styleName="bold h-left">{this.props.label}</Caption>
+            <Caption styleName="bold h-left">{label}</Caption>
             <Subtitle styleName="h-left" numberOfLines={2}>
               {deal.title}
             </Subtitle>
@@ -59,3 +59,9 @@ export default class FooterDealView extends PureComponent {
     );
   }
 }
+
+FooterDealView.propTypes = {
+  deal: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+};

@@ -11,6 +11,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 
 function LevelItem(props) {
@@ -19,7 +20,10 @@ function LevelItem(props) {
   const pointsRequired = I18n.t(ext('numberOfPoints'), {
     numberOfPoints: level.numberOfPoints,
   });
-  const uri = level.image?.url || '';
+
+  const imageSource = level.image
+    ? { uri: level.image.url }
+    : assets.noImagePlaceholder;
 
   function handleItemPress() {
     onPress(level);
@@ -33,7 +37,10 @@ function LevelItem(props) {
   return (
     <TouchableOpacity onPress={handleItemPress}>
       <View styleName="md-gutter horizontal">
-        <Image styleName="small rounded-corners placeholder" source={{ uri }} />
+        <Image
+          styleName="small rounded-corners placeholder"
+          source={imageSource}
+        />
         <View styleName="flexible vertical stretch space-between md-gutter-left">
           <Subtitle>{level.title}</Subtitle>
           <Caption>{pointsRequired}</Caption>

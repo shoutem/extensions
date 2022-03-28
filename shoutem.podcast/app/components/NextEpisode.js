@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  TouchableOpacity,
-  Subtitle,
   Caption,
   ImageBackground,
+  Subtitle,
   Tile,
+  TouchableOpacity,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 
 /**
@@ -15,19 +16,17 @@ import { ext } from '../const';
  * the episode details screen.
  */
 export default class NextEpisode extends PureComponent {
-  static propTypes = {
-    title: PropTypes.string,
-    imageUrl: PropTypes.string,
-    openEpisode: PropTypes.func.isRequired,
-  };
-
   render() {
     const { title, imageUrl, openEpisode } = this.props;
+
+    const episodeImage = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
 
     return (
       <TouchableOpacity onPress={openEpisode}>
         <ImageBackground
-          source={{ uri: imageUrl }}
+          source={episodeImage}
           styleName="large-ultra-wide placeholder"
         >
           <Tile styleName="fill-parent md-gutter space-between">
@@ -41,3 +40,14 @@ export default class NextEpisode extends PureComponent {
     );
   }
 }
+
+NextEpisode.propTypes = {
+  openEpisode: PropTypes.func.isRequired,
+  imageUrl: PropTypes.string,
+  title: PropTypes.string,
+};
+
+NextEpisode.defaultProps = {
+  imageUrl: undefined,
+  title: '',
+};

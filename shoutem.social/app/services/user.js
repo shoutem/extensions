@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import { loadUser, openProfile } from '../redux/actions';
 
+// TODO - refactor this to be proper, thunked action
+// https://fiveminutes.jira.com/browse/SEEXT-11570
 export function openProfileForLegacyUser(dispatch) {
   return legacyUser => {
     // This function is called either from auth or social.

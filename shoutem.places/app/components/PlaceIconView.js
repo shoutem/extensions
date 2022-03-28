@@ -11,11 +11,10 @@ import {
   View,
 } from '@shoutem/ui';
 import { Favorite } from 'shoutem.favorites';
+import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import { getFirstImage } from '../services/places';
 import withOpenPlaceDetails from '../shared/withOpenPlaceDetails';
-
-const DEFAULT_IMAGE = require('../assets/data/no_image.png');
 
 export class PlaceIconView extends PureComponent {
   static propTypes = {
@@ -37,12 +36,14 @@ export class PlaceIconView extends PureComponent {
     const { location = {} } = place;
     const { formattedAddress = '' } = location;
     const leadImage = getFirstImage(place);
-    const imageSource = leadImage ? { uri: leadImage.url } : DEFAULT_IMAGE;
+    const placeImage = leadImage
+      ? { uri: leadImage.url }
+      : assets.noImagePlaceholder;
 
     return (
       <TouchableOpacity onPress={onPress}>
         <Row>
-          <Image source={imageSource} styleName="small rounded-corners" />
+          <Image source={placeImage} styleName="small rounded-corners" />
           <View styleName="vertical stretch space-between">
             <Subtitle numberOfLines={2}>{place.name}</Subtitle>
             <View styleName="horizontal">

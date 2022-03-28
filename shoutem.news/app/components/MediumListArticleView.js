@@ -8,11 +8,16 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { ArticleView } from './ArticleView';
 
 export class MediumListArticleView extends ArticleView {
   render() {
     const { title, imageUrl, date } = this.props;
+
+    const articleImage = imageUrl
+      ? { uri: imageUrl }
+      : assets.noImagePlaceholder;
 
     const momentDate = moment(date);
     const dateInfo = momentDate.isAfter(0) ? (
@@ -24,7 +29,7 @@ export class MediumListArticleView extends ArticleView {
         <Card styleName="horizontal">
           <Image
             styleName="medium-portrait rounded-corners placeholder"
-            source={{ uri: imageUrl }}
+            source={articleImage}
           />
           <View styleName="content pull-left space-between rounded-corners">
             <Subtitle numberOfLines={3}>{title}</Subtitle>

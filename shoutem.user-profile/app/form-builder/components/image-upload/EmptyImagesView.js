@@ -21,7 +21,7 @@ EmptyImagesView.propTypes = {
 };
 
 EmptyImagesView.defaultProps = {
-  icon: 'upload-image',
+  icon: 'attach-media',
   style: {},
 };
 

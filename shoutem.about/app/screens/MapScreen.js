@@ -10,15 +10,15 @@ import {
 } from 'shoutem.navigation';
 import { getMapUrl } from '../services';
 
-const handleOpenMaps = marker => {
+function handleOpenMaps(marker) {
   const { latitude, longitude, title } = marker;
 
   if (latitude && longitude) {
     Linking.openURL(getMapUrl(latitude, longitude, title));
   }
-};
+}
 
-const MapScreen = props => {
+function MapScreen(props) {
   const { navigation } = props;
   const { title, marker } = getRouteParams(props);
 
@@ -52,10 +52,10 @@ const MapScreen = props => {
       />
     </Screen>
   );
-};
+}
 
 MapScreen.propTypes = {
-  navigation: PropTypes.object,
+  navigation: PropTypes.object.isRequired,
 };
 
 export default MapScreen;

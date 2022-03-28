@@ -46,6 +46,25 @@ export function mapViewToModel(notification) {
 
   if (
     !isUserScheduledNotification &&
+    notification.target === TARGET_TYPES.APP
+  ) {
+    const action = {
+      action: {
+        route: {
+          key: `push-${new Date().getTime().toString()}`,
+          props: {
+            title: notification.title,
+          },
+        },
+      },
+    };
+
+    _.set(model, 'target.type', notification.target);
+    _.set(model, 'content.body', JSON.stringify(action));
+  }
+
+  if (
+    !isUserScheduledNotification &&
     notification.target === TARGET_TYPES.URL
   ) {
     const action = {

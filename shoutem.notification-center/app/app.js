@@ -1,10 +1,8 @@
 import _ from 'lodash';
 import { Platform } from 'react-native';
 import rio from '@shoutem/redux-io';
-import { registerIcons } from '@shoutem/ui';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
 import { Firebase } from 'shoutem.firebase';
-import Restore from './assets/restore.svg';
 import {
   ext,
   REMINDER_CHANNEL_ID,
@@ -147,7 +145,4 @@ export async function appDidMount(app) {
   const { dispatch } = store;
 
   dispatch(fetchGroups());
-
-  const iconConfig = { name: 'restore', icon: Restore };
-  registerIcons(iconConfig);
 }

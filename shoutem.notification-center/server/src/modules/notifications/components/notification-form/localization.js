@@ -1,5 +1,6 @@
 const key = 'notification-form';
 
+const TARGET_APP_LABEL = `${key}.target-app-label`;
 const TARGET_URL_LABEL = `${key}.target-url-label`;
 const TARGET_SCREEN_LABEL = `${key}.target-screen-label`;
 const AUDIENCE_ALL_LABEL = `${key}.audience-all-label`;
@@ -21,6 +22,7 @@ const BUTTON_CREATE = `${key}.button-create`;
 const BUTTON_CANCEL = `${key}.button-cancel`;
 
 export default {
+  TARGET_APP_LABEL,
   TARGET_URL_LABEL,
   TARGET_SCREEN_LABEL,
   AUDIENCE_ALL_LABEL,

@@ -3,24 +3,11 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Icon, ImageBackground, Tile, View } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 import { dealStatusShape, getDealImages } from '../services';
 import DealRedeemTimer from './DealRedeemTimer';
 
 export default class DealImage extends PureComponent {
-  static propTypes = {
-    activeCoupon: PropTypes.object,
-    children: PropTypes.node,
-    deal: PropTypes.object,
-    dealStatus: dealStatusShape,
-    renderTimer: PropTypes.bool,
-    styleName: PropTypes.string,
-  };
-
-  static defaultProps = {
-    dealStatus: {},
-    renderTimer: true,
-  };
-
   constructor(props) {
     super(props);
 
@@ -54,7 +41,7 @@ export default class DealImage extends PureComponent {
     const { deal, activeCoupon, renderTimer } = this.props;
 
     const {
-      dealStatus: { couponClaimed, couponRedeemed, dealRedeemed },
+      dealStatus: { couponClaimed },
     } = this.state;
 
     if (renderTimer) {
@@ -77,6 +64,10 @@ export default class DealImage extends PureComponent {
         );
       }
 
+      const {
+        dealStatus: { couponRedeemed, dealRedeemed },
+      } = this.state;
+
       if (couponRedeemed || dealRedeemed) {
         return (
           <Tile styleName="text-centric sm-gutter overlay">
@@ -86,18 +77,28 @@ export default class DealImage extends PureComponent {
       }
     }
 
-    return this.props.children;
+    const { children } = this.props;
+
+    return children;
   }
 
   render() {
-    const { deal, styleName } = this.props;
-    const images = getDealImages(deal);
-    const leadImage = _.first(images);
+    const { deal, isListItemImage, styleName } = this.props;
+
+    const leadImage = _.first(getDealImages(deal));
+
+    const resolvedPlaceholderSource = isListItemImage
+      ? assets.noImagePlaceholder
+      : null;
+
+    const resolvedDealImage = leadImage
+      ? { uri: leadImage }
+      : resolvedPlaceholderSource;
 
     return (
       <ImageBackground
         {...this.props}
-        source={{ uri: leadImage }}
+        source={resolvedDealImage}
         styleName={`placeholder ${styleName}`}
       >
         {this.renderInnerContent()}
@@ -105,3 +106,22 @@ export default class DealImage extends PureComponent {
     );
   }
 }
+
+DealImage.propTypes = {
+  deal: PropTypes.object.isRequired,
+  activeCoupon: PropTypes.object,
+  children: PropTypes.node,
+  dealStatus: dealStatusShape,
+  isListItemImage: PropTypes.bool,
+  renderTimer: PropTypes.bool,
+  styleName: PropTypes.string,
+};
+
+DealImage.defaultProps = {
+  activeCoupon: {},
+  children: undefined,
+  dealStatus: {},
+  isListItemImage: true,
+  renderTimer: true,
+  styleName: '',
+};

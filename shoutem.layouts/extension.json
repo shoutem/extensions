@@ -1,11 +1,11 @@
 {
   "name": "layouts",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "platform": "^5.2.0",
   "type": "system",
   "title": "Layouts",
   "description": "Extension that enables app creator to choose between different layouts of the same screen",
-  "releaseNotes": "* Code improvements",
+  "releaseNotes": "* Added placeholder for list items with no image",
   "icon": "server/assets/add-layouts-image.png",
   "dependencies": ["shoutem.i18n"],
   "categories": [],

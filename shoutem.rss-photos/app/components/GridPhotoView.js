@@ -1,19 +1,13 @@
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, View, Image } from '@shoutem/ui';
+import { Image, TouchableOpacity, View } from '@shoutem/ui';
+import { assets } from 'shoutem.layouts';
 
 /**
  * A component used to render a single grid photo item
  */
 export default class GridPhotoView extends PureComponent {
-  static propTypes = {
-    onPress: PropTypes.func,
-    photo: PropTypes.object.isRequired,
-    width: PropTypes.number,
-    height: PropTypes.number,
-  };
-
   constructor(props) {
     super(props);
     this.onPress = this.onPress.bind(this);
@@ -29,7 +23,9 @@ export default class GridPhotoView extends PureComponent {
 
   render() {
     const { photo, width, height } = this.props;
-    const source = _.get(photo, 'source');
+
+    const photoImage = _.get(photo, 'source');
+    const photoSource = photoImage || assets.noImagePlaceholder;
 
     // resizeMethod="resize" significantly improves image
     // rendering performance on Android for some reason:
@@ -40,7 +36,7 @@ export default class GridPhotoView extends PureComponent {
           <Image
             styleName="placeholder"
             style={{ width, height }}
-            source={source}
+            source={photoSource}
             resizeMethod="resize"
           />
         </TouchableOpacity>
@@ -48,3 +44,15 @@ export default class GridPhotoView extends PureComponent {
     );
   }
 }
+
+GridPhotoView.propTypes = {
+  photo: PropTypes.object.isRequired,
+  onPress: PropTypes.func.isRequired,
+  height: PropTypes.number,
+  width: PropTypes.number,
+};
+
+GridPhotoView.defaultProps = {
+  height: undefined,
+  width: undefined,
+};
