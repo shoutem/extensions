@@ -6,12 +6,14 @@ import { NavigationBaseItem } from './NavigationBaseItem';
 
 class TabBarItem extends NavigationBaseItem {
   render() {
+    const { shortcut, style } = this.props;
+
+    if (!shortcut) {
+      return null;
+    }
+
     return (
-      <Touchable
-        onPress={this.onPress}
-        styleName="flexible"
-        style={this.props.style.item}
-      >
+      <Touchable onPress={this.onPress} styleName="flexible" style={style.item}>
         {this.renderIcon()}
         {this.renderText()}
       </Touchable>

@@ -1,10 +1,18 @@
-import { NavigationStacks, Decorators, ModalScreens } from 'shoutem.navigation';
-import { withLoginRequired } from './loginRequired';
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
+import React from 'react';
+import { TransitionPresets } from '@react-navigation/stack';
+import _ from 'lodash';
+import {
+  Decorators,
+  HeaderBackButton,
+  ModalScreens,
+  NavigationStacks,
+} from 'shoutem.navigation';
 import ChangePasswordScreen from './screens/ChangePasswordScreen';
-import { ext, SENDBIRD_SCREEN_ID, AGORA_SCREEN_ID } from './const';
+import LoginScreen from './screens/LoginScreen';
+import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import { AGORA_SCREEN_ID, ext, SENDBIRD_SCREEN_ID } from './const';
+import { withLoginRequired } from './loginRequired';
 
 Decorators.registerDecorator(withLoginRequired);
 
@@ -28,6 +36,18 @@ NavigationStacks.registerNavigationStack({
       component: ChangePasswordScreen,
     },
   ],
+  screenOptions: navParams => {
+    const onCancel = _.get(navParams, 'route.params.onCancel');
+
+    return {
+      headerLeft: _.get(navParams, 'route.params.canGoBack', false)
+        ? props => <HeaderBackButton {...props} onPress={onCancel} />
+        : null,
+      ...TransitionPresets.SlideFromRightIOS,
+      headerTitleAlign: 'center',
+    };
+  },
+  rootStack: false,
 });
 
 ModalScreens.registerModalScreens([

@@ -7,7 +7,7 @@ export function getBlockedUsers(state) {
   return state[ext()].blockedUsers;
 }
 
-export function getBlockedUsersForCurrentUser(state) {
+export function getBlockedUsersIds(state) {
   const blockedUsersState = state[ext()].blockedUsers;
   const { legacyId: currentUserId } = getUser(state);
 
@@ -15,15 +15,13 @@ export function getBlockedUsersForCurrentUser(state) {
 }
 
 export function getBlockedUsersData(state) {
-  const blockedUsers = getBlockedUsersForCurrentUser(state);
-  const userState = state[ext()].users;
-  const users = getCollection(userState, state);
+  const blockedUsersState = state[ext()].allBlockedUsers;
 
-  return _.filter(users, user => _.includes(blockedUsers, user.legacyId));
+  return getCollection(blockedUsersState, state);
 }
 
 function filterBlockedUsers(state, collection = [], userIdPath) {
-  const blockedUsers = getBlockedUsersForCurrentUser(state);
+  const blockedUsers = getBlockedUsersIds(state);
 
   const filteredUsers = _.filter(collection, item => {
     const userId = _.get(item, userIdPath);

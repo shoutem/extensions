@@ -25,7 +25,9 @@ export function fetchUserAddress(apiKey, long, lat) {
   return new Promise((resolve, reject) => {
     fetch(reverseGeocodingUrl)
       .then(response => response.json())
-      .then(json => resolve(_.get(json, 'Response.View[0].Result[0].Location.Address')))
+      .then(json =>
+        resolve(_.get(json, 'Response.View[0].Result[0].Location.Address')),
+      )
       .catch(error => reject());
-  })
+  });
 }

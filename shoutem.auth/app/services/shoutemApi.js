@@ -10,7 +10,7 @@ export default class ShoutemApi {
   }
 
   init(authApiEndpoint, appId) {
-    this.authHost = authApiEndpoint;
+    this.authHost = new Uri(authApiEndpoint).host();
     this.appId = appId;
   }
 

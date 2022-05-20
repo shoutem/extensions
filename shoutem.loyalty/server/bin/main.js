@@ -35,7 +35,9 @@ function renderPage() {
 function initializeApi(context, initialState) {
   const { ownExtensionName } = context;
   const installation = getExtension(initialState, ownExtensionName);
-  const additionalApiEndpoints = [_.get(installation, 'settings.apiEndpoint')];
+  const additionalApiEndpoints = [
+    _.get(installation, 'settings.services.core.loyalty'),
+  ];
   const newContext = _.cloneDeep(context);
   // url.aditionalEndpoints - used to extend endpoints validated against fetch
   // token intercept regex

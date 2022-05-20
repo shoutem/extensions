@@ -1,13 +1,15 @@
 {
   "name": "layouts",
-  "version": "6.0.0",
-  "platform": "^5.2.0",
+  "version": "7.0.0",
+  "platform": ">=6",
   "type": "system",
   "title": "Layouts",
   "description": "Extension that enables app creator to choose between different layouts of the same screen",
-  "releaseNotes": "* Added placeholder for list items with no image",
+  "releaseNotes": "*  Added support for new extension scoped theming",
   "icon": "server/assets/add-layouts-image.png",
-  "dependencies": ["shoutem.i18n"],
+  "dependencies": [
+    "shoutem.i18n"
+  ],
   "categories": [],
   "i18n": {
     "locale": "en",
@@ -18,6 +20,24 @@
       "name": "LayoutPage",
       "type": "native-component",
       "path": "dummy.js"
+    }
+  ],
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
     }
   ]
 }

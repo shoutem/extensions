@@ -1,30 +1,40 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { after, priorities, setPriority } from 'shoutem-core';
 import { ext } from '../const';
-import { getAccessToken } from '../redux';
+import { getAccessToken, getUser } from '../redux';
 
 export const AuthContext = React.createContext();
 
-export function AuthProvider({ accessToken, content }) {
-  const context = { [ext()]: { accessToken } };
+function AuthProvider({ accessToken, children, user }) {
+  const context = { [ext()]: { accessToken, user } };
 
-  return <AuthContext.Provider value={context}>{content}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={context}>{children}</AuthContext.Provider>
+  );
 }
 
 AuthProvider.propTypes = {
-  content: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired,
   accessToken: PropTypes.string,
+  user: PropTypes.object,
 };
 
 AuthProvider.defaultProps = {
   accessToken: undefined,
+  user: {},
 };
 
 function mapStateToProps(state) {
   return {
     accessToken: getAccessToken(state),
+    user: getUser(state),
   };
 }
 
-export default connect(mapStateToProps)(AuthProvider);
+const ConnectedAuthProvider = connect(mapStateToProps, null)(AuthProvider);
+
+export const renderProvider = setPriority(children => {
+  return <ConnectedAuthProvider>{children}</ConnectedAuthProvider>;
+}, after(priorities.REDUX));

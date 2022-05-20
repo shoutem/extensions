@@ -4,7 +4,7 @@ import URI from 'urijs';
 import { Request } from 'express';
 import config from '../../shared/config';
 import { shouldSendNotification, SETTINGS_PARAMS_KEYS } from '../../settings';
-import { SOCIAL_ACTION_TYPES, NOTIFICATION_TITLES } from '../const';
+import { SOCIAL_ACTION_TYPES, NOTIFICATION_TITLES, SOCIAL_NOTIFICATION_TYPES } from '../const';
 
 function formatNotificationTitle(userName: string, actionType: SOCIAL_ACTION_TYPES): string {
   const suffix = actionType === SOCIAL_ACTION_TYPES.LIKE ? NOTIFICATION_TITLES.LIKE : NOTIFICATION_TITLES.COMMENT;
@@ -46,6 +46,10 @@ export async function createNotification(
     content: {
       title,
     },
+    type:
+      socialActionType === SOCIAL_ACTION_TYPES.LIKE
+        ? SOCIAL_NOTIFICATION_TYPES.LIKE
+        : SOCIAL_NOTIFICATION_TYPES.COMMENT,
   };
 
   const response = await request(getCreateNotificationRequest(appId, notification));
@@ -60,9 +64,9 @@ export async function dispatchNotification(req: Request, socialActionType: SOCIA
   const { appId, authorId, username } = data;
 
   const controlParam =
-    socialActionType === SOCIAL_ACTION_TYPES.LIKE ?
-      SETTINGS_PARAMS_KEYS.LIKES_ON_MY_STATUSES :
-      SETTINGS_PARAMS_KEYS.COMMENTS_ON_MY_STATUSES;
+    socialActionType === SOCIAL_ACTION_TYPES.LIKE
+      ? SETTINGS_PARAMS_KEYS.LIKES_ON_MY_STATUSES
+      : SETTINGS_PARAMS_KEYS.COMMENTS_ON_MY_STATUSES;
   const sendNotification = await shouldSendNotification(authorId, controlParam);
 
   if (sendNotification) {

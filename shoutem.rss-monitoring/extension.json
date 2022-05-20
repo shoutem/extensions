@@ -1,10 +1,10 @@
 {
   "name": "rss-monitoring",
-  "version": "4.0.1",
-  "platform": "^4 || ^5",
+  "version": "4.1.0",
+  "platform": ">=6.0.1",
   "title": "RSS Monitoring",
   "description": "Monitors RSS feed content and sends automated push notifications when new content is loaded.",
-  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
+  "releaseNotes": "* Reworked RSS feed resolution resulting in more optimised feed fetching and parsing",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "dependencies": ["shoutem.rss"],
   "categories": ["content"],

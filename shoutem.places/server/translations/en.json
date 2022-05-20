@@ -14,7 +14,9 @@
       "Open Hours": "Open Hours",
       "Phone": "Phone",
       "RSVP link": "RSVP link",
-      "Location": "Location"
+      "Location": "Location",
+      "Miscellaneous": "Miscellaneous",
+      "Places grid layout item - background color": "Places grid layout item - background color"
     }
   }
 }

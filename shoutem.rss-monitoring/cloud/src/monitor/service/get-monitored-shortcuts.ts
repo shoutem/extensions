@@ -1,6 +1,6 @@
+import _ from 'lodash';
 import { getShortcuts } from '../providers/application-manager';
 import monitorRepository from '../../monitor/data/monitor-repository';
-import _ from 'lodash';
 import Monitor from '../data/monitor-model';
 import { logger } from '../../shared/logging';
 
@@ -32,11 +32,13 @@ function findMonitoredShortcuts(shortcutsResponse: any): { key: string; feedUrl:
   return monitoredShortcuts;
 }
 
-export async function getMonitoredShortcuts(): Promise<
-  { monitor: Monitor; shortcuts: { key: string; feedUrl: string; feedType: string }[] }[]
-> {
-  // fetch all appIds from feed table
-  const monitors = await monitorRepository.getAll();
+export async function getMonitoredShortcuts(page: {
+  offset: number;
+  limit: number;
+}): Promise<{ monitor: Monitor; shortcuts: { key: string; feedUrl: string; feedType: string }[] }[]> {
+  const monitorsPage = await monitorRepository.findPage({}, ['id'], page);
+  const monitors = monitorsPage.getPageItems();
+
   // for each app find monitored shortcout
   const promises = monitors.map(async monitor => {
     let shortcutsResponse;

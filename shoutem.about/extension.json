@@ -1,10 +1,10 @@
 {
   "name": "about",
-  "version": "5.0.2",
-  "platform": "^5",
+  "version": "6.0.0",
+  "platform": ">=6",
   "title": "About",
   "description": "Show info about your app or your business",
-  "releaseNotes": "* Removed map when no location provided",
+  "releaseNotes": "*  Added support for new extension scoped theming",
   "icon": "server/assets/add-about-image.png",
   "dependencies": [
     "shoutem.application",

@@ -10,3 +10,4 @@ export const VIDEOS_SCHEMA_ITEM = 'Video';
 export const VIDEO_DETAILS_SCREEN = ext('VideoDetails');
 export const VIDEOS_LIST_SCREEN = ext('VideosList');
 export const RSS_VIDEOS_SCHEMA = 'shoutem.proxy.videos';
+export const VIDEOS_COLLECTION_TAG = 'allVideos';

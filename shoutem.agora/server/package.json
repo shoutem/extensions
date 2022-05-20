@@ -1,6 +1,6 @@
 {
   "name": "shoutem.agora",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "Connect your users with real-time video conferencing!",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "0.12.3",
+    "@shoutem/react-web-ui": "1.0.1",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-composers": "^0.1.6",
     "@shoutem/redux-io": "^3.2.0",

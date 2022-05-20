@@ -13,7 +13,7 @@ import {
 
 const downloadedEpisodes = (state = [], action) => {
   if (action.type === REHYDRATE) {
-    return [..._.get(action, ['payload', ext(), 'downloadedEpisodes'])];
+    return [..._.get(action, ['payload', ext(), 'downloadedEpisodes'], [])];
   }
 
   // This is handled through redux because the user can start a download and

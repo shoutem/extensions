@@ -1,26 +1,21 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
+import { cloneStatus } from '@shoutem/redux-io';
+import { connectStyle } from '@shoutem/theme';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
-import { connectStyle } from '@shoutem/theme';
-import { cloneStatus, find, next, shouldRefresh } from '@shoutem/redux-io';
-import { ListEpisodeView, FeaturedEpisodeView } from '../components';
-import { ext, RSS_PODCAST_SCHEMA } from '../const';
+import { FeaturedEpisodeView, ListEpisodeView } from '../components';
+import { EPISODES_COLLECTION_TAG, ext, RSS_PODCAST_SCHEMA } from '../const';
 import {
   addDownloadedEpisode,
-  fetchEpisodesFeed,
-  getEpisodesFeedWithDownloads,
   getEpisodesFeed,
+  getEpisodesFeedWithDownloads,
   removeDownloadedEpisode,
 } from '../redux';
 
 export class EpisodesListScreen extends RssListScreen {
-  static propTypes = {
-    ...RssListScreen.propTypes,
-  };
-
   constructor(props, context) {
     super(props, context);
 
@@ -29,22 +24,9 @@ export class EpisodesListScreen extends RssListScreen {
     this.state = {
       ...this.state,
       schema: RSS_PODCAST_SCHEMA,
+      tag: EPISODES_COLLECTION_TAG,
     };
   }
-
-  componentDidMount() {
-    const { data, fetchEpisodesFeed, shortcutId } = this.props;
-
-    if (shouldRefresh(data)) {
-      fetchEpisodesFeed(shortcutId);
-    }
-  }
-
-  // Overriding RssListScreen refreshData.
-  // Once the collection is expired & data needs to be refreshed, it tries to fetch
-  // data by schema that doesn't exist (shoutem.proxy.news), fails & tries over and
-  // over again - infinite loop that causes app freeze.
-  refreshData() {}
 
   openEpisodeWithId(id) {
     const { feedUrl, enableDownload } = this.props;
@@ -116,13 +98,14 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = {
+EpisodesListScreen.propTypes = {
+  ...RssListScreen.propTypes,
+};
+
+export const mapDispatchToProps = RssListScreen.createMapDispatchToProps({
   addDownloadedEpisode,
   removeDownloadedEpisode,
-  fetchEpisodesFeed,
-  find,
-  next,
-};
+});
 
 export default connect(
   mapStateToProps,

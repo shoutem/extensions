@@ -15,7 +15,7 @@ export default class LoyaltyApi {
       throw new Error(i18next.t(LOCALIZATION.LOYALTY_ENDPOINT_MISSING));
     }
 
-    this.endpoint = endpoint;
+    this.endpoint = new Uri(endpoint).host();
   }
 
   isInitialized() {

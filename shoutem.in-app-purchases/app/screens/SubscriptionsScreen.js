@@ -61,7 +61,6 @@ class SubscriptionsScreen extends PureComponent {
 
     navigation.setOptions({
       title: subscriptionMetadata.subscriptionScreenTitle,
-      headerLeft: this.renderBackButton,
     });
   }
 
@@ -72,16 +71,6 @@ class SubscriptionsScreen extends PureComponent {
     if (!prevHasActiveProduct && hasActiveProduct) {
       this.setState({ modalActive: true });
     }
-  }
-
-  renderBackButton(props) {
-    const { canGoBack, onCancel } = getRouteParams(this.props);
-
-    if (!canGoBack) {
-      return null;
-    }
-
-    return <HeaderBackButton {...props} onPress={onCancel} />;
   }
 
   setLoadingState(loading) {

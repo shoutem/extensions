@@ -31,7 +31,7 @@ function getItemId(state, feedUrl, uuid) {
   const data = getPhotosFeed(state, feedUrl);
   const photos = remapAndFilterPhotos(data);
   const photo = _.find(photos, photo => {
-    return photo.uuid === uuid;
+    return photo.id === uuid;
   });
 
   return photo?.id;

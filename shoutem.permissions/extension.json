@@ -1,13 +1,13 @@
 {
   "name": "permissions",
   "title": "Permissions",
-  "version": "4.0.2",
-  "platform": "^4 || ^5",
+  "version": "4.0.3",
+  "platform": ">=4",
   "type": "system",
   "description": "Extension for app permission management. ",
   "icon": "server/assets/permissions-icon.png",
   "dependencies": ["shoutem.i18n"],
-  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
+  "releaseNotes": "* Added platform 6.x support",
   "pages": [
     {
       "name": "SettingsPage",

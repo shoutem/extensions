@@ -1,10 +1,10 @@
 {
   "name": "preview",
-  "version": "4.0.1",
-  "platform": "^4 || ^5",
+  "version": "4.0.2",
+  "platform": ">=4",
   "type": "system",
   "title": "Builder Preview",
-  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
+  "releaseNotes": "* Added platform 6.x support",
   "description": "Provides the support for app preview in the builder",
   "icon": "server/assets/add-preview-image.png",
   "dependencies": ["shoutem.application"],

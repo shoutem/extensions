@@ -1,7 +1,8 @@
 import _ from 'lodash';
+import { createSelector } from 'reselect';
 import { getConfiguration } from '../redux';
 
-export function getFirstShortcut(state) {
-  const configuration = getConfiguration(state);
-  return _.get(configuration, 'navigation[0]');
-}
+export const getFirstShortcut = createSelector(
+  [state => getConfiguration(state)],
+  configuration => _.get(configuration, 'navigation[0]'),
+);

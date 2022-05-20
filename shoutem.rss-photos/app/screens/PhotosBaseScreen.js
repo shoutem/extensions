@@ -1,17 +1,12 @@
 import autoBind from 'auto-bind';
 import _ from 'lodash';
-import { find, next, shouldRefresh } from '@shoutem/redux-io';
 import { getRouteParams, openInModal } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
-import { ext, RSS_PHOTOS_SCHEMA } from '../const';
-import { getPhotosFeed, fetchPhotosFeed } from '../redux';
+import { ext, PHOTOS_COLLECTION_TAG, RSS_PHOTOS_SCHEMA } from '../const';
+import { getPhotosFeed } from '../redux';
 import { remapAndFilterPhotos } from '../services';
 
 export class PhotosBaseScreen extends RssListScreen {
-  static propTypes = {
-    ...RssListScreen.propTypes,
-  };
-
   static getDerivedStateFromProps(props, state) {
     if (props.data !== state.data) {
       const photos = remapAndFilterPhotos(props.data);
@@ -35,15 +30,8 @@ export class PhotosBaseScreen extends RssListScreen {
       data: null,
       photos,
       schema: RSS_PHOTOS_SCHEMA,
+      tag: PHOTOS_COLLECTION_TAG,
     };
-  }
-
-  componentDidMount() {
-    const { data, fetchPhotosFeed, shortcutId } = this.props;
-
-    if (shouldRefresh(data)) {
-      fetchPhotosFeed(shortcutId);
-    }
   }
 
   openDetailsScreen(photo) {
@@ -70,8 +58,4 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = {
-  fetchPhotosFeed,
-  find,
-  next,
-};
+export const mapDispatchToProps = RssListScreen.createMapDispatchToProps();

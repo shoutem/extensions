@@ -48,13 +48,10 @@ export function createNavigatonStyles(config) {
     !showTitle &&
     !backgroundImageEnabledFirstScreen;
 
-  const headerStyle = _.get(theme, [
-    '@@shoutem.theme/themeStyle',
-    'shoutem.ui.NavigationBar',
-  ]);
+  const headerStyle = _.get(theme, 'shoutem.navigation.NavigationBar');
 
   if (!headerStyle) {
-    return;
+    return null;
   }
 
   const statusBarStyle = _.get(
@@ -186,6 +183,8 @@ export function createNavigatonStyles(config) {
     boxing,
     fade,
   };
+
+  return HeaderStyles;
 }
 
 export { HeaderStyles };

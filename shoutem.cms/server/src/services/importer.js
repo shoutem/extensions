@@ -2,6 +2,7 @@ import _ from 'lodash';
 import i18next from 'i18next';
 import { invalidate } from '@shoutem/redux-io';
 import { IMPORTER_STATUSES, IMPORT_CAPABILITIES } from '../const';
+import { CATEGORIES } from '../types';
 import { loadImporters } from '../actions';
 import LOCALIZATION from './localization';
 
@@ -125,6 +126,7 @@ export function checkStatusOfImporters(
 
     if (!inProgress) {
       if (IMPORTER_INTERVAL_REF) {
+        dispatch(invalidate(CATEGORIES));
         dispatch(invalidate(canonicalName));
         resetStatusOfImporters();
       }

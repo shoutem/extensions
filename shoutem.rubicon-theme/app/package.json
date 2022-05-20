@@ -1,9 +1,12 @@
 {
   "name": "shoutem.rubicon-theme",
   "description": "Rubicon theme is a...",
-  "version": "4.3.5",
+  "version": "5.0.0",
   "peerDependencies": {
     "@shoutem/theme": "*",
     "@shoutem/ui": "*"
+  },
+  "scripts": {
+    "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   }
 }

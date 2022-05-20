@@ -11,7 +11,18 @@
       "radio-shortcut-page.form-sharing-checkbox-title": "Enable Sharing",
       "radio-shortcut-page.form-artwork-checkbox-title": "Display artwork",
       "radio-shortcut-page.form-button-save": "Save",
-      "radio-shortcut-page.layout-specific-properties-alert": "The following settings only apply to the static background layout"
+      "radio-shortcut-page.layout-specific-properties-alert": "The following settings only apply to the static background layout",
+      "Screen background color": "Screen background color",
+      "Screen overlay color": "Screen overlay color",
+      "Stream title color": "Stream title color",
+      "Artist title color": "Artist title color",
+      "Artwork circular image border color": "Artwork circular image border color",
+      "Song name title color": "Song name title color",
+      "Share and Sleep button color": "Share and Sleep button color",
+      "Playback button border color": "Playback button border color",
+      "Playback icon color": "Playback icon color",
+      "Playback animated circle color": "Playback animated circle color",
+      "Radio+ (artwork background layout)": "Radio+ (artwork background layout)"
     }
   }
 }

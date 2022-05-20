@@ -1,10 +1,10 @@
 {
   "name": "auth",
-  "version": "4.1.0",
-  "platform": "^5.1.0",
+  "version": "5.0.2",
+  "platform": ">=6",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Added username availability check request\n* Exported additional redux actions & selectors\n* Generalize start of authentication flows, allowing other extensions to plug into / override standard flow",
+  "releaseNotes": "* Adjusted endpoint resolution, no user facing changes",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",
@@ -111,7 +111,6 @@
     }
   ],
   "settings": {
-    "authApiEndpoint": "auth.api.shoutem.com",
     "signupEnabled": true,
     "manuallyApproveMembers": false,
     "allScreensProtected": false,

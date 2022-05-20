@@ -1,10 +1,10 @@
 {
   "name": "deals",
   "title": "Deals",
-  "version": "5.1.0",
-  "platform": "^5",
+  "version": "6.0.1",
+  "platform": ">=6",
   "description": "Create special deals and redeem them with coupons",
-  "releaseNotes": "* Added placeholder for list items with no image",
+  "releaseNotes": "* Adjusted endpoint resolution, no user facing changes",
   "icon": "server/assets/add-deals-image.png",
   "dependencies": [
     "shoutem.application",
@@ -118,8 +118,5 @@
       },
       "categories": ["analytics"]
     }
-  ],
-  "settings": {
-    "dealsEndpoint": "deals.api.shoutem.com"
-  }
+  ]
 }

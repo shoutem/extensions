@@ -40,7 +40,7 @@ export function loadFeed(feedUrl) {
   const config = {
     schema: FEED_ITEMS,
     request: {
-      endpoint: `//${url.legacy}/v1/apps/${appId}/proxy/resources/${FEED_ITEMS}?filter[url]=${feedUrl}`,
+      endpoint: `//${url.proxy}/v1/apps/${appId}/proxy/resources/${FEED_ITEMS}?filter[url]=${feedUrl}`,
       headers: {
         Accept: 'application/vnd.api+json',
       },
@@ -62,7 +62,7 @@ export function discoverFeeds(feedUrl) {
   const config = {
     schema: DISCOVERED_FEEDS,
     request: {
-      endpoint: `//${url.legacy}/v1/apps/${appId}/proxy/actions/discover-feeds`,
+      endpoint: `//${url.proxy}/v1/apps/${appId}/proxy/actions/discover-feeds`,
       headers: {
         'Content-Type': 'application/vnd.api+json',
         Accept: 'application/vnd.api+json',

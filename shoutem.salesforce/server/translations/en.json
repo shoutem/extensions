@@ -15,7 +15,8 @@
       "button-save-title": "Save",
       "salesforce-configuration-title": "Authorize your SalesForce integration",
       "button-reauthorize-title": "Re-Authorize",
-      "button-authorize-title": "Authorize"
+      "button-authorize-title": "Authorize",
+      "store-resubmission-alert": "App needs to be republished in the store for MC App settings to update"
     }
   }
 }

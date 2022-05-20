@@ -20,6 +20,7 @@ export const SET_DOWNLOAD_IN_PROGRESS = ext('SET_DOWNLOAD_IN_PROGRESS');
 // problems if we have both, news and podcast, extensions in app
 // (https://fiveminutes.jira.com/browse/SEEXT-8462)
 export const RSS_PODCAST_SCHEMA = 'shoutem.proxy.news';
+export const EPISODES_COLLECTION_TAG = 'latestEpisodes';
 export const PODCAST_SCHEMA_ITEM = 'Podcast';
 export const DEFAULT_PAGE_LIMIT = 20;
 export const EPISODES_LIST_SCREEN = ext('EpisodesListScreen');

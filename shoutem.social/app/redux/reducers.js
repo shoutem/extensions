@@ -283,6 +283,7 @@ export default combineReducers({
   users: collection(USER_SCHEMA, 'users'),
   usersInGroups: collection(USER_SCHEMA, 'usersInGroups'),
   blockedUsers: blockedUsersReducer(),
+  allBlockedUsers: collection(USER_SCHEMA, 'blockedUsers'),
   searchUsers: collection(USER_SCHEMA, 'searchUsers'),
   settings: storage(SOCIAL_SETTINGS_SCHEMA),
   userSettings: one(SOCIAL_SETTINGS_SCHEMA, 'settings'),

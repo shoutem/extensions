@@ -1,9 +1,10 @@
+export { Drawer } from './Drawer';
+export { NavigationBaseItem } from './NavigationBaseItem';
+export { default as TabBarItem } from './TabBarItem';
 export {
   HeaderBackButton,
+  HeaderBackground,
   HeaderCloseButton,
   HeaderTextButton,
-  HeaderBackground,
   HeaderTitle,
 } from './ui';
-export { NavigationBaseItem } from './NavigationBaseItem';
-export { Drawer } from './Drawer';

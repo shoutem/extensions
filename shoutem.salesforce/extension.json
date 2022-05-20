@@ -1,10 +1,14 @@
 {
   "name": "salesforce",
   "title": "Salesforce MC",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Salesforce Marketing Cloud",
-  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
-  "platform": "^4 || ^5",
+  "platform": ">=6",
+  "nativeChanges": {
+    "lastVersion": "1.0.5",
+    "settingsKeys": ["appId", "accessToken", "appEndpoint", "fcmSenderId"]
+  },
+  "releaseNotes": "* Fixed the Android crash if extension wasn't properly configured in settings page",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

@@ -1,11 +1,10 @@
 import React from 'react';
-import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import { isBusy, isInitialized, next } from '@shoutem/redux-io';
+import { isBusy, isInitialized, isValid, next } from '@shoutem/redux-io';
 import {
   createStatus,
   setStatus,
@@ -13,7 +12,7 @@ import {
   validationStatus,
 } from '@shoutem/redux-io/status';
 import { connectStyle } from '@shoutem/theme';
-import { ListView } from '@shoutem/ui';
+import { ListView, Spinner, View } from '@shoutem/ui';
 import { RemoteDataListScreen } from 'shoutem.application';
 import { authenticate, getUser } from 'shoutem.auth/redux';
 import {
@@ -23,7 +22,12 @@ import {
 } from 'shoutem.navigation';
 import MemberView from '../components/MemberView';
 import { ext } from '../const';
-import { blockUser, loadUsers, loadUsersInGroups } from '../redux';
+import {
+  blockUser,
+  loadBlockedUsers,
+  loadUsers,
+  loadUsersInGroups,
+} from '../redux';
 import { getUsers, getUsersInGroups } from '../redux/selectors';
 import { openBlockActionSheet, openProfileForLegacyUser } from '../services';
 
@@ -68,11 +72,11 @@ export class MembersScreen extends RemoteDataListScreen {
   }
 
   handleMenuPress(user) {
-    const { blockUser, authenticate } = this.props;
+    const { authenticate, blockUser, loadBlockedUsers } = this.props;
 
     const handleBlockPress = () =>
       authenticate(currentUser =>
-        blockUser(user.legacyId, currentUser.legacyId),
+        blockUser(user.legacyId, currentUser.legacyId).then(loadBlockedUsers),
       );
 
     return openBlockActionSheet(handleBlockPress);
@@ -92,13 +96,11 @@ export class MembersScreen extends RemoteDataListScreen {
     } = this.props;
 
     if (!users) {
-      InteractionManager.runAfterInteractions(() => {
-        if (showAllUsers) {
-          loadUsers();
-        } else {
-          loadUsersInGroups(visibleGroups);
-        }
-      });
+      if (showAllUsers) {
+        loadUsers();
+      } else {
+        loadUsersInGroups(visibleGroups);
+      }
     }
   }
 
@@ -130,6 +132,14 @@ export class MembersScreen extends RemoteDataListScreen {
   renderData(data) {
     const { style } = this.props;
 
+    if (!isValid(data) || (isBusy(data) && !isInitialized(data))) {
+      return (
+        <View styleName="flexible horizontal h-center v-center">
+          <Spinner />
+        </View>
+      );
+    }
+
     if (this.shouldRenderPlaceholderView(data)) {
       return this.renderPlaceholderView(data);
     }
@@ -139,7 +149,7 @@ export class MembersScreen extends RemoteDataListScreen {
         data={data}
         getSectionId={this.getSectionId}
         initialListSize={1}
-        loading={isBusy(data) || !isInitialized(data)}
+        loading={isBusy(data)}
         onLoadMore={this.loadMore}
         onRefresh={this.fetchData}
         renderRow={this.renderRow}
@@ -192,6 +202,7 @@ export function mapDispatchToProps(dispatch, ownProps) {
   return {
     ...bindActionCreators(
       {
+        loadBlockedUsers,
         loadUsers: ownProps.users ? undefined : loadUsers,
         loadUsersInGroups: ownProps.users ? undefined : loadUsersInGroups,
         next,

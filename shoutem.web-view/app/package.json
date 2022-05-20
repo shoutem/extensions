@@ -1,10 +1,11 @@
 {
   "name": "shoutem.web-view",
-  "version": "4.2.0",
+  "version": "5.0.0",
   "dependencies": {
     "react-native-pdf": "6.1.2",
     "react-native-webview": "11.0.3",
-    "rn-fetch-blob": "0.11.2"
+    "rn-fetch-blob": "0.11.2",
+    "urijs": "^1.19.10"
   },
   "peerDependencies": {
     "@shoutem/animation": "*",

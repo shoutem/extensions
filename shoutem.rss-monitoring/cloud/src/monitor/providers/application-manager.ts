@@ -13,6 +13,7 @@ function getShortcutsRequest(appId: string): object {
       authorization: `Bearer ${config.servicesApiToken}`,
     },
     resolveWithFullResponse: true,
+    timeout: 30000,
     simple: false,
   };
 }

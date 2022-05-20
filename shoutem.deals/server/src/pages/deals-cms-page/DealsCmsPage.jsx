@@ -87,7 +87,7 @@ class DealsCmsPage extends PureComponent {
 
     const parentCategoryId = _.get(shortcut, 'settings.parentCategory.id');
     const catalogId = _.get(shortcut, 'settings.catalog.id');
-    const dealsEndpoint = _.get(extension, 'settings.dealsEndpoint');
+    const dealsEndpoint = _.get(extension, 'settings.services.core.deals');
     const appsUrl = _.get(page, 'pageContext.url.apps', {});
 
     this.assetManager = new AssetManager({

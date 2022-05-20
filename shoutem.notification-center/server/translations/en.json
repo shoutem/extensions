@@ -84,7 +84,11 @@
       "notification-settings.pn-settings-title": "User's push notification settings",
       "notification-settings.reminder-message-label": "Reminder notification message",
       "notification-settings.scheduled-notifications-label": "User scheduled notification",
-      "summary-fields.add-new-summary": "Add another message"
+      "summary-fields.add-new-summary": "Add another message",
+      "Notification title color": "Notification title color",
+      "Notification message color": "Notification message color",
+      "Notification timestamp color": "Notification timestamp color",
+      "Notification center": "Notification center"
     }
   }
 }

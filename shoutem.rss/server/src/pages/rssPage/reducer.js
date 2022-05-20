@@ -41,7 +41,7 @@ export function loadFeed(feedUrl) {
   // decode url in case someone encoded it in a way incompatible with legacy server
   const decodedFeedUrl = URI.decode(feedUrl);
   const endpoint = new URI(
-    `//${url.legacy}/v1/apps/${appId}/proxy/resources/${FEED_ITEMS}`,
+    `//${url.proxy}/v1/apps/${appId}/proxy/resources/${FEED_ITEMS}`,
   )
     .setQuery({
       'filter[url]': decodedFeedUrl,
@@ -73,7 +73,7 @@ export function discoverFeeds(feedUrl) {
   const config = {
     schema: DISCOVERED_FEEDS,
     request: {
-      endpoint: `//${url.legacy}/v1/apps/${appId}/proxy/actions/discover-feeds`,
+      endpoint: `//${url.proxy}/v1/apps/${appId}/proxy/actions/discover-feeds`,
       headers: {
         'Content-Type': 'application/vnd.api+json',
         Accept: 'application/vnd.api+json',

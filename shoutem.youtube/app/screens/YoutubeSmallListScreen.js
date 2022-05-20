@@ -4,9 +4,9 @@ import { connectStyle } from '@shoutem/theme';
 import SmallYoutubeView from '../components/SmallYoutubeView';
 import { ext } from '../const';
 import {
-  YoutubeVideosScreen,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
+  YoutubeVideosScreen,
 } from './YoutubeVideosScreen';
 
 class YoutubeSmallListScreen extends YoutubeVideosScreen {

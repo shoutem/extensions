@@ -1,0 +1,47 @@
+{
+  "title": "Theme",
+  "properties": {
+    "notificationTitleColor": {
+      "type": "string",
+      "title": "Notification title color",
+      "format": "color",
+      "default": "@notificationTitleColor"
+    },
+    "notificationMessageColor": {
+      "type": "string",
+      "title": "Notification message color",
+      "format": "color",
+      "default": "@notificationMessageColor"
+    },
+    "notificationTimestampColor": {
+      "type": "string",
+      "title": "Notification timestamp color",
+      "format": "color",
+      "default": "@notificationTimestampColor"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Notification center",
+        "properties": [
+          {
+            "name": "notificationTitleColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "notificationMessageColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "notificationTimestampColor",
+            "inline": true,
+            "size": 6
+          }
+        ]
+      }
+    ]
+  }
+}

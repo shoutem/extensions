@@ -135,7 +135,9 @@
       "Location": "Location",
       "Punch cards": "Punch cards",
       "Stamps required": "Stamps required",
-      "Rewards": "Rewards"
+      "Rewards": "Rewards",
+      "Miscellaneous": "Miscellaneous",
+      "Horseshoe color": "Horseshoe color"
     }
   }
 }

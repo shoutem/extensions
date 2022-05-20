@@ -1,18 +1,11 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { FadeIn, TimingDriver } from '@shoutem/animation';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Icon, View } from '@shoutem/ui';
 import { ext } from '../const';
 
 class NavigationToolbar extends PureComponent {
-  static propTypes = {
-    goForward: PropTypes.func,
-    goBack: PropTypes.func,
-    reload: PropTypes.func,
-    webNavigationState: PropTypes.object,
-  };
-
   constructor(props) {
     super(props);
 
@@ -54,5 +47,12 @@ class NavigationToolbar extends PureComponent {
     );
   }
 }
+
+NavigationToolbar.propTypes = {
+  goBack: PropTypes.func.isRequired,
+  goForward: PropTypes.func.isRequired,
+  reload: PropTypes.func.isRequired,
+  webNavigationState: PropTypes.object.isRequired,
+};
 
 export default connectStyle(ext('NavigationToolbar'))(NavigationToolbar);

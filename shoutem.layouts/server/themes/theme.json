@@ -1,0 +1,25 @@
+{
+  "title": "Theme",
+  "properties": {
+    "grid122ItemBackgroundColor": {
+      "type": "string",
+      "title": "Grid 1-2-2 layout item - background color",
+      "format": "color",
+      "default": "@newsGrid122ItemBackgroundColor"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Miscellaneous",
+        "properties": [
+          {
+            "name": "grid122ItemBackgroundColor",
+            "inline": true,
+            "size": 6
+          }
+        ]
+      }
+    ]
+  }
+}

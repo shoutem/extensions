@@ -1,6 +1,6 @@
 {
   "name": "shoutem.auth",
-  "version": "4.1.0",
+  "version": "5.0.2",
   "description": "Shoutem user authentication",
   "author": "Shoutem",
   "scripts": {
@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "0.12.4-beta.4",
+    "@shoutem/react-web-ui": "1.0.1",
     "@shoutem/redux-api-sdk": "1.1.7",
     "@shoutem/redux-composers": "^0.1.5",
     "@shoutem/redux-io": "^2.3.0",

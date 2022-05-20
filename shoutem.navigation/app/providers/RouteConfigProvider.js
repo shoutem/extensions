@@ -14,12 +14,8 @@ import { HeaderTitle } from '../components';
 import { navigationRef } from '../const';
 import { NavigationTree } from '../navigators';
 import { setNavigationInitialized } from '../redux';
-import {
-  collectShortcutScreens,
-  createNavigatonStyles,
-  Decorators,
-  ModalScreens,
-} from '../services';
+import { collectShortcutScreens, Decorators, ModalScreens } from '../services';
+import NavigationStylesProvider from './NavigationStylesProvider';
 
 let normalizedShortcuts = [];
 
@@ -147,36 +143,44 @@ export class RouteConfigProvider extends PureComponent {
   }
 
   handleAnimationDriverChange(animationDriver) {
-    const { navBarSettings } = this.props;
-    const { theme } = this.context;
-
-    createNavigatonStyles({
-      animationDriver,
-      navBarSettings,
-      theme,
-    });
+    this.setState({ animationDriver });
   }
 
   render() {
-    const { firstShortcut, hiddenShortcuts, initQueueComplete } = this.props;
-    const { decoratedScreens, normalizedShortcuts, navReady } = this.state;
+    const {
+      decoratedScreens,
+      normalizedShortcuts,
+      navReady,
+      animationDriver,
+    } = this.state;
+    const {
+      firstShortcut,
+      hiddenShortcuts,
+      initQueueComplete,
+      navBarSettings,
+    } = this.props;
 
-    if (!navReady || !initQueueComplete) {
-      return null;
-    }
+    const appReady = navReady && initQueueComplete && animationDriver;
 
     return (
       <ScrollView.DriverProvider
         onAnimationDriverChange={this.handleAnimationDriverChange}
       >
-        <NavigationContainer ref={navigationRef} onReady={this.handleReady}>
-          <NavigationTree
-            firstShortcut={firstShortcut}
-            shortcuts={normalizedShortcuts}
-            screens={decoratedScreens}
-            hiddenShortcuts={hiddenShortcuts}
-          />
-        </NavigationContainer>
+        {appReady && (
+          <NavigationStylesProvider
+            animationDriver={animationDriver}
+            navBarSettings={navBarSettings}
+          >
+            <NavigationContainer ref={navigationRef} onReady={this.handleReady}>
+              <NavigationTree
+                firstShortcut={firstShortcut}
+                shortcuts={normalizedShortcuts}
+                screens={decoratedScreens}
+                hiddenShortcuts={hiddenShortcuts}
+              />
+            </NavigationContainer>
+          </NavigationStylesProvider>
+        )}
       </ScrollView.DriverProvider>
     );
   }

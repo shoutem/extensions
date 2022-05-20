@@ -1,24 +1,20 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
+import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
-import { cloneStatus, shouldRefresh } from '@shoutem/redux-io';
-import { getRouteParams, composeNavigationStyles } from 'shoutem.navigation';
-import { GridEpisodeView, FeaturedEpisodeView } from '../components';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
+import { FeaturedEpisodeView, GridEpisodeView } from '../components';
 import { ext } from '../const';
 import {
   EpisodesListScreen,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
 } from './EpisodesListScreen';
 
 class EpisodesGridScreen extends EpisodesListScreen {
-  static propTypes = {
-    ...EpisodesListScreen.propTypes,
-  };
-
   constructor(props, context) {
     super(props, context);
 
@@ -93,6 +89,10 @@ class EpisodesGridScreen extends EpisodesListScreen {
     return super.renderData(groupedItems);
   }
 }
+
+EpisodesGridScreen.propTypes = {
+  ...EpisodesListScreen.propTypes,
+};
 
 export default connect(
   mapStateToProps,

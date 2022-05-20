@@ -1,24 +1,18 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { isBusy, isInitialized, next, shouldLoad } from '@shoutem/redux-io';
+import { ListView, Spinner } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
-import { next, isBusy, isInitialized, shouldLoad } from '@shoutem/redux-io';
-import { ListView, Spinner } from '@shoutem/ui';
 import LargeYoutubeView from '../components/LargeYoutubeView';
 import { ext } from '../const';
-import { YOUTUBE_VIDEOS_SCHEMA, getVideosFeed, fetchFeed } from '../redux';
+import { fetchFeed, getVideosFeed, YOUTUBE_VIDEOS_SCHEMA } from '../redux';
 
 export class YoutubeVideosScreen extends RssListScreen {
-  static propTypes = {
-    ...RssListScreen.propTypes,
-    fetchFeed: PropTypes.func,
-    data: PropTypes.array,
-  };
-
   constructor(props, context) {
     super(props, context);
 
@@ -55,6 +49,12 @@ export class YoutubeVideosScreen extends RssListScreen {
     fetchFeed(feedUrl, apiKey, sort);
   }
 
+  loadMore() {
+    const { data: collection, next } = this.props;
+
+    next(collection);
+  }
+
   renderRow(video) {
     return <LargeYoutubeView video={video} onPress={this.openDetailsScreen} />;
   }
@@ -79,6 +79,12 @@ export class YoutubeVideosScreen extends RssListScreen {
     );
   }
 }
+
+YoutubeVideosScreen.propTypes = {
+  ...RssListScreen.propTypes,
+  data: PropTypes.array,
+  fetchFeed: PropTypes.func,
+};
 
 export const mapStateToProps = (state, ownProps) => {
   const routeParams = getRouteParams(ownProps);

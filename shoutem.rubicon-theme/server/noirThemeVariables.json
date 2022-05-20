@@ -15,7 +15,7 @@
             "Rubik-Regular",
             "NotoSans",
             "NotoSerif",
-            "MuktaVaani-Regular"
+            "System Font"
           ]
         },
         "fontStyle": {
@@ -392,7 +392,7 @@
     },
     "indicatorColor": {
       "type": "string",
-      "title": "Loyalty horseshoe, notification dots and page indicators",
+      "title": "Notification dots and page indicators",
       "format": "color",
       "default": "#767676"
     },
@@ -529,41 +529,6 @@
         ]
       },
       {
-        "title": "Navigation bar (header)",
-        "properties": [
-          "statusBarColor",
-          "statusBarStyle",
-          "navBarText",
-          "navBarIconsColor",
-          "featuredNavBarTitleColor",
-          "featuredNavBarIconsColor",
-          "navBarBackground",
-          "navBarBorderColor"
-        ]
-      },
-      {
-        "title": "Tab Bar and Drawer layouts",
-        "properties": [
-          "mainNavBackground",
-          "mainNavItemIconColor",
-          "mainNavItemTextColor",
-          "mainNavItemBackground",
-          "mainNavBorderColor",
-          "mainNavSelectedItemIconColor",
-          "mainNavSelectedItemTextColor",
-          "mainNavSelectedItemBackground",
-          "mainNavSelectedItemBorderColor"
-        ]
-      },
-      {
-        "title": "List, Card list, Icon grid and Tile grid layouts",
-        "properties": [
-          "subNavItemColor",
-          "subNavItemBackground",
-          "subNavListBorderColor"
-        ]
-      },
-      {
         "title": "Typography",
         "properties": [
           "heading",
@@ -571,7 +536,8 @@
           "subtitle",
           "caption",
           "text",
-          "links"
+          "links",
+          "errorText"
         ]
       },
       {
@@ -595,50 +561,11 @@
         ]
       },
       {
-        "title": "Notification center",
-        "properties": [
-          "notificationTitleColor",
-          "notificationMessageColor",
-          "notificationTimestampColor"
-        ]
-      },
-      {
-        "title": "Onboarding",
-        "properties": [
-          "onboardingTitleTextColor",
-          "onboardingDescriptionTextColor"
-        ]
-      },
-      {
-        "title": "Radio+ (artwork background layout)",
-        "properties": [
-          "screenBackgroundColor",
-          "screenOverlayColor",
-          "streamTitleColor",
-          "artistTitleColor",
-          "artworkCircularImageBorderColor",
-          "songNameTitleColor",
-          "shareButtonColor",
-          "playbackButtonBorderColor",
-          "playbackIconColor",
-          "playbackAnimatedCircleColor"
-        ]
-      },
-      {
-        "title": "Social",
-        "properties": [
-          "likeButtonFillColor"
-        ]
-      },
-      {
         "title": "Miscellaneous",
         "properties": [
-          "errorText",
           "lineColor",
           "indicatorColor",
           "sectionHeaderBackgroundColor",
-          "gridItemBackgroundColor",
-          "newsGrid122ItemBackgroundColor",
           "categoryDropdownBackgroundColor",
           "categoryDropdownTextColor",
           "searchInputBackgroundColor",

@@ -36,7 +36,7 @@ export class DealsStatisticsPage extends PureComponent {
     autoBindReact(this);
 
     const { extension } = props;
-    const dealsEndpoint = _.get(extension, 'settings.dealsEndpoint');
+    const dealsEndpoint = _.get(extension, 'settings.services.core.deals');
 
     dealsApi.init(dealsEndpoint);
 

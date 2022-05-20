@@ -12,7 +12,6 @@ import { ext, SOCIAL_SETTINGS_SCHEMA, STATUSES_SCHEMA } from './const';
 import { initUserSettings } from './redux';
 
 const APPLICATION_EXTENSION = 'shoutem.application';
-const AUTH_EXTENSION = 'shoutem.auth';
 
 export function appDidMount(app) {
   const store = app.getStore();
@@ -20,15 +19,16 @@ export function appDidMount(app) {
   const apiEndpoint = getExtensionSettings(state, APPLICATION_EXTENSION)
     .legacyApiEndpoint;
   const cloudHost = getExtensionCloudUrl(state, ext());
-  const appsHost = getExtensionServiceUrl(state, APPLICATION_EXTENSION, 'apps');
+  const appsEndpoint = getExtensionServiceUrl(state, ext(), 'apps');
+  const authApiEndpoint = getExtensionServiceUrl(state, ext(), 'auth');
 
-  const { authApiEndpoint } = getExtensionSettings(state, AUTH_EXTENSION);
   if (!authApiEndpoint) {
-    console.error(`Authentication API endpoint not set in ${ext()} settings.`);
+    // eslint-disable-next-line no-console
+    console.error('Could not find auth API endpoint.');
   }
 
   const appId = getAppId();
-  shoutemApi.init(apiEndpoint, authApiEndpoint, cloudHost, appsHost, appId);
+  shoutemApi.init(apiEndpoint, authApiEndpoint, cloudHost, appsEndpoint, appId);
 
   const apiRequestOptions = {
     resourceType: 'JSON',

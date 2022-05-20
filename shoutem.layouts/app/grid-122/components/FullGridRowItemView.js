@@ -9,10 +9,11 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { assets } from '../../assets';
 import { ext } from '../../const';
 
 export function FullGridRowItemView({
-  imageSource,
+  imageUrl,
   numberOfLines,
   id,
   subtitle,
@@ -21,6 +22,8 @@ export function FullGridRowItemView({
   renderActions,
   style,
 }) {
+  const imageSource = imageUrl ? { uri: imageUrl } : assets.noImagePlaceholder;
+
   function handlePress() {
     if (onPress) {
       onPress(id);
@@ -54,7 +57,7 @@ export function FullGridRowItemView({
 FullGridRowItemView.propTypes = {
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  imageSource: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  imageUrl: PropTypes.string,
   numberOfLines: PropTypes.number,
   renderActions: PropTypes.func,
   style: PropTypes.object,
@@ -63,7 +66,7 @@ FullGridRowItemView.propTypes = {
 };
 
 FullGridRowItemView.defaultProps = {
-  imageSource: null,
+  imageUrl: null,
   numberOfLines: 2,
   subtitle: '',
   style: {},

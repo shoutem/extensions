@@ -1,10 +1,10 @@
 {
   "name": "navigation",
-  "version": "4.0.7",
-  "platform": "^5",
+  "version": "5.0.1",
+  "platform": ">=6",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "* Adjusted styling of icons in builder settings page",
+  "releaseNotes": "*  Fixed user groups missing tab bar navigation items in edge cases",
   "description": "App-level navigation",
   "dependencies": [
     "shoutem.application",
@@ -193,6 +193,24 @@
     {
       "name": "TileGrid",
       "type": "native-component"
+    }
+  ],
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
     }
   ],
   "settings": {

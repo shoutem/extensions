@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { getExtensionSettings } from 'shoutem.application';
 import { ext, MISSING_PERMISSIONS_ERROR } from './const';
 import { actions } from './redux';
-import { getCurrentLocation, fetchUserAddress } from './services';
+import { fetchUserAddress, getCurrentLocation } from './services';
 
 function getExtensionState(state) {
   return _.get(state, ext(), {});
@@ -24,8 +24,8 @@ export function appDidMount(app) {
 
   return getCurrentLocation()
     .then(currentLocation => {
-      const latitude = currentLocation.coords.latitude;
-      const longitude = currentLocation.coords.longitude;
+      const { latitude } = currentLocation.coords;
+      const { longitude } = currentLocation.coords;
 
       fetchUserAddress(geocoderApiKey, longitude, latitude).then(address => {
         const country = _.get(address, 'Country');

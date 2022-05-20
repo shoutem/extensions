@@ -1,11 +1,11 @@
 {
   "name": "menu",
   "title": "Restaurant menu",
-  "version": "4.1.0",
-  "platform": "^5",
+  "version": "5.0.0",
+  "platform": ">=6",
   "icon": "./server/assets/images/add-menu-items-image.png",
   "description": "Show a restaurant menu",
-  "releaseNotes": "* Added placeholder for list items with no image",
+  "releaseNotes": "*  Added support for new extension scoped theming",
   "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
   "categories": ["content"],
   "i18n": {

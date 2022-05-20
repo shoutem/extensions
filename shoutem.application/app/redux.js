@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
+import { createSelector } from 'reselect';
 import {
   find,
   getCollection,
@@ -142,6 +143,10 @@ export function appInitQueue(
   }
 }
 
+export const getExtensionState = state => {
+  return state[ext()];
+};
+
 /**
  * A selector that returns extension settings of the currently running application.
  *
@@ -149,13 +154,15 @@ export function appInitQueue(
  * @param extensionName The name of the currently running application
  * @returns {*} Settings of application
  */
-export const getExtensionSettings = (state, extensionName) => {
-  return _.get(
-    state[ext()],
-    ['extensions', extensionName, 'attributes', 'settings'],
-    {},
-  );
-};
+export const getExtensionSettings = createSelector(
+  [getExtensionState, (_state, extensionName) => extensionName],
+  (extension, extensionName) =>
+    _.get(
+      extension,
+      ['extensions', extensionName, 'attributes', 'settings'],
+      {},
+    ),
+);
 
 export function getExtensionCloudUrl(state, extensionName) {
   return _.get(state[ext()], [
@@ -187,11 +194,14 @@ export function getExtensionServiceUrl(state, extensionName, serviceName) {
  * @param state The redux state
  * @returns {Array} Shortcuts of the application
  */
-export const getAllShortcuts = state => {
-  const allShortcuts = _.keys(state[ext()].shortcuts);
+export const getAllShortcuts = _.memoize(
+  state => {
+    const allShortcuts = _.keys(state[ext()].shortcuts);
 
-  return getCollection(allShortcuts, state, SHORTCUTS_SCHEMA);
-};
+    return getCollection(allShortcuts, state, SHORTCUTS_SCHEMA);
+  },
+  state => state[ext()].configuration.value,
+);
 
 // create reducer with wanted default configuration
 const reducer = combineReducers({

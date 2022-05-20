@@ -1,11 +1,11 @@
 {
   "name": "persist",
-  "version": "4.0.1",
-  "platform": "^4 || ^5",
+  "version": "4.0.2",
+  "platform": ">=4",
   "type": "system",
   "title": "Persist",
   "description": "Extensions that persist redux state",
-  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
+  "releaseNotes": "*  Added support for new extension scoped theming",
   "icon": "server/assets/add-persist-image.png",
   "dependencies": [],
   "categories": []

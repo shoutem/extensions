@@ -1,0 +1,317 @@
+{
+  "title": "Navigation theme",
+  "formats": {
+    "font": {
+      "default": {
+        "fontFamily": "Rubik-Regular",
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+        "fontSize": 20,
+        "color": "#222222"
+      },
+      "constraints": {
+        "fontFamily": {
+          "enum": [
+            "Rubik-Regular",
+            "NotoSans",
+            "NotoSerif",
+            "System Font"
+          ]
+        },
+        "fontStyle": {
+          "enum": [
+            "normal",
+            "italic"
+          ]
+        },
+        "fontWeight": {
+          "enum": [
+            "normal",
+            "bold",
+            "100",
+            "200",
+            "300",
+            "400",
+            "500",
+            "600",
+            "700",
+            "800",
+            "900"
+          ]
+        },
+        "fontSize": {
+          "minimum": 10,
+          "maximum": 48
+        }
+      }
+    },
+    "dropdown": {
+      "default": {
+        "dropdownValue": "dark"
+      },
+      "constraints": {
+        "dropdownValue": {
+          "enum": [
+            "light",
+            "dark"
+          ]
+        }
+      }
+    }
+  },
+  "properties": {
+    "navBarBackground": {
+      "type": "string",
+      "title": "Background color",
+      "format": "color",
+      "default": "@navBarBackground"
+    },
+    "navBarBorderColor": {
+      "type": "string",
+      "title": "Header bottom border color",
+      "format": "color",
+      "default": "@navBarBorderColor"
+    },
+    "navBarText": {
+      "type": "object",
+      "title": "Title",
+      "format": "font",
+      "default": "@navBarText"
+    },
+    "statusBarColor": {
+      "type": "string",
+      "title": "Notch status bar color (used when background image is present)",
+      "format": "color",
+      "default": "@statusBarColor"
+    },
+    "statusBarStyle": {
+      "type": "object",
+      "title": "Status bar text (battery, time, carrier)",
+      "format": "dropdown",
+      "default": "@statusBarStyle"
+    },
+    "navBarIconsColor": {
+      "type": "string",
+      "title": "Icons color",
+      "format": "color",
+      "default": "@navBarIconsColor"
+    },
+    "featuredNavBarTitleColor": {
+      "type": "string",
+      "title": "Title color for featured layouts",
+      "format": "color",
+      "default": "@featuredNavBarTitleColor"
+    },
+    "featuredNavBarIconsColor": {
+      "type": "string",
+      "title": "Icons color for featured layouts",
+      "format": "color",
+      "default": "@featuredNavBarIconsColor"
+    },
+    "mainNavBackground": {
+      "type": "string",
+      "title": "Background color",
+      "format": "color",
+      "default": "@mainNavBackground"
+    },
+    "mainNavItemIconColor": {
+      "type": "string",
+      "title": "Item icon color",
+      "format": "color",
+      "default": "@mainNavItemIconColor"
+    },
+    "mainNavItemTextColor": {
+      "type": "string",
+      "title": "Item text color",
+      "format": "color",
+      "default": "@mainNavItemTextColor"
+    },
+    "mainNavItemBackground": {
+      "type": "string",
+      "title": "Item background color",
+      "format": "color",
+      "default": "@mainNavItemBackground"
+    },
+    "mainNavSelectedItemBackground": {
+      "type": "string",
+      "title": "Selected item background color",
+      "format": "color",
+      "default": "@mainNavSelectedItemBackground"
+    },
+    "mainNavSelectedItemIconColor": {
+      "type": "string",
+      "title": "Selected item icon color",
+      "format": "color",
+      "default": "@mainNavSelectedItemIconColor"
+    },
+    "mainNavSelectedItemTextColor": {
+      "type": "string",
+      "title": "Selected item text color",
+      "format": "color",
+      "default": "@mainNavSelectedItemTextColor"
+    },
+    "mainNavSelectedItemBorderColor": {
+      "type": "string",
+      "title": "Tab Bar selected item border color",
+      "format": "color",
+      "default": "@mainNavSelectedItemBorderColor"
+    },
+    "mainNavBorderColor": {
+      "type": "string",
+      "title": "Tab Bar border color",
+      "format": "color",
+      "default": "@mainNavBorderColor"
+    },
+    "subNavItemColor": {
+      "type": "string",
+      "title": "Item text and icon color",
+      "format": "color",
+      "default": "@subNavItemColor"
+    },
+    "subNavItemBackground": {
+      "type": "string",
+      "title": "Item background color",
+      "format": "color",
+      "default": "@subNavItemBackground"
+    },
+    "subNavListBorderColor": {
+      "type": "string",
+      "title": "List layout border color",
+      "format": "color",
+      "default": "@subNavListBorderColor"
+    },
+    "gridItemVerticalGutter": {
+      "type": "number",
+      "title": "Grid layout item vertical offset",
+      "format": "number",
+      "default": 24
+    },
+    "gridItemHorizontalGutter": {
+      "type": "number",
+      "title": "Grid layout item horizontal offset",
+      "format": "number",
+      "default": 17
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Navigation bar (header)",
+        "properties": [
+          "statusBarColor",
+          "navBarText",
+          {
+            "name": "navBarIconsColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "featuredNavBarTitleColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "featuredNavBarIconsColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "navBarBackground",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "navBarBorderColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "statusBarStyle",
+            "inline": true,
+            "size": 6
+          }
+        ]
+      },
+      {
+        "title": "Tab Bar and Drawer layouts",
+        "properties": [
+          {
+            "name": "mainNavBackground",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "mainNavItemIconColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "mainNavItemTextColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "mainNavItemBackground",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "mainNavBorderColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "mainNavSelectedItemIconColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "mainNavSelectedItemTextColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "mainNavSelectedItemBackground",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "mainNavSelectedItemBorderColor",
+            "inline": true,
+            "size": 6
+          }
+        ]
+      },
+      {
+        "title": "List, Card list, Icon grid and Tile grid layouts",
+        "properties": [
+          {
+            "name": "subNavItemColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "subNavItemBackground",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "subNavListBorderColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "gridItemVerticalGutter",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "gridItemHorizontalGutter",
+            "inline": true,
+            "size": 6
+          }
+        ]
+      }
+    ]
+  }
+}

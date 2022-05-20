@@ -1,0 +1,21 @@
+{
+  "title": "Theme",
+  "properties": {
+    "likeButtonFillColor": {
+      "type": "string",
+      "title": "Color of like button when status is liked",
+      "format": "color",
+      "default": "@likeButtonFillColor"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Social",
+        "properties": [
+          "likeButtonFillColor"
+        ]
+      }
+    ]
+  }
+}

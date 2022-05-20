@@ -1,6 +1,6 @@
 {
   "name": "shoutem.in-app-purchases",
-  "version": "4.0.5",
+  "version": "5.0.1",
   "scripts": {
     "lint": "eslint --no-eslintrc src/**/*.{js,jsx}",
     "clean": "rimraf ./build/*",
@@ -49,7 +49,7 @@
   "dependencies": {
     "@shoutem/assets-sdk": "^1.0.1",
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "0.12.4",
+    "@shoutem/react-web-ui": "1.0.1",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-composers": "^0.1.6",
     "@shoutem/redux-io": "^3.2.1",

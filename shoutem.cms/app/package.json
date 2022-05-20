@@ -1,7 +1,6 @@
 {
   "name": "shoutem.cms",
-  "version": "4.2.1",
-  "description": "Shoutem CMS extension",
+  "version": "5.0.1",
   "dependencies": {
     "@react-native-community/geolocation": "2.0.2"
   },

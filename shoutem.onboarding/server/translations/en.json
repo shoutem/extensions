@@ -24,7 +24,10 @@
       "onboarding-components-empty-state-settings-page.title": "Improve UX with Onboarding",
       "onboarding-components-empty-state-settings-page.message": "Onboarding pages are displayed on first app launch and can help you make a good first impression. So, put yourself in your users’ shoes and demonstrate all the amazing features your app has to offer.",
       "onboarding-components-empty-state-settings-page.button-label": "Enable",
-      "onboarding-components-empty-state-settings-page.error-message": "Ooops, something went wrong!"
+      "onboarding-components-empty-state-settings-page.error-message": "Ooops, something went wrong!",
+      "Onboarding title text color": "Onboarding title text color",
+      "Onboarding description text color": "Onboarding description text color",
+      "Onboarding": "Onboarding"
     }
   }
 }

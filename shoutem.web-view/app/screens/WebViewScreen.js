@@ -13,6 +13,7 @@ import { getRouteParams } from 'shoutem.navigation';
 import { AppContextProvider } from 'shoutem-core';
 import NavigationToolbar from '../components/NavigationToolbar';
 import { ext } from '../const';
+import { parseUrl } from '../services';
 
 function renderPlaceholderView() {
   return <EmptyStateView message={I18n.t(ext('noUrlErrorMessage'))} />;
@@ -160,9 +161,12 @@ export class WebViewScreen extends PureComponent {
     return { ...defaultWebViewProps, ...webViewProps };
   }
 
-  renderWebView() {
+  renderWebView(appContext) {
     const { url } = this.getSettings();
-    const resolvedUrl = url?.uri || url;
+
+    const ownUser = _.get(appContext, ['shoutem.auth', 'user']);
+
+    const resolvedUrl = parseUrl(url, ownUser);
 
     if (resolvedUrl.includes('.pdf')) {
       // TODO: Move to and then get from theme.
@@ -171,11 +175,7 @@ export class WebViewScreen extends PureComponent {
       return <Pdf source={{ uri: url }} style={pdfStyle} />;
     }
 
-    return (
-      <AppContextProvider>
-        {context => <WebView {...this.resolveWebViewProps(context)} />}
-      </AppContextProvider>
-    );
+    return <WebView {...this.resolveWebViewProps(appContext)} />;
   }
 
   renderWebNavigation() {
@@ -196,13 +196,12 @@ export class WebViewScreen extends PureComponent {
   }
 
   renderBrowser() {
-    const webView = this.renderWebView();
-    const webNavigationControls = this.renderWebNavigation();
-
     return (
       <View styleName="flexible">
-        {webView}
-        {webNavigationControls}
+        <AppContextProvider>
+          {context => this.renderWebView(context)}
+        </AppContextProvider>
+        {this.renderWebNavigation()}
       </View>
     );
   }

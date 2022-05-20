@@ -1,10 +1,10 @@
 {
   "name": "loyalty",
-  "version": "4.1.0",
-  "platform": "^5",
+  "version": "5.0.1",
+  "platform": ">=6",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "releaseNotes": "* Added placeholder for list items with no image",
+  "releaseNotes": "* Adjusted endpoint resolution, no user facing changes",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",
@@ -14,13 +14,20 @@
     "shoutem.layouts",
     "shoutem.navigation",
     "shoutem.redux",
-    "shoutem.web-view"
+    "shoutem.web-view",
+    "shoutem.theme"
   ],
   "categories": ["commerce"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
   },
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -260,6 +267,16 @@
     {
       "page": "@.TransactionsPage",
       "title": "Points"
+    },
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
     }
   ],
   "dataSchemas": [
@@ -302,8 +319,6 @@
     }
   ],
   "settings": {
-    "apiEndpoint": "loyalty.api.shoutem.com",
-    "cmsEndpoint": "v4.api.shoutem.com",
     "rules": [
       {
         "ruleType": "visit",

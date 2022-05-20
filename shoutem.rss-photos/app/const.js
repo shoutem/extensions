@@ -10,3 +10,4 @@ export const PHOTO_DETAILS_SCREEN = ext('PhotoDetails');
 export const PHOTOS_LIST_SCREEN = ext('PhotosList');
 export const PHOTOS_SCHEMA_ITEM = 'Photo';
 export const RSS_PHOTOS_SCHEMA = 'shoutem.proxy.photos';
+export const PHOTOS_COLLECTION_TAG = 'allPhotos';

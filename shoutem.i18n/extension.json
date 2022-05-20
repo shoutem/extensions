@@ -1,9 +1,9 @@
 {
   "name": "i18n",
   "title": "Language & Region",
-  "version": "4.0.3",
-  "platform": "^4 || ^5",
-  "releaseNotes": "* Switched to localized strings instead of default empty list strings for language selection screen",
+  "version": "4.0.4",
+  "platform": ">=4",
+  "releaseNotes": "*  Added support for new extension scoped theming",
   "description": "Configure the language and regional settings of your app.",
   "dependencies": ["shoutem.application"],
   "icon": "server/assets/add-translation.png",

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.navigation",
-  "version": "4.0.7",
+  "version": "5.0.1",
   "description": "Main navigation",
   "dependencies": {
     "@react-native-community/masked-view": "0.1.10",

@@ -12,13 +12,19 @@ export function getMappedCmsToCsvProperties(schema) {
   const schemaPropertyKeys = getSchemaPropertyKeys(schema);
   const mappedOptions = [];
 
+  // add categories import
+  mappedOptions.push({
+    value: 'categories',
+    label: i18next.t(LOCALIZATION.CATEGORY_SELECTOR_TITLE),
+  });
+
   _.forEach(schemaPropertyKeys, schemaPropertyKey => {
     const schemaProperty = getSchemaProperty(schema, schemaPropertyKey);
 
     if (
       schemaProperty.type === PROPERTY_TYPES.OBJECT &&
       schemaProperty.referencedSchema ===
-      PROPERTY_REFERENCED_SCHEMAS.IMAGE_ATTACHMENT
+        PROPERTY_REFERENCED_SCHEMAS.IMAGE_ATTACHMENT
     ) {
       const value = `${schemaPropertyKey}.url`;
       mappedOptions.push({ value, label: schemaProperty.title });
@@ -29,7 +35,7 @@ export function getMappedCmsToCsvProperties(schema) {
     if (
       schemaProperty.type === PROPERTY_TYPES.OBJECT &&
       schemaProperty.referencedSchema ===
-      PROPERTY_REFERENCED_SCHEMAS.VIDEO_ATTACHMENT
+        PROPERTY_REFERENCED_SCHEMAS.VIDEO_ATTACHMENT
     ) {
       const value = `${schemaPropertyKey}.url`;
       mappedOptions.push({ value, label: schemaProperty.title });

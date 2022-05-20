@@ -1,11 +1,11 @@
 // Constants `screens` and `reducer` are exported via named export
 // It is important to use those exact names
 
+import Rubicon, { defaultThemeVariables } from './themes/Rubicon';
+
 export const screens = {};
 
 export const reducer = {};
-
-import Rubicon, { defaultThemeVariables } from './themes/Rubicon';
 const getTheme = Rubicon;
 const themes = {
   Rubicon,
@@ -14,8 +14,4 @@ const themes = {
   RubiconRose: Rubicon,
 };
 
-export {
-  getTheme,
-  defaultThemeVariables,
-  themes,
-};
+export { defaultThemeVariables, getTheme, themes };

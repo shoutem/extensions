@@ -1,4 +1,10 @@
-import { Decorators, NavigationStacks } from 'shoutem.navigation';
+import React from 'react';
+import _ from 'lodash';
+import {
+  Decorators,
+  HeaderBackButton,
+  NavigationStacks,
+} from 'shoutem.navigation';
 import { ext } from './const';
 import { SubscriptionsScreen } from './screens';
 import { withSubscriptionRequired } from './services';
@@ -13,4 +19,15 @@ NavigationStacks.registerNavigationStack({
       component: SubscriptionsScreen,
     },
   ],
+  screenOptions: navParams => {
+    const onCancel = _.get(navParams, 'route.params.onCancel');
+
+    return {
+      title: null,
+      headerLeft: _.get(navParams, 'route.params.canGoBack', false)
+        ? props => <HeaderBackButton {...props} onPress={onCancel} />
+        : null,
+    };
+  },
+  rootStack: false,
 });

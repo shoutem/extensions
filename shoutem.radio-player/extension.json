@@ -1,12 +1,14 @@
 {
   "name": "radio-player",
   "title": "Radio+",
-  "version": "5.0.1",
-  "platform": ">=5.3.0",
+  "version": "6.0.0",
+  "platform": ">=6",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
-  "releaseNotes": "* Added sleep timer functionality\n* Breaking change for developers - Radio screen is now functional component, class inheritance no longer possible (can't extend)",
+  "releaseNotes": "* Fixed metadata not being shown occasionally\n* Added platform 6.x support",
   "icon": "server/assets/add-radio-image.png",
-  "categories": ["media"],
+  "categories": [
+    "media"
+  ],
   "dependencies": [
     "shoutem.audio",
     "shoutem.i18n",
@@ -23,14 +25,18 @@
       "name": "Radio",
       "title": "Radio with chosen static background image",
       "image": "./server/assets/layouts/static-background-image-radio.png",
-      "settings": { "disableAdBanner": true }
+      "settings": {
+        "disableAdBanner": true
+      }
     },
     {
       "name": "ArtworkRadioScreen",
       "title": "Radio with dynamic artwork background image",
       "image": "./server/assets/layouts/dynamic-artwork-background-image-radio.png",
       "extends": "@.Radio",
-      "settings": { "disableAdBanner": true }
+      "settings": {
+        "disableAdBanner": true
+      }
     }
   ],
   "shortcuts": [
@@ -62,6 +68,24 @@
     {
       "name": "RadioShortcutPage",
       "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
+    }
+  ],
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
     }
   ]
 }

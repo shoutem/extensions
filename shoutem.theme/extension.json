@@ -1,11 +1,54 @@
 {
   "name": "theme",
-  "version": "4.2.1",
-  "platform": ">=5.3.0",
+  "version": "5.0.0",
+  "platform": ">=6",
   "type": "system",
   "title": "Theme",
   "description": "Resolve and store theme related configuration",
-  "releaseNotes": "* Updated UI library version to 5.0.0",
+  "releaseNotes": "* Implemented new theming architecture",
   "icon": "server/assets/add-theme-image.png",
-  "categories": []
+  "categories": [],
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shoutem/extensions"
+  },
+  "pages": [
+    {
+      "name": "ExtensionThemeSettingsPage",
+      "type": "react-page"
+    },
+    {
+      "name": "ThemeSelectionPage",
+      "type": "react-page"
+    }
+  ],
+  "screens": [
+    {
+      "name": "ThemePickerScreen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "title": "Select theme",
+      "name": "themes",
+      "screen": "@.ThemePickerScreen",
+      "icon": "theme://members.png"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.ThemeSelectionPage",
+      "title": "Settings"
+    }
+  ],
+  "settings": {
+    "selectionEnabled": false,
+    "autoSelectEnabled": false,
+    "lightThemeId": null,
+    "darkThemeId": null
+  }
 }

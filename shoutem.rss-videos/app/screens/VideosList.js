@@ -1,13 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBind from 'auto-bind';
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { find, next, shouldRefresh } from '@shoutem/redux-io';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
 import LargeVideoView from '../components/LargeVideoView';
-import { ext, RSS_VIDEOS_SCHEMA } from '../const';
-import { getVideosFeed, fetchVideosFeed } from '../redux';
+import { ext, RSS_VIDEOS_SCHEMA, VIDEOS_COLLECTION_TAG } from '../const';
+import { getVideosFeed } from '../redux';
 
 export class VideosList extends RssListScreen {
   static propTypes = {
@@ -19,17 +18,10 @@ export class VideosList extends RssListScreen {
     this.state = {
       ...this.state,
       schema: RSS_VIDEOS_SCHEMA,
+      tag: VIDEOS_COLLECTION_TAG,
     };
 
     autoBind(this);
-  }
-
-  componentDidMount() {
-    const { data, fetchVideosFeed, shortcutId } = this.props;
-
-    if (shouldRefresh(data)) {
-      fetchVideosFeed(shortcutId);
-    }
   }
 
   openDetailsScreen(video) {
@@ -60,10 +52,6 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = {
-  find,
-  next,
-  fetchVideosFeed,
-};
+export const mapDispatchToProps = RssListScreen.createMapDispatchToProps();
 
 export default connect(mapStateToProps, mapDispatchToProps)(VideosList);

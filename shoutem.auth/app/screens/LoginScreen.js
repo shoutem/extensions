@@ -11,7 +11,6 @@ import { I18n } from 'shoutem.i18n';
 import {
   BackHandlerAndroid,
   getRouteParams,
-  HeaderBackButton,
   navigateTo,
   withIsFocused,
 } from 'shoutem.navigation';
@@ -49,15 +48,12 @@ export class LoginScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { canGoBack, clearAuthState, navigation, user } = this.props;
+    const { clearAuthState, navigation, user } = this.props;
 
     BackHandlerAndroid.addListener(this.handleAndroidBackPress);
 
     navigation.setOptions({
       title: I18n.t(ext('logInNavBarTitle')),
-      headerLeft: canGoBack
-        ? props => <HeaderBackButton {...props} onPress={this.handleCancel} />
-        : null,
     });
 
     if (!!user && !user.approved) {
@@ -131,16 +127,15 @@ export class LoginScreen extends PureComponent {
       return userAuthenticatedLimited();
     }
 
-    return userLoggedIn({
+    userLoggedIn({
       user,
       access_token,
       callback: onLoginSuccess,
-    })
-      .then(() => {
-        saveSession(JSON.stringify({ access_token }));
-        hideShortcuts(user);
-      })
-      .finally(() => this.setState({ inProgress: false }));
+    });
+    saveSession(JSON.stringify({ access_token }));
+    hideShortcuts(user);
+
+    return this.setState({ inProgress: false });
   }
 
   handleLoginFailed({ payload }) {

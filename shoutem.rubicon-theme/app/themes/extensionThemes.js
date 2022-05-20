@@ -1,0 +1,3 @@
+const extensionThemes = {};
+
+export { extensionThemes };

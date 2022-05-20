@@ -180,8 +180,11 @@ export class PageScreen extends PureComponent {
   }
 
   getNavBarProps() {
-    const { data, showTitle } = this.props;
-    const { title = '' } = getRouteParams(this.props);
+    const {
+      data,
+      shortcut: { title = '' },
+      showTitle,
+    } = this.props;
 
     const resolvedTitle = showTitle ? title : '';
 
@@ -333,7 +336,6 @@ export class PageScreen extends PureComponent {
   renderNavigationOnly() {
     const {
       executeShortcut,
-      isFocused,
       navigationLayoutType,
       route,
       shortcut,
@@ -365,7 +367,6 @@ export class PageScreen extends PureComponent {
   renderAboutInfo(profile) {
     const {
       executeShortcut,
-      isFocused,
       shortcut,
       navigationLayoutType,
       route,

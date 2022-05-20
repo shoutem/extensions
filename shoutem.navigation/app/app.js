@@ -1,18 +1,19 @@
 import React from 'react';
 import { Image } from 'react-native';
+import { connect } from 'react-redux';
 import _ from 'lodash';
-import { getExtensionSettings } from 'shoutem.application/redux';
+import PropTypes from 'prop-types';
 import { getAllShortcuts, getFirstShortcut } from 'shoutem.application';
+import { getExtensionSettings } from 'shoutem.application/redux';
 import { ext } from './const';
 import { RouteConfigProvider } from './providers';
 
-export function render(app) {
-  const screens = app.getScreens();
-  const state = app.getState();
-  const settings = getExtensionSettings(state, ext());
-  const shortcuts = getAllShortcuts(state);
-  const firstShortcut = getFirstShortcut(state);
-
+const NavigationProvider = ({
+  settings,
+  shortcuts,
+  firstShortcut,
+  screens,
+}) => {
   const hasNavBarImage = !_.isEmpty(settings.backgroundImage);
 
   if (hasNavBarImage) {
@@ -28,4 +29,36 @@ export function render(app) {
       navBarSettings={settings}
     />
   );
+};
+
+NavigationProvider.propTypes = {
+  screens: PropTypes.object.isRequired,
+  firstShortcut: PropTypes.object,
+  settings: PropTypes.object,
+  shortcuts: PropTypes.array,
+};
+
+NavigationProvider.defaultProps = {
+  settings: {},
+  shortcuts: [],
+  firstShortcut: undefined,
+};
+
+const ConnectedNavigationProvider = connect(
+  mapStateToProps,
+  null,
+)(NavigationProvider);
+
+function mapStateToProps(state) {
+  return {
+    settings: getExtensionSettings(state, ext()),
+    shortcuts: getAllShortcuts(state),
+    firstShortcut: getFirstShortcut(state),
+  };
+}
+
+export function render(app) {
+  const screens = app.getScreens();
+
+  return <ConnectedNavigationProvider screens={screens} />;
 }

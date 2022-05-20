@@ -1,7 +1,10 @@
 {
   "name": "shoutem.salesforce",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Salesforce Marketing Cloud",
+  "scripts": {
+    "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
+  },
   "dependencies": {
     "react-native-marketingcloudsdk": "7.4.0"
   },

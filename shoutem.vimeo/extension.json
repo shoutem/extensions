@@ -1,10 +1,10 @@
 {
   "name": "vimeo",
   "title": "Vimeo",
-  "version": "4.1.0",
-  "platform": "^4 || ^5",
+  "version": "5.1.0",
+  "platform": ">=6.0.1",
   "description": "Show videos from Vimeo",
-  "releaseNotes": "* Added placeholder for list items with no image",
+  "releaseNotes": "* Reworked RSS feed resolution resulting in more optimised feed fetching and parsing",
   "icon": "server/assets/add-videos-vimeo-image.png",
   "dependencies": ["shoutem.layouts", "shoutem.navigation", "shoutem.rss"],
   "categories": ["media"],
@@ -74,8 +74,5 @@
       "type": "native-component",
       "path": "dummy.js"
     }
-  ],
-  "settings": {
-    "baseApiEndpoint": "http://api.shoutem.com"
-  }
+  ]
 }

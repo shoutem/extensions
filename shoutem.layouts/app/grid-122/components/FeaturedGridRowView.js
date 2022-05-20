@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { assets } from '../../assets';
 import { ext } from '../../const';
 
 export function FeaturedGridRowItemView({
@@ -22,6 +23,8 @@ export function FeaturedGridRowItemView({
   numberOfLines,
   style,
 }) {
+  const imageSource = imageUrl ? { uri: imageUrl } : assets.noImagePlaceholder;
+
   function handlePress() {
     if (onPress) {
       onPress(id);
@@ -35,7 +38,7 @@ export function FeaturedGridRowItemView({
       styleName="flexible"
       style={style.container}
     >
-      <ImageBackground style={style.imageContainer} source={{ uri: imageUrl }}>
+      <ImageBackground style={style.imageContainer} source={imageSource}>
         <Tile>
           <View styleName="actions" virtual>
             {!!renderActions && renderActions(id)}

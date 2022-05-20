@@ -98,8 +98,8 @@ export const shoutem = {
   },
 };
 
-export { appDidMount, appWillUnmount, renderProvider } from './app';
-export { AuthContext as context } from './providers';
+export { appDidMount, appWillUnmount } from './app';
+export { AuthContext as context, renderProvider } from './providers';
 
 export {
   appScreens,

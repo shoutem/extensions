@@ -1,6 +1,6 @@
 {
   "name": "shoutem.i18n",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "description": "Configure the language and regional settings of your app.",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
@@ -48,7 +48,7 @@
   "dependencies": {
     "@shoutem/assets-sdk": "^1.0.1",
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "0.12.4",
+    "@shoutem/react-web-ui": "1.0.1",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-composers": "^0.1.6",
     "@shoutem/redux-io": "^3.2.0",

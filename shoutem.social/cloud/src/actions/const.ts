@@ -9,6 +9,11 @@ export enum SOCIAL_ACTION_TYPES {
   COMMENT = 'COMMENT'
 };
 
+export enum SOCIAL_NOTIFICATION_TYPES {
+  LIKE = 'ShoutLike',
+  COMMENT = 'ShoutComment'
+}
+
 export enum NOTIFICATION_TITLES {
   LIKE = ' liked your status',
   COMMENT = ' commented on your status'

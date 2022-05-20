@@ -1,11 +1,11 @@
 {
   "name": "push-notifications",
-  "version": "4.0.1",
-  "platform": "^4 || ^5",
+  "version": "4.0.2",
+  "platform": ">=4",
   "type": "system",
   "title": "Push Notifications",
   "description": "Base extension for push notifications",
-  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
+  "releaseNotes": "* Added platform 6.x support",
   "icon": "server/assets/add-push-notifications-image.png",
   "dependencies": [
     "shoutem.application",

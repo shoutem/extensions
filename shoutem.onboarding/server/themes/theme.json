@@ -1,0 +1,28 @@
+{
+  "title": "Theme",
+  "properties": {
+    "onboardingTitleTextColor": {
+      "type": "string",
+      "title": "Onboarding title text color",
+      "format": "color",
+      "default": "@onboardingTitleTextColor"
+    },
+    "onboardingDescriptionTextColor": {
+      "type": "string",
+      "title": "Onboarding description text color",
+      "format": "color",
+      "default": "@onboardingDescriptionTextColor"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Onboarding",
+        "properties": [
+          "onboardingTitleTextColor",
+          "onboardingDescriptionTextColor"
+        ]
+      }
+    ]
+  }
+}

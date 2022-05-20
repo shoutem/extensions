@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { EmptyStateView, ListView, View } from '@shoutem/ui';
-import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import { mapDataFor122Layout } from './services';
 

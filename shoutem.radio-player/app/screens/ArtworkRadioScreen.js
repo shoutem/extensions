@@ -90,19 +90,26 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
   }
 
   async function handleMetadataChange(metadata, manually = false) {
-    const { artist = '', title = '' } = metadata;
-    const { streamUrl } = route.params.shortcut.settings;
-
     if (manually) {
-      LayoutAnimation.easeInEaseOut();
+      // We have to set full state again, because screen is unmounted in
+      // non-tab layouts. RadioPlayer keeps playing in background and has all metadata
+      // from when it was started
+      const { artist, artwork: activeArtwork, songName } = metadata;
+
+      setArtist(artist);
+      setSongName(songName);
+      setArtwork(activeArtwork);
+
       return;
     }
+
+    const { artist = '', title = '' } = metadata;
+    const { streamUrl } = route.params.shortcut.settings;
 
     const artwork = await getTrackArtwork(title);
     // Resize so the image looks proper. iTunes always returns
     // image size inside image url
     const resizedArtwork = artwork?.replace('100x100', '500x500');
-
     const id = slugify(`${streamUrl}`);
 
     dispatch(
@@ -113,12 +120,12 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
       }),
     );
 
-    setArtist(artist);
-    setSongName(title);
+    setArtwork({ uri: resizedArtwork });
 
     LayoutAnimation.easeInEaseOut();
 
-    setArtwork({ uri: resizedArtwork });
+    setArtist(artist);
+    setSongName(title);
   }
 
   function shouldResetPlayer() {

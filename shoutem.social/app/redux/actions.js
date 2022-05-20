@@ -23,7 +23,7 @@ import {
   USERS_SEARCH_SCHEMA,
 } from '../const';
 import { shoutemApi } from '../services/shoutemApi';
-import { getStatus } from './selectors';
+import { getBlockedUsersIds, getStatus } from './selectors';
 
 const ASSET_POLICIES = 'shoutem.core.asset-policies';
 const IMAGE_PARAMS = {
@@ -153,6 +153,27 @@ export function loadUser(userId) {
 
 export function loadUsers() {
   return find(USER_SCHEMA, 'users');
+}
+
+export function loadBlockedUsers() {
+  return (dispatch, getState) => {
+    const state = getState();
+    const blockedUsersIds = getBlockedUsersIds(state);
+    const queryParam = `filter[legacyId]=${blockedUsersIds.join(',')}`;
+
+    const config = {
+      schema: USER_SCHEMA,
+      request: {
+        method: 'GET',
+        endpoint: shoutemApi.buildAuthUrl('users', queryParam),
+        headers: {
+          Accept: 'application/vnd.api+json',
+        },
+      },
+    };
+
+    return dispatch(find(config, 'blockedUsers'));
+  };
 }
 
 export function searchUsers(searchTerm) {
@@ -477,7 +498,7 @@ export function createAssetPolicy(path) {
     const config = {
       schema: ASSET_POLICIES,
       request: {
-        endpoint: shoutemApi.buildAppsUrl('/v1/asset-policies'),
+        endpoint: shoutemApi.buildAppsUrl('v1/asset-policies'),
         headers: {
           Accept: 'application/vnd.api+json',
           'Content-Type': 'application/vnd.api+json',
@@ -494,6 +515,7 @@ export function createAssetPolicy(path) {
         contentType: 'image/jpg',
       },
     };
+
     return dispatch(create(config, newAsset));
   };
 }

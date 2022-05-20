@@ -1,14 +1,14 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "6.0.1",
-  "platform": ">=5.3.0",
-  "skipClone": false,
-  "releaseNotes": "* Improved various UX and UI elements\n* For developers - switched to pre-uploading attachments to s3, then sending image link to create status/comment",
+  "version": "7.0.1",
+  "platform": ">=6",
   "nativeChanges": {
     "lastVersion": "6.0.0",
     "settingsKeys": []
   },
+  "skipClone": false,
+  "releaseNotes": "* Adjusted endpoint resolution, no user facing changes",
   "description": "Let members create posts, comment and like them",
   "categories": ["users"],
   "dependencies": [
@@ -98,6 +98,22 @@
     {
       "page": "@.SocialSettingsPage",
       "title": "Settings"
+    },
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
+    }
+  ],
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
     }
   ],
   "pages": [
@@ -117,7 +133,6 @@
     }
   ],
   "settings": {
-    "authApiEndpoint": "auth.api.shoutem.com",
     "maxStatusLength": 140,
     "enablePhotoAttachments": true,
     "enableComments": true,

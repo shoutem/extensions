@@ -27,8 +27,8 @@ function isSignupEnabled(nextSettings, settings) {
 }
 
 function resolveAuthApiEndpoint(nextSettings, settings) {
-  const currentAuthApiEndpoint = _.get(settings, 'authApiEndpoint', '');
-  return _.get(nextSettings, 'authApiEndpoint', currentAuthApiEndpoint);
+  const currentAuthApiEndpoint = _.get(settings, 'services.core.auth', '');
+  return _.get(nextSettings, 'services.core.auth', currentAuthApiEndpoint);
 }
 
 export default class GeneralSettings extends Component {
@@ -129,7 +129,7 @@ export default class GeneralSettings extends Component {
 
     const { authApiEndpoint } = this.state;
     const endpointHasChanged =
-      authApiEndpoint !== this.props.extensionSettings.authApiEndpoint;
+      authApiEndpoint !== this.props.extensionSettings.services.core.auth;
 
     return (
       <div className="general-settings">

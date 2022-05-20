@@ -1,6 +1,6 @@
+import { CommonActions } from '@react-navigation/native';
 import _ from 'lodash';
 import { MODAL, navigationRef } from '../const';
-import { CommonActions } from '@react-navigation/native';
 import { getCurrentRoute, navigateTo } from './commonActions';
 
 const RegisteredNavigationStacks = [];
@@ -17,10 +17,12 @@ export function registerNavigationStack(config) {
     screens,
     screenOptions,
     navigatorOptions,
+    rootStack = true,
   } = config;
 
   RegisteredNavigationStacks.push({
     name,
+    isRootStack: rootStack,
     stack: {
       NavigationStack,
       screens,

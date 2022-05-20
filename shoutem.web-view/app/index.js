@@ -1,10 +1,8 @@
-import * as actions from './redux';
+import './navigation';
+import enTranslations from './translations/en.json';
 import * as extension from './extension';
 import { openWebViewScreen } from './middleware';
-
-import enTranslations from './translations/en.json';
-
-import './navigation';
+import * as actions from './redux';
 
 export const shoutem = {
   i18n: {
@@ -18,6 +16,6 @@ const middleware = [openWebViewScreen];
 
 const { openURL } = actions;
 
-export const screens = extension.screens;
+export const { screens } = extension;
 
-export { middleware, actions, openURL };
+export { actions, middleware, openURL };

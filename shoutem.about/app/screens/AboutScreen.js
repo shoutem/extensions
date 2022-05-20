@@ -405,5 +405,5 @@ export default withIsFocused(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-  )(connectStyle(ext('About'))(AboutScreen)),
+  )(connectStyle(ext('AboutScreen'))(AboutScreen)),
 );

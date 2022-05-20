@@ -12,12 +12,12 @@ class ShoutemApi {
     this.appId = null;
   }
 
-  init(legacyEndpoint, authApiEndpoint, cloudHost, appsHost, appId) {
+  init(legacyEndpoint, authApiEndpoint, cloudHost, appsEndpoint, appId) {
     this.legacyHost = new Uri(legacyEndpoint).host();
-    this.authHost = authApiEndpoint;
+    this.authHost = new Uri(authApiEndpoint).host();
     this.appId = appId;
     this.cloudHost = cloudHost;
-    this.appsHost = appsHost;
+    this.appsHost = new Uri(appsEndpoint).host();
   }
 
   buildUrl(path = '', queryStringParams = '') {
@@ -43,9 +43,11 @@ class ShoutemApi {
   }
 
   buildAppsUrl(path = '', queryStringParams = '') {
-    const endpoint = `${this.appsHost}${path}`;
-
-    return new Uri(endpoint).query(`${queryStringParams}`).toString();
+    return new Uri(path)
+      .protocol('https')
+      .host(this.appsHost)
+      .query(`${queryStringParams}`)
+      .toString();
   }
 }
 

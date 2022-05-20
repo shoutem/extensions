@@ -11,9 +11,9 @@ export const appWillMount = setPriority(app => {
   app.setStore(store);
 }, priorities.INIT);
 
-export function renderProvider(children) {
+export const renderProvider = setPriority(children => {
   return <StoreProvider store={store}>{children}</StoreProvider>;
-}
+}, priorities.REDUX);
 
 export function getStore() {
   return store;

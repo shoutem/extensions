@@ -1,11 +1,11 @@
 {
   "name": "rss",
-  "version": "4.0.1",
-  "platform": "^4 || ^5",
+  "version": "5.0.0",
+  "platform": ">=6.0.1",
   "type": "system",
   "title": "RSS",
   "description": "Integrate with RSS feed source",
-  "releaseNotes": "* Added platform 5.0.0 platform support (no user facing changes)",
+  "releaseNotes": "* Reworked RSS feed resolution resulting in more optimised feed fetching and parsing\n* Reorganized extension's file structure & exports - breaking change",
   "icon": "server/assets/add-rss-image.png",
   "dependencies": ["shoutem.application", "shoutem.i18n"],
   "categories": ["content"],
@@ -19,8 +19,5 @@
       "type": "native-component",
       "path": "dummy.js"
     }
-  ],
-  "settings": {
-    "baseApiEndpoint": "http://v4.api.shoutem.com"
-  }
+  ]
 }

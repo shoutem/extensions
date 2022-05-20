@@ -1,8 +1,8 @@
-import React from 'react';
 import { AppState } from 'react-native';
 import rio from '@shoutem/redux-io';
 import {
   getAppId,
+  getExtensionServiceUrl,
   getExtensionSettings,
   setQueueTargetComplete,
 } from 'shoutem.application';
@@ -10,7 +10,6 @@ import { getCurrentRoute } from 'shoutem.navigation';
 import { authProviders } from './services/authProviders';
 import { shoutemApi } from './services/shoutemApi';
 import { ext } from './const';
-import { AuthProvider } from './providers';
 import {
   AUTH_TOKEN_SCHEMA,
   fetchUser,
@@ -72,7 +71,8 @@ export function appDidMount(app) {
 
   const appId = getAppId();
 
-  const { authApiEndpoint, providers } = getExtensionSettings(state, ext());
+  const { providers } = getExtensionSettings(state, ext());
+  const authApiEndpoint = getExtensionServiceUrl(state, ext(), 'auth');
 
   const providerKeys = Object.keys(providers);
 
@@ -91,7 +91,7 @@ export function appDidMount(app) {
 
   if (!authApiEndpoint) {
     // eslint-disable-next-line no-console
-    console.error(`Authentication API endpoint not set in ${ext()} settings.`);
+    console.error('Could not find auth service endpoint.');
   }
 
   shoutemApi.init(authApiEndpoint, appId);
@@ -152,8 +152,4 @@ export function appDidMount(app) {
 
 export function appWillUnmount() {
   AppState.removeEventListener('change', handleAppStateChange);
-}
-
-export function renderProvider(children) {
-  return <AuthProvider content={children} />;
 }

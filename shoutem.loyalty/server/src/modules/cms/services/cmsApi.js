@@ -17,7 +17,7 @@ export default class CmsApi {
       throw new Error(i18next.t(LOCALIZATION.ENDPOINT_REQUIRED_MESSAGE));
     }
 
-    this.endpoint = endpoint;
+    this.endpoint = new Uri(endpoint).host();
   }
 
   initSession(page) {

@@ -1,0 +1,25 @@
+{
+  "title": "Theme",
+  "properties": {
+    "gridItemBackgroundColor": {
+      "type": "string",
+      "title": "Places grid layout item - background color",
+      "format": "color",
+      "default": "@gridItemBackgroundColor"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Miscellaneous",
+        "properties": [
+          {
+            "name": "gridItemBackgroundColor",
+            "inline": true,
+            "size": 6
+          }
+        ]
+      }
+    ]
+  }
+}

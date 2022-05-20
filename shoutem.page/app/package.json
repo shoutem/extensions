@@ -1,6 +1,6 @@
 {
   "name": "shoutem.page",
-  "version": "4.0.2",
+  "version": "5.0.0",
   "description": "Shoutem extension with basic information and links",
   "peerDependencies": {
     "@shoutem/redux-io": "*",

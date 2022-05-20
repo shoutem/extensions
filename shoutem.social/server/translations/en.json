@@ -16,7 +16,8 @@
       "user-groups-table.header-name-title": "Visible groups",
       "user-groups-table.help-text": "Select the user groups whose members will be visible to users who navigate to this screen. This only applies if 'Show all users' is disabled.",
       "user-groups-table.show-all": "Show all users",
-      "user-groups-table.empty-placeholder-message": "No data to display"
+      "Color of like button when status is liked": "Color of like button when status is liked",
+      "Social": "Social"
     }
   }
 }

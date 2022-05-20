@@ -1,36 +1,22 @@
 import React from 'react';
-import autoBindReact from 'auto-bind/react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { connect } from 'react-redux';
-import { InteractionManager } from 'react-native';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import { isBusy, isInitialized } from '@shoutem/redux-io';
+import { isBusy, isInitialized, isValid, next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { ListView } from '@shoutem/ui';
+import { ListView, Spinner, View } from '@shoutem/ui';
 import { RemoteDataListScreen } from 'shoutem.application';
 import { authenticate, getUser } from 'shoutem.auth/redux';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import MemberView from '../components/MemberView';
 import { user as userShape } from '../components/shapes';
 import { ext } from '../const';
-import { unblockUser, loadUsers, selectors } from '../redux';
+import { loadBlockedUsers, selectors, unblockUser } from '../redux';
 import { openProfileForLegacyUser, openUnblockActionSheet } from '../services';
 
 export class BlockedUsers extends RemoteDataListScreen {
-  static propTypes = {
-    ...RemoteDataListScreen.propTypes,
-    data: PropTypes.arrayOf(userShape),
-    users: PropTypes.arrayOf(userShape),
-    currentUser: userShape,
-    navigation: PropTypes.object.isRequired,
-    next: _.noop,
-  };
-
-  static defaultProps = {
-    title: null,
-  };
-
   constructor(props) {
     super(props);
 
@@ -38,25 +24,20 @@ export class BlockedUsers extends RemoteDataListScreen {
   }
 
   fetchData() {
-    const { users, loadUsers } = this.props;
+    const { loadBlockedUsers } = this.props;
 
-    if (_.isEmpty(users)) {
-      InteractionManager.runAfterInteractions(() => {
-        loadUsers();
-      });
-    }
+    loadBlockedUsers();
   }
 
   componentDidMount() {
     const { navigation } = this.props;
 
     navigation.setOptions(this.getNavBarProps());
+
     this.fetchData();
   }
 
-  // Overwrite RemoteDataListScreen refreshData
-  // to avoid infinite loading
-  refreshData() {}
+  componentDidUpdate() {}
 
   getNavBarProps() {
     const {
@@ -73,11 +54,14 @@ export class BlockedUsers extends RemoteDataListScreen {
       authenticate,
       unblockUser,
       currentUser: { legacyId: currentUserId = '' },
+      loadBlockedUsers,
     } = this.props;
     const userId = _.get(user, 'legacyId');
 
     const handleUnblockUser = () =>
-      authenticate(() => unblockUser(userId, currentUserId));
+      authenticate(() =>
+        unblockUser(userId, currentUserId).then(loadBlockedUsers),
+      );
 
     return openUnblockActionSheet(handleUnblockUser);
   }
@@ -96,7 +80,15 @@ export class BlockedUsers extends RemoteDataListScreen {
   }
 
   renderData(data) {
-    const { style, users } = this.props;
+    const { style } = this.props;
+
+    if (!isValid(data) || (isBusy(data) && !isInitialized(data))) {
+      return (
+        <View styleName="flexible horizontal h-center v-center">
+          <Spinner />
+        </View>
+      );
+    }
 
     if (this.shouldRenderPlaceholderView(data)) {
       return this.renderPlaceholderView(data);
@@ -107,7 +99,8 @@ export class BlockedUsers extends RemoteDataListScreen {
         data={data}
         getSectionId={this.getSectionId}
         initialListSize={1}
-        loading={isBusy(users) || !isInitialized(users)}
+        loading={isBusy(data)}
+        onLoadMore={this.loadMore}
         onRefresh={this.fetchData}
         renderRow={this.renderRow}
         style={style.list}
@@ -115,6 +108,19 @@ export class BlockedUsers extends RemoteDataListScreen {
     );
   }
 }
+
+BlockedUsers.propTypes = {
+  ...RemoteDataListScreen.propTypes,
+  navigation: PropTypes.object.isRequired,
+  next: PropTypes.func.isRequired,
+  currentUser: userShape,
+  data: PropTypes.arrayOf(userShape),
+  users: PropTypes.arrayOf(userShape),
+};
+
+BlockedUsers.defaultProps = {
+  title: null,
+};
 
 const mapStateToProps = state => {
   return {
@@ -127,9 +133,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   ...bindActionCreators(
     {
-      navigateTo,
-      loadUsers,
       authenticate,
+      loadBlockedUsers,
+      navigateTo,
+      next,
       unblockUser,
     },
     dispatch,

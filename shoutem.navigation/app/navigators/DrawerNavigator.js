@@ -8,6 +8,7 @@ import { Drawer, HeaderBackButton } from '../components';
 import { ext, NO_SCREENS } from '../const';
 import NoScreens from '../screens/NoScreens';
 import { createChildNavigators, getRouteParams } from '../services';
+import { createCustomStackNavigators } from './CustomStackNavigators';
 
 const DrawerStack = createDrawerNavigator();
 
@@ -35,6 +36,47 @@ function screenOptions(navigationProps) {
   };
 }
 
+function customStackScreenOptions(navigationProps) {
+  const parentState = navigationProps.navigation.getParent().getState();
+  const { isFirstScreen, previousRoute, onBack } = getRouteParams(
+    navigationProps,
+  );
+
+  const prevRouteContainedInDrawer = _.find(parentState.routes, route => {
+    if (_.get(route, 'params.screen') === previousRoute.name) {
+      return true;
+    }
+    return false;
+  });
+
+  const prevPreviousRoute = _.get(previousRoute, 'params.previousRoute');
+  const isFromRootShortcut =
+    !prevPreviousRoute ||
+    (parentState.type === 'drawer' && prevRouteContainedInDrawer);
+
+  return {
+    headerLeft: props => {
+      if (isFirstScreen && isFromRootShortcut) {
+        // eslint-disable-next-line react/prop-types
+        const { tintColor } = props;
+        return (
+          <Button
+            styleName="clear tight"
+            onPress={navigationProps.navigation.toggleDrawer}
+          >
+            <Icon name="sidebar" style={tintColor} />
+          </Button>
+        );
+      }
+
+      const defaultBackHandler = onBack || navigationProps.navigation.goBack;
+
+      return <HeaderBackButton {...props} onPress={defaultBackHandler} />;
+    },
+    headerTitleAlign: 'center',
+  };
+}
+
 function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
   const initialShortcutId = _.get(
     parentShortcut,
@@ -57,6 +99,9 @@ function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
   const NoScreensComponent = (
     <DrawerStack.Screen name={NO_SCREENS} component={NoScreens} />
   );
+  const CustomNavigators = createCustomStackNavigators(DrawerStack, {
+    screenOptions: customStackScreenOptions,
+  });
 
   return (
     <DrawerStack.Navigator
@@ -71,7 +116,7 @@ function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
       )}
       drawerStyle={style.menu}
     >
-      {[...DrawerComponents, NoScreensComponent]}
+      {[...DrawerComponents, ...CustomNavigators, NoScreensComponent]}
     </DrawerStack.Navigator>
   );
 }

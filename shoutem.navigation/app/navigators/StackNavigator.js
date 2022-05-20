@@ -8,6 +8,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { HeaderBackButton, HeaderTitle } from '../components';
 import { createChildNavigators, HeaderStyles } from '../services';
+import { createCustomStackNavigators } from './CustomStackNavigators';
 
 const GridStack = createStackNavigator();
 
@@ -32,6 +33,8 @@ export function StackNavigator({ parentShortcut, hiddenShortcuts, screens }) {
     screens,
     { headerShown: false },
   );
+
+  const CustomNavigators = createCustomStackNavigators(GridStack);
 
   return (
     <GridStack.Navigator
@@ -65,7 +68,7 @@ export function StackNavigator({ parentShortcut, hiddenShortcuts, screens }) {
           isRootScreen: true,
         }}
       />
-      {StackComponents}
+      {[...StackComponents, ...CustomNavigators]}
     </GridStack.Navigator>
   );
 }

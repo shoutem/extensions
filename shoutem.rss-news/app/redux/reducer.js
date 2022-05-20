@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
-import { rssFeed } from 'shoutem.rss';
 import { storage } from '@shoutem/redux-io';
-import { RSS_NEWS_SCHEMA } from '../const';
+import { rssFeed } from 'shoutem.rss';
+import { NEWS_COLLECTION_TAG, RSS_NEWS_SCHEMA } from '../const';
 
 export default combineReducers({
   news: storage(RSS_NEWS_SCHEMA),
-  latestNews: rssFeed(RSS_NEWS_SCHEMA, 'latestNews'),
+  latestNews: rssFeed(RSS_NEWS_SCHEMA, NEWS_COLLECTION_TAG),
 });

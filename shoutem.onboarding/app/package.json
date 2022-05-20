@@ -1,6 +1,6 @@
 {
   "name": "shoutem.onboarding",
-  "version": "4.1.2",
+  "version": "5.0.0",
   "description": "Shows a quick tour on the first app launch. ",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

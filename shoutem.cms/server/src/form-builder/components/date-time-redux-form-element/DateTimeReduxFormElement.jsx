@@ -10,16 +10,18 @@ import { TIMEZONES } from './const';
 import './style.scss';
 
 function getISODateFromDatetimeAndZone(datetime, timezone) {
-  // check if moment supports that zone
+  const rawTimezone = _.find(TIMEZONES, { value: timezone });
+  if (rawTimezone) {
+    return `${datetime}${rawTimezone.offset}`;
+  }
+
+  // if we don't have raw timezone check if moment has that timezone
   if (moment.tz.zone(timezone)) {
     return moment.tz(datetime, timezone).format();
   }
 
-  // if we are here that means timezone is not supported by moment
-  const rawTimezone = _.find(TIMEZONES, { value: timezone });
-  const similarTimezone = _.find(rawTimezone.utc, item => moment.tz.zone(item));
-
-  return moment.tz(datetime, similarTimezone).format();
+  // if we can not find any suitable timezone, return UTC
+  return `${datetime}Z`;
 }
 
 function getDateTimeFromISODate(isoDate) {
@@ -38,7 +40,7 @@ function getTimezoneFromISODate(isoDate) {
 
   const offset = moment.parseZone(isoDate).format('Z');
   const timezone = _.find(TIMEZONES, timezone =>
-    _.includes(timezone.label, offset),
+    _.includes(timezone.offset, offset),
   );
 
   return _.get(timezone, 'value');
@@ -125,7 +127,7 @@ export default class DateTimeReduxFormElement extends Component {
 
   render() {
     const { elementId, field, name, timezoneName } = this.props;
-    const { timezone, timezoneOptions } = this.state;
+    const { timezone } = this.state;
 
     const timezoneElementId = `${elementId}-timezone`;
     const fieldValue = _.get(field, 'value');

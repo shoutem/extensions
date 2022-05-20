@@ -1,14 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
-import { RssListScreen, getLeadImageUrl } from 'shoutem.rss';
-import { find, next, shouldRefresh } from '@shoutem/redux-io';
+import { getLeadImageUrl, RssListScreen } from 'shoutem.rss';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
 import { ListArticleView } from '../components/ListArticleView';
-import { ext, RSS_NEWS_SCHEMA } from '../const';
-import { getNewsFeed, fetchNewsFeed } from '../redux';
+import { ext, NEWS_COLLECTION_TAG, RSS_NEWS_SCHEMA } from '../const';
+import { getNewsFeed } from '../redux';
 
 export class ArticlesListScreen extends RssListScreen {
   static propTypes = {
@@ -20,17 +19,10 @@ export class ArticlesListScreen extends RssListScreen {
     this.state = {
       ...this.state,
       schema: RSS_NEWS_SCHEMA,
+      tag: NEWS_COLLECTION_TAG,
     };
 
     autoBindReact(this);
-  }
-
-  componentDidMount() {
-    const { data, fetchNewsFeed, shortcutId } = this.props;
-
-    if (shouldRefresh(data)) {
-      fetchNewsFeed(shortcutId);
-    }
   }
 
   openArticle(id) {
@@ -103,10 +95,6 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = {
-  fetchNewsFeed,
-  find,
-  next,
-};
+export const mapDispatchToProps = RssListScreen.createMapDispatchToProps();
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArticlesListScreen);

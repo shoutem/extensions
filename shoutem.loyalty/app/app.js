@@ -1,6 +1,9 @@
 import _ from 'lodash';
 import rio from '@shoutem/redux-io';
-import { getExtensionSettings } from 'shoutem.application';
+import {
+  getExtensionServiceUrl,
+  getExtensionSettings,
+} from 'shoutem.application';
 import {
   AUTHORIZATIONS_SCHEMA,
   CARD_SCHEMA,
@@ -17,10 +20,11 @@ export function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
 
-  const { apiEndpoint, program } = getExtensionSettings(state, ext());
+  const { program } = getExtensionSettings(state, ext());
+  const apiEndpoint = getExtensionServiceUrl(state, ext(), 'loyalty');
   const programId = _.get(program, 'id');
 
-  const programEndpoint = `http://${apiEndpoint}/v1/programs/${programId}`;
+  const programEndpoint = `${apiEndpoint}/v1/programs/${programId}`;
 
   const jsonApiRequestOptions = {
     headers: {

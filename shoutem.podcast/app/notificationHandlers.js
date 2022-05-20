@@ -29,7 +29,7 @@ function canHandle(notification) {
 
 function getItemId(episodes, uuid) {
   const episode = _.find(episodes, episode => {
-    return episode.attributes.uuid === uuid;
+    return episode.id === uuid;
   });
 
   return _.get(episode, 'id');
@@ -45,7 +45,7 @@ function consumeNotification(notification, store) {
   const state = store.getState();
   const feedUrl = getFeedUrl(state, shortcutId);
 
-  dispatch(fetchEpisodesFeed(shortcutId)).then(
+  dispatch(fetchEpisodesFeed(shortcutId, { pageLimit: 100 })).then(
     ({ payload: { data: episodes } }) => {
       const id = getItemId(episodes, itemId);
 

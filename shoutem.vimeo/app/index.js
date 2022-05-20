@@ -1,10 +1,8 @@
-import { appDidMount } from './app';
-import reducer from './redux';
-
 import SmallVimeoList from './screens/SmallVimeoList';
 import VimeoDetails from './screens/VimeoDetails';
 import VimeoDetailsWithoutShare from './screens/VimeoDetailsWithoutShare';
 import VimeoList from './screens/VimeoList';
+import reducer from './redux';
 
 const screens = {
   SmallVimeoList,
@@ -15,4 +13,4 @@ const screens = {
 
 export { reducer };
 
-export { appDidMount, screens };
+export { screens };

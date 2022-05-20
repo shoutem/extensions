@@ -4,9 +4,9 @@ import { connectStyle } from '@shoutem/theme';
 import ListPhotoView from '../components/ListPhotoView';
 import { ext } from '../const';
 import {
-  PhotosBaseScreen,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
+  PhotosBaseScreen,
 } from './PhotosBaseScreen';
 
 export class PhotosList extends PhotosBaseScreen {

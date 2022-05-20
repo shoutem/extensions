@@ -1,10 +1,10 @@
 {
   "name": "page",
-  "version": "4.0.2",
-  "platform": "^5",
+  "version": "5.0.0",
+  "platform": ">=6",
   "title": "Page",
   "description": "Show a single screen with info and child items",
-  "releaseNotes": "* Fixed title and description scrolling over image\n* Fixed status bar styling getting \"stuck\"",
+  "releaseNotes": "* Fixed titles not being visible in the navigation bar\n* Added support for new extension scoped theming",
   "icon": "server/assets/add-page-image.png",
   "dependencies": [
     "shoutem.application",

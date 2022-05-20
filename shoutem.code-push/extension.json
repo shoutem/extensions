@@ -1,11 +1,11 @@
 {
   "name": "code-push",
-  "version": "4.1.0",
-  "platform": "^4 || ^5",
+  "version": "4.1.1",
+  "platform": ">=4",
   "type": "system",
   "title": "CodePush",
   "description": "Provides CodePush support for over the air code updates",
-  "releaseNotes": "* Updated react-native-code-push library",
+  "releaseNotes": "* Added platform 6.x support",
   "icon": "server/assets/add-code-push-image.png",
   "dependencies": ["shoutem.application", "shoutem.i18n"],
   "categories": []

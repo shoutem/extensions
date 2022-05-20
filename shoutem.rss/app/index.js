@@ -9,14 +9,14 @@ export const shoutem = {
 };
 
 export { ext } from './const';
-export { rssFeed } from './redux';
-export { buildFeedUrl, buildFeedUrlWithEndpoint } from './shared/buildFeedUrl';
+export { loadFeed, default as rssFeed } from './redux';
+export { RssListScreen } from './screens/RssListScreen';
+export { buildFeedUrl } from './shared/buildFeedUrl';
+export { default as createRenderAttachment } from './shared/createRenderAttachment';
+export { displayLocalNotification } from './shared/handleForegroundNotification';
 export {
+  getImageAttachments,
   getLeadAttachment,
   getLeadImageUrl,
-  getImageAttachments,
   isLeadAttachment,
 } from './shared/resourceSelectors';
-export { default as createRenderAttachment } from './shared/createRenderAttachment';
-export { RssListScreen } from './screens/RssListScreen';
-export { displayLocalNotification } from './shared/handleForegroundNotification';

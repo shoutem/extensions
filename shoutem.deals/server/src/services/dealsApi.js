@@ -16,7 +16,7 @@ function init(newEndpoint) {
     throw new Error(i18next.t(LOCALIZATION.EMPTY_DEALS_ENDPOINT_TITLE));
   }
 
-  endpoint = newEndpoint;
+  endpoint = new Uri(newEndpoint).host();
 }
 
 function isInitialized() {

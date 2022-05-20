@@ -1,10 +1,10 @@
 {
   "name": "photos",
-  "version": "4.1.0",
-  "platform": "^5",
+  "version": "5.0.0",
+  "platform": ">=6",
   "title": "Photos",
   "description": "Show a photo gallery",
-  "releaseNotes": "* Replaced loading spinner with animated placeholder",
+  "releaseNotes": "*  Added support for new extension scoped theming",
   "icon": "server/assets/add-photos-image.png",
   "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
   "categories": ["media"],

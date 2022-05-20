@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { HeaderBackButton } from '../components';
 import { HeaderStyles, NavigationStacks } from '../services';
 
-export function CustomStack({ stackConfig }) {
+export function CustomStack({ stackConfig, parentStackConfig }) {
   if (!stackConfig) {
     return null;
   }
@@ -13,14 +13,41 @@ export function CustomStack({ stackConfig }) {
   const NavigationStack =
     stackConfig.stack.NavigationStack || createStackNavigator();
 
+  const defaultScreen = _.get(
+    stackConfig,
+    'stack.navigatorOptions.initialRouteName',
+  );
+  const firstScreen = _.get(stackConfig, 'stack.screens[0].name');
+  const resolvedFirstRoute = defaultScreen || firstScreen;
+
+  const parentScreenOptionsObject = _.get(
+    parentStackConfig,
+    'screenOptions',
+    {},
+  );
+  const parentScreenOptionsFunction = _.get(
+    parentStackConfig,
+    'screenOptions',
+    () => {},
+  );
+  const stackScreenOptionsFunction = _.get(
+    stackConfig,
+    'stack.screenOptions',
+    () => {},
+  );
+
   return (
     <NavigationStack.Navigator
-      screenOptions={{
+      screenOptions={navProps => ({
         headerTitleAlign: 'center',
         headerLeft: props => <HeaderBackButton {...props} />,
         ...HeaderStyles.default,
         ...stackConfig.stack.screenOptions,
-      }}
+        ...stackScreenOptionsFunction(navProps),
+        ...parentScreenOptionsObject,
+        ...parentScreenOptionsFunction(navProps),
+      })}
+      {..._.get(parentStackConfig, 'navigatorOptions', {})}
       {...stackConfig.stack.navigatorOptions}
     >
       {_.map(stackConfig.stack.screens, screen => (
@@ -28,6 +55,10 @@ export function CustomStack({ stackConfig }) {
           name={screen.name}
           key={screen.name}
           component={screen.component}
+          initialParams={{
+            isFirstScreen: resolvedFirstRoute === screen.name,
+            screenId: _.uniqueId(screen.name),
+          }}
         />
       ))}
     </NavigationStack.Navigator>
@@ -35,20 +66,60 @@ export function CustomStack({ stackConfig }) {
 }
 
 CustomStack.propTypes = {
-  RootStack: PropTypes.node,
+  parentStackConfig: PropTypes.object,
   stackConfig: PropTypes.object,
 };
 
-export function createCustomStackNavigators(RootStack) {
+CustomStack.defaultProps = {
+  parentStackConfig: {},
+  stackConfig: {},
+};
+
+export function createRootCustomStackNavigators(RootStack, rootScreenOptions) {
   const customStacks = NavigationStacks.getRegisteredStacks();
 
   if (_.isEmpty(customStacks)) {
     return [];
   }
 
-  return _.map(customStacks, stackConfig => (
-    <RootStack.Screen name={stackConfig.name} key={stackConfig.name}>
+  const rootStacks = _.filter(customStacks, stack => stack.isRootStack);
+
+  return _.map(rootStacks, stackConfig => (
+    <RootStack.Screen
+      name={stackConfig.name}
+      key={stackConfig.name}
+      options={rootScreenOptions}
+    >
       {() => <CustomStack stackConfig={stackConfig} />}
+    </RootStack.Screen>
+  ));
+}
+
+export function createCustomStackNavigators(
+  RootStack,
+  parentStackConfig,
+  rootScreenOptions,
+) {
+  const customStacks = NavigationStacks.getRegisteredStacks();
+
+  if (_.isEmpty(customStacks)) {
+    return [];
+  }
+
+  const stacks = _.filter(customStacks, stack => !stack.isRootStack);
+
+  return _.map(stacks, stackConfig => (
+    <RootStack.Screen
+      name={stackConfig.name}
+      key={stackConfig.name}
+      options={rootScreenOptions}
+    >
+      {() => (
+        <CustomStack
+          stackConfig={stackConfig}
+          parentStackConfig={parentStackConfig}
+        />
+      )}
     </RootStack.Screen>
   ));
 }

@@ -136,7 +136,15 @@ function Radio(props) {
     const { artist = '', title = '' } = metadata;
 
     if (manually) {
-      LayoutAnimation.easeInEaseOut();
+      // We have to set full state again, because screen is unmounted in
+      // non-tab layouts. RadioPlayer keeps playing in background and has all metadata
+      // from when it was started
+      const { artist, artwork: activeArtwork, songName } = metadata;
+
+      setArtist(artist);
+      setSongName(songName);
+      setArtwork(activeArtwork);
+
       return;
     }
 

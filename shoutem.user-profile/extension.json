@@ -1,11 +1,11 @@
 {
   "name": "user-profile",
   "title": "User Profile",
-  "version": "2.0.5",
-  "platform": "^4.0.5 || ^5",
+  "version": "3.0.0",
+  "platform": ">=6",
   "type": "system",
   "description": "Add extended user profile",
-  "releaseNotes": "* Adjusted checkmark icons on progress bar (no visual difference, code-side improvement)",
+  "releaseNotes": "*  Added support for new extension scoped theming",
   "icon": "server/assets/add-user-profile-image.png",
   "native": true,
   "dependencies": [

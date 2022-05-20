@@ -1,10 +1,10 @@
 {
   "name": "places",
-  "version": "5.0.0",
-  "platform": "^5",
+  "version": "6.0.0",
+  "platform": ">=6",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "releaseNotes": "* Added placeholder for list items with no image\n* Removed animated loading placeholder when loading more list items",
+  "releaseNotes": "*  Added support for new extension scoped theming",
   "icon": "./server/assets/images/add-places-image.png",
   "dependencies": [
     "shoutem.application",
@@ -13,13 +13,19 @@
     "shoutem.i18n",
     "shoutem.layouts",
     "shoutem.navigation",
-    "shoutem.web-view"
+    "shoutem.web-view",
+    "shoutem.theme"
   ],
-  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
   },
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -70,7 +76,9 @@
       "settings": {
         "extensionTitle": "Places",
         "defaultShortcutTitle": "My Places",
-        "favoritesSchemas": ["@.places"]
+        "favoritesSchemas": [
+          "@.places"
+        ]
       }
     }
   ],
@@ -110,7 +118,9 @@
       "name": "PlaceDetails",
       "title": "Large photo with transparent navbar details page",
       "image": "./server/assets/images/details_large.png",
-      "settings": { "disableAdBanner": true }
+      "settings": {
+        "disableAdBanner": true
+      }
     },
     {
       "name": "SolidNavbarPlaceDetails",
@@ -125,7 +135,9 @@
       "name": "FavoritesList",
       "title": "Tile list",
       "image": "./server/assets/images/layout_photo.png",
-      "navigatesTo": ["@.PlaceDetails"]
+      "navigatesTo": [
+        "@.PlaceDetails"
+      ]
     },
     {
       "name": "FavoritesListWithIcons",
@@ -138,7 +150,9 @@
       "title": "Medium photo with transparent navbar details page",
       "extends": "@.PlaceDetails",
       "image": "./server/assets/images/details_medium.png",
-      "settings": { "disableAdBanner": true }
+      "settings": {
+        "disableAdBanner": true
+      }
     },
     {
       "name": "SolidNavbarMediumPlaceDetails",
@@ -152,7 +166,21 @@
     {
       "name": "SinglePlaceMap",
       "title": "Map View",
-      "navigatesTo": ["@.PlaceDetails"]
+      "navigatesTo": [
+        "@.PlaceDetails"
+      ]
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
     }
   ],
   "dataSchemas": [

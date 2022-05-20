@@ -1,20 +1,20 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { getLeadImageUrl } from 'shoutem.rss';
 import { cloneStatus, shouldRefresh } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
+import { getRouteParams, HeaderStyles } from 'shoutem.navigation';
+import { getLeadImageUrl } from 'shoutem.rss';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
 import { GridArticleView } from '../components/GridArticleView';
 import { ext } from '../const';
 import {
   ArticlesListScreen,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
 } from './ArticlesListScreen';
-import { getRouteParams, HeaderStyles } from 'shoutem.navigation';
 
 class ArticlesGridScreen extends ArticlesListScreen {
   static propTypes = {
@@ -28,15 +28,13 @@ class ArticlesGridScreen extends ArticlesListScreen {
   }
 
   componentDidMount() {
-    const { data, fetchNewsFeed, shortcutId, navigation } = this.props;
-
-    if (shouldRefresh(data)) {
-      fetchNewsFeed(shortcutId);
-    }
+    const { navigation } = this.props;
 
     navigation.setOptions({
       ...HeaderStyles.featured,
     });
+
+    super.componentDidMount();
   }
 
   renderFeaturedItem(article) {

@@ -1,11 +1,11 @@
 {
   "name": "books",
-  "version": "4.2.0",
-  "platform": "^5",
+  "version": "5.0.0",
+  "platform": ">=6",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",
   "description": "Show books and authors",
-  "releaseNotes": "* Added placeholder for list items with no image\n* For developers - BooksSmallListScreen is now using CompactListLayout from layouts extension",
+  "releaseNotes": "* Added platform 6.x support",
   "categories": ["content"],
   "i18n": {
     "locale": "en",

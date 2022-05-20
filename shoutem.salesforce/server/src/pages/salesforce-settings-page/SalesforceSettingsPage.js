@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
 import {
+  Alert,
   Button,
   ButtonToolbar,
   ControlLabel,
@@ -11,33 +8,32 @@ import {
   FormGroup,
   Label,
 } from 'react-bootstrap';
-import { LoaderContainer, FontIconPopover, FontIcon } from '@shoutem/react-web-ui';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import {
+  FontIcon,
+  FontIconPopover,
+  LoaderContainer,
+} from '@shoutem/react-web-ui';
 import {
   fetchExtension,
-  updateExtensionSettings,
   getExtension,
+  updateExtensionSettings,
 } from '@shoutem/redux-api-sdk';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { shouldRefresh } from '@shoutem/redux-io';
-import { connect } from 'react-redux';
 import greenThumb from '../../../assets/greenThumb.png';
 import redThumb from '../../../assets/redThumb.png';
 import { DEFAULT_EXTENSION_SETTINGS } from '../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-const MC_APP_VARIABLES = [
-  "appId",
-  "accessToken",
-  "appEndpoint",
-  "fcmSenderId",
-];
+const MC_APP_VARIABLES = ['appId', 'accessToken', 'appEndpoint', 'fcmSenderId'];
 
-const MC_API_VARIABLES = [
-  "clientId",
-  "authBaseUri",
-  "restBaseUri",
-];
+const MC_API_VARIABLES = ['clientId', 'authBaseUri', 'restBaseUri'];
 
 class SalesforceSettingsPage extends Component {
   static propTypes = {
@@ -56,7 +52,11 @@ class SalesforceSettingsPage extends Component {
     this.parentContainer = React.createRef();
     props.fetchExtensionAction();
 
-    const salesforceAuthorized = _.get(props, 'settings.salesforceAuthorized', false);
+    const salesforceAuthorized = _.get(
+      props,
+      'settings.salesforceAuthorized',
+      false,
+    );
 
     this.state = {
       loading: false,
@@ -69,11 +69,11 @@ class SalesforceSettingsPage extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener("focus", this.onFocus)
+    window.addEventListener('focus', this.onFocus);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("focus", this.onFocus)
+    window.removeEventListener('focus', this.onFocus);
   }
 
   onFocus() {
@@ -94,12 +94,19 @@ class SalesforceSettingsPage extends Component {
     const odlApiSettings = _.pick(settings, MC_API_VARIABLES);
     const newApiSettings = _.pick(nextSettings, MC_API_VARIABLES);
 
-    if (_.every(odlApiSettings, setting => !!setting) && !_.isEqual(odlApiSettings, newApiSettings)) {
+    if (
+      _.every(odlApiSettings, setting => !!setting) &&
+      !_.isEqual(odlApiSettings, newApiSettings)
+    ) {
       this.setState({ showFailed: true, showSuccess: false });
     }
 
     if (!settings.salesforceAuthorized && nextSettings.salesforceAuthorized) {
-      this.setState({ showFailed: false, showSuccess: true, salesforceAuthorized: true });
+      this.setState({
+        showFailed: false,
+        showSuccess: true,
+        salesforceAuthorized: true,
+      });
     }
   }
 
@@ -149,8 +156,8 @@ class SalesforceSettingsPage extends Component {
     );
 
     return (
-      !_.isEqual(newSettings, previousSettings)
-      && _.every(newSettings, param => !_.isEmpty(param))
+      !_.isEqual(newSettings, previousSettings) &&
+      _.every(newSettings, param => !_.isEmpty(param))
     );
   }
 
@@ -159,10 +166,17 @@ class SalesforceSettingsPage extends Component {
 
     this.setState({ loading: true });
 
-    updateExtensionSettingsAction(extension, _.pick(this.state, MC_API_VARIABLES))
+    updateExtensionSettingsAction(
+      extension,
+      _.pick(this.state, MC_API_VARIABLES),
+    )
       .then(() => {
         this.setState({ loading: false, salesforceAuthorized: false });
-        this.parentContainer.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });;
+        this.parentContainer.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+          inline: 'nearest',
+        });
       })
       .catch(() => this.setState({ loading: false }));
   }
@@ -172,7 +186,10 @@ class SalesforceSettingsPage extends Component {
 
     this.setState({ loading: true });
 
-    updateExtensionSettingsAction(extension, _.pick(this.state, MC_APP_VARIABLES))
+    updateExtensionSettingsAction(
+      extension,
+      _.pick(this.state, MC_APP_VARIABLES),
+    )
       .then(() => this.setState({ loading: false }))
       .catch(() => this.setState({ loading: false }));
   }
@@ -193,10 +210,7 @@ class SalesforceSettingsPage extends Component {
       appId,
     } = this.props;
 
-    const cloudUri = _.get(
-      services,
-      'self.cloud',
-    );
+    const cloudUri = _.get(services, 'self.cloud');
 
     return `${cloudUri}/v1/${appId}/redirect`;
   }
@@ -246,12 +260,12 @@ class SalesforceSettingsPage extends Component {
       : i18next.t(LOCALIZATION.BUTTON_AUTHORIZE_TITLE);
 
     return (
-      <div
-        ref={this.parentContainer}
-        className="salesforce-settings-page"
-      >
+      <div ref={this.parentContainer} className="salesforce-settings-page">
         <form onSubmit={this.handleApiSettingsSubmit}>
           <h3>{i18next.t(LOCALIZATION.APP_CONFIGURATION_TITLE)}</h3>
+          <Alert className="publish-alert">
+            {i18next.t(LOCALIZATION.STORE_RESUBMISSION_ALERT)}
+          </Alert>
           <FormGroup>
             <ControlLabel>{i18next.t(LOCALIZATION.APP_APP_ID)}</ControlLabel>
             <FormControl

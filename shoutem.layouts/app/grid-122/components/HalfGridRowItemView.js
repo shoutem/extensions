@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { assets } from '../../assets';
 import { ext } from '../../const';
 
 export function HalfGridRowItemView({
@@ -21,6 +22,8 @@ export function HalfGridRowItemView({
   numberOfLines,
   style,
 }) {
+  const imageSource = imageUrl ? { uri: imageUrl } : assets.noImagePlaceholder;
+
   function handlePress() {
     if (onPress) {
       onPress(id);
@@ -34,7 +37,7 @@ export function HalfGridRowItemView({
       style={style.container}
     >
       <ImageBackground
-        source={{ uri: imageUrl }}
+        source={imageSource}
         style={style.imageContainer}
         imageStyle={style.image}
       >

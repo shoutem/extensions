@@ -1,0 +1,9 @@
+{
+  "shoutem": {
+    "theme": {
+      "themeChangedAlertTitle": "Theme changed",
+      "themeChangedAlertMessage": "App will now be restarted to apply the newly selected theme",
+      "themeChangedAlertConfirmationButton": "Restart"
+    }
+  }
+}

@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
-import autoBind from 'auto-bind';
 import { connect } from 'react-redux';
+import autoBind from 'auto-bind';
+import PropTypes from 'prop-types';
 import { EmptyListImage, Screen } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { getRouteParams, HeaderBackButton } from 'shoutem.navigation';
+import { getRouteParams } from 'shoutem.navigation';
 import EmptyStateGraphic from '../assets/images/EmptyStateGraphic.svg';
 import { ext } from '../const';
 import { selectors } from '../redux';
@@ -16,20 +17,11 @@ export class RestrictedScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { navigation, canGoBack } = this.props;
+    const { navigation } = this.props;
 
     navigation.setOptions({
       title: null,
-      headerLeft: canGoBack
-        ? props => <HeaderBackButton {...props} onPress={this.handleCancel} />
-        : null,
     });
-  }
-
-  handleCancel() {
-    const { onCancel } = this.props;
-
-    onCancel();
   }
 
   render() {
@@ -53,6 +45,15 @@ export class RestrictedScreen extends PureComponent {
     );
   }
 }
+
+RestrictedScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  userLocation: PropTypes.object,
+};
+
+RestrictedScreen.defaultProps = {
+  userLocation: {},
+};
 
 function mapStateToProps(state, ownProps) {
   return {

@@ -1,14 +1,14 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "4.1.0",
-  "platform": "^4 || ^5",
+  "version": "5.0.1",
+  "platform": ">=6",
   "nativeChanges": {
     "lastVersion": null,
     "settingsKeys": ["chime"]
   },
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* Introduced targetless push notifications - when not opening a screen or URL, notifications will start the app",
+  "releaseNotes": "* Resolved filtering of manual push notifications",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": ["users"],
   "dependencies": [
@@ -16,7 +16,8 @@
     "shoutem.firebase",
     "shoutem.i18n",
     "shoutem.permissions",
-    "shoutem.push-notification"
+    "shoutem.push-notification",
+    "shoutem.theme"
   ],
   "i18n": {
     "locale": "en",
@@ -96,6 +97,14 @@
       "page": "@.GeneralPage",
       "title": "General",
       "categories": ["push"]
+    },
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": ["style"],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
     }
   ],
   "pages": [
@@ -110,6 +119,12 @@
     {
       "name": "GeneralPage",
       "type": "react-page"
+    }
+  ],
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
     }
   ]
 }

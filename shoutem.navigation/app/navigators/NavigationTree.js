@@ -18,7 +18,7 @@ import {
 import { NoContent, NoScreens } from '../screens';
 import { HeaderStyles } from '../services';
 import {
-  createCustomStackNavigators,
+  createRootCustomStackNavigators,
   DrawerNavigator,
   ModalNavigator,
   NoneStackNavigator,
@@ -46,7 +46,7 @@ export function NavigationTree({
   const isNoneLayout = layoutType === NONE;
   const isStackLayout = !isDrawerLayout && !isTabBarLayout && !isNoneLayout;
 
-  const CustomStackNavigators = createCustomStackNavigators(RootStack);
+  const RootCustomNavigators = createRootCustomStackNavigators(RootStack);
 
   return (
     <>
@@ -111,7 +111,7 @@ export function NavigationTree({
               )}
               <RootStack.Screen name={NO_SCREENS} component={NoScreens} />
               <RootStack.Screen name={NO_CONTENT} component={NoContent} />
-              {CustomStackNavigators}
+              {RootCustomNavigators}
             </RootStack.Navigator>
           )}
         </ParentStack.Screen>

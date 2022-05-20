@@ -1,10 +1,10 @@
 {
   "name": "audio",
   "title": "Audio",
-  "version": "4.0.1",
-  "platform": "^4 || ^5",
+  "version": "4.0.2",
+  "platform": ">=4",
   "description": "Track player components for other extensions to utilize. NOTE: Lock screen controls will not be visible in the preview.",
-  "releaseNotes": "* Set specific dependency versions instead of using semver ranges",
+  "releaseNotes": "* Added platform 6.x support",
   "dependencies": ["shoutem.application"],
   "icon": "server/assets/add-audio-image.png",
   "type": "system"

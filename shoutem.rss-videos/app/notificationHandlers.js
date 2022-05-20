@@ -29,7 +29,7 @@ function canHandle(notification) {
 
 function getItemId(videos, uuid) {
   const video = _.find(videos, video => {
-    return video.attributes.uuid === uuid;
+    return video.id === uuid;
   });
 
   return video?.id;

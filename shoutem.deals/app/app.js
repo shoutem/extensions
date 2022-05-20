@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import URI from 'urijs';
 import rio from '@shoutem/redux-io';
-import { getExtensionSettings } from 'shoutem.application';
+import { getExtensionServiceUrl } from 'shoutem.application';
 import {
   ext,
   // APPLICATION_EXTENSION,
@@ -26,7 +26,7 @@ export function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
 
-  const dealsApiEndpoint = getExtensionSettings(state, ext()).dealsEndpoint;
+  const dealsApiEndpoint = getExtensionServiceUrl(state, ext(), 'deals');
 
   function createDealsApiEndpoint(path, params) {
     const endpoint = new URI(`${dealsApiEndpoint}/v1/${path}`);

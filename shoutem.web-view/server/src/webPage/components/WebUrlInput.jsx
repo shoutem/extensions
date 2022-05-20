@@ -1,15 +1,18 @@
+/* eslint-disable react-native/no-raw-text */
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import i18next from 'i18next';
-import _ from 'lodash';
 import {
+  Alert,
   Button,
   ButtonToolbar,
-  FormGroup,
   ControlLabel,
   FormControl,
+  FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
+import { Trans } from 'react-i18next';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import validator from 'validator';
 import LOCALIZATION from './localization';
 import './style.scss';
@@ -62,6 +65,23 @@ export default class WebUrlInput extends Component {
       <div>
         <form onSubmit={this.handleSubmit}>
           <FormGroup validationState={this.getValidationState()}>
+            <Alert className="web-url-input__alert">
+              <Trans i18nKey={LOCALIZATION.GENERIC_URLS_ALERT_MESSAGE}>
+                We support defining user custom URLs. To defineit, wrap user
+                constants inside double curly brackets, like so:
+                <br />
+                <i>
+                  https://www.example.com/&#123;&#123;profile.nick&#125;&#125;?id=&#123;&#123;id&#125;&#125;
+                </i>
+                <br />
+                <br />
+                When defining user custom URLs, consider protecting the screen -
+                requiring user to log in. If user is not logged in, user
+                specific URL parts might not be parsed as inteded. To protect
+                your screen, go <br />
+                to Settings &gt; Users &gt; Protected screens.
+              </Trans>
+            </Alert>
             <ControlLabel>
               {i18next.t(LOCALIZATION.FORM_WEBSITE_URL)}
             </ControlLabel>

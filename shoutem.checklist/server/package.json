@@ -1,6 +1,6 @@
 {
   "name": "shoutem.checklist",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "Create checklists for app users to complete.",
   "scripts": {
     "lint": "eslint --no-eslintrc src/**/*.{js,jsx}",
@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "0.12.4",
+    "@shoutem/react-web-ui": "1.0.1",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-io": "^3.2.1",
     "@shoutem/redux-sync-state-engine": "^0.0.2",

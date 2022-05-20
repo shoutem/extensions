@@ -1,5 +1,3 @@
-import { getActiveTheme, getDefaultTheme } from '../redux';
-
 /**
  * Create icons map from theme.
  * Map key is icon name and value is icon url.
@@ -10,8 +8,8 @@ function resolveThemeIconsMap(theme) {
   if (!theme || !theme.iconsIncluded) {
     throw Error(
       'Trying to resolve theme icons map but ' +
-      'provided theme didn\'t implement Shoutem theme interface.' +
-      'Shoutem theme should have "iconsIncluded" property.'
+        "provided theme didn't implement Shoutem theme interface." +
+        'Shoutem theme should have "iconsIncluded" property.',
     );
   }
   return theme.iconsIncluded.reduce((iconsMap, iconName) => {
@@ -27,17 +25,13 @@ class AppThemeAssets {
   }
 
   /**
-   * Update active icons map with default and active theme icons from the state.
-   * @param state Application redux state
+   * Update active icons map with default and active theme icons.
+   * @param defaultTheme Default theme object from configuration
+   * @param activeTheme Active theme object from configuration
    */
-  resolveActiveIconsMap(state) {
-    const defaultTheme = getDefaultTheme(state);
-    const activeTheme = getActiveTheme(state);
-
+  resolveActiveIconsMap(defaultTheme, activeTheme) {
     if (!defaultTheme) {
-      throw Error(
-        'Missing `defaultTheme`, must be defined in configuration.'
-      );
+      throw Error('Missing `defaultTheme`, must be defined in configuration.');
     }
 
     // If activeTheme doesn't exists it will be ignored

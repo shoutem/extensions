@@ -1,5 +1,3 @@
-import reducer from './reducer';
-
-export { getVideosFeed, getFeedUrl } from './selectors';
 export { fetchVideosFeed } from './actions';
-export { reducer };
+export { default as reducer } from './reducer';
+export { getFeedUrl, getVideosFeed } from './selectors';

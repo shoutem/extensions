@@ -1,10 +1,10 @@
 {
   "name": "youtube",
   "title": "YouTube",
-  "version": "4.1.0",
-  "platform": "^4 || ^5",
+  "version": "5.0.1",
+  "platform": ">=6.0.1",
   "description": "Show a video gallery from YouTube channel, user or playlist",
-  "releaseNotes": "* Added placeholder for list items with no image",
+  "releaseNotes": "* Adjusted code & logic to new RssListScreen updates",
   "dependencies": [
     "shoutem.application",
     "shoutem.layouts",

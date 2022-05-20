@@ -14,6 +14,7 @@ const {
 const _ = require('lodash');
 const fs = require('fs-extra');
 const path = require('path');
+require('colors');
 
 const androidRepositoryInjection =
   'maven { url "https://salesforce-marketingcloud.github.io/MarketingCloudSDK-Android/repository" }';
@@ -28,7 +29,10 @@ const messagingServiceReplace = `android:name=".CustomPushService"`;
 const marketingCloudVersion = "marketingCloudVersion = '8.0.1'";
 
 function getCustomPushServicePath() {
-  return path.resolve(projectPath, 'android/app/src/main/java/com/shoutemapp/CustomPushService.java');
+  return path.resolve(
+    projectPath,
+    'android/app/src/main/java/com/shoutemapp/CustomPushService.java',
+  );
 }
 
 function isProduction() {
@@ -98,6 +102,9 @@ async function injectAndroid(appConfiguration) {
   const extSettings = getExtensionSettings(appConfiguration);
   const { appId, accessToken, appEndpoint, fcmSenderId } = extSettings;
 
+  const isValidConfiguration =
+    !!appId && !!accessToken && !!appEndpoint && !!fcmSenderId;
+
   const injectionString = createMainApplicationInjection(
     appId,
     accessToken,
@@ -116,11 +123,19 @@ async function injectAndroid(appConfiguration) {
     ANCHORS.ANDROID.GRADLE.ROOT_GRADLE_ALLPROJECTS_REPOSITORIES,
     androidRepositoryInjection,
   );
-  inject(
-    mainApplicationPath,
-    ANCHORS.ANDROID.MAIN_APPLICATION.ON_CREATE_END,
-    injectionString,
-  );
+
+  if (isValidConfiguration) {
+    inject(
+      mainApplicationPath,
+      ANCHORS.ANDROID.MAIN_APPLICATION.ON_CREATE_END,
+      injectionString,
+    );
+  } else {
+    const message = `Faulty Marketing Cloud configuration. Please check if you defined all necessary params in Salesforce MC settings page: App id, Access token, App endpoint & FCM sender id`;
+    // eslint-disable-next-line no-console
+    console.warn(message.bold.yellow);
+  }
+
   inject(
     mainApplicationPath,
     ANCHORS.ANDROID.MAIN_APPLICATION.IMPORT,
@@ -131,11 +146,7 @@ async function injectAndroid(appConfiguration) {
     ANCHORS.ANDROID.GRADLE.APP.DEPENDENCIES,
     androidGradleDependencyImport,
   );
-  replace(
-    androidManifestPath,
-    messagingServiceString,
-    messagingServiceReplace,
-  );
+  replace(androidManifestPath, messagingServiceString, messagingServiceReplace);
   inject(
     gradleConstantsPath,
     ANCHORS.ANDROID.GRADLE.CONSTANTS,
@@ -148,11 +159,14 @@ async function injectAndroid(appConfiguration) {
   if (!isProduction()) {
     bundleId = 'com.shoutemapp';
   } else {
-    const publishingProperties = await fetchPublishingProperties(getBuildConfiguration());
+    const publishingProperties = await fetchPublishingProperties(
+      getBuildConfiguration(),
+    );
     bundleId = publishingProperties.android_market_package_name;
   }
 
   fs.writeFileSync(pushServicePath, createCustomPushServiceContent(bundleId));
+  // eslint-disable-next-line no-console
   console.log('[shoutem.salesforce]: Created custom push activity');
 }
 

@@ -1,41 +1,50 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { shouldRefresh } from '@shoutem/redux-io';
 import { EmptyStateView } from '@shoutem/ui';
-
 import { RemoteDataListScreen } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-
 import { ext } from '../const';
-
-const { func, string } = PropTypes;
+import { loadFeed, loadNextFeedPage } from '../redux';
 
 export class RssListScreen extends RemoteDataListScreen {
-  static propTypes = {
-    ...RemoteDataListScreen.propTypes,
-    // The url of the RSS feed to display
-    feedUrl: string,
-
-    // Actions
-    navigateTo: func,
-    find: func,
-    next: func.isRequired,
-  };
+  static createMapDispatchToProps(actionCreators) {
+    return dispatch =>
+      bindActionCreators(
+        {
+          ...actionCreators,
+          loadFeed,
+          loadNextFeedPage,
+        },
+        dispatch,
+      );
+  }
 
   fetchData() {
-    const { feedUrl, find } = this.props;
-    const { schema } = this.state;
+    const { feedUrl, loadFeed, shortcutId } = this.props;
+    const { schema, tag } = this.state;
 
     if (!feedUrl) {
       return;
     }
 
-    find(schema, undefined, {
-      query: {
-        'filter[url]': feedUrl,
-      },
-    });
+    loadFeed(schema, tag, shortcutId);
+  }
+
+  refreshData() {
+    const { data } = this.props;
+
+    if (shouldRefresh(data, true)) {
+      this.fetchData();
+    }
+  }
+
+  loadMore() {
+    const { data: collection, loadNextFeedPage } = this.props;
+
+    loadNextFeedPage(collection);
   }
 
   shouldRenderPlaceholderView(data) {
@@ -66,3 +75,17 @@ export class RssListScreen extends RemoteDataListScreen {
     return super.renderPlaceholderView(data);
   }
 }
+
+RssListScreen.propTypes = {
+  ...RemoteDataListScreen.propTypes,
+  find: PropTypes.func.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  feedUrl: PropTypes.string,
+  next: PropTypes.func,
+};
+
+RssListScreen.defaultProps = {
+  ...RemoteDataListScreen.defaultProps,
+  feedUrl: '',
+  next: undefined,
+};

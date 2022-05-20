@@ -8,8 +8,8 @@ export function getProgramId(settings) {
 }
 
 export function initializeApiEndpoints(settings) {
-  const apiEndpoint = _.get(settings, 'apiEndpoint');
-  const cmsEndpoint = _.get(settings, 'cmsEndpoint');
+  const apiEndpoint = _.get(settings, 'services.core.loyalty');
+  const cmsEndpoint = _.get(settings, 'services.core.cms');
 
   if (!loyaltyApi.isInitialized()) {
     loyaltyApi.init(apiEndpoint);

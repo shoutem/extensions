@@ -4,8 +4,8 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import {
   isBusy,
-  isInitialized,
   isError,
+  isInitialized,
   shouldRefresh,
 } from '@shoutem/redux-io';
 import { EmptyStateView, ListView, Screen } from '@shoutem/ui';

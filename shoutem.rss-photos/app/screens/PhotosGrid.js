@@ -1,17 +1,17 @@
 import React from 'react';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import { Dimensions } from 'react-native';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle, getSizeRelativeToReference } from '@shoutem/theme';
 import { GridRow, View } from '@shoutem/ui';
 import GridPhotoView from '../components/GridPhotoView';
 import { ext } from '../const';
 import {
-  PhotosBaseScreen,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
+  PhotosBaseScreen,
 } from './PhotosBaseScreen';
 
 const window = Dimensions.get('window');

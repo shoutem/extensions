@@ -1,0 +1,84 @@
+{
+  "title": "Theme",
+  "properties": {
+    "screenBackgroundColor": {
+      "type": "string",
+      "title": "Screen background color",
+      "format": "color",
+      "default": "@screenBackgroundColor"
+    },
+    "screenOverlayColor": {
+      "type": "string",
+      "title": "Screen overlay color",
+      "format": "color",
+      "default": "@screenOverlayColor"
+    },
+    "streamTitleColor": {
+      "type": "string",
+      "title": "Stream title color",
+      "format": "color",
+      "default": "@streamTitleColor"
+    },
+    "artistTitleColor": {
+      "type": "string",
+      "title": "Artist title color",
+      "format": "color",
+      "default": "@artistTitleColor"
+    },
+    "artworkCircularImageBorderColor": {
+      "type": "string",
+      "title": "Artwork circular image border color",
+      "format": "color",
+      "default": "@artworkCircularImageBorderColor"
+    },
+    "songNameTitleColor": {
+      "type": "string",
+      "title": "Song name title color",
+      "format": "color",
+      "default": "@songNameTitleColor"
+    },
+    "shareButtonColor": {
+      "type": "string",
+      "title": "Share and Sleep button color",
+      "format": "color",
+      "default": "@shareButtonColor"
+    },
+    "playbackButtonBorderColor": {
+      "type": "string",
+      "title": "Playback button border color",
+      "format": "color",
+      "default": "@playbackButtonBorderColor"
+    },
+    "playbackIconColor": {
+      "type": "string",
+      "title": "Playback icon color",
+      "format": "color",
+      "default": "@playbackIconColor"
+    },
+    "playbackAnimatedCircleColor": {
+      "type": "string",
+      "title": "Playback animated circle color",
+      "format": "color",
+      "default": "@playbackAnimatedCircleColor"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Radio+ (artwork background layout)",
+        "properties": [
+          "screenBackgroundColor",
+          "screenOverlayColor",
+          "streamTitleColor",
+          "artistTitleColor",
+          "artworkCircularImageBorderColor",
+          "songNameTitleColor",
+          "shareButtonColor",
+          "playbackButtonBorderColor",
+          "playbackIconColor",
+          "playbackAnimatedCircleColor"
+        ]
+      }
+    ]
+  }
+}

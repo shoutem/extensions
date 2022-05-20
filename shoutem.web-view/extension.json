@@ -1,9 +1,10 @@
 {
   "name": "web-view",
-  "version": "4.2.0",
-  "platform": "^4 || ^5",
+  "version": "5.0.0",
+  "platform": ">=6",
+  "type": "system",
   "title": "Web view",
-  "releaseNotes": "* Added support for providing headers for URLs",
+  "releaseNotes": "* Added ability to construct generic URLs using user's profile info\n* New theming support",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "dependencies": [

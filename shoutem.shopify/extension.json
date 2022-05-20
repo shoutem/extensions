@@ -1,11 +1,11 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "4.1.0",
-  "platform": "^4 || ^5",
+  "version": "5.0.0",
+  "platform": ">=6",
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "releaseNotes": "* Added placeholder for list items with no image",
+  "releaseNotes": "*  Added support for new extension scoped theming",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

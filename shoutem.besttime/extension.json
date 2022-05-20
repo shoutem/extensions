@@ -1,10 +1,10 @@
 {
   "name": "besttime",
   "title": "BestTime",
-  "version": "4.0.2",
-  "platform": "^4 || ^5",
+  "version": "5.0.0",
+  "platform": ">=6",
   "description": "Check the busyness of an establishment using BestTime.",
-  "releaseNotes": "* Adjusted icon sources (no visual difference, code-side improvement)",
+  "releaseNotes": "*  Added support for new extension scoped theming",
   "icon": "server/assets/add-besttime-image.png",
   "screens": [
     {

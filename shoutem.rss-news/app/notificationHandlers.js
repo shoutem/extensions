@@ -29,7 +29,7 @@ function canHandle(notification) {
 
 function getItemId(articles, uuid) {
   const article = _.find(articles, article => {
-    return article.attributes.uuid === uuid;
+    return article.id === uuid;
   });
 
   return article?.id;

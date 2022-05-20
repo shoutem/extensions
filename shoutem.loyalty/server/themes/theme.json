@@ -1,0 +1,25 @@
+{
+  "title": "Theme",
+  "properties": {
+    "horseshoeColor": {
+      "type": "string",
+      "title": "Horseshoe color",
+      "format": "color",
+      "default": "@indicatorColor"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Miscellaneous",
+        "properties": [
+          {
+            "name": "horseshoeColor",
+            "inline": true,
+            "size": 6
+          }
+        ]
+      }
+    ]
+  }
+}

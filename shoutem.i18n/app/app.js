@@ -1,17 +1,15 @@
 import React from 'react';
-import _ from 'lodash';
 import I18n from 'i18n-js';
-
+import _ from 'lodash';
 import moment from 'moment';
+import { getExtensionSettings } from 'shoutem.application/redux';
+import { after, priorities, setPriority } from 'shoutem-core';
 // Load locale data into moment
 import 'moment/min/locales';
-
-import { getExtensionSettings } from 'shoutem.application/redux';
-import { actions, selectors } from './redux';
-
 import { ext } from './const';
-import customTranslations from './translations';
 import { LocalizationProvider } from './providers';
+import { actions, selectors } from './redux';
+import customTranslations from './translations';
 
 /**
  * Merges all translations found in `translationsToAdd` into
@@ -40,7 +38,7 @@ const mergeTranslations = (targetTranslations, translationsToAdd) => {
     // eslint-disable-next-line no-param-reassign
     targetTranslations[language] = _.merge(
       targetTranslations[language] || {},
-      translationsToAdd[language]
+      translationsToAdd[language],
     );
   }
 };
@@ -56,19 +54,23 @@ const mergeTranslations = (targetTranslations, translationsToAdd) => {
 //   }
 // }
 // ```
-const getTranslationsFromExtensions = (extensions) => {
+const getTranslationsFromExtensions = extensions => {
   const i18nExtension = ext();
 
-  const allTranslations = _.reduce(_.values(extensions), (translations, extension) => {
-    const extTranslations = _.get(extension, `${i18nExtension}.translations`);
-    mergeTranslations(translations, extTranslations);
-    return translations;
-  }, {});
+  const allTranslations = _.reduce(
+    _.values(extensions),
+    (translations, extension) => {
+      const extTranslations = _.get(extension, `${i18nExtension}.translations`);
+      mergeTranslations(translations, extTranslations);
+      return translations;
+    },
+    {},
+  );
 
   return allTranslations;
 };
 
-export const appWillMount = (app) => {
+export const appWillMount = app => {
   const extensions = app.getExtensions();
 
   // Load all translations provided by the extensions themselves
@@ -84,7 +86,7 @@ export const appWillMount = (app) => {
   };
 };
 
-export const appDidMount = (app) => {
+export const appDidMount = app => {
   // Load the current locale from extension settings
   const state = app.getState();
   const store = app.getStore();
@@ -94,7 +96,9 @@ export const appDidMount = (app) => {
   const currentlySelectedLocale = selectors.getSelectedLocale(state);
   const activeLocales = selectors.getActiveLocales(state);
 
-  const hasSelectedLocale = !_.isEmpty(currentlySelectedLocale) && _.includes(activeLocales, currentlySelectedLocale);
+  const hasSelectedLocale =
+    !_.isEmpty(currentlySelectedLocale) &&
+    _.includes(activeLocales, currentlySelectedLocale);
   const resolvedLocale = hasSelectedLocale ? currentlySelectedLocale : locale;
 
   if (!hasSelectedLocale) {
@@ -109,10 +113,6 @@ export const appDidMount = (app) => {
   moment.locale(resolvedLocale);
 };
 
-export function renderProvider(children) {
-  return (
-    <LocalizationProvider>
-      {children}
-    </LocalizationProvider>
-  );
-}
+export const renderProvider = setPriority(children => {
+  return <LocalizationProvider>{children}</LocalizationProvider>;
+}, after(priorities.REDUX));

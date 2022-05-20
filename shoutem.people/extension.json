@@ -1,11 +1,11 @@
 {
   "name": "people",
   "title": "People",
-  "version": "4.1.0",
-  "platform": "^5",
+  "version": "5.0.0",
+  "platform": ">=6",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
-  "releaseNotes": "* Added placeholder for list items with no image",
+  "releaseNotes": "*  Added support for new extension scoped theming",
   "dependencies": [
     "shoutem.cms",
     "shoutem.i18n",

@@ -4,7 +4,7 @@ import URI from 'urijs';
 import { isRSAA, RSAA } from 'redux-api-middleware';
 
 import { priorities, setPriority, before } from 'shoutem-core';
-import { getExtensionSettings } from 'shoutem.application';
+import { getExtensionServiceUrl } from 'shoutem.application';
 import { getAccessToken } from 'shoutem.auth';
 
 import { ext, AUTH_HEADERS } from './const';
@@ -18,7 +18,7 @@ export const networkRequestMiddleware = setPriority(
     if (isRSAA(action)) {
       const state = store.getState();
 
-      const dealsApiEndpoint = getExtensionSettings(state, ext()).dealsEndpoint;
+      const dealsApiEndpoint = getExtensionServiceUrl(state, ext(), 'deals');
       const endpointDomain = new URI(action[RSAA].endpoint).domain();
 
       if (
