@@ -1,14 +1,6 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { Modal } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
 import ActionSheet from 'react-native-action-sheet';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHeaderHeight } from '@react-navigation/stack';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import {
@@ -19,24 +11,16 @@ import {
   next,
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Divider,
-  ImageGallery,
-  ListView,
-  Screen,
-  ScrollView,
-  Text,
-  View,
-} from '@shoutem/ui';
+import { Divider, ListView, Screen, Text, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import {
   getRouteParams,
-  HeaderCloseButton,
   HeaderIconButton,
+  isTabBarNavigation,
 } from 'shoutem.navigation';
 import CommentView from '../components/CommentView';
 import NewCommentFooter from '../components/NewCommentFooter';
-import { CommentsListSkeleton } from '../components/skeleton-loading';
+import { CommentViewSkeleton } from '../components/skeleton-loading';
 import StatusView from '../components/StatusView';
 import { ext } from '../const';
 import { deleteComment, deleteStatus, loadComments, selectors } from '../redux';
@@ -55,11 +39,6 @@ export function StatusDetailsScreen(props) {
 
   const dispatch = useDispatch();
 
-  const [showImagePreview, setImagePreview] = useState(false);
-  const [imageGalleryData, setImageGalleryData] = useState(null);
-
-  const headerHeight = useHeaderHeight();
-
   const status = useSelector(state => selectors.getStatus(state, statusId));
   const comments = useSelector(state =>
     selectors.getCommentsForStatus(state, statusId),
@@ -67,6 +46,7 @@ export function StatusDetailsScreen(props) {
   const filteredComments = useSelector(state =>
     selectors.getFilteredCommentsForStatus(state, statusId),
   );
+  const isTabBar = useSelector(isTabBarNavigation);
 
   const headerRight = useCallback(
     props => {
@@ -106,6 +86,12 @@ export function StatusDetailsScreen(props) {
     );
   }, [dispatch, navigation.goBack, status]);
 
+  const loadStatusComments = useCallback(() => {
+    if (status?.id) {
+      dispatch(loadComments(status.id));
+    }
+  }, []);
+
   useLayoutEffect(() => {
     return navigation.setOptions({
       title: I18n.t(ext('postDetailsNavBarTitle')),
@@ -114,12 +100,8 @@ export function StatusDetailsScreen(props) {
   }, [dispatch, headerRight, navigation, status]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  const fetchData = useCallback(() => {
-    dispatch(loadComments(statusId));
-  }, [dispatch, statusId]);
+    loadStatusComments();
+  }, []);
 
   const loadMoreComments = useCallback(() => {
     dispatch(next(comments));
@@ -138,27 +120,18 @@ export function StatusDetailsScreen(props) {
     );
   }, [comments]);
 
-  const handleShowImagePreview = useCallback(imageGalleryData => {
-    setImageGalleryData(imageGalleryData);
-    setImagePreview(true);
-  }, []);
-
-  const handleHideImagePreview = useCallback(() => {
-    setImagePreview(false);
-  }, []);
-
   const renderRow = useCallback(
     comment => {
       return (
         <CommentView
-          openProfile={openProfileForLegacyUser}
           comment={comment}
           deleteComment={deleteComment}
-          onImagePress={handleShowImagePreview}
+          openProfile={openProfileForLegacyUser}
+          statusId={statusId}
         />
       );
     },
-    [handleShowImagePreview],
+    [statusId],
   );
 
   const renderStatus = useCallback(() => {
@@ -184,6 +157,14 @@ export function StatusDetailsScreen(props) {
     status,
   ]);
 
+  const skeletonLoading = useMemo(
+    () => ({
+      data: [1, 2, 3], // just a mockup of 3 array elements to produce 3 skeleton components in list
+      component: () => <CommentViewSkeleton />,
+    }),
+    [],
+  );
+
   const commentsData = useMemo(() => filteredComments?.data || [], [
     filteredComments,
   ]);
@@ -193,26 +174,30 @@ export function StatusDetailsScreen(props) {
     (isBusy(comments) &&
       (!comments || comments?.length === 0 || !isInitialized(comments)));
 
+  const resolvedData = useMemo(
+    () => (initialLoading ? skeletonLoading.data : commentsData),
+    [initialLoading, commentsData, skeletonLoading.data],
+  );
+  const resolvedRenderRow = useMemo(
+    () => (initialLoading ? skeletonLoading.component : renderRow),
+    [initialLoading, skeletonLoading.component, renderRow],
+  );
+
+  const screenStyle = isTabBar ? 'paper' : 'paper with-notch-padding';
+
   return (
-    <Screen styleName="paper with-notch-padding">
-      {initialLoading && (
-        <ScrollView>
-          {renderStatus()}
-          <CommentsListSkeleton />
-        </ScrollView>
-      )}
-      {!initialLoading && (
-        <ListView
-          data={commentsData}
-          loading={isBusy(commentsData)}
-          renderHeader={renderStatus}
-          renderRow={renderRow}
-          renderFooter={renderLoadingMoreText}
-          onLoadMore={loadMoreComments}
-          ListEmptyComponent={null}
-          style={style.list}
-        />
-      )}
+    <Screen styleName={screenStyle}>
+      <ListView
+        data={resolvedData}
+        loading={isBusy(commentsData)}
+        ListEmptyComponent={null}
+        renderFooter={renderLoadingMoreText}
+        renderHeader={renderStatus}
+        renderRow={resolvedRenderRow}
+        style={style.list}
+        onLoadMore={loadMoreComments}
+        onRefresh={loadStatusComments}
+      />
       {enableComments && (
         <NewCommentFooter
           enablePhotoAttachments={enablePhotoAttachments}
@@ -221,23 +206,6 @@ export function StatusDetailsScreen(props) {
           maxStatusLength={maxStatusLength}
         />
       )}
-
-      <Modal
-        onRequestClose={handleHideImagePreview}
-        visible={showImagePreview}
-        animationType="fade"
-        transparent
-      >
-        <View styleName="fill-parent">
-          <View style={[style.headerContainer, { height: headerHeight }]}>
-            <HeaderCloseButton
-              onPress={handleHideImagePreview}
-              tintColor={style.closeIcon}
-            />
-          </View>
-          <ImageGallery data={imageGalleryData} selectedIndex={0} />
-        </View>
-      </Modal>
     </Screen>
   );
 }

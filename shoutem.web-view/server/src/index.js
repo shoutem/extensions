@@ -1,6 +1,6 @@
-import WebPage from './webPage';
-import reducer from './reducer';
 import { createDenormalizer } from 'denormalizer';
+import reducer from './reducer';
+import WebPage from './webPage';
 
 const adminPages = {
   WebPage,
@@ -9,6 +9,6 @@ const adminPages = {
 export { adminPages, reducer };
 
 export function extensionDidLoad(builder) {
-  const getState = builder.getStore().getState;
+  const { getState } = builder.getStore();
   createDenormalizer(getState);
 }

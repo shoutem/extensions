@@ -15,10 +15,9 @@ const {
 const { injectFirebase } = require('./injectFirebase');
 const { injectReactNativePush } = require('./injectReactNativePush');
 const { injectFirebaseSettingsFile } = require('./injectFirebaseSettingsFile');
+const { name: firebaseExtensionName } = require('../package.json');
 
 const extensionPath = `${projectPath}/node_modules/shoutem.firebase`;
-const SHOUTEM_APPLICATION = 'shoutem.application';
-const API_ENDPOINT = 'legacyApiEndpoint';
 
 function endpointForResource(uri, appId, res) {
   return `${uri}${appId}/firebase/objects/FirebaseProject/${res}`;
@@ -90,9 +89,9 @@ function downloadConfigurationFiles(legacyApi, appId) {
   return Promise.all(fcmFiles.map(downloadConfigurationFile));
 }
 
-function isApplicationExtension(data) {
+function isFirebaseExtension(data) {
   return (
-    data.type === 'shoutem.core.extensions' && data.id === SHOUTEM_APPLICATION
+    data.type === 'shoutem.core.extensions' && data.id === firebaseExtensionName
   );
 }
 
@@ -159,7 +158,8 @@ function updateGoogleServicesPackageName(buildConfiguration) {
 
   const pkgName = 'com.shoutemapp';
   // eslint-disable-next-line prettier/prettier
-  const message = `Updating ${relativePath} package_name to ${pkgName}`.bold.green;
+  const message = `Updating ${relativePath} package_name to ${pkgName}`.bold
+    .green;
 
   console.time(message);
 
@@ -182,14 +182,17 @@ function updateGoogleServicesPackageName(buildConfiguration) {
 
 async function preBuild(appConfiguration, buildConfiguration) {
   const { production, release } = buildConfiguration;
-  const appExtension = _.get(appConfiguration, 'included').find(
-    isApplicationExtension,
+  const firebaseExtension = _.get(appConfiguration, 'included').find(
+    isFirebaseExtension,
   );
-  const legacyApi = _.get(appExtension, `attributes.settings.${API_ENDPOINT}`);
+  const legacyApi = _.get(
+    firebaseExtension,
+    'attributes.settings.services.core.cms',
+  );
 
   if (!legacyApi) {
     throw new Error(
-      `${API_ENDPOINT} not set in ${SHOUTEM_APPLICATION} settings`,
+      'Core service endpoints unavailable, could not get API endpoint for preBuild.',
     );
   }
 

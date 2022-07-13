@@ -27,6 +27,7 @@ import { getUser, loginRequired } from 'shoutem.auth';
 import { navigateToQRCodeScannerScreen, QRCodeScanner } from 'shoutem.camera';
 import { I18n } from 'shoutem.i18n';
 import {
+  getRouteParams,
   HeaderBackButton,
   HeaderIconButton,
   navigateTo,
@@ -135,10 +136,14 @@ export class PointsCardScreen extends PureComponent {
   getNavBarProps() {
     const { isScannerActive, isProcessingQRCodeData } = this.state;
     const { cashierInfo } = this.props;
+    const {
+      shortcut: { title: shortcutTitle },
+    } = getRouteParams(this.props);
 
     const isUserACashier = _.has(cashierInfo, 'data');
-    const titleKey = isUserACashier ? 'scanQrTitle' : 'myCardScreenNavBarTitle';
-    const title = I18n.t(ext(titleKey)).toUpperCase();
+    const title = isUserACashier
+      ? I18n.t(ext('scanQrTitle')).toUpperCase()
+      : shortcutTitle;
 
     const hideLeftButton =
       isUserACashier && (isScannerActive || isProcessingQRCodeData);

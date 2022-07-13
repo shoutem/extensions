@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { ListView, TouchableOpacity } from '@shoutem/ui';
 import { ext } from '../const';
-import { CAMERAROLL_OPTIONS } from '../services';
+import { attachmentService } from '../services';
 
 function RecentImages({ onImageSelected, style }) {
   const appState = useRef('active');
@@ -36,7 +36,7 @@ function RecentImages({ onImageSelected, style }) {
   }, [getPhotosInitial]);
 
   const getPhotosInitial = useCallback(() => {
-    CameraRoll.getPhotos(CAMERAROLL_OPTIONS)
+    CameraRoll.getPhotos(attachmentService.CAMERAROLL_OPTIONS)
       .then(res => {
         const imageObjects = _.map(res.edges, data => data.node.image);
 
@@ -56,7 +56,7 @@ function RecentImages({ onImageSelected, style }) {
     }
 
     CameraRoll.getPhotos({
-      ...CAMERAROLL_OPTIONS,
+      ...attachmentService.CAMERAROLL_OPTIONS,
       ...galleryPagination,
     })
       .then(res => {

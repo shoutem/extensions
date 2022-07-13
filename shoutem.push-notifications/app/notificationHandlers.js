@@ -1,11 +1,11 @@
 import { Alert } from 'react-native';
 import _ from 'lodash';
+import { getShortcut } from 'shoutem.application';
 import { NotificationHandlers } from 'shoutem.firebase';
 import { I18n } from 'shoutem.i18n';
 import { getCurrentRoute, openInModal } from 'shoutem.navigation';
-import { getShortcut } from 'shoutem.application';
-import { ext, DEFAULT_PUSH_NOTIFICATION_GROUP } from './const';
-import { selectPushNotificationGroups, deviceTokenReceived } from './redux';
+import { DEFAULT_PUSH_NOTIFICATION_GROUP, ext } from './const';
+import { deviceTokenReceived, selectPushNotificationGroups } from './redux';
 import { resolveNotificationData } from './services';
 
 const OPEN_IN_MODAL_ACTION_TYPE = 'shoutem.navigation.OPEN_MODAL';

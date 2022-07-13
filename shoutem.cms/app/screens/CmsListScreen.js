@@ -158,7 +158,7 @@ export class CmsListScreen extends PureComponent {
       const collection = getCmsCollection(state);
       if (!collection) {
         throw new Error(
-          `Invalid collection selector passed to createMapStateToProps of the 
+          `Invalid collection selector passed to createMapStateToProps of the
            CmsListScreen. Expected an array but the selector returned: ${collection}`,
         );
       }
@@ -227,7 +227,7 @@ export class CmsListScreen extends PureComponent {
 
     if (!schema) {
       throw Error(
-        `Invalid Screen state "schema". Screen that extends CMSListScreen must define 
+        `Invalid Screen state "schema". Screen that extends CMSListScreen must define
          (content) "schema" property in the state.`,
       );
     }
@@ -308,7 +308,6 @@ export class CmsListScreen extends PureComponent {
   }
 
   getNavBarProps() {
-    const { title } = getRouteParams(this.props);
     const { renderCategoriesInline } = this.state;
 
     const inlineCategories = renderCategoriesInline
@@ -317,7 +316,6 @@ export class CmsListScreen extends PureComponent {
 
     return {
       headerRight: () => <View styleName="container">{inlineCategories}</View>,
-      title,
     };
   }
 

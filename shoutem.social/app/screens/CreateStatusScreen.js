@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -13,7 +14,7 @@ import {
   Pressable,
   TextInput,
 } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
@@ -35,7 +36,8 @@ import { HeaderTextButton } from 'shoutem.navigation';
 import { images } from '../assets';
 import NewStatusFooter from '../components/NewStatusFooter';
 import { ext } from '../const';
-import { MAX_IMAGE_SIZE } from '../services';
+import { clearDraft, saveDraft, selectors } from '../redux';
+import { attachmentService } from '../services';
 
 export function CreateStatusScreen({ navigation, route, style }) {
   const {
@@ -51,6 +53,7 @@ export function CreateStatusScreen({ navigation, route, style }) {
 
   const dispatch = useDispatch();
 
+  const statusDraft = useSelector(selectors.getSavedDraft);
   const [text, setText] = useState('');
   const [selectedImage, setSelectedImage] = useState(selectedImageAttachment);
   const [isPostingStatus, setPostingStatus] = useState(false);
@@ -95,6 +98,11 @@ export function CreateStatusScreen({ navigation, route, style }) {
     navigation.goBack();
   }, [navigation]);
 
+  const saveStatus = useCallback(() => {
+    dispatch(saveDraft({ statusText: text, imageAttachment: selectedImage }));
+    navigateBack();
+  }, [dispatch, navigateBack, selectedImage, text]);
+
   const cancelNewPost = useCallback(() => {
     if (text.length === 0 && !selectedImage) {
       return navigateBack();
@@ -105,6 +113,11 @@ export function CreateStatusScreen({ navigation, route, style }) {
       I18n.t(ext('discardStatusAlertMessage')),
       [
         {
+          text: I18n.t(ext('saveAlertButtonLabel')),
+          style: 'destructive',
+          onPress: saveStatus,
+        },
+        {
           text: I18n.t(ext('discardAlertButtonLabel')),
           style: 'destructive',
           onPress: navigateBack,
@@ -114,7 +127,7 @@ export function CreateStatusScreen({ navigation, route, style }) {
         },
       ],
     );
-  }, [navigateBack, text.length, selectedImage]);
+  }, [navigateBack, text.length, saveStatus, selectedImage]);
 
   const headerLeft = useCallback(
     props => {
@@ -141,11 +154,25 @@ export function CreateStatusScreen({ navigation, route, style }) {
     navigation.setOptions({ title, headerLeft, headerRight });
   }, [headerLeft, headerRight, navigation, route]);
 
+  useEffect(() => {
+    if (statusDraft) {
+      setText(statusDraft.statusText);
+      setSelectedImage(statusDraft.imageAttachment);
+    }
+  }, [dispatch, statusDraft, text]);
+
+  useEffect(() => {
+    // Clear draft after it has been loaded
+    dispatch(clearDraft());
+  }, [dispatch]);
+
   const handleImageSelected = useCallback(image => {
-    if (image.size > MAX_IMAGE_SIZE) {
+    if (image.size > attachmentService.MAX_IMAGE_SIZE) {
       Alert.alert(
         I18n.t(
-          ext('imageSizeWarning', { maxSize: MAX_IMAGE_SIZE / (1024 * 1024) }),
+          ext('imageSizeWarning', {
+            maxSize: attachmentService.MAX_IMAGE_SIZE / (1024 * 1024),
+          }),
         ),
       );
     }
@@ -192,14 +219,15 @@ export function CreateStatusScreen({ navigation, route, style }) {
           />
         </Pressable>
         <TextInput
-          ref={textInputRef}
-          style={style.textInput}
-          multiline
-          textAlignVertical="top"
+          defaultValue={text}
           maxLength={maxStatusLength}
-          placeholder={placeholder}
           onChangeText={debouncedHandleTextChange}
+          multiline
+          placeholder={placeholder}
+          ref={textInputRef}
           returnKeyType="next"
+          style={style.textInput}
+          textAlignVertical="top"
         />
       </View>
       {!!selectedImage && (

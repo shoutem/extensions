@@ -12,5 +12,6 @@ function runPreBuild() {
 
 module.exports = {
   preBuild,
+  previewBuild: preBuild,
   runPreBuild,
 };

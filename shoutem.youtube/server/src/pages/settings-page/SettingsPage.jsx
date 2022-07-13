@@ -1,8 +1,5 @@
+/* eslint-disable react-native/no-raw-text */
 import React, { Component } from 'react';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import {
   Button,
   ButtonToolbar,
@@ -13,11 +10,15 @@ import {
 } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import {
   fetchExtension,
-  updateExtensionSettings,
   getExtension,
+  updateExtensionSettings,
 } from '@shoutem/redux-api-sdk';
 import { shouldRefresh } from '@shoutem/redux-io';
 import { validateYoutubeSettings } from '../../redux';
@@ -40,22 +41,12 @@ class SettingsPage extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { extension } = this.props;
-    const { extension: nextExtension } = nextProps;
-    const { apiKey } = this.state;
+  componentDidUpdate(prevProps) {
+    const { extension: prevExtension } = prevProps;
+    const { extension, fetchExtension } = this.props;
 
-    if (_.isEmpty(apiKey)) {
-      const apiKey = _.get(nextExtension, 'settings.apiKey');
-      const isSaved = apiKey !== undefined;
-      this.setState({
-        apiKey,
-        isSaved,
-      });
-    }
-
-    if (extension !== nextExtension && shouldRefresh(nextExtension)) {
-      this.props.fetchExtension();
+    if (extension !== prevExtension && shouldRefresh(extension)) {
+      fetchExtension();
     }
   }
 
@@ -122,7 +113,7 @@ class SettingsPage extends Component {
         <ControlLabel>
           <Trans i18nKey={LOCALIZATION.TO_CREATE_A_KEY}>
             To create your Youtube API key you need to create an app on Google
-            Developer Console. You can find detailed instructions{' '}
+            Developer Console. You can find detailed instructions
             <a
               href="https://developers.google.com/youtube/v3/getting-started"
               target="_blank"
@@ -150,10 +141,10 @@ class SettingsPage extends Component {
 }
 
 SettingsPage.propTypes = {
-  extension: PropTypes.object,
-  fetchExtension: PropTypes.func,
-  updateExtensionSettings: PropTypes.func,
-  validateYoutubeSettings: PropTypes.func,
+  extension: PropTypes.object.isRequired,
+  fetchExtension: PropTypes.func.isRequired,
+  updateExtensionSettings: PropTypes.func.isRequired,
+  validateYoutubeSettings: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {

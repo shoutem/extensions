@@ -1,3 +1,3 @@
-export { loadGroups, createGroup, updateGroup, deleteGroup } from './actions';
-export { getGroups, getRawGroups } from './selectors';
+export { createGroup, deleteGroup, loadGroups, updateGroup } from './actions';
 export { reducer } from './reducer';
+export { getGroups, getRawGroups } from './selectors';

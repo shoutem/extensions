@@ -3,6 +3,7 @@ import { FeedPreviewTable } from './feed-preview-table';
 import { FeedSortDropdown } from './feed-sort-dropdown';
 import { FeedUrlDescription } from './feed-url-description';
 import { FeedUrlInput } from './feed-url-input';
+import { NonPlaylistAlert } from './non-playlist-alert';
 
 export {
   FeedPreview,
@@ -10,4 +11,5 @@ export {
   FeedSortDropdown,
   FeedUrlDescription,
   FeedUrlInput,
+  NonPlaylistAlert,
 };

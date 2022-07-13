@@ -1,12 +1,15 @@
+import _ from 'lodash';
+import { reducer as formReducer } from 'redux-form';
 import { createScopedReducer } from '@shoutem/redux-api-sdk';
 import { create } from '@shoutem/redux-io';
-import { reducer as formReducer } from 'redux-form';
-import _ from 'lodash';
 import appReducer, { moduleName as app } from './modules/app';
+import groupReducer, { moduleName as group } from './modules/groups';
+import notificationJourneyReducer, {
+  moduleName as notificationJourneys,
+} from './modules/notification-journeys';
 import notificationReducer, {
   moduleName as notification,
 } from './modules/notifications';
-import groupReducer, { moduleName as group } from './modules/groups';
 import ext from './const';
 import { shoutemUrls } from './services';
 
@@ -55,6 +58,7 @@ export const reducer = () =>
       form: formReducer,
       [app]: appReducer,
       [notification]: notificationReducer,
+      [notificationJourneys]: notificationJourneyReducer,
       [group]: groupReducer,
     },
   });

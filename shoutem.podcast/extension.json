@@ -1,10 +1,10 @@
 {
   "name": "podcast",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "platform": ">=6.0.1",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* Reworked RSS feed resolution resulting in more optimised feed fetching and parsing",
+  "releaseNotes": "* Fixed a bug when downloaded episodes could not be played",
   "icon": "server/assets/extension-icon.png",
   "categories": ["media"],
   "repository": {

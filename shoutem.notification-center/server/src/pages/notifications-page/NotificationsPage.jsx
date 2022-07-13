@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
-import { bindActionCreators } from 'redux';
 import { Alert } from 'react-bootstrap';
-import classNames from 'classnames';
-import { shouldLoad } from '@shoutem/redux-io';
-import { getExtension } from '@shoutem/redux-api-sdk';
 import { connect } from 'react-redux';
-import { Notifications } from 'src/modules/notifications';
+import autoBindReact from 'auto-bind/react';
+import classNames from 'classnames';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 import {
-  loadApplicationStatus,
   getApplicationStatus,
   isPublished,
+  loadApplicationStatus,
 } from 'src/modules/app';
+import { Notifications } from 'src/modules/notifications';
+import { getExtension } from '@shoutem/redux-api-sdk';
+import { shouldLoad } from '@shoutem/redux-io';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -120,6 +120,7 @@ NotificationsPage.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   const { extensionName } = ownProps;
+
   const extension = getExtension(state, extensionName);
   const settings = _.get(extension, 'settings', {});
   const applicationStatus = getApplicationStatus(state);

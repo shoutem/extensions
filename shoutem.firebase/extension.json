@@ -1,13 +1,13 @@
 {
   "name": "firebase",
-  "version": "4.1.1",
-  "platform": ">=4",
+  "version": "4.1.4",
+  "platform": ">=7",
   "type": "system",
   "skipClone": false,
   "title": "Firebase",
   "native": true,
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
-  "releaseNotes": "* Added platform 6.x support",
+  "releaseNotes": "* Exported methods for queueing notifications",
   "icon": "server/assets/add-firebase-image.png",
   "dependencies": [
     "shoutem.application",

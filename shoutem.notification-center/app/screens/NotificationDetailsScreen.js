@@ -1,24 +1,24 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import autoBind from 'auto-bind';
 import _ from 'lodash';
-import {
-  ScrollView,
-  Screen,
-  Title,
-  Caption,
-  SimpleHtml,
-  View,
-  Button,
-  Text,
-} from '@shoutem/ui';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { I18n } from 'shoutem.i18n';
+import {
+  Button,
+  Caption,
+  Screen,
+  ScrollView,
+  SimpleHtml,
+  Text,
+  Title,
+  View,
+} from '@shoutem/ui';
 import { consumeNotification } from 'shoutem.firebase';
+import { I18n } from 'shoutem.i18n';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
-import { formatTimestamp } from '../services';
 import { ext, notificationShape } from '../const';
+import { formatTimestamp } from '../services';
 
 export class NotificationDetailsScreen extends PureComponent {
   static propTypes = {
@@ -87,7 +87,7 @@ export class NotificationDetailsScreen extends PureComponent {
     return (
       <Screen styleName="paper">
         <ScrollView>{this.renderContent()}</ScrollView>
-      </Screen >
+      </Screen>
     );
   }
 }

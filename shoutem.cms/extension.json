@@ -1,15 +1,13 @@
 {
   "name": "cms",
-  "version": "5.0.1",
+  "version": "6.0.1",
   "platform": ">=6",
   "type": "system",
   "title": "CMS",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Updated endpoint sourcing, no user facing changes\n* Removed extension settings page, no longer necessary",
   "icon": "server/assets/add-cms-image.png",
-  "categories": [
-    "content"
-  ],
+  "categories": ["content"],
   "dependencies": [
     "shoutem.application",
     "shoutem.layouts",
@@ -22,25 +20,11 @@
     "locale": "en",
     "translationPath": "server/translations/en.json"
   },
-  "settingsPages": [
-    {
-      "page": "@.CmsSettingsPage",
-      "title": "Settings"
-    }
-  ],
   "pages": [
     {
       "name": "CmsPage",
       "type": "native-component",
       "path": "dummy.js"
-    },
-    {
-      "name": "CmsSettingsPage",
-      "type": "native-component",
-      "path": "dummy.js"
     }
-  ],
-  "settings": {
-    "apiEndpoint": "http://api.beta.shoutem.com"
-  }
+  ]
 }

@@ -25,9 +25,6 @@ module.exports = {
   resolve: {
     modules: [path.join(__dirname, '../..'), 'node_modules'],
     extensions: ['.js', '.jsx', '.json', '.css', '.sass', '.scss', '.html'],
-    alias: {
-      '@shoutem/form-builder': path.join(__dirname, '../../form-builder'),
-    }
   },
   devServer: resolveDevServer(),
 };

@@ -1,5 +1,5 @@
-import { ReduxApiStateDenormalizer } from '@shoutem/redux-io';
 import { ext } from 'context';
+import { ReduxApiStateDenormalizer } from '@shoutem/redux-io';
 import { SHORTCUTS } from './webPage/reducer';
 
 // define your storage mappings here

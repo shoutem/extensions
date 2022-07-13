@@ -1,11 +1,11 @@
 {
   "name": "theme",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "platform": ">=6",
   "type": "system",
   "title": "Theme",
   "description": "Resolve and store theme related configuration",
-  "releaseNotes": "* Implemented new theming architecture",
+  "releaseNotes": "* Updated UI library version to 5.1.1",
   "icon": "server/assets/add-theme-image.png",
   "categories": [],
   "i18n": {

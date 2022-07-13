@@ -1,13 +1,13 @@
 import React, { createRef, PureComponent } from 'react';
+import { Alert, ControlLabel, FormGroup } from 'react-bootstrap';
+import Dropzone from 'react-dropzone';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Alert, ControlLabel, FormGroup } from 'react-bootstrap';
-import Dropzone from 'react-dropzone';
+import ext from 'src/const';
 import { AssetManager } from '@shoutem/assets-sdk';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import ext from 'src/const';
 import { ChimeFilePreview, ChimeUploadInput } from '../../components';
 import LOCALIZATION from './localization';
 import './style.scss';

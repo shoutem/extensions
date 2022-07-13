@@ -1,0 +1,14 @@
+.general-settings-page {
+  max-width: 552px;
+  height: max-content;
+  margin: auto;
+
+  &.is-wide {
+    max-width: 808px;
+  }
+}
+
+.journeys-page-modal {
+  background-color: white;
+  overflow-y: scroll;
+}

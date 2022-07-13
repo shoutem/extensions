@@ -1,6 +1,6 @@
 {
   "name": "rss",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "platform": ">=6.0.1",
   "type": "system",
   "title": "RSS",

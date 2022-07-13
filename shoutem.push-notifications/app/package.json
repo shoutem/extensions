@@ -1,6 +1,6 @@
 {
   "name": "shoutem.push-notifications",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Base extension for push notifications",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

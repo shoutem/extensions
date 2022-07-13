@@ -1,15 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Alert, AppState } from 'react-native';
 import { connect } from 'react-redux';
-import autoBind from 'auto-bind';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import {
-  checkNotifications,
-  openSettings,
-  RESULTS,
-} from 'shoutem.permissions';
-
+import PropTypes from 'prop-types';
+import { connectStyle } from '@shoutem/theme';
 import {
   Divider,
   EmptyStateView,
@@ -20,14 +15,13 @@ import {
   Switch,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
-
-import { I18n } from 'shoutem.i18n';
 import { isProduction } from 'shoutem.application';
 import { Firebase } from 'shoutem.firebase';
+import { I18n } from 'shoutem.i18n';
+import { checkNotifications, openSettings, RESULTS } from 'shoutem.permissions';
 import { selectPushNotificationGroups } from 'shoutem.push-notifications';
+import { ext, GROUP_PREFIX, pushGroupShape } from '../const';
 import { fetchGroups, invalidateNotifications } from '../redux';
-import { ext, pushGroupShape, GROUP_PREFIX } from '../const';
 
 const { arrayOf, func, string } = PropTypes;
 
@@ -63,19 +57,15 @@ export class PushGroupsScreen extends PureComponent {
   constructor(props) {
     super(props);
 
-    autoBind(this);
+    autoBindReact(this);
 
     this.state = { areNotificationsEnabled: true };
   }
 
   componentDidMount() {
-    const { fetchGroups, navigation } = this.props;
+    const { fetchGroups } = this.props;
 
     fetchGroups();
-
-    navigation.setOptions({
-      title: I18n.t(ext('pushGroupsSettingsNavBarTitle')),
-    });
 
     // Push groups and notifications are not enabled when there are no certificates set up.
     // They are usually set up only in production environments

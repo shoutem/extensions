@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import moment from 'moment';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import { uses24HourClock } from 'react-native-localize';
 import { connect } from 'react-redux';
+import moment from 'moment';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -16,7 +16,7 @@ import {
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { goBack, HeaderIconButton } from 'shoutem.navigation';
-import { ext, DEFAULT_TIMEFRAME } from '../const';
+import { DEFAULT_TIMEFRAME, ext } from '../const';
 import { getNotificationSettings, setNotificationSettings } from '../redux';
 
 function NotificationDailySettingsScreen({

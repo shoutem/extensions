@@ -27,6 +27,12 @@ export function ImageUpload({
   showLabel,
   style,
 }) {
+  // Backward compatibility for when we were saving images as a single string
+  const resolvedImages = useMemo(
+    () => (_.isArray(images) ? images : [images]),
+    [images],
+  );
+
   const isCircular = useMemo(() => shape === SHAPES.CIRCLE, [shape]);
 
   const imagePickerOptions = useMemo(
@@ -38,14 +44,14 @@ export function ImageUpload({
     try {
       const newImages = await imagePickerAction({
         ...imagePickerOptions,
-        maxFiles: maxItems - images?.length,
+        maxFiles: maxItems - resolvedImages?.length,
       });
 
       if (_.isEmpty(newImages)) {
         return null;
       }
 
-      return onImagesChange([...images, ...newImages]);
+      return onImagesChange([...resolvedImages, ...newImages]);
     } catch (e) {
       let error = {
         title: I18n.t(ext('errorTitle')),
@@ -69,7 +75,7 @@ export function ImageUpload({
       }
 
       // Custom permission denied handler
-      if (!!onPermissionDenied) {
+      if (onPermissionDenied) {
         return onPermissionDenied(error.title, error.message);
       }
 
@@ -97,7 +103,7 @@ export function ImageUpload({
     );
   }
 
-  if (_.isEmpty(images)) {
+  if (_.isEmpty(resolvedImages)) {
     return (
       <>
         {showLabel && <Text style={style.label}>{label}</Text>}
@@ -115,7 +121,7 @@ export function ImageUpload({
       {showLabel && <Text style={style.label}>{label}</Text>}
       <ImageCarousel
         style={style.imageCarousel}
-        images={images}
+        images={resolvedImages}
         isCircular={isCircular}
         maxItems={maxItems}
         onImagesChange={onImagesChange}

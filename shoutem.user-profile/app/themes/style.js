@@ -10,7 +10,7 @@ import { ext } from '../const';
 const resolveVariable = createScopedResolver(ext());
 
 export default () => ({
-  'shoutem.user-profile.FormInput': {
+  [`${ext('FormInput')}`]: {
     textInput: {
       borderColor: resolveVariable('text.color'),
       borderRadius: 6,
@@ -31,7 +31,7 @@ export default () => ({
     },
   },
 
-  'shoutem.user-profile.SubmitButton': {
+  [`${ext('SubmitButton')}`]: {
     container: {
       marginTop: resolveVariable('largeGutter'),
       marginBottom: Device.select({
@@ -47,7 +47,7 @@ export default () => ({
     },
   },
 
-  'shoutem.user-profile.ImageUpload': {
+  [`${ext('ImageUpload')}`]: {
     label: {
       fontSize: resolveVariable('text.fontSize'),
       paddingHorizontal: resolveVariable('smallGutter'),
@@ -65,7 +65,7 @@ export default () => ({
     },
   },
 
-  'shoutem.user-profile.TextValue': {
+  [`${ext('TextValue')}`]: {
     labelContainer: {
       width: '30%',
     },
@@ -89,7 +89,7 @@ export default () => ({
     },
   },
 
-  'shoutem.user-profile.EditProfileScreen': {
+  [`${ext('EditProfileScreen')}`]: {
     padding: {
       padding: resolveVariable('mediumGutter'),
       marginBottom: Device.select({
@@ -100,7 +100,7 @@ export default () => ({
     },
   },
 
-  'shoutem.user-profile.SubmissionCompletedScreen': {
+  [`${ext('SubmissionCompletedScreen')}`]: {
     title: {
       fontWeight: 'bold',
       fontSize: 18,
@@ -109,7 +109,7 @@ export default () => ({
     description: { textAlign: 'center', fontSize: 15 },
   },
 
-  'shoutem.user-profile.EmptyImagesView': {
+  [`${ext('EmptyImagesView')}`]: {
     icon: { width: 66, height: 66 },
     uploadContainer: {
       alignItems: 'center',
@@ -121,7 +121,7 @@ export default () => ({
     },
   },
 
-  'shoutem.user-profile.ImageCarousel': {
+  [`${ext('ImageCarousel')}`]: {
     container: {
       justifyContent: 'center',
     },
@@ -212,7 +212,7 @@ export default () => ({
     },
   },
 
-  'shoutem.user-profile.MyProfileScreen': {
+  [`${ext('MyProfileScreen')}`]: {
     container: {
       paddingBottom: Device.select({
         iPhoneX: resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
@@ -222,9 +222,10 @@ export default () => ({
       }),
       paddingTop: resolveVariable('mediumGutter'),
     },
+    deleteAccountButtonText: { color: resolveVariable('errorText.color') },
   },
 
-  'shoutem.user-profile.UserProfileScreen': {
+  [`${ext('UserProfileScreen')}`]: {
     container: {
       paddingBottom: Device.select({
         iPhoneX: resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
@@ -235,7 +236,7 @@ export default () => ({
     },
   },
 
-  'shoutem.user-profile.ImagesPreview': {
+  [`${ext('ImagesPreview')}`]: {
     container: {
       justifyContent: 'center',
     },
@@ -330,7 +331,7 @@ export default () => ({
     },
   },
 
-  'shoutem.user-profile.BaseUserProfile': {
+  [`${ext('BaseUserProfile')}`]: {
     name: {
       fontSize: 16,
       lineHeight: calculateLineHeight(16),

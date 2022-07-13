@@ -1,11 +1,11 @@
 {
   "name": "books",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "platform": ">=6",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",
   "description": "Show books and authors",
-  "releaseNotes": "* Added platform 6.x support",
+  "releaseNotes": "* Adjusted navigation bar title resolution, shortcuts will now always use the title provided via Language & Region settings",
   "categories": ["content"],
   "i18n": {
     "locale": "en",

@@ -61,9 +61,8 @@ export class EpisodeDetailsScreen extends PureComponent {
 
   deleteDownload() {
     const { deleteEpisode, downloadedEpisode } = this.props;
-    const { id, path } = downloadedEpisode;
 
-    deleteEpisode(id, path);
+    deleteEpisode(downloadedEpisode);
   }
 
   startDownload() {

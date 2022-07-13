@@ -1,12 +1,15 @@
 {
   "name": "web-view",
-  "version": "5.0.0",
-  "platform": ">=6",
+  "version": "5.1.0",
+  "platform": ">=7",
   "type": "system",
   "title": "Web view",
-  "releaseNotes": "* Added ability to construct generic URLs using user's profile info\n* New theming support",
+  "releaseNotes": "* Improved cookie storage and persisting\n* Resolved issues with navigation toolbar not showing buttons",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
+  "nativeChanges": {
+    "latestVersion": "5.1.0-rc.0"
+  },
   "dependencies": [
     "shoutem.cms",
     "shoutem.i18n",
@@ -34,6 +37,12 @@
           "title": "Content",
           "parameters": {
             "hasWebsiteSettings": "true"
+          },
+          "settings": {
+            "forwardAuthHeader": false,
+            "requireGeolocationPermission": false,
+            "showNavigationToolbar": false,
+            "url": ""
           }
         },
         {

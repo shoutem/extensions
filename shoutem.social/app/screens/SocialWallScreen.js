@@ -152,12 +152,8 @@ export class SocialWallScreen extends RemoteDataListScreen {
       !isValid(data) || (isBusy(data) && !isInitialized(data));
 
     if (initialLoad) {
-      LayoutAnimation.easeInEaseOut();
-
       return <SocialWallSkeleton />;
     }
-
-    LayoutAnimation.easeInEaseOut();
 
     return super.renderData(data);
   }

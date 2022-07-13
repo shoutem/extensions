@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 import _ from 'lodash';
-import { TARGET_TYPES, AUDIENCE_TYPES, DELIVERY_TYPES } from '../const';
+import { AUDIENCE_TYPES, DELIVERY_TYPES, TARGET_TYPES } from '../const';
 import LOCALIZATION from './localization';
 
 function validateRequiredField(notification) {

@@ -23,11 +23,12 @@ import { EpisodeView, mapDispatchToProps } from './EpisodeView';
 export class GridEpisodeView extends EpisodeView {
   render() {
     const { enableDownload, episode } = this.props;
-    const { downloadInProgress, timeUpdated, title, path } = episode;
+    const { downloadInProgress, timeUpdated, title } = episode;
 
+    const isDownloaded = downloadInProgress !== undefined;
     const momentDate = moment(timeUpdated);
-    const iconName = path ? 'delete' : 'download';
-    const handleDownloadManagerPress = path
+    const iconName = isDownloaded ? 'delete' : 'download';
+    const handleDownloadManagerPress = isDownloaded
       ? this.onDeletePress
       : this.onDownloadPress;
     const imageUrl = this.getImageUrl(episode);

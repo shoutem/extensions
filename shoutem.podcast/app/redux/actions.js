@@ -5,15 +5,20 @@ import {
   DEFAULT_PAGE_LIMIT,
   DOWNLOADED_EPISODE_ADDED,
   DOWNLOADED_EPISODE_REMOVED,
+  DOWNLOADED_EPISODE_UPDATED,
   EPISODES_COLLECTION_TAG,
   RSS_PODCAST_SCHEMA,
   SET_DOWNLOAD_IN_PROGRESS,
 } from '../const';
-import { episodeDownloadManager } from '../services';
+import {
+  episodeDownloadManager,
+  getFileNameFromPath,
+  getPathFromEpisode,
+} from '../services';
 import { getEpisodesFeed } from './selectors';
 
-export function addDownloadedEpisode(path, id) {
-  return { type: DOWNLOADED_EPISODE_ADDED, payload: { id, path } };
+export function addDownloadedEpisode(id, fileName) {
+  return { type: DOWNLOADED_EPISODE_ADDED, payload: { id, fileName } };
 }
 
 export function removeDownloadedEpisode(id) {
@@ -24,6 +29,12 @@ export function setDownloadInProgress(id) {
   return { type: SET_DOWNLOAD_IN_PROGRESS, payload: { id } };
 }
 
+// Used to replace 'path' with 'fileName' for 'downloadedEpisode's to allow
+// backwards compatibility.
+export function updateDownloadedEpisode(downloadedEpisode) {
+  return { type: DOWNLOADED_EPISODE_UPDATED, payload: { downloadedEpisode } };
+}
+
 export function downloadEpisode(id, feedUrl) {
   return (dispatch, getState) => {
     dispatch(setDownloadInProgress(id)).then(() => {
@@ -32,10 +43,10 @@ export function downloadEpisode(id, feedUrl) {
       const episode = _.find(episodes, { id });
       const url = _.get(episode, 'audioAttachments.0.src');
 
-      episodeDownloadManager
+      return episodeDownloadManager
         .download(url)
         .then(path => {
-          dispatch(addDownloadedEpisode(path, id));
+          dispatch(addDownloadedEpisode(id, getFileNameFromPath(path)));
         })
         .catch(errorMessage => {
           dispatch(removeDownloadedEpisode(id));
@@ -46,15 +57,17 @@ export function downloadEpisode(id, feedUrl) {
   };
 }
 
-export function deleteEpisode(id, path) {
+export function deleteEpisode(downloadedEpisode) {
+  const path = getPathFromEpisode(downloadedEpisode);
+
   return dispatch => {
     episodeDownloadManager
       .remove(path)
-      .then(() => dispatch(removeDownloadedEpisode(id)))
       .catch(error => {
         // eslint-disable-next-line no-console
         console.error('Error removing downloaded episode:', error);
-      });
+      })
+      .finally(() => dispatch(removeDownloadedEpisode(downloadedEpisode.id)));
   };
 }
 

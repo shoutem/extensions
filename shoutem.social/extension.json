@@ -1,14 +1,14 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "7.0.1",
+  "version": "8.0.1",
   "platform": ">=6",
   "nativeChanges": {
     "lastVersion": "6.0.0",
     "settingsKeys": []
   },
   "skipClone": false,
-  "releaseNotes": "* Adjusted endpoint resolution, no user facing changes",
+  "releaseNotes": "* Updated endpoint resolution, no user facing changes",
   "description": "Let members create posts, comment and like them",
   "categories": ["users"],
   "dependencies": [
@@ -102,9 +102,7 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": [
-        "style"
-      ],
+      "categories": ["style"],
       "parameters": {
         "extensionTheme": "Theme"
       }

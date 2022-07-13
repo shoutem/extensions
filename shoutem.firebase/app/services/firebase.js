@@ -1,9 +1,9 @@
-import _ from 'lodash';
 import { Platform } from 'react-native';
 import PushNotifications, { Importance } from 'react-native-push-notification';
-import messaging from '@react-native-firebase/messaging';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import { handleFCMTokenReceived, handleAPNSTokenReceived } from './handlers';
+import messaging from '@react-native-firebase/messaging';
+import _ from 'lodash';
+import { handleAPNSTokenReceived, handleFCMTokenReceived } from './handlers';
 
 function requestPermissions() {
   PushNotifications.requestPermissions();

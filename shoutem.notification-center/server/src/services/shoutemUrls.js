@@ -1,6 +1,6 @@
+import autoBind from 'auto-bind';
 import _ from 'lodash';
 import Uri from 'urijs';
-import autoBind from 'auto-bind';
 
 export default class ShoutemUrls {
   constructor() {
@@ -13,10 +13,11 @@ export default class ShoutemUrls {
   init(page) {
     const url = _.get(page, 'pageContext.url', {});
 
-    const { legacy, apps } = url;
+    const { legacy, apps, extensions } = url;
 
     this.legacyHost = new Uri(legacy).host();
     this.appsHost = new Uri(apps).host();
+    this.extensionsHost = new Uri(extensions).host();
   }
 
   legacyApi(path = '') {
@@ -30,6 +31,13 @@ export default class ShoutemUrls {
     return new Uri(path)
       .protocol(location.protocol)
       .host(this.appsHost)
+      .toString();
+  }
+
+  extensionsApi(path = '') {
+    return new Uri(path)
+      .protocol(location.protocol)
+      .host(this.extensionsHost)
       .toString();
   }
 }

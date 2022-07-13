@@ -5,7 +5,7 @@ import { connectStyle } from '@shoutem/theme';
 import { Button, Text, View } from '@shoutem/ui';
 import { loginRequired } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
-import { HeaderTextButton } from 'shoutem.navigation';
+import { getRouteParams, HeaderTextButton } from 'shoutem.navigation';
 import SmallPointCardView from '../components/SmallPointCardView';
 import { ext } from '../const';
 import {
@@ -25,8 +25,18 @@ export class PointsSmallCardScreen extends PointsCardScreen {
   }
 
   getNavBarProps() {
+    const { cashierInfo } = this.props;
+    const {
+      shortcut: { title: shortcutTitle },
+    } = getRouteParams(this.props);
+
+    const isUserACashier = _.has(cashierInfo, 'data');
+    const title = isUserACashier
+      ? I18n.t(ext('scanQrTitle')).toUpperCase()
+      : shortcutTitle;
+
     return {
-      title: I18n.t(ext('myCardScreenNavBarTitle')),
+      title,
       headerRight: props => (
         <HeaderTextButton
           {...props}

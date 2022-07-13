@@ -1,6 +1,6 @@
 {
   "name": "shoutem.user-profile",
-  "version": "3.0.0",
+  "version": "4.2.0",
   "description": "Add extended user profile",
   "dependencies": {
     "react-native-action-sheet": "2.2.0",

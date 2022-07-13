@@ -1,7 +1,7 @@
 import React from 'react';
+import { Button, FormControl } from 'react-bootstrap';
 import i18next from 'i18next';
 import PropTypes from 'prop-types';
-import { Button, FormControl } from 'react-bootstrap';
 import LOCALIZATION from './localization';
 import './style.scss';
 

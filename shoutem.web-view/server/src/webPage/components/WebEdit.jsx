@@ -1,112 +1,102 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { ControlLabel, FormGroup } from 'react-bootstrap';
 import i18next from 'i18next';
-import autoBindReact from 'auto-bind/react';
-import { FormGroup, ControlLabel } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { Checkbox, FontIcon } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export default class WebEdit extends Component {
-  constructor(props) {
-    super(props);
-
-    autoBindReact(this);
-  }
-
-  handleShowNavigationToolbarChange(event) {
+export default function WebEdit({
+  url,
+  showNavigationToolbar,
+  requireGeolocationPermission,
+  hasWebsiteSettings,
+  forwardAuthHeader,
+  onForwardAuthHeaderChange,
+  onRemoveClick,
+  onRequireGeolocationPermissionChange,
+  onShowNavigationToolbarChange,
+}) {
+  function handleShowNavigationToolbarChange(event) {
     if (event.target) {
-      this.props.onShowNavigationToolbarChange(event.target.checked);
+      onShowNavigationToolbarChange(event.target.checked);
     }
   }
 
-  handleForwardAuthHeaderChange(event) {
+  function handleForwardAuthHeaderChange(event) {
     if (event.target) {
-      this.props.onForwardAuthHeaderChange(event.target.checked);
+      onForwardAuthHeaderChange(event.target.checked);
     }
   }
 
-  handleGeolocationPermissionChange(event) {
+  function handleGeolocationPermissionChange(event) {
     if (event.target) {
-      this.props.onRequireGeolocationPermissionChange(event.target.checked);
+      onRequireGeolocationPermissionChange(event.target.checked);
     }
   }
 
-  render() {
-    const {
-      url,
-      showNavigationToolbar,
-      requireGeolocationPermission,
-      hasWebsiteSettings,
-      forwardAuthHeader,
-      onRemoveClick,
-    } = this.props;
-
-    return (
-      <div>
-        <form>
-          <FormGroup>
+  return (
+    <>
+      <FormGroup>
+        <ControlLabel>{i18next.t(LOCALIZATION.FORM_WEBSITE_URL)}</ControlLabel>
+        <div className="web-edit__url-container">
+          <div className="web-edit__web-img" />
+          <div className="text-ellipsis">
+            <span className="web-edit__url">{url}</span>
+          </div>
+          <FontIcon
+            className="web-edit__remove"
+            name="close"
+            size="large"
+            onClick={onRemoveClick}
+          />
+        </div>
+        {hasWebsiteSettings && (
+          <>
             <ControlLabel>
-              {i18next.t(LOCALIZATION.FORM_WEBSITE_URL)}
+              {i18next.t(LOCALIZATION.FORM_WEBSITE_SETTINGS)}
             </ControlLabel>
-            <div className="web-edit__url-container">
-              <div className="web-edit__web-img" />
-              <div className="text-ellipsis">
-                <span className="web-edit__url">{url}</span>
-              </div>
-              <FontIcon
-                className="web-edit__remove"
-                name="close"
-                size="large"
-                onClick={onRemoveClick}
-              />
-            </div>
-            {hasWebsiteSettings && (
-              <div>
-                <ControlLabel>
-                  {i18next.t(LOCALIZATION.FORM_WEBSITE_SETTINGS)}
-                </ControlLabel>
-                <div>
-                  <Checkbox
-                    checked={requireGeolocationPermission}
-                    onChange={this.handleGeolocationPermissionChange}
-                  >
-                    {i18next.t(LOCALIZATION.FORM_LOCATION_PERMISSIONS)}
-                  </Checkbox>
-                </div>
-                <div>
-                  <Checkbox
-                    checked={showNavigationToolbar}
-                    onChange={this.handleShowNavigationToolbarChange}
-                  >
-                    {i18next.t(LOCALIZATION.FORM_NAVIGATION_BAR)}
-                  </Checkbox>
-                </div>
-                <div>
-                  <Checkbox
-                    checked={forwardAuthHeader}
-                    onChange={this.handleForwardAuthHeaderChange}
-                  >
-                    {i18next.t(LOCALIZATION.FORM_FORWARD_AUTH_HEADER)}
-                  </Checkbox>
-                </div>
-              </div>
-            )}
-          </FormGroup>
-        </form>
-      </div>
-    );
-  }
+            <Checkbox
+              checked={requireGeolocationPermission}
+              onChange={handleGeolocationPermissionChange}
+            >
+              {i18next.t(LOCALIZATION.FORM_LOCATION_PERMISSIONS)}
+            </Checkbox>
+            <Checkbox
+              checked={showNavigationToolbar}
+              onChange={handleShowNavigationToolbarChange}
+            >
+              {i18next.t(LOCALIZATION.FORM_NAVIGATION_BAR)}
+            </Checkbox>
+            <Checkbox
+              checked={forwardAuthHeader}
+              onChange={handleForwardAuthHeaderChange}
+            >
+              {i18next.t(LOCALIZATION.FORM_FORWARD_AUTH_HEADER)}
+            </Checkbox>
+          </>
+        )}
+      </FormGroup>
+    </>
+  );
 }
 
 WebEdit.propTypes = {
-  hasWebsiteSettings: PropTypes.bool,
-  url: PropTypes.string,
-  showNavigationToolbar: PropTypes.bool,
-  requireGeolocationPermission: PropTypes.bool,
+  onForwardAuthHeaderChange: PropTypes.func.isRequired,
+  onRemoveClick: PropTypes.func.isRequired,
+  onRequireGeolocationPermissionChange: PropTypes.func.isRequired,
+  onShowNavigationToolbarChange: PropTypes.func.isRequired,
   forwardAuthHeader: PropTypes.bool,
-  onRemoveClick: PropTypes.func,
-  onShowNavigationToolbarChange: PropTypes.func,
-  onForwardAuthHeaderChange: PropTypes.func,
-  onRequireGeolocationPermissionChange: PropTypes.func,
+  hasWebsiteSettings: PropTypes.bool,
+  requireGeolocationPermission: PropTypes.bool,
+  showNavigationToolbar: PropTypes.bool,
+  url: PropTypes.string,
+};
+
+WebEdit.defaultProps = {
+  hasWebsiteSettings: undefined,
+  url: undefined,
+  showNavigationToolbar: false,
+  requireGeolocationPermission: false,
+  forwardAuthHeader: false,
 };

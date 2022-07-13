@@ -22,7 +22,10 @@
       "feed-url-description.how-to-link-step-3": "3. In the browser address bar, copy the URL.<1 />",
       "feed-url-description.how-to-link-step-4": "4. Paste the URL in input field and press continue.",
       "feed-sort-dropdown.sort-by-label": "Sort by",
-      "feed-sort-dropdown.sort-options-descriptions": " <0>Relevance</0> – Resources are sorted based on their relevance. This is the default sort value.<2 /><0>Date</0> – Resources are sorted in reverse chronological order based on the date they were created.<2 /><0>Rating</0> – Resources are sorted from highest to lowest rating.<2 /><0>Title</0> – Resources are sorted alphabetically by title.<2 /><0>View count</0> – Resources are sorted from highest to lowest number of views."
+      "feed-sort-dropdown.sort-options-descriptions": " <0>Relevance</0> – Resources are sorted based on their relevance. This is the default sort value.<2 /><0>Date</0> – Resources are sorted in reverse chronological order based on the date they were created.<2 /><0>Rating</0> – Resources are sorted from highest to lowest rating.<2 /><0>Title</0> – Resources are sorted alphabetically by title.<2 /><0>View count</0> – Resources are sorted from highest to lowest number of views.",
+      "youtube-feed-page-api-points-limit-reached-error-message": " Daily Youtube API points limit reached",
+      "youtube-feed-page-not-a-playlist-url-description-alert": "We see you are using <1>non-playlist</1> type of Youtube URL. <3 /> Note that you have limited daily Youtube API points and your non-playlist Youtube URL requests have high points cost. There is a possibility of reaching the points limit. <5 /> If limit is reached, we will notify you via message inside this window. <7 /> Also, in-app users will not be able to see new videos until points are reset, if any were uploaded since the limit was reached on that day.",
+      "youtube-feed-page-generic-error": "Something went wrong. Please try again."
     }
   }
 }

@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
+import {
+  Button,
+  ButtonToolbar,
+  ControlLabel,
+  FormControl,
+  FormGroup,
+} from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import {
-  Button,
-  ButtonToolbar,
-  FormGroup,
-  ControlLabel,
-  FormControl,
-} from 'react-bootstrap';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { validateYoutubeUrl } from '../../services/youtube';
 import { FeedUrlDescription } from '../feed-url-description';
@@ -109,11 +109,12 @@ export default class FeedUrlInput extends Component {
 }
 
 FeedUrlInput.propTypes = {
-  onContinueClick: PropTypes.func,
+  onContinueClick: PropTypes.func.isRequired,
   error: PropTypes.string,
   inProgress: PropTypes.bool,
 };
 
 FeedUrlInput.defaultProps = {
+  error: null,
   inProgress: false,
 };

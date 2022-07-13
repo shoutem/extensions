@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { isRSAA, RSAA } from 'redux-api-middleware';
 import URI from 'urijs';
 import { UPDATE_SUCCESS } from '@shoutem/redux-io';
-import { getExtensionSettings, RESTART_APP } from 'shoutem.application';
+import { getExtensionServiceUrl, RESTART_APP } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { before, priorities, setPriority } from 'shoutem-core';
 import { ext } from './const';
@@ -55,12 +55,13 @@ export const networkRequestMiddleware = setPriority(
       const state = store.getState();
 
       if (!legacyApiDomain) {
-        const appSettings = getExtensionSettings(state, APPLICATION_EXTENSION);
+        const cmsEndpoint = getExtensionServiceUrl(
+          state,
+          APPLICATION_EXTENSION,
+          'cms',
+        );
 
-        const { legacyApiEndpoint } = appSettings;
-
-        legacyApiDomain =
-          legacyApiEndpoint && new URI(legacyApiEndpoint).domain();
+        legacyApiDomain = cmsEndpoint && new URI(cmsEndpoint).domain();
       }
 
       const endpointDomain = new URI(action[RSAA].endpoint).domain();

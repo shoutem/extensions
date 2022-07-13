@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { TARGET_TYPES, DELIVERY_TYPES, AUDIENCE_TYPES } from '../const';
+import { AUDIENCE_TYPES, DELIVERY_TYPES, TARGET_TYPES } from '../const';
 
 const ACTION_TYPES = {
   URL: 'shoutem.navigation.OPEN_MODAL',

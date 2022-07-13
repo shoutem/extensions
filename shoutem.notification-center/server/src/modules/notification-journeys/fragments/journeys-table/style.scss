@@ -1,0 +1,36 @@
+.journeys-table__title-row {
+  h3 {
+    float: left;
+    margin-bottom: 4px;
+  }
+
+  .icon-label {
+    text-transform: none;
+    font-weight: normal;
+    padding-top: 48px;
+  }
+}
+
+.journeys-table {
+  .table {
+    margin-top: 4px;
+
+    > thead > tr {
+      > :first-child {
+        width: 435px;
+      }
+    }
+
+    > tbody > tr {
+      > :last-child {
+        width: 35px;
+      }
+    }
+
+    > tbody > tr {
+      > :nth-child(2) {
+        width: 35px;
+      }
+    }
+  }
+}

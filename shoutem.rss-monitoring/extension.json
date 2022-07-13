@@ -1,6 +1,6 @@
 {
   "name": "rss-monitoring",
-  "version": "4.1.0",
+  "version": "4.1.5",
   "platform": ">=6.0.1",
   "title": "RSS Monitoring",
   "description": "Monitors RSS feed content and sends automated push notifications when new content is loaded.",

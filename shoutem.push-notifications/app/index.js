@@ -1,16 +1,14 @@
+import enTranslations from './translations/en.json';
+import { appDidMount, appWillMount, appWillUnmount } from './app';
 import {
-  selectPushNotificationGroups,
-  SELECT_PUSH_NOTIFICATION_GROUPS,
   DEVICE_TOKEN_RECEIVED,
+  SELECT_PUSH_NOTIFICATION_GROUPS,
+  selectPushNotificationGroups,
 } from './redux';
 
-import { appDidMount, appWillMount, appWillUnmount } from './app';
-import enTranslations from './translations/en.json';
-export { resolveNotificationData } from './services';
-
 export { DEFAULT_PUSH_NOTIFICATION_GROUP, ext } from './const';
-
 export { displayLocalNotification } from './notificationHandlers';
+export { resolveNotificationData } from './services';
 
 export const shoutem = {
   i18n: {
@@ -21,10 +19,10 @@ export const shoutem = {
 };
 
 export {
-  selectPushNotificationGroups,
-  SELECT_PUSH_NOTIFICATION_GROUPS,
-  DEVICE_TOKEN_RECEIVED,
   appDidMount,
   appWillMount,
   appWillUnmount,
+  DEVICE_TOKEN_RECEIVED,
+  SELECT_PUSH_NOTIFICATION_GROUPS,
+  selectPushNotificationGroups,
 };

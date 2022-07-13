@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+import { Button, Col, ControlLabel, FormControl, Row } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Button, Col, ControlLabel, Row, FormControl } from 'react-bootstrap';
 import { FontIcon, IconLabel } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';

@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import { REHYDRATE } from 'redux-persist/constants';
 import { mapReducers } from '@shoutem/redux-composers';
 import {
+  cloneStatus,
   collection,
   CREATE_SUCCESS,
   LOAD_SUCCESS,
@@ -31,9 +32,11 @@ import {
 } from '../services';
 import {
   BLOCK_USER,
+  CLEAR_DRAFT,
   CREATE,
   DELETE,
   LIKE,
+  SAVE_DRAFT,
   UNBLOCK_USER,
   UNLIKE,
 } from './actions';
@@ -45,29 +48,66 @@ function isAppendMode(action) {
   return !!_.get(action, ['meta', 'options', APPEND_MODE]);
 }
 
+function isLoadSingleStatusAction(action) {
+  return _.get(action, 'meta.options.loadSingleStatus');
+}
+
+function replaceStatus(state, action) {
+  const newState = { ...state };
+
+  const prevStatusIndex = _.findIndex(
+    newState.data,
+    status => status.id === action.payload.id,
+  );
+
+  if (prevStatusIndex >= 0) {
+    newState.data[prevStatusIndex] = action.payload;
+  }
+
+  return newState;
+}
+
 function processStatuses(state, action) {
   const { payload } = action;
 
-  const newState = isAppendMode(action)
-    ? { ...state, data: [...state.data, ...payload.data] }
-    : { ...state, data: [...payload.data] };
+  let newState;
 
-  const hasNextPage = !!_.get(payload, 'paging');
+  // Single status is loaded after comment is deleted - find it in state & replace
+  // with updated data
+  if (isLoadSingleStatusAction(action)) {
+    newState = replaceStatus(state, action);
 
-  const params = hasNextPage ? _.get(action, 'meta.params') : {};
-  const next = hasNextPage ? _.get(action, 'payload.paging.next') : null;
+    // clone status to keep links and other RIO status values
+    cloneStatus(state, newState);
+    // cloned status has "busy" state status - update to idle
+    setStatus(
+      newState,
+      updateStatus(state[STATUS], {
+        busyStatus: busyStatus.IDLE,
+      }),
+    );
+  } else {
+    newState = isAppendMode(action)
+      ? { ...state, data: [...state.data, ...payload.data] }
+      : { ...state, data: [...payload.data] };
 
-  setStatus(
-    newState,
-    updateStatus(state[STATUS], {
-      validationStatus: validationStatus.VALID,
-      busyStatus: busyStatus.IDLE,
-      error: false,
-      links: { next },
-      params,
-      schema: STATUSES_SCHEMA,
-    }),
-  );
+    const hasNextPage = !!_.get(payload, 'paging');
+
+    const params = hasNextPage ? _.get(action, 'meta.params') : {};
+    const next = hasNextPage ? _.get(action, 'payload.paging.next') : null;
+
+    setStatus(
+      newState,
+      updateStatus(state[STATUS], {
+        validationStatus: validationStatus.VALID,
+        busyStatus: busyStatus.IDLE,
+        error: false,
+        links: { next },
+        params,
+        schema: STATUSES_SCHEMA,
+      }),
+    );
+  }
 
   return newState;
 }
@@ -103,7 +143,7 @@ function statusesReducer(prepend) {
 
       case CREATE_SUCCESS: {
         const user = _.get(action, 'meta.options.user', {});
-        const statusId = _.get(action, 'payload.id');
+        const statusId = _.get(action, 'meta.options.statusId', null);
         const liked = _.get(action, 'payload.liked');
 
         if (operation === CREATE) {
@@ -163,6 +203,7 @@ function statusesReducer(prepend) {
 
         if (operation === DELETE) {
           const newStatuses = removeStatus(state.data, statusId);
+
           const newState = { ...state, data: newStatuses };
 
           setStatus(
@@ -172,6 +213,7 @@ function statusesReducer(prepend) {
               error: false,
             }),
           );
+
           return newState;
         }
 
@@ -267,18 +309,31 @@ function commentsReducer() {
   const comments = statusesReducer(false);
 
   return (state = DEFAULT_STATE, action) => {
-    const actionIsStatus = !_.get(action, 'meta.params.in_reply_to_status_id');
+    const actionIsComment = _.get(action, 'meta.params.in_reply_to_status_id');
 
-    if (actionIsStatus) {
-      return state;
+    if (actionIsComment) {
+      return comments(state, action);
     }
 
-    return comments(state, action);
+    return state;
   };
+}
+
+function statusDraftReducer(state = null, action) {
+  if (action.type === SAVE_DRAFT) {
+    return action.payload;
+  }
+
+  if (action.type === CLEAR_DRAFT) {
+    return null;
+  }
+
+  return state;
 }
 
 export default combineReducers({
   statuses: wallReducer(),
+  statusDraft: statusDraftReducer,
   comments: mapReducers('meta.params.in_reply_to_status_id', commentsReducer()),
   users: collection(USER_SCHEMA, 'users'),
   usersInGroups: collection(USER_SCHEMA, 'usersInGroups'),

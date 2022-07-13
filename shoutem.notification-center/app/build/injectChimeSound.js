@@ -4,6 +4,7 @@ const _ = require('lodash');
 const path = require('path');
 const xcode = require('xcode');
 const buildTools = require('shoutem.application/build');
+
 const { getExtensionSettings } = buildTools.configuration;
 const {
   projectPath,

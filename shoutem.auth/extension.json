@@ -1,21 +1,24 @@
 {
   "name": "auth",
-  "version": "5.0.2",
-  "platform": ">=6",
+  "version": "5.1.5",
+  "platform": ">=7.1.0",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Adjusted endpoint resolution, no user facing changes",
+  "releaseNotes": "* Added push triggers",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",
     "shoutem.camera",
     "shoutem.i18n",
     "shoutem.navigation",
+    "shoutem.notification-center",
     "shoutem.permissions",
     "shoutem.redux",
     "shoutem.web-view"
   ],
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -138,5 +141,11 @@
         "enabled": false
       }
     }
-  }
+  },
+  "journeyTriggers": [
+    {
+      "id": "shoutem.auth.complete-registration",
+      "name": "App dismissed - user not registered"
+    }
+  ]
 }

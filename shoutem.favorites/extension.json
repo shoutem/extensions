@@ -1,11 +1,11 @@
 {
   "name": "favorites",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "platform": ">=6",
   "type": "system",
   "title": "Favorites",
   "description": "Extensions that are using Shoutem Favorites extension are able to store and retrieve user bookmarked items from local app storage. ",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Adjusted navigation bar title resolution, shortcuts will now always use the title provided via Language & Region settings",
   "icon": "server/assets/add-favorites-image.png",
   "categories": ["content"],
   "dependencies": ["shoutem.i18n", "shoutem.navigation"],

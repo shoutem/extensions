@@ -1,12 +1,4 @@
-export {
-  CAMERAROLL_OPTIONS,
-  GALLERY_PERMISSION,
-  hasGalleryPermissions,
-  IMAGE_PICKER_OPTIONS,
-  MAX_IMAGE_SIZE,
-  openCamera,
-  openImageGallery,
-} from './attachment';
+export { default as attachmentService } from './attachment';
 export {
   openBlockActionSheet,
   openBlockAndReportActionSheet,

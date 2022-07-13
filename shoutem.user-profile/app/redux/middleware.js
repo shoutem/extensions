@@ -1,5 +1,4 @@
 import { Alert } from 'react-native';
-import _ from 'lodash';
 import { getExtensionSettings } from 'shoutem.application';
 import { ext as authExt, LOGIN, REGISTER } from 'shoutem.auth';
 import { AUTHENTICATE_LIMITED, clearAuthState } from 'shoutem.auth/redux';
@@ -29,7 +28,7 @@ function openUserProfileForm(
       return dispatch(clearAuthState()).then(() => {
         NavigationStacks.closeStack(ext());
 
-        if (!!callback) {
+        if (callback) {
           callback();
         }
       });
@@ -56,14 +55,7 @@ export const authenticateMiddleware = setPriority(
       const { userProfileRequired } = getExtensionSettings(state, ext());
       const isUserProfileComplete = isUserProfileCompleted(state);
 
-      if (
-        !userProfileRequired ||
-        isUserProfileComplete ||
-        // If user profiled became required after user already logged in the past
-        // TODO: https://fiveminutes.jira.com/browse/SEEXT-11062 - if user logins/registers
-        // user won't see profile form because of condition below
-        (userProfileRequired && user.approved)
-      ) {
+      if (!userProfileRequired || isUserProfileComplete) {
         return next(action);
       }
 
@@ -75,7 +67,7 @@ export const authenticateMiddleware = setPriority(
         onSubmitSuccess: () => {
           NavigationStacks.closeStack(ext());
 
-          if (!!onAuthSuccessCallback) {
+          if (onAuthSuccessCallback) {
             onAuthSuccessCallback(user);
           }
         },

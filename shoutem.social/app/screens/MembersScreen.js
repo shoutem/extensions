@@ -44,9 +44,7 @@ export class MembersScreen extends RemoteDataListScreen {
   }
 
   getNavBarProps() {
-    const { title } = getRouteParams(this.props);
-
-    return { headerRight: this.headerRight, title };
+    return { headerRight: this.headerRight };
   }
 
   componentDidMount() {

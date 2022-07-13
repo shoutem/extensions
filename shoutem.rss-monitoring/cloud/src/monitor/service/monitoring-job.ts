@@ -1,24 +1,20 @@
-import { sleep } from '../../shared/core';
-import monitorRepository from '../data/monitor-repository'
+import { map } from 'bluebird';
+import { logger } from '../../shared/logging';
+import { requireEnvNumber } from '../../../core/env';
+import monitorRepository from '../data/monitor-repository';
 import { getMonitoredShortcuts } from './get-monitored-shortcuts';
 import { handleRssFeedUpdate } from './handle-rss-feed-update';
 
-const LIMIT = 10;
+const CONCURRENCY = requireEnvNumber('MONITOR_JOB_CONCURENNCY', 10);
+
+async function runMonitor(monitor) {
+  const monitoredShortcuts = await getMonitoredShortcuts(monitor);
+  await handleRssFeedUpdate(monitor, monitoredShortcuts);
+}
 
 export default async function processMonitoringJob() {
-  const count = await monitorRepository.getCountAll();
-  const countLimit = count + LIMIT;
+  const monitors = await monitorRepository.getAll();
+  logger.info(`Total count of monitors: ${monitors.length}.`);
 
-  let offset = 0;
-  while (countLimit >= offset) {
-    const page = { offset, limit: LIMIT };
-
-    const monitoredShortcuts = await getMonitoredShortcuts(page);
-    await handleRssFeedUpdate(monitoredShortcuts);
-
-    offset += LIMIT;
-
-    // sleep for 3 seconds
-    await sleep(3000);
-  }
+  map(monitors, runMonitor, { concurrency: CONCURRENCY });
 }

@@ -5,27 +5,27 @@ import { connectStyle } from '@shoutem/theme';
 import { Icon, TouchableOpacity, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
-import { MAX_IMAGE_SIZE, openCamera, openImageGallery } from '../services';
+import { attachmentService } from '../services';
 
 function AddAttachmentButtons({ onAttachmentSelected, style }) {
   const handleCameraPress = useCallback(() => {
     RNKeyboard.dismiss();
 
-    return openCamera(handleImageSelected);
+    return attachmentService.openCamera(handleImageSelected);
   }, [handleImageSelected]);
 
   const handleGalleryPress = useCallback(() => {
     RNKeyboard.dismiss();
 
-    return openImageGallery(handleImageSelected);
+    return attachmentService.openImageGallery(handleImageSelected);
   }, [handleImageSelected]);
 
   const handleImageSelected = useCallback(
     image => {
-      if (image.size > MAX_IMAGE_SIZE) {
+      if (image.size > attachmentService.MAX_IMAGE_SIZE) {
         Alert.alert(
           I18n.t(ext('imageSizeWarning'), {
-            maxSize: MAX_IMAGE_SIZE / (1024 * 1024),
+            maxSize: attachmentService.MAX_IMAGE_SIZE / (1024 * 1024),
           }),
         );
 

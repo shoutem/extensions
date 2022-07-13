@@ -1,9 +1,9 @@
 {
   "name": "i18n",
   "title": "Language & Region",
-  "version": "4.0.4",
-  "platform": ">=4",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "version": "4.0.5",
+  "platform": ">=7",
+  "releaseNotes": "* Introduced fetching translation files in the runtime for the preview mode",
   "description": "Configure the language and regional settings of your app.",
   "dependencies": ["shoutem.application"],
   "icon": "server/assets/add-translation.png",

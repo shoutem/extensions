@@ -1,11 +1,11 @@
 {
   "name": "push-notifications",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "platform": ">=4",
   "type": "system",
   "title": "Push Notifications",
   "description": "Base extension for push notifications",
-  "releaseNotes": "* Added platform 6.x support",
+  "releaseNotes": "* Fixed notification badge being incorrectly cleared",
   "icon": "server/assets/add-push-notifications-image.png",
   "dependencies": [
     "shoutem.application",

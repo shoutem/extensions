@@ -20,7 +20,7 @@ export const navInitializedMiddleware = store => next => action => {
     const queuedNotification = getQueuedNotification(state);
 
     if (queuedNotification) {
-      handleNotificationTapped(queuedNotification);
+      handleNotificationTapped(queuedNotification, store, true);
     }
   }
 

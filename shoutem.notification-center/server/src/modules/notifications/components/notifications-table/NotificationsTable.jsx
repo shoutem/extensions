@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import i18next from 'i18next';
 import { Button } from 'react-bootstrap';
-import { FontIcon, IconLabel, EditableTable } from '@shoutem/react-web-ui';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { EditableTable, FontIcon, IconLabel } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -126,7 +126,6 @@ export default class NotificationsTable extends Component {
 
             if (!_.isEmpty(summaries)) {
               _.set(notification, 'content.summary', summaries.join(', '));
-              return;
             }
           }
         } catch (ex) {

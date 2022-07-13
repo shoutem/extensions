@@ -1,11 +1,11 @@
 {
   "name": "sendbird",
   "title": "SendBird Chat",
-  "version": "5.0.0",
-  "platform": ">=6",
+  "version": "5.0.1",
+  "platform": ">=7",
   "icon": "./server/assets/chat.png",
   "description": "Connect your users with real-time chat!",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "NEW* Adapted to the platform changes regarding to push notifications",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

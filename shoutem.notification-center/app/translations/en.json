@@ -27,7 +27,7 @@
       "timeframeErrorMessage": "Invalid timeframe",
       "reminderSettingsTitle": "Set a time reminder",
       "reminderSettingDescription": "Set a time when you want to be reminded to use the app, if you haven’t that day",
-      "reminderMeAt": "Remind me at",
+      "addAdditionalReminder": "Add additional reminder",
       "dailyMessagesAlertTitle": "Warning",
       "dailyMessagesAlertMessage": "Unsubscribing from daily notification messages will stop all incoming messages for today. Are you sure you want to unsubscribe?",
       "alertCancelButton": "Cancel",

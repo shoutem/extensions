@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import webPageReducer, { SHORTCUTS } from './webPage/reducer';
 import { storage } from '@shoutem/redux-io';
+import webPageReducer, { SHORTCUTS } from './webPage/reducer';
 
 const storageReducer = combineReducers({
   [SHORTCUTS]: storage(SHORTCUTS),

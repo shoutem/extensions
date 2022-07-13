@@ -1,7 +1,8 @@
-import React, { PureComponent } from 'react';
-import { Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { createRef, PureComponent } from 'react';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import Pdf from 'react-native-pdf';
 import WebView from 'react-native-webview';
+import CookieManager from '@react-native-cookies/cookies';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -15,11 +16,7 @@ import NavigationToolbar from '../components/NavigationToolbar';
 import { ext } from '../const';
 import { parseUrl } from '../services';
 
-function renderPlaceholderView() {
-  return <EmptyStateView message={I18n.t(ext('noUrlErrorMessage'))} />;
-}
-
-const KEYBOARD_AVOIDING_ENABLED = Platform.OS === 'android';
+const isAndroid = Platform.OS === 'android';
 const KEYBOARD_OFFSET = Keyboard.calculateKeyboardOffset();
 
 export class WebViewScreen extends PureComponent {
@@ -27,6 +24,8 @@ export class WebViewScreen extends PureComponent {
     super(props);
 
     autoBindReact(this);
+
+    this.webViewRef = createRef();
 
     this.state = {
       webNavigationState: {},
@@ -54,10 +53,26 @@ export class WebViewScreen extends PureComponent {
     navigation.setOptions(this.getNavBarProps());
   }
 
+  componentDidUpdate(prevProps) {
+    const { navigation } = this.props;
+
+    const routeParams = getRouteParams(this.props);
+    const prevRouteParams = getRouteParams(prevProps);
+
+    if (prevRouteParams.title !== routeParams.title) {
+      navigation.setOptions(this.getNavBarProps());
+    }
+  }
+
   onNavigationStateChange(webState) {
-    this.setState({
-      webNavigationState: webState,
-    });
+    this.setState({ webNavigationState: webState });
+
+    if (isAndroid) {
+      // As per Android dev docs:
+      // flush() Ensures all cookies currently accessible through the getCookie
+      // API are written to persistent storage.
+      CookieManager.flush();
+    }
   }
 
   getSettings() {
@@ -76,10 +91,6 @@ export class WebViewScreen extends PureComponent {
     return {};
   }
 
-  setWebViewRef(ref) {
-    this.webViewRef = ref;
-  }
-
   getNavBarProps() {
     const { title } = this.getSettings();
 
@@ -87,15 +98,15 @@ export class WebViewScreen extends PureComponent {
   }
 
   goForward() {
-    this.webViewRef.goForward();
+    this.webViewRef.current.goForward();
   }
 
   goBack() {
-    this.webViewRef.goBack();
+    this.webViewRef.current.goBack();
   }
 
   reload() {
-    this.webViewRef.reload();
+    this.webViewRef.current.reload();
   }
 
   isNavigationEnabled() {
@@ -140,7 +151,7 @@ export class WebViewScreen extends PureComponent {
         };
 
     const defaultWebViewProps = {
-      ref: this.setWebViewRef,
+      ref: this.webViewRef,
       startInLoadingState: true,
       onNavigationStateChange: this.onNavigationStateChange,
       source: defaultSource,
@@ -148,9 +159,10 @@ export class WebViewScreen extends PureComponent {
       allowsInlineMediaPlayback: true,
       showsVerticalScrollIndicator: false,
       javaScriptCanOpenWindowsAutomatically: true,
+      mixedContentMode: isAndroid ? 'compatibility' : 'never',
     };
 
-    if (Platform.OS === 'android') {
+    if (isAndroid) {
       return {
         ...defaultWebViewProps,
         ...webViewProps,
@@ -162,6 +174,8 @@ export class WebViewScreen extends PureComponent {
   }
 
   renderWebView(appContext) {
+    const { style } = this.props;
+
     const { url } = this.getSettings();
 
     const ownUser = _.get(appContext, ['shoutem.auth', 'user']);
@@ -169,10 +183,7 @@ export class WebViewScreen extends PureComponent {
     const resolvedUrl = parseUrl(url, ownUser);
 
     if (resolvedUrl.includes('.pdf')) {
-      // TODO: Move to and then get from theme.
-      const pdfStyle = { flex: 1, width: Dimensions.get('window').width };
-
-      return <Pdf source={{ uri: url }} style={pdfStyle} />;
+      return <Pdf source={{ uri: url }} style={style.pdfStyle} />;
     }
 
     return <WebView {...this.resolveWebViewProps(appContext)} />;
@@ -212,7 +223,7 @@ export class WebViewScreen extends PureComponent {
     const { url } = this.getSettings();
 
     if (!url) {
-      return renderPlaceholderView();
+      return <EmptyStateView message={I18n.t(ext('noUrlErrorMessage'))} />;
     }
 
     return (
@@ -221,7 +232,7 @@ export class WebViewScreen extends PureComponent {
           style={style.container}
           behavior="padding"
           keyboardVerticalOffset={KEYBOARD_OFFSET}
-          enabled={KEYBOARD_AVOIDING_ENABLED}
+          enabled={isAndroid}
         >
           {this.renderBrowser()}
         </KeyboardAvoidingView>
@@ -231,16 +242,17 @@ export class WebViewScreen extends PureComponent {
 }
 
 WebViewScreen.propTypes = {
-  currentLocation: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   style: PropTypes.object.isRequired,
   checkPermissionStatus: PropTypes.func,
+  currentLocation: PropTypes.object,
   headers: PropTypes.object,
 };
 
 WebViewScreen.defaultProps = {
   checkPermissionStatus: undefined,
+  currentLocation: undefined,
   headers: {},
 };
 

@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import moment from 'moment';
 import autoBind from 'auto-bind';
-
+import moment from 'moment';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
@@ -13,7 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
-
 import { ext, notificationShape } from '../const';
 
 class NotificationView extends PureComponent {

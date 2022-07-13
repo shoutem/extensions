@@ -3,10 +3,10 @@ import Geolocation from '@react-native-community/geolocation';
 import { I18n } from 'shoutem.i18n';
 import {
   checkPermissions,
-  requestPermissions,
-  PERMISSION_TYPES,
-  RESULTS,
   openDeviceSettings,
+  PERMISSION_TYPES,
+  requestPermissions,
+  RESULTS,
 } from 'shoutem.permissions';
 import { ext } from '../const';
 
@@ -55,7 +55,7 @@ export function getCurrentLocation() {
         );
       }
 
-      if (result === RESULTS.BLOCKED) {
+      if (result === RESULTS.BLOCKED || result === RESULTS.UNAVAILABLE) {
         openDeviceSettings(
           I18n.t(ext('missingPermissionsTitle')),
           I18n.t(ext('missingPermissionsMessage')),

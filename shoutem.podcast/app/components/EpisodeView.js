@@ -1,16 +1,25 @@
 import { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { getLeadImageUrl } from 'shoutem.rss';
 import { deleteEpisode, downloadEpisode } from '../redux';
 
 export class EpisodeView extends PureComponent {
   static propTypes = {
-    enableDownload: PropTypes.bool,
+    deleteEpisode: PropTypes.func,
+    downloadEpisode: PropTypes.func,
     episode: PropTypes.object,
     feedUrl: PropTypes.string,
     onPress: PropTypes.func,
+  };
+
+  static defaultProps = {
+    deleteEpisode: undefined,
+    downloadEpisode: undefined,
+    episode: undefined,
+    feedUrl: undefined,
+    onPress: undefined,
   };
 
   constructor(props) {
@@ -42,12 +51,9 @@ export class EpisodeView extends PureComponent {
   }
 
   onDeletePress() {
-    const {
-      deleteEpisode,
-      episode: { id, path },
-    } = this.props;
+    const { deleteEpisode, episode } = this.props;
 
-    deleteEpisode(id, path);
+    deleteEpisode(episode);
   }
 
   onPress() {

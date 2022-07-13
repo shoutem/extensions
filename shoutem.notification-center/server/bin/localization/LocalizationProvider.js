@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import i18next from 'i18next';
+import { initReactI18next } from 'react-i18next';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import translation from '../../translations/en.json';
 
-export class LocalizationProvider extends Component {
+export class LocalizationProvider extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -21,7 +22,7 @@ export class LocalizationProvider extends Component {
     const { ownExtensionName, locale, translationUrl } = this.props;
     const dictionary = _.get(translation, ownExtensionName);
 
-    i18next.init({
+    i18next.use(initReactI18next).init({
       lng: 'en',
       fallbackLng: 'en',
       ns: [ownExtensionName],

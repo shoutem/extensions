@@ -4,6 +4,7 @@ import * as selectors from './selectors';
 
 export {
   blockUser,
+  clearDraft,
   createComment,
   createSocialSettings,
   createStatus,
@@ -15,10 +16,12 @@ export {
   loadBlockedUsers,
   loadComments,
   loadSocialSettings,
+  loadStatus,
   loadStatuses,
   loadUser,
   loadUsers,
   loadUsersInGroups,
+  saveDraft,
   searchUsers,
   searchUsersNextPage,
   unblockUser,

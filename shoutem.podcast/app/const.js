@@ -13,6 +13,7 @@ export function ext(resourceName) {
 
 export const DOWNLOADED_EPISODE_ADDED = ext('DOWNLOADED_EPISODE_ADDED');
 export const DOWNLOADED_EPISODE_REMOVED = ext('DOWNLOADED_EPISODE_REMOVED');
+export const DOWNLOADED_EPISODE_UPDATED = ext('DOWNLOADED_EPISODE_UPDATED');
 export const SET_DOWNLOAD_IN_PROGRESS = ext('SET_DOWNLOAD_IN_PROGRESS');
 
 // TODO: Currently, backend has no shoutem.proxy.podcast

@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import { Alert } from 'react-native';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Screen, Subtitle, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
-import { SettingsToggle, SettingDetailsNavigationItem } from '../components';
+import { SettingDetailsNavigationItem, SettingsToggle } from '../components';
 import { ext } from '../const';
 import {
   getDailyMessagesAppSettings,
@@ -41,14 +41,6 @@ export class NotificationSettingsScreen extends PureComponent {
     };
   }
 
-  componentDidMount() {
-    const { navigation } = this.props;
-
-    navigation.setOptions({
-      title: I18n.t(ext('notificationListNavBarTitle')).toUpperCase(),
-    });
-  }
-
   handleReminderSettingToggle() {
     const {
       notificationSettings,
@@ -76,9 +68,9 @@ export class NotificationSettingsScreen extends PureComponent {
         return;
       }
 
-      await notifications.scheduleReminderNotifications(
-        reminderAppSettings.message,
-        newNotificationSettings.reminderAt,
+      notifications.rescheduleReminderNotifications(
+        newNotificationSettings,
+        reminderAppSettings,
       );
     });
   }
@@ -99,9 +91,7 @@ export class NotificationSettingsScreen extends PureComponent {
       setNotificationSettings(newNotificationSettings);
 
       if (!dailyMessages) {
-        await notifications.cancelScheduledNotifications(
-          notificationSettings.reminderAt,
-        );
+        await notifications.cancelScheduledNotifications();
       }
     });
   }
@@ -141,6 +131,7 @@ export class NotificationSettingsScreen extends PureComponent {
 
     const reminderSettingsEnabled =
       !!reminderAppSettings && reminderAppSettings.enabled;
+    const resolvedStyleName = reminderSettingsEnabled ? 'xl-gutter-top' : '';
 
     return (
       <Screen>
@@ -162,7 +153,7 @@ export class NotificationSettingsScreen extends PureComponent {
           </>
         )}
         {scheduledNotificationsEnabled && (
-          <>
+          <View styleName={resolvedStyleName}>
             <View styleName="md-gutter">
               <Subtitle>
                 {I18n.t(ext('dailyMessagesSectionTitle')).toUpperCase()}
@@ -178,7 +169,7 @@ export class NotificationSettingsScreen extends PureComponent {
               onPress={this.handleOpenDailyMessagesSettingsDetails}
               title={I18n.t(ext('dailyMessagesNavigationItemTitle'))}
             />
-          </>
+          </View>
         )}
       </Screen>
     );

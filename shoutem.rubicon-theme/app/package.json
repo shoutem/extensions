@@ -1,7 +1,7 @@
 {
   "name": "shoutem.rubicon-theme",
   "description": "Rubicon theme is a...",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "peerDependencies": {
     "@shoutem/theme": "*",
     "@shoutem/ui": "*"

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
-import { getExtension } from '@shoutem/redux-api-sdk';
-import { AssetManager } from '@shoutem/assets-sdk';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { Groups } from 'src/modules/groups';
+import { AssetManager } from '@shoutem/assets-sdk';
+import { getExtension } from '@shoutem/redux-api-sdk';
 
 class GroupsPage extends Component {
   constructor(props, context) {

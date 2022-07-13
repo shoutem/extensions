@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Button, FormControl } from 'react-bootstrap';
-import { FontIcon } from '@shoutem/react-web-ui';
+import PropTypes from 'prop-types';
 import { useAudioPlay } from 'src/hooks';
+import { FontIcon } from '@shoutem/react-web-ui';
 import './style.scss';
 
 export default function ChimeFilePreview({ url, soundName, onDelete }) {

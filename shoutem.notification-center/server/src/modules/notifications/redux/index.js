@@ -1,8 +1,8 @@
 export {
-  loadNotifications,
   createNotification,
-  updateNotification,
   deleteNotification,
+  loadNotifications,
+  updateNotification,
 } from './actions';
-export { getNotifications, getRawNotifications } from './selectors';
 export { reducer } from './reducer';
+export { getNotifications, getRawNotifications } from './selectors';

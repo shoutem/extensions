@@ -19,9 +19,12 @@ import {
   isAuthenticated,
   LOGOUT,
   restoreSession,
+  triggerCompleteRegistration,
   USER_SCHEMA,
 } from './redux';
 import { getSession } from './session';
+
+let previousAppState = 'active';
 
 async function refreshUser(dispatch, getState) {
   const session = await getSession();
@@ -60,6 +63,12 @@ const createHandleAppStateChange = (dispatch, getState) => appState => {
   if (appState === 'active' && activeRoute?.name !== ext('EditProfileScreen')) {
     refreshUser(dispatch, getState);
   }
+
+  if (appState.match(/inactive|background/) && previousAppState === 'active') {
+    dispatch(triggerCompleteRegistration());
+  }
+
+  previousAppState = appState;
 };
 
 let handleAppStateChange;
@@ -151,5 +160,5 @@ export function appDidMount(app) {
 }
 
 export function appWillUnmount() {
-  AppState.removeEventListener('change', handleAppStateChange);
+  AppState.remove('change', handleAppStateChange);
 }

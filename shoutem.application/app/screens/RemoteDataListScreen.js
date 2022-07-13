@@ -27,19 +27,11 @@ export default class RemoteDataListScreen extends PureComponent {
     // Actions
     next: PropTypes.func.isRequired,
     // Component style
-    style: PropTypes.shape({
-      screen: Screen.propTypes.style,
-      list: ListView.propTypes.style,
-      emptyState: EmptyStateView.propTypes.style,
-    }),
+    style: PropTypes.object,
   };
 
   static defaultProps = {
-    style: {
-      screen: {},
-      list: {},
-      emptyState: {},
-    },
+    style: {},
   };
 
   constructor(props) {
@@ -81,7 +73,7 @@ export default class RemoteDataListScreen extends PureComponent {
    * Override this function to implement specific data fetching.
    * It's empty since it's called to refresh data.
    */
-  fetchData() { }
+  fetchData() {}
 
   shouldRenderPlaceholderView(data) {
     if ((!isInitialized(data) && !isError(data)) || isBusy(data)) {
@@ -94,7 +86,7 @@ export default class RemoteDataListScreen extends PureComponent {
   }
 
   renderPlaceholderView(data) {
-    const { style } = this.props;
+    const { style = {} } = this.props;
 
     const emptyStateViewProps = {
       icon: 'refresh',
@@ -131,7 +123,7 @@ export default class RemoteDataListScreen extends PureComponent {
       return this.renderPlaceholderView(data);
     }
 
-    const { style } = this.props;
+    const { style = {} } = this.props;
     const { screenSettings } = getRouteParams(this.props);
     const renderFeaturedItem = screenSettings.hasFeaturedItem
       ? this.renderFeaturedItem
@@ -156,7 +148,7 @@ export default class RemoteDataListScreen extends PureComponent {
   }
 
   render() {
-    const { data, style } = this.props;
+    const { data, style = {} } = this.props;
 
     return <Screen style={style.screen}>{this.renderData(data)}</Screen>;
   }

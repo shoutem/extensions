@@ -18,8 +18,6 @@
       "facebook-setup-form.error-message": "Something went wrong, please try again",
       "facebook-setup-form.required-field-message": "Required field",
       "general-settings.title": "General settings",
-      "general-settings.form-api-endpoint-title": "Api endpoint",
-      "general-settings.button-submit-title": "Save",
       "general-settings.form-allow-new-user-registration-title": "Allow new user registration",
       "general-settings.form-manually-approve-new-members-title": "Manually approve new members",
       "general-settings.manually-approve-members-description": "New users won't be able to access the app until they are manually approved",
@@ -99,7 +97,8 @@
       "protected-screens-table.empty-placeholder-message": "0 screens defined.",
       "protected-screens-table.header-name-title": "Screen",
       "protected-screens-page.title": "Protected screens",
-      "protected-screens-page.form-make-all-screens-private-title": "Make all screens private"
+      "protected-screens-page.form-make-all-screens-private-title": "Make all screens private",
+      "shoutem.auth.complete-registration": "User completes registration"
     }
   }
 }

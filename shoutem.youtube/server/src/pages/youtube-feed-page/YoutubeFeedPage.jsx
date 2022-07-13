@@ -1,27 +1,28 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import {
-  fetchShortcut,
-  updateShortcutSettings,
-  getShortcut,
-  fetchExtension,
   getExtension,
+  getShortcut,
+  updateShortcutSettings,
 } from '@shoutem/redux-api-sdk';
-import { isBusy, clear, isInitialized } from '@shoutem/redux-io';
-import { FeedPreview, FeedUrlInput } from '../../components';
-import { validateYoutubeUrl, isPlaylistUrl } from '../../services/youtube';
+import { clear, isBusy, isInitialized } from '@shoutem/redux-io';
+import { FeedPreview, FeedUrlInput, NonPlaylistAlert } from '../../components';
 import ext from '../../const';
-import { FEED_ITEMS, loadFeed, getFeedItems } from '../../redux';
+import { FEED_ITEMS, getFeedItems, loadFeed } from '../../redux';
+import {
+  isPlaylistUrl,
+  resolveYoutubeError,
+  validateYoutubeUrl,
+} from '../../services';
+import LOCALIZATION from './localization';
 import './style.scss';
 
-const ACTIVE_SCREEN_INPUT = 0;
-const ACTIVE_SCREEN_PREVIEW = 1;
-
-export class YoutubeFeedPage extends Component {
+export class YoutubeFeedPage extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -33,77 +34,46 @@ export class YoutubeFeedPage extends Component {
 
     this.state = {
       error: null,
-      hasChanges: false,
       apiKey,
       feedUrl,
       sort,
     };
 
     if (validateYoutubeUrl(feedUrl)) {
-      this.fetchPosts(feedUrl, sort);
+      this.fetchPosts(feedUrl);
     }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { shortcut: nextShortcut } = nextProps;
-    const { extension: nextExtension } = nextProps;
-    const { feedUrl } = this.state;
-
-    // Must be check with "undefined" because _.isEmpty() will validate this clause
-    // when feedUrl === null which is set when we want to clear { feedUrl } and this causes feedUrl
-    // to be set even when user removed it.
-    if (feedUrl === undefined) {
-      const nextFeedUrl = _.get(nextShortcut, 'settings.feedUrl');
-      const nextApiKey = _.get(nextExtension, 'settings.apiKey');
-
-      this.setState({
-        feedUrl: nextFeedUrl,
-        apiKey: nextApiKey,
-      });
-
-      if (nextFeedUrl && validateYoutubeUrl(nextFeedUrl)) {
-        nextProps.loadFeed(nextFeedUrl, nextApiKey, nextShortcut.id);
-      }
-    }
-  }
-
-  getActiveScreen() {
-    const { feedUrl } = this.state;
-
-    if (!_.isEmpty(feedUrl)) {
-      return ACTIVE_SCREEN_PREVIEW;
-    }
-
-    return ACTIVE_SCREEN_INPUT;
   }
 
   updateSettings(feedUrl, sort) {
     const { shortcut, updateShortcutSettings } = this.props;
     const settings = { feedUrl, sort };
 
-    this.setState({ error: '', inProgress: true });
-    updateShortcutSettings(shortcut, settings)
-      .then(() => {
-        this.setState({ hasChanges: false, inProgress: false });
-      })
-      .catch(err => {
-        this.setState({ error: err, inProgress: false });
-      });
+    this.setState({
+      error: '',
+    });
+
+    updateShortcutSettings(shortcut, settings).catch(err => {
+      this.setState({ error: err });
+    });
   }
 
-  fetchPosts(feedUrl, sort) {
-    const { apiKey } = this.state;
+  fetchPosts(feedUrl) {
+    const { apiKey, sort } = this.state;
     const { shortcut, loadFeed } = this.props;
 
-    if (!feedUrl || !apiKey || !shortcut) {
+    if (!feedUrl || !apiKey || !shortcut || !validateYoutubeUrl(feedUrl)) {
       return;
     }
 
-    loadFeed(feedUrl, apiKey, shortcut.id, sort).catch(err => {
-      this.setState({
-        error: _.get(err, 'message'),
-        inProgress: false,
-      });
+    loadFeed(feedUrl, apiKey, shortcut.id, sort).catch(error => {
+      const youtubeError = resolveYoutubeError(error);
+
+      if (youtubeError) {
+        this.setState({ error: youtubeError });
+        return;
+      }
+
+      this.setState({ error: i18next.t(LOCALIZATION.GENERIC_ERROR) });
     });
   }
 
@@ -141,7 +111,7 @@ export class YoutubeFeedPage extends Component {
     const settings = { feedUrl, sort };
 
     updateShortcutSettings(shortcut, settings).then(() =>
-      this.fetchPosts(feedUrl, sort),
+      this.fetchPosts(feedUrl),
     );
   }
 
@@ -149,46 +119,51 @@ export class YoutubeFeedPage extends Component {
     const { feedUrl, sort, error } = this.state;
     const { feedItems, shortcut } = this.props;
 
-    const activeScreen = this.getActiveScreen();
     const initialized = isInitialized(shortcut);
     const savedSort = _.get(shortcut, 'settings.sort');
-    const sortOptionsAvailable = !isPlaylistUrl(feedUrl);
+    const isPlayListFeedUrl = isPlaylistUrl(feedUrl);
+    const showNonPlaylistAlert = !!feedUrl && !isPlayListFeedUrl;
 
     return (
       <LoaderContainer isLoading={!initialized} className="youtube-feed-page">
-        {activeScreen === ACTIVE_SCREEN_INPUT && (
+        {showNonPlaylistAlert && <NonPlaylistAlert />}
+        {_.isEmpty(feedUrl) && (
           <FeedUrlInput
             inProgress={isBusy(feedItems)}
             error={error}
             onContinueClick={this.handleFeedUrlInputContinueClick}
           />
         )}
-        {activeScreen === ACTIVE_SCREEN_PREVIEW && (
+        {!_.isEmpty(feedUrl) && (
           <FeedPreview
             feedUrl={feedUrl}
             feedItems={feedItems}
-            onRemoveClick={this.handleFeedPreviewRemoveClick}
-            selectedSort={sort}
             savedSort={savedSort}
+            selectedSort={sort}
+            showDurationLabel={isPlayListFeedUrl}
+            sortOptionsAvailable={!isPlayListFeedUrl}
+            onRemoveClick={this.handleFeedPreviewRemoveClick}
             onSortChanged={this.handleSortChanged}
             onConfirmClick={this.handleSortConfirmedClick}
-            sortOptionsAvailable={sortOptionsAvailable}
           />
         )}
+        {!!error && <div className="error-text">{error}</div>}
       </LoaderContainer>
     );
   }
 }
 
 YoutubeFeedPage.propTypes = {
-  shortcut: PropTypes.object,
-  extension: PropTypes.object,
+  clearFeedItems: PropTypes.func.isRequired,
+  extension: PropTypes.object.isRequired,
+  loadFeed: PropTypes.func.isRequired,
+  shortcut: PropTypes.object.isRequired,
+  updateShortcutSettings: PropTypes.func.isRequired,
   feedItems: PropTypes.array,
-  fetchExtension: PropTypes.func,
-  fetchShortcut: PropTypes.func,
-  updateShortcutSettings: PropTypes.func,
-  loadFeed: PropTypes.func,
-  clearFeedItems: PropTypes.func,
+};
+
+YoutubeFeedPage.defaultProps = {
+  feedItems: [],
 };
 
 function mapStateToProps(state, ownProps) {
@@ -202,12 +177,8 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const { shortcutId } = ownProps;
-
+function mapDispatchToProps(dispatch) {
   return {
-    fetchExtension: () => dispatch(fetchExtension(ext())),
-    fetchShortcut: () => dispatch(fetchShortcut(shortcutId)),
     updateShortcutSettings: (shortcut, settings) =>
       dispatch(updateShortcutSettings(shortcut, settings)),
     clearFeedItems: () => dispatch(clear(FEED_ITEMS, 'feedItems')),

@@ -1,10 +1,11 @@
+/* eslint-disable react-native/no-raw-text */
 import React from 'react';
-import _ from 'lodash';
-import i18next from 'i18next';
-import PropTypes from 'prop-types';
-import { Dropdown, MenuItem, ControlLabel } from 'react-bootstrap';
+import { ControlLabel, Dropdown, MenuItem } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
-import { FontIconPopover, FontIcon } from '@shoutem/react-web-ui';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
 import { feedSortOptions } from '../../services/youtube';
 import LOCALIZATION from './localization';
 import './style.scss';
@@ -72,6 +73,6 @@ export default function FeedSortDropdown({ selectedSort, onSelect }) {
 }
 
 FeedSortDropdown.propTypes = {
-  selectedOptionLabel: PropTypes.string,
-  onSelect: PropTypes.func,
+  selectedSort: PropTypes.string.isRequired,
+  onSelect: PropTypes.func.isRequired,
 };

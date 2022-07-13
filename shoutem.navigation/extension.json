@@ -1,10 +1,10 @@
 {
   "name": "navigation",
-  "version": "5.0.1",
-  "platform": ">=6",
+  "version": "5.0.4",
+  "platform": ">=7",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "*  Fixed user groups missing tab bar navigation items in edge cases",
+  "releaseNotes": "* Preview application improvements",
   "description": "App-level navigation",
   "dependencies": [
     "shoutem.application",

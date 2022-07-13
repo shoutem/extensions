@@ -2,14 +2,14 @@ import { Platform } from 'react-native';
 import PushNotifications from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import messaging from '@react-native-firebase/messaging';
-
 import { isProduction } from 'shoutem.application';
 import { Firebase } from 'shoutem.firebase';
+import { priorities, setPriority } from 'shoutem-core';
 import {
-  handleNotificationReceivedForeground,
-  handleNotificationReceivedBackground,
-  handleNotificationTapped,
   handleNotification,
+  handleNotificationReceivedBackground,
+  handleNotificationReceivedForeground,
+  handleNotificationTapped,
 } from './services';
 
 function formatiOSNotificationPayload(message) {
@@ -20,13 +20,10 @@ function formatiOSNotificationPayload(message) {
   };
 }
 
-export function appDidFinishLaunching(app) {
+export const appWillMount = setPriority(app => {
   if (!isProduction()) {
     return;
   }
-
-  const store = app.getStore();
-  const { dispatch } = store;
 
   if (Platform.OS === 'ios') {
     messaging().onNotificationOpenedApp(message =>
@@ -34,12 +31,24 @@ export function appDidFinishLaunching(app) {
     );
   }
 
+  const store = app.getStore();
+  const { dispatch } = store;
+
   messaging()
     .registerDeviceForRemoteMessages()
     .then(() => {
       Firebase.obtainFCMToken()(dispatch);
       Firebase.obtainAPNSToken()(dispatch);
     });
+}, priorities.FIREBASE);
+
+export function appDidMount(app) {
+  if (!isProduction()) {
+    return;
+  }
+
+  const store = app.getStore();
+  const { dispatch } = store;
 
   PushNotifications.configure({
     onNotification: notif => {
@@ -59,6 +68,11 @@ export function appDidFinishLaunching(app) {
         handleNotificationReceivedBackground(notif, dispatch);
       }
 
+      // iOS is excluded because onNotification handler is sometimes triggered twice
+      // with userInteraction:true.
+      // Because iOS excludes tapped notifications here, we have defined separate handler
+      // messaging().onNotificationOpenedApp, for when app is killed and user opens it via
+      // push notification tap
       if (userInteraction === true && Platform.OS !== 'ios') {
         handleNotificationTapped(notif, store);
       }

@@ -1,6 +1,6 @@
-import { find, invalidate } from '@shoutem/redux-io';
 import ext from 'src/const';
 import { shoutemUrls } from 'src/services';
+import { find, invalidate } from '@shoutem/redux-io';
 import { GROUPS } from '../const';
 
 export function loadGroups(appId) {

@@ -9,11 +9,11 @@ export function ext(resourceName) {
 }
 
 export const GROUP_PREFIX = 'group.';
-export const REMINDER_NOTIFICATION_ID = '0'; // Valid unique 32 bit integer specified as string
 // Don't use extension name inside channel_id strings. It contains 'shoutem' and channel names are
 // visible in Android app specific notification settings
 export const REMINDER_CHANNEL_ID = `${getAppId()}.reminder`;
 export const SCHEDULED_NOTIFICATIONS_CHANNEL_ID = `${getAppId()}.user_scheduled_notifications`;
+export const JOURNEY_NOTIFICATIONS_CHANNEL_ID = `${getAppId()}.journey_local_notifications`;
 
 export const REPEAT_CONFIG = {
   repeatTime: 1,

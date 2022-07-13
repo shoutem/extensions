@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Platform, Switch } from 'react-native';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Divider, Row, Text, View } from '@shoutem/ui';
 import { ext } from '../const';

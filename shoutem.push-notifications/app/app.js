@@ -5,6 +5,7 @@ import {
   requestNotifications,
   RESULTS,
 } from 'shoutem.permissions';
+import { before, priorities, setPriority } from 'shoutem-core';
 import { registerNotificationHandlers } from './notificationHandlers';
 
 function handleAppStateChange(nextState) {
@@ -13,7 +14,11 @@ function handleAppStateChange(nextState) {
   }
 }
 
-const appWillMount = () => {
+const appWillMount = setPriority(app => {
+  const store = app.getStore();
+
+  registerNotificationHandlers(store);
+
   /**
    * Checks if the notification service has status DENIED => available on device but the permission has not been requested yet.
    * If status is DENIED, we request permissions and obtain FCM token if user grants permissions.
@@ -27,14 +32,9 @@ const appWillMount = () => {
     .catch(error => {
       console.log('Check push notification permissions failed:', error);
     });
-};
+}, before(priorities.FIREBASE));
 
-const appDidMount = app => {
-  Firebase.clearBadge();
-  const store = app.getStore();
-
-  registerNotificationHandlers(store);
-
+const appDidMount = () => {
   AppState.addEventListener('change', handleAppStateChange);
 };
 
@@ -42,4 +42,4 @@ const appWillUnmount = () => {
   AppState.removeEventListener('change', handleAppStateChange);
 };
 
-export { appWillMount, appDidMount, appWillUnmount };
+export { appDidMount, appWillMount, appWillUnmount };

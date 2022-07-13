@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import React, { useCallback, useMemo, useState } from 'react';
-import { LayoutAnimation, Pressable } from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import { LayoutAnimation } from 'react-native';
 import ActionSheet from 'react-native-action-sheet';
 import { useDispatch } from 'react-redux';
 import _ from 'lodash';
@@ -19,19 +19,13 @@ import {
 import { I18n } from 'shoutem.i18n';
 import { images } from '../assets';
 import { ext } from '../const';
+import { AttachmentResolver } from '../fragments';
+import { loadStatus } from '../redux';
 import { adaptSocialUserForProfileScreen, convertToHtml } from '../services';
 import { comment as commentShape } from './shapes';
 
-function CommentView({
-  comment,
-  openProfile,
-  deleteComment,
-  onImagePress,
-  style,
-}) {
+function CommentView({ comment, deleteComment, openProfile, statusId, style }) {
   const dispatch = useDispatch();
-
-  const [isDeleted, setDeleted] = useState(false);
 
   const handleClickOnUser = useCallback(() => {
     const { user } = comment;
@@ -55,19 +49,18 @@ function CommentView({
       },
       index => {
         if (index === 0) {
-          // TODO: fetch status or statues after delete, we need comment count in
-          // Interactions component updated after deletion
-          deleteComment(comment);
+          // We have to load statuses to fetch updated state after deleting comment
+          dispatch(deleteComment(comment)).then(() =>
+            dispatch(loadStatus(statusId)),
+          );
 
           LayoutAnimation.easeInEaseOut();
-          setDeleted(true);
         }
       },
     );
-  }, [comment, deleteComment]);
+  }, [comment, deleteComment, dispatch]);
 
-  const { user, created_at, text } = comment;
-  const { shoutem_attachments } = comment;
+  const { user, created_at, shoutem_attachments, text } = comment;
   const { profile_image_url, name: userName } = user;
 
   const timeAgo = useMemo(() => moment(created_at).fromNow(), [created_at]);
@@ -81,34 +74,15 @@ function CommentView({
   );
 
   const commentHtml = useMemo(() => convertToHtml(text), [text]);
-  // Before, we used image (base64) attachments when creating post.
-  // Now we'll use link as an attachment when creating post.
-  // Keeping shoutem_attachments[0]?.url_large for backwards compatibility.
-  const attachmentSource = useMemo(
-    () => ({
-      uri: shoutem_attachments?.[0]?.url || shoutem_attachments?.[0]?.url_large,
-    }),
-    [shoutem_attachments],
+
+  const userAttachment = useMemo(() => shoutem_attachments[0] || {}, [
+    shoutem_attachments,
+  ]);
+
+  const resolvedUserAttachment = useMemo(
+    () => ({ uri: userAttachment.url || userAttachment.url_large }),
+    [userAttachment],
   );
-
-  const resolvedAttachmentStyle = useMemo(
-    () => [style.attachment, !!commentHtml && style.attachmentMargin],
-    [commentHtml, style.attachment, style.attachmentMargin],
-  );
-
-  const handleImagePress = useCallback(() => {
-    const imageGalleryData = [
-      {
-        source: attachmentSource,
-      },
-    ];
-
-    onImagePress(imageGalleryData);
-  }, [attachmentSource, onImagePress]);
-
-  if (isDeleted) {
-    return null;
-  }
 
   return (
     <View style={style.container}>
@@ -129,14 +103,12 @@ function CommentView({
               <Caption style={style.timeAgo}>{timeAgo}</Caption>
             </View>
             <SimpleHtml body={commentHtml} style={style.comment} />
-            {!!attachmentSource.uri && (
-              <Pressable onPress={handleImagePress}>
-                <Image
-                  style={resolvedAttachmentStyle}
-                  source={attachmentSource}
-                />
-              </Pressable>
-            )}
+            <AttachmentResolver
+              enableImagePreview
+              isComment
+              statusText={text}
+              userAttachment={resolvedUserAttachment}
+            />
           </View>
         </Row>
       </TouchableOpacity>
@@ -148,7 +120,7 @@ CommentView.propTypes = {
   comment: commentShape.isRequired,
   deleteComment: PropTypes.func.isRequired,
   openProfile: PropTypes.func.isRequired,
-  onImagePress: PropTypes.func.isRequired,
+  statusId: PropTypes.number.isRequired,
   style: PropTypes.object,
 };
 

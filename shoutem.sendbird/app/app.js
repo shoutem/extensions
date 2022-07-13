@@ -1,13 +1,14 @@
 import { AppState, Platform } from 'react-native';
 import _ from 'lodash';
-import { getExtensionSettings } from 'shoutem.application/redux';
 import { getAppId, getSubscriptionValidState } from 'shoutem.application';
+import { getExtensionSettings } from 'shoutem.application/redux';
 import { getUser, isAuthenticated } from 'shoutem.auth';
+import { Firebase, NotificationHandlers } from 'shoutem.firebase';
 import { getCurrentRoute, openInModal } from 'shoutem.navigation';
-import { NotificationHandlers, Firebase } from 'shoutem.firebase';
-import { SendBird } from './services';
-import { ext, CONNECTION_STATUSES } from './const';
+import { before, priorities, setPriority } from 'shoutem-core';
+import { CONNECTION_STATUSES, ext } from './const';
 import { actions, handlers, selectors } from './redux';
+import { SendBird } from './services';
 
 export function handleNotificationOpened(notification, dispatch, store) {
   const sendBirdData = _.get(notification, 'data.sendbird');
@@ -69,7 +70,7 @@ function handleAppStateChange(nextState) {
   }
 }
 
-export function appWillMount(app) {
+export const appWillMount = setPriority(app => {
   const store = app.getStore();
 
   if (Platform.OS === 'android') {
@@ -105,7 +106,7 @@ export function appWillMount(app) {
         handleNotification(notification, dispatch, store),
     },
   });
-}
+}, before(priorities.FIREBASE));
 
 export function appDidFinishLaunching(app) {
   const store = app.getStore();

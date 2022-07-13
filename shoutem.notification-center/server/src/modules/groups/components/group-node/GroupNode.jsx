@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
 import { Button } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { FontIcon } from '@shoutem/react-web-ui';
 import './style.scss';
 

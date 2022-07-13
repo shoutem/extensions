@@ -4,7 +4,9 @@ let endpointProvider = {};
 
 const initialize = (legacyApiEndpointBase, appId) => {
   if (!legacyApiEndpointBase || !appId) {
-    throw new Error(`Unable to initialize Endpoint on ${legacyApiEndpointBase} for app ${appId}`);
+    throw new Error(
+      `Unable to initialize Endpoint on ${legacyApiEndpointBase} for app ${appId}`,
+    );
   }
 
   const notificationsUrl = `${legacyApiEndpointBase}/${appId}/notifications/functions`;
@@ -22,8 +24,6 @@ const initialize = (legacyApiEndpointBase, appId) => {
   };
 };
 
-export {
-  initialize,
-};
+export { initialize };
 
 export default () => endpointProvider;

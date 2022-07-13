@@ -1,17 +1,16 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import _ from 'lodash';
-import { connect } from 'react-redux';
 import { InteractionManager } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { ListScreen } from 'shoutem.application';
 import { navigateTo } from 'shoutem.navigation';
-import { I18n } from 'shoutem.i18n';
-import { fetchNotifications, markAsRead } from '../redux';
 import { NotificationView } from '../components';
 import { ext, notificationShape } from '../const';
+import { fetchNotifications, markAsRead } from '../redux';
 
 const { arrayOf, func, shape } = PropTypes;
 
@@ -82,10 +81,9 @@ class NotificationsScreen extends ListScreen {
     };
   }
 
+  // Keeping this to allow classes extending it to overwrite it if necessary.
   getNavBarProps() {
-    return {
-      title: I18n.t(ext('notificationListNavBarTitle')),
-    };
+    return {};
   }
 
   handleSettingsPress() {

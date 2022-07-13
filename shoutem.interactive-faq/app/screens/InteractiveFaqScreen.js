@@ -64,9 +64,6 @@ export class InteractiveFaqScreen extends PureComponent {
       loadCategories,
       loadQuestions,
     } = this.props;
-    const { title } = getRouteParams(this.props);
-
-    navigation.setOptions({ title });
 
     if (!parentCategoryId) {
       LayoutAnimation.easeInEaseOut();

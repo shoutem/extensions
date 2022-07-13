@@ -24,11 +24,12 @@ import { EpisodeView, mapDispatchToProps } from './EpisodeView';
 export class ListEpisodeView extends EpisodeView {
   render() {
     const { enableDownload, episode, style } = this.props;
-    const { downloadInProgress, path, timeUpdated, title } = episode;
+    const { downloadInProgress, timeUpdated, title } = episode;
 
+    const isDownloaded = downloadInProgress !== undefined;
     const momentDate = moment(timeUpdated);
-    const iconName = path ? 'delete' : 'download';
-    const handleDownloadManagerPress = path
+    const iconName = isDownloaded ? 'delete' : 'download';
+    const handleDownloadManagerPress = isDownloaded
       ? this.onDeletePress
       : this.onDownloadPress;
     const imageUrl = this.getImageUrl(episode);

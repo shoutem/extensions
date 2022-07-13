@@ -1,6 +1,6 @@
-import { find } from '@shoutem/redux-io';
 import ext from 'src/const';
 import { shoutemUrls } from 'src/services';
+import { find } from '@shoutem/redux-io';
 import { APPLICATION_STATUS } from '../const';
 
 export function loadApplicationStatus(appId) {

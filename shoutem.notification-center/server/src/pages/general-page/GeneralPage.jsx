@@ -1,17 +1,17 @@
 import React, { PureComponent } from 'react';
+import { Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import ext from 'src/const';
+import { ChimeUploader, NotificationSettings } from 'src/modules/settings';
+import { invalidateCurrentBuild } from 'src/redux';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { getExtension, updateExtensionSettings } from '@shoutem/redux-api-sdk';
 import { isBusy, isInitialized } from '@shoutem/redux-io';
-import { NotificationSettings, ChimeUploader } from 'src/modules/settings';
-import ext from 'src/const';
-import { invalidateCurrentBuild } from 'src/redux';
 import LOCALIZATION from './localization';
 import './style.scss';
 

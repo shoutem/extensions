@@ -1,33 +1,32 @@
 import { AppState } from 'react-native';
 import * as _ from 'lodash';
-import rio, { checkExpiration } from '@shoutem/redux-io';
 import { applyToAll } from '@shoutem/redux-composers';
-import { Image, Html } from '@shoutem/ui';
-
-import { NavigationStacks } from 'shoutem.navigation';
+import rio, { checkExpiration } from '@shoutem/redux-io';
+import { Html, Image } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-
+import { NavigationStacks } from 'shoutem.navigation';
+import { after, before, priorities, setPriority } from 'shoutem-core';
 import SubscriptionMissingScreen from './screens/SubscriptionMissingScreen';
-import { isRelease } from './shared/isRelease';
-import { extractAppActions } from './shared/extractAppActions';
-import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
-import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
 import { resizeImageSource } from './services/resizeImageSource';
+import { extractAppActions } from './shared/extractAppActions';
+import { isConfigurationLoaded } from './shared/isConfigurationLoaded';
+import { isRelease } from './shared/isRelease';
+import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
+import buildConfig from './buildConfig.json';
 import {
-  loadLocalConfiguration,
-  fetchConfiguration,
-  fetchAppSubscriptionStatus,
-  setQueueTargetComplete,
-} from './redux';
-import {
-  CONFIGURATION_SCHEMA,
   ACTIVE_APP_STATE,
   APP_SUBSCRIPTION_SCHEMA,
+  CONFIGURATION_SCHEMA,
   ext,
 } from './const';
-import { AppInitQueue } from './services';
 import { SeAttachment } from './html';
-import buildConfig from './buildConfig.json';
+import {
+  fetchAppSubscriptionStatus,
+  fetchConfiguration,
+  loadLocalConfiguration,
+  setQueueTargetComplete,
+} from './redux';
+import { AppInitQueue } from './services';
 
 export const appActions = {};
 
@@ -143,6 +142,8 @@ export function appWillMount(app) {
 
   return loadConfiguration(app);
 }
+
+setPriority(appWillMount, priorities.INIT);
 
 export function appDidMount(app) {
   const store = app.getStore();

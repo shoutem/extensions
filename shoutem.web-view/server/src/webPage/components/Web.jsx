@@ -1,53 +1,18 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { getShortcut } from 'environment';
 import { data } from 'context';
-import _ from 'lodash';
+import { getShortcut } from 'environment';
 import normalizeUrl from 'normalize-url';
-import { updateShortcut } from './../reducer';
-import WebUrlInput from './WebUrlInput';
+import PropTypes from 'prop-types';
+import { updateShortcut } from '../reducer';
 import WebEdit from './WebEdit';
+import WebUrlInput from './WebUrlInput';
 
-const ACTIVE_SCREEN_INPUT = 0;
-const ACTIVE_SCREEN_EDIT = 1;
-
-export class Web extends Component {
-  constructor(props) {
-    super(props);
-
-    autoBindReact(this);
-  }
-
-  getActiveScreen() {
-    if (_.has(this.props, 'shortcut.settings.url')) {
-      return ACTIVE_SCREEN_EDIT;
-    }
-    return ACTIVE_SCREEN_INPUT;
-  }
-
-  getShortcutSettings() {
-    const { shortcut } = this.props;
-    if (shortcut && shortcut.settings) {
-      return shortcut.settings;
-    }
-    return {
-      url: '',
-      showNavigationToolbar: false,
-      requireGeolocationPermission: false,
-      forwardAuthHeader: false,
-    };
-  }
-
-  setShortcutSettings(settings) {
-    const { shortcut, updateShortcut } = this.props;
-    const { id } = shortcut;
-
-    const currentSettings = this.getShortcutSettings();
+function Web({ shortcut, updateShortcut }) {
+  function updateShortcutSettings(settings) {
+    const { id, settings: currentSettings } = shortcut;
 
     const mergedSettings = { ...currentSettings, ...settings };
-
     const updatedShortcut = {
       id,
       attributes: {
@@ -58,73 +23,71 @@ export class Web extends Component {
     updateShortcut(updatedShortcut);
   }
 
-  handleUrlInputContinueClick(url) {
+  function handleUrlInputContinueClick(url) {
     const normalizedUrl = normalizeUrl(url, { stripWWW: false });
-    this.setShortcutSettings({ url: normalizedUrl });
+    updateShortcutSettings({ url: normalizedUrl });
   }
 
-  handleUrlRemoveClick() {
-    this.setShortcutSettings({ url: null });
+  function handleUrlRemoveClick() {
+    updateShortcutSettings({ url: null });
   }
 
-  handleForwardAuthHeaderChange(checked) {
-    this.setShortcutSettings({ forwardAuthHeader: checked });
+  function handleForwardAuthHeaderChange(checked) {
+    updateShortcutSettings({ forwardAuthHeader: checked });
   }
 
-  handleShowNavigationToolbarChange(checked) {
-    this.setShortcutSettings({ showNavigationToolbar: checked });
+  function handleShowNavigationToolbarChange(checked) {
+    updateShortcutSettings({ showNavigationToolbar: checked });
   }
 
-  handleGeolocationPermissionChange(checked) {
-    this.setShortcutSettings({ requireGeolocationPermission: checked });
+  function handleGeolocationPermissionChange(checked) {
+    updateShortcutSettings({ requireGeolocationPermission: checked });
   }
 
-  render() {
-    const activeScreen = this.getActiveScreen();
-    const {
+  const {
+    settings: {
       url,
       showNavigationToolbar,
       requireGeolocationPermission,
       forwardAuthHeader,
-    } = this.getShortcutSettings();
+    },
+  } = shortcut;
 
-    const { hasWebsiteSettings } = data.params;
+  const { hasWebsiteSettings } = data.params;
 
-    return (
-      <div>
-        {activeScreen === ACTIVE_SCREEN_INPUT && (
-          <WebUrlInput onContinueClick={this.handleUrlInputContinueClick} />
-        )}
-        {activeScreen === ACTIVE_SCREEN_EDIT && (
-          <WebEdit
-            hasWebsiteSettings={hasWebsiteSettings}
-            url={url}
-            showNavigationToolbar={showNavigationToolbar}
-            forwardAuthHeader={forwardAuthHeader}
-            requireGeolocationPermission={requireGeolocationPermission}
-            onRemoveClick={this.handleUrlRemoveClick}
-            onShowNavigationToolbarChange={
-              this.handleShowNavigationToolbarChange
-            }
-            onForwardAuthHeaderChange={this.handleForwardAuthHeaderChange}
-            onRequireGeolocationPermissionChange={
-              this.handleGeolocationPermissionChange
-            }
-          />
-        )}
-      </div>
-    );
-  }
+  return (
+    <div>
+      {!url && <WebUrlInput onContinueClick={handleUrlInputContinueClick} />}
+      {!!url && (
+        <WebEdit
+          hasWebsiteSettings={hasWebsiteSettings}
+          url={url}
+          showNavigationToolbar={showNavigationToolbar}
+          forwardAuthHeader={forwardAuthHeader}
+          requireGeolocationPermission={requireGeolocationPermission}
+          onRemoveClick={handleUrlRemoveClick}
+          onShowNavigationToolbarChange={handleShowNavigationToolbarChange}
+          onForwardAuthHeaderChange={handleForwardAuthHeaderChange}
+          onRequireGeolocationPermissionChange={
+            handleGeolocationPermissionChange
+          }
+        />
+      )}
+    </div>
+  );
 }
 
 Web.propTypes = {
-  shortcut: PropTypes.object,
-  updateShortcut: PropTypes.func,
+  shortcut: PropTypes.object.isRequired,
+  updateShortcut: PropTypes.func.isRequired,
 };
 
 function mapStateToProps() {
+  const shortcut = getShortcut();
+
   return {
-    shortcut: getShortcut(),
+    shortcut,
+    url: shortcut?.settings?.url,
   };
 }
 

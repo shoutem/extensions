@@ -1,25 +1,25 @@
 import _ from 'lodash';
 import { createScopedReducer, getShortcutState } from '@shoutem/redux-api-sdk';
 import {
-  resource,
-  find,
   cloneStatus,
+  find,
   RESOLVED_ENDPOINT,
+  resource,
 } from '@shoutem/redux-io';
 import {
+  createYoutubeChannelUrl,
+  createYoutubeValidationUrl,
+  isChannelUrl,
+  isCustomChannelUrl,
+  isPlaylistUrl,
+  isUserUrl,
+  parseCustomUrl,
+  resolveChannelsDataEndpoint,
+  resolveChannelsSearchEndpoint,
+  resolveUserChannel,
   resolveVideosFetchEndpoint,
   resolveVideosSearchEndpoint,
-  resolveChannelsSearchEndpoint,
-  resolveChannelsDataEndpoint,
-  isUserUrl,
-  isChannelUrl,
-  isPlaylistUrl,
-  resolveUserChannel,
-  createYoutubeValidationUrl,
-  isCustomChannelUrl,
-  parseCustomUrl,
-  createYoutubeChannelUrl,
-} from './services/youtube';
+} from './services';
 
 export const YOUTUBE_API_SETTINGS = 'shoutem.youtube.api-settings';
 export const FEED_ITEMS = 'shoutem.youtube.feedItems';
@@ -160,7 +160,9 @@ function fetchUserVideos(feedUrl, apiKey, shortcutId, selectedSort) {
 
       const channelUrl = createYoutubeChannelUrl(channelId);
 
-      dispatch(searchVideos(channelUrl, apiKey, shortcutId, selectedSort));
+      return dispatch(
+        searchVideos(channelUrl, apiKey, shortcutId, selectedSort),
+      );
     });
 }
 
@@ -183,9 +185,10 @@ function fetchCustomChannelVideos(feedUrl, apiKey, shortcutId, selectedSort) {
             const channelsData = _.get(channelsDataResponse, 'payload.items');
 
             // Find a channel with exact custom URL our feed URL contains
-            const verifiedCustomChannel = _.find(channelsData, channel => {
-              return _.get(channel, 'snippet.customUrl') === customUrl;
-            });
+            const verifiedCustomChannel = _.find(
+              channelsData,
+              channel => _.get(channel, 'snippet.customUrl') === customUrl,
+            );
 
             if (!verifiedCustomChannel) {
               return null;

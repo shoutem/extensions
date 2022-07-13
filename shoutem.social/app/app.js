@@ -3,7 +3,6 @@ import { getAppId } from 'shoutem.application/app';
 import {
   getExtensionCloudUrl,
   getExtensionServiceUrl,
-  getExtensionSettings,
 } from 'shoutem.application/redux';
 import { getUser, isAuthenticated } from 'shoutem.auth';
 import { Firebase } from 'shoutem.firebase';
@@ -11,16 +10,13 @@ import { shoutemApi } from './services/shoutemApi';
 import { ext, SOCIAL_SETTINGS_SCHEMA, STATUSES_SCHEMA } from './const';
 import { initUserSettings } from './redux';
 
-const APPLICATION_EXTENSION = 'shoutem.application';
-
 export function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
-  const apiEndpoint = getExtensionSettings(state, APPLICATION_EXTENSION)
-    .legacyApiEndpoint;
-  const cloudHost = getExtensionCloudUrl(state, ext());
+  const apiEndpoint = getExtensionServiceUrl(state, ext(), 'cms');
   const appsEndpoint = getExtensionServiceUrl(state, ext(), 'apps');
   const authApiEndpoint = getExtensionServiceUrl(state, ext(), 'auth');
+  const cloudHost = getExtensionCloudUrl(state, ext());
 
   if (!authApiEndpoint) {
     // eslint-disable-next-line no-console

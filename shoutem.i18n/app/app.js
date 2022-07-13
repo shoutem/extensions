@@ -2,6 +2,7 @@ import React from 'react';
 import I18n from 'i18n-js';
 import _ from 'lodash';
 import moment from 'moment';
+import { AppInitQueue, setQueueTargetComplete } from 'shoutem.application';
 import { getExtensionSettings } from 'shoutem.application/redux';
 import { after, priorities, setPriority } from 'shoutem-core';
 // Load locale data into moment
@@ -10,6 +11,12 @@ import { ext } from './const';
 import { LocalizationProvider } from './providers';
 import { actions, selectors } from './redux';
 import customTranslations from './translations';
+
+const runtimeTranslations = {};
+const translationsNotDownloaded =
+  customTranslations === 'TRANSLATIONS_NOT_DOWNLOADED';
+
+AppInitQueue.addExtension(ext());
 
 /**
  * Merges all translations found in `translationsToAdd` into
@@ -36,6 +43,7 @@ import customTranslations from './translations';
 const mergeTranslations = (targetTranslations, translationsToAdd) => {
   for (const language of _.keys(translationsToAdd)) {
     // eslint-disable-next-line no-param-reassign
+
     targetTranslations[language] = _.merge(
       targetTranslations[language] || {},
       translationsToAdd[language],
@@ -70,21 +78,95 @@ const getTranslationsFromExtensions = extensions => {
   return allTranslations;
 };
 
-export const appWillMount = app => {
+// Fetches translation object from URL
+const getTranslationObjects = (url, language) => {
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then(response => response.json())
+      .then(translation => resolve({ language, translation }))
+      .catch(error => reject(error));
+  });
+};
+
+export const appWillMount = setPriority(async app => {
   const extensions = app.getExtensions();
+  const store = app.getStore();
+  const state = app.getState();
+
+  const { dispatch } = store;
 
   // Load all translations provided by the extensions themselves
   const translations = getTranslationsFromExtensions(extensions);
 
+  // If translation files don't exist try to generate them on the app launch
+  if (translationsNotDownloaded) {
+    const settings = getExtensionSettings(state, 'shoutem.i18n');
+    const customLanguages = _.get(settings, 'translations', {});
+    const shortcutTranslations = _.get(settings, 'shortcuts', {});
+    const currentlySelectedLocale = selectors.getSelectedLocale(state);
+    const locale = _.get(settings, 'locale', 'en');
+    const customLanguageKeys = _.keys(customLanguages);
+    const translationObjectPromises = _.map(customLanguageKeys, language =>
+      getTranslationObjects(customLanguages[language], language),
+    );
+
+    const translationObjects = await Promise.all(translationObjectPromises);
+
+    // Create translation object for each language
+    _.forEach(translationObjects, translationObject => {
+      const { language, translation } = translationObject;
+
+      const shortcuts = _.reduce(
+        _.keys(shortcutTranslations),
+        (result, shortcut) => {
+          const value = shortcutTranslations[shortcut][language];
+
+          if (_.isEmpty(value)) {
+            return result;
+          }
+
+          return _.merge({}, result, {
+            [shortcut]: value,
+          });
+        },
+        {},
+      );
+
+      // Merge shortcut translations into translation object
+      const resolvedTranslation = _.merge({}, translation, {
+        shoutem: {
+          navigation: {
+            shortcuts,
+          },
+        },
+      });
+
+      // Save translation object
+      _.assign(runtimeTranslations, { [language]: resolvedTranslation });
+    });
+
+    // Set locale if the user changes default language in extension settings
+    if (currentlySelectedLocale !== locale) {
+      dispatch(actions.setLocale(locale));
+    }
+  }
+
+  // Hide the launch screen
+  dispatch(setQueueTargetComplete(ext()));
+
   // Add custom translations configured on the server, those are the
   // translations configured by the app owner on the server
-  mergeTranslations(translations, customTranslations);
+  const resolvedTranslations = translationsNotDownloaded
+    ? runtimeTranslations
+    : customTranslations;
+
+  mergeTranslations(translations, resolvedTranslations);
 
   I18n.translations = {
     ...I18n.translations,
     ...translations,
   };
-};
+}, after(priorities.INIT));
 
 export const appDidMount = app => {
   // Load the current locale from extension settings

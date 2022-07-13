@@ -23,18 +23,13 @@ function StatusView({
   style,
 }) {
   // status can be undefined if we're deleting it
-  const shoutem_attachments = status?.shoutem_attachments;
+  const shoutem_attachments = useMemo(() => status?.shoutem_attachments, [
+    status,
+  ]);
 
   const resolvedShowNewCommentInput = useMemo(
     () => enableComments && showNewCommentInput,
     [enableComments, showNewCommentInput],
-  );
-  // Before, we used image (base64) attachments when creating post.
-  // Now we'll use link as an attachment when creating post.
-  // Keeping shoutem_attachments[0]?.url_large for backwards compatibility.
-  const resolvedAttachment = useMemo(
-    () => shoutem_attachments?.[0]?.url || shoutem_attachments?.[0]?.url_large,
-    [shoutem_attachments],
   );
 
   if (!status) {
@@ -93,7 +88,7 @@ function StatusView({
       <StatusContent
         enableImageFullScreen={enableImageFullScreen}
         text={text}
-        leadAttachmentUrl={resolvedAttachment}
+        attachments={shoutem_attachments}
       />
       <Interactions
         commentCount={shoutem_reply_count}

@@ -1,3 +1,3 @@
 export { loadApplicationStatus } from './actions';
-export { getApplicationStatus } from './selectors';
 export { reducer } from './reducer';
+export { getApplicationStatus } from './selectors';

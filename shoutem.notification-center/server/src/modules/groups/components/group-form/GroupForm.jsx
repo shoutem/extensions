@@ -1,24 +1,24 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
-import { reduxForm } from 'redux-form';
 import {
-  Row,
   Button,
+  ButtonToolbar,
   ControlLabel,
   FormGroup,
-  ButtonToolbar,
   HelpBlock,
+  Row,
 } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import PropTypes from 'prop-types';
+import { reduxForm } from 'redux-form';
+import ext from 'src/const';
+import { getFormState } from 'src/redux';
 import {
+  ImageUploader,
   LoaderContainer,
   ReduxFormElement,
-  ImageUploader,
   Switch,
 } from '@shoutem/react-web-ui';
-import { getFormState } from 'src/redux';
-import ext from 'src/const';
 import { validateGroup } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';

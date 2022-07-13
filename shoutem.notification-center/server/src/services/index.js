@@ -4,4 +4,4 @@ const shoutemUrls = new ShoutemUrls();
 
 export { shoutemUrls };
 
-export { createOptions, buildShortcutTree } from './form';
+export { buildShortcutTree, createOptions } from './form';

@@ -1,36 +1,36 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import { reduxForm } from 'redux-form';
-import _ from 'lodash';
-import i18next from 'i18next';
 import {
-  Row,
-  Col,
   Button,
   ButtonToolbar,
-  HelpBlock,
+  Col,
   ControlLabel,
-  FormGroup,
   FormControl,
+  FormGroup,
+  HelpBlock,
+  Row,
 } from 'react-bootstrap';
 import Select from 'react-select';
-import {
-  LoaderContainer,
-  ReduxFormElement,
-  RadioSelector,
-  DateTimePicker,
-} from '@shoutem/react-web-ui';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { reduxForm } from 'redux-form';
 import { getFormState } from 'src/redux';
-import { GroupsDropdown } from '../../../groups';
-import { validateNotification } from '../../services';
 import {
-  DISPLAY_DATE_FORMAT,
-  DISPLAY_TIME_FORMAT,
+  DateTimePicker,
+  LoaderContainer,
+  RadioSelector,
+  ReduxFormElement,
+} from '@shoutem/react-web-ui';
+import { GroupsDropdown } from '../../../groups';
+import {
   AUDIENCE_TYPES,
   DELIVERY_TYPES,
+  DISPLAY_DATE_FORMAT,
+  DISPLAY_TIME_FORMAT,
   TARGET_TYPES,
 } from '../../const';
+import { validateNotification } from '../../services';
 import { ShortcutsDropdown } from '../shortcuts-dropdown';
 import { SummaryFields } from '../summary-fields';
 import LOCALIZATION from './localization';

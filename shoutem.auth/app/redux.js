@@ -23,10 +23,11 @@ import {
   navigateTo,
   NavigationStacks,
 } from 'shoutem.navigation';
+import { triggerCanceled, triggerOccured } from 'shoutem.notification-center';
 import { preventStateRehydration } from 'shoutem.redux';
 import { shoutemApi } from './services/shoutemApi';
 import encodeToBase64 from './shared/encodeToBase64';
-import { ext } from './const';
+import { COMPLETE_REGISTRATION_TRIGGER, ext } from './const';
 
 export const LOGIN = 'shoutem.auth.LOGIN';
 export const LOGIN_INITIALIZED = 'shoutem.auth.LOGIN_INITALIZED';
@@ -296,7 +297,10 @@ export function register(
     };
 
     return dispatch(create(schemeConfig, user)).then(() =>
-      dispatch(login(email, password)),
+      dispatch(login(email, password)).then(user => {
+        dispatch(cancelCompleteRegistrationTrigger());
+        return user;
+      }),
     );
   };
 }
@@ -639,4 +643,19 @@ export function deleteUser() {
   };
 
   return find(config);
+}
+
+export function triggerCompleteRegistration() {
+  return (dispatch, getState) => {
+    const state = getState();
+    const isRegistered = isAuthenticated(state);
+
+    if (!isRegistered) {
+      dispatch(triggerOccured(COMPLETE_REGISTRATION_TRIGGER));
+    }
+  };
+}
+
+export function cancelCompleteRegistrationTrigger() {
+  return dispatch => dispatch(triggerCanceled(COMPLETE_REGISTRATION_TRIGGER));
 }

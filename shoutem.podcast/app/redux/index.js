@@ -5,11 +5,12 @@ export {
   fetchEpisodesFeed,
   removeDownloadedEpisode,
   setDownloadInProgress,
+  updateDownloadedEpisode,
 } from './actions';
 export { default as reducer } from './reducer';
 export {
-  getDownloadedEpisodes,
   getDownloadedEpisode,
+  getDownloadedEpisodes,
   getEpisodesFeed,
   getEpisodesFeedWithDownloads,
   getFeedUrl,

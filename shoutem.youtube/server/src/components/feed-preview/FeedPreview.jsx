@@ -1,12 +1,12 @@
 import React from 'react';
+import {
+  Button,
+  ButtonToolbar,
+  ControlLabel,
+  FormGroup,
+} from 'react-bootstrap';
 import i18next from 'i18next';
 import PropTypes from 'prop-types';
-import {
-  FormGroup,
-  ControlLabel,
-  ButtonToolbar,
-  Button,
-} from 'react-bootstrap';
 import { FontIcon, LoaderContainer } from '@shoutem/react-web-ui';
 import { FeedPreviewTable } from '../feed-preview-table';
 import { FeedSortDropdown } from '../feed-sort-dropdown';
@@ -15,12 +15,13 @@ import './style.scss';
 
 export default function FeedPreview({
   feedUrl,
-  onRemoveClick,
   feedItems,
-  onSortChanged,
-  selectedSort,
   savedSort,
+  selectedSort,
+  showDurationLabel,
   sortOptionsAvailable,
+  onRemoveClick,
+  onSortChanged,
   onConfirmClick,
 }) {
   const sortConfirmButtonDisabled = savedSort === selectedSort;
@@ -63,18 +64,29 @@ export default function FeedPreview({
           )}
         </FormGroup>
       </form>
-      <FeedPreviewTable feedItems={feedItems} />
+      <FeedPreviewTable
+        feedItems={feedItems}
+        showDurationLabel={showDurationLabel}
+      />
     </div>
   );
 }
 
 FeedPreview.propTypes = {
-  feedUrl: PropTypes.string,
+  selectedSort: PropTypes.string.isRequired,
+  sortOptionsAvailable: PropTypes.bool.isRequired,
+  onConfirmClick: PropTypes.func.isRequired,
+  onRemoveClick: PropTypes.func.isRequired,
+  onSortChanged: PropTypes.func.isRequired,
   feedItems: PropTypes.array,
-  onRemoveClick: PropTypes.func,
-  onSortChanged: PropTypes.func,
-  selectedSort: PropTypes.string,
+  feedUrl: PropTypes.string,
   savedSort: PropTypes.string,
-  sortOptionsAvailable: PropTypes.bool,
-  onConfirmClick: PropTypes.func,
+  showDurationLabel: PropTypes.bool,
+};
+
+FeedPreview.defaultProps = {
+  feedItems: [],
+  feedUrl: undefined,
+  savedSort: undefined,
+  showDurationLabel: false,
 };

@@ -1,12 +1,18 @@
 import _ from 'lodash';
 import {
-  USER_REGEX,
-  CUSTOM_CHANNEL_REGEX,
-  RESOURCE_TYPES,
   CHANNEL_REGEX,
-  PLAYLIST_REGEX,
+  CUSTOM_CHANNEL_REGEX,
   PLAYLIST_ID_PARAM_REGEX,
+  PLAYLIST_REGEX,
+  RESOURCE_TYPES,
+  USER_REGEX,
 } from '../const';
+
+export const ERROR_TYPE = {
+  API_POINTS_LIMIT_REACHED: 'apiPointsLimitReached',
+  YOUTUBE_GENERIC_ERROR: 'youtubeGenericError',
+  GENERIC: 'generic',
+};
 
 export function resolveGoogleApisEndpoint(type, query) {
   const baseApiEndpoint = `https://www.googleapis.com/youtube/v3/${type}`;
@@ -68,4 +74,29 @@ export function resolveChannelsDataEndpoint(ids, apiKey) {
   const queryString = `part=id,snippet,contentDetails&id=${stringifiedIds}maxResults=20&key=${apiKey}`;
 
   return resolveGoogleApisEndpoint(RESOURCE_TYPES.CHANNELS, queryString);
+}
+
+export function resolveYoutubeError(action) {
+  const youtubeError = action.payload.response?.error?.errors?.[0];
+
+  if (youtubeError) {
+    if (
+      action.payload.response?.error?.code === 403 &&
+      youtubeError.domain === 'youtube.quota' &&
+      youtubeError.reason === 'quotaExceeded'
+    ) {
+      return {
+        type: ERROR_TYPE.API_POINTS_LIMIT_REACHED,
+        // Used only for console.warn, no localization needed
+        message: 'Daily Youtube API points limit reached',
+      };
+    }
+
+    return {
+      type: ERROR_TYPE.YOUTUBE_GENERIC_ERROR,
+      message: youtubeError.reason,
+    };
+  }
+
+  return null;
 }

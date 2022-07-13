@@ -1,4 +1,6 @@
 import React from 'react';
+import { Platform } from 'react-native';
+import { connect } from 'react-redux';
 import slugify from '@sindresorhus/slugify';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
@@ -16,6 +18,8 @@ import {
   TrackPlayerBase,
 } from 'shoutem.audio';
 import { ext, trackPlayerOptions } from '../../const';
+import { updateDownloadedEpisode } from '../../redux';
+import { getPathFromEpisode } from '../../services';
 import { SKIP_BACK_TIME, SKIP_FORWARD_TIME } from './const';
 import { ProgressControl } from './ProgressControl';
 
@@ -104,13 +108,27 @@ class PodcastPlayer extends TrackPlayerBase {
   }
 
   async addTrack() {
-    const { downloadedEpisode, episode, podcastTitle, url } = this.props;
+    const {
+      downloadedEpisode,
+      episode,
+      podcastTitle,
+      updateDownloadedEpisode,
+      url,
+    } = this.props;
     const { artist = podcastTitle, title } = episode;
 
+    // Whenever an episode is played, we check for a path and update
+    if (downloadedEpisode && downloadedEpisode.path && Platform.OS === 'ios') {
+      updateDownloadedEpisode(downloadedEpisode);
+    }
+
     const id = this.getId();
+    const resolvedUrl = downloadedEpisode
+      ? `file://${getPathFromEpisode(downloadedEpisode)}`
+      : url;
     const stream = {
       id,
-      url: downloadedEpisode ? `file://${downloadedEpisode.path}` : url,
+      url: resolvedUrl,
       title,
       artist,
     };
@@ -231,4 +249,9 @@ PodcastPlayer.defaultProps = {
   enableDownload: false,
 };
 
-export default connectStyle(ext('PodcastPlayer'))(PodcastPlayer);
+const mapDispatchToProps = { updateDownloadedEpisode };
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(connectStyle(ext('PodcastPlayer'))(PodcastPlayer));

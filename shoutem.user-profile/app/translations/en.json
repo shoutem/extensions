@@ -2,6 +2,7 @@
   "shoutem": {
     "user-profile": {
       "defaultErrorMessage": "Something went wrong",
+      "deleteAccountButtonText": "Delete account",
       "goBackToAppButton": "GO BACK TO APP",
       "userProfileCompletedTitle": "Thank you for submitting your application! Your submission will be reviewed by our team.",
       "userProfileCompletedDescription": "You will be notified once you are approved.",
@@ -27,6 +28,7 @@
       "confirm": "Yes",
       "selectImagesToUpload": "Select images to upload",
       "submitFormButtonTitle": "Send form",
+      "typeHerePlaceholder": "Type here...",
       "noImagesUploaded": "No images uploaded yet",
       "chat": "Chat",
       "video": "Video",

@@ -9,7 +9,6 @@ function getLastFeedRequest(appId: string, schema: string, url: string): object 
   const uri = new URI(config.servicesProxyBackend).segment(endpointSuffix);
   uri.addQuery('filter[url]', url);
   uri.addQuery('page[limit]', 1);
-  uri.addQuery('cache', false);
 
   return {
     json: true,
@@ -43,6 +42,10 @@ export async function getLastFeedItem(appId: string, feedType: string, feedUrl: 
   const schema = resolveSchema(feedType);
   if (!schema) {
     throw new Error(`Unable to resolve schema for app: ${appId}, feedType: ${feedType}`);
+  }
+
+  if (!feedUrl) {
+    return null;
   }
 
   const response = await request(getLastFeedRequest(appId, schema, feedUrl));

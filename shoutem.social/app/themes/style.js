@@ -317,6 +317,28 @@ export default () => ({
     placeholderText: { opacity: 0.5 },
   },
 
+  'shoutem.social.StatusContent': {
+    statusText: {
+      container: {
+        paddingHorizontal: 0,
+      },
+      tags: {
+        p: {
+          fontSize: 13,
+          lineHeight: calculateLineHeight(13),
+          marginVertical: 0,
+        },
+        a: {
+          fontSize: 13,
+          lineHeight: calculateLineHeight(13),
+          // TODO: SimpleHtml blocks font changes. For now, this works for iOS only
+          fontWeight: '400',
+          color: '#0000EE',
+        },
+      },
+    },
+  },
+
   'shoutem.social.StatusViewSkeleton': {
     statusItemContainerSkeleton: {
       backgroundColor: resolveVariable('paperColor'),
@@ -442,10 +464,6 @@ export default () => ({
     moreIcon: {
       color: resolveVariable('shoutem.navigation', 'navBarIconsColor'),
     },
-  },
-
-  'shoutem.social.StatusContent': {
-    image: { width: '100%' },
   },
 
   'shoutem.social.Interactions': {
@@ -589,21 +607,6 @@ export default () => ({
         },
       },
     },
-    attachment: {
-      width: '100%',
-      height: getSizeRelativeToReference(
-        163,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-    },
-    attachmentMargin: {
-      marginTop: getSizeRelativeToReference(
-        25,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-    },
   },
 
   'shoutem.social.CommentViewSkeleton': {
@@ -701,6 +704,148 @@ export default () => ({
     timeAgoWidth: { width: '20%' },
     longContentLineWidth: { width: '90%' },
     shortContentLineWidth: { width: '80%' },
+  },
+
+  'shoutem.social.AudioAttachment': {
+    container: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      backgroundColor: inverseColorBrightnessForAmount(
+        resolveVariable('paperColor'),
+        3,
+      ),
+      padding: getSizeRelativeToReference(
+        5,
+        375,
+        resolveVariable('sizes.window.width'),
+      ),
+      borderRadius: 12,
+    },
+    contentContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 10,
+    },
+    audioTitle: { flex: 1, fontSize: 8, lineHeight: calculateLineHeight(10) },
+    icon: {
+      marginLeft: getSizeRelativeToReference(
+        5,
+        375,
+        resolveVariable('sizes.window.width'),
+      ),
+      marginRight: getSizeRelativeToReference(
+        10,
+        375,
+        resolveVariable('sizes.window.width'),
+      ),
+    },
+  },
+
+  'shoutem.social.ImageAttachment': {
+    commentAttachment: {
+      height: getSizeRelativeToReference(
+        160,
+        812,
+        resolveVariable('sizes.window.height'),
+      ),
+      borderRadius: 10,
+    },
+    statusAttachment: {
+      height: getSizeRelativeToReference(
+        210,
+        812,
+        resolveVariable('sizes.window.height'),
+      ),
+      borderRadius: 10,
+    },
+  },
+
+  'shoutem.social.WebsiteAttachment': {
+    container: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      backgroundColor: inverseColorBrightnessForAmount(
+        resolveVariable('paperColor'),
+        3,
+      ),
+      borderRadius: 12,
+    },
+    image: {
+      borderTopLeftRadius: 12,
+      borderBottomLeftRadius: 12,
+      width: getSizeRelativeToReference(
+        70,
+        375,
+        resolveVariable('sizes.window.width'),
+      ),
+      height: getSizeRelativeToReference(
+        70,
+        375,
+        resolveVariable('sizes.window.width'),
+      ),
+    },
+    infoContainer: {
+      flex: 1,
+      justifyContent: 'space-between',
+      padding: 8,
+      borderRadius: 10,
+    },
+    url: {
+      fontSize: 8,
+      color: changeColorAlpha(resolveVariable('text.caption'), 0.5),
+    },
+    title: {
+      fontSize: 10,
+    },
+  },
+
+  'shoutem.social.VideoAttachment': {
+    container: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      padding: getSizeRelativeToReference(
+        5,
+        375,
+        resolveVariable('sizes.window.width'),
+      ),
+      borderRadius: 10,
+    },
+    innerContainer: {
+      flex: 1,
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      backgroundColor: inverseColorBrightnessForAmount(
+        resolveVariable('paperColor'),
+        3,
+      ),
+      borderRadius: 12,
+    },
+    image: {
+      width: '100%',
+      height: getSizeRelativeToReference(
+        200,
+        812,
+        resolveVariable('sizes.window.height'),
+      ),
+      borderTopLeftRadius: 12,
+      borderTopRightRadius: 12,
+    },
+    title: {
+      marginBottom: getSizeRelativeToReference(
+        5,
+        812,
+        resolveVariable('sizes.window.height'),
+      ),
+      fontWeight: resolveFontWeight('700'),
+      fontSize: 12,
+      lineHeight: calculateLineHeight(14),
+    },
+    description: { fontSize: 12, lineHeight: calculateLineHeight(14) },
   },
 
   'shoutem.social.NewStatusFooter': {

@@ -1,20 +1,20 @@
 import React, { PureComponent } from 'react';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
-import { CmsListScreen } from 'shoutem.cms';
-import { getFavoriteItems, fetchFavoritesData } from 'shoutem.favorites';
-import { I18n } from 'shoutem.i18n';
-import { getRouteParams, navigateTo } from 'shoutem.navigation';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
-  isError,
   getCollection,
   isBusy,
+  isError,
   isInitialized,
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { ListView, Screen, EmptyStateView } from '@shoutem/ui';
+import { EmptyStateView, ListView, Screen } from '@shoutem/ui';
+import { CmsListScreen } from 'shoutem.cms';
+import { fetchFavoritesData, getFavoriteItems } from 'shoutem.favorites';
+import { I18n } from 'shoutem.i18n';
+import { navigateTo } from 'shoutem.navigation';
 import ListBooksView from '../components/ListBooksView';
 import { ext } from '../const';
 
@@ -36,10 +36,7 @@ class MyBooksScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { fetchFavoritesData, favorites, navigation } = this.props;
-    const { title } = getRouteParams(this.props);
-
-    navigation.setOptions({ title });
+    const { fetchFavoritesData, favorites } = this.props;
 
     fetchFavoritesData(this.state.schema, favorites[this.state.schema]);
   }

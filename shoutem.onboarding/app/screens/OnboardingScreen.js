@@ -71,12 +71,23 @@ function OnboardingScreen({
   }
 
   function renderPage(page, index) {
-    const { title, description, featuredImageUrl = null, textPosition } = page;
+    const {
+      title,
+      description,
+      featuredImageUrl = null,
+      imageUrl = null,
+      textPosition,
+    } = page;
     const hasFeaturedImage = !!featuredImageUrl;
+
+    const image = images[`image${index}`] || { uri: imageUrl };
+    const featuredImage = images[`featuredImage${index}`] || {
+      uri: featuredImageUrl,
+    };
 
     return (
       <ImageBackground
-        source={images[`image${index}`]}
+        source={image}
         style={style.imageBackground}
         imageStyle={style.image}
       >
@@ -85,7 +96,7 @@ function OnboardingScreen({
             <ImageContent
               title={title}
               description={description}
-              featuredImage={images[`featuredImage${index}`]}
+              featuredImage={featuredImage}
               textPosition={textPosition}
             />
           )}

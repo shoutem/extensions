@@ -1,16 +1,20 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "5.0.1",
-  "platform": ">=6",
+  "version": "7.1.0",
+  "platform": ">=7.1.0",
   "nativeChanges": {
     "lastVersion": null,
-    "settingsKeys": ["chime"]
+    "settingsKeys": [
+      "chime"
+    ]
   },
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* Resolved filtering of manual push notifications",
+  "releaseNotes": "* Added push journeys",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "dependencies": [
     "shoutem.application",
     "shoutem.firebase",
@@ -86,22 +90,37 @@
     {
       "page": "@.NotificationsPage",
       "title": "Notifications",
-      "categories": ["push"]
+      "categories": [
+        "push"
+      ]
     },
     {
       "page": "@.GroupsPage",
       "title": "Groups",
-      "categories": ["push"]
+      "categories": [
+        "push"
+      ]
     },
     {
       "page": "@.GeneralPage",
       "title": "General",
-      "categories": ["push"]
+      "categories": [
+        "push"
+      ]
+    },
+    {
+      "page": "@.JourneysPage",
+      "title": "Journeys",
+      "categories": [
+        "push"
+      ]
     },
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": ["style"],
+      "categories": [
+        "style"
+      ],
       "parameters": {
         "extensionTheme": "Theme"
       }
@@ -118,6 +137,10 @@
     },
     {
       "name": "GeneralPage",
+      "type": "react-page"
+    },
+    {
+      "name": "JourneysPage",
       "type": "react-page"
     }
   ],

@@ -1,7 +1,7 @@
+/* eslint-disable react-native/no-raw-text */
 import React from 'react';
 import { Trans } from 'react-i18next';
-import PropTypes from 'prop-types';
-import { FontIconPopover, FontIcon } from '@shoutem/react-web-ui';
+import { FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -47,13 +47,3 @@ export default function FeedUrlDescription() {
     </div>
   );
 }
-
-FeedUrlDescription.propTypes = {
-  onContinueClick: PropTypes.func,
-  error: PropTypes.string,
-  inProgress: PropTypes.bool,
-};
-
-FeedUrlDescription.defaultProps = {
-  inProgress: false,
-};

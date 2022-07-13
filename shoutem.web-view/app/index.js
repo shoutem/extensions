@@ -1,8 +1,8 @@
 import './navigation';
+import * as actions from './redux/actions';
 import enTranslations from './translations/en.json';
 import * as extension from './extension';
 import { openWebViewScreen } from './middleware';
-import * as actions from './redux';
 
 export const shoutem = {
   i18n: {

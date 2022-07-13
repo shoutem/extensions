@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import moment from 'moment';
-import i18next from 'i18next';
 import {
-  Row,
-  Col,
   Button,
   ButtonToolbar,
+  Col,
   ControlLabel,
-  FormGroup,
   FormControl,
+  FormGroup,
+  Row,
 } from 'react-bootstrap';
-import { createOptions, buildShortcutTree } from 'src/services';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import { buildShortcutTree, createOptions } from 'src/services';
 import {
-  DISPLAY_DATE_TIME_FORMAT,
   AUDIENCE_TYPES,
+  DISPLAY_DATE_TIME_FORMAT,
   TARGET_TYPES,
 } from '../../const';
 import LOCALIZATION from './localization';

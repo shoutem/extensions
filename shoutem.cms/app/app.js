@@ -1,19 +1,22 @@
-navigator.geolocation = require('@react-native-community/geolocation');
 import rio from '@shoutem/redux-io';
-
-import { getAppId, getExtensionSettings } from 'shoutem.application';
-
+import { getAppId, getExtensionServiceUrl } from 'shoutem.application';
 import { ext } from './const';
 import { CATEGORIES_SCHEMA } from './redux';
+
+// eslint-disable-next-line no-undef
+navigator.geolocation = require('@react-native-community/geolocation');
 
 export function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
   const appId = getAppId();
-  const apiEndpoint = getExtensionSettings(state, ext()).apiEndpoint;
+  const apiEndpoint = getExtensionServiceUrl(state, ext(), 'cms');
 
   if (!apiEndpoint) {
-    console.error(`CMS API endpoint not set in ${ext()} settings.`);
+    // eslint-disable-next-line no-console
+    console.error(
+      'Core service endpoints not available, could not find CMS endpoint.',
+    );
   }
 
   const jsonApiRequestOptions = {
@@ -30,7 +33,7 @@ export function appDidMount(app) {
     },
   });
 
-  rio.registerResource((schemaName) => ({
+  rio.registerResource(schemaName => ({
     schema: schemaName,
     request: {
       endpoint: `${apiEndpoint}/v1/apps/${appId}/resources/${schemaName}/{?query*}`,

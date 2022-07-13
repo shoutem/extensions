@@ -1,13 +1,15 @@
 {
   "name": "user-profile",
   "title": "User Profile",
-  "version": "3.0.0",
+  "version": "4.2.0",
   "platform": ">=6",
   "type": "system",
   "description": "Add extended user profile",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Adjusted handling of \"Require user profile at sign up\" setting\n* Adjusted update handling, native build invalidation is now determined on a per-update basis, instead of requiring new native build on every update",
   "icon": "server/assets/add-user-profile-image.png",
-  "native": true,
+  "nativeChanges": {
+    "lastVersion": "4.2.0"
+  },
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

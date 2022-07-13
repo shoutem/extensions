@@ -93,12 +93,10 @@ async function checkForRssFeedUpdate(
 }
 
 export async function handleRssFeedUpdate(
-  monitoredShortcuts: { monitor: Monitor; shortcuts: { key: string; feedUrl: string; feedType: string }[] }[],
+  monitor: Monitor,
+  shortcuts: { key: string; feedUrl: string; feedType: string }[],
 ) {
-  const promises = monitoredShortcuts.map(async monitoredShortcut => {
-    if (monitoredShortcut.shortcuts && monitoredShortcut.shortcuts.length > 0) {
-      await checkForRssFeedUpdate(monitoredShortcut.monitor, monitoredShortcut.shortcuts);
-    }
-  });
-  await Promise.all(promises);
+  if (shortcuts && shortcuts.length > 0) {
+    await checkForRssFeedUpdate(monitor, shortcuts);
+  }
 }

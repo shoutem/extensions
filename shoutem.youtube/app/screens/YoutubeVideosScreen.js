@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { isBusy, isInitialized, next, shouldLoad } from '@shoutem/redux-io';
+import { isBusy, isInitialized, next } from '@shoutem/redux-io';
 import { ListView, Spinner } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
@@ -11,6 +11,7 @@ import { RssListScreen } from 'shoutem.rss';
 import LargeYoutubeView from '../components/LargeYoutubeView';
 import { ext } from '../const';
 import { fetchFeed, getVideosFeed, YOUTUBE_VIDEOS_SCHEMA } from '../redux';
+import { ERROR_TYPE, resolveYoutubeError } from '../services';
 
 export class YoutubeVideosScreen extends RssListScreen {
   constructor(props, context) {
@@ -19,6 +20,7 @@ export class YoutubeVideosScreen extends RssListScreen {
     this.state = {
       ...this.state,
       schema: YOUTUBE_VIDEOS_SCHEMA,
+      apiPointsLimitReached: false,
     };
 
     autoBindReact(this);
@@ -33,20 +35,29 @@ export class YoutubeVideosScreen extends RssListScreen {
     });
   }
 
-  refreshData(prevProps) {
-    if (shouldLoad(this.props, prevProps, 'data')) {
-      this.fetchData();
-    }
+  componentDidMount() {
+    this.fetchData();
   }
 
   fetchData() {
-    const { fetchFeed, feedUrl, apiKey, sort } = this.props;
+    const { apiKey, fetchFeed, feedUrl, sort } = this.props;
 
     if (_.isEmpty(feedUrl)) {
       return;
     }
 
-    fetchFeed(feedUrl, apiKey, sort);
+    fetchFeed(feedUrl, apiKey, sort).catch(error => {
+      const youtubeError = resolveYoutubeError(error);
+
+      if (youtubeError) {
+        // eslint-disable-next-line no-console
+        console.warn(youtubeError.message);
+
+        if (youtubeError.type === ERROR_TYPE.API_POINTS_LIMIT_REACHED) {
+          this.setState({ apiPointsLimitReached: true });
+        }
+      }
+    });
   }
 
   loadMore() {
@@ -54,6 +65,21 @@ export class YoutubeVideosScreen extends RssListScreen {
 
     next(collection);
   }
+
+  shouldRenderPlaceholderView(data) {
+    const { apiPointsLimitReached } = this.state;
+
+    if (apiPointsLimitReached) {
+      return false;
+    }
+
+    return super.shouldRenderPlaceholderView(data);
+  }
+
+  // // Overriding it because we don't want to trigger fetch data on each componentDidUpdate
+  // // if API points limit is reached. refreshData is always true in that case and it's a
+  // // condition for fetchData to run again
+  refreshData() {}
 
   renderRow(video) {
     return <LargeYoutubeView video={video} onPress={this.openDetailsScreen} />;
@@ -72,7 +98,7 @@ export class YoutubeVideosScreen extends RssListScreen {
       <ListView
         data={data}
         renderRow={this.renderRow}
-        loading={isBusy(data) || !isInitialized(data)}
+        loading={isBusy(data)}
         onRefresh={this.fetchData}
         onLoadMore={this.loadMore}
       />
@@ -82,8 +108,12 @@ export class YoutubeVideosScreen extends RssListScreen {
 
 YoutubeVideosScreen.propTypes = {
   ...RssListScreen.propTypes,
+  fetchFeed: PropTypes.func.isRequired,
   data: PropTypes.array,
-  fetchFeed: PropTypes.func,
+};
+
+YoutubeVideosScreen.defaultProps = {
+  data: [],
 };
 
 export const mapStateToProps = (state, ownProps) => {
@@ -100,7 +130,10 @@ export const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const mapDispatchToProps = { fetchFeed, next };
+export const mapDispatchToProps = {
+  fetchFeed,
+  next,
+};
 
 export default connect(
   mapStateToProps,

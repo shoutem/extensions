@@ -1,10 +1,10 @@
 {
   "name": "onboarding",
   "title": "Onboarding",
-  "version": "5.0.0",
-  "platform": ">=6",
+  "version": "5.0.1",
+  "platform": ">=7",
   "description": "Shows a quick tour on the first app launch.",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Introduced fetching onboarding images in the runtime for the preview mode",
   "icon": "server/assets/onboarding-icon.png",
   "dependencies": ["shoutem.application", "shoutem.i18n", "shoutem.navigation"],
   "i18n": {

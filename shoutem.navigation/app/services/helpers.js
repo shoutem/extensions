@@ -10,13 +10,6 @@ export function collectShortcutScreens(shortcut, screens) {
   const shortcutCanonicalName = _.get(shortcut, 'canonicalName');
   const extension = getExtensionNameByScreenName(shortcutCanonicalName);
 
-  const shortcutScreenName = _.get(shortcut, 'screens[0].canonicalName');
-  const shortcutScreen = screens[shortcutScreenName];
-
-  const resolvedShortcutScreen = shortcutScreenName
-    ? { name: shortcutScreenName, component: shortcutScreen }
-    : null;
-
   const collectedScreens = _.reduce(
     screens,
     (result, screen, name) => {
@@ -31,7 +24,22 @@ export function collectShortcutScreens(shortcut, screens) {
     [],
   );
 
+  const shortcutScreens = _.get(shortcut, 'screens');
+  const resolvedShortcutScreens = _.reduce(
+    shortcutScreens,
+    (result, screen) => {
+      const screenName = screen.canonicalName;
+
+      result.push({
+        name: screen.canonicalName,
+        component: screens[screenName],
+      });
+      return result;
+    },
+    [],
+  );
+
   return _.compact(
-    _.uniqBy([...collectedScreens, resolvedShortcutScreen], 'name'),
+    _.uniqBy([...collectedScreens, ...resolvedShortcutScreens], 'name'),
   );
 }

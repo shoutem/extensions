@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { REHYDRATE } from 'redux-persist/constants';
 import { mapReducers } from '@shoutem/redux-composers';
 import { collection } from '@shoutem/redux-io';
 
@@ -12,7 +13,7 @@ export default function rssFeed(schema, tag) {
   return (state = [], action) => {
     // Prevent all rssFeed reducers from executing mapReducers, execute only
     // for own schema
-    if (action.meta?.schema !== schema) {
+    if (action.meta?.schema !== schema && action.type !== REHYDRATE) {
       return state;
     }
 

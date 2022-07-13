@@ -1,5 +1,5 @@
-import moment from 'moment';
 import { uses24HourClock } from 'react-native-localize';
+import moment from 'moment';
 
 export function formatTimestamp(timestamp) {
   if (!timestamp) {

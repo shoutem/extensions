@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { connect } from 'react-redux';
+import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { uses24HourClock } from 'react-native-localize';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Button,
-  DateTimePicker,
-  Screen,
-  Subtitle,
-  Text,
-  View,
-} from '@shoutem/ui';
+import { Button, Screen, ScrollView, Subtitle, Text } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { goBack, HeaderIconButton } from 'shoutem.navigation';
-import { ext, DEFAULT_REMINDER } from '../const';
+import { ReminderTimePickers } from '../components';
+import { DEFAULT_REMINDER, ext } from '../const';
 import {
   getNotificationSettings,
   getReminderAppSettings,
@@ -30,95 +24,107 @@ function ReminderSettingsScreen({
   setNotificationSettings,
   style,
 }) {
-  const formattedReminderAt = moment(notificationSettings?.reminderAt).format();
+  const formattedReminderTimes = useMemo(() => {
+    return _.map(notificationSettings.reminderTimes, reminderTime => {
+      return moment(reminderTime).format();
+    });
+  }, []);
 
-  const [reminderAt, setReminderAt] = useState(formattedReminderAt);
+  const [reminderTimes, setReminderTimes] = useState(formattedReminderTimes);
 
-  function handleRestoreDefaultTimeframe() {
-    setReminderAt(DEFAULT_REMINDER);
-  }
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: renderRightComponent,
+    });
+  }, []);
 
   function renderRightComponent(props) {
     return (
       <HeaderIconButton
         {...props}
         iconName="restore"
-        onPress={handleRestoreDefaultTimeframe}
+        onPress={handleRestoreDefaultReminderSettings}
         tintColor={[style.restoreIconTintColor, props?.tintColor]}
       />
     );
   }
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: I18n.t(ext('reminderSettingsTitle')).toUpperCase(),
-      headerRight: renderRightComponent,
-    });
-  }, []);
+  const handleRestoreDefaultReminderSettings = useCallback(
+    () => setReminderTimes([DEFAULT_REMINDER]),
+    [],
+  );
 
-  function handleReminderTimeSelected(value) {
-    const reminderAt = moment(value)
-      .set({ s: 0 })
-      .format();
+  const handleAddReminderTime = useCallback(
+    () =>
+      setReminderTimes(prevReminderTimes => [
+        ...prevReminderTimes,
+        DEFAULT_REMINDER,
+      ]),
+    [],
+  );
 
-    setReminderAt(reminderAt);
-  }
+  const handleReminderTimeSelected = useCallback(
+    (value, index) => {
+      const selectedReminderTime = moment(value)
+        .set({ s: 0 })
+        .format();
 
-  async function handleConfirm() {
+      const newReminderTimes = [...reminderTimes];
+      newReminderTimes[index] = selectedReminderTime;
+
+      setReminderTimes(newReminderTimes);
+    },
+    [reminderTimes],
+  );
+
+  const handleConfirm = useCallback(() => {
     const newSettings = {
       ...notificationSettings,
-      reminderAt,
+      reminderTimes,
     };
 
     setNotificationSettings(newSettings);
-    await notifications.scheduleReminderNotifications(
-      reminder.message,
-      reminderAt,
-    );
-    goBack();
-  }
 
-  const reminderAtTextValue = moment(reminderAt).format('h:mm A');
+    notifications.rescheduleReminderNotifications(newSettings, reminder);
+
+    goBack();
+  }, [notificationSettings, reminder, reminderTimes, setNotificationSettings]);
 
   return (
     <Screen styleName="paper">
-      <Subtitle styleName="xl-gutter" style={style.subtitle}>
-        {I18n.t(ext('reminderSettingDescription'))}
-      </Subtitle>
-      <Text
-        styleName="xl-gutter-top lg-gutter-bottom h-center"
-        style={style.subtitle}
-      >
-        {I18n.t(ext('timePickerDescription'))}
-      </Text>
-      <View styleName="horizontal md-gutter-horizontal">
-        <View styleName="flexible md-gutter-right">
-          <Text styleName="sm-gutter-bottom">
-            {I18n.t(ext('reminderMeAt'))}
-          </Text>
-          <DateTimePicker
-            is24Hour={uses24HourClock()}
-            mode="time"
-            onValueChanged={handleReminderTimeSelected}
-            style={style.timePickerButton}
-            textValue={reminderAtTextValue}
-            value={moment(reminderAt).toDate()}
-          />
-        </View>
-      </View>
-      <Button style={style.confirmButton} onPress={handleConfirm}>
-        <Text>{I18n.t(ext('confirmButtonTitle')).toUpperCase()}</Text>
-      </Button>
+      <ScrollView>
+        <Subtitle styleName="xl-gutter" style={style.subtitle}>
+          {I18n.t(ext('reminderSettingDescription'))}
+        </Subtitle>
+        <Text
+          styleName="xl-gutter-top lg-gutter-bottom h-center"
+          style={style.subtitle}
+        >
+          {I18n.t(ext('timePickerDescription'))}
+        </Text>
+        <ReminderTimePickers
+          reminderTimes={reminderTimes}
+          onAddReminder={handleAddReminderTime}
+          onReminderTimeSelected={handleReminderTimeSelected}
+        />
+        <Button style={style.confirmButton} onPress={handleConfirm}>
+          <Text>{I18n.t(ext('confirmButtonTitle')).toUpperCase()}</Text>
+        </Button>
+      </ScrollView>
     </Screen>
   );
 }
 
 ReminderSettingsScreen.propTypes = {
-  navigation: PropTypes.object,
-  notificationSettings: PropTypes.object,
-  reminder: PropTypes.object,
-  setNotificationSettings: PropTypes.func,
+  navigation: PropTypes.object.isRequired,
+  notificationSettings: PropTypes.object.isRequired,
+  reminder: PropTypes.object.isRequired,
+  setNotificationSettings: PropTypes.func.isRequired,
   style: PropTypes.object,
+};
+
+ReminderSettingsScreen.defaultProps = {
+  style: {},
 };
 
 function mapStateToProps(state) {

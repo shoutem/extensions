@@ -1,5 +1,5 @@
-import { getOne } from '@shoutem/redux-io';
 import ext from 'src/const';
+import { getOne } from '@shoutem/redux-io';
 import { moduleName } from '../const';
 
 function getAppState(state) {

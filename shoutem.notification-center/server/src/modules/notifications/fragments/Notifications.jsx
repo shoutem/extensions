@@ -1,35 +1,35 @@
-import React, { createRef, Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import {
+  ConfirmModal,
+  InlineModal,
   LoaderContainer,
   Paging,
-  InlineModal,
-  ConfirmModal,
 } from '@shoutem/react-web-ui';
 import { fetchShortcuts, getShortcuts } from '@shoutem/redux-api-sdk';
 import { shouldLoad } from '@shoutem/redux-io';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import i18next from 'i18next';
-import { isInitialized, isBusy } from '@shoutem/redux-io/status';
-import { loadGroups, getGroups, getRawGroups } from '../../groups';
-import { TARGET_TYPES, AUDIENCE_TYPES, DELIVERY_TYPES } from '../const';
+import { isBusy, isInitialized } from '@shoutem/redux-io/status';
+import { getGroups, getRawGroups, loadGroups } from '../../groups';
 import {
+  NotificationForm,
+  NotificationInfoForm,
+  NotificationsTable,
+} from '../components';
+import { AUDIENCE_TYPES, DELIVERY_TYPES, TARGET_TYPES } from '../const';
+import {
+  createNotification,
+  deleteNotification,
   getNotifications,
   getRawNotifications,
   loadNotifications,
-  createNotification,
   updateNotification,
-  deleteNotification,
 } from '../redux';
-import { mapViewToModel, mapModelToView } from '../services';
-import {
-  NotificationsTable,
-  NotificationForm,
-  NotificationInfoForm,
-} from '../components';
+import { mapModelToView, mapViewToModel } from '../services';
 import LOCALIZATION from './localization';
 import './style.scss';
 

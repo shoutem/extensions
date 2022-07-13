@@ -78,9 +78,14 @@ export function handleNotificationReceivedForeground(notification, dispatch) {
   _.forEach(mappedHandlers, handler => handler(notification, dispatch));
 }
 
-export function handleNotificationTapped(notification, store) {
+export function handleNotificationTapped(
+  notification,
+  store,
+  navigationInitialized = false,
+) {
   const state = store.getState();
-  const navInitialized = getNavInitialized(state);
+
+  const navInitialized = getNavInitialized(state) || navigationInitialized;
 
   if (!navInitialized) {
     store.dispatch(queueNotification(notification));

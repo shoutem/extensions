@@ -1,25 +1,30 @@
-import _ from 'lodash';
 import { Platform } from 'react-native';
+import _ from 'lodash';
 import rio from '@shoutem/redux-io';
-import { getAppId, getExtensionSettings } from 'shoutem.application';
+import {
+  getAppId,
+  getExtensionServiceUrl,
+  getExtensionSettings,
+} from 'shoutem.application';
 import { Firebase } from 'shoutem.firebase';
+import { before, priorities, setPriority } from 'shoutem-core';
 import {
   ext,
+  JOURNEY_NOTIFICATIONS_CHANNEL_ID,
   REMINDER_CHANNEL_ID,
   SCHEDULED_NOTIFICATIONS_CHANNEL_ID,
 } from './const';
 import getEndpointProvider, { initialize } from './EndpointProvider';
+import { registerNotificationHandlers } from './notificationHandlers';
 import {
   fetchGroups,
   getNotificationSettings,
   GROUPS_SCHEMA,
   NOTIFICATIONS_SCHEMA,
   SELECTED_GROUPS_SCHEMA,
+  setNotificationSettings,
 } from './redux';
-import { registerNotificationHandlers } from './notificationHandlers';
 import { notifications } from './services';
-
-const APPLICATION_EXTENSION = 'shoutem.application';
 
 const apiRequestOptions = {
   resourceType: 'JSON',
@@ -28,28 +33,33 @@ const apiRequestOptions = {
   },
 };
 
+export const appWillMount = setPriority(app => {
+  const store = app.getStore();
+
+  registerNotificationHandlers(store);
+}, before(priorities.FIREBASE));
+
 export async function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
   const appId = getAppId();
+  const legacyApiEndpoint = getExtensionServiceUrl(state, ext(), 'cms');
   const extensionSettings = getExtensionSettings(state, ext());
-  const reminderEnabled = _.get(extensionSettings, 'reminder.enabled', true);
-  const reminderMessage = extensionSettings?.reminder?.message;
-  const applicationExtensionSettings = getExtensionSettings(
-    state,
-    APPLICATION_EXTENSION,
-  );
-  const remindMeToUseApp = getNotificationSettings(state).remindMeToUseApp;
-  const reminderAt = getNotificationSettings(state).reminderAt;
-  const legacyApiEndpoint = _.get(
-    applicationExtensionSettings,
-    'legacyApiEndpoint',
-  );
+  const appNotificationSettings = getNotificationSettings(state);
+
+  // Moving from single (string) to multiple (array)
+  if (_.isString(appNotificationSettings.reminderAt)) {
+    const newSettings = {
+      ...appNotificationSettings,
+      reminderTimes: [appNotificationSettings.reminderAt],
+      reminderAt: undefined,
+    };
+
+    await store.dispatch(setNotificationSettings(newSettings));
+  }
 
   if (!legacyApiEndpoint) {
-    throw new Error(
-      `Legacy api endpoint not configured. Check the ${APPLICATION_EXTENSION} extension settings.`,
-    );
+    throw new Error('Core service endpoints not found.');
   }
 
   initialize(legacyApiEndpoint, appId);
@@ -67,10 +77,24 @@ export async function appDidMount(app) {
       vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
     };
 
-    Firebase.createNotificationChannels([dailyNotificationsChannelConfig]);
+    const journeyLocalNotificationsConfig = {
+      channelId: JOURNEY_NOTIFICATIONS_CHANNEL_ID, // (required, Android only)
+      channelName: `${getAppId()}_journey_notifications`, // (required, Android only)
+      channelDescription: 'A channel local journey notifications', // (optional) default: undefined.
+      playSound: true, // (optional) default: true
+      vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+    };
+
+    Firebase.createNotificationChannels([
+      dailyNotificationsChannelConfig,
+      journeyLocalNotificationsConfig,
+    ]);
   }
 
-  if (reminderEnabled) {
+  // If reminder app feature is enabled via extension settings (builder)
+  if (extensionSettings.reminder?.enabled) {
+    const { reminder } = extensionSettings;
+
     if (Platform.OS === 'android') {
       const remindersChannelConfig = {
         channelId: REMINDER_CHANNEL_ID, // (required, Android only)
@@ -87,10 +111,10 @@ export async function appDidMount(app) {
           // automatically scheduled after user runs the app for the first time after update
           // We do this, because user's reminder setting is enabled by default, if app owner
           // enabled that feature
-          if (reminderEnabled && reminderMessage && remindMeToUseApp) {
-            await notifications.scheduleReminderNotifications(
-              reminderMessage,
-              reminderAt,
+          if (reminder.message && appNotificationSettings.remindMeToUseApp) {
+            notifications.rescheduleReminderNotifications(
+              appNotificationSettings,
+              reminder,
             );
           }
         },
@@ -102,10 +126,10 @@ export async function appDidMount(app) {
       // automatically scheduled after user runs the app for the first time after update
       // We do this, because user's reminder setting is enabled by default, if app owner
       // enabled that feature
-      if (reminderEnabled && reminderMessage && remindMeToUseApp) {
-        await notifications.scheduleReminderNotifications(
-          reminderMessage,
-          reminderAt,
+      if (reminder.message && appNotificationSettings.remindMeToUseApp) {
+        notifications.rescheduleReminderNotifications(
+          appNotificationSettings,
+          reminder,
         );
       }
     }
@@ -115,8 +139,6 @@ export async function appDidMount(app) {
     // eminder settings any more
     await notifications.cancelReminderNotifications();
   }
-
-  registerNotificationHandlers(store);
 
   rio.registerResource({
     schema: NOTIFICATIONS_SCHEMA,

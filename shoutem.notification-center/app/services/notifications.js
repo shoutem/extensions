@@ -1,15 +1,14 @@
+import { Platform } from 'react-native';
+import PushNotifications from 'react-native-push-notification';
 import _ from 'lodash';
 import moment from 'moment';
-import PushNotifications from 'react-native-push-notification';
 import { Firebase } from 'shoutem.firebase';
 import {
   REMINDER_CHANNEL_ID,
-  REMINDER_NOTIFICATION_ID,
   REPEAT_CONFIG,
   SCHEDULED_NOTIFICATIONS_CHANNEL_ID,
 } from '../const';
-import { parseTimeToTimeObject } from '../services';
-import { Platform } from 'react-native';
+import { parseTimeToTimeObject } from './calendar';
 
 let chimeSoundName = '';
 
@@ -17,10 +16,76 @@ function setChimeSoundName(soundName) {
   chimeSoundName = soundName;
 }
 
+function scheduleLocalNotifications(
+  notification,
+  additionalConfig,
+  useChimeSound = false,
+) {
+  const {
+    delay,
+    title,
+    body,
+    channelId = SCHEDULED_NOTIFICATIONS_CHANNEL_ID,
+  } = notification;
+
+  const scheduleDate = moment()
+    .add(delay, 'minutes')
+    .toDate();
+
+  const defaultConfig = {
+    id: additionalConfig.notificationId, // has to be stringified integer
+    date: scheduleDate,
+    message: body,
+    soundName: (useChimeSound && chimeSoundName) || 'default',
+    title,
+    userInfo: additionalConfig,
+  };
+
+  if (Platform.OS === 'ios') {
+    return Firebase.scheduleLocalNotification(defaultConfig);
+  }
+
+  return Firebase.scheduleLocalNotification({
+    ...defaultConfig,
+    allowWhileIdle: true, // (optional) set notification to work while on doze, default: false,
+    channelId, // android only
+  });
+}
+
+function cancelLocalNotifications(triggerId) {
+  return new Promise(resolve => {
+    PushNotifications.getScheduledLocalNotifications(
+      async scheduledLocalNotifications => {
+        const scheduledNotifications = _.filter(
+          scheduledLocalNotifications,
+          notification => _.includes(notification.data, triggerId),
+        );
+
+        if (!_.isEmpty(scheduledNotifications)) {
+          const cancelNotifications = _.map(
+            scheduledNotifications,
+            notification =>
+              PushNotifications.cancelLocalNotification(notification.id),
+          );
+
+          try {
+            await Promise.all(cancelNotifications);
+            resolve();
+          } catch (e) {
+            resolve();
+          }
+        } else {
+          resolve();
+        }
+      },
+    );
+  });
+}
+
 function scheduleRepeatingNotifications(message, date) {
   if (Platform.OS === 'ios') {
     const config = {
-      id: REMINDER_NOTIFICATION_ID,
+      id: _.uniqueId(), // has to be stringified integer
       fireDate: date,
       body: message,
       title: '',
@@ -38,7 +103,7 @@ function scheduleRepeatingNotifications(message, date) {
   const config = {
     allowWhileIdle: true, // (optional) set notification to work while on doze, default: false,
     channelId: REMINDER_CHANNEL_ID, // android only
-    id: REMINDER_NOTIFICATION_ID, // has to be stringified integer
+    id: _.uniqueId(), // has to be stringified integer
     date,
     message,
     soundName: chimeSoundName || 'default',
@@ -52,16 +117,16 @@ function scheduleRepeatingNotifications(message, date) {
 function cancelReminderNotifications() {
   return new Promise(resolve => {
     PushNotifications.getScheduledLocalNotifications(
-      async scheduledLocalNotifications => {
-        const scheduledReminderNotification = _.find(
+      scheduledLocalNotifications => {
+        const scheduledReminderNotifications = _.filter(
           scheduledLocalNotifications,
-          { id: REMINDER_NOTIFICATION_ID },
+          notification => !!notification.id,
         );
 
-        if (!!scheduledReminderNotification) {
-          await PushNotifications.cancelLocalNotification(
-            scheduledReminderNotification.id,
-          );
+        if (scheduledReminderNotifications.length > 0) {
+          _.forEach(scheduledReminderNotifications, async reminder => {
+            await PushNotifications.cancelLocalNotification(reminder.id);
+          });
         }
 
         resolve();
@@ -70,13 +135,24 @@ function cancelReminderNotifications() {
   });
 }
 
-async function scheduleReminderNotifications(message, reminderTime) {
-  const reminderAtTimeObject = parseTimeToTimeObject(reminderTime);
+async function rescheduleReminderNotifications(
+  appNotificationSettings,
+  reminder,
+) {
+  await cancelReminderNotifications();
+
+  _.forEach(appNotificationSettings.reminderTimes, async selectedTime => {
+    await scheduleReminderNotification(reminder.message, selectedTime);
+  });
+}
+
+async function scheduleReminderNotification(message, reminderTime) {
+  const reminderTimeObject = parseTimeToTimeObject(reminderTime);
   const now = moment();
   let date = moment()
     .set({
-      hours: reminderAtTimeObject.hours,
-      minutes: reminderAtTimeObject.minutes,
+      hours: reminderTimeObject.hours,
+      minutes: reminderTimeObject.minutes,
       seconds: 0,
     })
     .toDate();
@@ -88,27 +164,25 @@ async function scheduleReminderNotifications(message, reminderTime) {
       .toDate();
   }
 
-  await cancelReminderNotifications();
   await scheduleRepeatingNotifications(message, date);
 }
 
-function cancelScheduledNotifications(reminderTime) {
+function cancelScheduledNotifications() {
   PushNotifications.getScheduledLocalNotifications(
-    async scheduledLocalNotifications => {
-      const scheduledReminderNotification = _.find(
+    scheduledLocalNotifications => {
+      const scheduledReminderNotifications = _.filter(
         scheduledLocalNotifications,
-        { id: REMINDER_NOTIFICATION_ID },
+        reminder => !!reminder.id,
       );
 
       // Cancel all, then reschedule daily reminder notification
       // Faster than filtering & canceling 1 by 1 daily notifications
       PushNotifications.cancelAllLocalNotifications();
 
-      if (!!scheduledReminderNotification) {
-        await scheduleReminderNotifications(
-          scheduledReminderNotification.message,
-          reminderTime,
-        );
+      if (scheduledReminderNotifications.length > 0) {
+        _.forEach(scheduledReminderNotifications, async reminder => {
+          await scheduleReminderNotification(reminder.message, reminder.date);
+        });
       }
     },
   );
@@ -174,7 +248,7 @@ function randomizeNotifications(notification, dailyMessagesSettings) {
 
   return _.map(randomMessages, randomMessage => {
     const date = randomizeTime(dailyMessagesSettings);
-    const message = randomMessage.message;
+    const { message } = randomMessage;
 
     return {
       date,
@@ -206,11 +280,14 @@ function randomlyScheduleXnotifications(notification, notificationSettings) {
 }
 
 export default {
+  cancelLocalNotifications,
   cancelReminderNotifications,
   cancelScheduledNotifications,
   randomizeTime,
   randomizeNotifications,
   randomlyScheduleXnotifications,
-  scheduleReminderNotifications,
+  scheduleLocalNotifications,
+  rescheduleReminderNotifications,
+  scheduleReminderNotification,
   setChimeSoundName,
 };

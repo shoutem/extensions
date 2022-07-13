@@ -1,27 +1,27 @@
-import React, { createRef, Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, { Component, createRef } from 'react';
 import { Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 import {
-  LoaderContainer,
+  ConfirmModal,
   IconLabel,
   InlineModal,
-  ConfirmModal,
+  LoaderContainer,
   NestedSortable,
 } from '@shoutem/react-web-ui';
 import { shouldLoad } from '@shoutem/redux-io';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import i18next from 'i18next';
-import { isInitialized, isBusy } from '@shoutem/redux-io/status';
-import { GroupNode, GroupForm } from '../components';
+import { isBusy, isInitialized } from '@shoutem/redux-io/status';
+import { GroupForm, GroupNode } from '../components';
 import {
+  createGroup,
+  deleteGroup,
   getGroups,
   loadGroups,
-  createGroup,
   updateGroup,
-  deleteGroup,
 } from '../redux';
 import LOCALIZATION from './localization';
 import './style.scss';

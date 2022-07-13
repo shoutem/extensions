@@ -6,13 +6,11 @@ import { bindActionCreators } from 'redux';
 import { getCollection } from '@shoutem/redux-io';
 import { Screen, ListView, Spinner, EmptyStateView } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { getRouteParams } from 'shoutem.navigation';
 import { ext } from '../const';
 import { getFavoriteCollection, fetchFavoritesData } from '../helpers';
 
 export class FavoritesListScreen extends PureComponent {
   static propTypes = {
-    title: PropTypes.string,
     favorites: PropTypes.array,
     favoriteCollection: PropTypes.array,
     fetchFavoritesData: PropTypes.func,
@@ -59,10 +57,8 @@ export class FavoritesListScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { favoriteCollection, itemsLoaded, navigation } = this.props;
+    const { favoriteCollection, itemsLoaded } = this.props;
     const { schema } = this.state;
-
-    navigation.setOptions(this.getNavBarProps());
 
     if (!itemsLoaded) {
       this.toggleLoading();
@@ -70,17 +66,6 @@ export class FavoritesListScreen extends PureComponent {
         .fetchFavoritesData(schema, favoriteCollection)
         .then(() => this.toggleLoading());
     }
-  }
-
-  componentDidUpdate() {
-    const { navigation } = this.props;
-    navigation.setOptions(this.getNavBarProps());
-  }
-
-  getNavBarProps() {
-    const { title } = getRouteParams(this.props);
-
-    return { title };
   }
 
   toggleLoading() {

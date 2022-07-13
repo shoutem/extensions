@@ -81,7 +81,12 @@ export default class PlaceImageGallery extends PureComponent {
       );
     }
 
-    const { place, imageAnimationName, imageStyleName } = this.props;
+    const {
+      place,
+      imageAnimationName,
+      imageOverlay,
+      imageStyleName,
+    } = this.props;
     const { location } = place;
     const leadImage = getFirstImage(place);
     const resolvedAnimation = imageAnimationName || null;
@@ -90,6 +95,7 @@ export default class PlaceImageGallery extends PureComponent {
     return (
       <PlaceImage
         animationName={resolvedAnimation}
+        imageOverlay={imageOverlay}
         location={location}
         place={place}
         source={imageSource}

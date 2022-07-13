@@ -54,6 +54,7 @@ export default () => ({
       borderRadius: 2,
       marginHorizontal: 'auto',
       marginTop: 50,
+      marginBottom: 20,
       width: '40%',
     },
     restoreIconTintColor: {
@@ -65,6 +66,9 @@ export default () => ({
     subtitle: {
       textAlign: 'center',
     },
+  },
+
+  'shoutem.notification-center.ReminderTimePickers': {
     timePickerButton: {
       buttonContainer: {
         backgroundColor: resolveVariable('primaryButtonBackgroundColor'),

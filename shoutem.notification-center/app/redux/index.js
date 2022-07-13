@@ -1,43 +1,22 @@
-import { combineReducers } from 'redux';
-import {
-  notificationsReducer,
-  notificationSettingsReducer,
-} from './notifications';
-
-import {
-  deviceToken,
-  groups,
-  manuallyUnsubscribedGroups,
-  middleware,
-  selectedGroups,
-} from './groups';
-
 export {
-  NOTIFICATIONS_SCHEMA,
+  fetchGroups,
   fetchNotifications,
-  getDailyMessagesAppSettings,
-  getNotificationSettings,
-  getReminderAppSettings,
+  fetchSelectedGroups,
+  GROUPS_SCHEMA,
   invalidateNotifications,
   markAsRead,
-  setNotificationSettings,
-  viewNotification,
-} from './notifications';
-
-export {
-  GROUPS_SCHEMA,
+  NOTIFICATIONS_SCHEMA,
   SELECTED_GROUPS_SCHEMA,
-  fetchGroups,
-  fetchSelectedGroups,
-} from './groups';
-
-export { middleware };
-
-export default combineReducers({
-  deviceToken,
-  notifications: notificationsReducer(),
-  notificationSettings: notificationSettingsReducer,
-  groups,
-  manuallyUnsubscribedGroups,
-  selectedGroups,
-});
+  setNotificationSettings,
+  triggerCanceled,
+  triggerOccured,
+} from './actions';
+export { middleware } from './middlewares';
+export { reducer } from './reducer';
+export {
+  getActiveJourneys,
+  getDailyMessagesAppSettings,
+  getJourneys,
+  getNotificationSettings,
+  getReminderAppSettings,
+} from './selectors';

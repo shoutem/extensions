@@ -7,7 +7,7 @@ import FeedPreviewTableItem from './FeedPreviewTableItem';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export default function FeedPreviewTable({ feedItems }) {
+export default function FeedPreviewTable({ feedItems, showDurationLabel }) {
   const loading = isBusy(feedItems);
 
   return (
@@ -17,9 +17,11 @@ export default function FeedPreviewTable({ feedItems }) {
           <th className="feed-preview-table__title">
             {i18next.t(LOCALIZATION.TITLE)}
           </th>
-          <th className="feed-preview-table__duration">
-            {i18next.t(LOCALIZATION.DURATION)}
-          </th>
+          {showDurationLabel && (
+            <th className="feed-preview-table__duration">
+              {i18next.t(LOCALIZATION.DURATION)}
+            </th>
+          )}
         </tr>
       </thead>
       <tbody>
@@ -45,8 +47,10 @@ export default function FeedPreviewTable({ feedItems }) {
 
 FeedPreviewTable.propTypes = {
   feedItems: PropTypes.array,
+  showDurationLabel: PropTypes.bool,
 };
 
 FeedPreviewTable.defaultProps = {
   feedItems: [],
+  showDurationLabel: false,
 };

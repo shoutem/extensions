@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import { MultiselectDropdown } from '@shoutem/react-web-ui';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { createOptions } from 'src/services';
+import { MultiselectDropdown } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 
 export default class GroupsDropdown extends Component {

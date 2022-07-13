@@ -4,12 +4,7 @@ import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Icon, LoadingContainer, TouchableOpacity, View } from '@shoutem/ui';
 import { ext } from '../const';
-import {
-  createResizedImage,
-  hasGalleryPermissions,
-  openCamera,
-  openImageGallery,
-} from '../services';
+import { attachmentService, createResizedImage } from '../services';
 import RecentImages from './RecentImages';
 
 function NewStatusFooter({ enablePhotoAttachments, onImageSelected, style }) {
@@ -18,13 +13,13 @@ function NewStatusFooter({ enablePhotoAttachments, onImageSelected, style }) {
   function handleCameraSelectPress() {
     RNKeyboard.dismiss();
 
-    return openCamera(onImageSelected);
+    return attachmentService.openCamera(onImageSelected);
   }
 
   function handleGallerySelectPress() {
     RNKeyboard.dismiss();
 
-    return openImageGallery(onImageSelected);
+    return attachmentService.openImageGallery(onImageSelected);
   }
 
   const handleImageSelected = useCallback(
@@ -56,7 +51,10 @@ function NewStatusFooter({ enablePhotoAttachments, onImageSelected, style }) {
     [onImageSelected],
   );
 
-  const galleryPermissionsGranted = useMemo(() => hasGalleryPermissions(), []);
+  const galleryPermissionsGranted = useMemo(
+    () => attachmentService.hasGalleryPermissions(),
+    [],
+  );
 
   const showAttachmentSection = useMemo(
     () => enablePhotoAttachments && !isResizingImage,

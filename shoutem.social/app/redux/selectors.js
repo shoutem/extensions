@@ -97,3 +97,7 @@ export function getUsersInGroups(state) {
 
   return filterBlockedUsers(state, usersInGroups, 'legacyId');
 }
+
+export function getSavedDraft(state) {
+  return state[ext()].statusDraft;
+}

@@ -29,20 +29,27 @@ export function ImagesPreview({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fullScreenVisible, setFullScreenVisible] = useState(false);
 
-  const isCircularImage = shape === SHAPES.CIRCLE;
-  const isScrollable = _.size(images) > 1;
-
-  const imageData = useMemo(() => images.map(image => ({ uri: image })), [
-    images,
-  ]);
-  const imageSourceData = useMemo(
-    () => images.map(image => ({ source: { uri: image } })),
+  // Backward compatibility for when we were saving images as a single string
+  const resolvedImages = useMemo(
+    () => (_.isArray(images) ? images : [images]),
     [images],
   );
 
+  const isCircularImage = shape === SHAPES.CIRCLE;
+  const isScrollable = _.size(resolvedImages) > 1;
+
+  const imageData = useMemo(
+    () => resolvedImages.map(image => ({ uri: image })),
+    [resolvedImages],
+  );
+  const imageSourceData = useMemo(
+    () => resolvedImages.map(image => ({ source: { uri: image } })),
+    [resolvedImages],
+  );
+
   const currentImageText = useMemo(
-    () => `${currentIndex + 1} / ${images.length}`,
-    [images.length, currentIndex],
+    () => `${currentIndex + 1} / ${resolvedImages.length}`,
+    [resolvedImages.length, currentIndex],
   );
 
   const toggleFullScreenVisible = useCallback(

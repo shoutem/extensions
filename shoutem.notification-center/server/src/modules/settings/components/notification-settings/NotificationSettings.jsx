@@ -1,8 +1,8 @@
 import React from 'react';
+import { ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
 import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
 import { RadioSelector } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';

@@ -1,6 +1,8 @@
+import i18next from 'i18next';
 import _ from 'lodash';
 import URI from 'urijs';
 import validator from 'validator';
+import LOCALIZATION from '../localization';
 
 export const feedSortOptions = [
   { name: 'relevance', title: 'Relevance' },
@@ -171,4 +173,19 @@ export function validateYoutubeUrl(url) {
   }
 
   return false;
+}
+
+export function resolveYoutubeError(errorResponse) {
+  const error = errorResponse.payload.response?.error;
+
+  if (
+    !!error &&
+    error?.code === 403 &&
+    error?.errors[0].domain === 'youtube.quota' &&
+    error.errors[0].reason === 'quotaExceeded'
+  ) {
+    return i18next.t(LOCALIZATION.API_POINTS_LIMIT_REACHED_ERROR_MESSAGE);
+  }
+
+  return error?.errors?.[0]?.reason;
 }

@@ -44,6 +44,8 @@ export const UNLIKE = 'UNLIKE';
 export const DELETE = 'DELETE';
 export const BLOCK_USER = 'BLOCK_USER';
 export const UNBLOCK_USER = 'UNBLOCK_USER';
+export const SAVE_DRAFT = 'SAVE_DRAFT';
+export const CLEAR_DRAFT = 'CLEAR_DRAFT';
 
 export function openProfile(user) {
   return openInModal(userProfileExt('UserProfileScreen'), { user });
@@ -267,6 +269,31 @@ export function loadStatuses() {
   return find(rioConfig, '', {}, { operation: LOAD });
 }
 
+export function loadStatus(statusId) {
+  const params = formatParams({
+    include_shoutem_fields: true,
+    include_anonymous_shouts: true,
+    standard_response: true,
+  });
+
+  const rioConfig = {
+    schema: STATUSES_SCHEMA,
+    request: {
+      endpoint: shoutemApi.buildUrl(
+        `/api/statuses/show/${statusId}.json`,
+        params,
+      ),
+      method: 'GET',
+      resourceType: 'JSON',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  };
+
+  return find(rioConfig, '', {}, { operation: LOAD, loadSingleStatus: true });
+}
+
 export function deleteStatus(status) {
   const { id } = status;
   const params = formatParams();
@@ -283,7 +310,7 @@ export function deleteStatus(status) {
     },
   };
 
-  return create(rioConfig, null, { id }, { operation: DELETE });
+  return create(rioConfig, null, { id }, { operation: DELETE, statusId: id });
 }
 
 export function createStatus(text, image) {
@@ -351,6 +378,7 @@ export function likeStatus(statusId) {
       create(rioConfig, null, null, {
         operation: LIKE,
         user: adaptUserForSocialActions(user),
+        statusId,
       }),
     );
   };
@@ -377,6 +405,7 @@ export function unlikeStatus(statusId) {
       create(rioConfig, null, null, {
         operation: UNLIKE,
         user: adaptUserForSocialActions(getUser(getState())),
+        statusId,
       }),
     );
   };
@@ -432,7 +461,12 @@ export function deleteComment(comment) {
     },
   };
 
-  return create(rioConfig, null, { id }, { operation: DELETE });
+  return create(
+    rioConfig,
+    null,
+    { id, in_reply_to_status_id },
+    { operation: DELETE, statusId: id },
+  );
 }
 
 export function createComment(statusId, text, imagePath) {
@@ -538,19 +572,35 @@ export function uploadImageToS3(image, assetPolicy) {
   });
 
   return new Promise((resolve, reject) => {
-    return (
-      // eslint-disable-next-line no-undef
-      fetch(endpoint, { method: 'POST', body: formData })
-        .then(res => {
-          if (res.status !== 204) {
-            reject(res);
-          } else {
-            const location = _.get(res, 'headers.map.location');
+    return fetch(endpoint, { method: 'POST', body: formData })
+      .then(res => {
+        if (res.status !== 204) {
+          reject(res);
+        } else {
+          const location = _.get(res, 'headers.map.location');
 
-            resolve(location);
-          }
-        })
-        .catch(error => reject(error))
-    );
+          resolve(location);
+        }
+      })
+      .catch(error => reject(error));
   });
+}
+
+export function getYoutubeVideoData(url) {
+  return fetch(
+    `https://youtube.com/oembed?url=${url}&format=json`,
+  ).then(response => response.json());
+}
+
+export function saveDraft(status) {
+  return {
+    type: SAVE_DRAFT,
+    payload: status,
+  };
+}
+
+export function clearDraft() {
+  return {
+    type: CLEAR_DRAFT,
+  };
 }

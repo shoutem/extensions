@@ -9,7 +9,7 @@ export function getStateFromAsyncStorage() {
       unparsedExtensionState => {
         const extensionState = JSON.parse(unparsedExtensionState);
 
-        if (!!extensionState) {
+        if (extensionState) {
           return AsyncStorage.getItem(
             `reduxPersist:${APPLICATION_EXTENSION}`,
           ).then(unparsedApplicationState => {

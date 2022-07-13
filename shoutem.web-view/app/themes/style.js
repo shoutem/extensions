@@ -1,7 +1,11 @@
 import { StyleSheet } from 'react-native';
+import { createScopedResolver } from '@shoutem/ui';
+import { ext } from '../const';
+
+const resolveVariable = createScopedResolver(ext());
 
 export default () => ({
-  'shoutem.web-view.NavigationToolbar': {
+  [`${ext('NavigationToolbar')}`]: {
     'shoutem.ui.View': {
       '.container': {
         flexDirection: 'row',
@@ -32,13 +36,17 @@ export default () => ({
     },
   },
 
-  'shoutem.web-view.WebViewScreen': {
+  [`${ext('WebViewScreen')}`]: {
     container: {
       flex: 1,
     },
+    pdfStyle: {
+      flex: 1,
+      width: resolveVariable('sizes.window.width'),
+    },
   },
 
-  'shoutem.web-view.WebViewWithShareScreen': {
+  [`${ext('WebViewWithShareScreen')}`]: {
     container: {
       flex: 1,
     },

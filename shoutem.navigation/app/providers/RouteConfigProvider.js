@@ -67,73 +67,51 @@ export class RouteConfigProvider extends PureComponent {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    const { firstShortcut, shortcuts, hiddenShortcuts } = this.props;
+  componentDidMount() {
+    const { firstShortcut, shortcuts } = this.props;
     const { decoratedScreens } = this.state;
-    const {
-      shortcuts: prevShortcuts,
-      hiddenShortcuts: prevHiddenShortcuts,
-    } = prevProps;
-
-    const shortcutsLoaded = _.isEmpty(prevShortcuts) && !_.isEmpty(shortcuts);
-
-    if (shortcutsLoaded) {
-      normalizedShortcuts = normalizeShortcuts(shortcuts);
-    }
-
-    const hiddenShortcutsUpdated = !_.isEqual(
-      prevHiddenShortcuts,
-      hiddenShortcuts,
+    normalizedShortcuts = normalizeShortcuts(shortcuts);
+    const cleanShortcuts = [...shortcuts];
+    _.remove(cleanShortcuts, { id: firstShortcut.id });
+    ModalScreens.registerModalScreens(
+      _.reduce(
+        cleanShortcuts,
+        (result, shortcut) => {
+          if (!_.get(shortcut, 'screen')) {
+            return result;
+          }
+          const screens = collectShortcutScreens(shortcut, decoratedScreens);
+          return [
+            ...result,
+            ...screens.map(screen => {
+              // screens(collectShortcutScreens result) returns only name & component
+              // We need whole screen object here, to extract it's settings
+              const shortcutScreen = _.find(shortcut.screens, {
+                canonicalName: screen.name,
+              });
+              const screenSettings = shortcutScreen?.settings || {};
+              return {
+                name: screen.name,
+                initialParams: { shortcut, screenSettings },
+                options: {
+                  // eslint-disable-next-line react/prop-types
+                  headerTitle: ({ style, children }) => (
+                    <HeaderTitle
+                      style={style}
+                      shortcut={shortcut}
+                      title={children}
+                    />
+                  ),
+                },
+              };
+            }),
+          ];
+        },
+        [],
+      ),
     );
-
-    if (shortcutsLoaded || (hiddenShortcutsUpdated && !_.isEmpty(shortcuts))) {
-      const cleanShortcuts = [...shortcuts];
-      _.remove(cleanShortcuts, { id: firstShortcut.id });
-
-      ModalScreens.registerModalScreens(
-        _.reduce(
-          cleanShortcuts,
-          (result, shortcut) => {
-            if (!_.get(shortcut, 'screen')) {
-              return result;
-            }
-
-            const screens = collectShortcutScreens(shortcut, decoratedScreens);
-
-            return [
-              ...result,
-              ...screens.map(screen => {
-                // screens(collectShortcutScreens result) returns only name & component
-                // We need whole screen object here, to extract it's settings
-                const shortcutScreen = _.find(shortcut.screens, {
-                  canonicalName: screen.name,
-                });
-                const screenSettings = shortcutScreen?.settings || {};
-
-                return {
-                  name: screen.name,
-                  initialParams: { shortcut, screenSettings },
-                  options: {
-                    // eslint-disable-next-line react/prop-types
-                    headerTitle: ({ style, children }) => (
-                      <HeaderTitle
-                        style={style}
-                        shortcut={shortcut}
-                        title={children}
-                      />
-                    ),
-                  },
-                };
-              }),
-            ];
-          },
-          [],
-        ),
-      );
-
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ normalizedShortcuts, navReady: true });
-    }
+    // eslint-disable-next-line react/no-did-update-set-state
+    this.setState({ normalizedShortcuts, navReady: true });
   }
 
   handleReady() {

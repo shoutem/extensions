@@ -7,9 +7,14 @@ import { Button, Screen, ScrollView, Text } from '@shoutem/ui';
 import { getUser, loginRequired } from 'shoutem.auth';
 import { logout } from 'shoutem.auth/redux';
 import { I18n } from 'shoutem.i18n';
-import { goBack, HeaderTextButton, navigateTo } from 'shoutem.navigation';
+import {
+  goBack,
+  HeaderTextButton,
+  navigateTo,
+  openInModal,
+} from 'shoutem.navigation';
 import { BaseUserProfile } from '../components';
-import { ext, PROFILE_HEADER_FIELDS } from '../const';
+import { CONFIRM_DELETION_SCREEN, ext, PROFILE_HEADER_FIELDS } from '../const';
 import { DataPreview } from '../form-builder';
 import { getUserProfileSchema } from '../redux';
 
@@ -35,23 +40,24 @@ function MyProfileScreen({ navigation, style }) {
     [],
   );
 
-  useLayoutEffect(
-    () =>
-      navigation.setOptions({
-        title: I18n.t(ext('myProfileScreenTitle')),
-        headerRight: props => (
-          <HeaderTextButton
-            {...props}
-            title={I18n.t(ext('editButtonText'))}
-            onPress={openEditProfileScreen}
-          />
-        ),
-      }),
-    [navigation, openEditProfileScreen],
-  );
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: props => (
+        <HeaderTextButton
+          {...props}
+          title={I18n.t(ext('editButtonText'))}
+          onPress={openEditProfileScreen}
+        />
+      ),
+    });
+  }, [navigation, openEditProfileScreen]);
 
   function logoutUser() {
     dispatch(logout());
+  }
+
+  function openDeletionScreen() {
+    openInModal(CONFIRM_DELETION_SCREEN);
   }
 
   return (
@@ -65,6 +71,14 @@ function MyProfileScreen({ navigation, style }) {
             onPress={logoutUser}
           >
             <Text>{I18n.t(ext('logout'))}</Text>
+          </Button>
+          <Button
+            styleName="xl-gutter-bottom xl-gutter-horizontal"
+            onPress={openDeletionScreen}
+          >
+            <Text style={style.deleteAccountButtonText}>
+              {I18n.t(ext('deleteAccountButtonText'))}
+            </Text>
           </Button>
         </ScrollView>
       )}

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.rss",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Shoutem RSS extension",
   "peerDependencies": {
     "@shoutem/redux-composers": "*",

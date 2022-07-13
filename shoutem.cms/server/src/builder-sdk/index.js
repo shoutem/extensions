@@ -1,11 +1,1 @@
-import {
-  getExtensionSettings,
-  updateExtensionSettings,
-  updateShortcutSettings,
-} from './settings';
-
-export {
-  getExtensionSettings,
-  updateExtensionSettings,
-  updateShortcutSettings,
-};
+export { getExtensionSettings, updateShortcutSettings } from './settings';
