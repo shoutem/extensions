@@ -1,12 +1,16 @@
 {
   "name": "preview",
-  "version": "4.0.2",
-  "platform": ">=4",
+  "version": "5.0.0",
+  "platform": ">=8",
   "type": "system",
   "title": "Builder Preview",
-  "releaseNotes": "* Added platform 6.x support",
+  "releaseNotes": "* Added support for Disclose preview",
   "description": "Provides the support for app preview in the builder",
   "icon": "server/assets/add-preview-image.png",
-  "dependencies": ["shoutem.application"],
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.navigation",
+    "shoutem.permissions"
+  ],
   "categories": []
 }

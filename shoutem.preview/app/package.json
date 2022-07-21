@@ -1,12 +1,19 @@
 {
   "name": "shoutem.preview",
-  "version": "4.0.2",
+  "version": "5.0.0",
   "description": "Shoutem preview extension",
   "license": "ISC",
   "dependencies": {
-    "react-native-device-info": "8.4.8"
+    "react-native-device-info": "8.4.8",
+    "react-native-shake": "5.1.1",
+    "react-native-view-shot": "3.1.2"
+  },
+  "peerDependencies": {
+    "@react-native-community/cameraroll": "*"
   },
   "nativeDependencies": [
-    "react-native-device-info"
+    "react-native-device-info",
+    "react-native-shake",
+    "react-native-view-shot"
   ]
 }

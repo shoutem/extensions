@@ -1,19 +1,22 @@
+import React from 'react';
 import { Linking } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import { getAppId, isProduction, RESTART_APP } from 'shoutem.application';
+import { PreviewProvider } from './providers';
 
-import {
-  RESTART_APP,
-  isProduction,
-  getAppId,
-} from 'shoutem.application';
+let previewApp;
 
 const bundleId = DeviceInfo.getBundleId();
+
+const discloseAppsIds = ['com.disclose', 'com.shoutem.disclose'];
 const previewAppsIds = [
   'com.shoutem.builder.preview',
   'com.shoutem.extensions.preview',
+  ...discloseAppsIds,
 ];
 
 export const isPreviewApp = previewAppsIds.includes(bundleId);
+export const isDiscloseApp = discloseAppsIds.includes(bundleId);
 
 function getAppIdFromUrl(url) {
   const matches = url.match(/preview:\/\/open-app\/([0-9]*)/);
@@ -21,7 +24,7 @@ function getAppIdFromUrl(url) {
 }
 
 function listenForDeepLinks(dispatch) {
-  Linking.addEventListener('url', (deepLink) => {
+  Linking.addEventListener('url', deepLink => {
     const appId = getAppIdFromUrl(deepLink.url);
     // check if link is for the right app
     if (appId === getAppId()) {
@@ -31,7 +34,7 @@ function listenForDeepLinks(dispatch) {
   });
 }
 
-export const appDidMount = (app) => {
+export const appDidMount = app => {
   const { dispatch } = app.getStore();
 
   if (!isProduction()) {
@@ -39,6 +42,18 @@ export const appDidMount = (app) => {
   }
 };
 
+export function appWillMount(app) {
+  previewApp = app;
+}
+
 export function appWillUnmount() {
   Linking.removeEventListener('url');
+}
+
+export function renderProvider(children) {
+  if (isDiscloseApp) {
+    return <PreviewProvider app={previewApp}>{children}</PreviewProvider>;
+  }
+
+  return children;
 }

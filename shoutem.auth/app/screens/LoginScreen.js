@@ -63,8 +63,13 @@ export class LoginScreen extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { isFocused, user } = this.props;
+    const { user, navigation } = this.props;
     const { user: prevUser } = prevProps;
+
+    const { routes, index } = navigation.getState();
+    // Added for properly indicating focus when
+    // running preview from Disclose
+    const isFocused = routes[index].name === ext('LoginScreen');
 
     if (isFocused && _.isEmpty(prevUser.id) && !_.isEmpty(user.id)) {
       this.handleLoginSuccess();

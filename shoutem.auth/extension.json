@@ -1,10 +1,10 @@
 {
   "name": "auth",
-  "version": "5.1.5",
-  "platform": ">=7.1.0",
+  "version": "6.0.0",
+  "platform": ">=8",
   "title": "Users",
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Added push triggers",
+  "releaseNotes": "* Bug fixes",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",
