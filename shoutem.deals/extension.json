@@ -1,10 +1,13 @@
 {
   "name": "deals",
   "title": "Deals",
-  "version": "6.0.1",
-  "platform": ">=6",
+  "version": "6.0.2",
+  "platform": ">=9",
   "description": "Create special deals and redeem them with coupons",
-  "releaseNotes": "* Adjusted endpoint resolution, no user facing changes",
+  "releaseNotes": "* Added support for platform 9.0.0",
+  "nativeChanges": {
+    "lastVersion": "6.0.2"
+  },
   "icon": "server/assets/add-deals-image.png",
   "dependencies": [
     "shoutem.application",

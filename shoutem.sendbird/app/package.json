@@ -13,8 +13,5 @@
     "@shoutem/theme": "*",
     "@shoutem/ui": "*",
     "react-native-image-picker": "*"
-  },
-  "nativeDependencies": [
-    "sendbird"
-  ]
+  }
 }

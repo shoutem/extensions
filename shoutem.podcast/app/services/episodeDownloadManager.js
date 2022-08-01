@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 import autoBind from 'auto-bind';
 import _ from 'lodash';
-import RNFetchBlob from 'rn-fetch-blob';
 import { I18n } from 'shoutem.i18n';
 import {
   openDeviceSettings,
@@ -23,7 +23,7 @@ const isAndroid = Platform.OS === 'android';
 export function getDownloadDir(isOnOldPath) {
   const {
     fs: { dirs },
-  } = RNFetchBlob;
+  } = ReactNativeBlobUtil;
 
   if (isAndroid) {
     return dirs.DownloadDir;
@@ -71,7 +71,7 @@ class EpisodeDownloadManager {
       };
 
       if (Platform.OS === 'ios') {
-        return RNFetchBlob.config(downloadConfig)
+        return ReactNativeBlobUtil.config(downloadConfig)
           .fetch('GET', episodeUrl)
           .then(({ path }) => resolve(path()))
           .catch(error => reject(error));
@@ -83,7 +83,7 @@ class EpisodeDownloadManager {
           const writeStatus = statuses[writePermission];
 
           if (readStatus === GRANTED && writeStatus === GRANTED) {
-            return RNFetchBlob.config(downloadConfig)
+            return ReactNativeBlobUtil.config(downloadConfig)
               .fetch('GET', episodeUrl)
               .then(({ path }) => resolve(path()))
               .catch(error => reject(error));
@@ -119,7 +119,7 @@ class EpisodeDownloadManager {
 
   remove(episodePath) {
     return new Promise((resolve, reject) => {
-      RNFetchBlob.fs
+      ReactNativeBlobUtil.fs
         .unlink(episodePath)
         .then(resolve)
         .catch(errorMessage => reject(errorMessage));

@@ -12,7 +12,6 @@
     "@shoutem/ui": "*"
   },
   "nativeDependencies": [
-    "react-native-agora",
-    "react-native-stopwatch-timer"
+    "react-native-agora"
   ]
 }

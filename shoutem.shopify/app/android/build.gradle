@@ -1,6 +1,7 @@
 def DEFAULT_COMPILE_SDK_VERSION             = 28
 def DEFAULT_BUILD_TOOLS_VERSION             = "28.0.3"
 def DEFAULT_TARGET_SDK_VERSION              = 28
+def DEFAULT_MIN_SDK_VERSION                 = 21
 
 apply plugin: "com.android.library"
 
@@ -9,7 +10,7 @@ android {
     buildToolsVersion rootProject.hasProperty('buildToolsVersion') ? rootProject.buildToolsVersion : DEFAULT_BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion rootProject.hasProperty('minSdkVersion') ? rootProject.minSdkVersion : DEFAULT_MIN_SDK_VERSION
         targetSdkVersion rootProject.hasProperty('targetSdkVersion') ? rootProject.targetSdkVersion : DEFAULT_TARGET_SDK_VERSION
         versionCode 1
         versionName "1.0"
@@ -22,9 +23,9 @@ android {
 }
 
 dependencies {
-  compileOnly "com.facebook.react:react-native:+"
+  compileOnly 'com.facebook.react:react-native:+'
 
-  compile 'com.google.code.gson:gson:2.8.4'
-  compile 'joda-time:joda-time:2.9.9'
-  compile 'com.shopify.mobilebuysdk:buy3:3.2.1'
+  implementation 'com.google.code.gson:gson:2.8.4'
+  implementation 'joda-time:joda-time:2.9.9'
+  implementation 'com.shopify.mobilebuysdk:buy3:3.2.1'
 }

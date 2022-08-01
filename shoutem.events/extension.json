@@ -1,10 +1,13 @@
 {
   "name": "events",
-  "version": "5.0.0",
-  "platform": ">=6",
+  "version": "5.0.1",
+  "platform": ">=9",
   "title": "Events",
   "description": "Show items with location and time",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Added support for platform 9.0.0",
+  "nativeChanges": {
+    "lastVersion": "5.0.1"
+  },
   "dependencies": [
     "shoutem.analytics",
     "shoutem.application",

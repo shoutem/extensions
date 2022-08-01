@@ -1,6 +1,6 @@
 {
   "name": "shoutem.shopify",
-  "version": "5.0.0",
+  "version": "5.1.1",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
@@ -13,16 +13,14 @@
     "axios": "0.18.1",
     "graphql": "0.13.2",
     "graphql-tag": "2.12.6",
-    "react-native-webview": "11.0.3",
     "shopify-buy": "2.11.0",
     "world-countries": "1.8.1"
   },
   "peerDependencies": {
     "@shoutem/redux-io": "*",
     "@shoutem/theme": "*",
-    "@shoutem/ui": "*"
-  },
-  "nativeDependencies": [
-    "react-native-webview"
-  ]
+    "@shoutem/ui": "*",
+    "react-native-device-info": "*",
+    "react-native-webview": "*"
+  }
 }

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { getExtensionSettings } from 'shoutem.application';
+import { after, priorities, setPriority } from 'shoutem-core';
 import { ext, MISSING_PERMISSIONS_ERROR } from './const';
 import { actions } from './redux';
 import { fetchUserAddress, getCurrentLocation } from './services';
@@ -8,7 +9,7 @@ function getExtensionState(state) {
   return _.get(state, ext(), {});
 }
 
-export function appDidMount(app) {
+export const appDidMount = setPriority(app => {
   const store = app.getStore();
   const state = store.getState();
   const { dispatch } = store;
@@ -52,4 +53,4 @@ export function appDidMount(app) {
         );
       }
     });
-}
+}, after(priorities.DEFAULT));

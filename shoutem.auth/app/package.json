@@ -1,13 +1,12 @@
 {
   "name": "shoutem.auth",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Authentication extension that uses the Shoutem authentication backend.",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
     "@invertase/react-native-apple-authentication": "2.0.2",
-    "@react-native-community/async-storage": "1.6.3",
     "auto-bind": "4.0.0",
     "buffer": "4.9.2",
     "fs-extra": "1.0.0",
@@ -25,7 +24,6 @@
   },
   "nativeDependencies": [
     "@invertase/react-native-apple-authentication",
-    "@react-native-community/async-storage",
     "react-native-fbsdk"
   ]
 }

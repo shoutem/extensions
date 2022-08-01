@@ -1,6 +1,6 @@
 {
   "name": "shoutem.flurry-analytics",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "description": "Measure and analyze activity across your app with Flurry analytics",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

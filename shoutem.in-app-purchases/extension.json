@@ -1,10 +1,13 @@
 {
   "name": "in-app-purchases",
-  "version": "5.0.1",
-  "platform": ">=6",
+  "version": "5.0.2",
+  "platform": ">=8",
   "title": "In App Purchases",
   "description": "Add Apple/Google Play subscriptions to your app",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Added support for 9.0.0 plaform",
+  "nativeChanges": {
+    "lastVersion": "5.0.2"
+  },
   "icon": "server/assets/iap.png",
   "repository": {
     "type": "git",

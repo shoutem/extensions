@@ -21,9 +21,9 @@ const androidManifestApplication = `
 <!-- Change the value to true to enable pop-up for in foreground (remote-only, for local use ignoreInForeground) -->
 <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
     android:value="false"/>
-  <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
-  <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
-  <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+  <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" android:exported="false" />
+  <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" android:exported="false" />
+  <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver" android:exported="true">
       <intent-filter>
           <action android:name="android.intent.action.BOOT_COMPLETED" />
           <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -33,7 +33,7 @@ const androidManifestApplication = `
 
 <service
   android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
-  android:exported="false" >
+  android:exported="true" >
   <intent-filter>
     <action android:name="com.google.firebase.MESSAGING_EVENT" />
   </intent-filter>

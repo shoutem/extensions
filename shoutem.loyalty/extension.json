@@ -1,10 +1,10 @@
 {
   "name": "loyalty",
-  "version": "6.0.0",
-  "platform": ">=6",
+  "version": "6.0.1",
+  "platform": ">=9",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "releaseNotes": "* Adjusted navigation bar title resolution, shortcuts will now always use the title provided via Language & Region settings",
+  "releaseNotes": "* Added support for 9.0.0 plaform",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

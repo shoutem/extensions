@@ -1,14 +1,15 @@
 {
   "name": "radio-player",
   "title": "Radio+",
-  "version": "6.0.0",
-  "platform": ">=6",
+  "version": "6.0.1",
+  "platform": ">=9",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
-  "releaseNotes": "* Fixed metadata not being shown occasionally\n* Added platform 6.x support",
+  "releaseNotes": "* Added support for 9.0.0 plaform",
+  "nativeChanges": {
+    "lastVersion": "6.0.1"
+  },
   "icon": "server/assets/add-radio-image.png",
-  "categories": [
-    "media"
-  ],
+  "categories": ["media"],
   "dependencies": [
     "shoutem.audio",
     "shoutem.i18n",
@@ -74,9 +75,7 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": [
-        "style"
-      ],
+      "categories": ["style"],
       "parameters": {
         "extensionTheme": "Theme"
       }

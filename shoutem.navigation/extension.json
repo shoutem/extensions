@@ -1,11 +1,14 @@
 {
   "name": "navigation",
-  "version": "5.0.4",
-  "platform": ">=7",
+  "version": "5.0.5",
+  "platform": ">=9",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "* Preview application improvements",
+  "releaseNotes": "* Added support for 9.0.0 plaform",
   "description": "App-level navigation",
+  "nativeChanges": {
+    "lastVersion": "5.0.5"
+  },
   "dependencies": [
     "shoutem.application",
     "shoutem.i18n",
@@ -205,9 +208,7 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": [
-        "style"
-      ],
+      "categories": ["style"],
       "parameters": {
         "extensionTheme": "Theme"
       }

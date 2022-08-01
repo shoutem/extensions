@@ -1,10 +1,19 @@
 {
   "name": "besttime",
   "title": "BestTime",
-  "version": "5.0.0",
-  "platform": ">=6",
+  "version": "5.0.1",
+  "platform": ">=9",
   "description": "Check the busyness of an establishment using BestTime.",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Added support for platform 9.0.0",
+  "nativeChanges": {
+    "lastVersion": "5.0.1"
+  },
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.cms",
+    "shoutem.i18n",
+    "shoutem.navigation"
+  ],
   "icon": "server/assets/add-besttime-image.png",
   "screens": [
     {

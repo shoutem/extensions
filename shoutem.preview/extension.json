@@ -1,10 +1,10 @@
 {
   "name": "preview",
-  "version": "5.0.0",
-  "platform": ">=8",
+  "version": "5.0.1",
+  "platform": ">=9",
   "type": "system",
   "title": "Builder Preview",
-  "releaseNotes": "* Added support for Disclose preview",
+  "releaseNotes": "* Added support for 9.0.0 plaform",
   "description": "Provides the support for app preview in the builder",
   "icon": "server/assets/add-preview-image.png",
   "dependencies": [

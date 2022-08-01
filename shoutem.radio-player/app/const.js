@@ -4,7 +4,6 @@ import pack from './package.json';
 export const trackPlayerOptions = {
   stopWithApp: true,
   alwaysPauseOnInterruption: false,
-  isLiveStreamSource: true,
   capabilities: [CAPABILITY_PLAY, CAPABILITY_PAUSE],
   notificationCapabilities: [CAPABILITY_PLAY, CAPABILITY_PAUSE],
   compactCapabilities: [CAPABILITY_PLAY, CAPABILITY_PAUSE],

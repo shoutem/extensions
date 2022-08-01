@@ -1,14 +1,14 @@
 {
   "name": "web-view",
-  "version": "5.1.0",
-  "platform": ">=7",
+  "version": "5.2.0",
+  "platform": ">=8",
   "type": "system",
   "title": "Web view",
   "releaseNotes": "* Improved cookie storage and persisting\n* Resolved issues with navigation toolbar not showing buttons",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "nativeChanges": {
-    "latestVersion": "5.1.0-rc.0"
+    "latestVersion": "5.2.0"
   },
   "dependencies": [
     "shoutem.cms",

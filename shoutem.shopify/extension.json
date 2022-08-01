@@ -1,11 +1,14 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "5.0.0",
-  "platform": ">=6",
+  "version": "5.1.1",
+  "platform": ">=9",
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Added support for platform 9.0.0",
+  "nativeChanges": {
+    "lastVersion": "5.1.1"
+  },
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

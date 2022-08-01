@@ -1,6 +1,6 @@
 {
   "name": "shoutem.navigation",
-  "version": "5.0.4",
+  "version": "5.0.5",
   "description": "Main navigation",
   "dependencies": {
     "@react-native-community/masked-view": "0.1.10",
@@ -10,14 +10,12 @@
     "@react-navigation/stack": "5.14.3",
     "@shoutem/animation": "~0.15.0",
     "hoist-non-react-statics": "3.3.2",
-    "react-native-device-info": "8.4.8",
     "react-native-gesture-handler": "1.10.3",
-    "react-native-reanimated": "1.13.2",
-    "react-native-safe-area-context": "3.2.0",
+    "react-native-reanimated": "1.13.4",
+    "react-native-safe-area-context": "4.1.4",
     "react-native-screens": "2.18.1"
   },
   "nativeDependencies": [
-    "@shoutem/animation",
     "@react-navigation/native",
     "react-native-gesture-handler",
     "react-native-reanimated",
@@ -32,6 +30,7 @@
     "@shoutem/redux-composers": "*",
     "@shoutem/redux-io": "*",
     "@shoutem/theme": "*",
-    "@shoutem/ui": "*"
+    "@shoutem/ui": "*",
+    "react-native-device-info": "*"
   }
 }

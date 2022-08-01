@@ -1,10 +1,13 @@
 {
   "name": "flurry-analytics",
   "title": "Flurry analytics",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "platform": ">=4",
   "description": "Measure and analyze activity across your app with Flurry analytics",
-  "releaseNotes": "* Added platform 6.x support",
+  "releaseNotes": "* Added support for 9.0.0 plaform",
+  "nativeChanges": {
+    "lastVersion": "4.1.0"
+  },
   "icon": "server/assets/add-analytics-image.png",
   "categories": ["analytics"],
   "dependencies": ["shoutem.analytics", "shoutem.application"],

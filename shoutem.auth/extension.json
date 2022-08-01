@@ -1,10 +1,14 @@
 {
   "name": "auth",
-  "version": "6.0.0",
-  "platform": ">=8",
+  "version": "6.0.1",
+  "platform": ">=9",
   "title": "Users",
+  "nativeChanges": {
+    "lastVersion": "5.1.7",
+    "settingsKeys": ["providers.facebook.enabled", "providers.apple.enabled"]
+  },
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Bug fixes",
+  "releaseNotes": "* Added support for 9.0.0 plaform",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",
@@ -16,9 +20,7 @@
     "shoutem.redux",
     "shoutem.web-view"
   ],
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

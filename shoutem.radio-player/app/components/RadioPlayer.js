@@ -219,6 +219,7 @@ class RadioPlayer extends TrackPlayerBase {
     const stream = {
       artist: title,
       id,
+      isLiveStream: true,
       title,
       url,
     };
