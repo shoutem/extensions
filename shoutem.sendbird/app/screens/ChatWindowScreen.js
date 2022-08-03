@@ -1,47 +1,47 @@
 import React, { PureComponent } from 'react';
+import {
+  Alert,
+  AppState,
+  FlatList,
+  InteractionManager,
+  Keyboard as RNKeyboard,
+  KeyboardAvoidingView,
+  Platform,
+  View,
+} from 'react-native';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import {
-  KeyboardAvoidingView,
-  Keyboard as RNKeyboard,
-  FlatList,
-  Alert,
-  InteractionManager,
-  View,
-  Platform,
-  AppState,
-} from 'react-native';
-import { connect } from 'react-redux';
+import { connectStyle } from '@shoutem/theme';
+import { ActionSheet, Keyboard, Screen, Spinner } from '@shoutem/ui';
 import { getSubscriptionValidState } from 'shoutem.application';
-import { loginRequired, getUser } from 'shoutem.auth';
+import { getUser, loginRequired } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import {
-  goBack,
-  openInModal,
-  isTabBarNavigation,
-  withIsFocused,
   getRouteParams,
+  goBack,
   HeaderBackButton,
+  isTabBarNavigation,
+  openInModal,
+  withIsFocused,
 } from 'shoutem.navigation';
 import {
-  requestPermissions,
   PERMISSION_TYPES,
+  requestPermissions,
   RESULTS,
 } from 'shoutem.permissions';
-import { connectStyle } from '@shoutem/theme';
-import { Screen, Keyboard, ActionSheet, Spinner } from '@shoutem/ui';
 import {
-  MessageBubble,
-  ChatInputBox,
   ChatEncryptionMessage,
+  ChatInputBox,
   ErrorModal,
+  MessageBubble,
 } from '../components';
 import { ext } from '../const';
 import { actions, selectors } from '../redux';
-import { SendBird, composeSendBirdId } from '../services';
+import { composeSendBirdId, SendBird } from '../services';
 
 const CAMERA_PERMISSION = Platform.select({
   ios: PERMISSION_TYPES.IOS_CAMERA,
@@ -73,30 +73,14 @@ function withinMinuteOf(leadingMoment, trailingMoment) {
 }
 
 export class ChatWindowScreen extends PureComponent {
-  static propTypes = {
-    createChannel: PropTypes.func,
-    isConnected: PropTypes.bool,
-    user: PropTypes.object,
-    setActiveChannel: PropTypes.func,
-    sendMessage: PropTypes.func,
-    loadChannelMessages: PropTypes.func,
-    messages: PropTypes.array,
-    currentUser: PropTypes.object,
-    channel: PropTypes.object,
-    navigateTo: PropTypes.func,
-    sendFileMessage: PropTypes.func,
-    style: Screen.propTypes.style,
-    isTabBar: PropTypes.bool,
-    loadChannel: PropTypes.func,
-    hasValidSubscription: PropTypes.bool,
-  };
-
   constructor(props) {
     super(props);
 
     this.USER_UNAVAILABLE_MESSAGE = I18n.t(ext('userUnavailableMessage'));
     this.GENERIC_ERROR_MESSAGE = I18n.t(ext('genericErrorMessage'));
     this.SUBSCRIPTION_ERROR_MESSAGE = I18n.t(ext('subscriptionInvalidMessage'));
+
+    this.appStateEventListener = null;
 
     autoBindReact(this);
 
@@ -123,7 +107,10 @@ export class ChatWindowScreen extends PureComponent {
       return;
     }
 
-    AppState.addEventListener('change', this.handleAppStateChange);
+    this.appStateEventListener = AppState.addEventListener(
+      'change',
+      this.handleAppStateChange,
+    );
 
     if (channelId && isConnected) {
       loadChannel(channelId)
@@ -196,7 +183,7 @@ export class ChatWindowScreen extends PureComponent {
   }
 
   componentWillUnmount() {
-    AppState.removeEventListener('change', this.handleAppStateChange);
+    this.appStateEventListener.remove();
   }
 
   handleGoBack() {
@@ -231,7 +218,7 @@ export class ChatWindowScreen extends PureComponent {
   getTypingStatus() {
     const { channel, currentUser } = this.props;
 
-    if (!channel) {
+    if (_.isEmpty(channel)) {
       return null;
     }
 
@@ -293,6 +280,10 @@ export class ChatWindowScreen extends PureComponent {
 
   loadData() {
     const { channel, loadChannelMessages } = this.props;
+
+    if (_.isEmpty(channel)) {
+      return;
+    }
 
     const messageQuery = channel.channel.createPreviousMessageListQuery();
     messageQuery.limit = 100;
@@ -553,6 +544,30 @@ export class ChatWindowScreen extends PureComponent {
     );
   }
 }
+
+ChatWindowScreen.propTypes = {
+  createChannel: PropTypes.func.isRequired,
+  currentUser: PropTypes.object.isRequired,
+  hasValidSubscription: PropTypes.bool.isRequired,
+  isConnected: PropTypes.bool.isRequired,
+  isFocused: PropTypes.bool.isRequired,
+  isTabBar: PropTypes.bool.isRequired,
+  loadChannel: PropTypes.func.isRequired,
+  loadChannelMessages: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  sendFileMessage: PropTypes.func.isRequired,
+  sendMessage: PropTypes.func.isRequired,
+  setActiveChannel: PropTypes.func.isRequired,
+  channel: PropTypes.object,
+  messages: PropTypes.array,
+  style: Screen.propTypes.style,
+};
+
+ChatWindowScreen.defaultProps = {
+  channel: {},
+  messages: [],
+  style: {},
+};
 
 const mapStateToProps = state => {
   const channel = selectors.getActiveChannel(state);

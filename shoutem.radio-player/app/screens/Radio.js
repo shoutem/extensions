@@ -1,7 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { LayoutAnimation, Platform, Share } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import slugify from '@sindresorhus/slugify';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -27,21 +34,20 @@ import {
   STATE_STOPPED, // 1 idle
 } from 'shoutem.audio';
 import { I18n } from 'shoutem.i18n';
-import {
-  composeNavigationStyles,
-  getCurrentRoute,
-  getRouteParams,
-} from 'shoutem.navigation';
+import { composeNavigationStyles, getCurrentRoute } from 'shoutem.navigation';
 import { images } from '../assets';
 import { RadioActionSheet, RadioPlayer } from '../components';
 import { ext } from '../const';
 import { useTimer } from '../hooks';
-import { setTrackMetadata } from '../redux';
-import { getResizedImageSource, getTrackArtwork } from '../services';
+import { getRadioMetadata, setRadioMetadata } from '../redux';
+import {
+  getRadioProvider,
+  getResizedImageSource,
+  getTrackArtwork,
+} from '../services';
 
-function Radio(props) {
-  const { navigation, route, style } = props;
-  const { shortcut } = getRouteParams(props);
+function Radio({ navigation, route, style }) {
+  const { shortcut } = route.params;
   const {
     settings: {
       backgroundImageUrl,
@@ -55,17 +61,27 @@ function Radio(props) {
 
   const dispatch = useDispatch();
 
+  const radioId = useMemo(() => slugify(`radio-${streamUrl}`), [streamUrl]);
+  const currentRadio = useSelector(state => getRadioMetadata(state, radioId));
+
   const [clearTimer, startTimer, timeRemaining] = useTimer(60000);
 
   const [actionSheetActive, setActionSheetActive] = useState(false);
-  const [artist, setArtist] = useState('');
-  const [artwork, setArtwork] = useState('');
+  const [artist, setArtist] = useState(currentRadio?.artist);
+  const [songName, setSongName] = useState(currentRadio?.songName);
+  const [artwork, setArtwork] = useState({ uri: currentRadio?.artwork?.uri });
   const [playbackState, setPlaybackState] = useState(STATE_STOPPED);
   const [shouldSleep, setShouldSleep] = useState(false);
-  const [songName, setSongName] = useState('');
 
   const isPlaying = playbackState === STATE_PLAYING;
   const isTimerActive = timeRemaining && timeRemaining > 0;
+
+  const handleSleep = useCallback(() => setShouldSleep(false), []);
+  const hideActionSheet = useCallback(() => setActionSheetActive(false), []);
+  const setActionSheetVisible = useCallback(
+    () => setActionSheetActive(true),
+    [],
+  );
 
   const renderHeaderRight = useCallback(() => {
     const { activeSleepIconFill, inactiveSleepIconFill } = style;
@@ -78,7 +94,7 @@ function Radio(props) {
     return (
       <Button
         disabled={!showSharing && !(isPlaying || isTimerActive)}
-        onPress={() => setActionSheetActive(true)}
+        onPress={setActionSheetVisible}
         styleName="tight clear"
       >
         <Icon name={iconName} fill={iconFill} />
@@ -87,13 +103,13 @@ function Radio(props) {
   }, [
     isPlaying,
     isTimerActive,
-    setActionSheetActive,
+    setActionSheetVisible,
     showSharing,
     style,
     timeRemaining,
   ]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       ...composeNavigationStyles(['clear']),
       headerRight: renderHeaderRight,
@@ -108,15 +124,17 @@ function Radio(props) {
     }
   }, [clearTimer, timeRemaining]);
 
-  function hideActionSheet() {
-    setActionSheetActive(false);
-  }
+  useEffect(() => {
+    const provider = getRadioProvider(streamUrl);
+
+    dispatch(
+      setRadioMetadata(radioId, {
+        provider,
+      }),
+    );
+  }, [dispatch, radioId, streamUrl]);
 
   function shareStream() {
-    const {
-      settings: { streamTitle, streamUrl },
-    } = shortcut;
-
     const shareMessage = I18n.t(ext('shareMessage'), { streamUrl });
 
     Share.share({
@@ -128,18 +146,15 @@ function Radio(props) {
     });
   }
 
-  function handleSleep() {
-    setShouldSleep(false);
-  }
-
   async function handleMetadataChange(metadata, manually = false) {
-    const { artist = '', title = '' } = metadata;
-
     if (manually) {
-      // We have to set full state again, because screen is unmounted in
-      // non-tab layouts. RadioPlayer keeps playing in background and has all metadata
-      // from when it was started
-      const { artist, artwork: activeArtwork, songName } = metadata;
+      // We have to set state again, because screen is unmounted in
+      // non-tab layouts. Metadata sometimes defaults to {},
+      // so we read values from redux instead.
+      const metadataSource = _.isEmpty(metadata) ? currentRadio : metadata;
+      const { artist, artwork: activeArtwork, songName } = metadataSource;
+
+      LayoutAnimation.easeInEaseOut();
 
       setArtist(artist);
       setSongName(songName);
@@ -148,18 +163,24 @@ function Radio(props) {
       return;
     }
 
-    const artwork = await getTrackArtwork(title);
+    const { artist = '', title = '' } = metadata;
+    const artwork = await getTrackArtwork(
+      {
+        artist,
+        songName: title,
+        streamUrl,
+      },
+      currentRadio.provider,
+    );
     const resolvedImage = artwork ? { uri: artwork } : images.music;
 
-    const updates = {
-      artist,
-      songName: title,
-      artwork: resolvedImage,
-    };
-
-    const id = slugify(`${streamUrl}`);
-
-    dispatch(setTrackMetadata(`radio-${id}`, updates));
+    dispatch(
+      setRadioMetadata(radioId, {
+        artist,
+        songName: title,
+        artwork: resolvedImage,
+      }),
+    );
 
     LayoutAnimation.easeInEaseOut();
     setArtist(artist);
@@ -204,10 +225,7 @@ function Radio(props) {
     <Screen>
       <ImageBackground source={bgImage} styleName="fill-parent">
         <Tile styleName="clear text-centric">
-          <Overlay
-            style={style.overlayStyle}
-            styleName="fill-parent image-overlay"
-          >
+          <Overlay style={style.overlayStyle} styleName="image-overlay">
             <RadioPlayer
               onMetadataStateChange={handleMetadataChange}
               onPlaybackStateChange={setPlaybackState}
@@ -227,7 +245,9 @@ function Radio(props) {
             )}
             {isPlaying && (
               <View styleName="vertical">
-                <Text style={style.artistName}>{artist}</Text>
+                <Text numberOfLines={1} style={style.artistName}>
+                  {artist}
+                </Text>
                 <Text style={style.songName}>{songName}</Text>
               </View>
             )}

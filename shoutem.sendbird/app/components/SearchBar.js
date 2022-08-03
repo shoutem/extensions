@@ -1,22 +1,16 @@
 import React, { PureComponent } from 'react';
+import { Animated, TouchableOpacity } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Animated, TouchableOpacity } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
-import { View, TextInput, Icon } from '@shoutem/ui';
+import { Icon, TextInput, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 class SearchBar extends PureComponent {
-  static propTypes = {
-    style: View.propTypes.style,
-    onChangeText: PropTypes.func,
-    ...TextInput.propTypes,
-  };
-
   constructor(props) {
     super(props);
 
@@ -94,5 +88,15 @@ class SearchBar extends PureComponent {
     );
   }
 }
+
+SearchBar.propTypes = {
+  onChangeText: PropTypes.func.isRequired,
+  style: View.propTypes.style,
+  ...TextInput.propTypes,
+};
+
+SearchBar.defaultProps = {
+  style: {},
+};
 
 export default connectStyle(ext('SearchBar'))(SearchBar);

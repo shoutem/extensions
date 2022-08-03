@@ -1,12 +1,12 @@
 {
   "name": "shoutem.advertising",
-  "version": "4.0.3",
+  "version": "5.0.0",
   "description": "Integrate AdMob and embed ads to your application",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
-    "@react-native-admob/admob": "1.3.0"
+    "@react-native-admob/admob": "2.0.1"
   },
   "nativeDependencies": [
     "@react-native-admob/admob"

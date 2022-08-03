@@ -1,21 +1,21 @@
 import _ from 'lodash';
 import { UPDATE_SUCCESS } from '@shoutem/redux-io';
-import { getExtensionSettings } from 'shoutem.application/redux';
 import { getAppId, getSubscriptionValidState } from 'shoutem.application';
+import { getExtensionSettings } from 'shoutem.application/redux';
 import {
-  LOGIN,
-  REGISTER,
-  LOGOUT,
   getUser,
   isUserUpdateAction,
+  LOGIN,
+  LOGOUT,
+  REGISTER,
 } from 'shoutem.auth';
-import { priorities, setPriority, before } from 'shoutem-core';
-import { ext, CONNECTION_STATUSES } from '../const';
+import { before, priorities, setPriority } from 'shoutem-core';
+import { CONNECTION_STATUSES, ext } from '../const';
 import { SendBird } from '../services';
 import { setConnectionState } from './actions';
 import {
-  onMessageReceivedHandler,
   onChannelChangedHandler,
+  onMessageReceivedHandler,
   onTypingStatusUpdatedHandler,
 } from './handlers';
 

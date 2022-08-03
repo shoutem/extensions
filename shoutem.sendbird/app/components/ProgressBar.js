@@ -21,9 +21,13 @@ function ProgressBar({ visible, progress, style }) {
 }
 
 ProgressBar.propTypes = {
-  visible: PropTypes.bool,
+  progress: PropTypes.number.isRequired,
+  visible: PropTypes.bool.isRequired,
   style: PropTypes.object,
-  progress: PropTypes.number,
+};
+
+ProgressBar.defaultProps = {
+  style: {},
 };
 
 export default connectStyle(ext('ProgressBar'))(ProgressBar);

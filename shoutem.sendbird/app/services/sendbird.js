@@ -1,6 +1,6 @@
-import moment from 'moment';
-import _ from 'lodash';
 import { Platform } from 'react-native';
+import _ from 'lodash';
+import moment from 'moment';
 import SendBird from 'sendbird';
 
 const requiredConfigKeys = ['appId', 'user'];

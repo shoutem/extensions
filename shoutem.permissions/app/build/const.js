@@ -59,6 +59,7 @@ const PERMISSION_TYPES = {
   ANDROID_FOREGROUND_SERVICE: 'android.permission.FOREGROUND_SERVICE',
   ANDROID_ACCESS_NETWORK_STATE: 'android.permission.ACCESS_NETWORK_STATE',
   ANDROID_BILLING: 'com.android.vending.BILLING',
+  ANDROID_EXACT_ALARM: 'android.permission.SCHEDULE_EXACT_ALARM',
 };
 
 const permissionsPath = '../node_modules/react-native-permissions/ios';
@@ -227,6 +228,8 @@ const ANDROID_PERMISSION_NATIVE_DATA = {
     '<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>',
   [PERMISSION_TYPES.ANDROID_BILLING]:
     '<uses-permission android:name="com.android.vending.BILLING" />',
+  [PERMISSION_TYPES.ANDROID_EXACT_ALARM]:
+    '<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>',
 };
 
 const PERMISSION_IOS_RATIONALE_PREFIX = {

@@ -1,7 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { LayoutAnimation, Platform, Share } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import slugify from '@sindresorhus/slugify';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -28,8 +35,12 @@ import { images } from '../assets';
 import { RadioActionSheet, RadioPlayer } from '../components';
 import { ext } from '../const';
 import { useTimer } from '../hooks';
-import { setTrackMetadata } from '../redux';
-import { getResizedImageSource, getTrackArtwork } from '../services';
+import { getRadioMetadata, setRadioMetadata } from '../redux';
+import {
+  getRadioProvider,
+  getResizedImageSource,
+  getTrackArtwork,
+} from '../services';
 
 const DEPRECATED_RADIO_EXTENSION_SHORTCUT = 'shoutem.radio.Radio';
 
@@ -43,58 +54,70 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
 
   const isTabBar = useSelector(isTabBarNavigation);
 
+  const radioId = useMemo(() => slugify(`radio-${streamUrl}`), [streamUrl]);
+  const currentRadio = useSelector(state => getRadioMetadata(state, radioId));
+
   const [clearTimer, startTimer, timeRemaining] = useTimer(60000);
 
   const [playbackState, setPlaybackState] = useState(STATE_STOPPED);
-  const [artist, setArtist] = useState('');
-  const [songName, setSongName] = useState('');
-  const [artwork, setArtwork] = useState({ uri: '' });
+  const [artist, setArtist] = useState(currentRadio?.artist);
+  const [songName, setSongName] = useState(currentRadio?.songName);
+  const [artwork, setArtwork] = useState({ uri: currentRadio?.artwork?.uri });
   const [shouldSleep, setShouldSleep] = useState(false);
   const [shouldShowActionSheet, setShouldShowActionSheet] = useState(false);
 
-  const isTimerActive = useMemo(() => timeRemaining && timeRemaining > 0, [
+  const isTimerActive = useMemo(() => !!timeRemaining && timeRemaining > 0, [
     timeRemaining,
   ]);
-  const nowPlayingContainerStyle = useMemo(() => {
-    return isTabBar
-      ? style.nowPlayingContainer
-      : style.nowPlayingContainerTabBar;
-  }, [isTabBar, style.nowPlayingContainer, style.nowPlayingContainerTabBar]);
+  const nowPlayingContainerStyle = useMemo(
+    () =>
+      isTabBar ? style.nowPlayingContainer : style.nowPlayingContainerTabBar,
+    [isTabBar, style.nowPlayingContainer, style.nowPlayingContainerTabBar],
+  );
+
+  const handleSleep = useCallback(() => setShouldSleep(false), []);
+  const handleActionSheetDismiss = useCallback(
+    () => setShouldShowActionSheet(false),
+    [],
+  );
+  const handleSleepTimerPress = useCallback(
+    () => setShouldShowActionSheet(true),
+    [],
+  );
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      ...composeNavigationStyles(['clear']),
+      title: '',
+    });
+  }, [navigation, navbarTitle]);
 
   useEffect(() => {
     if (timeRemaining === 0) {
       setShouldSleep(true);
       clearTimer();
     }
+  }, [clearTimer, streamUrl, timeRemaining]);
 
-    navigation.setOptions({
-      ...composeNavigationStyles(['clear']),
-      title: '',
-    });
-  }, [clearTimer, navigation, navbarTitle, timeRemaining]);
+  useEffect(() => {
+    const provider = getRadioProvider(streamUrl);
 
-  function handleActionSheetDismiss() {
-    setShouldShowActionSheet(false);
-  }
-
-  function handleSleep() {
-    setShouldSleep(false);
-  }
-
-  function handleSleepTimerPress() {
-    setShouldShowActionSheet(true);
-  }
-
-  function handleUpdatePlaybackState(playbackState) {
-    setPlaybackState(playbackState);
-  }
+    dispatch(
+      setRadioMetadata(radioId, {
+        provider,
+      }),
+    );
+  }, [dispatch, radioId, streamUrl]);
 
   async function handleMetadataChange(metadata, manually = false) {
     if (manually) {
-      // We have to set full state again, because screen is unmounted in
-      // non-tab layouts. RadioPlayer keeps playing in background and has all metadata
-      // from when it was started
-      const { artist, artwork: activeArtwork, songName } = metadata;
+      // We have to set state again, because screen is unmounted in
+      // non-tab layouts. Metadata sometimes defaults to {},
+      // so we read values from redux instead.
+      const metadataSource = _.isEmpty(metadata) ? currentRadio : metadata;
+      const { artist, artwork: activeArtwork, songName } = metadataSource;
+
+      LayoutAnimation.easeInEaseOut();
 
       setArtist(artist);
       setSongName(songName);
@@ -104,26 +127,26 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
     }
 
     const { artist = '', title = '' } = metadata;
-    const { streamUrl } = route.params.shortcut.settings;
-
-    const artwork = await getTrackArtwork(title);
-    // Resize so the image looks proper. iTunes always returns
-    // image size inside image url
-    const resizedArtwork = artwork?.replace('100x100', '500x500');
-    const id = slugify(`${streamUrl}`);
-
-    dispatch(
-      setTrackMetadata(`radio-${id}`, {
+    const artwork = await getTrackArtwork(
+      {
         artist,
         songName: title,
-        artwork: { uri: resizedArtwork },
+        streamUrl,
+      },
+      currentRadio.provider,
+    );
+
+    dispatch(
+      setRadioMetadata(radioId, {
+        artist,
+        songName: title,
+        artwork: { uri: artwork },
       }),
     );
 
-    setArtwork({ uri: resizedArtwork });
-
     LayoutAnimation.easeInEaseOut();
 
+    setArtwork({ uri: artwork });
     setArtist(artist);
     setSongName(title);
   }
@@ -159,8 +182,10 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
   }
 
   const isPlaying = playbackState === STATE_PLAYING;
-  const artworkImage = getResizedImageSource(artwork.uri);
-  const resolvedImage = artworkImage || images.music;
+  const backgroundImage = artwork?.uri
+    ? getResizedImageSource(artwork?.uri)
+    : images.music;
+  const resolvedImage = isPlaying ? backgroundImage : images.music;
 
   return (
     <Screen style={style.screen}>
@@ -180,7 +205,7 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
           >
             <RadioPlayer
               onMetadataStateChange={handleMetadataChange}
-              onPlaybackStateChange={handleUpdatePlaybackState}
+              onPlaybackStateChange={setPlaybackState}
               onSleepTriggered={handleSleep}
               triggerSleep={shouldSleep}
               shouldResetPlayer={shouldResetPlayer()}
@@ -190,9 +215,13 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
             />
           </ImageBackground>
           <View style={nowPlayingContainerStyle}>
-            {!!isPlaying && (
+            {isPlaying && (
               <View styleName="vertical v-center h-center">
-                <Title style={style.artistTitle} styleName="sm-gutter-bottom">
+                <Title
+                  style={style.artistTitle}
+                  styleName="sm-gutter-bottom"
+                  numberOfLines={1}
+                >
                   {artist}
                 </Title>
                 <Subtitle style={style.songNameTitle}>{songName}</Subtitle>
@@ -201,7 +230,7 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
           </View>
           <View style={style.smallActionRow} styleName="horizontal">
             <View style={style.smallActionContainerLeft}>
-              {!!isTimerActive && (
+              {isTimerActive && (
                 <Button onPress={handleSleepTimerPress} styleName="clear">
                   <Icon name="sleep" fill={style.sleepTimerActiveText.color} />
                   <Title style={style.sleepTimerActiveText}>

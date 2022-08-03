@@ -20,8 +20,12 @@ function SectionHeader({ section, style }) {
 }
 
 SectionHeader.propTypes = {
-  section: PropTypes.object,
+  section: PropTypes.object.isRequired,
   style: PropTypes.object,
+};
+
+SectionHeader.defaultProps = {
+  style: {},
 };
 
 export default connectStyle(ext('SectionHeader'))(SectionHeader);

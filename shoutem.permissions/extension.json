@@ -1,16 +1,16 @@
 {
   "name": "permissions",
   "title": "Permissions",
-  "version": "4.0.4",
-  "platform": ">=9",
+  "version": "4.0.5",
+  "platform": ">=9.0.1",
   "type": "system",
   "description": "Extension for app permission management. ",
+  "releaseNotes": "* Added schedule exact alarm permission type for Android 12",
   "nativeChanges": {
-    "lastVersion": "4.0.4"
+    "lastVersion": "4.0.5"
   },
   "icon": "server/assets/permissions-icon.png",
   "dependencies": ["shoutem.i18n"],
-  "releaseNotes": "* Added support for 9.0.0 plaform",
   "pages": [
     {
       "name": "SettingsPage",

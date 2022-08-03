@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { ext, CONNECTION_STATUSES } from '../const';
+import { CONNECTION_STATUSES, ext } from '../const';
 
 function getModuleState(state) {
   return state[ext()];
@@ -16,7 +16,7 @@ export function getChannelMessages(channel, state) {
 }
 
 export function getChannels(state, orderBy = orderByLastMessage) {
-  const channels = getModuleState(state).channels;
+  const { channels } = getModuleState(state);
 
   return orderBy(channels);
 }

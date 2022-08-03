@@ -1,13 +1,13 @@
 {
   "name": "audio",
   "title": "Audio",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "platform": ">=9",
   "description": "Track player components for other extensions to utilize. NOTE: Lock screen controls will not be visible in the preview.",
-  "releaseNotes": "* Added support for platform 9.0.0",
+  "releaseNotes": "* Fixed issues with Android 12",
   "dependencies": ["shoutem.application"],
   "nativeChanges": {
-    "lastVersion": "4.0.3"
+    "lastVersion": "4.0.4"
   },
   "icon": "server/assets/add-audio-image.png",
   "type": "system"

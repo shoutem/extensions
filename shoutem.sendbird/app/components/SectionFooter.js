@@ -10,4 +10,6 @@ function SectionFooter({ style }) {
 
 SectionFooter.propTypes = { style: PropTypes.object };
 
+SectionFooter.defaultProps = { style: {} };
+
 export default connectStyle(ext('SectionFooter'))(SectionFooter);

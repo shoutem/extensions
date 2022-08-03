@@ -1,8 +1,7 @@
-import _ from 'lodash';
-import { CONNECTION_STATUSES, CHAT_CONVERSATION_SCREEN } from '../const';
 import { getCurrentRoute } from 'shoutem.navigation';
+import { CHAT_CONVERSATION_SCREEN, CONNECTION_STATUSES } from '../const';
 import { SendBird } from '../services';
-import { setNewMessage, updateChannel, setConnectionState } from './actions';
+import { setConnectionState, setNewMessage, updateChannel } from './actions';
 import { getActiveChannelId } from './selectors';
 
 function onMessageReceivedHandler(dispatch, getState) {
@@ -51,10 +50,10 @@ function onReconnectFailed(dispatch) {
 }
 
 export {
-  onMessageReceivedHandler,
   onChannelChangedHandler,
-  onTypingStatusUpdatedHandler,
+  onMessageReceivedHandler,
+  onReconnectFailed,
   onReconnectStarted,
   onReconnectSucceeded,
-  onReconnectFailed,
+  onTypingStatusUpdatedHandler,
 };

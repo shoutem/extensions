@@ -1,32 +1,21 @@
 import React, { PureComponent } from 'react';
+import { Keyboard } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Keyboard } from 'react-native';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import {
-  Row,
-  Image,
   ImageBackground,
-  View,
+  Row,
   Subtitle,
   TouchableOpacity,
+  View,
 } from '@shoutem/ui';
 import { navigateTo } from 'shoutem.navigation';
 import { ext } from '../const';
 
 class MemberListItem extends PureComponent {
-  static propTypes = {
-    onPress: PropTypes.func,
-    user: PropTypes.object,
-    style: PropTypes.shape({
-      row: Row.propTypes.style,
-      image: Image.propTypes.style,
-      indicator: Image.propTypes.style,
-    }),
-  };
-
   constructor(props) {
     super(props);
 
@@ -69,6 +58,15 @@ class MemberListItem extends PureComponent {
     );
   }
 }
+
+MemberListItem.propTypes = {
+  user: PropTypes.object.isRequired,
+  style: PropTypes.object,
+};
+
+MemberListItem.defaultProps = {
+  style: {},
+};
 
 function mapStateToProps(state) {
   return {

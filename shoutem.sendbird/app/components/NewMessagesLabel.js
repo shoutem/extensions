@@ -21,4 +21,8 @@ NewMessagesLabel.propTypes = {
   style: PropTypes.object,
 };
 
+NewMessagesLabel.defaultProps = {
+  style: {},
+};
+
 export default connectStyle(ext('NewMessagesLabel'))(NewMessagesLabel);

@@ -1,10 +1,10 @@
 {
   "name": "advertising",
   "title": "Advertising",
-  "version": "4.0.3",
-  "platform": ">=4.0.2",
+  "version": "5.0.0",
+  "platform": ">=9",
   "description": "Integrate AdMob and embed ads to your application",
-  "releaseNotes": "* Added platform 6.* support (no user facing changes)",
+  "releaseNotes": "* Fixed issues with Android 12",
   "icon": "server/assets/add-advertising-image.png",
   "dependencies": [
     "shoutem.application",

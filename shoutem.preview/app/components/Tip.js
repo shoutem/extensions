@@ -7,9 +7,9 @@ import { PreviewTip } from '../assets';
 export function Tip({ onPress }) {
   return (
     <Pressable onPress={onPress} style={styles.overlayContainer}>
-      <Text style={styles.title}>Shake to{'\n'}show/hide menu</Text>
+      <Text style={styles.title}>Shake the phone to show{'\n'}previewer controls</Text>
       <View style={styles.image}>
-        <PreviewTip height={140} width={140} />
+        <PreviewTip height={176} width={176} />
       </View>
     </Pressable>
   );

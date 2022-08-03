@@ -209,7 +209,7 @@ function RadioActionSheet({
         <SheetHeader
           renderLeftSheetHeader={renderLeftSheetHeader}
           rightHeaderAction={handleDismiss}
-          showLeftHeader={showSharing}
+          showSharing={showSharing}
         />
         <View style={style.segmentContainer}>
           {showSharing && !shouldShowTimerOptions && (
@@ -248,18 +248,20 @@ function RadioActionSheet({
 
 RadioActionSheet.propTypes = {
   active: PropTypes.bool.isRequired,
-  isPlaying: PropTypes.bool.isRequired,
   showSharing: PropTypes.bool.isRequired,
-  timeRemaining: PropTypes.number.isRequired,
   onClearPress: PropTypes.func.isRequired,
   onDismiss: PropTypes.func.isRequired,
   onSharePress: PropTypes.func.isRequired,
   onTimerSet: PropTypes.func.isRequired,
+  isPlaying: PropTypes.bool,
   style: PropTypes.object,
+  timeRemaining: PropTypes.number,
 };
 
 RadioActionSheet.defaultProps = {
+  isPlaying: false,
   style: {},
+  timeRemaining: null,
 };
 
 export default connectStyle(ext('RadioActionSheet'))(RadioActionSheet);

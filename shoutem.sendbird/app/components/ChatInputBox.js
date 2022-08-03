@@ -1,25 +1,16 @@
 import React, { PureComponent } from 'react';
+import { Keyboard, LayoutAnimation, Platform, TextInput } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { LayoutAnimation, TextInput, Platform, Keyboard } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
-import { View, TouchableOpacity, Image, Text } from '@shoutem/ui';
+import { Image, Text, TouchableOpacity, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { images } from '../assets';
 import { ext } from '../const';
 import ProgressBar from './ProgressBar';
 
 class ChatInputBox extends PureComponent {
-  static propTypes = {
-    style: View.propTypes.style,
-    onAttachmentPress: PropTypes.func,
-    onSendPress: PropTypes.func,
-    onTypingStatusChange: PropTypes.func,
-    uploadProgress: PropTypes.number,
-    typing: PropTypes.any,
-  };
-
   constructor(props) {
     super(props);
 
@@ -152,5 +143,23 @@ class ChatInputBox extends PureComponent {
     );
   }
 }
+
+ChatInputBox.propTypes = {
+  style: View.propTypes.style,
+  typing: PropTypes.bool,
+  uploadProgress: PropTypes.number,
+  onAttachmentPress: PropTypes.func,
+  onSendPress: PropTypes.func,
+  onTypingStatusChange: PropTypes.func,
+};
+
+ChatInputBox.defaultProps = {
+  style: {},
+  typing: false,
+  uploadProgress: 0,
+  onAttachmentPress: null,
+  onSendPress: null,
+  onTypingStatusChange: null,
+};
 
 export default connectStyle(ext('ChatInputBox'))(ChatInputBox);

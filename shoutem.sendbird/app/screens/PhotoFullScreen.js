@@ -1,18 +1,13 @@
 import React, { PureComponent } from 'react';
+import { Platform, StatusBar } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { StatusBar, Platform } from 'react-native';
-import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { ImageGallery, Screen } from '@shoutem/ui';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { ext } from '../const';
 
 class PhotoFullScreen extends PureComponent {
-  static propTypes = {
-    navigation: PropTypes.object.isRequired,
-    navigateBack: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
 
@@ -82,5 +77,9 @@ class PhotoFullScreen extends PureComponent {
     );
   }
 }
+
+PhotoFullScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
 
 export default connectStyle(ext('PhotoFullScreen'))(PhotoFullScreen);

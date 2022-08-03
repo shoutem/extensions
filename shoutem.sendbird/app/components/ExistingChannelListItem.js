@@ -1,34 +1,23 @@
 import React, { PureComponent } from 'react';
+import { Keyboard } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Keyboard } from 'react-native';
 import { connectStyle } from '@shoutem/theme';
 import {
-  Row,
   Image,
   ImageBackground,
-  Text,
-  View,
+  Row,
   Subtitle,
+  Text,
   TouchableOpacity,
+  View,
 } from '@shoutem/ui';
 import { images } from '../assets';
-import { ext, CONNECTION_STATUSES } from '../const';
+import { CONNECTION_STATUSES, ext } from '../const';
 import { formatMessageDate, SendBird } from '../services';
 
 class ExistingChannelListItem extends PureComponent {
-  static propTypes = {
-    channel: PropTypes.object,
-    onPress: PropTypes.func,
-    currentUser: PropTypes.object,
-    style: PropTypes.shape({
-      row: Row.propTypes.style,
-      image: Image.propTypes.style,
-      indicator: Image.propTypes.style,
-    }),
-  };
-
   constructor(props) {
     super(props);
 
@@ -113,6 +102,18 @@ class ExistingChannelListItem extends PureComponent {
     );
   }
 }
+
+ExistingChannelListItem.propTypes = {
+  channel: PropTypes.object.isRequired,
+  currentUser: PropTypes.object.isRequired,
+  style: PropTypes.object,
+  onPress: PropTypes.func,
+};
+
+ExistingChannelListItem.defaultProps = {
+  style: {},
+  onPress: null,
+};
 
 export default connectStyle(ext('ExistingChannelListItem'))(
   ExistingChannelListItem,

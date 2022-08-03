@@ -1,14 +1,16 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { preventStateRehydration } from 'shoutem.redux';
-import { REMOVE_TRACK_METADATA, SET_TRACK_METADATA } from './actions';
+import { REMOVE_RADIO_METADATA, SET_RADIO_METADATA } from './actions';
 
-const trackMetadata = (state = {}, action) => {
-  if (action.type === SET_TRACK_METADATA) {
-    return { ...state, [action.payload.id]: action.payload.metadata };
+const radioMetadata = (state = {}, action) => {
+  if (action.type === SET_RADIO_METADATA) {
+    const { id, metadata } = action.payload;
+
+    return { ...state, [id]: { ...state[id], ...metadata } };
   }
 
-  if (action.type === REMOVE_TRACK_METADATA) {
+  if (action.type === REMOVE_RADIO_METADATA) {
     const newState = { ...state };
 
     return _.omit(newState, [action.payload]);
@@ -19,6 +21,6 @@ const trackMetadata = (state = {}, action) => {
 
 export default preventStateRehydration(
   combineReducers({
-    trackMetadata,
+    radioMetadata,
   }),
 );

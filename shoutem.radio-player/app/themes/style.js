@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { changeColorAlpha, getSizeRelativeToReference } from '@shoutem/theme';
 import {
   createScopedResolver,
@@ -41,6 +41,12 @@ export default () => ({
         ) * 2,
       fontSize: 15,
     },
+    overlayStyle: {
+      ...StyleSheet.absoluteFill,
+      paddingTop: 0,
+      paddingBottom: 0,
+      marginBottom: 0,
+    },
     streamTitle: {
       color: resolveVariable('streamTitleColor'),
       fontSize: 15,
@@ -76,20 +82,6 @@ export default () => ({
       ),
     },
     spinner: {
-      marginTop: Platform.select({
-        ios: getSizeRelativeToReference(
-          5,
-          812,
-          resolveVariable('sizes.window.height'),
-        ),
-      }),
-      marginLeft: Platform.select({
-        ios: getSizeRelativeToReference(
-          5,
-          375,
-          resolveVariable('sizes.window.width'),
-        ),
-      }),
       size: Platform.select({
         ios: 0,
         default: getSizeRelativeToReference(
@@ -135,6 +127,11 @@ export default () => ({
     artistTitle: {
       color: resolveVariable('artistTitleColor'),
       fontWeight: '700',
+      marginHorizontal: getSizeRelativeToReference(
+        resolveVariable('mediumGutter'),
+        375,
+        resolveVariable('sizes.window.width'),
+      ),
     },
     songNameTitle: {
       color: resolveVariable('songNameTitleColor'),

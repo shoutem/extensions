@@ -1,60 +1,31 @@
 import React, { PureComponent } from 'react';
+import { Alert, InteractionManager, LayoutAnimation } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Alert, InteractionManager, LayoutAnimation } from 'react-native';
-import { connect } from 'react-redux';
 import { clear } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Screen,
-  ListView,
-  EmptyStateView,
-  EmptyListImage,
-  Title,
-  View,
-} from '@shoutem/ui';
+import { EmptyListImage, ListView, Screen, Title, View } from '@shoutem/ui';
+import { getUser, loginRequired } from 'shoutem.auth';
 import { isSendBirdConfigured, USER_SCHEMA } from 'shoutem.auth/redux';
-import { loginRequired, getUser } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
+import { composeNavigationStyles, navigateTo } from 'shoutem.navigation';
 import {
-  navigateTo,
-  getRouteParams,
-  composeNavigationStyles,
-} from 'shoutem.navigation';
-import {
-  selectors as socialSelectors,
   actions as socialActions,
+  selectors as socialSelectors,
 } from 'shoutem.social';
 import {
-  NewChannelListItem,
   ExistingChannelListItem,
   MemberListItem,
+  NewChannelListItem,
   SearchBar,
 } from '../components';
 import { ext } from '../const';
-import { selectors, actions } from '../redux';
-import { SendBird, composeSendBirdId } from '../services';
-export class MessageListScreen extends PureComponent {
-  static propTypes = {
-    loadChannels: PropTypes.func,
-    searchChannels: PropTypes.func,
-    clearSearch: PropTypes.func,
-    channels: PropTypes.array,
-    searchedChannels: PropTypes.array,
-    currentUser: PropTypes.object,
-    users: PropTypes.array,
-    isConnected: PropTypes.bool,
-    isConnecting: PropTypes.bool,
-    isSendBirdConfigured: PropTypes.bool,
-    loadUsers: PropTypes.func,
-    style: PropTypes.shape({
-      screen: Screen.propTypes.style,
-      list: ListView.propTypes.style,
-      emptyState: EmptyStateView.propTypes.style,
-    }),
-  };
+import { actions, selectors } from '../redux';
+import { composeSendBirdId, SendBird } from '../services';
 
+export class MessageListScreen extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -134,8 +105,6 @@ export class MessageListScreen extends PureComponent {
     groupChannelListQuery.order = 'latest_last_message';
     groupChannelListQuery.limit = 100;
     groupChannelListQuery.userIdsIncludeFilter = [userId];
-
-    this.setState({ groupChannelListQuery });
 
     loadChannels(groupChannelListQuery, false)
       .then(this.handleSearchLoaded)
@@ -323,15 +292,33 @@ export class MessageListScreen extends PureComponent {
   }
 }
 
+MessageListScreen.propTypes = {
+  channels: PropTypes.array.isRequired,
+  clearSearch: PropTypes.func.isRequired,
+  currentUser: PropTypes.object.isRequired,
+  isConnected: PropTypes.bool.isRequired,
+  isSendBirdConfigured: PropTypes.bool.isRequired,
+  loadChannels: PropTypes.func.isRequired,
+  loadUsers: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  searchChannels: PropTypes.func.isRequired,
+  searchedChannels: PropTypes.array.isRequired,
+  searchedUsers: PropTypes.array.isRequired,
+  searchUsers: PropTypes.func.isRequired,
+  style: PropTypes.object,
+};
+
+MessageListScreen.defaultProps = {
+  style: {},
+};
+
 const mapStateToProps = state => ({
-  users: socialSelectors.getUsers(state),
   currentUser: getUser(state),
   channels: selectors.getChannels(state),
   searchedChannels: selectors.getSearchedChannels(state),
   searchedUsers: socialSelectors.getSearchUsers(state),
   isSendBirdConfigured: isSendBirdConfigured(state),
   isConnected: selectors.isConnected(state),
-  isConnecting: selectors.isConnecting(state),
 });
 
 const mapDispatchToProps = {

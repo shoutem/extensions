@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
+import { Animated } from 'react-native';
+import Autolink from 'react-native-autolink';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Animated } from 'react-native';
-import Autolink from 'react-native-autolink';
 import { connectStyle } from '@shoutem/theme';
-import { Text, Image, View, TouchableOpacity } from '@shoutem/ui';
+import { Image, Text, TouchableOpacity, View } from '@shoutem/ui';
 import { ext } from '../const';
 import { formatMessageDate } from '../services';
 import NewMessagesLabel from './NewMessagesLabel';
@@ -21,17 +21,6 @@ function resolveProfileImage(senderImage, defaultImage) {
 }
 
 class MessageBubble extends PureComponent {
-  static propTypes = {
-    message: PropTypes.object,
-    currentUserId: PropTypes.string,
-    style: PropTypes.object,
-    showTimeStamp: PropTypes.bool,
-    showNewLabel: PropTypes.bool,
-    firstMessage: PropTypes.bool,
-    defaultProfileImage: PropTypes.string,
-    onFileMessagePress: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
 
@@ -161,5 +150,21 @@ class MessageBubble extends PureComponent {
     );
   }
 }
+
+MessageBubble.propTypes = {
+  currentUserId: PropTypes.string.isRequired,
+  defaultProfileImage: PropTypes.string.isRequired,
+  message: PropTypes.object.isRequired,
+  showNewLabel: PropTypes.bool.isRequired,
+  showTimeStamp: PropTypes.bool.isRequired,
+  onFileMessagePress: PropTypes.func.isRequired,
+  firstMessage: PropTypes.bool,
+  style: PropTypes.object,
+};
+
+MessageBubble.defaultProps = {
+  firstMessage: false,
+  style: {},
+};
 
 export default connectStyle(ext('MessageBubble'))(MessageBubble);

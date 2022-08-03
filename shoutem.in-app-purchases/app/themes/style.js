@@ -90,14 +90,14 @@ export default () => ({
 
     buttonSecondary: {
       marginTop: 16,
-      backgroundColor: resolveVariable('secondaryButtonTextColor'),
-      borderColor: resolveVariable('secondaryButtonTextColor'),
+      backgroundColor: resolveVariable('secondaryButtonBackgroundColor'),
+      borderColor: resolveVariable('secondaryButtonBackgroundColor'),
     },
 
     buttonText: {
       fontSize: 17,
       lineHeight: 24,
-      color: resolveVariable('primaryButtonText.color'),
+      color: resolveVariable('primaryButtonTextColor'),
       fontWeight: '400',
     },
 

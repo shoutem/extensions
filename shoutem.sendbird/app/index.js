@@ -1,10 +1,10 @@
 import { NotificationHandlers } from 'shoutem.firebase';
-import { screens } from './extension.js';
 import './navigation';
-import { reducer, middleware, actions, selectors, handlers } from './redux';
 import enTranslations from './translations/en.json';
-import { ext } from './const';
 import { handleNotificationReceivedBackground } from './app';
+import { ext } from './const';
+import { screens } from './extension.js';
+import { actions, handlers, middleware, reducer, selectors } from './redux';
 
 export const shoutem = {
   i18n: {
@@ -12,14 +12,13 @@ export const shoutem = {
   },
 };
 
-export { appDidFinishLaunching, appWillUnmount, appWillMount } from './app';
+export { appDidFinishLaunching, appWillMount, appWillUnmount } from './app';
 
-export { reducer, middleware, screens, actions, selectors, handlers };
-
-export { SendBird } from './services';
+export { actions, handlers, middleware, reducer, screens, selectors };
 
 export * from './components';
 export * from './const';
+export { SendBird } from './services';
 
 NotificationHandlers.registerNotificationReceivedHandlers({
   owner: ext(),

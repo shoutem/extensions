@@ -1,18 +1,18 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { preventStateRehydration } from 'shoutem.redux';
+import { CONNECTION_STATUSES } from '../const';
 import {
-  CHANNEL_MESSAGES_LOADED,
-  NEW_MESSAGE_ADDED,
   CHANNEL_CREATED,
-  CHANNELS_LOADED,
+  CHANNEL_MESSAGES_LOADED,
   CHANNEL_UPDATED,
-  SET_ACTIVE_CHANNEL,
-  CONNECTION_STATUS_CHANGE,
+  CHANNELS_LOADED,
   CHANNELS_SEARCH_LOADED,
   CLEAR_CHANNEL_SEARCH,
+  CONNECTION_STATUS_CHANGE,
+  NEW_MESSAGE_ADDED,
+  SET_ACTIVE_CHANNEL,
 } from './actions';
-import { CONNECTION_STATUSES } from '../const';
 
 const messages = (state = {}, action) => {
   if (action.type === CHANNEL_MESSAGES_LOADED && !action.payload.append) {

@@ -1,11 +1,14 @@
 {
   "name": "application",
-  "version": "4.1.3",
+  "version": "4.1.4",
   "platform": ">=9",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "releaseNotes": "* Added support for platform 9.0.0",
+  "releaseNotes": "* Fixed issues with Android 12",
+  "nativeChanges": {
+    "lastVersion": "4.1.4"
+  },
   "icon": "server/assets/add-application-image.png",
   "categories": [],
   "dependencies": [
@@ -14,9 +17,6 @@
     "shoutem.redux",
     "shoutem.theme"
   ],
-  "nativeChanges": {
-    "lastVersion": "4.1.3"
-  },
   "screens": [
     {
       "name": "SubscriptionMissingScreen"

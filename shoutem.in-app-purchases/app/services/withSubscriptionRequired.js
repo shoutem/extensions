@@ -23,15 +23,6 @@ function isShortcutProtected(route) {
 
 export function withSubscriptionRequired(WrappedComponent) {
   class SubscriptionComponent extends FocusTriggerBase {
-    static propTypes = {
-      ...FocusTriggerBase.propTypes,
-      route: PropTypes.object,
-      allScreensProtected: PropTypes.bool,
-      isSubscribed: PropTypes.bool,
-      isSubscriptionRequired: PropTypes.bool,
-      hasProperConfiguration: PropTypes.bool,
-    };
-
     handleFocus() {
       const {
         route,
@@ -69,6 +60,15 @@ export function withSubscriptionRequired(WrappedComponent) {
       return <WrappedComponent {...this.props} />;
     }
   }
+
+  SubscriptionComponent.propTypes = {
+    ...FocusTriggerBase.propTypes,
+    allScreensProtected: PropTypes.bool.isRequired,
+    hasProperConfiguration: PropTypes.bool.isRequired,
+    isSubscribed: PropTypes.bool.isRequired,
+    isSubscriptionRequired: PropTypes.bool.isRequired,
+    route: PropTypes.object.isRequired,
+  };
 
   const mapStateToProps = state => ({
     isSubscribed: selectors.isSubscribed(state),

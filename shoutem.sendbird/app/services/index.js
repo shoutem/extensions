@@ -1,5 +1,5 @@
 export {
-  default as SendBird,
   composeSendBirdId,
   formatMessageDate,
+  default as SendBird,
 } from './sendbird';

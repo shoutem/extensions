@@ -38,10 +38,18 @@ const TermsAndPolicy = ({
 
 TermsAndPolicy.propTypes = {
   privacyPolicyUrl: PropTypes.string,
+  style: PropTypes.object,
   termsOfServiceUrl: PropTypes.string,
   onPrivacyPolicyPress: PropTypes.func,
   onTermsPress: PropTypes.func,
-  style: PropTypes.any,
+};
+
+TermsAndPolicy.defaultProps = {
+  privacyPolicyUrl: null,
+  termsOfServiceUrl: null,
+  onPrivacyPolicyPress: null,
+  onTermsPress: null,
+  style: {},
 };
 
 export default connectStyle(ext('TermsAndPolicy'))(TermsAndPolicy);

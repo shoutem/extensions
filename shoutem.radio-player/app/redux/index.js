@@ -1,7 +1,7 @@
 export {
-  removeTrackMetadata,
-  SET_TRACK_METADATA,
-  setTrackMetadata,
+  removeRadioMetadata,
+  SET_RADIO_METADATA,
+  setRadioMetadata,
 } from './actions';
 export { default as reducer } from './reducers';
-export { getTrackMetadata } from './selectors';
+export { getRadioMetadata } from './selectors';

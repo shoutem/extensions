@@ -2,15 +2,10 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Row, Image, Text, TouchableOpacity } from '@shoutem/ui';
+import { Image, Row, Text, TouchableOpacity } from '@shoutem/ui';
 import { images } from '../assets';
 
 export default class NewChannelListItem extends PureComponent {
-  static propTypes = {
-    user: PropTypes.object,
-    onPress: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
 
@@ -42,3 +37,12 @@ export default class NewChannelListItem extends PureComponent {
     );
   }
 }
+
+NewChannelListItem.propTypes = {
+  user: PropTypes.object.isRequired,
+  onPress: PropTypes.func,
+};
+
+NewChannelListItem.defaultProps = {
+  onPress: null,
+};

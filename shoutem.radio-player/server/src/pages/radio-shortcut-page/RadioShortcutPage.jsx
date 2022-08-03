@@ -44,31 +44,31 @@ class RadioShortcutPage extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { shortcut: nextShortcut } = nextProps;
+  componentDidMount() {
+    const { shortcut } = this.props;
     const { streamTitle, backgroundImageUrl, streamUrl } = this.state;
 
     if (_.isEmpty(backgroundImageUrl)) {
       this.setState({
-        backgroundImageUrl: _.get(nextShortcut, 'settings.backgroundImageUrl'),
+        backgroundImageUrl: _.get(shortcut, 'settings.backgroundImageUrl'),
       });
     }
 
     if (_.isEmpty(streamTitle)) {
       this.setState({
-        streamTitle: _.get(nextShortcut, 'settings.streamTitle'),
+        streamTitle: _.get(shortcut, 'settings.streamTitle'),
       });
     }
 
     if (_.isEmpty(streamUrl)) {
       this.setState({
-        streamUrl: _.get(nextShortcut, 'settings.streamUrl'),
+        streamUrl: _.get(shortcut, 'settings.streamUrl'),
       });
     }
   }
 
   handleBackgroundImageUrlChange(event) {
-    this.setState({ backgroundImageUrl: event.target.value });
+    this.setState({ backgroundImageUrl: event.target?.value });
   }
 
   handleStreamUrlChange(event) {

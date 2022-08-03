@@ -18,7 +18,7 @@ import {
   TrackPlayerBase,
 } from 'shoutem.audio';
 import { ext, trackPlayerOptions } from '../const';
-import { getTrackMetadata } from '../redux';
+import { getRadioMetadata } from '../redux';
 
 const COMMON_BUBBLE_PARAMS = {
   duration: 200,
@@ -364,17 +364,18 @@ class RadioPlayer extends TrackPlayerBase {
 }
 
 RadioPlayer.propTypes = {
-  metadata: PropTypes.object.isRequired,
   shouldResetPlayer: PropTypes.bool.isRequired,
   triggerSleep: PropTypes.bool.isRequired,
   url: PropTypes.string.isRequired,
   onMetadataStateChange: PropTypes.func.isRequired,
   onPlaybackStateChange: PropTypes.func.isRequired,
   onSleepTriggered: PropTypes.func.isRequired,
+  metadata: PropTypes.object,
   title: PropTypes.string,
 };
 
 RadioPlayer.defaultProps = {
+  metadata: {},
   title: '',
 };
 
@@ -385,7 +386,7 @@ const mapStateToProps = (state, ownProps) => {
   const resolvedId = `radio-${id}`;
 
   return {
-    metadata: getTrackMetadata(resolvedId, state),
+    metadata: getRadioMetadata(resolvedId, state),
   };
 };
 

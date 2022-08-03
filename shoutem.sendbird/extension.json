@@ -1,11 +1,11 @@
 {
   "name": "sendbird",
   "title": "SendBird Chat",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "platform": ">=7",
   "icon": "./server/assets/chat.png",
   "description": "Connect your users with real-time chat!",
-  "releaseNotes": "NEW* Adapted to the platform changes regarding to push notifications",
+  "releaseNotes": "* Fixed app crash on messages screen when returning to app from background",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",
@@ -18,7 +18,9 @@
     "shoutem.redux",
     "shoutem.social"
   ],
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -43,7 +45,9 @@
     },
     {
       "name": "ChatWindowScreen",
-      "settings": { "disableAdBanner": true }
+      "settings": {
+        "disableAdBanner": true
+      }
     },
     {
       "name": "PhotoFullScreen"

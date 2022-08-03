@@ -15,7 +15,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { getRouteParams, HeaderBackButton } from 'shoutem.navigation';
+import { getRouteParams } from 'shoutem.navigation';
 import { isPreviewApp } from 'shoutem.preview';
 import { openURL } from 'shoutem.web-view';
 import { SuccessModal, TermsAndPolicy } from '../components';
@@ -29,20 +29,6 @@ import {
 } from '../services';
 
 class SubscriptionsScreen extends PureComponent {
-  static propTypes = {
-    onSubscriptionObtained: PropTypes.func,
-    buyProduct: PropTypes.func,
-    restorePurchases: PropTypes.func,
-    hasActiveProduct: PropTypes.bool,
-    subscriptionProduct: PropTypes.object,
-    privacyPolicyUrl: PropTypes.string,
-    termsOfServiceUrl: PropTypes.string,
-    subscriptionMetadata: PropTypes.object,
-    productId: PropTypes.string,
-    isScreenActive: PropTypes.bool,
-    style: PropTypes.any,
-  };
-
   constructor(props, contex) {
     super(props, contex);
 
@@ -222,6 +208,23 @@ class SubscriptionsScreen extends PureComponent {
     );
   }
 }
+
+SubscriptionsScreen.propTypes = {
+  buyProduct: PropTypes.func.isRequired,
+  hasActiveProduct: PropTypes.bool.isRequired,
+  navigation: PropTypes.object.isRequired,
+  privacyPolicyUrl: PropTypes.string.isRequired,
+  productId: PropTypes.string.isRequired,
+  restorePurchases: PropTypes.func.isRequired,
+  subscriptionMetadata: PropTypes.object.isRequired,
+  subscriptionProduct: PropTypes.object.isRequired,
+  termsOfServiceUrl: PropTypes.string.isRequired,
+  style: PropTypes.object,
+};
+
+SubscriptionsScreen.defaultProps = {
+  style: {},
+};
 
 const mapStateToProps = state => {
   const productId = selectors.getSubscriptionProductId(state);

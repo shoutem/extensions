@@ -1,7 +1,7 @@
 import pack from './package.json';
 import {
-  MessageListScreen,
   ChatWindowScreen,
+  MessageListScreen,
   PhotoFullScreen,
 } from './screens';
 

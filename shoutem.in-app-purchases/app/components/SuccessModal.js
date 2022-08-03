@@ -7,18 +7,6 @@ import { Button, Text } from '@shoutem/ui';
 import { ext } from '../const';
 
 class SuccessModal extends PureComponent {
-  static propTypes = {
-    visible: PropTypes.bool,
-    title: PropTypes.string,
-    description: PropTypes.string,
-    buttonText: PropTypes.string,
-    onButtonPress: PropTypes.func,
-    onModalHide: PropTypes.func,
-    style: PropTypes.any,
-  };
-
-  static defaultProps = { buttonText: 'OK' };
-
   render() {
     const {
       style,
@@ -49,5 +37,22 @@ class SuccessModal extends PureComponent {
     );
   }
 }
+
+SuccessModal.propTypes = {
+  visible: PropTypes.bool.isRequired,
+  onButtonPress: PropTypes.func.isRequired,
+  onModalHide: PropTypes.func.isRequired,
+  buttonText: PropTypes.string,
+  description: PropTypes.string,
+  style: PropTypes.object,
+  title: PropTypes.string,
+};
+
+SuccessModal.defaultProps = {
+  description: null,
+  buttonText: 'OK',
+  style: {},
+  title: null,
+};
 
 export default connectStyle(ext('SuccessModal'))(SuccessModal);
