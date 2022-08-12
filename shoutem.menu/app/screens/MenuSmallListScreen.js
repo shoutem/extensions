@@ -1,13 +1,13 @@
 import React from 'react';
-import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import { connectStyle } from '@shoutem/theme';
 import SmallListMenuView from '../components/SmallListMenuView';
 import { ext } from '../const';
 import {
-  MenuListScreen,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
+  MenuListScreen,
 } from './MenuListScreen';
 
 class MenuSmallListScreen extends MenuListScreen {
@@ -15,9 +15,6 @@ class MenuSmallListScreen extends MenuListScreen {
     super(props, context);
 
     autoBindReact(this);
-
-    // This propery changes dropdown position
-    this.state.renderCategoriesInline = false;
   }
 
   renderRow(item) {

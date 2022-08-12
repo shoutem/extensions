@@ -1,10 +1,10 @@
 {
   "name": "events",
-  "version": "5.0.1",
-  "platform": ">=9",
+  "version": "5.1.0",
+  "platform": ">=9.1.0",
   "title": "Events",
   "description": "Show items with location and time",
-  "releaseNotes": "* Added support for platform 9.0.0",
+  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
   "nativeChanges": {
     "lastVersion": "5.0.1"
   },
@@ -60,10 +60,15 @@
       "name": "EventsScreen",
       "title": "Fixed grid",
       "image": "./server/assets/images/fixed-grid.png",
-      "navigatesTo": ["@.EventDetailsScreen", "@.SingleEventMapScreen"],
+      "navigatesTo": ["@.EventDetailsScreen"],
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "grid-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -71,9 +76,14 @@
       "title": "Compact list",
       "image": "./server/assets/images/compact-list.png",
       "extends": "@.EventsScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "compact-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -118,9 +128,14 @@
       "title": "Fixed grid with a featured item",
       "image": "./server/assets/images/fixed-grid-featured.png",
       "extends": "@.EventsScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "grid-list",
-        "hasFeaturedItem": true
+        "hasFeaturedItem": true,
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -128,9 +143,14 @@
       "title": "Compact list with a featured item",
       "image": "./server/assets/images/compact-list-featured.png",
       "extends": "@.EventsScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "compact-list",
-        "hasFeaturedItem": true
+        "hasFeaturedItem": true,
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -138,9 +158,14 @@
       "title": "Medium list",
       "image": "./server/assets/images/medium-list.png",
       "extends": "@.EventsScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "medium-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -148,9 +173,14 @@
       "title": "Medium list with a featured item",
       "image": "./server/assets/images/medium-list-featured.png",
       "extends": "@.EventsScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "medium-list",
-        "hasFeaturedItem": true
+        "hasFeaturedItem": true,
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -158,9 +188,14 @@
       "title": "Tile list",
       "image": "./server/assets/images/tile-list.png",
       "extends": "@.EventsScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "tile-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -168,9 +203,14 @@
       "title": "Large list",
       "image": "./server/assets/images/large-list.png",
       "extends": "@.EventsScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "large-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {

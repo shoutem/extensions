@@ -1,21 +1,22 @@
-export { loadCategories, createCategory } from './category';
+export { createCategory, loadCategories } from './category';
 export {
-  loadResources,
-  loadReferenceResources,
-  loadPreviousResourcesPage,
-  loadNextResourcesPage,
+  createImporter,
+  deleteImporter,
+  loadCsvColumns,
+  loadImporters,
+} from './importer';
+export { loadLanguageModuleStatus, loadLanguages } from './language';
+export {
   fetchCmsDataZip,
+  loadNextResourcesPage,
+  loadPreviousResourcesPage,
+  loadReferenceResources,
+  loadResources,
 } from './resource';
 export { loadSchema } from './schema';
 export {
   initializeShortcutCategories,
+  updateShortcut,
   updateShortcutCategories,
   updateShortcutSortOptions,
 } from './shortcut';
-export { loadLanguages, loadLanguageModuleStatus } from './language';
-export {
-  loadImporters,
-  deleteImporter,
-  loadCsvColumns,
-  createImporter,
-} from './importer';

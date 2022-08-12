@@ -37,8 +37,6 @@ class BooksSmallListScreen extends BooksListScreen {
     super(props, context);
 
     autoBindReact(this);
-
-    this.state.renderCategoriesInline = false;
   }
 
   renderRow(book) {

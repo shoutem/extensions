@@ -51,3 +51,8 @@ export async function getMonitoredShortcuts(
 
   return findMonitoredShortcuts(shortcutsResponse);
 }
+
+export async function getMonitoredShortcutsByApp(appId: string) {
+  const shortcutsResponse = await getShortcuts(appId);
+  return findMonitoredShortcuts(shortcutsResponse);
+}

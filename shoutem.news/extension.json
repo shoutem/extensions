@@ -1,10 +1,10 @@
 {
   "name": "news",
-  "version": "6.0.0",
-  "platform": ">=6",
+  "version": "6.1.0",
+  "platform": ">=9.1.0",
   "title": "News",
   "description": "Show news articles",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
   "icon": "server/assets/add-news-image.png",
   "dependencies": [
     "shoutem.cms",
@@ -62,9 +62,14 @@
       "navigatesTo": [
         "@.ArticleDetailsScreen"
       ],
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "fixed-grid",
-        "hasFeaturedItem": true
+        "hasFeaturedItem": true,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -72,9 +77,14 @@
       "title": "Fixed grid",
       "image": "./server/assets/screens/fixed-grid.png",
       "extends": "@.ArticlesScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "fixed-grid",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -82,9 +92,14 @@
       "title": "Compact list",
       "image": "./server/assets/screens/list.png",
       "extends": "@.ArticlesScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "compact-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -92,9 +107,14 @@
       "title": "Compact list with a featured item",
       "image": "./server/assets/screens/featuredlist.png",
       "extends": "@.ArticlesScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "compact-list",
-        "hasFeaturedItem": true
+        "hasFeaturedItem": true,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -102,9 +122,14 @@
       "title": "Large list",
       "image": "./server/assets/screens/large-list.png",
       "extends": "@.ArticlesScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "large-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -112,9 +137,14 @@
       "title": "Medium list",
       "image": "./server/assets/screens/medium-list.png",
       "extends": "@.ArticlesScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "medium-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -122,9 +152,14 @@
       "title": "Medium list with a featured item",
       "image": "./server/assets/screens/medium-list-with-featured.png",
       "extends": "@.ArticlesScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "medium-list",
-        "hasFeaturedItem": true
+        "hasFeaturedItem": true,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -132,9 +167,14 @@
       "title": "Tile list",
       "image": "./server/assets/screens/tile-list.png",
       "extends": "@.ArticlesScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "tile-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -188,9 +228,14 @@
       "title": "1-2-2 pattern grid with a featured item",
       "image": "./server/assets/screens/1-2-2-grid-with-featured.png",
       "extends": "@.ArticlesScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
+        "listType": "1-2-2-grid",
         "hasFeaturedItem": true,
-        "listType": "1-2-2-grid"
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -198,9 +243,14 @@
       "title": "1-2-2 pattern grid",
       "image": "./server/assets/screens/1-2-2-grid.png",
       "extends": "@.ArticlesScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
+        "listType": "1-2-2-grid",
         "hasFeaturedItem": false,
-        "listType": "1-2-2-grid"
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     }
   ],

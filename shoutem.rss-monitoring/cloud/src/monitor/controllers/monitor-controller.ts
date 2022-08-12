@@ -8,9 +8,7 @@ import { getMonitor } from '../service';
 export class MonitorController {
   create() {
     return asyncMiddleware(async (req: Request, res: Response) => {
-      const data = _.pick(io.get(req), [
-        'appId',
-      ]);
+      const data = _.pick(io.get(req), ['appId']);
 
       const monitor = await monitorRepository.create(data);
       io.setCreated(res, monitor);
@@ -21,9 +19,7 @@ export class MonitorController {
     return asyncMiddleware(async (req: Request, res: Response) => {
       const monitor = getMonitor(req);
 
-      const changes = _.pick(io.get(req), [
-        'appId',
-      ]);
+      const changes = _.pick(io.get(req), ['appId']);
 
       const monitorUpdated = await monitorRepository.update(monitor.id, changes);
       io.set(res, monitorUpdated);

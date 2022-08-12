@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { data } from 'context';
+import { SORT_OPTIONS } from '../const';
 
 export function getSortFieldProperty() {
   return _.get(data, ['params', 'sortFieldProperty']) || 'sortField';
@@ -29,6 +30,13 @@ export function getSortOptions(shortcut) {
     field,
     order,
   };
+}
+
+export function isManualSorting(shortcut) {
+  const sortFieldProperty = getSortFieldProperty();
+  const field = _.get(shortcut, `settings.${sortFieldProperty}`);
+
+  return field === SORT_OPTIONS.MANUAL;
 }
 
 export function getParentCategoryProperty() {

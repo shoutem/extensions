@@ -43,9 +43,11 @@ export function CustomStack({ stackConfig, parentStackConfig }) {
         headerLeft: props => <HeaderBackButton {...props} />,
         ...HeaderStyles.default,
         ...stackConfig.stack.screenOptions,
-        ...stackScreenOptionsFunction(navProps),
+        ...(_.isFunction(stackScreenOptionsFunction) &&
+          stackScreenOptionsFunction(navProps)),
         ...parentScreenOptionsObject,
-        ...parentScreenOptionsFunction(navProps),
+        ...(_.isFunction(parentScreenOptionsFunction) &&
+          parentScreenOptionsFunction(navProps)),
       })}
       {..._.get(parentStackConfig, 'navigatorOptions', {})}
       {...stackConfig.stack.navigatorOptions}

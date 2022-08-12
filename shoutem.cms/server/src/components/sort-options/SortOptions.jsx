@@ -6,6 +6,7 @@ import _ from 'lodash';
 import i18next from 'i18next';
 import { MenuItem } from 'react-bootstrap';
 import { FontIcon, IconLabel, Dropdown } from '@shoutem/react-web-ui';
+import { SORT_OPTIONS } from '../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -23,8 +24,15 @@ const UNSUPPORTED_FORMATS = [
 
 export function getAlwaysAvailableSortFormats() {
   return [
-    { name: 'timeCreated', title: i18next.t(LOCALIZATION.SORT_CREATED_TIME) },
-    { name: 'timeUpdated', title: i18next.t(LOCALIZATION.SORT_UPDATED_TIME) },
+    { name: SORT_OPTIONS.MANUAL, title: i18next.t(LOCALIZATION.SORT_MANUALLY) },
+    {
+      name: SORT_OPTIONS.CREATED_TIME,
+      title: i18next.t(LOCALIZATION.SORT_CREATED_TIME),
+    },
+    {
+      name: SORT_OPTIONS.UPDATED_TIME,
+      title: i18next.t(LOCALIZATION.SORT_UPDATED_TIME),
+    },
   ];
 }
 

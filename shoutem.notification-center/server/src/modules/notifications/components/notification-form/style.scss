@@ -3,6 +3,13 @@
   margin: auto;
   padding-bottom: 12px;
 
+  .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
   .btn-toolbar {
     margin-top: 48px;
     margin-bottom: 48px;
@@ -25,11 +32,18 @@
     padding-top: 54px;
   }
 
-  .notification-form__date-select {
-    padding-top: 20px;
-  }
-
   .notification-form__daily-number {
     margin-top: 50px;
+  }
+
+  .recurring-switch-group {
+    .switch__button {
+      margin-top: 16px;
+      margin-left: 10px;
+    }
+
+    .switch__knob-background {
+      z-index: 10;
+    }
   }
 }

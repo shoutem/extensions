@@ -1,11 +1,11 @@
 {
   "name": "books",
-  "version": "6.0.0",
-  "platform": ">=6",
+  "version": "6.1.0",
+  "platform": ">=9.1.0",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",
   "description": "Show books and authors",
-  "releaseNotes": "* Adjusted navigation bar title resolution, shortcuts will now always use the title provided via Language & Region settings",
+  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
   "categories": ["content"],
   "i18n": {
     "locale": "en",
@@ -64,9 +64,18 @@
       "name": "BooksListScreen",
       "title": "List",
       "image": "./server/assets/images/screens/large-photo-list.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "tile-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -74,14 +83,25 @@
       "title": "Small List",
       "extends": "@.BooksListScreen",
       "image": "./server/assets/images/screens/small-photo-list.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "compact-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
+        "categoryPickerType": "dropdown"
       }
     },
     {
       "name": "BooksDetailsScreen",
-      "settings": { "disableAdBanner": true }
+      "settings": {
+        "disableAdBanner": true
+      }
     },
     {
       "name": "MyBooksScreen"

@@ -1,0 +1,10 @@
+.paging-more-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+
+  .btn {
+    min-width: none;
+    min-height: none;
+  }
+}

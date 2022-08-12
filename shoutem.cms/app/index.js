@@ -1,20 +1,21 @@
-export { CmsListScreen } from './screens/CmsListScreen';
+import enTranslations from './translations/en.json';
+
+export { Header as CmsHeader } from './components';
 export { default as currentLocation } from './components/CurrentLocation';
 export {
-  reducer,
-  invalidateLoadedCollections,
   CATEGORIES_SCHEMA,
-  IMAGE_ATTACHMENTS_SCHEMA,
-  VIDEO_ATTACHMENTS_SCHEMA,
-  cmsCollection,
   childCategories,
-  getCategories,
-  setScreenState,
   clearScreenState,
+  cmsCollection,
+  getCategories,
   getScreenState,
+  IMAGE_ATTACHMENTS_SCHEMA,
+  invalidateLoadedCollections,
+  reducer,
+  setScreenState,
+  VIDEO_ATTACHMENTS_SCHEMA,
 } from './redux';
-
-import enTranslations from './translations/en.json';
+export { CmsListScreen } from './screens/CmsListScreen';
 
 export const shoutem = {
   i18n: {

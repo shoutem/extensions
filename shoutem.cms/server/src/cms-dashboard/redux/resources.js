@@ -223,3 +223,44 @@ export function updateResourceLanguages(appId, languageIds, resource) {
     return Promise.all(promises).then(() => dispatch(invalidate(schema)));
   };
 }
+
+export function updateResourceIndex(appId, categoryId, index, resource) {
+  return dispatch => {
+    const { id: resourceId } = resource;
+    const schema = _.get(resource, 'type');
+
+    const item = {
+      data: {
+        type: 'shoutem.core.resources.move-to-index-actions',
+        attributes: { index },
+        relationships: {
+          category: {
+            data: {
+              type: CATEGORIES,
+              id: categoryId,
+            },
+          },
+        },
+      },
+    };
+
+    const config = {
+      schema: 'shoutem.core.resources.move-to-index-actions',
+      request: {
+        endpoint: shoutemUrls.buildLegacyUrl(
+          `/v1/apps/${appId}/resources/${schema}/${resourceId}/actions/move-to-index`,
+        ),
+        method: 'POST',
+        headers: {
+          Accept: 'application/vnd.api+json',
+          'Content-Type': 'application/vnd.api+json',
+        },
+        body: JSON.stringify(item),
+      },
+    };
+
+    return dispatch(find(config, 'move-to-index')).then(() => {
+      dispatch(invalidate(schema));
+    });
+  };
+}

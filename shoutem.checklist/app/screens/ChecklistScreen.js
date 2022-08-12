@@ -1,13 +1,13 @@
 import React from 'react';
-import autoBindReact from 'auto-bind/react';
-import PropTypes from 'prop-types';
 import { Alert, Linking } from 'react-native';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Screen, ScrollView, Text } from '@shoutem/ui';
 import { CmsListScreen } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
-import { navigateTo, getRouteParams } from 'shoutem.navigation';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { Checklist, ChecklistNavBarButton } from '../components';
 import { ext } from '../const';
 import {
@@ -116,7 +116,7 @@ export class ChecklistScreen extends CmsListScreen {
   }
 
   render() {
-    const { data, isSearchSettingEnabled, isSubmitted, style } = this.props;
+    const { data, isSubmitted, style } = this.props;
     const { hasChanges, statuses } = this.state;
 
     const contentContainerStyle = isSubmitted ? {} : style.scrollViewContainer;
@@ -127,18 +127,17 @@ export class ChecklistScreen extends CmsListScreen {
 
     return (
       <Screen>
-        {isSearchSettingEnabled && this.renderSearch()}
         <ScrollView
           contentContainerStyle={contentContainerStyle}
           endFillColor={style.endFillColor}
         >
           {data &&
-            data.map((checklist, index) => (
+            data.map(checklist => (
               <Checklist
                 checklist={checklist}
                 checklistStatus={statuses[checklist.id] || {}}
                 disabled={isSubmitted}
-                key={index}
+                key={checklist.id}
                 onItemToggle={this.handleItemChange}
               />
             ))}

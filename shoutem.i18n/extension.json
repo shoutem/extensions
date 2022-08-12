@@ -1,9 +1,9 @@
 {
   "name": "i18n",
   "title": "Language & Region",
-  "version": "4.0.5",
+  "version": "4.0.6",
   "platform": ">=7",
-  "releaseNotes": "* Introduced fetching translation files in the runtime for the preview mode",
+  "releaseNotes": "* No user facing changes\n* For devs: Added Node 16 support for server segment",
   "description": "Configure the language and regional settings of your app.",
   "dependencies": ["shoutem.application"],
   "icon": "server/assets/add-translation.png",

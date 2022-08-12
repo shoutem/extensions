@@ -20,3 +20,4 @@ export * from './importer';
 export * from './export';
 export * from './pagination';
 export * from './search';
+export * from './sort';

@@ -3,7 +3,7 @@ import SubscriptionMissingScreen from './screens/SubscriptionMissingScreen';
 import enTranslations from './translations/en.json';
 import { initializeApp } from './app';
 import {
-  appInitQueueMiddleware,
+  navigationInitializedMiddleware,
   noInternetMiddleware,
   restartAppMiddleware,
 } from './middleware';
@@ -58,7 +58,7 @@ export { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 export const middleware = [
   noInternetMiddleware,
   restartAppMiddleware,
-  appInitQueueMiddleware,
+  navigationInitializedMiddleware,
 ];
 
 export const shoutem = {

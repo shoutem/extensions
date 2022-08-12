@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 import { reduxForm } from 'redux-form';
 import { getFormState } from 'src/redux';
 import {
+  Switch,
   DateTimePicker,
   LoaderContainer,
   RadioSelector,
@@ -26,6 +27,7 @@ import { GroupsDropdown } from '../../../groups';
 import {
   AUDIENCE_TYPES,
   DELIVERY_TYPES,
+  RECURRING_PERIOD_TYPES,
   DISPLAY_DATE_FORMAT,
   DISPLAY_TIME_FORMAT,
   TARGET_TYPES,
@@ -73,6 +75,24 @@ class NotificationForm extends Component {
       {
         value: DELIVERY_TYPES.SCHEDULED,
         label: i18next.t(LOCALIZATION.DELIVERY_SCHEDULED_LABEL),
+      },
+    ];
+    this.RECURRING_PERIOD_OPTIONS = [
+      {
+        value: RECURRING_PERIOD_TYPES.NONE,
+        label: i18next.t(LOCALIZATION.RECURRING_PERIOD_NONE),
+      },
+      {
+        value: RECURRING_PERIOD_TYPES.EVERY_DAY,
+        label: i18next.t(LOCALIZATION.RECURRING_PERIOD_EVERY_DAY),
+      },
+      {
+        value: RECURRING_PERIOD_TYPES.EVERY_7_DAYS,
+        label: i18next.t(LOCALIZATION.RECURRING_PERIOD_EVERY_7_DAYS),
+      },
+      {
+        value: RECURRING_PERIOD_TYPES.EVERY_30_DAYS,
+        label: i18next.t(LOCALIZATION.RECURRING_PERIOD_EVERY_30_DAYS),
       },
     ];
 
@@ -155,6 +175,14 @@ class NotificationForm extends Component {
     delivery.onChange(item.value);
   }
 
+  handleRecurringPeriodSelect(item) {
+    const {
+      fields: { recurringPeriod },
+    } = this.props;
+
+    recurringPeriod.onChange(item.value);
+  }
+
   handleSummariesChange() {
     const { touch } = this.props;
     touch('numberOfMessages');
@@ -166,6 +194,7 @@ class NotificationForm extends Component {
       shortcuts,
       submitting,
       invalid,
+      recurringEnabled,
       fields,
       fields: {
         id,
@@ -179,6 +208,7 @@ class NotificationForm extends Component {
         numberOfMessages,
         delivery,
         deliveryTime,
+        recurringPeriod,
       },
       onCancel,
       handleSubmit,
@@ -235,6 +265,39 @@ class NotificationForm extends Component {
         </Row>
         <Row>
           <Col xs={5}>
+            <FormGroup
+              className="recurring-switch-group"
+              controlId="recurring-switch"
+            >
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.ENABLE_RECURRING_LABEL)}
+              </ControlLabel>
+              <Switch
+                onChange={this.props.toogleRecurringFeature}
+                value={recurringEnabled}
+              />
+            </FormGroup>
+          </Col>
+          <Col xs={7} className="notification-form__recurring-period-select">
+            <FormGroup controlId="recurring-select">
+              <ControlLabel>
+                {i18next.t(LOCALIZATION.RECURRING_PERIOD_LABEL)}
+              </ControlLabel>
+              <Select
+                className="notification-form__recurring-period-selector"
+                clearable={false}
+                disabled={!recurringEnabled}
+                elementId="recurringPeriod"
+                name="recurringPeriod"
+                onChange={this.handleRecurringPeriodSelect}
+                options={this.RECURRING_PERIOD_OPTIONS}
+                value={recurringPeriod.value}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={5}>
             <FormGroup controlId="delivery">
               <ControlLabel>
                 {i18next.t(LOCALIZATION.DELIVERY_LABEL)}
@@ -250,7 +313,7 @@ class NotificationForm extends Component {
               />
             </FormGroup>
           </Col>
-          <Col xs={7} className="notification-form__date-select">
+          <Col xs={7}>
             <ReduxFormElement
               disabled={submitting || deliveryTimeDisabled}
               elementId="deliveryTime"
@@ -406,6 +469,8 @@ NotificationForm.propTypes = {
   isEdit: PropTypes.bool,
   settings: PropTypes.object,
   scheduledNotificationsEnabled: PropTypes.bool,
+  recurringEnabled: PropTypes.bool,
+  toogleRecurringFeature: PropTypes.func,
 };
 
 // iconUrl and imageUrl fields are necessary even we don't use it
@@ -427,6 +492,7 @@ export default reduxForm({
     'numberOfMessages',
     'delivery',
     'deliveryTime',
+    'recurringPeriod',
     'iconUrl',
     'imageUrl',
   ],

@@ -1,13 +1,17 @@
+import { appId, url } from 'environment';
 import _ from 'lodash';
-import { invalidate } from '@shoutem/redux-io';
+import Uri from 'urijs';
+import { invalidate, update } from '@shoutem/redux-io';
 import { updateShortcutSettings } from '../builder-sdk';
 import {
-  getParentCategoryProperty,
   getOriginParentCategoryProperty,
+  getParentCategoryProperty,
   getSortFieldProperty,
   getSortOrderProperty,
 } from '../services';
 import { CATEGORIES, CURRENT_SCHEMA } from '../types';
+
+const SHORTCUTS = 'shoutem.core.shortcuts';
 
 export function initializeShortcutCategories(
   shortcut,
@@ -90,4 +94,28 @@ export function updateShortcutSortOptions(
       dispatch(invalidate(schema));
     });
   };
+}
+
+export function updateShortcut(shortcut) {
+  const uri = new Uri()
+    .protocol('')
+    .host(url.apps)
+    .segment(['v1', 'apps', appId, 'shortcuts', shortcut.id])
+    .toString();
+
+  const config = {
+    schema: SHORTCUTS,
+    request: {
+      endpoint: uri,
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
+    },
+  };
+
+  return update(config, {
+    type: SHORTCUTS,
+    ...shortcut,
+  });
 }

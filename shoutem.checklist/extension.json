@@ -1,10 +1,10 @@
 {
   "name": "checklist",
   "title": "Checklist",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "platform": ">=6",
   "description": "Create to-do list, onboarding tasklist and more.",
-  "releaseNotes": "* Added platform 6.x support",
+  "releaseNotes": "* Remove category dropdown",
   "icon": "server/assets/images/add-checklist-image.png",
   "dependencies": [
     "shoutem.application",

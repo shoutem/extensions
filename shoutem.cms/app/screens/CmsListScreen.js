@@ -27,7 +27,7 @@ import {
 import { I18n, selectors as i18nSelectors } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
 import { SkeletonLoading } from '../components';
-import SearchInput from '../components/SearchInput';
+import Header from '../components/Header';
 import { ext } from '../const';
 import {
   CATEGORIES_SCHEMA,
@@ -308,11 +308,12 @@ export class CmsListScreen extends PureComponent {
   }
 
   getNavBarProps() {
-    const { renderCategoriesInline } = this.state;
+    const { screenSettings } = this.props;
 
-    const inlineCategories = renderCategoriesInline
-      ? null
-      : this.renderCategoriesDropDown('navBar');
+    const inlineCategories =
+      screenSettings.categoryPickerType === 'navBarDropdown'
+        ? this.renderNavbarCategoriesDropDown()
+        : null;
 
     return {
       headerRight: () => <View styleName="container">{inlineCategories}</View>,
@@ -579,7 +580,7 @@ export class CmsListScreen extends PureComponent {
     );
   }
 
-  renderCategoriesDropDown(styleName) {
+  renderNavbarCategoriesDropDown() {
     const { selectedCategory, categories, style } = this.props;
 
     if (categories.length <= 1 || !this.isCategoryValid(selectedCategory)) {
@@ -588,7 +589,7 @@ export class CmsListScreen extends PureComponent {
 
     return (
       <DropDownMenu
-        styleName={styleName}
+        styleName="navBar"
         options={categories}
         titleProperty="name"
         valueProperty="id"
@@ -597,18 +598,6 @@ export class CmsListScreen extends PureComponent {
         showSelectedOption
         iconName="down-arrow"
         style={style.categories}
-      />
-    );
-  }
-
-  renderSearch() {
-    const { searchText } = this.state;
-
-    return (
-      <SearchInput
-        onChangeText={this.handleSearchTextChange}
-        onClearPress={this.handleClearSearchText}
-        input={searchText}
       />
     );
   }
@@ -665,15 +654,30 @@ export class CmsListScreen extends PureComponent {
   }
 
   render() {
-    const { data, isSearchSettingEnabled, style } = this.props;
-    const { renderCategoriesInline, searchEnabled } = this.state;
+    const {
+      categories,
+      data,
+      isSearchSettingEnabled,
+      screenSettings,
+      selectedCategory,
+      style,
+    } = this.props;
+    const { searchEnabled, searchText } = this.state;
 
     const shouldRenderSearch = isSearchSettingEnabled && searchEnabled;
 
     return (
       <Screen style={style.screen}>
-        {shouldRenderSearch && this.renderSearch()}
-        {renderCategoriesInline && this.renderCategoriesDropDown('horizontal')}
+        <Header
+          categories={categories}
+          categoryPickerType={screenSettings.categoryPickerType}
+          searchText={searchText}
+          selectedCategory={selectedCategory}
+          onCategorySelected={this.onCategorySelected}
+          shouldRenderSearch={shouldRenderSearch}
+          onSearchTextChange={this.handleSearchTextChange}
+          onClearSearchText={this.handleClearSearchText}
+        />
         {this.renderData(data)}
       </Screen>
     );

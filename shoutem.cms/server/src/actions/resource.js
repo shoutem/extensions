@@ -2,23 +2,16 @@ import _ from 'lodash';
 import { find, next, prev } from '@shoutem/redux-io';
 import { url, appId } from 'environment';
 import { ext } from 'context';
+import { getSortFromSortOptions } from '../services';
 import { CURRENT_SCHEMA } from '../types';
 
-function resolveSortParam(sortOptions) {
-  if (!sortOptions) {
+export function resolveSortParam(sortOptions) {
+  const sort = getSortFromSortOptions(sortOptions);
+  if (!sort) {
     return null;
   }
 
-  const { field, order } = sortOptions;
-
-  // when previewing distance (location) sort in builder,
-  // we fallback to alphabetical name sort (we can't preview
-  // distance sort without users location)
-  if (field === 'location') {
-    return { sort: 'name' };
-  }
-
-  return order === 'ascending' ? { sort: field } : { sort: `-${field}` };
+  return { sort };
 }
 
 function resolveIncludeParam(include = {}) {
@@ -102,7 +95,7 @@ export function loadReferenceResources(schema) {
   return find(config, ext('reference-resources'), queryParams);
 }
 
-export function loadNextResourcesPage(resources) {
+export function loadNextResourcesPage(resources, append = false) {
   const config = {
     request: {
       headers: {
@@ -111,7 +104,7 @@ export function loadNextResourcesPage(resources) {
     },
   };
 
-  return next(resources, false, config);
+  return next(resources, append, config);
 }
 
 export function loadPreviousResourcesPage(resources) {

@@ -90,6 +90,8 @@
       "parent-category-selector.button-create-title": "Create new collection",
       "parent-category-selector.form-choose-data-title": "Choose data source to display",
       "parent-category-selector.no-filtered-data-title": "{{schemaTitle}}/New collection",
+      "paging-more.load-more": "Load more",
+      "sort-options.sort-manually": "Manually",
       "sort-options.sort-created-time": "Created time",
       "sort-options.sort-updated-time": "Updated time",
       "sort-options.sort-by": "Sort by {{displayFieldTitle}}",
@@ -149,7 +151,12 @@
       "importer-csv-mapping-form.form-title": "Map fields:",
       "importer-csv-mapping-form.header-cms-field-label": "CMS field",
       "importer-csv-mapping-form.header-csv-column-label": "CSV column",
-      "importer-csv-mapping-item.empty-placeholder-label": "Select column..."
+      "importer-csv-mapping-item.empty-placeholder-label": "Select column...",
+      "layout-settings-title": "Layout settings",
+      "category-picker-type-label": "Category picker type",
+      "inline-category-picker-label": "Display picker as dropdown above the list. Picker opens in modal",
+      "nav-header-category-picker-label": "Display picker as dropdown in navigation header. Picker opens in modal",
+      "inline-horizontal-category-picker-label": "Display picker as horizontal list"
     }
   }
 }

@@ -13,6 +13,7 @@ export {
   updateResource,
   updateResourceCategories,
   updateResourceLanguages,
+  updateResourceIndex,
 } from './resources';
 
 export { getFormState } from './form';

@@ -5,6 +5,7 @@ import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { EditableTable, FontIcon, IconLabel } from '@shoutem/react-web-ui';
+import { RECURRING_PERIOD_TYPES } from '../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -19,8 +20,13 @@ function resolveAudiencDisplayValue(item) {
 }
 
 function renderStatusValue(item) {
-  const value = _.get(item, 'active');
-  const iconName = value ? 'clock' : 'check';
+  const active = _.get(item, 'active');
+  const recurringPeriod = _.get(item, 'recurringPeriod');
+
+  let iconName = active ? 'clock' : 'check';
+  if (active && recurringPeriod !== RECURRING_PERIOD_TYPES.NONE) {
+    iconName = 'refresh';
+  }
 
   return <FontIcon name={iconName} size="24px" />;
 }

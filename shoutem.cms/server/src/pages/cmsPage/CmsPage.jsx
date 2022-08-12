@@ -72,6 +72,7 @@ import {
   canExportData,
   getShortcutTitle,
   getCategoryName,
+  isManualSorting,
 } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';
@@ -394,6 +395,7 @@ export class CmsPage extends PureComponent {
     const visibleCategoryIds = getVisibleCategoryIds(shortcut);
     const extensionInfo = this.resolveExtensionInfo(shortcut);
     const canExportCmsData = canExportData(shortcut);
+    const sortable = isManualSorting(shortcut);
 
     return (
       <div>
@@ -461,6 +463,7 @@ export class CmsPage extends PureComponent {
             categories={childCategories}
             selectedCategoryId={selectedCategoryId}
             sortOptions={sortOptions}
+            sortable={sortable}
             onCategorySelected={this.handleCategorySelected}
             onResourceEditClick={this.handleResourceEditClick}
           />

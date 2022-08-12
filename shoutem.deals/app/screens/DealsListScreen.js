@@ -1,19 +1,18 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
+import DealListView from '../components/DealListView';
 import { ext, TRANSLATIONS } from '../const';
-
 // Components
 import {
   DealsScreen,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
 } from './DealsScreen';
-import DealListView from '../components/DealListView';
 
 export class DealsListScreen extends DealsScreen {
   constructor(props) {
@@ -23,7 +22,6 @@ export class DealsListScreen extends DealsScreen {
 
     this.state = {
       ...this.state,
-      renderCategoriesInline: true,
     };
   }
 

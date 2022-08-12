@@ -20,6 +20,12 @@ const NUMBER_OF_NOTIFICATIONS = `${key}.number-of-notifications-input-label`;
 const BUTTON_SAVE = `${key}.button-save`;
 const BUTTON_CREATE = `${key}.button-create`;
 const BUTTON_CANCEL = `${key}.button-cancel`;
+const ENABLE_RECURRING_LABEL = `${key}.enable-recurring-label`;
+const RECURRING_PERIOD_LABEL = `${key}.recurring-period-label`;
+const RECURRING_PERIOD_NONE = `${key}.recurring-period-none`;
+const RECURRING_PERIOD_EVERY_DAY = `${key}.recurring-period-every-day`;
+const RECURRING_PERIOD_EVERY_7_DAYS = `${key}.recurring-period-every-7-days`;
+const RECURRING_PERIOD_EVERY_30_DAYS = `${key}.recurring-period-every-30-days`;
 
 export default {
   TARGET_APP_LABEL,
@@ -42,4 +48,10 @@ export default {
   BUTTON_SAVE,
   BUTTON_CREATE,
   BUTTON_CANCEL,
+  ENABLE_RECURRING_LABEL,
+  RECURRING_PERIOD_LABEL,
+  RECURRING_PERIOD_NONE,
+  RECURRING_PERIOD_EVERY_DAY,
+  RECURRING_PERIOD_EVERY_7_DAYS,
+  RECURRING_PERIOD_EVERY_30_DAYS,
 };

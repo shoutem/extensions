@@ -22,6 +22,7 @@ import {
   getIncludeProperties,
   updateResourceCategories,
   updateResourceLanguages,
+  updateResourceIndex,
   CategoryTree,
   CmsTable,
   SearchForm,
@@ -36,9 +37,12 @@ import { getResources } from '../../selectors';
 import {
   getCurrentPagingOffsetFromCollection,
   getCurrentSearchOptionsFromCollection,
+  getCurrentSortFromCollection,
+  getSortFromSortOptions,
   canSearch,
   canFilter,
 } from '../../services';
+import { PagingMore } from '../../components';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -55,6 +59,7 @@ export class ResourceDashboard extends Component {
     parentCategoryId: PropTypes.string,
     selectedCategoryId: PropTypes.string,
     sortOptions: PropTypes.object,
+    sortable: PropTypes.bool,
     categories: PropTypes.array,
     languages: PropTypes.array,
     resources: PropTypes.array,
@@ -67,8 +72,10 @@ export class ResourceDashboard extends Component {
     deleteResource: PropTypes.func,
     loadNextPage: PropTypes.func,
     loadPreviousPage: PropTypes.func,
+    loadMore: PropTypes.func,
     onCategorySelected: PropTypes.func,
     onResourceEditClick: PropTypes.func,
+    updateResourceIndex: PropTypes.func,
   };
 
   constructor(props) {
@@ -81,6 +88,7 @@ export class ResourceDashboard extends Component {
     const { schema } = props;
 
     this.state = {
+      reordering: false,
       include: getIncludeProperties(schema),
     };
   }
@@ -113,21 +121,37 @@ export class ResourceDashboard extends Component {
     }
 
     if (nextSelectedCategoryId && shouldRefresh(nextResources)) {
-      const offset = getCurrentPagingOffsetFromCollection(
-        nextResources,
-        DEFAULT_LIMIT,
-      );
+      const currentSort = getCurrentSortFromCollection(nextResources);
+      const nextSort = getSortFromSortOptions(nextSortOptions);
+
+      let limit = DEFAULT_LIMIT;
+      if (nextResources) {
+        limit = nextResources.length;
+      }
+
+      // when sort is changed we are returning default pagination limit
+      // as manually sorting can increase that limit
+      if (currentSort !== nextSort) {
+        limit = DEFAULT_LIMIT;
+      }
 
       this.handleLoadResources(
         nextSelectedCategoryId,
         {},
         nextSortOptions,
-        offset,
+        0,
+        limit,
       );
     }
   }
 
-  handleLoadResources(categoryId, filterOptions, sortOptions, offset) {
+  handleLoadResources(
+    categoryId,
+    filterOptions,
+    sortOptions,
+    offset,
+    limit = DEFAULT_LIMIT,
+  ) {
     const { include } = this.state;
 
     this.props.loadResources(
@@ -135,7 +159,7 @@ export class ResourceDashboard extends Component {
       filterOptions,
       sortOptions,
       include,
-      DEFAULT_LIMIT,
+      limit,
       offset,
     );
   }
@@ -143,6 +167,11 @@ export class ResourceDashboard extends Component {
   handleFilterChange(searchOptions) {
     const { selectedCategoryId, sortOptions } = this.props;
     this.handleLoadResources(selectedCategoryId, searchOptions, sortOptions, 0);
+  }
+
+  handleLoadMoreClick() {
+    const { resources } = this.props;
+    return this.props.loadMore(resources);
   }
 
   handleNextPageClick() {
@@ -202,6 +231,21 @@ export class ResourceDashboard extends Component {
     );
   }
 
+  handleResourceIndexChange(index, resource) {
+    const { selectedCategoryId } = this.props;
+
+    this.setState({ reordering: true });
+
+    return this.props
+      .updateResourceIndex(selectedCategoryId, index, resource)
+      .then(() => {
+        this.setState({ reordering: false });
+      })
+      .catch(error => {
+        this.setState({ reordering: false });
+      });
+  }
+
   handleCategoryDragAndDrop(categoryId, index) {
     const { dragAndDropCategory, parentCategoryId } = this.props;
     return dragAndDropCategory(parentCategoryId, categoryId, index);
@@ -228,15 +272,17 @@ export class ResourceDashboard extends Component {
       resources,
       schema,
       shortcut,
+      sortable,
     } = this.props;
-    const { mainCategoryId } = this.state;
+    const { mainCategoryId, reordering } = this.state;
 
     const categoryActionWhitelist = {
       [mainCategoryId]: ['rename'],
     };
 
-    const isLoading = !isInitialized(resources) || isBusy(resources);
-    const inProgress = isBusy(resources);
+    const isLoading =
+      !isInitialized(resources) || isBusy(resources) || reordering;
+    const inProgress = isBusy(resources) || reordering;
 
     const showSearch = canSearch(shortcut);
     const showFilter = canFilter(shortcut);
@@ -275,25 +321,32 @@ export class ResourceDashboard extends Component {
             languages={languages}
             categories={categories}
             items={resources}
+            sortable={sortable}
             mainCategoryId={mainCategoryId}
             onDeleteClick={this.handleDeleteResourceClick}
             onUpdateClick={this.props.onResourceEditClick}
             onUpdateItemCategories={this.props.updateResourceCategories}
             onUpdateItemLanguages={this.props.updateResourceLanguages}
+            onUpdateItemIndex={this.handleResourceIndexChange}
           />
-          <Paging
-            ref={this.paging}
-            limit={DEFAULT_LIMIT}
-            offset={getCurrentPagingOffsetFromCollection(
-              resources,
-              DEFAULT_LIMIT,
-            )}
-            hasNext={hasNext(resources)}
-            hasPrevious={hasPrev(resources)}
-            onNextPageClick={this.handleNextPageClick}
-            onPreviousPageClick={this.handlePreviousPageClick}
-            resolvePageLabel={resolvePageLabel}
-          />
+          {!sortable && (
+            <Paging
+              ref={this.paging}
+              limit={DEFAULT_LIMIT}
+              offset={getCurrentPagingOffsetFromCollection(
+                resources,
+                DEFAULT_LIMIT,
+              )}
+              hasNext={hasNext(resources)}
+              hasPrevious={hasPrev(resources)}
+              onNextPageClick={this.handleNextPageClick}
+              onPreviousPageClick={this.handlePreviousPageClick}
+              resolvePageLabel={resolvePageLabel}
+            />
+          )}
+          {sortable && hasNext(resources) && (
+            <PagingMore onLoadMoreClick={this.handleLoadMoreClick} />
+          )}
         </LoaderContainer>
         <ConfirmModal
           className="resources-dashboard__delete settings-page-modal-small"
@@ -333,6 +386,8 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(updateResourceCategories(appId, categoryIds, resource)),
     updateResourceLanguages: (languageIds, resource) =>
       dispatch(updateResourceLanguages(appId, languageIds, resource)),
+    updateResourceIndex: (categoryId, index, resource) =>
+      dispatch(updateResourceIndex(appId, categoryId, index, resource)),
     loadResources: (
       categoryId,
       searchOptions,
@@ -353,6 +408,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         ),
       ),
     loadNextPage: resources => dispatch(loadNextResourcesPage(resources)),
+    loadMore: resources => dispatch(loadNextResourcesPage(resources, true)),
     loadPreviousPage: resources =>
       dispatch(loadPreviousResourcesPage(resources)),
   };

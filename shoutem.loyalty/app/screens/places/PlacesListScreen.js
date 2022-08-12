@@ -1,12 +1,12 @@
 import React from 'react';
-import { Alert, LayoutAnimation } from 'react-native';
+import { Alert } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { find, getCollection, isBusy, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { ListView, Screen } from '@shoutem/ui';
+import { ListView } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
 import { loginRequired } from 'shoutem.auth';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
@@ -38,7 +38,6 @@ export class PlacesList extends CmsListScreen {
     this.state = {
       ...this.state,
       schema: ext('places'),
-      renderCategoriesInline: true,
       mapView: false,
     };
   }
@@ -171,20 +170,13 @@ export class PlacesList extends CmsListScreen {
   }
 
   render() {
-    const { data, isSearchSettingEnabled, navigation, programId } = this.props;
-    const { renderCategoriesInline } = this.state;
+    const { navigation, programId } = this.props;
 
     if (!programId) {
       return <NoProgramScreen navigation={navigation} />;
     }
 
-    return (
-      <Screen>
-        {isSearchSettingEnabled && this.renderSearch()}
-        {renderCategoriesInline && this.renderCategoriesDropDown('horizontal')}
-        {this.renderData(data)}
-      </Screen>
-    );
+    return super.render();
   }
 }
 

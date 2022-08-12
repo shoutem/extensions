@@ -6,11 +6,13 @@ import { getTableHeaders } from '../../services';
 import Table from '../table';
 import CmsTableRow from '../cms-table-row';
 import CmsActionsMenu from '../cms-actions-menu';
+import './style.scss';
 
 export default class CmsTable extends Component {
   static propTypes = {
     schema: PropTypes.object,
     items: PropTypes.array,
+    sortable: PropTypes.bool,
     mainCategoryId: PropTypes.string,
     className: PropTypes.string,
     canDelete: PropTypes.bool,
@@ -23,6 +25,7 @@ export default class CmsTable extends Component {
     categories: PropTypes.array,
     onUpdateItemCategories: PropTypes.func,
     onUpdateItemLanguages: PropTypes.func,
+    onUpdateItemIndex: PropTypes.func,
   };
 
   constructor(props) {
@@ -51,20 +54,22 @@ export default class CmsTable extends Component {
     );
   }
 
-  renderItem(item) {
+  renderItem(item, rowProps) {
     const {
       schema,
       languages,
+      sortable,
       categories,
       mainCategoryId,
       onUpdateItemCategories,
       onUpdateItemLanguages,
     } = this.props;
 
-    const headers = getTableHeaders(schema, categories, languages);
+    const headers = getTableHeaders(schema, categories, languages, sortable);
 
     return (
       <CmsTableRow
+        rowProps={rowProps}
         actionsMenu={this.renderActionsMenu(item)}
         languages={languages}
         categories={categories}
@@ -79,16 +84,25 @@ export default class CmsTable extends Component {
   }
 
   render() {
-    const { schema, categories, languages } = this.props;
+    const {
+      schema,
+      categories,
+      languages,
+      sortable,
+      onUpdateItemIndex,
+    } = this.props;
     const { items, className } = this.props;
+
     const classes = classNames('cms-table', className);
-    const headers = getTableHeaders(schema, categories, languages);
+    const headers = getTableHeaders(schema, categories, languages, sortable);
 
     return (
       <Table
         className={classes}
         columnHeaders={headers}
         items={items}
+        sortable={sortable}
+        onItemIndexChange={onUpdateItemIndex}
         renderItem={this.renderItem}
       />
     );

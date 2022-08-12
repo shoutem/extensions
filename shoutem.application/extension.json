@@ -1,11 +1,11 @@
 {
   "name": "application",
-  "version": "4.1.4",
-  "platform": ">=9",
+  "version": "5.0.0",
+  "platform": ">=9.1.0",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "releaseNotes": "* Fixed issues with Android 12",
+  "releaseNotes": "* Resolved issues with opening initial screen",
   "nativeChanges": {
     "lastVersion": "4.1.4"
   },

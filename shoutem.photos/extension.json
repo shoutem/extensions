@@ -1,10 +1,10 @@
 {
   "name": "photos",
-  "version": "5.0.0",
-  "platform": ">=6",
+  "version": "5.1.0",
+  "platform": ">=9.1.0",
   "title": "Photos",
   "description": "Show a photo gallery",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
   "icon": "server/assets/add-photos-image.png",
   "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
   "categories": ["media"],
@@ -48,23 +48,44 @@
       "title": "Large list",
       "navigatesTo": ["@.PhotoDetailsScreen"],
       "image": "./server/assets/screens/layout-photos-large-list.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
-        "listType": "large-list"
+        "listType": "large-list",
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
       "name": "CompactGridPhotosScreen",
       "title": "Compact grid",
       "extends": "@.PhotosScreen",
-      "image": "./server/assets/screens/layout-photos-compact-grid.png"
+      "image": "./server/assets/screens/layout-photos-compact-grid.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
+      "settings": {
+        "listType": "compact-grid",
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
+      }
     },
     {
       "name": "FixedGridPhotosScreen",
       "title": "Fixed grid",
       "extends": "@.PhotosScreen",
       "image": "./server/assets/screens/layout-photos-fixed-grid.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
-        "listType": "fixed-grid"
+        "listType": "fixed-grid",
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -72,8 +93,14 @@
       "title": "Tile list",
       "extends": "@.PhotosScreen",
       "image": "./server/assets/screens/layout-photos-tile-list.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
-        "listType": "tile-list"
+        "listType": "tile-list",
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -81,8 +108,14 @@
       "title": "Compact list",
       "extends": "@.PhotosScreen",
       "image": "./server/assets/screens/layout-photos-compact-list.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
-        "listType": "compact-list"
+        "listType": "compact-list",
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -90,8 +123,14 @@
       "title": "Medium list",
       "extends": "@.PhotosScreen",
       "image": "./server/assets/screens/layout-photos-medium-list.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
-        "listType": "medium-list"
+        "listType": "medium-list",
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {

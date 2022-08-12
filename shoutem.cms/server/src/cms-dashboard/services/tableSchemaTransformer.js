@@ -97,17 +97,30 @@ function getTableHeader(column, properties, categories, languages) {
   };
 }
 
-export function getTableHeaders(schema, categories, languages) {
+export function getTableHeaders(schema, categories, languages, sortable) {
   const tableLayout = getLayoutsTable(schema) || getDefaultTableLayout(schema);
 
   const { properties } = schema;
   const { columns } = tableLayout;
 
-  const tableHeaders = _.compact(
+  const tableHeaders = [];
+
+  // added one extra empty table header for drag handle
+  if (sortable) {
+    tableHeaders.push({
+      id: 'drag-handle',
+      format: 'drag-handle',
+      className: 'cms-table__drag-handle-header',
+    });
+  }
+
+  const columnHeaders = _.compact(
     _.map(columns, column =>
       getTableHeader(column, properties, categories, languages),
     ),
   );
+
+  _.forEach(columnHeaders, columnHeader => tableHeaders.push(columnHeader));
 
   // added one extra empty table header for cms actions
   tableHeaders.push({ id: 'actions', format: 'actions' });

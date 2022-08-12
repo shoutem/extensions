@@ -26,3 +26,9 @@ export const SEARCH_CAPABILITIES = {
   SEARCH: 'shoutem.cms.search',
   FILTER: 'shoutem.cms.filter',
 };
+
+export const SORT_OPTIONS = {
+  MANUAL: 'manual',
+  CREATED_TIME: 'timeCreated',
+  UPDATED_TIME: 'timeUpdated',
+};

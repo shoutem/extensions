@@ -1,11 +1,11 @@
 {
   "name": "people",
   "title": "People",
-  "version": "5.0.0",
-  "platform": ">=6",
+  "version": "5.1.0",
+  "platform": ">=9.1.0",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
   "dependencies": [
     "shoutem.cms",
     "shoutem.i18n",
@@ -54,9 +54,14 @@
       "title": "Compact list",
       "image": "./server/assets/screens/compact-list.png",
       "navigatesTo": ["@.PeopleDetailsScreen"],
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
+        "listType": "compact-list",
         "hasFeaturedItem": false,
-        "listType": "compact-list"
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {

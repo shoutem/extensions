@@ -28,9 +28,9 @@ export class EventsScreen extends CmsListScreen {
     this.state = {
       ...this.state,
       schema: EVENTS_SCHEME,
-      renderCategoriesInline: true,
       shouldRenderMap: false,
     };
+
     this.navBarViewTitle = {
       map: I18n.t('shoutem.cms.navBarMapViewButton'),
       list: I18n.t('shoutem.cms.navBarListViewButton'),
@@ -73,10 +73,6 @@ export class EventsScreen extends CmsListScreen {
     const { shouldRenderMap } = this.state;
 
     this.setState({ shouldRenderMap: !shouldRenderMap });
-  }
-
-  renderCategoriesDropDown(styleName) {
-    return super.renderCategoriesDropDown(styleName);
   }
 
   getNavBarProps() {

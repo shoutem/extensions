@@ -1,17 +1,17 @@
-import _ from 'lodash';
-import { priorities, setPriority } from 'shoutem-core';
-import { LOAD_REQUEST } from '@shoutem/redux-io';
 import { Alert } from 'react-native';
+import _ from 'lodash';
+import { LOAD_REQUEST } from '@shoutem/redux-io';
 import { I18n } from 'shoutem.i18n';
-import {
-  RESTART_APP,
-  QUEUE_TARGET_COMPLETED,
-  getSubscriptionValidState,
-  getAppInitQueue,
-} from './redux';
-import { restartApp } from './services';
+import { SET_NAVIGATION_INITIALIZED } from 'shoutem.navigation';
+import { priorities, setPriority } from 'shoutem-core';
 import { openInitialScreen } from './shared/openInitialScreen';
 import { ext } from './const';
+import {
+  getAppInitQueue,
+  getSubscriptionValidState,
+  RESTART_APP,
+} from './redux';
+import { restartApp } from './services';
 
 const alertNoInternet = _.throttle(
   () =>
@@ -45,20 +45,19 @@ const restartAppMiddleware = setPriority(
   priorities.LAST,
 );
 
-const appInitQueueMiddleware = store => next => action => {
+const navigationInitializedMiddleware = store => next => action => {
   const actionType = _.get(action, 'type');
 
-  if (actionType === QUEUE_TARGET_COMPLETED) {
+  if (actionType === SET_NAVIGATION_INITIALIZED) {
     const state = store.getState();
     const subscriptionValid = getSubscriptionValidState(state);
     const appInitQueue = getAppInitQueue(state);
-    const hasMatchingTarget =
-      _.has(appInitQueue, action.payload) &&
-      appInitQueue[action.payload] === false;
-    const isLastQueuedTarget =
-      _.size(_.filter(appInitQueue, target => target === false)) < 2;
 
-    if (hasMatchingTarget && isLastQueuedTarget) {
+    // If all initializations are complete and navigation is about to be
+    // initialized, open the initial screen.
+    if (
+      _.size(Object.keys(appInitQueue).filter(target => target === false)) === 0
+    ) {
       openInitialScreen(subscriptionValid);
     }
   }
@@ -66,4 +65,8 @@ const appInitQueueMiddleware = store => next => action => {
   return next(action);
 };
 
-export { noInternetMiddleware, restartAppMiddleware, appInitQueueMiddleware };
+export {
+  navigationInitializedMiddleware,
+  noInternetMiddleware,
+  restartAppMiddleware,
+};

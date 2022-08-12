@@ -1,10 +1,10 @@
 {
   "name": "places",
-  "version": "6.0.1",
-  "platform": ">=6",
+  "version": "6.1.0",
+  "platform": ">=9.1.0",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "releaseNotes": "* Fixed place name & address not showing on large photo details screen",
+  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
   "icon": "./server/assets/images/add-places-image.png",
   "dependencies": [
     "shoutem.application",
@@ -88,18 +88,28 @@
       "title": "Compact List",
       "extends": "@.PlacesListScreen",
       "image": "./server/assets/images/layout_icon.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
+        "listType": "compact-list",
         "hasFeaturedItem": false,
-        "listType": "compact-list"
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
       "name": "PlacesListScreen",
       "title": "Tile List",
       "image": "./server/assets/images/layout_photo.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
+        "listType": "tile-list",
         "hasFeaturedItem": false,
-        "listType": "tile-list"
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       },
       "navigatesTo": ["@.PlaceDetails"]
     },
@@ -108,9 +118,14 @@
       "title": "1-2-2 pattern grid with a featured item",
       "extends": "@.PlacesListScreen",
       "image": "./server/assets/images/layout_grid.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
+        "listType": "1-2-2-grid",
         "hasFeaturedItem": true,
-        "listType": "1-2-2-grid"
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       },
       "navigatesTo": ["@.PlaceDetails"]
     },

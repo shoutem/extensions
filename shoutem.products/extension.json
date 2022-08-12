@@ -1,10 +1,10 @@
 {
   "name": "products",
-  "version": "5.0.0",
-  "platform": ">=6",
+  "version": "5.1.0",
+  "platform": ">=9.1.0",
   "title": "Products",
   "description": "Show products with purchase link",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
   "categories": ["commerce"],
   "i18n": {
     "locale": "en",
@@ -62,9 +62,14 @@
       "name": "ProductsList",
       "title": "Compact list",
       "image": "./server/assets/screens/compact-list.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
+        "listType": "compact-list",
         "hasFeaturedItem": false,
-        "listType": "compact-list"
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       },
       "groupTitle": "Choose list layout",
       "navigatesTo": ["@.ProductDetails"]

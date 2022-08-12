@@ -1,4 +1,16 @@
 .table {
+  .drag-body-wrapper {
+    border-bottom: none;
+
+    tr {
+      border-bottom: none;
+    }
+  }
+
+  > tbody + tbody {
+    border-top: 1px solid #ddd;
+  }
+
   > tbody > tr.table__empty-row {
     border-bottom: none;
     color: #888fa1;
@@ -17,6 +29,7 @@
   > tbody > tr > td {
     padding-left: 8px;
     padding-right: 8px;
+    border-top: none;
   }
 
   > thead > tr > th:last-child,

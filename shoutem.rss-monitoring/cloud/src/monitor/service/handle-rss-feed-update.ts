@@ -7,6 +7,34 @@ import Monitor from '../data/monitor-model';
 export const MAX_TITLE_LENGTH = 100;
 export const MAX_SUMMARY_LENGTH = 140;
 
+function resolveFeedItemTitle(lastFeedItem) {
+  if (!lastFeedItem) {
+    return null;
+  }
+
+  if (!lastFeedItem.title) {
+    return null;
+  }
+
+  return lastFeedItem.title.substring(0, MAX_TITLE_LENGTH);
+}
+
+function resolveFeedItemSummary(lastFeedItem) {
+  if (!lastFeedItem) {
+    return null;
+  }
+
+  if (lastFeedItem.summary) {
+    return lastFeedItem.summary.substring(0, MAX_SUMMARY_LENGTH);
+  }
+
+  if (lastFeedItem.title) {
+    return lastFeedItem.title.substring(0, MAX_SUMMARY_LENGTH);
+  }
+
+  return null;
+}
+
 async function checkForRssFeedUpdate(
   monitor: Monitor,
   shortcuts: { key: string; feedUrl: string; feedType: string }[],
@@ -35,33 +63,8 @@ async function checkForRssFeedUpdate(
           lastFeedItemHash: lastFeedItem.id,
         });
 
-        const title = (() => {
-          if (!lastFeedItem) {
-            return null;
-          }
-
-          if (!lastFeedItem.title) {
-            return null;
-          }
-
-          return lastFeedItem.title.substring(0, MAX_TITLE_LENGTH);
-        })();
-
-        const summary = (() => {
-          if (!lastFeedItem) {
-            return null;
-          }
-
-          if (lastFeedItem.summary) {
-            return lastFeedItem.summary.substring(0, MAX_SUMMARY_LENGTH);
-          }
-
-          if (lastFeedItem.title) {
-            return lastFeedItem.title.substring(0, MAX_SUMMARY_LENGTH);
-          }
-
-          return null;
-        })();
+        const title = resolveFeedItemTitle(lastFeedItem);
+        const summary = resolveFeedItemSummary(lastFeedItem);
 
         try {
           logger.info('Create push notification.');
@@ -98,5 +101,32 @@ export async function handleRssFeedUpdate(
 ) {
   if (shortcuts && shortcuts.length > 0) {
     await checkForRssFeedUpdate(monitor, shortcuts);
+  }
+}
+
+export async function handleRssFeedUpdateForApp(
+  appId: string,
+  shortcuts: { key: string; feedUrl: string; feedType: string }[],
+) {
+  logger.info(`Rss feed update for app:${appId}.`);
+
+  if (shortcuts && shortcuts.length > 0) {
+    logger.info(`Shortcuts found:${shortcuts.length}.`);
+
+    const promises = shortcuts.map(async shortcut => {
+      const lastFeedItem = await getLastFeedItem(appId, shortcut.feedType, shortcut.feedUrl);
+      if (!lastFeedItem) {
+        return;
+      }
+
+      const title = resolveFeedItemTitle(lastFeedItem);
+      const summary = resolveFeedItemSummary(lastFeedItem);
+
+      logger.info(`Creating notification for app:${appId} and feedUrl ${shortcut.feedUrl}.`);
+
+      await createNotification(appId, shortcut.key || '', lastFeedItem.id, shortcut.feedType || '', title, summary);
+    });
+
+    await Promise.all(promises);
   }
 }

@@ -1,14 +1,14 @@
 {
   "name": "salesforce",
   "title": "Salesforce MC",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "Salesforce Marketing Cloud",
-  "platform": ">=6",
+  "platform": ">=9.0.1",
   "nativeChanges": {
-    "lastVersion": "1.0.5",
+    "lastVersion": "2.0.0",
     "settingsKeys": ["appId", "accessToken", "appEndpoint", "fcmSenderId"]
   },
-  "releaseNotes": "* Fixed the Android crash if extension wasn't properly configured in settings page",
+  "releaseNotes": "* Fixed incorrect app icon reference",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

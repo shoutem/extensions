@@ -15,6 +15,7 @@ export {
   updateResource,
   updateResourceCategories,
   updateResourceLanguages,
+  updateResourceIndex,
   loadCategories,
   createCategory,
   deleteCategory,

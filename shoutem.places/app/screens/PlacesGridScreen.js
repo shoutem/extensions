@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import { isBusy, isInitialized, isValid } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { GridRow, ListView, Screen } from '@shoutem/ui';
+import { GridRow, ListView } from '@shoutem/ui';
 import { CmsListScreen, currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import { HeaderTextButton } from 'shoutem.navigation';
@@ -29,7 +29,6 @@ class PlacesGridScreen extends CmsListScreen {
     this.state = {
       ...this.state,
       schema: ext('places'),
-      renderCategoriesInline: true,
       mapView: false,
     };
   }
@@ -130,19 +129,6 @@ class PlacesGridScreen extends CmsListScreen {
         onRefresh={this.refreshData}
         renderRow={this.renderRow}
       />
-    );
-  }
-
-  render() {
-    const { data, isSearchSettingEnabled } = this.props;
-    const { renderCategoriesInline } = this.state;
-
-    return (
-      <Screen>
-        {isSearchSettingEnabled && this.renderSearch()}
-        {renderCategoriesInline && this.renderCategoriesDropDown('horizontal')}
-        {this.renderData(data)}
-      </Screen>
     );
   }
 }

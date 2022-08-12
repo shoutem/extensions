@@ -9,7 +9,6 @@ import {
   ForeignKey,
   AllowNull,
 } from 'sequelize-typescript';
-
 import { Monitor } from '../../monitor/data/monitor-model';
 
 @Table({ modelName: 'Feeds' })

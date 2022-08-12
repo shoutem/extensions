@@ -1,32 +1,26 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
+import DealGridView from '../components/DealGridView';
 import { ext, TRANSLATIONS } from '../const';
-
 // Components
 import {
   DealsScreen,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
 } from './DealsScreen';
-import DealGridView from '../components/DealGridView';
 
 export class DealsGridScreen extends DealsScreen {
   constructor(props, context) {
     super(props, context);
 
     autoBindReact(this);
-
-    this.state = {
-      ...this.state,
-      renderCategoriesInline: true,
-    };
   }
 
   getNavBarProps() {

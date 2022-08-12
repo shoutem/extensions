@@ -1,11 +1,11 @@
 {
   "name": "menu",
   "title": "Restaurant menu",
-  "version": "5.0.0",
-  "platform": ">=6",
+  "version": "5.1.0",
+  "platform": ">=9.1.0",
   "icon": "./server/assets/images/add-menu-items-image.png",
   "description": "Show a restaurant menu",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
   "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
   "categories": ["content"],
   "i18n": {
@@ -48,9 +48,14 @@
       "name": "MenuListScreen",
       "title": "Tile list",
       "image": "./server/assets/images/screens/large-photo-list.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "hasFeaturedItem": false,
-        "listType": "tile-list"
+        "listType": "tile-list",
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -58,9 +63,14 @@
       "title": "Compact list",
       "image": "./server/assets/images/screens/small-photo-list.png",
       "extends": "@.MenuListScreen",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "hasFeaturedItem": false,
-        "listType": "compact-list"
+        "listType": "compact-list",
+        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {

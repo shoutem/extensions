@@ -1,10 +1,10 @@
 {
   "name": "deals",
   "title": "Deals",
-  "version": "6.0.2",
-  "platform": ">=9",
+  "version": "6.1.0",
+  "platform": ">=9.1.0",
   "description": "Create special deals and redeem them with coupons",
-  "releaseNotes": "* Added support for platform 9.0.0",
+  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
   "nativeChanges": {
     "lastVersion": "6.0.2"
   },
@@ -30,9 +30,14 @@
       "title": "Deals grid",
       "image": "server/assets/fixed-grid.png",
       "navigatesTo": ["@.LargeDealDetailsScreen"],
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "grid-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {
@@ -41,9 +46,14 @@
       "image": "server/assets/compact-list.png",
       "extends": "@.DealsGridScreen",
       "navigatesTo": ["@.LargeDealDetailsScreen"],
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
       "settings": {
         "listType": "compact-list",
-        "hasFeaturedItem": false
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
       }
     },
     {

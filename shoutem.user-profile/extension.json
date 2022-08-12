@@ -1,7 +1,7 @@
 {
   "name": "user-profile",
   "title": "User Profile",
-  "version": "4.2.1",
+  "version": "5.0.0",
   "platform": ">=8",
   "type": "system",
   "description": "Add extended user profile",

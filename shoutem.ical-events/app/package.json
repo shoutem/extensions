@@ -1,6 +1,6 @@
 {
   "name": "shoutem.ical-events",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "description": "Shoutem extension for managing iCal events",
   "dependencies": {
     "@shoutem/react-native-calendar-manager": "1.1.1",

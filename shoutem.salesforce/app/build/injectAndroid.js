@@ -53,7 +53,7 @@ function createMainApplicationInjection(
             .setAccessToken("${accessToken}")
             .setSenderId("${FCMSenderId}")
             .setMarketingCloudServerUrl("${serverUrl}")
-            .setNotificationCustomizationOptions(NotificationCustomizationOptions.create(R.mipmap.ic_launcher))
+            .setNotificationCustomizationOptions(NotificationCustomizationOptions.create(R.mipmap.app_icon))
             .setAnalyticsEnabled(true)
             .build(this),
     initializationStatus -> Log.e("INIT", initializationStatus.toString()));`;
@@ -65,9 +65,9 @@ function createCustomPushServiceContent(appBundle) {
   import com.salesforce.marketingcloud.MarketingCloudSdk;
   import com.salesforce.marketingcloud.messages.push.PushMessageManager;
   import com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService;
-  
+
   import com.google.firebase.messaging.RemoteMessage;
-  
+
   public class CustomPushService extends RNPushNotificationListenerService {
       @Override
       public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -77,11 +77,11 @@ function createCustomPushServiceContent(appBundle) {
           super.onMessageReceived(remoteMessage);
         }
       }
-  
+
       @Override
       public void onNewToken(String token) {
         MarketingCloudSdk.requestSdk(sdk -> sdk.getPushMessageManager().setPushToken(token));
-  
+
         super.onNewToken(token);
       }
   }

@@ -133,6 +133,7 @@ export function mapViewToModel(notification) {
 
   _.set(model, 'content.title', notification.title);
   _.set(model, 'content.summary', notification.summary);
+  _.set(model, 'recurringPeriod', notification.recurringPeriod);
 
   return model;
 }
@@ -199,6 +200,8 @@ export function mapModelToView(notification) {
   } else {
     _.set(view, 'delivery', DELIVERY_TYPES.NOW);
   }
+
+  _.set(view, 'recurringPeriod', _.get(notification, 'recurringPeriod'));
 
   return view;
 }

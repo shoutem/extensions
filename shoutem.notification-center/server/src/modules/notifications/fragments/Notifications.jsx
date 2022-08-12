@@ -5,13 +5,21 @@ import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
+import { Button } from 'react-bootstrap';
 import {
   ConfirmModal,
-  InlineModal,
   LoaderContainer,
   Paging,
+  FontIcon,
 } from '@shoutem/react-web-ui';
-import { fetchShortcuts, getShortcuts } from '@shoutem/redux-api-sdk';
+import {
+  fetchShortcuts,
+  getShortcuts,
+  fetchModules,
+  getModules,
+  createModule,
+  removeModule,
+} from '@shoutem/redux-api-sdk';
 import { shouldLoad } from '@shoutem/redux-io';
 import { isBusy, isInitialized } from '@shoutem/redux-io/status';
 import { getGroups, getRawGroups, loadGroups } from '../../groups';
@@ -20,7 +28,13 @@ import {
   NotificationInfoForm,
   NotificationsTable,
 } from '../components';
-import { AUDIENCE_TYPES, DELIVERY_TYPES, TARGET_TYPES } from '../const';
+import {
+  RECURRING_FEATURE,
+  AUDIENCE_TYPES,
+  DELIVERY_TYPES,
+  RECURRING_PERIOD_TYPES,
+  TARGET_TYPES,
+} from '../const';
 import {
   createNotification,
   deleteNotification,
@@ -37,6 +51,7 @@ const DEFAULT_NOTIFICATION = {
   target: TARGET_TYPES.APP,
   audience: AUDIENCE_TYPES.ALL,
   delivery: DELIVERY_TYPES.NOW,
+  recurringPeriod: RECURRING_PERIOD_TYPES.NONE,
   summaries: [],
 };
 
@@ -63,7 +78,7 @@ class Notifications extends Component {
   }
 
   checkData(nextProps, props = {}) {
-    const { appId, fetchShortcuts, loadGroups } = nextProps;
+    const { appId, fetchShortcuts, fetchModules, loadGroups } = nextProps;
 
     if (shouldLoad(nextProps, props, 'notifications')) {
       this.handleLoadNotifications(appId, 0);
@@ -76,6 +91,10 @@ class Notifications extends Component {
 
     if (shouldLoad(nextProps, props, 'shortcuts')) {
       fetchShortcuts();
+    }
+
+    if (shouldLoad(nextProps, props, 'modules')) {
+      fetchModules();
     }
   }
 
@@ -145,21 +164,29 @@ class Notifications extends Component {
   }
 
   handleEditClick(notification) {
+    const { onModalShown } = this.props;
+
     const view = mapModelToView(notification);
 
     this.setState({
       currentNotification: view,
       showNotificationModal: true,
     });
+
+    onModalShown(true);
   }
 
   handleInfoClick(notification) {
+    const { onModalShown } = this.props;
+
     const view = mapModelToView(notification);
 
     this.setState({
       currentNotification: view,
       showNotificationInfoModal: true,
     });
+
+    onModalShown(true);
   }
 
   handleDeleteClick(notification) {
@@ -215,6 +242,17 @@ class Notifications extends Component {
     return this.handleHideNotificationModal();
   }
 
+  handleToggleRecurringFeature() {
+    const { modules } = this.props;
+
+    const recurringEnabled = _.find(modules, { name: RECURRING_FEATURE });
+    if (recurringEnabled) {
+      return this.props.removeModule(recurringEnabled);
+    }
+
+    return this.props.createModule({ name: RECURRING_FEATURE });
+  }
+
   resolveHasNext() {
     const { rawNotifications } = this.props;
 
@@ -261,9 +299,10 @@ class Notifications extends Component {
   }
 
   renderNotificationModal() {
-    const { shortcuts, rawGroups, settings } = this.props;
+    const { shortcuts, rawGroups, settings, modules } = this.props;
     const { currentNotification } = this.state;
 
+    const recurringEnabled = _.find(modules, { name: RECURRING_FEATURE });
     const groups = _.get(rawGroups, 'data', []);
     const initialValues = this.resolveCurrentNotification();
     const isEdit = !!_.get(currentNotification, 'id');
@@ -272,11 +311,16 @@ class Notifications extends Component {
       : i18next.t(LOCALIZATION.TITLE_NEW_PUSH_NOTIFICATION_TEXT);
 
     return (
-      <InlineModal
-        className="notifications-page-modal"
-        onHide={this.handleHideNotificationModal}
-        title={title}
-      >
+      <div className="notifications-modal">
+        <div className="notifications-modal-title-container">
+          <Button
+            className="btn-icon pull-left"
+            onClick={this.handleHideNotificationModal}
+          >
+            <FontIcon name="back" size="24px" />
+          </Button>
+          <h3 className="notifications-modal-title">{title}</h3>
+        </div>
         <NotificationForm
           isEdit={isEdit}
           groups={groups}
@@ -285,8 +329,10 @@ class Notifications extends Component {
           onCancel={this.handleHideNotificationModal}
           initialValues={initialValues}
           settings={settings}
+          recurringEnabled={recurringEnabled}
+          toogleRecurringFeature={this.handleToggleRecurringFeature}
         />
-      </InlineModal>
+      </div>
     );
   }
 
@@ -295,17 +341,24 @@ class Notifications extends Component {
     const { currentNotification } = this.state;
 
     return (
-      <InlineModal
-        className="notifications-page-modal"
-        onHide={this.handleHideNotificationModal}
-        title={i18next.t(LOCALIZATION.INLINE_MODAL_TITLE)}
-      >
+      <div className="notifications-modal">
+        <div className="notifications-modal-title-container">
+          <Button
+            className="btn-icon pull-left"
+            onClick={this.handleHideNotificationModal}
+          >
+            <FontIcon name="back" size="24px" />
+          </Button>
+          <h3 className="notifications-modal-title">
+            {i18next.t(LOCALIZATION.INLINE_MODAL_TITLE)}
+          </h3>
+        </div>
         <NotificationInfoForm
           shortcuts={shortcuts}
           notification={currentNotification}
           onCancel={this.handleHideNotificationInfoModal}
         />
-      </InlineModal>
+      </div>
     );
   }
 
@@ -358,12 +411,16 @@ Notifications.propTypes = {
   groups: PropTypes.array,
   rawGroups: PropTypes.object,
   shortcuts: PropTypes.array,
+  modules: PropTypes.array,
   loadNotifications: PropTypes.func,
   createNotification: PropTypes.func,
   updateNotification: PropTypes.func,
   deleteNotification: PropTypes.func,
   loadGroups: PropTypes.func,
   fetchShortcuts: PropTypes.func,
+  fetchModules: PropTypes.func,
+  createModule: PropTypes.func,
+  removeModule: PropTypes.func,
   showAlert: PropTypes.func,
   onModalShown: PropTypes.func,
   settings: PropTypes.object,
@@ -376,6 +433,7 @@ function mapStateToProps(state) {
     groups: getGroups(state),
     rawGroups: getRawGroups(state),
     shortcuts: getShortcuts(state),
+    modules: getModules(state),
   };
 }
 
@@ -388,6 +446,9 @@ function mapDispatchToProps(dispatch) {
       deleteNotification,
       loadGroups,
       fetchShortcuts,
+      fetchModules,
+      createModule,
+      removeModule,
     },
     dispatch,
   );

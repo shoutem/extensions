@@ -1,10 +1,10 @@
 {
   "name": "loyalty",
-  "version": "6.0.1",
-  "platform": ">=9",
+  "version": "6.1.0",
+  "platform": ">=9.1.0",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "releaseNotes": "* Added support for 9.0.0 plaform",
+  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",
@@ -159,7 +159,18 @@
     {
       "name": "PunchCardListScreen",
       "title": "Punch Card",
-      "image": "./server/assets/images/layout-punch-card.png"
+      "image": "./server/assets/images/layout-punch-card.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
+      "settings": {
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
+        "categoryPickerType": "dropdown"
+      }
     },
     {
       "name": "PointsCardScreen",
@@ -175,19 +186,50 @@
     {
       "name": "RewardsListScreen",
       "title": "Compact list",
-      "image": "./server/assets/images/layout-compact-list.png"
+      "image": "./server/assets/images/layout-compact-list.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
+      "settings": {
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
+        "categoryPickerType": "dropdown"
+      }
     },
     {
       "name": "RewardsProgressScreen",
       "title": "Large list",
       "extends": "@.RewardsListScreen",
-      "image": "./server/assets/images/layout-large-list.png"
+      "image": "./server/assets/images/layout-large-list.png",
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
+      "settings": {
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
+        "categoryPickerType": "dropdown"
+      }
     },
     {
       "name": "PlacesListScreen",
       "title": "Stores",
       "image": "./server/assets/images/layout-compact-list.png",
-      "navigatesTo": ["@.PlaceDetails"]
+      "navigatesTo": ["@.PlaceDetails"],
+      "settingsPage": {
+        "page": "shoutem.cms.LayoutSettingsPage"
+      },
+      "settings": {
+        "listType": "compact-list",
+        "hasFeaturedItem": false,
+        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerType": "dropdown"
+      }
     },
     {
       "name": "FavoritesList",
