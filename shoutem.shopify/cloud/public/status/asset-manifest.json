@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/shoutem.shopify/status/static/css/main.c8be200d.css",
+    "main.js": "/shoutem.shopify/status/static/js/main.9e68e346.js",
+    "static/media/successState.png": "/shoutem.shopify/status/static/media/successState.14a1a88c2deffcce36e6.png",
+    "static/media/errorState.png": "/shoutem.shopify/status/static/media/errorState.cd6afec66d086f545243.png",
+    "static/media/MuseoSansCyrl-500.woff2": "/shoutem.shopify/status/static/media/MuseoSansCyrl-500.a07c2347743e47d3974a.woff2",
+    "index.html": "/shoutem.shopify/status/index.html",
+    "main.c8be200d.css.map": "/shoutem.shopify/status/static/css/main.c8be200d.css.map",
+    "main.9e68e346.js.map": "/shoutem.shopify/status/static/js/main.9e68e346.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c8be200d.css",
+    "static/js/main.9e68e346.js"
+  ]
+}

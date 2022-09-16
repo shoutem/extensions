@@ -44,7 +44,10 @@ export class LoginScreen extends PureComponent {
 
     autoBindReact(this);
 
-    this.state = { inProgress: false };
+    this.state = {
+      facebookLoginInProgress: false,
+      inProgress: false,
+    };
   }
 
   componentDidMount() {
@@ -102,11 +105,21 @@ export class LoginScreen extends PureComponent {
     onCancel();
   }
 
+  handleLoginProgressChange(inProgress) {
+    this.setState({ inProgress });
+  }
+
+  handleFacebookLoginProgressChange(facebookLoginInProgress) {
+    this.setState({ facebookLoginInProgress });
+  }
+
   handlePerformLogin(username, password) {
     const { login } = this.props;
 
     const resolvedUsername = username.toLowerCase();
-    this.setState({ inProgress: true });
+
+    this.handleLoginProgressChange(true);
+
     return login(resolvedUsername, password).catch(this.handleLoginFailed);
   }
 
@@ -127,7 +140,7 @@ export class LoginScreen extends PureComponent {
     } = this.props;
 
     if (settings.manuallyApproveMembers && !user.approved) {
-      this.setState({ inProgress: false });
+      this.handleLoginProgressChange(false);
 
       return userAuthenticatedLimited();
     }
@@ -140,7 +153,7 @@ export class LoginScreen extends PureComponent {
     saveSession(JSON.stringify({ access_token }));
     hideShortcuts(user);
 
-    return this.setState({ inProgress: false });
+    return this.handleLoginProgressChange(false);
   }
 
   handleLoginFailed({ payload }) {
@@ -150,7 +163,7 @@ export class LoginScreen extends PureComponent {
     const errorCode = getErrorCode(code);
     const errorMessage = getErrorMessage(errorCode);
 
-    this.setState({ inProgress: false });
+    this.handleLoginProgressChange(false);
     Alert.alert(I18n.t(ext('loginFailedErrorTitle')), errorMessage);
   }
 
@@ -164,7 +177,7 @@ export class LoginScreen extends PureComponent {
 
   render() {
     const { settings, style } = this.props;
-    const { inProgress } = this.state;
+    const { facebookLoginInProgress, inProgress } = this.state;
 
     const platformVersion = parseInt(Platform.Version, 10);
     const gdprSettings = _.get(settings, 'gdpr', {});
@@ -207,7 +220,9 @@ export class LoginScreen extends PureComponent {
           )}
           {isFacebookAuthEnabled && (
             <FacebookButton
-              disabled={inProgress}
+              disabled={inProgress || facebookLoginInProgress}
+              inProgress={facebookLoginInProgress}
+              onLoginProgressChange={this.handleFacebookLoginProgressChange}
               onLoginFailed={this.handleLoginFailed}
             />
           )}

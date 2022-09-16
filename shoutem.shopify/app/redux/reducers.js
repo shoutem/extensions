@@ -1,23 +1,21 @@
-import { combineReducers } from 'redux';
 import _ from 'lodash';
-
-import { storage, collection, find } from '@shoutem/redux-io';
-
+import { combineReducers } from 'redux';
+import { collection, storage } from '@shoutem/redux-io';
 import { ext } from '../const';
 import {
-  SHOP_LOADING,
-  SHOP_LOADED,
-  SHOP_ERROR_LOADING,
+  APP_MOUNTED,
   CART_ITEM_ADDED,
   CART_ITEM_REMOVED,
   CART_ITEM_UPDATED,
-  PRODUCTS_ERROR,
-  PRODUCTS_LOADING,
-  PRODUCTS_LOADED,
+  CHECKOUT_COMPLETED,
   CUSTOMER_INFORMATION_UPDATED,
   ORDER_NUMBER_LOADED,
-  CHECKOUT_COMPLETED,
-  APP_MOUNTED,
+  PRODUCTS_ERROR,
+  PRODUCTS_LOADED,
+  PRODUCTS_LOADING,
+  SHOP_ERROR_LOADING,
+  SHOP_LOADED,
+  SHOP_LOADING,
 } from './actionTypes';
 
 const addItemToCart = (cart, { item, variant, quantity }) => {
@@ -139,6 +137,7 @@ const productsForKey = keyName => (state = {}, action) => {
 
   switch (type) {
     case PRODUCTS_LOADED:
+      // TODO: Check why tags have null as key
       return productIdsForKey(state, payload, key);
     case PRODUCTS_LOADING:
       return productsStatus(state, key, true);

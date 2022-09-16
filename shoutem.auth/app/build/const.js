@@ -1,21 +1,16 @@
-const reactNativeFbSdkDependencies = `
-  # React Native FBSDK dependencies
-  pod 'FBSDKCoreKit'
-  pod 'FBSDKLoginKit'
+const reactNativeFbSdkDependencies = `pod 'react-native-fbsdk-next', :path => '../node_modules/react-native-fbsdk-next'`;
+
+const appDelegateImport = `
+#import <React/RCTLinkingManager.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 `;
 
-const appDelegateImport = `#import <React/RCTLinkingManager.h>
-#import <FBSDKCoreKit/FBSDKCoreKit.h>`;
 const appDelegateOpenUrl = `
 - (BOOL)application:(UIApplication *)app
             openURL:(NSURL *)url
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-  if ([[FBSDKApplicationDelegate sharedInstance] application:app
-    openURL:url
-    sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
-    annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
-  ]) {
+  if ([[FBSDKApplicationDelegate sharedInstance] application:app openURL:url options:options]) {
     return YES;
   }
 
@@ -27,11 +22,25 @@ const appDelegateOpenUrl = `
 }
 `;
 
+const androidApplicationMetaData = `
+    <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+    <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+    <meta-data android:name='com.facebook.sdk.AutoLogAppEventsEnabled' android:value='false'/>
+`;
+
+const facebookActivity = `
+<activity android:name="com.facebook.FacebookActivity"
+          android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+          android:label="@string/app_name" />
+`;
+
 const fbSdk = {
   ios: {
     appDelegate: {
       import: appDelegateImport,
       didFinishLaunchingWithOptions:
+        '[FBSDKApplicationDelegate.sharedInstance initializeSDK];',
+      didFinishLaunchingWithOptionsEnd:
         '[[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];',
       body: appDelegateOpenUrl,
     },
@@ -46,13 +55,17 @@ const fbSdk = {
     },
     gradle: {
       app: {
-        dependencies: "implementation project(':react-native-fbsdk')",
+        dependencies: "implementation project(':react-native-fbsdk-next')",
       },
       settings:
-        "include ':react-native-fbsdk'\nproject(':react-native-fbsdk').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fbsdk/android')",
+        "include ':react-native-fbsdk-next'\nproject(':react-native-fbsdk-next').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fbsdk-next/android')",
     },
-    manifest:
-      '<meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>',
+    manifest: {
+      facebookActivity,
+      applicationMetaData: androidApplicationMetaData,
+      removeAdIdPermission:
+        '<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>',
+    },
   },
 };
 

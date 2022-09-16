@@ -1,26 +1,44 @@
-import _ from 'lodash';
 import { Alert } from 'react-native';
+import _ from 'lodash';
+import { getAppId, getExtensionCloudUrl } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
-import { ShopifyClient } from '../app';
+import { triggerCanceled, triggerOccured } from 'shoutem.notification-center';
 import { ext } from '../const';
 import MBBridge from '../MBBridge';
+import { ShopifyClient } from '../services/shopifyClient';
 import {
-  SHOP_LOADING,
-  SHOP_LOADED,
-  SHOP_ERROR_LOADING,
+  ABANDONED_CART_TRIGGER,
+  APP_MOUNTED,
   CART_ITEM_ADDED,
   CART_ITEM_REMOVED,
   CART_ITEM_UPDATED,
-  PRODUCTS_ERROR,
-  PRODUCTS_LOADING,
-  PRODUCTS_LOADED,
+  CHECKOUT_COMPLETED,
   CUSTOMER_INFORMATION_UPDATED,
   ORDER_NUMBER_LOADED,
-  CHECKOUT_COMPLETED,
-  APP_MOUNTED,
+  PRODUCTS_ERROR,
+  PRODUCTS_LOADED,
+  PRODUCTS_LOADING,
+  SHOP_ERROR_LOADING,
+  SHOP_LOADED,
+  SHOP_LOADING,
 } from './actionTypes';
-import { getDiscountCode } from './selectors';
+import { getCartSize, getDiscountCode } from './selectors';
+
+export function triggerAbandonedCart() {
+  return (dispatch, getState) => {
+    const state = getState();
+    const cartSize = getCartSize(state);
+
+    if (cartSize > 0) {
+      dispatch(triggerOccured(ABANDONED_CART_TRIGGER));
+    }
+  };
+}
+
+export function cancelAbandonedCartTrigger() {
+  return dispatch => dispatch(triggerCanceled(ABANDONED_CART_TRIGGER));
+}
 
 /**
  * @see SHOP_LOADING
@@ -176,7 +194,7 @@ export function productsLoaded(products, collectionId, tag, page, resetMode) {
  * @returns {{ type: function }}
  */
 export function refreshProducts(collectionId, tag, resetMode) {
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch(productsLoading(collectionId, tag));
 
     // We get the last loaded page from Shopify, which is 0 if we don't have any products
@@ -189,7 +207,7 @@ export function refreshProducts(collectionId, tag, resetMode) {
         .then(res => {
           dispatch(productsLoaded(res, collectionId, tag, 0, resetMode));
         })
-        .catch(error => {
+        .catch(() => {
           dispatch(productsError(collectionId, tag));
         });
     }
@@ -202,7 +220,7 @@ export function refreshProducts(collectionId, tag, resetMode) {
         // const lastLoadedPage = _.size(products) < PAGE_SIZE ? nextPage - 1 : nextPage;
         dispatch(productsLoaded(res, collectionId, tag, 0, resetMode));
       })
-      .catch(error => {
+      .catch(() => {
         dispatch(productsError(collectionId, tag));
       });
   };
@@ -235,6 +253,21 @@ export function updateCustomerInformation(customer, cart) {
         resp.checkoutCreate.checkout = {};
       }
 
+      const {
+        checkoutCreate: {
+          userErrors = [],
+          checkout: { webUrl = '' } = {},
+        } = {},
+      } = resp;
+
+      if (userErrors.length > 0) {
+        const fullErrorMessage = _.map(userErrors, error => error.message).join(
+          '\n',
+        );
+
+        return Alert.alert(I18n.t(ext('checkoutErrorTitle')), fullErrorMessage);
+      }
+
       if (!_.get(resp, 'checkoutCreate.checkout.availableShippingRates')) {
         resp.checkoutCreate.checkout.availableShippingRates = {};
       }
@@ -244,23 +277,6 @@ export function updateCustomerInformation(customer, cart) {
           _.get(resp, 'checkoutCreate.checkout.id'),
           discountCode,
         );
-      }
-
-      const {
-        checkoutCreate: {
-          userErrors = [],
-          checkout: {
-            requiresShipping = true,
-            availableShippingRates: { shippingRates = [] } = {},
-            webUrl = '',
-          } = {},
-        } = {},
-      } = resp;
-
-      if (userErrors.length > 0) {
-        const error = userErrors[0];
-
-        return Alert.alert(I18n.t(ext('checkoutErrorTitle')), error.message);
       }
 
       dispatch(customerInformationUpdated(customer));
@@ -316,5 +332,19 @@ export function checkoutCompleted() {
 export function appMounted() {
   return {
     type: APP_MOUNTED,
+  };
+}
+
+export function fetchStorefrontToken(shop) {
+  return (_dispatch, getState) => {
+    const state = getState();
+
+    const cloudHost = getExtensionCloudUrl(state, ext());
+
+    const endpoint = `${cloudHost}/v1/token?appId=${getAppId()}&shop=${shop}`;
+
+    return fetch(endpoint)
+      .then(res => res.json())
+      .then(tokenData => tokenData?.access_token);
   };
 }

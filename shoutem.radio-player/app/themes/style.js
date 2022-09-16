@@ -5,6 +5,7 @@ import {
   dimensionRelativeToIphone,
   resolveFontFamily,
   resolveFontWeight,
+  responsiveWidth,
 } from '@shoutem/ui';
 import { ext } from '../const';
 
@@ -277,22 +278,13 @@ export default () => ({
         812,
         resolveVariable('sizes.window.height'),
       ),
+      paddingHorizontal: responsiveWidth(resolveVariable('largeGutter')),
     },
     smallActionContainerLeft: {
-      width: resolveVariable('sizes.window.width') / 2,
-      paddingLeft: getSizeRelativeToReference(
-        resolveVariable('largeGutter'),
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
+      flex: 1,
     },
     smallActionContainerRight: {
-      width: resolveVariable('sizes.window.width') / 2,
-      paddingRight: getSizeRelativeToReference(
-        resolveVariable('largeGutter'),
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
+      flex: 1,
     },
     smallActionText: {
       color: resolveVariable('shareButtonColor'),

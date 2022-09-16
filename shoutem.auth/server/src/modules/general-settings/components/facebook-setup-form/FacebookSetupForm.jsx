@@ -16,19 +16,26 @@ import _ from 'lodash';
 import LOCALIZATION from './localization';
 import './style.scss';
 
+const DEFAULT_KEYSTORE_HASH = 'ga0RGNYHvNM5d0SLGQfpQWAPGJ8=';
+
 export default class FacebookSetupForm extends Component {
   constructor(props) {
     super(props);
 
     autoBindReact(this);
 
-    const { providerSettings } = this.props;
-    const initialFacebookID = _.get(providerSettings, 'appId', '');
-    const initialFacebookAppName = _.get(providerSettings, 'appName', '');
+    const {
+      providerSettings: {
+        appId: initialFacebookID = '',
+        appName: initialFacebookAppName = '',
+        clientToken: initialFacebookClientToken = '',
+      },
+    } = this.props;
 
     this.state = {
       appId: initialFacebookID,
       appName: initialFacebookAppName,
+      clientToken: initialFacebookClientToken,
       appIdError: null,
       appNameError: null,
       submitting: false,
@@ -42,6 +49,10 @@ export default class FacebookSetupForm extends Component {
 
   handleAppNameChange(event) {
     this.setState({ appName: event.target.value });
+  }
+
+  handleClientTokenChange(event) {
+    this.setState({ clientToken: event.target.value });
   }
 
   handleFacebookSwitchToggle() {
@@ -76,23 +87,26 @@ export default class FacebookSetupForm extends Component {
   }
 
   validateForm() {
-    const { appId, appName } = this.state;
+    const { appId, appName, clientToken } = this.state;
+
     const appIdError =
       _.isEmpty(appId) && i18next.t(LOCALIZATION.REQUIRED_FIELD_MESSAGE);
     const appNameError =
       _.isEmpty(appName) && i18next.t(LOCALIZATION.REQUIRED_FIELD_MESSAGE);
+    const clientTokenError =
+      _.isEmpty(clientToken) && i18next.t(LOCALIZATION.REQUIRED_FIELD_MESSAGE);
 
-    this.setState({ appIdError, appNameError });
-    return !appIdError && !appNameError;
+    this.setState({ appIdError, appNameError, clientTokenError });
+    return !appIdError && !appNameError && !clientTokenError;
   }
 
   saveFormData() {
     const { onSetupUpdate } = this.props;
-    const { appId, appName } = this.state;
+    const { appId, appName, clientToken } = this.state;
 
     const settingsPatch = {
       providers: {
-        facebook: { appId, appName },
+        facebook: { appId, appName, clientToken },
       },
     };
 
@@ -109,16 +123,24 @@ export default class FacebookSetupForm extends Component {
   }
 
   disableButton() {
-    const { providerSettings } = this.props;
-    const initialFacebookID = _.get(providerSettings, 'appId', '');
-    const initialFacebookAppName = _.get(providerSettings, 'appName', '');
-    const { appId, appName } = this.state;
+    const {
+      providerSettings: {
+        appId: initialFacebookID = '',
+        appName: initialFacebookAppName = '',
+        clientToken: initialFacebookClientToken = '',
+      },
+    } = this.props;
+    const { appId, appName, clientToken } = this.state;
 
-    if (appName === initialFacebookAppName && appId === initialFacebookID) {
+    if (
+      appName === initialFacebookAppName &&
+      appId === initialFacebookID &&
+      clientToken === initialFacebookClientToken
+    ) {
       return true;
     }
 
-    if (appId === '' || appName === '') {
+    if (appId === '' || appName === '' || clientToken === '') {
       return true;
     }
 
@@ -126,13 +148,17 @@ export default class FacebookSetupForm extends Component {
   }
 
   render() {
-    const { providerSettings, className } = this.props;
-    const { enabled } = providerSettings;
+    const {
+      providerSettings: { enabled },
+      className,
+    } = this.props;
     const {
       appId,
       appIdError,
       appName,
       appNameError,
+      clientToken,
+      clientTokenError,
       error,
       submitting,
     } = this.state;
@@ -151,26 +177,32 @@ export default class FacebookSetupForm extends Component {
               <ControlLabel>
                 {i18next.t(LOCALIZATION.FORM_SETUP_FACEBOOK_TITLE)}
               </ControlLabel>
-              <Row>
-                <Col xs={6}>
-                  <FormInput
-                    elementId="facebookAppId"
-                    error={appIdError}
-                    name={i18next.t(LOCALIZATION.FORM_APP_ID_TITLE)}
-                    onChange={this.handleAppIdChange}
-                    value={appId}
-                  />
-                </Col>
-                <Col xs={6}>
-                  <FormInput
-                    elementId="facebookAppName"
-                    error={appNameError}
-                    name={i18next.t(LOCALIZATION.FORM_APP_NAME_TITLE)}
-                    onChange={this.handleAppNameChange}
-                    value={appName}
-                  />
-                </Col>
-              </Row>
+              <FormInput
+                elementId="facebookAppId"
+                error={appIdError}
+                name={i18next.t(LOCALIZATION.FORM_APP_ID_TITLE)}
+                onChange={this.handleAppIdChange}
+                value={appId}
+              />
+              <FormInput
+                elementId="facebookAppName"
+                error={appNameError}
+                name={i18next.t(LOCALIZATION.FORM_APP_NAME_TITLE)}
+                onChange={this.handleAppNameChange}
+                value={appName}
+              />
+              <FormInput
+                elementId="clientToken"
+                error={clientTokenError}
+                name={i18next.t(LOCALIZATION.FORM_CLIENT_TOKEN_TITLE)}
+                onChange={this.handleClientTokenChange}
+                value={clientToken}
+              />
+              <FormInput
+                disabled
+                name={i18next.t(LOCALIZATION.KEYPASS_HASH_TITLE)}
+                value={DEFAULT_KEYSTORE_HASH}
+              />
               <ButtonToolbar>
                 <Button
                   bsStyle="primary"

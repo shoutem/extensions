@@ -4,60 +4,11 @@ import { getAppId, getSubscriptionValidState } from 'shoutem.application';
 import { getExtensionSettings } from 'shoutem.application/redux';
 import { getUser, isAuthenticated } from 'shoutem.auth';
 import { Firebase, NotificationHandlers } from 'shoutem.firebase';
-import { getCurrentRoute, openInModal } from 'shoutem.navigation';
 import { before, priorities, setPriority } from 'shoutem-core';
 import { CONNECTION_STATUSES, ext } from './const';
-import { actions, handlers, selectors } from './redux';
+import { registerNotificationHandlers } from './notificationHandlers';
+import { actions, handlers } from './redux';
 import { SendBird } from './services';
-
-export function handleNotificationOpened(notification, dispatch, store) {
-  const sendBirdData = _.get(notification, 'data.sendbird');
-
-  if (!sendBirdData) {
-    return;
-  }
-
-  const parsedSendBirdData =
-    Platform.OS === 'ios' ? sendBirdData : JSON.parse(sendBirdData);
-
-  const channelId = _.get(parsedSendBirdData, 'channel.channel_url');
-
-  const state = store.getState();
-  const currentRoute = getCurrentRoute();
-  const activeChannelId = selectors.getActiveChannelId(state);
-
-  const sameDestinationChannel = channelId === activeChannelId;
-  const routeReady = currentRoute.name === ext('ChatWindowScreen');
-  const alreadyOnScreen = sameDestinationChannel && routeReady;
-
-  if (channelId && !alreadyOnScreen) {
-    openInModal(ext('ChatWindowScreen'), { channelId });
-  }
-}
-
-export function handleNotificationReceivedBackground(notification) {
-  if (Platform.OS !== 'ios') {
-    const sendbirdData = _.get(notification, 'data.sendbird');
-    const message = _.get(notification, 'data.message');
-    if (!sendbirdData) {
-      return;
-    }
-
-    Firebase.presentLocalNotification({
-      channelId: 'SENDBIRD',
-      message,
-      data: notification.data,
-      somethingElse: sendbirdData,
-    });
-  }
-}
-
-export function handleNotification(notification, dispatch, store) {
-  const { userInteraction, foreground } = notification;
-  if (Platform.OS === 'ios' && userInteraction && !foreground) {
-    handleNotificationOpened(notification, dispatch, store);
-  }
-}
 
 function handleAppStateChange(nextState) {
   if (nextState === 'active') {
@@ -97,15 +48,7 @@ export const appWillMount = setPriority(app => {
     });
   }
 
-  NotificationHandlers.registerNotificationReceivedHandlers({
-    owner: ext(),
-    notificationHandlers: {
-      onNotificationTapped: (notification, dispatch) =>
-        handleNotificationOpened(notification, dispatch, store),
-      onNotification: (notification, dispatch) =>
-        handleNotification(notification, dispatch, store),
-    },
-  });
+  registerNotificationHandlers(store);
 }, before(priorities.FIREBASE));
 
 export function appDidFinishLaunching(app) {

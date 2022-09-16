@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import _ from 'lodash';
+import moment from 'moment';
 import { RSAA } from 'redux-api-middleware';
 import { find, invalidate } from '@shoutem/redux-io';
 import { getExtensionSettings } from 'shoutem.application';
@@ -125,6 +126,33 @@ export function updateActiveJourney(triggerId, journey, payload = null) {
       },
     });
   };
+}
+
+// Checks if journey is scheduled, and if no notifications have been
+// triggered yet. If both conditions are met, the journey is cancelled
+export function cancelPendingJourney(triggerId) {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    const activeJourneys = getActiveJourneys(state);
+    const matchingActiveJourney = _.find(
+      activeJourneys,
+      journey => journey.trigger.value === triggerId,
+    );
+
+    if (!matchingActiveJourney) {
+      return;
+    }
+
+    const firstNotification = _.head(_.sortBy(matchingActiveJourney.notifications, ['delay']));
+    const firstNotificationDate = moment(matchingActiveJourney.startedAt).add(firstNotification.delay, 'minutes');
+
+    if (moment(Date.now()).isAfter(firstNotificationDate)) {
+      return;
+    }
+
+    dispatch(triggerCanceled(triggerId));
+  }
 }
 
 export function triggerOccured(triggerId, payload = null) {

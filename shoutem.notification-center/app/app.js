@@ -39,7 +39,7 @@ export const appWillMount = setPriority(app => {
   registerNotificationHandlers(store);
 }, before(priorities.FIREBASE));
 
-export async function appDidMount(app) {
+export const appDidMount = setPriority(async (app) => {
   const store = app.getStore();
   const state = store.getState();
   const appId = getAppId();
@@ -85,7 +85,7 @@ export async function appDidMount(app) {
       vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
     };
 
-    Firebase.createNotificationChannels([
+   await Firebase.createNotificationChannels([
       dailyNotificationsChannelConfig,
       journeyLocalNotificationsConfig,
     ]);
@@ -167,4 +167,4 @@ export async function appDidMount(app) {
   const { dispatch } = store;
 
   dispatch(fetchGroups());
-}
+}, priorities.FIRST);

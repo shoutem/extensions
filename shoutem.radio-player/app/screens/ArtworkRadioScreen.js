@@ -47,7 +47,7 @@ const DEPRECATED_RADIO_EXTENSION_SHORTCUT = 'shoutem.radio.Radio';
 export function ArtworkRadioScreen({ navigation, route, style }) {
   const { shortcut } = route.params;
   const {
-    settings: { navbarTitle, streamTitle, streamUrl },
+    settings: { navbarTitle, showSharing, streamTitle, streamUrl },
   } = shortcut;
 
   const dispatch = useDispatch();
@@ -253,14 +253,16 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
                 </Button>
               )}
             </View>
-            <View style={style.smallActionContainerRight}>
-              <Button onPress={shareStream} styleName="clear">
-                <Icon name="share" fill={style.smallActionIconFill} />
-                <Title style={style.smallActionText}>
-                  {I18n.t(ext('shareButtonLabel'))}
-                </Title>
-              </Button>
-            </View>
+            {showSharing && (
+              <View style={style.smallActionContainerRight}>
+                <Button onPress={shareStream} styleName="clear">
+                  <Icon name="share" fill={style.smallActionIconFill} />
+                  <Title style={style.smallActionText}>
+                    {I18n.t(ext('shareButtonLabel'))}
+                  </Title>
+                </Button>
+              </View>
+            )}
           </View>
         </View>
         <RadioActionSheet

@@ -39,101 +39,160 @@ function getFileContents(filePath) {
  * Resolves ios project settings to be configured for facebook authentication
  * If facebook authentication is enabled, writes the required keys to the Info.plist file
  */
-const configureFacebookSettingsIos = (facebookSettings) => {
+function configureFacebookSettingsIos(facebookSettings) {
   console.log('Configuring Facebook login settings for iOS');
 
   const plistPath = 'ios/Info.plist';
   const currentPlistContents = parsePlist(plistPath);
 
-  const appId = _.get(facebookSettings, 'appId');
-  const appName = _.get(facebookSettings, 'appName');
+  const appId = facebookSettings?.appId;
+  const appName = facebookSettings?.appName;
+  const clientToken = facebookSettings?.clientToken;
 
   const facebookPlistData = {
-    CFBundleURLTypes: [{
-      CFBundleURLSchemes: [`fb${appId}`],
-    }],
+    CFBundleURLTypes: [
+      {
+        CFBundleURLSchemes: [`fb${appId}`],
+      },
+    ],
     FacebookAppID: appId,
+    FacebookClientToken: clientToken,
     FacebookDisplayName: appName,
     FacebookAutoLogAppEventsEnabled: false,
-    LSApplicationQueriesSchemes: [
-      'fbapi',
-      'fb-messenger-api',
-      'fbauth2',
-      'fbshareextension',
-    ],
+    LSApplicationQueriesSchemes: ['fbapi', 'fb-messenger-share-api'],
   };
 
   const authInfoPlist = Object.assign(currentPlistContents, facebookPlistData);
 
   fs.writeFileSync(plistPath, plist.build(authInfoPlist));
-};
+}
 
-const getExistingFacebookAppId = (fileContents) => {
+function getExistingFacebookAppId(fileContents) {
   const fbAppIdRegex = /<string name="facebook_app_id">([^<]*)<\/string>/;
   const result = fileContents.match(fbAppIdRegex);
 
   return result && result[1];
-};
+}
 
-const configureFacebookSettingsAndroid = (facebookSettings) => {
+function getExistingClientToken(fileContents) {
+  const fbClientTokenRegex = /<string name="facebook_client_token">([^<]*)<\/string>/;
+  const result = fileContents.match(fbClientTokenRegex);
+
+  return result && result[1];
+}
+
+function updateXmlFile(xmlFile, property, newString, oldString) {
+  if (!oldString || !xmlFile.includes(property)) {
+    return xmlFile.replace('</resources>', `${newString}\n</resources>`);
+  }
+
+  return xmlFile.replace(oldString, newString);
+}
+
+function configureFacebookSettingsAndroid(facebookSettings = {}) {
   console.log('Configuring Facebook login settings for Android');
+  const {
+    appId: facebookAppId,
+    clientToken,
+    enabled: isFacebookAuthEnabled = false,
+  } = facebookSettings;
 
-  const stringsXmlFilePath = path.resolve(projectPath, 'android/app/src/main/res/values/strings.xml');
+  const stringsXmlFilePath = path.resolve(
+    projectPath,
+    'android/app/src/main/res/values/strings.xml',
+  );
   const stringsXmlContents = getFileContents(stringsXmlFilePath);
 
-  const facebookAppId = _.get(facebookSettings, 'appId');
-  const isFacebookAuthEnabled = _.get(facebookSettings, 'enabled', false);
   const existingFacebookAppId = getExistingFacebookAppId(stringsXmlContents);
-  const facebookAppIdDiffers = (facebookAppId !== existingFacebookAppId);
+  const facebookAppIdDiffers = facebookAppId !== existingFacebookAppId;
 
-  // fbauth is enabled, appId string is present and matches the current appId: no changes needed
-  if (isFacebookAuthEnabled && !facebookAppIdDiffers) {
-    return;
+  const existingClientToken = getExistingClientToken(stringsXmlContents);
+  const clientTokenDiffers = clientToken !== existingClientToken;
+
+  let resultingXmlFile = stringsXmlContents;
+
+  if (isFacebookAuthEnabled) {
+    if (!facebookAppIdDiffers && !clientTokenDiffers) {
+      return;
+    }
+
+    if (facebookAppIdDiffers) {
+      const appIdString = `<string name="facebook_app_id">${facebookAppId}</string>`;
+      const existingAppIdString = `<string name="facebook_app_id">${existingFacebookAppId}</string>`;
+
+      resultingXmlFile = updateXmlFile(
+        resultingXmlFile,
+        'facebook_app_id',
+        appIdString,
+        existingAppIdString,
+      );
+
+      const protocolString = `<string name="fb_login_protocol_scheme">fb${facebookAppId}</string>`;
+      const existingProtocolString = `<string name="fb_login_protocol_scheme">fb${existingFacebookAppId}</string>`;
+
+      resultingXmlFile = updateXmlFile(
+        resultingXmlFile,
+        'fb_login_protocol_scheme',
+        protocolString,
+        existingProtocolString,
+      );
+    }
+
+    if (clientTokenDiffers) {
+      const clientTokenString = `<string name="facebook_client_token">${clientToken}</string>`;
+      const existingClientTokenString = `<string name="facebook_client_token">${existingClientToken}</string>`;
+
+      resultingXmlFile = updateXmlFile(
+        resultingXmlFile,
+        'facebook_client_token',
+        clientTokenString,
+        existingClientTokenString,
+      );
+    }
+  } else {
+    if (!existingFacebookAppId) {
+      const dummyAppIdString = '<string name="facebook_app_id">112233</string>';
+      resultingXmlFile = updateXmlFile(
+        resultingXmlFile,
+        'facebook_app_id',
+        dummyAppIdString,
+      );
+
+      const dummyProtocolString = `<string name="fb_login_protocol_scheme">fb112233</string>`;
+      resultingXmlFile = updateXmlFile(
+        resultingXmlFile,
+        'fb_login_protocol_scheme',
+        dummyProtocolString,
+      );
+    }
+
+    if (!existingClientToken) {
+      const dummyString = 'string name="facebook_client_token">445566</string>';
+      resultingXmlFile = updateXmlFile(
+        resultingXmlFile,
+        'facebook_client_token',
+        dummyString,
+      );
+    }
   }
 
-  const facebookAppIdString = `<string name="facebook_app_id">${facebookAppId}</string>`;
-  const existingFacebookAppIdString = `<string name="facebook_app_id">${existingFacebookAppId}</string>`;
+  fs.writeFileSync(stringsXmlFilePath, resultingXmlFile);
+}
 
-  let searchString = '';
-  let replaceString = '';
-
-  // fbauth is enabled, but appIds differ: replace the old appId with the new one
-  if (isFacebookAuthEnabled && facebookAppIdDiffers) {
-    searchString = existingFacebookAppIdString;
-    replaceString = facebookAppIdString;
-  }
-  // fbauth is enabled, but appId is not present: add the appId string
-  else if (isFacebookAuthEnabled && !existingFacebookAppId) {
-    searchString = '</resources>';
-    replaceString = `${facebookAppIdString}\n</resources>`;
-  }
-  // fbauth is disabled && appId string is not present: add dummy appId
-  else if (!isFacebookAuthEnabled && !existingFacebookAppId) {
-    searchString = '</resources>';
-    replaceString = '<string name="facebook_app_id">112233</string>';
-  }
-
-  const updatedFileContents = stringsXmlContents.replace(searchString, replaceString);
-
-  fs.writeFileSync(stringsXmlFilePath, updatedFileContents);
-};
-
-const configureSettingsAndroid = (extensionSettings) => {
+function configureSettingsAndroid(extensionSettings) {
   const facebookSettings = _.get(extensionSettings, 'providers.facebook');
 
   configureFacebookSettingsAndroid(facebookSettings);
-};
+}
 
-const configureSettingsIos = (extensionSettings) => {
+function configureSettingsIos(extensionSettings) {
   const facebookSettings = _.get(extensionSettings, 'providers.facebook');
   const isFacebookAuthEnabled = _.get(facebookSettings, 'enabled', false);
 
-  if (!isFacebookAuthEnabled) {
-    return;
+  if (isFacebookAuthEnabled) {
+    configureFacebookSettingsIos(facebookSettings);
   }
-
-  configureFacebookSettingsIos(facebookSettings);
-};
+}
 
 module.exports = {
   configureSettingsAndroid,

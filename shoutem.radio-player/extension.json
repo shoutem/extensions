@@ -1,10 +1,10 @@
 {
   "name": "radio-player",
   "title": "Radio+",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "platform": ">=9",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
-  "releaseNotes": "* Improved metadata fetching",
+  "releaseNotes": "* Fixed showing or hiding sharing button on dynamic artwork layout based on settings",
   "nativeChanges": {
     "lastVersion": "6.0.1"
   },

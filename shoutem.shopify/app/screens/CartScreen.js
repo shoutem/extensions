@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
@@ -17,11 +17,10 @@ import {
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { closeModal, openInModal } from 'shoutem.navigation';
-import CartFooter from '../components/CartFooter';
-import CartItem from '../components/CartItem';
+import { CartFooter, CartItem } from '../components/cart';
 import { cart as cartShape, shop as shopShape } from '../components/shapes';
-import { cartItemRemoved, cartItemUpdated } from '../redux/actionCreators';
 import { ext } from '../const';
+import { cartItemRemoved, cartItemUpdated } from '../redux/actionCreators';
 import UpdateItemScreen from './UpdateItemScreen';
 
 /**
@@ -29,26 +28,10 @@ import UpdateItemScreen from './UpdateItemScreen';
  * a button that lets him proceed to checkout
  */
 class CartScreen extends PureComponent {
-  static propTypes = {
-    // A list of cart items, where an item is defined by a combination of product, its variant
-    // and quantity
-    cart: cartShape.isRequired,
-    // Action dispatched when an item is removed from the cart
-    cartItemRemoved: PropTypes.func.isRequired,
-    // Action dispatched when a cart item is updated
-    cartItemUpdated: PropTypes.func.isRequired,
-    // Shop properties, currently used just to display currency
-    shop: shopShape.isRequired,
-  };
-
   constructor(props) {
     super(props);
 
     autoBindReact(this);
-
-    this.state = {
-      selectedItem: null,
-    };
   }
 
   componentDidMount() {
@@ -134,6 +117,14 @@ class CartScreen extends PureComponent {
     );
   }
 }
+
+CartScreen.propTypes = {
+  cart: cartShape.isRequired,
+  cartItemRemoved: PropTypes.func.isRequired,
+  cartItemUpdated: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  shop: shopShape.isRequired,
+};
 
 const mapStateToProps = state => {
   const { cart, shop } = state[ext()];

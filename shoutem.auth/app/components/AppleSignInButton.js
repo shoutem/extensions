@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
+import { isPreviewApp } from 'shoutem.preview';
 import { ext } from '../const';
 import { getErrorCode, resolveErrorMessage } from '../errorMessages';
 import { getUser, loginWithApple, registerWithApple } from '../redux';
@@ -48,6 +49,17 @@ class AppleSignInButton extends PureComponent {
   handleAppleButtonPress() {
     const { disabled } = this.props;
     const { inProgress } = this.state;
+
+    if (isPreviewApp) {
+      Alert.alert(
+        I18n.t(ext('appleLoginPreviewTitle')),
+        I18n.t(ext('appleLoginPreviewMessage')),
+        [],
+        { cancelable: true },
+      );
+
+      return;
+    }
 
     if (disabled || inProgress) {
       return null;

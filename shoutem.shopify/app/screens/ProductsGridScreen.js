@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import ProductsGrid from '../components/ProductsGrid';
-import {
-  ProductsListScreen,
-  mapStateToProps,
-  mapDispatchToProps,
-} from './ProductsListScreen';
 import { ext } from '../const';
+import {
+  mapDispatchToProps,
+  mapStateToProps,
+  ProductsListScreen,
+} from './ProductsListScreen';
 
 /**
  * Allows users to browse through products arranged in a grid view.

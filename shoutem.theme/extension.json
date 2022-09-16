@@ -1,11 +1,11 @@
 {
   "name": "theme",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "platform": ">=9",
   "type": "system",
   "title": "Theme",
   "description": "Resolve and store theme related configuration",
-  "releaseNotes": "* Added support for platform 9.0.0",
+  "releaseNotes": "* Added new @shoutem/ui version (5.4.0)",
   "icon": "server/assets/add-theme-image.png",
   "categories": [],
   "i18n": {

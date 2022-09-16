@@ -6,7 +6,7 @@ export function ext(resourceName) {
 }
 
 export const DEFAULT_EXTENSION_SETTINGS = {
-  store: "",
-  apiKey: "",
-  discountCode: ""
+  store: '',
+  apiKey: '',
+  discountCode: '',
 };

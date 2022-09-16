@@ -1,5 +1,6 @@
 import express from 'express';
 import { authenticate } from '../core/auth';
+import { healthRouter } from './health';
 import { usersRouter } from './users';
 
 /**
@@ -10,6 +11,8 @@ import { usersRouter } from './users';
 // import { assertAuthenticated } from './shared/auth';
 
 export const router = new express.Router();
+
+router.use('/v1/health', healthRouter);
 
 const mockTokenProvider = {
   validateToken: async () => Promise.resolve('antinUsername'),

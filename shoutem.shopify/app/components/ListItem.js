@@ -1,74 +1,51 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Button,
-  Caption,
-  Divider,
-  Icon,
-  Image,
-  Row,
-  Subtitle,
-  TouchableOpacity,
-  View,
-} from '@shoutem/ui';
-import { images as localImages } from '../assets';
+import { Image, Row, TouchableOpacity, View } from '@shoutem/ui';
+import { images as imageAssets } from '../assets';
 import { ext } from '../const';
+import { getProductImage } from '../services';
+import { AddToCartButton, ProductPrice, ProductTitle } from './product';
 import { product as productShape, shop as shopShape } from './shapes';
 
-const ListItem = ({ item, onAddToCart, onPress, shop }) => {
+function ListItem({ item, onAddToCart, onPress, shop, style }) {
   const { images, title } = item;
-  const { currency = '' } = shop;
+  const { currency = '', moneyFormat } = shop;
 
-  const variant = item.variants[0];
-  const newPrice = parseFloat(variant.price);
-  const oldPrice = parseFloat(variant.compareAtPrice);
+  const productImage = useMemo(() => getProductImage(images), [images]);
 
-  const newPriceString = `${currency}${newPrice}`;
-  const oldPriceString = oldPrice ? `${currency}${oldPrice}` : null;
-
-  const productImage = images[0]
-    ? { uri: images[0].src }
-    : localImages.fallback;
-
-  // TODO: Format currency in locale
   return (
     <TouchableOpacity onPress={onPress}>
-      <Row>
+      <Row style={style.container}>
         <Image
-          styleName="small"
+          style={style.image}
           source={productImage}
-          defaultSource={images.fallback}
+          defaultSource={imageAssets.fallback}
         />
-        <View styleName="vertical stretch space-between">
-          <Subtitle>{title}</Subtitle>
-          <View styleName="horizontal">
-            <Subtitle styleName="md-gutter-right">{newPriceString}</Subtitle>
-            {oldPriceString && (
-              <Caption styleName="line-through">{oldPriceString}</Caption>
-            )}
-          </View>
+        <View style={style.contentContainer}>
+          <ProductTitle title={title} />
+          <ProductPrice
+            product={item}
+            currency={currency}
+            moneyFormat={moneyFormat}
+          />
         </View>
-        <Button onPress={onAddToCart} styleName="right-icon">
-          <Icon name="add-to-cart" />
-        </Button>
+        <AddToCartButton onPress={onAddToCart} />
       </Row>
-      <Divider styleName="line" />
     </TouchableOpacity>
   );
-};
-
-const { func } = PropTypes;
+}
 
 ListItem.propTypes = {
-  // Product
   item: productShape.isRequired,
-  // Shop, used to display currency
   shop: shopShape.isRequired,
-  // Called when item is added to cart
-  onAddToCart: func.isRequired,
-  // Called when item is pressed
-  onPress: func.isRequired,
+  onAddToCart: PropTypes.func.isRequired,
+  onPress: PropTypes.func.isRequired,
+  style: PropTypes.object,
+};
+
+ListItem.defaultProps = {
+  style: {},
 };
 
 export default connectStyle(ext('ListItem'))(ListItem);

@@ -15,7 +15,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.shopify.buy3.CardClient;
 import com.shopify.buy3.CreditCard;
+import com.shopify.buy3.QueryGraphCall;
 import com.shopify.buy3.GraphCall;
+import com.shopify.buy3.GraphCallResult;
 import com.shopify.buy3.GraphClient;
 import com.shopify.buy3.GraphError;
 import com.shopify.buy3.GraphResponse;
@@ -34,6 +36,8 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import kotlin.Unit;
 
 public class ShopifyModule extends ReactContextBaseJavaModule {
 
@@ -57,11 +61,14 @@ public class ShopifyModule extends ReactContextBaseJavaModule {
     // TODO: replace Callback with Promise
     @ReactMethod
     public void initStore(String shopDomain, String apiKey, Callback callback) {
-        client = GraphClient
-                .builder(this.getReactApplicationContext())
-                .shopDomain(shopDomain)
-                .accessToken(apiKey)
-                .build();
+        client = GraphClient.Companion
+            .build(
+                this.getReactApplicationContext(),
+                shopDomain,
+                apiKey,
+                builder -> {
+                    return Unit.INSTANCE;
+                });
         callback.invoke(true);
     }
 
@@ -71,22 +78,23 @@ public class ShopifyModule extends ReactContextBaseJavaModule {
                 .name()
                 .moneyFormat()
                 .paymentSettings(p -> p.cardVaultUrl())
-        ));
-        try {
-            Storefront.QueryRoot response = client.queryGraph(q).execute().data();
-            this.cardVaultUrl = response.getShop().getPaymentSettings().getCardVaultUrl();
-            promise.resolve(this.gson.toJson(response.getShop()));
-        } catch (GraphError graphError) {
-            graphError.printStackTrace();
-            promise.reject(graphError);
-        }
+        )); 
+       
+            client.queryGraph(q).enqueue(result -> {
+                if (result instanceof GraphCallResult.Success) {
+                    this.cardVaultUrl = ((GraphCallResult.Success<Storefront.QueryRoot>) result).getResponse().getData().getShop().getPaymentSettings().getCardVaultUrl();
+                    promise.resolve(this.gson.toJson(((GraphCallResult.Success<Storefront.QueryRoot>) result).getResponse().getData().getShop()));
+                } else {
+                    promise.reject(((GraphCallResult.Failure) result).getError());
+                }
+                return Unit.INSTANCE;
+              });
     }
 
     @ReactMethod
     public void getCollections(String cursor, Promise promise) {
         final String cursorValue = cursor.length() == 0 ? null : cursor;
-        Storefront.QueryRootQuery query = Storefront.query(q -> q.shop(shop ->
-            shop.collections(args -> args
+        Storefront.QueryRootQuery query = Storefront.query(q -> q.collections(args -> args
                 // TODO: implement pagination, high priority
                 .first(250)
                 .after(cursorValue),
@@ -100,41 +108,45 @@ public class ShopifyModule extends ReactContextBaseJavaModule {
                     .handle()
                     .title()
                     .description()
-                    .image(i -> i.src())
+                    .image(i -> i.url())
                   )
                 )
               )
-            )
-          );
+            );
 
-        try {
-            Storefront.QueryRoot response = client.queryGraph(query).execute().data();
-            promise.resolve(new Gson().toJson(response.getShop()));
-        } catch (GraphError graphError) {
-            graphError.printStackTrace();
-        }
+               
+            client.queryGraph(query).enqueue(result -> {
+                if (result instanceof GraphCallResult.Success) {
+                    promise.resolve(new Gson().toJson(((GraphCallResult.Success<Storefront.QueryRoot>) result).getResponse().getData().getCollections()));
+                } else {
+                    promise.reject(((GraphCallResult.Failure) result).getError());
+                }
+                return Unit.INSTANCE;
+              });
     }
 
     @ReactMethod
     public void filterProducts(String filter, Promise promise) {
-        Storefront.QueryRootQuery query = Storefront.query(q -> q.shop(shop ->
-                shop.products(args -> args.first(250).query(filter), edges -> edges.edges(edge -> edge.node(pNode ->
+        Storefront.QueryRootQuery query = Storefront.query(q -> q.products(
+            args -> args.first(250).query(filter), edges -> edges.edges(edge -> edge.node(pNode ->
                     pNode.description().descriptionHtml().title().createdAt().handle().options(o -> o.name().values())
                             .images(args -> args.first(250), iEdges -> iEdges.edges(iEdge -> iEdge.node(iNode ->
-                                    iNode.src()
+                                    iNode.url()
                             )))
                             .variants(args -> args.first(250), vEdges -> vEdges.edges(vEdge -> vEdge.node(vNode ->
                                     vNode.compareAtPrice().availableForSale().price().sku().title()
                                             .weight().weightUnit().selectedOptions(so -> so.name().value())
                             )))
-                )))));
-        try {
-            Storefront.QueryRoot response = client.queryGraph(query).execute().data();
-            promise.resolve(this.gson.toJson(response.getShop()));
-        } catch (GraphError graphError) {
-            graphError.printStackTrace();
-            promise.reject(graphError);
-        }
+                ))));
+        
+                client.queryGraph(query).enqueue(result -> {
+                    if (result instanceof GraphCallResult.Success) {
+                        promise.resolve(this.gson.toJson(((GraphCallResult.Success<Storefront.QueryRoot>) result).getResponse().getData()));
+                    } else {
+                        promise.reject(((GraphCallResult.Failure) result).getError());
+                    }
+                    return Unit.INSTANCE;
+                  });
     }
 
     @ReactMethod
@@ -144,7 +156,7 @@ public class ShopifyModule extends ReactContextBaseJavaModule {
                         collection.products(args -> args.first(250), edges -> edges.edges(edge -> edge.node(pNode ->
                                 pNode.description().descriptionHtml().title().createdAt().handle().options(o -> o.name().values())
                                         .images(args -> args.first(250), iEdges -> iEdges.edges(iEdge -> iEdge.node(iNode ->
-                                                iNode.src()
+                                                iNode.url()
                                         )))
                                         .variants(args -> args.first(250), vEdges -> vEdges.edges(vEdge -> vEdge.node(vNode ->
                                                 vNode.compareAtPrice().availableForSale().price().sku().title()
@@ -153,13 +165,14 @@ public class ShopifyModule extends ReactContextBaseJavaModule {
                         )))
                 ))
         );
-        try {
-            Storefront.QueryRoot response = client.queryGraph(query).execute().data();
-            promise.resolve(this.gson.toJson(response));
-        } catch (GraphError graphError) {
-            graphError.printStackTrace();
-            promise.reject(graphError);
-        }
+        client.queryGraph(query).enqueue(result -> {
+            if (result instanceof GraphCallResult.Success) {
+                promise.resolve(this.gson.toJson(((GraphCallResult.Success<Storefront.QueryRoot>) result).getResponse().getData()));
+            } else {
+                promise.reject(((GraphCallResult.Failure) result).getError());
+            }
+            return Unit.INSTANCE;
+          });
     }
 
     private String getString(ReadableMap map, String key) {
@@ -208,19 +221,20 @@ public class ShopifyModule extends ReactContextBaseJavaModule {
                 )
         );
 
-        try {
-            Storefront.Mutation response = client.mutateGraph(mutation).execute().data();
-            if (response.getCheckoutCreate().getUserErrors().isEmpty()) {
-                this.webUrl = response.getCheckoutCreate().getCheckout().getWebUrl();
-                this.checkoutId = response.getCheckoutCreate().getCheckout().getId();
-                this.paymentDue = response.getCheckoutCreate().getCheckout().getPaymentDue();
-            }
-            promise.resolve(this.gson.toJson(response));
-        } catch (GraphError graphError) {
-            graphError.printStackTrace();
-            promise.reject(graphError);
-        }
+        client.mutateGraph(mutation).enqueue(result -> {
+            if (result instanceof GraphCallResult.Success) {
+                if (((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData().getCheckoutCreate().getUserErrors().isEmpty()) {
+                    this.webUrl = ((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData().getCheckoutCreate().getCheckout().getWebUrl();
+                    this.checkoutId = ((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData().getCheckoutCreate().getCheckout().getId();
+                    this.paymentDue = ((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData().getCheckoutCreate().getCheckout().getPaymentDue();
+                }
 
+                promise.resolve(this.gson.toJson(((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData()));
+            } else {
+                promise.reject(((GraphCallResult.Failure) result).getError());
+            }
+            return Unit.INSTANCE;
+          });
     }
 
 }

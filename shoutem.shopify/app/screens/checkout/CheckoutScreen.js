@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
+import { Alert, KeyboardAvoidingView } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Alert, KeyboardAvoidingView } from 'react-native';
-import { connect } from 'react-redux';
 import countryData from 'world-countries';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -16,11 +16,11 @@ import {
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import CartFooter from '../../components/CartFooter';
+import { CartFooter } from '../../components/cart';
 import { customer as customerShape } from '../../components/shapes';
+import { ext } from '../../const';
 import { updateCustomerInformation } from '../../redux/actionCreators';
 import { getFieldLabel } from '../../services/getFormFieldLabel';
-import { ext } from '../../const';
 
 const loadCountries = () =>
   _.sortBy(
@@ -50,13 +50,6 @@ const arrayMove = function(arr, from, to) {
  * next step - the web checkout
  */
 class CheckoutScreen extends PureComponent {
-  static propTypes = {
-    // The customer performing the checkout
-    customer: customerShape,
-    // Action dispatched when proceeding to the next step
-    updateCustomerInformation: PropTypes.func.isRequired,
-  };
-
   constructor(props) {
     super(props);
 
@@ -112,7 +105,7 @@ class CheckoutScreen extends PureComponent {
     const { updateCustomerInformation, cart } = this.props;
     const { countryCode } = this.state;
 
-    const values = _.map(this.fields, ({ name }) => this.state[name]);
+    const values = _.map(this.fields, ({ name }) => _.get(this.state, name));
 
     if (_.some(values, _.isEmpty) || !countryCode) {
       Alert.alert(
@@ -125,9 +118,9 @@ class CheckoutScreen extends PureComponent {
 
     const customerInformation = { ...this.state };
 
-    var cartItems = [];
-    for (var i = 0; i < cart.length; i++) {
-      var item = cart[i];
+    const cartItems = [];
+    for (let i = 0; i < cart.length; i++) {
+      const item = cart[i];
       cartItems.push({
         id: item.variant.id,
         quantity: item.quantity,
@@ -138,7 +131,7 @@ class CheckoutScreen extends PureComponent {
   }
 
   renderInput(field) {
-    const { autoCapitalize, name, label, keyboardType } = field;
+    const { autoCapitalize, name, label, keyboardType, value } = field;
 
     return (
       <FormGroup key={name}>
@@ -151,7 +144,7 @@ class CheckoutScreen extends PureComponent {
           keyboardType={keyboardType || 'default'}
           onChangeText={text => this.setState({ [name]: text })}
           returnKeyType="done"
-          value={this.state[name]}
+          value={value}
         />
         <Divider styleName="line sm-gutter-bottom" />
       </FormGroup>
@@ -171,8 +164,8 @@ class CheckoutScreen extends PureComponent {
           options={countries}
           selectedOption={selectedCountry || countries[0]}
           styleName={countryCode ? '' : 'empty'}
-          titleProperty={'name'}
-          valueProperty={'cca2'}
+          titleProperty="name"
+          valueProperty="cca2"
         />
       </FormGroup>
     );
@@ -196,6 +189,13 @@ class CheckoutScreen extends PureComponent {
     );
   }
 }
+
+CheckoutScreen.propTypes = {
+  cart: PropTypes.object.isRequired,
+  customer: customerShape.isRequired,
+  navigation: PropTypes.object.isRequired,
+  updateCustomerInformation: PropTypes.func.isRequired,
+};
 
 const mapStateToProps = state => {
   const { customer, cart } = state[ext()];

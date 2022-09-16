@@ -43,6 +43,7 @@ import {
   canFilter,
 } from '../../services';
 import { PagingMore } from '../../components';
+import { SORT_OPTIONS } from '../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -125,8 +126,10 @@ export class ResourceDashboard extends Component {
       const nextSort = getSortFromSortOptions(nextSortOptions);
 
       let limit = DEFAULT_LIMIT;
-      if (nextResources) {
-        limit = nextResources.length;
+      if (nextResources && currentSort === SORT_OPTIONS.MANUAL) {
+        if (limit < nextResources.length) {
+          limit = nextResources.length;
+        }
       }
 
       // when sort is changed we are returning default pagination limit

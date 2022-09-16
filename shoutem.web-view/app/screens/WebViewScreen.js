@@ -183,7 +183,13 @@ export class WebViewScreen extends PureComponent {
     const resolvedUrl = parseUrl(url, ownUser);
 
     if (resolvedUrl.includes('.pdf')) {
-      return <Pdf source={{ uri: url }} style={style.pdfStyle} />;
+      return (
+        <Pdf
+          source={{ uri: url }}
+          style={style.pdfStyle}
+          trustAllCerts={false}
+        />
+      );
     }
 
     return <WebView {...this.resolveWebViewProps(appContext)} />;

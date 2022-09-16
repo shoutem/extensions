@@ -1,22 +1,22 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { find } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { EmptyStateView, ListView, Screen } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import {
-  navigateTo,
   closeModal,
-  openInModal,
   getCurrentRoute,
+  navigateTo,
+  openInModal,
 } from 'shoutem.navigation';
+import { ext, PAGE_SIZE } from '../const';
 import { cartItemAdded, refreshProducts } from '../redux/actionCreators';
 import { getProducts } from '../redux/selectors';
 import UpdateItemScreen from '../screens/UpdateItemScreen';
-import { ext, PAGE_SIZE } from '../const';
 import FeaturedItem from './FeaturedItem';
 import ListItem from './ListItem';
 import { product as productShape, shop as shopShape } from './shapes';
@@ -28,34 +28,10 @@ import { product as productShape, shop as shopShape } from './shapes';
  * details or add a product to cart.
  */
 export class ProductsList extends PureComponent {
-  static propTypes = {
-    // Action dispatched when a product is added to the cart
-    cartItemAdded: PropTypes.func.isRequired,
-    // Collection ID for which products are displayed
-    collectionId: PropTypes.string,
-    productsState: PropTypes.shape({
-      // Used to display a loading status when fetching new products
-      isLoading: PropTypes.bool,
-      // Has fetching products failed with an error
-      error: PropTypes.bool,
-      // Products displayed in this list for its collection ID or tag
-      products: PropTypes.arrayOf(productShape),
-    }),
-    // Called when reaching the end of the list to load more products or
-    // to refresh them completely
-    refreshProducts: PropTypes.func.isRequired,
-    // Shop properties, currently used just to display currency
-    shop: shopShape.isRequired,
-    // Product tag for which products are displayed
-    tag: PropTypes.string,
-  };
-
   constructor(props) {
     super(props);
 
     autoBindReact(this);
-
-    this.state = { selectedItem: null };
   }
 
   componentDidMount() {
@@ -86,7 +62,9 @@ export class ProductsList extends PureComponent {
   }
 
   onLoadMore() {
-    const { products } = this.props.productsState;
+    const {
+      productsState: { products },
+    } = this.props;
 
     if (_.size(products) < PAGE_SIZE) {
       return;
@@ -186,6 +164,7 @@ export class ProductsList extends PureComponent {
         renderRow={this.renderProductRow}
         hasFeaturedItem={hasFeaturedItem}
         renderFeaturedItem={item => this.renderFeaturedProduct(item)}
+        scrollIndicatorInsets={{ right: 1 }}
       />
     );
   }
@@ -239,6 +218,24 @@ export const mapStateToProps = (state, ownProps) => {
     productsState,
     shop,
   };
+};
+
+ProductsList.propTypes = {
+  cartItemAdded: PropTypes.func.isRequired,
+  collectionId: PropTypes.string.isRequired,
+  hasFeaturedItem: PropTypes.bool.isRequired,
+  productsState: PropTypes.shape({
+    error: PropTypes.bool,
+    isLoading: PropTypes.bool,
+    products: PropTypes.arrayOf(productShape),
+  }).isRequired,
+  refreshProducts: PropTypes.func.isRequired,
+  shop: shopShape.isRequired,
+  tag: PropTypes.string,
+};
+
+ProductsList.defaultProps = {
+  tag: null,
 };
 
 export const mapDispatchToProps = {

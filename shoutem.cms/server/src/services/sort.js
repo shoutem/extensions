@@ -17,7 +17,7 @@ export function getSortFromSortOptions(sortOptions) {
   // we fallback to alphabetical name sort (we can't preview
   // distance sort without users location)
   if (field === 'location') {
-    return { sort: 'name' };
+    return 'name';
   }
 
   return order === 'ascending' ? field : `-${field}`;

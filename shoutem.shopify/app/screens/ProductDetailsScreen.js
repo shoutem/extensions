@@ -1,19 +1,18 @@
-/* eslint-disable camelcase */
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Heading,
+  Html,
   Icon,
   ImageGallery,
   InlineGallery,
   Overlay,
   PageIndicators,
-  Html,
   Screen,
   ScrollView,
   Subtitle,
@@ -24,21 +23,21 @@ import {
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import {
-  navigateTo,
   closeModal,
-  openInModal,
   getRouteParams,
   HeaderCloseButton,
+  navigateTo,
+  openInModal,
 } from 'shoutem.navigation';
-import CartIcon from '../components/CartIcon';
+import { CartIcon } from '../components/cart';
 import {
   product as productShape,
   shop as shopShape,
 } from '../components/shapes';
+import { ext } from '../const';
 import { cartItemAdded } from '../redux/actionCreators';
 import { getCartSize } from '../redux/selectors';
-import { getDiscount } from '../services/getDiscount';
-import { ext } from '../const';
+import { getDiscount } from '../services';
 import UpdateItemScreen from './UpdateItemScreen';
 
 const renderPageIndicators = (data, selectedIndex) => {
@@ -61,17 +60,6 @@ const renderPageIndicators = (data, selectedIndex) => {
  * also add a product to cart from this screen or go to cart.
  */
 class ProductDetailsScreen extends PureComponent {
-  static propTypes = {
-    // Number of items that the user has added to his cart
-    cartSize: PropTypes.number,
-    // Action dispatched when a product has been added to the cart
-    cartItemAdded: PropTypes.func.isRequired,
-    // Product for which details are shown
-    item: productShape.isRequired,
-    // Shop properties, currently used just to display currency
-    shop: shopShape.isRequired,
-  };
-
   constructor(props) {
     super(props);
 
@@ -161,7 +149,7 @@ class ProductDetailsScreen extends PureComponent {
     const { selectedImageIndex } = this.state;
 
     const data = _.map(images, image => ({
-      source: { uri: image.src },
+      source: { uri: image.url },
       title: '',
     }));
 
@@ -182,7 +170,7 @@ class ProductDetailsScreen extends PureComponent {
     } = this.props;
     const { selectedImageIndex } = this.state;
 
-    const data = _.map(images, image => ({ source: { uri: image.src } }));
+    const data = _.map(images, image => ({ source: { uri: image.url } }));
 
     return (
       <InlineGallery
@@ -260,6 +248,18 @@ class ProductDetailsScreen extends PureComponent {
     );
   }
 }
+
+ProductDetailsScreen.propTypes = {
+  cartItemAdded: PropTypes.func.isRequired,
+  item: productShape.isRequired,
+  navigation: PropTypes.object.isRequired,
+  shop: shopShape.isRequired,
+  cartSize: PropTypes.number,
+};
+
+ProductDetailsScreen.defaultProps = {
+  cartSize: null,
+};
 
 const mapStateToProps = (state, ownProps) => {
   const { products, shop } = state[ext()];

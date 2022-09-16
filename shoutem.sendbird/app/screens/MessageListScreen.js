@@ -82,11 +82,19 @@ export class MessageListScreen extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { isConnected, channels } = this.props;
-    const { isConnected: prevIsConnected } = prevProps;
+    const { isConnected, isFocused, channels } = this.props;
+    const {
+      isConnected: prevIsConnected,
+      isFocused: prevIsFocused,
+      channels: prevChannels,
+    } = prevProps;
 
     if (!prevIsConnected && isConnected && _.isEmpty(channels)) {
       this.loadInitialChannels();
+    }
+
+    if (prevChannels !== channels || (!prevIsFocused && isFocused)) {
+      this.handleSearchLoaded();
     }
   }
 
@@ -115,7 +123,7 @@ export class MessageListScreen extends PureComponent {
     const { searchChannels } = this.props;
 
     if (!SendBird.getInstance()) {
-      return;
+      return null;
     }
 
     return searchChannels(searchTerm);
@@ -127,7 +135,7 @@ export class MessageListScreen extends PureComponent {
 
   handleSearchTextChange(newSearchQuery) {
     const { searchQuery } = this.state;
-    const { searchUsers } = this.props;
+    const { searchUsers, searchChannels } = this.props;
     const wasEmpty = _.isEmpty(searchQuery);
     const isEmpty = _.isEmpty(newSearchQuery);
 
@@ -145,7 +153,7 @@ export class MessageListScreen extends PureComponent {
       this.setState({ membersLoading: true });
 
       return Promise.all([
-        this.props.searchChannels(newSearchQuery),
+        searchChannels(newSearchQuery),
         searchUsers(newSearchQuery),
       ])
         .then(this.handleSearchLoaded)
@@ -154,6 +162,8 @@ export class MessageListScreen extends PureComponent {
           this.setState({ membersLoading: false });
         });
     }
+
+    return null;
   }
 
   filterSearchedUsers() {
@@ -297,6 +307,7 @@ MessageListScreen.propTypes = {
   clearSearch: PropTypes.func.isRequired,
   currentUser: PropTypes.object.isRequired,
   isConnected: PropTypes.bool.isRequired,
+  isFocused: PropTypes.bool.isRequired,
   isSendBirdConfigured: PropTypes.bool.isRequired,
   loadChannels: PropTypes.func.isRequired,
   loadUsers: PropTypes.func.isRequired,

@@ -6,10 +6,11 @@ import {
   getExtensionSettings,
   setQueueTargetComplete,
 } from 'shoutem.application';
+import { cancelPendingJourney } from 'shoutem.notification-center';
 import { getCurrentRoute } from 'shoutem.navigation';
 import { authProviders } from './services/authProviders';
 import { shoutemApi } from './services/shoutemApi';
-import { ext } from './const';
+import { ext, COMPLETE_REGISTRATION_TRIGGER } from './const';
 import {
   AUTH_TOKEN_SCHEMA,
   fetchUser,
@@ -62,6 +63,10 @@ const createHandleAppStateChange = (dispatch, getState) => appState => {
 
   if (appState === 'active' && activeRoute?.name !== ext('EditProfileScreen')) {
     refreshUser(dispatch, getState);
+  }
+
+  if (appState === 'active') {
+    dispatch(cancelPendingJourney(COMPLETE_REGISTRATION_TRIGGER));
   }
 
   if (appState.match(/inactive|background/) && previousAppState === 'active') {

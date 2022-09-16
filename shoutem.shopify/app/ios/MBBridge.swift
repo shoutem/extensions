@@ -72,7 +72,7 @@ class MBBridge: NSObject {
     @objc func getCollections(_ cursor: NSString, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let cursorValue = cursor == "" ? nil : cursor as String
         self.client?.queryGraphWith(MBBridge.queryForCollections(250, cursor:cursorValue)) {(query, error) in
-            if let collections = query?.fields["shop"] {
+            if let collections = query?.fields["collections"] {
                 resolve(collections)
             }
             if let error = error {
@@ -132,7 +132,7 @@ class MBBridge: NSObject {
                                     .edges() { $0
                                         .node() { $0
                                             .id()
-                                            .src()
+                                            .url()
                                         }
                                     }
                                 }
@@ -233,7 +233,6 @@ class MBBridge: NSObject {
     // UTILS
     static func queryForCollections(_ limit: Int, cursor: String? = nil) -> Storefront.QueryRootQuery {
         return Storefront.buildQuery { $0
-            .shop { $0
                 .collections(first: Int32(limit), after: cursor) { $0
                     .pageInfo { $0
                         .hasNextPage()
@@ -245,18 +244,16 @@ class MBBridge: NSObject {
                             .title()
                             .descriptionHtml()
                             .image() { $0
-                                .src()
+                                .url()
                             }
                         }
                     }
                 }
-            }
         }
     }
 
     static func queryForProducts(_ limit: Int, query: String? = nil) -> Storefront.QueryRootQuery {
         return Storefront.buildQuery { $0
-            .shop { $0
                 .products(first: Int32(limit), query: query) { $0
                     .edges {$0
                         .node {$0
@@ -293,14 +290,13 @@ class MBBridge: NSObject {
                                 .edges() { $0
                                     .node() { $0
                                         .id()
-                                        .src()
+                                        .url()
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
         }
     }
 

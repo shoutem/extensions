@@ -3,6 +3,25 @@ import moment from 'moment';
 import { JOURNEY_NOTIFICATIONS_CHANNEL_ID } from '../const';
 import notificationService from './notifications';
 
+function createNotificationId(stringifiedId) {
+  if (!stringifiedId) {
+    return null;
+  }
+
+  const signedHash = _.reduce(stringifiedId, (result, _char, index) => {
+    const char = stringifiedId.charCodeAt(index);
+    let hash = ((result << 5) - result) + char;
+
+    // convert to 32Bit int
+    hash |= 0;
+
+    return hash;
+  });
+
+  // make sure the signed Int is positive
+  return Math.abs(signedHash)
+}
+
 function calculateEndsAt(journey) {
   const notificationsPerDelay = _.sortBy(journey.notifications, ['delay']);
   const maxDelayNotification = _.last(notificationsPerDelay);
@@ -26,8 +45,7 @@ function isJourneyActive(journey) {
 
 function scheduleNotifications(triggerId, notifications, payload) {
   return notifications.forEach((notification, index) => {
-    const dateStampString = moment().format('X');
-    const notificationId = `${dateStampString.slice(0, -1)}${index}`;
+    const notificationId = createNotificationId(`${triggerId}-${index.toString()}`);
 
     return notificationService.scheduleLocalNotifications(
       { ...notification, channelId: JOURNEY_NOTIFICATIONS_CHANNEL_ID },

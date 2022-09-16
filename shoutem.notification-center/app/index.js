@@ -6,7 +6,7 @@ import PushGroupsScreen from './screens/PushGroupsScreen';
 import ReminderSettingsScreen from './screens/ReminderSettingsScreen';
 import enTranslations from './translations/en.json';
 import { registerBackgroundMessageHandler } from './notificationHandlers';
-import { middleware, reducer, triggerCanceled, triggerOccured } from './redux';
+import { middleware, reducer, triggerCanceled, triggerOccured, cancelPendingJourney } from './redux';
 
 // Android only. Handles push notifications when the app is killed.
 // Has to be defined outside app lifecycle
@@ -31,6 +31,6 @@ export const shoutem = {
 
 export { notificationJourneys } from './services';
 
-export { middleware, reducer, screens, triggerCanceled, triggerOccured };
+export { middleware, reducer, screens, triggerCanceled, triggerOccured, cancelPendingJourney };
 
 export { appDidMount } from './app';

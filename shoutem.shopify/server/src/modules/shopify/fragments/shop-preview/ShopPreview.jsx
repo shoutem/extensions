@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
+import { ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
 import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import LOCALIZATION from './localization';
 import './style.scss';
 

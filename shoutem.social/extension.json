@@ -1,7 +1,7 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "9.0.0",
+  "version": "9.0.1",
   "platform": ">=6",
   "nativeChanges": {
     "lastVersion": "6.0.0",

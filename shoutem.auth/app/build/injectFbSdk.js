@@ -17,38 +17,90 @@ const { fbSdk } = require('./const');
 
 function injectFbSdkAndroid() {
   const mainApplication = getMainApplicationPath({ cwd: projectPath });
-  inject(mainApplication, ANCHORS.ANDROID.MAIN_APPLICATION.IMPORT, fbSdk.android.mainApplication.import);
-  inject(mainApplication, ANCHORS.ANDROID.MAIN_APPLICATION.GET_PACKAGES, fbSdk.android.mainApplication.package);
+  inject(
+    mainApplication,
+    ANCHORS.ANDROID.MAIN_APPLICATION.IMPORT,
+    fbSdk.android.mainApplication.import,
+  );
+  inject(
+    mainApplication,
+    ANCHORS.ANDROID.MAIN_APPLICATION.GET_PACKAGES,
+    fbSdk.android.mainApplication.package,
+  );
 
   const androidManifestPath = getAndroidManifestPath({ cwd: projectPath });
-  inject(androidManifestPath, ANCHORS.ANDROID.MANIFEST.APPLICATION, fbSdk.android.manifest);
+  inject(
+    androidManifestPath,
+    ANCHORS.ANDROID.MANIFEST.APPLICATION,
+    fbSdk.android.manifest.facebookActivity,
+  );
+  inject(
+    androidManifestPath,
+    ANCHORS.ANDROID.MANIFEST.APPLICATION,
+    fbSdk.android.manifest.applicationMetaData,
+  );
+  inject(
+    androidManifestPath,
+    ANCHORS.ANDROID.MANIFEST.APPLICATION,
+    fbSdk.android.manifest.removeAdIdPermission,
+  );
 
   const appGradlePath = getAppGradlePath({ cwd: projectPath });
-  inject(appGradlePath, ANCHORS.ANDROID.GRADLE.APP.DEPENDENCIES, fbSdk.android.gradle.app.dependencies);
+  inject(
+    appGradlePath,
+    ANCHORS.ANDROID.GRADLE.APP.DEPENDENCIES,
+    fbSdk.android.gradle.app.dependencies,
+  );
 
   const settingsGradlePath = getSettingsGradlePath({ cwd: projectPath });
-  inject(settingsGradlePath, ANCHORS.ANDROID.GRADLE.SETTINGS, fbSdk.android.gradle.settings);
-
+  inject(
+    settingsGradlePath,
+    ANCHORS.ANDROID.GRADLE.SETTINGS,
+    fbSdk.android.gradle.settings,
+  );
 }
 
 function injectFbSdkIos() {
   if (process.platform !== 'darwin') {
-    console.log('iOS linking for FBSDK is available only on OSX - [Skipping...]');
+    console.log(
+      'iOS linking for FBSDK is available only on OSX - [Skipping...]',
+    );
     return;
   }
 
   const appDelegatePath = getAppDelegatePath({ cwd: projectPath });
-  inject(appDelegatePath, ANCHORS.IOS.APP_DELEGATE.IMPORT, fbSdk.ios.appDelegate.import);
-  inject(appDelegatePath, ANCHORS.IOS.APP_DELEGATE.DID_FINISH_LAUNCHING_WITH_OPTIONS_END, fbSdk.ios.appDelegate.didFinishLaunchingWithOptions);
-  inject(appDelegatePath, ANCHORS.IOS.APP_DELEGATE.BODY, fbSdk.ios.appDelegate.body);
+  inject(
+    appDelegatePath,
+    ANCHORS.IOS.APP_DELEGATE.IMPORT,
+    fbSdk.ios.appDelegate.import,
+  );
+  inject(
+    appDelegatePath,
+    ANCHORS.IOS.APP_DELEGATE.DID_FINISH_LAUNCHING_WITH_OPTIONS,
+    fbSdk.ios.appDelegate.didFinishLaunchingWithOptions,
+  );
+  inject(
+    appDelegatePath,
+    ANCHORS.IOS.APP_DELEGATE.DID_FINISH_LAUNCHING_WITH_OPTIONS_END,
+    fbSdk.ios.appDelegate.didFinishLaunchingWithOptionsEnd,
+  );
+  inject(
+    appDelegatePath,
+    ANCHORS.IOS.APP_DELEGATE.BODY,
+    fbSdk.ios.appDelegate.body,
+  );
 
   const podFileTemplatePath = getPodfileTemplatePath({ cwd: projectPath });
-  inject(podFileTemplatePath, ANCHORS.IOS.PODFILE.EXTENSION_DEPENDENCIES, fbSdk.ios.podfile.pods);
+  inject(
+    podFileTemplatePath,
+    ANCHORS.IOS.PODFILE.EXTENSION_DEPENDENCIES,
+    fbSdk.ios.podfile.pods,
+  );
 }
 
 /**
- * Injects required modifications for react-native-fbsdk as described
- * here: https://github.com/facebook/react-native-fbsdk
+ * Injects required modifications for react-native-fbsdk-next as described
+ * here: https://developers.facebook.com/docs/android/getting-started/
  */
 function injectFbSdk() {
   injectFbSdkAndroid();

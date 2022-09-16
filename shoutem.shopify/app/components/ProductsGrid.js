@@ -1,17 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
-
-import FeaturedItem from '../components/FeaturedItem';
-import GridItem from '../components/GridItem';
 import { ext } from '../const';
+import GridItem from './GridItem';
 import {
-  ProductsList,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
+  ProductsList,
 } from './ProductsList';
 
 /**
@@ -22,7 +19,7 @@ class ProductsGrid extends ProductsList {
     ...ProductsList.propTypes,
   };
 
-  renderProductRow(products, sectionId, index) {
+  renderProductRow(products) {
     const gridProducts = _.map(products, product =>
       this.renderGridProduct(product),
     );

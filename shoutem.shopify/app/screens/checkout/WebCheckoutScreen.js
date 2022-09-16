@@ -1,9 +1,11 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
-import PropTypes from 'prop-types';
 import DeviceInfo from 'react-native-device-info';
 import WebView from 'react-native-webview';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
+import { connectStyle } from '@shoutem/theme';
+import { Screen, Spinner, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import {
   closeModal,
@@ -11,17 +13,10 @@ import {
   HeaderCloseButton,
   HeaderTextButton,
 } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
-import { Screen, Spinner, View } from '@shoutem/ui';
-import { checkoutCompleted } from '../../redux/actionCreators';
 import { ext } from '../../const';
+import { checkoutCompleted } from '../../redux/actionCreators';
 
 class WebCheckoutScreen extends PureComponent {
-  static propTypes = {
-    // Redux action - empties cart in redux store
-    checkoutCompleted: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
 
@@ -93,7 +88,7 @@ class WebCheckoutScreen extends PureComponent {
       headerRight: !transactionCompleted
         ? () => null
         : props => (
-            <HeaderTextButton
+          <HeaderTextButton
               title={I18n.t(ext('doneButton'))}
               onPress={this.completeTransaction}
               {...props}
@@ -143,6 +138,11 @@ class WebCheckoutScreen extends PureComponent {
     );
   }
 }
+
+WebCheckoutScreen.propTypes = {
+  checkoutCompleted: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+};
 
 export default connect(null, { checkoutCompleted })(
   connectStyle(ext('WebCheckoutScreen'))(WebCheckoutScreen),

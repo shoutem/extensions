@@ -124,15 +124,6 @@ const getInitialStateFromProps = props => {
 class UpdateItemScreen extends PureComponent {
   static actionTypes = actionTypes;
 
-  static propTypes = {
-    // Initial quantity
-    quantity: PropTypes.number,
-    // Shop details
-    shop: shopShape.isRequired,
-    // Initial product variant
-    variant: variantShape,
-  };
-
   constructor(props) {
     super(props);
 
@@ -153,27 +144,27 @@ class UpdateItemScreen extends PureComponent {
    * below and selects the first available variant.
    */
   onOptionSelected(option) {
-    const product = this.props.item;
-    const oldVariant = this.state.variant;
+    const product = _.get(this.props, 'route.params.item', null);
+    const { variant: oldVariant } = this.state;
 
     const selectedValues = getValuesForVariant(oldVariant);
 
     selectedValues[option.name] = option.value;
 
-    let newVariant = _.find(product.variants, variant => {
+    let newVariant = _.find(product?.variants, variant => {
       return _.isEqual(getValuesForVariant(variant), selectedValues);
     });
 
     if (!newVariant) {
-      const optionIndex = _.findIndex(product.options, { name: option.name });
+      const optionIndex = _.findIndex(product?.options, { name: option.name });
       const optionValuesToSelect = _.map(
-        product.options.slice(0, optionIndex + 1),
+        product?.options.slice(0, optionIndex + 1),
         option => {
           return { name: option.name, value: selectedValues[option.name] };
         },
       );
 
-      newVariant = _.find(product.variants, variant => {
+      newVariant = _.find(product?.variants, variant => {
         const valuesForVariant = getValuesForVariant(variant);
 
         return _.every(
@@ -182,7 +173,7 @@ class UpdateItemScreen extends PureComponent {
         );
       });
     }
-    this.setState({ variant: newVariant || product.variants[0] });
+    this.setState({ variant: newVariant || product?.variants[0] });
   }
 
   /**
@@ -225,6 +216,7 @@ class UpdateItemScreen extends PureComponent {
 
   renderAddToCartButton() {
     const { onActionButtonClicked } = getRouteParams(this.props);
+
     const { variant, quantity } = this.state;
     const { availableForSale } = variant;
 
@@ -291,7 +283,7 @@ class UpdateItemScreen extends PureComponent {
     const { currency } = shop;
 
     const productImage = images[0]
-      ? { uri: images[0].src }
+      ? { uri: images[0].url }
       : localImages.fallback;
 
     return (
@@ -421,6 +413,11 @@ class UpdateItemScreen extends PureComponent {
     );
   }
 }
+
+UpdateItemScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  shop: shopShape.isRequired,
+};
 
 export const mapStateToProps = state => {
   const { shop } = state[ext()];

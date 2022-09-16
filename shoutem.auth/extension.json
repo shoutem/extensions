@@ -1,14 +1,20 @@
 {
   "name": "auth",
-  "version": "6.0.1",
-  "platform": ">=9",
+  "version": "7.0.0",
+  "platform": ">=10.0.0",
   "title": "Users",
   "nativeChanges": {
-    "lastVersion": "5.1.7",
-    "settingsKeys": ["providers.facebook.enabled", "providers.apple.enabled"]
+    "lastVersion": "7.0.0",
+    "settingsKeys": [
+      "providers.facebook.appId",
+      "providers.facebook.appName",
+      "providers.facebook.clientToken",
+      "providers.facebook.enabled",
+      "providers.apple.enabled"
+    ]
   },
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Added support for 9.0.0 plaform",
+  "releaseNotes": "* Fixed Facebook login\n* Updated Facebook SDK\n* Migrated from react-native-fbsdk to react-native-fbsdk-next",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",

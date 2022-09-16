@@ -1,11 +1,11 @@
 {
   "name": "shoutem.web-view",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "dependencies": {
     "@react-native-cookies/cookies": "6.2.1",
     "react-native-blob-util": "0.16.2",
-    "react-native-pdf": "6.5.0",
-    "react-native-webview": "11.22.7",
+    "react-native-pdf": "6.6.2",
+    "react-native-webview": "11.23.0",
     "urijs": "^1.19.10"
   },
   "peerDependencies": {

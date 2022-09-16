@@ -24,17 +24,20 @@ export default () => ({
       borderRadius: 6,
       backgroundColor: '#4267B2',
       alignSelf: 'center',
-      'shoutem.ui.Text': {
-        color: '#ffffff',
-        fontSize: 16,
-        fontWeight: resolveFontWeight('600'),
-        fontFamily: 'Rubik-Regular',
-      },
-      'shoutem.ui.Icon': {
-        color: '#ffffff',
-        width: 16,
-        height: 16,
-      },
+    },
+    facebookButtonIcon: {
+      color: '#ffffff',
+      width: 16,
+      height: 16,
+    },
+    facebookButtonSpinner: {
+      color: '#ffffff',
+    },
+    facebookButtonText: {
+      color: '#ffffff',
+      fontSize: 16,
+      fontWeight: resolveFontWeight('600'),
+      fontFamily: 'Rubik-Regular',
     },
   },
 

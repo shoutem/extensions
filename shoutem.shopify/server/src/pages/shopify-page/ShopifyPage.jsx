@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { FormGroup, Pager } from 'react-bootstrap';
+import { FormGroup, Pager, ControlLabel, } from 'react-bootstrap';
 import { Checkbox, LoaderContainer } from '@shoutem/react-web-ui';
 import { connect } from 'react-redux';
 import { updateShortcutSettings } from '@shoutem/redux-api-sdk';
@@ -11,21 +11,21 @@ import {
   ShopPreview,
   getShopifyCollections,
   loadShopifyCollections,
+  getStorefrontToken,
 } from 'src/modules/shopify';
 import { navigateToSettings } from 'src/redux';
-import ShopifySettingsPage from '../shopify-settings-page';
 import LOCALIZATION from './localization';
 import './style.scss';
 
 class ShopifyPage extends Component {
   static propTypes = {
     store: PropTypes.string,
-    apiKey: PropTypes.string,
     collections: PropTypes.array,
     selectedCollections: PropTypes.array,
     loadShopifyCollections: PropTypes.func,
     updateShortcutSettings: PropTypes.func,
     navigateToShopifySettings: PropTypes.func,
+    getStorefrontToken: PropTypes.func,
   };
 
   constructor(props) {
@@ -33,10 +33,25 @@ class ShopifyPage extends Component {
     autoBindReact(this);
 
     this.page = 1;
+    
+    this.state = {
+      apiKey: '',
+      loading: true,
+    };
   }
 
   componentDidMount() {
-    this.checkData(this.props);
+    const { getStorefrontToken, store, loadShopifyCollections } = this.props;
+    
+    getStorefrontToken(store)
+    .then(tokenData => {
+      if (!_.isEmpty(tokenData) && store) {
+        this.setState({ apiKey: tokenData.access_token });
+
+        return loadShopifyCollections(store, tokenData.access_token);
+      }
+    })
+    .finally(() => this.setState({ loading: false }));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -44,15 +59,16 @@ class ShopifyPage extends Component {
   }
 
   checkData(nextProps, props = {}) {
-    const { store, apiKey } = props;
-    const { store: nextStore, apiKey: nextApiKey } = nextProps;
+    const { store } = props;
+    const { apiKey } = this.state;
+    const { store: nextStore } = nextProps;
 
-    if (!nextStore || !nextApiKey) {
+    if (!nextStore || !apiKey) {
       return;
     }
 
-    if (nextStore !== store || nextApiKey !== apiKey) {
-      this.props.loadShopifyCollections(nextStore, nextApiKey);
+    if (nextStore !== store) {
+      this.props.loadShopifyCollections(nextStore, apiKey);
     }
   }
 
@@ -77,12 +93,12 @@ class ShopifyPage extends Component {
 
   renderShopifyCollections() {
     const {
-      apiKey,
       collections,
       selectedCollections,
       loadShopifyCollections,
       store,
     } = this.props;
+    const { apiKey } = this.state;
 
     if (collections.length === 0) {
       return <LoaderContainer size="50px" isLoading />;
@@ -131,26 +147,36 @@ class ShopifyPage extends Component {
   }
 
   render() {
-    const { apiKey, store, navigateToShopifySettings } = this.props;
+    const { store, navigateToShopifySettings } = this.props;
+    const { apiKey, loading } = this.state;
 
-    const isConfigured = apiKey && store;
-
-    if (!isConfigured) {
-      return <ShopifySettingsPage {...this.props} />;
+    if (!loading && (!apiKey || !store)) {
+      return (
+        <FormGroup>
+          <ControlLabel>
+            {i18next.t(LOCALIZATION.SHOP_NOT_CONFIGURED)}
+            <a href="#" onClick={navigateToShopifySettings}>
+              {i18next.t(LOCALIZATION.SHOP_NOT_CONFIGURED_LINK)}
+            </a>
+          </ControlLabel>
+        </FormGroup>
+      )
     }
 
     return (
-      <div className="shopify-page settings-page">
-        <ShopPreview
-          store={store}
-          onNavigateToShopifySettingsClick={navigateToShopifySettings}
-        />
-        <form>
-          <h3>{i18next.t(LOCALIZATION.FORM_TITLE)}</h3>
-          <h5>{i18next.t(LOCALIZATION.FORM_DESCIRPTION)}</h5>
-          <FormGroup>{this.renderShopifyCollections()}</FormGroup>
-        </form>
-      </div>
+      <LoaderContainer isLoading={loading}>
+        <div className="shopify-page settings-page">
+          <ShopPreview
+            store={store}
+            onNavigateToShopifySettingsClick={navigateToShopifySettings}
+          />
+          <form>
+            <h3>{i18next.t(LOCALIZATION.FORM_TITLE)}</h3>
+            <h5>{i18next.t(LOCALIZATION.FORM_DESCIRPTION)}</h5>
+            <FormGroup>{this.renderShopifyCollections()}</FormGroup>
+          </form>
+        </div>
+      </LoaderContainer>
     );
   }
 }
@@ -162,7 +188,6 @@ function mapStateToProps(state, ownProps) {
   } = ownProps;
 
   const store = _.get(extensionSettings, 'store');
-  const apiKey = _.get(extensionSettings, 'apiKey');
   const selectedCollections = _.get(
     shortcutSettings,
     'selectedCollections',
@@ -171,7 +196,6 @@ function mapStateToProps(state, ownProps) {
 
   return {
     store,
-    apiKey,
     selectedCollections,
     collections: getShopifyCollections(state),
   };
@@ -188,6 +212,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(updateShortcutSettings(shortcut, settings)),
     navigateToShopifySettings: () =>
       dispatch(navigateToSettings(appId, ownExtensionName)),
+    getStorefrontToken: store => dispatch(getStorefrontToken(appId, store)),
   };
 }
 

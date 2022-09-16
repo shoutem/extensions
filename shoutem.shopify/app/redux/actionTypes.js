@@ -3,6 +3,19 @@
  * Redux action types dispatched by Shoutem Shopify extension.
  */
 
+// TODO: Remove from UpdateItemScreen
+export const CART_ACTION_TYPES = {
+  ADD: 'ADD',
+  REMOVE: 'REMOVE',
+  UPDATE: 'UPDATE',
+};
+
+/**
+ @typedef ABANDONED_CART_TRIGGER
+ @type {object}
+ */
+export const ABANDONED_CART_TRIGGER = 'shoutem.shopify.abandoned-cart';
+
 /**
  @typedef SHOP_LOADING
  @type {object}

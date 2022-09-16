@@ -1,62 +1,66 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Button,
-  Caption,
-  Card,
-  Icon,
-  Image,
-  Subtitle,
-  TouchableOpacity,
-  View,
-} from '@shoutem/ui';
-import { images as localImages } from '../assets';
+import { Image, TouchableOpacity, View } from '@shoutem/ui';
+import { images as imageAssets } from '../assets';
 import { ext } from '../const';
+import { getProductImage } from '../services';
 import ListItem from './ListItem';
+import { AddToCartButton, ProductPrice, ProductTitle } from './product';
 
-const GridItem = ({ item, isTall, onAddToCart, onPress, shop }) => {
+function GridItem({
+  item,
+  isTall,
+  isFixed,
+  onAddToCart,
+  onPress,
+  shop,
+  style,
+}) {
+  const { currency = '', moneyFormat } = shop;
   const { images, title } = item;
 
-  const variant = item.variants[0];
-  const newPrice = parseFloat(variant.price);
-  const oldPrice = parseFloat(variant.compareAtPrice);
-  const { currency = '' } = shop;
+  const productImage = useMemo(() => getProductImage(images), [images]);
+  const imageStyle = useMemo(() => {
+    if (isTall) {
+      return style.tallImage;
+    }
 
-  const newPriceString = `${currency}${newPrice}`;
-  const oldPriceString = oldPrice ? `${currency}${oldPrice}` : null;
+    if (isFixed) {
+      return style.fixedImage;
+    }
 
-  const productImage = images[0]
-    ? { uri: images[0].src }
-    : localImages.fallback;
+    return style.image;
+  }, [isTall, isFixed, style]);
+
+  const resolvedTextContainerStyle = useMemo(
+    () => [style.textContainer, isFixed && style.fixedContainer],
+    [style, isFixed],
+  );
 
   return (
-    <TouchableOpacity onPress={onPress}>
-      <Card styleName="flexible">
-        <View styleName="horizontal h-center v-start">
-          <Image
-            styleName={isTall ? 'medium-square' : 'medium-wide'}
-            source={productImage}
-            defaultSource={images.fallback}
+    <TouchableOpacity onPress={onPress} style={style.container}>
+      <View style={style.imageContainer}>
+        <Image
+          style={imageStyle}
+          source={productImage}
+          defaultSource={imageAssets.fallback}
+        />
+      </View>
+      <View style={resolvedTextContainerStyle}>
+        <ProductTitle title={title} />
+        <View style={style.priceContainer}>
+          <ProductPrice
+            product={item}
+            currency={currency}
+            moneyFormat={moneyFormat}
+            wide
           />
+          <AddToCartButton onPress={onAddToCart} />
         </View>
-        <View styleName="content">
-          <Subtitle numberOfLines={2}>{title}</Subtitle>
-          <View styleName="horizontal v-center space-between">
-            <Subtitle styleName="md-gutter-right bold">
-              {newPriceString}
-            </Subtitle>
-            {oldPriceString && (
-              <Caption styleName="line-through">{oldPriceString}</Caption>
-            )}
-            <Button onPress={onAddToCart} styleName="tight clear">
-              <Icon name="add-to-cart" />
-            </Button>
-          </View>
-        </View>
-      </Card>
+      </View>
     </TouchableOpacity>
   );
-};
+}
 
 GridItem.propTypes = {
   ...ListItem.propTypes,

@@ -1,11 +1,11 @@
 {
   "name": "sendbird",
   "title": "SendBird Chat",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "platform": ">=7",
   "icon": "./server/assets/chat.png",
   "description": "Connect your users with real-time chat!",
-  "releaseNotes": "* Fixed app crash on messages screen when returning to app from background",
+  "releaseNotes": "* Fixed receiving notifications while app is in foreground",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

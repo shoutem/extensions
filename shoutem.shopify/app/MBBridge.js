@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { NativeModules, Platform } from 'react-native';
 import _ from 'lodash';
 
@@ -80,23 +81,23 @@ export default {
     }),
   getCollections: () =>
     new Promise((accept, reject) => {
-      var collections = [];
-      const addCollections = shop => {
-        var response = cleanUp(shop, true);
-        var edges = _.get(response, 'collections.edges');
+      var resolvedCollections = [];
+      const addCollections = collections => {
+        var response = cleanUp(collections, true);
+        var edges = _.get(response, 'edges');
         var data = _.map(edges, 'node');
 
         if (data.length > 0) {
-          collections = _.concat(collections, data);
+          resolvedCollections = _.concat(resolvedCollections, data);
         }
 
-        if (response.collections.pageInfo.hasNextPage) {
+        if (response.pageInfo.hasNextPage) {
           const cursor = _.last(edges).cursor;
           MBBridge.getCollections(cursor)
             .then(addCollections)
             .catch(reject);
         } else {
-          accept(collections);
+          accept(resolvedCollections);
         }
       };
 

@@ -1,8 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
 import {
   Button,
   ButtonToolbar,
@@ -11,29 +7,41 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import {
+  checkShopConnection,
+  connectShop,
+  createStorefrontToken,
+  getStorefrontToken,
+  validateShopifyStoreUrl,
+} from 'src/modules/shopify';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import {
   fetchExtension,
-  updateExtensionSettings,
   getExtension,
+  updateExtensionSettings,
 } from '@shoutem/redux-api-sdk';
 import { shouldRefresh } from '@shoutem/redux-io';
-import { connect } from 'react-redux';
-import {
-  validateShopifySettings,
-  validateShopifyStoreUrl,
-  resolveShopifyStoreUrl,
-} from 'src/modules/shopify';
+import errorState from '../../../assets/errorState.png';
+import successState from '../../../assets/successState.png';
 import { DEFAULT_EXTENSION_SETTINGS } from '../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
 
 class ShopifySettingsPage extends Component {
   static propTypes = {
-    extension: PropTypes.object,
-    fetchExtension: PropTypes.func,
-    updateExtensionSettings: PropTypes.func,
-    validateShopifySettings: PropTypes.func,
+    checkShopConnection: PropTypes.func.isRequired,
+    connectShop: PropTypes.func.isRequired,
+    createStorefrontToken: PropTypes.func.isRequired,
+    extension: PropTypes.object.isRequired,
+    fetchExtension: PropTypes.func.isRequired,
+    getStorefrontToken: PropTypes.func.isRequired,
+    settings: PropTypes.object.isRequired,
+    updateExtensionSettings: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -43,23 +51,122 @@ class ShopifySettingsPage extends Component {
     this.ERROR_STORE_URL = i18next.t(LOCALIZATION.ERROR_STORE_URL);
     this.ERROR_SHOP = i18next.t(LOCALIZATION.ERROR_SHOP);
 
-    props.fetchExtension();
-
     this.state = {
       error: '',
-      inProgress: false,
+      loading: true,
+      checkingConnection: false,
+      checkingApiKey: false,
+      connecting: false,
+      creatingApiKey: false,
+      connected: false,
+      apiKey: '',
       ...DEFAULT_EXTENSION_SETTINGS,
       ...props.extension.settings,
     };
   }
 
+  componentDidMount() {
+    const { fetchExtension } = this.props;
+
+    window.addEventListener('focus', this.handleFocus);
+
+    fetchExtension()
+      .then(() =>
+        Promise.all([
+          this.handleShopConnectionCheck(),
+          this.handleStorefrontKeyCheck(),
+        ]),
+      )
+      .finally(() => this.setState({ loading: false }));
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('focus', this.handleFocus);
+  }
+
   componentWillReceiveProps(nextProps) {
-    const { extension } = this.props;
+    const { extension, fetchExtension } = this.props;
     const { extension: nextExtension } = nextProps;
 
     if (extension !== nextExtension && shouldRefresh(nextExtension)) {
-      this.props.fetchExtension();
+      fetchExtension();
     }
+  }
+
+  handleFocus() {
+    const { connecting } = this.state;
+
+    if (!connecting) {
+      return;
+    }
+
+    this.handleShopConnectionCheck().then(() =>
+      this.setState({ connecting: false }),
+    );
+  }
+
+  handleShopConnectionCheck() {
+    const { checkShopConnection } = this.props;
+    const {
+      settings: { store },
+    } = this.props;
+
+    if (!store) {
+      return null;
+    }
+
+    this.setState({ checkingConnection: true });
+
+    return checkShopConnection(store)
+      .then(({ authorized }) =>
+        this.setState({
+          connected: authorized,
+        }),
+      )
+      .finally(() => this.setState({ checkingConnection: false }));
+  }
+
+  handleConnectPress() {
+    const { connectShop } = this.props;
+    const { store } = this.state;
+
+    this.setState({ connecting: true });
+
+    return connectShop(store);
+  }
+
+  handleStorefrontKeyCheck() {
+    const { getStorefrontToken } = this.props;
+    const {
+      settings: { store },
+    } = this.props;
+
+    if (!store) {
+      return;
+    }
+
+    this.setState({ checkingApiKey: true });
+
+    getStorefrontToken(store)
+      .then(tokenData => {
+        if (_.isEmpty(tokenData)) {
+          return this.setState({ apiKey: '' });
+        }
+
+        return this.setState({ apiKey: tokenData.access_token });
+      })
+      .finally(() => this.setState({ checkingApiKey: false }));
+  }
+
+  handleCreateStorefrontKey() {
+    const { createStorefrontToken, settings } = this.props;
+    const { store } = settings;
+
+    this.setState({ creatingApiKey: true });
+
+    createStorefrontToken(store)
+      .then(tokenData => this.setState({ apiKey: tokenData.access_token }))
+      .finally(() => this.setState({ creatingApiKey: false }));
   }
 
   handleTextSettingChange(fieldName) {
@@ -72,43 +179,43 @@ class ShopifySettingsPage extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
+
     this.handleSave();
   }
 
   handleSave() {
-    const { store, apiKey, discountCode } = this.state;
-    const {
-      extension,
-      validateShopifySettings,
-      updateExtensionSettings,
-    } = this.props;
+    const { store, discountCode } = this.state;
+    const { extension, updateExtensionSettings } = this.props;
 
     if (!validateShopifyStoreUrl(store)) {
       this.setState({ error: this.ERROR_STORE_URL });
       return;
     }
 
-    const resolvedStore = resolveShopifyStoreUrl(store);
-
     this.setState({
       error: '',
-      inProgress: true,
-      store: resolvedStore,
+      loading: true,
     });
 
-    validateShopifySettings(resolvedStore, apiKey)
-      .then(() => updateExtensionSettings(extension, {
-        apiKey,
-        store: resolvedStore,
-        discountCode,
-      }))
-      .then(() => this.setState({
-        inProgress: false,
-      }))
+    updateExtensionSettings(extension, {
+      store,
+      discountCode,
+    })
+      .then(() =>
+        Promise.all([
+          this.handleShopConnectionCheck(),
+          this.handleStorefrontKeyCheck(),
+        ]),
+      )
+      .then(() =>
+        this.setState({
+          loading: false,
+        }),
+      )
       .catch(() => {
         this.setState({
           error: this.ERROR_SHOP,
-          inProgress: false,
+          loading: false,
         });
       });
   }
@@ -116,19 +223,38 @@ class ShopifySettingsPage extends Component {
   render() {
     const {
       error,
-      inProgress,
+      loading,
       store,
-      apiKey,
       discountCode,
+      connected,
+      connecting,
+      checkingConnection,
+      apiKey,
+      checkingApiKey,
+      creatingApiKey,
     } = this.state;
-    const { extension: { settings } } = this.props;
+    const { settings } = this.props;
+    const { store: savedStore, discountCode: savedDiscountCode } = settings;
 
-    const newSettings = _.omit(this.state, ['inProgress', 'error']);
-    const oldSettings = { ...DEFAULT_EXTENSION_SETTINGS, ...settings };
-    const hasMandatoryFields = !_.isEmpty(store) && !_.isEmpty(apiKey);
+    const hasMandatoryFields = !_.isEmpty(store);
 
-    const allShortcutsNote = i18next.t(LOCALIZATION.ALL_SHORTCUTS_NOTE);
-    const saveDisabled = _.isEqual(newSettings, oldSettings) || inProgress || !hasMandatoryFields;
+    const connectButtonTitle = connected
+      ? i18next.t(LOCALIZATION.CONNECT_BUTTON_RECONNECT)
+      : i18next.t(LOCALIZATION.CONNECT_BUTTON_CONNECT);
+
+    const apiKeyButtonTitle = !apiKey
+      ? i18next.t(LOCALIZATION.API_KEY_BUTTON_CREATE)
+      : i18next.t(LOCALIZATION.API_KEY_BUTTON_RECREATE);
+
+    const saveDisabled =
+      (_.isEqual(store, savedStore) &&
+        _.isEqual(discountCode, savedDiscountCode)) ||
+      loading ||
+      !hasMandatoryFields;
+    const connectDisabled =
+      !savedStore || loading || connecting || checkingConnection;
+    const createApiKeyDisabled =
+      checkingApiKey || creatingApiKey || !connected || loading;
 
     return (
       <div className="shopify-settings-page">
@@ -144,16 +270,6 @@ class ShopifySettingsPage extends Component {
               value={store}
               onChange={this.handleTextSettingChange('store')}
             />
-            <ControlLabel>
-              {i18next.t(LOCALIZATION.STORE_ACCESS_TOKEN)}
-            </ControlLabel>
-            <FormControl
-              type="text"
-              className="form-control"
-              value={apiKey}
-              onChange={this.handleTextSettingChange('apiKey')}
-            />
-            <div className="note">{allShortcutsNote}</div>
             <ControlLabel>
               {i18next.t(LOCALIZATION.DISCOUNT_CODE_LABEL)}
             </ControlLabel>
@@ -172,11 +288,51 @@ class ShopifySettingsPage extends Component {
             disabled={saveDisabled}
             onClick={this.handleSave}
           >
-            <LoaderContainer isLoading={inProgress}>
+            <LoaderContainer isLoading={loading}>
               {i18next.t(LOCALIZATION.BUTTON_SAVE)}
             </LoaderContainer>
           </Button>
         </ButtonToolbar>
+        <ControlLabel>
+          {i18next.t(LOCALIZATION.CONNECT_SHOP_DESCRIPTION)}
+        </ControlLabel>
+        <ButtonToolbar>
+          <Button
+            bsStyle="primary"
+            disabled={connectDisabled}
+            onClick={this.handleConnectPress}
+          >
+            <LoaderContainer isLoading={connecting || checkingConnection}>
+              {connectButtonTitle}
+            </LoaderContainer>
+          </Button>
+          {connected && <img src={successState} alt="successState" />}
+          {!connected && <img src={errorState} alt="errorState" />}
+        </ButtonToolbar>
+        <FormGroup>
+          <ControlLabel>
+            {i18next.t(LOCALIZATION.API_KEY_CREATE_DESCRIPTION)}
+          </ControlLabel>
+          <FormControl
+            type="text"
+            disabled
+            className="form-control"
+            value={apiKey}
+          />
+          <ButtonToolbar>
+            <Button
+              bsStyle="primary"
+              disabled={createApiKeyDisabled}
+              onClick={this.handleCreateStorefrontKey}
+            >
+              <LoaderContainer isLoading={checkingApiKey || creatingApiKey}>
+                {apiKeyButtonTitle}
+              </LoaderContainer>
+            </Button>
+            {apiKey && <img src={successState} alt="successState" />}
+            {!apiKey && <img src={errorState} alt="errorState" />}
+          </ButtonToolbar>
+        </FormGroup>
       </div>
     );
   }
@@ -185,24 +341,26 @@ class ShopifySettingsPage extends Component {
 function mapStateToProps(state, ownProps) {
   const { extensionName } = ownProps;
 
+  const extension = getExtension(state, extensionName);
+  const { settings } = extension;
+
   return {
     extension: getExtension(state, extensionName),
+    settings,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const { extensionName } = ownProps;
+  const { extensionName, appId } = ownProps;
 
   return {
     fetchExtension: () => dispatch(fetchExtension(extensionName)),
-    validateShopifySettings: (store, apiKey) =>
-      dispatch(
-        validateShopifySettings(store, apiKey, {
-          extensionName,
-        }),
-      ),
     updateExtensionSettings: (extension, settings) =>
       dispatch(updateExtensionSettings(extension, settings)),
+    checkShopConnection: shop => dispatch(checkShopConnection(shop)),
+    connectShop: shop => dispatch(connectShop(shop)),
+    getStorefrontToken: shop => dispatch(getStorefrontToken(appId, shop)),
+    createStorefrontToken: shop => dispatch(createStorefrontToken(appId, shop)),
   };
 }
 

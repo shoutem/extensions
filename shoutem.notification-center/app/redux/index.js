@@ -10,6 +10,7 @@ export {
   setNotificationSettings,
   triggerCanceled,
   triggerOccured,
+  cancelPendingJourney,
 } from './actions';
 export { middleware } from './middlewares';
 export { reducer } from './reducer';

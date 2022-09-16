@@ -1,12 +1,14 @@
 import React, { PureComponent } from 'react';
-import { AccessToken, LoginManager } from 'react-native-fbsdk';
+import { Alert } from 'react-native';
+import { AccessToken, LoginManager } from 'react-native-fbsdk-next';
 import { connect } from 'react-redux';
 import autoBind from 'auto-bind';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Button, Icon, Text } from '@shoutem/ui';
+import { Button, Icon, Spinner, Text } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
+import { isPreviewApp } from 'shoutem.preview';
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
 import {
@@ -27,13 +29,34 @@ class FacebookButton extends PureComponent {
     };
   }
 
-  loginOrSignup() {
-    this.setState({ inProgress: true });
+  handleLoginProgressChange(inProgress) {
+    const { onLoginProgressChange } = this.props;
 
+    onLoginProgressChange(inProgress);
+    this.setState({ inProgress });
+  }
+
+  loginOrSignup() {
+    const { onLoginProgressChange } = this.props;
+
+    if (isPreviewApp) {
+      Alert.alert(
+        I18n.t(ext('facebookLoginPreviewTitle')),
+        I18n.t(ext('facebookLoginPreviewMessage')),
+        [],
+        { cancelable: true },
+      );
+
+      return;
+    }
+
+    this.handleLoginProgressChange(true);
     this.refreshFacebookToken()
       .then(this.parseAccessToken)
       .catch(this.openFacebookSignup)
-      .finally(() => this.setState({ inProgress: false }));
+      .finally(() => {
+        this.handleLoginProgressChange(true);
+      });
   }
 
   parseAccessToken(result) {
@@ -125,10 +148,15 @@ class FacebookButton extends PureComponent {
         styleName="full-width inflexible"
         disabled={resolvedInProgress}
       >
-        <Icon name="facebook-logo" />
-        <Text allowFontScaling={false}>
-          {I18n.t(ext('facebookLogInButton'))}
-        </Text>
+        {!!inProgress && <Spinner style={style.facebookButtonSpinner} />}
+        {!inProgress && (
+          <>
+            <Icon name="facebook-logo" style={style.facebookButtonIcon} />
+            <Text allowFontScaling={false} style={style.facebookButtonText}>
+              {I18n.t(ext('facebookLogInButton'))}
+            </Text>
+          </>
+        )}
       </Button>
     );
   }
@@ -137,14 +165,16 @@ class FacebookButton extends PureComponent {
 FacebookButton.propTypes = {
   loginWithFacebook: PropTypes.func.isRequired,
   registerWithFacebook: PropTypes.func.isRequired,
+  style: PropTypes.object.isRequired,
   onLoginFailed: PropTypes.func.isRequired,
+  onLoginProgressChange: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
-  style: PropTypes.object,
+  inProgress: PropTypes.bool,
 };
 
 FacebookButton.defaultProps = {
   disabled: false,
-  style: {},
+  inProgress: false,
 };
 
 const mapDispatchToProps = {

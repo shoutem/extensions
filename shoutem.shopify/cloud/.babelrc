@@ -1,0 +1,14 @@
+{
+  "sourceMaps": "both",
+  "presets": [
+    ["env", {
+      "targets": {
+        "node": "current"
+      }
+    }]
+  ],
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-decorators-legacy"
+  ]
+}

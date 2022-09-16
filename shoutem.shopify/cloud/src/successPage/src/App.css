@@ -1,0 +1,75 @@
+.App {
+  margin: 0;
+  display: flex;
+  background: #FFFFFF;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Status-image {
+  width: 10vw;
+  height: auto;
+  margin-top: 96px;
+  margin-bottom: 24px;
+}
+
+.Title {
+  font-family: 'Museo Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 48px;
+  color: #000000;
+  margin-bottom: 24px;
+}
+
+.Description {
+  font-family: 'Museo Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #888FA1;
+  max-width: 30%;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.Caption {
+  font-family: 'Museo Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  color: #888FA1;
+  max-width: 30%;
+  opacity: 0.7;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.Button {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 32px;
+  gap: 10px;
+  background: #444F6C;
+  border-radius: 4px;
+}
+
+.Button-text {
+  font-family: 'Museo Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 1px;
+  color: #FFFFFF;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}

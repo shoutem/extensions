@@ -1,26 +1,25 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   EmptyStateView,
   ListView,
   Row,
+  Screen,
+  SearchField,
+  Subtitle,
   Text,
   TouchableOpacity,
-  SearchField,
-  Screen,
-  Subtitle,
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { goBack } from 'shoutem.navigation';
 import ProductsList from '../components/ProductsList';
-import { shop as shopShape } from '../components/shapes';
-import { refreshProducts } from '../redux/actionCreators';
 import { ext } from '../const';
+import { refreshProducts } from '../redux/actionCreators';
 
 const renderCancelButton = onPress => (
   <Button styleName="clear" onPress={onPress}>
@@ -29,13 +28,6 @@ const renderCancelButton = onPress => (
 );
 
 export class SearchProductsScreen extends PureComponent {
-  static propTypes = {
-    // Action dispatched when the user searches for a tag
-    refreshProducts: PropTypes.func.isRequired,
-    // Shop properties, used to get all available tags
-    shop: shopShape.isRequired,
-  };
-
   constructor(props) {
     super(props);
 
@@ -155,11 +147,16 @@ export class SearchProductsScreen extends PureComponent {
   }
 }
 
+SearchProductsScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  refreshProducts: PropTypes.func.isRequired,
+  tags: PropTypes.array.isRequired,
+};
+
 export function mapStateToProps(state) {
-  const { shop, tags } = state[ext()];
+  const { tags } = state[ext()];
 
   return {
-    shop,
     tags,
   };
 }

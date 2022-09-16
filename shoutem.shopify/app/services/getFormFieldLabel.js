@@ -1,5 +1,4 @@
 import { I18n } from 'shoutem.i18n';
-
 import { ext } from '../const';
 
 export function getFieldLabel(label) {
@@ -26,5 +25,7 @@ export function getFieldLabel(label) {
       return I18n.t(ext('checkoutFirstName'));
     case 'lastName':
       return I18n.t(ext('checkoutLastName'));
+    default:
+      return '';
   }
 }

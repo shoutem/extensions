@@ -1,10 +1,10 @@
 {
   "name": "web-view",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "platform": ">=8",
   "type": "system",
   "title": "Web view",
-  "releaseNotes": "* Improved cookie storage and persisting\n* Resolved issues with navigation toolbar not showing buttons",
+  "releaseNotes": "* Fixed opening PDFs on Android",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "nativeChanges": {

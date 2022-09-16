@@ -1,13 +1,14 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "5.1.1",
-  "platform": ">=9",
+  "version": "6.0.1",
+  "platform": ">=9.2.0",
+  "hidden": false,
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "releaseNotes": "* Added support for platform 9.0.0",
+  "releaseNotes": "* Updated Shopify auth flow\n *Updated native SDK versions\n *Squashed a couple of UI bugs",
   "nativeChanges": {
-    "lastVersion": "5.1.1"
+    "lastVersion": "6.0.0"
   },
   "i18n": {
     "locale": "en",
@@ -18,9 +19,12 @@
     "shoutem.cms",
     "shoutem.i18n",
     "shoutem.layouts",
-    "shoutem.navigation"
+    "shoutem.navigation",
+    "shoutem.notification-center"
   ],
-  "categories": ["commerce"],
+  "categories": [
+    "commerce"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -105,6 +109,76 @@
       }
     },
     {
+      "name": "Grid122ProductsScreen",
+      "title": "1-2-2 pattern grid",
+      "image": "./server/assets/screens/1-2-2-grid.png",
+      "extends": "@.ProductsListScreen",
+      "settings": {
+        "listType": "1-2-2-grid",
+        "hasFeaturedItem": false
+      }
+    },
+    {
+      "name": "FixedGridProductsScreen",
+      "title": "Fixed grid",
+      "image": "./server/assets/screens/fixed-grid.png",
+      "extends": "@.ProductsListScreen",
+      "settings": {
+        "listType": "fixed-grid",
+        "hasFeaturedItem": false
+      }
+    },
+    {
+      "name": "FeaturedFixedGridProductsScreen",
+      "title": "Fixed grid with a featured item",
+      "image": "./server/assets/screens/grid.png",
+      "extends": "@.ProductsListScreen",
+      "settings": {
+        "listType": "fixed-grid",
+        "hasFeaturedItem": true
+      }
+    },
+    {
+      "name": "MediumListProductsScreen",
+      "title": "Medium list",
+      "image": "./server/assets/screens/medium-list.png",
+      "extends": "@.ProductsListScreen",
+      "settings": {
+        "listType": "medium-list",
+        "hasFeaturedItem": false
+      }
+    },
+    {
+      "name": "FeaturedMediumListProductsScreen",
+      "title": "Medium list with a featured item",
+      "image": "./server/assets/screens/medium-list-with-featured.png",
+      "extends": "@.ProductsListScreen",
+      "settings": {
+        "listType": "medium-list",
+        "hasFeaturedItem": true
+      }
+    },
+    {
+      "name": "TileListProductsScreen",
+      "title": "Tile list",
+      "image": "./server/assets/screens/tile-list.png",
+      "extends": "@.ProductsListScreen",
+      "settings": {
+        "listType": "tile-list",
+        "hasFeaturedItem": false
+      }
+    },
+    {
+      "name": "LargeListProductsScreen",
+      "title": "Large list",
+      "image": "./server/assets/screens/large-list.png",
+      "extends": "@.ProductsListScreen",
+      "settings": {
+        "listType": "large-list",
+        "hasFeaturedItem": false
+      }
+    },
+    {
       "name": "ProductDetailsScreen"
     },
     {
@@ -157,6 +231,18 @@
     {
       "name": "Shopify",
       "path": "server/data-schemas/Shopify.json"
+    }
+  ],
+  "cloud": [
+    {
+      "type": "api",
+      "script": "npm run migrate:docker && npm run start:server:docker"
+    }
+  ],
+  "journeyTriggers": [
+    {
+      "id": "shoutem.shopify.abandoned-cart",
+      "name": "Abandoned cart (Shopify)"
     }
   ]
 }

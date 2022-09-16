@@ -112,7 +112,7 @@ export class ChatWindowScreen extends PureComponent {
       this.handleAppStateChange,
     );
 
-    if (channelId && isConnected) {
+    if (channelId) {
       loadChannel(channelId)
         .then(() => {
           setActiveChannel(channelId);
