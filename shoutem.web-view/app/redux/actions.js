@@ -18,8 +18,12 @@ export function openURL(
   requireGeolocationPermission = false,
   webViewProps = {},
   otherRouteParams,
+  screenOptions = {},
 ) {
-  return openInModal(ext('WebViewWithShareScreen'), {
+  const showSharing = screenOptions.showSharing ?? true;
+  const screenToOpen = showSharing ? 'WebViewWithShareScreen' : 'WebViewScreen';
+
+  return openInModal(ext(screenToOpen), {
     url,
     title,
     showNavigationToolbar,

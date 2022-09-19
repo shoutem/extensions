@@ -1,0 +1,13 @@
+{
+  "shoutem": {
+    "age-restriction": {
+      "save-button": "SAVE",
+      "empty-input-error": "This field is required",
+      "required-age-label": "Required age to view app content",
+      "terms-of-service": "Terms of Service URL",
+      "privacy-policy": "Privacy policy URL",
+      "invalid-url": "Invalid URL.",
+      "background-image-title": "Background image (1080x1920px)"
+    }
+  }
+}

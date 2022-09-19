@@ -1,10 +1,10 @@
 {
   "name": "web-view",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "platform": ">=8",
   "type": "system",
   "title": "Web view",
-  "releaseNotes": "* Fixed opening PDFs on Android",
+  "releaseNotes": "* No user facing changes\n* For devs: Updated open URL action to support hiding share button",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "nativeChanges": {

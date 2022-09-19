@@ -1,11 +1,11 @@
 {
   "name": "application",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "platform": ">=9.1.0",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "releaseNotes": "* Resolved issues with opening initial screen",
+  "releaseNotes": "* For devs: added middleware priority on navigation initialized middleware - breaking change",
   "nativeChanges": {
     "lastVersion": "4.1.4"
   },

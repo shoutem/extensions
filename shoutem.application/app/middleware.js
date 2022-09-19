@@ -45,25 +45,29 @@ const restartAppMiddleware = setPriority(
   priorities.LAST,
 );
 
-const navigationInitializedMiddleware = store => next => action => {
-  const actionType = _.get(action, 'type');
+const navigationInitializedMiddleware = setPriority(
+  store => next => action => {
+    const actionType = _.get(action, 'type');
 
-  if (actionType === SET_NAVIGATION_INITIALIZED) {
-    const state = store.getState();
-    const subscriptionValid = getSubscriptionValidState(state);
-    const appInitQueue = getAppInitQueue(state);
+    if (actionType === SET_NAVIGATION_INITIALIZED) {
+      const state = store.getState();
+      const subscriptionValid = getSubscriptionValidState(state);
+      const appInitQueue = getAppInitQueue(state);
 
-    // If all initializations are complete and navigation is about to be
-    // initialized, open the initial screen.
-    if (
-      _.size(Object.keys(appInitQueue).filter(target => target === false)) === 0
-    ) {
-      openInitialScreen(subscriptionValid);
+      // If all initializations are complete and navigation is about to be
+      // initialized, open the initial screen.
+      if (
+        _.size(Object.keys(appInitQueue).filter(target => target === false)) ===
+        0
+      ) {
+        openInitialScreen(subscriptionValid);
+      }
     }
-  }
 
-  return next(action);
-};
+    return next(action);
+  },
+  priorities.INIT,
+);
 
 export {
   navigationInitializedMiddleware,

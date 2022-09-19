@@ -1,0 +1,63 @@
+{
+  "title": "Theme",
+  "properties": {
+    "ageRestrictionTitleTextColor": {
+      "type": "string",
+      "title": "Title text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "ageRestrictionDescriptionTextColor": {
+      "type": "string",
+      "title": "Description text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "ageRestrictionAgeBadgeColor": {
+      "type": "string",
+      "title": "Age badge color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "ageRestrictionConfirmButtonColor": {
+      "type": "string",
+      "title": "Confirm button background color",
+      "format": "color",
+      "default": "@primaryButtonBackgroundColor"
+    },
+    "ageRestrictionConfirmButtonTextColor": {
+      "type": "string",
+      "title": "Confirm button background text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "ageRestrictionExitButtonColor": {
+      "type": "string",
+      "title": "Exit app button background color",
+      "format": "color",
+      "default": "@secondaryButtonBackgroundColor"
+    },
+    "ageRestrictionExitButtonTextColor": {
+      "type": "string",
+      "title": "Exit app button background text color",
+      "format": "color",
+      "default": "@secondaryButtonTextColor"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Age Restriction",
+        "properties": [
+          "ageRestrictionTitleTextColor",
+          "ageRestrictionDescriptionTextColor",
+          "ageRestrictionAgeBadgeColor",
+          "ageRestrictionConfirmButtonColor",
+          "ageRestrictionConfirmButtonTextColor",
+          "ageRestrictionExitButtonColor",
+          "ageRestrictionExitButtonTextColor"
+        ]
+      }
+    ]
+  }
+}

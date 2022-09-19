@@ -1,0 +1,56 @@
+{
+  "name": "age-restriction",
+  "title": "Age Restriction",
+  "version": "1.0.0",
+  "platform": ">=7",
+  "description": "Restricts access to specific content based upon the user's age",
+  "releaseNotes": "* Added age restriction extension",
+  "nativeChanges": {
+    "lastVersion": "1.0.0"
+  },
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.i18n",
+    "shoutem.navigation",
+    "shoutem.web-view"
+  ],
+  "icon": "server/assets/add-age-restriction-image.png",
+  "i18n": {
+    "locale": "en",
+    "translationPath": "server/translations/en.json"
+  },
+  "pages": [
+    {
+      "name": "AgeRestrictionPage",
+      "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "@.AgeRestrictionPage",
+      "title": "Settings"
+    },
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
+    }
+  ],
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
+    }
+  ],
+  "settings": {
+    "requiredAge": "21",
+    "privacyPolicy": null,
+    "termsOfService": null,
+    "backgroundImageUrl": null
+  }
+}
