@@ -167,7 +167,8 @@ function configureFacebookSettingsAndroid(facebookSettings = {}) {
     }
 
     if (!existingClientToken) {
-      const dummyString = 'string name="facebook_client_token">445566</string>';
+      const dummyString =
+        '<string name="facebook_client_token">445566</string>';
       resultingXmlFile = updateXmlFile(
         resultingXmlFile,
         'facebook_client_token',

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.auth",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "Authentication extension that uses the Shoutem authentication backend.",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

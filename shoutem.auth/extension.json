@@ -1,6 +1,6 @@
 {
   "name": "auth",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "platform": ">=10.0.0",
   "title": "Users",
   "nativeChanges": {
@@ -14,7 +14,7 @@
     ]
   },
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Fixed Facebook login\n* Updated Facebook SDK\n* Migrated from react-native-fbsdk to react-native-fbsdk-next",
+  "releaseNotes": "* Fixed issue with native Android builds",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",
