@@ -1,11 +1,11 @@
 {
   "name": "agora",
   "title": "Agora video calls",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "platform": ">=6",
   "icon": "server/assets/add-videos-image.png",
   "description": "Connect your users with real-time video conferencing!",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

@@ -1,9 +1,9 @@
 {
   "name": "shoutem.checklist",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Create checklists for app users to complete.",
   "scripts": {
-    "lint": "eslint --no-eslintrc src/**/*.{js,jsx}",
+    "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
     "clean": "rimraf ./build/*",
     "build": "npm run clean && cross-env NODE_ENV=production webpack --config ./bin/webpack/webpack.config.js",
     "dev": "webpack-dev-server --config ./bin/webpack/webpack.config.js"
@@ -66,29 +66,6 @@
     "redux": "^3.6.0",
     "redux-thunk": "~2.2.0",
     "urijs": "^1.18.9"
-  },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": [
-      "@shoutem/react"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 6,
-      "sourceType": "module",
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    },
-    "rules": {},
-    "settings": {
-      "import/resolver": {
-        "node": {
-          "paths": [
-            "src"
-          ]
-        }
-      }
-    }
   },
   "babel": {
     "presets": [

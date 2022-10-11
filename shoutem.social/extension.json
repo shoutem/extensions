@@ -1,14 +1,14 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "9.0.1",
+  "version": "9.1.0",
   "platform": ">=6",
   "nativeChanges": {
     "lastVersion": "6.0.0",
     "settingsKeys": []
   },
   "skipClone": false,
-  "releaseNotes": "* Updated endpoint resolution, no user facing changes",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "description": "Let members create posts, comment and like them",
   "categories": ["users"],
   "dependencies": [

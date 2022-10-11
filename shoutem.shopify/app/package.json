@@ -1,10 +1,11 @@
 {
   "name": "shoutem.shopify",
-  "version": "6.0.1",
+  "version": "6.2.0",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
+    "react-native-google-places-autocomplete": "2.4.1",
     "shopify-buy": "2.11.0",
     "world-countries": "1.8.1"
   },

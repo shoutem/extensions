@@ -16,10 +16,12 @@ import {
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
+import { goBack, navigateTo } from 'shoutem.navigation';
 import { CartFooter } from '../../components/cart';
 import { customer as customerShape } from '../../components/shapes';
 import { ext } from '../../const';
 import { updateCustomerInformation } from '../../redux/actionCreators';
+import { formatAutocompleteData } from '../../services';
 import { getFieldLabel } from '../../services/getFormFieldLabel';
 
 const loadCountries = () =>
@@ -130,8 +132,43 @@ class CheckoutScreen extends PureComponent {
     updateCustomerInformation(customerInformation, cartItems);
   }
 
+  handleAddressFieldPress() {
+    navigateTo(ext('SelectAddressScreen'), {
+      onAddressSelected: this.handleAddressSelected,
+    });
+  }
+
+  handleAddressSelected(_shortInfo, longInfo) {
+    const {
+      street,
+      streetNumber,
+      postalCode,
+      city,
+      countryName,
+      countryCode,
+      province,
+    } = formatAutocompleteData(longInfo);
+
+    this.setState({
+      ...(street && { address1: `${street} ${streetNumber}` }),
+      ...(postalCode && { zip: postalCode }),
+      ...(city && { city }),
+      ...(countryName && { countryName }),
+      ...(countryCode && { countryCode }),
+      ...(province && { province }),
+    });
+
+    goBack();
+  }
+
   renderInput(field) {
-    const { autoCapitalize, name, label, keyboardType, value } = field;
+    const { autoCapitalize, name, label, keyboardType } = field;
+    const { [name]: currentValue } = this.state;
+
+    const isAddressField = name === 'address1';
+    const handlePress = isAddressField
+      ? this.handleAddressFieldPress
+      : undefined;
 
     return (
       <FormGroup key={name}>
@@ -143,8 +180,9 @@ class CheckoutScreen extends PureComponent {
           keyboardAppearance="light"
           keyboardType={keyboardType || 'default'}
           onChangeText={text => this.setState({ [name]: text })}
+          onPressIn={handlePress}
           returnKeyType="done"
-          value={value}
+          value={currentValue}
         />
         <Divider styleName="line sm-gutter-bottom" />
       </FormGroup>

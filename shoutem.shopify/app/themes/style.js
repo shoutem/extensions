@@ -1,9 +1,10 @@
-import { getSizeRelativeToReference } from '@shoutem/theme';
+import { changeColorAlpha } from '@shoutem/theme';
 import {
   createScopedResolver,
-  dimensionRelativeToIphone,
   resolveFontFamily,
   resolveFontWeight,
+  responsiveHeight,
+  responsiveWidth,
 } from '@shoutem/ui';
 import { ext } from '../const';
 
@@ -21,36 +22,22 @@ const dropShadowStyle = {
 };
 
 export default () => ({
-  'shoutem.shopify.FeaturedItem': {
+  [`${ext('FeaturedItem')}`]: {
     container: {
       borderRadius: 4,
       resizeMode: 'cover',
       overflow: 'hidden',
       justifyContent: 'flex-end',
-      marginHorizontal: dimensionRelativeToIphone(8),
-      marginVertical: getSizeRelativeToReference(
-        resolveVariable('smallGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      width: dimensionRelativeToIphone(360),
-      height: getSizeRelativeToReference(
-        240,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      marginHorizontal: responsiveWidth(8),
+      marginVertical: responsiveHeight(resolveVariable('smallGutter')),
+      width: responsiveWidth(360),
+      height: responsiveHeight(240),
       ...dropShadowStyle,
     },
     contentContainer: {
       flexDirection: 'row',
-      paddingHorizontal: dimensionRelativeToIphone(
-        resolveVariable('mediumGutter'),
-      ),
-      paddingBottom: getSizeRelativeToReference(
-        resolveVariable('mediumGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+      paddingBottom: responsiveHeight(resolveVariable('mediumGutter')),
     },
     priceContainer: {
       flex: 1,
@@ -83,20 +70,16 @@ export default () => ({
       size: 20,
       marginRight: 0,
     },
-    buyIconSize: dimensionRelativeToIphone(25),
+    buyIconSize: responsiveWidth(25),
   },
-  'shoutem.shopify.ProductPrice': {
+  [`${ext('ProductPrice')}`]: {
     container: {
       flexDirection: 'row',
       overflow: 'hidden',
       alignItems: 'center',
-      width: dimensionRelativeToIphone(160),
-      marginRight: dimensionRelativeToIphone(resolveVariable('smallGutter')),
-      paddingTop: getSizeRelativeToReference(
-        resolveVariable('smallGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      width: responsiveWidth(160),
+      marginRight: responsiveWidth(resolveVariable('smallGutter')),
+      paddingTop: responsiveHeight(resolveVariable('smallGutter')),
     },
     wideContainer: { flex: 1 },
     price: {
@@ -104,7 +87,7 @@ export default () => ({
       fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '600'),
       fontWeight: resolveFontWeight('600'),
       fontSize: 16,
-      marginRight: dimensionRelativeToIphone(resolveVariable('smallGutter')),
+      marginRight: responsiveWidth(resolveVariable('smallGutter')),
     },
     featuredPrice: { color: '#FFFFFF' },
     discountedPrice: {
@@ -121,24 +104,16 @@ export default () => ({
       alignSelf: 'center',
       textDecorationLine: 'line-through',
       textDecorationStyle: 'solid',
-      marginBottom: dimensionRelativeToIphone(resolveVariable('smallGutter')),
+      marginBottom: responsiveHeight(resolveVariable('smallGutter')),
     },
   },
-  'shoutem.shopify.GridItem': {
+  [`${ext('GridItem')}`]: {
     container: {
       borderRadius: 4,
       backgroundColor: resolveVariable('paperColor'),
-      width: dimensionRelativeToIphone(175),
-      marginLeft: getSizeRelativeToReference(
-        8,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      marginVertical: getSizeRelativeToReference(
-        5,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      width: responsiveWidth(175),
+      marginLeft: responsiveWidth(8),
+      marginVertical: responsiveHeight(5),
       ...dropShadowStyle,
     },
     imageContainer: {
@@ -149,43 +124,23 @@ export default () => ({
       borderTopRightRadius: 4,
     },
     image: {
-      width: dimensionRelativeToIphone(175),
-      height: getSizeRelativeToReference(
-        150,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      width: responsiveWidth(175),
+      height: responsiveHeight(150),
     },
     tallImage: {
-      width: dimensionRelativeToIphone(175),
-      height: getSizeRelativeToReference(
-        205,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      width: responsiveWidth(175),
+      height: responsiveHeight(205),
     },
     fixedImage: {
-      width: dimensionRelativeToIphone(175),
-      height: getSizeRelativeToReference(
-        85,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      width: responsiveWidth(175),
+      height: responsiveHeight(85),
     },
     fixedContainer: {
-      height: getSizeRelativeToReference(
-        90,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      height: responsiveHeight(90),
     },
     textContainer: {
-      paddingHorizontal: dimensionRelativeToIphone(10),
-      paddingVertical: getSizeRelativeToReference(
-        8,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      paddingHorizontal: responsiveWidth(10),
+      paddingVertical: responsiveHeight(8),
     },
     priceContainer: {
       flex: 1,
@@ -193,43 +148,35 @@ export default () => ({
       alignItems: 'flex-end',
     },
   },
-  'shoutem.shopify.ProductTitle': {
+  [`${ext('ProductTitle')}`]: {
     title: {
       fontSize: 16,
       color: resolveVariable('text.color'),
-      paddingBottom: getSizeRelativeToReference(
-        resolveVariable('smallGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      paddingBottom: responsiveHeight(resolveVariable('smallGutter')),
     },
     featuredTitle: {
       fontSize: 17,
       color: '#FFFFFF',
     },
   },
-  'shoutem.shopify.ListItem': {
+  [`${ext('ListItem')}`]: {
     container: {
       flexDirection: 'row',
       borderRadius: 4,
-      marginHorizontal: dimensionRelativeToIphone(8),
-      marginVertical: getSizeRelativeToReference(
-        resolveVariable('smallGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      marginHorizontal: responsiveWidth(8),
+      marginVertical: responsiveHeight(resolveVariable('smallGutter')),
       ...dropShadowStyle,
     },
     contentContainer: {
-      height: dimensionRelativeToIphone(65),
+      height: responsiveHeight(65),
       justifyContent: 'space-between',
     },
     image: {
-      width: dimensionRelativeToIphone(65),
-      height: dimensionRelativeToIphone(65),
+      width: responsiveWidth(65),
+      height: responsiveHeight(65),
     },
   },
-  'shoutem.shopify.AddToCartButton': {
+  [`${ext('AddToCartButton')}`]: {
     container: {
       backgroundColor: 'transparent',
       borderWidth: 0,
@@ -246,71 +193,74 @@ export default () => ({
     featuredIcon: {
       color: 'white',
     },
-    iconSize: dimensionRelativeToIphone(25),
+    iconSize: responsiveWidth(25),
     title: {
-      marginLeft: dimensionRelativeToIphone(12),
+      marginLeft: responsiveWidth(12),
       color: resolveVariable('text.color'),
     },
   },
-  'shoutem.shopify.CartItem': {
-    titleContainer: {
+  [`${ext('CartItem')}`]: {
+    mainContainer: {
+      backgroundColor: resolveVariable('paperColor'),
+      borderRadius: 4,
+      marginHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+      marginTop: responsiveHeight(10),
+      padding: 0,
+      ...dropShadowStyle,
+    },
+    image: {
+      borderBottomLeftRadius: 4,
+      borderTopLeftRadius: 4,
+      marginRight: 0,
+      height: 95,
+      width: 95,
+    },
+    infoContainer: {
       flex: 1,
+      flexDirection: 'row',
       justifyContent: 'space-between',
+      padding: resolveVariable('mediumGutter'),
+    },
+    nameContainer: {
+      flex: 2,
     },
     priceContainer: {
-      justifyContent: 'space-between',
+      flex: 1,
       alignItems: 'flex-end',
-      marginLeft: dimensionRelativeToIphone(resolveVariable('smallGutter')),
+    },
+    oldPrice: {
+      textDecorationLine: 'line-through',
+    },
+    price: {
+      fontWeight: resolveFontWeight('500'),
     },
   },
-  'shoutem.shopify.MediumListItem': {
+  [`${ext('MediumListItem')}`]: {
     container: {
       flexDirection: 'row',
       borderRadius: 4,
-      height: getSizeRelativeToReference(
-        140,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      height: responsiveHeight(140),
       paddingLeft: 0,
-      marginHorizontal: dimensionRelativeToIphone(8),
-      marginVertical: getSizeRelativeToReference(
-        resolveVariable('smallGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      marginHorizontal: responsiveWidth(8),
+      marginVertical: responsiveHeight(resolveVariable('smallGutter')),
     },
     contentContainer: {
       flexDirection: 'row',
       borderRadius: 4,
       backgroundColor: resolveVariable('paperColor'),
       position: 'absolute',
-      left: dimensionRelativeToIphone(130),
-      paddingHorizontal: dimensionRelativeToIphone(
-        resolveVariable('mediumGutter'),
-      ),
-      paddingVertical: getSizeRelativeToReference(
-        resolveVariable('mediumGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      height: getSizeRelativeToReference(
-        110,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      width: dimensionRelativeToIphone(220),
+      left: responsiveWidth(130),
+      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+      paddingVertical: responsiveHeight(resolveVariable('mediumGutter')),
+      height: responsiveHeight(110),
+      width: responsiveWidth(220),
       ...dropShadowStyle,
     },
     image: {
       borderRadius: 4,
       marginRight: 0,
-      width: dimensionRelativeToIphone(220),
-      height: getSizeRelativeToReference(
-        140,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      width: responsiveWidth(220),
+      height: responsiveHeight(140),
     },
     productContainer: {
       flex: 1,
@@ -320,52 +270,36 @@ export default () => ({
       alignSelf: 'center',
     },
   },
-  'shoutem.shopify.LargeListItem': {
+  [`${ext('LargeListItem')}`]: {
     container: {
       borderRadius: 4,
       resizeMode: 'cover',
       overflow: 'hidden',
       justifyContent: 'flex-end',
-      marginHorizontal: dimensionRelativeToIphone(8),
-      marginVertical: getSizeRelativeToReference(
-        resolveVariable('smallGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      width: dimensionRelativeToIphone(360),
+      marginHorizontal: responsiveWidth(8),
+      marginVertical: responsiveHeight(resolveVariable('smallGutter')),
+      width: responsiveWidth(360),
     },
     image: {
-      width: dimensionRelativeToIphone(360),
-      height: getSizeRelativeToReference(
-        240,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      width: responsiveWidth(360),
+      height: responsiveHeight(240),
     },
     contentContainer: {
       flexDirection: 'row',
       backgroundColor: resolveVariable('paperColor'),
-      paddingHorizontal: dimensionRelativeToIphone(16),
+      paddingHorizontal: responsiveWidth(16),
     },
     priceContainer: {
       flex: 1,
-      paddingVertical: getSizeRelativeToReference(
-        16,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      paddingVertical: responsiveHeight(16),
     },
   },
-  'shoutem.shopify.TileItem': {
+  [`${ext('TileItem')}`]: {
     container: {
       resizeMode: 'cover',
       justifyContent: 'center',
-      width: dimensionRelativeToIphone(375),
-      height: getSizeRelativeToReference(
-        200,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      width: responsiveWidth(375),
+      height: responsiveHeight(200),
     },
     overlay: {
       position: 'absolute',
@@ -376,11 +310,7 @@ export default () => ({
       backgroundColor: 'rgba(0,0,0,0.4)',
     },
     contentContainer: {
-      marginTop: getSizeRelativeToReference(
-        resolveVariable('mediumGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      marginTop: responsiveHeight(resolveVariable('mediumGutter')),
     },
     title: {
       title: { textAlign: 'center' },
@@ -394,13 +324,226 @@ export default () => ({
     },
     buyButton: {
       container: {
-        marginTop: 20,
+        marginTop: responsiveHeight(20),
         backgroundColor: 'white',
-        width: 155,
-        height: 40,
+        width: responsiveWidth(155),
+        height: responsiveHeight(40),
         alignSelf: 'center',
         borderRadius: 2,
       },
+    },
+  },
+  [`${ext('SelectAddressScreen')}`]: {
+    closeIconContainer: {
+      position: 'absolute',
+      right: responsiveWidth(16),
+      top: responsiveHeight(12),
+      justifyContent: 'center',
+      zIndex: 2,
+      elevation: 2,
+    },
+    closeIcon: {
+      color: resolveVariable('text.color'),
+      width: responsiveWidth(15),
+      height: responsiveHeight(15),
+    },
+    autocompleteStyles: {
+      textInput: {
+        fontSize: 13,
+        lineHeight: 16,
+        justifyContent: 'center',
+        paddingLeft: responsiveWidth(16),
+        // Take clear button into account
+        paddingRight: responsiveWidth(32),
+        color: resolveVariable('text.color'),
+      },
+    },
+    placeholderText: {
+      placeholderTextColor: changeColorAlpha(
+        resolveVariable('text.color'),
+        0.6,
+      ),
+    },
+  },
+  [`${ext('UpdateItemScreen')}`]: {
+    itemDetailsContainer: {
+      flexDirection: 'row',
+      backgroundColor: resolveVariable('paperColor'),
+      alignItems: 'flex-start',
+      padding: resolveVariable('mediumGutter'),
+    },
+    image: {
+      height: responsiveHeight(95),
+      width: responsiveWidth(95),
+      borderRadius: 2,
+    },
+    descriptionContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: resolveVariable('mediumGutter'),
+    },
+    oldPrice: {
+      textDecorationLine: 'line-through',
+    },
+    price: {
+      boldTextStyle: {
+        fontWeight: resolveFontWeight('500'),
+      },
+    },
+    footer: {
+      backgroundColor: resolveVariable('paperColor'),
+      shadowRadius: 8,
+      shadowOffset: {
+        width: 0,
+        height: -3,
+      },
+      shadowColor: resolveVariable('shadowColor'),
+      shadowOpacity: 0.8,
+      elevation: 4,
+    },
+    screen: {
+      backgroundColor: resolveVariable('paperColor'),
+    },
+    optionsContainer: {
+      backgroundColor: resolveVariable('paperColor'),
+      marginTop: resolveVariable('mediumGutter'),
+    },
+    optionRow: {
+      alignItems: 'center',
+      backgroundColor: resolveVariable('paperColor'),
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingBottom: resolveVariable('mediumGutter'),
+      paddingHorizontal: resolveVariable('mediumGutter'),
+    },
+    dropDownMenu: {
+      horizontalContainer: {
+        alignItems: 'flex-end',
+        borderColor: resolveVariable('shadowColor'),
+        borderWidth: 0,
+        height: responsiveHeight(40),
+        width: responsiveWidth(184),
+      },
+      selectedOption: {
+        borderBottomWidth: 1,
+        borderLeftWidth: 1,
+        borderTopWidth: 1,
+        borderBottomLeftRadius: 4,
+        borderTopLeftRadius: 4,
+        borderColor: 'rgba(136, 143, 161, 0.1)',
+        height: responsiveHeight(38),
+      },
+      icon: {
+        borderBottomRightRadius: 4,
+        borderTopRightRadius: 4,
+        borderWidth: 0,
+        elevation: 4,
+        shadowColor: resolveVariable('shadowColor'),
+        shadowOffset: {
+          width: 0,
+          height: 0,
+        },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        height: responsiveHeight(40),
+        width: responsiveWidth(40),
+      },
+    },
+    quantityContainer: {
+      alignItems: 'center',
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingBottom: resolveVariable('mediumGutter'),
+      paddingHorizontal: resolveVariable('mediumGutter'),
+    },
+    numberInput: {
+      button: {
+        elevation: 4,
+        shadowColor: resolveVariable('shadowColor'),
+        shadowOffset: {
+          width: 0,
+          height: 0,
+        },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        height: responsiveHeight(40),
+        width: responsiveWidth(40),
+        padding: 8,
+      },
+      buttonLeft: {
+        borderBottomLeftRadius: 4,
+        bordertopLeftRadius: 4,
+      },
+      buttonRight: {
+        borderBottomRightRadius: 4,
+        borderTopRightRadius: 4,
+      },
+      container: {
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      },
+      icon: {
+        marginRight: 0,
+      },
+      input: {
+        height: responsiveHeight(38),
+        paddingVertical: responsiveHeight(10),
+        textAlign: 'center',
+        width: responsiveWidth(94),
+      },
+      inputContainer: {
+        borderColor: 'rgba(136, 143, 161, 0.1)',
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+      },
+    },
+  },
+  [`${ext('CartScreen')}`]: {
+    screen: {
+      backgroundColor: resolveVariable('paperColor'),
+    },
+    list: {
+      listContent: {
+        backgroundColor: resolveVariable('paperColor'),
+        flex: 1,
+      },
+    },
+  },
+  [`${ext('CartFooter')}`]: {
+    mainContainer: {
+      backgroundColor: resolveVariable('paperColor'),
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      shadowRadius: 8,
+      shadowOffset: {
+        width: 0,
+        height: -3,
+      },
+      shadowColor: resolveVariable('shadowColor'),
+      shadowOpacity: 0.8,
+      width: resolveVariable('sizes.window.width'),
+    },
+    priceContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+      paddingVertical: responsiveHeight(resolveVariable('mediumGutter')),
+    },
+    buttonContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+      paddingVertical: responsiveHeight(resolveVariable('mediumGutter')),
+    },
+    buttonText: {
+      fontWeight: resolveFontWeight('500'),
     },
   },
 });

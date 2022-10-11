@@ -1,10 +1,10 @@
 {
   "name": "rss-videos",
   "title": "Videos RSS",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "platform": ">=6.0.1",
   "description": "Show a video gallery from an RSS feed",
-  "releaseNotes": "* Reworked RSS feed resolution resulting in more optimised feed fetching and parsing",
+  "releaseNotes": "* Removed unnecessary details screen layout from Layout settings page",
   "icon": "server/assets/add-videos-image.png",
   "categories": ["media"],
   "repository": {
@@ -51,8 +51,7 @@
     {
       "name": "VideosList",
       "title": "Big list",
-      "image": "server/assets/screens/big-list.png",
-      "navigatesTo": ["@.VideoDetails"]
+      "image": "server/assets/screens/big-list.png"
     },
     {
       "name": "VideosSmallList",

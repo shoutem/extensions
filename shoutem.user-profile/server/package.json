@@ -1,9 +1,9 @@
 {
   "name": "shoutem.user-profile",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "Add extended user profile",
   "scripts": {
-    "lint": "eslint --no-eslintrc src/**/*.{js,jsx}",
+    "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
     "clean": "rimraf ./build/*",
     "build": "npm run clean && cross-env NODE_ENV=production webpack --config ./bin/webpack/webpack.config.js",
     "dev": "webpack-dev-server --config ./bin/webpack/webpack.config.js"
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "^1.0.0",
+    "@shoutem/react-web-ui": "^1.0.2",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-composers": "^0.1.6",
     "@shoutem/redux-io": "^3.2.1",

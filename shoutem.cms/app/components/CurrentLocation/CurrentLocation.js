@@ -1,19 +1,19 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { bindActionCreators } from 'redux';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
 import { Alert, Platform } from 'react-native';
+import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 import { I18n } from 'shoutem.i18n';
 import {
   checkPermissions,
-  requestPermissions,
-  PERMISSION_TYPES,
-  RESULTS,
   openSettings,
+  PERMISSION_TYPES,
   request,
+  requestPermissions,
+  RESULTS,
 } from 'shoutem.permissions';
-
 import { ext } from '../../const';
 import {
   getLocationPermissionStatus,
@@ -21,14 +21,13 @@ import {
   updateLocationPermission,
   updateSecondPromptStatus,
 } from '../../redux';
-import { connect } from 'react-redux';
 
 const LOCATION_PERMISSION =
   Platform.OS === 'ios'
     ? PERMISSION_TYPES.IOS_LOCATION_WHEN_IN_USE
     : PERMISSION_TYPES.ANDROID_ACCESS_FINE_LOCATION;
 
-export default function (WrappedComponent) {
+export default function(WrappedComponent) {
   class CurrentLocation extends PureComponent {
     static propTypes = {
       permissionStatus: PropTypes.object,

@@ -84,3 +84,9 @@ export const getProducts = createSelector(
     };
   },
 );
+
+export function getShopifyGooglePlacesApiKey(state) {
+  const settings = getExtensionSettings(state, ext());
+
+  return _.get(settings, 'services.self.apiKeys.googlePlacesApiKey');
+}

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.deals",
-  "version": "6.1.0",
+  "version": "6.2.0",
   "description": "Create special deals and redeem them with coupons",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
@@ -51,7 +51,7 @@
   "dependencies": {
     "@shoutem/assets-sdk": "1.0.0",
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "^1.0.0",
+    "@shoutem/react-web-ui": "^1.0.2",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-composers": "^0.1.5",
     "@shoutem/redux-io": "^3.2.1",

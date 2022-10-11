@@ -1,11 +1,11 @@
 {
   "name": "permissions",
   "title": "Permissions",
-  "version": "4.0.5",
+  "version": "4.1.0",
   "platform": ">=9.0.1",
   "type": "system",
   "description": "Extension for app permission management. ",
-  "releaseNotes": "* Added schedule exact alarm permission type for Android 12",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "nativeChanges": {
     "lastVersion": "4.0.5"
   },

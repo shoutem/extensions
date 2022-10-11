@@ -1,10 +1,10 @@
 {
   "name": "onboarding",
   "title": "Onboarding",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "platform": ">=7",
   "description": "Shows a quick tour on the first app launch.",
-  "releaseNotes": "* Introduced fetching onboarding images in the runtime for the preview mode",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "icon": "server/assets/onboarding-icon.png",
   "dependencies": ["shoutem.application", "shoutem.i18n", "shoutem.navigation"],
   "i18n": {

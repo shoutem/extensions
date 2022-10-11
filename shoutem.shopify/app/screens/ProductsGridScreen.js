@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
-import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
+import { getRouteParams } from 'shoutem.navigation';
 import ProductsGrid from '../components/ProductsGrid';
 import { ext } from '../const';
 import {
@@ -17,17 +17,6 @@ class ProductsGridScreen extends ProductsListScreen {
   static propTypes = {
     ...ProductsListScreen.propTypes,
   };
-
-  getNavBarProps() {
-    return {
-      ...super.getNavBarProps(),
-      ...composeNavigationStyles(['featured']),
-    };
-  }
-
-  renderCollectionsPicker() {
-    return super.renderCollectionsPicker('horizontal featured');
-  }
 
   /* eslint-disable class-methods-use-this */
   renderProducts(collectionId) {

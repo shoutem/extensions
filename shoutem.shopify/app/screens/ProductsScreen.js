@@ -77,19 +77,19 @@ function ProductsScreen({
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      ...composeNavigationStyles(['featured']),
-      headerRight: props => {
+      ...(hasFeaturedItem && { ...composeNavigationStyles(['featured']) }),
+      headerRight: navProps => {
         return (
           <View virtual styleName="horizontal">
             <HeaderIconButton
               iconName="search"
               onPress={navigateToSearchScreen}
-              {...props}
+              {...navProps}
             />
             <CartIcon
               cartSize={cartSize}
               onPress={navigateToCart}
-              iconProps={{ style: props.tintColor }}
+              iconProps={{ style: navProps.tintColor }}
             />
           </View>
         );
@@ -116,6 +116,11 @@ function ProductsScreen({
     [listType],
   );
 
+  const dropdownStyleName = useMemo(
+    () => (hasFeaturedItem ? 'featured horizontal' : 'horizontal'),
+    [hasFeaturedItem],
+  );
+
   return (
     <Screen>
       {isCategoryPickerVisible && (
@@ -125,7 +130,7 @@ function ProductsScreen({
           selectedOption={currentCollection}
           titleProperty="title"
           valueProperty="id"
-          styleName="horizontal"
+          styleName={dropdownStyleName}
         />
       )}
       {loading ? (

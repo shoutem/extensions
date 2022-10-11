@@ -4,15 +4,14 @@ import reducer from './redux';
 export { ShopPreview };
 
 export {
-  checkShopConnection,
-  connectShop,
-  createStorefrontToken,
-  getShopifyCollections,
-  getStorefrontToken,
-  loadShopifyCollections,
   moduleName,
+  getShopifyCollections,
+  loadShopifyCollections,
   validateShopifySettings,
 } from './redux';
-export { validateShopifyStoreUrl } from './services/store';
+export {
+  resolveShopifyStoreUrl,
+  validateShopifyStoreUrl,
+} from './services/store';
 
 export default reducer;

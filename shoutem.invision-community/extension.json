@@ -1,8 +1,8 @@
 {
   "name": "invision-community",
   "title": "Invision community",
-  "version": "2.0.0",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "version": "2.1.0",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "description": "Allow Invision Community to grant limited access to your app",
   "platform": ">=6",
   "icon": "./server/assets/add-invision-image.png",

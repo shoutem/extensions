@@ -1,10 +1,10 @@
 {
   "name": "web-view",
-  "version": "5.2.2",
+  "version": "5.3.0",
   "platform": ">=8",
   "type": "system",
   "title": "Web view",
-  "releaseNotes": "* No user facing changes\n* For devs: Updated open URL action to support hiding share button",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "nativeChanges": {

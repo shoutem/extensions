@@ -7,7 +7,6 @@ import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
-  Divider,
   DropDownMenu,
   Image,
   ListView,
@@ -21,10 +20,7 @@ import {
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
 import { images as localImages } from '../assets';
-import {
-  shop as shopShape,
-  variant as variantShape,
-} from '../components/shapes';
+import { shop as shopShape } from '../components/shapes';
 import { ext } from '../const';
 
 /*
@@ -56,21 +52,6 @@ const getAvailableValuesForOption = (availableVariants, option) => {
   });
 
   return _.uniqBy(availableValues, 'value');
-};
-
-/**
- * Filters available variants based on last selected option.
- * For example, we have Massimo Dutti and John Smedley
- * sweaters, but for the latter we only have Small and
- * Medium in Navy. Initially all variants are available.
- * When the user selects John Smedley and Navy, we filter
- * variants to only 2 items: Small and Medium in Navy from
- * this brand.
- */
-const getAvailableVariants = (availableVariants, lastSelectedOption) => {
-  return _.filter(availableVariants, variant => {
-    return _.some(variant.selectedOptions, { value: lastSelectedOption });
-  });
 };
 
 /**
@@ -185,7 +166,6 @@ class UpdateItemScreen extends PureComponent {
    */
   getAvailableOptions() {
     const { item } = getRouteParams(this.props);
-    const { variant } = this.state;
 
     // if there is only one variant, it is already selected, so we don't render
     if (_.size(item.variants) === 1) {
@@ -205,22 +185,43 @@ class UpdateItemScreen extends PureComponent {
         optionName: option.name,
         values: availableValues,
       });
-
-      const lastSelectedOption = _.find(variant.selectedOptions, {
-        name: option.name,
-      }).value;
     });
 
     return availableOptions;
   }
 
-  renderAddToCartButton() {
+  handleAdd() {
+    const { onActionButtonClicked } = getRouteParams(this.props);
+    const { variant, quantity } = this.state;
+
+    const { add } = actionTypes;
+
+    onActionButtonClicked(add, { variant, quantity });
+  }
+
+  handleRemove() {
     const { onActionButtonClicked } = getRouteParams(this.props);
 
+    const { remove } = actionTypes;
+
+    onActionButtonClicked(remove);
+  }
+
+  handleUpdate() {
+    const { onActionButtonClicked } = getRouteParams(this.props);
     const { variant, quantity } = this.state;
     const { availableForSale } = variant;
 
-    const { add } = actionTypes;
+    const { update } = actionTypes;
+
+    if (availableForSale && quantity) {
+      onActionButtonClicked(update, { variant, quantity });
+    }
+  }
+
+  renderAddToCartButton() {
+    const { variant, quantity } = this.state;
+    const { availableForSale } = variant;
 
     const canUpdate = availableForSale && quantity;
     const resolvedStyleName = `horizontal h-end md-gutter ${
@@ -229,11 +230,7 @@ class UpdateItemScreen extends PureComponent {
 
     return (
       <View styleName={resolvedStyleName}>
-        <Button
-          styleName="secondary"
-          onPress={() =>
-            canUpdate && onActionButtonClicked(add, { variant, quantity })}
-        >
+        <Button disabled={!canUpdate} onPress={this.handleAdd}>
           <Text styleName="bold lg-gutter-horizontal">
             {I18n.t(ext('addItemConfirmButton'))}
           </Text>
@@ -243,11 +240,8 @@ class UpdateItemScreen extends PureComponent {
   }
 
   renderUpdateButtons() {
-    const { onActionButtonClicked } = getRouteParams(this.props);
     const { variant, quantity } = this.state;
     const { availableForSale } = variant;
-
-    const { remove, update } = actionTypes;
 
     const canUpdate = availableForSale && quantity;
     const resolvedStyleName = `horizontal md-gutter-vertical ${
@@ -256,17 +250,10 @@ class UpdateItemScreen extends PureComponent {
 
     return (
       <View styleName={resolvedStyleName}>
-        <Button
-          styleName="confirmation"
-          onPress={() => onActionButtonClicked(remove)}
-        >
+        <Button styleName="confirmation" onPress={this.handleRemove}>
           <Text>{I18n.t(ext('cartItemRemoveButton'))}</Text>
         </Button>
-        <Button
-          styleName="confirmation secondary"
-          onPress={() =>
-            canUpdate && onActionButtonClicked(update, { variant, quantity })}
-        >
+        <Button styleName="confirmation secondary" onPress={this.handleUpdate}>
           <Text>{I18n.t(ext('cartItemUpdateButton'))}</Text>
         </Button>
       </View>
@@ -275,7 +262,7 @@ class UpdateItemScreen extends PureComponent {
 
   renderItemDetails() {
     const { variant } = this.state;
-    const { shop } = this.props;
+    const { shop, style } = this.props;
     const { item } = getRouteParams(this.props);
 
     const { price, compare_at_price: oldPrice } = variant;
@@ -287,45 +274,43 @@ class UpdateItemScreen extends PureComponent {
       : localImages.fallback;
 
     return (
-      <View styleName="horizontal solid v-start md-gutter">
-        <Image styleName="small" source={productImage} />
-        <View style={{ flex: 7 }} styleName="md-gutter-left">
+      <View style={style.itemDetailsContainer}>
+        <Image style={style.image} source={productImage} />
+        <View style={style.descriptionContainer}>
           <Subtitle>{title}</Subtitle>
-        </View>
-        <View styleName="h-end sm-gutter-left vertical" style={{ flex: 3 }}>
-          {oldPrice && oldPrice < price && (
-            <Caption styleName="line-through">
+          <View>
+            {!!oldPrice && oldPrice < price && (
+              <Caption style={style.oldPrice}>
+                {currency}
+                {oldPrice}
+              </Caption>
+            )}
+            <Subtitle style={style.price}>
               {currency}
-              {oldPrice}
-            </Caption>
-          )}
-          <Subtitle>
-            {currency}
-            {price}
-          </Subtitle>
+              {price}
+            </Subtitle>
+          </View>
         </View>
       </View>
     );
   }
 
   renderQuantityPicker() {
+    const { style } = this.props;
     const {
       quantity,
       variant: { availableForSale },
     } = this.state;
 
-    const viewStyling =
-      'horizontal v-center space-between' +
-      ' md-gutter-horizontal lg-gutter-vertical';
-
     return (
-      <View styleName={viewStyling}>
+      <View style={style.quantityContainer}>
         <Subtitle>{I18n.t(ext('itemQuantity'))}</Subtitle>
         {availableForSale ? (
           <NumberInput
             min={1}
             onChange={quantity => this.setState({ quantity })}
             step={1}
+            style={style.numberInput}
             value={quantity}
           />
         ) : (
@@ -358,57 +343,55 @@ class UpdateItemScreen extends PureComponent {
   }
 
   renderOptionRow({ values, optionName }) {
+    const { style } = this.props;
     const { variant } = this.state;
 
     const option = _.find(variant.selectedOptions, { name: optionName });
     const selectedOption = _.find(values, { value: option.value });
-    const viewStyling =
-      'horizontal v-center space-between' +
-      ' md-gutter-horizontal lg-gutter-vertical';
 
     return (
-      <View>
-        <View styleName={viewStyling}>
-          <Subtitle>{optionName}</Subtitle>
-          {_.size(values) === 1 ? (
-            <Subtitle>{values[0].value}</Subtitle>
-          ) : (
-            <DropDownMenu
-              onOptionSelected={this.onOptionSelected}
-              options={values}
-              selectedOption={selectedOption}
-              styleName="large"
-              titleProperty="value"
-              valueProperty="value"
-            />
-          )}
-        </View>
-        <Divider styleName="line" />
+      <View style={style.optionRow}>
+        <Subtitle>{optionName}</Subtitle>
+        {_.size(values) === 1 ? (
+          <Subtitle>{values[0].value}</Subtitle>
+        ) : (
+          <DropDownMenu
+            onOptionSelected={this.onOptionSelected}
+            options={values}
+            selectedOption={selectedOption}
+            style={style.dropDownMenu}
+            styleName="large"
+            titleProperty="value"
+            valueProperty="value"
+          />
+        )}
       </View>
     );
   }
 
   render() {
+    const { style } = this.props;
     const { actionType } = getRouteParams(this.props);
     const { add } = actionTypes;
 
     return (
-      <Screen>
+      <Screen style={style.screen}>
         <ScrollView>
           {this.renderItemDetails()}
-          <Divider styleName="line" />
+          {this.renderQuantityPicker()}
           <ListView
             data={this.getAvailableOptions()}
+            contentContainerStyle={style.optionsContainer}
             renderRow={this.renderOptionRow}
             ListEmptyComponent={() => null}
           />
-          {this.renderQuantityPicker()}
         </ScrollView>
-        <Divider styleName="line" />
-        {this.renderStatusRow()}
-        {actionType === add
-          ? this.renderAddToCartButton()
-          : this.renderUpdateButtons()}
+        <View style={style.footer}>
+          {this.renderStatusRow()}
+          {actionType === add
+            ? this.renderAddToCartButton()
+            : this.renderUpdateButtons()}
+        </View>
       </Screen>
     );
   }
@@ -417,6 +400,7 @@ class UpdateItemScreen extends PureComponent {
 UpdateItemScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
   shop: shopShape.isRequired,
+  style: PropTypes.object.isRequired,
 };
 
 export const mapStateToProps = state => {
@@ -427,7 +411,6 @@ export const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {},
-)(connectStyle(ext('UpdateItemScreen'))(UpdateItemScreen));
+export default connect(mapStateToProps)(
+  connectStyle(ext('UpdateItemScreen'))(UpdateItemScreen),
+);

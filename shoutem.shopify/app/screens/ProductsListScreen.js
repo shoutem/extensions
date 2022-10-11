@@ -7,6 +7,7 @@ import { connectStyle } from '@shoutem/theme';
 import { DropDownMenu, Screen, Spinner, View } from '@shoutem/ui';
 import { getScreenState, setScreenState } from 'shoutem.cms';
 import {
+  composeNavigationStyles,
   getRouteParams,
   HeaderIconButton,
   navigateTo,
@@ -66,9 +67,10 @@ export class ProductsListScreen extends PureComponent {
   }
 
   getNavBarProps() {
-    const { cartSize } = this.props;
+    const { cartSize, hasFeaturedItem } = this.props;
 
     return {
+      ...(hasFeaturedItem && { ...composeNavigationStyles(['featured']) }),
       headerRight: props => {
         return (
           <View virtual styleName="horizontal">
@@ -120,12 +122,18 @@ export class ProductsListScreen extends PureComponent {
   }
 
   render() {
-    const { collection = {}, shop } = this.props;
+    const { collection = {}, shop, hasFeaturedItem } = this.props;
     const { collections, isLoading } = shop;
+
+    const collectionPickerStyleName = hasFeaturedItem
+      ? 'featured horizontal'
+      : 'horizontal';
 
     return (
       <Screen>
-        {_.size(collections) > 1 ? this.renderCollectionsPicker() : null}
+        {_.size(collections) > 1
+          ? this.renderCollectionsPicker(collectionPickerStyleName)
+          : null}
         {isLoading ? (
           <Spinner styleName="md-gutter-top" />
         ) : (
@@ -137,6 +145,7 @@ export class ProductsListScreen extends PureComponent {
 }
 
 ProductsListScreen.propTypes = {
+  hasFeaturedItem: PropTypes.bool.isRequired,
   navigation: PropTypes.object.isRequired,
   refreshProducts: PropTypes.func.isRequired,
   setScreenState: PropTypes.func.isRequired,
@@ -158,7 +167,11 @@ ProductsListScreen.defaultProps = {
 export const mapStateToProps = (state, ownProps) => {
   const extState = state[ext()];
   const { shop } = extState;
-  const { screenId, shortcut = {} } = getRouteParams(ownProps);
+  const {
+    screenId,
+    shortcut = {},
+    screenSettings: { hasFeaturedItem = false },
+  } = getRouteParams(ownProps);
   const { selectedCollections } = shortcut.settings || {};
 
   const data = getScreenState(state, screenId);
@@ -175,6 +188,7 @@ export const mapStateToProps = (state, ownProps) => {
     shop: { ...shop, collections },
     visibleCollections: collections,
     shortcut,
+    hasFeaturedItem,
   };
 };
 

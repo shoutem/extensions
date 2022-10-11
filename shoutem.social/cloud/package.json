@@ -1,6 +1,6 @@
 {
   "name": "shoutem.social",
-  "version": "9.0.1",
+  "version": "9.1.0",
   "private": true,
   "scripts": {
     "@comment init": "Generates env files for all workflow types - should work out of the box",
@@ -80,7 +80,7 @@
     "sequelize-values": "^1.1.0",
     "sleep-promise": "^8.0.1",
     "ts-node": "^8.8.1",
-    "typescript": "3.5.1",
+    "typescript": "4.1.2",
     "urijs": "^1.19.0",
     "uuid": "^3.3.2",
     "yaml-js": "^0.2.3",

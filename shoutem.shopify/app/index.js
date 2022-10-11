@@ -10,9 +10,10 @@ import ProductsGridScreen from './screens/ProductsGridScreen.js';
 import ProductsListScreen from './screens/ProductsListScreen.js';
 import ProductsScreen from './screens/ProductsScreen';
 import SearchProductsScreen from './screens/SearchProductsScreen.js';
+import SelectAddressScreen from './screens/SelectAddressScreen';
 import UpdateItemScreen from './screens/UpdateItemScreen.js';
 import enTranslations from './translations/en.json';
-import { actions, reducer, middleware } from './redux';
+import { actions, middleware, reducer } from './redux';
 
 export const screens = {
   CartScreen,
@@ -35,6 +36,7 @@ export const screens = {
   UpdateItemScreen,
   CheckoutScreen,
   WebCheckoutScreen,
+  SelectAddressScreen,
 };
 
 export const shoutem = {
@@ -47,4 +49,4 @@ export const shoutem = {
 
 export { appDidMount } from './app';
 
-export { actions, reducer, middleware };
+export { actions, middleware, reducer };

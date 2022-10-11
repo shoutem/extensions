@@ -13,6 +13,7 @@ function CartFooter({
   action,
   cartTotal,
   shop: { currency, moneyFormat },
+  style,
   onActionButtonClicked,
 }) {
   const total = useMemo(() => formatPrice(cartTotal, currency, moneyFormat), [
@@ -22,15 +23,15 @@ function CartFooter({
   ]);
 
   return (
-    <View>
-      <View styleName="horizontal md-gutter space-between">
+    <View style={style.mainContainer}>
+      <View style={style.priceContainer}>
         <Subtitle>{I18n.t(ext('totalPrice'))}</Subtitle>
         <Subtitle>{total}</Subtitle>
       </View>
       {!!action && (
-        <View styleName="horizontal h-end md-gutter sm-gutter-top">
-          <Button onPress={onActionButtonClicked} styleName="secondary">
-            <Text styleName="bold">{action}</Text>
+        <View style={style.buttonContainer}>
+          <Button onPress={onActionButtonClicked}>
+            <Text style={style.buttonText}>{action}</Text>
           </Button>
         </View>
       )}
@@ -41,6 +42,7 @@ function CartFooter({
 CartFooter.propTypes = {
   cartTotal: PropTypes.string.isRequired,
   shop: shopShape.isRequired,
+  style: PropTypes.object.isRequired,
   onActionButtonClicked: PropTypes.func.isRequired,
   action: PropTypes.string,
 };

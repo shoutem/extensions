@@ -1,10 +1,10 @@
 {
   "name": "page",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "platform": ">=6",
   "title": "Page",
   "description": "Show a single screen with info and child items",
-  "releaseNotes": "* Fixed titles not being visible in the navigation bar\n* Added support for new extension scoped theming",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "icon": "server/assets/add-page-image.png",
   "dependencies": [
     "shoutem.application",

@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.source_files  = "Classes", "Classes/**/*.{h,m,swift}"
   s.exclude_files = "Classes/Exclude"
 
-  s.dependency "Mobile-Buy-SDK"
+  s.dependency "Mobile-Buy-SDK", '8.0.0'
   def s.post_install(target)
     target.build_configurations.each do |config|
           config.build_settings['SWIFT_VERSION'] = '4.2'

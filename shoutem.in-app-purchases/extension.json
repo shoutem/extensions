@@ -1,10 +1,10 @@
 {
   "name": "in-app-purchases",
-  "version": "5.0.3",
+  "version": "5.1.0",
   "platform": ">=8",
   "title": "In App Purchases",
   "description": "Add Apple/Google Play subscriptions to your app",
-  "releaseNotes": "* Fixed wrong background color on Restore subscription button",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "nativeChanges": {
     "lastVersion": "5.0.2"
   },

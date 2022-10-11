@@ -1,15 +1,16 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "6.0.1",
+  "version": "6.2.0",
   "platform": ">=9.2.0",
   "hidden": false,
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "releaseNotes": "* Updated Shopify auth flow\n *Updated native SDK versions\n *Squashed a couple of UI bugs",
+  "releaseNotes": "* Updated cart screen and edit cart item screen design\n* For developers: Add node 16 support for server segment",
   "nativeChanges": {
     "lastVersion": "6.0.0"
   },
+  "capabilities": ["shoutem.shopify.places-api"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -22,9 +23,7 @@
     "shoutem.navigation",
     "shoutem.notification-center"
   ],
-  "categories": [
-    "commerce"
-  ],
+  "categories": ["commerce"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -204,6 +203,9 @@
     },
     {
       "name": "UpdateItemScreen"
+    },
+    {
+      "name": "SelectAddressScreen"
     }
   ],
   "pages": [

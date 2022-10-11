@@ -1,6 +1,6 @@
 {
   "name": "shoutem.advertising",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "Integrate AdMob and embed ads to your application",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

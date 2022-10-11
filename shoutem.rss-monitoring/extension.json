@@ -1,10 +1,10 @@
 {
   "name": "rss-monitoring",
-  "version": "4.1.6",
+  "version": "4.1.8",
   "platform": ">=6.0.1",
   "title": "RSS Monitoring",
   "description": "Monitors RSS feed content and sends automated push notifications when new content is loaded.",
-  "releaseNotes": "* Reworked RSS feed resolution resulting in more optimised feed fetching and parsing",
+  "releaseNotes": "* No user facing changes\n* For developers: Switched from eslintConfig to .eslintrc in server segment",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "dependencies": ["shoutem.rss"],
   "categories": ["content"],

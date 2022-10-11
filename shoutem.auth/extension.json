@@ -1,6 +1,6 @@
 {
   "name": "auth",
-  "version": "7.0.1",
+  "version": "7.1.0",
   "platform": ">=10.0.0",
   "title": "Users",
   "nativeChanges": {
@@ -14,7 +14,7 @@
     ]
   },
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Fixed issue with native Android builds",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",

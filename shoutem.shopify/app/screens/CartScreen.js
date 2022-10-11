@@ -5,12 +5,9 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
-  Caption,
-  Divider,
   Icon,
   ListView,
   Screen,
-  ScrollView,
   Subtitle,
   TouchableOpacity,
   View,
@@ -79,17 +76,18 @@ class CartScreen extends PureComponent {
     return (
       <TouchableOpacity onPress={() => this.onEditItem(cartItem)}>
         <CartItem cartItem={cartItem} shop={shop} />
-        <Divider styleName="line" />
       </TouchableOpacity>
     );
   }
 
   render() {
-    const { cart } = this.props;
+    const { cart, style } = this.props;
+
+    const cartSize = _.size(cart);
 
     return (
-      <Screen>
-        {!_.size(cart) && (
+      <Screen style={style.screen}>
+        {!cartSize && (
           <View styleName="flexible vertical h-center v-center xl-gutter-horizontal">
             <View styleName="oval-highlight">
               <Icon name="cart" />
@@ -99,20 +97,13 @@ class CartScreen extends PureComponent {
             </Subtitle>
           </View>
         )}
-        {!!_.size(cart) && (
-          <ScrollView>
-            <Divider styleName="section-header">
-              <Caption>{I18n.t(ext('cartScreenProductName'))}</Caption>
-              <Caption>{I18n.t(ext('cartScreenProductPrice'))}</Caption>
-            </Divider>
-            <ListView data={cart} renderRow={this.renderRow} />
-            <Divider styleName="line" />
-            <CartFooter
-              action={I18n.t(ext('proceedToCheckoutButton'))}
-              onActionButtonClicked={this.proceedToCheckout}
-            />
-          </ScrollView>
+        {!!cartSize && (
+          <ListView data={cart} renderRow={this.renderRow} style={style.list} />
         )}
+        <CartFooter
+          action={I18n.t(ext('proceedToCheckoutButton'))}
+          onActionButtonClicked={this.proceedToCheckout}
+        />
       </Screen>
     );
   }
@@ -124,6 +115,7 @@ CartScreen.propTypes = {
   cartItemUpdated: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   shop: shopShape.isRequired,
+  style: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => {

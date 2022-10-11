@@ -13,16 +13,18 @@ function CartCaption({ item, variantTitle, quantity }) {
       return '';
     }
 
-    return `${variantTitle}  ·  `;
+    return variantTitle;
   }, [item.title, variantTitle]);
 
-  return (
-    <Caption ellipsizeMode="middle" numberOfLines={1}>
-      {variantText}
-      {I18n.t(ext('itemQuantity'))}
-      {quantity}
-    </Caption>
+  const caption = useMemo(
+    () =>
+      variantText
+        ? `${I18n.t(ext('itemQuantity'))}${quantity}  ·  ${variantText}`
+        : `${I18n.t(ext('itemQuantity'))}${quantity}`,
+    [quantity, variantText],
   );
+
+  return <Caption numberOfLines={1}>{caption}</Caption>;
 }
 
 CartCaption.propTypes = {

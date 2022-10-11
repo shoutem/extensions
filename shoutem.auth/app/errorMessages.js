@@ -72,7 +72,7 @@ export const getErrorMessage = errorCode => resolveErrorMessage(errorCode);
 export const apiCodeToErrorMessage = {
   auth_auth_validation_usernameTaken: 'EMAIL_TAKEN',
   auth_user_validation_nickTaken: 'USERNAME_TAKEN',
-  auth_auth_notAuthorized_userAuthenticationError: 'UNEXPECTED_ERROR',
+  auth_auth_notAuthorized_userAuthenticationError: 'INVALID_CREDENTIALS',
   auth_token_validation_userNotApproved: 'USER_NOT_APPROVED',
 };
 

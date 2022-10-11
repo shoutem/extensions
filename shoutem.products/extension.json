@@ -1,10 +1,10 @@
 {
   "name": "products",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "platform": ">=9.1.0",
   "title": "Products",
   "description": "Show products with purchase link",
-  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "categories": ["commerce"],
   "i18n": {
     "locale": "en",

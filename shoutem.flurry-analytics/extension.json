@@ -1,10 +1,10 @@
 {
   "name": "flurry-analytics",
   "title": "Flurry analytics",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "platform": ">=4",
   "description": "Measure and analyze activity across your app with Flurry analytics",
-  "releaseNotes": "* Added support for 9.0.0 plaform",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "nativeChanges": {
     "lastVersion": "4.1.0"
   },

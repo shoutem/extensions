@@ -3,7 +3,6 @@ import { getExtensionSettings } from 'shoutem.application';
 import { cancelPendingJourney } from 'shoutem.notification-center';
 import {
   appMounted,
-  fetchStorefrontToken,
   refreshProducts,
   shopErrorLoading,
   shopLoaded,
@@ -33,39 +32,33 @@ export async function appDidMount(app) {
   const { dispatch } = store;
   const state = store.getState();
 
-  const { store: shopifyStore } = getExtensionSettings(state, ext());
+  const { store: shopifyStore, apiKey } = getExtensionSettings(state, ext());
 
-  if (!shopifyStore) {
+  if (!shopifyStore || !apiKey) {
     return dispatch(shopErrorLoading());
   }
 
-  const apiKey = await dispatch(fetchStorefrontToken(shopifyStore));
+    dispatch(appMounted());
 
-  if (!apiKey) {
-    return dispatch(shopErrorLoading());
-  }
+    MBBridge.initStore(shopifyStore, apiKey);
+    initShopifyClient(shopifyStore, apiKey);
 
-  dispatch(appMounted());
+    dispatch(shopLoading());
+    Promise.all([MBBridge.getCollections(), MBBridge.getShop()])
+      .then(([collections, shop]) => {
+        shop.collections = collections;
+        shop.currency = shop.moneyFormat
+          .replace('{{amount}}', '')
+          .replace(/<\/?[^>]+(>|$)/g, '')
+          .trim();
+        dispatch(shopLoaded(collections, shop, []));
+        // TODO: Figure out why only the first item of a collection is refreshed
+        dispatch(refreshProducts(collections[0].id));
 
-  MBBridge.initStore(shopifyStore, apiKey);
-  initShopifyClient(shopifyStore, apiKey);
-
-  dispatch(shopLoading());
-  Promise.all([MBBridge.getCollections(), MBBridge.getShop()])
-    .then(([collections, shop]) => {
-      shop.collections = collections;
-      shop.currency = shop.moneyFormat
-        .replace('{{amount}}', '')
-        .replace(/<\/?[^>]+(>|$)/g, '')
-        .trim();
-      dispatch(shopLoaded(collections, shop, []));
-      // TODO: Figure out why only the first item of a collection is refreshed
-      dispatch(refreshProducts(collections[0].id));
-
-      handleAppStateChange = createHandleAppStateChange(dispatch);
-      AppState.addEventListener('change', handleAppStateChange);
-    })
-    .catch(() => {
-      dispatch(shopErrorLoading());
-    });
+        handleAppStateChange = createHandleAppStateChange(dispatch);
+        AppState.addEventListener('change', handleAppStateChange);
+      })
+      .catch(() => {
+        dispatch(shopErrorLoading());
+      });
 }

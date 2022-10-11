@@ -1,14 +1,14 @@
 {
   "name": "salesforce",
   "title": "Salesforce MC",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Salesforce Marketing Cloud",
   "platform": ">=9.0.1",
   "nativeChanges": {
     "lastVersion": "2.0.0",
     "settingsKeys": ["appId", "accessToken", "appEndpoint", "fcmSenderId"]
   },
-  "releaseNotes": "* Fixed incorrect app icon reference",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

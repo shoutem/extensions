@@ -1,6 +1,6 @@
 {
   "name": "shoutem.besttime",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "description": "Check the busyness of an establishment using BestTime.",
   "dependencies": {
     "react-native-localize": "2.2.2",

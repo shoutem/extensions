@@ -83,8 +83,8 @@ class MBBridge: NSObject {
 
     @objc func filterProducts(_ query: NSString, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         self.client?.queryGraphWith(MBBridge.queryForProducts(250, query:query as String)) {(query, error) in
-            if let products = query?.fields["shop"] {
-                resolve(products)
+            if let products = query?.fields["products"] {
+                resolve(query?.fields)
             }
             if let error = error {
                 reject("error", "Error filtering products", error)

@@ -31,7 +31,7 @@ function FeaturedItem({ item, onAddToCart, onPress, shop, style }) {
               moneyFormat={moneyFormat}
             />
           </View>
-          <AddToCartButton isFeatured onPress={onAddToCart} />
+          <AddToCartButton isFeatured onPress={() => onAddToCart(item)} />
         </View>
       </ImageBackground>
     </TouchableOpacity>

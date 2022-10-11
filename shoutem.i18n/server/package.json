@@ -1,6 +1,6 @@
 {
   "name": "shoutem.i18n",
-  "version": "4.0.6",
+  "version": "4.1.0",
   "description": "Configure the language and regional settings of your app.",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
@@ -15,7 +15,7 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
-    "@shoutem/eslint-config-react": "^1.0.1",
+    "@shoutem/eslint-config-react": "^1.0.5",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.0.6",
     "cross-env": "^4.0.0",
@@ -50,7 +50,7 @@
   "dependencies": {
     "@shoutem/assets-sdk": "^1.0.1",
     "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "^1.0.1",
+    "@shoutem/react-web-ui": "^1.0.2",
     "@shoutem/redux-api-sdk": "^2.0.0",
     "@shoutem/redux-composers": "^0.1.6",
     "@shoutem/redux-io": "^3.2.0",
@@ -71,29 +71,6 @@
     "redux": "^4.0.5",
     "redux-thunk": "~2.2.0",
     "urijs": "^1.19.2"
-  },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": [
-      "@shoutem/react"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 6,
-      "sourceType": "module",
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    },
-    "rules": {},
-    "settings": {
-      "import/resolver": {
-        "node": {
-          "paths": [
-            "src"
-          ]
-        }
-      }
-    }
   },
   "babel": {
     "presets": [

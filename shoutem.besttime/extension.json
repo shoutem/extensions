@@ -1,10 +1,10 @@
 {
   "name": "besttime",
   "title": "BestTime",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "platform": ">=9",
   "description": "Check the busyness of an establishment using BestTime.",
-  "releaseNotes": "* Added support for platform 9.0.0",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "nativeChanges": {
     "lastVersion": "5.0.1"
   },

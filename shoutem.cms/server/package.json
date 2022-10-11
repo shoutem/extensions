@@ -1,6 +1,6 @@
 {
   "name": "shoutem.cms",
-  "version": "6.1.2",
+  "version": "6.1.4",
   "description": "Shoutem CMS extension",
   "author": "Shoutem",
   "scripts": {
@@ -63,29 +63,6 @@
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
-  },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": [
-      "@shoutem/react"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 6,
-      "sourceType": "module",
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    },
-    "rules": {},
-    "settings": {
-      "import/resolver": {
-        "node": {
-          "paths": [
-            "src"
-          ]
-        }
-      }
-    }
   },
   "babel": {
     "presets": [

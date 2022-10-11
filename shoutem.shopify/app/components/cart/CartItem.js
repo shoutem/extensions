@@ -33,22 +33,22 @@ function CartItem({ cartItem, shop, style }) {
   const productImage = useMemo(() => getProductImage(images), [images]);
 
   return (
-    <Row>
+    <Row style={style.mainContainer}>
       <Image
-        styleName="small"
+        style={style.image}
         source={productImage}
         defaultSource={imageAssets.fallback}
       />
-      <View styleName="horizontal">
-        <View style={style.titleContainer}>
-          <Subtitle>{itemTitle}</Subtitle>
+      <View style={style.infoContainer}>
+        <View style={style.nameContainer}>
+          <Subtitle numberOfLines={2}>{itemTitle}</Subtitle>
           <CartCaption item={item} variantTitle={title} quantity={quantity} />
         </View>
         <View style={style.priceContainer}>
+          <Subtitle style={style.price}>{priceString}</Subtitle>
           {showOldPrice && (
-            <Caption styleName="line-through">{oldPriceString}</Caption>
+            <Caption style={style.oldPrice}>{oldPriceString}</Caption>
           )}
-          <Subtitle>{priceString}</Subtitle>
         </View>
       </View>
     </Row>
@@ -58,11 +58,7 @@ function CartItem({ cartItem, shop, style }) {
 CartItem.propTypes = {
   cartItem: cartItemShape.isRequired,
   shop: shopShape.isRequired,
-  style: PropTypes.object,
-};
-
-CartItem.defaultProps = {
-  style: {},
+  style: PropTypes.object.isRequired,
 };
 
 export default connectStyle(ext('CartItem'))(CartItem);

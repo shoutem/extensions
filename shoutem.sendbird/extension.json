@@ -1,11 +1,11 @@
 {
   "name": "sendbird",
   "title": "SendBird Chat",
-  "version": "5.0.3",
+  "version": "5.1.0",
   "platform": ">=7",
   "icon": "./server/assets/chat.png",
   "description": "Connect your users with real-time chat!",
-  "releaseNotes": "* Fixed receiving notifications while app is in foreground",
+  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

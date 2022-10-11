@@ -1,6 +1,6 @@
 {
   "name": "shoutem.rss-monitoring",
-  "version": "4.1.6",
+  "version": "4.1.8",
   "description": "Monitors RSS feed content and sends automated push notifications when new content is loaded.",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
@@ -67,29 +67,6 @@
     "redux": "^3.6.0",
     "redux-thunk": "~2.2.0",
     "urijs": "^1.19.2"
-  },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": [
-      "@shoutem/react"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 6,
-      "sourceType": "module",
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    },
-    "rules": {},
-    "settings": {
-      "import/resolver": {
-        "node": {
-          "paths": [
-            "src"
-          ]
-        }
-      }
-    }
   },
   "babel": {
     "presets": [
