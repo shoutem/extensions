@@ -12,7 +12,7 @@ import {
 } from '@shoutem/ui';
 import MenuButton from './MenuButton';
 
-export function Menu({ onDismissPress, onClosePress, onScreenshotPress }) {
+export function Menu({ onDismissPress, onReloadPress, onClosePress, onScreenshotPress }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={onClosePress}>
@@ -34,6 +34,7 @@ export function Menu({ onDismissPress, onClosePress, onScreenshotPress }) {
       </ScrollView>
       <View style={styles.buttonContainer}>
         <MenuButton text="Screenshot the preview" onPress={onScreenshotPress} />
+        <MenuButton text="Restart the preview" onPress={onReloadPress} />
         <MenuButton
           text="Go back to push notifications"
           onPress={onDismissPress}
@@ -85,6 +86,7 @@ const styles = StyleSheet.create({
 Menu.propTypes = {
   onClosePress: PropTypes.func.isRequired,
   onDismissPress: PropTypes.func.isRequired,
+  onReloadPress: PropTypes.func.isRequired,
   onScreenshotPress: PropTypes.func.isRequired,
 };
 

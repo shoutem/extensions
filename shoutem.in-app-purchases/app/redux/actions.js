@@ -25,11 +25,12 @@ export function loadActiveProducts() {
 }
 
 export function loadProducts() {
-  return dispatch =>
-    Promise.all([
+  return dispatch => {
+    return Promise.all([
       dispatch(loadAvailableProducts()),
       dispatch(loadActiveProducts()),
     ]);
+  };
 }
 
 export function buyProduct(productId) {

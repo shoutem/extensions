@@ -13,6 +13,7 @@ import CameraRoll from '@react-native-community/cameraroll';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Spinner, View } from '@shoutem/ui';
+import { getAppId } from 'shoutem.application';
 import { requestPermissions } from 'shoutem.permissions';
 import { Menu, Tip, Watermark } from '../components';
 import { clearPreviewStorage, GALLERY_PERMISSION } from '../services';
@@ -21,6 +22,8 @@ const { Mobilizer } = NativeModules;
 
 export function PreviewProvider({ app, children }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const appId = getAppId();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
@@ -118,6 +121,15 @@ export function PreviewProvider({ app, children }) {
       .finally(() => setIsLoading(false));
   }, [handleUnmount]);
 
+  const handleReloadPress = useCallback(() => {
+    setIsLoading(true);
+
+    clearPreviewStorage()
+      .then(() => handleUnmount())
+      .then(() => Mobilizer.reloadPreviewedApp(appId))
+      .finally(() => setIsLoading(false));
+  }, [handleUnmount]);
+
   return (
     <View style={styles.container}>
       <Animated.View
@@ -135,6 +147,7 @@ export function PreviewProvider({ app, children }) {
         <Menu
           onDismissPress={handleDismissPress}
           onClosePress={toggleOverlay}
+          onReloadPress={handleReloadPress}
           onScreenshotPress={handleScreenshotPress}
         />
       )}

@@ -275,7 +275,7 @@ export class MessageListScreen extends PureComponent {
     }
 
     return (
-      <View styleName="section-header" style={style.sectionContainer}>
+      <View style={style.sectionContainer}>
         <Title style={style.sectionTitle}>{title}</Title>
       </View>
     );
@@ -286,7 +286,7 @@ export class MessageListScreen extends PureComponent {
     const { membersLoading, sectionData, channelsLoading } = this.state;
 
     return (
-      <Screen style={style.screen}>
+      <Screen style={style.container}>
         <SearchBar onChangeText={this.handleSearchTextChange} />
         <ListView
           sections={sectionData}

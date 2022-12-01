@@ -8,5 +8,3 @@ export { default as NewChannelListItem } from './NewChannelListItem';
 export { default as NewMessagesLabel } from './NewMessagesLabel';
 export { default as ProgressBar } from './ProgressBar';
 export { default as SearchBar } from './SearchBar';
-export { default as SectionFooter } from './SectionFooter';
-export { default as SectionHeader } from './SectionHeader';

@@ -4,7 +4,7 @@ import RNBackgroundTimer from 'react-native-background-timer';
 
 const isAndroid = Platform.OS === 'android';
 
-export default function useTimer(interval = 60000) {
+export function useTimer(interval = 60000) {
   const [timeRemaining, setTimeRemaining] = useState();
   const [intervalId, setIntervalId] = useState();
 

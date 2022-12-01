@@ -1,0 +1,309 @@
+{
+  "title": "Theme",
+  "properties": {
+    "sendbirdMessageSectionBackgroundColor": {
+      "type": "string",
+      "title": "Message search section background color",
+      "format": "color",
+      "default": "@backgroundColor"
+    },
+    "sendbirdMessageSectionTextColor": {
+      "type": "string",
+      "title": "Message search section text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "sendbirdMemberItemBackgroundColor": {
+      "type": "string",
+      "title": "Member list item background color",
+      "format": "color",
+      "default": "@featuredColor"
+    },
+    "sendbirdMemberItemBorderColor": {
+      "type": "string",
+      "title": "Member list item border color",
+      "format": "color",
+      "default": "@lineColor"
+    },
+    "sendbirdMemberItemTextColor": {
+      "type": "string",
+      "title": "Member list item text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "sendbirdChatScreenBackgroundColor": {
+      "type": "string",
+      "title": "Chat screen background color",
+      "format": "color",
+      "default": "@paperColor"
+    },
+    "sendbirdMessagesScreenBackgroundColor": {
+      "type": "string",
+      "title": "Messages screen background color",
+      "format": "color",
+      "default": "@backgroundColor"
+    },
+    "sendbirdExistingChannelBackgroundColor": {
+      "type": "string",
+      "title": "Existing message background color",
+      "format": "color",
+      "default": "@backgroundColor"
+    },
+    "sendbirdExistingChannelBorderColor": {
+      "type": "string",
+      "title": "Existing message border color",
+      "format": "color",
+      "default": "@lineColor"
+    },
+    "sendbirdExistingChannelTextColor": {
+      "type": "string",
+      "title": "Existing message text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "sendbirdUnreadCountBackgroundColor": {
+      "type": "string",
+      "title": "Unread count badge background color",
+      "format": "color",
+      "default": "#FF4F4F"
+    },
+    "sendbirdUnreadCountTextColor": {
+      "type": "string",
+      "title": "Unread count badge text color",
+      "format": "color",
+      "default": "#FFFFFF"
+    },
+    "sendbirdSentMessageBackgroundColor": {
+      "type": "string",
+      "title": "Sent message background color",
+      "format": "color",
+      "default": "rgba(28, 171, 221, 0.1)"
+    },
+    "sendbirdSentMessageTextColor": {
+      "type": "string",
+      "title": "Sent message text color",
+      "format": "color",
+      "default": "#000000"
+    },
+    "sendbirdReceivedMessageBackgroundColor": {
+      "type": "string",
+      "title": "Received message background color",
+      "format": "color",
+      "default": "#F9F9F9"
+    },
+    "sendbirdReceivedMessageTextColor": {
+      "type": "string",
+      "title": "Received message text color",
+      "format": "color",
+      "default": "#333333"
+    },
+    "sendbirdMessageLinkTextColor": {
+      "type": "string",
+      "title": "Message links text color",
+      "format": "color",
+      "default": "#0645AD"
+    },
+    "sendbirdMessageFileTextColor": {
+      "type": "string",
+      "title": "Message file name and size text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "sendbirdChatEncryptionBorderColor": {
+      "type": "string",
+      "title": "Chat encryption message text color",
+      "format": "color",
+      "default": "@primaryButtonBorderColor"
+    },
+    "sendbirdChatEncryptionTextColor": {
+      "type": "string",
+      "title": "Chat encryption message text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "sendbirdNewMessageTextColor": {
+      "type": "string",
+      "title": "New message label text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "sendbirdNewMessageDividerColor": {
+      "type": "string",
+      "title": "New message label divider lines color",
+      "format": "color",
+      "default": "@lineColor"
+    },
+    "sendbirdNewMessageBorderColor": {
+      "type": "string",
+      "title": "New message label border color",
+      "format": "color",
+      "default": "@lineColor"
+    },
+    "sendbirdChatInputBackgroundColor": {
+      "type": "string",
+      "title": "Chat input container background color",
+      "format": "color",
+      "default": "@paperColor"
+    },
+    "sendbirdChatInputContainerBorderColor": {
+      "type": "string",
+      "title": "Chat input container border color",
+      "format": "color",
+      "default": "@primaryButtonBorderColor"
+    },
+    "sendbirdChatInputFieldBackgroundColor": {
+      "type": "string",
+      "title": "Chat input background color",
+      "format": "color",
+      "default": "transparent"
+    },
+    "sendbirdChatInputBorderColor": {
+      "type": "string",
+      "title": "Chat input border color",
+      "format": "color",
+      "default": "@primaryButtonBorderColor"
+    },
+    "sendbirdChatInputTextColor": {
+      "type": "string",
+      "title": "Chat input border color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "sendbirdSearchBarBackgroundColor": {
+      "type": "string",
+      "title": "Search bar background color",
+      "format": "color",
+      "default": "@backgroundColor"
+    },
+    "sendbirdSearchBarBorderColor": {
+      "type": "string",
+      "title": "Search bar border color",
+      "format": "color",
+      "default": "@backgroundColor"
+    },
+    "sendbirdSearchBarFocusedBorderColor": {
+      "type": "string",
+      "title": "Search bar focused border color",
+      "format": "color",
+      "default": "@lineColor"
+    },
+    "sendbirdSearchBarInputBackgroundColor": {
+      "type": "string",
+      "title": "Search bar input background color",
+      "format": "color",
+      "default": "@paperColor"
+    },
+    "sendbirdSearchBarInputColor": {
+      "type": "string",
+      "title": "Search bar input text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "sendbirdSearchBarIconColor": {
+      "type": "string",
+      "title": "Search bar input icon color",
+      "format": "color",
+      "default": "#C4C4C4"
+    },
+    "sendbirdErrorModalBackgroundColor": {
+      "type": "string",
+      "title": "Error modal background color",
+      "format": "color",
+      "default": "@paperColor"
+    },
+    "sendbirdErrorModalTextColor": {
+      "type": "string",
+      "title": "Error modal text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "sendbirdErrorModalButtonColor": {
+      "type": "string",
+      "title": "Error modal button color",
+      "format": "color",
+      "default": "@primaryButtonBackgroundColor"
+    },
+    "sendbirdErrorModalButtonBorderColor": {
+      "type": "string",
+      "title": "Error modal button border color",
+      "format": "color",
+      "default": "@primaryButtonBorderColor"
+    },
+    "sendbirdErrorModalButtonTextColor": {
+      "type": "string",
+      "title": "Error modal button text color",
+      "format": "color",
+      "default": "@primaryButtonText.color"
+    },
+    "sendbirdProgressBarColor": {
+      "type": "string",
+      "title": "Upload progress bar color",
+      "format": "color",
+      "default": "#39FF14"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Messages",
+        "properties": [
+          "sendbirdMessagesScreenBackgroundColor",
+          "sendbirdMessageSectionBackgroundColor",
+          "sendbirdMessageSectionTextColor",
+          "sendbirdChatScreenBackgroundColor",
+          "sendbirdExistingChannelBackgroundColor",
+          "sendbirdExistingChannelBorderColor",
+          "sendbirdExistingChannelTextColor",
+          "sendbirdUnreadCountBackgroundColor",
+          "sendbirdUnreadCountTextColor",
+          "sendbirdSentMessageBackgroundColor",
+          "sendbirdSentMessageTextColor",
+          "sendbirdReceivedMessageBackgroundColor",
+          "sendbirdReceivedMessageTextColor",
+          "sendbirdMessageLinkTextColor",
+          "sendbirdMessageFileTextColor",
+          "sendbirdChatInputBackgroundColor",
+          "sendbirdChatInputContainerBorderColor",
+          "sendbirdChatInputFieldBackgroundColor",
+          "sendbirdChatInputBorderColor",
+          "sendbirdChatInputTextColor",
+          "sendbirdProgressBarColor",
+          "sendbirdNewMessageTextColor",
+          "sendbirdNewMessageDividerColor",
+          "sendbirdNewMessageBorderColor",
+          "sendbirdChatEncryptionBorderColor",
+          "sendbirdChatEncryptionTextColor"
+        ]
+      },
+      {
+        "title": "Members",
+        "properties": [
+          "sendbirdMemberItemBackgroundColor",
+          "sendbirdMemberItemBorderColor",
+          "sendbirdMemberItemTextColor"
+        ]
+      },
+      {
+        "title": "Search bar",
+        "properties": [
+          "sendbirdSearchBarBackgroundColor",
+          "sendbirdSearchBarBorderColor",
+          "sendbirdSearchBarFocusedBorderColor",
+          "sendbirdSearchBarInputBackgroundColor",
+          "sendbirdSearchBarInputColor",
+          "sendbirdSearchBarIconColor"
+        ]
+      },
+      {
+        "title": "Error modal",
+        "properties": [
+          "sendbirdErrorModalBackgroundColor",
+          "sendbirdErrorModalTextColor",
+          "sendbirdErrorModalButtonColor",
+          "sendbirdErrorModalButtonBorderColor",
+          "sendbirdErrorModalButtonTextColor"
+        ]
+      }
+    ]
+  }
+}

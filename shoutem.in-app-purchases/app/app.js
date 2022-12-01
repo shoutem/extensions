@@ -8,6 +8,11 @@ import { actions, selectors } from './redux';
 
 AppInitQueue.addExtension(ext());
 
+const deriveUserId = () =>
+  Iaphub.login(DeviceInfo.getUniqueId()).catch(() => {
+    console.log('IAP User not found. Continuing with anonymous mode');
+  });
+
 export const appDidMount = app => {
   const store = app.getStore();
   const state = store.getState();
@@ -26,12 +31,14 @@ export const appDidMount = app => {
     return null;
   }
 
-  return Iaphub.init({
+  return Iaphub.start({
     appId: iapHubAppId,
     apiKey: iapHubApiKey,
+    allowAnonymousPurchase: true,
     environment: iapHubEnvironment,
   })
-    .then(() => Iaphub.setUserId(DeviceInfo.getUniqueId()))
+    .then(deriveUserId)
     .then(() => store.dispatch(actions.loadProducts()))
-    .then(() => store.dispatch(setQueueTargetComplete(ext())));
+    .then(() => store.dispatch(setQueueTargetComplete(ext())))
+    .catch(error => console.log('error', error));
 };

@@ -26,12 +26,17 @@ export class ArticlesListScreen extends RssListScreen {
   }
 
   openArticle(id) {
-    const { feedUrl } = this.props;
+    const { data, feedUrl } = this.props;
+    const article = _.find(data, { id });
 
     navigateTo(ext('ArticleDetailsScreen'), {
       id,
       feedUrl,
       openArticle: this.openArticle,
+      analyticsPayload: {
+        itemId: article.id,
+        itemName: article.name,
+      },
     });
   }
 

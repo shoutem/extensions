@@ -1,10 +1,10 @@
 {
   "name": "radio-player",
   "title": "Radio+",
-  "version": "7.0.1",
+  "version": "8.0.0",
   "platform": ">=9",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
-  "releaseNotes": "* Fixed showing or hiding sharing button on dynamic artwork layout based on settings",
+  "releaseNotes": "* Add new screen that combines radio player and RSS feed",
   "nativeChanges": {
     "lastVersion": "6.0.1"
   },
@@ -17,7 +17,9 @@
     "shoutem.i18n",
     "shoutem.navigation",
     "shoutem.layouts",
-    "shoutem.redux"
+    "shoutem.redux",
+    "shoutem.rss",
+    "shoutem.rss-news"
   ],
   "i18n": {
     "locale": "en",
@@ -29,7 +31,11 @@
       "title": "Radio with chosen static background image",
       "image": "./server/assets/layouts/static-background-image-radio.png",
       "settings": {
-        "disableAdBanner": true
+        "disableAdBanner": true,
+        "canToggleArtwork": true,
+        "canUseBackgroundImage": true,
+        "canHaveRssFeed": false,
+        "canShowStreamTitle": false
       }
     },
     {
@@ -38,7 +44,22 @@
       "image": "./server/assets/layouts/dynamic-artwork-background-image-radio.png",
       "extends": "@.Radio",
       "settings": {
-        "disableAdBanner": true
+        "disableAdBanner": true,
+        "canToggleArtwork": false,
+        "canUseBackgroundImage": false,
+        "canHaveRssFeed": false,
+        "canShowStreamTitle": true
+      }
+    },
+    {
+      "name": "RadioRssScreen",
+      "title": "Radio with RSS news feed",
+      "settings": {
+        "disableAdBanner": true,
+        "canToggleArtwork": true,
+        "canUseBackgroundImage": true,
+        "canHaveRssFeed": true,
+        "canShowStreamTitle": false
       }
     }
   ],
@@ -64,6 +85,30 @@
         "streamUrl": "",
         "backgroundImageUrl": "",
         "showSharing": false
+      }
+    },
+    {
+      "name": "RadioRssScreen",
+      "title": "Radio with RSS news feed",
+      "description": "Shortcut that combines radio stream player and RSS news feed ",
+      "screen": "@.RadioRssScreen",
+      "icon": "theme://play.png",
+      "adminPages": [
+        {
+          "page": "@.RadioShortcutPage",
+          "title": "RADIO SETTINGS",
+          "settings": {
+            "tara": "oroz"
+          }
+        }
+      ],
+      "settings": {
+        "streamTitle": "",
+        "streamUrl": "",
+        "feedUrl": "",
+        "backgroundImageUrl": "",
+        "showSharing": false,
+        "hasRssFeed": true
       }
     }
   ],

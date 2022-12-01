@@ -1,12 +1,12 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "6.2.0",
-  "platform": ">=9.2.0",
+  "version": "7.1.0",
+  "platform": ">=12.2.0",
   "hidden": false,
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "releaseNotes": "* Updated cart screen and edit cart item screen design\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "* Fixed Address field not being visible on Checkout screen\n* Fixed Postal code field not being visible on Checkout screen",
   "nativeChanges": {
     "lastVersion": "6.0.0"
   },
@@ -15,6 +15,12 @@
     "locale": "en",
     "translationPath": "server/translations/en.json"
   },
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
+    }
+  ],
   "dependencies": [
     "shoutem.application",
     "shoutem.cms",
@@ -227,18 +233,20 @@
     {
       "page": "@.ShopifySettingsPage",
       "title": "Settings"
+    },
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": ["style"],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
     }
   ],
   "dataSchemas": [
     {
       "name": "Shopify",
       "path": "server/data-schemas/Shopify.json"
-    }
-  ],
-  "cloud": [
-    {
-      "type": "api",
-      "script": "npm run migrate:docker && npm run start:server:docker"
     }
   ],
   "journeyTriggers": [

@@ -3,19 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { DropDownMenu, ListView, Screen, Spinner } from '@shoutem/ui';
-import { getScreenState, setScreenState } from 'shoutem.cms';
-import { closeModal, navigateTo, openInModal } from 'shoutem.navigation';
+import { ListView } from '@shoutem/ui';
+import { getScreenState } from 'shoutem.cms';
+import { navigateTo } from 'shoutem.navigation';
 import FeaturedItem from '../components/FeaturedItem';
 import { ext, PAGE_SIZE } from '../const';
 import { selectors } from '../redux';
-import { cartItemAdded, refreshProducts } from '../redux/actionCreators';
-import { CART_ACTION_TYPES } from '../redux/actionTypes';
+import { refreshProducts } from '../redux/actionCreators';
 import { getCurrentItem } from '../services';
 
 function ProductsLayout({
   groupedProducts,
   hasFeaturedItem,
+  onQuickAddPress,
   renderRow,
   screenId,
   selectedCollections,
@@ -56,30 +56,6 @@ function ProductsLayout({
     });
   }, []);
 
-  const addItemToCart = useCallback(
-    (item, variant, quantity) => {
-      dispatch(cartItemAdded({ item, variant, quantity }));
-      closeModal();
-    },
-    [dispatch],
-  );
-
-  const handleAddToCart = useCallback(
-    item => {
-      const resolvedItem = getCurrentItem(item);
-
-      const routeParams = {
-        actionType: CART_ACTION_TYPES.ADD,
-        item: resolvedItem,
-        onActionButtonClicked: (type, { variant, quantity }) =>
-          addItemToCart(resolvedItem, variant, quantity),
-      };
-
-      openInModal(ext('UpdateItemScreen'), routeParams);
-    },
-    [addItemToCart],
-  );
-
   function renderFeaturedProduct(item) {
     const resolvedItem = getCurrentItem(item);
 
@@ -90,7 +66,7 @@ function ProductsLayout({
     return (
       <FeaturedItem
         item={resolvedItem}
-        onAddToCart={() => handleAddToCart(item)}
+        onAddToCart={() => onQuickAddPress(resolvedItem)}
         onPress={() => navigateToProductDetails(resolvedItem)}
         shop={shop}
       />
@@ -129,6 +105,7 @@ ProductsLayout.propTypes = {
   renderRow: PropTypes.func.isRequired,
   screenId: PropTypes.string.isRequired,
   selectedCollections: PropTypes.array.isRequired,
+  onQuickAddPress: PropTypes.func.isRequired,
   tag: PropTypes.string,
 };
 

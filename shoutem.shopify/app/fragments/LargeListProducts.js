@@ -1,14 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { getScreenState } from 'shoutem.cms';
-import { closeModal, navigateTo, openInModal } from 'shoutem.navigation';
+import { navigateTo } from 'shoutem.navigation';
 import LargeListItem from '../components/LargeListItem';
 import { ext } from '../const';
 import { selectors } from '../redux';
-import { cartItemAdded } from '../redux/actionCreators';
-import { CART_ACTION_TYPES } from '../redux/actionTypes';
 import { getCurrentItem } from '../services';
 import ProductsLayout from './ProductsLayout';
 
@@ -16,10 +14,9 @@ function LargeListProducts({
   hasFeaturedItem,
   screenId,
   selectedCollections,
+  onQuickAddPress,
   tag,
 }) {
-  const dispatch = useDispatch();
-
   const shop = useSelector(selectors.getShopState);
 
   const { collectionId } = useSelector(state =>
@@ -46,37 +43,15 @@ function LargeListProducts({
     });
   }, []);
 
-  const addItemToCart = useCallback(
-    (item, variant, quantity) => {
-      dispatch(cartItemAdded({ item, variant, quantity }));
-      closeModal();
-    },
-    [dispatch],
-  );
-
-  const handleAddToCart = useCallback(
-    item => {
-      const resolvedItem = getCurrentItem(item);
-
-      const routeParams = {
-        actionType: CART_ACTION_TYPES.ADD,
-        item: resolvedItem,
-        onActionButtonClicked: (type, { variant, quantity }) =>
-          addItemToCart(resolvedItem, variant, quantity),
-      };
-
-      openInModal(ext('UpdateItemScreen'), routeParams);
-    },
-    [addItemToCart],
-  );
-
   function renderProductRow(item) {
+    const resolvedItem = getCurrentItem(item);
+
     return (
       <LargeListItem
         item={item}
         isFixed
         key={item.id}
-        onAddToCart={() => handleAddToCart(item)}
+        onAddToCart={() => onQuickAddPress(resolvedItem)}
         onPress={() => navigateToProductDetails(item)}
         shop={shop}
       />
@@ -91,6 +66,7 @@ function LargeListProducts({
       screenId={screenId}
       selectedCollections={selectedCollections}
       tag={tag}
+      onQuickAddPress={onQuickAddPress}
     />
   );
 }
@@ -99,6 +75,7 @@ LargeListProducts.propTypes = {
   hasFeaturedItem: PropTypes.bool.isRequired,
   screenId: PropTypes.string.isRequired,
   selectedCollections: PropTypes.array.isRequired,
+  onQuickAddPress: PropTypes.func.isRequired,
   tag: PropTypes.string,
 };
 

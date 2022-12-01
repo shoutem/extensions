@@ -390,7 +390,6 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  null,
-)(connectStyle(ext('RadioPlayer'))(RadioPlayer));
+export default connect(mapStateToProps)(
+  connectStyle(ext('RadioPlayer'))(RadioPlayer),
+);

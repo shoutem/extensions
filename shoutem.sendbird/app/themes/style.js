@@ -1,25 +1,24 @@
-import { createScopedResolver, resolveFontWeight } from '@shoutem/ui';
+import { createScopedResolver, Device, resolveFontWeight } from '@shoutem/ui';
 import { ext } from '../const';
 
 const resolveVariable = createScopedResolver(ext());
 
 export default () => ({
-  'shoutem.sendbird.MessageListScreen': {
+  [`${ext('MessageListScreen')}`]: {
+    container: {
+      backgroundColor: resolveVariable('sendbirdMessagesScreenBackgroundColor'),
+    },
     sectionContainer: {
-      backgroundColor: resolveVariable('backgroundColor'),
+      backgroundColor: resolveVariable('sendbirdMessageSectionBackgroundColor'),
     },
     sectionTitle: {
       fontWeight: '500',
       margin: 20,
+      color: resolveVariable('sendbirdMessageSectionTextColor'),
     },
   },
 
-  'shoutem.sendbird.SectionFooter': {
-    height: 15,
-    backgroundColor: 'transparent',
-  },
-
-  'shoutem.sendbird.ErrorModal': {
+  [`${ext('ErrorModal')}`]: {
     outerContainer: {
       flex: 1,
       justifyContent: 'center',
@@ -31,7 +30,7 @@ export default () => ({
       paddingVertical: 68,
       justifyContent: 'flex-start',
       alignItems: 'center',
-      backgroundColor: '#FFFFFF',
+      backgroundColor: resolveVariable('sendbirdErrorModalBackgroundColor'),
       width: '100%',
       borderRadius: 10,
     },
@@ -44,55 +43,65 @@ export default () => ({
 
     title: {
       marginBottom: 22,
+      color: resolveVariable('sendbirdErrorModalTextColor'),
       fontWeight: resolveFontWeight('500'),
       fontSize: 21,
       textAlign: 'center',
     },
 
     description: {
+      color: resolveVariable('sendbirdErrorModalTextColor'),
       fontSize: 15,
       marginBottom: 48,
       textAlign: 'center',
     },
 
     button: {
-      backgroundColor: '#4AA8DA',
+      backgroundColor: resolveVariable('sendbirdErrorModalButtonColor'),
+      borderColor: resolveVariable('sendbirdErrorModalButtonBorderColor'),
+      borderWidth: 1,
       borderRadius: 2,
     },
 
     buttonText: {
       fontSize: 13,
       fontWeight: resolveFontWeight('500'),
-      color: '#FFFFFF',
+      color: resolveVariable('sendbirdErrorModalButtonTextColor'),
     },
   },
 
-  'shoutem.sendbird.SectionHeader': {
-    container: {
-      height: 57,
-      paddingLeft: 20,
-      backgroundColor: '#FFFFFF',
-    },
-    text: {
-      letterSpacing: -0.165,
-      fontSize: 21,
-      color: '#333333',
-    },
-  },
-
-  'shoutem.sendbird.ChatWindowScreen': {
+  [`${ext('ChatWindowScreen')}`]: {
     screen: {
-      backgroundColor: '#FFFFFF',
+      backgroundColor: resolveVariable('sendbirdChatScreenBackgroundColor'),
     },
+    paddedScreen: {
+      paddingBottom: Device.select({
+        iPhoneX:
+          resolveVariable('largeGutter') +
+          resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
+        iPhoneXR:
+          resolveVariable('largeGutter') +
+          resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
+        default: resolveVariable('mediumGutter'),
+      }),
+    },
+    keyboardOffset: Device.select({
+      iPhoneX: -resolveVariable('smallGutter'),
+      iPhoneXR: -resolveVariable('smallGutter'),
+      default: 0,
+    }),
     spinnerContainer: {
       paddingVertical: 15,
     },
   },
 
-  'shoutem.sendbird.ExistingChannelListItem': {
+  [`${ext('ExistingChannelListItem')}`]: {
     row: {
       height: 80,
-      borderColor: 'rgba(130, 130, 130, 0.1)',
+      backgroundColor: resolveVariable(
+        'sendbirdExistingChannelBackgroundColor',
+      ),
+      borderColor: resolveVariable('sendbirdExistingChannelBorderColor'),
       borderBottomWidth: 1,
     },
     image: {
@@ -110,7 +119,7 @@ export default () => ({
       borderRadius: 6,
     },
     unreadCountContainer: {
-      backgroundColor: '#FF4F4F',
+      backgroundColor: resolveVariable('sendbirdUnreadCountBackgroundColor'),
       height: 16,
       width: 16,
       borderRadius: 8,
@@ -118,12 +127,12 @@ export default () => ({
       justifyContent: 'center',
     },
     unreadCountText: {
-      color: '#FFFFFF',
+      color: resolveVariable('sendbirdUnreadCountTextColor'),
       fontSize: 10,
     },
     text: {
       letterSpacing: -0.17,
-      color: '#333333',
+      color: resolveVariable('sendbirdExistingChannelTextColor'),
       fontSize: 13,
     },
     nickname: {
@@ -138,10 +147,11 @@ export default () => ({
     },
   },
 
-  'shoutem.sendbird.MemberListItem': {
+  [`${ext('MemberListItem')}`]: {
     row: {
       height: 80,
-      borderColor: 'rgba(130, 130, 130, 0.1)',
+      backgroundColor: resolveVariable('sendbirdMemberItemBackgroundColor'),
+      borderColor: resolveVariable('sendbirdMemberItemBorderColor'),
       borderBottomWidth: 1,
     },
     image: {
@@ -152,7 +162,7 @@ export default () => ({
     },
     text: {
       letterSpacing: -0.17,
-      color: '#333333',
+      color: resolveVariable('sendbirdMemberItemTextColor'),
       fontSize: 13,
     },
     nickname: {
@@ -160,33 +170,33 @@ export default () => ({
     },
   },
 
-  'shoutem.sendbird.SearchBar': {
+  [`${ext('SearchBar')}`]: {
     placeholderTextColor: 'rgba(0, 0, 0, 0.3)',
     container: {
       padding: 20,
       height: 80,
-      backgroundColor: resolveVariable('backgroundColor'),
-      borderColor: 'rgba(130, 130, 130, 0.1)',
+      backgroundColor: resolveVariable('sendbirdSearchBarBackgroundColor'),
+      borderColor: resolveVariable('sendbirdSearchBarBorderColor'),
       borderBottomWidth: 1,
     },
     input: {
       height: 40,
       borderRadius: 100,
-      backgroundColor: '#F9F9F9',
-      borderColor: 'rgba(130, 130, 130, 0.1)',
+      backgroundColor: resolveVariable('sendbirdSearchBarInputBackgroundColor'),
+      borderColor: resolveVariable('sendbirdSearchBarBorderColor'),
       borderWidth: 1,
       paddingTop: 11,
       paddingBottom: 11,
       paddingRight: 44,
       fontSize: 13,
       letterSpacing: -0.17,
-      color: '#000000',
+      color: resolveVariable('sendbirdSearchBarInputColor'),
     },
     inputFocused: {
-      borderColor: '#828282',
+      borderColor: resolveVariable('sendbirdSearchBarFocusedBorderColor'),
     },
     icon: {
-      color: '#C4C4C4',
+      color: resolveVariable('sendbirdSearchBarIconColor'),
     },
     iconWrapper: {
       position: 'absolute',
@@ -195,43 +205,20 @@ export default () => ({
     },
   },
 
-  'shoutem.sendbird.EmptyChannelListComponent': {
-    image: {
-      resizeMode: 'contain',
-      marginTop: 45,
-      marginBottom: 30,
-      height: (resolveVariable('sizes.window.height') * 227) / 812,
-      width: resolveVariable('sizes.window.width') - 80,
-    },
-    title: {
-      fontWeight: resolveFontWeight('500'),
-      fontSize: 21,
-      lineHeight: 25,
-      marginBottom: 20,
-      letterSpacing: -0.165,
-      color: '#000000',
-    },
-    description: {
-      fontSize: 13,
-      lineHeight: 18,
-      letterSpacing: -0.165,
-      color: '#333333',
-      maxWidth: 200,
-    },
-  },
-
-  'shoutem.sendbird.MessageBubble': {
+  [`${ext('MessageBubble')}`]: {
     container: {
       borderRadius: 30,
       marginLeft: 40,
       marginRight: 20,
-      backgroundColor: 'rgba(28, 171, 221, 0.1)',
+      backgroundColor: resolveVariable('sendbirdSentMessageBackgroundColor'),
       padding: 15,
     },
     secondaryContainer: {
       marginLeft: 49,
       marginRight: 40,
-      backgroundColor: '#F9F9F9',
+      backgroundColor: resolveVariable(
+        'sendbirdReceivedMessageBackgroundColor',
+      ),
     },
     firstMessage: {
       borderTopEndRadius: 0,
@@ -246,16 +233,16 @@ export default () => ({
     text: {
       fontSize: 13,
       letterSpacing: -0.17,
-      color: '#000000',
+      color: resolveVariable('sendbirdSentMessageTextColor'),
     },
     withProfileImage: {
       marginLeft: 5,
     },
     secondaryText: {
-      color: '#333333',
+      color: resolveVariable('sendbirdReceivedMessageTextColor'),
     },
     linkText: {
-      color: '#0645AD',
+      color: resolveVariable('sendbirdMessageLinkTextColor'),
     },
     date: {
       opacity: 0.4,
@@ -281,44 +268,44 @@ export default () => ({
       fontWeight: resolveFontWeight('500'),
       fontSize: 13,
       lineHeight: 16,
-      color: '#000000',
+      color: resolveVariable('sendbirdMessageFileTextColor'),
       maxWidth: 200,
     },
     fileSizeText: {
       fontSize: 10,
       lineHeight: 12,
-      color: '#000000',
+      color: resolveVariable('sendbirdMessageFileTextColor'),
     },
   },
 
-  'shoutem.sendbird.NewMessagesLabel': {
+  [`${ext('NewMessagesLabel')}`]: {
     text: {
-      color: '#000000',
+      color: resolveVariable('sendbirdNewMessageTextColor'),
       fontSize: 10,
     },
     leadingLine: {
       height: 1,
       flex: 1,
       marginRight: 10,
-      backgroundColor: '#333333',
+      backgroundColor: resolveVariable('sendbirdNewMessageDividerColor'),
       borderRadius: 1,
     },
     trailingLine: {
       height: 1,
       flex: 1,
       marginLeft: 10,
-      backgroundColor: '#333333',
+      backgroundColor: resolveVariable('sendbirdNewMessageDividerColor'),
       borderRadius: 1,
     },
     textContainer: {
       borderRadius: 100,
       borderWidth: 1,
-      borderColor: '#000000',
+      borderColor: resolveVariable('sendbirdNewMessageBorderColor'),
       paddingHorizontal: 8,
     },
   },
 
-  'shoutem.sendbird.ChatEncryptionMessage': {
+  [`${ext('ChatEncryptionMessage')}`]: {
     container: {
       flex: 0,
       transform: [{ scaleY: -1 }],
@@ -326,11 +313,12 @@ export default () => ({
       borderRadius: 8,
       borderWidth: 1,
       maxWidth: 205,
-      borderColor: 'rgba(0, 0, 0, 0.1)',
+      borderColor: resolveVariable('sendbirdChatEncryptionBorderColor'),
       marginTop: 20,
     },
     text: {
       fontSize: 13,
+      color: resolveVariable('sendbirdChatEncryptionTextColor'),
       maxWidth: 156,
     },
     image: {
@@ -340,14 +328,15 @@ export default () => ({
     },
   },
 
-  'shoutem.sendbird.ChatInputBox': {
+  [`${ext('ChatInputBox')}`]: {
     container: {
-      backgroundColor: '#FFFFFF',
+      backgroundColor: resolveVariable('sendbirdChatInputBackgroundColor'),
       paddingLeft: 20,
       paddingTop: 14,
-      paddingBottom: 9,
+      paddingBottom: 20,
       paddingRight: 15,
-      borderColor: 'rgba(130, 130, 130, 0.1)',
+      marginTop: 20,
+      borderColor: resolveVariable('sendbirdChatInputContainerBorderColor'),
       borderTopWidth: 1,
     },
     attachIcon: {
@@ -364,8 +353,8 @@ export default () => ({
       minHeight: 37,
       maxHeight: 80,
       borderRadius: 100,
-      backgroundColor: 'transparent',
-      borderColor: '#333333',
+      backgroundColor: resolveVariable('sendbirdChatInputFieldBackgroundColor'),
+      borderColor: resolveVariable('sendbirdChatInputBorderColor'),
       borderWidth: 2,
       paddingTop: 9,
       paddingBottom: 10,
@@ -374,7 +363,7 @@ export default () => ({
       fontSize: 13,
       letterSpacing: -0.17,
       textAlignVertical: 'center',
-      color: '#000000',
+      color: resolveVariable('sendbirdChatInputTextColor'),
       overflow: 'hidden',
     },
     sendIcon: {
@@ -390,7 +379,7 @@ export default () => ({
     },
   },
 
-  'shoutem.sendbird.ProgressBar': {
+  [`${ext('ProgressBar')}`]: {
     container: {
       width: '100%',
       height: 5,
@@ -398,7 +387,7 @@ export default () => ({
       alignItems: 'flex-start',
     },
     progress: {
-      backgroundColor: '#39FF14',
+      backgroundColor: resolveVariable('sendbirdProgressBarColor'),
       height: '100%',
     },
   },

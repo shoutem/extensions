@@ -1,10 +1,10 @@
 {
   "name": "preview",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "platform": ">=9",
   "type": "system",
   "title": "Builder Preview",
-  "releaseNotes": "* Updated overlay for Disclose preview",
+  "releaseNotes": "* Added restart preview support for Disclose preview",
   "description": "Provides the support for app preview in the builder",
   "icon": "server/assets/add-preview-image.png",
   "dependencies": [

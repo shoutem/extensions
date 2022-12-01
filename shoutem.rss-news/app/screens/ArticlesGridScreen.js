@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { cloneStatus, shouldRefresh } from '@shoutem/redux-io';
+import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
 import { getRouteParams, HeaderStyles } from 'shoutem.navigation';
@@ -29,8 +29,10 @@ class ArticlesGridScreen extends ArticlesListScreen {
 
   componentDidMount() {
     const { navigation } = this.props;
+    const { title } = getRouteParams(this.props);
 
     navigation.setOptions({
+      title,
       ...HeaderStyles.featured,
     });
 

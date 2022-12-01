@@ -1,19 +1,20 @@
-import React, { useCallback, useLayoutEffect, useMemo } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { DropDownMenu, Screen, Spinner, View } from '@shoutem/ui';
+import { Screen, Spinner, TabMenu, View } from '@shoutem/ui';
 import { getScreenState, setScreenState } from 'shoutem.cms';
 import {
   composeNavigationStyles,
   HeaderIconButton,
   navigateTo,
 } from 'shoutem.navigation';
+import { QuickAddModal } from '../components';
 import { CartIcon } from '../components/cart';
 import { ext } from '../const';
 import { selectors } from '../redux';
-import { refreshProducts } from '../redux/actionCreators';
+import { cartItemAdded, refreshProducts } from '../redux/actionCreators';
 import { resolveLayoutComponent } from '../services';
 
 function ProductsScreen({
@@ -36,6 +37,31 @@ function ProductsScreen({
   );
   const collections = useSelector(state =>
     selectors.getCollectionsVisibleInShortcut(state, selectedCollections),
+  );
+
+  const [quickAddVisible, setQuickAddvisible] = useState(false);
+  const [quickAddItem, setQuickAddItem] = useState(undefined);
+
+  const closeQuickAddModal = useCallback(() => {
+    setQuickAddvisible(false);
+    setQuickAddItem(undefined);
+  }, []);
+
+  const handleQuickBuyPress = useCallback(item => {
+    setQuickAddItem(item);
+    setQuickAddvisible(true);
+  }, []);
+
+  const handleAddToCart = useCallback(
+    (variant, quantity) => {
+      dispatch(cartItemAdded({ item: quickAddItem, variant, quantity })).then(
+        () => {
+          setQuickAddItem(null);
+          setQuickAddvisible(false);
+        },
+      );
+    },
+    [dispatch, quickAddItem],
   );
 
   const resolvedCollectionId = useMemo(
@@ -95,7 +121,13 @@ function ProductsScreen({
         );
       },
     });
-  }, [cartSize, navigateToCart, navigateToSearchScreen, navigation]);
+  }, [
+    cartSize,
+    navigateToCart,
+    navigateToSearchScreen,
+    navigation,
+    hasFeaturedItem,
+  ]);
 
   function onCollectionSelected(collection) {
     if (currentCollection.id === collection.id) {
@@ -116,21 +148,13 @@ function ProductsScreen({
     [listType],
   );
 
-  const dropdownStyleName = useMemo(
-    () => (hasFeaturedItem ? 'featured horizontal' : 'horizontal'),
-    [hasFeaturedItem],
-  );
-
   return (
     <Screen>
       {isCategoryPickerVisible && (
-        <DropDownMenu
-          onOptionSelected={onCollectionSelected}
+        <TabMenu
           options={collections}
-          selectedOption={currentCollection}
-          titleProperty="title"
-          valueProperty="id"
-          styleName={dropdownStyleName}
+          onOptionSelected={onCollectionSelected}
+          selectedOption={currentCollection || collections[0]}
         />
       )}
       {loading ? (
@@ -140,9 +164,16 @@ function ProductsScreen({
           hasFeaturedItem={hasFeaturedItem}
           screenId={screenId}
           selectedCollections={selectedCollections}
+          onQuickAddPress={handleQuickBuyPress}
           tag={tag}
         />
       )}
+      <QuickAddModal
+        visible={quickAddVisible}
+        product={quickAddItem}
+        onCancel={closeQuickAddModal}
+        onSubmit={handleAddToCart}
+      />
     </Screen>
   );
 }

@@ -1,44 +1,51 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
 import './style.scss';
 
-// eslint-disable-next-line react/prefer-stateless-function
-export default class SettingField extends Component {
-  static propTypes = {
-    title: PropTypes.string,
-    textValue: PropTypes.string,
-    onChange: PropTypes.func,
-    errorText: PropTypes.string,
-    popoverMessage: PropTypes.string,
-  };
-
-  render() {
-    const {
-      title,
-      textValue,
-      onChange,
-      errorText,
-      popoverMessage,
-    } = this.props;
-
-    return (
-      <div>
-        <ControlLabel>{title}</ControlLabel>
-        {!!popoverMessage && (
-          <FontIconPopover message={popoverMessage}>
-            <FontIcon className="icon-popover" name="info" size="24px" />
-          </FontIconPopover>
-        )}
-        <FormControl
-          className="form-control"
-          onChange={onChange}
-          type="text"
-          value={textValue}
-        />
-        {errorText && <HelpBlock className="text-error">{errorText}</HelpBlock>}
-      </div>
-    );
+export default function SettingField({
+  fieldKey,
+  title,
+  textValue,
+  onChange,
+  errorText,
+  popoverMessage,
+}) {
+  function handleChange(event) {
+    onChange(event, fieldKey);
   }
+
+  return (
+    <div>
+      <ControlLabel>{title}</ControlLabel>
+      {!!popoverMessage && (
+        <FontIconPopover message={popoverMessage}>
+          <FontIcon className="icon-popover" name="info" size="24px" />
+        </FontIconPopover>
+      )}
+      <FormControl
+        className="form-control"
+        onChange={handleChange}
+        type="text"
+        value={textValue}
+      />
+      {errorText && <HelpBlock className="text-error">{errorText}</HelpBlock>}
+    </div>
+  );
 }
+
+SettingField.propTypes = {
+  fieldKey: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  errorText: PropTypes.string,
+  popoverMessage: PropTypes.string,
+  textValue: PropTypes.string,
+};
+
+SettingField.defaultProps = {
+  errorText: null,
+  popoverMessage: null,
+  textValue: '',
+};

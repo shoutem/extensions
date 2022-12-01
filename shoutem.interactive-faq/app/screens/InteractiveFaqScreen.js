@@ -1,16 +1,16 @@
 import React, { PureComponent } from 'react';
+import { FlatList, LayoutAnimation } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { FlatList, LayoutAnimation } from 'react-native';
-import { connect } from 'react-redux';
-import { CATEGORIES_SCHEMA } from 'shoutem.cms';
-import { isTabBarNavigation, getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import { Screen, Spinner } from '@shoutem/ui';
-import { QuestionsBar, MessageBubble } from '../components';
+import { CATEGORIES_SCHEMA } from 'shoutem.cms';
+import { getRouteParams, isTabBarNavigation } from 'shoutem.navigation';
+import { MessageBubble, QuestionsBar } from '../components';
 import { ext } from '../const';
-import { actions, selectors, QUESTIONS_SCHEMA } from '../redux';
+import { actions, QUESTIONS_SCHEMA, selectors } from '../redux';
 
 function renderMessage({ item }) {
   return <MessageBubble {...item} />;
@@ -136,14 +136,14 @@ export class InteractiveFaqScreen extends PureComponent {
     const { questions, categoryPath, style, isTabBar } = this.props;
     const { conversationHistory, loading } = this.state;
     const hasHistory = !_.isEmpty(categoryPath);
-    const screenStyle = isTabBar ? 'paper' : 'paper with-notch-padding';
+    const screenStyle = [style.container, isTabBar && style.paddedConatiner];
 
     return (
-      <Screen styleName={screenStyle}>
+      <Screen style={screenStyle}>
         {!loading && (
           <FlatList
             ref={ref => (this.list = ref)}
-            contentContainerStyle={style}
+            contentContainerStyle={style.flatlistContainer}
             data={conversationHistory}
             renderItem={renderMessage}
             keyExtractor={keyExtractor}

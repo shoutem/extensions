@@ -4,7 +4,7 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { DropDownMenu, Screen, Spinner, View } from '@shoutem/ui';
+import { Screen, Spinner, TabMenu, View } from '@shoutem/ui';
 import { getScreenState, setScreenState } from 'shoutem.cms';
 import {
   composeNavigationStyles,
@@ -12,6 +12,7 @@ import {
   HeaderIconButton,
   navigateTo,
 } from 'shoutem.navigation';
+import { QuickAddModal } from '../components';
 import { CartIcon } from '../components/cart';
 import ProductsList from '../components/ProductsList';
 import {
@@ -19,7 +20,7 @@ import {
   shop as shopShape,
 } from '../components/shapes';
 import { ext } from '../const';
-import { refreshProducts } from '../redux/actionCreators';
+import { actions } from '../redux';
 import {
   getCartSize,
   getCollectionsVisibleInShortcut,
@@ -33,6 +34,11 @@ export class ProductsListScreen extends PureComponent {
     super(props);
 
     autoBindReact(this);
+
+    this.state = {
+      quickAddItem: undefined,
+      quickAddVisible: false,
+    };
   }
 
   componentDidMount() {
@@ -45,6 +51,29 @@ export class ProductsListScreen extends PureComponent {
     const { navigation } = this.props;
 
     navigation.setOptions(this.getNavBarProps());
+  }
+
+  handleCloseQuickAddModal() {
+    this.setState({
+      quickAddItem: undefined,
+      quickAddVisible: false,
+    });
+  }
+
+  handleQuickBuyPress(item) {
+    this.setState({
+      quickAddItem: item,
+      quickAddVisible: true,
+    });
+  }
+
+  handleAddToCart(variant, quantity) {
+    const { cartItemAdded } = this.props;
+    const { quickAddItem } = this.state;
+
+    cartItemAdded({ item: quickAddItem, variant, quantity }).then(
+      this.handleCloseQuickAddModal,
+    );
   }
 
   onCollectionSelected(collection) {
@@ -100,51 +129,55 @@ export class ProductsListScreen extends PureComponent {
     navigateTo(ext('SearchProductsScreen'), { collectionId: collection.id });
   }
 
-  renderCollectionsPicker(styleName = 'horizontal') {
+  renderCollectionsPicker() {
     const { collection, shop } = this.props;
     const { collections } = shop;
 
     return (
-      <DropDownMenu
-        onOptionSelected={this.onCollectionSelected}
+      <TabMenu
         options={collections}
+        onOptionSelected={this.onCollectionSelected}
         selectedOption={collection || collections[0]}
-        titleProperty="title"
-        valueProperty="id"
-        styleName={styleName}
       />
     );
   }
 
   /* eslint-disable class-methods-use-this */
   renderProducts(collectionId) {
-    return <ProductsList collectionId={collectionId} />;
+    return (
+      <ProductsList
+        collectionId={collectionId}
+        onQuickAddPress={this.handleQuickBuyPress}
+      />
+    );
   }
 
   render() {
-    const { collection = {}, shop, hasFeaturedItem } = this.props;
+    const { collection = {}, shop } = this.props;
+    const { quickAddItem, quickAddVisible } = this.state;
     const { collections, isLoading } = shop;
-
-    const collectionPickerStyleName = hasFeaturedItem
-      ? 'featured horizontal'
-      : 'horizontal';
 
     return (
       <Screen>
-        {_.size(collections) > 1
-          ? this.renderCollectionsPicker(collectionPickerStyleName)
-          : null}
+        {_.size(collections) > 1 && this.renderCollectionsPicker()}
         {isLoading ? (
           <Spinner styleName="md-gutter-top" />
         ) : (
           this.renderProducts(collection.id)
         )}
+        <QuickAddModal
+          visible={quickAddVisible}
+          product={quickAddItem}
+          onCancel={this.handleCloseQuickAddModal}
+          onSubmit={this.handleAddToCart}
+        />
       </Screen>
     );
   }
 }
 
 ProductsListScreen.propTypes = {
+  cartItemAdded: PropTypes.func.isRequired,
   hasFeaturedItem: PropTypes.bool.isRequired,
   navigation: PropTypes.object.isRequired,
   refreshProducts: PropTypes.func.isRequired,
@@ -193,7 +226,8 @@ export const mapStateToProps = (state, ownProps) => {
 };
 
 export const mapDispatchToProps = {
-  refreshProducts,
+  refreshProducts: actions.refreshProducts,
+  cartItemAdded: actions.cartItemAdded,
   setScreenState,
 };
 

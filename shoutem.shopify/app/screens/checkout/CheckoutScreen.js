@@ -11,9 +11,9 @@ import {
   Divider,
   DropDownMenu,
   FormGroup,
+  Keyboard,
   ScrollView,
   TextInput,
-  View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { goBack, navigateTo } from 'shoutem.navigation';
@@ -23,6 +23,8 @@ import { ext } from '../../const';
 import { updateCustomerInformation } from '../../redux/actionCreators';
 import { formatAutocompleteData } from '../../services';
 import { getFieldLabel } from '../../services/getFormFieldLabel';
+
+const KEYBOARD_OFFSET = Keyboard.calculateKeyboardOffset();
 
 const loadCountries = () =>
   _.sortBy(
@@ -210,19 +212,23 @@ class CheckoutScreen extends PureComponent {
   }
 
   render() {
+    const { style } = this.props;
+
     return (
-      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-        <View>
-          <ScrollView>
-            {_.map(this.fields, this.renderInput)}
-            {this.renderCountryPicker()}
-            <Divider styleName="line" />
-            <CartFooter
-              action={I18n.t(ext('checkoutContinueButton'))}
-              onActionButtonClicked={this.proceedToWebCheckout}
-            />
-          </ScrollView>
-        </View>
+      <KeyboardAvoidingView
+        behavior="padding"
+        keyboardVerticalOffset={KEYBOARD_OFFSET}
+        style={style.container}
+      >
+        <ScrollView>
+          {_.map(this.fields, this.renderInput)}
+          {this.renderCountryPicker()}
+          <Divider styleName="line" />
+        </ScrollView>
+        <CartFooter
+          action={I18n.t(ext('checkoutContinueButton'))}
+          onActionButtonClicked={this.proceedToWebCheckout}
+        />
       </KeyboardAvoidingView>
     );
   }
@@ -233,6 +239,11 @@ CheckoutScreen.propTypes = {
   customer: customerShape.isRequired,
   navigation: PropTypes.object.isRequired,
   updateCustomerInformation: PropTypes.func.isRequired,
+  style: PropTypes.object,
+};
+
+CheckoutScreen.defaultProps = {
+  style: {},
 };
 
 const mapStateToProps = state => {

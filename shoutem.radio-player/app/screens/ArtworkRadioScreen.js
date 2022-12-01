@@ -5,10 +5,8 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { LayoutAnimation, Platform, Share } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import slugify from '@sindresorhus/slugify';
-import _ from 'lodash';
+import { Platform, Share } from 'react-native';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -21,10 +19,6 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
-import {
-  STATE_PLAYING, // 3 playing
-  STATE_STOPPED, // 1 idle
-} from 'shoutem.audio';
 import { I18n } from 'shoutem.i18n';
 import {
   composeNavigationStyles,
@@ -32,15 +26,10 @@ import {
   isTabBarNavigation,
 } from 'shoutem.navigation';
 import { images } from '../assets';
-import { RadioActionSheet, RadioPlayer } from '../components';
+import { RadioActionSheet } from '../components';
 import { ext } from '../const';
-import { useTimer } from '../hooks';
-import { getRadioMetadata, setRadioMetadata } from '../redux';
-import {
-  getRadioProvider,
-  getResizedImageSource,
-  getTrackArtwork,
-} from '../services';
+import { RadioPlayer } from '../fragments';
+import { useMetadata, usePlaybackState, useTimer } from '../hooks';
 
 const DEPRECATED_RADIO_EXTENSION_SHORTCUT = 'shoutem.radio.Radio';
 
@@ -50,19 +39,14 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
     settings: { navbarTitle, showSharing, streamTitle, streamUrl },
   } = shortcut;
 
-  const dispatch = useDispatch();
-
   const isTabBar = useSelector(isTabBarNavigation);
 
-  const radioId = useMemo(() => slugify(`radio-${streamUrl}`), [streamUrl]);
-  const currentRadio = useSelector(state => getRadioMetadata(state, radioId));
-
   const [clearTimer, startTimer, timeRemaining] = useTimer(60000);
+  const { isPlaying, setPlaybackState } = usePlaybackState();
+  const { artist, songName, artwork, handleMetadataChange } = useMetadata(
+    streamUrl,
+  );
 
-  const [playbackState, setPlaybackState] = useState(STATE_STOPPED);
-  const [artist, setArtist] = useState(currentRadio?.artist);
-  const [songName, setSongName] = useState(currentRadio?.songName);
-  const [artwork, setArtwork] = useState({ uri: currentRadio?.artwork?.uri });
   const [shouldSleep, setShouldSleep] = useState(false);
   const [shouldShowActionSheet, setShouldShowActionSheet] = useState(false);
 
@@ -99,58 +83,6 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
     }
   }, [clearTimer, streamUrl, timeRemaining]);
 
-  useEffect(() => {
-    const provider = getRadioProvider(streamUrl);
-
-    dispatch(
-      setRadioMetadata(radioId, {
-        provider,
-      }),
-    );
-  }, [dispatch, radioId, streamUrl]);
-
-  async function handleMetadataChange(metadata, manually = false) {
-    if (manually) {
-      // We have to set state again, because screen is unmounted in
-      // non-tab layouts. Metadata sometimes defaults to {},
-      // so we read values from redux instead.
-      const metadataSource = _.isEmpty(metadata) ? currentRadio : metadata;
-      const { artist, artwork: activeArtwork, songName } = metadataSource;
-
-      LayoutAnimation.easeInEaseOut();
-
-      setArtist(artist);
-      setSongName(songName);
-      setArtwork(activeArtwork);
-
-      return;
-    }
-
-    const { artist = '', title = '' } = metadata;
-    const artwork = await getTrackArtwork(
-      {
-        artist,
-        songName: title,
-        streamUrl,
-      },
-      currentRadio.provider,
-    );
-
-    dispatch(
-      setRadioMetadata(radioId, {
-        artist,
-        songName: title,
-        artwork: { uri: artwork },
-      }),
-    );
-
-    LayoutAnimation.easeInEaseOut();
-
-    setArtwork({ uri: artwork });
-    setArtist(artist);
-    setSongName(title);
-  }
-
   function shouldResetPlayer() {
     const activeRoute = getCurrentRoute();
 
@@ -181,10 +113,7 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
     return <EmptyListImage message={I18n.t(ext('missingStreamUrl'))} />;
   }
 
-  const isPlaying = playbackState === STATE_PLAYING;
-  const backgroundImage = artwork?.uri
-    ? getResizedImageSource(artwork?.uri)
-    : images.music;
+  const backgroundImage = artwork?.uri ? { uri: artwork?.uri } : images.music;
   const resolvedImage = isPlaying ? backgroundImage : images.music;
 
   return (

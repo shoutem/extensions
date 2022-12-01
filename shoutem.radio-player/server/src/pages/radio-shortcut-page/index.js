@@ -1,2 +1,1 @@
-import RadioShortcutPage from './RadioShortcutPage';
-export default RadioShortcutPage;
+export { RadioShortcutPage as default } from './RadioShortcutPage';

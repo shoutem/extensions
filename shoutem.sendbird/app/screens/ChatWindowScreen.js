@@ -489,7 +489,9 @@ export class ChatWindowScreen extends PureComponent {
       errorMessage,
     } = this.state;
     const typing = this.getTypingStatus();
-    const keyboardOffset = Keyboard.calculateKeyboardOffset();
+    const keyboardOffset = Keyboard.calculateKeyboardOffset(
+      style.keyboardOffset,
+    );
 
     const confirmOptions = [
       { title: 'Camera', onPress: this.handleTakePhotoPress },
@@ -498,10 +500,10 @@ export class ChatWindowScreen extends PureComponent {
     const cancelOptions = [
       { title: 'Cancel', onPress: this.handleAttachmentDismiss },
     ];
-    const styleName = isTabBar ? '' : 'with-notch-padding';
+    const screenStyle = [style.screen, isTabBar && style.paddedScreen];
 
     return (
-      <Screen style={style.screen} styleName={styleName}>
+      <Screen style={screenStyle}>
         <FlatList
           data={messages}
           inverted

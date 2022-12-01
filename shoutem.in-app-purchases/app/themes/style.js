@@ -10,7 +10,7 @@ import { ext } from '../const';
 const resolveVariable = createScopedResolver(ext());
 
 export default () => ({
-  'shoutem.in-app-purchases.SuccessModal': {
+  'shoutem.in-app-purchases.SuccessScreen': {
     container: {
       flex: 1,
       paddingBottom: 56,
@@ -18,10 +18,6 @@ export default () => ({
       paddingTop: 80,
       justifyContent: 'space-between',
       backgroundColor: resolveVariable('paperColor'),
-    },
-
-    modal: {
-      margin: 0,
     },
 
     button: {

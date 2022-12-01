@@ -23,7 +23,13 @@ class ProductsGridScreen extends ProductsListScreen {
     const { screenSettings } = getRouteParams(this.props);
     const isTallGrid = screenSettings.listType === 'tall-grid';
 
-    return <ProductsGrid collectionId={collectionId} isTall={isTallGrid} />;
+    return (
+      <ProductsGrid
+        collectionId={collectionId}
+        isTall={isTallGrid}
+        onQuickAddPress={this.handleQuickBuyPress}
+      />
+    );
   }
 }
 

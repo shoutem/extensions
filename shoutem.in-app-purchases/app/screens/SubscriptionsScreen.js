@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Alert, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-import autoBind from 'auto-bind';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
@@ -15,10 +15,10 @@ import {
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { getRouteParams } from 'shoutem.navigation';
+import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { isPreviewApp } from 'shoutem.preview';
 import { openURL } from 'shoutem.web-view';
-import { SuccessModal, TermsAndPolicy } from '../components';
+import { TermsAndPolicy } from '../components';
 import { ext } from '../const';
 import { actions, selectors } from '../redux';
 import {
@@ -32,13 +32,14 @@ class SubscriptionsScreen extends PureComponent {
   constructor(props, contex) {
     super(props, contex);
 
-    autoBind(this);
+    autoBindReact(this);
 
     this.state = {
       loading: false,
-      modalActive: false,
-      productHasTrial:
-        _.get(props.subscriptionProduct, 'subscriptionPeriodType') === 'trial',
+      successDescription:
+        _.get(props.subscriptionProduct, 'subscriptionPeriodType') === 'trial'
+          ? props.subscriptionMetadata.confirmationMessageTrial
+          : props.subscriptionMetadata.confirmationMessageRegular,
     };
   }
 
@@ -52,10 +53,14 @@ class SubscriptionsScreen extends PureComponent {
 
   componentDidUpdate(prevProps) {
     const { hasActiveProduct } = this.props;
+    const { successDescription } = this.state;
     const { hasActiveProduct: prevHasActiveProduct } = prevProps;
 
     if (!prevHasActiveProduct && hasActiveProduct) {
-      this.setState({ modalActive: true });
+      navigateTo(ext('SuccessScreen'), {
+        onButtonPress: this.handleSuccessConfirmPress,
+        description: successDescription,
+      });
     }
   }
 
@@ -63,10 +68,9 @@ class SubscriptionsScreen extends PureComponent {
     this.setState({ loading });
   }
 
-  handleSuccessModalConfirm() {
+  handleSuccessConfirmPress() {
     const { onSubscriptionObtained } = getRouteParams(this.props);
 
-    this.setState({ modalActive: false });
     onSubscriptionObtained();
   }
 
@@ -137,12 +141,9 @@ class SubscriptionsScreen extends PureComponent {
       termsOfServiceUrl,
       subscriptionMetadata,
     } = this.props;
-    const { loading, modalActive, productHasTrial } = this.state;
+    const { loading } = this.state;
 
     const trialDuration = formatTrialDuration(subscriptionProduct);
-    const purchaseSuccessDescription = productHasTrial
-      ? subscriptionMetadata.confirmationMessageTrial
-      : subscriptionMetadata.confirmationMessageRegular;
 
     return (
       <Screen styleName="paper with-notch-padding">
@@ -196,13 +197,6 @@ class SubscriptionsScreen extends PureComponent {
           onTermsPress={this.handleTermsPress}
           privacyPolicyUrl={privacyPolicyUrl}
           termsOfServiceUrl={termsOfServiceUrl}
-        />
-        <SuccessModal
-          buttonText={I18n.t(ext('startExploringButton'))}
-          description={purchaseSuccessDescription}
-          onButtonPress={this.handleSuccessModalConfirm}
-          title={I18n.t(ext('subscribeSuccessModalTitle'))}
-          visible={modalActive}
         />
       </Screen>
     );

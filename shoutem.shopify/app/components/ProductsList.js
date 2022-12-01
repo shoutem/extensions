@@ -7,16 +7,10 @@ import { find } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { EmptyStateView, ListView, Screen } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import {
-  closeModal,
-  getCurrentRoute,
-  navigateTo,
-  openInModal,
-} from 'shoutem.navigation';
+import { getCurrentRoute, navigateTo } from 'shoutem.navigation';
 import { ext, PAGE_SIZE } from '../const';
 import { cartItemAdded, refreshProducts } from '../redux/actionCreators';
 import { getProducts } from '../redux/selectors';
-import UpdateItemScreen from '../screens/UpdateItemScreen';
 import FeaturedItem from './FeaturedItem';
 import ListItem from './ListItem';
 import { product as productShape, shop as shopShape } from './shapes';
@@ -44,21 +38,6 @@ export class ProductsList extends PureComponent {
     }
 
     this.refreshData();
-  }
-
-  onAddToCart(item) {
-    // featured item is received as array, bug with @shoutem/ui
-    const resolvedItem = Array.isArray(item) ? item[0] : item;
-    const { add } = UpdateItemScreen.actionTypes;
-
-    const routeParams = {
-      actionType: add,
-      item: resolvedItem,
-      onActionButtonClicked: (type, { variant, quantity }) =>
-        this.addItemToCart(resolvedItem, variant, quantity),
-    };
-
-    openInModal(ext('UpdateItemScreen'), routeParams);
   }
 
   onLoadMore() {
@@ -98,6 +77,10 @@ export class ProductsList extends PureComponent {
 
     navigateTo(ext('ProductDetailsScreen'), {
       productId: resolvedItem.id,
+      analyticsPayload: {
+        itemId: resolvedItem.id,
+        itemName: resolvedItem.name,
+      },
     });
   }
 
@@ -108,15 +91,8 @@ export class ProductsList extends PureComponent {
     refreshProducts(collectionId, tag, resetMode);
   }
 
-  addItemToCart(item, variant, quantity) {
-    const { cartItemAdded } = this.props;
-
-    cartItemAdded({ item, variant, quantity });
-    closeModal();
-  }
-
   renderFeaturedProduct(item) {
-    const { shop } = this.props;
+    const { shop, onQuickAddPress } = this.props;
 
     // featured item is received as array, bug with @shoutem/ui
     const resolvedItem = Array.isArray(item) ? item[0] : item;
@@ -124,7 +100,7 @@ export class ProductsList extends PureComponent {
     return resolvedItem ? (
       <FeaturedItem
         item={resolvedItem}
-        onAddToCart={() => this.onAddToCart(resolvedItem)}
+        onAddToCart={() => onQuickAddPress(resolvedItem)}
         onPress={() => this.navigateToProductDetails(resolvedItem)}
         shop={shop}
       />
@@ -134,12 +110,12 @@ export class ProductsList extends PureComponent {
   renderProductRow(item) {
     if (!item) return null;
 
-    const { shop } = this.props;
+    const { shop, onQuickAddPress } = this.props;
 
     return (
       <ListItem
         item={item}
-        onAddToCart={() => this.onAddToCart(item)}
+        onAddToCart={() => onQuickAddPress(item)}
         onPress={() => this.navigateToProductDetails(item)}
         shop={shop}
       />
@@ -221,7 +197,6 @@ export const mapStateToProps = (state, ownProps) => {
 };
 
 ProductsList.propTypes = {
-  cartItemAdded: PropTypes.func.isRequired,
   collectionId: PropTypes.string.isRequired,
   hasFeaturedItem: PropTypes.bool.isRequired,
   productsState: PropTypes.shape({
@@ -231,6 +206,7 @@ ProductsList.propTypes = {
   }).isRequired,
   refreshProducts: PropTypes.func.isRequired,
   shop: shopShape.isRequired,
+  onQuickAddPress: PropTypes.func.isRequired,
   tag: PropTypes.string,
 };
 

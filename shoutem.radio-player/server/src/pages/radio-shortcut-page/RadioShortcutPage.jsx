@@ -1,264 +1,216 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Alert,
   Button,
   ButtonToolbar,
   Checkbox,
   ControlLabel,
   FormGroup,
-  HelpBlock,
 } from 'react-bootstrap';
-import { connect } from 'react-redux';
-import autoBindReact from 'auto-bind/react';
+import { useInView } from 'react-intersection-observer';
+import { useDispatch } from 'react-redux';
 import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { updateShortcutSettings } from '@shoutem/redux-api-sdk';
+import { fetchShortcut, updateShortcutSettings } from '@shoutem/redux-api-sdk';
 import SettingField from '../../components/SettingField';
 import getWeServUrl from '../../services/getWeServUrl';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-class RadioShortcutPage extends Component {
-  constructor(props) {
-    super(props);
-    autoBindReact(this);
+export function RadioShortcutPage({ shortcut }) {
+  const [initialized, setInitialized] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [shortcutSettings, setShortcutSettings] = useState({});
+  const [screenSettings, setScreenSettings] = useState({});
 
-    const {
-      shortcut: { settings = {} },
-    } = props;
+  const dispatch = useDispatch();
 
-    this.state = {
-      errorBackgroundImageUrl: null,
-      errorStreamTitle: null,
-      errorStreamUrl: null,
-      errorSharing: null,
-      errorArtwork: null,
-      streamTitle: settings.streamTitle,
-      streamUrl: settings.streamUrl,
-      showSharing: settings.showSharing || false,
-      showArtwork: settings.showArtwork || false,
-      backgroundImageUrl: settings.backgroundImageUrl,
-      isLoading: false,
-    };
-  }
+  const { ref } = useInView({
+    // This settings page is rendered differently depending on screen settings.
+    // Screen settings are defined by the screen layout that user chooses in another tab.
+    // Currently, we don't have the mechanism to sync props between two settings page tabs.
+    // Instead, we track the visibility of this page and, if it changed and is visible again
+    // we will refetch the shortcut to make sure new screen settings are loaded.
+    onChange: handlePageVisibilityChange,
+    initialInView: true,
+  });
 
-  componentDidMount() {
-    const { shortcut } = this.props;
-    const { streamTitle, backgroundImageUrl, streamUrl } = this.state;
-
-    if (_.isEmpty(backgroundImageUrl)) {
-      this.setState({
-        backgroundImageUrl: _.get(shortcut, 'settings.backgroundImageUrl'),
-      });
+  useEffect(() => {
+    if (!shortcut) {
+      return;
     }
 
-    if (_.isEmpty(streamTitle)) {
-      this.setState({
-        streamTitle: _.get(shortcut, 'settings.streamTitle'),
-      });
-    }
+    const { settings = {}, screen: canonicalType, screens } = shortcut;
 
-    if (_.isEmpty(streamUrl)) {
-      this.setState({
-        streamUrl: _.get(shortcut, 'settings.streamUrl'),
-      });
+    const screen = _.find(screens, { canonicalType });
+    const currentScreenSettings = screen?.settings;
+
+    setShortcutSettings(settings);
+    setScreenSettings(currentScreenSettings);
+    setInitialized(true);
+  }, [shortcut]);
+
+  function handlePageVisibilityChange(isVisible) {
+    if (isVisible) {
+      dispatch(fetchShortcut(shortcut.id));
     }
   }
 
-  handleBackgroundImageUrlChange(event) {
-    this.setState({ backgroundImageUrl: event.target?.value });
+  function handleFormItemChange(event, key) {
+    const newSettings = { ...shortcutSettings, [key]: event.target?.value };
+
+    setShortcutSettings(newSettings);
   }
 
-  handleStreamUrlChange(event) {
-    this.setState({ streamUrl: event.target.value });
+  function handleToggleSharing() {
+    const { showSharing } = shortcutSettings;
+    const newSettings = { ...shortcutSettings, showSharing: !showSharing };
+
+    setShortcutSettings(newSettings);
   }
 
-  handleStreamTitleChange(event) {
-    this.setState({ streamTitle: event.target.value });
+  function handleToggleArtwork() {
+    const { showArtwork } = shortcutSettings;
+    const newSettings = { ...shortcutSettings, showArtwork: !showArtwork };
+
+    setShortcutSettings(newSettings);
   }
 
-  handleToggleCheckbox() {
-    const { showSharing } = this.state;
+  function validateForm() {
+    const { streamUrl, feedUrl } = shortcutSettings;
+    const { canHaveRssFeed } = screenSettings;
+    const errors = {};
 
-    this.setState({ showSharing: !showSharing });
-  }
-
-  handleToggleArtwork() {
-    const { showArtwork } = this.state;
-
-    this.setState({ showArtwork: !showArtwork });
-  }
-
-  async saveBackgroundImageUrl() {
-    const { shortcut, updateSettings } = this.props;
-    const { backgroundImageUrl } = this.state;
-
-    this.setState({ errorBackgroundImageUrl: '' });
-
-    try {
-      await updateSettings(shortcut, { backgroundImageUrl });
-    } catch (err) {
-      this.setState({ errorBackgroundImageUrl: err });
-    }
-  }
-
-  async saveStreamUrl() {
-    const { shortcut, updateSettings } = this.props;
-    const { streamUrl } = this.state;
-
-    this.setState({ errorStreamUrl: '' });
-
-    try {
-      await updateSettings(shortcut, { streamUrl });
-    } catch (err) {
-      this.setState({ errorStreamUrl: err });
-    }
-  }
-
-  async saveShowSharing() {
-    const { shortcut, updateSettings } = this.props;
-    const { showSharing } = this.state;
-
-    try {
-      await updateSettings(shortcut, { showSharing });
-    } catch (err) {
-      this.setState({ errorSharing: err });
-    }
-  }
-
-  async saveShowArtwork() {
-    const { shortcut, updateSettings } = this.props;
-    const { showArtwork } = this.state;
-
-    try {
-      await updateSettings(shortcut, { showArtwork });
-    } catch (err) {
-      this.setState({ errorArtwork: err });
-    }
-  }
-
-  async saveStreamTitle() {
-    const { shortcut, updateSettings } = this.props;
-    const { streamTitle } = this.state;
-
-    this.setState({ errorStreamTitle: '' });
-
-    try {
-      await updateSettings(shortcut, { streamTitle });
-    } catch (err) {
-      this.setState({ errorStreamTitle: err });
-    }
-  }
-
-  async handleSaveSettings() {
-    this.setState({ isLoading: true });
-
-    await this.saveStreamTitle();
-    await this.saveStreamUrl();
-    await this.saveShowSharing();
-    await this.saveShowArtwork();
-    await this.saveBackgroundImageUrl();
-
-    this.setState({ isLoading: false });
-  }
-
-  renderImage() {
-    const { backgroundImageUrl } = this.state;
-
-    if (!backgroundImageUrl) {
-      return null;
+    if (!streamUrl) {
+      errors.streamUrl = i18next.t(LOCALIZATION.FORM_STREAM_URL_FIELD_ERROR);
     }
 
-    const imageSrc = getWeServUrl(backgroundImageUrl, 200);
+    if (canHaveRssFeed && !feedUrl) {
+      errors.feedUrl = i18next.t(LOCALIZATION.FORM_FEED_URL_FIELD_ERROR);
+    }
 
-    return (
-      <img
-        alt={i18next.t(LOCALIZATION.BACKGROUND_IMAGE_ALT_TEXT)}
-        src={imageSrc}
-      />
-    );
+    return errors;
   }
 
-  render() {
-    const {
-      errorArtwork,
-      errorBackgroundImageUrl,
-      errorStreamTitle,
-      errorStreamUrl,
-      errorSharing,
-      streamTitle,
-      streamUrl,
-      showArtwork,
-      showSharing,
-      isLoading,
-      backgroundImageUrl,
-    } = this.state;
+  async function handleSaveSettings() {
+    const errors = validateForm();
 
-    return (
-      <FormGroup>
-        <ControlLabel>{i18next.t(LOCALIZATION.FORM_LABEL_NOTE)}</ControlLabel>
-        <SettingField
-          errorText={errorStreamUrl}
-          onChange={this.handleStreamUrlChange}
-          textValue={streamUrl}
-          title={i18next.t(LOCALIZATION.FORM_STREAM_URL_FIELD_TITLE)}
-        />
-        <SettingField
-          errorText={errorStreamTitle}
-          onChange={this.handleStreamTitleChange}
-          textValue={streamTitle}
-          title={i18next.t(LOCALIZATION.FORM_STREAM_FIELD_TITLE)}
-        />
-        <Alert className="specific-layout-note">
-          {i18next.t(LOCALIZATION.LAYOUT_SPECIFIC_PROPERTIES_ALERT)}
-        </Alert>
-        {this.renderImage()}
-        <SettingField
-          errorText={errorBackgroundImageUrl}
-          onChange={this.handleBackgroundImageUrlChange}
-          textValue={backgroundImageUrl}
-          title={i18next.t(LOCALIZATION.FORM_BACKGROUND_FIELD_TITLE)}
-          popoverMessage={i18next.t(LOCALIZATION.FORM_BACKGROUND_FIELD_POPOVER)}
-        />
-        <Checkbox
-          checked={showSharing}
-          name="Enable Sharing"
-          onChange={this.handleToggleCheckbox}
-        >
-          {i18next.t(LOCALIZATION.FORM_SHARING_CHECKBOX_TITLE)}
-        </Checkbox>
-        {!!errorSharing && (
-          <HelpBlock className="text-error">{errorSharing}</HelpBlock>
-        )}
-        <Checkbox
-          checked={showArtwork}
-          name="Display artwork"
-          onChange={this.handleToggleArtwork}
-        >
-          {i18next.t(LOCALIZATION.FORM_ARTWORK_CHECKBOX_TITLE)}
-        </Checkbox>
-        {!!errorArtwork && (
-          <HelpBlock className="text-error">{errorArtwork}</HelpBlock>
-        )}
-        <ButtonToolbar>
-          <Button bsStyle="primary" onClick={this.handleSaveSettings}>
-            <LoaderContainer isLoading={isLoading}>
-              {i18next.t(LOCALIZATION.BUTTON_SAVE)}
-            </LoaderContainer>
-          </Button>
-        </ButtonToolbar>
-      </FormGroup>
-    );
+    if (!_.isEmpty(errors)) {
+      setErrors(errors);
+      return;
+    }
+
+    setErrors({});
+    setIsLoading(true);
+
+    await dispatch(updateShortcutSettings(shortcut, { ...shortcutSettings }));
+
+    setIsLoading(false);
   }
+
+  const {
+    streamUrl,
+    feedUrl,
+    streamTitle,
+    backgroundImageUrl,
+    showArtwork,
+    showSharing,
+  } = shortcutSettings;
+
+  const {
+    canToggleArtwork,
+    canUseBackgroundImage,
+    canHaveRssFeed,
+    canShowStreamTitle,
+  } = screenSettings;
+
+  const imageSrc =
+    canUseBackgroundImage &&
+    !!backgroundImageUrl &&
+    getWeServUrl(backgroundImageUrl, 200);
+
+  return (
+    <div ref={ref}>
+      <LoaderContainer isLoading={!initialized}>
+        <FormGroup>
+          <ControlLabel>{i18next.t(LOCALIZATION.FORM_LABEL_NOTE)}</ControlLabel>
+          <SettingField
+            fieldKey="streamUrl"
+            errorText={errors.streamUrl}
+            onChange={handleFormItemChange}
+            textValue={streamUrl}
+            title={i18next.t(LOCALIZATION.FORM_STREAM_URL_FIELD_TITLE)}
+          />
+          {canHaveRssFeed && (
+            <SettingField
+              fieldKey="feedUrl"
+              errorText={errors.feedUrl}
+              onChange={handleFormItemChange}
+              textValue={feedUrl}
+              title={i18next.t(LOCALIZATION.FORM_FEED_URL_FIELD_TITLE)}
+            />
+          )}
+          {canShowStreamTitle && (
+            <SettingField
+              fieldKey="streamTitle"
+              onChange={handleFormItemChange}
+              textValue={streamTitle}
+              title={i18next.t(LOCALIZATION.FORM_STREAM_FIELD_TITLE)}
+            />
+          )}
+          {canUseBackgroundImage && (
+            <SettingField
+              fieldKey="backgroundImageUrl"
+              onChange={handleFormItemChange}
+              textValue={backgroundImageUrl}
+              title={i18next.t(LOCALIZATION.FORM_BACKGROUND_FIELD_TITLE)}
+              popoverMessage={i18next.t(
+                LOCALIZATION.FORM_BACKGROUND_FIELD_POPOVER,
+              )}
+            />
+          )}
+          {!!imageSrc && (
+            <div>
+              <ControlLabel className="background-image-label">
+                {i18next.t(LOCALIZATION.BACKGROUND_IMAGE_LABEL_TEXT)}
+              </ControlLabel>
+              <img
+                alt={i18next.t(LOCALIZATION.BACKGROUND_IMAGE_ALT_TEXT)}
+                src={imageSrc}
+              />
+            </div>
+          )}
+          <Checkbox
+            checked={showSharing}
+            name="Enable Sharing"
+            onChange={handleToggleSharing}
+          >
+            {i18next.t(LOCALIZATION.FORM_SHARING_CHECKBOX_TITLE)}
+          </Checkbox>
+          {canToggleArtwork && (
+            <Checkbox
+              checked={showArtwork}
+              name="Display artwork"
+              onChange={handleToggleArtwork}
+            >
+              {i18next.t(LOCALIZATION.FORM_ARTWORK_CHECKBOX_TITLE)}
+            </Checkbox>
+          )}
+          <ButtonToolbar>
+            <Button bsStyle="primary" onClick={handleSaveSettings}>
+              <LoaderContainer isLoading={isLoading}>
+                {i18next.t(LOCALIZATION.BUTTON_SAVE)}
+              </LoaderContainer>
+            </Button>
+          </ButtonToolbar>
+        </FormGroup>
+      </LoaderContainer>
+    </div>
+  );
 }
 
 RadioShortcutPage.propTypes = {
   shortcut: PropTypes.object.isRequired,
-  updateSettings: PropTypes.func.isRequired,
 };
-
-export default connect(null, { updateSettings: updateShortcutSettings })(
-  RadioShortcutPage,
-);

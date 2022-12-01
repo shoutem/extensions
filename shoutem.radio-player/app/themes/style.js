@@ -12,7 +12,7 @@ import { ext } from '../const';
 const resolveVariable = createScopedResolver(ext());
 
 export default () => ({
-  'shoutem.radio-player.RadioPlayer': {
+  [`${ext('RadioScreen')}`]: {
     clearRow: {
       backgroundColor: 'transparent',
       width: resolveVariable('sizes.window.width'),
@@ -48,13 +48,11 @@ export default () => ({
       paddingBottom: 0,
       marginBottom: 0,
     },
-    streamTitle: {
-      color: resolveVariable('streamTitleColor'),
-      fontSize: 15,
-    },
-    hiddenImage: {
-      opacity: 0,
-    },
+    activeSleepIconFill: resolveVariable('featuredColor'),
+    inactiveSleepIconFill: resolveVariable('navBarIconsColor'),
+  },
+
+  [`${ext('RadioPlayer')}`]: {
     playbackButton: {
       width: dimensionRelativeToIphone(75),
       height: dimensionRelativeToIphone(75),
@@ -92,25 +90,9 @@ export default () => ({
         ),
       }),
     },
-    artistName: {
-      color: resolveVariable('imageOverlayTextColor'),
-      fontFamily: resolveFontFamily(
-        resolveVariable('text.fontFamily'),
-        '700',
-        resolveVariable('text.fontStyle'),
-      ),
-      fontWeight: resolveFontWeight('bold'),
-      fontSize: 14,
-    },
-    songName: {
-      color: resolveVariable('imageOverlayTextColor'),
-      fontSize: 15,
-    },
-    activeSleepIconFill: resolveVariable('featuredColor'),
-    inactiveSleepIconFill: resolveVariable('navBarIconsColor'),
   },
 
-  'shoutem.radio-player.ArtworkRadioScreen': {
+  [`${ext('ArtworkRadioScreen')}`]: {
     screen: {
       backgroundColor: resolveVariable('screenBackgroundColor'),
     },
@@ -291,7 +273,7 @@ export default () => ({
     },
   },
 
-  'shoutem.radio-player.SheetHeader': {
+  [`${ext('SheetHeader')}`]: {
     container: {
       borderTopLeftRadius: getSizeRelativeToReference(
         10,
@@ -307,7 +289,7 @@ export default () => ({
     iconFill: resolveVariable('text.color'),
   },
 
-  'shoutem.radio-player.TimerOptions': {
+  [`${ext('TimerOptions')}`]: {
     optionContainer: {
       alignItems: 'center',
       flexDirection: 'row',
@@ -335,7 +317,7 @@ export default () => ({
     },
   },
 
-  'shoutem.radio-player.RadioActionSheet': {
+  [`${ext('RadioActionSheet')}`]: {
     container: {
       position: 'absolute',
       top: 0,
@@ -373,6 +355,123 @@ export default () => ({
         812,
         resolveVariable('sizes.window.height'),
       ),
+    },
+  },
+
+  [`${ext('RadioRssScreen')}`]: {
+    radioPlayerContainer: {
+      marginTop: getSizeRelativeToReference(
+        -200,
+        812,
+        resolveVariable('sizes.window.height'),
+      ),
+    },
+    clearRow: {
+      backgroundColor: 'transparent',
+      width: resolveVariable('sizes.window.width'),
+    },
+    nowPlaying: {
+      position: 'absolute',
+      bottom: 0,
+    },
+    nowPlayingText: {
+      color: resolveVariable('imageOverlayTextColor'),
+      fontSize: 15,
+      paddingTop: resolveVariable('extraLargeGutter'),
+    },
+    overlayStyle: {
+      ...StyleSheet.absoluteFill,
+      paddingTop: 0,
+      paddingBottom: 0,
+      marginBottom: 0,
+    },
+    activeSleepIconFill: resolveVariable('featuredColor'),
+    inactiveSleepIconFill: resolveVariable('navBarIconsColor'),
+  },
+
+  [`${ext('RssNewsFeed')}`]: {
+    container: {
+      flexDirection: 'column',
+      backgroundColor: 'rgba(236, 236, 236, 0.6)',
+      maxHeight: getSizeRelativeToReference(
+        280,
+        812,
+        resolveVariable('sizes.window.height'),
+      ),
+    },
+  },
+
+  [`${ext('ArticleCard')}`]: {
+    cardContainer: {
+      height: getSizeRelativeToReference(
+        200,
+        812,
+        resolveVariable('sizes.window.height'),
+      ),
+    },
+    card: {
+      borderRadius: 5,
+      marginRight: resolveVariable('mediumGutter'),
+      flex: 1,
+    },
+    cardImage: {
+      borderTopLeftRadius: 5,
+      borderTopRightRadius: 5,
+      flex: 0.5,
+    },
+    cartContent: {
+      borderRadius: 5,
+      justifyContent: 'space-between',
+      overflow: 'hidden',
+      flex: 0.5,
+    },
+  },
+
+  [`${ext('ArticleList')}`]: {
+    flexRow: {
+      flexDirection: 'row',
+    },
+    title: {
+      flex: 1,
+      paddingBottom: resolveVariable('mediumGutter'),
+    },
+    seeAll: {
+      flex: 1,
+      textAlign: 'right',
+    },
+  },
+
+  [`${ext('StreamMetadata')}`]: {
+    artworkStyle: {
+      borderRadius: 5,
+      marginRight: 20,
+    },
+    songMetaContainer: {
+      flex: 1,
+      padding: 10,
+      borderRadius: 8,
+      flexDirection: 'row',
+    },
+    withOverlay: {
+      backgroundColor: '#00000080',
+    },
+    alignSelfCenter: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    artistName: {
+      color: resolveVariable('imageOverlayTextColor'),
+      fontFamily: resolveFontFamily(
+        resolveVariable('text.fontFamily'),
+        '700',
+        resolveVariable('text.fontStyle'),
+      ),
+      fontWeight: resolveFontWeight('bold'),
+      fontSize: 14,
+    },
+    songName: {
+      color: resolveVariable('imageOverlayTextColor'),
+      fontSize: 15,
     },
   },
 });

@@ -1,0 +1,102 @@
+{
+  "title": "Theme",
+  "properties": {
+    "quickBuyBackgroundColor": {
+      "type": "string",
+      "title": "Window background color",
+      "format": "color",
+      "default": "#FFFFFF"
+    },
+    "quickBuyTitleColor": {
+      "type": "string",
+      "title": "Title color",
+      "format": "color",
+      "default": "#000000"
+    },
+    "quickBuyDescriptionColor": {
+      "type": "string",
+      "title": "Item description text color",
+      "format": "color",
+      "default": "#545454"
+    },
+    "quickBuyOptionCaptionColor": {
+      "type": "string",
+      "title": "Option caption text color",
+      "format": "color",
+      "default": "#545454"
+    },
+    "quickBuyOptionNameColor": {
+      "type": "string",
+      "title": "Option name text color",
+      "format": "color",
+      "default": "#000000"
+    },
+    "quickBuyOptionBackgroundColor": {
+      "type": "string",
+      "title": "Option background color",
+      "format": "color",
+      "default": "#EDEDED"
+    },
+    "quickBuyAddToCartButtonBackgroundColor": {
+      "type": "string",
+      "title": "Add to cart button background color",
+      "format": "color",
+      "default": "#000000"
+    },
+    "quickBuyAddToCartButtonTextColor": {
+      "type": "string",
+      "title": "Add to cart button text color",
+      "format": "color",
+      "default": "#FFFFFF"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Add to cart window (quick add)",
+        "properties": [
+          {
+            "name": "quickBuyBackgroundColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "quickBuyTitleColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "quickBuyDescriptionColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "quickBuyOptionCaptionColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "quickBuyOptionNameColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "quickBuyOptionBackgroundColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "quickBuyAddToCartButtonBackgroundColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "quickBuyAddToCartButtonTextColor",
+            "inline": true,
+            "size": 6
+          }
+        ]
+      }
+    ]
+  }
+}

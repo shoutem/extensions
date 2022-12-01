@@ -1,11 +1,11 @@
 {
   "name": "interactive-faq",
   "title": "Interactive FAQ",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "platform": ">=6",
   "icon": "./server/assets/faq.png",
   "description": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
-  "releaseNotes": "* Adjusted navigation bar title resolution, shortcuts will now always use the title provided via Language & Region settings",
+  "releaseNotes": "* Added theme customization options - breaking change",
   "dependencies": [
     "shoutem.cms",
     "shoutem.i18n",
@@ -62,6 +62,24 @@
       "name": "FaqSettings",
       "path": "dummy.js",
       "type": "native-component"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
+    }
+  ],
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
     }
   ]
 }

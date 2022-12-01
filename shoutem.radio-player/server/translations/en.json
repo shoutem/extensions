@@ -2,14 +2,18 @@
   "shoutem": {
     "radio-player": {
       "radio-shortcut-page.background-image-alt-text": "Background preview",
+      "radio-shortcut-page.background-image-label-text": "Background image preview:",
       "radio-shortcut-page.form-label-note": "NOTE: Radio player's lock screen and notification banner controls will not appear or work in the app preview. These functionalities do work in live applications.",
       "radio-shortcut-page.form-background-field-title": "Background image URL:",
       "radio-shortcut-page.form-background-field-popover": "Only static image formats are supported (e.g. PNG, JPEG).",
+      "radio-shortcut-page.form-feed-url-field-title": "RSS feed URL:",
       "radio-shortcut-page.form-navbar-field-title": "Navbar title:",
       "radio-shortcut-page.form-stream-url-field-title": "Stream URL:",
       "radio-shortcut-page.form-stream-field-title": "Stream title:",
       "radio-shortcut-page.form-sharing-checkbox-title": "Enable Sharing",
       "radio-shortcut-page.form-artwork-checkbox-title": "Display artwork",
+      "radio-shortcut-page.form-feed-url-field-error": "Feed URL required",
+      "radio-shortcut-page.form-stream-url-field-error": "Stream URL required",
       "radio-shortcut-page.form-button-save": "Save",
       "radio-shortcut-page.layout-specific-properties-alert": "The following settings only apply to the static background layout",
       "Screen background color": "Screen background color",

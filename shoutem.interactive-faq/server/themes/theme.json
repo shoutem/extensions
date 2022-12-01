@@ -1,0 +1,105 @@
+{
+  "title": "Theme",
+  "properties": {
+    "interactiveFaqScreenBackgroundColor": {
+      "type": "string",
+      "title": "Interactive FAQ screen background color",
+      "format": "color",
+      "default": "@paperColor"
+    },
+    "interactiveFaqQuestionButtonBackgroundColor": {
+      "type": "string",
+      "title": "Question button background color",
+      "format": "color",
+      "default": "transparent"
+    },
+    "interactiveFaqQuestionButtonBorderColor": {
+      "type": "string",
+      "title": "Question button border color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "interactiveFaqQuestionTextColor": {
+      "type": "string",
+      "title": "Question button text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "interactiveFaqQuestionBackButtonBackgroundColor": {
+      "type": "string",
+      "title": "Back button background color",
+      "format": "color",
+      "default": "@primaryButtonBackgroundColor"
+    },
+    "interactiveFaqQuestionBackButtonBorderColor": {
+      "type": "string",
+      "title": "Back button border color",
+      "format": "color",
+      "default": "@primaryButtonBackgroundColor"
+    },
+    "interactiveFaqQuestionBackButtonTextColor": {
+      "type": "string",
+      "title": "Back button text color",
+      "format": "color",
+      "default": "@primaryButtonText.color"
+    },
+    "interactiveFaqMessageBackgroundColor": {
+      "type": "string",
+      "title": "Message background color",
+      "format": "color",
+      "default": "@primaryButtonBackgroundColor"
+    },
+    "interactiveFaqMessageBorderColor": {
+      "type": "string",
+      "title": "Message border color",
+      "format": "color",
+      "default": "@primaryButtonBorderColor"
+    },
+    "interactiveFaqMessageTextColor": {
+      "type": "string",
+      "title": "Message text color",
+      "format": "color",
+      "default": "@primaryButtonText.color"
+    },
+    "interactiveFaqBotMessageBackgroundColor": {
+      "type": "string",
+      "title": "Bot message background color",
+      "format": "color",
+      "default": "@secondaryButtonBackgroundColor"
+    },
+    "interactiveFaqBotMessageBorderColor": {
+      "type": "string",
+      "title": "Bot message border color",
+      "format": "color",
+      "default": "@secondaryButtonBorderColor"
+    },
+    "interactiveFaqBotMessageTextColor": {
+      "type": "string",
+      "title": "Bot message text color",
+      "format": "color",
+      "default": "@secondaryButtonTextColor"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Interactive FAQ",
+        "properties": [
+          "interactiveFaqScreenBackgroundColor",
+          "interactiveFaqQuestionButtonBackgroundColor",
+          "interactiveFaqQuestionButtonBorderColor",
+          "interactiveFaqQuestionTextColor",
+          "interactiveFaqQuestionBackButtonBackgroundColor",
+          "interactiveFaqQuestionBackButtonBorderColor",
+          "interactiveFaqQuestionBackButtonTextColor",
+          "interactiveFaqMessageBackgroundColor",
+          "interactiveFaqMessageBorderColor",
+          "interactiveFaqMessageTextColor",
+          "interactiveFaqBotMessageBackgroundColor",
+          "interactiveFaqBotMessageBorderColor",
+          "interactiveFaqBotMessageTextColor"
+        ]
+      }
+    ]
+  }
+}

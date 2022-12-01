@@ -183,6 +183,7 @@ export default () => ({
       borderRadius: 0,
       paddingLeft: 0,
       paddingRight: 0,
+      padding: 10,
       alignItems: 'center',
     },
     icon: {
@@ -355,6 +356,9 @@ export default () => ({
         paddingLeft: responsiveWidth(16),
         // Take clear button into account
         paddingRight: responsiveWidth(32),
+        color: resolveVariable('text.color'),
+      },
+      description: {
         color: resolveVariable('text.color'),
       },
     },
@@ -544,6 +548,209 @@ export default () => ({
     },
     buttonText: {
       fontWeight: resolveFontWeight('500'),
+    },
+  },
+  [`${ext('QuickAddModal')}`]: {
+    container: {
+      position: 'absolute',
+      left: 0,
+      bottom: 0,
+      right: 0,
+      top: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    },
+    contentContainer: {
+      position: 'absolute',
+      left: 0,
+      top: '100%',
+      right: 0,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
+      backgroundColor: resolveVariable('quickBuyBackgroundColor'),
+      paddingHorizontal: responsiveWidth(15),
+      paddingTop: responsiveWidth(15),
+      paddingBottom: responsiveWidth(30),
+    },
+    confirmButton: {
+      marginTop: responsiveHeight(18),
+      height: responsiveHeight(44),
+      borderRadius: 4,
+      backgroundColor: resolveVariable(
+        'quickBuyAddToCartButtonBackgroundColor',
+      ),
+      borderColor: resolveVariable('quickBuyAddToCartButtonBackgroundColor'),
+    },
+    confirmButtonText: {
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '500'),
+      fontWeight: resolveFontWeight('500'),
+      fontSize: 13,
+      lineHeight: 24,
+      color: resolveVariable('quickBuyAddToCartButtonTextColor'),
+    },
+  },
+  [`${ext('QuickAddTitle')}`]: {
+    container: {
+      flexDirection: 'row',
+      padding: responsiveWidth(8),
+    },
+    icon: {
+      width: responsiveWidth(24),
+      height: responsiveWidth(24),
+      color: resolveVariable('quickBuyTitleColor'),
+    },
+    title: {
+      position: 'absolute',
+      left: responsiveWidth(8 + 24 + 8),
+      bottom: responsiveWidth(8),
+      right: responsiveWidth(8 + 24 + 8),
+      top: responsiveWidth(8),
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '500'),
+      fontWeight: resolveFontWeight('500'),
+      fontSize: 20,
+      lineHeight: 24,
+      textAlign: 'center',
+      color: resolveVariable('quickBuyTitleColor'),
+    },
+  },
+  [`${ext('QuickAddItemDetails')}`]: {
+    container: {
+      flex: 1,
+      flexDirection: 'row',
+      marginTop: responsiveWidth(5),
+    },
+    image: {
+      width: responsiveWidth(95),
+      height: responsiveWidth(95),
+      borderRadius: 4,
+      marginRight: responsiveWidth(8),
+    },
+    contentContainer: {
+      flexDirection: 'row',
+      flex: 1,
+    },
+    // dirty hack to have text wrap properly
+    innerContentContainer: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    },
+    textContainer: {
+      flex: 1,
+      flexDirection: 'row',
+    },
+    detailsText: {
+      flex: 1,
+      flexWrap: 'wrap',
+      fontSize: 12,
+      lineHeight: 18,
+      paddingBottom: responsiveWidth(8),
+      fontWeight: resolveFontWeight('400'),
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '400'),
+      color: resolveVariable('quickBuyDescriptionColor'),
+    },
+    priceContainer: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+    },
+    price: {
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '500'),
+      fontWeight: resolveFontWeight('500'),
+      fontSize: 20,
+      lineHeight: 24,
+      color: resolveVariable('quickBuyTitleColor'),
+    },
+    oldPrice: {
+      color: changeColorAlpha(resolveVariable('text.color'), 0.6),
+      marginRight: responsiveWidth(8),
+      textDecorationLine: 'line-through',
+    },
+  },
+  [`${ext('QuantitySelector')}`]: {
+    mainContainer: {
+      marginTop: responsiveHeight(18),
+    },
+    caption: {
+      color: resolveVariable('quickBuyOptionCaptionColor'),
+      fontSize: 15,
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '400'),
+      fontWeight: resolveFontWeight('400'),
+      lineHeight: 18,
+      letterSpacing: 0.361,
+    },
+    container: {
+      marginTop: responsiveHeight(8),
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: responsiveHeight(10),
+      paddingHorizontal: responsiveWidth(10),
+      width: responsiveWidth(160),
+      borderRadius: 4,
+      backgroundColor: resolveVariable('quickBuyOptionBackgroundColor'),
+    },
+    control: {
+      width: responsiveWidth(24),
+      height: responsiveWidth(24),
+    },
+    count: {
+      color: resolveVariable('quickBuyTitleColor'),
+      fontSize: 15,
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '500'),
+      fontWeight: resolveFontWeight('500'),
+      lineHeight: 24,
+    },
+  },
+  [`${ext('QuickAddOptionItem')}`]: {
+    container: {
+      height: responsiveHeight(44),
+      borderRadius: 4,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: resolveVariable('quickBuyOptionBackgroundColor'),
+      paddingHorizontal: responsiveWidth(16),
+      marginRight: responsiveWidth(8),
+      marginTop: responsiveWidth(8),
+    },
+    selectedContainer: {
+      borderWidth: 1,
+      borderColor: resolveVariable('quickBuyTitleColor'),
+    },
+    title: {
+      color: resolveVariable('quickBuyOptionNameColor'),
+      fontSize: 15,
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '400'),
+      fontWeight: resolveFontWeight('400'),
+      lineHeight: 24,
+    },
+    selectedTitle: {
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '500'),
+      fontWeight: resolveFontWeight('500'),
+    },
+  },
+  [`${ext('QuickAddOption')}`]: {
+    container: {
+      marginTop: responsiveHeight(8),
+    },
+    caption: {
+      color: resolveVariable('quickBuyOptionCaptionColor'),
+      fontSize: 15,
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '400'),
+      fontWeight: resolveFontWeight('400'),
+      lineHeight: 18,
+      letterSpacing: 0.361,
+    },
+    valuesContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+  },
+  [`${ext('CheckoutScreen')}`]: {
+    container: {
+      flex: 1,
     },
   },
 });

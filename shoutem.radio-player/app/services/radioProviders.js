@@ -1,3 +1,4 @@
+/* globals fetch */
 import _ from 'lodash';
 
 async function getItunesTrackArtwork({ artist, songName }) {

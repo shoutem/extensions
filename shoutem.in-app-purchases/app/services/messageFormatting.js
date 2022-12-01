@@ -17,7 +17,7 @@ export function formatTrialDuration(product) {
 }
 
 export function formatSubscribeMessage(product) {
-  const localisedPrice = _.get(product, 'price');
+  const localisedPrice = _.get(product, 'localizedPrice');
   const subsscriptionDuration = _.get(product, 'subscriptionDuration');
   const durationInMonths = moment.duration(subsscriptionDuration).asMonths();
   const monthsText =

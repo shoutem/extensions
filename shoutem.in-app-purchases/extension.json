@@ -1,12 +1,12 @@
 {
   "name": "in-app-purchases",
-  "version": "5.1.0",
+  "version": "6.0.1",
   "platform": ">=8",
-  "title": "In App Purchases",
+  "title": "Subscriptions",
   "description": "Add Apple/Google Play subscriptions to your app",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "* Rename extension to Subscriptions as this is what the feature is now called in App & Play Store",
   "nativeChanges": {
-    "lastVersion": "5.0.2"
+    "lastVersion": "6.0.0"
   },
   "icon": "server/assets/iap.png",
   "repository": {
@@ -28,6 +28,9 @@
   "screens": [
     {
       "name": "SubscriptionsScreen"
+    },
+    {
+      "name": "SuccessScreen"
     }
   ],
   "pages": [

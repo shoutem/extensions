@@ -28,14 +28,14 @@ class ProductsGrid extends ProductsList {
   }
 
   renderGridProduct(item) {
-    const { isTall, shop } = this.props;
+    const { isTall, shop, onQuickAddPress } = this.props;
 
     return (
       <GridItem
         item={item}
         isTall={isTall}
         key={item.id}
-        onAddToCart={() => this.onAddToCart(item)}
+        onAddToCart={() => onQuickAddPress(item)}
         onPress={() => this.navigateToProductDetails(item)}
         shop={shop}
       />

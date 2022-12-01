@@ -6,7 +6,7 @@ import {
   NavigationStacks,
 } from 'shoutem.navigation';
 import { ext } from './const';
-import { SubscriptionsScreen } from './screens';
+import { SubscriptionsScreen, SuccessScreen } from './screens';
 import { withSubscriptionRequired } from './services';
 
 Decorators.registerDecorator(withSubscriptionRequired);
@@ -17,6 +17,10 @@ NavigationStacks.registerNavigationStack({
     {
       name: ext('SubscriptionsScreen'),
       component: SubscriptionsScreen,
+    },
+    {
+      name: ext('SuccessScreen'),
+      component: SuccessScreen,
     },
   ],
   screenOptions: navParams => {

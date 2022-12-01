@@ -29,7 +29,9 @@
       "sleepTimerLabel": "Sleep Timer",
       "shareButtonLabel": "Share",
       "shareMessage": "Stream address: {{streamUrl}}",
-      "shareTitle": "Currently listening to {{streamTitle}}"
+      "shareTitle": "Currently listening to {{streamTitle}}",
+      "currentNews": "CURRENT NEWS",
+      "seeAll": "See all"
     }
   }
 }

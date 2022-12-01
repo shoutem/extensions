@@ -1,6 +1,6 @@
 {
   "name": "shoutem.radio-player",
-  "version": "7.0.1",
+  "version": "8.0.0",
   "description": "Radio extension",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
@@ -61,8 +61,9 @@
     "lodash": "^4.17.4",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-redux": "^5.0.3",
-    "redux": "^3.6.0",
+    "react-intersection-observer": "^9.4.0",
+    "react-redux": "^7.0.0",
+    "redux": "^4.1.1",
     "redux-thunk": "~2.2.0",
     "urijs": "^1.18.9"
   },
