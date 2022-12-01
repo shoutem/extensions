@@ -59,6 +59,15 @@ function customStackScreenOptions(navigationProps) {
 }
 
 function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
+  const initialShortcutId = _.get(
+    parentShortcut,
+    'screens[0].settings.startingScreen',
+  );
+
+  const initialShortcut = _.find(parentShortcut.children, {
+    id: initialShortcutId,
+  });
+
   const TabComponents = createChildNavigators(
     parentShortcut,
     TabBarStack,
@@ -81,6 +90,7 @@ function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
 
   return (
     <TabBarStack.Navigator
+      initialRouteName={initialShortcut?.navigationCanonicalName}
       tabBarOptions={{
         activeTintColor: style.activeTintColor,
         inactiveTintColor: style.inactiveTintColor,
