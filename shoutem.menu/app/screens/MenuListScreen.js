@@ -1,9 +1,9 @@
 import React from 'react';
-import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import { connectStyle } from '@shoutem/theme';
 import { CmsListScreen } from 'shoutem.cms';
 import { navigateTo } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
 import ListMenuView from '../components/ListMenuView';
 import { ext } from '../const';
 
@@ -26,6 +26,10 @@ export class MenuListScreen extends CmsListScreen {
   openDetailsScreen(item) {
     navigateTo(ext('MenuDetailsScreen'), {
       item,
+      analyticsPayload: {
+        itemId: item.id,
+        itemName: item.name,
+      },
     });
   }
 

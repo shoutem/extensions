@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { LoaderContainer, MultiselectDropdown } from '@shoutem/react-web-ui';
 import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { createOptions } from 'src/services';
+import { LoaderContainer, MultiselectDropdown } from '@shoutem/react-web-ui';
 import './style.scss';
 
 export default class UserGroupsDropdown extends Component {
@@ -15,7 +15,7 @@ export default class UserGroupsDropdown extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.checkData(this.props);
   }
 

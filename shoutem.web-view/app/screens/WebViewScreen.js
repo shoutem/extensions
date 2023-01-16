@@ -13,7 +13,7 @@ import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
 import { AppContextProvider } from 'shoutem-core';
 import NavigationToolbar from '../components/NavigationToolbar';
-import { ext } from '../const';
+import { AUTH_EXTENSION, ext } from '../const';
 import { parseUrl } from '../services';
 
 const isAndroid = Platform.OS === 'android';
@@ -127,7 +127,7 @@ export class WebViewScreen extends PureComponent {
       webViewProps,
     } = this.getSettings();
 
-    const accessToken = _.get(appContext, ['shoutem.auth', 'accessToken']);
+    const accessToken = _.get(appContext, [AUTH_EXTENSION, 'accessToken']);
     const shouldInsertAuthHeader = accessToken && forwardAuthHeader;
     const defaultSource = _.isObject(url)
       ? {
@@ -178,7 +178,7 @@ export class WebViewScreen extends PureComponent {
 
     const { url } = this.getSettings();
 
-    const ownUser = _.get(appContext, ['shoutem.auth', 'user']);
+    const ownUser = _.get(appContext, [AUTH_EXTENSION, 'user']);
 
     const resolvedUrl = parseUrl(url, ownUser);
 

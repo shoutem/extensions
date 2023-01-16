@@ -157,7 +157,7 @@ function getTokenScope(state) {
   return {};
 }
 
-export function fetchToken(tokenType, authHeader) {
+export function fetchToken(tokenType, authHeader, meta = {}) {
   return (dispatch, getState) => {
     const tokenScope = getTokenScope(getState());
 
@@ -177,7 +177,7 @@ export function fetchToken(tokenType, authHeader) {
       ...tokenScope,
     };
 
-    return dispatch(create(schemeConfig, token));
+    return dispatch(create(schemeConfig, token, {}, meta));
   };
 }
 
@@ -187,6 +187,7 @@ export function fetchAccessToken(email, password) {
       fetchToken(
         'refresh-token',
         `Basic ${encodeToBase64(`${email}:${password}`)}`,
+        encodeToBase64(`${email}:${password}`),
       ),
     ).then(action =>
       dispatch(
@@ -224,8 +225,8 @@ export function fetchFacebookAccessToken(userAccessToken) {
     );
 }
 
-export function fetchUser(userId = 'me') {
-  return find(USER_SCHEMA, userId, { userId });
+export function fetchUser(userId = 'me', meta) {
+  return find(USER_SCHEMA, userId, { userId }, meta);
 }
 
 export function fetchFacebookUserInfo(userAccessToken) {
@@ -244,8 +245,9 @@ export function login(email, password) {
     dispatch(fetchAccessToken(email, password)).then(action => {
       const accessToken = _.get(action, 'payload.data.attributes.token');
       dispatch(setAccessToken(accessToken));
+      const meta = encodeToBase64(`${email}:${password}`);
 
-      return dispatch(fetchUser('me'));
+      return dispatch(fetchUser('me', meta));
     });
 }
 

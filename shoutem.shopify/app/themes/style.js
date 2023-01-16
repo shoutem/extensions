@@ -1,3 +1,4 @@
+import { Platform, StyleSheet } from 'react-native';
 import { changeColorAlpha } from '@shoutem/theme';
 import {
   createScopedResolver,
@@ -510,19 +511,19 @@ export default () => ({
     screen: {
       backgroundColor: resolveVariable('paperColor'),
     },
+    contentContainer: {
+      flex: 1,
+    },
     list: {
       listContent: {
         backgroundColor: resolveVariable('paperColor'),
-        flex: 1,
+        paddingBottom: responsiveHeight(resolveVariable('mediumGutter')),
       },
     },
   },
   [`${ext('CartFooter')}`]: {
     mainContainer: {
       backgroundColor: resolveVariable('paperColor'),
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
       shadowRadius: 8,
       shadowOffset: {
         width: 0,
@@ -531,23 +532,217 @@ export default () => ({
       shadowColor: resolveVariable('shadowColor'),
       shadowOpacity: 0.8,
       width: resolveVariable('sizes.window.width'),
+      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
     },
     priceContainer: {
-      flex: 1,
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
       paddingVertical: responsiveHeight(resolveVariable('mediumGutter')),
     },
     buttonContainer: {
-      flex: 1,
       flexDirection: 'row',
       justifyContent: 'flex-end',
-      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
-      paddingVertical: responsiveHeight(resolveVariable('mediumGutter')),
+      paddingTop: responsiveHeight(resolveVariable('mediumGutter')),
+      paddingBottom: responsiveHeight(resolveVariable('largeGutter')),
     },
     buttonText: {
       fontWeight: resolveFontWeight('500'),
+    },
+  },
+  [`${ext('OrderListItem')}`]: {
+    container: {
+      borderRadius: 4,
+      height: responsiveHeight(95),
+      paddingLeft: 0,
+      marginVertical: responsiveHeight(resolveVariable('smallGutter')),
+      ...dropShadowStyle,
+      ...(Platform.OS === 'android' && {
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: resolveVariable('shadowColor'),
+      }),
+    },
+    image: {
+      width: responsiveWidth(90),
+      height: responsiveWidth(90),
+    },
+    mainContainer: { justifyContent: 'space-between', flexDirection: 'row' },
+    orderContainer: {
+      flex: 1,
+    },
+    price: {
+      fontSize: 16,
+      lineHeight: 24,
+      fontWeight: resolveFontWeight('600'),
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '600'),
+    },
+    orderStatus: {
+      fontSize: 14,
+      lineHeight: 20,
+      color: '#888FA1',
+    },
+    paidStatus: {
+      color: '#88C242',
+    },
+    iconSize: 20,
+    icon: {
+      width: responsiveWidth(20),
+      alignSelf: 'center',
+    },
+  },
+  [`${ext('OrderHistoryScreen')}`]: {
+    screen: {
+      backgroundColor: resolveVariable('paperColor'),
+    },
+    container: {
+      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+    },
+    spinner: {
+      zIndex: 10,
+      ...StyleSheet.absoluteFill,
+      color: resolveVariable('primaryButtonText.color'),
+    },
+  },
+  [`${ext('OrderDetailsScreen')}`]: {
+    screen: {
+      paddingTop: responsiveHeight(resolveVariable('mediumGutter')),
+      backgroundColor: resolveVariable('paperColor'),
+    },
+    paddedContainer: {
+      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+    },
+  },
+  [`${ext('OrderHeader')}`]: {
+    orderDetails: {
+      fontSize: 15,
+      fontWeight: resolveFontWeight('500'),
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '500'),
+      color: resolveVariable('text.color'),
+      opacity: 0.8,
+      marginLeft: resolveVariable('smallGutter'),
+    },
+    value: {
+      color: resolveVariable('text.color'),
+      fontSize: 15,
+      fontWeight: resolveFontWeight('500'),
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '500'),
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: responsiveWidth(resolveVariable('smallGutter')),
+    },
+    iconRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    iconSize: 24,
+    icon: {
+      color: 'transparent',
+    },
+    secondaryText: {
+      color: '#88C242',
+    },
+  },
+  [`${ext('OrderItems')}`]: {
+    container: {
+      marginVertical: responsiveHeight(resolveVariable('mediumGutter')),
+    },
+    title: {
+      fontSize: 16,
+      fontWeight: resolveFontWeight('600'),
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '600'),
+      marginTop: responsiveHeight(resolveVariable('largeGutter')),
+    },
+  },
+  [`${ext('OrderItem')}`]: {
+    itemContainer: {
+      borderRadius: 4,
+      height: responsiveHeight(65),
+      marginVertical: resolveVariable('mediumGutter'),
+      paddingLeft: 0,
+    },
+    image: {
+      width: responsiveWidth(65),
+      height: responsiveWidth(65),
+    },
+    mainContainer: {
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+    },
+    orderContainer: {
+      flex: 1,
+      height: responsiveHeight(60),
+    },
+    orderTitle: {
+      fontSize: 16,
+      lineHeight: 22,
+    },
+    variantTitle: {
+      fontSize: 12,
+      lineHeight: 15,
+    },
+    price: {
+      fontSize: 16,
+      lineHeight: 24,
+      fontWeight: resolveFontWeight('600'),
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '600'),
+    },
+  },
+  [`${ext('OrderTotal')}`]: {
+    container: {
+      borderWidth: 1,
+      borderColor: 'rgba(136, 143, 161, 0.1)',
+      borderRadius: 4,
+      paddingVertical: resolveVariable('smallGutter'),
+      paddingHorizontal: resolveVariable('mediumGutter'),
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: resolveVariable('smallGutter'),
+    },
+    bold: {
+      fontWeight: resolveFontWeight('600'),
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '600'),
+    },
+    divider: {
+      height: 1,
+      backgroundColor: 'rgba(189, 192, 203, 0.5)',
+      marginVertical: resolveVariable('smallGutter'),
+    },
+  },
+  [`${ext('DeliveryAddress')}`]: {
+    container: {
+      marginTop: responsiveHeight(resolveVariable('largeGutter')),
+    },
+    title: {
+      fontWeight: resolveFontWeight('600'),
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '600'),
+      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+    },
+    map: {
+      width: resolveVariable('sizes.window.width'),
+      height: responsiveHeight(160),
+      marginTop: responsiveHeight(resolveVariable('mediumGutter')),
+    },
+    mapTextContainer: {
+      backgroundColor: resolveVariable('imageOverlayColor'),
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      flex: 1,
+    },
+    mapText: {
+      textAlign: 'center',
+      flexShrink: 1,
+      color: resolveVariable('paperColor'),
+      marginBottom: responsiveHeight(24),
+      fontSize: 12,
+      lineHeight: 14,
+    },
+  },
+  [`${ext('CheckoutScreen')}`]: {
+    container: {
+      flex: 1,
     },
   },
   [`${ext('QuickAddModal')}`]: {
@@ -751,6 +946,116 @@ export default () => ({
   [`${ext('CheckoutScreen')}`]: {
     container: {
       flex: 1,
+    },
+  },
+  [`${ext('CustomerAddressScreen')}`]: {
+    screen: {
+      flex: 1,
+      backgroundColor: resolveVariable('paperColor'),
+    },
+    container: {
+      flex: 1,
+      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+    },
+    spinner: {
+      zIndex: 10,
+      ...StyleSheet.absoluteFill,
+      color: resolveVariable('primaryButtonText.color'),
+    },
+    sectionHeader: {
+      marginVertical: responsiveHeight(resolveVariable('mediumGutter')),
+      fontSize: 15,
+    },
+    divider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: resolveVariable('lineColor'),
+    },
+    itemRow: {
+      flexDirection: 'row',
+      paddingVertical: responsiveHeight(resolveVariable('mediumGutter')),
+    },
+    itemContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    item: {
+      fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '500'),
+      fontWeight: resolveFontWeight('500'),
+      fontSize: 14,
+      paddingLeft: responsiveWidth(resolveVariable('smallGutter')),
+    },
+    iconFill: resolveVariable('text.color'),
+  },
+  [`${ext('EditAddressScreen')}`]: {
+    container: {
+      flex: 1,
+      backgroundColor: resolveVariable('paperColor'),
+    },
+    spinner: {
+      zIndex: 10,
+      ...StyleSheet.absoluteFill,
+      color: resolveVariable('primaryButtonText.color'),
+    },
+    deleteIcon: {
+      color: resolveVariable('errorText.color'),
+    },
+    setDefaultAddressButton: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      marginVertical: responsiveHeight(resolveVariable('mediumGutter')),
+    },
+    footer: {
+      backgroundColor: resolveVariable('paperColor'),
+      ...dropShadowStyle,
+    },
+    confirmButton: {
+      height: responsiveHeight(44),
+      marginHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+      marginVertical: responsiveHeight(resolveVariable('mediumGutter')),
+      borderRadius: 4,
+      backgroundColor: resolveVariable('secondaryButtonBackgroundColor'),
+    },
+    confirmButtonText: {
+      color: resolveVariable('secondaryButtonTextColor'),
+    },
+    dropDownContainer: {
+      paddingVertical: responsiveHeight(resolveVariable('smallGutter')),
+      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+      backgroundColor: resolveVariable('paperColor'),
+    },
+    dropDownMenu: {
+      horizontalContainer: {
+        border: resolveVariable('lineColor'),
+        borderRadius: 6,
+        borderWidth: StyleSheet.hairlineWidth,
+        backgroundColor: resolveVariable('paperColor'),
+        marginVertical: responsiveHeight(resolveVariable('smallGutter')),
+        paddingVertical: responsiveHeight(resolveVariable('mediumGutter')),
+        height: responsiveHeight(50),
+      },
+    },
+  },
+  [`${ext('FormInput')}`]: {
+    container: {
+      paddingVertical: responsiveHeight(resolveVariable('smallGutter')),
+      paddingHorizontal: responsiveWidth(resolveVariable('mediumGutter')),
+      backgroundColor: resolveVariable('paperColor'),
+    },
+    label: {
+      paddingVertical: responsiveHeight(resolveVariable('smallGutter')),
+    },
+    textInput: {
+      border: resolveVariable('lineColor'),
+      borderRadius: 6,
+      borderWidth: StyleSheet.hairlineWidth,
+      backgroundColor: resolveVariable('paperColor'),
+    },
+    error: {
+      fontSize: 12,
+      color: resolveVariable('errorText.color'),
+      paddingTop: responsiveHeight(resolveVariable('smallGutter')),
     },
   },
 });

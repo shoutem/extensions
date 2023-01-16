@@ -1,10 +1,10 @@
 {
   "name": "podcast",
-  "version": "5.1.0",
-  "platform": ">=9",
+  "version": "5.3.0",
+  "platform": ">=12.1.0",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
   "nativeChanges": {
     "lastVersion": "5.0.3"
   },

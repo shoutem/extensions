@@ -1,11 +1,11 @@
 {
   "name": "application",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "platform": ">=9.1.0",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "releaseNotes": "* For devs: added middleware priority on navigation initialized middleware - breaking change",
+  "releaseNotes": "* Created settings page with image resizer control",
   "nativeChanges": {
     "lastVersion": "4.1.4"
   },
@@ -20,6 +20,21 @@
   "screens": [
     {
       "name": "SubscriptionMissingScreen"
+    }
+  ],
+  "pages": [
+    {
+      "name": "AppSettingsPage",
+      "type": "react-page"
+    }
+  ],
+  "settings": {
+    "imageResizingActive": true
+  },
+  "settingsPages": [
+    {
+      "page": "@.AppSettingsPage",
+      "title": "Settings"
     }
   ]
 }

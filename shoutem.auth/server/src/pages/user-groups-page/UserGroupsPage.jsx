@@ -56,7 +56,7 @@ export class UserGroupsPage extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.checkData(this.props, null, true);
   }
 

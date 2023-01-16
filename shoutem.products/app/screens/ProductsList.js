@@ -27,7 +27,14 @@ export class ProductsList extends CmsListScreen {
       },
     } = getRouteParams(this.props);
 
-    navigateTo(ext('ProductDetails'), { addAuthHeaderToBuyLink, product });
+    navigateTo(ext('ProductDetails'), {
+      addAuthHeaderToBuyLink,
+      product,
+      analyticsPayload: {
+        itemId: product.id,
+        itemName: product.name,
+      },
+    });
   }
 
   renderRow(product) {

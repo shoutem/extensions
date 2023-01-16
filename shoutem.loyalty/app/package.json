@@ -1,6 +1,6 @@
 {
   "name": "shoutem.loyalty",
-  "version": "6.2.0",
+  "version": "6.3.0",
   "dependencies": {
     "react-native-qrcode-svg": "6.1.1"
   },

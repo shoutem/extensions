@@ -1,11 +1,11 @@
 {
   "name": "people",
   "title": "People",
-  "version": "5.1.0",
-  "platform": ">=9.1.0",
+  "version": "5.2.0",
+  "platform": ">=12.1.0",
   "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
-  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
+  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
   "dependencies": [
     "shoutem.cms",
     "shoutem.i18n",

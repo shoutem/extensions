@@ -1,6 +1,6 @@
 {
   "name": "shoutem.loyalty",
-  "version": "6.2.0",
+  "version": "6.3.0",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
     "clean": "rimraf ./build/*",

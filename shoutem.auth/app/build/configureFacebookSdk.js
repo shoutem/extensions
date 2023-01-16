@@ -13,6 +13,7 @@ function parsePlist(plistPath) {
     try {
       plistResult = plist.parse(plistContent);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error('Unable to parse plist', plistPath);
     }
   }
@@ -27,6 +28,7 @@ function getFileContents(filePath) {
     try {
       fileContents = fs.readFileSync(filePath, { encoding: 'utf8' });
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(`${filePath} not found or unreadable!`);
       throw new Error(err);
     }
@@ -40,6 +42,7 @@ function getFileContents(filePath) {
  * If facebook authentication is enabled, writes the required keys to the Info.plist file
  */
 function configureFacebookSettingsIos(facebookSettings) {
+  // eslint-disable-next-line no-console
   console.log('Configuring Facebook login settings for iOS');
 
   const plistPath = 'ios/Info.plist';
@@ -48,6 +51,7 @@ function configureFacebookSettingsIos(facebookSettings) {
   const appId = facebookSettings?.appId;
   const appName = facebookSettings?.appName;
   const clientToken = facebookSettings?.clientToken;
+  const trackFbsdkEvents = !!facebookSettings?.clientToken;
 
   const facebookPlistData = {
     CFBundleURLTypes: [
@@ -58,7 +62,7 @@ function configureFacebookSettingsIos(facebookSettings) {
     FacebookAppID: appId,
     FacebookClientToken: clientToken,
     FacebookDisplayName: appName,
-    FacebookAutoLogAppEventsEnabled: false,
+    FacebookAutoLogAppEventsEnabled: trackFbsdkEvents,
     LSApplicationQueriesSchemes: ['fbapi', 'fb-messenger-share-api'],
   };
 
@@ -90,11 +94,13 @@ function updateXmlFile(xmlFile, property, newString, oldString) {
 }
 
 function configureFacebookSettingsAndroid(facebookSettings = {}) {
+  // eslint-disable-next-line no-console
   console.log('Configuring Facebook login settings for Android');
   const {
     appId: facebookAppId,
     clientToken,
     enabled: isFacebookAuthEnabled = false,
+    trackFbsdkEvents,
   } = facebookSettings;
 
   const stringsXmlFilePath = path.resolve(
@@ -111,7 +117,7 @@ function configureFacebookSettingsAndroid(facebookSettings = {}) {
 
   let resultingXmlFile = stringsXmlContents;
 
-  if (isFacebookAuthEnabled) {
+  if (isFacebookAuthEnabled || trackFbsdkEvents) {
     if (!facebookAppIdDiffers && !clientTokenDiffers) {
       return;
     }
@@ -181,17 +187,28 @@ function configureFacebookSettingsAndroid(facebookSettings = {}) {
 }
 
 function configureSettingsAndroid(extensionSettings) {
+  const trackFbsdkEvents = _.get(extensionSettings, 'trackFbsdkEvents');
   const facebookSettings = _.get(extensionSettings, 'providers.facebook');
+  const resolvedSettings = {
+    ...facebookSettings,
+    trackFbsdkEvents,
+  };
 
-  configureFacebookSettingsAndroid(facebookSettings);
+  configureFacebookSettingsAndroid(resolvedSettings);
 }
 
 function configureSettingsIos(extensionSettings) {
+  const trackFbsdkEvents = _.get(extensionSettings, 'trackFbsdkEvents');
   const facebookSettings = _.get(extensionSettings, 'providers.facebook');
   const isFacebookAuthEnabled = _.get(facebookSettings, 'enabled', false);
 
-  if (isFacebookAuthEnabled) {
-    configureFacebookSettingsIos(facebookSettings);
+  if (isFacebookAuthEnabled || trackFbsdkEvents) {
+    const resolvedSettings = {
+      ...facebookSettings,
+      trackFbsdkEvents,
+    };
+
+    configureFacebookSettingsIos(resolvedSettings);
   }
 }
 

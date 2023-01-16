@@ -1,20 +1,21 @@
 {
   "name": "auth",
-  "version": "7.1.0",
-  "platform": ">=10.0.0",
+  "version": "7.2.0",
+  "platform": ">=12.3.0",
   "title": "Users",
   "nativeChanges": {
-    "lastVersion": "7.0.0",
+    "lastVersion": "7.2.0",
     "settingsKeys": [
       "providers.facebook.appId",
       "providers.facebook.appName",
       "providers.facebook.clientToken",
       "providers.facebook.enabled",
-      "providers.apple.enabled"
+      "providers.apple.enabled",
+      "trackFbsdkEvents"
     ]
   },
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "* Added automatic event tracking capability\n* To turn it on, go to Settings - Users - General and turn on \"Enable Facebook automatic event tracking\"",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",
@@ -134,6 +135,7 @@
     "newsletter": {
       "consentToggleActive": false
     },
+    "trackFbsdkEvents": false,
     "providers": {
       "email": {
         "enabled": true

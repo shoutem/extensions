@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
 import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -17,21 +17,21 @@ import {
   Screen,
   ScrollView,
   Spinner,
-  TextInput,
   Text,
+  TextInput,
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { HeaderTextButton, openInModal } from 'shoutem.navigation';
 import {
-  requestPermissions,
   PERMISSION_TYPES,
+  requestPermissions,
   RESULTS,
 } from 'shoutem.permissions';
 import ProfileImage from '../components/ProfileImage';
 import { user as userShape } from '../components/shapes';
-import { getUser, updateProfile } from '../redux';
 import { ext } from '../const';
+import { getUser, updateProfile } from '../redux';
 
 const { func } = PropTypes;
 
@@ -215,7 +215,7 @@ class EditProfileScreen extends PureComponent {
           maxLength={160}
           multiline={isTextArea}
           numberOfLines={4}
-          textTransform={'none'}
+          textTransform="none"
           value={this.state[name] || ''}
           {...options}
         />
@@ -278,6 +278,7 @@ class EditProfileScreen extends PureComponent {
     const { pickerActive } = this.state;
     const keyboardOffset =
       Platform.OS === 'ios' ? Keyboard.calculateKeyboardOffset() : 0;
+
     const pickerOptions = [
       {
         title: I18n.t(ext('imagePickerCameraOption')),
@@ -286,6 +287,10 @@ class EditProfileScreen extends PureComponent {
       {
         title: I18n.t(ext('imagePickerGalleryOption')),
         onPress: this.handleGalleryPickerPress,
+      },
+      {
+        title: I18n.t(ext('imagePickerCancelOption')),
+        onPress: this.handlePickerClosePress,
       },
     ];
 

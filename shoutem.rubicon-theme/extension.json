@@ -1,10 +1,10 @@
 {
   "name": "rubicon-theme",
-  "version": "5.0.1",
-  "platform": ">=7",
+  "version": "6.1.1",
+  "platform": ">=12.2.0",
   "type": "system",
   "title": "Rubicon Theme",
-  "releaseNotes": "*  Reworked theme customisation system",
+  "releaseNotes": "* Minor adjustments regarding font selection in navigation",
   "description": "Rubicon theme",
   "icon": "server/assets/add-rubicon-theme-image.png",
   "categories": [],

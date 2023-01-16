@@ -1,10 +1,10 @@
 {
   "name": "navigation",
-  "version": "5.0.6",
-  "platform": ">=9.1.0",
+  "version": "5.1.3",
+  "platform": ">=12.2.0",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "* Adjusted custom stack navigator screen option resolution, no user facing changes",
+  "releaseNotes": "* Resolved issues with Android back handling for tabbar / drawer",
   "description": "App-level navigation",
   "nativeChanges": {
     "lastVersion": "5.0.5"
@@ -208,7 +208,9 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": ["style"],
+      "categories": [
+        "style"
+      ],
       "parameters": {
         "extensionTheme": "Theme"
       }

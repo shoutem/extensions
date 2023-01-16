@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
-import { LoaderContainer, Switch, FormInput } from '@shoutem/react-web-ui';
 import {
-  Row,
-  Col,
   Button,
   ButtonToolbar,
-  HelpBlock,
   ControlLabel,
   FormGroup,
+  HelpBlock,
 } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { FormInput, LoaderContainer, Switch } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -149,8 +147,9 @@ export default class FacebookSetupForm extends Component {
 
   render() {
     const {
-      providerSettings: { enabled },
       className,
+      providerSettings: { enabled },
+      trackFbsdkEvents,
     } = this.props;
     const {
       appId,
@@ -167,11 +166,10 @@ export default class FacebookSetupForm extends Component {
       <div className={className}>
         <FormGroup>
           <ControlLabel>
-            {' '}
             {i18next.t(LOCALIZATION.FORM_FACEBOOK_TITLE)}
           </ControlLabel>
           <Switch onChange={this.handleFacebookSwitchToggle} value={enabled} />
-          {enabled && (
+          {(enabled || trackFbsdkEvents) && (
             <form className="facebook-setup-form">
               <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
               <ControlLabel>
@@ -228,9 +226,16 @@ export default class FacebookSetupForm extends Component {
 }
 
 FacebookSetupForm.propTypes = {
-  changeAppleClientID: PropTypes.func,
-  changeFacebookAppID: PropTypes.func,
+  changeAppleClientID: PropTypes.func.isRequired,
+  changeFacebookAppID: PropTypes.func.isRequired,
+  onSetupUpdate: PropTypes.func.isRequired,
   className: PropTypes.string,
-  onSetupUpdate: PropTypes.func,
   providerSettings: PropTypes.object,
+  trackFbsdkEvents: PropTypes.bool,
+};
+
+FacebookSetupForm.defaultProps = {
+  className: undefined,
+  providerSettings: undefined,
+  trackFbsdkEvents: false,
 };

@@ -31,6 +31,10 @@ export class VideosList extends RssListScreen {
     navigateTo(ext('VideoDetails'), {
       id,
       feedUrl,
+      analyticsPayload: {
+        itemId: video.id,
+        itemName: video.title,
+      },
     });
   }
 

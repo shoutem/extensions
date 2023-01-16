@@ -40,5 +40,8 @@ export const appDidMount = app => {
     .then(deriveUserId)
     .then(() => store.dispatch(actions.loadProducts()))
     .then(() => store.dispatch(setQueueTargetComplete(ext())))
-    .catch(error => console.log('error', error));
+    .catch(error => {
+      console.warn('Error initializing IAPHub', error);
+      store.dispatch(setQueueTargetComplete(ext()));
+    });
 };

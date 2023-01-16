@@ -2,16 +2,20 @@
 // It is important to use those exact names
 
 import './navigation';
-import CartScreen from './screens/CartScreen.js';
+import CartScreen from './screens/CartScreen';
 import CheckoutScreen from './screens/checkout/CheckoutScreen';
 import WebCheckoutScreen from './screens/checkout/WebCheckoutScreen';
-import ProductDetailsScreen from './screens/ProductDetailsScreen.js';
-import ProductsGridScreen from './screens/ProductsGridScreen.js';
-import ProductsListScreen from './screens/ProductsListScreen.js';
+import CustomerAddressScreen from './screens/CustomerAddressScreen';
+import EditAddressScreen from './screens/EditAddressScreen';
+import OrderDetailsScreen from './screens/OrderDetailsScreen';
+import OrderHistoryScreen from './screens/OrderHistoryScreen';
+import ProductDetailsScreen from './screens/ProductDetailsScreen';
+import ProductsGridScreen from './screens/ProductsGridScreen';
+import ProductsListScreen from './screens/ProductsListScreen';
 import ProductsScreen from './screens/ProductsScreen';
-import SearchProductsScreen from './screens/SearchProductsScreen.js';
+import SearchProductsScreen from './screens/SearchProductsScreen';
 import SelectAddressScreen from './screens/SelectAddressScreen';
-import UpdateItemScreen from './screens/UpdateItemScreen.js';
+import UpdateItemScreen from './screens/UpdateItemScreen';
 import enTranslations from './translations/en.json';
 import { actions, middleware, reducer } from './redux';
 
@@ -31,12 +35,16 @@ export const screens = {
   ProductsTallGridScreen: ProductsGridScreen,
   ProductsFeaturedListScreen: ProductsListScreen,
   ProductsListScreen,
+  CustomerAddressScreen,
   SearchProductsScreen,
   ProductDetailsScreen,
   UpdateItemScreen,
   CheckoutScreen,
   WebCheckoutScreen,
   SelectAddressScreen,
+  EditAddressScreen,
+  OrderDetailsScreen,
+  OrderHistoryScreen,
 };
 
 export const shoutem = {

@@ -14,9 +14,7 @@ const {
 function resolveAssetFilePath(chimeFileName) {
   const assetsSoundDir = path.resolve(projectPath, 'assets/sound');
 
-  if (!fs.existsSync(assetsSoundDir)) {
-    fs.mkdirSync(assetsSoundDir);
-  }
+  fs.ensureDirSync(assetsSoundDir);
 
   return path.resolve(assetsSoundDir, chimeFileName);
 }

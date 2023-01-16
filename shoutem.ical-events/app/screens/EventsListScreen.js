@@ -1,9 +1,9 @@
 import React from 'react';
+import { InteractionManager } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
-import { InteractionManager } from 'react-native';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { find, isInitialized, next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
@@ -14,15 +14,15 @@ import { currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import {
   getRouteParams,
-  navigateTo,
   HeaderTextButton,
+  navigateTo,
 } from 'shoutem.navigation';
 import EventsMap from '../components/EventsMap';
 import FeaturedEventView from '../components/FeaturedEventView';
 import ListEventView from '../components/ListEventView';
-import { addToCalendar } from '../services/Calendar';
 import { ext } from '../const';
 import { EVENTS_PROXY_SCHEMA, getIcalFeed } from '../redux';
+import { addToCalendar } from '../services/Calendar';
 
 export class EventsListScreen extends RemoteDataListScreen {
   static propTypes = {
@@ -149,6 +149,10 @@ export class EventsListScreen extends RemoteDataListScreen {
     navigateTo(ext('EventDetailsScreen'), {
       title: event.name,
       event,
+      analyticsPayload: {
+        itemId: event.id,
+        itemName: event.title,
+      },
     });
   }
 

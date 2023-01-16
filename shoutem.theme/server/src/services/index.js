@@ -4,4 +4,5 @@ import ShoutemUrls from './shoutemUrls';
 const shoutemUrls = new ShoutemUrls();
 const pageParameters = new PageParameters();
 
-export { pageParameters, shoutemUrls };
+export { shoutemUrls, pageParameters };
+export { prepareSchemaForCustomFonts } from './schema';

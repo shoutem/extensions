@@ -1,7 +1,5 @@
 import Flurry from 'react-native-flurry-sdk';
-
 import { getExtensionSettings, isProduction } from 'shoutem.application';
-
 import { isFlurryActive } from './services/flurry';
 import { ext } from './const';
 

@@ -1,12 +1,12 @@
 {
   "name": "flurry-analytics",
   "title": "Flurry analytics",
-  "version": "4.2.0",
-  "platform": ">=4",
+  "version": "4.3.2",
+  "platform": ">=12.1.0",
   "description": "Measure and analyze activity across your app with Flurry analytics",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "Remove patch that forced Flurry iOS SDK to version 12.1.1",
   "nativeChanges": {
-    "lastVersion": "4.1.0"
+    "lastVersion": "4.3.2"
   },
   "icon": "server/assets/add-analytics-image.png",
   "categories": ["analytics"],

@@ -26,7 +26,13 @@ export class VideosList extends CmsListScreen {
   }
 
   openDetailsScreen(video) {
-    navigateTo(ext('VideoDetails'), { video });
+    navigateTo(ext('VideoDetails'), {
+      video,
+      analyticsPayload: {
+        itemId: video.id,
+        itemName: video.name,
+      },
+    });
   }
 
   renderActions(video) {

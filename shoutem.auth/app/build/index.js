@@ -7,6 +7,8 @@ const {
 } = require('./configureFacebookSdk');
 const { injectFbSdk } = require('./injectFbSdk');
 const { injectAppleSignInIos } = require('./injectAppleSignIn');
+const { injectResolutionStrategy } = require('./injectResolutionStrategy');
+const { embedFbsdkFrameworks } = require('./embedFbsdkFrameworks');
 
 const ext = resourceName =>
   resourceName ? `${pack.name}.${resourceName}` : pack.name;
@@ -23,8 +25,8 @@ const getExtensionSettings = appConfiguration => {
 
 function preBuild(appConfiguration) {
   const extensionSettings = getExtensionSettings(appConfiguration);
-
-  injectFbSdk();
+  injectResolutionStrategy();
+  injectFbSdk(extensionSettings);
   injectAppleSignInIos(extensionSettings);
 
   configureSettingsAndroid(extensionSettings);
@@ -36,7 +38,24 @@ function runPreBuild() {
   preBuild(appConfiguration);
 }
 
+function postConfigure(appConfiguration) {
+  const extensionSettings = getExtensionSettings(appConfiguration);
+  const facebookAuthEnabled = extensionSettings?.providers?.facebook?.enabled;
+  const trackFbsdkEvents = extensionSettings?.trackFbsdkEvents;
+
+  if (facebookAuthEnabled || trackFbsdkEvents) {
+    embedFbsdkFrameworks();
+  }
+}
+
+function runPostConfigure() {
+  const appConfiguration = getAppConfiguration();
+  postConfigure(appConfiguration);
+}
+
 module.exports = {
+  postConfigure,
   preBuild,
+  runPostConfigure,
   runPreBuild,
 };

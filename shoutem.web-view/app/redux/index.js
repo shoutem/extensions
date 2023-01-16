@@ -3,3 +3,4 @@ export {
   openURL,
   openUrlInExternalBrowser,
 } from './actions';
+export { getUser } from './selectors';

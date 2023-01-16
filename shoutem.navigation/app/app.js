@@ -5,6 +5,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { getAllShortcuts, getFirstShortcut } from 'shoutem.application';
 import { getExtensionSettings } from 'shoutem.application/redux';
+import { priorities, setPriority } from 'shoutem-core';
 import { ext } from './const';
 import { RouteConfigProvider } from './providers';
 
@@ -57,8 +58,8 @@ function mapStateToProps(state) {
   };
 }
 
-export function render(app) {
+export const render = setPriority(app => {
   const screens = app.getScreens();
 
   return <ConnectedNavigationProvider screens={screens} />;
-}
+}, priorities.NAVIGATION);

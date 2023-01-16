@@ -1,11 +1,13 @@
-import { Alert } from 'react-native';
 import _ from 'lodash';
+import { Toast } from '@shoutem/ui';
 import { getAppId, getExtensionCloudUrl } from 'shoutem.application';
+import { getUser, updateProfile } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
 import { triggerCanceled, triggerOccured } from 'shoutem.notification-center';
 import { ext } from '../const';
-import MBBridge from '../MBBridge';
+import MBBridge, { SHOPIFY_ERROR_CODES } from '../MBBridge';
+import { normalizeOrderPrices, PROFILE_FIELDS } from '../services';
 import { ShopifyClient } from '../services/shopifyClient';
 import {
   ABANDONED_CART_TRIGGER,
@@ -14,16 +16,28 @@ import {
   CART_ITEM_REMOVED,
   CART_ITEM_UPDATED,
   CHECKOUT_COMPLETED,
+  CUSTOMER_ERROR,
   CUSTOMER_INFORMATION_UPDATED,
+  CUSTOMER_LOADING,
+  CUSTOMER_LOGIN_SUCCESS,
   ORDER_NUMBER_LOADED,
+  ORDERS_LOADED,
+  ORDERS_LOADING,
   PRODUCTS_ERROR,
   PRODUCTS_LOADED,
   PRODUCTS_LOADING,
+  SET_ORDERS_ERROR,
   SHOP_ERROR_LOADING,
   SHOP_LOADED,
   SHOP_LOADING,
 } from './actionTypes';
-import { getCartSize, getDiscountCode } from './selectors';
+import {
+  getCartSize,
+  getCurrencyFormatting,
+  getCustomerState,
+  getDiscountCode,
+  getOrdersPageInfo,
+} from './selectors';
 
 export function triggerAbandonedCart() {
   return (dispatch, getState) => {
@@ -226,6 +240,122 @@ export function refreshProducts(collectionId, tag, resetMode) {
   };
 }
 
+export function createCustomer(customer) {
+  return async (dispatch, getState) => {
+    try {
+      const response = await MBBridge.createCustomer(customer);
+
+      const {
+        customerCreate: { customerUserErrors },
+      } = response;
+
+      if (!_.isEmpty(customerUserErrors)) {
+        if (customerUserErrors?.code !== SHOPIFY_ERROR_CODES.ACTIVATE_ACCOUNT) {
+          return dispatch(
+            setCustomerError({
+              title: I18n.t(ext('createCustomerErrorTitle')),
+              message: `${I18n.t(ext('createCustomerErrorMessage'))} ${
+                customerUserErrors?.message
+              }`,
+            }),
+          );
+        }
+
+        // Registration was successful,
+        // but customer has to activate account first
+        Toast.showInfo({
+          title: I18n.t(ext('createCustomerSuccessTitle')),
+          message: customerUserErrors.message,
+        });
+      }
+
+      const {
+        customerCreate: { customer: createdCustomer },
+      } = response;
+
+      const currentUser = getUser(getState());
+
+      if (createdCustomer?.id && currentUser.id) {
+        dispatch(
+          updateProfile({
+            profile: { [ext()]: { id: createdCustomer.id } },
+            id: currentUser.id,
+          }),
+        );
+      }
+
+      return dispatch(
+        customerInformationUpdated({ customer: createdCustomer }),
+      ).then(() => dispatch(login(customer.email, customer.password)));
+    } catch (e) {
+      return dispatch(
+        setCustomerError({
+          title: I18n.t(ext('createCustomerErrorTitle')),
+          message: `${I18n.t(ext('createCustomerErrorMessage'))} ${e?.message}`,
+        }),
+      );
+    }
+  };
+}
+
+export function loginSuccess() {
+  return {
+    type: CUSTOMER_LOGIN_SUCCESS,
+  };
+}
+
+export function setCustomerError(payload) {
+  return {
+    type: CUSTOMER_ERROR,
+    payload,
+  };
+}
+
+export function login(email, password) {
+  return async dispatch => {
+    const isLoggedIn = await MBBridge.isLoggedIn();
+
+    if (isLoggedIn) {
+      return dispatch(loginSuccess());
+    }
+
+    const response = await MBBridge.login(email, password);
+
+    const {
+      customerAccessTokenCreate: { customerUserErrors },
+    } = response;
+
+    if (!_.isEmpty(customerUserErrors)) {
+      const fullErrorMessage = _.map(
+        customerUserErrors,
+        error => error.message,
+      ).join('\n');
+
+      // Throw error to enable .catch in login middleware
+      throw new Error(fullErrorMessage);
+    }
+
+    return dispatch(loginSuccess());
+  };
+}
+
+export async function refreshToken() {
+  return async dispatch => {
+    try {
+      await MBBridge.refreshToken();
+
+      return dispatch(loginSuccess());
+    } catch (e) {
+      return dispatch(
+        setCustomerError({
+          title: I18n.t(ext('loginError')),
+          message: e?.message,
+        }),
+      );
+    }
+  };
+}
+
 /**
  * Used to update customer information and proceed to the next checkout step
  * @param customer - Email and address information
@@ -233,13 +363,6 @@ export function refreshProducts(collectionId, tag, resetMode) {
  */
 export function updateCustomerInformation(customer, cart) {
   return async (dispatch, getState) => {
-    const errorHandler = error => {
-      Alert.alert(
-        I18n.t(ext('checkoutErrorTitle')),
-        _.map(JSON.parse(error.message), 'message').join('\n'),
-      );
-    };
-
     const state = getState();
     const discountCode = getDiscountCode(state);
 
@@ -255,17 +378,56 @@ export function updateCustomerInformation(customer, cart) {
 
       const {
         checkoutCreate: {
-          userErrors = [],
-          checkout: { webUrl = '' } = {},
+          checkoutUserErrors: createCheckoutError = [],
+          checkout: { id: checkoutId, webUrl: checkoutUrl } = {},
         } = {},
       } = resp;
 
-      if (userErrors.length > 0) {
-        const fullErrorMessage = _.map(userErrors, error => error.message).join(
-          '\n',
-        );
+      if (createCheckoutError.length > 0) {
+        const fullErrorMessage = _.map(
+          createCheckoutError,
+          error => error.message,
+        ).join('\n');
 
-        return Alert.alert(I18n.t(ext('checkoutErrorTitle')), fullErrorMessage);
+        return dispatch(
+          setCustomerError({
+            title: I18n.t(ext('checkoutErrorTitle')),
+            message: fullErrorMessage,
+          }),
+        );
+      }
+
+      let webUrl = checkoutUrl;
+      let accessToken = '';
+      const isLoggedIn = await MBBridge.isLoggedIn();
+
+      if (isLoggedIn) {
+        const associateResponse = await MBBridge.associateCheckout(checkoutId);
+
+        const {
+          checkoutCustomerAssociateV2: {
+            checkoutUserErrors: associateCheckoutError = [],
+            checkout: associateCheckout,
+          },
+        } = associateResponse;
+
+        if (associateCheckoutError.length > 0 || !associateCheckout.webUrl) {
+          const fullErrorMessage = _.map(
+            associateCheckoutError,
+            error => error.message,
+          ).join('\n');
+
+          return dispatch(
+            setCustomerError({
+              title: I18n.t(ext('checkoutErrorTitle')),
+              message: fullErrorMessage,
+            }),
+          );
+        }
+
+        const { webUrl: checkoutUrl } = associateCheckout;
+        webUrl = checkoutUrl;
+        accessToken = await MBBridge.getAccessToken();
       }
 
       if (!_.get(resp, 'checkoutCreate.checkout.availableShippingRates')) {
@@ -279,13 +441,19 @@ export function updateCustomerInformation(customer, cart) {
         );
       }
 
-      dispatch(customerInformationUpdated(customer));
+      dispatch(customerInformationUpdated({ customer, isLoggedIn }));
 
       navigateTo(ext('WebCheckoutScreen'), {
         checkoutUrl: webUrl,
+        accessToken,
       });
     } catch (e) {
-      errorHandler(e);
+      return dispatch(
+        setCustomerError({
+          title: I18n.t(ext('checkoutErrorTitle')),
+          message: e?.message,
+        }),
+      );
     }
   };
 }
@@ -297,12 +465,10 @@ export function updateCustomerInformation(customer, cart) {
  * @param customer - Customer information
  * @returns {{ type: String, payload: { customer: {} }}
  */
-export function customerInformationUpdated(customer) {
+export function customerInformationUpdated(payload) {
   return {
     type: CUSTOMER_INFORMATION_UPDATED,
-    payload: {
-      customer,
-    },
+    payload,
   };
 }
 
@@ -346,5 +512,257 @@ export function fetchStorefrontToken(shop) {
     return fetch(endpoint)
       .then(res => res.json())
       .then(tokenData => tokenData?.access_token);
+  };
+}
+
+export function setOrdersLoading(payload) {
+  return {
+    type: ORDERS_LOADING,
+    payload,
+  };
+}
+
+export function setOrders(payload) {
+  return {
+    type: ORDERS_LOADED,
+    payload,
+  };
+}
+
+export function setOrdersError(payload) {
+  return {
+    type: SET_ORDERS_ERROR,
+    payload,
+  };
+}
+
+const DEFAULT_PAGE_SIZE = 25;
+
+export function loadOrders(pageSize = DEFAULT_PAGE_SIZE, cursor = '') {
+  return async (dispatch, getState) => {
+    dispatch(setOrdersLoading(true));
+
+    try {
+      const { orders, pageInfo } = await MBBridge.getOrders(pageSize, cursor);
+
+      const currencyFormatting = getCurrencyFormatting(getState());
+      const normalizedOrders = normalizeOrderPrices(orders, currencyFormatting);
+
+      return dispatch(setOrders({ orders: normalizedOrders, pageInfo }));
+    } catch (e) {
+      return dispatch(
+        setOrdersError({
+          title: I18n.t(ext('ordersError')),
+          message: e?.message,
+        }),
+      );
+    }
+  };
+}
+
+export function loadOrderByName(orderName) {
+  return async (dispatch, getState) => {
+    dispatch(setOrdersLoading(true));
+
+    try {
+      const order = await MBBridge.getOrderByOrderName(orderName);
+
+      const currencyFormatting = getCurrencyFormatting(getState());
+      const normalizedOrders = normalizeOrderPrices(order, currencyFormatting);
+
+      return dispatch(setOrders({ orders: normalizedOrders }));
+    } catch (e) {
+      return dispatch(
+        setOrdersError({
+          title: I18n.t(ext('ordersError')),
+          message: e?.message,
+        }),
+      );
+    }
+  };
+}
+
+export function loadNextOrders(pageSize = DEFAULT_PAGE_SIZE) {
+  return async (dispatch, getState) => {
+    dispatch(setOrdersLoading(true));
+
+    const pageInfo = getOrdersPageInfo(getState());
+
+    if (!pageInfo.hasNextPage) {
+      return dispatch(setOrdersLoading(false));
+    }
+
+    const cursor = pageInfo?.cursor;
+
+    return dispatch(loadOrders(pageSize, cursor));
+  };
+}
+
+export function setCustomerLoading(payload) {
+  return {
+    type: CUSTOMER_LOADING,
+    payload,
+  };
+}
+
+export function getCustomer(addressCursor = '') {
+  return async dispatch => {
+    dispatch(setCustomerLoading(true));
+
+    try {
+      const { customer, customerUserErrors } = await MBBridge.getCustomer(
+        addressCursor,
+      );
+
+      if (!_.isEmpty(customerUserErrors)) {
+        return dispatch(
+          setCustomerError({
+            title: I18n.t(ext('updateCustomerErrorTitle')),
+            message: customerUserErrors.message,
+          }),
+        );
+      }
+
+      return dispatch(
+        customerInformationUpdated({ customer, isLoggedIn: true }),
+      );
+    } catch (e) {
+      return dispatch(
+        setCustomerError({
+          message: e?.message,
+        }),
+      );
+    }
+  };
+}
+
+export function updateCustomer(updates) {
+  return async dispatch => {
+    dispatch(setCustomerLoading(true));
+
+    const isLoggedIn = await MBBridge.isLoggedIn();
+
+    if (!isLoggedIn) {
+      return dispatch(setCustomerLoading(false));
+    }
+
+    const updatedUser = _.pick(updates, PROFILE_FIELDS);
+
+    try {
+      const {
+        customerUpdate: { customer, customerUserErrors },
+      } = await MBBridge.updateCustomer(updatedUser);
+
+      if (!_.isEmpty(customerUserErrors)) {
+        return dispatch(
+          setCustomerError({
+            title: I18n.t(ext('updateCustomerErrorTitle')),
+            message: customerUserErrors.message,
+          }),
+        );
+      }
+
+      return dispatch(
+        customerInformationUpdated({ customer, isLoggedIn: true }),
+      );
+    } catch (e) {
+      return dispatch(
+        setCustomerError({
+          message: e?.message,
+        }),
+      );
+    }
+  };
+}
+
+export function loadNextAddresses(pageSize = DEFAULT_PAGE_SIZE) {
+  return async (dispatch, getState) => {
+    dispatch(setCustomerLoading(true));
+
+    const { addressesPageInfo } = getCustomerState(getState());
+
+    if (!addressesPageInfo?.hasNextPage) {
+      return dispatch(setCustomerLoading(false));
+    }
+
+    const cursor = addressesPageInfo?.cursor;
+
+    return dispatch(getCustomer(pageSize, cursor));
+  };
+}
+
+export function createCustomerAddress(addressInfo) {
+  return async dispatch => {
+    dispatch(setCustomerLoading(true));
+
+    try {
+      await MBBridge.createCustomerAddress(addressInfo);
+
+      return dispatch(getCustomer());
+    } catch (e) {
+      return dispatch(
+        setCustomerError({
+          message: e?.message,
+        }),
+      );
+    }
+  };
+}
+
+export function updateDefaultCustomerAddress(addressId) {
+  return async dispatch => {
+    dispatch(setCustomerLoading(true));
+
+    try {
+      await MBBridge.updateCustomerDefaultAddress(addressId);
+
+      return dispatch(getCustomer());
+    } catch (e) {
+      return dispatch(
+        setCustomerError({
+          message: e?.message,
+        }),
+      );
+    }
+  };
+}
+
+export function updateCustomerAddress(addressId = null, addressInfo) {
+  return async dispatch => {
+    dispatch(setCustomerLoading(true));
+
+    if (!addressId) {
+      return dispatch(createCustomerAddress(addressInfo));
+    }
+
+    try {
+      await MBBridge.updateCustomerAddress(addressId, addressInfo);
+
+      return dispatch(getCustomer());
+    } catch (e) {
+      return dispatch(
+        setCustomerError({
+          message: e?.message,
+        }),
+      );
+    }
+  };
+}
+
+export function deleteCustomerAddress(addressId) {
+  return async dispatch => {
+    dispatch(setCustomerLoading(true));
+
+    try {
+      await MBBridge.deleteCustomerAddress(addressId);
+
+      return dispatch(getCustomer());
+    } catch (e) {
+      return dispatch(
+        setCustomerError({
+          message: e?.message,
+        }),
+      );
+    }
   };
 }

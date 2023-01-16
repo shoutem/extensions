@@ -72,32 +72,12 @@ export default () => ({
       borderTopWidth: 1,
     },
     title: {
-      fontSize: 20,
-      lineHeight: 24,
       fontWeight: resolveFontWeight('bold'),
-    },
-    description: {
-      fontSize: 14,
-      lineHeight: 16,
-      paddingBottom: getSizeRelativeToReference(
-        16,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      paddingTop: getSizeRelativeToReference(
-        4,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
     },
   },
 
   'shoutem.layouts.FeaturedGridRowItemView': {
     [INCLUDE]: ['shoutem.layouts.FullGridRowItemView'],
-    description: {
-      fontSize: 16,
-      lineHeight: 24,
-    },
     imageContainer: {
       // Image has to be a square, 1:1 ratio. Using (-16) because
       // shoutem.layouts.Grid122FullRowView.container.marginHorizontal = 8

@@ -59,6 +59,10 @@ export class EventsScreen extends CmsListScreen {
     return navigateTo(ext('EventDetailsScreen'), {
       title: event.name,
       event,
+      analyticsPayload: {
+        itemId: event.id,
+        itemName: event.name,
+      },
     });
   }
 

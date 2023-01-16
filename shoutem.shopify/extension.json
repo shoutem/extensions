@@ -1,16 +1,18 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "7.1.0",
-  "platform": ">=12.2.0",
+  "version": "8.0.0",
+  "platform": ">=12.2.1",
   "hidden": false,
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "releaseNotes": "* Fixed Address field not being visible on Checkout screen\n* Fixed Postal code field not being visible on Checkout screen",
+  "releaseNotes": "* Added Shopify customer login\n* Added customers order history shortcut\n* Added customers delivery addresses shortcut",
   "nativeChanges": {
-    "lastVersion": "6.0.0"
+    "lastVersion": "8.0.0"
   },
-  "capabilities": ["shoutem.shopify.places-api"],
+  "capabilities": [
+    "shoutem.shopify.places-api"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -23,13 +25,17 @@
   ],
   "dependencies": [
     "shoutem.application",
+    "shoutem.auth",
     "shoutem.cms",
     "shoutem.i18n",
     "shoutem.layouts",
     "shoutem.navigation",
-    "shoutem.notification-center"
+    "shoutem.notification-center",
+    "shoutem.redux"
   ],
-  "categories": ["commerce"],
+  "categories": [
+    "commerce"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -51,6 +57,20 @@
           "title": "Layout"
         }
       ]
+    },
+    {
+      "title": "Order history",
+      "description": "Show customers their order history",
+      "icon": "theme://cart.png",
+      "name": "orderHistory",
+      "screen": "@.OrderHistoryScreen"
+    },
+    {
+      "title": "Delivery addresses",
+      "description": "Show Shopify customers their saved addresses",
+      "icon": "theme://delivery.png",
+      "name": "customerAddresses",
+      "screen": "@.CustomerAddressScreen"
     }
   ],
   "screens": [
@@ -212,6 +232,15 @@
     },
     {
       "name": "SelectAddressScreen"
+    },
+    {
+      "name": "OrderHistoryScreen"
+    },
+    {
+      "name": "CustomerAddressScreen"
+    },
+    {
+      "name": "EditAddressScreen"
     }
   ],
   "pages": [
@@ -237,7 +266,9 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": ["style"],
+      "categories": [
+        "style"
+      ],
       "parameters": {
         "extensionTheme": "Theme"
       }

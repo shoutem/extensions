@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { priorities, after, setPriority } from 'shoutem-core';
 import { getAppId } from 'shoutem.application';
 import { getCurrentRoute } from 'shoutem.navigation';
-import { EVENT, SCREEN_VIEW, isAnalyticsAction } from './redux';
+import { after, priorities, setPriority } from 'shoutem-core';
+import { EVENT, isAnalyticsAction, SCREEN_VIEW } from './redux';
 
 // Use to intercept analytics actions and provide more data to the action
 export const ANALYTICS_MIDDLEWARE_PRIORITY = priorities.NAVIGATION;
@@ -58,8 +58,17 @@ function getApplicationAnalyticsData() {
   const extension = getExtensionNameFromScreen(screenName);
   const shortcutId = (_.get(activeRoute, 'params.shortcut') || {}).id;
   const appId = `${getAppId()}`; // All GA dimensions values should be sent as strings
+  const previousRouteName = _.get(activeRoute, 'params.previousRoute.name');
+  const analyticsPayload = _.get(activeRoute, 'params.analyticsPayload');
 
-  return { appId, extension, screen: screenName, shortcutId };
+  return {
+    appId,
+    extension,
+    screen: screenName,
+    shortcutId,
+    previousRouteName,
+    ...analyticsPayload,
+  };
 }
 
 /**

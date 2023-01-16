@@ -1,7 +1,6 @@
 import './navigation';
 import SubscriptionMissingScreen from './screens/SubscriptionMissingScreen';
 import enTranslations from './translations/en.json';
-import { initializeApp } from './app';
 import {
   navigationInitializedMiddleware,
   noInternetMiddleware,
@@ -70,5 +69,3 @@ export const shoutem = {
 };
 
 export const screens = { SubscriptionMissingScreen };
-
-initializeApp();

@@ -5,7 +5,7 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { ThemeShape } from '@shoutem/theme';
-import { ScrollView } from '@shoutem/ui';
+import { ScrollView, Toast } from '@shoutem/ui';
 import {
   getAppInitQueueComplete,
   getHiddenShortcuts,
@@ -157,6 +157,7 @@ export class RouteConfigProvider extends PureComponent {
                 hiddenShortcuts={hiddenShortcuts}
               />
             </NavigationContainer>
+            <Toast.Provider />
           </NavigationStylesProvider>
         )}
       </ScrollView.DriverProvider>

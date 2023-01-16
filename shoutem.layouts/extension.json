@@ -1,11 +1,11 @@
 {
   "name": "layouts",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "platform": ">=6",
   "type": "system",
   "title": "Layouts",
   "description": "Extension that enables app creator to choose between different layouts of the same screen",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "Title in Grid122 connected to the theme settings",
   "icon": "server/assets/add-layouts-image.png",
   "dependencies": [
     "shoutem.i18n"

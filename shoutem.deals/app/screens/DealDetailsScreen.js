@@ -69,16 +69,21 @@ const styles = {
 function formatDealDate(dealDateStr, isOnlyEndDate) {
   const dealDate = moment(dealDateStr);
   const timeFormat = uses24HourClock() ? 'H:mm' : 'h:mm a';
+  const diffInYears = Math.abs(moment().diff(dealDate, 'years'));
+  const yearFormat = diffInYears >= 1 ? 'YYYY' : '';
+  const monthFormat = diffInYears >= 1 ? 'MMM' : 'MMMM';
 
   if (!isOnlyEndDate) {
-    return dealDate.format(`MMMM DD  • ${timeFormat}`);
+    return dealDate.format(`${monthFormat} DD ${yearFormat}  • ${timeFormat}`);
   }
 
   const isMidnight = dealDate.isSame(
     moment(dealDateStr).startOf('day'),
     'hour',
   );
-  const weekdayAndDate = dealDate.format('dddd Do MMMM');
+  const weekdayAndDate = dealDate.format(
+    `dddd Do ${monthFormat} ${yearFormat}`,
+  );
 
   if (isMidnight) {
     return I18n.t(ext('validUntilLabelWithoutTime'), { weekdayAndDate });
@@ -486,7 +491,7 @@ export class DealDetailsScreen extends PureComponent {
         )}
         <Text
           styleName={`h-center dimmed ${
-            !!startTime ? 'md-gutter-top' : ''
+            startTime ? 'md-gutter-top' : ''
           } ${textColorStyle}`}
         >
           {formatDealDate(endTime, !startTime)}

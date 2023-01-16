@@ -14,6 +14,11 @@ const permissions = [
     type: PERMISSION_TYPES.IOS_PHOTO_LIBRARY,
     rationale: 'select profile image from gallery',
   },
+  {
+    type: PERMISSION_TYPES.IOS_APP_TRACKING_TRANSPARENCY,
+    rationale:
+      'to provide diagnostics to the app developer for app improvement',
+  },
 ];
 
 module.exports = { permissions };

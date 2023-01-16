@@ -33,6 +33,10 @@ export class BooksListScreen extends CmsListScreen {
     navigateTo(ext('BooksDetailsScreen'), {
       book,
       hasFavoriteButton: hasFavorites,
+      analyticsPayload: {
+        itemId: book.id,
+        itemName: book.title,
+      },
     });
   }
 

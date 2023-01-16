@@ -1,4 +1,5 @@
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
+import { Settings } from 'react-native-fbsdk-next';
 import rio from '@shoutem/redux-io';
 import {
   getAppId,
@@ -6,11 +7,17 @@ import {
   getExtensionSettings,
   setQueueTargetComplete,
 } from 'shoutem.application';
-import { cancelPendingJourney } from 'shoutem.notification-center';
 import { getCurrentRoute } from 'shoutem.navigation';
+import { cancelPendingJourney } from 'shoutem.notification-center';
+import {
+  PERMISSION_TYPES,
+  requestPermissions,
+  RESULTS,
+} from 'shoutem.permissions';
+import { isPreviewApp } from 'shoutem.preview';
 import { authProviders } from './services/authProviders';
 import { shoutemApi } from './services/shoutemApi';
-import { ext, COMPLETE_REGISTRATION_TRIGGER } from './const';
+import { COMPLETE_REGISTRATION_TRIGGER, ext } from './const';
 import {
   AUTH_TOKEN_SCHEMA,
   fetchUser,
@@ -67,6 +74,24 @@ const createHandleAppStateChange = (dispatch, getState) => appState => {
 
   if (appState === 'active') {
     dispatch(cancelPendingJourney(COMPLETE_REGISTRATION_TRIGGER));
+
+    const state = getState();
+    const { trackFbsdkEvents } = getExtensionSettings(state, ext());
+
+    if (trackFbsdkEvents && !isPreviewApp) {
+      if (Platform.OS === 'ios') {
+        const TRACKING_PERMISSION =
+          PERMISSION_TYPES.IOS_APP_TRACKING_TRANSPARENCY;
+
+        requestPermissions(TRACKING_PERMISSION).then(result => {
+          if (result[TRACKING_PERMISSION] === RESULTS.GRANTED) {
+            Settings.setAdvertiserTrackingEnabled(true);
+          }
+        });
+      } else {
+        Settings.setAdvertiserTrackingEnabled(true);
+      }
+    }
   }
 
   if (appState.match(/inactive|background/) && previousAppState === 'active') {

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.rss-photos",
-  "version": "5.1.0",
+  "version": "5.2.1",
   "description": "Shoutem RSS Photos extension",
   "peerDependencies": {
     "@shoutem/redux-io": "*",

@@ -6,12 +6,14 @@ export function formatAutocompleteData(data) {
   const street = _.get(
     _.find(addressParts, part => _.includes(part.types, 'route')),
     'long_name',
+    '',
   );
   const streetNumber = _.get(
     _.find(addressParts, part => _.includes(part.types, 'street_number')),
     'long_name',
     '',
   );
+  const address = _.trim(`${street} ${streetNumber}`);
   const postalCode = _.get(
     _.find(addressParts, part => _.includes(part.types, 'postal_code')),
     'long_name',
@@ -53,6 +55,7 @@ export function formatAutocompleteData(data) {
   return {
     street,
     streetNumber,
+    address,
     postalCode,
     city,
     countryName,

@@ -1,9 +1,9 @@
 import React from 'react';
-import autoBindReact from 'auto-bind/react';
 import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import { connectStyle } from '@shoutem/theme';
 import { CmsListScreen } from 'shoutem.cms';
 import { navigateTo } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
 import ListPeopleView from '../components/ListPeopleView';
 import { ext } from '../const';
 
@@ -24,7 +24,13 @@ export class PeopleListScreen extends CmsListScreen {
   }
 
   openDetailsScreen(person) {
-    navigateTo(ext('PeopleDetailsScreen'), { person });
+    navigateTo(ext('PeopleDetailsScreen'), {
+      person,
+      analyticsPayload: {
+        itemId: person.id,
+        itemName: `${person.firstName} ${person.lastName}`,
+      },
+    });
   }
 
   renderRow(person) {

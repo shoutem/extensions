@@ -147,7 +147,14 @@ export class RewardsListScreen extends CmsListScreen {
     const { parentCategoryId } = this.props;
 
     navigateTo(ext('RewardDetailsScreen'), {
-      reward: { ...reward, parentCategoryId },
+      reward: {
+        ...reward,
+        parentCategoryId,
+      },
+      analyticsPayload: {
+        itemId: reward.id,
+        itemName: reward.title,
+      },
     });
   }
 

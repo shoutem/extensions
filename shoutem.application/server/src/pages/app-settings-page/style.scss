@@ -1,0 +1,22 @@
+body.extension-sandbox-container {
+  .settings-page {
+    max-width: 552px;
+    margin: auto;
+
+    &.is-wide {
+      max-width: 808px;
+    }
+  }
+}
+
+.text-area {
+  background-color: #F2F2F5;
+  padding:20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+#root > div > div.switch-form-group.form-group > label {
+  font-size: 15px;
+  color: #444f6c;
+}

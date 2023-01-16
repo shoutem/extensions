@@ -286,7 +286,7 @@ export default () => ({
       },
       text: {
         marginBottom: 8,
-        fontSize: 10,
+        fontSize: resolveVariable('tabbarItemText.fontSize'),
       },
     },
     '.icon-only': {
@@ -296,7 +296,7 @@ export default () => ({
     },
     '.text-only': {
       text: {
-        fontSize: 15,
+        fontSize: resolveVariable('tabbarItemText.fontSize'),
       },
       item: {
         justifyContent: 'center',
@@ -358,9 +358,18 @@ export default () => ({
       resizeMode: 'contain',
     },
     text: {
-      fontWeight: resolveFontWeight('normal'),
       flex: -1,
       margin: 0,
+      fontFamily: resolveFontFamily(
+        resolveVariable('tabbarItemText.fontFamily'),
+        resolveVariable('tabbarItemText.fontWeight'),
+        resolveVariable('tabbarItemText.fontStyle'),
+      ),
+      color: resolveVariable('tabbarItemText.color'),
+      fontStyle: resolveFontStyle(resolveVariable('tabbarItemText.fontStyle')),
+      fontWeight: resolveFontWeight(
+        resolveVariable('tabbarItemText.fontWeight'),
+      ),
     },
   },
   'shoutem.navigation.Drawer': {
@@ -424,7 +433,17 @@ export default () => ({
     text: {
       justifyContent: 'flex-start',
       margin: 0,
-      fontSize: 15,
+      fontFamily: resolveFontFamily(
+        resolveVariable('drawerItemText.fontFamily'),
+        resolveVariable('drawerItemText.fontWeight'),
+        resolveVariable('drawerItemText.fontStyle'),
+      ),
+      color: resolveVariable('drawerItemText.color'),
+      fontStyle: resolveFontStyle(resolveVariable('drawerItemText.fontStyle')),
+      fontWeight: resolveFontWeight(
+        resolveVariable('drawerItemText.fontWeight'),
+      ),
+      fontSize: resolveVariable('drawerItemText.fontSize'),
     },
   },
   'shoutem.navigation.IconGrid': {

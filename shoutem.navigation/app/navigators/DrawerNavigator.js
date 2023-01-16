@@ -69,6 +69,12 @@ function customStackScreenOptions(navigationProps) {
         );
       }
 
+      // Mostly, we want to control the visibility of the drawer icon in the top left
+      // This causes a few issues with the custom navigator screen options that have custom
+      // headerLeft implementation, as these have presedence when resolving screenOptions.
+      // For this purpose, we include onBack route prop,
+      // which will be used by any form of backbutton enforced by parent navigator like
+      // Drawer or TabBar
       const defaultBackHandler = onBack || navigationProps.navigation.goBack;
 
       return <HeaderBackButton {...props} onPress={defaultBackHandler} />;

@@ -10,14 +10,6 @@
         "color": "#222222"
       },
       "constraints": {
-        "fontFamily": {
-          "enum": [
-            "Rubik-Regular",
-            "NotoSans",
-            "NotoSerif",
-            "System Font"
-          ]
-        },
         "fontStyle": {
           "enum": [
             "normal",
@@ -114,17 +106,23 @@
       "format": "color",
       "default": "@mainNavBackground"
     },
+    "drawerItemText": {
+      "type": "object",
+      "title": "Drawer items text",
+      "format": "font",
+      "default": "@drawerItemText"
+    },
+    "tabbarItemText": {
+      "type": "object",
+      "title": "TabBar item text",
+      "format": "font",
+      "default": "@tabbarItemText"
+    },
     "mainNavItemIconColor": {
       "type": "string",
       "title": "Item icon color",
       "format": "color",
       "default": "@mainNavItemIconColor"
-    },
-    "mainNavItemTextColor": {
-      "type": "string",
-      "title": "Item text color",
-      "format": "color",
-      "default": "@mainNavItemTextColor"
     },
     "mainNavItemBackground": {
       "type": "string",
@@ -236,17 +234,22 @@
         "title": "Tab Bar and Drawer layouts",
         "properties": [
           {
+            "name": "drawerItemText",
+            "inline": true,
+            "size": 12
+          },
+          {
+            "name": "tabbarItemText",
+            "inline": true,
+            "size": 12
+          },
+          {
             "name": "mainNavBackground",
             "inline": true,
             "size": 6
           },
           {
             "name": "mainNavItemIconColor",
-            "inline": true,
-            "size": 6
-          },
-          {
-            "name": "mainNavItemTextColor",
             "inline": true,
             "size": 6
           },

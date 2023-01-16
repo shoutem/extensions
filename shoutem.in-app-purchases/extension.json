@@ -1,10 +1,10 @@
 {
   "name": "in-app-purchases",
-  "version": "6.0.1",
+  "version": "6.0.2",
   "platform": ">=8",
   "title": "Subscriptions",
   "description": "Add Apple/Google Play subscriptions to your app",
-  "releaseNotes": "* Rename extension to Subscriptions as this is what the feature is now called in App & Play Store",
+  "releaseNotes": "* Resolved a few issues with protected screens navigation",
   "nativeChanges": {
     "lastVersion": "6.0.0"
   },

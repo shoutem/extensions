@@ -1,7 +1,3 @@
-const path = require('path');
-const fs = require('fs-extra');
-const xcode = require('xcode');
-const execSync = require('child_process').execSync;
 const {
   ANCHORS,
   getAndroidManifestPath,
@@ -15,7 +11,7 @@ const {
 } = require('@shoutem/build-tools');
 const { fbSdk } = require('./const');
 
-function injectFbSdkAndroid() {
+function injectFbSdkAndroid(trackFbsdkEvents) {
   const mainApplication = getMainApplicationPath({ cwd: projectPath });
   inject(
     mainApplication,
@@ -29,6 +25,7 @@ function injectFbSdkAndroid() {
   );
 
   const androidManifestPath = getAndroidManifestPath({ cwd: projectPath });
+  const shouldAutoLogAppEvents = trackFbsdkEvents ? 'true' : 'false';
   inject(
     androidManifestPath,
     ANCHORS.ANDROID.MANIFEST.APPLICATION,
@@ -38,6 +35,11 @@ function injectFbSdkAndroid() {
     androidManifestPath,
     ANCHORS.ANDROID.MANIFEST.APPLICATION,
     fbSdk.android.manifest.applicationMetaData,
+  );
+  inject(
+    androidManifestPath,
+    ANCHORS.ANDROID.MANIFEST.APPLICATION,
+    `<meta-data android:name='com.facebook.sdk.AutoLogAppEventsEnabled' android:value='${shouldAutoLogAppEvents}'/>`,
   );
   inject(
     androidManifestPath,
@@ -62,6 +64,7 @@ function injectFbSdkAndroid() {
 
 function injectFbSdkIos() {
   if (process.platform !== 'darwin') {
+    // eslint-disable-next-line no-console
     console.log(
       'iOS linking for FBSDK is available only on OSX - [Skipping...]',
     );
@@ -93,8 +96,8 @@ function injectFbSdkIos() {
   const podFileTemplatePath = getPodfileTemplatePath({ cwd: projectPath });
   inject(
     podFileTemplatePath,
-    ANCHORS.IOS.PODFILE.EXTENSION_DEPENDENCIES,
-    fbSdk.ios.podfile.pods,
+    ANCHORS.IOS.PODFILE.EXTENSION_POSTINSTALL_TARGETS,
+    fbSdk.ios.podfile.postInstall,
   );
 }
 
@@ -102,8 +105,10 @@ function injectFbSdkIos() {
  * Injects required modifications for react-native-fbsdk-next as described
  * here: https://developers.facebook.com/docs/android/getting-started/
  */
-function injectFbSdk() {
-  injectFbSdkAndroid();
+function injectFbSdk(extensionSettings) {
+  const trackFbsdkEvents = extensionSettings?.trackFbsdkEvents;
+
+  injectFbSdkAndroid(trackFbsdkEvents);
   injectFbSdkIos();
 }
 

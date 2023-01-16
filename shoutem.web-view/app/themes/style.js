@@ -50,5 +50,9 @@ export default () => ({
     container: {
       flex: 1,
     },
+    pdfStyle: {
+      flex: 1,
+      width: resolveVariable('sizes.window.width'),
+    },
   },
 });

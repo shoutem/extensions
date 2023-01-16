@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import countryData from 'world-countries';
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
@@ -20,33 +19,13 @@ import { goBack, navigateTo } from 'shoutem.navigation';
 import { CartFooter } from '../../components/cart';
 import { customer as customerShape } from '../../components/shapes';
 import { ext } from '../../const';
+import { selectors } from '../../redux';
 import { updateCustomerInformation } from '../../redux/actionCreators';
 import { formatAutocompleteData } from '../../services';
+import { countries } from '../../services/countries';
 import { getFieldLabel } from '../../services/getFormFieldLabel';
 
 const KEYBOARD_OFFSET = Keyboard.calculateKeyboardOffset();
-
-const loadCountries = () =>
-  _.sortBy(
-    _.map(countryData, ({ name: { common: name }, cca2 }) => ({ name, cca2 })),
-    'name',
-  );
-
-const emptyOption = { name: 'Select', cca2: '' };
-const countries = [emptyOption, ...loadCountries()];
-
-// Move element in array from one index to another
-const arrayMove = function(arr, from, to) {
-  return arr.splice(to, 0, arr.splice(from, 1)[0]);
-};
-
-// Reorder Countries in checkout
-['US', 'CA'].map((country, i) => {
-  const countryIndex = countries.findIndex(c => c.cca2 === country);
-
-  // Move country after placeholder option
-  arrayMove(countries, countryIndex, 1 + i);
-});
 
 /**
  * Lets the user enter his email and address when performing a checkout with selected
@@ -92,7 +71,9 @@ class CheckoutScreen extends PureComponent {
       },
     ];
 
-    this.state = { ...props.customer };
+    this.state = {
+      ...props.customer,
+    };
   }
 
   componentDidMount() {
@@ -112,12 +93,10 @@ class CheckoutScreen extends PureComponent {
     const values = _.map(this.fields, ({ name }) => _.get(this.state, name));
 
     if (_.some(values, _.isEmpty) || !countryCode) {
-      Alert.alert(
+      return Alert.alert(
         I18n.t(ext('checkoutFormErrorTitle')),
         I18n.t(ext('checkoutFormErrorMessage')),
       );
-
-      return;
     }
 
     const customerInformation = { ...this.state };
@@ -131,7 +110,7 @@ class CheckoutScreen extends PureComponent {
       });
     }
 
-    updateCustomerInformation(customerInformation, cartItems);
+    return updateCustomerInformation(customerInformation, cartItems);
   }
 
   handleAddressFieldPress() {
@@ -174,7 +153,9 @@ class CheckoutScreen extends PureComponent {
 
     return (
       <FormGroup key={name}>
-        <Caption>{label.toUpperCase()}</Caption>
+        <Caption styleName="sm-gutter-horizontal">
+          {label.toUpperCase()}
+        </Caption>
         <TextInput
           placeholder={label}
           autoCapitalize={autoCapitalize || 'words'}
@@ -197,7 +178,7 @@ class CheckoutScreen extends PureComponent {
     const selectedCountry = _.find(countries, { cca2: countryCode });
 
     return (
-      <FormGroup>
+      <FormGroup styleName="sm-gutter-horizontal">
         <Caption>{I18n.t(ext('countrySelectionTitle'))}</Caption>
         <DropDownMenu
           onOptionSelected={this.onCountrySelected}
@@ -235,7 +216,7 @@ class CheckoutScreen extends PureComponent {
 }
 
 CheckoutScreen.propTypes = {
-  cart: PropTypes.object.isRequired,
+  cart: PropTypes.array.isRequired,
   customer: customerShape.isRequired,
   navigation: PropTypes.object.isRequired,
   updateCustomerInformation: PropTypes.func.isRequired,
@@ -247,7 +228,8 @@ CheckoutScreen.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { customer, cart } = state[ext()];
+  const cart = selectors.getCartState(state);
+  const customer = selectors.getCheckoutCustomerInfo(state);
 
   return {
     customer,
@@ -255,6 +237,11 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { updateCustomerInformation })(
-  connectStyle(ext('CheckoutScreen'))(CheckoutScreen),
-);
+const mapDispatchToProps = {
+  updateCustomerInformation,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(connectStyle(ext('CheckoutScreen'))(CheckoutScreen));

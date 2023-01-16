@@ -2,10 +2,10 @@ import { AppState } from 'react-native';
 import * as _ from 'lodash';
 import { applyToAll } from '@shoutem/redux-composers';
 import rio, { checkExpiration } from '@shoutem/redux-io';
-import { Html, Image } from '@shoutem/ui';
+import { Html, Image, ImageBackground } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { NavigationStacks } from 'shoutem.navigation';
-import { after, before, priorities, setPriority } from 'shoutem-core';
+import { priorities, setPriority } from 'shoutem-core';
 import SubscriptionMissingScreen from './screens/SubscriptionMissingScreen';
 import { resizeImageSource } from './services/resizeImageSource';
 import { extractAppActions } from './shared/extractAppActions';
@@ -23,6 +23,7 @@ import { SeAttachment } from './html';
 import {
   fetchAppSubscriptionStatus,
   fetchConfiguration,
+  getExtensionSettings,
   loadLocalConfiguration,
   setQueueTargetComplete,
 } from './redux';
@@ -51,8 +52,13 @@ export const getAppId = () => {
   return _.get(application, 'props.appId') || buildConfig.appId;
 };
 
-export const initializeApp = () => {
+export const initializeApp = imageResizingActive => {
+  if (!imageResizingActive) {
+    return;
+  }
+
   Image.setPropsTransformer(resizeImageSource);
+  ImageBackground.setPropsTransformer(resizeImageSource);
 };
 
 function loadConfiguration(app) {
@@ -140,7 +146,14 @@ export function appWillMount(app) {
   // want to check expiration of local content (AppState is active).gst
   dispatchCheckExpiration(app);
 
-  return loadConfiguration(app);
+  return loadConfiguration(app).then(() => {
+    const store = app.getStore();
+    const state = store.getState();
+
+    return initializeApp(
+      _.get(getExtensionSettings(state, ext()), 'imageResizingActive'),
+    );
+  });
 }
 
 setPriority(appWillMount, priorities.INIT);

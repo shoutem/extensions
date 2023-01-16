@@ -1,0 +1,22 @@
+body.extension-sandbox-container {
+  .modal-backdrop {
+    background-color: #ffffff;
+
+    .in {
+      opacity: 0.8;
+    }
+  }
+
+  .fonts-page-modal-small.modal-dialog,
+  .modal.fonts-page-modal-small .modal-dialog {
+    min-width: 518px;
+  }
+
+  .fonts-page-modal-confirm {
+    display: inline,
+  }
+
+  .modal:not(.fullscreen) .modal-dialog:not(.modal-lg) {
+    width: 100%;
+  }
+}

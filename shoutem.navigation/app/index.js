@@ -1,14 +1,13 @@
-import 'react-native-gesture-handler';
 import { LogBox } from 'react-native';
+import 'react-native-gesture-handler';
+import './navigation';
+import CardList from './screens/CardList';
 import IconGrid from './screens/IconGrid';
 import List from './screens/List';
-import CardList from './screens/CardList';
 import None from './screens/None';
 import NoScreens from './screens/NoScreens';
 import TileGrid from './screens/TileGrid';
 import enTranslations from './translations/en.json';
-
-import './navigation';
 
 export const screens = {
   None,
@@ -29,46 +28,41 @@ export const shoutem = {
   },
 };
 
-export * from './components/ui';
-
 export { render } from './app';
-export {
-  reducer,
-  getNavInitialized,
-  SET_NAVIGATION_INITIALIZED,
-  isTabBarNavigation,
-} from './redux';
-
-export {
-  getRouteParams,
-  HeaderStyles,
-  ModalScreens,
-  openInModal,
-  closeModal,
-  navigateTo,
-  goBack,
-  replace,
-  push,
-  getCurrentRoute,
-  navigate,
-  NavigationStacks,
-  Decorators,
-  composeNavigationStyles,
-  BackHandlerAndroid,
-} from './services';
-
+export * from './components/ui';
+export { MAIN_NAVIGATION_SCREEN_TYPES, MODAL, navigationRef } from './const';
 export {
   FocusTriggerBase,
-  withIsFocused,
-  withChildrenRequired,
   withChildrenRequired as shortcutChildrenRequired,
   withBackHandling,
+  withChildrenRequired,
+  withIsFocused,
   withSubNavigationScreen,
 } from './hoc';
+export {
+  getNavInitialized,
+  isTabBarNavigation,
+  reducer,
+  SET_NAVIGATION_INITIALIZED,
+} from './redux';
+export {
+  BackHandlerAndroid,
+  closeModal,
+  composeNavigationStyles,
+  Decorators,
+  getCurrentRoute,
+  getRouteParams,
+  goBack,
+  HeaderStyles,
+  ModalScreens,
+  navigateTo,
+  NavigationStacks,
+  openInModal,
+  push,
+  replace,
+} from './services';
 
-export { MODAL, navigationRef, MAIN_NAVIGATION_SCREEN_TYPES } from './const';
-
-export { List, IconGrid };
+export { IconGrid, List };
 
 export { NavigationBaseItem } from './components/NavigationBaseItem';
 

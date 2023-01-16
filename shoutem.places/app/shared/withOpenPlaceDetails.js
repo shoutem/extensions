@@ -26,6 +26,10 @@ export default function withOpenPlaceDetails(RowComponent, prop = 'onPress') {
       navigateTo(ext('PlaceDetails'), {
         title: place.name,
         place,
+        analyticsPayload: {
+          itemId: place.id,
+          itemName: place.name,
+        },
       });
     }
 
@@ -40,8 +44,7 @@ export default function withOpenPlaceDetails(RowComponent, prop = 'onPress') {
   }
 
   EnhancedComponent.propTypes = {
-    place: PropTypes.object,
-    navigateTo: PropTypes.func,
+    place: PropTypes.object.isRequired,
   };
 
   return EnhancedComponent;

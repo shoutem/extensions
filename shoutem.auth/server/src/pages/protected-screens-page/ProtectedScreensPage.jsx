@@ -21,7 +21,7 @@ export class SettingsPage extends Component {
     autoBindReact(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.checkData(this.props);
   }
 

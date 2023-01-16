@@ -53,16 +53,20 @@ export function withLoginRequired(WrappedComponent) {
       if (screenProtected && !isAuthenticated) {
         const previousRoute = _.get(route, 'params.previousRoute');
 
+        const onCancel = () =>
+          NavigationStacks.closeStack(ext(), () =>
+            navigateTo({
+              key: previousRoute.key,
+              ...previousRoute.params,
+            }),
+          );
+
         loginInitialized({
           openAuthFlow: () =>
             NavigationStacks.openStack(ext(), {
               onLoginSuccess: () => NavigationStacks.closeStack(ext()),
-              onCancel: () =>
-                NavigationStacks.closeStack(ext(), () =>
-                  navigateTo(previousRoute.name, {
-                    ...previousRoute.params,
-                  }),
-                ),
+              onCancel,
+              onBack: onCancel,
               canGoBack: !!previousRoute,
             }),
           loginSuccessCallback: undefined,

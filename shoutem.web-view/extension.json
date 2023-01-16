@@ -1,10 +1,10 @@
 {
   "name": "web-view",
-  "version": "5.3.0",
-  "platform": ">=8",
+  "version": "5.3.2",
+  "platform": ">=12.1.0",
   "type": "system",
   "title": "Web view",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "NEW* No user facing changes\n* Remove direct dependency to Users extension",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "nativeChanges": {

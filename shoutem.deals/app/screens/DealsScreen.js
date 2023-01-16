@@ -1,8 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Text, Title, View } from '@shoutem/ui';
 import { CmsListScreen } from 'shoutem.cms';
@@ -13,10 +13,10 @@ import DealGridView from '../components/DealGridView';
 import DealsMap from '../components/DealsMap';
 import FeaturedDealView from '../components/FeaturedDealView';
 import MyDealsBadge from '../components/MyDealsBadge';
-import { ext, DEALS_SCHEMA, DEALS_TAG, TRANSLATIONS } from '../const';
+import { DEALS_SCHEMA, DEALS_TAG, ext, TRANSLATIONS } from '../const';
 import {
-  fetchDealTransactions,
   fetchDealListTransactions,
+  fetchDealTransactions,
   getCatalogId,
 } from '../redux';
 
@@ -167,6 +167,10 @@ export class DealsScreen extends CmsListScreen {
       hasFavoriteButton: this.props.hasFavorites,
       catalogId,
       shortcut,
+      analyticsPayload: {
+        itemId: deal.id,
+        itemName: deal.title,
+      },
     });
   }
 

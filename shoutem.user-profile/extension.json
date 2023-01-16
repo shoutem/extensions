@@ -1,11 +1,11 @@
 {
   "name": "user-profile",
   "title": "User Profile",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "platform": ">=8",
   "type": "system",
   "description": "Add extended user profile",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "Change translation string when editing user profile",
   "icon": "server/assets/add-user-profile-image.png",
   "nativeChanges": {
     "lastVersion": "4.2.1"

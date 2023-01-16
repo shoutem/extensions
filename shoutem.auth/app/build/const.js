@@ -1,4 +1,7 @@
-const reactNativeFbSdkDependencies = `pod 'react-native-fbsdk-next', :path => '../node_modules/react-native-fbsdk-next'`;
+const reactNativeFbSdkPostInstall = `
+  installer.pods_project.build_configurations.each do |config|
+    config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+  end`;
 
 const appDelegateImport = `
 #import <React/RCTLinkingManager.h>
@@ -25,7 +28,6 @@ const appDelegateOpenUrl = `
 const androidApplicationMetaData = `
     <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
     <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
-    <meta-data android:name='com.facebook.sdk.AutoLogAppEventsEnabled' android:value='false'/>
 `;
 
 const facebookActivity = `
@@ -45,7 +47,7 @@ const fbSdk = {
       body: appDelegateOpenUrl,
     },
     podfile: {
-      pods: reactNativeFbSdkDependencies,
+      postInstall: reactNativeFbSdkPostInstall,
     },
   },
   android: {
@@ -82,7 +84,13 @@ const appleSignIn = {
   },
 };
 
+const resolutionStrategy = `
+          // Temporary fix, this should be removed once we upgrade to RN 0.71.0 or higher
+          // https://github.com/facebook/react-native/issues/35210#issuecomment-1304536693
+          force "com.facebook.react:react-native:" + new File(['node', '--print',"JSON.parse(require('fs').readFileSync(require.resolve('react-native/package.json'), 'utf-8')).version"].execute(null, rootDir).text.trim())`;
+
 module.exports = {
   fbSdk,
   appleSignIn,
+  resolutionStrategy,
 };

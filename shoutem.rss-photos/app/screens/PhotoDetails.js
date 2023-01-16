@@ -1,26 +1,37 @@
-import React, { PureComponent } from 'react';
-import autoBind from 'auto-bind';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { Alert, Platform, StatusBar } from 'react-native';
+import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Platform, StatusBar, Alert } from 'react-native';
-import { connect } from 'react-redux';
 import { isBusy, isValid } from '@shoutem/redux-io';
 import {
-  Screen,
   ImageGallery,
   ImageGalleryOverlay,
-  View,
-  Spinner,
+  Screen,
   ShareButton,
+  Spinner,
+  View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { closeModal, HeaderStyles, getRouteParams } from 'shoutem.navigation';
+import { closeModal, HeaderStyles } from 'shoutem.navigation';
 import { ext as rssExt } from 'shoutem.rss';
 import { getPhotosFeed } from '../redux';
 import { remapAndFilterPhotos } from '../services';
 
 function calculateStartingIndex(photo, photos) {
   return _.findIndex(photos, ['id', photo.id]) || 0;
+}
+
+function handleItemNotFound() {
+  return Alert.alert(
+    I18n.t(rssExt('itemNotFoundTitle')),
+    I18n.t(rssExt('itemNotFoundMessage')),
+    [
+      {
+        onPress: closeModal,
+      },
+    ],
+  );
 }
 
 function renderImageOverlay(imageData) {
@@ -33,101 +44,35 @@ function renderImageOverlay(imageData) {
   );
 }
 
-class PhotoDetails extends PureComponent {
-  static propTypes = {
-    navigation: PropTypes.object.isRequired,
-  };
+export default function PhotoDetails({
+  route: {
+    params: { id, feedUrl },
+  },
+  navigation,
+}) {
+  const data = useSelector(state => getPhotosFeed(state, feedUrl));
 
-  constructor(props) {
-    super(props);
+  const photos = useMemo(() => remapAndFilterPhotos(data), [data]);
+  const photo = useMemo(() => _.find(photos, { id }), [photos, id]);
 
-    autoBind(this);
+  const [mode, setMode] = useState(ImageGallery.IMAGE_PREVIEW_MODE);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(
+    calculateStartingIndex(photo, photos),
+  );
 
-    this.state = {
-      photos: [],
-      mode: null,
-      selectedPhotoIndex: null,
-    };
-  }
-
-  componentDidMount() {
-    const { photos, photo, photoNotFound, navigation } = this.props;
-
-    navigation.setOptions(this.getNavbarProps());
-
-    if (photoNotFound) {
-      this.handleItemNotFound();
-    }
-
-    if (photo) {
-      this.setState({
-        photos,
-        mode: ImageGallery.IMAGE_GALLERY_MODE,
-        selectedPhotoIndex: calculateStartingIndex(photo, photos),
-      });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const {
-      selectedPhotoIndex: prevSelectedPhotoIndex,
-      photos: prevPhotosState,
-    } = prevState;
-    const { selectedPhotoIndex, photos: photosState } = this.state;
-
-    const { data, photos, photo, photoNotFound, navigation } = this.props;
-    const { data: prevData, photoNotFound: prevPhotoNotFound } = prevProps;
-
-    if (!prevPhotoNotFound && photoNotFound) {
-      this.handleItemNotFound();
-    }
-
-    if (photo && prevData !== data) {
-      this.setState(
-        {
-          photos,
-          mode: ImageGallery.IMAGE_GALLERY_MODE,
-          selectedPhotoIndex: calculateStartingIndex(photo, photos),
-        },
-        () => navigation.setOptions(this.getNavbarProps()),
-      );
-    }
-
-    if (
-      prevSelectedPhotoIndex !== selectedPhotoIndex ||
-      prevPhotosState !== photosState
-    ) {
-      navigation.setOptions(this.getNavbarProps());
-    }
-  }
-
-  handleItemNotFound() {
-    const okButton = {
-      onPress: closeModal,
-    };
-
-    return Alert.alert(
-      I18n.t(rssExt('itemNotFoundTitle')),
-      I18n.t(rssExt('itemNotFoundMessage')),
-      [okButton],
-    );
-  }
-
-  getNavbarProps() {
-    const { selectedPhotoIndex, mode, photos } = this.state;
-
+  useLayoutEffect(() => {
     if (mode === ImageGallery.IMAGE_PREVIEW_MODE) {
-      return {
+      navigation.setOptions({
         ...HeaderStyles.clear,
         title: '',
-      };
+      });
     }
 
     const selectedPhoto = photos[selectedPhotoIndex];
     const title = _.get(selectedPhoto, 'title');
     const link = _.get(selectedPhoto, 'source.uri');
 
-    return {
+    navigation.setOptions({
       headerRight: props => (
         <ShareButton
           styleName="clear"
@@ -138,67 +83,57 @@ class PhotoDetails extends PureComponent {
       ),
       ...HeaderStyles.clear,
       title: `${selectedPhotoIndex + 1} / ${photos.length}`,
-    };
-  }
+    });
+  }, [mode, navigation, photos, selectedPhotoIndex]);
 
-  handleIndexSelected(index) {
-    this.setState({ selectedPhotoIndex: index });
-  }
+  useEffect(() => {
+    if (photoNotFound) {
+      handleItemNotFound();
+    }
 
-  handleImageGalleryModeChange(newMode) {
-    const { mode } = this.state;
+    if (photo) {
+      setSelectedPhotoIndex(calculateStartingIndex(photo, photos));
+    }
+  }, [photo, photos, photoNotFound]);
 
+  const photoNotFound = useMemo(() => isValid(data) && !photo, [data, photo]);
+  const loading = useMemo(() => isBusy(data) || photoNotFound, [
+    data,
+    photoNotFound,
+  ]);
+
+  function handleImageGalleryModeChange(newMode) {
     if (Platform.OS === 'ios') {
       const isHidden = newMode === ImageGallery.IMAGE_PREVIEW_MODE;
       StatusBar.setHidden(isHidden, 'fade');
     }
 
     if (newMode !== mode) {
-      this.setState({ mode: newMode });
+      setMode(newMode);
     }
   }
 
-  render() {
-    const { data, photoNotFound } = this.props;
-    const { selectedPhotoIndex, photos } = this.state;
-
-    const loading = isBusy(data) || photoNotFound;
-
-    return (
-      <Screen styleName="paper">
-        {loading && (
-          <View styleName="flexible vertical h-center v-center">
-            <Spinner />
-          </View>
-        )}
-        {!loading && (
-          <ImageGallery
-            data={photos}
-            onIndexSelected={this.handleIndexSelected}
-            onModeChanged={this.handleImageGalleryModeChange}
-            renderImageOverlay={renderImageOverlay}
-            selectedIndex={selectedPhotoIndex}
-          />
-        )}
-      </Screen>
-    );
-  }
+  return (
+    <Screen styleName="paper">
+      {loading && (
+        <View styleName="flexible vertical h-center v-center">
+          <Spinner />
+        </View>
+      )}
+      {!loading && (
+        <ImageGallery
+          data={photos}
+          onIndexSelected={setSelectedPhotoIndex}
+          onModeChanged={handleImageGalleryModeChange}
+          renderImageOverlay={renderImageOverlay}
+          selectedIndex={selectedPhotoIndex}
+        />
+      )}
+    </Screen>
+  );
 }
 
-export const mapStateToProps = (state, ownProps) => {
-  const { id, feedUrl } = getRouteParams(ownProps);
-
-  const data = getPhotosFeed(state, feedUrl);
-  const photos = remapAndFilterPhotos(data);
-  const photo = _.find(photos, { id });
-  const photoNotFound = isValid(data) && !photo;
-
-  return {
-    data,
-    photos,
-    photo,
-    photoNotFound,
-  };
+PhotoDetails.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired,
 };
-
-export default connect(mapStateToProps, null)(PhotoDetails);

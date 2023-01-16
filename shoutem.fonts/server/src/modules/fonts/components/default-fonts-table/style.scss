@@ -1,0 +1,46 @@
+.default-fonts-table {
+  .editable-table__table {
+    margin-top: 0px;
+  }
+
+  .form-control-static {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: auto;
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+    .switch {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 25px;
+    }
+  }
+
+  .table > thead > tr {
+    > :last-child {
+      width: 55px;
+    }
+  }
+
+  label {
+    height: 24px;
+    padding-top: 8px;
+  }
+
+  .fonts-table__title {
+    display: flex;
+    align-items: flex-end;
+
+    h3 {
+      float: left;
+    }
+
+    .default-fonts__icon-popover {
+      padding-left: 5px;
+      padding-bottom: 4px;
+    }
+  }
+}

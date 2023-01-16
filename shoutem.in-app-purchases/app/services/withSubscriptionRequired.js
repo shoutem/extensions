@@ -44,13 +44,19 @@ export function withSubscriptionRequired(WrappedComponent) {
         hasProperConfiguration
       ) {
         const previousRoute = _.get(route, 'params.previousRoute');
+        const onCancel = () => {
+          NavigationStacks.closeStack(ext(), () =>
+            navigateTo({
+              key: previousRoute.key,
+              ...previousRoute.params,
+            }),
+          );
+        };
 
         NavigationStacks.openStack(ext(), {
           canGoBack: !!previousRoute,
-          onCancel: () =>
-            navigateTo(previousRoute.name, {
-              ...previousRoute.params,
-            }),
+          onCancel,
+          onBack: onCancel,
           onSubscriptionObtained: () => NavigationStacks.closeStack(ext()),
         });
       }

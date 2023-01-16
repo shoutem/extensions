@@ -21,7 +21,7 @@ export class GdprSettingsPage extends Component {
     autoBindReact(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.checkData(this.props);
   }
 

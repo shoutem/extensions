@@ -10,6 +10,7 @@ import { I18n } from 'shoutem.i18n';
 import {
   closeModal,
   getRouteParams,
+  goBack,
   HeaderCloseButton,
   HeaderTextButton,
 } from 'shoutem.navigation';
@@ -74,6 +75,21 @@ class WebCheckoutScreen extends PureComponent {
 
     checkoutCompleted();
     closeModal();
+    goBack();
+  }
+
+  renderCloseButton(props) {
+    return <HeaderCloseButton onPress={closeModal} {...props} />;
+  }
+
+  renderDoneButton(props) {
+    return (
+      <HeaderTextButton
+        title={I18n.t(ext('doneButton'))}
+        onPress={this.completeTransaction}
+        {...props}
+      />
+    );
   }
 
   getNavBarProps() {
@@ -82,32 +98,31 @@ class WebCheckoutScreen extends PureComponent {
     return {
       headerLeft: transactionCompleted
         ? () => null
-        : props => (
-            <HeaderCloseButton onPress={() => closeModal()} {...props} />
-          ),
+        : props => this.renderCloseButton(props),
       headerRight: !transactionCompleted
         ? () => null
-        : props => (
-          <HeaderTextButton
-              title={I18n.t(ext('doneButton'))}
-              onPress={this.completeTransaction}
-              {...props}
-            />
-          ),
+        : props => this.renderDoneButton(props),
 
       title: I18n.t(ext('checkoutNavBarTitle')),
     };
   }
 
   getWebViewProps() {
-    const { checkoutUrl } = getRouteParams(this.props);
+    const { checkoutUrl, accessToken } = getRouteParams(this.props);
     const { userAgent } = this.state;
 
     return {
       userAgent,
       renderLoading: this.renderLoadingSpinner,
       onLoadEnd: () => this.stopLoading(),
-      source: { uri: checkoutUrl },
+      source: {
+        uri: checkoutUrl,
+        ...(!!accessToken && {
+          headers: {
+            'X-Shopify-Customer-Access-Token': accessToken,
+          },
+        }),
+      },
       startInLoadingState: true,
     };
   }
@@ -126,12 +141,12 @@ class WebCheckoutScreen extends PureComponent {
   }
 
   render() {
-    const { checkoutUrl } = getRouteParams(this.props);
-
     return (
       <Screen>
         <WebView
           {...this.getWebViewProps()}
+          incognito
+          enableApplePay
           onNavigationStateChange={this.handleNavigationStateChange}
         />
       </Screen>

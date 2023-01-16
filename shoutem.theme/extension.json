@@ -1,11 +1,11 @@
 {
   "name": "theme",
-  "version": "5.1.0",
-  "platform": ">=9",
+  "version": "6.1.2",
+  "platform": ">=12.2.0",
   "type": "system",
   "title": "Theme",
   "description": "Resolve and store theme related configuration",
-  "releaseNotes": "NEW* Added new @shoutem/ui version (5.5.0)\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "* Updated version of UI library to 6.1.2",
   "icon": "server/assets/add-theme-image.png",
   "categories": [],
   "i18n": {

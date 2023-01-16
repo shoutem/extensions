@@ -1,8 +1,8 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "7.2.0",
-  "platform": ">=9",
+  "version": "7.3.0",
+  "platform": ">=12.0.0",
   "nativeChanges": {
     "lastVersion": "7.1.1",
     "settingsKeys": [
@@ -10,7 +10,7 @@
     ]
   },
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "* No user facing changes\n* Modified preBuild phase to resolve dirs properly",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": [
     "users"

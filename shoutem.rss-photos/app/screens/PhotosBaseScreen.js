@@ -41,6 +41,10 @@ export class PhotosBaseScreen extends RssListScreen {
     openInModal(ext('PhotoDetails'), {
       id,
       feedUrl,
+      analyticsPayload: {
+        itemId: photo.id,
+        itemName: photo.title,
+      },
     });
   }
 }

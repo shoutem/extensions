@@ -1,0 +1,37 @@
+{
+  "shoutem": {
+    "fonts": {
+      "fonts.delete": "Delete",
+      "fonts.abort": "Cancel",
+      "fonts.delete-modal-title": "Delete font",
+      "fonts.delete-warning": "Are you sure you want to delete ",
+      "fonts.info-description": "Please note that your custom fonts are not visible in the preview app.",
+      "add-font": "Add font",
+      "custom-fonts": "Custom fonts",
+      "default-fonts": "Default fonts",
+      "name": "Name",
+      "include": "Include",
+      "default-fonts-disclaimer": "In case the font you remove here is still selected in the theme customisation, the app will default to the system font. Removing unused fonts here will decrease your app size and load time.",
+      "font-modal.button-text-add": "Add",
+      "font-modal.button-text-cancel": "Cancel",
+      "font-modal.button-text-save": "Save",
+      "font-modal.button-text-next": "Next",
+      "font-modal.modal-title-add-font": "Add font",
+      "font-modal.modal-title-edit-font": "Edit font",
+      "font-modal.font-form-name": "Name",
+      "font-modal.font-form-file": "Font file (.ttf, .otf)",
+      "font-modal.bold-font-form-file": "Bold font file (.ttf, .otf)",
+      "font-modal.italic-font-form-file": "Italic font file (.ttf, .otf)",
+      "font-modal.bold-italic-font-form-file": "Bold-Italic font file (.ttf, .otf)",
+      "font-modal.name-taken-error": "Name already exist",
+      "font-modal.name-required-error": "Name is required",
+      "font-modal.file-url-required-error": "Font file is required",
+      "react-web-ui.file-upload-error": "File upload failed.",
+      "react-web-ui.file-max-size-error": "Max allowed file size is {{maxFileSize}}MB!",
+      "react-web-ui.file-rejected-error": "File rejected",
+      "react-web-ui.file-delete-error": "Delete failed.",
+      "react-web-ui.no-file-error-message": "No file",
+      "react-web-ui.file-upload-message": "Choose a file or drag it here."
+    }
+  }
+}

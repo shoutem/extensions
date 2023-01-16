@@ -1,65 +1,85 @@
-import PropTypes from 'prop-types';
+/* eslint-disable react/jsx-wrap-multilines */
 import React, { Component } from 'react';
-import _ from 'lodash';
-import i18next from 'i18next';
-import autoBindReact from 'auto-bind/react';
 import { ControlLabel, FormGroup } from 'react-bootstrap';
-import { Switch, FontIcon, FontIconPopover } from '@shoutem/react-web-ui';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { FontIcon, FontIconPopover, Switch } from '@shoutem/react-web-ui';
+import MessageWithLink from '../../../../components/message-with-link';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-function canManuallyApproveMembers(nextAppSettings, appSettings) {
-  const currentApproveMembers = _.get(
-    appSettings,
+const SUPPORT_ARTICLE_LINK =
+  'https://shoutem.com/support/getting-started-facebook-integration/';
+
+function canManuallyApproveMembers(prevAppSettings, appSettings) {
+  const prevApproveMembers = _.get(
+    prevAppSettings,
     'manuallyApproveMembers',
     false,
   );
-  return _.get(
-    nextAppSettings,
-    'manuallyApproveMembers',
-    currentApproveMembers,
-  );
+
+  return _.get(appSettings, 'manuallyApproveMembers', prevApproveMembers);
 }
 
-function isSignupEnabled(nextSettings, settings) {
-  const currentSignupEnabled = _.get(settings, 'signupEnabled', false);
-  return _.get(nextSettings, 'signupEnabled', currentSignupEnabled);
+function isSignupEnabled(prevSettings, settings) {
+  const prevSignupEnabled = _.get(prevSettings, 'signupEnabled', true);
+
+  return _.get(settings, 'signupEnabled', prevSignupEnabled);
+}
+
+function isTrackFbsdkEventsEnabled(prevSettings, settings) {
+  const prevTrackFbsdkEvents = _.get(prevSettings, 'trackFbsdkEvents', false);
+
+  return _.get(settings, 'trackFbsdkEvents', prevTrackFbsdkEvents);
 }
 
 export default class GeneralSettings extends Component {
   constructor(props) {
     super(props);
+
     autoBindReact(this);
+
+    this.state = {
+      manuallyApproveMembers: false,
+      signupEnabled: true,
+      trackFbsdkEvents: false,
+    };
   }
 
-  componentWillMount() {
-    this.checkData(this.props);
+  componentDidMount() {
+    this.checkData();
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.checkData(nextProps, this.props);
+  componentDidUpdate(prevProps) {
+    this.checkData(prevProps);
   }
 
-  checkData(nextProps, props = {}) {
-    const { appSettings, extensionSettings } = props;
+  checkData(prevProps = {}) {
+    const { appSettings, extensionSettings } = this.props;
     const {
-      appSettings: nextAppSettings,
-      extensionSettings: nextExtensionSettings,
-    } = nextProps;
+      appSettings: prevAppSettings,
+      extensionSettings: prevExtensionSettings,
+    } = prevProps;
 
-    if (nextAppSettings !== appSettings) {
+    if (appSettings !== prevAppSettings) {
       this.setState({
         manuallyApproveMembers: canManuallyApproveMembers(
-          nextAppSettings,
+          prevAppSettings,
           appSettings,
         ),
       });
     }
 
-    if (nextExtensionSettings !== extensionSettings) {
+    if (extensionSettings !== prevExtensionSettings) {
       this.setState({
         signupEnabled: isSignupEnabled(
-          nextExtensionSettings,
+          prevExtensionSettings,
+          extensionSettings,
+        ),
+        trackFbsdkEvents: isTrackFbsdkEventsEnabled(
+          prevExtensionSettings,
           extensionSettings,
         ),
       });
@@ -80,14 +100,14 @@ export default class GeneralSettings extends Component {
   }
 
   handleAllowMembersChange() {
-    const { onExtensionSettingsUpdate } = this.props;
+    const { onAppSettingsUpdate, onExtensionSettingsUpdate } = this.props;
     const { manuallyApproveMembers } = this.state;
 
     const settingsPatch = {
       manuallyApproveMembers: !manuallyApproveMembers,
     };
 
-    this.props.onAppSettingsUpdate({
+    onAppSettingsUpdate({
       manuallyApproveMembers: !manuallyApproveMembers,
     });
     onExtensionSettingsUpdate(settingsPatch).then(() =>
@@ -95,8 +115,28 @@ export default class GeneralSettings extends Component {
     );
   }
 
+  handleTrackFbsdkEventsChange() {
+    const { onAppSettingsUpdate, onExtensionSettingsUpdate } = this.props;
+    const { trackFbsdkEvents } = this.state;
+
+    const settingsPatch = {
+      trackFbsdkEvents: !trackFbsdkEvents,
+    };
+
+    onAppSettingsUpdate({
+      trackFbsdkEvents: !trackFbsdkEvents,
+    });
+    onExtensionSettingsUpdate(settingsPatch).then(() =>
+      this.setState(settingsPatch),
+    );
+  }
+
   render() {
-    const { signupEnabled, manuallyApproveMembers } = this.state;
+    const {
+      signupEnabled,
+      trackFbsdkEvents,
+      manuallyApproveMembers,
+    } = this.state;
 
     return (
       <div className="general-settings">
@@ -130,14 +170,45 @@ export default class GeneralSettings extends Component {
             />
           </FontIconPopover>
         </FormGroup>
+        <FormGroup className="switch-form-group">
+          <ControlLabel>
+            {i18next.t(LOCALIZATION.FORM_ENABLE_FBSDK_EVENT_TRACKING)}
+          </ControlLabel>
+          <Switch
+            checked={trackFbsdkEvents}
+            onChange={this.handleTrackFbsdkEventsChange}
+          />
+          <FontIconPopover
+            delayHide={2000}
+            hideOnMouseLeave={false}
+            message={
+              <MessageWithLink
+                link={SUPPORT_ARTICLE_LINK}
+                linkText={i18next.t(LOCALIZATION.TRACK_FBSDK_EVENTS_LEARN_MORE)}
+                message={i18next.t(LOCALIZATION.TRACK_FBSDK_EVENTS_DESCRIPTION)}
+              />
+            }
+          >
+            <FontIcon
+              className="general-settings__icon-popover"
+              name="info"
+              size="24px"
+            />
+          </FontIconPopover>
+        </FormGroup>
       </div>
     );
   }
 }
 
 GeneralSettings.propTypes = {
+  onAppSettingsUpdate: PropTypes.func.isRequired,
+  onExtensionSettingsUpdate: PropTypes.func.isRequired,
   appSettings: PropTypes.object,
   extensionSettings: PropTypes.object,
-  onAppSettingsUpdate: PropTypes.func,
-  onExtensionSettingsUpdate: PropTypes.func,
+};
+
+GeneralSettings.defaultProps = {
+  appSettings: undefined,
+  extensionSettings: undefined,
 };

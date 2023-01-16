@@ -52,6 +52,7 @@ function SelectAddressScreen({
 
   const textInputProps = useMemo(
     () => ({
+      autoFocus: true,
       clearButtonMode: 'never',
       ...style.placeholderText,
     }),

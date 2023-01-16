@@ -1,9 +1,15 @@
+import { Buffer } from 'buffer';
+
 const keyStr =
   'ABCDEFGHIJKLMNOP' +
   'QRSTUVWXYZabcdef' +
   'ghijklmnopqrstuv' +
   'wxyz0123456789+/' +
   '=';
+
+export function decodeFromBase64(stringToDecode) {
+  return Buffer.from(stringToDecode, 'base64').toString('utf-8');
+}
 
 export function encode64(input) {
   input = escape(input);

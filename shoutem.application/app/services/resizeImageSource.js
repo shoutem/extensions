@@ -35,7 +35,7 @@ export const resizeImageSource = imageProps => {
     ...imageProps,
     source: {
       ...imageProps.source,
-      uri: `https://images.weserv.nl/?url=${encodeURIComponent(
+      uri: `https://wsrv.nl/?url=${encodeURIComponent(
         imageUrl,
       )}&w=${imageWidth}&t=fit&h=${imageHeight}`,
     },

@@ -1,7 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { CmsListScreen } from 'shoutem.cms';
 import { getRouteParams, push } from 'shoutem.navigation';
@@ -46,6 +46,10 @@ export class ArticlesScreen extends CmsListScreen {
       nextArticle,
       openArticle: this.openArticle,
       shortcut,
+      analyticsPayload: {
+        itemId: article.id,
+        itemName: article.title,
+      },
     });
   }
 

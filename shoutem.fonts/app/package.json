@@ -1,0 +1,7 @@
+{
+  "name": "shoutem.fonts",
+  "version": "1.0.1",
+  "scripts": {
+    "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
+  }
+}

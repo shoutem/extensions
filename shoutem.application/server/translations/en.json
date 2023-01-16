@@ -1,0 +1,10 @@
+{
+  "shoutem": {
+    "application": {
+      "image-resizing-title": "Image resizing",
+      "image-resizing-tooltip-title": "Image resizing in Shoutem",
+      "image-resizing-description": "Controls the usage of image resizing service. By activating this, all of the images inside of the app will be scaled(resized) to fit the container, therefore reducing the overall image size and resulting in faster image load on the side of the mobile device. Toggle this off if you're using your own custom image resizing service, or if you're having issues with the default image resizing service.",
+      "image-resizing-toggle": "Use image resizing"
+    }
+  }
+}

@@ -29,12 +29,17 @@ export class EpisodesListScreen extends RssListScreen {
   }
 
   openEpisodeWithId(id) {
-    const { feedUrl, enableDownload } = this.props;
+    const { data, feedUrl, enableDownload } = this.props;
+    const episode = _.find(data, { id });
 
     navigateTo(ext('EpisodeDetailsScreen'), {
       id,
       feedUrl,
       enableDownload,
+      analyticsPayload: {
+        itemId: id,
+        itemName: episode.title,
+      },
     });
   }
 

@@ -18,10 +18,12 @@ import {
   getExtension,
   getTheme,
   updateExtensionActiveTheme,
+  fetchAllFonts,
+  getAllFonts,
 } from '@shoutem/redux-api-sdk';
 import { isInitialized } from '@shoutem/redux-io';
 import { loadExtension } from '../../redux';
-import { pageParameters } from '../../services';
+import { pageParameters, prepareSchemaForCustomFonts } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -37,7 +39,11 @@ class ExtensionThemeSettingsPage extends PureComponent {
   }
 
   componentDidMount() {
-    const { activeThemeId, theme, extension, fetchTheme } = this.props;
+    const { activeThemeId, theme, extension, fonts, fetchAllFonts, fetchTheme } = this.props;
+
+    if (!isInitialized(fonts)) {
+      fetchAllFonts().catch(() => console.warn('Unable to fetch fonts. Feature is probably not enabled'));
+    }
 
     if (!isInitialized(theme)) {
       fetchTheme(activeThemeId);
@@ -159,13 +165,14 @@ class ExtensionThemeSettingsPage extends PureComponent {
   }
 
   renderForm() {
-    const { theme, extensionName, ownExtensionName } = this.props;
+    const { theme, fonts, extensionName, ownExtensionName } = this.props;
     const { schema, resourceForm: ResourceForm } = this.state;
 
     if (!ResourceForm) {
       return null;
     }
 
+    const customSchema = prepareSchemaForCustomFonts(schema, fonts);
     const values = _.get(theme, `settings.variables.${extensionName}`);
     const initialValues = mapModelToView(schema, values);
     const languageData = i18next.getDataByLanguage(i18next.language);
@@ -178,7 +185,7 @@ class ExtensionThemeSettingsPage extends PureComponent {
     return (
       <ResourceForm
         className="extension-theme-form"
-        schema={schema}
+        schema={customSchema}
         ownInitialValues={initialValues}
         initialValues={initialValues}
         onSubmit={this.handleSubmit}
@@ -189,11 +196,14 @@ class ExtensionThemeSettingsPage extends PureComponent {
   }
 
   render() {
-    const { theme, extension } = this.props;
+    const { theme, fonts, extension } = this.props;
     const { schema } = this.state;
 
     const isLoading =
-      !isInitialized(theme) || !isInitialized(extension) || !schema;
+      !isInitialized(fonts) ||
+      !isInitialized(theme) ||
+      !isInitialized(extension) ||
+      !schema;
 
     return (
       <LoaderContainer
@@ -209,6 +219,7 @@ class ExtensionThemeSettingsPage extends PureComponent {
 ExtensionThemeSettingsPage.propTypes = {
   extension: PropTypes.object.isRequired,
   extensionName: PropTypes.string.isRequired,
+  fetchAllFonts: PropTypes.string.isRequired,
   fetchTheme: PropTypes.func.isRequired,
   loadExtension: PropTypes.func.isRequired,
   ownExtensionName: PropTypes.string.isRequired,
@@ -228,6 +239,7 @@ ExtensionThemeSettingsPage.defaultProps = {
 function mapStateToProps(state, ownProps) {
   const { activeThemeId, extensionName, ownExtensionName } = ownProps;
 
+  const fonts = getAllFonts(state);
   const theme = getTheme(state, activeThemeId);
   const extension = getExtension(state, extensionName);
 
@@ -236,6 +248,7 @@ function mapStateToProps(state, ownProps) {
     extensionName,
     ownExtensionName,
     theme,
+    fonts,
     extension,
   };
 }
@@ -244,6 +257,7 @@ function mapDispatchToProps(dispatch) {
   return {
     loadExtension: extensionId => dispatch(loadExtension(extensionId)),
     fetchTheme: themeId => dispatch(fetchTheme(themeId)),
+    fetchAllFonts: () => dispatch(fetchAllFonts()),
     revertFormChanges: formKey => dispatch(resetForm(formKey)),
     updateExtensionActiveTheme: (theme, canonicalName, variables) =>
       dispatch(updateExtensionActiveTheme(theme, canonicalName, variables)),

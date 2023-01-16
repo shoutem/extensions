@@ -1,4 +1,5 @@
 import React from 'react';
+import { TransitionPresets } from '@react-navigation/stack';
 import _ from 'lodash';
 import {
   Decorators,
@@ -31,6 +32,7 @@ NavigationStacks.registerNavigationStack({
       headerLeft: _.get(navParams, 'route.params.canGoBack', false)
         ? props => <HeaderBackButton {...props} onPress={onCancel} />
         : null,
+      ...TransitionPresets.SlideFromRightIOS,
     };
   },
   rootStack: false,

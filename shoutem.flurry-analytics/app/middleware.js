@@ -1,13 +1,10 @@
-import { setPriority } from 'shoutem-core';
-
-import {
-  createScreenViewMiddleware,
-  createEventsMiddleware,
-  ANALYTICS_OUT_MIDDLEWARE_PRIORITY,
-} from 'shoutem.analytics';
-
 import Flurry from 'react-native-flurry-sdk';
-
+import {
+  ANALYTICS_OUT_MIDDLEWARE_PRIORITY,
+  createEventsMiddleware,
+  createScreenViewMiddleware,
+} from 'shoutem.analytics';
+import { setPriority } from 'shoutem-core';
 import { isFlurryActive } from './services/flurry';
 
 function trackScreenView(action, store) {
@@ -15,9 +12,13 @@ function trackScreenView(action, store) {
     return;
   }
 
-  const screenName = action.title || action.screen;
+  const { title, screen, payload } = action;
+  const params = {
+    screenName: title || screen,
+    ...payload,
+  };
 
-  Flurry.logEvent('Screen view', { screenName });
+  Flurry.logEvent('Screen view', params);
 }
 setPriority(trackScreenView, ANALYTICS_OUT_MIDDLEWARE_PRIORITY);
 

@@ -1,27 +1,27 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
-import { Paging, LoaderContainer } from '@shoutem/react-web-ui';
-import { shouldLoad, isInitialized, hasNext, hasPrev } from '@shoutem/redux-io';
-import { getErrorCode } from '@shoutem/redux-api-sdk';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { getAllUserGroups, loadAllUserGroups } from 'src/modules/user-groups';
 import {
-  UsersDashboard,
-  getUsers,
-  loadUsers,
-  loadNextUsersPage,
-  loadPreviousUsersPage,
-  createUser,
-  deleteUser,
-  updateUser,
   changePassword,
-  getErrorMessage,
-  downloadUserData,
+  createUser,
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,
+  deleteUser,
+  downloadUserData,
+  getErrorMessage,
+  getUsers,
+  loadNextUsersPage,
+  loadPreviousUsersPage,
+  loadUsers,
+  updateUser,
+  UsersDashboard,
 } from 'src/modules/users';
-import { loadAllUserGroups, getAllUserGroups } from 'src/modules/user-groups';
+import { LoaderContainer, Paging } from '@shoutem/react-web-ui';
+import { getErrorCode } from '@shoutem/redux-api-sdk';
+import { hasNext, hasPrev, isInitialized, shouldLoad } from '@shoutem/redux-io';
 import './style.scss';
 
 const DEFAULT_PAGING = {
@@ -45,7 +45,7 @@ export class UsersPage extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.checkData(this.props, null, true);
   }
 

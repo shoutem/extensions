@@ -1,29 +1,29 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import _ from 'lodash';
-import classNames from 'classnames';
-import { connect } from 'react-redux';
-import i18next from 'i18next';
 import { ControlLabel, FormGroup } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
-import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
-import { shouldLoad, isInitialized } from '@shoutem/redux-io';
+import classNames from 'classnames';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
-  updateExtensionSettings,
-  fetchShortcuts,
-  getShortcuts,
-} from '@shoutem/redux-api-sdk';
-import {
+  AppleSetupForm,
+  FacebookSetupForm,
+  GeneralSettings,
   getAppSettings,
   getAppStoreSettings,
   loadAppSettings,
   loadAppStoreSettings,
-  updateAppSettings,
   updateAppRealm,
-  GeneralSettings,
-  FacebookSetupForm,
-  AppleSetupForm,
+  updateAppSettings,
 } from 'src/modules/general-settings';
+import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
+import {
+  fetchShortcuts,
+  getShortcuts,
+  updateExtensionSettings,
+} from '@shoutem/redux-api-sdk';
+import { isInitialized, shouldLoad } from '@shoutem/redux-io';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -34,40 +34,47 @@ export class GeneralSettingsPage extends Component {
     autoBindReact(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.checkData(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.checkData(nextProps, this.props);
   }
 
   checkData(nextProps, props = {}) {
-    const { appId } = nextProps;
+    const {
+      appId,
+      fetchShortcuts,
+      loadAppSettings,
+      loadAppStoreSettings,
+    } = this.props;
 
     if (shouldLoad(nextProps, props, 'shortcuts')) {
-      this.props.fetchShortcuts();
+      fetchShortcuts();
     }
 
     if (shouldLoad(nextProps, props, 'appSettings')) {
-      this.props.loadAppSettings(appId);
+      loadAppSettings(appId);
     }
     if (shouldLoad(nextProps, props, 'storeSettings')) {
-      this.props.loadAppStoreSettings(appId);
+      loadAppStoreSettings(appId);
     }
   }
 
   handleExtensionSettingsUpdate(settingsPatch) {
-    const { extension } = this.props;
+    const { extension, updateExtensionSettings } = this.props;
     const { settings } = extension;
 
     const newSettings = _.merge({}, settings, settingsPatch);
-    return this.props.updateExtensionSettings(extension, newSettings);
+
+    return updateExtensionSettings(extension, newSettings);
   }
 
   handleAppSettingsUpdate(settingsPatch) {
-    const { appId } = this.props;
-    return this.props.updateAppSettings(appId, settingsPatch);
+    const { appId, updateAppSettings } = this.props;
+
+    return updateAppSettings(appId, settingsPatch);
   }
 
   changeAppleClientId() {
@@ -105,6 +112,11 @@ export class GeneralSettingsPage extends Component {
       false,
     );
     const facebookSettings = _.get(extensionSettings, 'providers.facebook', {});
+    const trackFbsdkEvents = _.get(
+      extensionSettings,
+      'trackFbsdkEvents',
+      false,
+    );
     const appleSettings = _.get(extensionSettings, 'providers.apple', {});
 
     const providerClasses = classNames('general-settings', 'switch-form-group');
@@ -137,6 +149,7 @@ export class GeneralSettingsPage extends Component {
           className={providerClasses}
           onSetupUpdate={this.handleExtensionSettingsUpdate}
           providerSettings={facebookSettings}
+          trackFbsdkEvents={trackFbsdkEvents}
         />
         <AppleSetupForm
           changeAppleClientID={this.changeAppleClientId}
@@ -150,17 +163,17 @@ export class GeneralSettingsPage extends Component {
 }
 
 GeneralSettingsPage.propTypes = {
-  appId: PropTypes.string,
-  extension: PropTypes.object,
-  shortcuts: PropTypes.array,
-  appSettings: PropTypes.object,
-  storeSettings: PropTypes.object,
-  loadAppSettings: PropTypes.func,
-  loadAppStoreSettings: PropTypes.func,
-  updateExtensionSettings: PropTypes.func,
-  fetchShortcuts: PropTypes.func,
-  updateAppSettings: PropTypes.func,
-  updateAppRealm: PropTypes.func,
+  appId: PropTypes.string.isRequired,
+  appSettings: PropTypes.object.isRequired,
+  extension: PropTypes.object.isRequired,
+  fetchShortcuts: PropTypes.func.isRequired,
+  loadAppSettings: PropTypes.func.isRequired,
+  loadAppStoreSettings: PropTypes.func.isRequired,
+  shortcuts: PropTypes.array.isRequired,
+  storeSettings: PropTypes.object.isRequired,
+  updateAppRealm: PropTypes.func.isRequired,
+  updateAppSettings: PropTypes.func.isRequired,
+  updateExtensionSettings: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {

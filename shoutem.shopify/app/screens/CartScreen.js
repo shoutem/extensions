@@ -98,12 +98,18 @@ class CartScreen extends PureComponent {
           </View>
         )}
         {!!cartSize && (
-          <ListView data={cart} renderRow={this.renderRow} style={style.list} />
+          <View style={style.contentContainer}>
+            <ListView
+              data={cart}
+              renderRow={this.renderRow}
+              style={style.list}
+            />
+            <CartFooter
+              action={I18n.t(ext('proceedToCheckoutButton'))}
+              onActionButtonClicked={this.proceedToCheckout}
+            />
+          </View>
         )}
-        <CartFooter
-          action={I18n.t(ext('proceedToCheckoutButton'))}
-          onActionButtonClicked={this.proceedToCheckout}
-        />
       </Screen>
     );
   }

@@ -10,14 +10,6 @@
         "color": "#222222"
       },
       "constraints": {
-        "fontFamily": {
-          "enum": [
-            "Rubik-Regular",
-            "NotoSans",
-            "NotoSerif",
-            "System Font"
-          ]
-        },
         "fontStyle": {
           "enum": ["normal", "italic"]
         },
@@ -251,6 +243,30 @@
       "title": "Item text color",
       "format": "color",
       "default": "rgba(34, 34, 34, 0.35)"
+    },
+    "drawerItemText": {
+      "type": "object",
+      "title": "Drawer items text",
+      "format": "font",
+      "default": {
+        "fontFamily": "Rubik-Regular",
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+        "fontSize": 15,
+        "color": "rgba(34, 34, 34, 0.35)"
+      }
+    },
+    "tabbarItemText": {
+      "type": "object",
+      "title": "TabBar item text",
+      "format": "font",
+      "default": {
+        "fontFamily": "Rubik-Regular",
+        "fontStyle": "normal",
+        "fontWeight": "normal",
+        "fontSize": 10,
+        "color": "rgba(34, 34, 34, 0.35)"
+      }
     },
     "mainNavItemBackground": {
       "type": "string",
@@ -510,6 +526,108 @@
       "title": "Color of like button when status is liked",
       "format": "color",
       "default": "rgba(200, 0, 0, 0.8)"
+    },
+    "toastBackgroundColor": {
+      "type": "string",
+      "title": "Background color",
+      "format": "color",
+      "default": "#FFFFFF"
+    },
+    "toastSuccessBackgroundColor": {
+      "type": "string",
+      "title": "Success toast",
+      "format": "color",
+      "default": "#333D27"
+    },
+    "toastErrorBackgroundColor": {
+      "type": "string",
+      "title": "Error toast",
+      "format": "color",
+      "default": "#3D272A"
+    },
+    "toastTitleColor": {
+      "type": "string",
+      "title": "Title color",
+      "format": "color",
+      "default": "#888FA1"
+    },
+    "toastSuccessTitleColor": {
+      "type": "string",
+      "title": "Success toast",
+      "format": "color",
+      "default": "#B4BDAA"
+    },
+    "toastErrorTitleColor": {
+      "type": "string",
+      "title": "Error toast",
+      "format": "color",
+      "default": "#B4BDAA"
+    },
+    "toastMessageColor": {
+      "type": "string",
+      "title": "Message color",
+      "format": "color",
+      "default": "#444F6C"
+    },
+    "toastSuccessMessageColor": {
+      "type": "string",
+      "title": "Success toast",
+      "format": "color",
+      "default": "#FFFFFF"
+    },
+    "toastErrorMessageColor": {
+      "type": "string",
+      "title": "Error toast",
+      "format": "color",
+      "default": "#FFFFFF"
+    },
+    "toastConfirmButtonBackgroundColor": {
+      "type": "string",
+      "title": "Confirm button background color",
+      "format": "color",
+      "default": "#444F6C"
+    },
+    "toastConfirmButtonTextColor": {
+      "type": "string",
+      "title": "Confirm button text color",
+      "format": "color",
+      "default": "#FFFFFF"
+    },
+    "toastCancelButtonBackgroundColor": {
+      "type": "string",
+      "title": "Cancel button background color",
+      "format": "color",
+      "default": "#F3F4F6"
+    },
+    "toastCancelButtonTextColor": {
+      "type": "string",
+      "title": "Cancel button text color",
+      "format": "color",
+      "default": "#444F6C"
+    },
+    "toastProgressBarBackgroundColor": {
+      "type": "string",
+      "title": "Progress bar background color",
+      "format": "color",
+      "default": "rgba(136, 143, 161, 0.1)"
+    },
+    "toastProgressBarColor": {
+      "type": "string",
+      "title": "Progress bar main color",
+      "format": "color",
+      "default": "#00AADF"
+    },
+    "toastSuccessProgressBarColor": {
+      "type": "string",
+      "title": "Success toast",
+      "format": "color",
+      "default": "#88C242"
+    },
+    "toastErrorProgressBarColor": {
+      "type": "string",
+      "title": "Error toast",
+      "format": "color",
+      "default": "#D0021B"
     }
   },
   "layout": {
@@ -565,6 +683,96 @@
           "categoryDropdownTextColor",
           "searchInputBackgroundColor",
           "searchTextColor"
+        ]
+      },
+      {
+        "title": "Toast messages",
+        "properties": [
+          {
+            "name": "toastBackgroundColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "toastSuccessBackgroundColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "toastErrorBackgroundColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "toastTitleColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "toastSuccessTitleColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "toastErrorTitleColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "toastMessageColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "toastSuccessMessageColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "toastErrorMessageColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "toastConfirmButtonBackgroundColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "toastConfirmButtonTextColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "toastCancelButtonBackgroundColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "toastCancelButtonTextColor",
+            "inline": true,
+            "size": 6
+          },
+          {
+            "name": "toastProgressBarBackgroundColor",
+            "inline": false,
+            "size": 12
+          },
+          {
+            "name": "toastProgressBarColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "toastSuccessProgressBarColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "toastErrorProgressBarColor",
+            "inline": true,
+            "size": 4
+          }
         ]
       }
     ]

@@ -1,18 +1,26 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { collection, storage } from '@shoutem/redux-io';
+import { preventStateRehydration } from 'shoutem.redux';
 import { ext } from '../const';
+import { mapOrdersToState } from '../services';
 import {
   APP_MOUNTED,
   CART_ITEM_ADDED,
   CART_ITEM_REMOVED,
   CART_ITEM_UPDATED,
   CHECKOUT_COMPLETED,
+  CUSTOMER_ERROR,
   CUSTOMER_INFORMATION_UPDATED,
+  CUSTOMER_LOADING,
+  CUSTOMER_LOGIN_SUCCESS,
   ORDER_NUMBER_LOADED,
+  ORDERS_LOADED,
+  ORDERS_LOADING,
   PRODUCTS_ERROR,
   PRODUCTS_LOADED,
   PRODUCTS_LOADING,
+  SET_ORDERS_ERROR,
   SHOP_ERROR_LOADING,
   SHOP_LOADED,
   SHOP_LOADING,
@@ -81,13 +89,35 @@ const cart = (state = [], action) => {
   }
 };
 
-const customer = (state = {}, action) => {
-  switch (action.type) {
-    case CUSTOMER_INFORMATION_UPDATED:
-      return action.payload.customer;
-    default:
-      return state;
+const customer = (
+  state = { customer: {}, loading: false, error: null, isLoggedIn: false },
+  action,
+) => {
+  const { type } = action;
+
+  if (type === CUSTOMER_INFORMATION_UPDATED) {
+    return {
+      ...state,
+      error: null,
+      loading: false,
+      isLoggedIn: action.payload.isLoggedIn,
+      customer: { ...state.customer, ...action.payload.customer },
+    };
   }
+
+  if (type === CUSTOMER_LOGIN_SUCCESS) {
+    return { ...state, isLoggedIn: true };
+  }
+
+  if (type === CUSTOMER_LOADING) {
+    return { ...state, loading: action.payload };
+  }
+
+  if (type === CUSTOMER_ERROR) {
+    return { ...state, error: action.payload, loading: false };
+  }
+
+  return state;
 };
 
 const products = (state = {}, action) => {
@@ -192,12 +222,57 @@ const shop = (state = {}, action) => {
   }
 };
 
+const ORDERS_INITIAL_STATE = {
+  loading: false,
+  error: false,
+  errorMessage: null,
+  orders: {},
+  pageInfo: {},
+};
+
+function orders(state = ORDERS_INITIAL_STATE, action) {
+  const { type } = action;
+
+  if (type === ORDERS_LOADING) {
+    return { ...state, loading: !!action.payload };
+  }
+
+  if (type === ORDERS_LOADED) {
+    const { orders, pageInfo } = action.payload;
+
+    const updatedOrders = mapOrdersToState(orders, state.orders);
+
+    return {
+      ...state,
+      loading: false,
+      error: false,
+      orders: updatedOrders,
+      pageInfo,
+    };
+  }
+
+  if (type === SET_ORDERS_ERROR) {
+    return {
+      ...state,
+      loading: false,
+      error: true,
+      errorMessage: {
+        title: action.payload.title,
+        message: action.payload.message,
+      },
+    };
+  }
+
+  return state;
+}
+
 export default combineReducers({
   cart,
   collections: productsForKey('collectionId'),
   customer,
   products,
   checkoutOrder,
+  orders: preventStateRehydration(orders),
   shop,
   shopifyAttachments: storage(ext('Shopify')),
   allShopifyAttachments: collection(ext('Shopify'), 'all'),

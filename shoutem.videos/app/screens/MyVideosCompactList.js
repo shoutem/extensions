@@ -22,7 +22,13 @@ export class MyVideosCompactList extends FavoritesListScreen {
   }
 
   openDetailsScreen(video) {
-    navigateTo(ext('VideoDetails'), { video });
+    navigateTo(ext('VideoDetails'), {
+      video,
+      analyticsPayload: {
+        itemId: video.id,
+        itemName: video.name,
+      },
+    });
   }
 
   resolveLeftSubtitle(video) {
