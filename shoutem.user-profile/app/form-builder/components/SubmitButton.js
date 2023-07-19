@@ -9,7 +9,7 @@ function SubmitButton({ onPress, style }) {
   return (
     <View style={style.container}>
       <Button onPress={onPress} style={style.button}>
-        <Text>{I18n.t(ext('submitFormButtonTitle'))}</Text>
+        <Text style={style.text}>{I18n.t(ext('submitFormButtonTitle'))}</Text>
       </Button>
     </View>
   );

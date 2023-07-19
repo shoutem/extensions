@@ -7,6 +7,7 @@ import {
   DOWNLOADED_EPISODE_REMOVED,
   DOWNLOADED_EPISODE_UPDATED,
   EPISODES_COLLECTION_TAG,
+  ext,
   RSS_PODCAST_SCHEMA,
   SET_DOWNLOAD_IN_PROGRESS,
 } from '../const';
@@ -16,6 +17,9 @@ import {
   getPathFromEpisode,
 } from '../services';
 import { getEpisodesFeed } from './selectors';
+
+export const FAVORITE_EPISODE = ext('FAVORITE_EPISODE');
+export const UNFAVORITE_EPISODE = ext('UNFAVORITE_EPISODE');
 
 export function addDownloadedEpisode(id, fileName) {
   return { type: DOWNLOADED_EPISODE_ADDED, payload: { id, fileName } };
@@ -83,4 +87,15 @@ export function fetchEpisodesFeed(
       loadFeed(RSS_PODCAST_SCHEMA, EPISODES_COLLECTION_TAG, shortcut, options),
     );
   };
+}
+
+export function favoriteEpisode(episode, enableDownload, feedUrl) {
+  return {
+    type: FAVORITE_EPISODE,
+    payload: { episode: { ...episode, enableDownload, feedUrl } },
+  };
+}
+
+export function unfavoriteEpisode(id) {
+  return { type: UNFAVORITE_EPISODE, payload: { id } };
 }

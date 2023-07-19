@@ -5,6 +5,7 @@ import {
   dimensionRelativeToIphone,
   resolveFontFamily,
   resolveFontWeight,
+  responsiveHeight,
   responsiveWidth,
 } from '@shoutem/ui';
 import { ext } from '../const';
@@ -50,6 +51,10 @@ export default () => ({
     },
     activeSleepIconFill: resolveVariable('featuredColor'),
     inactiveSleepIconFill: resolveVariable('navBarIconsColor'),
+    adBannerContainer: {
+      position: 'absolute',
+      top: responsiveHeight(90),
+    },
   },
 
   [`${ext('RadioPlayer')}`]: {
@@ -271,6 +276,10 @@ export default () => ({
     smallActionText: {
       color: resolveVariable('shareButtonColor'),
     },
+    adBannerContainer: {
+      position: 'absolute',
+      top: responsiveHeight(90),
+    },
   },
 
   [`${ext('SheetHeader')}`]: {
@@ -387,6 +396,10 @@ export default () => ({
     },
     activeSleepIconFill: resolveVariable('featuredColor'),
     inactiveSleepIconFill: resolveVariable('navBarIconsColor'),
+    adBannerContainer: {
+      position: 'absolute',
+      top: responsiveHeight(90),
+    },
   },
 
   [`${ext('RssNewsFeed')}`]: {

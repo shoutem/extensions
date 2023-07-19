@@ -24,7 +24,7 @@ import {
   useTimer,
 } from '../hooks';
 
-function Radio({ navigation, route, style }) {
+function Radio({ navigation, route, style, renderAdBanner }) {
   const { shortcut } = route.params;
   const {
     settings: {
@@ -101,6 +101,9 @@ function Radio({ navigation, route, style }) {
       >
         <Tile styleName="clear text-centric">
           <Overlay style={style.overlayStyle} styleName="image-overlay">
+            {!!renderAdBanner && (
+              <View style={style.adBannerContainer}>{renderAdBanner()}</View>
+            )}
             <RadioPlayer
               onMetadataStateChange={handleMetadataChange}
               onPlaybackStateChange={setPlaybackState}
@@ -143,10 +146,12 @@ function Radio({ navigation, route, style }) {
 Radio.propTypes = {
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
+  renderAdBanner: PropTypes.func,
   style: PropTypes.object,
 };
 
 Radio.defaultProps = {
+  renderAdBanner: null,
   style: {},
 };
 

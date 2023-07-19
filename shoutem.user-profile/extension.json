@@ -1,11 +1,11 @@
 {
   "name": "user-profile",
   "title": "User Profile",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "platform": ">=8",
   "type": "system",
   "description": "Add extended user profile",
-  "releaseNotes": "Change translation string when editing user profile",
+  "releaseNotes": "* Introduced styling through Customize style on the Builder",
   "icon": "server/assets/add-user-profile-image.png",
   "nativeChanges": {
     "lastVersion": "4.2.1"
@@ -17,7 +17,9 @@
     "shoutem.navigation",
     "shoutem.redux"
   ],
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "pages": [
     {
       "name": "UsersPage",
@@ -44,6 +46,22 @@
     {
       "page": "@.SettingsPage",
       "title": "Settings"
+    },
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
+    }
+  ],
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
     }
   ],
   "screens": [

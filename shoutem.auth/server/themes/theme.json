@@ -1,0 +1,138 @@
+{
+  "title": "Theme",
+  "properties": {
+    "buttonBackgroundColor": {
+      "type": "string",
+      "title": "Background color",
+      "format": "color",
+      "default": "@primaryButtonBackgroundColor"
+    },
+    "buttonBorderColor": {
+      "type": "string",
+      "title": "Border color",
+      "format": "color",
+      "default": "@primaryButtonBorderColor"
+    },
+    "buttonText": {
+      "type": "object",
+      "title": "Button text",
+      "format": "font",
+      "default": {
+        "color": "@primaryButtonText.color",
+        "fontFamily": "@primaryButtonText.fontFamily",
+        "fontSize": 16,
+        "fontStyle": "@primaryButtonText.fontStyle",
+        "fontWeight": "@primaryButtonText.fontWeight"
+      }
+    },
+    "createNewAccountText": {
+      "type": "object",
+      "title": "Create new account textual button",
+      "format": "font",
+      "default": {
+        "color": "@text.color",
+        "fontFamily": "@text.fontFamily",
+        "fontSize": 15,
+        "fontStyle": "@text.fontStyle",
+        "fontWeight": "@text.fontWeight"
+      }
+    },
+    "inputBackgroundColor": {
+      "type": "string",
+      "title": "Input background color",
+      "format": "color",
+      "default": "transparent"
+    },
+    "inputBorderColor": {
+      "type": "string",
+      "title": "Input border color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "inputLabelText": {
+      "type": "object",
+      "title": "Input label text",
+      "format": "font",
+      "default": {
+        "color": "@text.color",
+        "fontFamily": "@text.fontFamily",
+        "fontSize": 15,
+        "fontStyle": "@text.fontStyle",
+        "fontWeight": "@text.fontWeight"
+      }
+    },
+    "inputText": {
+      "type": "object",
+      "title": "Input text",
+      "format": "font",
+      "default": {
+        "color": "@text.color",
+        "fontFamily": "@text.fontFamily",
+        "fontSize": 15,
+        "fontStyle": "@text.fontStyle",
+        "fontWeight": "@text.fontWeight"
+      }
+    },
+    "loginAndRegisterScreenBackgroundColor": {
+      "type": "string",
+      "title": "Login and Register screen background color",
+      "format": "color",
+      "default": "@backgroundColor"
+    },
+    "separatorLineColor": {
+      "type": "string",
+      "title": "Separator line color",
+      "format": "color",
+      "default": "#c5c3c3"
+    },
+    "separatorText": {
+      "type": "object",
+      "title": "Separator text (separates regular and social section buttons)",
+      "format": "font",
+      "default": {
+        "color": "#c5c3c3",
+        "fontFamily": "@text.fontFamily",
+        "fontSize": 14,
+        "fontStyle": "@text.fontStyle",
+        "fontWeight": "@text.fontWeight"
+      }
+    },
+    "showPasswordButtonColor": {
+      "type": "string",
+      "title": "Show password button color",
+      "format": "color",
+      "default": "@caption.color"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Text inputs",
+        "properties": [
+          "inputBackgroundColor",
+          "inputBorderColor",
+          "inputLabelText",
+          "inputText"
+        ]
+      },
+      {
+        "title": "Login and Register buttons",
+        "properties": [
+          "buttonBackgroundColor",
+          "buttonBorderColor",
+          "buttonText"
+        ]
+      },
+      {
+        "title": "Other",
+        "properties": [
+          "loginAndRegisterScreenBackgroundColor",
+          "createNewAccountText",
+          "separatorLineColor",
+          "separatorText",
+          "showPasswordButtonColor"
+        ]
+      }
+    ]
+  }
+}

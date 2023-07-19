@@ -12,7 +12,12 @@ import {
   FormGroup,
   Checkbox,
 } from 'react-bootstrap';
-import { LoaderContainer, RadioSelector } from '@shoutem/react-web-ui';
+import {
+  FontIcon,
+  FontIconPopover,
+  LoaderContainer,
+  RadioSelector,
+} from '@shoutem/react-web-ui';
 import {
   fetchExtension,
   updateExtensionSettings,
@@ -92,9 +97,16 @@ class AdSettingsPage extends Component {
     const { settings: oldSettings } = this.props;
 
     const newSettings = _.omit(this.state, 'loading');
-    const iOSConfigured = !_.isEmpty(iOSAdAppId) && (!_.isEmpty(iOSBannerAdId) || !_.isEmpty(iOSInterstitialAdId));
-    const androidConfigured = !_.isEmpty(AndroidAdAppId) && (!_.isEmpty(AndroidBannerAdId) || !_.isEmpty(AndroidInterstitialAdId));
-    const previousSettings = _.merge({ ...DEFAULT_EXTENSION_SETTINGS }, oldSettings);
+    const iOSConfigured =
+      !_.isEmpty(iOSAdAppId) &&
+      (!_.isEmpty(iOSBannerAdId) || !_.isEmpty(iOSInterstitialAdId));
+    const androidConfigured =
+      !_.isEmpty(AndroidAdAppId) &&
+      (!_.isEmpty(AndroidBannerAdId) || !_.isEmpty(AndroidInterstitialAdId));
+    const previousSettings = _.merge(
+      { ...DEFAULT_EXTENSION_SETTINGS },
+      oldSettings,
+    );
 
     return (
       !_.isEqual(newSettings, previousSettings) &&
@@ -209,6 +221,11 @@ class AdSettingsPage extends Component {
             <ControlLabel>
               {i18next.t(LOCALIZATION.FORM_BANNER_PLACEMENT_TITLE)}
             </ControlLabel>
+            <FontIconPopover
+              message={i18next.t(LOCALIZATION.FORM_BANNER_PLACEMENT_INFO)}
+            >
+              <FontIcon className="icon-popover" name="info" size="24px" />
+            </FontIconPopover>
             <RadioSelector
               activeValue={bannerPlacement}
               className="ads-settings-selector"
@@ -219,21 +236,29 @@ class AdSettingsPage extends Component {
           </FormGroup>
           <h3>{i18next.t(LOCALIZATION.INTERSTITIAL_ADS_TITLE)}</h3>
           <FormGroup>
-            <ControlLabel>{i18next.t(LOCALIZATION.FORM_IOS_INTERSTITIAL_AD_UNIT_ID_TITLE)}</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_IOS_INTERSTITIAL_AD_UNIT_ID_TITLE)}
+            </ControlLabel>
             <FormControl
               className="form-control"
               onChange={this.handleTextSettingChange('iOSInterstitialAdId')}
               type="text"
               value={iOSInterstitialAdId}
             />
-            <ControlLabel>{i18next.t(LOCALIZATION.FORM_ANDROID_INTERSTITIAL_AD_UNIT_ID_TITLE)}</ControlLabel>
+            <ControlLabel>
+              {i18next.t(
+                LOCALIZATION.FORM_ANDROID_INTERSTITIAL_AD_UNIT_ID_TITLE,
+              )}
+            </ControlLabel>
             <FormControl
               className="form-control"
               onChange={this.handleTextSettingChange('AndroidInterstitialAdId')}
               type="text"
               value={AndroidInterstitialAdId}
             />
-            <ControlLabel>{i18next.t(LOCALIZATION.FORM_INTERSTITIAL_KEYWORDS)}</ControlLabel>
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_INTERSTITIAL_KEYWORDS)}
+            </ControlLabel>
             <FormControl
               className="form-control"
               onChange={this.handleTextSettingChange('keywords')}
@@ -241,7 +266,7 @@ class AdSettingsPage extends Component {
               value={keywords}
             />
           </FormGroup>
-        </form >
+        </form>
         <ButtonToolbar>
           <Button
             bsStyle="primary"
@@ -253,7 +278,7 @@ class AdSettingsPage extends Component {
             </LoaderContainer>
           </Button>
         </ButtonToolbar>
-      </div >
+      </div>
     );
   }
 }

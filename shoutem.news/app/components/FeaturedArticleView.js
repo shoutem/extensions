@@ -17,16 +17,23 @@ import { ArticleView } from './ArticleView';
  */
 export class FeaturedArticleView extends ArticleView {
   render() {
-    const { title = '', imageUrl, date, author } = this.props;
+    const {
+      hideModificationTimestamp,
+      title = '',
+      imageUrl,
+      date,
+      author,
+    } = this.props;
 
     const articleImage = imageUrl
       ? { uri: imageUrl }
       : assets.noImagePlaceholder;
 
     const momentDate = moment(date);
-    const dateInfo = momentDate.isAfter(0) ? (
-      <Caption styleName="md-gutter-left">{momentDate.fromNow()}</Caption>
-    ) : null;
+    const dateInfo =
+      momentDate.isAfter(0) && !hideModificationTimestamp ? (
+        <Caption styleName="md-gutter-left">{momentDate.fromNow()}</Caption>
+      ) : null;
 
     return (
       <TouchableOpacity onPress={this.onPress}>

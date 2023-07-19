@@ -1,0 +1,10 @@
+{
+  "name": "shoutem.bands-in-town",
+  "version": "1.0.1",
+  "description": "Integrate a Bands in Town widget into your app.",
+  "peerDependencies": {
+    "@shoutem/theme": "*",
+    "@shoutem/ui": "*",
+    "react-native-webview": "*"
+  }
+}

@@ -25,18 +25,19 @@ export class GridArticleView extends ArticleView {
   };
 
   render() {
-    const { title, imageUrl, date } = this.props;
+    const { hideModificationTimestamp, title, imageUrl, date } = this.props;
 
     const articleImage = imageUrl
       ? { uri: imageUrl }
       : assets.noImagePlaceholder;
 
     const momentDate = moment(date);
-    const dateInfo = momentDate.isAfter(0) ? (
-      <View styleName="horizontal">
-        <Caption>{momentDate.fromNow()}</Caption>
-      </View>
-    ) : null;
+    const dateInfo =
+      momentDate.isAfter(0) && !hideModificationTimestamp ? (
+        <View styleName="horizontal">
+          <Caption>{momentDate.fromNow()}</Caption>
+        </View>
+      ) : null;
 
     return (
       <TouchableOpacity onPress={this.onPress}>

@@ -1,0 +1,37 @@
+{
+  "name": "bands-in-town",
+  "title": "Bands in Town",
+  "version": "1.0.1",
+  "description": "Integrate a Bands in Town widget into your app.",
+  "releaseNotes": "* Resolved website scaling issues outside of Bands in Town widget\n* Resolved Android opening widget links in external browser instead of inside the app",
+  "platform": ">=12.1.2",
+  "icon": "server/assets/add-bandsintown-image.png",
+  "screens": [
+    {
+      "name": "BandsInTownScreen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "BandsInTownScreen",
+      "title": "Bands in Town",
+      "description": "A shortcut for BandsInTownScreen",
+      "screen": "@.BandsInTownScreen",
+      "adminPages": [
+        {
+          "page": "@.BandsInTownPage",
+          "title": "Bands in Town",
+          "settings": {
+            "widget": ""
+          }
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "BandsInTownPage",
+      "type": "react-page"
+    }
+  ]
+}

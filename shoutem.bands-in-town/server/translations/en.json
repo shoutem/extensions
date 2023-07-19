@@ -1,0 +1,10 @@
+{
+  "shoutem": {
+    "bands-in-town": {
+      "save-button": "Save",
+      "widget-info": "Bands in Town is a tool for artists to build audiences and sell their tickets. The widget shows all upcoming events for a given band on Bands in Town.",
+      "widget-info-link": "Generate yours here",
+      "widget-input-label": "Enter your Bands in Town widget code here"
+    }
+  }
+}

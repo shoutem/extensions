@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import {
+  Checkbox,
   Col,
   ControlLabel,
   Dropdown,
@@ -13,6 +14,7 @@ import i18next from 'i18next';
 import _ from 'lodash';
 import { updateShortcut } from '../../actions';
 import LOCALIZATION from './localization';
+import './style.scss';
 
 export default function LayoutSettingsPage() {
   const dispatch = useDispatch();
@@ -34,6 +36,11 @@ export default function LayoutSettingsPage() {
   const selectedLayoutSettings = _.find(shortcut.screens, {
     canonicalType: shortcut.screen,
   })?.settings;
+
+  const canHideModificationTimestamp =
+    selectedLayoutSettings?.canHideModificationTimestamp;
+  const hideModificationTimestamp =
+    selectedLayoutSettings?.hideModificationTimestamp;
 
   const categoryPickerTypeOptions =
     selectedLayoutSettings?.categoryPickerTypeOptions || [];
@@ -76,6 +83,42 @@ export default function LayoutSettingsPage() {
     [dispatch, shortcut.id, shortcut.screen, shortcut.screens],
   );
 
+  const handleHideTimestampToggle = useCallback(
+    hideTimestamp => {
+      const newScreens = [...shortcut.screens];
+
+      const selectedLayoutIndex = _.findIndex(newScreens, {
+        canonicalType: shortcut.screen,
+      });
+
+      if (selectedLayoutIndex === 0) {
+        newScreens[selectedLayoutIndex] = {
+          ...newScreens[selectedLayoutIndex],
+          settings: {
+            ...newScreens[selectedLayoutIndex].settings,
+            hideModificationTimestamp: !hideModificationTimestamp,
+          },
+        };
+
+        dispatch(
+          updateShortcut({
+            id: shortcut.id,
+            attributes: {
+              screens: newScreens,
+            },
+          }),
+        );
+      }
+    },
+    [
+      dispatch,
+      hideModificationTimestamp,
+      shortcut.id,
+      shortcut.screen,
+      shortcut.screens,
+    ],
+  );
+
   return (
     <div className="general-settings">
       <h3>{i18next.t(LOCALIZATION.LAYOUT_SETTINGS_TITLE)}</h3>
@@ -103,6 +146,20 @@ export default function LayoutSettingsPage() {
               </Dropdown>
             </Col>
           </Row>
+          {!!canHideModificationTimestamp && (
+            <Row>
+              <Col md={12}>
+                <Checkbox
+                  className="layout__hide_timestamp"
+                  checked={hideModificationTimestamp}
+                  name="hideTimestamp"
+                  onChange={handleHideTimestampToggle}
+                >
+                  {i18next.t(LOCALIZATION.HIDE_TIMESTAMP_LABEL)}
+                </Checkbox>
+              </Col>
+            </Row>
+          )}
         </FormGroup>
       </form>
     </div>

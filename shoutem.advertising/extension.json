@@ -1,10 +1,10 @@
 {
   "name": "advertising",
   "title": "Advertising",
-  "version": "5.1.0",
+  "version": "6.0.0",
   "platform": ">=9",
   "description": "Integrate AdMob and embed ads to your application",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "* Improved ad context configuration\n* Exposed mechanics allowing for custom ad placement",
   "icon": "server/assets/add-advertising-image.png",
   "dependencies": [
     "shoutem.application",

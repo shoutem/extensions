@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import moment from 'moment';
 import { connectStyle } from '@shoutem/theme';
 import { Caption, Icon, ImageBackground, Tile, Title, View } from '@shoutem/ui';
@@ -8,7 +9,9 @@ import { ArticleDetailsScreen } from './ArticleDetailsScreen';
 
 export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
   renderImageGalleryPage(image) {
-    const { article } = getRouteParams(this.props);
+    const { article, shortcut } = getRouteParams(this.props);
+    const { screen: canonicalType, screens } = shortcut;
+    const { hideModificationTimestamp } = _.find(screens, { canonicalType });
 
     return (
       <ImageBackground
@@ -23,9 +26,11 @@ export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
             <Caption styleName="collapsible" numberOfLines={1}>
               {article.newsAuthor}
             </Caption>
-            <Caption styleName="md-gutter-left">
-              {moment(article.timeUpdated).fromNow()}
-            </Caption>
+            {!!hideModificationTimestamp && (
+              <Caption styleName="md-gutter-left">
+                {moment(article.timeUpdated).fromNow()}
+              </Caption>
+            )}
           </View>
         </Tile>
         <Icon name="down-arrow" styleName="scroll-indicator" />
@@ -35,11 +40,14 @@ export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
 
   renderHeader() {
     const { style } = this.props;
-    const { article } = getRouteParams(this.props);
+    const { article, shortcut } = getRouteParams(this.props);
 
     if (article.image) {
       return null;
     }
+
+    const { screen: canonicalType, screens } = shortcut;
+    const { hideModificationTimestamp } = _.find(screens, { canonicalType });
 
     return (
       <View styleName="vertical h-center v-center md-gutter">
@@ -48,9 +56,11 @@ export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
           <Caption styleName="collapsible" numberOfLines={1}>
             {article.newsAuthor}
           </Caption>
-          <Caption styleName="md-gutter-left">
-            {moment(article.timeUpdated).fromNow()}
-          </Caption>
+          {!!hideModificationTimestamp && (
+            <Caption styleName="md-gutter-left">
+              {moment(article.timeUpdated).fromNow()}
+            </Caption>
+          )}
         </View>
       </View>
     );

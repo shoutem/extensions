@@ -1,20 +1,22 @@
+import './navigation';
+import EpisodeDetailsScreen from './screens/EpisodeDetailsScreen';
 import EpisodesGridScreen from './screens/EpisodesGridScreen';
 import EpisodesLargeGridScreen from './screens/EpisodesLargeGridScreen';
 import EpisodesListScreen from './screens/EpisodesListScreen';
-import EpisodeDetailsScreen from './screens/EpisodeDetailsScreen';
+import MyPodcastsScreen from './screens/MyPodcastsScreen';
 import enTranslations from './translations/en.json';
 import { reducer } from './redux';
-import './navigation';
 
 const screens = {
-  EpisodesListScreen,
-  EpisodesGridScreen,
-  EpisodesLargeGridScreen,
   EpisodeDetailsScreen,
   EpisodeDetailsWithoutShareScreen: EpisodeDetailsScreen,
-  EpisodesFeaturedListScreen: EpisodesListScreen,
   EpisodesFeaturedGridScreen: EpisodesGridScreen,
   EpisodesFeaturedLargeGridScreen: EpisodesLargeGridScreen,
+  EpisodesFeaturedListScreen: EpisodesListScreen,
+  EpisodesGridScreen,
+  EpisodesLargeGridScreen,
+  EpisodesListScreen,
+  MyPodcastsScreen,
 };
 
 const shoutem = {

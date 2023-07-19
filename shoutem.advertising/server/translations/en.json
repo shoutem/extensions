@@ -12,6 +12,7 @@
       "ad-settings-page.settings-title": "Settings",
       "ad-settings-page.banner-ads-title": "Banner Ads",
       "ad-settings-page.interstitial-ads-title": "Interstitial Ads",
+      "ad-settings-page.form-banner-placement-info": "Certain screens ignore this setting due to UX and/or UI requirements, e.g. Radio+ screens",
       "ad-settings-page.form-banner-placement-title": "Banner placement",
       "ad-settings-page.form-max-ad-content-rating-title": "Max Ad content rating",
       "ad-settings-page.form-child-direct-treatment-title": "Child directed treatment",

@@ -1,17 +1,15 @@
 {
   "name": "radio-player",
   "title": "Radio+",
-  "version": "8.0.0",
+  "version": "8.1.1",
   "platform": ">=9",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
-  "releaseNotes": "* Add new screen that combines radio player and RSS feed",
+  "releaseNotes": "* Resolved issue when ad banner isn't defined",
   "nativeChanges": {
     "lastVersion": "6.0.1"
   },
   "icon": "server/assets/add-radio-image.png",
-  "categories": [
-    "media"
-  ],
+  "categories": ["media"],
   "dependencies": [
     "shoutem.audio",
     "shoutem.i18n",
@@ -31,7 +29,7 @@
       "title": "Radio with chosen static background image",
       "image": "./server/assets/layouts/static-background-image-radio.png",
       "settings": {
-        "disableAdBanner": true,
+        "hasCustomAdRenderer": true,
         "canToggleArtwork": true,
         "canUseBackgroundImage": true,
         "canHaveRssFeed": false,
@@ -44,7 +42,7 @@
       "image": "./server/assets/layouts/dynamic-artwork-background-image-radio.png",
       "extends": "@.Radio",
       "settings": {
-        "disableAdBanner": true,
+        "hasCustomAdRenderer": true,
         "canToggleArtwork": false,
         "canUseBackgroundImage": false,
         "canHaveRssFeed": false,
@@ -55,7 +53,7 @@
       "name": "RadioRssScreen",
       "title": "Radio with RSS news feed",
       "settings": {
-        "disableAdBanner": true,
+        "hasCustomAdRenderer": true,
         "canToggleArtwork": true,
         "canUseBackgroundImage": true,
         "canHaveRssFeed": true,
@@ -96,10 +94,7 @@
       "adminPages": [
         {
           "page": "@.RadioShortcutPage",
-          "title": "RADIO SETTINGS",
-          "settings": {
-            "tara": "oroz"
-          }
+          "title": "RADIO SETTINGS"
         }
       ],
       "settings": {
@@ -122,9 +117,7 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": [
-        "style"
-      ],
+      "categories": ["style"],
       "parameters": {
         "extensionTheme": "Theme"
       }

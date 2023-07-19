@@ -61,7 +61,7 @@ function MyProfileScreen({ navigation, style }) {
   }
 
   return (
-    <Screen styleName="md-gutter-horizontal">
+    <Screen styleName="md-gutter-horizontal" style={style.screen}>
       {showPreview && (
         <ScrollView contentContainerStyle={style.container}>
           <BaseUserProfile user={ownUser} />

@@ -1,10 +1,10 @@
 {
   "name": "podcast",
-  "version": "5.3.0",
+  "version": "5.4.1",
   "platform": ">=12.1.0",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
+  "releaseNotes": "* Resolved issue with opening episodes from favorites screen",
   "nativeChanges": {
     "lastVersion": "5.0.3"
   },
@@ -57,6 +57,12 @@
         "extensionTitle": "Podcast RSS",
         "feedType": "Podcast"
       }
+    },
+    {
+      "name": "MyPodcastsScreen",
+      "title": "Favorite podcasts",
+      "icon": "theme://podcasts.png",
+      "screen": "@.MyPodcastsScreen"
     }
   ],
   "screens": [
@@ -136,6 +142,11 @@
       "settings": {
         "enableSharing": false
       }
+    },
+    {
+      "name": "MyPodcastsScreen",
+      "title": "List",
+      "image": "./server/assets/screens/list.png"
     }
   ],
   "pages": [

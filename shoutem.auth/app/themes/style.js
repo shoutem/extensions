@@ -49,16 +49,15 @@ export default () => ({
       marginTop: 10,
       marginBottom: 22,
       'shoutem.ui.View': {
-        backgroundColor: '#c5c3c3',
+        backgroundColor: resolveVariable('separatorLineColor'),
         flex: 5,
         height: 1,
         width: '100%',
       },
       'shoutem.ui.Text': {
-        fontSize: 14,
+        ...resolveVariable('separatorText'),
         paddingLeft: 20,
         paddingRight: 20,
-        color: '#c5c3c3',
       },
     },
   },
@@ -66,7 +65,10 @@ export default () => ({
   'shoutem.auth.PasswordTextInput': {
     'shoutem.ui.View': {
       'shoutem.ui.TextInput': {
-        borderColor: resolveVariable('text.color'),
+        ...resolveVariable('inputText'),
+        backgroundColor: resolveVariable('inputBackgroundColor'),
+        borderColor: resolveVariable('inputBorderColor'),
+        borderWidth: 1,
         borderRadius: 6,
         height: 50,
         flex: 1,
@@ -80,17 +82,21 @@ export default () => ({
         paddingBottom: 13,
       },
     },
+    iconColor: resolveVariable('showPasswordButtonColor'),
   },
 
   'shoutem.auth.LoginForm': {
     usernameContainer: {
       'shoutem.ui.Text': {
-        fontSize: 15,
+        ...resolveVariable('inputLabelText'),
         paddingBottom: 5,
       },
       'shoutem.ui.TextInput': {
-        borderColor: resolveVariable('text.color'),
+        ...resolveVariable('inputText'),
+        backgroundColor: resolveVariable('inputBackgroundColor'),
+        borderColor: resolveVariable('inputBorderColor'),
         borderRadius: 6,
+        borderWidth: 1,
         height: 50,
         paddingHorizontal: 15,
         paddingVertical: 4,
@@ -103,11 +109,10 @@ export default () => ({
       alignItems: 'center',
       paddingBottom: 5,
       'shoutem.ui.Text': {
-        fontSize: 15,
+        ...resolveVariable('inputLabelText'),
       },
       'shoutem.ui.Button': {
         'shoutem.ui.Text': {
-          color: resolveVariable('caption.color'),
           fontSize: 11,
           fontWeight: resolveFontWeight('400'),
           margin: 0,
@@ -116,21 +121,25 @@ export default () => ({
     },
 
     loginButton: {
+      backgroundColor: resolveVariable('buttonBackgroundColor'),
+      borderColor: resolveVariable('buttonBorderColor'),
       borderRadius: 6,
+      borderWidth: 1,
       width: '100%',
       minWidth: 140,
       height: 44,
       marginTop: 32,
       marginBottom: 20,
       'shoutem.ui.Text': {
+        ...resolveVariable('buttonText'),
         margin: 0,
-        fontSize: 16,
       },
     },
   },
 
   'shoutem.auth.LoginScreen': {
     loginScreen: {
+      backgroundColor: resolveVariable('loginAndRegisterScreenBackgroundColor'),
       paddingHorizontal: 30,
       paddingTop: 40,
     },
@@ -148,13 +157,13 @@ export default () => ({
       paddingBottom: 20,
       'shoutem.ui.Caption': {
         lineHeight: 24,
-        fontSize: resolveVariable('text.fontSize'),
+        ...resolveVariable('createNewAccountText'),
       },
       'shoutem.ui.Button': {
         paddingLeft: 5,
         'shoutem.ui.Text': {
           lineHeight: 24,
-          fontSize: resolveVariable('text.fontSize'),
+          ...resolveVariable('createNewAccountText'),
           margin: 0,
         },
       },
@@ -164,12 +173,15 @@ export default () => ({
   'shoutem.auth.RegisterForm': {
     'shoutem.ui.View': {
       'shoutem.ui.Text': {
+        ...resolveVariable('inputLabelText'),
         paddingBottom: 5,
-        fontSize: 15,
       },
       'shoutem.ui.TextInput': {
-        borderColor: resolveVariable('text.color'),
+        ...resolveVariable('inputText'),
+        backgroundColor: resolveVariable('inputBackgroundColor'),
+        borderColor: resolveVariable('inputBorderColor'),
         borderRadius: 6,
+        borderWidth: 1,
         height: 50,
         paddingHorizontal: 15,
         paddingVertical: 4,
@@ -180,18 +192,24 @@ export default () => ({
         justifyContent: 'center',
         alignItems: 'center',
         'shoutem.ui.TextInput': {
+          ...resolveVariable('inputText'),
+          backgroundColor: resolveVariable('inputBackgroundColor'),
+          borderColor: resolveVariable('inputBorderColor'),
           borderRadius: 6,
+          borderWidth: 1,
           height: 50,
           flex: 1,
         },
       },
       'shoutem.ui.TouchableOpacity': {
         'shoutem.ui.Caption': {
-          color: '#659CEC',
+          color: resolveVariable('showPasswordButtonColor'),
         },
       },
     },
     registerButton: {
+      backgroundColor: resolveVariable('buttonBackgroundColor'),
+      borderColor: resolveVariable('buttonBorderColor'),
       borderRadius: 6,
       width: '100%',
       minWidth: 140,
@@ -199,14 +217,15 @@ export default () => ({
       marginTop: 40,
       alignSelf: 'center',
       'shoutem.ui.Text': {
-        fontSize: 16,
+        ...resolveVariable('buttonText'),
         margin: 0,
       },
     },
   },
 
   'shoutem.auth.RegisterScreen': {
-    registerScreenMargin: {
+    registerScreen: {
+      backgroundColor: resolveVariable('loginAndRegisterScreenBackgroundColor'),
       paddingHorizontal: 30,
       paddingTop: 40,
     },
@@ -241,7 +260,10 @@ export default () => ({
       lineHeight: 24,
     },
     emailInput: {
+      backgroundColor: resolveVariable('inputBackgroundColor'),
+      borderColor: resolveVariable('inputBorderColor'),
       borderRadius: 6,
+      borderWidth: 1,
     },
     inputCaption: {
       marginBottom: 3,

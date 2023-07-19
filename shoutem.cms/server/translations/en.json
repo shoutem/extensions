@@ -154,6 +154,7 @@
       "importer-csv-mapping-item.empty-placeholder-label": "Select column...",
       "layout-settings-title": "Layout settings",
       "category-picker-type-label": "Category picker type",
+      "hide-timestamp-label": "Hide time since item creation or latest modification",
       "inline-category-picker-label": "Display picker as dropdown above the list. Picker opens in modal",
       "nav-header-category-picker-label": "Display picker as dropdown in navigation header. Picker opens in modal",
       "inline-horizontal-category-picker-label": "Display picker as horizontal list"

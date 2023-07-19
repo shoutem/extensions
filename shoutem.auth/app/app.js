@@ -103,14 +103,29 @@ const createHandleAppStateChange = (dispatch, getState) => appState => {
 
 let handleAppStateChange;
 
-export function appDidMount(app) {
+export async function appDidMount(app) {
   const store = app.getStore();
   const state = store.getState();
   const { dispatch, getState } = store;
 
   const appId = getAppId();
 
-  const { providers } = getExtensionSettings(state, ext());
+  const { providers, trackFbsdkEvents } = getExtensionSettings(state, ext());
+
+  if (trackFbsdkEvents) {
+    const TRACKING_PERMISSION = PERMISSION_TYPES.IOS_APP_TRACKING_TRANSPARENCY;
+
+    if (Platform.OS === 'ios') {
+      requestPermissions(TRACKING_PERMISSION).then(async result => {
+        if (result[TRACKING_PERMISSION] === RESULTS.GRANTED) {
+          Settings.setAdvertiserTrackingEnabled(true);
+        }
+      });
+    } else {
+      Settings.setAdvertiserTrackingEnabled(true);
+    }
+  }
+
   const authApiEndpoint = getExtensionServiceUrl(state, ext(), 'auth');
 
   const providerKeys = Object.keys(providers);

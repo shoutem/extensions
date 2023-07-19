@@ -16,14 +16,25 @@ import {
 } from '@shoutem/ui';
 import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
-import { EpisodeView, mapDispatchToProps } from './EpisodeView';
+import {
+  EpisodeView,
+  mapDispatchToProps,
+  mapStateToProps,
+} from './EpisodeView';
+import FavoriteButton from './FavoriteButton';
 
 /**
  * A component used to render a single list episode item
  */
 export class ListEpisodeView extends EpisodeView {
   render() {
-    const { enableDownload, episode, style } = this.props;
+    const {
+      enableDownload,
+      episode,
+      hasFavorites,
+      isFavorited,
+      style,
+    } = this.props;
     const { downloadInProgress, timeUpdated, title } = episode;
 
     const isDownloaded = downloadInProgress !== undefined;
@@ -54,15 +65,23 @@ export class ListEpisodeView extends EpisodeView {
                 <Caption>{momentDate.fromNow()}</Caption>
               )}
             </View>
-            {enableDownload && !downloadInProgress && (
-              <Button
-                onPress={handleDownloadManagerPress}
-                styleName="clear tight"
-              >
-                <Icon name={iconName} />
-              </Button>
-            )}
-            {downloadInProgress && <Spinner />}
+            <View styleName="vertical">
+              {!!hasFavorites && (
+                <FavoriteButton
+                  onPress={this.onFavoritePress}
+                  isFavorited={isFavorited}
+                />
+              )}
+              {!!enableDownload && !downloadInProgress && (
+                <Button
+                  onPress={handleDownloadManagerPress}
+                  styleName="clear tight"
+                >
+                  <Icon name={iconName} />
+                </Button>
+              )}
+              {!!downloadInProgress && <Spinner />}
+            </View>
           </View>
           <Divider styleName="line" />
         </Row>
@@ -72,6 +91,6 @@ export class ListEpisodeView extends EpisodeView {
 }
 
 export default connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps,
 )(connectStyle(ext('ListEpisodeView'), {})(ListEpisodeView));

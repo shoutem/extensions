@@ -3,50 +3,51 @@ import { changeColorAlpha } from '@shoutem/theme';
 import {
   createScopedResolver,
   Device,
-  dimensionRelativeToIphone,
+  responsiveHeight,
+  responsiveWidth,
 } from '@shoutem/ui';
 import { ext } from '../const';
 
 const resolveVariable = createScopedResolver(ext());
 
 export default () => ({
-  'shoutem.podcast.FeaturedEpisodeView': {
-    downloadManagerButton: {
+  [`${ext('FeaturedEpisodeView')}`]: {
+    actionButtonContainer: {
       position: 'absolute',
       top: 5,
       right: 5,
     },
   },
 
-  'shoutem.podcast.ListEpisodeView': {
+  [`${ext('ListEpisodeView')}`]: {
     episodeTitle: {
       width:
         resolveVariable('sizes.window.width') -
         3 * resolveVariable('mediumGutter') -
-        dimensionRelativeToIphone(65) -
+        responsiveWidth(65) -
         30,
     },
   },
 
-  'shoutem.podcast.EpisodesLargeGridScreen': {
+  [`${ext('EpisodesLargeGridScreen')}`]: {
     gridRow: {
       paddingLeft: 25,
       paddingTop: 30,
     },
   },
 
-  'shoutem.podcast.LargeGridEpisodeView': {
+  [`${ext('LargeGridEpisodeView')}`]: {
     'shoutem.ui.TouchableOpacity': {
       'shoutem.ui.Card': {
         'shoutem.ui.Image': {
-          height: dimensionRelativeToIphone(145),
-          width: dimensionRelativeToIphone(145),
+          height: responsiveHeight(145),
+          width: responsiveWidth(145),
         },
         'shoutem.ui.View': {
           backgroundColor: 'transparent',
           paddingHorizontal: 0,
           paddingBottom: 0,
-          width: dimensionRelativeToIphone(145),
+          width: responsiveWidth(145),
         },
 
         backgroundColor: 'transparent',
@@ -54,7 +55,7 @@ export default () => ({
     },
   },
 
-  'shoutem.podcast.PodcastPlayer': {
+  [`${ext('PodcastPlayer')}`]: {
     container: {
       paddingBottom: Device.select({
         iPhoneX: resolveVariable('sizes.iphone.X.notchPadding'),

@@ -1,0 +1,92 @@
+{
+  "title": "Theme",
+  "properties": {
+    "profileInputBackgroundColor": {
+      "type": "string",
+      "title": "Input background color",
+      "format": "color",
+      "default": "transparent"
+    },
+    "profileInputBorderColor": {
+      "type": "string",
+      "title": "Input border color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "profileInputLabelText": {
+      "type": "object",
+      "title": "Input label text",
+      "format": "font",
+      "default": {
+        "color": "@text.color",
+        "fontFamily": "@text.fontFamily",
+        "fontSize": 15,
+        "fontStyle": "@text.fontStyle",
+        "fontWeight": "@text.fontWeight"
+      }
+    },
+    "profileInputText": {
+      "type": "object",
+      "title": "Input text",
+      "format": "font",
+      "default": {
+        "color": "@text.color",
+        "fontFamily": "@text.fontFamily",
+        "fontSize": 15,
+        "fontStyle": "@text.fontStyle",
+        "fontWeight": "@text.fontWeight"
+      }
+    },
+    "profileScreenBackgroundColor": {
+      "type": "string",
+      "title": "Screen background color",
+      "format": "color",
+      "default": "@paperColor"
+    },
+    "profileSubmitButtonBackgroundColor": {
+      "type": "string",
+      "title": "Submit button background color",
+      "format": "color",
+      "default": "@primaryButtonBackgroundColor"
+    },
+    "profileSubmitButtonBorderColor": {
+      "type": "string",
+      "title": "Submit button border color",
+      "format": "color",
+      "default": "@primaryButtonBackgroundColor"
+    },
+    "profileSubmitButtonTextColor": {
+      "type": "string",
+      "title": "Submit button text color",
+      "format": "color",
+      "default": "@primaryButtonText.color"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Screen",
+        "properties": [
+          "profileScreenBackgroundColor"
+        ]
+      },
+      {
+        "title": "Text inputs",
+        "properties": [
+          "profileInputBackgroundColor",
+          "profileInputBorderColor",
+          "profileInputLabelText",
+          "profileInputText"
+        ]
+      },
+      {
+        "title": "Submit button",
+        "properties": [
+          "profileSubmitButtonBackgroundColor",
+          "profileSubmitButtonBorderColor",
+          "profileSubmitButtonTextColor"
+        ]
+      }
+    ]
+  }
+}

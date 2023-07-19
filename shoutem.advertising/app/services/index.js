@@ -1,2 +1,2 @@
+export { adBannerDisabled, hasCustomAdRenderer } from './staticSetters';
 export { withAdBanner } from './withAdBanner';
-export { adBannerDisabled } from './adBannerDisabled';

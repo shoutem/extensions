@@ -16,14 +16,25 @@ import {
 } from '@shoutem/ui';
 import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
-import { EpisodeView, mapDispatchToProps } from './EpisodeView';
+import {
+  EpisodeView,
+  mapDispatchToProps,
+  mapStateToProps,
+} from './EpisodeView';
+import { FavoriteButton } from './FavoriteButton';
 
 /**
  * A component used to render featured podcast episode
  */
 export class FeaturedEpisodeView extends EpisodeView {
   render() {
-    const { enableDownload, episode, style } = this.props;
+    const {
+      enableDownload,
+      episode,
+      hasFavorites,
+      isFavorited,
+      style,
+    } = this.props;
     const { author, downloadInProgress, timeUpdated, title } = episode;
 
     const isDownloaded = downloadInProgress !== undefined;
@@ -57,18 +68,25 @@ export class FeaturedEpisodeView extends EpisodeView {
                 )}
               </View>
             </Tile>
-            {enableDownload && !downloadInProgress && (
-              <Button
-                styleName="clear tight"
-                onPress={handleDownloadManagerPress}
-                style={style.downloadManagerButton}
-              >
-                <Icon name={iconName} />
-              </Button>
-            )}
-            {downloadInProgress && (
-              <Spinner style={style.downloadManagerButton} />
-            )}
+            <View style={style.actionButtonContainer}>
+              {!!hasFavorites && (
+                <FavoriteButton
+                  onPress={this.onFavoritePress}
+                  isFavorited={isFavorited}
+                />
+              )}
+              {!!enableDownload && !downloadInProgress && (
+                <Button
+                  styleName="clear tight"
+                  onPress={handleDownloadManagerPress}
+                >
+                  <Icon name={iconName} />
+                </Button>
+              )}
+              {!!downloadInProgress && (
+                <Spinner style={style.downloadManagerButton} />
+              )}
+            </View>
           </ImageBackground>
         </View>
         <Divider styleName="line" />
@@ -78,6 +96,6 @@ export class FeaturedEpisodeView extends EpisodeView {
 }
 
 export default connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps,
 )(connectStyle(ext('FeaturedEpisodeView'), {})(FeaturedEpisodeView));

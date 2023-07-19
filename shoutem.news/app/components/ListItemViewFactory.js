@@ -1,8 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
+import { LargeListArticleView } from './LargeListArticleView';
 import { ListArticleView } from './ListArticleView';
 import { MediumListArticleView } from './MediumListArticleView';
-import { LargeListArticleView } from './LargeListArticleView';
 import { TileListArticleView } from './TileListArticleView';
 
 const layoutItems = {
@@ -29,7 +29,12 @@ export const getItemProps = item => ({
  * @param {function} onPress A function that is called after a click on the item
  * @returns List item component
  */
-export const createListItem = (layoutName, article, onPress) => {
+export const createListItem = (
+  layoutName,
+  article,
+  onPress,
+  hideModificationTimestamp,
+) => {
   if (!layoutItems[layoutName]) {
     // eslint-disable-next-line no-console
     console.error(`List item not registered for layout ${layoutName}`);
@@ -37,5 +42,11 @@ export const createListItem = (layoutName, article, onPress) => {
   }
 
   const ListItem = layoutItems[layoutName];
-  return <ListItem {...getItemProps(article)} onPress={onPress} />;
+  return (
+    <ListItem
+      {...getItemProps(article)}
+      hideModificationTimestamp={hideModificationTimestamp}
+      onPress={onPress}
+    />
+  );
 };

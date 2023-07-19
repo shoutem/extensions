@@ -89,7 +89,6 @@ class LoginForm extends PureComponent {
           <TextInput
             autoCapitalize="none"
             autoCorrect={false}
-            highlightOnFocus
             keyboardAppearance="dark"
             keyboardType="email-address"
             onChangeText={this.handleUsernameChange}
