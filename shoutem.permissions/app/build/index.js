@@ -1,12 +1,12 @@
 require('colors');
 const fs = require('fs-extra');
 const _ = require('lodash');
+const path = require('path');
 const plist = require('plist');
 const buildTools = require('shoutem.application/build');
 const {
   ANCHORS,
   getAppConfiguration,
-  getPodfileTemplatePath,
   inject,
   projectPath,
   getAndroidManifestPath,
@@ -16,6 +16,8 @@ const {
   ANDROID_PERMISSION_NATIVE_DATA,
   PERMISSION_IOS_RATIONALE_PREFIX,
 } = require('./const');
+const { name: extName } = require('../package.json');
+
 const { getExtensionSettings } = buildTools.configuration;
 
 const registeredPermissions = {};
@@ -36,17 +38,17 @@ function overwriteRationales(appConfiguration) {
     'shoutem.permissions',
   );
   const { permissionsToOverwrite: permissionsToOverwriteText } = settings;
-  
+
   if (!permissionsToOverwriteText) {
     return;
   }
-  
+
   const permissionsToOverwrite = JSON.parse(permissionsToOverwriteText);
 
   for (const type of _.keys(permissionsToOverwrite)) {
     const permission = { type, rationale: permissionsToOverwrite[type] };
 
-    if (!!registeredPermissions[type]) {
+    if (registeredPermissions[type]) {
       // eslint-disable-next-line no-console
       console.log(`Overwriting permission rationale - ${type}`.bold.green);
       registeredPermissions[type] = {
@@ -59,6 +61,7 @@ function overwriteRationales(appConfiguration) {
         }),
       };
     } else {
+      // eslint-disable-next-line no-console
       console.log(
         `Warning: can not overwrite permission rationale, ${type} permission does not exist.`
           .yellow,
@@ -67,20 +70,34 @@ function overwriteRationales(appConfiguration) {
   }
 }
 
-function injectPodfileData() {
-  const podfileTemplatePath = getPodfileTemplatePath({ cwd: projectPath });
+function injectPermissionsToPackageJson() {
+  const packageJsonPath = path.join(projectPath, 'package.json');
+  const rootPackageJson = fs.readJsonSync(packageJsonPath);
 
-  _.forEach(registeredPermissions, permission => {
-    if (isIOSPermission(permission) && permission.pod && permission.podPath) {
-      const injectedString = `pod '${permission.pod}', :path => "${permission.podPath}"`;
+  if (_.isEmpty(registeredPermissions)) {
+    return;
+  }
 
-      inject(
-        podfileTemplatePath,
-        ANCHORS.IOS.PODFILE.EXTENSION_DEPENDENCIES,
-        injectedString,
-      );
-    }
+  const iosPermissions = _.filter(registeredPermissions, isIOSPermission);
+
+  if (_.isEmpty(iosPermissions)) {
+    return;
+  }
+
+  rootPackageJson.reactNativePermissionsIOS = [];
+
+  iosPermissions.forEach(permission => {
+    rootPackageJson.reactNativePermissionsIOS.push(permission.name);
   });
+
+  if (rootPackageJson.reactNativePermissionsIOS?.length) {
+    fs.writeJsonSync(packageJsonPath, rootPackageJson, { spaces: 2 });
+    // eslint-disable-next-line no-console
+    console.log(
+      `[${extName}]: Added IOS permissions to package.json:`,
+      rootPackageJson.reactNativePermissionsIOS,
+    );
+  }
 }
 
 function parsePlist(plistPath) {
@@ -92,6 +109,7 @@ function parsePlist(plistPath) {
     try {
       plistResult = plist.parse(plistContent);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error('Unable to parse plist', plistPath);
     }
   }
@@ -147,6 +165,7 @@ function injectManifestPermissions() {
 function preBuild(appConfiguration) {
   const files = fs.readdirSync(`${projectPath}/extensions`);
   const withoutHiddenFiles = files.filter(
+    // eslint-disable-next-line no-useless-escape
     item => !/(^|\/)\.[^\/\.]/g.test(item),
   );
   const extensions = _.without(withoutHiddenFiles, 'README.md', 'package.json');
@@ -158,7 +177,7 @@ function preBuild(appConfiguration) {
     if (hasFile) {
       const {
         permissions,
-        // eslint-disable-next-line global-require
+        // eslint-disable-next-line global-require, import/no-dynamic-require
       } = require(`${projectPath}/extensions/${extension}/app/permissions.js`);
       _.forEach(permissions, permission => {
         const currentRationale = _.get(
@@ -184,7 +203,7 @@ function preBuild(appConfiguration) {
   });
 
   overwriteRationales(appConfiguration);
-  injectPodfileData();
+  injectPermissionsToPackageJson();
   injectPlistPermissions();
   injectManifestPermissions();
 }

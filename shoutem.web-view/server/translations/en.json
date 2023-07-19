@@ -6,7 +6,7 @@
       "web-page.form-location-permissions": "This website requires location permissions",
       "web-page.form-cookies-permissions": "This website requires cookies",
       "web-page.form-navigation-bar": "Show navigation toolbar",
-      "web-page.form-forward-auth-header": "Forward authentication header",
+      "web-page.form-forward-auth-header": "Forward Shoutem authentication header",
       "web-page.button-continue": "Continue",
       "web-page.invalid-url": "Invalid URL.",
       "web-page.generic-urls-alert-message": "We support defining user custom URLs. To define it, wrap user constants inside double curly brackets, like so: <1 /> <2> https://www.example.com/&#123;&#123;profile.nick&#125;&#125;?id=&#123;&#123;id&#125;&#125;</2><3 /><4 /> When defining user custom URLs, consider protecting the screen - requiring user to log in. If user is not logged in, user specific URL parts might not be parsed as inteded. To protect your screen, go <6 /> to Settings > Users > Protected screens."

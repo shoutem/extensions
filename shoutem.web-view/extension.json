@@ -1,10 +1,10 @@
 {
   "name": "web-view",
-  "version": "5.4.2",
+  "version": "5.4.1",
   "platform": ">=12.1.0",
   "type": "system",
   "title": "Web view",
-  "releaseNotes": "* Adjusted wording in auth header explanation",
+  "releaseNotes": "* Resolved issue with tracking permission being added when not necessary",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "nativeChanges": {
