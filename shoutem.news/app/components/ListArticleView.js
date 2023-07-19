@@ -17,25 +17,18 @@ import { ArticleView } from './ArticleView';
  * A component used to render a single list article item
  */
 export class ListArticleView extends ArticleView {
-  static propTypes = {
-    articleId: PropTypes.string.isRequired,
-    onPress: PropTypes.func.isRequired,
-    date: PropTypes.string,
-    imageUrl: PropTypes.string,
-    title: PropTypes.string,
-  };
-
   render() {
-    const { title, imageUrl, date } = this.props;
+    const { hideModificationTimestamp, title, imageUrl, date } = this.props;
 
     const articleImage = imageUrl
       ? { uri: imageUrl }
       : assets.noImagePlaceholder;
 
     const momentDate = moment(date);
-    const dateInfo = momentDate.isAfter(0) ? (
-      <Caption>{momentDate.fromNow()}</Caption>
-    ) : null;
+    const dateInfo =
+      momentDate.isAfter(0) && !hideModificationTimestamp ? (
+        <Caption>{momentDate.fromNow()}</Caption>
+      ) : null;
 
     return (
       <TouchableOpacity onPress={this.onPress}>
@@ -55,3 +48,19 @@ export class ListArticleView extends ArticleView {
     );
   }
 }
+
+ListArticleView.propTypes = {
+  articleId: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+  date: PropTypes.string,
+  hideModificationTimestamp: PropTypes.bool,
+  imageUrl: PropTypes.string,
+  title: PropTypes.string,
+};
+
+ListArticleView.defaultProps = {
+  date: undefined,
+  hideModificationTimestamp: false,
+  imageUrl: undefined,
+  title: undefined,
+};

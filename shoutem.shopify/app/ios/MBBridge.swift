@@ -289,25 +289,25 @@ class MBBridge: NSObject {
       return reject("error", "Unable to get customer", nil)
     }
     let accessToken = String(decoding: token, as: UTF8.self)
-    
+
     let input = Storefront.CustomerUpdateInput.create()
-    
+
     if let firstName = userInfo["firstName"] as? String {
       input.firstName = Input.value(firstName)
     }
-    
+
     if let lastName = userInfo["lastName"] as? String {
       input.lastName = Input.value(lastName)
     }
-    
+
     if let email = userInfo["email"] as? String {
       input.lastName = Input.value(email)
     }
-    
+
     if let phone = userInfo["phone"] as? String {
       input.phone = Input.value(phone)
     }
-    
+
     let mutation = Storefront.buildMutation { $0
       .customerUpdate(customerAccessToken: accessToken as String, customer: input) { $0
         .customer { $0
@@ -399,20 +399,20 @@ class MBBridge: NSObject {
       }
     }.resume()
   }
-  
+
   @objc func updateCustomerDefaultAddress(_ addressId: NSString, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
     guard let token = MBBridge.getAccessToken() else {
       return reject("error", "Unable to login", nil)
     }
-    
+
     let accessToken = String(decoding: token, as: UTF8.self)
-    
+
     let mutation = Storefront.buildMutation { $0
       .customerDefaultAddressUpdate(customerAccessToken: accessToken as String, addressId: GraphQL.ID(rawValue: addressId as String)) { $0
         .customer { $0
           .id()
         }
-        .customerUserErrors() { $0
+        .customerUserErrors { $0
           .field()
           .message()
         }
@@ -427,7 +427,6 @@ class MBBridge: NSObject {
         reject("error", "Error updating customer's default address", error)
       }
     }.resume()
-    
   }
 
   @objc func updateCustomerAddress(_ addressId: NSString, addressInfo: NSDictionary, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
@@ -722,11 +721,11 @@ class MBBridge: NSObject {
                   .edges { $0
                     .node { $0
                       .id()
-                      .compareAtPriceV2() { $0
+                      .compareAtPriceV2 { $0
                         .amount()
                         .currencyCode()
                       }
-                      .priceV2() { $0
+                      .priceV2 { $0
                         .amount()
                         .currencyCode()
                       }
@@ -808,7 +807,7 @@ class MBBridge: NSObject {
         .checkout { $0
           .id()
           .webUrl()
-          .paymentDueV2() { $0
+          .paymentDueV2 { $0
             .amount()
             .currencyCode()
           }
@@ -973,11 +972,11 @@ class MBBridge: NSObject {
               .edges { $0
                 .node { $0
                   .id()
-                  .compareAtPriceV2() { $0
+                  .compareAtPriceV2 { $0
                     .amount()
                     .currencyCode()
                   }
-                  .priceV2() { $0
+                  .priceV2 { $0
                     .amount()
                     .currencyCode()
                   }

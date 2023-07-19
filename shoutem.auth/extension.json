@@ -1,10 +1,10 @@
 {
   "name": "auth",
-  "version": "7.2.0",
+  "version": "7.3.1",
   "platform": ">=12.3.0",
   "title": "Users",
   "nativeChanges": {
-    "lastVersion": "7.2.0",
+    "lastVersion": "7.2.1",
     "settingsKeys": [
       "providers.facebook.appId",
       "providers.facebook.appName",
@@ -15,7 +15,7 @@
     ]
   },
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Added automatic event tracking capability\n* To turn it on, go to Settings - Users - General and turn on \"Enable Facebook automatic event tracking\"",
+  "releaseNotes": "* Fixed Protected screens and Groups pages not showing properly",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",
@@ -27,7 +27,9 @@
     "shoutem.redux",
     "shoutem.web-view"
   ],
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -98,6 +100,16 @@
     {
       "page": "@.GdprSettingsPage",
       "title": "GDPR"
+    },
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
     }
   ],
   "pages": [
@@ -156,6 +168,12 @@
     {
       "id": "shoutem.auth.complete-registration",
       "name": "App dismissed - user not registered"
+    }
+  ],
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
     }
   ]
 }

@@ -85,7 +85,6 @@ class PasswordRecoveryScreen extends PureComponent {
             errorMessage={emailError}
             autoCapitalize="none"
             autoCorrect={false}
-            highlightOnFocus
             keyboardAppearance="dark"
             keyboardType="email-address"
             onChangeText={this.handleEmailChange}

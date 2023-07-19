@@ -11,6 +11,7 @@ const FORM_INTERSTITIAL_KEYWORDS = `${key}.form-interstitial-keywords`;
 const SETTINGS_TITLE = `${key}.settings-title`;
 const BANNER_ADS_TITLE = `${key}.banner-ads-title`;
 const INTERSTITIAL_ADS_TITLE = `${key}.interstitial-ads-title`;
+const FORM_BANNER_PLACEMENT_INFO = `${key}.form-banner-placement-info`;
 const FORM_BANNER_PLACEMENT_TITLE = `${key}.form-banner-placement-title`;
 const FORM_MAX_AD_CONTENT_RATING_TITLE = `${key}.form-max-ad-content-rating-title`;
 const FORM_CHILD_DIRECT_TREATMENT_TITLE = `${key}.form-child-direct-treatment-title`;
@@ -29,6 +30,7 @@ export default {
   SETTINGS_TITLE,
   BANNER_ADS_TITLE,
   INTERSTITIAL_ADS_TITLE,
+  FORM_BANNER_PLACEMENT_INFO,
   FORM_BANNER_PLACEMENT_TITLE,
   FORM_MAX_AD_CONTENT_RATING_TITLE,
   FORM_CHILD_DIRECT_TREATMENT_TITLE,

@@ -5,7 +5,9 @@
       "actionSheetDeleteOption": "Delete download",
       "actionSheetDownloadOption": "Download",
       "actionSheetDownloadInProgress": "Downloading...",
+      "actionSheetFavorite": "Favorite",
       "actionSheetShareOption": "Share",
+      "actionSheetUnfavorite": "Unfavorite",
       "deviceSettingsDescription": "To download and play offline podcast episodes, the app requires read and write access to external storage.",
       "deviceSettingsTitle": "Go to Settings",
       "upNext": "UP NEXT"

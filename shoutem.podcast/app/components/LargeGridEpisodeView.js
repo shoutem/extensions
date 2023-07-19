@@ -15,14 +15,19 @@ import {
 } from '@shoutem/ui';
 import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
-import { EpisodeView, mapDispatchToProps } from './EpisodeView';
+import {
+  EpisodeView,
+  mapDispatchToProps,
+  mapStateToProps,
+} from './EpisodeView';
+import { FavoriteButton } from './FavoriteButton';
 
 /**
  * A component used to render a single large grid episode item
  */
 export class LargeGridEpisodeView extends EpisodeView {
   render() {
-    const { enableDownload, episode } = this.props;
+    const { enableDownload, episode, hasFavorites, isFavorited } = this.props;
     const { downloadInProgress, timeUpdated, title } = episode;
 
     const isDownloaded = downloadInProgress !== undefined;
@@ -46,15 +51,23 @@ export class LargeGridEpisodeView extends EpisodeView {
               <Caption>
                 {momentDate.isAfter(0) ? momentDate.fromNow() : ''}
               </Caption>
-              {enableDownload && !downloadInProgress && (
-                <Button
-                  onPress={handleDownloadManagerPress}
-                  styleName="clear tight"
-                >
-                  <Icon name={iconName} />
-                </Button>
-              )}
-              {downloadInProgress && <Spinner />}
+              <View styleName="horizontal">
+                {!!hasFavorites && (
+                  <FavoriteButton
+                    isFavorited={isFavorited}
+                    onPress={this.onFavoritePress}
+                  />
+                )}
+                {!!enableDownload && !downloadInProgress && (
+                  <Button
+                    onPress={handleDownloadManagerPress}
+                    styleName="clear tight"
+                  >
+                    <Icon name={iconName} />
+                  </Button>
+                )}
+                {!!downloadInProgress && <Spinner />}
+              </View>
             </View>
           </View>
         </Card>
@@ -64,6 +77,6 @@ export class LargeGridEpisodeView extends EpisodeView {
 }
 
 export default connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps,
 )(connectStyle(ext('LargeGridEpisodeView'), {})(LargeGridEpisodeView));

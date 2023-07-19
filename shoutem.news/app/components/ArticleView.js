@@ -3,15 +3,6 @@ import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 
 export class ArticleView extends PureComponent {
-  static propTypes = {
-    onPress: PropTypes.func,
-    articleId: PropTypes.string,
-    title: PropTypes.string,
-    author: PropTypes.string,
-    imageUrl: PropTypes.string,
-    date: PropTypes.string,
-  };
-
   constructor(props) {
     super(props);
 
@@ -24,3 +15,24 @@ export class ArticleView extends PureComponent {
     onPress(articleId);
   }
 }
+
+/* eslint-disable react/no-unused-prop-types */
+// Disabling because these props are used in components via inheritence
+ArticleView.propTypes = {
+  articleId: PropTypes.string,
+  author: PropTypes.string,
+  date: PropTypes.string,
+  imageUrl: PropTypes.string,
+  title: PropTypes.string,
+  onPress: PropTypes.func,
+};
+/* eslint-enable react/no-unused-prop-types */
+
+ArticleView.defaultProps = {
+  articleId: undefined,
+  author: undefined,
+  date: undefined,
+  imageUrl: undefined,
+  title: undefined,
+  onPress: undefined,
+};

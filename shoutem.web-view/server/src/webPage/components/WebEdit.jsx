@@ -9,12 +9,14 @@ import './style.scss';
 export default function WebEdit({
   url,
   showNavigationToolbar,
+  requireCookiesPermission,
   requireGeolocationPermission,
   hasWebsiteSettings,
   forwardAuthHeader,
   onForwardAuthHeaderChange,
   onRemoveClick,
   onRequireGeolocationPermissionChange,
+  onRequireCookiesPermissionChange,
   onShowNavigationToolbarChange,
 }) {
   function handleShowNavigationToolbarChange(event) {
@@ -32,6 +34,12 @@ export default function WebEdit({
   function handleGeolocationPermissionChange(event) {
     if (event.target) {
       onRequireGeolocationPermissionChange(event.target.checked);
+    }
+  }
+
+  function handleCookiesPermissionChange(event) {
+    if (event.target) {
+      onRequireCookiesPermissionChange(event.target.checked);
     }
   }
 
@@ -63,6 +71,12 @@ export default function WebEdit({
               {i18next.t(LOCALIZATION.FORM_LOCATION_PERMISSIONS)}
             </Checkbox>
             <Checkbox
+              checked={requireCookiesPermission}
+              onChange={handleCookiesPermissionChange}
+            >
+              {i18next.t(LOCALIZATION.FORM_COOKIES_PERMISSIONS)}
+            </Checkbox>
+            <Checkbox
               checked={showNavigationToolbar}
               onChange={handleShowNavigationToolbarChange}
             >
@@ -84,10 +98,12 @@ export default function WebEdit({
 WebEdit.propTypes = {
   onForwardAuthHeaderChange: PropTypes.func.isRequired,
   onRemoveClick: PropTypes.func.isRequired,
+  onRequireCookiesPermissionChange: PropTypes.func.isRequired,
   onRequireGeolocationPermissionChange: PropTypes.func.isRequired,
   onShowNavigationToolbarChange: PropTypes.func.isRequired,
   forwardAuthHeader: PropTypes.bool,
   hasWebsiteSettings: PropTypes.bool,
+  requireCookiesPermission: PropTypes.bool,
   requireGeolocationPermission: PropTypes.bool,
   showNavigationToolbar: PropTypes.bool,
   url: PropTypes.string,
@@ -97,6 +113,7 @@ WebEdit.defaultProps = {
   hasWebsiteSettings: undefined,
   url: undefined,
   showNavigationToolbar: false,
+  requireCookiesPermission: false,
   requireGeolocationPermission: false,
   forwardAuthHeader: false,
 };

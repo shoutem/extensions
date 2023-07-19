@@ -11,6 +11,11 @@ import { EmptyStateView, Keyboard, Screen, View } from '@shoutem/ui';
 import { currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
+import {
+  PERMISSION_TYPES,
+  requestPermissions,
+  RESULTS,
+} from 'shoutem.permissions';
 import { AppContextProvider } from 'shoutem-core';
 import NavigationToolbar from '../components/NavigationToolbar';
 import { AUTH_EXTENSION, ext } from '../const';
@@ -28,6 +33,7 @@ export class WebViewScreen extends PureComponent {
     this.webViewRef = createRef();
 
     this.state = {
+      trackingGranted: isAndroid,
       webNavigationState: {},
     };
 
@@ -51,6 +57,17 @@ export class WebViewScreen extends PureComponent {
     const { navigation } = this.props;
 
     navigation.setOptions(this.getNavBarProps());
+
+    if (!isAndroid) {
+      const TRACKING_PERMISSION =
+        PERMISSION_TYPES.IOS_APP_TRACKING_TRANSPARENCY;
+
+      requestPermissions(TRACKING_PERMISSION).then(result => {
+        if (result[TRACKING_PERMISSION] === RESULTS.GRANTED) {
+          this.setState({ trackingGranted: true });
+        }
+      });
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -119,6 +136,8 @@ export class WebViewScreen extends PureComponent {
   }
 
   resolveWebViewProps(appContext) {
+    const { trackingGranted } = this.state;
+
     const {
       headers,
       forwardAuthHeader,
@@ -158,6 +177,7 @@ export class WebViewScreen extends PureComponent {
       scalesPageToFit: true,
       allowsInlineMediaPlayback: true,
       showsVerticalScrollIndicator: false,
+      sharedCookiesEnabled: trackingGranted,
       javaScriptCanOpenWindowsAutomatically: true,
       mixedContentMode: isAndroid ? 'compatibility' : 'never',
     };

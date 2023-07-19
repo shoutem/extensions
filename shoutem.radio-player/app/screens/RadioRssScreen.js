@@ -24,7 +24,7 @@ import {
   useTimer,
 } from '../hooks';
 
-function RadioRssScreen({ navigation, route, style }) {
+function RadioRssScreen({ navigation, route, style, renderAdBanner }) {
   const { shortcut } = route.params;
   const {
     settings: {
@@ -101,6 +101,9 @@ function RadioRssScreen({ navigation, route, style }) {
         styleName="fill-parent"
       >
         <Overlay style={style.overlayStyle} styleName="image-overlay">
+          {!!renderAdBanner && (
+            <View style={style.adBannerContainer}>{renderAdBanner()}</View>
+          )}
           <Tile
             styleName="clear text-centric"
             style={style.radioPlayerContainer}
@@ -149,10 +152,12 @@ function RadioRssScreen({ navigation, route, style }) {
 RadioRssScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
+  renderAdBanner: PropTypes.func,
   style: PropTypes.object,
 };
 
 RadioRssScreen.defaultProps = {
+  renderAdBanner: null,
   style: {},
 };
 

@@ -72,10 +72,15 @@ export class ArticlesScreen extends CmsListScreen {
   }
 
   renderFeaturedItem(item) {
+    const {
+      screenSettings: { hideModificationTimestamp },
+    } = getRouteParams(this.props);
+
     return item ? (
       <FeaturedArticleView
         {...getItemProps(item)}
         onPress={this.openArticleWithId}
+        hideModificationTimestamp={hideModificationTimestamp}
       />
     ) : null;
   }
@@ -87,6 +92,7 @@ export class ArticlesScreen extends CmsListScreen {
       screenSettings.listType,
       data,
       this.openArticleWithId,
+      screenSettings.hideModificationTimestamp,
     );
   }
 }

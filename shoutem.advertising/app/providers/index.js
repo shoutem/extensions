@@ -1,1 +1,1 @@
-export { AdProvider, AdContext } from './AdProvider';
+export { AdContext, default as AdProvider } from './AdProvider';

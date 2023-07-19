@@ -33,7 +33,12 @@ import { useMetadata, usePlaybackState, useTimer } from '../hooks';
 
 const DEPRECATED_RADIO_EXTENSION_SHORTCUT = 'shoutem.radio.Radio';
 
-export function ArtworkRadioScreen({ navigation, route, style }) {
+export function ArtworkRadioScreen({
+  navigation,
+  route,
+  style,
+  renderAdBanner,
+}) {
   const { shortcut } = route.params;
   const {
     settings: { navbarTitle, showSharing, streamTitle, streamUrl },
@@ -124,6 +129,9 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
         blurRadius={style.blurRadius}
       >
         <View styleName="fill-parent vertical h-center" style={style.overlay}>
+          {!!renderAdBanner && (
+            <View style={style.adBannerContainer}>{renderAdBanner()}</View>
+          )}
           <View style={style.streamTitleContainer}>
             <Title style={style.streamTitle}>{streamTitle}</Title>
           </View>
@@ -212,10 +220,12 @@ export function ArtworkRadioScreen({ navigation, route, style }) {
 ArtworkRadioScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
+  renderAdBanner: PropTypes.func,
   style: PropTypes.object,
 };
 
 ArtworkRadioScreen.defaultProps = {
+  renderAdBanner: null,
   style: {},
 };
 

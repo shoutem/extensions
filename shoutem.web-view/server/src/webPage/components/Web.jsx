@@ -9,6 +9,18 @@ import WebEdit from './WebEdit';
 import WebUrlInput from './WebUrlInput';
 
 function Web({ shortcut, updateShortcut }) {
+  const {
+    settings: {
+      url,
+      showNavigationToolbar,
+      requireGeolocationPermission,
+      requireCookiesPermission,
+      forwardAuthHeader,
+    },
+  } = shortcut;
+
+  const { hasWebsiteSettings } = data.params;
+
   function updateShortcutSettings(settings) {
     const { id, settings: currentSettings } = shortcut;
 
@@ -44,16 +56,11 @@ function Web({ shortcut, updateShortcut }) {
     updateShortcutSettings({ requireGeolocationPermission: checked });
   }
 
-  const {
-    settings: {
-      url,
-      showNavigationToolbar,
-      requireGeolocationPermission,
-      forwardAuthHeader,
-    },
-  } = shortcut;
-
-  const { hasWebsiteSettings } = data.params;
+  function handleCookiesPermissionChange(checked) {
+    updateShortcutSettings({
+      requireCookiesPermission: checked,
+    });
+  }
 
   return (
     <div>
@@ -64,6 +71,7 @@ function Web({ shortcut, updateShortcut }) {
           url={url}
           showNavigationToolbar={showNavigationToolbar}
           forwardAuthHeader={forwardAuthHeader}
+          requireCookiesPermission={requireCookiesPermission}
           requireGeolocationPermission={requireGeolocationPermission}
           onRemoveClick={handleUrlRemoveClick}
           onShowNavigationToolbarChange={handleShowNavigationToolbarChange}
@@ -71,6 +79,7 @@ function Web({ shortcut, updateShortcut }) {
           onRequireGeolocationPermissionChange={
             handleGeolocationPermissionChange
           }
+          onRequireCookiesPermissionChange={handleCookiesPermissionChange}
         />
       )}
     </div>

@@ -24,13 +24,17 @@ import {
 import { I18n } from 'shoutem.i18n';
 import { closeModal, getRouteParams } from 'shoutem.navigation';
 import { ext as rssExt, getLeadImageUrl } from 'shoutem.rss';
-import { PodcastPlayer } from '../components';
+import { FavoriteButton, PodcastPlayer } from '../components';
 import { ext } from '../const';
 import {
   deleteEpisode,
   downloadEpisode,
+  favoriteEpisode,
   getDownloadedEpisode,
   getEpisodesFeed,
+  getHasFavorites,
+  getIsFavorited,
+  unfavoriteEpisode,
 } from '../redux';
 
 export class EpisodeDetailsScreen extends PureComponent {
@@ -77,9 +81,9 @@ export class EpisodeDetailsScreen extends PureComponent {
       actionSheetOptions,
       downloadInProgress,
       downloadedEpisode,
-      enableDownload,
       enableSharing,
       episode,
+      hasFavorites,
     } = this.props;
 
     const url = _.get(episode, 'link', '');
@@ -94,9 +98,9 @@ export class EpisodeDetailsScreen extends PureComponent {
         tintColor: 'black',
       },
       index => {
+        // Index 1 can only be Share or Favorite
         if (index === 1) {
           if (enableSharing) {
-            // If sharing is enabled, it is always on option with an index of 1
             Share.share({
               title,
               // URL property isn't supported on Android, so we are
@@ -104,9 +108,26 @@ export class EpisodeDetailsScreen extends PureComponent {
               message: Platform.OS === 'android' ? resolvedUrl : null,
               url: resolvedUrl,
             });
-          } else if (enableDownload && !downloadInProgress) {
-            // If sharing isn't enabled, the option on index 1 is used for
-            // download functionality
+          } else {
+            this.onFavoritePress();
+          }
+        }
+
+        // Index two can only be Favorite and Download
+        if (index === 2) {
+          if (enableSharing && hasFavorites) {
+            this.onFavoritePress();
+          }
+
+          if (enableSharing && !hasFavorites && !downloadInProgress) {
+            if (downloadedEpisode) {
+              this.deleteDownload();
+            } else {
+              this.startDownload();
+            }
+          }
+
+          if (!enableSharing && hasFavorites && !downloadInProgress) {
             if (downloadedEpisode) {
               this.deleteDownload();
             } else {
@@ -115,9 +136,7 @@ export class EpisodeDetailsScreen extends PureComponent {
           }
         }
 
-        // If an index of 2 exists, it implies both sharing and download are
-        // enabled and option with index 2 is for download functionality
-        if (index === 2 && !downloadInProgress) {
+        if (index === 3 && !downloadInProgress) {
           if (downloadedEpisode) {
             this.deleteDownload();
           } else {
@@ -137,6 +156,21 @@ export class EpisodeDetailsScreen extends PureComponent {
     };
   }
 
+  onFavoritePress() {
+    const {
+      enableDownload,
+      episode,
+      favoriteEpisode,
+      feedUrl,
+      isFavorited,
+      unfavoriteEpisode,
+    } = this.props;
+
+    return isFavorited
+      ? unfavoriteEpisode(episode.id)
+      : favoriteEpisode(episode, enableDownload, feedUrl);
+  }
+
   headerRight(props) {
     const {
       downloadedEpisode,
@@ -144,15 +178,21 @@ export class EpisodeDetailsScreen extends PureComponent {
       enableDownload,
       enableSharing,
       episode,
+      hasFavorites,
+      isFavorited,
     } = this.props;
-
-    if (!enableDownload && !downloadedEpisode && !enableSharing) {
-      return null;
-    }
 
     const hasDownloadOption = enableDownload || downloadedEpisode;
 
-    if (hasDownloadOption && enableSharing) {
+    if (!hasDownloadOption && !enableSharing && !hasFavorites) {
+      return null;
+    }
+
+    if (
+      (hasDownloadOption && enableSharing) ||
+      (hasDownloadOption && hasFavorites) ||
+      (enableSharing && hasFavorites)
+    ) {
       return (
         <Button styleName="clear tight" onPress={this.openActionSheet}>
           <Icon name="more-horizontal" style={props.tintColor} />
@@ -160,7 +200,7 @@ export class EpisodeDetailsScreen extends PureComponent {
       );
     }
 
-    if (hasDownloadOption && !enableSharing) {
+    if (hasDownloadOption && !enableSharing && !hasFavorites) {
       if (downloadInProgress) {
         return <Spinner />;
       }
@@ -174,6 +214,16 @@ export class EpisodeDetailsScreen extends PureComponent {
         <Button styleName="clear tight" onPress={handleDownloadPress}>
           <Icon name={iconName} style={props.tintColor} />
         </Button>
+      );
+    }
+
+    if (!hasDownloadOption && !enableSharing && hasFavorites) {
+      return (
+        <FavoriteButton
+          onPress={this.onFavoritePress}
+          isFavorited={isFavorited}
+          iconColor={props.tintColor}
+        />
       );
     }
 
@@ -292,8 +342,13 @@ EpisodeDetailsScreen.propTypes = {
   enableDownload: PropTypes.bool.isRequired,
   enableSharing: PropTypes.bool.isRequired,
   episodeNotFound: PropTypes.bool.isRequired,
+  favoriteEpisode: PropTypes.func.isRequired,
+  feedUrl: PropTypes.func.isRequired,
+  hasFavorites: PropTypes.bool.isRequired,
   id: PropTypes.string.isRequired,
+  isFavorited: PropTypes.bool.isRequired,
   navigation: PropTypes.object.isRequired,
+  unfavoriteEpisode: PropTypes.func.isRequired,
   data: PropTypes.array,
   downloadedEpisode: PropTypes.object,
   episode: PropTypes.object,
@@ -310,18 +365,29 @@ export function mapStateToProps(state, ownProps) {
     enableDownload = false,
     feedUrl,
     id,
-    screenSettings: { enableSharing },
+    screenSettings: { enableSharing = false },
+    episode: favoritedEpisode,
   } = getRouteParams(ownProps);
 
   const data = getEpisodesFeed(state, feedUrl);
   const downloadedEpisode = getDownloadedEpisode(state, id);
   const episode = _.find(data, { id });
   const episodeNotFound = isValid(data) && !episode;
+  const hasFavorites = getHasFavorites(state);
+  const isFavorited = getIsFavorited(state, id);
 
   const actionSheetOptions = [I18n.t(ext('actionSheetCancelOption'))];
 
   if (enableSharing) {
     actionSheetOptions.push(I18n.t(ext('actionSheetShareOption')));
+  }
+
+  if (hasFavorites) {
+    if (isFavorited) {
+      actionSheetOptions.push(I18n.t(ext('actionSheetUnfavorite')));
+    } else {
+      actionSheetOptions.push(I18n.t(ext('actionSheetFavorite')));
+    }
   }
 
   if (enableDownload && !downloadedEpisode) {
@@ -346,14 +412,19 @@ export function mapStateToProps(state, ownProps) {
     downloadInProgress,
     enableDownload,
     enableSharing,
-    episode,
+    episode: favoritedEpisode || episode,
     episodeNotFound,
+    feedUrl,
+    hasFavorites,
+    isFavorited,
   };
 }
 
 export const mapDispatchToProps = {
   deleteEpisode,
   downloadEpisode,
+  favoriteEpisode,
+  unfavoriteEpisode,
 };
 
 export default connect(

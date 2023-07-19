@@ -164,16 +164,20 @@ export class ArticleDetailsScreen extends PureComponent {
   }
 
   renderHeader() {
-    const { article } = getRouteParams(this.props);
+    const { article, shortcut } = getRouteParams(this.props);
+    const { screen: canonicalType, screens } = shortcut;
+    const { hideModificationTimestamp } = _.find(screens, { canonicalType });
 
     return (
       <Tile styleName="text-centric md-gutter-bottom">
         <Title>{article.title.toUpperCase()}</Title>
         <View styleName="horizontal md-gutter-top">
           <Caption numberOfLines={1}>{article.newsAuthor}</Caption>
-          <Caption styleName="md-gutter-left">
-            {moment(article.timeUpdated).fromNow()}
-          </Caption>
+          {!!hideModificationTimestamp && (
+            <Caption styleName="md-gutter-left">
+              {moment(article.timeUpdated).fromNow()}
+            </Caption>
+          )}
         </View>
       </Tile>
     );

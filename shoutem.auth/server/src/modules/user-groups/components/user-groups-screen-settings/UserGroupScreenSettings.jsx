@@ -22,19 +22,15 @@ export default class UserGroupScreenSettings extends Component {
   constructor(props) {
     super(props);
     autoBindReact(this);
+
+    this.state = {
+      shortcutTree: buildShortcutTree(props.shortcuts),
+    };
   }
 
-  componentWillMount() {
-    this.checkData(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.checkData(nextProps, this.props);
-  }
-
-  checkData(nextProps, props = {}) {
-    const { shortcuts } = props;
-    const { shortcuts: nextShortcuts } = nextProps;
+  componentDidUpdate(prevProps) {
+    const { shortcuts } = prevProps;
+    const { shortcuts: nextShortcuts } = this.props;
 
     if (nextShortcuts !== shortcuts) {
       this.setState({

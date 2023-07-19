@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { View, Caption, Button, Text } from '@shoutem/ui';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
+import { Button, Caption, Text, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
@@ -15,13 +15,11 @@ const RegisterButton = ({ onPress }) => (
   </View>
 );
 
-const { func } = PropTypes;
-
 RegisterButton.propTypes = {
-  onPress: func,
+  onPress: PropTypes.func,
 };
 
-RegisterButton.defaultPropTypes = {
+RegisterButton.defaultProps = {
   onPress: _.noop,
 };
 

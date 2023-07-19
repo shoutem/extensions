@@ -15,14 +15,19 @@ import {
 } from '@shoutem/ui';
 import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
-import { EpisodeView, mapDispatchToProps } from './EpisodeView';
+import {
+  EpisodeView,
+  mapDispatchToProps,
+  mapStateToProps,
+} from './EpisodeView';
+import { FavoriteButton } from './FavoriteButton';
 
 /**
  * A component used to render a single grid episode item
  */
 export class GridEpisodeView extends EpisodeView {
   render() {
-    const { enableDownload, episode } = this.props;
+    const { enableDownload, episode, hasFavorites, isFavorited } = this.props;
     const { downloadInProgress, timeUpdated, title } = episode;
 
     const isDownloaded = downloadInProgress !== undefined;
@@ -42,18 +47,26 @@ export class GridEpisodeView extends EpisodeView {
           <Image source={episodeImage} styleName="medium-wide placeholder" />
           <View styleName="flexible space-between clear">
             <Subtitle numberOfLines={2}>{title}</Subtitle>
-            {momentDate.isAfter(0) && (
+            {!!momentDate.isAfter(0) && (
               <View styleName="horizontal md-gutter-top space-between">
                 <Caption>{momentDate.fromNow()}</Caption>
-                {enableDownload && !downloadInProgress && (
-                  <Button
-                    onPress={handleDownloadManagerPress}
-                    styleName="clear tight"
-                  >
-                    <Icon name={iconName} />
-                  </Button>
-                )}
-                {downloadInProgress && <Spinner />}
+                <View styleName="horizontal">
+                  {!!hasFavorites && (
+                    <FavoriteButton
+                      isFavorited={isFavorited}
+                      onPress={this.onFavoritePress}
+                    />
+                  )}
+                  {!!enableDownload && !downloadInProgress && (
+                    <Button
+                      onPress={handleDownloadManagerPress}
+                      styleName="clear tight"
+                    >
+                      <Icon name={iconName} />
+                    </Button>
+                  )}
+                  {!!downloadInProgress && <Spinner />}
+                </View>
               </View>
             )}
           </View>
@@ -64,6 +77,6 @@ export class GridEpisodeView extends EpisodeView {
 }
 
 export default connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps,
 )(connectStyle(ext('GridEpisodeView'), {})(GridEpisodeView));

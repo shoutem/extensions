@@ -58,7 +58,7 @@ function UserProfileScreen({ navigation, route, style }) {
   );
 
   return (
-    <Screen styleName="md-gutter">
+    <Screen styleName="md-gutter" style={style.screen}>
       <ScrollView style={style.container}>
         <BaseUserProfile user={user} />
         <DataPreview

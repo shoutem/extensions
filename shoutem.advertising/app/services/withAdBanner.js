@@ -1,69 +1,54 @@
 import React from 'react';
-import { Platform } from 'react-native';
 import { connect } from 'react-redux';
-import { BannerAd, BannerAdSize, TestIds } from '@react-native-admob/admob';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { View } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
-import { isPreviewApp } from 'shoutem.preview';
-import { BANNER_REQUEST_OPTIONS, ext } from '../const';
+import { ext } from '../const';
 import { AdContext } from '../providers';
 
 export function withAdBanner(WrappedComponent) {
   function AdComponent(props) {
     const { extensionSettings, route } = props;
 
-    const {
-      iOSBannerAdId,
-      AndroidBannerAdId,
-      bannerPlacement,
-      iOSAdAppId,
-      AndroidAdAppId,
-    } = extensionSettings;
+    const { bannerPlacement } = extensionSettings;
 
     return (
       <AdContext.Consumer>
         {context => {
-          const isIOS = Platform.OS === 'ios';
-          const iOSConfigured = iOSBannerAdId && iOSAdAppId;
-          const AndroidConfigured = AndroidBannerAdId && AndroidAdAppId;
-
-          const isConfigured = isIOS ? iOSConfigured : AndroidConfigured;
           const isExcludedScreen = _.includes(
-            context?.disabledBanner,
+            context?.disabledBannerScreens,
+            route.name,
+          );
+          const hasCustomBanner = _.includes(
+            context?.customBannerScreens,
             route.name,
           );
 
           if (
-            !isConfigured ||
+            !context?.isConfigured ||
             WrappedComponent.adBannerDisabled ||
             isExcludedScreen
           ) {
             return <WrappedComponent {...props} />;
           }
 
-          const liveBannerAdId = isIOS ? iOSBannerAdId : AndroidBannerAdId;
-          const bannerAdId = isPreviewApp ? TestIds.BANNER : liveBannerAdId;
+          if (WrappedComponent.hasCustomAdRenderer || hasCustomBanner) {
+            return (
+              <WrappedComponent
+                {...props}
+                renderAdBanner={context?.renderBanner}
+              />
+            );
+          }
+
           const bannerPlacementTop = bannerPlacement === 'Top';
 
           return (
             <View styleName="flexible">
-              {bannerPlacementTop && (
-                <BannerAd
-                  size={BannerAdSize.ADAPTIVE_BANNER}
-                  unitId={bannerAdId}
-                  requestOptions={BANNER_REQUEST_OPTIONS}
-                />
-              )}
+              {bannerPlacementTop && context?.renderBanner()}
               <WrappedComponent {...props} />
-              {!bannerPlacementTop && (
-                <BannerAd
-                  size={BannerAdSize.ADAPTIVE_BANNER}
-                  unitId={bannerAdId}
-                  requestOptions={BANNER_REQUEST_OPTIONS}
-                />
-              )}
+              {!bannerPlacementTop && context?.renderBanner()}
             </View>
           );
         }}

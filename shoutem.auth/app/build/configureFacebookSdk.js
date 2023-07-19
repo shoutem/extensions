@@ -2,7 +2,48 @@ const _ = require('lodash');
 const fs = require('fs-extra');
 const path = require('path');
 const plist = require('plist');
-const { projectPath } = require('@shoutem/build-tools');
+const xcode = require('xcode');
+const PbxFile = require('xcode/lib/pbxFile.js');
+const { getXcodeProjectPath, projectPath } = require('@shoutem/build-tools');
+
+function addEmbededFramework(frameworkName, xcodeProject) {
+  const frameworkPath = path.join(
+    'Pods',
+    `${frameworkName}`,
+    'XCFrameworks',
+    `${frameworkName}.xcframework`,
+  );
+
+  const file = new PbxFile(frameworkPath, {
+    lastKnownFileType: 'wrapper.xcframework',
+  });
+
+  file.uuid = xcodeProject.generateUuid();
+  file.fileRef = xcodeProject.generateUuid();
+  file.group = 'Frameworks';
+
+  const frameworkGroupKey = xcodeProject.findPBXGroupKey({
+    name: 'Frameworks',
+  });
+
+  xcodeProject.addToPbxFileReferenceSection(file);
+  xcodeProject.addToPbxBuildFileSection(file);
+  xcodeProject.addToPbxGroup(file, frameworkGroupKey);
+  xcodeProject.addToPbxFrameworksBuildPhase(file);
+
+  const embededFile = new PbxFile(frameworkPath, {
+    lastKnownFileType: 'wrapper.xcframework',
+  });
+  embededFile.uuid = xcodeProject.generateUuid();
+  embededFile.fileRef = file.fileRef;
+  embededFile.group = 'Embed Frameworks';
+  embededFile.settings = embededFile.settings || {};
+  embededFile.settings.ATTRIBUTES = ['CodeSignOnCopy', 'RemoveHeadersOnCopy'];
+
+  xcodeProject.addToPbxFileReferenceSection(embededFile);
+  xcodeProject.addToPbxBuildFileSection(embededFile);
+  xcodeProject.addToPbxEmbedFrameworksBuildPhase(embededFile);
+}
 
 function parsePlist(plistPath) {
   let plistResult = {};

@@ -13,16 +13,17 @@ import { ArticleView } from './ArticleView';
 
 export class MediumListArticleView extends ArticleView {
   render() {
-    const { title, imageUrl, date } = this.props;
+    const { hideModificationTimestamp, title, imageUrl, date } = this.props;
 
     const articleImage = imageUrl
       ? { uri: imageUrl }
       : assets.noImagePlaceholder;
 
     const momentDate = moment(date);
-    const dateInfo = momentDate.isAfter(0) ? (
-      <Caption>{momentDate.fromNow()}</Caption>
-    ) : null;
+    const dateInfo =
+      momentDate.isAfter(0) && !hideModificationTimestamp ? (
+        <Caption>{momentDate.fromNow()}</Caption>
+      ) : null;
 
     return (
       <TouchableOpacity onPress={this.onPress}>

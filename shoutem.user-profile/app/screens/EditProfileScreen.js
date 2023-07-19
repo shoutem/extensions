@@ -65,7 +65,7 @@ function EditProfileScreen({ navigation, route, style }) {
   }
 
   return (
-    <Screen>
+    <Screen style={style.container}>
       <Form
         containerStyle={style.padding}
         initialValues={resolvedUserProfile}

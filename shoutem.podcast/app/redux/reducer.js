@@ -12,6 +12,7 @@ import {
   SET_DOWNLOAD_IN_PROGRESS,
 } from '../const';
 import { getFileNameFromPath } from '../services';
+import { FAVORITE_EPISODE, UNFAVORITE_EPISODE } from './actions';
 
 const downloadedEpisodes = (state = [], action) => {
   if (action.type === REHYDRATE) {
@@ -61,8 +62,39 @@ const downloadedEpisodes = (state = [], action) => {
   return state;
 };
 
+const favoritedEpisodes = (state = [], action) => {
+  if (action.type === REHYDRATE) {
+    return [..._.get(action, ['payload', ext(), 'favoritedEpisodes'], [])];
+  }
+
+  if (action.type === FAVORITE_EPISODE) {
+    const {
+      payload: { episode },
+    } = action;
+
+    const alreadyFavorited = !!state.find(
+      favoritedEpisode => favoritedEpisode.id === episode.id,
+    );
+
+    if (alreadyFavorited) {
+      return state;
+    }
+
+    return [...state, episode];
+  }
+
+  if (action.type === UNFAVORITE_EPISODE) {
+    const newState = state.filter(episode => episode.id !== action.payload.id);
+
+    return newState;
+  }
+
+  return state;
+};
+
 export default combineReducers({
   downloadedEpisodes,
   episodes: storage(RSS_PODCAST_SCHEMA),
+  favoritedEpisodes,
   latestEpisodes: rssFeed(RSS_PODCAST_SCHEMA, 'latestEpisodes'),
 });

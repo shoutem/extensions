@@ -92,6 +92,20 @@ class WebCheckoutScreen extends PureComponent {
     );
   }
 
+  renderCloseButton(props) {
+    return <HeaderCloseButton onPress={closeModal} {...props} />;
+  }
+
+  renderDoneButton(props) {
+    return (
+      <HeaderTextButton
+        title={I18n.t(ext('doneButton'))}
+        onPress={this.completeTransaction}
+        {...props}
+      />
+    );
+  }
+
   getNavBarProps() {
     const { transactionCompleted } = this.state;
 

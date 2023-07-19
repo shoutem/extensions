@@ -1,6 +1,6 @@
 {
   "name": "shoutem.user-profile",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "description": "Add extended user profile",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

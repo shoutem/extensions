@@ -12,11 +12,14 @@ const resolveVariable = createScopedResolver(ext());
 export default () => ({
   [`${ext('FormInput')}`]: {
     textInput: {
-      borderColor: resolveVariable('text.color'),
+      backgroundColor: resolveVariable('profileInputBackgroundColor'),
+      borderColor: resolveVariable('profileInputBorderColor'),
+      borderWidth: 1,
       borderRadius: 6,
       paddingHorizontal: resolveVariable('mediumGutter'),
       paddingVertical: resolveVariable('smallGutter'),
       textAlignVertical: 'center',
+      color: resolveVariable('profileInputText'),
     },
 
     multilineTextInput: {
@@ -26,6 +29,7 @@ export default () => ({
 
     label: {
       fontSize: resolveVariable('text.fontSize'),
+      color: resolveVariable('profileInputLabelText.color'),
       paddingHorizontal: resolveVariable('smallGutter'),
       paddingVertical: resolveVariable('smallGutter'),
     },
@@ -43,12 +47,16 @@ export default () => ({
     },
 
     button: {
+      backgroundColor: resolveVariable('profileSubmitButtonBackgroundColor'),
+      borderColor: resolveVariable('profileSubmitButtonBorderColor'),
       borderRadius: 6,
     },
+    text: { color: resolveVariable('profileSubmitButtonTextColor') },
   },
 
   [`${ext('ImageUpload')}`]: {
     label: {
+      color: resolveVariable('profileInputLabelText.color'),
       fontSize: resolveVariable('text.fontSize'),
       paddingHorizontal: resolveVariable('smallGutter'),
       paddingVertical: resolveVariable('smallGutter'),
@@ -75,6 +83,7 @@ export default () => ({
     },
 
     label: {
+      color: resolveVariable('profileInputLabelText.color'),
       fontSize: resolveVariable('text.fontSize'),
       paddingHorizontal: resolveVariable('smallGutter'),
       paddingVertical: resolveVariable('smallGutter'),
@@ -90,6 +99,9 @@ export default () => ({
   },
 
   [`${ext('EditProfileScreen')}`]: {
+    container: {
+      backgroundColor: resolveVariable('profileScreenBackgroundColor'),
+    },
     padding: {
       padding: resolveVariable('mediumGutter'),
       marginBottom: Device.select({
@@ -110,13 +122,18 @@ export default () => ({
   },
 
   [`${ext('EmptyImagesView')}`]: {
-    icon: { width: 66, height: 66 },
+    icon: {
+      width: 66,
+      height: 66,
+      color: resolveVariable('profileInputLabelText.color'),
+    },
     uploadContainer: {
       alignItems: 'center',
       justifyContent: 'center',
       height: dimensionRelativeToIphone(275),
     },
     uploadMessage: {
+      color: resolveVariable('profileInputLabelText.color'),
       paddingTop: resolveVariable('largeGutter'),
     },
   },
@@ -213,6 +230,9 @@ export default () => ({
   },
 
   [`${ext('MyProfileScreen')}`]: {
+    screen: {
+      backgroundColor: resolveVariable('profileScreenBackgroundColor'),
+    },
     container: {
       paddingBottom: Device.select({
         iPhoneX: resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
@@ -226,6 +246,9 @@ export default () => ({
   },
 
   [`${ext('UserProfileScreen')}`]: {
+    screen: {
+      backgroundColor: resolveVariable('profileScreenBackgroundColor'),
+    },
     container: {
       paddingBottom: Device.select({
         iPhoneX: resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
@@ -257,6 +280,7 @@ export default () => ({
     },
     overlayText: { paddingBottom: 26, fontSize: 11, color: '#FFFFFF' },
     label: {
+      color: resolveVariable('profileInputLabelText.color'),
       fontSize: resolveVariable('text.fontSize'),
       paddingHorizontal: resolveVariable('smallGutter'),
       paddingVertical: resolveVariable('smallGutter'),

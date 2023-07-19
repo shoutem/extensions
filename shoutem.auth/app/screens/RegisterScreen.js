@@ -151,7 +151,7 @@ export class RegisterScreen extends PureComponent {
       isAppleAuthEnabled && Platform.OS === 'ios' && platformVersion >= 13;
 
     return (
-      <Screen style={style.registerScreenMargin}>
+      <Screen style={style.registerScreen}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}

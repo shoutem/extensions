@@ -1,29 +1,34 @@
 import React from 'react';
-import _ from 'lodash';
 import { connect } from 'react-redux';
-import { getRouteParams } from 'shoutem.navigation';
+import _ from 'lodash';
 import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
+import { getRouteParams } from 'shoutem.navigation';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
 import { GridArticleView } from '../components/GridArticleView';
 import { getItemProps } from '../components/ListItemViewFactory';
 import { ext } from '../const';
 import {
   ArticlesScreen,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
 } from './ArticlesScreen';
 
 const GRID_ITEMS_PER_ROW = 2;
 
 export class GridArticlesScreen extends ArticlesScreen {
   renderRow(data) {
+    const {
+      screenSettings: { hideModificationTimestamp },
+    } = getRouteParams(this.props);
+
     const articleViews = _.map(data, article => {
       return (
         <GridArticleView
           {...getItemProps(article)}
           onPress={this.openArticleWithId}
+          hideModificationTimestamp={hideModificationTimestamp}
         />
       );
     });
@@ -32,10 +37,15 @@ export class GridArticlesScreen extends ArticlesScreen {
   }
 
   renderFeaturedItem(item) {
+    const {
+      screenSettings: { hideModificationTimestamp },
+    } = getRouteParams(this.props);
+
     return item ? (
       <FeaturedArticleView
         {...getItemProps(item[0])}
         onPress={this.openArticleWithId}
+        hideModificationTimestamp={hideModificationTimestamp}
       />
     ) : null;
   }

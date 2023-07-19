@@ -1,10 +1,10 @@
 {
   "name": "news",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "platform": ">=12.1.0",
   "title": "News",
   "description": "Show news articles",
-  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
+  "releaseNotes": "* Added support for hiding modification timestamp (time since creation / last edit)\n* Update CMS extension to add checkbox for this setting in Layout settings page",
   "icon": "server/assets/add-news-image.png",
   "dependencies": [
     "shoutem.cms",
@@ -13,9 +13,7 @@
     "shoutem.navigation",
     "shoutem.theme"
   ],
-  "categories": [
-    "content"
-  ],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -59,16 +57,19 @@
       "name": "ArticlesScreen",
       "title": "Fixed grid with a featured item",
       "image": "./server/assets/screens/grid.png",
-      "navigatesTo": [
-        "@.ArticleDetailsScreen"
-      ],
+      "navigatesTo": ["@.ArticleDetailsScreen"],
       "settingsPage": {
         "page": "shoutem.cms.LayoutSettingsPage"
       },
       "settings": {
         "listType": "fixed-grid",
         "hasFeaturedItem": true,
-        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "canHideModificationTimestamp": true,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       }
     },
@@ -83,7 +84,12 @@
       "settings": {
         "listType": "fixed-grid",
         "hasFeaturedItem": false,
-        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "canHideModificationTimestamp": true,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       }
     },
@@ -98,7 +104,12 @@
       "settings": {
         "listType": "compact-list",
         "hasFeaturedItem": false,
-        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "canHideModificationTimestamp": true,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       }
     },
@@ -113,7 +124,12 @@
       "settings": {
         "listType": "compact-list",
         "hasFeaturedItem": true,
-        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "canHideModificationTimestamp": true,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       }
     },
@@ -128,7 +144,12 @@
       "settings": {
         "listType": "large-list",
         "hasFeaturedItem": false,
-        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "canHideModificationTimestamp": true,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       }
     },
@@ -143,7 +164,12 @@
       "settings": {
         "listType": "medium-list",
         "hasFeaturedItem": false,
-        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "canHideModificationTimestamp": true,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       }
     },
@@ -158,7 +184,12 @@
       "settings": {
         "listType": "medium-list",
         "hasFeaturedItem": true,
-        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "canHideModificationTimestamp": true,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       }
     },
@@ -173,7 +204,12 @@
       "settings": {
         "listType": "tile-list",
         "hasFeaturedItem": false,
-        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "canHideModificationTimestamp": true,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       }
     },
@@ -234,7 +270,12 @@
       "settings": {
         "listType": "1-2-2-grid",
         "hasFeaturedItem": true,
-        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "canHideModificationTimestamp": true,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       }
     },
@@ -249,7 +290,12 @@
       "settings": {
         "listType": "1-2-2-grid",
         "hasFeaturedItem": false,
-        "categoryPickerTypeOptions": ["dropdown", "navBarDropdown", "horizontalList"],
+        "canHideModificationTimestamp": true,
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "navBarDropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       }
     }

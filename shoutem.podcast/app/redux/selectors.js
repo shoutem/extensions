@@ -43,3 +43,36 @@ export function getFeedUrl(state, shortcutId) {
 
   return _.get(shortcut, 'settings.feedUrl');
 }
+
+export function getFavoritedEpisodes(state) {
+  return state[ext()].favoritedEpisodes;
+}
+
+export function getHasFavorites(state) {
+  const { shortcuts } = state['shoutem.application'];
+
+  const shortcutIds = Object.keys(shortcuts);
+  const podcastFavoriteShortcuts = [];
+
+  shortcutIds.forEach(shortcutId => {
+    const {
+      attributes: { canonicalName },
+    } = shortcuts[shortcutId];
+
+    if (
+      canonicalName === ext('MyPodcastsScreen') ||
+      canonicalName === ext('MyPodcastsWithoutShareScreen')
+    ) {
+      podcastFavoriteShortcuts.push(shortcutId);
+    }
+  });
+
+  return !!podcastFavoriteShortcuts.length;
+}
+
+export function getIsFavorited(state, id) {
+  const favoritedEpisodes = getFavoritedEpisodes(state);
+  const favoritedEpisode = favoritedEpisodes.find(episode => episode.id === id);
+
+  return !!favoritedEpisode;
+}
