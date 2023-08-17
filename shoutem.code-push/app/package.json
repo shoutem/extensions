@@ -5,7 +5,7 @@
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
-    "react-native-code-push": "7.0.4"
+    "react-native-code-push": "8.0.2"
   },
   "nativeDependencies": [
     "react-native-code-push"

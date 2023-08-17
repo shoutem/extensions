@@ -16,6 +16,7 @@ const {
   ANDROID_PERMISSION_NATIVE_DATA,
   PERMISSION_IOS_RATIONALE_PREFIX,
 } = require('./const');
+const { setupIosPermissions } = require('./setupIosPermissions');
 const { name: extName } = require('../package.json');
 
 const { getExtensionSettings } = buildTools.configuration;
@@ -204,6 +205,7 @@ function preBuild(appConfiguration) {
 
   overwriteRationales(appConfiguration);
   injectPermissionsToPackageJson();
+  setupIosPermissions();
   injectPlistPermissions();
   injectManifestPermissions();
 }

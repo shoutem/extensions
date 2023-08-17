@@ -9,7 +9,7 @@
     "@sindresorhus/slugify": "0.9.1",
     "moment": "2.24.0",
     "react-native-action-sheet": "2.2.0",
-    "react-native-blob-util": "0.16.2"
+    "react-native-blob-util": "0.19.0"
   },
   "peerDepencies": {
     "@shoutem/redux-io": "*",

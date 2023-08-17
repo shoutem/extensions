@@ -3,7 +3,7 @@
   "version": "6.1.2",
   "dependencies": {
     "@shoutem/theme": "0.13.1",
-    "@shoutem/ui": "6.1.2"
+    "@shoutem/ui": "shoutem/ui#feature/add-font-linking"
   },
   "peerDependencies": {
     "@shoutem/redux-io": "*",
