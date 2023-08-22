@@ -108,9 +108,10 @@ function downloadFonts(appConfiguration) {
           `extensions/${pack.name}/app/package.json`,
         );
         const extPackageJson = fs.readJsonSync(extPackageJsonPath);
+        const { assets: existingAssets = [] } = extPackageJson;
         const newPackageJson = {
           ...extPackageJson,
-          assets: [FONT_ASSET_DIR],
+          assets: [...existingAssets, FONT_ASSET_DIR],
         };
 
         fs.writeJsonSync(extPackageJsonPath, newPackageJson, { spaces: 2 });

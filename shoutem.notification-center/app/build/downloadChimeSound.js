@@ -43,9 +43,10 @@ function downloadChimeSound(appConfiguration) {
         `extensions/${extName}/app/package.json`,
       );
       const extPackageJson = fs.readJsonSync(extPackageJsonPath);
+      const { assets: existingAssets = [] } = extPackageJson;
       const newPackageJson = {
         ...extPackageJson,
-        assets: [SOUND_ASSETS_DIR],
+        assets: [...existingAssets, SOUND_ASSETS_DIR],
       };
 
       fs.writeJsonSync(extPackageJsonPath, newPackageJson, { spaces: 2 });
