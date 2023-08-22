@@ -233,7 +233,10 @@ export class CmsListScreen extends PureComponent {
     }
     this.refreshInvalidContent(this.props, true);
     this.checkPermissionStatus(this.props);
-    AppState.addEventListener('change', this.handleAppStateChange);
+    this.appStateListener = AppState.addEventListener(
+      'change',
+      this.handleAppStateChange,
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -247,7 +250,7 @@ export class CmsListScreen extends PureComponent {
   }
 
   componentWillUnmount() {
-    AppState.removeEventListener('change', this.handleAppStateChange);
+    this.appStateListener.remove();
   }
 
   handleAppStateChange(appState) {

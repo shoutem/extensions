@@ -9,6 +9,11 @@ const {
 } = require('@shoutem/build-tools');
 const pack = require('../package.json');
 
+const FONT_ASSET_DIR = path.resolve(
+  projectPath,
+  `extensions/${pack.name}/app/fonts`,
+);
+
 const getExtension = appConfiguration => {
   const includedResources = _.get(appConfiguration, 'included');
   const extension = _.find(includedResources, {
@@ -36,11 +41,6 @@ function ensureFontsFilePath() {
 }
 
 function downloadFont(fontConfig) {
-  const fontsDir = path.resolve(
-    projectPath,
-    `extensions/${pack.name}/app/fonts`,
-  );
-
   console.log(`Downloading ${fontConfig.name} font`);
 
   const fontDownloadPaths = _.values(_.omit(fontConfig, ['name', 'default']));
@@ -50,7 +50,7 @@ function downloadFont(fontConfig) {
   );
   const downloadPromises = _.map(fontDownloadPaths, fontUrl => {
     const fileName = /[^/]*$/.exec(fontUrl)[0];
-    const filePath = path.resolve(fontsDir, fileName);
+    const filePath = path.resolve(FONT_ASSET_DIR, fileName);
 
     return downloadFile(fontUrl, filePath);
   });
@@ -67,35 +67,12 @@ function downloadFont(fontConfig) {
         ' ',
       )}`;
 
-      execSync(fontRenameCommand, { cwd: fontsDir });
+      execSync(fontRenameCommand, { cwd: FONT_ASSET_DIR });
     })
     .catch(() => {
       const errorMessage = `Downloading ${fontConfig.name} FAILED`.bold.red;
       throw errorMessage;
     });
-}
-
-// Removes automatic UI lib linking, causing conflict with duplicate fonts
-function removeUiLinking() {
-  const themeExtDir = path.resolve(projectPath, `extensions/shoutem.theme`);
-  const uiFontsDir = path.resolve(
-    projectPath,
-    `node_modules/@shoutem/ui/fonts`,
-  );
-  const rnConfigFilePath = path.resolve(
-    projectPath,
-    `node_modules/@shoutem/ui/react-native.config.js`,
-  );
-
-  console.log('Ensuring default fonts from @shoutem/ui are unlinked');
-
-  if (fs.existsSync(themeExtDir) && fs.readdirSync(uiFontsDir).length > 0) {
-    fs.emptyDirSync(uiFontsDir);
-  }
-
-  if (fs.existsSync(rnConfigFilePath)) {
-    fs.unlinkSync(rnConfigFilePath);
-  }
 }
 
 function downloadFonts(appConfiguration) {
@@ -122,12 +99,26 @@ function downloadFonts(appConfiguration) {
     downloadFont(fontData.attributes),
   );
 
-  removeUiLinking();
-  Promise.all(fontsToDownload)
-    .then(() => console.log('Font download complete'))
-    .catch(e => {
-      throw new Error(e);
-    });
+  if (fonts.length) {
+    Promise.all(fontsToDownload)
+      .then(() => {
+        console.log('Font download complete, adding asset linking path');
+        const extPackageJsonPath = path.resolve(
+          projectPath,
+          `extensions/${pack.name}/app/package.json`,
+        );
+        const extPackageJson = fs.readJsonSync(extPackageJsonPath);
+        const newPackageJson = {
+          ...extPackageJson,
+          assets: [FONT_ASSET_DIR],
+        };
+
+        fs.writeJsonSync(extPackageJsonPath, newPackageJson, { spaces: 2 });
+      })
+      .catch(e => {
+        throw new Error(e);
+      });
+  }
 }
 
 module.exports = {

@@ -8,6 +8,8 @@ import {
 import { before, priorities, setPriority } from 'shoutem-core';
 import { registerNotificationHandlers } from './notificationHandlers';
 
+let appStateListener;
+
 function handleAppStateChange(nextState) {
   if (nextState === 'active') {
     Firebase.clearBadge();
@@ -35,11 +37,11 @@ const appWillMount = setPriority(app => {
 }, before(priorities.FIREBASE));
 
 const appDidMount = () => {
-  AppState.addEventListener('change', handleAppStateChange);
+  appStateListener = AppState.addEventListener('change', handleAppStateChange);
 };
 
 const appWillUnmount = () => {
-  AppState.removeEventListener('change', handleAppStateChange);
+  appStateListener.remove();
 };
 
 export { appDidMount, appWillMount, appWillUnmount };

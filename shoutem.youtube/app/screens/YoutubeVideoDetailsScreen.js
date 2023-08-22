@@ -36,7 +36,10 @@ const YoutubeVideoDetailsScreen = props => {
   useEffect(() => {
     const { navigation } = props;
 
-    AppState.addEventListener('change', handleAppStateChange);
+    const appStateListener = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
     navigation.setOptions({
       ...composeNavigationStyles(['boxing']),
       headerRight: () => (
@@ -45,7 +48,7 @@ const YoutubeVideoDetailsScreen = props => {
       title,
     });
 
-    return () => AppState.removeEventListener('change', handleAppStateChange);
+    return () => appStateListener.remove();
   }, []);
 
   const publishedAt = _.get(video, 'snippet.publishedAt');

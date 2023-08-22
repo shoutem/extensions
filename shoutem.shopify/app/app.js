@@ -27,6 +27,7 @@ const createHandleAppStateChange = dispatch => appState => {
   }
 };
 
+let appStateListener;
 let handleAppStateChange;
 
 /* eslint-disable consistent-return */
@@ -69,7 +70,9 @@ export async function appDidMount(app) {
         dispatch(actions.getCustomer());
       }
     })
-    .catch(error => console.error('Error while checking Shopify isLoggedIn:', error));
+    .catch(error =>
+      console.error('Error while checking Shopify isLoggedIn:', error),
+    );
 
   dispatch(shopLoading());
   Promise.all([MBBridge.getCollections(), MBBridge.getShop()])
@@ -84,9 +87,16 @@ export async function appDidMount(app) {
       dispatch(refreshProducts(collections[0].id));
 
       handleAppStateChange = createHandleAppStateChange(dispatch);
-      AppState.addEventListener('change', handleAppStateChange);
+      appStateListener = AppState.addEventListener(
+        'change',
+        handleAppStateChange,
+      );
     })
     .catch(() => {
       dispatch(shopErrorLoading());
     });
+}
+
+export function appWillUnmount() {
+  appStateListener.remove();
 }
