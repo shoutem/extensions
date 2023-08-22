@@ -78,7 +78,7 @@ export class PushGroupsScreen extends PureComponent {
   }
 
   componentWillUnmount() {
-    AppState.removeEventListener('change', this.handleAppStateChange);
+    this.appStateListener?.remove();
   }
 
   onToggleGroupSubscription(tag, value) {
@@ -95,7 +95,10 @@ export class PushGroupsScreen extends PureComponent {
   }
 
   handleOpenSettingsPress() {
-    AppState.addEventListener('change', this.handleAppStateChange);
+    this.appStateListener = AppState.addEventListener(
+      'change',
+      this.handleAppStateChange,
+    );
     openSettings();
   }
 
@@ -124,7 +127,7 @@ export class PushGroupsScreen extends PureComponent {
     if (appState === 'active' && !areNotificationsEnabled) {
       checkNotifications().then(({ status }) => {
         if (status === RESULTS.GRANTED) {
-          AppState.removeEventListener('change', this.handleAppStateChange);
+          this.appStateListener?.remove();
         }
       });
     }

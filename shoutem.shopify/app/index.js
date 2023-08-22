@@ -55,6 +55,6 @@ export const shoutem = {
   },
 };
 
-export { appDidMount } from './app';
+export { appDidMount, appWillUnmount } from './app';
 
 export { actions, middleware, reducer };

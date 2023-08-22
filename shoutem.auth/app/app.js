@@ -32,6 +32,7 @@ import {
 } from './redux';
 import { getSession } from './session';
 
+let appStateListener;
 let previousAppState = 'active';
 
 async function refreshUser(dispatch, getState) {
@@ -199,11 +200,11 @@ export async function appDidMount(app) {
   });
 
   handleAppStateChange = createHandleAppStateChange(dispatch, getState);
-  AppState.addEventListener('change', handleAppStateChange);
+  appStateListener = AppState.addEventListener('change', handleAppStateChange);
 
   return refreshUser(dispatch, getState);
 }
 
 export function appWillUnmount() {
-  AppState.remove('change', handleAppStateChange);
+  appStateListener.remove();
 }

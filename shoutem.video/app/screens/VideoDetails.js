@@ -34,12 +34,15 @@ export class VideoDetails extends PureComponent {
   componentDidMount() {
     const { navigation } = this.props;
 
-    AppState.addEventListener('change', this.handleAppStateChange);
+    this.appStateListener = AppState.addEventListener(
+      'change',
+      this.handleAppStateChange,
+    );
     navigation.setOptions(this.getNavbarProps());
   }
 
   componentWillUnmount() {
-    AppState.removeEventListener('change', this.handleAppStateChange);
+    this.appStateListener.remove();
   }
 
   handleAppStateChange(appState) {

@@ -18,9 +18,10 @@ function getNewBundle(app) {
   }
 }
 
+let appStateListener;
 let handleAppStateChange;
 
-const createHandleAppStateChange = (app) => (state) => {
+const createHandleAppStateChange = app => state => {
   if (state === 'active') {
     getNewBundle(app);
   }
@@ -38,12 +39,15 @@ export function appDidMount(app) {
     getNewBundle(app);
     handleAppStateChange = createHandleAppStateChange(app);
     // Check for updates on app resume
-    AppState.addEventListener('change', handleAppStateChange);
+    appStateListener = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
   }
 }
 
 export function appWillUnmount() {
   if (isProduction()) {
-    AppState.removeEventListener('change', handleAppStateChange);
+    appStateListener.remove();
   }
 }

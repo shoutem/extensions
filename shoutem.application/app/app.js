@@ -33,6 +33,8 @@ export const appActions = {};
 
 AppInitQueue.addExtension(ext());
 
+let appStateListener;
+
 const AUTH_HEADER = `Bearer ${buildConfig.authorization}`;
 
 let appStateChangeHandler; // Dynamically created handler;
@@ -140,7 +142,7 @@ export function appWillMount(app) {
 
   // Handler is saved into variable so it can be removed on unmount
   appStateChangeHandler = createAppStateChangeHandler(app);
-  AppState.addEventListener('change', appStateChangeHandler);
+  appStateListener = AppState.addEventListener('change', appStateChangeHandler);
 
   // When app is started first "AppState change" is skipped but we still
   // want to check expiration of local content (AppState is active).gst
@@ -178,5 +180,5 @@ export function appDidMount(app) {
 export const isDevelopment = () => process.env.NODE_ENV === 'development';
 
 export function appWillUnmount() {
-  AppState.removeEventListener('change', appStateChangeHandler);
+  appStateListener.remove();
 }
