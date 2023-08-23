@@ -1,6 +1,6 @@
 {
   "name": "shoutem.theme",
-  "version": "6.1.2",
+  "version": "7.0.0-rc.0",
   "dependencies": {
     "@shoutem/theme": "0.13.1",
     "@shoutem/ui": "shoutem/ui#feature/add-font-linking"

@@ -19,7 +19,7 @@ export function loadCategories(
 ) {
   const queryParams = {
     'filter[schema]': schema,
-    'page[limit]': 1000,
+    'page[limit]': 10000,
     'filter[parent]': parentCategoryId,
   };
 

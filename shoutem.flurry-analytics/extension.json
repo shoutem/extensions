@@ -1,12 +1,12 @@
 {
   "name": "flurry-analytics",
   "title": "Flurry analytics",
-  "version": "4.3.2",
+  "version": "4.4.0",
   "platform": ">=12.1.0",
   "description": "Measure and analyze activity across your app with Flurry analytics",
-  "releaseNotes": "Remove patch that forced Flurry iOS SDK to version 12.1.1",
+  "releaseNotes": "* Update Flurry SDK for Google Play Developer Program policies compliance",
   "nativeChanges": {
-    "lastVersion": "4.3.2"
+    "lastVersion": "4.4.0"
   },
   "icon": "server/assets/add-analytics-image.png",
   "categories": ["analytics"],

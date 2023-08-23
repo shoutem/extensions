@@ -15,7 +15,7 @@
     ]
   },
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* IOS - Remove manual framework embed",
+  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",
@@ -27,9 +27,7 @@
     "shoutem.redux",
     "shoutem.web-view"
   ],
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -104,9 +102,7 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": [
-        "style"
-      ],
+      "categories": ["style"],
       "parameters": {
         "extensionTheme": "Theme"
       }

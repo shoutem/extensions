@@ -1,18 +1,16 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "8.0.0",
+  "version": "8.0.1-rc.0",
   "platform": ">=12.2.1",
   "hidden": false,
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "releaseNotes": "* Added Shopify customer login\n* Added customers order history shortcut\n* Added customers delivery addresses shortcut",
+  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
   "nativeChanges": {
     "lastVersion": "8.0.0"
   },
-  "capabilities": [
-    "shoutem.shopify.places-api"
-  ],
+  "capabilities": ["shoutem.shopify.places-api"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -33,9 +31,7 @@
     "shoutem.notification-center",
     "shoutem.redux"
   ],
-  "categories": [
-    "commerce"
-  ],
+  "categories": ["commerce"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -266,9 +262,7 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": [
-        "style"
-      ],
+      "categories": ["style"],
       "parameters": {
         "extensionTheme": "Theme"
       }
