@@ -1,11 +1,11 @@
 {
   "name": "application",
-  "version": "6.1.0",
+  "version": "6.1.1-rc.0",
   "platform": ">=9.1.0",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "releaseNotes": "* Created settings page with image resizer control",
+  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
   "nativeChanges": {
     "lastVersion": "4.1.4"
   },

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.permissions",
-  "version": "4.2.0-rc.0",
+  "version": "5.0.0-rc.0",
   "description": "Extension for app permission management. ",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

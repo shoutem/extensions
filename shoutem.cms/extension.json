@@ -1,11 +1,11 @@
 {
   "name": "cms",
-  "version": "6.2.0",
+  "version": "6.2.2-rc.0",
   "platform": ">=9.1.0",
   "type": "system",
   "title": "CMS",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",
-  "releaseNotes": "* Added \"Hide timestamp\" checkbox to Layout settings page, next to category picker type dropdown\n* This hides the timestamp showing how long ago the CMS item was created or updated for extensions that support it",
+  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
   "nativeChanges": {
     "lastVersion": "6.1.0"
   },

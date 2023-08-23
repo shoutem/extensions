@@ -1,13 +1,13 @@
 {
   "name": "permissions",
   "title": "Permissions",
-  "version": "4.1.0",
-  "platform": ">=9.0.1",
+  "version": "5.0.0-rc.0",
+  "platform": ">=13.0.",
   "type": "system",
   "description": "Extension for app permission management. ",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "* Updated react-native-permissions library, no user facing changes",
   "nativeChanges": {
-    "lastVersion": "4.0.5"
+    "lastVersion": "5.0.0"
   },
   "icon": "server/assets/permissions-icon.png",
   "dependencies": ["shoutem.i18n"],

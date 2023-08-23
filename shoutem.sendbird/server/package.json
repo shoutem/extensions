@@ -1,6 +1,6 @@
 {
   "name": "shoutem.sendbird",
-  "version": "6.0.0",
+  "version": "6.0.1-rc.0",
   "description": "SendBird Chat extension",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

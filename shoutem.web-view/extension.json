@@ -1,10 +1,10 @@
 {
   "name": "web-view",
-  "version": "5.4.1",
-  "platform": ">=12.1.0",
+  "version": "6.0.0-rc.0",
+  "platform": ">=13.1.0",
   "type": "system",
   "title": "Web view",
-  "releaseNotes": "* Resolved issue with tracking permission being added when not necessary",
+  "releaseNotes": "* Updated react-native-blob-util library, no user facing changes",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "nativeChanges": {

@@ -1,20 +1,16 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "7.3.0",
-  "platform": ">=12.0.0",
+  "version": "8.0.0-rc.0",
+  "platform": ">=13.0.0",
   "nativeChanges": {
     "lastVersion": "7.1.1",
-    "settingsKeys": [
-      "chime"
-    ]
+    "settingsKeys": ["chime"]
   },
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* No user facing changes\n* Modified preBuild phase to resolve dirs properly",
+  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes\n* Adjusted asset linking, no user facing changes",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "dependencies": [
     "shoutem.application",
     "shoutem.firebase",
@@ -90,37 +86,27 @@
     {
       "page": "@.NotificationsPage",
       "title": "Notifications",
-      "categories": [
-        "push"
-      ]
+      "categories": ["push"]
     },
     {
       "page": "@.GroupsPage",
       "title": "Groups",
-      "categories": [
-        "push"
-      ]
+      "categories": ["push"]
     },
     {
       "page": "@.GeneralPage",
       "title": "General",
-      "categories": [
-        "push"
-      ]
+      "categories": ["push"]
     },
     {
       "page": "@.JourneysPage",
       "title": "Journeys",
-      "categories": [
-        "push"
-      ]
+      "categories": ["push"]
     },
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": [
-        "style"
-      ],
+      "categories": ["style"],
       "parameters": {
         "extensionTheme": "Theme"
       }
