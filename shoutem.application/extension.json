@@ -1,6 +1,6 @@
 {
   "name": "application",
-  "version": "6.1.1-rc.0",
+  "version": "6.1.1-rc.1",
   "platform": ">=9.1.0",
   "type": "system",
   "title": "Application",

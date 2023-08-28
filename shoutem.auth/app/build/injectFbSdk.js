@@ -4,7 +4,7 @@ const {
   getAppDelegatePath,
   getAppGradlePath,
   getMainApplicationPath,
-  getPodfileTemplatePath,
+  getPodfilePath,
   getSettingsGradlePath,
   inject,
   projectPath,
@@ -93,9 +93,9 @@ function injectFbSdkIos() {
     fbSdk.ios.appDelegate.body,
   );
 
-  const podFileTemplatePath = getPodfileTemplatePath({ cwd: projectPath });
+  const podfilePath = getPodfilePath({ cwd: projectPath });
   inject(
-    podFileTemplatePath,
+    podfilePath,
     ANCHORS.IOS.PODFILE.EXTENSION_POSTINSTALL_TARGETS,
     fbSdk.ios.podfile.postInstall,
   );

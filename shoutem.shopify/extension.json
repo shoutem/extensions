@@ -1,14 +1,14 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "8.0.1-rc.0",
-  "platform": ">=12.2.1",
+  "version": "9.0.0-rc.0",
+  "platform": ">=13",
   "hidden": false,
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
   "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
   "nativeChanges": {
-    "lastVersion": "8.0.0"
+    "lastVersion": "9.0.0"
   },
   "capabilities": ["shoutem.shopify.places-api"],
   "i18n": {

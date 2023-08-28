@@ -1,5 +1,4 @@
 const {
-  getPodfileTemplatePath,
   getMainApplicationPath,
   getAppGradlePath,
   getSettingsGradlePath,
@@ -15,20 +14,40 @@ const { maps } = require('./const');
 function injectAndroid() {
   // app/build.gradle mods
   const appGradlePath = getAppGradlePath({ cwd: projectPath });
-  inject(appGradlePath, ANCHORS.ANDROID.GRADLE.APP.DEPENDENCIES, maps.android.gradle.app.dependencies);
+  inject(
+    appGradlePath,
+    ANCHORS.ANDROID.GRADLE.APP.DEPENDENCIES,
+    maps.android.gradle.app.dependencies,
+  );
 
   // settings.gradle mods
   const settingsGradlePath = getSettingsGradlePath({ cwd: projectPath });
-  inject(settingsGradlePath, ANCHORS.ANDROID.GRADLE.SETTINGS, maps.android.gradle.settings);
+  inject(
+    settingsGradlePath,
+    ANCHORS.ANDROID.GRADLE.SETTINGS,
+    maps.android.gradle.settings,
+  );
 
   // MainApplication.java mods
   const mainApplicationPath = getMainApplicationPath({ cwd: projectPath });
-  inject(mainApplicationPath, ANCHORS.ANDROID.MAIN_APPLICATION.IMPORT, maps.android.mainApplication.import);
-  inject(mainApplicationPath, ANCHORS.ANDROID.MAIN_APPLICATION.GET_PACKAGES, maps.android.mainApplication.getPackage);
+  inject(
+    mainApplicationPath,
+    ANCHORS.ANDROID.MAIN_APPLICATION.IMPORT,
+    maps.android.mainApplication.import,
+  );
+  inject(
+    mainApplicationPath,
+    ANCHORS.ANDROID.MAIN_APPLICATION.GET_PACKAGES,
+    maps.android.mainApplication.getPackage,
+  );
 
   // AndroidManifest.xml mods
   const androidManifestPath = getAndroidManifestPath({ cwd: projectPath });
-  inject(androidManifestPath, ANCHORS.ANDROID.MANIFEST.APPLICATION, maps.android.manifest);
+  inject(
+    androidManifestPath,
+    ANCHORS.ANDROID.MANIFEST.APPLICATION,
+    maps.android.manifest,
+  );
 }
 
 /**

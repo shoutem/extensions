@@ -1,6 +1,6 @@
 {
   "name": "shoutem.shopify",
-  "version": "8.0.1-rc.0",
+  "version": "9.0.0-rc.0",
   "private": true,
   "scripts": {
     "@comment init": "Generates env files for all workflow types - should work out of the box",
