@@ -1,7 +1,7 @@
 {
   "name": "web-view",
-  "version": "6.0.0-rc.0",
-  "platform": ">=13.1.0",
+  "version": "6.0.0-rc.1",
+  "platform": ">=13",
   "type": "system",
   "title": "Web view",
   "releaseNotes": "* Updated react-native-blob-util library, no user facing changes",

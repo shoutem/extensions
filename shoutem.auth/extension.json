@@ -1,6 +1,6 @@
 {
   "name": "auth",
-  "version": "7.3.2-rc.0",
+  "version": "7.3.2-rc.1",
   "platform": ">=12.3.0",
   "title": "Users",
   "nativeChanges": {
