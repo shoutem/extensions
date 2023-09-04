@@ -1,7 +1,7 @@
 {
   "name": "permissions",
   "title": "Permissions",
-  "version": "5.0.0-rc.0",
+  "version": "5.0.0",
   "platform": ">=13",
   "type": "system",
   "description": "Extension for app permission management. ",

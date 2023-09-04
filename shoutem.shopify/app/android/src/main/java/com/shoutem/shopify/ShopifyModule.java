@@ -43,6 +43,7 @@ public class ShopifyModule extends ReactContextBaseJavaModule {
     private Storefront.MailingAddressInput mailingAddressInput;
     private ID checkoutId;
     private String webUrl;
+    private Storefront.MoneyV2 paymentDue;
     private String cardVaultUrl;
     private static final Gson gson = new Gson();
 
@@ -167,7 +168,7 @@ public class ShopifyModule extends ReactContextBaseJavaModule {
                                     iNode.url()
                             )))
                             .variants(args -> args.first(250), vEdges -> vEdges.edges(vEdge -> vEdge.node(vNode ->
-                                    vNode.compareAtPrice().availableForSale().price().sku().title()
+                                    vNode.compareAtPriceV2(price -> price.amount().currencyCode()).availableForSale().priceV2(price -> price.amount().currencyCode()).sku().title()
                                             .weight().weightUnit().selectedOptions(so -> so.name().value())
                             )))
                 ))));
@@ -192,7 +193,7 @@ public class ShopifyModule extends ReactContextBaseJavaModule {
                                                 iNode.url()
                                         )))
                                         .variants(args -> args.first(250), vEdges -> vEdges.edges(vEdge -> vEdge.node(vNode ->
-                                                vNode.compareAtPrice().availableForSale().price().sku().title()
+                                                vNode.compareAtPriceV2(price -> price.amount().currencyCode()).availableForSale().priceV2(price -> price.amount().currencyCode()).sku().title()
                                                         .weight().weightUnit().selectedOptions(so -> so.name().value())
                                         )))
                         )))
@@ -259,12 +260,12 @@ public class ShopifyModule extends ReactContextBaseJavaModule {
         Storefront.MutationQuery mutation = Storefront.mutation(mQuery ->
                 mQuery.checkoutCreate(checkoutCreateInput, checkoutCreate ->
                         checkoutCreate.checkout(checkout ->
-                                checkout.webUrl().paymentDue().requiresShipping().availableShippingRates(availableShippingRates ->
+                                checkout.webUrl().paymentDueV2(price -> price.amount().currencyCode()).requiresShipping().availableShippingRates(availableShippingRates ->
                                         availableShippingRates.ready().shippingRates(shippingRates ->
-                                                shippingRates.handle().title().price()
+                                                shippingRates.handle().title().priceV2(price -> price.amount().currencyCode())
                                         )
                                 )
-                        ).userErrors(e ->
+                        ).checkoutUserErrors(e ->
                                 e.field().message()
                         )
                 )
@@ -272,10 +273,10 @@ public class ShopifyModule extends ReactContextBaseJavaModule {
 
         client.mutateGraph(mutation).enqueue(result -> {
             if (result instanceof GraphCallResult.Success) {
-                if (((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData().getCheckoutCreate().getUserErrors().isEmpty()) {
+                if (((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData().getCheckoutCreate().getCheckoutUserErrors().isEmpty()) {
                     this.webUrl = ((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData().getCheckoutCreate().getCheckout().getWebUrl();
                     this.checkoutId = ((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData().getCheckoutCreate().getCheckout().getId();
-                    this.paymentDue = ((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData().getCheckoutCreate().getCheckout().getPaymentDue();
+                    this.paymentDue = ((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData().getCheckoutCreate().getCheckout().getPaymentDueV2();
                 }
 
                 promise.resolve(this.gson.toJson(((GraphCallResult.Success<Storefront.Mutation>) result).getResponse().getData()));

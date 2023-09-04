@@ -1,8 +1,8 @@
 const {
   getAppGradlePath,
-  getGradlePropertiesPath,
   getSettingsGradlePath,
   getAppDelegatePath,
+  getResStringsPath,
   getMainApplicationPath,
   replace,
   inject,
@@ -19,39 +19,24 @@ function injectCodePushAndroid() {
   const gradleAppPath = getAppGradlePath({ cwd: projectPath });
   inject(
     gradleAppPath,
-    ANCHORS.ANDROID.GRADLE.APP.REACT_GRADLE,
+    ANCHORS.ANDROID.GRADLE.APP.PLUGINS_END,
     codepush.android.app.gradle.codepushGradle,
-  );
-  inject(
-    gradleAppPath,
-    ANCHORS.ANDROID.GRADLE.APP.DEPENDENCIES,
-    codepush.android.app.gradle.dependencies
-  );
-  inject(
-    gradleAppPath,
-    ANCHORS.ANDROID.GRADLE.APP.BUILD_TYPES.UNSIGNED_RELEASE,
-    codepush.android.app.gradle.buildTypes,
-  );
-  inject(
-    gradleAppPath,
-    ANCHORS.ANDROID.GRADLE.APP.BUILD_TYPES.DEBUG,
-    codepush.android.app.gradle.buildTypes,
   );
 
   // android/settings.gradle mods
   const settingsGradlePath = getSettingsGradlePath({ cwd: projectPath });
   inject(
     settingsGradlePath,
-    ANCHORS.ANDROID.GRADLE.SETTINGS,
+    ANCHORS.ANDROID.GRADLE.SETTINGS_END,
     codepush.android.app.settings,
   );
 
-  // app/settings.properties mods
-  const gradlePropertiesPath = getGradlePropertiesPath({ cwd: projectPath });
+  // android/app/src/main/res/values mods
+  const androidResStringsPath = getResStringsPath({ cwd: projectPath });
   inject(
-    gradlePropertiesPath,
-    ANCHORS.ANDROID.GRADLE.PROPERTIES,
-    codepush.android.app.gradle.codepushKey,
+    androidResStringsPath,
+    ANCHORS.ANDROID.RES.VALUES.STRINGS,
+    codepush.android.app.stringsCodePushKey,
   );
 
   // MainApplication.java mods
@@ -65,11 +50,6 @@ function injectCodePushAndroid() {
     mainApplicationPath,
     ANCHORS.ANDROID.MAIN_APPLICATION.RN_HOST_BODY,
     codepush.android.app.rnHost,
-  );
-  inject(
-    mainApplicationPath,
-    ANCHORS.ANDROID.MAIN_APPLICATION.GET_PACKAGES,
-    codepush.android.app.getPackages,
   );
 }
 

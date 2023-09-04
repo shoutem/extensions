@@ -1,7 +1,7 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "8.0.0-rc.0",
+  "version": "8.0.0",
   "platform": ">=13.0.0",
   "nativeChanges": {
     "lastVersion": "7.1.1",

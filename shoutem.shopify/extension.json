@@ -1,12 +1,12 @@
 {
   "name": "shopify",
   "title": "Shopify",
-  "version": "9.0.0-rc.0",
+  "version": "9.0.0",
   "platform": ">=13",
   "hidden": false,
   "icon": "./server/assets/add-shopify-image.png",
   "description": "Sell from your Shopify store",
-  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
+  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener and Android SDK deprecations, no user facing changes",
   "nativeChanges": {
     "lastVersion": "9.0.0"
   },

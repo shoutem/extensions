@@ -1,7 +1,10 @@
 {
   "name": "code-push",
-  "version": "4.2.0-rc.0",
-  "platform": ">=4",
+  "version": "4.2.0",
+  "platform": ">=13",
+  "nativeChanges": {
+    "lastVersion": "4.2.0"
+  },
   "type": "system",
   "title": "CodePush",
   "description": "Provides CodePush support for over the air code updates",

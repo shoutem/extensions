@@ -1,6 +1,6 @@
 {
   "name": "podcast",
-  "version": "6.0.0-rc.0",
+  "version": "6.0.0",
   "platform": ">=12.1.0",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",

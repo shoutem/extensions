@@ -183,7 +183,7 @@ export class ChatWindowScreen extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.appStateEventListener.remove();
+    this.appStateEventListener?.remove();
   }
 
   handleGoBack() {

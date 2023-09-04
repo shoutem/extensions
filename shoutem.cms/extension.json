@@ -1,6 +1,6 @@
 {
   "name": "cms",
-  "version": "6.2.2-rc.0",
+  "version": "6.2.2",
   "platform": ">=9.1.0",
   "type": "system",
   "title": "CMS",

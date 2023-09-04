@@ -1,7 +1,7 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "7.2.1-rc.0",
+  "version": "7.2.1",
   "platform": ">=12.1.0",
   "description": "Show a video gallery",
   "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",

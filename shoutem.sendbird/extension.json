@@ -1,7 +1,7 @@
 {
   "name": "sendbird",
   "title": "SendBird Chat",
-  "version": "6.0.1-rc.0",
+  "version": "6.0.1",
   "platform": ">=7",
   "icon": "./server/assets/chat.png",
   "description": "Connect your users with real-time chat!",
@@ -16,7 +16,8 @@
     "shoutem.navigation",
     "shoutem.permissions",
     "shoutem.redux",
-    "shoutem.social"
+    "shoutem.social",
+    "shoutem.theme"
   ],
   "categories": ["users"],
   "i18n": {

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.vimeo",
-  "version": "5.2.1-rc.0",
+  "version": "5.2.1",
   "description": "Shoutem Vimeo extensions",
   "author": "Shoutem",
   "scripts": {

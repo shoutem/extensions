@@ -1,6 +1,6 @@
 {
   "name": "shoutem.firebase",
-  "version": "5.0.0-rc.0",
+  "version": "5.0.0",
   "description": "Firebase SDK bridge",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

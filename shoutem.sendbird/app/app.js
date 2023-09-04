@@ -112,7 +112,7 @@ export function appDidFinishLaunching(app) {
 export function appWillUnmount() {
   const SendBirdInstance = SendBird.getInstance();
 
-  appStateListener.remove();
+  appStateListener?.remove();
 
   if (SendBirdInstance) {
     SendBird.disconnect();

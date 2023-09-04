@@ -1,6 +1,6 @@
 {
   "name": "fonts",
-  "version": "2.0.0-rc.0",
+  "version": "2.0.0",
   "platform": ">=13.0.0",
   "title": "Fonts",
   "description": "View and manage fonts for the app",
