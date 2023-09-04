@@ -1,10 +1,10 @@
 {
   "name": "advertising",
   "title": "Advertising",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "platform": ">=9",
   "description": "Integrate AdMob and embed ads to your application",
-  "releaseNotes": "* Improved ad context configuration\n* Exposed mechanics allowing for custom ad placement",
+  "releaseNotes": "* Added support for setting Swift version if necessary",
   "icon": "server/assets/add-advertising-image.png",
   "dependencies": [
     "shoutem.application",

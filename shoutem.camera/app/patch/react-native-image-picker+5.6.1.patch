@@ -1,34 +1,36 @@
 diff --git a/node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java b/node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java
-index f74c66c..bb6f806 100644
+index d07bc29..ced75bd 100644
 --- a/node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java
 +++ b/node_modules/react-native-image-picker/android/src/main/java/com/imagepicker/Utils.java
-@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
- import android.database.Cursor;
+@@ -10,6 +10,7 @@ import android.content.Intent;
+ import android.content.pm.PackageManager;
  import android.graphics.Bitmap;
  import android.graphics.BitmapFactory;
 +import android.graphics.Matrix;
  import android.hardware.camera2.CameraCharacteristics;
- import android.media.MediaMetadataRetriever;
  import android.net.Uri;
-@@ -203,11 +204,12 @@ public class Utils {
-             Bitmap b = BitmapFactory.decodeStream(imageStream);
-             b = Bitmap.createScaledBitmap(b, newDimens[0], newDimens[1], true);
-             String originalOrientation = getOrientation(uri, context);
+ import android.os.Build;
+@@ -192,14 +193,14 @@ public class Utils {
+                 b = Bitmap.createScaledBitmap(b, newDimens[0], newDimens[1], true);
+                 String originalOrientation = getOrientation(uri, context);
+
++                int orientation = originalOrientation != null ? Integer.parseInt(originalOrientation) :  ExifInterface.ORIENTATION_NORMAL;
++                b = getRotatedImage(b, orientation);
+                 File file = createFile(context, getFileTypeFromMime(mimeType));
+
+                 try(OutputStream os = context.getContentResolver().openOutputStream(Uri.fromFile(file))) {
+                     b.compress(getBitmapCompressFormat(mimeType), options.quality, os);
+                 }
+
+-                setOrientation(file, originalOrientation, context);
 -
-+            int orientation = originalOrientation != null ? Integer.parseInt(originalOrientation) :  ExifInterface.ORIENTATION_NORMAL;
-+            b = getRotatedImage(b, orientation);
-             File file = createFile(context, getFileTypeFromMime(mimeType));
-             OutputStream os = context.getContentResolver().openOutputStream(Uri.fromFile(file));
-             b.compress(getBitmapCompressFormat(mimeType), options.quality, os);
--            setOrientation(file, originalOrientation, context);
-+
-             return Uri.fromFile(file);
- 
-         } catch (Exception e) {
-@@ -221,14 +223,27 @@ public class Utils {
+                 deleteFile(uri);
+
+                 return Uri.fromFile(file);
+@@ -216,14 +217,27 @@ public class Utils {
          return exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION);
      }
- 
+
 -    // ExifInterface.saveAttributes is costly operation so don't set exif for unnecessary orientations
 -    static void setOrientation(File file, String orientation, Context context) throws IOException {
 -        if (orientation.equals(String.valueOf(ExifInterface.ORIENTATION_NORMAL)) || orientation.equals(String.valueOf(ExifInterface.ORIENTATION_UNDEFINED))) {
@@ -58,5 +60,5 @@ index f74c66c..bb6f806 100644
 +        matrix.setRotate(rotationAngle, (float) width / 2, (float) height / 2);
 +        return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
      }
- 
+
      static int[] getImageDimensBasedOnConstraints(int origWidth, int origHeight, Options options) {

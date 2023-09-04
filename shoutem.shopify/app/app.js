@@ -1,6 +1,7 @@
 import { AppState } from 'react-native';
 import _ from 'lodash';
 import { registerIcons } from '@shoutem/ui';
+import { Platform } from 'react-native';
 import { getExtensionSettings } from 'shoutem.application';
 import { cancelPendingJourney } from 'shoutem.notification-center';
 import {
@@ -27,6 +28,7 @@ const createHandleAppStateChange = dispatch => appState => {
   }
 };
 
+let appStateListener;
 let handleAppStateChange;
 
 /* eslint-disable consistent-return */
@@ -63,13 +65,18 @@ export async function appDidMount(app) {
   MBBridge.initStore(shopifyStore, apiKey);
   initShopifyClient(shopifyStore, apiKey);
 
-  MBBridge.isLoggedIn()
+  // Log in disabled on Android
+  if (Platform.OS === 'ios') {
+    MBBridge.isLoggedIn()
     .then(isLoggedIn => {
       if (isLoggedIn) {
         dispatch(actions.getCustomer());
       }
     })
-    .catch(error => console.error('Error while checking Shopify isLoggedIn:', error));
+    .catch(error =>
+      console.error('Error while checking Shopify isLoggedIn:', error),
+    );
+  }
 
   dispatch(shopLoading());
   Promise.all([MBBridge.getCollections(), MBBridge.getShop()])
@@ -84,9 +91,16 @@ export async function appDidMount(app) {
       dispatch(refreshProducts(collections[0].id));
 
       handleAppStateChange = createHandleAppStateChange(dispatch);
-      AppState.addEventListener('change', handleAppStateChange);
+      appStateListener = AppState.addEventListener(
+        'change',
+        handleAppStateChange,
+      );
     })
     .catch(() => {
       dispatch(shopErrorLoading());
     });
+}
+
+export function appWillUnmount() {
+  appStateListener.remove();
 }

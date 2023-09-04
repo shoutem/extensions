@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { createScopedResolver, Device, resolveFontWeight } from '@shoutem/ui';
 import { ext } from '../const';
 
@@ -308,7 +309,10 @@ export default () => ({
   [`${ext('ChatEncryptionMessage')}`]: {
     container: {
       flex: 0,
-      transform: [{ scaleY: -1 }],
+      transform:
+        Platform.OS === 'android'
+          ? [{ scaleY: -1 }, { scaleX: -1 }]
+          : [{ scaleY: -1 }],
       padding: 10,
       borderRadius: 8,
       borderWidth: 1,

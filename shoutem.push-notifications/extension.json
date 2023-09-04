@@ -1,11 +1,11 @@
 {
   "name": "push-notifications",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "platform": ">=4",
   "type": "system",
   "title": "Push Notifications",
   "description": "Base extension for push notifications",
-  "releaseNotes": "* Fixed notification badge being incorrectly cleared",
+  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
   "icon": "server/assets/add-push-notifications-image.png",
   "dependencies": [
     "shoutem.application",
@@ -14,7 +14,5 @@
     "shoutem.navigation",
     "shoutem.permission"
   ],
-  "categories": [
-    "push"
-  ]
+  "categories": ["push"]
 }

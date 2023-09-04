@@ -10,6 +10,8 @@ import { registerNotificationHandlers } from './notificationHandlers';
 import { actions, handlers } from './redux';
 import { SendBird } from './services';
 
+let appStateListener;
+
 function handleAppStateChange(nextState) {
   if (nextState === 'active') {
     SendBird.setForegroundState();
@@ -62,7 +64,7 @@ export function appDidFinishLaunching(app) {
   const metadata = { appId: getAppId().toString() };
   const hasValidSubscription = getSubscriptionValidState(state);
 
-  AppState.addEventListener('change', handleAppStateChange);
+  appStateListener = AppState.addEventListener('change', handleAppStateChange);
 
   const channelHandlers = {
     onMessageReceived: handlers.onMessageReceivedHandler(
@@ -110,7 +112,7 @@ export function appDidFinishLaunching(app) {
 export function appWillUnmount() {
   const SendBirdInstance = SendBird.getInstance();
 
-  AppState.removeEventListener('change', handleAppStateChange);
+  appStateListener?.remove();
 
   if (SendBirdInstance) {
     SendBird.disconnect();

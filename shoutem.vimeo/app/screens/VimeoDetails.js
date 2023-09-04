@@ -41,13 +41,16 @@ export class VimeoDetails extends PureComponent {
     const { video } = getRouteParams(this.props);
     const videoAttachment = _.head(video.videoAttachments);
 
-    AppState.addEventListener('change', this.handleAppStateChange);
+    this.appStateListener = AppState.addEventListener(
+      'change',
+      this.handleAppStateChange,
+    );
 
     navigation.setOptions(this.getNavBarProps(video, videoAttachment));
   }
 
   componentWillUnmount() {
-    AppState.removeEventListener('change', this.handleAppStateChange);
+    this.appStateListener.remove();
   }
 
   handleAppStateChange(appState) {

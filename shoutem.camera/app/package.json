@@ -1,13 +1,13 @@
 {
   "name": "shoutem.camera",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "description": "Shoutem camera extension",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
     "react-native-camera": "3.44.3",
-    "react-native-image-picker": "4.0.6"
+    "react-native-image-picker": "5.6.1"
   },
   "peerDependencies": {
     "@shoutem/theme": "*",

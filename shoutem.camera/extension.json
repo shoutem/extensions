@@ -1,11 +1,11 @@
 {
   "name": "camera",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "platform": ">=6",
   "title": "Camera",
   "type": "system",
-  "description": "Implements camera and library access, and QR code generation",
-  "releaseNotes": "* Code update (no user facing changes)",
+  "description": "Shoutem camera extension",
+  "releaseNotes": "* Updated react-native-image-picker library, no user facing changes",
   "dependencies": ["shoutem.i18n", "shoutem.navigation", "shoutem.theme"],
   "icon": "server/assets/add-camera-image.png",
   "screens": [

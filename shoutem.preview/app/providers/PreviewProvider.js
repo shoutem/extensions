@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import RNShake from 'react-native-shake';
 import { captureScreen } from 'react-native-view-shot';
-import CameraRoll from '@react-native-community/cameraroll';
+import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Spinner, View } from '@shoutem/ui';

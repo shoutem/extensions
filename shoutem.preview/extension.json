@@ -1,11 +1,11 @@
 {
   "name": "preview",
-  "version": "5.0.3",
-  "platform": ">=9",
+  "version": "6.0.0",
+  "platform": ">=13",
   "type": "system",
   "title": "Builder Preview",
-  "releaseNotes": "* Added restart preview support for Disclose preview",
-  "description": "Provides the support for app preview in the builder",
+  "releaseNotes": "* Changed image picking library, no user facing changes",
+  "description": "Provides the support for app preview in the Builder",
   "icon": "server/assets/add-preview-image.png",
   "dependencies": [
     "shoutem.application",

@@ -1,11 +1,11 @@
 {
   "name": "theme",
-  "version": "6.1.2",
-  "platform": ">=12.2.0",
+  "version": "7.0.0",
+  "platform": ">=13",
   "type": "system",
   "title": "Theme",
   "description": "Resolve and store theme related configuration",
-  "releaseNotes": "* Updated version of UI library to 6.1.2",
+  "releaseNotes": "* Updated version of UI library\n* Adjusted asset linking for platform version 13.0.0",
   "icon": "server/assets/add-theme-image.png",
   "categories": [],
   "i18n": {

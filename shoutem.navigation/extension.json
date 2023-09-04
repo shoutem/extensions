@@ -1,13 +1,13 @@
 {
   "name": "navigation",
-  "version": "5.1.3",
-  "platform": ">=12.2.0",
+  "version": "5.2.0",
+  "platform": ">=13.0.0",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "* Resolved issues with Android back handling for tabbar / drawer",
+  "releaseNotes": "* Updated native dependencies for platform 13 compatibility, no user facing changes",
   "description": "App-level navigation",
   "nativeChanges": {
-    "lastVersion": "5.0.5"
+    "lastVersion": "5.2.0"
   },
   "dependencies": [
     "shoutem.application",
@@ -208,9 +208,7 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": [
-        "style"
-      ],
+      "categories": ["style"],
       "parameters": {
         "extensionTheme": "Theme"
       }

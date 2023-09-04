@@ -1,12 +1,12 @@
 {
   "name": "podcast",
-  "version": "5.4.1",
+  "version": "6.0.0",
   "platform": ">=12.1.0",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* Resolved issue with opening episodes from favorites screen",
+  "releaseNotes": "* Updated react-native-blob-util library, no user facing changes",
   "nativeChanges": {
-    "lastVersion": "5.0.3"
+    "lastVersion": "6.0.0"
   },
   "icon": "server/assets/extension-icon.png",
   "categories": ["media"],

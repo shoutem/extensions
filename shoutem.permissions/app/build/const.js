@@ -62,100 +62,81 @@ const PERMISSION_TYPES = {
   ANDROID_EXACT_ALARM: 'android.permission.SCHEDULE_EXACT_ALARM',
 };
 
-const permissionsPath = '../node_modules/react-native-permissions/ios';
-
 const IOS_PERMISSION_NATIVE_DATA = {
   [PERMISSION_TYPES.IOS_APP_TRACKING_TRANSPARENCY]: {
-    pod: 'Permission-AppTrackingTransparency',
-    podPath: `${permissionsPath}/AppTrackingTransparency`,
+    name: 'AppTrackingTransparency',
     plistKey: 'NSUserTrackingUsageDescription',
   },
   [PERMISSION_TYPES.IOS_BLUETOOTH_PERIPHERAL]: {
-    pod: 'Permission-BluetoothPeripheral',
-    podPath: `${permissionsPath}/BluetoothPeripheral`,
+    name: 'BluetoothPeripheral',
     plistKey: 'NSBluetoothPeripheralUsageDescription',
   },
   [PERMISSION_TYPES.IOS_CALENDARS]: {
-    pod: 'Permission-Calendars',
-    podPath: `${permissionsPath}/Calendars`,
+    name: 'Calendars',
     plistKey: 'NSCalendarsUsageDescription',
   },
   [PERMISSION_TYPES.IOS_CONTACTS]: {
-    pod: 'Permission-Contacts',
-    podPath: `${permissionsPath}/Contacts`,
+    name: 'Contacts',
     plistKey: 'NSContactsUsageDescription',
   },
   [PERMISSION_TYPES.IOS_CAMERA]: {
-    pod: 'Permission-Camera',
-    podPath: `${permissionsPath}/Camera`,
+    name: 'Camera',
     plistKey: 'NSCameraUsageDescription',
   },
   [PERMISSION_TYPES.IOS_FACE_ID]: {
-    pod: 'Permission-FaceID',
-    podPath: `${permissionsPath}/FaceID`,
+    name: 'FaceID',
     plistKey: 'NSFaceIDUsageDescription',
   },
   [PERMISSION_TYPES.IOS_LOCATION_ALWAYS]: {
-    pod: 'Permission-LocationAlways',
-    podPath: `${permissionsPath}/LocationAlways`,
+    name: 'LocationAlways',
     plistKey: 'NSLocationAlwaysUsageDescription',
   },
   [PERMISSION_TYPES.IOS_LOCATION_WHEN_IN_USE]: {
-    pod: 'Permission-LocationWhenInUse',
-    podPath: `${permissionsPath}/LocationWhenInUse`,
+    name: 'LocationWhenInUse',
     plistKey: 'NSLocationWhenInUseUsageDescription',
   },
   [PERMISSION_TYPES.IOS_LOCATION_ALWAYS_AND_WHEN_IN_USE]: {
     plistKey: 'NSLocationAlwaysAndWhenInUseUsageDescription',
   },
   [PERMISSION_TYPES.IOS_MICROPHONE]: {
-    pod: 'Permission-Microphone',
-    podPath: `${permissionsPath}/Microphone`,
+    name: 'Microphone',
     plistKey: 'NSMicrophoneUsageDescription',
   },
   [PERMISSION_TYPES.IOS_MEDIA_LIBRARY]: {
-    pod: 'Permission-MediaLibrary',
-    podPath: `${permissionsPath}/MediaLibrary`,
+    name: 'MediaLibrary',
     plistKey: 'NSAppleMusicUsageDescription',
   },
   [PERMISSION_TYPES.IOS_MOTION]: {
-    pod: 'Permission-Motion',
-    podPath: `${permissionsPath}/Motion`,
+    name: 'Motion',
     plistKey: 'NSMotionUsageDescription',
   },
   [PERMISSION_TYPES.IOS_PHOTO_LIBRARY]: {
-    pod: 'Permission-PhotoLibrary',
-    podPath: `${permissionsPath}/PhotoLibrary`,
+    name: 'PhotoLibrary',
+
     plistKey: 'NSPhotoLibraryUsageDescription',
   },
   [PERMISSION_TYPES.IOS_PHOTO_LIBRARY_ADD_ONLY]: {
-    pod: 'Permission-PhotoLibraryAddOnly',
-    podPath: `${permissionsPath}/PhotoLibraryAddOnly`,
+    name: 'PhotoLibraryAddOnly',
     plistKey: 'NSPhotoLibraryAddUsageDescription',
   },
   [PERMISSION_TYPES.IOS_REMINDERS]: {
-    pod: 'Permission-Reminders',
-    podPath: `${permissionsPath}/Reminders`,
+    name: 'Reminders',
     plistKey: 'NSRemindersUsageDescription',
   },
   [PERMISSION_TYPES.IOS_SIRI]: {
-    pod: 'Permission-Siri',
-    podPath: `${permissionsPath}/Siri`,
+    name: 'Siri',
     plistKey: 'NSSiriUsageDescription',
   },
   [PERMISSION_TYPES.IOS_SPEECH_RECOGNITION]: {
-    pod: 'Permission-SpeechRecognition',
-    podPath: `${permissionsPath}/SpeechRecognition`,
+    name: 'SpeechRecognition',
     plistKey: 'NSSpeechRecognitionUsageDescription',
   },
   [PERMISSION_TYPES.IOS_STOREKIT]: {
-    pod: 'Permission-StoreKit',
-    podPath: `${permissionsPath}/StoreKit`,
+    name: 'StoreKit',
     plistKey: 'NSAppleMusicUsageDescription',
   },
   [PERMISSION_TYPES.IOS_NOTIFICATIONS]: {
-    pod: 'Permission-Notifications',
-    podPath: `${permissionsPath}/Notifications`,
+    name: 'Notifications',
   },
 };
 

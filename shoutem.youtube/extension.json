@@ -1,10 +1,10 @@
 {
   "name": "youtube",
   "title": "YouTube",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "platform": ">=6.0.1",
   "description": "Show a video gallery from YouTube channel, user or playlist",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
   "dependencies": [
     "shoutem.application",
     "shoutem.layouts",

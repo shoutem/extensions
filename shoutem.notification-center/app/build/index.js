@@ -1,8 +1,8 @@
 const { getAppConfiguration } = require('@shoutem/build-tools');
-const { injectChimeSound } = require('./injectChimeSound');
+const { downloadChimeSound } = require('./downloadChimeSound');
 
 function preBuild(appConfiguration) {
-  injectChimeSound(appConfiguration);
+  downloadChimeSound(appConfiguration);
 }
 
 function runPreBuild() {

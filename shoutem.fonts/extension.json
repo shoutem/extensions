@@ -1,17 +1,15 @@
 {
   "name": "fonts",
-  "version": "1.0.1",
-  "platform": ">=12.0.0",
+  "version": "2.0.0",
+  "platform": ">=13.0.0",
   "title": "Fonts",
   "description": "View and manage fonts for the app",
-  "releaseNotes": "* Resolved a couple of UI issues with the font upload section",
+  "releaseNotes": "* Adjusted font download and linking method",
   "icon": "server/assets/add-theme-image.png",
   "categories": [],
   "nativeChanges": {
-    "lastVersion": "1.0.0",
-    "settingsKeys": [
-      "excludedFonts"
-    ]
+    "lastVersion": "2.0.0",
+    "settingsKeys": ["excludedFonts"]
   },
   "i18n": {
     "locale": "en",
@@ -21,9 +19,7 @@
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
   },
-  "dependencies": [
-    "shoutem.application"
-  ],
+  "dependencies": ["shoutem.application"],
   "pages": [
     {
       "name": "FontsPage",
@@ -34,9 +30,7 @@
     {
       "page": "@.FontsPage",
       "title": "Fonts",
-      "categories": [
-        "style"
-      ]
+      "categories": ["style"]
     }
   ],
   "settings": {

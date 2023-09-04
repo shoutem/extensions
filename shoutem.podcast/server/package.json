@@ -1,6 +1,6 @@
 {
   "name": "shoutem.podcast",
-  "version": "5.4.1",
+  "version": "6.0.0",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
     "clean": "rimraf ./build/*",

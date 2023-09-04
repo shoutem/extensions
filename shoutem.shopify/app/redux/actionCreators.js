@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { Toast } from '@shoutem/ui';
+import { Platform } from 'react-native';
 import { getAppId, getExtensionCloudUrl } from 'shoutem.application';
 import { getUser, updateProfile } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
@@ -399,7 +400,8 @@ export function updateCustomerInformation(customer, cart) {
 
       let webUrl = checkoutUrl;
       let accessToken = '';
-      const isLoggedIn = await MBBridge.isLoggedIn();
+      // Log in disabled on Android
+      const isLoggedIn = Platform.OS === 'ios' && await MBBridge.isLoggedIn();
 
       if (isLoggedIn) {
         const associateResponse = await MBBridge.associateCheckout(checkoutId);

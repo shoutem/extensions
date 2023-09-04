@@ -1,14 +1,14 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "9.1.0",
-  "platform": ">=6",
+  "version": "10.0.0",
+  "platform": ">=13",
   "nativeChanges": {
-    "lastVersion": "6.0.0",
+    "lastVersion": "10.0.0",
     "settingsKeys": []
   },
   "skipClone": false,
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "* Changed image picker library, no user facing changes\n* For developers: Cleaned up peer dependencies",
   "description": "Let members create posts, comment and like them",
   "categories": ["users"],
   "dependencies": [
@@ -19,7 +19,9 @@
     "shoutem.layouts",
     "shoutem.navigation",
     "shoutem.permissions",
-    "shoutem.user-profile"
+    "shoutem.user-profile",
+    "shoutem.theme",
+    "shoutem.redux"
   ],
   "i18n": {
     "locale": "en",

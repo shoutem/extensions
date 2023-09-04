@@ -1,6 +1,6 @@
 {
   "name": "auth",
-  "version": "7.3.1",
+  "version": "7.3.2",
   "platform": ">=12.3.0",
   "title": "Users",
   "nativeChanges": {
@@ -15,7 +15,7 @@
     ]
   },
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Fixed Protected screens and Groups pages not showing properly",
+  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",
@@ -27,9 +27,7 @@
     "shoutem.redux",
     "shoutem.web-view"
   ],
-  "categories": [
-    "users"
-  ],
+  "categories": ["users"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -104,9 +102,7 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": [
-        "style"
-      ],
+      "categories": ["style"],
       "parameters": {
         "extensionTheme": "Theme"
       }

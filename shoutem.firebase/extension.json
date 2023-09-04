@@ -1,15 +1,15 @@
 {
   "name": "firebase",
-  "version": "4.1.6",
-  "platform": ">=9.0.1",
+  "version": "5.0.0",
+  "platform": ">=13.0.0",
   "type": "system",
   "skipClone": false,
   "title": "Firebase",
   "nativeChanges": {
-    "lastVersion": "4.1.6"
+    "lastVersion": "5.0.0"
   },
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
-  "releaseNotes": "* Added permission for scheduling exact alarm for local notifications",
+  "releaseNotes": "* Updated native code linking to support React Native 0.72, no user facing changes",
   "icon": "server/assets/add-firebase-image.png",
   "dependencies": [
     "shoutem.application",

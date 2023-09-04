@@ -1,6 +1,6 @@
 {
   "name": "shoutem.video",
-  "version": "7.2.0",
+  "version": "7.2.1",
   "description": "Videos extension enables browsing through the collection of videos uploaded to the Shoutem CMS.",
   "peerDependencies": {
     "@shoutem/redux-io": "*",
