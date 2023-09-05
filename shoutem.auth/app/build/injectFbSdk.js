@@ -11,7 +11,7 @@ const {
 } = require('@shoutem/build-tools');
 const { fbSdk } = require('./const');
 
-function injectFbSdkAndroid(trackFbsdkEvents) {
+function injectFbSdkAndroid(trackFbsdkEvents, hasAdvertisingExtension) {
   const mainApplication = getMainApplicationPath({ cwd: projectPath });
   inject(
     mainApplication,
@@ -41,11 +41,21 @@ function injectFbSdkAndroid(trackFbsdkEvents) {
     ANCHORS.ANDROID.MANIFEST.APPLICATION,
     `<meta-data android:name='com.facebook.sdk.AutoLogAppEventsEnabled' android:value='${shouldAutoLogAppEvents}'/>`,
   );
-  inject(
-    androidManifestPath,
-    ANCHORS.ANDROID.MANIFEST.APPLICATION,
-    fbSdk.android.manifest.removeAdIdPermission,
-  );
+  // Injecting twice because of a weird bug with AndroidManifest merging.
+  // Check replies to this answer:
+  // https://stackoverflow.com/a/73170802/7920643
+  if (!hasAdvertisingExtension) {
+    inject(
+      androidManifestPath,
+      ANCHORS.ANDROID.MANIFEST.ROOT,
+      fbSdk.android.manifest.removeAdIdPermission,
+    );
+    inject(
+      androidManifestPath,
+      ANCHORS.ANDROID.MANIFEST.APPLICATION,
+      fbSdk.android.manifest.removeAdIdPermission,
+    );
+  }
 
   const appGradlePath = getAppGradlePath({ cwd: projectPath });
   inject(
@@ -105,10 +115,10 @@ function injectFbSdkIos() {
  * Injects required modifications for react-native-fbsdk-next as described
  * here: https://developers.facebook.com/docs/android/getting-started/
  */
-function injectFbSdk(extensionSettings) {
+function injectFbSdk(extensionSettings, hasAdvertisingExtension) {
   const trackFbsdkEvents = extensionSettings?.trackFbsdkEvents;
 
-  injectFbSdkAndroid(trackFbsdkEvents);
+  injectFbSdkAndroid(trackFbsdkEvents, hasAdvertisingExtension);
   injectFbSdkIos();
 }
 

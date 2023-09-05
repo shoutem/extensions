@@ -1,10 +1,10 @@
 {
   "name": "auth",
-  "version": "7.3.2",
+  "version": "7.4.0",
   "platform": ">=12.3.0",
   "title": "Users",
   "nativeChanges": {
-    "lastVersion": "7.2.1",
+    "lastVersion": "7.4.0",
     "settingsKeys": [
       "providers.facebook.appId",
       "providers.facebook.appName",
@@ -15,7 +15,7 @@
     ]
   },
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
+  "releaseNotes": "* No user-facing changes\n* Adjusted Android AD_ID permission removal logic to handle AndroidManifest merging tool errors",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",

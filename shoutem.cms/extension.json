@@ -1,13 +1,13 @@
 {
   "name": "cms",
-  "version": "6.2.2",
+  "version": "6.3.0",
   "platform": ">=9.1.0",
   "type": "system",
   "title": "CMS",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",
-  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
+  "releaseNotes": "* Added missing iOS location usage rationale for permission requests",
   "nativeChanges": {
-    "lastVersion": "6.1.0"
+    "lastVersion": "6.3.0"
   },
   "icon": "server/assets/add-cms-image.png",
   "categories": ["content"],

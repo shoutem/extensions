@@ -9,6 +9,8 @@ const { injectFbSdk } = require('./injectFbSdk');
 const { injectAppleSignInIos } = require('./injectAppleSignIn');
 const { injectResolutionStrategy } = require('./injectResolutionStrategy');
 
+const ADVERTISING_EXTENSION = 'shoutem.advertising';
+
 const ext = resourceName =>
   resourceName ? `${pack.name}.${resourceName}` : pack.name;
 
@@ -24,8 +26,12 @@ const getExtensionSettings = appConfiguration => {
 
 function preBuild(appConfiguration) {
   const extensionSettings = getExtensionSettings(appConfiguration);
+  const hasAdvertisingExtension = !!appConfiguration.included.find(
+    extension => extension.id === ADVERTISING_EXTENSION,
+  );
+
   injectResolutionStrategy();
-  injectFbSdk(extensionSettings);
+  injectFbSdk(extensionSettings, hasAdvertisingExtension);
   injectAppleSignInIos(extensionSettings);
 
   configureSettingsAndroid(extensionSettings);
