@@ -1,10 +1,10 @@
 {
   "name": "wordpress",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "platform": ">=6",
   "title": "WordPress",
   "description": "Show news articles from WordPress blog.",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "* Resolved article title encoding errors in \"Up next\" section",
   "icon": "server/assets/extension-icon.png",
   "dependencies": [
     "shoutem.application",

@@ -1,11 +1,11 @@
 {
   "name": "rss",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "platform": ">=6.0.1",
   "type": "system",
   "title": "RSS",
   "description": "Integrate with RSS feed source",
-  "releaseNotes": "* Reworked RSS feed resolution resulting in more optimised feed fetching and parsing\n* Reorganized extension's file structure & exports - breaking change",
+  "releaseNotes": "* Fixed error on list screen when no URL was provided",
   "icon": "server/assets/add-rss-image.png",
   "dependencies": ["shoutem.application", "shoutem.i18n"],
   "categories": ["content"],
