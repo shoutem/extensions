@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert } from 'react-native';
+import { Alert, AppState } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
@@ -59,7 +59,13 @@ export class PlacesList extends CmsListScreen {
     if (programId) {
       super.refreshInvalidContent(this.props, true);
       refreshCardState();
+      this.checkPermissionStatus(this.props);
     }
+
+    this.appStateListener = AppState.addEventListener(
+      'change',
+      this.handleAppStateChange,
+    );
   }
 
   refreshData() {

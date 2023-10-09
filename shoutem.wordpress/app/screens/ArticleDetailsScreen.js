@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
+import { Dimensions } from 'react-native';
 import he from 'he';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { Dimensions } from 'react-native';
-import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
   Caption,
@@ -19,9 +18,10 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { NextArticle } from '../components/NextArticle';
 import { ext } from '../const';
-import { getLeadImageUrl, getAuthorName } from '../services';
+import { getAuthorName, getLeadImageUrl } from '../services';
 
 export class ArticleDetailsScreen extends PureComponent {
   static propTypes = {
@@ -64,7 +64,7 @@ export class ArticleDetailsScreen extends PureComponent {
       <NextArticle
         imageUrl={getLeadImageUrl(nextArticle)}
         openArticle={() => openArticle(nextArticle)}
-        title={nextArticle.title.rendered}
+        title={he.decode(nextArticle.title.rendered)}
       />
     );
   }

@@ -66,7 +66,7 @@ export class RssListScreen extends RemoteDataListScreen {
       const emptyStateViewProps = {
         icon: 'error',
         message: I18n.t(ext('noUrlMessage')),
-        style: style.emptyState,
+        style: style?.emptyState,
       };
 
       return <EmptyStateView {...emptyStateViewProps} />;

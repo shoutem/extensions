@@ -250,7 +250,7 @@ export class CmsListScreen extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.appStateListener.remove();
+    this.appStateListener?.remove();
   }
 
   handleAppStateChange(appState) {

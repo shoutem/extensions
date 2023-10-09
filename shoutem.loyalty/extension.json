@@ -1,10 +1,10 @@
 {
   "name": "loyalty",
-  "version": "6.3.0",
+  "version": "6.3.1",
   "platform": ">=12.1.0",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening reward item details screen.",
+  "releaseNotes": "* Resolved rare error when navigating back from a Stores list screen",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",
