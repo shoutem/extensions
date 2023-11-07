@@ -50,7 +50,7 @@ function NotificationDailySettingsScreen({
 
   useEffect(() => {
     navigation.setOptions({
-      title: I18n.t(ext('dailySettingsTitle')).toUpperCase(),
+      title: I18n.t(ext('dailySettingsTitle')),
       headerRight: renderRightComponent,
     });
   }, []);

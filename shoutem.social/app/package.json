@@ -1,6 +1,6 @@
 {
   "name": "shoutem.social",
-  "version": "10.0.0",
+  "version": "10.1.0",
   "description": "Social wall",
   "dependencies": {
     "@react-native-camera-roll/camera-roll": "5.7.2",

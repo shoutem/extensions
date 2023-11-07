@@ -1,6 +1,6 @@
 {
   "name": "shoutem.cms",
-  "version": "6.3.1",
+  "version": "6.3.2",
   "description": "Shoutem CMS extension",
   "author": "Shoutem",
   "scripts": {
@@ -16,8 +16,8 @@
     "@shoutem/react-web-ui": "^1.0.2",
     "@shoutem/redux-api-sdk": "^1.1.7",
     "i18next": "^19.8.2",
-    "moment": "^2.16.0",
-    "moment-timezone": "^0.5.32",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
     "normalize-url": "^1.6.0",
     "react-debounce-input": "^3.1.0",
     "react-dropzone": "^4.2.1",

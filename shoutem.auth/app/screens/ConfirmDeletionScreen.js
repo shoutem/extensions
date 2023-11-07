@@ -21,7 +21,7 @@ export function ConfirmDeletionScreen(props) {
     : style.deleteAccountButtonText.enabled;
 
   function getNavBarProps() {
-    return { title: I18n.t(ext('deletionNavBarTitle')).toUpperCase() };
+    return { title: I18n.t(ext('deletionNavBarTitle')) };
   }
 
   useLayoutEffect(() => {

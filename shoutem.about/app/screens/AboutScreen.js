@@ -157,9 +157,7 @@ export class AboutScreen extends PureComponent {
     // If navigation bar is clear, show the name that is rendered below the image, so it looks like
     // it is transferred to the navigation bar when scrolling. Otherwise show the screen title
     // (from the shortcut). The screen title is always displayed on solid navigation bars.
-    const resolvedTitle = isNavigationBarClear
-      ? profile.name?.toUpperCase() || title
-      : title;
+    const resolvedTitle = isNavigationBarClear ? profile.name || title : title;
 
     return {
       headerRight: this.headerRight,

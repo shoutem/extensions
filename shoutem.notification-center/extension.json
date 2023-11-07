@@ -1,14 +1,14 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "8.0.0",
+  "version": "8.1.0",
   "platform": ">=13.0.0",
   "nativeChanges": {
     "lastVersion": "7.1.1",
     "settingsKeys": ["chime"]
   },
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes\n* Adjusted asset linking, no user facing changes",
+  "releaseNotes": "* Adjusted Navigation Bar title capitalization to adhere to Main Navigation settings",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": ["users"],
   "dependencies": [

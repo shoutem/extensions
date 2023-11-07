@@ -44,9 +44,7 @@ export class BlockedUsers extends RemoteDataListScreen {
       shortcut: { title = '' },
     } = getRouteParams(this.props);
 
-    return {
-      title: title.toUpperCase(),
-    };
+    return { title };
   }
 
   handleUnblockPress(user) {

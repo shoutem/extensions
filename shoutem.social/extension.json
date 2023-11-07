@@ -1,14 +1,14 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "10.0.0",
+  "version": "10.1.0",
   "platform": ">=13",
   "nativeChanges": {
     "lastVersion": "10.0.0",
     "settingsKeys": []
   },
   "skipClone": false,
-  "releaseNotes": "* Changed image picker library, no user facing changes\n* For developers: Cleaned up peer dependencies",
+  "releaseNotes": "* Adjusted Navigation Bar title capitalization to adhere to Main Navigation settings",
   "description": "Let members create posts, comment and like them",
   "categories": ["users"],
   "dependencies": [

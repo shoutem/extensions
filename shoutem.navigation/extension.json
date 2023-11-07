@@ -1,10 +1,10 @@
 {
   "name": "navigation",
-  "version": "5.2.0",
+  "version": "5.3.0",
   "platform": ">=13.0.0",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "* Updated native dependencies for platform 13 compatibility, no user facing changes",
+  "releaseNotes": "* Added ability to prevent Navigation Bar title uppercasing\n* See Main Navigation -> Navigation Bar settings page",
   "description": "App-level navigation",
   "nativeChanges": {
     "lastVersion": "5.2.0"
@@ -218,6 +218,7 @@
     "showTitle": true,
     "backgroundImageEnabledFirstScreen": false,
     "backgroundImage": null,
-    "fitContainer": true
+    "fitContainer": true,
+    "uppercaseTitle": true
   }
 }
