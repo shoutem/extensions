@@ -9,6 +9,7 @@ import {
   IconLabel,
   LoaderContainer,
 } from '@shoutem/react-web-ui';
+import DownloadRowDescriptor from '../download-row-descriptor';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -19,7 +20,6 @@ export default class CustomFontsTable extends PureComponent {
 
     this.state = {
       inProgress: false,
-      downloading: false,
     };
   }
 
@@ -56,16 +56,6 @@ export default class CustomFontsTable extends PureComponent {
     ];
   }
 
-  handleDownload(event, font) {
-    const { onDownloadClick } = this.props;
-    event.stopPropagation();
-
-    this.setState({ downloading: true });
-    onDownloadClick(font).then(() => {
-      this.setState({ downloading: false });
-    });
-  }
-
   renderEditValue(item) {
     const { onEditClick } = this.props;
 
@@ -93,17 +83,10 @@ export default class CustomFontsTable extends PureComponent {
   }
 
   renderDownloadValue(item) {
-    const { downloading } = this.state;
+    const { onDownloadClick } = this.props;
 
     return (
-      <LoaderContainer size="22px" isLoading={downloading}>
-        <Button
-          className="btn-icon"
-          onClick={event => this.handleDownload(event, item)}
-        >
-          <FontIcon name="download" size="24px" />
-        </Button>
-      </LoaderContainer>
+      <DownloadRowDescriptor font={item} onDownloadClick={onDownloadClick} />
     );
   }
 

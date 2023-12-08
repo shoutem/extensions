@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { getAllUserGroups, loadAllUserGroups } from 'src/modules/user-groups';
 import {
   changePassword,
+  changeRole,
   createUser,
   DEFAULT_LIMIT,
   DEFAULT_OFFSET,
@@ -15,6 +16,7 @@ import {
   getUsers,
   loadNextUsersPage,
   loadPreviousUsersPage,
+  loadUser,
   loadUsers,
   updateUser,
   UsersDashboard,
@@ -37,6 +39,8 @@ export class UsersPage extends Component {
     const { page } = context;
     const ownerId = _.get(page, 'pageContext.currentUserId');
 
+    this.pageRef = createRef();
+
     this.state = {
       ownerId,
       filter: {},
@@ -49,11 +53,12 @@ export class UsersPage extends Component {
     this.checkData(this.props, null, true);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.checkData(nextProps, this.props);
   }
 
   checkData(nextProps, props = {}, willMount = false) {
+    const { loadAllUserGroups } = this.props;
     const { appId } = nextProps;
 
     if (shouldLoad(nextProps, props, 'users')) {
@@ -61,22 +66,22 @@ export class UsersPage extends Component {
     }
 
     if (shouldLoad(nextProps, props, 'userGroups')) {
-      this.props.loadAllUserGroups(appId);
+      loadAllUserGroups(appId);
     }
   }
 
   loadUsers(defaultPaging) {
-    const { appId } = this.props;
+    const { appId, loadUsers } = this.props;
     const { filter } = this.state;
 
     const pagingInfo = defaultPaging
       ? DEFAULT_PAGING
-      : this.refs.paging.getPagingInfo();
+      : this.pageRef.current.getPagingInfo();
     const { limit, offset } = pagingInfo;
 
     this.setState({ inProgress: true });
 
-    this.props.loadUsers(appId, filter, limit, offset).then(() =>
+    loadUsers(appId, filter, limit, offset).then(() =>
       this.setState({
         inProgress: false,
         showLoaderOnRefresh: false,
@@ -85,14 +90,14 @@ export class UsersPage extends Component {
   }
 
   handleNextPageClick() {
-    const { users } = this.props;
+    const { users, loadNextPage } = this.props;
 
     this.setState({
       showLoaderOnRefresh: true,
       inProgress: true,
     });
 
-    this.props.loadNextPage(users).then(() =>
+    loadNextPage(users).then(() =>
       this.setState({
         inProgress: false,
         showLoaderOnRefresh: false,
@@ -101,14 +106,14 @@ export class UsersPage extends Component {
   }
 
   handlePreviousPageClick() {
-    const { users } = this.props;
+    const { users, loadPreviousPage } = this.props;
 
     this.setState({
       showLoaderOnRefresh: true,
       inProgress: true,
     });
 
-    this.props.loadPreviousPage(users).then(() =>
+    loadPreviousPage(users).then(() =>
       this.setState({
         inProgress: false,
         showLoaderOnRefresh: false,
@@ -117,11 +122,11 @@ export class UsersPage extends Component {
   }
 
   handleUserCreate(user) {
-    const { appId } = this.props;
+    const { appId, createUser } = this.props;
     this.setState({ showLoaderOnRefresh: true });
 
     return new Promise((resolve, reject) =>
-      this.props.createUser(appId, user).then(resolve, action => {
+      createUser(appId, user).then(resolve, action => {
         this.setState({ showLoaderOnRefresh: false });
         const errorCode = getErrorCode(action);
         reject(getErrorMessage(errorCode));
@@ -130,24 +135,29 @@ export class UsersPage extends Component {
   }
 
   handleUserUpdate(userId, user) {
-    const { appId } = this.props;
-    return this.props.updateUser(appId, userId, user);
+    const { appId, updateUser } = this.props;
+    return updateUser(appId, userId, user);
   }
 
   handleDownloadUserData() {
     const { appId } = this.props;
-
     return downloadUserData(appId);
   }
 
   handleUserDelete(userId) {
-    const { appId } = this.props;
-    return this.props.deleteUser(appId, userId);
+    const { appId, deleteUser } = this.props;
+    return deleteUser(appId, userId);
   }
 
   handleUserChangePassword(userId, password) {
     const { appId, changePassword } = this.props;
     return changePassword(appId, userId, password);
+  }
+
+  async handleUserChangeRole(userId, role) {
+    const { appId, changeRole, loadUser } = this.props;
+    await changeRole(appId, userId, role);
+    await loadUser(appId, userId);
   }
 
   handleFilterChange(filter) {
@@ -157,7 +167,7 @@ export class UsersPage extends Component {
       ...filter,
     };
 
-    this.refs.paging.reset();
+    this.pageRef.current.reset();
 
     this.setState(
       {
@@ -193,10 +203,11 @@ export class UsersPage extends Component {
           onUserDelete={this.handleUserDelete}
           onUserUpdate={this.handleUserUpdate}
           onUserChangePassword={this.handleUserChangePassword}
+          onUserChangeRole={this.handleUserChangeRole}
           onUserDataDownload={this.handleDownloadUserData}
         />
         <Paging
-          ref="paging"
+          ref={this.pageRef}
           hasNext={hasNext(users)}
           hasPrevious={hasPrev(users)}
           onNextPageClick={this.handleNextPageClick}
@@ -208,18 +219,19 @@ export class UsersPage extends Component {
 }
 
 UsersPage.propTypes = {
-  appId: PropTypes.string,
-  users: PropTypes.array,
-  userGroups: PropTypes.array,
-  loadUsers: PropTypes.func,
-  loadNextPage: PropTypes.func,
-  loadPreviousPage: PropTypes.func,
-  loadAllUserGroups: PropTypes.func,
-  createUser: PropTypes.func,
-  updateUser: PropTypes.func,
-  deleteUser: PropTypes.func,
-  changePassword: PropTypes.func,
-  downloadUserData: PropTypes.func,
+  appId: PropTypes.string.isRequired,
+  changePassword: PropTypes.func.isRequired,
+  changeRole: PropTypes.func.isRequired,
+  createUser: PropTypes.func.isRequired,
+  deleteUser: PropTypes.func.isRequired,
+  loadAllUserGroups: PropTypes.func.isRequired,
+  loadNextPage: PropTypes.func.isRequired,
+  loadPreviousPage: PropTypes.func.isRequired,
+  loadUser: PropTypes.func.isRequired,
+  loadUsers: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
+  userGroups: PropTypes.array.isRequired,
+  users: PropTypes.array.isRequired,
 };
 
 UsersPage.contextTypes = {
@@ -238,6 +250,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   const scope = { extensionName };
 
   return {
+    loadUser: (appId, userId) => dispatch(loadUser(appId, userId)),
     loadUsers: (appId, filter, limit, offset) =>
       dispatch(loadUsers(appId, filter, limit, offset, scope)),
     loadNextPage: users => dispatch(loadNextUsersPage(users)),
@@ -249,6 +262,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     deleteUser: (appId, userId) => dispatch(deleteUser(appId, userId)),
     changePassword: (appId, userId, password) =>
       dispatch(changePassword(appId, userId, password)),
+    changeRole: (appId, userId, role) =>
+      dispatch(changeRole(appId, userId, role)),
   };
 }
 

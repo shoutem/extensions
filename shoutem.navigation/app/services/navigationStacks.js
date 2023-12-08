@@ -81,6 +81,7 @@ export function closeStack(stackName, navigationAction) {
     (() =>
       navigationRef.current?.dispatch(
         CommonActions.navigate({
+          name: matchingStack.previousRoute.name,
           key: matchingStack.previousRoute.key,
           params: matchingStack.previousRoute.params,
         }),

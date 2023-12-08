@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
@@ -15,6 +16,7 @@ import {
 } from '@shoutem/ui';
 import { images } from '../assets';
 import { ext } from '../const';
+import { openProfileForLegacyUser } from '../services';
 import { user as userShape } from './shapes';
 
 export function MemberView({
@@ -22,12 +24,12 @@ export function MemberView({
   style,
   onMenuPress,
   showMenuIcon,
-  openProfile,
   isBlocked,
 }) {
-  const handleOpenProfile = () => {
-    openProfile(user);
-  };
+  const dispatch = useDispatch();
+
+  const handleOpenProfile = () =>
+    dispatch(openProfileForLegacyUser(user.legacyId));
 
   const renderLegacyUser = user => {
     // this is here because Image causes a crash if it receives null as url
@@ -92,11 +94,11 @@ export function MemberView({
 }
 
 MemberView.propTypes = {
+  style: PropTypes.object.isRequired,
   user: userShape.isRequired,
-  openProfile: PropTypes.func.isRequired,
-  onMenuPress: PropTypes.func,
   isBlocked: PropTypes.bool,
   showMenuIcon: PropTypes.bool,
+  onMenuPress: PropTypes.func,
 };
 
 MemberView.defaultProps = {

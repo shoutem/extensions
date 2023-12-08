@@ -96,7 +96,7 @@ export class PlaceDetails extends PureComponent {
 
     return {
       ...composeNavigationStyles([navBarStyle]),
-      title: name.toUpperCase(),
+      title: name,
       headerRight: this.renderRightNavBarComponent,
     };
   }

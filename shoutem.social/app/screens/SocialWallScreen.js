@@ -98,9 +98,9 @@ export class SocialWallScreen extends RemoteDataListScreen {
   }
 
   openMyProfile() {
-    const { user, openProfile } = this.props;
+    const { user, openProfileForLegacyUser } = this.props;
 
-    openProfile(user);
+    openProfileForLegacyUser(user.legacyId);
   }
 
   fetchData() {
@@ -159,7 +159,12 @@ export class SocialWallScreen extends RemoteDataListScreen {
   }
 
   render() {
-    const { data, user, style } = this.props;
+    const {
+      data,
+      user,
+      style,
+      extension: { enablePhotoAttachments },
+    } = this.props;
 
     const profileImageUrl = user?.profile?.image || user?.profile_image_url;
 
@@ -185,11 +190,13 @@ export class SocialWallScreen extends RemoteDataListScreen {
             <Text style={style.newStatusPlaceholderText}>
               {I18n.t(ext('newStatusPlaceholder'))}
             </Text>
-            <AddAttachmentButtons
-              onAddAttachmentCancel={_.noop}
-              onAttachmentSelected={this.handleOpenCreateStatus}
-              style={style}
-            />
+            {enablePhotoAttachments && (
+              <AddAttachmentButtons
+                onAddAttachmentCancel={_.noop}
+                onAttachmentSelected={this.handleOpenCreateStatus}
+                style={style}
+              />
+            )}
           </TouchableOpacity>
         </View>
         {this.renderData(data)}
@@ -220,10 +227,10 @@ const mapDispatchToProps = dispatch => ({
       authenticate,
       isAuthenticated,
       blockUser,
+      openProfileForLegacyUser,
     },
     dispatch,
   ),
-  openProfile: openProfileForLegacyUser(dispatch),
 });
 
 SocialWallScreen.propTypes = {

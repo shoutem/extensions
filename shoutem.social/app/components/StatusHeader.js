@@ -53,7 +53,7 @@ function StatusHeader({
   }
 
   function handleOpenProfile() {
-    openProfileForLegacyUser(dispatch)({ id: userId });
+    dispatch(openProfileForLegacyUser(userId));
   }
 
   const resolvedProfileImage = profileImageUrl

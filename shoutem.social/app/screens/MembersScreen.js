@@ -29,7 +29,7 @@ import {
   loadUsersInGroups,
 } from '../redux';
 import { getUsers, getUsersInGroups } from '../redux/selectors';
-import { openBlockActionSheet, openProfileForLegacyUser } from '../services';
+import { openBlockActionSheet } from '../services';
 
 export class MembersScreen extends RemoteDataListScreen {
   static propTypes = {
@@ -113,13 +113,12 @@ export class MembersScreen extends RemoteDataListScreen {
   }
 
   renderRow(user) {
-    const { openProfile, currentUser } = this.props;
+    const { currentUser } = this.props;
 
     const isCurrentUser = currentUser.legacyId === user.legacyId;
 
     return (
       <MemberView
-        openProfile={openProfile}
         user={user}
         showMenuIcon={!isCurrentUser}
         onMenuPress={this.handleMenuPress}
@@ -209,7 +208,6 @@ export function mapDispatchToProps(dispatch, ownProps) {
       },
       dispatch,
     ),
-    openProfile: openProfileForLegacyUser(dispatch),
   };
 }
 

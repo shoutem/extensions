@@ -78,12 +78,9 @@ class FontsPage extends Component {
 
     const fontId = _.get(fontToDelete, 'id');
 
-    removeFont(appId, fontId)
+    return removeFont(appId, fontId)
       .then(this.handleDeleteCancel)
-      .catch(e => {
-        console.error(e);
-        this.handleDeleteCancel();
-      });
+      .catch(this.handleDeleteCancel);
   }
 
   handleEditClick(font) {

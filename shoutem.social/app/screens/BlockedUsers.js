@@ -14,7 +14,7 @@ import MemberView from '../components/MemberView';
 import { user as userShape } from '../components/shapes';
 import { ext } from '../const';
 import { loadBlockedUsers, selectors, unblockUser } from '../redux';
-import { openProfileForLegacyUser, openUnblockActionSheet } from '../services';
+import { openUnblockActionSheet } from '../services';
 
 export class BlockedUsers extends RemoteDataListScreen {
   constructor(props) {
@@ -44,9 +44,7 @@ export class BlockedUsers extends RemoteDataListScreen {
       shortcut: { title = '' },
     } = getRouteParams(this.props);
 
-    return {
-      title: title.toUpperCase(),
-    };
+    return { title };
   }
 
   handleUnblockPress(user) {
@@ -67,15 +65,8 @@ export class BlockedUsers extends RemoteDataListScreen {
   }
 
   renderRow(user) {
-    const { openProfile } = this.props;
-
     return (
-      <MemberView
-        openProfile={openProfile}
-        user={user}
-        onMenuPress={this.handleUnblockPress}
-        isBlocked
-      />
+      <MemberView user={user} onMenuPress={this.handleUnblockPress} isBlocked />
     );
   }
 
@@ -141,7 +132,6 @@ const mapDispatchToProps = dispatch => ({
     },
     dispatch,
   ),
-  openProfile: openProfileForLegacyUser(dispatch),
 });
 
 export default connect(

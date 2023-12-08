@@ -21,7 +21,7 @@ import { images } from '../assets';
 import { ext } from '../const';
 import { AttachmentResolver } from '../fragments';
 import { loadStatus } from '../redux';
-import { adaptSocialUserForProfileScreen, convertToHtml } from '../services';
+import { convertToHtml } from '../services';
 import { comment as commentShape } from './shapes';
 
 function CommentView({ comment, deleteComment, openProfile, statusId, style }) {
@@ -30,8 +30,8 @@ function CommentView({ comment, deleteComment, openProfile, statusId, style }) {
   const handleClickOnUser = useCallback(() => {
     const { user } = comment;
 
-    openProfile(dispatch)(adaptSocialUserForProfileScreen(user));
-  }, [comment, dispatch, openProfile]);
+    dispatch(openProfile(user.id ?? user.legacyId));
+  }, [comment, openProfile]);
 
   const showActionSheet = useCallback(() => {
     if (_.get(comment, 'deletable') !== 'yes') {
@@ -60,7 +60,7 @@ function CommentView({ comment, deleteComment, openProfile, statusId, style }) {
     );
   }, [comment, deleteComment, dispatch]);
 
-  const { user, created_at, shoutem_attachments, text } = comment;
+  const { user, created_at, shoutem_attachments, html_text: text } = comment;
   const { profile_image_url, name: userName } = user;
 
   const timeAgo = useMemo(() => moment(created_at).fromNow(), [created_at]);

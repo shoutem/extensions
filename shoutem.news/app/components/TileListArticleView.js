@@ -13,7 +13,13 @@ import { ArticleView } from './ArticleView';
 
 export class TileListArticleView extends ArticleView {
   render() {
-    const { hideModificationTimestamp, title, imageUrl, date } = this.props;
+    const {
+      disableUppercasing,
+      hideModificationTimestamp,
+      title,
+      imageUrl,
+      date,
+    } = this.props;
 
     const articleImage = imageUrl
       ? { uri: imageUrl }
@@ -24,6 +30,7 @@ export class TileListArticleView extends ArticleView {
       momentDate.isAfter(0) && !hideModificationTimestamp ? (
         <Caption>{momentDate.fromNow()}</Caption>
       ) : null;
+    const resolvedTitle = disableUppercasing ? title : title.toUpperCase();
 
     return (
       <TouchableOpacity onPress={this.onPress}>
@@ -32,7 +39,7 @@ export class TileListArticleView extends ArticleView {
           source={articleImage}
         >
           <Tile>
-            <Title numberOfLines={3}>{title.toUpperCase()}</Title>
+            <Title numberOfLines={3}>{resolvedTitle}</Title>
             {dateInfo}
           </Tile>
         </ImageBackground>

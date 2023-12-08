@@ -1,11 +1,11 @@
 {
   "name": "cms",
-  "version": "6.3.1",
+  "version": "6.4.0",
   "platform": ">=9.1.0",
   "type": "system",
   "title": "CMS",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",
-  "releaseNotes": "* Resolved rare error when navigating back from CMS content screens",
+  "releaseNotes": "* Added ability to disable uppercasing for layouts that support it",
   "nativeChanges": {
     "lastVersion": "6.3.0"
   },

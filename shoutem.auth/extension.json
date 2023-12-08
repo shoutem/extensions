@@ -1,6 +1,6 @@
 {
   "name": "auth",
-  "version": "7.4.0",
+  "version": "7.5.1",
   "platform": ">=12.3.0",
   "title": "Users",
   "nativeChanges": {
@@ -15,7 +15,7 @@
     ]
   },
   "icon": "server/assets/add-authentication-image.png",
-  "releaseNotes": "* No user-facing changes\n* Adjusted Android AD_ID permission removal logic to handle AndroidManifest merging tool errors",
+  "releaseNotes": "* Added ability to set app user roles, see Users extension settings",
   "description": "Show user profile, sign out user",
   "dependencies": [
     "shoutem.application",

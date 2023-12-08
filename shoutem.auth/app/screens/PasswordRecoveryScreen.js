@@ -31,7 +31,7 @@ class PasswordRecoveryScreen extends PureComponent {
     const { navigation } = this.props;
 
     navigation.setOptions({
-      title: I18n.t(ext('passwordRecoveryNavBarTitle')).toUpperCase(),
+      title: I18n.t(ext('passwordRecoveryNavBarTitle')),
     });
   }
 

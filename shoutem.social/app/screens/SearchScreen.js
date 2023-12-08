@@ -1,27 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { clear, isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import {
-  Divider,
-  ListView,
-  SearchField,
-  Screen,
-  View,
-} from '@shoutem/ui';
+import { Divider, ListView, Screen, SearchField, View } from '@shoutem/ui';
 import { USER_SCHEMA } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { goBack, HeaderTextButton } from 'shoutem.navigation';
 import MemberView from '../components/MemberView';
-import { getSearchUsers } from '../redux/selectors';
 import { ext } from '../const';
 import { searchUsers, searchUsersNextPage } from '../redux';
-import { openProfileForLegacyUser } from '../services';
+import { getSearchUsers } from '../redux/selectors';
 
 export function SearchScreen({
-  openProfile,
   searchData,
   searchUsersNextPage,
   searchUsers,
@@ -97,7 +89,7 @@ export function SearchScreen({
   }
 
   function renderRow(user) {
-    return <MemberView openProfile={openProfile} user={user} />;
+    return <MemberView user={user} />;
   }
 
   return (
@@ -117,7 +109,6 @@ export function SearchScreen({
 }
 
 SearchScreen.propTypes = {
-  openProfile: PropTypes.func,
   searchData: PropTypes.func,
   searchUsersNextPage: PropTypes.func,
   searchUsers: PropTypes.func,
@@ -135,7 +126,6 @@ export function mapStateToProps(state) {
 
 export function mapDispatchToProps(dispatch) {
   return {
-    openProfile: openProfileForLegacyUser(dispatch),
     searchUsers: term => dispatch(searchUsers(term)),
     searchUsersNextPage: (term, currentData) =>
       dispatch(searchUsersNextPage(term, currentData)),

@@ -49,10 +49,13 @@ if (shouldLogRequests) app.use(logRequest());
 
 // app.use(authenticate());
 // app.use(loadAuthenticatedAccount());
-app.use(bodyParser.json({
-  type: 'application/vnd.api+json', extended: true,
-  limit: '50mb'
-}));
+app.use(
+  bodyParser.json({
+    type: 'application/vnd.api+json',
+    extended: true,
+    limit: '50mb',
+  }),
+);
 
 app.use('/', router);
 

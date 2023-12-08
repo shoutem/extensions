@@ -164,13 +164,21 @@ export class ArticleDetailsScreen extends PureComponent {
   }
 
   renderHeader() {
-    const { article, shortcut } = getRouteParams(this.props);
+    const { article, disableUppercasing, shortcut } = getRouteParams(
+      this.props,
+    );
     const { screen: canonicalType, screens } = shortcut;
-    const { hideModificationTimestamp } = _.find(screens, { canonicalType });
+    const { hideModificationTimestamp } = _.find(screens, {
+      canonicalType,
+    });
+
+    const resolvedTitle = disableUppercasing
+      ? article.title
+      : article.title.toUpperCase();
 
     return (
       <Tile styleName="text-centric md-gutter-bottom">
-        <Title>{article.title.toUpperCase()}</Title>
+        <Title>{resolvedTitle}</Title>
         <View styleName="horizontal md-gutter-top">
           <Caption numberOfLines={1}>{article.newsAuthor}</Caption>
           {!!hideModificationTimestamp && (

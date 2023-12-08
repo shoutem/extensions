@@ -1,6 +1,6 @@
 {
   "name": "shoutem.in-app-purchases",
-  "version": "6.0.2",
+  "version": "6.1.0",
   "description": "Add Apple/Google Play subscriptions to your app",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

@@ -1,10 +1,10 @@
 {
   "name": "news",
-  "version": "6.2.1",
+  "version": "6.3.0",
   "platform": ">=12.1.0",
   "title": "News",
   "description": "Show news articles",
-  "releaseNotes": "* Added support for hiding modification timestamp (time since creation / last edit)\n* Update CMS extension to add checkbox for this setting in Layout settings page",
+  "releaseNotes": "* Added support for disabling uppercasing of titles in layouts that currently do so\n* Update CMS extension to add checkbox for this setting in Layout settings page",
   "icon": "server/assets/add-news-image.png",
   "dependencies": [
     "shoutem.cms",
@@ -65,6 +65,7 @@
         "listType": "fixed-grid",
         "hasFeaturedItem": true,
         "canHideModificationTimestamp": true,
+        "canDisableUppercasing": true,
         "categoryPickerTypeOptions": [
           "dropdown",
           "navBarDropdown",
@@ -85,6 +86,7 @@
         "listType": "fixed-grid",
         "hasFeaturedItem": false,
         "canHideModificationTimestamp": true,
+        "canDisableUppercasing": true,
         "categoryPickerTypeOptions": [
           "dropdown",
           "navBarDropdown",
@@ -105,6 +107,7 @@
         "listType": "compact-list",
         "hasFeaturedItem": false,
         "canHideModificationTimestamp": true,
+        "canDisableUppercasing": true,
         "categoryPickerTypeOptions": [
           "dropdown",
           "navBarDropdown",
@@ -125,6 +128,7 @@
         "listType": "compact-list",
         "hasFeaturedItem": true,
         "canHideModificationTimestamp": true,
+        "canDisableUppercasing": true,
         "categoryPickerTypeOptions": [
           "dropdown",
           "navBarDropdown",
@@ -145,6 +149,7 @@
         "listType": "large-list",
         "hasFeaturedItem": false,
         "canHideModificationTimestamp": true,
+        "canDisableUppercasing": true,
         "categoryPickerTypeOptions": [
           "dropdown",
           "navBarDropdown",
@@ -165,6 +170,7 @@
         "listType": "medium-list",
         "hasFeaturedItem": false,
         "canHideModificationTimestamp": true,
+        "canDisableUppercasing": true,
         "categoryPickerTypeOptions": [
           "dropdown",
           "navBarDropdown",
@@ -185,6 +191,7 @@
         "listType": "medium-list",
         "hasFeaturedItem": true,
         "canHideModificationTimestamp": true,
+        "canDisableUppercasing": true,
         "categoryPickerTypeOptions": [
           "dropdown",
           "navBarDropdown",
@@ -205,6 +212,7 @@
         "listType": "tile-list",
         "hasFeaturedItem": false,
         "canHideModificationTimestamp": true,
+        "canDisableUppercasing": true,
         "categoryPickerTypeOptions": [
           "dropdown",
           "navBarDropdown",
@@ -270,6 +278,7 @@
       "settings": {
         "listType": "1-2-2-grid",
         "hasFeaturedItem": true,
+        "canDisableUppercasing": true,
         "canHideModificationTimestamp": true,
         "categoryPickerTypeOptions": [
           "dropdown",
@@ -290,6 +299,7 @@
       "settings": {
         "listType": "1-2-2-grid",
         "hasFeaturedItem": false,
+        "canDisableUppercasing": true,
         "canHideModificationTimestamp": true,
         "categoryPickerTypeOptions": [
           "dropdown",

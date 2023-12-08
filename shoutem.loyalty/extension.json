@@ -1,10 +1,10 @@
 {
   "name": "loyalty",
-  "version": "6.3.1",
+  "version": "6.4.0",
   "platform": ">=12.1.0",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "releaseNotes": "* Resolved rare error when navigating back from a Stores list screen",
+  "releaseNotes": "* Adjusted Navigation Bar title capitalization to adhere to Main Navigation settings",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

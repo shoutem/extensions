@@ -1,16 +1,18 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "10.0.0",
+  "version": "10.1.1",
   "platform": ">=13",
   "nativeChanges": {
     "lastVersion": "10.0.0",
     "settingsKeys": []
   },
   "skipClone": false,
-  "releaseNotes": "* Changed image picker library, no user facing changes\n* For developers: Cleaned up peer dependencies",
+  "releaseNotes": "* Added support for emojis in statuses and comments\n* Add attachment buttons on social wall will now be hidden if photo attachments were disabled in extension settings\n* Statuses and comments containing # character will now present hashtags as expected, instead of headings",
   "description": "Let members create posts, comment and like them",
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",
@@ -104,7 +106,9 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": ["style"],
+      "categories": [
+        "style"
+      ],
       "parameters": {
         "extensionTheme": "Theme"
       }

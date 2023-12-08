@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { loginRequired, getUser } from 'shoutem.auth';
-import { I18n } from 'shoutem.i18n';
+import PropTypes, { objectOf } from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
-  Screen,
+  Divider,
   ListView,
-  View,
+  resolveVariable,
   Row,
+  Screen,
   Subtitle,
   Switch,
-  Divider,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
+import { getUser, loginRequired } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import { actions, selectors } from '../redux';
 
@@ -32,6 +34,7 @@ function parseSettingsData(settings) {
 }
 
 export function NotificationSettingsScreen({
+  style,
   updateSettings,
   settings,
   user,
@@ -62,6 +65,7 @@ export function NotificationSettingsScreen({
           <Switch
             onValueChange={() => handleSettingToggle(setting)}
             value={setting.value}
+            style={style.notificationToggle}
           />
         </Row>
         <Divider styleName="line" />
@@ -86,6 +90,9 @@ NotificationSettingsScreen.propTypes = {
   settings: PropTypes.object,
   user: PropTypes.object,
   updateSettings: PropTypes.func,
+  style: PropTypes.objectOf({
+    notificationToggle: PropTypes.object,
+  }),
 };
 
 const mapStateToProps = state => ({
@@ -101,6 +108,8 @@ export default loginRequired(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-  )(connectStyle(ext('MessageListScreen'))(NotificationSettingsScreen)),
+  )(
+    connectStyle(ext('NotificationSettingsScreen'))(NotificationSettingsScreen),
+  ),
   true,
 );

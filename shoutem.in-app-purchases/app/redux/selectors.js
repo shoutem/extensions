@@ -66,6 +66,8 @@ export function getSubscriptionMetadata(state) {
     subscriptionScreenImageUrl,
     confirmationMessageTrial,
     confirmationMessageRegular,
+    descriptionHtml,
+    descriptionHtmlEnabled,
   } = extensionSettings;
 
   return {
@@ -74,6 +76,8 @@ export function getSubscriptionMetadata(state) {
     subscriptionScreenImageUrl,
     confirmationMessageTrial,
     confirmationMessageRegular,
+    descriptionHtml,
+    descriptionHtmlEnabled,
   };
 }
 

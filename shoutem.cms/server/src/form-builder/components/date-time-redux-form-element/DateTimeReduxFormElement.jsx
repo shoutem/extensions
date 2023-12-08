@@ -6,18 +6,20 @@ import { Row, Col } from 'react-bootstrap';
 import moment from 'moment-timezone';
 import { DateTimePicker, ReduxFormElement } from '@shoutem/react-web-ui';
 import SelectReduxFormElement from '../select-redux-form-element';
-import { TIMEZONES } from './const';
+import { TIMEZONES, IANA_WINDOWS_TIMEZONE_MAPPER } from './const';
 import './style.scss';
 
 function getISODateFromDatetimeAndZone(datetime, timezone) {
   const rawTimezone = _.find(TIMEZONES, { value: timezone });
-  if (rawTimezone) {
-    return `${datetime}${rawTimezone.offset}`;
+
+  // check if moment has that timezone
+  if (moment.tz.zone(rawTimezone.iana)) {
+    return moment.tz(datetime, rawTimezone.iana).format();
   }
 
-  // if we don't have raw timezone check if moment has that timezone
-  if (moment.tz.zone(timezone)) {
-    return moment.tz(datetime, timezone).format();
+  // check raw timezones
+  if (rawTimezone) {
+    return `${datetime}${rawTimezone.offset}`;
   }
 
   // if we can not find any suitable timezone, return UTC
@@ -50,6 +52,17 @@ function isTimezoneSupported(timezone) {
   return !!_.find(TIMEZONES, item => item.value === timezone);
 }
 
+function getDefaultTimezone() {
+  const guessedTimezone = moment.tz.guess();
+  const windowsTimezone = IANA_WINDOWS_TIMEZONE_MAPPER[guessedTimezone];
+
+  if (isTimezoneSupported(windowsTimezone)) {
+    return windowsTimezone;
+  }
+
+  return 'UTC';
+}
+
 function resoloveTimezone(timezoneField, field) {
   if (timezoneField && timezoneField.value) {
     if (isTimezoneSupported(timezoneField.value)) {
@@ -59,7 +72,7 @@ function resoloveTimezone(timezoneField, field) {
 
   const fieldValue = _.get(field, 'value');
 
-  return getTimezoneFromISODate(fieldValue) || 'UTC';
+  return getTimezoneFromISODate(fieldValue) || getDefaultTimezone();
 }
 
 export default class DateTimeReduxFormElement extends Component {
@@ -79,6 +92,12 @@ export default class DateTimeReduxFormElement extends Component {
     const { field, timezoneField } = props;
     const timezone = resoloveTimezone(timezoneField, field);
 
+    // update timezone field for initial setup when 
+    // timezoneField was never selected before
+    if (timezoneField && !timezoneField.value) {
+      timezoneField.onChange(timezone);
+    }
+
     this.state = {
       timezone,
     };
@@ -94,7 +113,6 @@ export default class DateTimeReduxFormElement extends Component {
       const datetime = getDateTimeFromISODate(fieldValue);
       const value = getISODateFromDatetimeAndZone(datetime, timezone);
 
-      timezoneField.onChange(timezone);
       field.onChange(value);
     }
 
@@ -103,6 +121,7 @@ export default class DateTimeReduxFormElement extends Component {
     }
 
     if (timezone) {
+      timezoneField.onChange(timezone);
       this.setState({ timezone });
     }
   }

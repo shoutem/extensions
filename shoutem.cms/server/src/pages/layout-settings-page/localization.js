@@ -1,5 +1,6 @@
 const LAYOUT_SETTINGS_TITLE = 'layout-settings-title';
 const CATEGORY_PICKER_TYPE_LABEL = 'category-picker-type-label';
+const DISABLE_UPPERCASING_LABEL = 'disable-uppercasing-label';
 const HIDE_TIMESTAMP_LABEL = 'hide-timestamp-label';
 const INLINE_CATEGORY_PICKER_LABEL = 'inline-category-picker-label';
 const NAV_HEADER_CATEGORY_PICKER = 'nav-header-category-picker-label';
@@ -8,6 +9,7 @@ const INLINE_HORIZONTAL_CATEGORY_PICKER_LABEL =
 
 export default {
   CATEGORY_PICKER_TYPE_LABEL,
+  DISABLE_UPPERCASING_LABEL,
   HIDE_TIMESTAMP_LABEL,
   INLINE_CATEGORY_PICKER_LABEL,
   INLINE_HORIZONTAL_CATEGORY_PICKER_LABEL,

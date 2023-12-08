@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import { find, next, prev, create, update, remove } from '@shoutem/redux-io';
-import { shoutemUrls } from 'src/services';
 import ext from 'src/const';
 import { USER_GROUPS } from 'src/modules/user-groups';
-import { USERS, DEFAULT_LIMIT, DEFAULT_OFFSET } from '../const';
+import { shoutemUrls } from 'src/services';
+import { create, find, next, prev, remove, update } from '@shoutem/redux-io';
+import { DEFAULT_LIMIT, DEFAULT_OFFSET, USERS } from '../const';
 
 function transformFilter(filter) {
   return _.mapKeys(filter, (value, key) => `filter[${key}]`);
@@ -39,6 +39,22 @@ export function loadUsers(
   };
 
   return find(config, ext('currentUsersPage'), params);
+}
+
+export function loadUser(appId, userId) {
+  const config = {
+    schema: USERS,
+    request: {
+      endpoint: shoutemUrls.buildAuthUrl(
+        `/v1/realms/externalReference:${appId}/users/${userId}`,
+      ),
+      headers: {
+        Accept: 'application/vnd.api+json',
+      },
+    },
+  };
+
+  return find(config, 'current-user');
 }
 
 export function loadNextUsersPage(users) {
@@ -139,6 +155,34 @@ export function changePassword(appId, userId, password) {
   };
 
   return find(config, 'set-user-password');
+}
+
+export function changeRole(appId, userId, role) {
+  const body = {
+    data: {
+      type: 'shoutem.auth.change-app-role-actions',
+      attributes: {
+        role,
+      },
+    },
+  };
+
+  const config = {
+    schema: 'shoutem.auth.change-app-role-actions',
+    request: {
+      endpoint: shoutemUrls.buildAuthUrl(
+        `/v1/realms/externalReference:${appId}/users/${userId}/actions/change-app-role`,
+      ),
+      method: 'POST',
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
+      body: JSON.stringify(body),
+    },
+  };
+
+  return find(config, 'change-app-role');
 }
 
 export function updateUser(appId, userId, userPatch, scope = {}) {

@@ -42,6 +42,9 @@ export default function LayoutSettingsPage() {
   const hideModificationTimestamp =
     selectedLayoutSettings?.hideModificationTimestamp;
 
+  const canDisableUppercasing = selectedLayoutSettings?.canDisableUppercasing;
+  const disableUppercasing = selectedLayoutSettings?.disableUppercasing;
+
   const categoryPickerTypeOptions =
     selectedLayoutSettings?.categoryPickerTypeOptions || [];
   const selectedCategoryPickerType = selectedLayoutSettings?.categoryPickerType;
@@ -83,41 +86,71 @@ export default function LayoutSettingsPage() {
     [dispatch, shortcut.id, shortcut.screen, shortcut.screens],
   );
 
-  const handleHideTimestampToggle = useCallback(
-    hideTimestamp => {
-      const newScreens = [...shortcut.screens];
+  const handleHideTimestampToggle = useCallback(() => {
+    const newScreens = [...shortcut.screens];
 
-      const selectedLayoutIndex = _.findIndex(newScreens, {
-        canonicalType: shortcut.screen,
-      });
+    const selectedLayoutIndex = _.findIndex(newScreens, {
+      canonicalType: shortcut.screen,
+    });
 
-      if (selectedLayoutIndex === 0) {
-        newScreens[selectedLayoutIndex] = {
-          ...newScreens[selectedLayoutIndex],
-          settings: {
-            ...newScreens[selectedLayoutIndex].settings,
-            hideModificationTimestamp: !hideModificationTimestamp,
+    if (selectedLayoutIndex === 0) {
+      newScreens[selectedLayoutIndex] = {
+        ...newScreens[selectedLayoutIndex],
+        settings: {
+          ...newScreens[selectedLayoutIndex].settings,
+          hideModificationTimestamp: !hideModificationTimestamp,
+        },
+      };
+
+      dispatch(
+        updateShortcut({
+          id: shortcut.id,
+          attributes: {
+            screens: newScreens,
           },
-        };
+        }),
+      );
+    }
+  }, [
+    dispatch,
+    hideModificationTimestamp,
+    shortcut.id,
+    shortcut.screen,
+    shortcut.screens,
+  ]);
 
-        dispatch(
-          updateShortcut({
-            id: shortcut.id,
-            attributes: {
-              screens: newScreens,
-            },
-          }),
-        );
-      }
-    },
-    [
-      dispatch,
-      hideModificationTimestamp,
-      shortcut.id,
-      shortcut.screen,
-      shortcut.screens,
-    ],
-  );
+  const handleDisableUppercasingToggle = useCallback(() => {
+    const newScreens = [...shortcut.screens];
+
+    const selectedLayoutIndex = _.findIndex(newScreens, {
+      canonicalType: shortcut.screen,
+    });
+
+    if (selectedLayoutIndex === 0) {
+      newScreens[selectedLayoutIndex] = {
+        ...newScreens[selectedLayoutIndex],
+        settings: {
+          ...newScreens[selectedLayoutIndex].settings,
+          disableUppercasing: !disableUppercasing,
+        },
+      };
+
+      dispatch(
+        updateShortcut({
+          id: shortcut.id,
+          attributes: {
+            screens: newScreens,
+          },
+        }),
+      );
+    }
+  }, [
+    dispatch,
+    disableUppercasing,
+    shortcut.id,
+    shortcut.screen,
+    shortcut.screens,
+  ]);
 
   return (
     <div className="general-settings">
@@ -156,6 +189,20 @@ export default function LayoutSettingsPage() {
                   onChange={handleHideTimestampToggle}
                 >
                   {i18next.t(LOCALIZATION.HIDE_TIMESTAMP_LABEL)}
+                </Checkbox>
+              </Col>
+            </Row>
+          )}
+          {!!canDisableUppercasing && (
+            <Row>
+              <Col md={12}>
+                <Checkbox
+                  className="layout__disable_uppercasing"
+                  checked={disableUppercasing}
+                  name="disableUppercasing"
+                  onChange={handleDisableUppercasingToggle}
+                >
+                  {i18next.t(LOCALIZATION.DISABLE_UPPERCASING_LABEL)}
                 </Checkbox>
               </Col>
             </Row>

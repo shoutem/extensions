@@ -76,6 +76,7 @@
       "user-table-row.button-block-user-title": "Block this user",
       "user-table-row.button-edit-title": "Edit",
       "user-table-row.button-change-password-title": "Change password",
+      "user-table-row.button-change-role-title": "Change role",
       "user-table-row.button-delete-title": "Delete",
       "users-dashboard.header-filter-by-email-title": "Filter by mail",
       "users-dashboard.header-filter-by-group-title": "Filter by group",
@@ -87,6 +88,7 @@
       "users-dashboard.button-add-new-user-title": "Add new user",
       "users-dashboard.table-empty-placeholder-message": "No users yet.",
       "users-dashboard.export-popover-message": "Download user database",
+      "users-dashboard.users-table-title": "List of users",
       "services.username-exists-message": "User with this username already exists",
       "services.email-exists-message": "User with this email already exists.",
       "services.error-message": "Something went wrong, please try again",
@@ -103,7 +105,14 @@
       "protected-screens-table.header-name-title": "Screen",
       "protected-screens-page.title": "Protected screens",
       "protected-screens-page.form-make-all-screens-private-title": "Make all screens private",
-      "shoutem.auth.complete-registration": "User completes registration"
+      "shoutem.auth.complete-registration": "User completes registration",
+      "change-role-modal.title": "Change app user role",
+      "change-role-form.app-role-user": "User",
+      "change-role-form.app-role-admin": "Admin",
+      "change-role-form.app-role-root": "Root",
+      "change-role-form.form-user-app-role-title":"User app role",
+      "change-role-form.button-change-title": "Change",
+      "change-role-form.button-cancel-title": "Cancel"
     }
   }
 }

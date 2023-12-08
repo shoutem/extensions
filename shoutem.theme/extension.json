@@ -1,11 +1,11 @@
 {
   "name": "theme",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "platform": ">=13",
   "type": "system",
   "title": "Theme",
   "description": "Resolve and store theme related configuration",
-  "releaseNotes": "* Updated version of UI library\n* Adjusted asset linking for platform version 13.0.0",
+  "releaseNotes": "* Updated version of UI library",
   "icon": "server/assets/add-theme-image.png",
   "categories": [],
   "i18n": {

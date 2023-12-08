@@ -16,7 +16,4 @@ export {
   updateStatusesAfterUnlike,
 } from './status';
 export { convertToHtml } from './textConverter';
-export {
-  adaptSocialUserForProfileScreen,
-  openProfileForLegacyUser,
-} from './user';
+export { openProfileForLegacyUser } from './user';

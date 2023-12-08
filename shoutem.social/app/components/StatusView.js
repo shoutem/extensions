@@ -42,7 +42,7 @@ function StatusView({
     liked,
     shoutem_favorited_by,
     shoutem_reply_count,
-    text,
+    html_text,
     user,
   } = status;
   const {
@@ -87,7 +87,7 @@ function StatusView({
       />
       <StatusContent
         enableImageFullScreen={enableImageFullScreen}
-        text={text}
+        text={html_text}
         attachments={shoutem_attachments}
       />
       <Interactions
@@ -123,12 +123,12 @@ StatusView.propTypes = {
   showNewCommentInput: PropTypes.bool,
   status: PropTypes.shape({
     created_at: PropTypes.string,
+    html_text: PropTypes.string,
     id: PropTypes.number,
     liked: PropTypes.bool,
     shoutem_attachments: PropTypes.array,
     shoutem_favorited_by: PropTypes.object,
     shoutem_reply_count: PropTypes.number,
-    text: PropTypes.string,
     user: PropTypes.object,
   }),
   style: PropTypes.object,
