@@ -13,6 +13,7 @@ function preBuild(appConfiguration) {
   const settings = getExtensionSettings(appConfiguration, 'shoutem.i18n');
   const translations = _.get(settings, 'translations', {});
   const shortcutTranslations = _.get(settings, 'shortcuts', {});
+  const categoriesTranslations = _.get(settings, 'categories', {});
   const translationFilePromises = [];
   const customLanguages = [];
 
@@ -39,10 +40,29 @@ function preBuild(appConfiguration) {
         {},
       );
 
+      const categories = _.reduce(
+        _.keys(categoriesTranslations),
+        (result, category) => {
+          const value = categoriesTranslations[category][language];
+
+          if (_.isEmpty(value)) {
+            return result;
+          }
+
+          return _.merge({}, result, {
+            [category]: value,
+          });
+        },
+        {},
+      );
+
       const resolvedTranslation = _.merge({}, translationObject, {
         shoutem: {
           navigation: {
             shortcuts,
+          },
+          cms: {
+            categories,
           },
         },
       });

@@ -397,7 +397,7 @@ class NotificationForm extends Component {
               >
                 <FormControl
                   componentClass="textarea"
-                  maxLength={255}
+                  maxLength={2000}
                   {...summary}
                 />
               </ReduxFormElement>

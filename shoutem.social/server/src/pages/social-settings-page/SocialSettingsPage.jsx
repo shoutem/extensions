@@ -1,9 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
 import {
   Button,
   ButtonToolbar,
@@ -12,11 +7,16 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
+  FontIcon,
+  FontIconPopover,
   LoaderContainer,
   Switch,
-  FontIconPopover,
-  FontIcon,
 } from '@shoutem/react-web-ui';
 import {
   fetchExtension,
@@ -75,6 +75,18 @@ class SocialSettingsPage extends Component {
     });
   }
 
+  handleToggleGifAttachments() {
+    const { settings } = this.state;
+    const { enableGifAttachments } = settings;
+
+    this.setState({
+      settings: {
+        ...settings,
+        enableGifAttachments: !enableGifAttachments,
+      },
+    });
+  }
+
   handleToggleComments() {
     const { settings } = this.state;
     const { enableComments } = settings;
@@ -126,6 +138,7 @@ class SocialSettingsPage extends Component {
     const {
       maxStatusLength,
       enablePhotoAttachments,
+      enableGifAttachments,
       enableComments,
       enableInteractions,
     } = settings;
@@ -156,6 +169,16 @@ class SocialSettingsPage extends Component {
               className="social-settings-page__switch"
               onChange={this.handleTogglePhotoAttachments}
               value={enablePhotoAttachments}
+            />
+          </FormGroup>
+          <FormGroup className="social-settings-page__photos">
+            <ControlLabel>
+              {i18next.t(LOCALIZATION.FORM_TITLE_GIF_ATTACHMENTS)}
+            </ControlLabel>
+            <Switch
+              className="social-settings-page__switch"
+              onChange={this.handleToggleGifAttachments}
+              value={enableGifAttachments}
             />
           </FormGroup>
           <FormGroup className="social-settings-page__comments">

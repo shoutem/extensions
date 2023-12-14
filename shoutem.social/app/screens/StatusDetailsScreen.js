@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import ActionSheet from 'react-native-action-sheet';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
@@ -12,6 +18,7 @@ import {
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { Divider, ListView, Screen, Text, View } from '@shoutem/ui';
+import { getExtensionSettings } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import {
   getRouteParams,
@@ -24,21 +31,29 @@ import { CommentViewSkeleton } from '../components/skeleton-loading';
 import StatusView from '../components/StatusView';
 import { ext } from '../const';
 import { deleteComment, deleteStatus, loadComments, selectors } from '../redux';
+import { getGiphyApiKey } from '../redux/selectors';
 import { openProfileForLegacyUser } from '../services';
 
 export function StatusDetailsScreen(props) {
   const { navigation, style } = props;
   const {
-    focusAddCommentInput,
-    enableComments,
-    enableInteractions,
-    enablePhotoAttachments,
     statusId,
     maxStatusLength,
+    focusAddCommentInputOnMount,
   } = getRouteParams(props);
+
+  const addCommentInputRef = useRef(null);
+
+  const giphyApiKey = useSelector(getGiphyApiKey);
 
   const dispatch = useDispatch();
 
+  const {
+    enableComments,
+    enableGifAttachments,
+    enablePhotoAttachments,
+    enableInteractions,
+  } = useSelector(state => getExtensionSettings(state, ext()));
   const status = useSelector(state => selectors.getStatus(state, statusId));
   const comments = useSelector(state =>
     selectors.getCommentsForStatus(state, statusId),
@@ -90,6 +105,7 @@ export function StatusDetailsScreen(props) {
     if (status?.id) {
       dispatch(loadComments(status.id));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useLayoutEffect(() => {
@@ -101,11 +117,12 @@ export function StatusDetailsScreen(props) {
 
   useEffect(() => {
     loadStatusComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loadMoreComments = useCallback(() => {
+  const loadMoreComments = () => {
     dispatch(next(comments));
-  }, [comments, dispatch]);
+  };
 
   const renderLoadingMoreText = useCallback(() => {
     if (!hasNext(comments)) {
@@ -139,23 +156,17 @@ export function StatusDetailsScreen(props) {
       <View styleName="lg-gutter-bottom">
         <StatusView
           status={status}
-          enableImageFullScreen
           enableComments={enableComments}
           enableInteractions={enableInteractions}
-          enablePhotoAttachments={enablePhotoAttachments}
+          enableImageFullScreen
           goBackAfterBlock
           maxStatusLength={maxStatusLength}
-          showNewCommentInput={false}
+          addCommentInputRef={addCommentInputRef}
         />
       </View>
     );
-  }, [
-    enableComments,
-    enableInteractions,
-    enablePhotoAttachments,
-    maxStatusLength,
-    status,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [maxStatusLength, status]);
 
   const skeletonLoading = useMemo(
     () => ({
@@ -183,7 +194,7 @@ export function StatusDetailsScreen(props) {
     [initialLoading, skeletonLoading.component, renderRow],
   );
 
-  const screenStyle = isTabBar ? 'paper' : 'paper with-notch-padding';
+  const screenStyle = isTabBar ? 'paper' : 'paper md-gutter-bottom';
 
   return (
     <Screen styleName={screenStyle}>
@@ -200,10 +211,13 @@ export function StatusDetailsScreen(props) {
       />
       {enableComments && (
         <NewCommentFooter
-          enablePhotoAttachments={enablePhotoAttachments}
-          focusAddCommentInput={focusAddCommentInput}
+          addCommentInputRef={addCommentInputRef}
           statusId={statusId}
           maxStatusLength={maxStatusLength}
+          focusAddCommentInputOnMount={focusAddCommentInputOnMount}
+          enableGifAttachments={enableGifAttachments}
+          enablePhotoAttachments={enablePhotoAttachments}
+          giphyApiKey={giphyApiKey}
         />
       )}
     </Screen>
@@ -212,10 +226,12 @@ export function StatusDetailsScreen(props) {
 
 StatusDetailsScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
+  focusAddCommentInputOnMount: PropTypes.bool,
   style: PropTypes.object,
 };
 
 StatusDetailsScreen.defaultProps = {
+  focusAddCommentInputOnMount: false,
   style: {},
 };
 

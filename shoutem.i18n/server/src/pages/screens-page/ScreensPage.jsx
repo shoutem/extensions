@@ -1,9 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
-import { connect } from 'react-redux';
 import {
   Button,
   ButtonToolbar,
@@ -11,19 +6,24 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import Select from 'react-select';
-import { LoaderContainer } from '@shoutem/react-web-ui';
-import { shouldLoad, isBusy, isInitialized } from '@shoutem/redux-io/status';
-import {
-  updateExtensionSettings,
-  getExtension,
-  fetchShortcuts,
-  getShortcuts,
-} from '@shoutem/redux-api-sdk';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { invalidateCurrentBuild } from 'src/redux';
+import { LoaderContainer } from '@shoutem/react-web-ui';
+import {
+  fetchShortcuts,
+  getExtension,
+  getShortcuts,
+  updateExtensionSettings,
+} from '@shoutem/redux-api-sdk';
+import { isBusy, isInitialized, shouldLoad } from '@shoutem/redux-io/status';
 import { TranslationTable } from '../../components';
+import { ARROW_UNICODE, DEFAULT_LOCALE } from '../../const';
 import { createLanguageOptions } from '../../services';
-import { DEFAULT_LOCALE } from '../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -84,9 +84,8 @@ class ScreensPage extends Component {
       const translationOptions = _.reduce(
         languageOptions,
         (availableTranslations, languageOption) => {
-          const arrowUnicode = '\u2192';
-          const value = languageOption.value;
-          const label = `${DEFAULT_LOCALE.label} ${arrowUnicode} ${languageOption.label}`;
+          const { value } = languageOption;
+          const label = `${DEFAULT_LOCALE.label} ${ARROW_UNICODE} ${languageOption.label}`;
           const title = languageOption.label;
 
           if (languageOption.value === DEFAULT_LOCALE.value) {
@@ -219,10 +218,10 @@ class ScreensPage extends Component {
 
 ScreensPage.propTypes = {
   extension: PropTypes.object,
-  updateExtensionSettings: PropTypes.func,
-  shortcuts: PropTypes.array,
   fetchShortcuts: PropTypes.func,
   invalidateCurrentBuild: PropTypes.func,
+  shortcuts: PropTypes.array,
+  updateExtensionSettings: PropTypes.func,
 };
 
 function mapStateToProps(state, ownProps) {

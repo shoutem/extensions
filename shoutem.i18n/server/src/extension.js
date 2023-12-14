@@ -3,10 +3,12 @@
 // You should not change it manually
 
 // screens imports
+import CategoriesPage from './pages/categories-page';
 import LanguagePage from './pages/language-page';
 import ScreensPage from './pages/screens-page';
 
 export const pages = {
   LanguagePage,
-  ScreensPage
+  ScreensPage,
+  CategoriesPage,
 };

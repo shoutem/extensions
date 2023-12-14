@@ -1,14 +1,16 @@
 import ShoutemUrls from './shoutemUrls';
+
 const shoutemUrls = new ShoutemUrls();
 
 export { shoutemUrls };
+export { buildShortcutCategoryTree } from './category';
+export { createLanguageOptions } from './languageOptions';
 export { default as LANGUAGES } from './languages';
+export { migrateChannels } from './migration';
 export { readFileAsText } from './readFileAsText';
-export { validateJson } from './validateJson';
 export {
-  resolveTranslationRows,
   getActiveLanguageCodes,
   getNumberOfActiveTranslations,
+  resolveTranslationRows,
 } from './translations';
-export { migrateChannels } from './migration';
-export { createLanguageOptions } from './languageOptions';
+export { validateJson } from './validateJson';

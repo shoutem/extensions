@@ -16,6 +16,7 @@ import { openInModal } from 'shoutem.navigation';
 import { ext as userProfileExt } from 'shoutem.user-profile';
 import {
   apiVersion,
+  ATTACHMENT_TYPE,
   DEFAULT_USER_SETTINGS,
   ext,
   SOCIAL_SETTINGS_SCHEMA,
@@ -313,17 +314,20 @@ export function deleteStatus(status) {
   return create(rioConfig, null, { id }, { operation: DELETE, statusId: id });
 }
 
-export function createStatus(text, image) {
+export function createStatus(text, attachment) {
   return async dispatch => {
     const body = {
       status: text,
       include_shoutem_fields: true,
     };
 
-    if (image) {
+    if (attachment) {
       try {
-        const imageUri = await dispatch(uploadImage(image));
-        body.link_attachment = imageUri;
+        const { path, type } = attachment;
+
+        const imageUri = await dispatch(uploadImage({ uri: path }, type));
+
+        body.link_attachment = imageUri.replace('s3.amazonaws.com/', ''); // Remove so that CDN is used when this link is opened / used
       } catch (error) {
         Alert.alert(I18n.t(ext('postStatusError')));
         return null;
@@ -469,7 +473,7 @@ export function deleteComment(comment) {
   );
 }
 
-export function createComment(statusId, text, imagePath) {
+export function createComment(statusId, text, attachment) {
   return async (dispatch, getState) => {
     const state = getState();
     const user = getUser(state);
@@ -485,12 +489,13 @@ export function createComment(statusId, text, imagePath) {
       },
     };
 
-    if (imagePath) {
+    if (attachment) {
       try {
-        // TODO - modify selectedImage to be plain uri string instead of object in
-        // CreateStatusScreen. We're not using filename and fileSize any more
-        const imageUri = await dispatch(uploadImage({ uri: imagePath }));
-        body.data.imageUrl = imageUri;
+        const { path, type } = attachment;
+
+        const imageUri = await dispatch(uploadImage({ uri: path }, type));
+
+        body.data.imageUrl = imageUri.replace('s3.amazonaws.com/', ''); // Remove so that CDN is used when this link is opened / used
       } catch (error) {
         Alert.alert(I18n.t(ext('postCommentError')));
         return null;
@@ -519,15 +524,15 @@ export function createComment(statusId, text, imagePath) {
   };
 }
 
-export function uploadImage(image) {
+export function uploadImage(image, type) {
   return dispatch => {
     return dispatch(
-      createAssetPolicy(`shoutem.social/${Date.now()}.jpg`),
-    ).then(assetPolicy => uploadImageToS3(image, assetPolicy));
+      createAssetPolicy(`shoutem.social/${Date.now()}.${type}`, type),
+    ).then(assetPolicy => uploadImageToS3(image, type, assetPolicy));
   };
 }
 
-export function createAssetPolicy(path) {
+export function createAssetPolicy(path, type) {
   return dispatch => {
     const config = {
       schema: ASSET_POLICIES,
@@ -539,6 +544,7 @@ export function createAssetPolicy(path) {
         },
       },
     };
+
     const newAsset = {
       type: ASSET_POLICIES,
       attributes: {
@@ -546,7 +552,7 @@ export function createAssetPolicy(path) {
         scopeId: getAppId(),
         path,
         action: 'upload',
-        contentType: 'image/jpg',
+        contentType: type === ATTACHMENT_TYPE.GIF ? 'gif' : 'image/jpg',
       },
     };
 
@@ -554,7 +560,7 @@ export function createAssetPolicy(path) {
   };
 }
 
-export function uploadImageToS3(image, assetPolicy) {
+export function uploadImageToS3(image, type, assetPolicy) {
   const { endpoint, formData: uploadData } = _.get(
     assetPolicy,
     'payload.data.attributes.signedRequest',
@@ -567,8 +573,8 @@ export function uploadImageToS3(image, assetPolicy) {
 
   formData.append('file', {
     uri: image.uri,
-    type: 'image/jpg',
-    name: `${Date.now()}.jpg`,
+    type: `image/${type}`,
+    name: `${Date.now()}.${type}`,
   });
 
   return new Promise((resolve, reject) => {

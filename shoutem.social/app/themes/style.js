@@ -1,7 +1,7 @@
+import { Dimensions } from 'react-native';
 import {
   changeColorAlpha,
   getSizeRelativeToReference,
-  INCLUDE,
   inverseColorBrightnessForAmount,
 } from '@shoutem/theme';
 import {
@@ -10,6 +10,8 @@ import {
   resolveFontFamily,
   resolveFontStyle,
   resolveFontWeight,
+  responsiveHeight,
+  responsiveWidth,
 } from '@shoutem/ui';
 import { ext } from '../const';
 
@@ -60,23 +62,6 @@ export default () => ({
       ),
       borderRadius: 10,
     },
-    overlay: {
-      backgroundColor: resolveVariable('imageOverlayColor'),
-      borderRadius: 10,
-    },
-    removeImageIcon: {
-      color: '#FFFFFF',
-      height: getSizeRelativeToReference(
-        18,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-      width: getSizeRelativeToReference(
-        18,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-    },
     attachmentContainer: {
       height: getSizeRelativeToReference(
         135,
@@ -115,6 +100,23 @@ export default () => ({
         resolveVariable('sizes.window.width'),
       ),
       alignItems: 'flex-start',
+    },
+    removeAttachmentButton: {
+      height: responsiveHeight(30),
+      width: responsiveHeight(30),
+      borderRadius: responsiveHeight(15),
+      backgroundColor: 'grey',
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'absolute',
+      left: responsiveWidth(130),
+      top: responsiveHeight(5),
+      zIndex: 5,
+    },
+    removeAttachmentIcon: {
+      color: '#FFFFFF',
+      height: responsiveHeight(18),
+      width: responsiveHeight(18),
     },
   },
 
@@ -314,7 +316,6 @@ export default () => ({
         resolveVariable('sizes.window.width'),
       ),
     },
-    placeholderText: { opacity: 0.5 },
   },
 
   'shoutem.social.StatusContent': {
@@ -470,22 +471,8 @@ export default () => ({
     button: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginRight: getSizeRelativeToReference(
-        5,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-    },
-    likeButtonWidth: {
-      width: getSizeRelativeToReference(
-        80,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-    },
-    commentsButtonWidth: {
-      width: getSizeRelativeToReference(
-        110,
+      paddingRight: getSizeRelativeToReference(
+        10,
         375,
         resolveVariable('sizes.window.width'),
       ),
@@ -495,7 +482,7 @@ export default () => ({
     },
     iconText: {
       marginLeft: getSizeRelativeToReference(
-        5,
+        2,
         375,
         resolveVariable('sizes.window.width'),
       ),
@@ -505,16 +492,65 @@ export default () => ({
         resolveVariable('text.fontStyle'),
       ),
     },
-  },
-
-  'shoutem.social.Like': {
     heartIcon: {
       color: resolveVariable('paperColor'),
       stroke: resolveVariable('text.color'),
     },
-    heartIconLiked: {
-      color: resolveVariable('likeButtonFillColor'),
-      stroke: resolveVariable('likeButtonFillColor'),
+  },
+
+  'shoutem.social.InteractionActions': {
+    container: {
+      flex: 1,
+      flexDirection: 'row',
+    },
+    interactionButton: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: resolveVariable('paperColor'),
+      borderWidth: 1,
+      borderColor: resolveVariable('lineColor'),
+      borderRadius: getSizeRelativeToReference(
+        10,
+        812,
+        resolveVariable('sizes.window.height'),
+      ),
+      height: getSizeRelativeToReference(
+        38,
+        812,
+        resolveVariable('sizes.window.height'),
+      ),
+      marginVertical: getSizeRelativeToReference(
+        10,
+        812,
+        resolveVariable('sizes.window.height'),
+      ),
+      marginHorizontal: getSizeRelativeToReference(
+        10,
+        375,
+        resolveVariable('sizes.window.width'),
+      ),
+    },
+    likedStatusButtonText: { color: resolveVariable('featuredColor') },
+  },
+
+  'shoutem.social.NotificationSettingsScreen': {
+    notificationToggle: {
+      container: {
+        shadowColor: resolveVariable('notificationsToggleShadowColor'),
+        shadowOffset: { width: 0.5, height: 0.5 },
+        shadowRadius: 5,
+        shadowOpacity: 1,
+        elevation: 3,
+      },
+      thumb: {
+        shadowColor: resolveVariable('notificationsToggleShadowColor'),
+        shadowOffset: { width: 0.5, height: 0.5 },
+        shadowRadius: 5,
+        shadowOpacity: 1,
+        elevation: 3,
+      },
     },
   },
 
@@ -745,21 +781,15 @@ export default () => ({
   },
 
   'shoutem.social.ImageAttachment': {
-    commentAttachment: {
-      height: getSizeRelativeToReference(
-        160,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      borderRadius: 10,
-    },
-    statusAttachment: {
-      height: getSizeRelativeToReference(
-        210,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      borderRadius: 10,
+    imagePreview: { flex: 1 },
+    loadingIndicator: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   },
 
@@ -848,62 +878,6 @@ export default () => ({
     description: { fontSize: 12, lineHeight: calculateLineHeight(14) },
   },
 
-  'shoutem.social.NewStatusFooter': {
-    container: {
-      width: '100%',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      paddingHorizontal: getSizeRelativeToReference(
-        15,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-      paddingTop: getSizeRelativeToReference(
-        5,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      paddingBottom: getSizeRelativeToReference(
-        10,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-    },
-    attachmentIcon: {
-      width: getSizeRelativeToReference(
-        24,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-      height: getSizeRelativeToReference(
-        24,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-      color: resolveVariable('text.color'),
-    },
-    button: {
-      justifyContent: 'center',
-      padding: resolveVariable('mediumGutter'),
-      backgroundColor: 'rgba(136, 143, 161, 0.1)',
-      borderRadius: 10,
-    },
-    cameraButton: {
-      marginRight: getSizeRelativeToReference(
-        5,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-    },
-    galleryButton: {
-      marginRight: getSizeRelativeToReference(
-        10,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-    },
-  },
-
   'shoutem.social.RecentImages': {
     image: {
       width: getSizeRelativeToReference(
@@ -927,6 +901,26 @@ export default () => ({
       listContent: {
         backgroundColor: resolveVariable('paperColor'),
       },
+    },
+  },
+
+  'shoutem.social.NewStatusFooter': {
+    container: {
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      paddingRight: responsiveWidth(15),
+      paddingTop: responsiveHeight(5),
+      paddingBottom: responsiveHeight(10),
+    },
+    expandButton: {
+      justifyContent: 'center',
+      paddingVertical: responsiveHeight(15),
+      paddingHorizontal: responsiveWidth(20),
+      borderRadius: 10,
+    },
+    plusIconRotated: {
+      transform: [{ rotate: '45deg' }],
     },
   },
 
@@ -963,54 +957,10 @@ export default () => ({
         resolveVariable('sizes.window.width'),
       ),
     },
-    attachmentsContainer: {
-      flexDirection: 'row',
-      alignItems: 'flex-end',
-    },
-    button: {
-      maxHeight: 100,
-      justifyContent: 'flex-end',
-      paddingHorizontal: getSizeRelativeToReference(
-        5,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-      paddingVertical: getSizeRelativeToReference(
-        15,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-    },
-    overlay: {
-      [INCLUDE]: ['fillParent'],
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      alignItems: 'flex-start',
-      paddingRight: getSizeRelativeToReference(
-        5,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-      paddingTop: getSizeRelativeToReference(
-        5,
-        815,
-        resolveVariable('sizes.window.height'),
-      ),
-      backgroundColor: resolveVariable('imageOverlayColor'),
-      borderRadius: 10,
-    },
-    deleteAttachmentIcon: {
+    removeAttachmentIcon: {
       color: '#FFFFFF',
-      height: getSizeRelativeToReference(
-        18,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-      width: getSizeRelativeToReference(
-        18,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
+      height: responsiveHeight(18),
+      width: responsiveHeight(18),
     },
     image: {
       width: getSizeRelativeToReference(
@@ -1041,6 +991,107 @@ export default () => ({
         375,
         resolveVariable('sizes.window.width'),
       ),
+    },
+    plusIconRotated: {
+      transform: [{ rotate: '45deg' }],
+    },
+    removeAttachmentButton: {
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      backgroundColor: 'grey',
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'absolute',
+      left: 130,
+      top: 5,
+      zIndex: 5,
+    },
+  },
+
+  'shoutem.social.AddAttachmentButtons': {
+    attachmentsContainer: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+    },
+    button: {
+      maxHeight: 100,
+      justifyContent: 'flex-end',
+      paddingHorizontal: responsiveWidth(20),
+      paddingVertical: responsiveHeight(15),
+    },
+    icon: {
+      width: responsiveHeight(18),
+      height: responsiveHeight(18),
+    },
+    buttonText: {
+      fontFamily: resolveFontFamily(
+        resolveVariable('text.fontFamily'),
+        '700',
+        resolveVariable('text.fontStyle'),
+      ),
+      fontWeight: resolveFontWeight('700'),
+    },
+  },
+
+  'shoutem.social.GiphyPicker': {
+    modal: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: 0,
+    },
+    screen: {
+      flex: 1,
+      backgroundColor: 'white',
+      width: '100%',
+    },
+    closeButton: { position: 'absolute' },
+    title: {
+      alignSelf: 'center',
+      fontFamily: resolveFontFamily(
+        resolveVariable('title.fontFamily'),
+        resolveVariable('title.fontWeight'),
+        resolveVariable('title.fontStyle'),
+      ),
+      fontWeight: resolveFontWeight(resolveVariable('title.fontWeight')),
+      fontStyle: resolveFontStyle(resolveVariable('title.fontStyle')),
+    },
+    searchInputContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      alignSelf: 'center',
+      paddingVertical: 20,
+    },
+    searchInput: {
+      borderColor: resolveVariable('inputBorderColor'),
+      borderWidth: 1,
+      borderRadius: 6,
+      height: responsiveHeight(30),
+      width: responsiveWidth(300),
+      paddingVertical: responsiveHeight(3),
+      margin: responsiveHeight(10),
+    },
+    giphyPickerFooter: {
+      width: '100%',
+      height: responsiveHeight(50),
+      alignSelf: 'center',
+    },
+  },
+
+  'shoutem.social.GiphyImage': {
+    loadingIndicator: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
+    image: {
+      margin: responsiveHeight(2),
+      borderRadius: 6,
     },
   },
 

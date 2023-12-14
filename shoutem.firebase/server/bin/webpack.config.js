@@ -1,6 +1,5 @@
 const path = require('path');
 const pack = require('../package.json');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const _ = require('lodash');
 
 const publicPath = '/server/build/';
@@ -83,18 +82,7 @@ module.exports = {
     ],
   },
   optimization: {
-    minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          unused: true,
-          dead_code: true,
-          warnings: false,
-          output: {
-            comments: false,
-          },
-        },
-      }),
-    ],
+    minimize: true,
   },
   output: {
     libraryTarget: 'amd',

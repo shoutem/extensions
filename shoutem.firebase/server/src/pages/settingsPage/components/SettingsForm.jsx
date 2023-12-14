@@ -1,6 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { reduxForm } from 'redux-form';
 import {
   Button,
   ControlLabel,
@@ -8,9 +6,11 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
-import i18next from 'i18next';
-import { LoaderContainer } from '@shoutem/react-web-ui';
 import { ext } from 'context';
+import i18next from 'i18next';
+import PropTypes from 'prop-types';
+import { reduxForm } from 'redux-form';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 import { validateFirebaseConfig } from '../services';
 import LOCALIZATION from './localization';
 import './style.scss';
@@ -34,9 +34,11 @@ function SettingsForm({
   handleSubmit,
   submitting,
   globalError,
+  pristine,
   fields: {
     projectName,
     serverKey,
+    serviceAccountKeyJson,
     googleServicesJson,
     googleServiceInfoPlist,
   },
@@ -48,10 +50,22 @@ function SettingsForm({
         i18next.t(LOCALIZATION.FORM_PROJECT_SLUG),
         <FormControl type="text" disabled={submitting} {...projectName} />,
       )}
+      {serverKey?.value &&
+        renderFormGroup(
+          serverKey,
+          i18next.t(LOCALIZATION.FORM_SERVER_KEY),
+          <FormControl type="text" disabled {...serverKey} />,
+        )}
       {renderFormGroup(
-        serverKey,
-        i18next.t(LOCALIZATION.FORM_SERVER_KEY),
-        <FormControl type="text" disabled={submitting} {...serverKey} />,
+        serviceAccountKeyJson,
+        i18next.t(LOCALIZATION.FORM_SERVICE_ACCOUNT_KEY_JSON),
+        <textarea
+          className="form-control"
+          cols="4"
+          type="text"
+          disabled={submitting}
+          {...serviceAccountKeyJson}
+        />,
       )}
       {renderFormGroup(
         googleServicesJson,
@@ -84,7 +98,7 @@ function SettingsForm({
         <Button
           bsStyle="primary"
           bsSize="large"
-          disabled={submitting}
+          disabled={submitting || pristine}
           type="submit"
         >
           <LoaderContainer isLoading={submitting}>
@@ -97,20 +111,18 @@ function SettingsForm({
 }
 
 SettingsForm.propTypes = {
-  handleSubmit: PropTypes.func,
-  submitting: PropTypes.bool,
-  fields: PropTypes.object,
-  globalError: PropTypes.string,
+  fields: PropTypes.object.isRequired,
+  globalError: PropTypes.string.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
   initialValues: PropTypes.shape({
+    googleServiceInfoPlist: PropTypes.string,
+    googleServicesJson: PropTypes.string,
     projectName: PropTypes.string,
     serverKey: PropTypes.string,
-    googleServicesJson: PropTypes.string,
-    googleServiceInfoPlist: PropTypes.string,
-  }),
-};
-
-SettingsForm.defaultProps = {
-  currentConfig: {},
+    serviceAccountKeyJson: PropTypes.string,
+  }).isRequired,
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
 };
 
 export default reduxForm({
@@ -118,6 +130,7 @@ export default reduxForm({
   fields: [
     'projectName',
     'serverKey',
+    'serviceAccountKeyJson',
     'googleServicesJson',
     'googleServiceInfoPlist',
   ],

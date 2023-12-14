@@ -32,6 +32,8 @@
       "cancelStatusSelectionOption": "Cancel",
       "postStatusButton": "Post",
       "newCommentPlaceholder": "Add a comment",
+      "likeStatusButtonText": "Like",
+      "likedStatusButtonText": "Unlike",
       "postDetailsNavBarTitle": "POST DETAILS",
       "reportOptionSpam": "It's a spam",
       "reportOptionInappropriate": "It's inappropriate",
@@ -62,7 +64,10 @@
       "keepEditingButtonLabel": "Keep editing",
       "cancelHeaderButtonText": "Cancel",
       "postCommentError": "Failed to post a comment. Please try again later.",
-      "postStatusError": "Failed to post a comment. Please try again later."
+      "postStatusError": "Failed to post a status. Please try again later.",
+      "giphyPickerTitle": "Select GIF",
+      "giphyPickerInputPlaceholder": "Search GIPHY",
+      "fetchGifsError": "There was a problem loading GIFs"
     }
   }
 }

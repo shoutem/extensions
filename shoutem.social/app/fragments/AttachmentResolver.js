@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { LayoutAnimation, Linking } from 'react-native';
 import { getLinkPreview } from 'link-preview-js';
 import PropTypes from 'prop-types';
@@ -15,7 +15,6 @@ import { attachmentService } from '../services';
 
 function AttachmentResolver({
   enableImagePreview,
-  isComment,
   userAttachment,
   statusText,
 }) {
@@ -80,9 +79,9 @@ function AttachmentResolver({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleOpenLink = useCallback(() => {
+  const handleOpenLink = () => {
     Linking.openURL(urlMetadata?.url);
-  }, [urlMetadata?.url]);
+  };
 
   const containerStyleName = useMemo(
     () =>
@@ -108,7 +107,6 @@ function AttachmentResolver({
       {userAttachment && (
         <ImageAttachment
           enableImagePreview={enableImagePreview}
-          isComment
           source={userAttachment}
         />
       )}
@@ -116,7 +114,6 @@ function AttachmentResolver({
         {mediaType === attachmentService.MEDIA_TYPE.IMAGE && (
           <ImageAttachment
             enableImagePreview={enableImagePreview}
-            isComment={isComment}
             source={{ uri: urlMetadata?.url }}
           />
         )}
@@ -145,12 +142,10 @@ function AttachmentResolver({
 AttachmentResolver.propTypes = {
   enableImagePreview: PropTypes.bool.isRequired,
   statusText: PropTypes.string.isRequired,
-  isComment: PropTypes.bool,
   userAttachment: PropTypes.object,
 };
 
 AttachmentResolver.defaultProps = {
-  isComment: false,
   userAttachment: null,
 };
 

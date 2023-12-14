@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { loginRequired, getUser } from 'shoutem.auth';
-import { I18n } from 'shoutem.i18n';
-import { connectStyle } from '@shoutem/theme';
 import {
-  Screen,
+  Divider,
   ListView,
-  View,
   Row,
+  Screen,
   Subtitle,
   Switch,
-  Divider,
+  View,
 } from '@shoutem/ui';
+import { getUser, loginRequired } from 'shoutem.auth';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import { actions, selectors } from '../redux';
 
@@ -46,6 +45,7 @@ export function NotificationSettingsScreen({
 
     const newSettings = parseSettingsData(settings);
     setCurrentSettings(newSettings);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings]);
 
   const handleSettingToggle = setting => {
@@ -83,9 +83,14 @@ export function NotificationSettingsScreen({
 
 NotificationSettingsScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
+  updateSettings: PropTypes.func.isRequired,
   settings: PropTypes.object,
   user: PropTypes.object,
-  updateSettings: PropTypes.func,
+};
+
+NotificationSettingsScreen.defaultProps = {
+  settings: {},
+  user: {},
 };
 
 const mapStateToProps = state => ({
@@ -98,9 +103,6 @@ const mapDispatchToProps = {
 };
 
 export default loginRequired(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-  )(connectStyle(ext('MessageListScreen'))(NotificationSettingsScreen)),
+  connect(mapStateToProps, mapDispatchToProps)(NotificationSettingsScreen),
   true,
 );

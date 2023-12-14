@@ -1,100 +1,129 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Keyboard as RNKeyboard } from 'react-native';
+import { LayoutAnimation } from 'react-native';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Icon, LoadingContainer, TouchableOpacity, View } from '@shoutem/ui';
-import { ext } from '../const';
+import {
+  Divider,
+  Icon,
+  LoadingContainer,
+  TouchableOpacity,
+  View,
+} from '@shoutem/ui';
+import { ATTACHMENT_TYPE, ext } from '../const';
 import { attachmentService, createResizedImage } from '../services';
+import AddAttachmentButtons from './AddAttachmentButtons';
 import RecentImages from './RecentImages';
 
-function NewStatusFooter({ enablePhotoAttachments, onImageSelected, style }) {
+const NewStatusFooter = ({
+  onAttachmentSelected,
+  enableGifAttachments,
+  enablePhotoAttachments,
+  giphyApiKey,
+  style,
+}) => {
   const [isResizingImage, setResizingImage] = useState(false);
-
-  function handleCameraSelectPress() {
-    RNKeyboard.dismiss();
-
-    return attachmentService.openCamera(onImageSelected);
-  }
-
-  function handleGallerySelectPress() {
-    RNKeyboard.dismiss();
-
-    return attachmentService.openImageGallery(onImageSelected);
-  }
-
-  const handleImageSelected = useCallback(
-    (image, shouldResizeImage = false) => {
-      if (shouldResizeImage) {
-        setResizingImage(true);
-
-        return createResizedImage(image.uri)
-          .then(resizedImage => {
-            return onImageSelected({
-              path: resizedImage.uri,
-              size: resizedImage.size,
-              filename: resizedImage.name,
-            });
-          })
-          .catch(() => {
-            // eslint-disable-next-line no-console
-            return console.warn('Failed to resize image');
-          })
-          .finally(() => setResizingImage(false));
-      }
-
-      return onImageSelected({
-        path: image.uri,
-        size: image.fileSize,
-        filename: image.filename,
-      });
-    },
-    [onImageSelected],
-  );
+  const [expanded, setExpanded] = useState(false);
 
   const galleryPermissionsGranted = useMemo(
-    () => attachmentService.hasGalleryPermissions(),
+    async () => attachmentService.hasGalleryPermissions(),
     [],
   );
 
-  const showAttachmentSection = useMemo(
-    () => enablePhotoAttachments && !isResizingImage,
-    [enablePhotoAttachments, isResizingImage],
+  const handleAttachmentSelected = useCallback(
+    (attachment, shouldResizeImage = false) => {
+      const { path, type, size } = attachment;
+
+      if (type !== ATTACHMENT_TYPE.IMAGE || !shouldResizeImage) {
+        return onAttachmentSelected({
+          path,
+          type,
+          size,
+        });
+      }
+
+      // Resize image before uploading it
+      setResizingImage(true);
+
+      return createResizedImage(path)
+        .then(resizedImage => {
+          return onAttachmentSelected({
+            path: resizedImage.uri,
+            type,
+            size: resizedImage.size,
+          });
+        })
+        .catch(() => {
+          // eslint-disable-next-line no-console
+          return console.warn('Failed to resize image');
+        })
+        .finally(() => setResizingImage(false));
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
+
+  const handleExpandButtonPress = () => {
+    LayoutAnimation.easeInEaseOut();
+    setExpanded(!expanded);
+  };
+
+  if (
+    !enableGifAttachments &&
+    !enablePhotoAttachments &&
+    !enableGifAttachments
+  ) {
+    return null;
+  }
 
   return (
-    <LoadingContainer loading={isResizingImage}>
-      <View style={style.container}>
-        {showAttachmentSection && (
+    <>
+      <Divider styleName={expanded ? 'line' : 'line md-gutter-bottom'} />
+      <LoadingContainer loading={isResizingImage}>
+        {!isResizingImage && (
           <>
-            <TouchableOpacity
-              onPress={handleCameraSelectPress}
-              style={[style.button, style.cameraButton]}
-            >
-              <Icon name="camera" style={style.attachmentIcon} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleGallerySelectPress}
-              style={[style.button, style.galleryButton]}
-            >
-              <Icon name="gallery" style={style.attachmentIcon} />
-            </TouchableOpacity>
-            {galleryPermissionsGranted && (
-              <RecentImages onImageSelected={handleImageSelected} />
+            {expanded && (
+              <View styleName="md-gutter-left">
+                <AddAttachmentButtons
+                  onAttachmentSelected={handleAttachmentSelected}
+                  enableGifAttachments={enableGifAttachments}
+                  enablePhotoAttachments={enablePhotoAttachments}
+                  giphyApiKey={giphyApiKey}
+                />
+                <Divider styleName="line md-gutter-bottom" />
+              </View>
             )}
+            <View style={style.container}>
+              <TouchableOpacity
+                onPress={handleExpandButtonPress}
+                style={style.expandButton}
+              >
+                <Icon
+                  name="plus-button"
+                  style={expanded ? style.plusIconRotated : {}}
+                />
+              </TouchableOpacity>
+              {galleryPermissionsGranted && (
+                <RecentImages onImageSelected={handleAttachmentSelected} />
+              )}
+            </View>
           </>
         )}
-      </View>
-    </LoadingContainer>
+      </LoadingContainer>
+    </>
   );
-}
+};
 
 NewStatusFooter.propTypes = {
-  enablePhotoAttachments: PropTypes.bool.isRequired,
-  onImageSelected: PropTypes.func.isRequired,
+  giphyApiKey: PropTypes.string.isRequired,
+  onAttachmentSelected: PropTypes.func.isRequired,
+  enableGifAttachments: PropTypes.bool,
+  enablePhotoAttachments: PropTypes.bool,
   style: PropTypes.object,
 };
 
 NewStatusFooter.defaultProps = {
+  enableGifAttachments: true,
+  enablePhotoAttachments: true,
   style: {},
 };
 

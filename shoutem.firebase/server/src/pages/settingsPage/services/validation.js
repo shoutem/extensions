@@ -12,7 +12,7 @@ export default function validateFirebaseConfig(values) {
   const errors = {};
 
   errors.projectName = nonEmptyField(values.projectName);
-  errors.serverKey = nonEmptyField(values.serverKey);
+  errors.serviceAccountKeyJson = nonEmptyField(values.serviceAccountKeyJson);
 
   if (!values.googleServicesJson && !values.googleServiceInfoPlist) {
     const message = i18next.t(LOCALIZATION.GOOGLE_SERVICES_REQUIRED);

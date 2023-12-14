@@ -1,0 +1,36 @@
+.screen-row {
+  width: 100%;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(49, 60, 89, 0.13);
+
+
+  .expand-button {
+    padding-left: 10px;
+  }
+
+  .subtitle-container {
+    font-size: 13px;
+    color: #888fa1;
+  }
+
+  .subtitle {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+}
+
+.translation-row {
+  .no-padding {
+    padding-left: 0px;
+  }
+
+  label {
+    padding-top: 12px;
+    padding-bottom: 0px;
+    height: 30px;
+  }
+}

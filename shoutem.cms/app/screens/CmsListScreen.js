@@ -9,7 +9,6 @@ import {
   cloneStatus,
   find as findAction,
   getCollection,
-  getOne,
   isBusy,
   isError,
   isInitialized,
@@ -49,15 +48,23 @@ const CATEGORIES_PAGE_LIMIT = 1000;
  *   in the app. If this list is empty, all categories will be displayed.
  */
 function getCategoriesToDisplay(allCategories, visibleCategories) {
+  const translatedCategories = _.map(allCategories, category => ({
+    ...category,
+    name: I18n.t(`shoutem.cms.categories.${category.id}`, {
+      defaultValue: category.name,
+    }),
+  }));
+
   if (_.isEmpty(visibleCategories)) {
     // Show all categories, if the app owner hasn't explicitly
     // selected any visible categories, this is the default state.
-    return allCategories;
+    cloneStatus(allCategories, translatedCategories);
+    return translatedCategories;
   }
 
   // Visible categories have been configured, so show only the selected categories
   const categoriesToDisplay = _.intersectionBy(
-    allCategories,
+    translatedCategories,
     visibleCategories,
     'id',
   );
@@ -164,6 +171,11 @@ export class CmsListScreen extends PureComponent {
       }
 
       const { selectedCategoryId } = getScreenState(state, screenId);
+      const selectedCategory =
+        _.find(categoriesToDisplay, {
+          id: selectedCategoryId,
+        }) ?? {};
+
       const { screenSettings } = getRouteParams(ownProps);
 
       return {
@@ -175,7 +187,7 @@ export class CmsListScreen extends PureComponent {
         data: getCollection(collection[selectedCategoryId], state),
         categories: categoriesToDisplay,
         screenSettings,
-        selectedCategory: getOne(selectedCategoryId, state, CATEGORIES_SCHEMA),
+        selectedCategory,
       };
     };
   }
@@ -605,7 +617,7 @@ export class CmsListScreen extends PureComponent {
     );
   }
 
-  renderFeaturedItem() {}
+  renderFeaturedItem() { }
 
   renderLoading() {
     const { screenSettings } = this.props;

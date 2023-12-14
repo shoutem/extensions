@@ -4,7 +4,13 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import { isBusy, isInitialized, isValid, next } from '@shoutem/redux-io';
+import {
+  isBusy,
+  isError,
+  isInitialized,
+  isValid,
+  next,
+} from '@shoutem/redux-io';
 import {
   createStatus,
   setStatus,
@@ -29,7 +35,7 @@ import {
   loadUsersInGroups,
 } from '../redux';
 import { getUsers, getUsersInGroups } from '../redux/selectors';
-import { openBlockActionSheet, openProfileForLegacyUser } from '../services';
+import { openBlockActionSheet } from '../services';
 
 export class MembersScreen extends RemoteDataListScreen {
   static propTypes = {
@@ -67,6 +73,16 @@ export class MembersScreen extends RemoteDataListScreen {
     ) {
       this.fetchData();
     }
+  }
+
+  shouldRenderPlaceholderView(data) {
+    if ((!isInitialized(data) && !isError(data)) || isBusy(data)) {
+      // Data is loading, treat it as valid for now
+      return false;
+    }
+
+    // We want to render a placeholder only in case of errors
+    return isError(data);
   }
 
   handleMenuPress(user) {
@@ -113,13 +129,15 @@ export class MembersScreen extends RemoteDataListScreen {
   }
 
   renderRow(user) {
-    const { openProfile, currentUser } = this.props;
+    const { currentUser } = this.props;
 
-    const isCurrentUser = currentUser.legacyId === user.legacyId;
+    // Member user objects hold legacyId inside id property, because they're loaded from
+    // our legacy user database.
+    const isCurrentUser =
+      currentUser.legacyId?.toString() === user.id?.toString();
 
     return (
       <MemberView
-        openProfile={openProfile}
         user={user}
         showMenuIcon={!isCurrentUser}
         onMenuPress={this.handleMenuPress}
@@ -209,7 +227,6 @@ export function mapDispatchToProps(dispatch, ownProps) {
       },
       dispatch,
     ),
-    openProfile: openProfileForLegacyUser(dispatch),
   };
 }
 

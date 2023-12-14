@@ -2,7 +2,8 @@
   "shoutem": {
     "firebase": {
       "settings-form.form-project-slug": "Project slug",
-      "settings-form.form-server-key": "Server key",
+      "settings-form.form-server-key": "Server key (deprecated)",
+      "settings-form.form-service-account-key-json": "Service account key (.json)",
       "settings-form.form-google-services-json": "google-services.json (Android app)",
       "settings-form.form-google-services-plist": "GoogleService-Info.plist (iOS app)",
       "settings-form.button-save": "Save",

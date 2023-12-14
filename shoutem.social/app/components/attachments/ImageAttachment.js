@@ -1,33 +1,54 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { ActivityIndicator } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Image, Lightbox } from '@shoutem/ui';
+import { Lightbox, responsiveHeight } from '@shoutem/ui';
 import { ext } from '../../const';
 
-function ImageAttachment({ enableImagePreview, isComment, source, style }) {
-  const resolvedStyle = useMemo(
-    () => (isComment ? style.commentAttachment : style.statusAttachment),
-    [isComment, style.commentAttachment, style.statusAttachment],
+const MAX_IMAGE_HEIGHT = responsiveHeight(350);
+
+function ImageAttachment({ enableImagePreview, source, style }) {
+  const [height, setHeight] = useState(0);
+
+  const fastImageSource = useMemo(
+    () => ({ uri: source.uri, priority: 'high' }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
+
+  const handleImageLoaded = useCallback(e => {
+    const aspectRatio = e.nativeEvent.height / e.nativeEvent.width;
+
+    const newHeight = MAX_IMAGE_HEIGHT * aspectRatio;
+
+    setHeight(newHeight > MAX_IMAGE_HEIGHT ? MAX_IMAGE_HEIGHT : newHeight);
+  }, []);
 
   if (!source?.uri) {
     return null;
   }
 
-  if (enableImagePreview) {
-    return (
-      <Lightbox activeProps={{ styleName: 'preview' }}>
-        <Image source={source} style={resolvedStyle} />
-      </Lightbox>
-    );
-  }
+  return (
+    <Lightbox disabled={!enableImagePreview} underlayColor="transparent">
+      <>
+        {!height && (
+          <ActivityIndicator style={style.loadingIndicator} size="small" />
+        )}
 
-  return <Image source={source} style={resolvedStyle} />;
+        <FastImage
+          source={fastImageSource}
+          resizeMode="contain"
+          style={[style.imagePreview, { height }]}
+          onLoad={handleImageLoaded}
+        />
+      </>
+    </Lightbox>
+  );
 }
 
 ImageAttachment.propTypes = {
   enableImagePreview: PropTypes.bool.isRequired,
-  isComment: PropTypes.bool.isRequired,
   source: PropTypes.object,
   style: PropTypes.object,
 };

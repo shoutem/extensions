@@ -1,6 +1,6 @@
 export {
-  enableChannelsModule,
   createChannel,
-  updateChannel,
   deleteChannel,
+  enableChannelsModule,
+  updateChannel,
 } from './redux';

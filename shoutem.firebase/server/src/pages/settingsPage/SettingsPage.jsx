@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import i18next from 'i18next';
-import { LoaderContainer } from '@shoutem/react-web-ui';
 import { ext } from 'context';
-import { fetchFirebaseConfig, updateFirebaseConfig } from './actions';
+import i18next from 'i18next';
+import PropTypes from 'prop-types';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 import SettingsForm from './components/SettingsForm';
+import { fetchFirebaseConfig, updateFirebaseConfig } from './actions';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -46,16 +46,16 @@ export class SettingsPage extends Component {
 }
 
 SettingsPage.propTypes = {
-  isLoading: PropTypes.bool,
-  fetchConfig: PropTypes.func,
-  updateConfig: PropTypes.func,
-  error: PropTypes.string,
   currentConfig: PropTypes.shape({
+    googleServiceInfoPlist: PropTypes.string,
+    googleServicesJson: PropTypes.string,
     projectName: PropTypes.string,
     serverKey: PropTypes.string,
-    googleServicesJson: PropTypes.string,
-    googleServiceInfoPlist: PropTypes.string,
   }),
+  error: PropTypes.string,
+  fetchConfig: PropTypes.func,
+  isLoading: PropTypes.bool,
+  updateConfig: PropTypes.func,
 };
 
 function mapStateToProps(state) {

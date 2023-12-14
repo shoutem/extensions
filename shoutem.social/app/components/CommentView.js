@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { LayoutAnimation } from 'react-native';
 import ActionSheet from 'react-native-action-sheet';
 import { useDispatch } from 'react-redux';
@@ -21,19 +21,19 @@ import { images } from '../assets';
 import { ext } from '../const';
 import { AttachmentResolver } from '../fragments';
 import { loadStatus } from '../redux';
-import { adaptSocialUserForProfileScreen, convertToHtml } from '../services';
+import { convertToHtml } from '../services';
 import { comment as commentShape } from './shapes';
 
 function CommentView({ comment, deleteComment, openProfile, statusId, style }) {
   const dispatch = useDispatch();
 
-  const handleClickOnUser = useCallback(() => {
+  const handleClickOnUser = () => {
     const { user } = comment;
 
-    openProfile(dispatch)(adaptSocialUserForProfileScreen(user));
-  }, [comment, dispatch, openProfile]);
+    dispatch(openProfile(user.id ?? user.legacyId));
+  };
 
-  const showActionSheet = useCallback(() => {
+  const showActionSheet = () => {
     if (_.get(comment, 'deletable') !== 'yes') {
       return;
     }
@@ -58,31 +58,20 @@ function CommentView({ comment, deleteComment, openProfile, statusId, style }) {
         }
       },
     );
-  }, [comment, deleteComment, dispatch]);
+  };
 
-  const { user, created_at, shoutem_attachments, text } = comment;
+  const { user, created_at, shoutem_attachments, html_text: text } = comment;
   const { profile_image_url, name: userName } = user;
 
-  const timeAgo = useMemo(() => moment(created_at).fromNow(), [created_at]);
+  const timeAgo = moment(created_at).fromNow();
 
-  const resolvedProfileAvatar = useMemo(
-    () =>
-      profile_image_url
-        ? { uri: profile_image_url }
-        : images.defaultProfileAvatar,
-    [profile_image_url],
-  );
+  const resolvedProfileAvatar = profile_image_url
+    ? { uri: profile_image_url }
+    : images.defaultProfileAvatar;
 
   const commentHtml = useMemo(() => convertToHtml(text), [text]);
 
-  const userAttachment = useMemo(() => shoutem_attachments[0] || {}, [
-    shoutem_attachments,
-  ]);
-
-  const resolvedUserAttachment = useMemo(
-    () => ({ uri: userAttachment.url || userAttachment.url_large }),
-    [userAttachment],
-  );
+  const userAttachment = shoutem_attachments[0] || {};
 
   return (
     <View style={style.container}>
@@ -105,9 +94,10 @@ function CommentView({ comment, deleteComment, openProfile, statusId, style }) {
             <SimpleHtml body={commentHtml} style={style.comment} />
             <AttachmentResolver
               enableImagePreview
-              isComment
               statusText={text}
-              userAttachment={resolvedUserAttachment}
+              userAttachment={{
+                uri: userAttachment.url || userAttachment.url_large,
+              }}
             />
           </View>
         </Row>

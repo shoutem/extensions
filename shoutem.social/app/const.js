@@ -15,6 +15,11 @@ export const DEFAULT_USER_SETTINGS = {
   type: SOCIAL_SETTINGS_SCHEMA,
 };
 
+export const ATTACHMENT_TYPE = {
+  IMAGE: 'jpg',
+  GIF: 'gif',
+};
+
 export function ext(resourceName) {
   return resourceName ? `${pack.name}.${resourceName}` : pack.name;
 }

@@ -5,9 +5,14 @@ export function ext(resourceName) {
   return resourceName ? `${pack.name}.${resourceName}` : pack.name;
 }
 
+export const ARROW_UNICODE = '\u2192';
+
 export const DEFAULT_LANGUAGE_CODE = 'en';
 const DEFAULT_LANGUAGE_LABEL = 'English (United States)';
-export const DEFAULT_LOCALE = { value: DEFAULT_LANGUAGE_CODE, label: DEFAULT_LANGUAGE_LABEL }
+export const DEFAULT_LOCALE = {
+  value: DEFAULT_LANGUAGE_CODE,
+  label: DEFAULT_LANGUAGE_LABEL,
+};
 export const DEFAULT_LANGUAGE_URL =
   'https://shoutem.github.io/static/localization/en.json';
 export const DEFAULT_LANGUAGE_URL_ZIP =

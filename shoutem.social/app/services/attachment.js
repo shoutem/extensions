@@ -9,7 +9,7 @@ import {
   requestPermissions,
   RESULTS,
 } from 'shoutem.permissions';
-import { ext } from '../const';
+import { ATTACHMENT_TYPE, ext } from '../const';
 
 const INVALID_TEXT_ERROR =
   'link-preview-js did not receive a valid url or text';
@@ -38,7 +38,7 @@ const GALLERY_PERMISSION = Platform.select({
   default: PERMISSION_TYPES.ANDROID_READ_EXTERNAL_STORAGE,
 });
 
-const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
+const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024;
 
 const IMAGE_PICKER_OPTIONS = {
   mediaType: 'photo',
@@ -89,7 +89,10 @@ function openCamera(onImageSelected) {
     if (result[CAMERA_PERMISSION] === RESULTS.GRANTED) {
       return launchCamera(IMAGE_PICKER_OPTIONS)
         .then(image => {
-          return onImageSelected(image);
+          return onImageSelected({
+            path: image.path,
+            type: ATTACHMENT_TYPE.IMAGE,
+          });
         })
         .catch(error => {
           if (error.code === 'E_PICKER_CANCELLED') {
@@ -118,7 +121,10 @@ function openImageGallery(onImageSelected) {
 
     return launchImageLibrary(IMAGE_PICKER_OPTIONS)
       .then(image => {
-        return onImageSelected(image);
+        return onImageSelected({
+          path: image.path,
+          type: ATTACHMENT_TYPE.IMAGE,
+        });
       })
       .catch(error => {
         if (error.code === 'E_PICKER_CANCELLED') {
@@ -155,7 +161,7 @@ export default {
   hasGalleryPermissions,
   INVALID_OR_NO_URL_ERROR,
   INVALID_TEXT_ERROR,
-  MAX_IMAGE_SIZE,
+  MAX_ATTACHMENT_SIZE,
   MEDIA_TYPE,
   openCamera,
   openImageGallery,

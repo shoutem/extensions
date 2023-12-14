@@ -1,52 +1,34 @@
-import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Caption, Icon, TouchableOpacity, View } from '@shoutem/ui';
-import { authenticate } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
 import { ext } from '../const';
-import { likeStatus, unlikeStatus } from '../redux';
-import Like from './Like';
+import { adaptSocialUserForProfileScreen } from '../services/user';
 
-function Interactions({
-  commentCount,
-  enableComments,
+const Interactions = ({
   enableInteractions,
-  statusId,
-  statusLiked,
+  enableComments,
+  commentCount,
   usersWhoLiked,
   likedCount,
   style,
-}) {
-  const dispatch = useDispatch();
-
+}) => {
   const likeCountText =
     likedCount === 0
       ? I18n.t(ext('noLikes'))
       : I18n.t(ext('numberOfLikes'), { count: likedCount });
 
-  function handleOpenUserLikes() {
-    if (likedCount === 0) {
-      return;
-    }
-
+  const handleOpenUserLikes = () => {
     const routeParams = {
       title: I18n.t(ext('viewStatusLikes')),
-      users: usersWhoLiked,
+      users: _.map(usersWhoLiked, adaptSocialUserForProfileScreen),
     };
 
     navigateTo(ext('MembersScreen'), routeParams);
-  }
-
-  const toggleLikeStatus = useCallback(() => {
-    if (!statusLiked) {
-      dispatch(authenticate(() => dispatch(likeStatus(statusId))));
-    } else {
-      dispatch(unlikeStatus(statusId));
-    }
-  }, [dispatch, statusId, statusLiked]);
+  };
 
   const commentsCountText = I18n.t(ext('numberOfComments'), {
     count: commentCount,
@@ -59,18 +41,15 @@ function Interactions({
   return (
     <View styleName="horizontal v-center md-gutter">
       {enableInteractions && (
-        <TouchableOpacity
-          onPress={handleOpenUserLikes}
-          style={[style.button, style.likeButtonWidth]}
-        >
-          <Like onPress={toggleLikeStatus} statusLiked={statusLiked} />
+        <TouchableOpacity onPress={handleOpenUserLikes} style={style.button}>
+          <Icon name="like-heart" style={style.heartIcon} />
           <Caption numberOfLines={1} style={style.iconText}>
             {likeCountText}
           </Caption>
         </TouchableOpacity>
       )}
       {enableComments && (
-        <View style={[style.button, style.commentsButtonWidth]}>
+        <View style={style.button}>
           <Icon name="comments" style={style.icon} />
           <Caption numberOfLines={1} style={style.iconText}>
             {commentsCountText}
@@ -79,15 +58,13 @@ function Interactions({
       )}
     </View>
   );
-}
+};
 
 Interactions.propTypes = {
   commentCount: PropTypes.number.isRequired,
-  enableComments: PropTypes.bool.isRequired,
-  enableInteractions: PropTypes.bool.isRequired,
   likedCount: PropTypes.number.isRequired,
-  statusId: PropTypes.number.isRequired,
-  statusLiked: PropTypes.bool.isRequired,
+  enableComments: PropTypes.bool,
+  enableInteractions: PropTypes.bool,
   style: PropTypes.object,
   usersWhoLiked: PropTypes.array,
 };
@@ -95,6 +72,8 @@ Interactions.propTypes = {
 Interactions.defaultProps = {
   style: {},
   usersWhoLiked: [],
+  enableInteractions: true,
+  enableComments: true,
 };
 
 export default connectStyle(ext('Interactions'))(Interactions);

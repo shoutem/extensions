@@ -1,6 +1,6 @@
 {
   "name": "shoutem.notification-center",
-  "version": "8.0.0",
+  "version": "8.1.1",
   "description": "Manage push notification settings within the app",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

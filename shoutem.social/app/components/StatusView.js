@@ -1,12 +1,11 @@
 /* eslint-disable camelcase */
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Pressable } from 'react-native';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Text } from '@shoutem/ui';
-import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
 import { ext } from '../const';
+import InteractionActions from './InteractionActions';
 import Interactions from './Interactions';
 import StatusContent from './StatusContent';
 import StatusHeader from './StatusHeader';
@@ -14,27 +13,19 @@ import StatusHeader from './StatusHeader';
 function StatusView({
   status,
   enableComments,
-  enableImageFullScreen,
   enableInteractions,
-  enablePhotoAttachments,
+  enableImageFullScreen,
   goBackAfterBlock,
-  showNewCommentInput,
   maxStatusLength,
+  addCommentInputRef,
   style,
 }) {
   // status can be undefined if we're deleting it
-  const shoutem_attachments = useMemo(() => status?.shoutem_attachments, [
-    status,
-  ]);
-
-  const resolvedShowNewCommentInput = useMemo(
-    () => enableComments && showNewCommentInput,
-    [enableComments, showNewCommentInput],
-  );
-
   if (!status) {
     return null;
   }
+
+  const { shoutem_attachments } = status;
 
   const {
     id,
@@ -42,7 +33,7 @@ function StatusView({
     liked,
     shoutem_favorited_by,
     shoutem_reply_count,
-    text,
+    html_text,
     user,
   } = status;
   const {
@@ -56,20 +47,6 @@ function StatusView({
   function handleOpenDetails() {
     navigateTo(ext('StatusDetailsScreen'), {
       statusId: id,
-      enableComments,
-      enableInteractions,
-      enablePhotoAttachments,
-      maxStatusLength,
-    });
-  }
-
-  function handleOpenDetailsAndFocusInput() {
-    navigateTo(ext('StatusDetailsScreen'), {
-      statusId: id,
-      enableComments,
-      enableInteractions,
-      enablePhotoAttachments,
-      focusAddCommentInput: true,
       maxStatusLength,
     });
   }
@@ -87,57 +64,53 @@ function StatusView({
       />
       <StatusContent
         enableImageFullScreen={enableImageFullScreen}
-        text={text}
+        text={html_text}
         attachments={shoutem_attachments}
       />
       <Interactions
-        commentCount={shoutem_reply_count}
         enableComments={enableComments}
         enableInteractions={enableInteractions}
-        statusId={id}
+        commentCount={shoutem_reply_count}
         statusLiked={liked}
         usersWhoLiked={shoutem_favorited_by.users}
         likedCount={shoutem_favorited_by.count}
       />
-      {resolvedShowNewCommentInput && (
-        <Pressable
-          style={style.newComment}
-          onPress={handleOpenDetailsAndFocusInput}
-        >
-          <Text style={style.placeholderText}>
-            {I18n.t(ext('newCommentPlaceholder'))}
-          </Text>
-        </Pressable>
-      )}
+      <InteractionActions
+        statusId={id}
+        statusLiked={liked}
+        maxStatusLength={maxStatusLength}
+        addCommentInputRef={addCommentInputRef}
+      />
     </Pressable>
   );
 }
 
 StatusView.propTypes = {
-  enableComments: PropTypes.bool.isRequired,
-  enableInteractions: PropTypes.bool.isRequired,
-  enablePhotoAttachments: PropTypes.bool.isRequired,
   maxStatusLength: PropTypes.number.isRequired,
+  addCommentInputRef: PropTypes.object,
+  enableComments: PropTypes.bool,
   enableImageFullScreen: PropTypes.bool,
+  enableInteractions: PropTypes.bool,
   goBackAfterBlock: PropTypes.bool,
-  showNewCommentInput: PropTypes.bool,
   status: PropTypes.shape({
     created_at: PropTypes.string,
+    html_text: PropTypes.string,
     id: PropTypes.number,
     liked: PropTypes.bool,
     shoutem_attachments: PropTypes.array,
     shoutem_favorited_by: PropTypes.object,
     shoutem_reply_count: PropTypes.number,
-    text: PropTypes.string,
     user: PropTypes.object,
   }),
   style: PropTypes.object,
 };
 
 StatusView.defaultProps = {
+  addCommentInputRef: { current: {} },
+  enableComments: true,
+  enableInteractions: true,
   enableImageFullScreen: false,
   goBackAfterBlock: false,
-  showNewCommentInput: true,
   status: undefined,
   style: {},
 };

@@ -15,7 +15,7 @@ import {
   openProfileForLegacyUser,
 } from '../services';
 
-function StatusHeader({
+const StatusHeader = ({
   createdAt,
   firstName,
   goBackAfterBlock,
@@ -24,7 +24,7 @@ function StatusHeader({
   screenName,
   userId,
   style,
-}) {
+}) => {
   const dispatch = useDispatch();
 
   const ownUser = useSelector(getUser);
@@ -33,7 +33,7 @@ function StatusHeader({
 
   const resolvedName = screenName || `${firstName} ${lastName}`;
 
-  function handleBlockUser() {
+  const handleBlockUser = () => {
     dispatch(
       authenticate(async () => {
         await dispatch(loadUser(`legacyUser:${userId}`));
@@ -44,17 +44,17 @@ function StatusHeader({
         });
       }),
     );
-  }
+  };
 
-  function handleReportButtonPress() {
+  const handleReportButtonPress = () => {
     const isBlockAllowed = ownUser?.legacyId?.toString() !== userId.toString();
 
     return openBlockOrReportActionSheet(isBlockAllowed, handleBlockUser);
-  }
+  };
 
-  function handleOpenProfile() {
-    openProfileForLegacyUser(dispatch)({ id: userId });
-  }
+  const handleOpenProfile = () => {
+    dispatch(openProfileForLegacyUser(userId));
+  };
 
   const resolvedProfileImage = profileImageUrl
     ? { uri: profileImageUrl }
@@ -77,14 +77,16 @@ function StatusHeader({
           <Caption>{moment(createdAt).fromNow()}</Caption>
         </View>
       </View>
-      <View styleName="md-gutter-vertical md-gutter-left">
-        <Pressable onPress={handleReportButtonPress}>
-          <Icon name="more-horizontal" style={style.moreIcon} />
-        </Pressable>
-      </View>
+      {ownUser?.legacyId !== userId.toString() && (
+        <View styleName="md-gutter-vertical md-gutter-left">
+          <Pressable onPress={handleReportButtonPress}>
+            <Icon name="more-horizontal" style={style.moreIcon} />
+          </Pressable>
+        </View>
+      )}
     </View>
   );
-}
+};
 
 StatusHeader.propTypes = {
   createdAt: PropTypes.string.isRequired,

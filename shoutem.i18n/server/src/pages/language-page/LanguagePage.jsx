@@ -1,33 +1,33 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
 import { ControlLabel, FormGroup } from 'react-bootstrap';
-import { LoaderContainer } from '@shoutem/react-web-ui';
-import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
-import { connect } from 'react-redux';
 import { Trans } from 'react-i18next';
+import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { AssetManager } from '@shoutem/assets-sdk';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LanguageSelect } from 'src/components';
-import { TranslationsDashboard } from 'src/modules/translations';
-import {
-  createChannel,
-  updateChannel,
-  deleteChannel,
-} from 'src/modules/channels';
-import { invalidateCurrentBuild, navigateToUrl } from 'src/redux';
 import {
   DEFAULT_LANGUAGE_CODE,
   DEFAULT_LANGUAGE_URL_ZIP,
   LOCALIZATION_TUTORIAL_URL,
 } from 'src/const';
 import {
-  LANGUAGES,
-  migrateChannels,
+  createChannel,
+  deleteChannel,
+  updateChannel,
+} from 'src/modules/channels';
+import { TranslationsDashboard } from 'src/modules/translations';
+import { invalidateCurrentBuild, navigateToUrl } from 'src/redux';
+import {
   getActiveLanguageCodes,
   getNumberOfActiveTranslations,
+  LANGUAGES,
+  migrateChannels,
 } from 'src/services';
+import { AssetManager } from '@shoutem/assets-sdk';
+import { LoaderContainer } from '@shoutem/react-web-ui';
+import { updateExtensionSettings } from '@shoutem/redux-api-sdk';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -258,14 +258,14 @@ class LanguagePage extends Component {
 
 LanguagePage.propTypes = {
   appId: PropTypes.string,
-  extension: PropTypes.object,
-  migrateChannels: PropTypes.func,
   createChannel: PropTypes.func,
-  updateChannel: PropTypes.func,
   deleteChannel: PropTypes.func,
-  updateExtensionSettings: PropTypes.func,
+  extension: PropTypes.object,
   invalidateCurrentBuild: PropTypes.func,
+  migrateChannels: PropTypes.func,
   navigateToUrl: PropTypes.func,
+  updateChannel: PropTypes.func,
+  updateExtensionSettings: PropTypes.func,
 };
 
 LanguagePage.contextTypes = {

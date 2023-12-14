@@ -12,12 +12,13 @@ export class SettingsController {
     return asyncMiddleware(async (req: Request, res: Response) => {
       const user = getUser(req);
 
-      const data = _.pick(io.get(req), [
-        'commentsOnMyStatuses',
-        'likesOnMyStatuses',
-        'commentsOnCommentedStatuses',
-        'commentsOnLikedStatuses',
-      ]);
+      const data =
+        _.pick(io.get(req), [
+          'commentsOnMyStatuses',
+          'likesOnMyStatuses',
+          'commentsOnCommentedStatuses',
+          'commentsOnLikedStatuses',
+        ]) || {};
 
       _.set(data, 'userId', user.id);
 
@@ -47,8 +48,10 @@ export class SettingsController {
 
       const settings = await settingsRepository.findOne({ userId: user.id });
       if (!settings) {
-        throw new errors.NotFoundError('User settings not found',
-          generateErrorCode('settings', 'notFound', 'settingsNotFound'));
+        throw new errors.NotFoundError(
+          'User settings not found',
+          generateErrorCode('settings', 'notFound', 'settingsNotFound'),
+        );
       }
 
       io.set(res, settings);

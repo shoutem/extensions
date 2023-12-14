@@ -2,7 +2,6 @@ import React, {
   useCallback,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -11,41 +10,48 @@ import {
   Keyboard as RNKeyboard,
   KeyboardAvoidingView,
   LayoutAnimation,
+  Platform,
   Pressable,
   TextInput,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
-  Button,
   Divider,
   Icon,
   Image,
-  ImageBackground,
   Keyboard,
   LoadingContainer,
   Row,
   Screen,
+  TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { getExtensionSettings } from 'shoutem.application';
 import { authenticate } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
-import { HeaderTextButton } from 'shoutem.navigation';
+import { HeaderTextButton, isTabBarNavigation } from 'shoutem.navigation';
 import { images } from '../assets';
 import NewStatusFooter from '../components/NewStatusFooter';
 import { ext } from '../const';
 import { clearDraft, saveDraft, selectors } from '../redux';
+import { getGiphyApiKey } from '../redux/selectors';
 import { attachmentService } from '../services';
+
+const KEYBOARD_OFFSET =
+  Platform.OS === 'android'
+    ? Keyboard.calculateKeyboardOffset(-30)
+    : Keyboard.calculateKeyboardOffset();
 
 export function CreateStatusScreen({ navigation, route, style }) {
   const {
     params: {
-      selectedImage: selectedImageAttachment,
+      selectedAttachment,
       user,
       placeholder,
-      enablePhotoAttachments = true,
       maxStatusLength,
       onStatusCreated,
     },
@@ -53,28 +59,34 @@ export function CreateStatusScreen({ navigation, route, style }) {
 
   const dispatch = useDispatch();
 
+  const giphyApiKey = useSelector(getGiphyApiKey);
   const statusDraft = useSelector(selectors.getSavedDraft);
-  const [text, setText] = useState('');
-  const [selectedImage, setSelectedImage] = useState(selectedImageAttachment);
+  const { enableGifAttachments, enablePhotoAttachments } = useSelector(state =>
+    getExtensionSettings(state, ext()),
+  );
+  const isTabBarNav = useSelector(isTabBarNavigation);
+
+  const [statusText, setStatusText] = useState('');
+  const [attachment, setAttachment] = useState(selectedAttachment);
   const [isPostingStatus, setPostingStatus] = useState(false);
 
   const textInputRef = useRef(null);
 
-  const debouncedHandleTextChange = _.debounce(setText, 250);
+  const debouncedHandleTextChange = _.debounce(setStatusText, 250);
 
   const addNewStatus = useCallback(() => {
-    if (text.length > 0) {
+    if (statusText.length === 0 && !attachment) {
+      Alert.alert(I18n.t(ext('blankPostWarning')));
+    } else {
       setPostingStatus(true);
 
       dispatch(
         authenticate(() => {
-          onStatusCreated(text, selectedImage, setStatusPosted);
+          onStatusCreated(statusText, attachment, setStatusPosted);
         }),
       );
-    } else {
-      Alert.alert(I18n.t(ext('blankPostWarning')));
     }
-  }, [dispatch, selectedImage, onStatusCreated, setStatusPosted, text]);
+  }, [dispatch, attachment, onStatusCreated, setStatusPosted, statusText]);
 
   const setStatusPosted = useCallback(() => setPostingStatus(false), []);
 
@@ -94,17 +106,17 @@ export function CreateStatusScreen({ navigation, route, style }) {
   );
 
   const navigateBack = useCallback(() => {
-    setSelectedImage(undefined);
+    setAttachment(undefined);
     navigation.goBack();
   }, [navigation]);
 
   const saveStatus = useCallback(() => {
-    dispatch(saveDraft({ statusText: text, imageAttachment: selectedImage }));
+    dispatch(saveDraft({ statusText, attachment }));
     navigateBack();
-  }, [dispatch, navigateBack, selectedImage, text]);
+  }, [dispatch, navigateBack, attachment, statusText]);
 
   const cancelNewPost = useCallback(() => {
-    if (text.length === 0 && !selectedImage) {
+    if (statusText.length === 0 && !attachment) {
       return navigateBack();
     }
 
@@ -127,7 +139,7 @@ export function CreateStatusScreen({ navigation, route, style }) {
         },
       ],
     );
-  }, [navigateBack, text.length, saveStatus, selectedImage]);
+  }, [navigateBack, statusText.length, saveStatus, attachment]);
 
   const headerLeft = useCallback(
     props => {
@@ -156,22 +168,22 @@ export function CreateStatusScreen({ navigation, route, style }) {
 
   useEffect(() => {
     if (statusDraft) {
-      setText(statusDraft.statusText);
-      setSelectedImage(statusDraft.imageAttachment);
+      setStatusText(statusDraft.statusText);
+      setAttachment(statusDraft.attachment);
     }
-  }, [dispatch, statusDraft, text]);
+  }, [dispatch, statusDraft, statusText]);
 
   useEffect(() => {
     // Clear draft after it has been loaded
     dispatch(clearDraft());
   }, [dispatch]);
 
-  const handleImageSelected = useCallback(image => {
-    if (image.size > attachmentService.MAX_IMAGE_SIZE) {
+  const handleAttachmentSelected = selectedAttachment => {
+    if (selectedAttachment.size > attachmentService.MAX_ATTACHMENT_SIZE) {
       Alert.alert(
         I18n.t(
           ext('imageSizeWarning', {
-            maxSize: attachmentService.MAX_IMAGE_SIZE / (1024 * 1024),
+            maxSize: attachmentService.MAX_ATTACHMENT_SIZE / (1024 * 1024),
           }),
         ),
       );
@@ -179,37 +191,24 @@ export function CreateStatusScreen({ navigation, route, style }) {
 
     LayoutAnimation.easeInEaseOut();
 
-    setSelectedImage({
-      uri: image.path,
-      // Only iOS has filename property. For Android, we get the last segment of file path
-      fileName:
-        image.filename || image.path.substring(image.path.lastIndexOf('/') + 1),
-    });
-  }, []);
+    setAttachment(selectedAttachment);
+  };
 
-  function discardImage() {
+  function discardAttachment() {
     LayoutAnimation.easeInEaseOut();
-    setSelectedImage(undefined);
+    setAttachment(undefined);
   }
 
   const profileImage = user?.profile?.image || user?.profile_image_url;
 
-  const resolvedProfileAvatar = useMemo(
-    () => (profileImage ? { uri: profileImage } : images.defaultProfileAvatar),
-    [profileImage],
-  );
+  const resolvedProfileAvatar = profileImage
+    ? { uri: profileImage }
+    : images.defaultProfileAvatar;
 
-  const attachmentSource = useMemo(
-    () => ({
-      uri: selectedImage?.uri,
-    }),
-    [selectedImage],
-  );
-
-  const keyboardOffset = Keyboard.calculateKeyboardOffset();
+  const screenStyleName = isTabBarNav ? 'paper' : 'paper md-gutter-bottom';
 
   return (
-    <Screen styleName="paper">
+    <Screen styleName={screenStyleName}>
       <View style={style.keyboardDismissContainer}>
         <Pressable onPress={RNKeyboard.dismiss}>
           <Image
@@ -219,7 +218,7 @@ export function CreateStatusScreen({ navigation, route, style }) {
           />
         </Pressable>
         <TextInput
-          defaultValue={text}
+          defaultValue={statusText}
           maxLength={maxStatusLength}
           onChangeText={debouncedHandleTextChange}
           multiline
@@ -230,35 +229,35 @@ export function CreateStatusScreen({ navigation, route, style }) {
           textAlignVertical="top"
         />
       </View>
-      {!!selectedImage && (
+      {attachment && (
         <View style={style.attachmentContainer}>
           <Divider styleName="line" />
-          <Row style={style.attachmentRow}>
-            <ImageBackground
-              source={attachmentSource}
-              style={style.image}
-              imageStyle={[style.image]}
+          <Row>
+            <TouchableOpacity
+              onPress={discardAttachment}
+              style={style.removeAttachmentButton}
             >
-              <View
-                styleName="fill-parent horizontal v-start h-end sm-gutter-right sm-gutter-top"
-                style={style.overlay}
-              >
-                <Button styleName="tight clear" onPress={discardImage}>
-                  <Icon name="close" style={style.removeImageIcon} />
-                </Button>
-              </View>
-            </ImageBackground>
+              <Icon name="close" style={style.removeAttachmentIcon} />
+            </TouchableOpacity>
+            <FastImage
+              source={{ uri: attachment.path }}
+              style={style.image}
+              imageStyle={style.image}
+              resizeMode="contain"
+            />
           </Row>
         </View>
       )}
       <KeyboardAvoidingView
         behavior="padding"
-        keyboardVerticalOffset={keyboardOffset}
+        keyboardVerticalOffset={KEYBOARD_OFFSET}
       >
-        {!selectedImage && (
+        {!attachment && (
           <NewStatusFooter
+            onAttachmentSelected={handleAttachmentSelected}
+            enableGifAttachments={enableGifAttachments}
             enablePhotoAttachments={enablePhotoAttachments}
-            onImageSelected={handleImageSelected}
+            giphyApiKey={giphyApiKey}
           />
         )}
       </KeyboardAvoidingView>

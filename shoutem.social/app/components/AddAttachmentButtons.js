@@ -1,66 +1,97 @@
-import React, { useCallback } from 'react';
+import React, { useState } from 'react';
 import { Alert, Keyboard as RNKeyboard } from 'react-native';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Icon, TouchableOpacity, View } from '@shoutem/ui';
+import { Icon, Text, TouchableOpacity, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 import { attachmentService } from '../services';
+import GiphyPicker from './GiphyPicker';
 
-function AddAttachmentButtons({ onAttachmentSelected, style }) {
-  const handleCameraPress = useCallback(() => {
+const AddAttachmentButtons = ({
+  onAttachmentSelected,
+  enableGifAttachments,
+  enablePhotoAttachments,
+  giphyApiKey,
+  style,
+}) => {
+  const [giphyPickerVisible, setGiphyPickerVisible] = useState(false);
+
+  const handleCameraPress = () => {
     RNKeyboard.dismiss();
 
-    return attachmentService.openCamera(handleImageSelected);
-  }, [handleImageSelected]);
+    return attachmentService.openCamera(handleAttachmentSelected);
+  };
 
-  const handleGalleryPress = useCallback(() => {
+  const handleGalleryPress = () => {
     RNKeyboard.dismiss();
 
-    return attachmentService.openImageGallery(handleImageSelected);
-  }, [handleImageSelected]);
+    return attachmentService.openImageGallery(handleAttachmentSelected);
+  };
 
-  const handleImageSelected = useCallback(
-    image => {
-      if (image.size > attachmentService.MAX_IMAGE_SIZE) {
-        Alert.alert(
-          I18n.t(ext('imageSizeWarning'), {
-            maxSize: attachmentService.MAX_IMAGE_SIZE / (1024 * 1024),
-          }),
-        );
+  const handleAttachmentSelected = attachment => {
+    setGiphyPickerVisible(false);
 
-        return null;
-      }
+    if (attachment.size > attachmentService.MAX_ATTACHMENT_SIZE) {
+      Alert.alert(
+        I18n.t(ext('imageSizeWarning'), {
+          maxSize: attachmentService.MAX_ATTACHMENT_SIZE / (1024 * 1024),
+        }),
+      );
 
-      return onAttachmentSelected({
-        uri: image.path,
-        // Only iOS has filename property. For Android, we get the last segment of file path
-        fileName:
-          image.filename ||
-          image.path.substring(image.path.lastIndexOf('/') + 1),
-      });
-    },
-    [onAttachmentSelected],
-  );
+      return null;
+    }
+
+    return onAttachmentSelected(attachment);
+  };
+
+  if (!enableGifAttachments && !enablePhotoAttachments) {
+    return null;
+  }
 
   return (
     <View style={style.attachmentsContainer}>
-      <TouchableOpacity onPress={handleCameraPress} style={style.button}>
-        <Icon name="camera" style={style.attachmentIcon} />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleGalleryPress} style={style.button}>
-        <Icon name="gallery" style={style.attachmentIcon} />
-      </TouchableOpacity>
+      {enablePhotoAttachments && (
+        <>
+          <TouchableOpacity onPress={handleCameraPress} style={style.button}>
+            <Icon name="camera" style={style.icon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleGalleryPress} style={style.button}>
+            <Icon name="gallery" style={style.icon} />
+          </TouchableOpacity>
+        </>
+      )}
+      {enableGifAttachments && (
+        <>
+          <TouchableOpacity
+            onPress={() => setGiphyPickerVisible(true)}
+            style={style.button}
+          >
+            <Text style={style.buttonText}>GIF</Text>
+          </TouchableOpacity>
+          <GiphyPicker
+            apiKey={giphyApiKey}
+            isVisible={giphyPickerVisible}
+            onGifSelected={handleAttachmentSelected}
+            onClose={() => setGiphyPickerVisible(false)}
+          />
+        </>
+      )}
     </View>
   );
-}
+};
 
 AddAttachmentButtons.propTypes = {
+  giphyApiKey: PropTypes.string.isRequired,
   onAttachmentSelected: PropTypes.func.isRequired,
+  enableGifAttachments: PropTypes.bool,
+  enablePhotoAttachments: PropTypes.bool,
   style: PropTypes.object,
 };
 
 AddAttachmentButtons.defaultProps = {
+  enableGifAttachments: true,
+  enablePhotoAttachments: true,
   style: {},
 };
 

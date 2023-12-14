@@ -8,6 +8,7 @@
       "shortcut-settings-page.title": "General settings",
       "shortcut-settings-page.form-title-status-length": "Max status length:",
       "shortcut-settings-page.form-title-attachments": "Enable photo attachments",
+      "shortcut-settings-page.form-title-gif-attachments": "Enable GIF attachments",
       "shortcut-settings-page.form-title-comments": "Enable comments",
       "shortcut-settings-page.form-title-interactions": "Enable interactions",
       "shortcut-settings-page.popoover-enable-like-text": "Enable users to like posts",
@@ -17,7 +18,8 @@
       "user-groups-table.help-text": "Select the user groups whose members will be visible to users who navigate to this screen. This only applies if 'Show all users' is disabled.",
       "user-groups-table.show-all": "Show all users",
       "Color of like button when status is liked": "Color of like button when status is liked",
-      "Social": "Social"
+      "Social": "Social",
+      "Social notifications toggle shadow color": "Social notifications toggle shadow color"
     }
   }
 }

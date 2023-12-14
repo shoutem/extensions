@@ -1,16 +1,20 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "8.0.0",
+  "version": "8.1.1",
   "platform": ">=13.0.0",
   "nativeChanges": {
     "lastVersion": "7.1.1",
-    "settingsKeys": ["chime"]
+    "settingsKeys": [
+      "chime"
+    ]
   },
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes\n* Adjusted asset linking, no user facing changes",
+  "releaseNotes": "* Increased push notification message limit to 2000 characters.",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
-  "categories": ["users"],
+  "categories": [
+    "users"
+  ],
   "dependencies": [
     "shoutem.application",
     "shoutem.firebase",
@@ -86,27 +90,37 @@
     {
       "page": "@.NotificationsPage",
       "title": "Notifications",
-      "categories": ["push"]
+      "categories": [
+        "push"
+      ]
     },
     {
       "page": "@.GroupsPage",
       "title": "Groups",
-      "categories": ["push"]
+      "categories": [
+        "push"
+      ]
     },
     {
       "page": "@.GeneralPage",
       "title": "General",
-      "categories": ["push"]
+      "categories": [
+        "push"
+      ]
     },
     {
       "page": "@.JourneysPage",
       "title": "Journeys",
-      "categories": ["push"]
+      "categories": [
+        "push"
+      ]
     },
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": ["style"],
+      "categories": [
+        "style"
+      ],
       "parameters": {
         "extensionTheme": "Theme"
       }

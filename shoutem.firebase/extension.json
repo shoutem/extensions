@@ -1,6 +1,6 @@
 {
   "name": "firebase",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "platform": ">=13.0.0",
   "type": "system",
   "skipClone": false,
@@ -9,7 +9,7 @@
     "lastVersion": "5.0.0"
   },
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
-  "releaseNotes": "* Updated native code linking to support React Native 0.72, no user facing changes",
+  "releaseNotes": "* Added option to add service account key (.json) instead of server key (deprecated)",
   "icon": "server/assets/add-firebase-image.png",
   "dependencies": [
     "shoutem.application",

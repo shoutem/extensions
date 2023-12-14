@@ -1,9 +1,7 @@
 /* eslint-disable camelcase */
-import React from 'react';
-import { LayoutAnimation } from 'react-native';
+import React, { createRef } from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { isBusy, isInitialized, isValid, next } from '@shoutem/redux-io';
@@ -21,7 +19,6 @@ import { SocialWallSkeleton } from '../components/skeleton-loading';
 import StatusView from '../components/StatusView';
 import { ext } from '../const';
 import {
-  blockUser,
   createStatus,
   likeStatus,
   loadStatuses,
@@ -33,6 +30,8 @@ import { openProfileForLegacyUser } from '../services';
 export class SocialWallScreen extends RemoteDataListScreen {
   constructor(props, context) {
     super(props, context);
+
+    this.addCommentInputRef = createRef();
 
     autoBindReact(this);
   }
@@ -49,21 +48,20 @@ export class SocialWallScreen extends RemoteDataListScreen {
     return { headerRight: this.renderSettingsButton };
   }
 
-  handleOpenCreateStatus(selectedImage = null) {
+  handleOpenCreateStatus(selectedAttachment = null) {
     const {
       navigation,
       user,
       createStatus,
-      extension: { enablePhotoAttachments, maxStatusLength = 140 },
+      extension: { maxStatusLength = 140 },
     } = this.props;
 
     const routeParams = {
       title: I18n.t(ext('newStatusTitle')),
       placeholder: I18n.t(ext('newStatusPlaceholder')),
       user,
-      enablePhotoAttachments,
       maxStatusLength,
-      selectedImage,
+      selectedAttachment,
       onStatusCreated: (status, attachment, callback) => {
         createStatus(status, attachment).then(() => {
           if (callback) {
@@ -98,9 +96,9 @@ export class SocialWallScreen extends RemoteDataListScreen {
   }
 
   openMyProfile() {
-    const { user, openProfile } = this.props;
+    const { user, openProfileForLegacyUser } = this.props;
 
-    openProfile(user);
+    openProfileForLegacyUser(user.legacyId);
   }
 
   fetchData() {
@@ -117,12 +115,7 @@ export class SocialWallScreen extends RemoteDataListScreen {
 
   renderRow(data) {
     const {
-      extension: {
-        enableComments,
-        enableInteractions,
-        enablePhotoAttachments,
-        maxStatusLength = 140,
-      },
+      extension: { maxStatusLength = 140, enableComments, enableInteractions },
     } = this.props;
 
     return (
@@ -130,8 +123,8 @@ export class SocialWallScreen extends RemoteDataListScreen {
         status={data}
         enableComments={enableComments}
         enableInteractions={enableInteractions}
-        enablePhotoAttachments={enablePhotoAttachments}
         maxStatusLength={maxStatusLength}
+        addCommentInputRef={this.addCommentInputRef}
       />
     );
   }
@@ -159,7 +152,13 @@ export class SocialWallScreen extends RemoteDataListScreen {
   }
 
   render() {
-    const { data, user, style } = this.props;
+    const {
+      data,
+      user,
+      extension: { enableGifAttachments, enablePhotoAttachments },
+      giphyApiKey,
+      style,
+    } = this.props;
 
     const profileImageUrl = user?.profile?.image || user?.profile_image_url;
 
@@ -186,8 +185,10 @@ export class SocialWallScreen extends RemoteDataListScreen {
               {I18n.t(ext('newStatusPlaceholder'))}
             </Text>
             <AddAttachmentButtons
-              onAddAttachmentCancel={_.noop}
               onAttachmentSelected={this.handleOpenCreateStatus}
+              enableGifAttachments={enableGifAttachments}
+              enablePhotoAttachments={enablePhotoAttachments}
+              giphyApiKey={giphyApiKey}
               style={style}
             />
           </TouchableOpacity>
@@ -206,6 +207,9 @@ const mapStateToProps = state => {
     data: selectors.getStatuses(state),
     statuses: selectors.getStatusesForUser(state),
     user: getUser(state),
+    giphyApiKey: selectors.getGiphyApiKey(state),
+    enableComments: extension.enableComments,
+    enableInteractions: extension.enableInteractions,
   };
 };
 
@@ -219,11 +223,10 @@ const mapDispatchToProps = dispatch => ({
       unlikeStatus,
       authenticate,
       isAuthenticated,
-      blockUser,
+      openProfileForLegacyUser,
     },
     dispatch,
   ),
-  openProfile: openProfileForLegacyUser(dispatch),
 });
 
 SocialWallScreen.propTypes = {

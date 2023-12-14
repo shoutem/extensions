@@ -1,6 +1,6 @@
-import { find } from '@shoutem/redux-io';
-import { shoutemUrls } from 'src/services';
 import { ext } from 'src/const';
+import { shoutemUrls } from 'src/services';
+import { find } from '@shoutem/redux-io';
 import { CHANNELS, CHANNELS_MODULE_TYPE } from '../const';
 
 export function enableChannelsModule(appId) {

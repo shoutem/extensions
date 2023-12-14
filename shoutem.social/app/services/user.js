@@ -1,15 +1,17 @@
 import _ from 'lodash';
 import { loadUser, openProfile } from '../redux/actions';
 
-// TODO - refactor this to be proper, thunked action
-// https://fiveminutes.jira.com/browse/SEEXT-11570
-export function openProfileForLegacyUser(dispatch) {
-  return legacyUser => {
-    // This function is called either from auth or social.
-    // If it's called from auth we use legacyId and if it's called from social we use id.
-    const id = legacyUser.legacyId || legacyUser.id;
-
-    return dispatch(loadUser(`legacyUser:${id}`)).then(user => {
+/**
+ * Social user objects are from our .NET. Given user's legacyId, fetch
+ * Mongo user object and open profile screen showing retrieved user data.
+ *
+ * @param {*} legacyUserId
+ * @returns
+ */
+export function openProfileForLegacyUser(legacyUserId) {
+  return dispatch => {
+    // Dispatch the loadUser action and handle the promise
+    return dispatch(loadUser(`legacyUser:${legacyUserId}`)).then(user => {
       const fetchedUser = user.payload.data;
       const unpackedUser = {
         id: fetchedUser.id,
@@ -19,7 +21,8 @@ export function openProfileForLegacyUser(dispatch) {
         },
       };
 
-      return dispatch(openProfile(unpackedUser));
+      // Dispatch the openProfile action with the unpackedUser
+      dispatch(openProfile(unpackedUser));
     });
   };
 }
@@ -31,11 +34,8 @@ export function adaptSocialUserForProfileScreen(user) {
     id: _.toString(id),
     legacyId: parseInt(id, 10),
     profile: {
-      firstName: _.get(user, 'first_name', ''),
-      lastName: _.get(user, 'last_name', ''),
-      nickname: _.get(user, 'screen_name', ''),
+      nick: _.get(user, 'first_name', ''),
       image: _.get(user, 'profile_image_url', ''),
     },
-    username: _.get(user, 'email', ''),
   };
 }

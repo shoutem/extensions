@@ -1,6 +1,6 @@
+import autoBind from 'auto-bind';
 import _ from 'lodash';
 import Uri from 'urijs';
-import autoBind from 'auto-bind';
 
 export default class ShoutemUrls {
   constructor() {

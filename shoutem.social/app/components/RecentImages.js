@@ -5,7 +5,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { ListView, TouchableOpacity } from '@shoutem/ui';
-import { ext } from '../const';
+import { ATTACHMENT_TYPE, ext } from '../const';
 import { attachmentService } from '../services';
 
 function RecentImages({ onImageSelected, style }) {
@@ -16,7 +16,8 @@ function RecentImages({ onImageSelected, style }) {
 
   useEffect(() => {
     getPhotosInitial();
-  }, [getPhotosInitial]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     // We need to load photos again after user returns to app
@@ -33,7 +34,8 @@ function RecentImages({ onImageSelected, style }) {
     );
 
     return appStateSubscription.remove;
-  }, [getPhotosInitial]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getPhotosInitial = useCallback(() => {
     CameraRoll.getPhotos(attachmentService.CAMERAROLL_OPTIONS)
@@ -62,7 +64,7 @@ function RecentImages({ onImageSelected, style }) {
       .then(res => {
         const imageObjects = _.map(res.edges, data => data.node.image);
 
-        setImages(prevImages => setImages([...prevImages, ...imageObjects]));
+        setImages(prevImages => [...prevImages, ...imageObjects]);
 
         setGalleryPagination({
           hasNextPage: res.page_info.has_next_page,
@@ -72,12 +74,13 @@ function RecentImages({ onImageSelected, style }) {
       .catch(() => null);
   }, [galleryPagination]);
 
-  const handleImageSelected = useCallback(
-    image => {
-      onImageSelected({ uri: image.uri }, true);
-    },
-    [onImageSelected],
-  );
+  const handleImageSelected = useCallback(image => {
+    onImageSelected(
+      { path: image.uri, size: image.fileSize, type: ATTACHMENT_TYPE.IMAGE },
+      true,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const renderRow = useCallback(
     image => (
@@ -85,7 +88,8 @@ function RecentImages({ onImageSelected, style }) {
         <Image style={style.image} source={image} />
       </TouchableOpacity>
     ),
-    [handleImageSelected, style.image],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   return (

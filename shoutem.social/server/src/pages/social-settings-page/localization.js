@@ -6,6 +6,7 @@ const FORM_TITLE_STATUS_LENGTH = `${key}.form-title-status-length`;
 const FORM_TITLE_ATTACHMENTS = `${key}.form-title-attachments`;
 const FORM_TITLE_COMMENTS = `${key}.form-title-comments`;
 const FORM_TITLE_INTERACTIONS = `${key}.form-title-interactions`;
+const FORM_TITLE_GIF_ATTACHMENTS = `${key}.form-title-gif-attachments`;
 const POPOVER_ENABLE_LIKE_TEXT = `${key}.popoover-enable-like-text`;
 const BUTTON_SAVE = `${key}.button-save`;
 
@@ -16,6 +17,7 @@ export default {
   FORM_TITLE_ATTACHMENTS,
   FORM_TITLE_COMMENTS,
   FORM_TITLE_INTERACTIONS,
+  FORM_TITLE_GIF_ATTACHMENTS,
   POPOVER_ENABLE_LIKE_TEXT,
   BUTTON_SAVE,
 };

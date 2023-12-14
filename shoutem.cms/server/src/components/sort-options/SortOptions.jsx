@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import { MenuItem } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
-import _ from 'lodash';
 import i18next from 'i18next';
-import { MenuItem } from 'react-bootstrap';
-import { FontIcon, IconLabel, Dropdown } from '@shoutem/react-web-ui';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { Dropdown, FontIcon, IconLabel } from '@shoutem/react-web-ui';
 import { SORT_OPTIONS } from '../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
@@ -51,13 +51,13 @@ export default class SortOptions extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { schema, sortOptions } = this.props;
 
     this.calculateDisplayProperties(schema, sortOptions);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { schema, sortOptions } = nextProps;
 
     this.calculateDisplayProperties(schema, sortOptions);
@@ -122,7 +122,11 @@ export default class SortOptions extends PureComponent {
   }
 
   render() {
-    const { className, disabled } = this.props;
+    const {
+      className,
+      sortFieldOptionsDisabled,
+      sortOrderOptionsDisabled,
+    } = this.props;
     const { currentField, currentOrder, displayFields } = this.state;
 
     const classes = classNames('sort-options', className);
@@ -137,7 +141,7 @@ export default class SortOptions extends PureComponent {
       <div className={classes}>
         <Dropdown
           className="sort-options__field-selector"
-          disabled={disabled}
+          disabled={sortFieldOptionsDisabled}
           dropup={false}
           onSelect={this.handleFieldChange}
         >
@@ -154,7 +158,7 @@ export default class SortOptions extends PureComponent {
         </Dropdown>
         <Dropdown
           className="sort-options__order-selector"
-          disabled={disabled}
+          disabled={sortOrderOptionsDisabled}
           onSelect={this.handleOrderingChange}
         >
           <Dropdown.Toggle>
@@ -192,12 +196,15 @@ export default class SortOptions extends PureComponent {
 
 SortOptions.propTypes = {
   schema: PropTypes.object.isRequired,
-  disabled: PropTypes.bool,
-  sortOptions: PropTypes.object,
+  sortOptions: PropTypes.object.isRequired,
   onSortOptionsChange: PropTypes.func.isRequired,
   className: PropTypes.string,
+  sortFieldOptionsDisabled: PropTypes.bool,
+  sortOrderOptionsDisabled: PropTypes.bool,
 };
 
 SortOptions.defaultProps = {
-  onSortOptionsChange: _.noop(),
+  className: '',
+  sortFieldOptionsDisabled: false,
+  sortOrderOptionsDisabled: false,
 };

@@ -12,12 +12,7 @@ import { convertToHtml } from '../services';
 function StatusContent({ attachments, enableImageFullScreen, style, text }) {
   const statusHtml = useMemo(() => convertToHtml(text), [text]);
   // Keeping shoutem_attachments[0]?.url_large for backwards compatibility
-  const userAttachment = useMemo(() => attachments[0] || {}, [attachments]);
-
-  const resolvedUserAttachment = useMemo(
-    () => ({ uri: userAttachment.url || userAttachment.url_large }),
-    [userAttachment],
-  );
+  const userAttachment = attachments[0] || {};
 
   return (
     <View styleName="md-gutter-horizontal">
@@ -25,7 +20,7 @@ function StatusContent({ attachments, enableImageFullScreen, style, text }) {
       <AttachmentResolver
         enableImagePreview={enableImageFullScreen}
         statusText={text}
-        userAttachment={resolvedUserAttachment}
+        userAttachment={{ uri: userAttachment.url || userAttachment.url_large }}
       />
     </View>
   );

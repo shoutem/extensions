@@ -1,79 +1,79 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import { Checkbox, ControlLabel } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import classNames from 'classnames';
+import { appId, getShortcut, googleApiKey, url } from 'environment';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import Uri from 'urijs';
+import { AssetManager } from '@shoutem/assets-sdk';
 import {
+  createResourceWithRelationships,
+  getMainCategoryId,
+  getReferencedSchemas,
+  renameCategory,
+  ResourceFormModal,
+  shoutemUrls,
+  updateResourceWithRelationships,
+} from '@shoutem/cms-dashboard';
+import { LoaderContainer } from '@shoutem/react-web-ui';
+import {
+  isBusy,
+  isInitialized,
+  isValid,
   shouldLoad,
   shouldRefresh,
-  isBusy,
-  isValid,
-  isInitialized,
 } from '@shoutem/redux-io';
-import { AssetManager } from '@shoutem/assets-sdk';
-import { url, appId, googleApiKey, getShortcut } from 'environment';
-import i18next from 'i18next';
-import { connect } from 'react-redux';
-import { LoaderContainer } from '@shoutem/react-web-ui';
-import { Checkbox, ControlLabel } from 'react-bootstrap';
 import {
-  getCategory,
-  getCategories,
-  getChildCategories,
-  getImporters,
-  getLanguages,
-  getRawLanguages,
-  getSchema,
-  dataInitialized,
-  getLanguageModuleStatus,
-} from '../../selectors';
-import { addSchemasToDenormalizer } from '../../denormalizer';
-import { trackEvent } from '../../providers/analytics';
-import {
-  shoutemUrls,
-  renameCategory,
-  createResourceWithRelationships,
-  updateResourceWithRelationships,
-  getMainCategoryId,
-  ResourceFormModal,
-  getReferencedSchemas,
-} from '@shoutem/cms-dashboard';
-import {
-  loadLanguageModuleStatus,
-  loadImporters,
-  loadLanguages,
-  loadCategories,
   createCategory,
+  loadCategories,
+  loadImporters,
+  loadLanguageModuleStatus,
+  loadLanguages,
   loadReferenceResources,
   loadSchema,
   updateShortcutSortOptions,
 } from '../../actions';
 import { updateShortcutSettings } from '../../builder-sdk';
 import {
+  ExportCmsButton,
   ManageContentButton,
   SortOptions,
-  ExportCmsButton,
 } from '../../components';
+import { addSchemasToDenormalizer } from '../../denormalizer';
 import AdvancedSetup from '../../fragments/advanced-setup';
 import ImporterDashboard from '../../fragments/importer-dashboard';
 import ResourceDashboard from '../../fragments/resource-dashboard';
-import { CURRENT_SCHEMA } from '../../types';
+import { trackEvent } from '../../providers/analytics';
 import {
-  resolveHasLanguages,
-  isLanguageModuleEnabled,
-  translateSchema,
-  getSortOptions,
-  getParentCategoryId,
-  getOriginParentCategoryId,
-  getVisibleCategoryIds,
-  checkStatusOfImporters,
-  getImporterCapabilities,
+  dataInitialized,
+  getCategories,
+  getCategory,
+  getChildCategories,
+  getImporters,
+  getLanguageModuleStatus,
+  getLanguages,
+  getRawLanguages,
+  getSchema,
+} from '../../selectors';
+import {
   canExportData,
-  getShortcutTitle,
+  checkStatusOfImporters,
   getCategoryName,
+  getImporterCapabilities,
+  getOriginParentCategoryId,
+  getParentCategoryId,
+  getShortcutTitle,
+  getSortOptions,
+  getVisibleCategoryIds,
+  isLanguageModuleEnabled,
   isManualSorting,
+  resolveHasLanguages,
+  translateSchema,
 } from '../../services';
+import { CURRENT_SCHEMA } from '../../types';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -258,7 +258,16 @@ export class CmsPage extends PureComponent {
 
   handleSortOptionsChange(options) {
     const { shortcut } = this.props;
-    this.props.updateSortOptions(shortcut, options);
+    const newSortOptions = { ...options };
+
+    // Manual sorting only support ascending order. Otherwise, if order was descending and user tried to
+    // sort item manually, it would not be positioned properly. E.g. if user would drop item in position #2
+    // it would end up in second to last position... reversed list.
+    if (newSortOptions.sortField === 'manual') {
+      newSortOptions.sortOrder = 'ascending';
+    }
+
+    this.props.updateSortOptions(shortcut, newSortOptions);
   }
 
   handleToggleAdditionalOptions() {
@@ -414,6 +423,7 @@ export class CmsPage extends PureComponent {
             onSortOptionsChange={this.handleSortOptionsChange}
             schema={schema}
             sortOptions={sortOptions}
+            sortOrderOptionsDisabled={sortable}
           />
           <div className="content-options">
             {canExportCmsData && (

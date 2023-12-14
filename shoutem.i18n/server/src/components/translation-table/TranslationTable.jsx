@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { Col, ControlLabel, Row } from 'react-bootstrap';
 import _ from 'lodash';
-import { Row, Col, ControlLabel } from 'react-bootstrap';
-import { isBusy, isInitialized } from '@shoutem/redux-io';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
+import { isBusy, isInitialized } from '@shoutem/redux-io';
 import { DEFAULT_LOCALE } from '../../const';
 import TranslationRow from '../translation-row';
 import './style.scss';
@@ -76,11 +76,13 @@ export default function TranslationTable({
 }
 
 TranslationTable.propTypes = {
+  translateTo: PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
   shortcuts: PropTypes.array,
-  translateTo: PropTypes.object,
-  onChange: PropTypes.func,
+  translations: PropTypes.array,
 };
 
 TranslationTable.defaultProps = {
   shortcuts: [],
+  translations: [],
 };

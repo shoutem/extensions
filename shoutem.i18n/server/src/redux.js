@@ -1,4 +1,9 @@
+import { createScopedReducer } from '@shoutem/redux-api-sdk';
 import { create } from '@shoutem/redux-io';
+import {
+  moduleName as category,
+  reducer as categoryReducer,
+} from './modules/categories';
 import { shoutemUrls } from './services';
 
 const APPLICATION_BUILD_INVALIDATE_ACTIONS =
@@ -35,3 +40,11 @@ export function navigateToUrl(url) {
     },
   };
 }
+
+// REDUCER
+export const reducer = () =>
+  createScopedReducer({
+    extension: {
+      [category]: categoryReducer,
+    },
+  });

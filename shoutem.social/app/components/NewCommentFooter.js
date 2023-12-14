@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Keyboard as RNKeyboard,
   KeyboardAvoidingView,
@@ -12,6 +6,7 @@ import {
   Platform,
   TextInput,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
@@ -19,7 +14,6 @@ import {
   Button,
   Divider,
   Icon,
-  ImageBackground,
   Keyboard,
   LoadingContainer,
   Row,
@@ -33,147 +27,178 @@ import { ext } from '../const';
 import { createComment } from '../redux';
 import AddAttachmentButtons from './AddAttachmentButtons';
 
-function NewCommentFooter({
-  enablePhotoAttachments,
-  focusAddCommentInput,
+const NewCommentFooter = ({
+  addCommentInputRef,
+  focusAddCommentInputOnMount,
   statusId,
   maxStatusLength,
+  enableGifAttachments,
+  enablePhotoAttachments,
+  giphyApiKey,
   style,
-}) {
+}) => {
   const dispatch = useDispatch();
 
-  const textInputRef = useRef(null);
-
-  const [text, setText] = useState('');
-  const [selectedImagePath, setSelectedImagePath] = useState(undefined);
+  const [commentText, setCommentText] = useState('');
   const [isPostingComment, setPostingComment] = useState(false);
+  const [attachment, setAttachment] = useState(undefined);
+  const [attachmentButtonsVisible, setAttachmentButtonsVisible] = useState(
+    false,
+  );
 
-  const postButtonDisabled = text.length === 0 && !selectedImagePath;
+  const postButtonDisabled = commentText.length === 0 && !attachment;
   const resolvedBehavior = Platform.OS === 'ios' ? 'padding' : '';
   const keyboardOffset = Keyboard.calculateKeyboardOffset();
 
   useEffect(() => {
-    if (focusAddCommentInput) {
-      textInputRef.current?.focus();
+    if (focusAddCommentInputOnMount) {
+      addCommentInputRef.current?.focus();
     }
-  }, [focusAddCommentInput]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handlePostCommentClick = useCallback(() => {
+  const handlePostCommentClick = () => {
     setPostingComment(true);
 
     dispatch(
       authenticate(() => {
-        dispatch(createComment(statusId, text, selectedImagePath))
+        dispatch(createComment(statusId, commentText, attachment))
           .then(() => handleSubmit())
           .finally(() => setPostingComment(false));
 
         RNKeyboard.dismiss();
-        setText('');
+        setCommentText('');
       }),
     );
-  }, [dispatch, statusId, text, selectedImagePath, handleSubmit]);
+  };
 
-  const handleSubmit = useCallback(() => {
-    setText('');
-    discardImage();
-  }, [discardImage]);
+  const handleSubmit = () => {
+    setCommentText('');
+    discardAttachment();
+    setAttachmentButtonsVisible(false);
+  };
 
-  const discardImage = useCallback(() => {
+  const handleAddAttachmentButtonPress = () => {
+    LayoutAnimation.easeInEaseOut();
+    setAttachmentButtonsVisible(!attachmentButtonsVisible);
+  };
+
+  const handleAttachmentSelected = attachment => {
+    LayoutAnimation.easeInEaseOut();
+    setAttachment(attachment);
+
+    addCommentInputRef.current?.focus();
+  };
+
+  const discardAttachment = () => {
     LayoutAnimation.easeInEaseOut();
 
-    setSelectedImagePath(undefined);
-  }, []);
+    setAttachment(undefined);
+  };
 
-  const handleAttachmentSelected = useCallback(attachment => {
-    LayoutAnimation.spring();
+  const photoOrGifAttachmentsEnabled =
+    enableGifAttachments || enablePhotoAttachments;
 
-    setSelectedImagePath(attachment.uri);
+  const showAddAttachmentMenuButton =
+    !attachment && photoOrGifAttachmentsEnabled;
 
-    textInputRef.current?.focus();
-  }, []);
+  const showAddAttachmentButtons =
+    photoOrGifAttachmentsEnabled && !attachment && attachmentButtonsVisible;
 
-  const attachmentSource = useMemo(() => ({ uri: selectedImagePath }), [
-    selectedImagePath,
-  ]);
-
-  const showAddAddAttachmentButtons = useMemo(
-    () => enablePhotoAttachments && !selectedImagePath,
-    [enablePhotoAttachments, selectedImagePath],
-  );
-
-  const resolvedTextInputStyle = useMemo(
-    () => [
-      style.textInput,
-      !showAddAddAttachmentButtons && style.textInputMarginLeft,
-    ],
-    [showAddAddAttachmentButtons, style.textInput, style.textInputMarginLeft],
-  );
+  const resolvedTextInputStyle = [
+    style.textInput,
+    !showAddAttachmentButtons && style.textInputMarginLeft,
+  ];
 
   return (
-    <KeyboardAvoidingView
-      behavior={resolvedBehavior}
-      keyboardVerticalOffset={keyboardOffset}
-    >
-      <Divider styleName="line" />
-      {!!selectedImagePath && (
-        <Row>
-          <ImageBackground
-            source={attachmentSource}
-            style={style.image}
-            imageStyle={style.image}
-          >
-            <View style={style.overlay}>
-              <Button styleName="tight clear" onPress={discardImage}>
-                <Icon name="close" style={style.deleteAttachmentIcon} />
+    <>
+      <KeyboardAvoidingView
+        behavior={resolvedBehavior}
+        keyboardVerticalOffset={keyboardOffset}
+      >
+        <Divider styleName="line" />
+        <View styleName="vertical v-center sm-gutter-left">
+          {attachment && (
+            <Row>
+              <TouchableOpacity
+                onPress={discardAttachment}
+                style={style.removeAttachmentButton}
+              >
+                <Icon name="close" style={style.removeAttachmentIcon} />
+              </TouchableOpacity>
+              <FastImage
+                source={{ uri: attachment.path }}
+                style={style.image}
+                imageStyle={style.image}
+                resizeMode="contain"
+              />
+            </Row>
+          )}
+          {showAddAttachmentButtons && (
+            <AddAttachmentButtons
+              onAttachmentSelected={handleAttachmentSelected}
+              enableGifAttachments={enableGifAttachments}
+              enablePhotoAttachments={enablePhotoAttachments}
+              giphyApiKey={giphyApiKey}
+            />
+          )}
+          <View styleName="paper horizontal v-center sm-gutter-left">
+            {showAddAttachmentMenuButton && (
+              <Button
+                styleName="tight clear"
+                onPress={handleAddAttachmentButtonPress}
+              >
+                <Icon
+                  name="plus-button"
+                  style={attachmentButtonsVisible ? style.plusIconRotated : {}}
+                />
               </Button>
+            )}
+            <TextInput
+              style={resolvedTextInputStyle}
+              maxLength={maxStatusLength}
+              multiline
+              onChangeText={setCommentText}
+              placeholder={I18n.t(ext('newCommentPlaceholder'))}
+              styleName="flexible"
+              value={commentText}
+              returnKeyType="next"
+              ref={addCommentInputRef}
+            />
+            <View style={style.postButtonContainer}>
+              <LoadingContainer loading={isPostingComment} animationScale={0.6}>
+                <TouchableOpacity
+                  styleName="flexible horizontal h-center"
+                  onPress={handlePostCommentClick}
+                  disabled={postButtonDisabled}
+                >
+                  <Text>{I18n.t(ext('postStatusButton'))}</Text>
+                </TouchableOpacity>
+              </LoadingContainer>
             </View>
-          </ImageBackground>
-        </Row>
-      )}
-      <View styleName="paper horizontal v-center sm-gutter-left">
-        {showAddAddAttachmentButtons && (
-          <AddAttachmentButtons
-            onAttachmentSelected={handleAttachmentSelected}
-            style={style}
-          />
-        )}
-        <TextInput
-          style={resolvedTextInputStyle}
-          maxLength={maxStatusLength}
-          multiline
-          onChangeText={setText}
-          placeholder={I18n.t(ext('newCommentPlaceholder'))}
-          styleName="flexible"
-          value={text}
-          returnKeyType="next"
-          ref={textInputRef}
-        />
-        <View style={style.postButtonContainer}>
-          <LoadingContainer loading={isPostingComment} animationScale={0.6}>
-            <TouchableOpacity
-              styleName="flexible horizontal h-center"
-              onPress={handlePostCommentClick}
-              disabled={postButtonDisabled}
-            >
-              <Text>{I18n.t(ext('postStatusButton'))}</Text>
-            </TouchableOpacity>
-          </LoadingContainer>
+          </View>
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </>
   );
-}
+};
 
 NewCommentFooter.propTypes = {
-  enablePhotoAttachments: PropTypes.bool.isRequired,
+  giphyApiKey: PropTypes.string.isRequired,
   maxStatusLength: PropTypes.number.isRequired,
   statusId: PropTypes.number.isRequired,
-  focusAddCommentInput: PropTypes.bool,
+  addCommentInputRef: PropTypes.object,
+  enableGifAttachments: PropTypes.bool,
+  enablePhotoAttachments: PropTypes.bool,
+  focusAddCommentInputOnMount: PropTypes.bool,
   style: PropTypes.object,
 };
 
 NewCommentFooter.defaultProps = {
-  focusAddCommentInput: false,
+  addCommentInputRef: { current: {} },
+  focusAddCommentInputOnMount: false,
+  enableGifAttachments: true,
+  enablePhotoAttachments: true,
   style: {},
 };
 

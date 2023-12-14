@@ -1,11 +1,13 @@
 {
   "name": "i18n",
   "title": "Language & Region",
-  "version": "4.1.0",
-  "platform": ">=7",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "version": "4.1.1",
+  "platform": ">=13.0.2",
+  "releaseNotes": "* Option to translate categories.",
   "description": "Configure the language and regional settings of your app.",
-  "dependencies": ["shoutem.application"],
+  "dependencies": [
+    "shoutem.application"
+  ],
   "icon": "server/assets/add-translation.png",
   "i18n": {
     "locale": "en",
@@ -19,6 +21,10 @@
     {
       "name": "ScreensPage",
       "type": "react-page"
+    },
+    {
+      "name": "CategoriesPage",
+      "type": "react-page"
     }
   ],
   "settingsPages": [
@@ -29,6 +35,10 @@
     {
       "page": "@.ScreensPage",
       "title": "Screens"
+    },
+    {
+      "page": "@.CategoriesPage",
+      "title": "Categories"
     }
   ],
   "shortcuts": [
