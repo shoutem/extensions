@@ -26,5 +26,15 @@
     max-width: 552px;
     margin: auto;
     padding-bottom: 12px;
+
+    .form-group-title-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .font-icon-info {
+      padding-top: 14px;
+      padding-left: 5px;
+    }
   }
 }

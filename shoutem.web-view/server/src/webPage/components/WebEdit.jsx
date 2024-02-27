@@ -13,11 +13,13 @@ export default function WebEdit({
   requireGeolocationPermission,
   hasWebsiteSettings,
   forwardAuthHeader,
+  startInLoadingState,
   onForwardAuthHeaderChange,
   onRemoveClick,
   onRequireGeolocationPermissionChange,
   onRequireCookiesPermissionChange,
   onShowNavigationToolbarChange,
+  onStartInLoadingStateChange,
 }) {
   function handleShowNavigationToolbarChange(event) {
     if (event.target) {
@@ -28,6 +30,12 @@ export default function WebEdit({
   function handleForwardAuthHeaderChange(event) {
     if (event.target) {
       onForwardAuthHeaderChange(event.target.checked);
+    }
+  }
+
+  function handleStartInLoadingStateChange(event) {
+    if (event.target) {
+      onStartInLoadingStateChange(event.target.checked);
     }
   }
 
@@ -88,6 +96,12 @@ export default function WebEdit({
             >
               {i18next.t(LOCALIZATION.FORM_FORWARD_AUTH_HEADER)}
             </Checkbox>
+            <Checkbox
+              checked={startInLoadingState}
+              onChange={handleStartInLoadingStateChange}
+            >
+              {i18next.t(LOCALIZATION.FORM_START_IN_LOADING_STATE)}
+            </Checkbox>
           </>
         )}
       </FormGroup>
@@ -101,11 +115,13 @@ WebEdit.propTypes = {
   onRequireCookiesPermissionChange: PropTypes.func.isRequired,
   onRequireGeolocationPermissionChange: PropTypes.func.isRequired,
   onShowNavigationToolbarChange: PropTypes.func.isRequired,
+  onStartInLoadingStateChange: PropTypes.func.isRequired,
   forwardAuthHeader: PropTypes.bool,
   hasWebsiteSettings: PropTypes.bool,
   requireCookiesPermission: PropTypes.bool,
   requireGeolocationPermission: PropTypes.bool,
   showNavigationToolbar: PropTypes.bool,
+  startInLoadingState: PropTypes.bool,
   url: PropTypes.string,
 };
 
@@ -115,5 +131,6 @@ WebEdit.defaultProps = {
   showNavigationToolbar: false,
   requireCookiesPermission: false,
   requireGeolocationPermission: false,
+  startInLoadingState: true,
   forwardAuthHeader: false,
 };

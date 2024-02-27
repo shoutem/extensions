@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { loadUser, openProfile } from '../redux/actions';
+import { loadUser, openOwnProfile, openProfile } from '../redux/actions';
 
 /**
  * Social user objects are from our .NET. Given user's legacyId, fetch
@@ -8,8 +8,12 @@ import { loadUser, openProfile } from '../redux/actions';
  * @param {*} legacyUserId
  * @returns
  */
-export function openProfileForLegacyUser(legacyUserId) {
+export function openProfileForLegacyUser(legacyUserId, isOwnUserProfile) {
   return dispatch => {
+    if (isOwnUserProfile) {
+      return dispatch(openOwnProfile);
+    }
+
     // Dispatch the loadUser action and handle the promise
     return dispatch(loadUser(`legacyUser:${legacyUserId}`)).then(user => {
       const fetchedUser = user.payload.data;

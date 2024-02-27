@@ -39,8 +39,9 @@ export function createNavigatonStyles(config) {
 
   const {
     backgroundImage,
-    showTitle,
     backgroundImageEnabledFirstScreen,
+    uppercaseTitle,
+    showTitle,
   } = navBarSettings;
 
   const shouldHideTitle =
@@ -65,6 +66,7 @@ export function createNavigatonStyles(config) {
   const headerTitleStyle = {
     ..._.get(headerStyle, 'title'),
     ...(shouldHideTitle && { color: 'transparent' }),
+    ...(uppercaseTitle && { textTransform: 'uppercase' }),
   };
   const headerLeftContainerStyle = _.get(headerStyle, 'leftContainer');
   const headerRightContainerStyle = _.get(headerStyle, 'rightContainer');

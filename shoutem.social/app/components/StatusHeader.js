@@ -53,7 +53,10 @@ const StatusHeader = ({
   };
 
   const handleOpenProfile = () => {
-    dispatch(openProfileForLegacyUser(userId));
+    const isOwnUserProfile =
+      ownUser?.legacyId?.toString() === userId.toString();
+
+    dispatch(openProfileForLegacyUser(userId, isOwnUserProfile));
   };
 
   const resolvedProfileImage = profileImageUrl

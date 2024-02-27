@@ -2,16 +2,20 @@ import { Platform } from 'react-native';
 import _ from 'lodash';
 import moment from 'moment';
 import { RSAA } from 'redux-api-middleware';
-import { find, invalidate } from '@shoutem/redux-io';
+import { create, find, invalidate } from '@shoutem/redux-io';
 import { getExtensionSettings } from 'shoutem.application';
 import { checkNotifications, RESULTS } from 'shoutem.permissions';
 import { ext } from '../const';
 import getEndpointProvider from '../EndpointProvider';
-import { notificationJourneys, notifications } from '../services';
+import {
+  mapNotificationToApi,
+  notificationJourneys,
+  notifications,
+} from '../services';
 import { getActiveJourneys } from './selectors';
 
 export const NOTIFICATIONS_SCHEMA = ext('notifications');
-
+export const SCHEDULED_NOTIFICATIONS_SCHEMA = ext('scheduledNotifications');
 export const GROUPS_SCHEMA = ext('groups');
 export const SELECTED_GROUPS_SCHEMA = ext('selectedGroups');
 
@@ -23,6 +27,7 @@ export const SET_NOTIFICATION_SETTINGS = ext('SET_NOTIFICATION_SETTINGS');
 export const SAVE_JOURNEY = ext('SAVE_JOURNEY');
 export const CANCEL_JOURNEY = ext('CANCEL_JOURNEY');
 
+// GROUPS
 export function fetchGroups() {
   return find(GROUPS_SCHEMA);
 }
@@ -33,6 +38,47 @@ export function fetchSelectedGroups() {
     dispatch(find(SELECTED_GROUPS_SCHEMA, '', { deviceToken }));
   };
 }
+
+// GLOBAL PUSH NOTS ( ADMIN / MODERATOR )
+
+export function fetchScheduledNotifications(params) {
+  return find(SCHEDULED_NOTIFICATIONS_SCHEMA, '', params);
+}
+
+export function createPushNotification(notification) {
+  return async dispatch => {
+    const body = mapNotificationToApi(notification);
+
+    return dispatch(
+      create({
+        schema: SCHEDULED_NOTIFICATIONS_SCHEMA,
+        request: {
+          body: JSON.stringify(body),
+        },
+      }),
+    );
+  };
+}
+
+export function editPushNotification(notificationId, notification) {
+  return async dispatch => {
+    const body = mapNotificationToApi(notification);
+
+    return dispatch(
+      create({
+        schema: SCHEDULED_NOTIFICATIONS_SCHEMA,
+        request: {
+          endpoint: `${
+            getEndpointProvider().scheduledNotifications
+          }/${notificationId}`,
+          body: JSON.stringify(body),
+        },
+      }),
+    );
+  };
+}
+
+// PUSH NOTS INBOX
 
 export function markAsRead({ id }) {
   const body = JSON.stringify({ ids: [id] });
@@ -78,6 +124,8 @@ export function setNotificationSettings(settings) {
     dispatch({ payload: settings, type: SET_NOTIFICATION_SETTINGS });
   };
 }
+
+// PUSH JOURNEYS
 
 export function triggerCanceled(triggerId) {
   return async dispatch => {
@@ -144,15 +192,20 @@ export function cancelPendingJourney(triggerId) {
       return;
     }
 
-    const firstNotification = _.head(_.sortBy(matchingActiveJourney.notifications, ['delay']));
-    const firstNotificationDate = moment(matchingActiveJourney.startedAt).add(firstNotification.delay, 'minutes');
+    const firstNotification = _.head(
+      _.sortBy(matchingActiveJourney.notifications, ['delay']),
+    );
+    const firstNotificationDate = moment(matchingActiveJourney.startedAt).add(
+      firstNotification.delay,
+      'minutes',
+    );
 
     if (moment(Date.now()).isAfter(firstNotificationDate)) {
       return;
     }
 
     dispatch(triggerCanceled(triggerId));
-  }
+  };
 }
 
 export function triggerOccured(triggerId, payload = null) {

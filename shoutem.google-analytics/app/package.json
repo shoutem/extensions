@@ -1,0 +1,17 @@
+{
+  "name": "shoutem.google-analytics",
+  "version": "3.0.1",
+  "description": "Measure and analyze activity across your app with Google analytics",
+  "scripts": {
+    "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
+  },
+  "dependencies": {
+    "@react-native-firebase/analytics": "14.11.1"
+  },
+  "peerDependencies": {
+    "@react-native-firebase/app": "14.11.1"
+  },
+  "nativeDependencies": [
+    "@react-native-firebase/analytics"
+  ]
+}

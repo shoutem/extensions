@@ -6,16 +6,8 @@ const actionsRouter: Router = express.Router();
 
 actionsRouter.param('statusId', loadStatusParam());
 
-actionsRouter.post(
-  '/like/:statusId',
-  controller.createLike(),
-);
+actionsRouter.post('/like/:statusId', controller.createLike());
 
-actionsRouter.post(
-  '/comment/:statusId',
-  controller.createComment()
-);
+actionsRouter.post('/comment/:statusId', controller.createComment());
 
-export {
-  actionsRouter,
-};
+export { actionsRouter };

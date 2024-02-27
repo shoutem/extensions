@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
@@ -16,28 +15,23 @@ import {
 } from '@shoutem/ui';
 import { images } from '../assets';
 import { ext } from '../const';
-import { openProfileForLegacyUser } from '../services';
 import { user as userShape } from './shapes';
 
 export function MemberView({
   user,
   style,
   onMenuPress,
-  showMenuIcon,
+  onMemberPress,
+  isOwnUser,
   isBlocked,
 }) {
-  const dispatch = useDispatch();
-
-  const handleOpenProfile = () =>
-    dispatch(openProfileForLegacyUser(user.legacyId));
-
   const renderLegacyUser = user => {
     // this is here because Image causes a crash if it receives null as url
     const imageUrl = _.get(user, 'profile_image_url');
     const resolvedImageUrl = imageUrl === null ? undefined : imageUrl;
 
     return (
-      <TouchableOpacity key={user.id} onPress={handleOpenProfile}>
+      <TouchableOpacity key={user.id} onPress={onMemberPress}>
         <View>
           <Row>
             <Image
@@ -68,9 +62,10 @@ export function MemberView({
   const resolvedIconName = isBlocked ? 'close' : 'more-horizontal';
 
   const handleButtonPress = () => onMenuPress(user);
+  const handleMemberItemPress = () => onMemberPress(user);
 
   return (
-    <TouchableOpacity key={user.id} onPress={handleOpenProfile}>
+    <TouchableOpacity key={user.id} onPress={handleMemberItemPress}>
       <View>
         <Row>
           <Image style={style.avatar} source={resolvedImageSource} />
@@ -81,7 +76,7 @@ export function MemberView({
             </Subtitle>
             <Caption>{_.get(user, 'profile.profession')}</Caption>
           </View>
-          {showMenuIcon && (
+          {!isOwnUser && (
             <Button onPress={handleButtonPress} styleName="clear tight">
               <Icon name={resolvedIconName} style={style.menuButton} />
             </Button>
@@ -94,17 +89,18 @@ export function MemberView({
 }
 
 MemberView.propTypes = {
-  style: PropTypes.object.isRequired,
+  isOwnUser: PropTypes.bool.isRequired,
   user: userShape.isRequired,
+  onMemberPress: PropTypes.func.isRequired,
   isBlocked: PropTypes.bool,
-  showMenuIcon: PropTypes.bool,
+  style: PropTypes.object,
   onMenuPress: PropTypes.func,
 };
 
 MemberView.defaultProps = {
   onMenuPress: _.noop,
   isBlocked: false,
-  showMenuIcon: true,
+  style: {},
 };
 
 export default connectStyle(ext('MemberView'))(MemberView);

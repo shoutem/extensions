@@ -1,0 +1,20 @@
+.app-form {
+  .form-group textarea.form-control {
+    padding: 12px;
+    resize: vertical;
+
+    &[cols='4'] {
+      height: 180px;
+    }
+
+    &[cols='2'] {
+      height: 180px;
+    }
+  }
+
+  .footer {
+    .btn {
+      margin-top: 24px;
+    }
+  }
+}

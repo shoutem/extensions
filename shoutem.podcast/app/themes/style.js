@@ -1,8 +1,6 @@
-import { Platform } from 'react-native';
-import { changeColorAlpha } from '@shoutem/theme';
+import { Dimensions, Platform } from 'react-native';
 import {
   createScopedResolver,
-  Device,
   responsiveHeight,
   responsiveWidth,
 } from '@shoutem/ui';
@@ -11,11 +9,65 @@ import { ext } from '../const';
 const resolveVariable = createScopedResolver(ext());
 
 export default () => ({
+  [`${ext('ProgressBar')}`]: {
+    container: {
+      flex: 1,
+      height: responsiveHeight(20),
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+    },
+    progressContainer: {
+      height: responsiveHeight(7),
+      width: '100%',
+      backgroundColor: resolveVariable('progressBarContainerBackgroundColor'),
+      borderColor: resolveVariable('progressBarBorderColor'),
+      // Somehow we get string value here and then Android crashes if in release mode. Add safeguard...
+      borderWidth: parseFloat(resolveVariable('progressBarBorderWidth')),
+      padding: responsiveHeight(1),
+      borderRadius: responsiveHeight(5),
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+    },
+    completeProgressBarBackground: {
+      backgroundColor: resolveVariable('completeProgressBackgroundColor'),
+    },
+    progressBar: {
+      borderRadius: responsiveHeight(5),
+      height: responsiveHeight(5),
+    },
+  },
+
+  [`${ext('PlaybackIcon')}`]: {
+    icon: {
+      color: resolveVariable('episodeProgressPlaybackIconColor'),
+      width: responsiveHeight(20),
+      marginRight: responsiveWidth(10),
+    },
+  },
+
+  [`${ext('EpisodeProgress')}`]: {
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+  },
+
   [`${ext('FeaturedEpisodeView')}`]: {
     actionButtonContainer: {
       position: 'absolute',
-      top: 5,
-      right: 5,
+      top: responsiveHeight(5),
+      right: responsiveHeight(5),
+    },
+    episodeProgressContainer: {
+      position: 'absolute',
+      bottom: responsiveHeight(10),
+      left: responsiveWidth(25),
+      right: responsiveWidth(25),
+    },
+    playbackIcon: {
+      icon: {
+        color: resolveVariable('featuredEpisodeProgressPlaybackIconColor'),
+      },
     },
   },
 
@@ -27,85 +79,77 @@ export default () => ({
         responsiveWidth(65) -
         30,
     },
+    episodeProgress: {
+      container: { paddingHorizontal: resolveVariable('mediumGutter') },
+    },
   },
 
   [`${ext('EpisodesLargeGridScreen')}`]: {
     gridRow: {
-      paddingLeft: 25,
-      paddingTop: 30,
+      paddingTop: responsiveHeight(30),
+      paddingRight: 0,
+    },
+  },
+
+  [`${ext('EpisodeDetailsScreen')}`]: {
+    container: {
+      flex: 1,
+      // Add padding because PodcastPlayer is position absolutely, so that screen content doesn't go under it.
+      // PodcastPlayer height 100 + bottom padding 15 + top padding 5 - details screen content (we want content
+      // to disappear as it touches player's border, not X pixel before)
+      paddingBottom:
+        responsiveHeight(100) +
+        resolveVariable('mediumGutter') +
+        resolveVariable('smallGutter') -
+        resolveVariable('mediumGutter'),
     },
   },
 
   [`${ext('LargeGridEpisodeView')}`]: {
-    'shoutem.ui.TouchableOpacity': {
-      'shoutem.ui.Card': {
-        'shoutem.ui.Image': {
-          height: responsiveHeight(145),
-          width: responsiveWidth(145),
-        },
-        'shoutem.ui.View': {
-          backgroundColor: 'transparent',
-          paddingHorizontal: 0,
-          paddingBottom: 0,
-          width: responsiveWidth(145),
-        },
-
-        backgroundColor: 'transparent',
-      },
+    image: {
+      alignSelf: 'center',
+      height:
+        Dimensions.get('window').width / 2 -
+        2 * resolveVariable('mediumGutter'),
+      width:
+        Dimensions.get('window').width / 2 -
+        2 * resolveVariable('mediumGutter'),
+      resizeMode: 'contain',
     },
   },
 
   [`${ext('PodcastPlayer')}`]: {
     container: {
-      paddingBottom: Device.select({
-        iPhoneX: resolveVariable('sizes.iphone.X.notchPadding'),
-        iPhoneXR: resolveVariable('sizes.iphone.XR.notchPadding'),
-        default: 0,
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      left: 0,
+      height: responsiveHeight(100),
+      backgroundColor: resolveVariable('paperColor'),
+      ...Platform.select({
+        ios: {
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.4,
+          shadowRadius: 8,
+        },
+        android: {
+          elevation: 8,
+        },
       }),
     },
-    slider: {
-      height: 30,
-      minimumTrackTintColor: changeColorAlpha(
-        resolveVariable('primaryButtonText.color'),
-        0.6,
-      ),
-      maximumTrackTintColor: changeColorAlpha(
-        resolveVariable('primaryButtonText.color'),
-        0.4,
-      ),
-      thumbTintColor: Platform.select({
-        android: resolveVariable('primaryButtonText.color'),
-      }),
-      marginVertical: 5,
+    controls: { marginTop: responsiveHeight(-20) },
+    spinnerContainer: {
+      height: responsiveHeight(45),
+      width: responsiveHeight(45),
+      justifyContent: 'center',
+      alignItems: 'center',
     },
-    skipButton: {
-      width: 30,
-      height: 30,
-      padding: 0,
+    playbackIcon: {
+      icon: { height: responsiveHeight(45), width: responsiveHeight(45) },
     },
-    skipIcon: {
-      color: resolveVariable('primaryButtonText.color'),
-    },
-    skipIconSize: 30,
-    timeDisplay: {
-      lineHeight: 15,
-      fontSize: 12,
-    },
-    playbackButtonStyle: {
-      padding: 0,
-      margin: 0,
-      marginLeft: 10,
-      backgroundColor: 'transparent',
-      borderWidth: 0,
-    },
-    playbackIconStyle: {
-      height: 45,
-      width: 45,
-      padding: 0,
-      margin: 0,
-    },
-    spinnerStyle: {
-      size: 45,
+    disabledJumpTimeIcon: {
+      container: { opacity: 0.5 },
     },
   },
 });

@@ -1,0 +1,29 @@
+.analytics-table__table-container {
+  margin-top: 50px;
+
+  caption {
+    color: #00aadf;
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  th {
+    font-size: 11px;
+    color: #888fa1;
+  }
+
+  tr:nth-child(even) {
+    background: rgba(136, 143, 161, 0.03);
+  }
+
+  td,
+  th {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  td:last-of-type,
+  th:last-of-type {
+    text-align: right;
+  }
+}

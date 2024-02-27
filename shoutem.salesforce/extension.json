@@ -1,14 +1,19 @@
 {
   "name": "salesforce",
   "title": "Salesforce MC",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Salesforce Marketing Cloud",
   "platform": ">=9.0.1",
   "nativeChanges": {
     "lastVersion": "2.0.0",
-    "settingsKeys": ["appId", "accessToken", "appEndpoint", "fcmSenderId"]
+    "settingsKeys": [
+      "appId",
+      "accessToken",
+      "appEndpoint",
+      "fcmSenderId"
+    ]
   },
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "releaseNotes": "* No user facing changes\n* Optimized swagger usage to reduce download size when building apps",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

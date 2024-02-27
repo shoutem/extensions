@@ -1,11 +1,11 @@
 {
   "name": "application",
-  "version": "6.1.1",
-  "platform": ">=9.1.0",
+  "version": "6.2.0",
+  "platform": ">=13.0.4",
   "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
+  "releaseNotes": "* Added app analytics",
   "nativeChanges": {
     "lastVersion": "4.1.4"
   },
@@ -15,7 +15,8 @@
     "shoutem.i18n",
     "shoutem.navigation",
     "shoutem.redux",
-    "shoutem.theme"
+    "shoutem.theme",
+    "shoutem.google-analytics"
   ],
   "screens": [
     {
@@ -26,6 +27,10 @@
     {
       "name": "AppSettingsPage",
       "type": "react-page"
+    },
+    {
+      "name": "AppAnalyticsPage",
+      "type": "react-page"
     }
   ],
   "settings": {
@@ -35,6 +40,13 @@
     {
       "page": "@.AppSettingsPage",
       "title": "Settings"
+    },
+    {
+      "page": "@.AppAnalyticsPage",
+      "title": "Application",
+      "categories": [
+        "analytics"
+      ]
     }
   ]
 }

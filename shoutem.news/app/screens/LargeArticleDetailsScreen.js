@@ -9,9 +9,19 @@ import { ArticleDetailsScreen } from './ArticleDetailsScreen';
 
 export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
   renderImageGalleryPage(image) {
-    const { article, shortcut } = getRouteParams(this.props);
+    const { article, disableUppercasing, shortcut } = getRouteParams(
+      this.props,
+    );
     const { screen: canonicalType, screens } = shortcut;
-    const { hideModificationTimestamp } = _.find(screens, { canonicalType });
+    const {
+      settings: { hideModificationTimestamp },
+    } = _.find(screens, {
+      canonicalType,
+    });
+
+    const resolvedTitle = disableUppercasing
+      ? article.title
+      : article.title.toUpperCase();
 
     return (
       <ImageBackground
@@ -20,7 +30,7 @@ export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
         animationName="hero"
       >
         <Tile animationName="hero">
-          <Title styleName="centered">{article.title.toUpperCase()}</Title>
+          <Title styleName="centered">{resolvedTitle}</Title>
           {/* Virtual prop makes View pass Tile color style to Caption */}
           <View styleName="horizontal md-gutter-top">
             <Caption styleName="collapsible" numberOfLines={1}>
@@ -40,18 +50,28 @@ export class LargeArticleDetailsScreen extends ArticleDetailsScreen {
 
   renderHeader() {
     const { style } = this.props;
-    const { article, shortcut } = getRouteParams(this.props);
+    const { article, disableUppercasing, shortcut } = getRouteParams(
+      this.props,
+    );
 
     if (article.image) {
       return null;
     }
 
     const { screen: canonicalType, screens } = shortcut;
-    const { hideModificationTimestamp } = _.find(screens, { canonicalType });
+    const {
+      settings: { hideModificationTimestamp },
+    } = _.find(screens, {
+      canonicalType,
+    });
+
+    const resolvedTitle = disableUppercasing
+      ? article.title
+      : article.title.toUpperCase();
 
     return (
       <View styleName="vertical h-center v-center md-gutter">
-        <Title style={style.title}>{article.title.toUpperCase()}</Title>
+        <Title style={style.title}>{resolvedTitle}</Title>
         <View styleName="horizontal md-gutter-top">
           <Caption styleName="collapsible" numberOfLines={1}>
             {article.newsAuthor}

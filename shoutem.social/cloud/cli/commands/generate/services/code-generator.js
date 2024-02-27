@@ -33,7 +33,7 @@ export const sequelizeJsTypesMap = {
 
 const getTemplateFiles = (dir, fileList = []) => {
   const files = fs.readdirSync(dir);
-  files.forEach((file) => {
+  files.forEach(file => {
     if (fs.statSync(path.join(dir, file)).isDirectory()) {
       fileList = getTemplateFiles(path.join(dir, file), fileList);
     } else {
@@ -96,15 +96,16 @@ export async function generateModule(context) {
       },`);
   }
 
-  let sequelizeAttributes = _.map(context.properties, (p) => `${p.name}:${p.type}`).join(',');
-  sequelizeAttributes = sequelizeAttributes + _.map(context.foreignKeys, (k) => `,${k.name}:INTEGER`).join();
+  let sequelizeAttributes = _.map(context.properties, p => `${p.name}:${p.type}`).join(',');
+  sequelizeAttributes = sequelizeAttributes + _.map(context.foreignKeys, k => `,${k.name}:INTEGER`).join();
 
-  const sequelizeCommand = `${path.join(__dirname, '../../../../node_modules/.bin/sequelize ')} model:generate --name ${
-    context.modelName.upperCase
-  } --attributes ${sequelizeAttributes}`;
+  const sequelizeCommand = `${path.join(__dirname, '../../../../node_modules/.bin/sequelize ')} model:generate --name ${context.modelName.upperCase
+    } --attributes ${sequelizeAttributes}`;
   execSync(sequelizeCommand);
 
-  const modelPath = `${path.join(__dirname, '../../../../src/sequelize/models/')}${context.modelName.noCase}.js`;
+  const modelPath = `${path.join(__dirname, '../../../../src/sequelize/models/')}${_.toLower(
+    context.modelName.camelCase,
+  )}.js`;
 
   // deleting sequelize model file because it is created by our own scaffolding tool
   fs.unlinkSync(modelPath);

@@ -52,6 +52,10 @@ export function openProfile(user) {
   return openInModal(userProfileExt('UserProfileScreen'), { user });
 }
 
+export function openOwnProfile() {
+  return openInModal(userProfileExt('MyProfileScreen'));
+}
+
 function resolveUsername(user) {
   return (
     _.get(user, 'profile.nick') || _.get(user, 'profile.firstName') || 'someone'

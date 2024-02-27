@@ -4,11 +4,15 @@
   margin: auto;
 
   .btn-toolbar {
-    margin-top: 48px;
+    margin-top: 30px;
     margin-bottom: 24px;
   }
 
   .form-group .control-label {
+    padding-top: 16px;
+  }
+
+  .form-group .rich-text-editor__container {
     padding-top: 16px;
   }
 

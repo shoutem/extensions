@@ -1,11 +1,11 @@
 {
   "name": "interactive-faq",
   "title": "Interactive FAQ",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "platform": ">=6",
   "icon": "./server/assets/faq.png",
   "description": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
-  "releaseNotes": "* Added theme customization options - breaking change",
+  "releaseNotes": "* Added localization support",
   "dependencies": [
     "shoutem.cms",
     "shoutem.i18n",

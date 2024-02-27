@@ -16,9 +16,13 @@ import { ext, notificationShape } from '../const';
 
 class NotificationView extends PureComponent {
   static propTypes = {
-    onPress: PropTypes.func,
-    notification: notificationShape,
+    notification: notificationShape.isRequired,
+    onPress: PropTypes.func.isRequired,
     style: PropTypes.object,
+  };
+
+  static defaultProps = {
+    style: {},
   };
 
   constructor(props) {

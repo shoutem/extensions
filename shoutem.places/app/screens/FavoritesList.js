@@ -37,6 +37,23 @@ export class FavoritesList extends FavoritesListScreen {
     };
   }
 
+  componentDidMount() {
+    const { navigation } = this.props;
+    super.componentDidMount();
+
+    navigation.setOptions({
+      ...this.getNavBarProps(),
+    });
+  }
+
+  componentDidUpdate() {
+    const { navigation } = this.props;
+
+    navigation.setOptions({
+      ...this.getNavBarProps(),
+    });
+  }
+
   shouldRenderMap(favorites) {
     const { mapView } = this.state;
 

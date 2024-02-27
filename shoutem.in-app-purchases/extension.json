@@ -1,10 +1,10 @@
 {
   "name": "in-app-purchases",
-  "version": "6.0.2",
+  "version": "6.1.2",
   "platform": ">=8",
   "title": "Subscriptions",
   "description": "Add Apple/Google Play subscriptions to your app",
-  "releaseNotes": "* Resolved a few issues with protected screens navigation",
+  "releaseNotes": "No user facing changes\n* Settings page under the hood improvements.",
   "nativeChanges": {
     "lastVersion": "6.0.0"
   },
@@ -91,6 +91,8 @@
     "subscriptionScreenImageUrl": "",
     "confirmationMessageTrial": "",
     "confirmationMessageRegular": "",
-    "allScreensProtected": false
+    "allScreensProtected": false,
+    "descriptionHtml": null,
+    "descriptionHtmlEnabled": false
   }
 }

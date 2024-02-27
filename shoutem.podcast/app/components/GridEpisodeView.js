@@ -15,6 +15,7 @@ import {
 } from '@shoutem/ui';
 import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
+import EpisodeProgress from './EpisodeProgress';
 import {
   EpisodeView,
   mapDispatchToProps,
@@ -27,7 +28,14 @@ import { FavoriteButton } from './FavoriteButton';
  */
 export class GridEpisodeView extends EpisodeView {
   render() {
-    const { enableDownload, episode, hasFavorites, isFavorited } = this.props;
+    const { isActiveTrack, isPlaying } = this.state;
+    const {
+      enableDownload,
+      episode,
+      hasFavorites,
+      isFavorited,
+      savedProgress,
+    } = this.props;
     const { downloadInProgress, timeUpdated, title } = episode;
 
     const isDownloaded = downloadInProgress !== undefined;
@@ -47,28 +55,33 @@ export class GridEpisodeView extends EpisodeView {
           <Image source={episodeImage} styleName="medium-wide placeholder" />
           <View styleName="flexible space-between clear">
             <Subtitle numberOfLines={2}>{title}</Subtitle>
-            {!!momentDate.isAfter(0) && (
-              <View styleName="horizontal md-gutter-top space-between">
+            <View styleName="horizontal md-gutter-top space-between">
+              {!!momentDate.isAfter(0) && (
                 <Caption>{momentDate.fromNow()}</Caption>
-                <View styleName="horizontal">
-                  {!!hasFavorites && (
-                    <FavoriteButton
-                      isFavorited={isFavorited}
-                      onPress={this.onFavoritePress}
-                    />
-                  )}
-                  {!!enableDownload && !downloadInProgress && (
-                    <Button
-                      onPress={handleDownloadManagerPress}
-                      styleName="clear tight"
-                    >
-                      <Icon name={iconName} />
-                    </Button>
-                  )}
-                  {!!downloadInProgress && <Spinner />}
-                </View>
+              )}
+              <View styleName="horizontal">
+                {!!hasFavorites && (
+                  <FavoriteButton
+                    isFavorited={isFavorited}
+                    onPress={this.onFavoritePress}
+                  />
+                )}
+                {!!enableDownload && !downloadInProgress && (
+                  <Button
+                    onPress={handleDownloadManagerPress}
+                    styleName="clear tight"
+                  >
+                    <Icon name={iconName} />
+                  </Button>
+                )}
+                {!!downloadInProgress && <Spinner />}
               </View>
-            )}
+            </View>
+            <EpisodeProgress
+              showPlaybackIcon={isActiveTrack}
+              isPlaying={isPlaying}
+              progressPercentage={savedProgress?.completionPercentage ?? 0}
+            />
           </View>
         </Card>
       </TouchableOpacity>

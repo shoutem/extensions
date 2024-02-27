@@ -1,11 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { Platform, Share } from 'react-native';
+import React, { useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
@@ -22,16 +15,13 @@ import {
 import { I18n } from 'shoutem.i18n';
 import {
   composeNavigationStyles,
-  getCurrentRoute,
   isTabBarNavigation,
 } from 'shoutem.navigation';
 import { images } from '../assets';
 import { RadioActionSheet } from '../components';
 import { ext } from '../const';
 import { RadioPlayer } from '../fragments';
-import { useMetadata, usePlaybackState, useTimer } from '../hooks';
-
-const DEPRECATED_RADIO_EXTENSION_SHORTCUT = 'shoutem.radio.Radio';
+import { useRadioActionSheet, useRadioFeatures, useSleepTimer } from '../hooks';
 
 export function ArtworkRadioScreen({
   navigation,
@@ -46,34 +36,6 @@ export function ArtworkRadioScreen({
 
   const isTabBar = useSelector(isTabBarNavigation);
 
-  const [clearTimer, startTimer, timeRemaining] = useTimer(60000);
-  const { isPlaying, setPlaybackState } = usePlaybackState();
-  const { artist, songName, artwork, handleMetadataChange } = useMetadata(
-    streamUrl,
-  );
-
-  const [shouldSleep, setShouldSleep] = useState(false);
-  const [shouldShowActionSheet, setShouldShowActionSheet] = useState(false);
-
-  const isTimerActive = useMemo(() => !!timeRemaining && timeRemaining > 0, [
-    timeRemaining,
-  ]);
-  const nowPlayingContainerStyle = useMemo(
-    () =>
-      isTabBar ? style.nowPlayingContainer : style.nowPlayingContainerTabBar,
-    [isTabBar, style.nowPlayingContainer, style.nowPlayingContainerTabBar],
-  );
-
-  const handleSleep = useCallback(() => setShouldSleep(false), []);
-  const handleActionSheetDismiss = useCallback(
-    () => setShouldShowActionSheet(false),
-    [],
-  );
-  const handleSleepTimerPress = useCallback(
-    () => setShouldShowActionSheet(true),
-    [],
-  );
-
   useLayoutEffect(() => {
     navigation.setOptions({
       ...composeNavigationStyles(['clear']),
@@ -81,45 +43,40 @@ export function ArtworkRadioScreen({
     });
   }, [navigation, navbarTitle]);
 
-  useEffect(() => {
-    if (timeRemaining === 0) {
-      setShouldSleep(true);
-      clearTimer();
-    }
-  }, [clearTimer, streamUrl, timeRemaining]);
+  const { nowPlayingMetadata, isActiveStream } = useRadioFeatures(
+    streamUrl,
+    streamTitle,
+  );
 
-  function shouldResetPlayer() {
-    const activeRoute = getCurrentRoute();
+  const {
+    shouldSleep,
+    isTimerActive,
+    startTimer,
+    clearTimer,
+    timeRemaining,
+    handleSleep,
+  } = useSleepTimer();
 
-    if (activeRoute) {
-      const isActiveShortcutRadio =
-        activeRoute.name === ext('Radio') ||
-        activeRoute.name === DEPRECATED_RADIO_EXTENSION_SHORTCUT;
-
-      return isActiveShortcutRadio && route.key !== activeRoute.key;
-    }
-
-    return false;
-  }
-
-  function shareStream() {
-    const shareMessage = I18n.t(ext('shareMessage'), { streamUrl });
-
-    Share.share({
-      title: I18n.t(ext('shareTitle'), { streamTitle }),
-      // URL property isn't supported on Android, so we are
-      // including it as the message for now.
-      message: Platform.OS === 'android' ? streamUrl : shareMessage,
-      streamUrl,
-    });
-  }
+  const {
+    active: actionSheetActive,
+    showActionSheet,
+    hideActionSheet,
+    shareStream,
+  } = useRadioActionSheet(streamUrl, streamTitle);
 
   if (!streamUrl) {
     return <EmptyListImage message={I18n.t(ext('missingStreamUrl'))} />;
   }
 
-  const backgroundImage = artwork?.uri ? { uri: artwork?.uri } : images.music;
-  const resolvedImage = isPlaying ? backgroundImage : images.music;
+  const resolvedImage =
+    isActiveStream && nowPlayingMetadata?.artwork
+      ? { uri: nowPlayingMetadata.artwork }
+      : images.music;
+
+  const disabledOpacityStyle = !isActiveStream ? style.disabledOpacity : {};
+  const nowPlayingContainerStyle = isTabBar
+    ? style.nowPlayingContainer
+    : style.nowPlayingContainerTabBar;
 
   return (
     <Screen style={style.screen}>
@@ -141,34 +98,32 @@ export function ArtworkRadioScreen({
             imageStyle={style.artworkCircularImage}
           >
             <RadioPlayer
-              onMetadataStateChange={handleMetadataChange}
-              onPlaybackStateChange={setPlaybackState}
+              url={streamUrl}
               onSleepTriggered={handleSleep}
               triggerSleep={shouldSleep}
-              shouldResetPlayer={shouldResetPlayer()}
-              title={streamTitle}
-              url={streamUrl}
               style={style.radioPlayer}
             />
           </ImageBackground>
           <View style={nowPlayingContainerStyle}>
-            {isPlaying && (
+            {isActiveStream && (
               <View styleName="vertical v-center h-center">
                 <Title
                   style={style.artistTitle}
                   styleName="sm-gutter-bottom"
                   numberOfLines={1}
                 >
-                  {artist}
+                  {nowPlayingMetadata?.artist}
                 </Title>
-                <Subtitle style={style.songNameTitle}>{songName}</Subtitle>
+                <Subtitle style={style.songNameTitle}>
+                  {nowPlayingMetadata?.title}
+                </Subtitle>
               </View>
             )}
           </View>
           <View style={style.smallActionRow} styleName="horizontal">
             <View style={style.smallActionContainerLeft}>
               {isTimerActive && (
-                <Button onPress={handleSleepTimerPress} styleName="clear">
+                <Button onPress={showActionSheet} styleName="clear">
                   <Icon name="sleep" fill={style.sleepTimerActiveText.color} />
                   <Title style={style.sleepTimerActiveText}>
                     {I18n.t(ext('cancelSleepTimerArtworkLayout'), {
@@ -179,12 +134,16 @@ export function ArtworkRadioScreen({
               )}
               {!isTimerActive && (
                 <Button
-                  onPress={handleSleepTimerPress}
-                  disabled={!isPlaying}
+                  onPress={showActionSheet}
+                  disabled={!isActiveStream}
                   styleName="clear tight"
                 >
-                  <Icon name="sleep" fill={style.smallActionIconFill} />
-                  <Title style={style.smallActionText}>
+                  <Icon
+                    name="sleep"
+                    fill={style.smallActionIconFill}
+                    style={disabledOpacityStyle}
+                  />
+                  <Title style={[style.smallActionText, disabledOpacityStyle]}>
                     {I18n.t(ext('sleepTimerLabel'))}
                   </Title>
                 </Button>
@@ -203,11 +162,11 @@ export function ArtworkRadioScreen({
           </View>
         </View>
         <RadioActionSheet
-          active={shouldShowActionSheet}
-          canStartTimer={isPlaying}
+          active={actionSheetActive}
+          isActiveStream={isActiveStream}
           timeRemaining={timeRemaining}
           onClearPress={clearTimer}
-          onDismiss={handleActionSheetDismiss}
+          onDismiss={hideActionSheet}
           onSharePress={shareStream}
           onTimerSet={startTimer}
           showSharing={false}

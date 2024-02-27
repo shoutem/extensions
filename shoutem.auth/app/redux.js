@@ -1,3 +1,4 @@
+import { decode as atob } from 'base-64';
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { chainReducers } from '@shoutem/redux-composers';
@@ -53,12 +54,26 @@ export const USER_FACEBOOK_CREDENTIALS_SCHEMA =
   'shoutem.auth.user-facebook-credentials';
 export const USER_APPLE_CREDENTIALS_SCHEMA =
   'shoutem.auth.user-apple-credentials';
+export const USER_ADMIN_ROLE = 'admin';
 
 export function restoreSession(session) {
   return {
     type: RESTORE_SESSION,
     payload: JSON.parse(session),
   };
+}
+
+function parseJwt(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map(c => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
+      .join(''),
+  );
+
+  return JSON.parse(jsonPayload);
 }
 
 const facebookUserInfoURL =
@@ -364,6 +379,23 @@ export function getAccessToken(state) {
   return state[ext()].access_token;
 }
 
+export function hasResourcePermission(state, resourceType, permissionType) {
+  const token = getAccessToken(state);
+
+  if (!token) {
+    return false;
+  }
+
+  const decodedToken = parseJwt(token);
+  const resourceSet = _.find(decodedToken?.acl, { resource: resourceType });
+
+  if (!resourceSet) {
+    return false;
+  }
+
+  return _.some(resourceSet?.actions, action => action === permissionType);
+}
+
 export const isUserUpdateAction = action => {
   const schema = _.get(action, 'meta.schema');
 
@@ -383,6 +415,16 @@ export function getUser(state) {
   }
 
   return getOne(user, state);
+}
+
+export function isUserAdmin(state) {
+  const user = getUser(state);
+
+  if (!user) {
+    return false;
+  }
+
+  return _.get(user, ['profile', 'appRole']) === USER_ADMIN_ROLE;
 }
 
 /**

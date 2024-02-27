@@ -1,11 +1,11 @@
 {
   "name": "cms",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "platform": ">=13.0.2",
   "type": "system",
   "title": "CMS",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",
-  "releaseNotes": "* Fixed innacurate sorting inside shortcut Content pages, in edge cases when Manually sort option was selected\n* Added CMS category translation capability",
+  "releaseNotes": "* No user facing changes\n* Dev improvements - removed unused dependencies",
   "nativeChanges": {
     "lastVersion": "6.3.0"
   },

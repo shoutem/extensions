@@ -11,7 +11,12 @@ import i18next from 'i18next';
 import _ from 'lodash';
 import path from 'path';
 import PropTypes from 'prop-types';
-import { FileUploader, FontIcon, LoaderContainer } from '@shoutem/react-web-ui';
+import {
+  FileUploader,
+  FontIcon,
+  FontIconPopover,
+  LoaderContainer,
+} from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -55,23 +60,6 @@ function validate(font, allNames) {
   const fileUrlError = resolveFileRequiredError(font.fileUrl);
   if (fileUrlError) {
     errors.fileUrl = fileUrlError;
-  }
-
-  const boldFileUrlError = resolveFileRequiredError(font.boldFileUrl);
-  if (boldFileUrlError) {
-    errors.boldFileUrl = boldFileUrlError;
-  }
-
-  const italicFileUrlError = resolveFileRequiredError(font.italicFileUrl);
-  if (italicFileUrlError) {
-    errors.italicFileUrl = italicFileUrlError;
-  }
-
-  const boldItalicFileUrlError = resolveFileRequiredError(
-    font.boldItalicFileUrl,
-  );
-  if (boldItalicFileUrlError) {
-    errors.boldItalicFileUrl = boldItalicFileUrlError;
   }
 
   return errors;
@@ -174,7 +162,7 @@ export default class FontModal extends Component {
     return `${fileName}${extName}`;
   }
 
-  renderUploader(locKey, key, fileName) {
+  renderUploader(locKey, key, fileName, showFontDisclaimer) {
     const { assetManager } = this.props;
     const { errors, showErrors, font } = this.state;
 
@@ -194,7 +182,16 @@ export default class FontModal extends Component {
 
     return (
       <FormGroup>
-        <ControlLabel>{i18next.t(locKey)}</ControlLabel>
+        <div className="form-group-title-container">
+          <ControlLabel>{i18next.t(locKey)}</ControlLabel>
+          {showFontDisclaimer && (
+            <FontIconPopover
+              message={i18next.t(LOCALIZATION.FONT_NOT_REQUIRED_DISCLAIMER)}
+            >
+              <FontIcon className="font-icon-info" name="info" size="23px" />
+            </FontIconPopover>
+          )}
+        </div>
         <FileUploader
           className="fonts-modal__uploader"
           src={src}
@@ -230,16 +227,19 @@ export default class FontModal extends Component {
           LOCALIZATION.BOLD_FONT_FORM_FILE,
           'boldFileUrl',
           `${font.name}-Bold`,
+          true,
         )}
         {this.renderUploader(
           LOCALIZATION.ITALIC_FONT_FORM_FILE,
           'italicFileUrl',
           `${font.name}-Italic`,
+          true,
         )}
         {this.renderUploader(
           LOCALIZATION.BOLD_ITALIC_FONT_FORM_FILE,
           'boldItalicFileUrl',
           `${font.name}-BoldItalic`,
+          true,
         )}
       </div>
     );

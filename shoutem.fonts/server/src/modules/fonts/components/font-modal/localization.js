@@ -12,6 +12,8 @@ const BOLD_ITALIC_FONT_FORM_FILE = 'font-modal.bold-italic-font-form-file';
 const NAME_TAKEN_ERROR = 'font-modal.name-taken-error';
 const NAME_REQUIRED_ERROR = 'font-modal.name-required-error';
 const FILE_URL_REQUIRED_ERROR = 'font-modal.file-url-required-error';
+const FONT_NOT_REQUIRED_DISCLAIMER = 'font-modal.font-not-required-disclaimer';
+
 const FILE_UPLOAD_ERROR = 'react-web-ui.file-upload-error';
 const FILE_MAX_SIZE_ERROR = 'react-web-ui.file-max-size-error';
 const FILE_REJECTED_ERROR = 'react-web-ui.file-rejected-error';
@@ -40,4 +42,5 @@ export default {
   FILE_DELETE_ERROR,
   NO_FILE_ERROR_MESSAGE,
   FILE_UPLOAD_MESSAGE,
+  FONT_NOT_REQUIRED_DISCLAIMER,
 };

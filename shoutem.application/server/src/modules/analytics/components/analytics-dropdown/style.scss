@@ -1,0 +1,23 @@
+.analytics-dropdown {
+  .dropdown-toggle {
+    // Overriding default properties
+    background-color: white;
+    border: 1px solid;
+    border-color: rgba(136, 143, 161, 0.1);
+    box-shadow: 0;
+    font-size: 14px;
+    color: #888fa1;
+  }
+
+  .open .dropdown-toggle {
+    visibility: hidden;
+  }
+
+  .caret {
+    margin-left: 12px;
+    border-width: 5px;
+    margin-right: 6px;
+    display: inline-block;
+    padding-bottom: 2px;
+  }
+}

@@ -15,7 +15,7 @@ import {
   episodeDownloadManager,
   getFileNameFromPath,
   getPathFromEpisode,
-} from '../services';
+} from '../services/episodeDownloadManager';
 import { getEpisodesFeed } from './selectors';
 
 export const FAVORITE_EPISODE = ext('FAVORITE_EPISODE');
@@ -89,10 +89,12 @@ export function fetchEpisodesFeed(
   };
 }
 
-export function favoriteEpisode(episode, enableDownload, feedUrl) {
+export function favoriteEpisode(episode, enableDownload, feedUrl, meta) {
   return {
     type: FAVORITE_EPISODE,
-    payload: { episode: { ...episode, enableDownload, feedUrl } },
+    payload: {
+      episode: { ...episode, enableDownload, feedUrl, feedMeta: meta },
+    },
   };
 }
 

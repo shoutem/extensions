@@ -144,6 +144,7 @@ export class WebViewScreen extends PureComponent {
       requireGeolocationPermission,
       url,
       webViewProps,
+      startInLoadingState,
     } = this.getSettings();
 
     const accessToken = _.get(appContext, [AUTH_EXTENSION, 'accessToken']);
@@ -171,7 +172,7 @@ export class WebViewScreen extends PureComponent {
 
     const defaultWebViewProps = {
       ref: this.webViewRef,
-      startInLoadingState: true,
+      startInLoadingState,
       onNavigationStateChange: this.onNavigationStateChange,
       source: defaultSource,
       scalesPageToFit: true,

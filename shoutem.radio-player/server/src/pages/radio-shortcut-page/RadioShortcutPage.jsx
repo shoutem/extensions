@@ -136,6 +136,9 @@ export function RadioShortcutPage({ shortcut }) {
       <LoaderContainer isLoading={!initialized}>
         <FormGroup>
           <ControlLabel>{i18next.t(LOCALIZATION.FORM_LABEL_NOTE)}</ControlLabel>
+          <ControlLabel className="metadata-note-label">
+            {i18next.t(LOCALIZATION.METADATA_NOTE)}
+          </ControlLabel>
           <SettingField
             fieldKey="streamUrl"
             errorText={errors.streamUrl}

@@ -3,8 +3,8 @@
 // You should not change it manually
 
 // screens imports
-import DownloadPage from './pages/download-page';
+import { DownloadPage } from './pages';
 
 export const pages = {
-  DownloadPage
+  DownloadPage,
 };

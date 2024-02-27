@@ -1,9 +1,9 @@
 {
   "name": "i18n",
   "title": "Language & Region",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "platform": ">=13.0.2",
-  "releaseNotes": "* Option to translate categories.",
+  "releaseNotes": "* Fixed a minor issue with translation changes in preview",
   "description": "Configure the language and regional settings of your app.",
   "dependencies": [
     "shoutem.application"

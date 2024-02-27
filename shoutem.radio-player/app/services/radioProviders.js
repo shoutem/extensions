@@ -1,10 +1,17 @@
 /* globals fetch */
 import _ from 'lodash';
 
-async function getItunesTrackArtwork({ artist, songName }) {
+async function getItunesTrackArtwork({ artist, title }) {
+  // Empty title scenario is possible in cases where we receive timed metadata that
+  // is not related to artist and song name, e.g. Ad between songs with description - "Our app is available in Stores!".
+  // In this situation, we want to skip fetching artwork.
+  if (!title) {
+    return null;
+  }
+
   // Fetch top 50 results
   const itunesEndpoint = `https://itunes.apple.com/search?term=${encodeURI(
-    songName,
+    title,
   )}&media=music`;
 
   try {
@@ -50,6 +57,7 @@ async function getRadioKingTrackArtwork({ streamUrl }) {
 
     return _.get(response, 'cover', null);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.warn('Fetching RadioKing artwork failed', error);
     return null;
   }
@@ -76,7 +84,7 @@ export function getRadioProvider(streamUrl) {
 }
 /**
  * Function for fetching track data depending on radio provider.
- * @param {{streamUrl: string, artist: string, songName: string}} radio
+ * @param {{streamUrl: string, artist: string, title: string}} radio
  * @param {string} provider
  * @returns Url for track artwork, if it exists
  */

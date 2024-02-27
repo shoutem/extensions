@@ -1,5 +1,6 @@
 import './navigation';
 import EpisodeDetailsScreen from './screens/EpisodeDetailsScreen';
+import EpisodesFeaturedImageListScreen from './screens/EpisodesFeaturedImageListScreen';
 import EpisodesGridScreen from './screens/EpisodesGridScreen';
 import EpisodesLargeGridScreen from './screens/EpisodesLargeGridScreen';
 import EpisodesListScreen from './screens/EpisodesListScreen';
@@ -17,6 +18,7 @@ const screens = {
   EpisodesLargeGridScreen,
   EpisodesListScreen,
   MyPodcastsScreen,
+  EpisodesFeaturedImageListScreen,
 };
 
 const shoutem = {
@@ -27,6 +29,8 @@ const shoutem = {
   },
 };
 
-export { appDidMount } from './app';
+export { appDidMount, appWillMount } from './app';
 
 export { reducer, screens, shoutem };
+
+export { PlaybackService } from './services';

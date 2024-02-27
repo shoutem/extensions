@@ -1,14 +1,14 @@
-export { getUsers } from './selectors';
-
 export {
-  loadUsers,
-  loadNextUsersPage,
-  loadPreviousUsersPage,
+  changePassword,
+  changeRole,
   createUser,
   deleteUser,
-  updateUser,
-  changePassword,
   downloadUserData,
+  loadNextUsersPage,
+  loadPreviousUsersPage,
+  loadUser,
+  loadUsers,
+  updateUser,
 } from './actions';
-
 export { reducer } from './reducer';
+export { getUsers } from './selectors';

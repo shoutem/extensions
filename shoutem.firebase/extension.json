@@ -1,15 +1,15 @@
 {
   "name": "firebase",
-  "version": "5.0.1",
-  "platform": ">=13.0.0",
+  "version": "5.0.2",
+  "platform": ">=13.0.4",
   "type": "system",
   "skipClone": false,
   "title": "Firebase",
   "nativeChanges": {
-    "lastVersion": "5.0.0"
+    "lastVersion": "5.0.2"
   },
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
-  "releaseNotes": "* Added option to add service account key (.json) instead of server key (deprecated)",
+  "releaseNotes": "* Minor changes related to internal configuration and google analytics support",
   "icon": "server/assets/add-firebase-image.png",
   "dependencies": [
     "shoutem.application",

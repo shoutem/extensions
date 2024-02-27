@@ -35,11 +35,13 @@ export async function downloadFont(font) {
   const fileUrls = getFileUrls(font);
   const zip = new JSZip();
 
-  const promises = _.map(fileUrls, url => downloadFileUrl(zip, url));
+  try {
+    const promises = _.map(fileUrls, url => downloadFileUrl(zip, url));
+    await Promise.all(promises);
 
-  await Promise.all(promises);
-
-  const zipBlob = await zip.generateAsync({ type: 'blob' });
-
-  saveAs(zipBlob, `${font.name}.zip`);
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    saveAs(zipBlob, `${font.name}.zip`);
+  } catch (error) {
+    console.warn('Error while downloading font file:', error);
+  }
 }

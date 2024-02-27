@@ -1,15 +1,17 @@
 {
   "name": "podcast",
-  "version": "6.0.0",
-  "platform": ">=12.1.0",
+  "version": "7.0.0",
+  "platform": ">=13.0.5",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* Updated react-native-blob-util library, no user facing changes",
+  "releaseNotes": "* Incorporated podcast episode progress tracking functionality\n* Enhanced overall playback experience for podcast episodes, as well as lock screen playback UX/UI\n* Added new featured image layout\n* Builder UX improvements",
   "nativeChanges": {
-    "lastVersion": "6.0.0"
+    "lastVersion": "7.0.0"
   },
   "icon": "server/assets/extension-icon.png",
-  "categories": ["media"],
+  "categories": [
+    "media"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -31,7 +33,9 @@
       "title": "Podcast RSS",
       "icon": "theme://podcasts.png",
       "screen": "@.EpisodesListScreen",
-      "capabilities": ["shoutem.rss.feed"],
+      "capabilities": [
+        "shoutem.rss.feed"
+      ],
       "adminPages": [
         {
           "page": "shoutem.rss.RssPage",
@@ -55,7 +59,8 @@
       "settings": {
         "defaultShortcutTitle": "Podcast RSS",
         "extensionTitle": "Podcast RSS",
-        "feedType": "Podcast"
+        "feedType": "Podcast",
+        "shortcutPageNote": "NOTE: Your RSS feed metadata must be encoded in ID3 (MP3), Icy (Shoutcast / Icecast), Vorbis Comments (Vorbis, FLAC, Opus, Speex, Theora), or QuickTime MDTA metadata (mov, qt) formats to ensure accurate display of information within the app."
       }
     },
     {
@@ -70,7 +75,19 @@
       "name": "EpisodesListScreen",
       "title": "List",
       "image": "./server/assets/screens/list.png",
-      "navigatesTo": ["@.EpisodeDetailsScreen"],
+      "navigatesTo": [
+        "@.EpisodeDetailsScreen"
+      ],
+      "settings": {
+        "listType": "list",
+        "hasFeaturedItem": false
+      }
+    },
+    {
+      "name": "EpisodesFeaturedImageListScreen",
+      "title": "List with a featured image (image from the feed metadata)",
+      "image": "./server/assets/screens/featuredlist.png",
+      "extends": "@.EpisodesListScreen",
       "settings": {
         "listType": "list",
         "hasFeaturedItem": false
@@ -153,6 +170,24 @@
     {
       "name": "DownloadPage",
       "type": "react-page"
+    }
+  ],
+  "settingsPages": [
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
+    }
+  ],
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
     }
   ]
 }

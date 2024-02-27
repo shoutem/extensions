@@ -7,7 +7,8 @@
       "errorMessage": "Something went wrong.",
       "messageReceivedAlert": "Message received",
       "messageReceivedAlertView": "View",
-      "messageReceivedAlertDismiss": "Dismiss"
+      "messageReceivedAlertDismiss": "Dismiss",
+      "noSearchResultsText": "No results found"
     }
   }
 }

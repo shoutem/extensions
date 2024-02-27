@@ -24,14 +24,16 @@ import { loadStatus } from '../redux';
 import { convertToHtml } from '../services';
 import { comment as commentShape } from './shapes';
 
-function CommentView({ comment, deleteComment, openProfile, statusId, style }) {
+function CommentView({
+  comment,
+  deleteComment,
+  onUserAvatarPress,
+  statusId,
+  style,
+}) {
   const dispatch = useDispatch();
 
-  const handleClickOnUser = () => {
-    const { user } = comment;
-
-    dispatch(openProfile(user.id ?? user.legacyId));
-  };
+  const handleUserAvatarPress = () => onUserAvatarPress(comment);
 
   const showActionSheet = () => {
     if (_.get(comment, 'deletable') !== 'yes') {
@@ -75,7 +77,10 @@ function CommentView({ comment, deleteComment, openProfile, statusId, style }) {
 
   return (
     <View style={style.container}>
-      <TouchableOpacity onPress={handleClickOnUser} style={style.profileImage}>
+      <TouchableOpacity
+        onPress={handleUserAvatarPress}
+        style={style.profileImage}
+      >
         <Image
           styleName="small-avatar placeholder"
           source={resolvedProfileAvatar}
@@ -109,8 +114,8 @@ function CommentView({ comment, deleteComment, openProfile, statusId, style }) {
 CommentView.propTypes = {
   comment: commentShape.isRequired,
   deleteComment: PropTypes.func.isRequired,
-  openProfile: PropTypes.func.isRequired,
   statusId: PropTypes.number.isRequired,
+  onUserAvatarPress: PropTypes.func.isRequired,
   style: PropTypes.object,
 };
 

@@ -10,6 +10,7 @@ export const CONFIGURATION_TAG = 'configuration';
 export const EXTENSIONS_SCHEMA = 'shoutem.core.extensions';
 export const SCREENS_SCHEMA = 'shoutem.core.screens';
 export const SHORTCUTS_SCHEMA = 'shoutem.core.shortcuts';
+export const APP_MODULES_SCHEMA = 'shoutem.core.modules';
 
 export function ext(resourceName) {
   return resourceName ? `${pack.name}.${resourceName}` : pack.name;

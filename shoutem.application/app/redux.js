@@ -12,6 +12,7 @@ import {
 import { preventStateRehydration } from 'shoutem.redux';
 import configuration from './configuration.json';
 import {
+  APP_MODULES_SCHEMA,
   APP_SUBSCRIPTION_SCHEMA,
   APP_SUBSCRIPTION_TAG,
   APPLICATION_SCHEMA,
@@ -49,6 +50,10 @@ export function fetchAppSubscriptionStatus(appId) {
 
 export function fetchConfiguration(appId) {
   return find(CONFIGURATION_SCHEMA, CONFIGURATION_TAG, { appId });
+}
+
+export function fetchAppModules(appId) {
+  return find(APP_MODULES_SCHEMA, '', { appId });
 }
 
 export function loadLocalConfiguration() {
@@ -203,6 +208,15 @@ export const getAllShortcuts = _.memoize(
   state => state[ext()].configuration.value,
 );
 
+export const hasModuleActive = createSelector(
+  [getExtensionState, (_state, moduleName) => moduleName],
+  (extension, moduleName) =>
+    !!_.find(
+      extension.modules,
+      module => module.attributes.name === moduleName,
+    ),
+);
+
 // create reducer with wanted default configuration
 const reducer = combineReducers({
   configuration: one(CONFIGURATION_SCHEMA, CONFIGURATION_TAG, undefined),
@@ -213,6 +227,7 @@ const reducer = combineReducers({
   shortcuts: storage(SHORTCUTS_SCHEMA),
   subscriptions: storage(APP_SUBSCRIPTION_SCHEMA),
   subscription: one(APP_SUBSCRIPTION_SCHEMA, APP_SUBSCRIPTION_TAG, undefined),
+  modules: storage(APP_MODULES_SCHEMA),
   hiddenShortcuts,
   appInitQueue,
 });

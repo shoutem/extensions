@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import { getAppId } from 'shoutem.application';
 import pack from './package.json';
 
+export const NOTIFICATIONS_MODULE_NAME = 'pushNotifications';
+export const NOTIFICATIONS_RESOURCE = 'shoutem.core.push-notifications';
+
 export function ext(resourceName) {
   return resourceName ? `${pack.name}.${resourceName}` : pack.name;
 }
@@ -37,12 +40,12 @@ export const notificationShape = PropTypes.shape({
   id: PropTypes.number.isRequired,
   // URL to image
   imageUrl: PropTypes.string.isRequired,
-  // Was the notification read
-  read: PropTypes.bool,
   // Summary text
   summary: PropTypes.string.isRequired,
   // Time when the notification was created
   timestamp: PropTypes.number.isRequired,
+  // Was the notification read
+  read: PropTypes.bool,
 });
 
 export const pushGroupShape = PropTypes.shape({
@@ -57,3 +60,25 @@ export const pushGroupShape = PropTypes.shape({
   // Group tag, used for subscribtions
   tag: PropTypes.string,
 });
+
+export const PUSH_NOTIFICATION_TYPE_OPTIONS = {
+  SEND_NOW: 'Send now',
+  SCHEDULED: 'Scheduled',
+};
+
+export const PUSH_NOTIFICATIONS_TARGET_OPTIONS = {
+  APP: 'App',
+  URL: 'Url',
+  SCREEN: 'Screen',
+};
+
+export const PUSH_NOTIFICATION_AUDIENCE_TYPES = {
+  BROADCAST: 'broadcast',
+  GROUP: 'group',
+};
+
+export const PUSH_NOTIFICATION_GROUP_TYPES = {
+  USER: 'user',
+  GROUP: 'group',
+  BROADCAST: 'broadcast',
+};

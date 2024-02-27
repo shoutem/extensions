@@ -535,25 +535,6 @@ export default () => ({
     likedStatusButtonText: { color: resolveVariable('featuredColor') },
   },
 
-  'shoutem.social.NotificationSettingsScreen': {
-    notificationToggle: {
-      container: {
-        shadowColor: resolveVariable('notificationsToggleShadowColor'),
-        shadowOffset: { width: 0.5, height: 0.5 },
-        shadowRadius: 5,
-        shadowOpacity: 1,
-        elevation: 3,
-      },
-      thumb: {
-        shadowColor: resolveVariable('notificationsToggleShadowColor'),
-        shadowOffset: { width: 0.5, height: 0.5 },
-        shadowRadius: 5,
-        shadowOpacity: 1,
-        elevation: 3,
-      },
-    },
-  },
-
   'shoutem.social.CommentView': {
     container: {
       flexDirection: 'row',

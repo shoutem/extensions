@@ -1,12 +1,12 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import _ from 'lodash';
-import classNames from 'classnames';
-import autoBindReact from 'auto-bind/react';
-import i18next from 'i18next';
 import { MenuItem } from 'react-bootstrap';
-import { ActionsMenu, IconLabel } from '@shoutem/react-web-ui';
+import autoBindReact from 'auto-bind/react';
+import classNames from 'classnames';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { UserGroupsDropdown } from 'src/modules/user-groups';
+import { ActionsMenu, IconLabel } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -27,6 +27,11 @@ export default class UserTableRow extends Component {
   handleChangePasswordClick() {
     const { user, onEditClick } = this.props;
     onEditClick(user, true);
+  }
+
+  handleChangeRoleClick() {
+    const { user, onChangeRoleClick } = this.props;
+    onChangeRoleClick(user);
   }
 
   handleDeleteClick() {
@@ -100,6 +105,13 @@ export default class UserTableRow extends Component {
               </MenuItem>
             )}
             {!isOwner && (
+              <MenuItem onClick={this.handleChangeRoleClick}>
+                <IconLabel iconName="moderators">
+                  {i18next.t(LOCALIZATION.BUTTON_CHANGE_ROLE_TITLE)}
+                </IconLabel>
+              </MenuItem>
+            )}
+            {!isOwner && (
               <MenuItem onClick={this.handleChangePasswordClick}>
                 <IconLabel iconName="eyeoff">
                   {i18next.t(LOCALIZATION.BUTTON_CHANGE_PASSWORD_TITLE)}
@@ -121,10 +133,11 @@ export default class UserTableRow extends Component {
 }
 
 UserTableRow.propTypes = {
-  user: PropTypes.object,
   ownerId: PropTypes.string,
-  onEditClick: PropTypes.func,
-  onDeleteClick: PropTypes.func,
-  onUserUpdate: PropTypes.func,
+  user: PropTypes.object,
   userGroups: PropTypes.array,
+  onChangeRoleClick: PropTypes.func,
+  onDeleteClick: PropTypes.func,
+  onEditClick: PropTypes.func,
+  onUserUpdate: PropTypes.func,
 };

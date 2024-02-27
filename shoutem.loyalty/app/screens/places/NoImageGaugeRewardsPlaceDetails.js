@@ -34,7 +34,7 @@ export class NoImageGaugeRewardsPlaceDetails extends PlaceDetails {
     const name = _.get(place, 'name', '');
 
     return {
-      title: name.toUpperCase(),
+      title: name,
       headerRight: this.renderRightNavBarComponent,
     };
   }

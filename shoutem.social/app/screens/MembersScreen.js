@@ -35,7 +35,7 @@ import {
   loadUsersInGroups,
 } from '../redux';
 import { getUsers, getUsersInGroups } from '../redux/selectors';
-import { openBlockActionSheet } from '../services';
+import { openBlockActionSheet, openProfileForLegacyUser } from '../services';
 
 export class MembersScreen extends RemoteDataListScreen {
   static propTypes = {
@@ -128,19 +128,29 @@ export class MembersScreen extends RemoteDataListScreen {
     );
   }
 
+  handleMemberItemPress(user) {
+    const { openProfileForLegacyUser, currentUser } = this.props;
+
+    const isOwnUser =
+      currentUser.legacyId?.toString() ===
+      (user.legacyId ?? user.id)?.toString();
+
+    openProfileForLegacyUser(user.legacyId, isOwnUser);
+  }
+
   renderRow(user) {
     const { currentUser } = this.props;
 
-    // Member user objects hold legacyId inside id property, because they're loaded from
-    // our legacy user database.
-    const isCurrentUser =
-      currentUser.legacyId?.toString() === user.id?.toString();
+    const isOwnUser =
+      currentUser.legacyId?.toString() ===
+      (user.legacyId ?? user.id)?.toString();
 
     return (
       <MemberView
         user={user}
-        showMenuIcon={!isCurrentUser}
+        isOwnUser={isOwnUser}
         onMenuPress={this.handleMenuPress}
+        onMemberPress={this.handleMemberItemPress}
       />
     );
   }
@@ -224,6 +234,7 @@ export function mapDispatchToProps(dispatch, ownProps) {
         next,
         blockUser,
         authenticate,
+        openProfileForLegacyUser,
       },
       dispatch,
     ),

@@ -15,12 +15,14 @@ const initialize = (legacyApiEndpointBase, appId) => {
 
   const groups = `${legacyApiEndpointBase}/${appId}/notifications/objects/Group?device_id=${UNIVERSAL_DEVICE_ID}`;
   const selectedGroups = `${legacyApiEndpointBase}/${appId}/firebase/objects/Topics?deviceToken={deviceToken}`;
+  const scheduledNotifications = `${legacyApiEndpointBase}/${appId}/notifications/objects/ScheduledNotification`;
 
   endpointProvider = {
     groups,
     inbox,
     markAsRead,
     selectedGroups,
+    scheduledNotifications,
   };
 };
 

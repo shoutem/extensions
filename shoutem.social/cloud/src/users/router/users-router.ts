@@ -10,6 +10,4 @@ usersRouter.use('/:userId/actions', actionsRouter);
 
 usersRouter.param('userId', loadUserParam());
 
-export {
-  usersRouter,
-};
+export { usersRouter };

@@ -5,7 +5,13 @@ import { Button, Icon, TextInput, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
-export function SearchInput({ input, onChangeText, onClearPress, style }) {
+export function SearchInput({
+  input,
+  onChangeText,
+  onClearPress,
+  style,
+  onFocus,
+}) {
   return (
     <View style={style.container}>
       <View
@@ -16,6 +22,7 @@ export function SearchInput({ input, onChangeText, onClearPress, style }) {
         <TextInput
           autoCorrect={false}
           onChangeText={onChangeText}
+          onFocus={onFocus}
           returnKeyType="done"
           value={input}
           placeholder={I18n.t(ext('searchPlaceholder'))}
@@ -41,10 +48,12 @@ SearchInput.propTypes = {
   onChangeText: PropTypes.func.isRequired,
   onClearPress: PropTypes.func.isRequired,
   style: PropTypes.object,
+  onFocus: PropTypes.func,
 };
 
 SearchInput.defaultProps = {
   style: {},
+  onFocus: undefined,
 };
 
 export default React.memo(connectStyle(ext('SearchInput'))(SearchInput));

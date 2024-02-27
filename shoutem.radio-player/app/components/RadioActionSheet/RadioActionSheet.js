@@ -44,7 +44,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 function RadioActionSheet({
   active,
-  isPlaying,
+  isActiveStream,
   showSharing,
   timeRemaining,
   onClearPress,
@@ -162,10 +162,6 @@ function RadioActionSheet({
   }
 
   function showTimerOptions() {
-    if (!isPlaying && !timeRemaining) {
-      return;
-    }
-
     LayoutAnimation.easeInEaseOut();
     setShouldShowTimerOptions(true);
   }
@@ -178,6 +174,11 @@ function RadioActionSheet({
   if (!active) {
     return null;
   }
+
+  const streamStoppedWithoutActiveTimer = !isActiveStream && !timeRemaining;
+  const resolvedSleepOptionOpacity = streamStoppedWithoutActiveTimer
+    ? style.sleepOptionDisabled
+    : style.sleepOptionEnabled;
 
   return (
     <AnimatedTouchable
@@ -224,9 +225,10 @@ function RadioActionSheet({
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                activeOpacity={isPlaying ? 0.2 : 1}
+                activeOpacity={isActiveStream ? 0.2 : 1}
                 onPress={showTimerOptions}
-                style={style.optionContainer}
+                disabled={streamStoppedWithoutActiveTimer}
+                style={[style.optionContainer, resolvedSleepOptionOpacity]}
               >
                 <Icon name="sleep" fill={style.optionText?.color} />
                 <Text style={style.optionText}>{sleepLabel}</Text>
@@ -253,13 +255,13 @@ RadioActionSheet.propTypes = {
   onDismiss: PropTypes.func.isRequired,
   onSharePress: PropTypes.func.isRequired,
   onTimerSet: PropTypes.func.isRequired,
-  isPlaying: PropTypes.bool,
+  isActiveStream: PropTypes.bool,
   style: PropTypes.object,
   timeRemaining: PropTypes.number,
 };
 
 RadioActionSheet.defaultProps = {
-  isPlaying: false,
+  isActiveStream: false,
   style: {},
   timeRemaining: null,
 };

@@ -19,6 +19,7 @@ function RssNewsFeed({ shortcut, style }) {
 
   useEffect(() => {
     dispatch(fetchNewsFeed(shortcut.id));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleViewAllPress() {

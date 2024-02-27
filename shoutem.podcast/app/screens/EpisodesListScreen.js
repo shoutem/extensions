@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { cloneStatus } from '@shoutem/redux-io';
+import { cloneStatus, getMeta } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
@@ -30,12 +30,15 @@ export class EpisodesListScreen extends RssListScreen {
 
   openEpisodeWithId(id) {
     const { data, feedUrl, enableDownload } = this.props;
+
     const episode = _.find(data, { id });
+    const meta = getMeta(data);
 
     navigateTo(ext('EpisodeDetailsScreen'), {
       id,
       feedUrl,
       enableDownload,
+      meta,
       analyticsPayload: {
         itemId: id,
         itemName: episode.title,
@@ -52,7 +55,7 @@ export class EpisodesListScreen extends RssListScreen {
   }
 
   renderFeaturedItem(episode) {
-    const { enableDownload, feedUrl } = this.props;
+    const { enableDownload, feedUrl, data } = this.props;
     const { screenSettings } = getRouteParams(this.props);
 
     return screenSettings.hasFeaturedItem && episode ? (
@@ -62,12 +65,13 @@ export class EpisodesListScreen extends RssListScreen {
         enableDownload={enableDownload}
         episode={episode}
         onPress={this.openEpisodeWithId}
+        meta={getMeta(data)}
       />
     ) : null;
   }
 
   renderRow(episode) {
-    const { enableDownload, feedUrl } = this.props;
+    const { enableDownload, feedUrl, data } = this.props;
 
     return (
       <ListEpisodeView
@@ -76,6 +80,7 @@ export class EpisodesListScreen extends RssListScreen {
         episode={episode}
         feedUrl={feedUrl}
         onPress={this.openEpisodeWithId}
+        meta={getMeta(data)}
       />
     );
   }
@@ -85,7 +90,11 @@ export const mapStateToProps = (state, ownProps) => {
   const { shortcut } = getRouteParams(ownProps);
   const shortcutId = shortcut?.id || null;
   const settings = shortcut?.settings || {};
-  const { feedUrl, enableDownload = false } = settings;
+  const {
+    feedUrl,
+    enableDownload = false,
+    isInAppContentSearchEnabled: isSearchSettingEnabled = false,
+  } = settings;
   const episodesFeed = getEpisodesFeed(state, feedUrl);
   const resolvedFeed = enableDownload
     ? getEpisodesFeedWithDownloads(state, feedUrl)
@@ -100,6 +109,7 @@ export const mapStateToProps = (state, ownProps) => {
     feedUrl,
     shortcutId,
     enableDownload,
+    isSearchSettingEnabled,
   };
 };
 

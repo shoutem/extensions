@@ -30,6 +30,7 @@ export {
   getHiddenShortcuts,
   getShortcut,
   getSubscriptionValidState,
+  hasModuleActive,
   hideShortcuts,
   isShortcutVisible,
   QUEUE_TARGET_COMPLETED,

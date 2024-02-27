@@ -8,7 +8,6 @@ import {
   Divider,
   Icon,
   Image,
-  Row,
   Spinner,
   Subtitle,
   TouchableOpacity,
@@ -16,6 +15,7 @@ import {
 } from '@shoutem/ui';
 import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
+import EpisodeProgress from './EpisodeProgress';
 import {
   EpisodeView,
   mapDispatchToProps,
@@ -28,11 +28,13 @@ import FavoriteButton from './FavoriteButton';
  */
 export class ListEpisodeView extends EpisodeView {
   render() {
+    const { isActiveTrack, isPlaying } = this.state;
     const {
       enableDownload,
       episode,
       hasFavorites,
       isFavorited,
+      savedProgress,
       style,
     } = this.props;
     const { downloadInProgress, timeUpdated, title } = episode;
@@ -51,40 +53,48 @@ export class ListEpisodeView extends EpisodeView {
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Divider styleName="line" />
-        <Row>
-          <Image
-            source={episodeImage}
-            styleName="small rounded-corners placeholder"
-          />
-          <View styleName="horizontal v-center">
-            <View styleName="space-between sm-gutter-right">
-              <Subtitle numberOfLines={2} style={style.episodeTitle}>
-                {title}
-              </Subtitle>
-              {momentDate.isAfter(0) && (
-                <Caption>{momentDate.fromNow()}</Caption>
-              )}
-            </View>
-            <View styleName="vertical">
-              {!!hasFavorites && (
-                <FavoriteButton
-                  onPress={this.onFavoritePress}
-                  isFavorited={isFavorited}
-                />
-              )}
-              {!!enableDownload && !downloadInProgress && (
-                <Button
-                  onPress={handleDownloadManagerPress}
-                  styleName="clear tight"
-                >
-                  <Icon name={iconName} />
-                </Button>
-              )}
-              {!!downloadInProgress && <Spinner />}
+        <View styleName="sm-gutter-vertical">
+          <View styleName="horizontal sm-gutter-horizontal space-between v-center">
+            <Image
+              source={episodeImage}
+              styleName="small rounded-corners placeholder"
+            />
+            <View styleName="horizontal v-center sm-gutter-bottom">
+              <View styleName="sm-gutter-right">
+                <Subtitle numberOfLines={2} style={style.episodeTitle}>
+                  {title}
+                </Subtitle>
+                {momentDate.isAfter(0) && (
+                  <Caption>{momentDate.fromNow()}</Caption>
+                )}
+              </View>
+              <>
+                {!!hasFavorites && (
+                  <FavoriteButton
+                    onPress={this.onFavoritePress}
+                    isFavorited={isFavorited}
+                  />
+                )}
+                {!!enableDownload && !downloadInProgress && (
+                  <Button
+                    onPress={handleDownloadManagerPress}
+                    styleName="clear tight"
+                  >
+                    <Icon name={iconName} />
+                  </Button>
+                )}
+                {!!downloadInProgress && <Spinner />}
+              </>
             </View>
           </View>
-          <Divider styleName="line" />
-        </Row>
+          <EpisodeProgress
+            showPlaybackIcon={isActiveTrack}
+            isPlaying={isPlaying}
+            progressPercentage={savedProgress?.completionPercentage ?? 0}
+            style={style.episodeProgress}
+          />
+        </View>
+        <Divider styleName="line" />
       </TouchableOpacity>
     );
   }

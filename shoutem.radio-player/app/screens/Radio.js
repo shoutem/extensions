@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Platform, Share } from 'react-native';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -13,18 +12,17 @@ import {
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { getCurrentRoute } from 'shoutem.navigation';
 import { RadioActionSheet, StreamMetadata } from '../components';
 import { ext } from '../const';
 import { RadioPlayer } from '../fragments';
 import {
-  useMetadata,
-  usePlaybackState,
+  useRadioActionSheet,
+  useRadioFeatures,
   useRadioNavigation,
-  useTimer,
+  useSleepTimer,
 } from '../hooks';
 
-function Radio({ navigation, route, style, renderAdBanner }) {
+const Radio = ({ navigation, route, style, renderAdBanner }) => {
   const { shortcut } = route.params;
   const {
     settings: {
@@ -36,58 +34,36 @@ function Radio({ navigation, route, style, renderAdBanner }) {
     },
   } = shortcut;
 
-  const [clearTimer, startTimer, timeRemaining] = useTimer(60000);
-  const { playbackText, isPlaying, setPlaybackState } = usePlaybackState();
-  const { artist, songName, artwork, handleMetadataChange } = useMetadata(
-    streamUrl,
-  );
+  const {
+    nowPlayingMetadata,
+    isActiveStream,
+    playbackStateText,
+  } = useRadioFeatures(streamUrl, streamTitle);
 
-  const [actionSheetActive, setActionSheetActive] = useState(false);
-  const [shouldSleep, setShouldSleep] = useState(false);
+  const {
+    shouldSleep,
+    isTimerActive,
+    startTimer,
+    clearTimer,
+    timeRemaining,
+    handleSleep,
+  } = useSleepTimer();
 
-  const isTimerActive = timeRemaining && timeRemaining > 0;
-
-  const handleSleep = useCallback(() => setShouldSleep(false), []);
-  const hideActionSheet = useCallback(() => setActionSheetActive(false), []);
+  const {
+    active: actionSheetActive,
+    showActionSheet,
+    hideActionSheet,
+    shareStream,
+  } = useRadioActionSheet(streamUrl, streamTitle);
 
   useRadioNavigation({
     navigation,
-    isPlaying,
+    isActiveStream,
     isTimerActive,
     showSharing,
-    setActionSheetActive,
+    setActionSheetActive: showActionSheet,
     style,
   });
-
-  useEffect(() => {
-    if (timeRemaining === 0) {
-      setShouldSleep(true);
-      clearTimer();
-    }
-  }, [clearTimer, timeRemaining]);
-
-  function shareStream() {
-    const shareMessage = I18n.t(ext('shareMessage'), { streamUrl });
-
-    Share.share({
-      title: I18n.t(ext('shareTitle'), { streamTitle }),
-      // URL property isn't supported on Android, so we are
-      // including it as the message for now.
-      message: Platform.OS === 'android' ? streamUrl : shareMessage,
-      streamUrl,
-    });
-  }
-
-  function shouldResetPlayer() {
-    const activeRoute = getCurrentRoute();
-
-    if (activeRoute) {
-      const isActiveShortcutRadio = activeRoute.name === ext('Radio');
-      return isActiveShortcutRadio && route.key !== activeRoute.key;
-    }
-
-    return false;
-  }
 
   if (!streamUrl) {
     return <EmptyStateView message={I18n.t(ext('missingStreamUrl'))} />;
@@ -96,7 +72,7 @@ function Radio({ navigation, route, style, renderAdBanner }) {
   return (
     <Screen>
       <ImageBackground
-        source={{ uri: backgroundImageUrl }}
+        source={backgroundImageUrl ? { uri: backgroundImageUrl } : null} // Avoid source.uri empty string warnings
         styleName="fill-parent"
       >
         <Tile styleName="clear text-centric">
@@ -105,32 +81,28 @@ function Radio({ navigation, route, style, renderAdBanner }) {
               <View style={style.adBannerContainer}>{renderAdBanner()}</View>
             )}
             <RadioPlayer
-              onMetadataStateChange={handleMetadataChange}
-              onPlaybackStateChange={setPlaybackState}
-              onSleepTriggered={handleSleep}
-              shouldResetPlayer={shouldResetPlayer()}
-              triggerSleep={shouldSleep}
-              title={streamTitle}
               url={streamUrl}
+              onSleepTriggered={handleSleep}
+              triggerSleep={shouldSleep}
             />
           </Overlay>
         </Tile>
         <View style={style.nowPlaying} styleName="vertical h-center">
-          <Text style={style.nowPlayingText}>{playbackText}</Text>
+          <Text style={style.nowPlayingText}>{playbackStateText}</Text>
           <Row style={style.clearRow}>
-            {isPlaying && (
+            {isActiveStream && (
               <StreamMetadata
-                artist={artist}
-                artwork={artwork}
+                artist={nowPlayingMetadata?.artist}
+                title={nowPlayingMetadata?.title}
+                artwork={nowPlayingMetadata?.artwork}
                 showArtwork={showArtwork}
-                songName={songName}
               />
             )}
           </Row>
         </View>
         <RadioActionSheet
           active={actionSheetActive}
-          isPlaying={isPlaying}
+          isActiveStream={isActiveStream}
           timeRemaining={isTimerActive ? timeRemaining : 0}
           onClearPress={clearTimer}
           onDismiss={hideActionSheet}
@@ -141,7 +113,7 @@ function Radio({ navigation, route, style, renderAdBanner }) {
       </ImageBackground>
     </Screen>
   );
-}
+};
 
 Radio.propTypes = {
   navigation: PropTypes.object.isRequired,

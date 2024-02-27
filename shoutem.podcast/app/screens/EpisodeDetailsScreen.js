@@ -24,8 +24,9 @@ import {
 import { I18n } from 'shoutem.i18n';
 import { closeModal, getRouteParams } from 'shoutem.navigation';
 import { ext as rssExt, getLeadImageUrl } from 'shoutem.rss';
-import { FavoriteButton, PodcastPlayer } from '../components';
+import { FavoriteButton } from '../components';
 import { ext } from '../const';
+import { PodcastPlayer } from '../fragments';
 import {
   deleteEpisode,
   downloadEpisode,
@@ -55,11 +56,18 @@ export class EpisodeDetailsScreen extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { episodeNotFound: prevEpisodeNotFound } = prevProps;
-    const { episodeNotFound } = this.props;
+    const {
+      episodeNotFound: prevEpisodeNotFound,
+      isFavorited: prevIsFavorited,
+    } = prevProps;
+    const { episodeNotFound, isFavorited, navigation } = this.props;
 
     if (!prevEpisodeNotFound && episodeNotFound) {
       this.handleItemNotFound();
+    }
+
+    if (prevIsFavorited !== isFavorited) {
+      navigation.setOptions(this.getNavBarProps());
     }
   }
 
@@ -164,11 +172,12 @@ export class EpisodeDetailsScreen extends PureComponent {
       feedUrl,
       isFavorited,
       unfavoriteEpisode,
+      meta,
     } = this.props;
 
     return isFavorited
       ? unfavoriteEpisode(episode.id)
-      : favoriteEpisode(episode, enableDownload, feedUrl);
+      : favoriteEpisode(episode, enableDownload, feedUrl, meta);
   }
 
   headerRight(props) {
@@ -255,9 +264,9 @@ export class EpisodeDetailsScreen extends PureComponent {
   }
 
   renderHeaderImage() {
-    const { episode } = this.props;
+    const { episode, meta } = this.props;
 
-    const episodeImageUrl = getLeadImageUrl(episode);
+    const episodeImageUrl = getLeadImageUrl(episode) ?? meta?.imageUrl;
 
     return (
       <Image
@@ -268,7 +277,7 @@ export class EpisodeDetailsScreen extends PureComponent {
   }
 
   renderPlayer() {
-    const { downloadedEpisode, episode, id } = this.props;
+    const { downloadedEpisode, episode, id, meta } = this.props;
 
     const audioFile = _.get(episode, 'audioAttachments.0.src');
 
@@ -276,18 +285,21 @@ export class EpisodeDetailsScreen extends PureComponent {
       return null;
     }
 
+    const episodeImageUrl = getLeadImageUrl(episode) ?? meta?.imageUrl;
+
     return (
       <PodcastPlayer
         downloadedEpisode={downloadedEpisode}
         episode={episode}
         episodeId={id}
         url={audioFile}
+        artwork={episodeImageUrl}
       />
     );
   }
 
   render() {
-    const { data, episode, episodeNotFound } = this.props;
+    const { data, episode, episodeNotFound, style } = this.props;
 
     const loading = isBusy(data) || episodeNotFound;
     const author = _.get(episode, 'author', '');
@@ -306,7 +318,7 @@ export class EpisodeDetailsScreen extends PureComponent {
           </View>
         )}
         {!loading && (
-          <View styleName="flexible">
+          <View style={style.container}>
             <ScrollView>
               {this.renderHeaderImage()}
               <View styleName="text-centric md-gutter-horizontal md-gutter-top vertical h-center">
@@ -352,12 +364,16 @@ EpisodeDetailsScreen.propTypes = {
   data: PropTypes.array,
   downloadedEpisode: PropTypes.object,
   episode: PropTypes.object,
+  meta: PropTypes.object,
+  style: PropTypes.object,
 };
 
 EpisodeDetailsScreen.defaultProps = {
   data: undefined,
   downloadedEpisode: undefined,
   episode: undefined,
+  meta: undefined,
+  style: {},
 };
 
 export function mapStateToProps(state, ownProps) {
@@ -367,6 +383,7 @@ export function mapStateToProps(state, ownProps) {
     id,
     screenSettings: { enableSharing = false },
     episode: favoritedEpisode,
+    meta,
   } = getRouteParams(ownProps);
 
   const data = getEpisodesFeed(state, feedUrl);
@@ -417,6 +434,7 @@ export function mapStateToProps(state, ownProps) {
     feedUrl,
     hasFavorites,
     isFavorited,
+    meta,
   };
 }
 

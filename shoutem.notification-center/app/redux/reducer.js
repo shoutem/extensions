@@ -30,6 +30,7 @@ import {
   MARK_AS_READ_SUCCESS,
   NOTIFICATIONS_SCHEMA,
   SAVE_JOURNEY,
+  SCHEDULED_NOTIFICATIONS_SCHEMA,
   SELECTED_GROUPS_SCHEMA,
   SET_NOTIFICATION_SETTINGS,
 } from './actions';
@@ -121,7 +122,7 @@ const processNotifications = (state, action) => {
       error: false,
       links,
       params,
-      schema: NOTIFICATIONS_SCHEMA,
+      schema: SCHEDULED_NOTIFICATIONS_SCHEMA,
     }),
   );
 
@@ -146,6 +147,26 @@ export function notificationsReducer() {
 
     if (type === MARK_AS_READ_SUCCESS) {
       return markNotificationAsRead(state, action);
+    }
+
+    return defaultResourceReducer(state, action);
+  };
+}
+
+export function scheduledNotificationsReducer() {
+  const defaultResourceReducer = resource(
+    SCHEDULED_NOTIFICATIONS_SCHEMA,
+    DEFAULT_NOTIFICATION_STATE,
+  );
+
+  return (state = DEFAULT_NOTIFICATION_STATE, action) => {
+    const { type } = action;
+
+    if (type === LOAD_SUCCESS) {
+      if (canHandleAction(action, SCHEDULED_NOTIFICATIONS_SCHEMA)) {
+        return processNotifications(state, action);
+      }
+      return state;
     }
 
     return defaultResourceReducer(state, action);
@@ -190,6 +211,7 @@ export const reducer = combineReducers({
   notificationJourneys: preventStateRehydration(notificationJourneyReducer),
   notificationSettings: notificationSettingsReducer,
   groups,
+  scheduledNotifications: scheduledNotificationsReducer(),
   manuallyUnsubscribedGroups,
   selectedGroups,
 });

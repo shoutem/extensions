@@ -10,13 +10,14 @@ import { getFavoritedEpisodes } from '../redux';
 
 export function MyPodcastsScreen({ data }) {
   function openEpisodeWithId(episode) {
-    const { enableDownload, feedUrl, id, title } = episode;
+    const { enableDownload, feedUrl, id, title, feedMeta } = episode;
 
     navigateTo(ext('EpisodeDetailsScreen'), {
       id,
       feedUrl,
       enableDownload,
       episode,
+      meta: feedMeta,
       analyticsPayload: {
         itemId: id,
         itemName: title,
@@ -25,7 +26,7 @@ export function MyPodcastsScreen({ data }) {
   }
 
   function renderRow(episode) {
-    const { enableDownload, feedUrl } = episode;
+    const { enableDownload, feedUrl, feedMeta } = episode;
 
     return (
       <ListEpisodeView
@@ -34,6 +35,7 @@ export function MyPodcastsScreen({ data }) {
         episode={episode}
         feedUrl={feedUrl}
         onPress={() => openEpisodeWithId(episode)}
+        meta={feedMeta}
       />
     );
   }
@@ -46,7 +48,7 @@ export function MyPodcastsScreen({ data }) {
 }
 
 MyPodcastsScreen.propTypes = {
-  data: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired,
 };
 
 function mapStateToProps(state) {

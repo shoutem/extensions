@@ -6,6 +6,7 @@ import {
   ControlLabel,
   FormControl,
   FormGroup,
+  HelpBlock,
 } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
@@ -26,6 +27,7 @@ export class PrivacyPolicyPage extends PureComponent {
     this.state = {
       privacyPolicyUrl: props.privacyPolicyUrl,
       loading: false,
+      error: null,
     };
   }
 
@@ -41,22 +43,30 @@ export class PrivacyPolicyPage extends PureComponent {
   handlePolicyChange(event) {
     const newText = event.target.value;
 
-    this.setState({ privacyPolicyUrl: newText });
+    this.setState({ privacyPolicyUrl: newText, error: null });
   }
 
-  handleSave() {
+  async handleSave() {
     const { extension, updateExtensionSettingsAction } = this.props;
     const { privacyPolicyUrl } = this.state;
 
-    this.setState({ loading: true });
+    this.setState({ loading: true, error: null });
 
-    updateExtensionSettingsAction(extension, { privacyPolicyUrl })
-      .then(() => this.setState({ loading: false }))
-      .catch(() => this.setState({ loading: false }));
+    try {
+      await updateExtensionSettingsAction(extension, { privacyPolicyUrl });
+      this.setState({ loading: false, error: null });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+      this.setState({
+        loading: false,
+        error: i18next.t(LOCALIZATION.ERROR_MESSAGE),
+      });
+    }
   }
 
   render() {
-    const { privacyPolicyUrl, loading } = this.state;
+    const { privacyPolicyUrl, loading, error } = this.state;
 
     const saveEnabled = this.saveEnabled();
 
@@ -80,6 +90,11 @@ export class PrivacyPolicyPage extends PureComponent {
             value={privacyPolicyUrl}
           />
         </FormGroup>
+        {error && (
+          <FormGroup validationState="error">
+            <HelpBlock>{error}</HelpBlock>
+          </FormGroup>
+        )}
         <ButtonToolbar>
           <Button
             bsStyle="primary"
@@ -97,9 +112,9 @@ export class PrivacyPolicyPage extends PureComponent {
 }
 
 PrivacyPolicyPage.propTypes = {
-  privacyPolicyUrl: PropTypes.string,
-  updateExtensionSettingsAction: PropTypes.func,
-  extension: PropTypes.object,
+  extension: PropTypes.object.isRequired,
+  privacyPolicyUrl: PropTypes.string.isRequired,
+  updateExtensionSettingsAction: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {

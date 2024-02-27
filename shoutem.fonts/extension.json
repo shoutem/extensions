@@ -1,11 +1,11 @@
 {
   "name": "fonts",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "platform": ">=13.0.0",
   "title": "Fonts",
   "description": "View and manage fonts for the app",
-  "releaseNotes": "* Adjusted font download and linking method",
-  "icon": "server/assets/add-theme-image.png",
+  "releaseNotes": "* Removed requirement for Italic, Bold and Bold-Italic versions of custom fonts",
+  "icon": "server/assets/images/add-fonts-image.png",
   "categories": [],
   "nativeChanges": {
     "lastVersion": "2.0.0",

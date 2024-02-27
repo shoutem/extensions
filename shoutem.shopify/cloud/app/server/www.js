@@ -1,6 +1,7 @@
 /* eslint no-console:0 */
-import app from './app';
+import 'dotenv/config';
 import http from 'http';
+import app from './app';
 import database from '../../src/shared/db/database';
 import { logger } from '../../src/shared/logging';
 
@@ -29,7 +30,7 @@ database
     server.listen(port);
 
     // Event listener for HTTP server "error" event.
-    server.on('error', (error) => {
+    server.on('error', error => {
       if (error.syscall !== 'listen') {
         throw error;
       }
@@ -59,6 +60,6 @@ database
       logger.info(`Listening on ${bind}`);
     });
   })
-  .catch((err) => {
+  .catch(err => {
     logger.error(err);
   });

@@ -16,6 +16,7 @@ import {
 } from '@shoutem/ui';
 import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
+import EpisodeProgress from './EpisodeProgress';
 import {
   EpisodeView,
   mapDispatchToProps,
@@ -28,11 +29,13 @@ import { FavoriteButton } from './FavoriteButton';
  */
 export class FeaturedEpisodeView extends EpisodeView {
   render() {
+    const { isActiveTrack, isPlaying } = this.state;
     const {
       enableDownload,
       episode,
       hasFavorites,
       isFavorited,
+      savedProgress,
       style,
     } = this.props;
     const { author, downloadInProgress, timeUpdated, title } = episode;
@@ -56,7 +59,7 @@ export class FeaturedEpisodeView extends EpisodeView {
             styleName="featured placeholder"
           >
             <Tile>
-              <Title>{(title || '').toUpperCase()}</Title>
+              <Title>{(title ?? '').toUpperCase()}</Title>
               <View styleName="horizontal md-gutter-top">
                 <Caption numberOfLines={1} styleName="collapsible">
                   {author}
@@ -87,6 +90,17 @@ export class FeaturedEpisodeView extends EpisodeView {
                 <Spinner style={style.downloadManagerButton} />
               )}
             </View>
+            {savedProgress?.completionPercentage > 0 && (
+              <EpisodeProgress
+                showPlaybackIcon={isActiveTrack}
+                isPlaying={isPlaying}
+                progressPercentage={savedProgress.completionPercentage}
+                style={{
+                  container: style.episodeProgressContainer,
+                  playbackIcon: style.playbackIcon,
+                }}
+              />
+            )}
           </ImageBackground>
         </View>
         <Divider styleName="line" />
