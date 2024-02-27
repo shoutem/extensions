@@ -6,6 +6,7 @@ const BUTTON_APPROVED_USER_TITLE = `${key}.button-approved-user-title`;
 const BUTTON_BLOCK_USER_TITLE = `${key}.button-block-user-title`;
 const BUTTON_EDIT_TITLE = `${key}.button-edit-title`;
 const BUTTON_CHANGE_PASSWORD_TITLE = `${key}.button-change-password-title`;
+const BUTTON_CHANGE_ROLE_TITLE = `${key}.button-change-role-title`;
 const BUTTON_DELETE_TITLE = `${key}.button-delete-title`;
 
 export default {
@@ -15,5 +16,6 @@ export default {
   BUTTON_BLOCK_USER_TITLE,
   BUTTON_EDIT_TITLE,
   BUTTON_CHANGE_PASSWORD_TITLE,
+  BUTTON_CHANGE_ROLE_TITLE,
   BUTTON_DELETE_TITLE,
 };

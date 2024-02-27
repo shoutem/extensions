@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
-import _ from 'lodash';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { TouchableOpacity, Text } from '@shoutem/ui';
+import { Text, TouchableOpacity } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
+import { QUESTIONS_SCHEMA } from '../redux';
 
 export class Question extends PureComponent {
   constructor(props) {
@@ -19,17 +21,33 @@ export class Question extends PureComponent {
     onPress(item);
   }
 
-  render() {
-    const { item, isBack, style } = this.props;
+  resolveItemName() {
+    const { item, isBack } = this.props;
 
-    const name = _.get(item, 'name') || _.get(item, 'buttonLabel');
+    if (isBack) {
+      return _.get(item, 'name');
+    }
+
+    if (item?.type === QUESTIONS_SCHEMA) {
+      return _.get(item, 'buttonLabel');
+    }
+
+    return I18n.t(`shoutem.cms.categories.${item.id}`, {
+      defaultValue: item.name,
+    });
+  }
+
+  render() {
+    const { isBack, style } = this.props;
 
     return (
       <TouchableOpacity
         onPress={this.handlePress}
         style={[style.container, isBack && style.backContainer]}
       >
-        <Text style={[style.text, isBack && style.backText]}>{name}</Text>
+        <Text style={[style.text, isBack && style.backText]}>
+          {this.resolveItemName()}
+        </Text>
       </TouchableOpacity>
     );
   }

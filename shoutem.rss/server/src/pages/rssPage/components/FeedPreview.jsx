@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { ControlLabel, FormGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { ext } from 'context';
 import i18next from 'i18next';
-import { FormGroup, ControlLabel } from 'react-bootstrap';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { FontIcon } from '@shoutem/react-web-ui';
 import { isBusy } from '@shoutem/redux-io';
-import { loadFeed } from './../reducer';
-import { getFeedItems } from './../selectors';
-import { ext } from 'context';
+import { loadFeed } from '../reducer';
+import { getFeedItems } from '../selectors';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -29,7 +30,7 @@ export class FeedPreview extends Component {
   }
 
   render() {
-    const { feedUrl, onRemoveClick, feedItems } = this.props;
+    const { feedUrl, onRemoveClick, feedItems, shortcutPageNote } = this.props;
 
     const loading = isBusy(feedItems);
 
@@ -37,6 +38,9 @@ export class FeedPreview extends Component {
       <div>
         <form>
           <FormGroup>
+            {shortcutPageNote && (
+              <ControlLabel>{shortcutPageNote}</ControlLabel>
+            )}
             <ControlLabel>
               {i18next.t(LOCALIZATION.FORM_LOADING_FROM)}
             </ControlLabel>
@@ -97,10 +101,19 @@ export class FeedPreview extends Component {
 }
 
 FeedPreview.propTypes = {
-  feedUrl: PropTypes.string,
   feedItems: PropTypes.array,
-  onRemoveClick: PropTypes.func,
+  feedUrl: PropTypes.string,
   loadFeed: PropTypes.func,
+  shortcutPageNote: PropTypes.string,
+  onRemoveClick: PropTypes.func,
+};
+
+FeedPreview.defaultProps = {
+  feedItems: [],
+  feedUrl: undefined,
+  loadFeed: _.noop,
+  shortcutPageNote: undefined,
+  onRemoveClick: _.noop,
 };
 
 function mapStateToProps(state) {

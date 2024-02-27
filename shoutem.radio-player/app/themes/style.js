@@ -1,8 +1,7 @@
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { changeColorAlpha, getSizeRelativeToReference } from '@shoutem/theme';
 import {
   createScopedResolver,
-  dimensionRelativeToIphone,
   resolveFontFamily,
   resolveFontWeight,
   responsiveHeight,
@@ -58,42 +57,52 @@ export default () => ({
   },
 
   [`${ext('RadioPlayer')}`]: {
-    playbackButton: {
-      width: dimensionRelativeToIphone(75),
-      height: dimensionRelativeToIphone(75),
-      fontSize: dimensionRelativeToIphone(36),
+    container: {
+      width: responsiveHeight(75),
+      height: responsiveHeight(75),
+      backgroundColor: resolveVariable('paperColor'),
+      fontSize: responsiveHeight(36),
       borderRadius: 200,
       padding: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     playbackMainCircle: {
-      width: dimensionRelativeToIphone(150),
-      height: dimensionRelativeToIphone(150),
+      width: responsiveHeight(150),
+      height: responsiveHeight(150),
       backgroundColor: 'rgba(255, 255, 255, 0.05)',
       borderColor: resolveVariable('primaryButtonBackgroundColor'),
       borderWidth: 2,
       position: 'absolute',
-      left: -dimensionRelativeToIphone(37.5),
-      top: -dimensionRelativeToIphone(37.5),
+      left: -responsiveHeight(37.5),
+      top: -responsiveHeight(37.5),
       borderRadius: 200,
     },
+    playbackContainer: {
+      height: responsiveHeight(75),
+      width: responsiveHeight(75),
+    },
     playbackIcon: {
-      width: dimensionRelativeToIphone(36),
-      height: dimensionRelativeToIphone(36),
-      marginLeft: getSizeRelativeToReference(
-        10,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
+      width: responsiveHeight(36),
+      height: responsiveHeight(36),
     },
     spinner: {
-      size: Platform.select({
-        ios: 0,
-        default: getSizeRelativeToReference(
-          18,
-          812,
-          resolveVariable('sizes.window.height'),
-        ),
-      }),
+      height: responsiveHeight(45),
+      width: responsiveHeight(45),
+    },
+  },
+
+  [`${ext('PlaybackAnimation')}`]: {
+    playbackMainCircle: {
+      width: responsiveHeight(150),
+      height: responsiveHeight(150),
+      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+      borderColor: resolveVariable('primaryButtonBackgroundColor'),
+      borderWidth: 2,
+      position: 'absolute',
+      left: -responsiveHeight(37.5),
+      top: -responsiveHeight(37.5),
+      borderRadius: 200,
     },
   },
 
@@ -105,12 +114,12 @@ export default () => ({
       playbackMainCircle: {
         borderColor: resolveVariable('playbackAnimatedCircleColor'),
       },
-      playbackButton: {
+      container: {
         backgroundColor: 'rgba(0,0,0,0.7)',
         borderColor: resolveVariable('playbackButtonBorderColor'),
+        borderWidth: 1,
       },
       playbackIcon: { color: resolveVariable('playbackIconColor') },
-      spinner: { color: '#bbbbbb', margin: 0 },
     },
     artistTitle: {
       color: resolveVariable('artistTitleColor'),
@@ -276,6 +285,9 @@ export default () => ({
     smallActionText: {
       color: resolveVariable('shareButtonColor'),
     },
+    disabledOpacity: {
+      opacity: 0.5,
+    },
     adBannerContainer: {
       position: 'absolute',
       top: responsiveHeight(90),
@@ -364,6 +376,12 @@ export default () => ({
         812,
         resolveVariable('sizes.window.height'),
       ),
+    },
+    sleepOptionDisabled: {
+      opacity: 0.5,
+    },
+    sleepOptionEnabled: {
+      opacity: 1,
     },
   },
 
@@ -457,16 +475,20 @@ export default () => ({
   [`${ext('StreamMetadata')}`]: {
     artworkStyle: {
       borderRadius: 5,
-      marginRight: 20,
+      marginRight: responsiveWidth(20),
     },
     songMetaContainer: {
       flex: 1,
-      padding: 10,
+      padding: responsiveHeight(10),
       borderRadius: 8,
       flexDirection: 'row',
     },
     withOverlay: {
       backgroundColor: '#00000080',
+    },
+    metaTextContainer: {
+      textWrap: true,
+      width: '70%',
     },
     alignSelfCenter: {
       flex: 1,

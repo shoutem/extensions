@@ -141,9 +141,7 @@ export class PointsCardScreen extends PureComponent {
     } = getRouteParams(this.props);
 
     const isUserACashier = _.has(cashierInfo, 'data');
-    const title = isUserACashier
-      ? I18n.t(ext('scanQrTitle')).toUpperCase()
-      : shortcutTitle;
+    const title = isUserACashier ? I18n.t(ext('scanQrTitle')) : shortcutTitle;
 
     const hideLeftButton =
       isUserACashier && (isScannerActive || isProcessingQRCodeData);

@@ -38,9 +38,14 @@ export class ArticlesScreen extends CmsListScreen {
   openArticle(article) {
     const { navigation } = this.props;
     const { shortcut } = getRouteParams(this.props);
+    const { screen: canonicalType, screens } = shortcut;
+    const { settings } = _.find(screens, { canonicalType });
+    const { disableUppercasing } = settings;
+
     const nextArticle = this.getNextArticle(article);
 
     push(navigation, ext('ArticleDetailsScreen'), {
+      disableUppercasing,
       title: article.title,
       article,
       nextArticle,
@@ -73,7 +78,7 @@ export class ArticlesScreen extends CmsListScreen {
 
   renderFeaturedItem(item) {
     const {
-      screenSettings: { hideModificationTimestamp },
+      screenSettings: { disableUppercasing, hideModificationTimestamp },
     } = getRouteParams(this.props);
 
     return item ? (
@@ -81,6 +86,7 @@ export class ArticlesScreen extends CmsListScreen {
         {...getItemProps(item)}
         onPress={this.openArticleWithId}
         hideModificationTimestamp={hideModificationTimestamp}
+        disableUppercasing={disableUppercasing}
       />
     ) : null;
   }
@@ -93,6 +99,7 @@ export class ArticlesScreen extends CmsListScreen {
       data,
       this.openArticleWithId,
       screenSettings.hideModificationTimestamp,
+      screenSettings.disableUppercasing,
     );
   }
 }

@@ -1,8 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import path from 'path';
 import rewrite from 'express-urlrewrite';
+import swaggerUi from 'swagger-ui-express';
 import { requireEnvBoolean } from '../../core/env';
 import { errorHandler, defaultNotFound, errorConfig } from '../../src/shared/error';
 import swaggerSpec from '../../src/shared/swagger';
@@ -39,10 +39,7 @@ app.use(cors());
 app.options('*', cors());
 
 app.use(favicon());
-app.get('/swagger.json', (req, res) => {
-  res.send(swaggerSpec);
-});
-app.use(express.static(path.join(__dirname, '../../public')));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const shouldLogRequests = requireEnvBoolean('LOG_API_REQUESTS', false);
 if (shouldLogRequests) app.use(logRequest());

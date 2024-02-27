@@ -34,6 +34,7 @@ export const createListItem = (
   article,
   onPress,
   hideModificationTimestamp,
+  disableUppercasing,
 ) => {
   if (!layoutItems[layoutName]) {
     // eslint-disable-next-line no-console
@@ -45,6 +46,7 @@ export const createListItem = (
   return (
     <ListItem
       {...getItemProps(article)}
+      disableUppercasing={disableUppercasing}
       hideModificationTimestamp={hideModificationTimestamp}
       onPress={onPress}
     />

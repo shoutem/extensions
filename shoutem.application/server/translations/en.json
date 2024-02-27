@@ -4,7 +4,25 @@
       "image-resizing-title": "Image resizing",
       "image-resizing-tooltip-title": "Image resizing in Shoutem",
       "image-resizing-description": "Controls the usage of image resizing service. By activating this, all of the images inside of the app will be scaled(resized) to fit the container, therefore reducing the overall image size and resulting in faster image load on the side of the mobile device. Toggle this off if you're using your own custom image resizing service, or if you're having issues with the default image resizing service.",
-      "image-resizing-toggle": "Use image resizing"
+      "image-resizing-toggle": "Use image resizing",
+      "analytics-constants.downloads": "Downloads",
+      "analytics-constants.sessions": "Sessions",
+      "analytics-constants.active-users": "Active users",
+      "analytics-constants.page-views": "Page views",
+      "analytics-constants.today": "Today",
+      "analytics-constants.yesterday": "Yesterday",
+      "analytics-constants.last_7_days": "Last 7 days",
+      "analytics-constants.last_30_days": "Last 30 days",
+      "analytics-constants.custom_range": "Custom range",
+      "analytics.custom-range-modal.title": "Select date range",
+      "analytics.custom-range-modal.from": "From",
+      "analytics.custom-range-modal.to": "To",
+      "analytics.custom-range-modal.cancel": "Cancel",
+      "analytics.custom-range-modal.apply": "Apply",
+      "analytics.custom-range-modal.range-duration-error-message": "Range duration has to be less than 2 years.",
+      "app-analytics.title": "App",
+      "app-analytics.analytics-table-title": "Top 10 most visited pages",
+      "app-analytics.error-message": "Something went wrong, please try again"
     }
   }
 }

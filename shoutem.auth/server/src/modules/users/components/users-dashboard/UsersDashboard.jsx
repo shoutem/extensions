@@ -1,20 +1,21 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { Button } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import i18next from 'i18next';
-import {
-  ConfirmModal,
-  IconLabel,
-  FontIcon,
-  FontIconPopover,
-  LoaderContainer,
-} from '@shoutem/react-web-ui';
+import PropTypes from 'prop-types';
 import { Table } from 'src/components';
 import { createOptions } from 'src/services';
-import UserTableRow from '../user-table-row';
+import {
+  ConfirmModal,
+  FontIcon,
+  FontIconPopover,
+  IconLabel,
+  LoaderContainer,
+} from '@shoutem/react-web-ui';
+import ChangeRoleModal from '../change-role-modal';
 import UserModal from '../user-modal';
+import UserTableRow from '../user-table-row';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -54,22 +55,32 @@ export default class UsersDashboard extends Component {
     super(props);
     autoBindReact(this);
 
+    this.confirmModalRef = createRef();
+    this.userModalRef = createRef();
+    this.changeRoleModalRef = createRef();
+
     this.state = {
       downloading: false,
     };
   }
 
   handleShowUserModal(user, passwordOnly) {
-    this.refs.userModal.show(user, passwordOnly);
+    this.userModalRef.current.show(user, passwordOnly);
   }
 
   handleAddUserClick() {
-    this.refs.userModal.show();
+    this.userModalRef.current.show();
+  }
+
+  handleShowChangeRoleModal(user) {
+    this.changeRoleModalRef.current.show(user);
   }
 
   handleDeleteUserClick(user) {
+    const { onUserDelete } = this.props;
     const { username, id } = user;
-    this.refs.confirm.show({
+
+    this.confirmModalRef.current.show({
       title: i18next.t(LOCALIZATION.DELETE_MODAL_USER_TITLE),
       message: i18next.t(LOCALIZATION.DELETE_USER_MODAL_MESSAGE, { username }),
       confirmLabel: i18next.t(
@@ -77,7 +88,7 @@ export default class UsersDashboard extends Component {
       ),
       confirmBsStyle: 'danger',
       abortLabel: i18next.t(LOCALIZATION.DELETE_USER_MODAL_BUTTON_ABORT_TITLE),
-      onConfirm: () => this.props.onUserDelete(id),
+      onConfirm: () => onUserDelete(id),
     });
   }
 
@@ -119,6 +130,7 @@ export default class UsersDashboard extends Component {
         key={user.id}
         onDeleteClick={this.handleDeleteUserClick}
         onEditClick={this.handleShowUserModal}
+        onChangeRoleClick={this.handleShowChangeRoleModal}
         onUserUpdate={onUserUpdate}
         ownerId={ownerId}
         user={user}
@@ -127,30 +139,19 @@ export default class UsersDashboard extends Component {
     );
   }
 
-  renderUserModal() {
+  render() {
+    const { downloading } = this.state;
     const {
-      userGroups,
+      users,
       ownerId,
+      userGroups,
+      filter,
+      onFilterChange,
+      onUserChangeRole,
       onUserUpdate,
       onUserCreate,
       onUserChangePassword,
     } = this.props;
-
-    return (
-      <UserModal
-        ref="userModal"
-        ownerId={ownerId}
-        userGroups={userGroups}
-        onUserCreate={onUserCreate}
-        onUserUpdate={onUserUpdate}
-        onUserChangePassword={onUserChangePassword}
-      />
-    );
-  }
-
-  render() {
-    const { downloading } = this.state;
-    const { users, userGroups, filter, onFilterChange } = this.props;
 
     const classes = classNames('download-button', {
       'button-cursor': !downloading,
@@ -160,7 +161,9 @@ export default class UsersDashboard extends Component {
       <div className="users-dashboard">
         <div className="users-dashboard__header">
           <div className="users-dashboard__title_container">
-            <span className="users-dashboard__title">List of users</span>
+            <span className="users-dashboard__title">
+              {i18next.t(LOCALIZATION.USERS_TABLE_TITLE)}
+            </span>
             <LoaderContainer className={classes} isLoading={downloading}>
               <FontIconPopover
                 onClick={this.handleDownloadUserData}
@@ -191,23 +194,38 @@ export default class UsersDashboard extends Component {
           onFilterChange={onFilterChange}
           renderItem={this.renderUserRow}
         />
-        <ConfirmModal className="settings-page-modal-small" ref="confirm" />
-        {this.renderUserModal()}
+        <ConfirmModal
+          className="settings-page-modal-small"
+          ref={this.confirmModalRef}
+        />
+        <ChangeRoleModal
+          ref={this.changeRoleModalRef}
+          onUserChangeRole={onUserChangeRole}
+        />
+        <UserModal
+          ref={this.userModalRef}
+          ownerId={ownerId}
+          userGroups={userGroups}
+          onUserCreate={onUserCreate}
+          onUserUpdate={onUserUpdate}
+          onUserChangePassword={onUserChangePassword}
+        />
       </div>
     );
   }
 }
 
 UsersDashboard.propTypes = {
-  appId: PropTypes.string,
-  users: PropTypes.array,
-  userGroups: PropTypes.array,
-  filter: PropTypes.object,
-  onFilterChange: PropTypes.func,
-  onUserCreate: PropTypes.func,
-  onUserUpdate: PropTypes.func,
-  onUserDelete: PropTypes.func,
-  onUserChangePassword: PropTypes.func,
-  onUserDataDownload: PropTypes.func,
-  ownerId: PropTypes.string,
+  appId: PropTypes.string.isRequired,
+  filter: PropTypes.object.isRequired,
+  ownerId: PropTypes.string.isRequired,
+  userGroups: PropTypes.array.isRequired,
+  users: PropTypes.array.isRequired,
+  onFilterChange: PropTypes.func.isRequired,
+  onUserChangePassword: PropTypes.func.isRequired,
+  onUserChangeRole: PropTypes.func.isRequired,
+  onUserCreate: PropTypes.func.isRequired,
+  onUserDataDownload: PropTypes.func.isRequired,
+  onUserDelete: PropTypes.func.isRequired,
+  onUserUpdate: PropTypes.func.isRequired,
 };

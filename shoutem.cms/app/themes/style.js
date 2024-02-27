@@ -1,5 +1,10 @@
 import { INCLUDE } from '@shoutem/theme';
-import { createScopedResolver, dimensionRelativeToIphone } from '@shoutem/ui';
+import {
+  createScopedResolver,
+  dimensionRelativeToIphone,
+  responsiveHeight,
+  responsiveWidth,
+} from '@shoutem/ui';
 import { ext } from '../const';
 
 const resolveVariable = createScopedResolver(ext());
@@ -11,7 +16,7 @@ export default () => ({
         'shoutem.navigation',
         'navBarBackground',
       ),
-      height: 44,
+      height: responsiveHeight(44),
       justifyContent: 'center',
     },
     searchBackground: {
@@ -19,18 +24,18 @@ export default () => ({
         resolveVariable('searchInputBackgroundColor') || '#F0F0F0',
       borderRadius: 4,
       marginHorizontal: resolveVariable('smallGutter'),
-      height: 30,
+      height: responsiveHeight(30),
     },
     searchIcon: {
       color: resolveVariable('searchTextColor') || '#666666',
-      marginHorizontal: 10,
-      marginVertical: 5,
+      marginHorizontal: responsiveWidth(10),
+      marginVertical: responsiveHeight(5),
     },
     searchTextInput: {
       backgroundColor:
         resolveVariable('searchInputBackgroundColor') || '#F0F0F0',
       color: resolveVariable('searchTextColor') || '#666666',
-      height: 30,
+      height: responsiveHeight(30),
       marginLeft: 0,
       paddingVertical: 0,
       paddingLeft: 0,
@@ -40,8 +45,8 @@ export default () => ({
         resolveVariable('sizes.window.width') - dimensionRelativeToIphone(110),
     },
     clearSearchContainer: {
-      height: 30,
-      width: 44,
+      height: responsiveHeight(30),
+      width: responsiveWidth(44),
     },
     clearSearchIcon: {
       color: resolveVariable('searchTextColor') || '#666666',
@@ -53,7 +58,7 @@ export default () => ({
       borderColor: 'rgba(68,79,108,0.2)',
       borderRadius: 4,
       borderWidth: 1,
-      marginBottom: 8,
+      marginBottom: responsiveHeight(8),
     },
     imageContainer: { height: dimensionRelativeToIphone(224) },
     textContainer: {
@@ -70,8 +75,8 @@ export default () => ({
     description: {
       fontSize: 14,
       lineHeight: 16,
-      paddingBottom: 16,
-      paddingTop: 4,
+      paddingBottom: responsiveHeight(16),
+      paddingTop: responsiveHeight(4),
     },
   },
 
@@ -79,7 +84,7 @@ export default () => ({
     [INCLUDE]: ['shoutem.cms.FullGridRowItemView'],
     container: {
       ...['shoutem.cms.FullGridRowItemView'],
-      marginHorizontal: 4,
+      marginHorizontal: responsiveWidth(4),
     },
     imageContainer: { height: dimensionRelativeToIphone(110) },
     textContainer: {

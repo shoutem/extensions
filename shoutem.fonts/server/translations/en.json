@@ -26,6 +26,7 @@
       "font-modal.name-taken-error": "Name already exist",
       "font-modal.name-required-error": "Name is required",
       "font-modal.file-url-required-error": "Font file is required",
+      "font-modal.font-not-required-disclaimer": "This font is not required. If you don't upload it, the system font will be used for it.",
       "react-web-ui.file-upload-error": "File upload failed.",
       "react-web-ui.file-max-size-error": "Max allowed file size is {{maxFileSize}}MB!",
       "react-web-ui.file-rejected-error": "File rejected",

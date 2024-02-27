@@ -1,5 +1,5 @@
-import { getCollection } from '@shoutem/redux-io';
 import ext from 'src/const';
+import { getCollection } from '@shoutem/redux-io';
 import { moduleName } from '../const';
 
 function getUsersState(state) {

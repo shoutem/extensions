@@ -14,6 +14,10 @@ const SHOW_TITLE_LABEL = `${key}.show-title-label`;
 const HIDE_TITLE_LABEL = `${key}.hide-title-label`;
 const BACKGROUND_IMAGE_ALERT_TITLE = `${key}.background-image-alert-title`;
 const BACKGROUND_IMAGE_ALERT_DESCRIPTION = `${key}.background-image-alert-description`;
+const FORM_NAVIGATION_TITLE_UPPERCASING = `${key}.form-navigation-title-uppercasing`;
+const UPPERCASE_LABEL = `${key}.uppercase-label`;
+const UPPERCASED_TRANSLATIONS_INFO = `${key}.uppercase-translations-info`;
+const DISABLE_UPPERCASE_LABEL = `${key}.disable-uppercase-label`;
 
 export default {
   WITH_NOTCH_BACKGROUND_IMAGE,
@@ -30,4 +34,8 @@ export default {
   HIDE_TITLE_LABEL,
   BACKGROUND_IMAGE_ALERT_TITLE,
   BACKGROUND_IMAGE_ALERT_DESCRIPTION,
+  FORM_NAVIGATION_TITLE_UPPERCASING,
+  UPPERCASE_LABEL,
+  UPPERCASED_TRANSLATIONS_INFO,
+  DISABLE_UPPERCASE_LABEL,
 };

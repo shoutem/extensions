@@ -1,23 +1,23 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
+import { Checkbox, ControlLabel } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { ControlLabel } from 'react-bootstrap';
-import i18next from 'i18next';
-import { isBusy, clear } from '@shoutem/redux-io';
+import autoBindReact from 'auto-bind';
 import { ext } from 'context';
 import { denormalizeCollection } from 'denormalizer';
 import { getShortcut } from 'environment';
+import i18next from 'i18next';
+import _ from 'lodash';
 import normalizeUrl from 'normalize-url';
+import PropTypes from 'prop-types';
+import { clear, isBusy } from '@shoutem/redux-io';
 import {
-  updateShortcutSettings,
-  discoverFeeds,
   DISCOVERED_FEEDS,
-} from './../reducer';
-import FeedUrlInput from './FeedUrlInput';
-import FeedSelector from './FeedSelector';
+  discoverFeeds,
+  updateShortcutSettings,
+} from '../reducer';
 import FeedPreview from './FeedPreview';
+import FeedSelector from './FeedSelector';
+import FeedUrlInput from './FeedUrlInput';
 import LOCALIZATION from './localization';
 
 const ACTIVE_SCREEN_INPUT = 0;
@@ -30,7 +30,17 @@ export class Rss extends PureComponent {
 
     autoBindReact(this);
 
-    this.state = { discoverInProgress: false, error: '' };
+    const isInAppContentSearchEnabled = _.get(
+      props,
+      'shortcut.settings.isInAppContentSearchEnabled',
+      false,
+    );
+
+    this.state = {
+      discoverInProgress: false,
+      error: '',
+      isInAppContentSearchEnabled,
+    };
   }
 
   componentDidUpdate(prevProps) {
@@ -61,6 +71,19 @@ export class Rss extends PureComponent {
         });
       }
     }
+  }
+
+  handleToggleEnableSearch() {
+    const { shortcut, updateShortcutSettings } = this.props;
+    const { isInAppContentSearchEnabled } = this.state;
+
+    this.setState(
+      { isInAppContentSearchEnabled: !isInAppContentSearchEnabled },
+      () =>
+        updateShortcutSettings(shortcut.id, {
+          isInAppContentSearchEnabled: !isInAppContentSearchEnabled,
+        }),
+    );
   }
 
   onFeedUrlInputContinueClick(feedUrl) {
@@ -100,7 +123,8 @@ export class Rss extends PureComponent {
 
     if (shortcut.settings?.feedUrl) {
       return ACTIVE_SCREEN_PREVIEW;
-    } else if (discoveredFeeds.length > 1) {
+    }
+    if (discoveredFeeds.length > 1) {
       return ACTIVE_SCREEN_SELECT;
     }
 
@@ -120,7 +144,7 @@ export class Rss extends PureComponent {
 
   render() {
     const { discoveredFeeds, shortcut } = this.props;
-    const { error } = this.state;
+    const { error, isInAppContentSearchEnabled } = this.state;
 
     const activeScreen = this.getActiveScreen();
     const feedUrl = shortcut.settings?.feedUrl;
@@ -148,9 +172,20 @@ export class Rss extends PureComponent {
           />
         )}
         {activeScreen === ACTIVE_SCREEN_PREVIEW && (
+          <Checkbox
+            className="cms__checkbox-enable-search"
+            checked={isInAppContentSearchEnabled}
+            name="isInAppContentSearchEnabled"
+            onChange={this.handleToggleEnableSearch}
+          >
+            {i18next.t(LOCALIZATION.ENABLE_SEARCH_IN_APP)}
+          </Checkbox>
+        )}
+        {activeScreen === ACTIVE_SCREEN_PREVIEW && (
           <FeedPreview
             feedUrl={feedUrl}
             onRemoveClick={this.onFeedRemoveClick}
+            shortcutPageNote={shortcut.settings?.shortcutPageNote}
           />
         )}
       </div>
@@ -159,11 +194,19 @@ export class Rss extends PureComponent {
 }
 
 Rss.propTypes = {
+  clearDiscoverFeeds: PropTypes.func,
   discoveredFeeds: PropTypes.array,
+  discoverFeeds: PropTypes.func,
   shortcut: PropTypes.object,
   updateShortcutSettings: PropTypes.func,
-  discoverFeeds: PropTypes.func,
-  clearDiscoverFeeds: PropTypes.func,
+};
+
+Rss.defaultProps = {
+  discoveredFeeds: [],
+  shortcut: {},
+  updateShortcutSettings: _.noop,
+  discoverFeeds: _.noop,
+  clearDiscoverFeeds: _.noop,
 };
 
 function mapStateToProps(state) {

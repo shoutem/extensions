@@ -31,7 +31,9 @@
       "shareMessage": "Stream address: {{streamUrl}}",
       "shareTitle": "Currently listening to {{streamTitle}}",
       "currentNews": "CURRENT NEWS",
-      "seeAll": "See all"
+      "seeAll": "See all",
+      "sleepTimerToastTitle": "Sleep Timer Expired",
+      "sleepTimerToastMessage": "Your radio has completed its scheduled session."
     }
   }
 }

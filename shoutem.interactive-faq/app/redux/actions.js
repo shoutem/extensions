@@ -1,5 +1,6 @@
 import { find } from '@shoutem/redux-io';
 import { CATEGORIES_SCHEMA } from 'shoutem.cms';
+import { selectors as i18nSelectors } from 'shoutem.i18n';
 import { ext } from '../const';
 import { QUESTIONS_SCHEMA } from './const';
 
@@ -30,9 +31,19 @@ export function loadCategories(parentCategoryId) {
 }
 
 export function loadQuestions() {
-  return find(QUESTIONS_SCHEMA, 'questions', {
-    'page[limit]': 2000,
-  });
+  return (dispatch, getState) => {
+    const state = getState();
+    const currentChannelId = i18nSelectors.getActiveChannelId(state);
+
+    return dispatch(
+      find(QUESTIONS_SCHEMA, 'questions', {
+        query: {
+          'page[limit]': 2000,
+          'filter[channels]': currentChannelId,
+        },
+      }),
+    );
+  };
 }
 
 export default {

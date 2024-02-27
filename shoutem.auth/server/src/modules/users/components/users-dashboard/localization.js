@@ -10,6 +10,7 @@ const DELETE_USER_MODAL_BUTTON_ABORT_TITLE = `${key}.delete-user-modal-button-ab
 const BUTTON_ADD_NEW_USER_TITLE = `${key}.button-add-new-user-title`;
 const TABLE_EMPTY_PLACEHOLDER_MESSAGE = `${key}.table-empty-placeholder-message`;
 const EXPORT_POPOVER_MESSAGE = `${key}.export-popover-message`;
+const USERS_TABLE_TITLE = `${key}.users-table-title`;
 
 export default {
   HEADER_FILTER_BY_EMAIL_TITLE,
@@ -22,4 +23,5 @@ export default {
   BUTTON_ADD_NEW_USER_TITLE,
   TABLE_EMPTY_PLACEHOLDER_MESSAGE,
   EXPORT_POPOVER_MESSAGE,
+  USERS_TABLE_TITLE
 };

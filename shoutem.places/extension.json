@@ -1,10 +1,10 @@
 {
   "name": "places",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "platform": ">=12.1.0",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
+  "releaseNotes": "Display map list on favorites screen",
   "icon": "./server/assets/images/add-places-image.png",
   "dependencies": [
     "shoutem.application",
@@ -94,7 +94,10 @@
       "settings": {
         "listType": "compact-list",
         "hasFeaturedItem": false,
-        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       }
     },
@@ -108,10 +111,15 @@
       "settings": {
         "listType": "tile-list",
         "hasFeaturedItem": false,
-        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       },
-      "navigatesTo": ["@.PlaceDetails"]
+      "navigatesTo": [
+        "@.PlaceDetails"
+      ]
     },
     {
       "name": "PlacesGridScreen",
@@ -124,10 +132,15 @@
       "settings": {
         "listType": "1-2-2-grid",
         "hasFeaturedItem": true,
-        "categoryPickerTypeOptions": ["dropdown", "horizontalList"],
+        "categoryPickerTypeOptions": [
+          "dropdown",
+          "horizontalList"
+        ],
         "categoryPickerType": "dropdown"
       },
-      "navigatesTo": ["@.PlaceDetails"]
+      "navigatesTo": [
+        "@.PlaceDetails"
+      ]
     },
     {
       "name": "PlaceDetails",

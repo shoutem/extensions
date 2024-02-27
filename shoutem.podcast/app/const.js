@@ -1,10 +1,3 @@
-import {
-  CAPABILITY_JUMP_BACKWARD,
-  CAPABILITY_JUMP_FORWARD,
-  CAPABILITY_PAUSE,
-  CAPABILITY_PLAY,
-  CAPABILITY_SEEK_TO,
-} from 'shoutem.audio';
 import pack from './package.json';
 
 export function ext(resourceName) {
@@ -27,28 +20,4 @@ export const DEFAULT_PAGE_LIMIT = 20;
 export const EPISODES_LIST_SCREEN = ext('EpisodesListScreen');
 export const EPISODE_DETAILS_SCREEN = ext('EpisodeDetailsScreen');
 
-export const trackPlayerOptions = {
-  stopWithApp: true,
-  alwaysPauseOnInterruption: false,
-  capabilities: [
-    CAPABILITY_SEEK_TO,
-    CAPABILITY_JUMP_FORWARD,
-    CAPABILITY_JUMP_BACKWARD,
-    CAPABILITY_PLAY,
-    CAPABILITY_PAUSE,
-  ],
-  notificationCapabilities: [
-    CAPABILITY_SEEK_TO,
-    CAPABILITY_JUMP_FORWARD,
-    CAPABILITY_JUMP_BACKWARD,
-    CAPABILITY_PLAY,
-    CAPABILITY_PAUSE,
-  ],
-  compactCapabilities: [
-    CAPABILITY_SEEK_TO,
-    CAPABILITY_JUMP_FORWARD,
-    CAPABILITY_JUMP_BACKWARD,
-    CAPABILITY_PLAY,
-    CAPABILITY_PAUSE,
-  ],
-};
+export const PODCAST_TRACK_IDENTIFIER = 'podcast';

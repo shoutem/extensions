@@ -19,3 +19,4 @@ export const shoutem = {
 };
 
 export { reducer } from './redux';
+export { PlaybackService } from './services';

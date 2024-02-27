@@ -5,16 +5,20 @@ import { connect } from 'react-redux';
 import { getExtensionInstallation } from 'environment';
 import { updateExtensionSettings } from '../builder-sdk';
 import { trackEvent } from '../providers/analytics';
-import NavigationBarFirstScreenImageToggle from './components/NavigationBarFirstScreenImageToggle';
-import NavigationBarBackgroundImages from './components/NavigationBarBackgroundImages';
-import NavigationBarTitleToggle from './components/NavigationBarTitleToggle';
-import NavigationBarBackgroundSize from './components/NavigationBarBackgroundSize';
+import {
+  NavigationBarBackgroundImages,
+  NavigationBarBackgroundSize,
+  NavigationBarUppercaseTitleToggle,
+  NavigationBarFirstScreenImageToggle,
+  NavigationBarTitleToggle,
+} from './components';
 import './style.scss';
 
 const BACKGROUND_IMAGE_ENABLED_FIRST_SCREEN =
   'backgroundImageEnabledFirstScreen';
 const SHOW_TITLE = 'showTitle';
 const FIT_CONTAINER = 'fitContainer';
+const UPPERCASE_TITLE = 'uppercaseTitle';
 
 export class NavigationBarPage extends Component {
   constructor(props) {
@@ -90,6 +94,23 @@ export class NavigationBarPage extends Component {
   }
 
   /**
+   * Handle title uppercasing dropdown
+   * @param  {event} evt
+   * @return {void}
+   */
+  handleUppercaseToggle(uppercaseTitle) {
+    trackEvent(
+      'screens',
+      'main-navigation-navigation-bar-settings-changed',
+      'uppercase-title',
+    );
+
+    this.updateExtensionSettings({
+      [UPPERCASE_TITLE]: uppercaseTitle,
+    });
+  }
+
+  /**
    * Update extension settings with lates changes.
    * Only diff values are required here.
    * @param {void} settings
@@ -110,6 +131,7 @@ export class NavigationBarPage extends Component {
       backgroundImageEnabledFirstScreen,
       showTitle,
       fitContainer,
+      uppercaseTitle,
     } = settings;
 
     return (
@@ -133,6 +155,10 @@ export class NavigationBarPage extends Component {
           <NavigationBarTitleToggle
             showTitle={showTitle}
             onTitleToggle={this.handleTitleToggle}
+          />
+          <NavigationBarUppercaseTitleToggle
+            uppercaseTitle={uppercaseTitle}
+            onUppercaseToggle={this.handleUppercaseToggle}
           />
         </form>
       </div>

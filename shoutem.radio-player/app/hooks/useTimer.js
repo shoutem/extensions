@@ -3,7 +3,18 @@ import { Platform } from 'react-native';
 import RNBackgroundTimer from 'react-native-background-timer';
 
 const isAndroid = Platform.OS === 'android';
-
+/**
+ * Custom hook for managing timers, with support for background timer on Android.
+ *
+ * The hook provides methods and state for managing timers, including starting,
+ * clearing, and getting the remaining time.
+ *
+ * @param {number} [interval=60000] - The interval (in milliseconds) for the timer.
+ * @returns {Array} Array of
+ * @property {function} clearTimer - Function to clear (stop) the timer.
+ * @property {function} startTimer - Function to start the timer with a specified duration.
+ * @property {number} timeRemaining - Time remaining in the timer in milliseconds.
+ */
 export function useTimer(interval = 60000) {
   const [timeRemaining, setTimeRemaining] = useState();
   const [intervalId, setIntervalId] = useState();

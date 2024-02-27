@@ -21,6 +21,7 @@ import {
   getNotificationSettings,
   GROUPS_SCHEMA,
   NOTIFICATIONS_SCHEMA,
+  SCHEDULED_NOTIFICATIONS_SCHEMA,
   SELECTED_GROUPS_SCHEMA,
   setNotificationSettings,
 } from './redux';
@@ -39,7 +40,7 @@ export const appWillMount = setPriority(app => {
   registerNotificationHandlers(store);
 }, before(priorities.FIREBASE));
 
-export const appDidMount = setPriority(async (app) => {
+export const appDidMount = setPriority(async app => {
   const store = app.getStore();
   const state = store.getState();
   const appId = getAppId();
@@ -85,7 +86,7 @@ export const appDidMount = setPriority(async (app) => {
       vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
     };
 
-   await Firebase.createNotificationChannels([
+    await Firebase.createNotificationChannels([
       dailyNotificationsChannelConfig,
       journeyLocalNotificationsConfig,
     ]);
@@ -161,6 +162,17 @@ export const appDidMount = setPriority(async (app) => {
     request: {
       endpoint: getEndpointProvider().selectedGroups,
       ...apiRequestOptions,
+    },
+  });
+
+  rio.registerResource({
+    schema: SCHEDULED_NOTIFICATIONS_SCHEMA,
+    request: {
+      endpoint: `${getEndpointProvider().scheduledNotifications}?type=manual`,
+      resourceType: 'JSON',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     },
   });
 

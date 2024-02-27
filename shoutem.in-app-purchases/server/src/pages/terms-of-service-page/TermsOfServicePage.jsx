@@ -6,6 +6,7 @@ import {
   ControlLabel,
   FormControl,
   FormGroup,
+  HelpBlock,
 } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
@@ -26,6 +27,7 @@ export class TermsOfServicePage extends PureComponent {
     this.state = {
       termsOfServiceUrl: props.termsOfServiceUrl,
       loading: false,
+      error: null,
     };
   }
 
@@ -42,22 +44,30 @@ export class TermsOfServicePage extends PureComponent {
   handlePolicyChange(event) {
     const newText = event.target.value;
 
-    this.setState({ termsOfServiceUrl: newText });
+    this.setState({ termsOfServiceUrl: newText, error: null });
   }
 
-  handleSave() {
+  async handleSave() {
     const { extension, updateExtensionSettingsAction } = this.props;
     const { termsOfServiceUrl } = this.state;
 
-    this.setState({ loading: true });
+    this.setState({ loading: true, error: null });
 
-    updateExtensionSettingsAction(extension, { termsOfServiceUrl })
-      .then(() => this.setState({ loading: false }))
-      .catch(() => this.setState({ loading: false }));
+    try {
+      await updateExtensionSettingsAction(extension, { termsOfServiceUrl });
+      this.setState({ loading: false, error: null });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+      this.setState({
+        loading: false,
+        error: i18next.t(LOCALIZATION.ERROR_MESSAGE),
+      });
+    }
   }
 
   render() {
-    const { termsOfServiceUrl, loading } = this.state;
+    const { termsOfServiceUrl, loading, error } = this.state;
 
     const saveEnabled = this.saveEnabled();
 
@@ -81,6 +91,11 @@ export class TermsOfServicePage extends PureComponent {
             value={termsOfServiceUrl}
           />
         </FormGroup>
+        {error && (
+          <FormGroup validationState="error">
+            <HelpBlock>{error}</HelpBlock>
+          </FormGroup>
+        )}
         <ButtonToolbar>
           <Button
             bsStyle="primary"
@@ -98,9 +113,9 @@ export class TermsOfServicePage extends PureComponent {
 }
 
 TermsOfServicePage.propTypes = {
-  termsOfServiceUrl: PropTypes.string,
-  updateExtensionSettingsAction: PropTypes.func,
-  extension: PropTypes.object,
+  extension: PropTypes.object.isRequired,
+  termsOfServiceUrl: PropTypes.string.isRequired,
+  updateExtensionSettingsAction: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {

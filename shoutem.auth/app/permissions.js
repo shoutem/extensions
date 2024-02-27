@@ -3,13 +3,13 @@ const { getAppConfiguration } = require('@shoutem/build-tools');
 const {
   PERMISSION_TYPES,
 } = require('../../shoutem.permissions/app/build/const');
-const package = require('./package.json');
+const packageJson = require('./package.json');
 
 function getExtensionSettings(appConfiguration) {
   const included = _.get(appConfiguration, 'included');
   const extension = _.find(
     included,
-    item => item.type === 'shoutem.core.extensions' && item.id === package.name,
+    item => item.type === 'shoutem.core.extensions' && item.id === packageJson.name,
   );
 
   return _.get(extension, 'attributes.settings');

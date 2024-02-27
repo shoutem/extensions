@@ -1,6 +1,6 @@
 {
   "name": "shoutem.auth",
-  "version": "7.4.0",
+  "version": "7.5.2",
   "description": "Shoutem user authentication",
   "author": "Shoutem",
   "scripts": {
@@ -69,6 +69,7 @@
     "react-dom": "^16.12.0",
     "react-i18next": "^11.7.3",
     "react-redux": "^5.0.3",
+    "react-select": "^1.0.0-rc.5",
     "redux": "^3.6.0",
     "redux-form": "^5.2.5",
     "redux-thunk": "~2.2.0",

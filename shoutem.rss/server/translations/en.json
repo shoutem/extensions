@@ -13,7 +13,8 @@
       "rss-page.form-feed": "Website URL or RSS feed",
       "rss-page.button-continue": "Continue",
       "rss-page.invalid-rss-feed": "URL does not contain valid RSS feeds.",
-      "rss-page.form-show-feed": "This is a {{feedType}} feed."
+      "rss-page.form-show-feed": "This is a {{feedType}} feed.",
+      "rss-page.enable-search-in-app": "Enable in-app search of items per title"
     }
   }
 }

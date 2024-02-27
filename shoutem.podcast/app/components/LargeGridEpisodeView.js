@@ -5,7 +5,6 @@ import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
-  Card,
   Icon,
   Image,
   Spinner,
@@ -15,6 +14,7 @@ import {
 } from '@shoutem/ui';
 import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
+import EpisodeProgress from './EpisodeProgress';
 import {
   EpisodeView,
   mapDispatchToProps,
@@ -27,7 +27,15 @@ import { FavoriteButton } from './FavoriteButton';
  */
 export class LargeGridEpisodeView extends EpisodeView {
   render() {
-    const { enableDownload, episode, hasFavorites, isFavorited } = this.props;
+    const { isActiveTrack, isPlaying } = this.state;
+    const {
+      enableDownload,
+      episode,
+      hasFavorites,
+      isFavorited,
+      savedProgress,
+      style,
+    } = this.props;
     const { downloadInProgress, timeUpdated, title } = episode;
 
     const isDownloaded = downloadInProgress !== undefined;
@@ -42,35 +50,45 @@ export class LargeGridEpisodeView extends EpisodeView {
       : assets.noImagePlaceholder;
 
     return (
-      <TouchableOpacity onPress={this.onPress}>
-        <Card styleName="flexible">
-          <Image source={episodeImage} styleName="placeholder" />
-          <View styleName="flexible space-between clear">
-            <Subtitle numberOfLines={2}>{title}</Subtitle>
-            <View styleName="horizontal space-between sm-gutter-top">
-              <Caption>
-                {momentDate.isAfter(0) ? momentDate.fromNow() : ''}
-              </Caption>
-              <View styleName="horizontal">
-                {!!hasFavorites && (
-                  <FavoriteButton
-                    isFavorited={isFavorited}
-                    onPress={this.onFavoritePress}
-                  />
-                )}
-                {!!enableDownload && !downloadInProgress && (
-                  <Button
-                    onPress={handleDownloadManagerPress}
-                    styleName="clear tight"
-                  >
-                    <Icon name={iconName} />
-                  </Button>
-                )}
-                {!!downloadInProgress && <Spinner />}
-              </View>
+      <TouchableOpacity
+        styleName="flexible md-gutter-horizontal clear"
+        onPress={this.onPress}
+      >
+        <Image
+          source={episodeImage}
+          styleName="placeholder sm-gutter-bottom"
+          style={style.image}
+        />
+        <View styleName="flexible space-between clear">
+          <Subtitle numberOfLines={2}>{title}</Subtitle>
+          <View styleName="horizontal space-between sm-gutter-top">
+            <Caption>
+              {momentDate.isAfter(0) ? momentDate.fromNow() : ''}
+            </Caption>
+            <View styleName="horizontal">
+              {!!hasFavorites && (
+                <FavoriteButton
+                  isFavorited={isFavorited}
+                  onPress={this.onFavoritePress}
+                />
+              )}
+              {!!enableDownload && !downloadInProgress && (
+                <Button
+                  onPress={handleDownloadManagerPress}
+                  styleName="clear tight"
+                >
+                  <Icon name={iconName} />
+                </Button>
+              )}
+              {!!downloadInProgress && <Spinner />}
             </View>
           </View>
-        </Card>
+          <EpisodeProgress
+            showPlaybackIcon={isActiveTrack}
+            isPlaying={isPlaying}
+            progressPercentage={savedProgress?.completionPercentage ?? 0}
+          />
+        </View>
       </TouchableOpacity>
     );
   }

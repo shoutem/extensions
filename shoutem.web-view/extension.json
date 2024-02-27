@@ -1,10 +1,10 @@
 {
   "name": "web-view",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "platform": ">=13",
   "type": "system",
   "title": "Web view",
-  "releaseNotes": "* Updated react-native-blob-util library, no user facing changes",
+  "releaseNotes": "* Enhance the web page loading experience with the option to display pages in a loading state",
   "description": "Show a web page in-app or in a browser",
   "icon": "server/assets/add-web-page.png",
   "nativeChanges": {

@@ -10,7 +10,11 @@ function injectFirebaseSettingsFile() {
   try {
     fs.ensureFileSync(filePath);
     const existingConfig = fs.readJsonSync(filePath, { throws: false });
-    const config = { messaging_ios_auto_register_for_remote_messages: false };
+    const config = {
+      'react-native': {
+        messaging_ios_auto_register_for_remote_messages: false,
+      },
+    };
     const actionTaken = _.isEmpty(existingConfig) ? 'Created' : 'Modified';
     const newConfig = existingConfig ? _.merge(existingConfig, config) : config;
     fs.writeJsonSync(filePath, newConfig);

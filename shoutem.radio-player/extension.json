@@ -1,12 +1,12 @@
 {
   "name": "radio-player",
   "title": "Radio+",
-  "version": "8.1.1",
-  "platform": ">=9",
+  "version": "9.0.0",
+  "platform": ">=13.0.5",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
-  "releaseNotes": "* Resolved issue when ad banner isn't defined",
+  "releaseNotes": "* Enhanced overall radio streaming experience, as well as lock screen playback UX/UI",
   "nativeChanges": {
-    "lastVersion": "6.0.1"
+    "lastVersion": "9.0.0"
   },
   "icon": "server/assets/add-radio-image.png",
   "categories": ["media"],

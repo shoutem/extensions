@@ -1,395 +1,89 @@
-import React from 'react';
-import { Animated } from 'react-native';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { ActivityIndicator } from 'react-native';
 import slugify from '@sindresorhus/slugify';
-import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Button, Icon, Spinner } from '@shoutem/ui';
+import { View } from '@shoutem/ui';
 import {
-  STATE_BUFFERING, // 6 buffering
-  STATE_NONE, // 0 idle
-  STATE_PAUSED, // 2 paused
-  STATE_PLAYING, // 3 playing
-  STATE_READY, // undefined ready
-  STATE_STOPPED, // 1 idle
+  Capability,
+  PlaybackControl,
+  State,
+  STOP_PLAYBACK_TYPE,
   TrackPlayer,
-  TrackPlayerBase,
+  usePlayer,
 } from 'shoutem.audio';
-import { ext, trackPlayerOptions } from '../const';
-import { getRadioMetadata } from '../redux';
+import { PlaybackAnimation } from '../components';
+import { ext, RADIO_TRACK_IDENTIFIER } from '../const';
 
-const COMMON_BUBBLE_PARAMS = {
-  duration: 200,
-  useNativeDriver: true,
+const PLAYER_OPTIONS = {
+  capabilities: [Capability.Play, Capability.Stop],
+  compactCapabilities: [Capability.Play, Capability.Stop],
 };
 
-const COMMON_APPEAR_PARAMS = {
-  duration: 500,
-  useNativeDriver: true,
-};
+const RadioPlayer = ({ url, triggerSleep, onSleepTriggered, style }) => {
+  const radioStream = {
+    id: `${RADIO_TRACK_IDENTIFIER}-${slugify(`${url}`)}`,
+    artist: '',
+    title: '',
+    url,
+    isLiveStream: true,
+  };
 
-class RadioPlayer extends TrackPlayerBase {
-  constructor(props) {
-    super(props);
+  const { isActivePlayer, playback, onPlaybackButtonPress } = usePlayer({
+    tracks: [radioStream],
+    updateOptions: PLAYER_OPTIONS,
+    stopPlaybackType: STOP_PLAYBACK_TYPE.STOP,
+  });
 
-    autoBindReact(this);
-
-    this.setTrackPlayerOptions();
-
-    this.appearAnimationMain = new Animated.Value(0);
-    this.appearAnimationOuter = new Animated.Value(0);
-    this.bubbleAnimationMain = new Animated.Value(0);
-    this.bubbleAnimationOuterA = new Animated.Value(1);
-    this.bubbleAnimationOuterB = new Animated.Value(1);
-
-    this.bubbleAnimation = this.composeBubbleAnimation();
-
-    this.state = { ...this.state, appearAnimationActive: false };
-  }
-
-  componentDidMount() {
-    this.metadataListener = TrackPlayer.addEventListener(
-      'playback-metadata-received',
-      this.handleMetadataChange,
-    );
-
-    this.remotePauseListener = TrackPlayer.addEventListener(
-      'remote-pause',
-      () => TrackPlayer.pause(),
-    );
-
-    this.remotePlayListener = TrackPlayer.addEventListener('remote-play', () =>
-      TrackPlayer.play(),
-    );
-
-    this.isCurrentTrack().then(isCurrentTrack => {
-      if (isCurrentTrack) {
-        this.handleReturnToPlayer();
-      }
-    });
-  }
-
-  async componentDidUpdate(prevProps) {
-    const { onSleepTriggered, triggerSleep, shouldResetPlayer } = this.props;
-
-    const isCurrentTrack = await this.isCurrentTrack();
-
-    if (!isCurrentTrack) {
-      return;
-    }
-
-    if (!prevProps.triggerSleep && triggerSleep) {
-      TrackPlayer.pause();
-      this.handlePlaybackStateChange({ state: STATE_PAUSED });
+  useEffect(() => {
+    if (triggerSleep) {
+      TrackPlayer.stop();
       onSleepTriggered();
     }
+  }, [onSleepTriggered, triggerSleep]);
 
-    if (isCurrentTrack && shouldResetPlayer) {
-      this.firstPlay = true;
+  const isActiveAndPlaying = isActivePlayer && playback.state === State.Playing;
+  const isLoadingOrBuffering =
+    isActivePlayer &&
+    (playback.state === State.Loading || playback.state === State.Buffering);
 
-      this.handlePlaybackStateChange({ state: STATE_STOPPED });
-      TrackPlayer.reset();
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.metadataListener) {
-      this.metadataListener.remove();
-    }
-
-    super.componentWillUnmount();
-  }
-
-  handleMetadataChange(metadata) {
-    const { onMetadataStateChange } = this.props;
-
-    onMetadataStateChange(metadata);
-  }
-
-  composeBubbleAnimation() {
-    return Animated.loop(
-      Animated.stagger(150, [
-        Animated.sequence([
-          Animated.timing(this.bubbleAnimationOuterA, {
-            toValue: 1.05,
-            ...COMMON_BUBBLE_PARAMS,
-          }),
-          Animated.timing(this.bubbleAnimationOuterA, {
-            toValue: 1,
-            ...COMMON_BUBBLE_PARAMS,
-          }),
-        ]),
-        Animated.sequence([
-          Animated.timing(this.bubbleAnimationMain, {
-            toValue: 0.05,
-            ...COMMON_BUBBLE_PARAMS,
-          }),
-          Animated.timing(this.bubbleAnimationMain, {
-            toValue: 0,
-            ...COMMON_BUBBLE_PARAMS,
-          }),
-        ]),
-        Animated.sequence([
-          Animated.timing(this.bubbleAnimationOuterB, {
-            toValue: 1.05,
-            ...COMMON_BUBBLE_PARAMS,
-          }),
-          Animated.timing(this.bubbleAnimationOuterB, {
-            toValue: 1,
-            ...COMMON_BUBBLE_PARAMS,
-          }),
-        ]),
-      ]),
-    );
-  }
-
-  composeAppearAnimation(appear) {
-    const endValue = appear ? 1 : 0;
-
-    const animations = [
-      Animated.spring(this.appearAnimationMain, {
-        toValue: endValue,
-        ...COMMON_APPEAR_PARAMS,
-      }),
-      Animated.timing(this.appearAnimationOuter, {
-        toValue: endValue,
-        ...COMMON_APPEAR_PARAMS,
-      }),
-    ];
-
-    this.appearAnimation = Animated.sequence(
-      appear ? animations : _.reverse(animations),
-    );
-  }
-
-  calculateOuterCircleStyle(leadingCircle) {
-    const { style } = this.props;
-
-    const bubbleAnimationValue = leadingCircle
-      ? this.bubbleAnimationOuterA
-      : this.bubbleAnimationOuterB;
-    const translateOutputRange = leadingCircle ? [0, -10] : [0, 10];
-
-    return [
-      style.playbackMainCircle,
-      {
-        opacity: this.appearAnimationOuter.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 0.35],
-        }),
-        transform: [
-          { scale: bubbleAnimationValue },
-          { perspective: 1000 },
-          {
-            translateX: this.appearAnimationOuter.interpolate({
-              inputRange: [0, 1],
-              outputRange: translateOutputRange,
-            }),
-          },
-          {
-            translateY: this.appearAnimationOuter.interpolate({
-              inputRange: [0, 1],
-              outputRange: translateOutputRange,
-            }),
-          },
-        ],
-      },
-    ];
-  }
-
-  setTrackPlayerOptions() {
-    this.trackPlayerOptions = trackPlayerOptions;
-  }
-
-  getId() {
-    const { url } = this.props;
-
-    const id = slugify(`${url}`);
-
-    return `radio-${id}`;
-  }
-
-  async addTrack() {
-    const { title, url } = this.props;
-
-    const id = this.getId();
-
-    const stream = {
-      artist: title,
-      id,
-      isLiveStream: true,
-      title,
-      url,
-    };
-
-    // Resets the player stopping the current track and clearing the queue.
-    await this.reset();
-    await TrackPlayer.add(stream);
-  }
-
-  handlePlaybackStateChange(data) {
-    const { appearAnimationActive } = this.state;
-    const { onPlaybackStateChange } = this.props;
-    const { state } = data;
-
-    if (
-      state === STATE_STOPPED ||
-      state === STATE_PLAYING ||
-      state === STATE_PAUSED
-    ) {
-      if (appearAnimationActive) {
-        this.appearAnimation.reset();
-      }
-
-      const wasPlaying = state === STATE_PAUSED || state === STATE_STOPPED;
-
-      this.composeAppearAnimation(!wasPlaying);
-
-      const callback = wasPlaying
-        ? () => this.bubbleAnimation.reset()
-        : () => this.bubbleAnimation.start();
-
-      this.setState({ appearAnimationActive: true });
-
-      this.appearAnimation.start(() => {
-        this.setState({ appearAnimationActive: false });
-        callback();
-      });
-    }
-
-    super.handlePlaybackStateChange(data);
-    onPlaybackStateChange(state);
-  }
-
-  handleActionButtonPress() {
-    const { playbackState, appearAnimationActive } = this.state;
-
-    if (appearAnimationActive) {
-      this.appearAnimation.reset();
-    }
-
-    const wasPlaying = playbackState === STATE_PLAYING;
-
-    this.composeAppearAnimation();
-
-    const callback = wasPlaying
-      ? () => this.bubbleAnimation.reset()
-      : () => this.bubbleAnimation.start();
-
-    this.setState({ appearAnimationActive: true });
-
-    this.appearAnimation.start(() => {
-      this.setState({ appearAnimationActive: false });
-      callback();
-    });
-
-    super.handleActionButtonPress();
-  }
-
-  async handleReturnToPlayer() {
-    const { onMetadataStateChange, metadata } = this.props;
-
-    const currentTrack = await TrackPlayer.getCurrentTrack();
-
-    if (currentTrack !== null) {
-      this.firstPlay = false;
-    }
-
-    this.setAsActiveTrack();
-    this.setPlaybackState(STATE_BUFFERING);
-    const playbackState = await TrackPlayer.getState();
-    this.setPlaybackState(playbackState);
-    this.handlePlaybackStateChange({ state: playbackState });
-
-    if (currentTrack !== null && playbackState === STATE_PLAYING) {
-      onMetadataStateChange(metadata, true);
-    }
-
-    this.addEventListeners();
-  }
-
-  resolveActionIcon() {
-    const {
-      style: { playbackIcon, spinner },
-    } = this.props;
-    const { playbackState } = this.state;
-
-    const icons = {
-      [STATE_NONE]: <Spinner style={spinner} />,
-      [STATE_BUFFERING]: <Spinner style={spinner} />,
-      [STATE_READY]: <Spinner style={spinner} />, // intermediate state
-      [STATE_PLAYING]: <Icon name="pause" style={playbackIcon} />,
-      [STATE_STOPPED]: <Icon name="play" style={playbackIcon} />,
-      [STATE_PAUSED]: <Icon name="play" style={playbackIcon} />,
-    };
-
-    return icons[playbackState] || <Spinner style={spinner} />;
-  }
-
-  render() {
-    const { style } = this.props;
-
-    const ActionIcon = this.resolveActionIcon;
-
-    return (
-      <Button
-        onPress={this.handleActionButtonPress}
-        style={style.playbackButton}
-      >
-        <ActionIcon />
-        <Animated.View
-          style={[
-            style.playbackMainCircle,
-            { opacity: this.appearAnimationMain },
-            {
-              transform: [
-                {
-                  scale: Animated.add(
-                    this.appearAnimationMain,
-                    this.bubbleAnimationMain,
-                  ),
-                },
-                { perspective: 1000 },
-              ],
-            },
-          ]}
+  return (
+    <View style={style.container}>
+      <PlaybackAnimation
+        shouldAnimate={isActivePlayer}
+        isPlaying={playback.state === State.Playing}
+        isStopped={
+          // We always Stop radio stream programatically, but Android devices execute Pause when using remote controls.
+          playback.state === State.Stopped || playback.state === State.Paused
+        }
+        style={style.playbackMainCircle}
+      />
+      {isLoadingOrBuffering && <ActivityIndicator style={style.spinner} />}
+      {!isLoadingOrBuffering && (
+        <PlaybackControl
+          onPress={onPlaybackButtonPress}
+          iconName={isActiveAndPlaying ? 'stop' : 'play'}
+          style={{
+            icon: style.playbackIcon,
+            container: style.playbackContainer,
+          }}
         />
-        <Animated.View style={this.calculateOuterCircleStyle(true)} />
-        <Animated.View style={this.calculateOuterCircleStyle(false)} />
-      </Button>
-    );
-  }
-}
+      )}
+    </View>
+  );
+};
 
 RadioPlayer.propTypes = {
-  shouldResetPlayer: PropTypes.bool.isRequired,
   triggerSleep: PropTypes.bool.isRequired,
   url: PropTypes.string.isRequired,
-  onMetadataStateChange: PropTypes.func.isRequired,
-  onPlaybackStateChange: PropTypes.func.isRequired,
-  onSleepTriggered: PropTypes.func.isRequired,
-  metadata: PropTypes.object,
-  title: PropTypes.string,
+  style: PropTypes.object,
+  onSleepTriggered: PropTypes.func,
 };
 
 RadioPlayer.defaultProps = {
-  metadata: {},
-  title: '',
+  onSleepTriggered: _.noop,
+  style: {},
 };
 
-const mapStateToProps = (state, ownProps) => {
-  const { url } = ownProps;
-
-  const id = slugify(`${url}`);
-  const resolvedId = `radio-${id}`;
-
-  return {
-    metadata: getRadioMetadata(resolvedId, state),
-  };
-};
-
-export default connect(mapStateToProps)(
-  connectStyle(ext('RadioPlayer'))(RadioPlayer),
-);
+export default connectStyle(ext('RadioPlayer'))(RadioPlayer);

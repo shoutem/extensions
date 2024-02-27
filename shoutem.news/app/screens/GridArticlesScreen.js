@@ -38,7 +38,7 @@ export class GridArticlesScreen extends ArticlesScreen {
 
   renderFeaturedItem(item) {
     const {
-      screenSettings: { hideModificationTimestamp },
+      screenSettings: { disableUppercasing, hideModificationTimestamp },
     } = getRouteParams(this.props);
 
     return item ? (
@@ -46,6 +46,7 @@ export class GridArticlesScreen extends ArticlesScreen {
         {...getItemProps(item[0])}
         onPress={this.openArticleWithId}
         hideModificationTimestamp={hideModificationTimestamp}
+        disableUppercasing={disableUppercasing}
       />
     ) : null;
   }

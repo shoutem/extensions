@@ -6,6 +6,7 @@
 import EpisodeDetailsScreen from './screens/EpisodeDetailsScreen';
 import EpisodeDetailsWithoutShareScreen from './screens/EpisodeDetailsWithoutShareScreen';
 import EpisodesFeaturedGridScreen from './screens/EpisodesFeaturedGridScreen';
+import EpisodesFeaturedImageListScreen from './screens/EpisodesFeaturedImageListScreen';
 import EpisodesFeaturedLargeGridScreen from './screens/EpisodesFeaturedLargeGridScreen';
 import EpisodesFeaturedListScreen from './screens/EpisodesFeaturedListScreen';
 import EpisodesGridScreen from './screens/EpisodesGridScreen';
@@ -23,4 +24,5 @@ export const screens = {
   EpisodesLargeGridScreen,
   EpisodesListScreen,
   MyPodcastsScreen,
+  EpisodesFeaturedImageListScreen,
 };

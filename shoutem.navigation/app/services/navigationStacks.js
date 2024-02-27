@@ -72,23 +72,25 @@ export function closeStack(stackName, navigationAction) {
   const matchingStack = _.find(openStacks, { name: stackName });
 
   if (!matchingStack) {
+    // eslint-disable-next-line no-console
     console.warn('Unable to find matching stack to close. Ignoring');
     return;
   }
 
-  const resolvedAction =
-    navigationAction ||
-    (() =>
-      navigationRef.current?.dispatch(
-        CommonActions.navigate({
-          key: matchingStack.previousRoute.key,
-          params: matchingStack.previousRoute.params,
-        }),
-      ));
-
-  resolvedAction();
-
   _.remove(openStacks, { name: stackName });
+
+  if (_.isFunction(navigationAction)) {
+    navigationAction(matchingStack);
+    return;
+  }
+
+  navigationRef.current?.dispatch(
+    CommonActions.navigate({
+      name: matchingStack.previousRoute.name,
+      key: matchingStack.previousRoute.key,
+      params: matchingStack.previousRoute.params,
+    }),
+  );
 }
 
 export default {

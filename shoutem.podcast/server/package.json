@@ -1,6 +1,6 @@
 {
   "name": "shoutem.podcast",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
     "clean": "rimraf ./build/*",
@@ -60,7 +60,7 @@
     "react-dom": "^16.12.0",
     "i18next": "^19.7.0",
     "react-i18next": "^11.7.3",
-    "react-redux": "^5.0.3",
+    "react-redux": "7.2.6",
     "redux": "^3.6.0",
     "redux-thunk": "~2.2.0",
     "urijs": "^1.18.9"

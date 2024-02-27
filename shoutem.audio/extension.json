@@ -1,13 +1,13 @@
 {
   "name": "audio",
   "title": "Audio",
-  "version": "4.0.5",
-  "platform": ">=9",
+  "version": "5.0.0",
+  "platform": ">=13.0.5",
   "description": "Track player components for other extensions to utilize. NOTE: Lock screen controls will not be visible in the preview.",
-  "releaseNotes": "* Moved setting Swift version to preBuild hook, no user facing changes",
+  "releaseNotes": "* Updated underlying library for audio playback (react-native-track-player) to enhance the overall user experience during listening.",
   "dependencies": ["shoutem.application"],
   "nativeChanges": {
-    "lastVersion": "4.0.4"
+    "lastVersion": "5.0.0"
   },
   "icon": "server/assets/add-audio-image.png",
   "type": "system"

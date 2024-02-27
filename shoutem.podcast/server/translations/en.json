@@ -2,7 +2,13 @@
   "shoutem": {
     "podcast": {
       "download-explanation": "Downloads will not be accessible through the device's media library, they'll only be accessible through the app itself.",
-      "enable-download-checkbox-label": "Enable download of episodes"
+      "enable-download-checkbox-label": "Enable download of episodes",
+      "progress-tracking-title": "Episode progress tracking",
+      "progress-tracking-description": "Specifies the frequency at which the app will update the episode progress bar and save the episode progress. It's important to note that more frequent progress updates can have an impact on the overall performance of the application. Adjust this setting with consideration for performance implications.",
+      "progress-tracking-frequency": "Episode progress tracking interval (seconds)",
+      "progress-tracking-minimum-interval-error-message": "The interval cannot be set to less than 2 seconds due to potential performance issues with the application.",
+      "progress-tracking-save": "Save",
+      "extension-settings-update-error": "Something went wrong while trying to update episode progress tracking interval. Please try again later."
     }
   }
 }

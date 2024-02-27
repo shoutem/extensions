@@ -15,12 +15,14 @@ import { resolveAppEndpoint } from './shared/resolveAppEndpoint';
 import buildConfig from './buildConfig.json';
 import {
   ACTIVE_APP_STATE,
+  APP_MODULES_SCHEMA,
   APP_SUBSCRIPTION_SCHEMA,
   CONFIGURATION_SCHEMA,
   ext,
 } from './const';
 import { SeAttachment } from './html';
 import {
+  fetchAppModules,
   fetchAppSubscriptionStatus,
   fetchConfiguration,
   getExtensionSettings,
@@ -109,6 +111,18 @@ rio.registerResource({
   },
 });
 
+rio.registerResource({
+  schema: APP_MODULES_SCHEMA,
+  request: {
+    method: 'GET',
+    endpoint: resolveAppEndpoint('modules', '{appId}'),
+    headers: {
+      Authorization: AUTH_HEADER,
+      Accept: 'application/vnd.api+json',
+    },
+  },
+});
+
 function dispatchCheckExpiration(app) {
   app.getStore().dispatch(applyToAll(checkExpiration()));
 }
@@ -169,9 +183,10 @@ export function appDidMount(app) {
   }
   unsubscribeFromConfigurationLoaded();
 
-  return store
-    .dispatch(fetchAppSubscriptionStatus(appId))
-    .then(() => store.dispatch(setQueueTargetComplete(ext())));
+  return Promise.all([
+    store.dispatch(fetchAppSubscriptionStatus(appId)),
+    store.dispatch(fetchAppModules(appId)),
+  ]).then(() => store.dispatch(setQueueTargetComplete(ext())));
 }
 
 /**

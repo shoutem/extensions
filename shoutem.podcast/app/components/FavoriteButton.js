@@ -12,7 +12,7 @@ export function FavoriteButton({ iconColor, isFavorited, onPress }) {
 
   return (
     <Button onPress={onPress} styleName="clear tight">
-      <Icon name={iconName} iconFill={iconColor} />
+      <Icon name={iconName} iconFill={iconColor?.color} />
     </Button>
   );
 }
@@ -20,7 +20,7 @@ export function FavoriteButton({ iconColor, isFavorited, onPress }) {
 FavoriteButton.propTypes = {
   isFavorited: PropTypes.bool.isRequired,
   onPress: PropTypes.func.isRequired,
-  iconColor: PropTypes.string,
+  iconColor: PropTypes.object,
 };
 
 FavoriteButton.defaultProps = {

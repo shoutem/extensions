@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-wrap-multilines */
 import React, { Component } from 'react';
 import { ControlLabel, FormGroup } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';

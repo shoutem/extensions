@@ -10,6 +10,7 @@ import {
   Image,
   LinearGradient,
   Screen,
+  SimpleHtml,
   Spinner,
   Text,
   View,
@@ -149,14 +150,23 @@ class SubscriptionsScreen extends PureComponent {
       <Screen styleName="paper with-notch-padding">
         <View styleName="flexible">
           <ScrollView contentContainerStyle={style.scrollContainer}>
-            <Text style={style.leadingText}>
-              {subscriptionMetadata.subscriptionScreenDescription}
-            </Text>
-            <Image
-              resizeMode="contain"
-              source={{ uri: subscriptionMetadata.subscriptionScreenImageUrl }}
-              style={style.image}
-            />
+            {!subscriptionMetadata.descriptionHtmlEnabled && (
+              <>
+                <Text style={style.leadingText}>
+                  {subscriptionMetadata.subscriptionScreenDescription}
+                </Text>
+                <Image
+                  resizeMode="contain"
+                  source={{
+                    uri: subscriptionMetadata.subscriptionScreenImageUrl,
+                  }}
+                  style={style.image}
+                />
+              </>
+            )}
+            {!!subscriptionMetadata.descriptionHtmlEnabled && (
+              <SimpleHtml body={subscriptionMetadata.descriptionHtml} />
+            )}
           </ScrollView>
           <LinearGradient
             pointerEvents="box-none"

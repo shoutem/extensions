@@ -1,8 +1,8 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "8.1.1",
-  "platform": ">=13.0.0",
+  "version": "9.0.1",
+  "platform": ">=13.0.3",
   "nativeChanges": {
     "lastVersion": "7.1.1",
     "settingsKeys": [
@@ -10,7 +10,7 @@
     ]
   },
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* Increased push notification message limit to 2000 characters.",
+  "releaseNotes": "* Added 'app' target option for new push notification creation",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": [
     "users"
@@ -21,7 +21,8 @@
     "shoutem.i18n",
     "shoutem.permissions",
     "shoutem.push-notification",
-    "shoutem.theme"
+    "shoutem.theme",
+    "shoutem.auth"
   ],
   "i18n": {
     "locale": "en",
@@ -64,6 +65,17 @@
         "defaultShortcutTitle": "Notification settings",
         "extensionTitle": "Notifications"
       }
+    },
+    {
+      "title": "Manage push notifications",
+      "description": "Create or edit push notifications for your users, from within the app. Access restricted to admins & moderators",
+      "name": "openPushNotificationsScreen",
+      "icon": "theme://bell.png",
+      "screen": "@.PushNotificationsScreen",
+      "settings": {
+        "defaultShortcutTitle": "Manage notifications",
+        "extensionTitle": "Notifications"
+      }
     }
   ],
   "screens": [
@@ -84,6 +96,18 @@
     },
     {
       "name": "NotificationDetailsScreen"
+    },
+    {
+      "name": "PushNotificationsScreen"
+    },
+    {
+      "name": "CreatePushNotificationScreen"
+    },
+    {
+      "name": "EditPushNotificationScreen"
+    },
+    {
+      "name": "ViewPushNotificationScreen"
     }
   ],
   "settingsPages": [

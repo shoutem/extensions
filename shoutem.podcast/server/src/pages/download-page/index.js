@@ -1,1 +1,1 @@
-export { default } from './DownloadPage';
+export { default as DownloadPage } from './DownloadPage';

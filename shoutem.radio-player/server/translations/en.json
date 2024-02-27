@@ -4,6 +4,7 @@
       "radio-shortcut-page.background-image-alt-text": "Background preview",
       "radio-shortcut-page.background-image-label-text": "Background image preview:",
       "radio-shortcut-page.form-label-note": "NOTE: Radio player's lock screen and notification banner controls will not appear or work in the app preview. These functionalities do work in live applications.",
+      "radio-shortcut-page.metadata-note": "NOTE: Your RSS feed metadata must be encoded in ID3 (MP3), Icy (Shoutcast / Icecast), Vorbis Comments (Vorbis, FLAC, Opus, Speex, Theora), or QuickTime MDTA metadata (mov, qt) formats to ensure accurate display of information within the app.",
       "radio-shortcut-page.form-background-field-title": "Background image URL:",
       "radio-shortcut-page.form-background-field-popover": "Only static image formats are supported (e.g. PNG, JPEG).",
       "radio-shortcut-page.form-feed-url-field-title": "RSS feed URL:",

@@ -96,9 +96,9 @@ export class SocialWallScreen extends RemoteDataListScreen {
   }
 
   openMyProfile() {
-    const { user, openProfileForLegacyUser } = this.props;
+    const { openProfileForLegacyUser } = this.props;
 
-    openProfileForLegacyUser(user.legacyId);
+    openProfileForLegacyUser(null, true);
   }
 
   fetchData() {
@@ -157,6 +157,7 @@ export class SocialWallScreen extends RemoteDataListScreen {
       user,
       extension: { enableGifAttachments, enablePhotoAttachments },
       giphyApiKey,
+      isLoggedIn,
       style,
     } = this.props;
 
@@ -169,13 +170,15 @@ export class SocialWallScreen extends RemoteDataListScreen {
     return (
       <Screen styleName="paper" style={style.screen}>
         <View styleName="horizontal md-gutter">
-          <TouchableOpacity onPress={this.openMyProfile}>
-            <Image
-              styleName="small-avatar md-gutter-right"
-              source={resolvedProfileAvatar}
-              style={style.profileAvatar}
-            />
-          </TouchableOpacity>
+          {isLoggedIn && (
+            <TouchableOpacity onPress={this.openMyProfile}>
+              <Image
+                styleName="small-avatar md-gutter-right"
+                source={resolvedProfileAvatar}
+                style={style.profileAvatar}
+              />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             onPress={this.handleNavigateToCreateStatus}
             styleName="flexible sm-gutter-vertical md-gutter-left"
@@ -210,6 +213,7 @@ const mapStateToProps = state => {
     giphyApiKey: selectors.getGiphyApiKey(state),
     enableComments: extension.enableComments,
     enableInteractions: extension.enableInteractions,
+    isLoggedIn: isAuthenticated(state),
   };
 };
 
@@ -222,7 +226,6 @@ const mapDispatchToProps = dispatch => ({
       likeStatus,
       unlikeStatus,
       authenticate,
-      isAuthenticated,
       openProfileForLegacyUser,
     },
     dispatch,

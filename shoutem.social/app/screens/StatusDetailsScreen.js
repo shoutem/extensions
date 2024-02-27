@@ -19,6 +19,7 @@ import {
 import { connectStyle } from '@shoutem/theme';
 import { Divider, ListView, Screen, Text, View } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
+import { getUser } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import {
   getRouteParams,
@@ -44,8 +45,6 @@ export function StatusDetailsScreen(props) {
 
   const addCommentInputRef = useRef(null);
 
-  const giphyApiKey = useSelector(getGiphyApiKey);
-
   const dispatch = useDispatch();
 
   const {
@@ -61,6 +60,8 @@ export function StatusDetailsScreen(props) {
   const filteredComments = useSelector(state =>
     selectors.getFilteredCommentsForStatus(state, statusId),
   );
+  const ownUser = useSelector(getUser);
+  const giphyApiKey = useSelector(getGiphyApiKey);
   const isTabBar = useSelector(isTabBarNavigation);
 
   const headerRight = useCallback(
@@ -137,17 +138,35 @@ export function StatusDetailsScreen(props) {
     );
   }, [comments]);
 
+  const handleOpenUserProfile = useCallback(
+    comment => {
+      const isOwnUserProfile =
+        ownUser.legacyId.toString() ===
+        (comment.user.id ?? comment.user.legacyId).toString();
+
+      dispatch(
+        openProfileForLegacyUser(
+          comment.user.id ?? comment.user.legacyId,
+          isOwnUserProfile,
+        ),
+      );
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [ownUser.legacyId],
+  );
+
   const renderRow = useCallback(
     comment => {
       return (
         <CommentView
           comment={comment}
           deleteComment={deleteComment}
-          openProfile={openProfileForLegacyUser}
+          onUserAvatarPress={handleOpenUserProfile}
           statusId={statusId}
         />
       );
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [statusId],
   );
 

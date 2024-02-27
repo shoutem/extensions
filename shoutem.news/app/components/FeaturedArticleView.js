@@ -18,6 +18,7 @@ import { ArticleView } from './ArticleView';
 export class FeaturedArticleView extends ArticleView {
   render() {
     const {
+      disableUppercasing,
       hideModificationTimestamp,
       title = '',
       imageUrl,
@@ -34,6 +35,7 @@ export class FeaturedArticleView extends ArticleView {
       momentDate.isAfter(0) && !hideModificationTimestamp ? (
         <Caption styleName="md-gutter-left">{momentDate.fromNow()}</Caption>
       ) : null;
+    const resolvedTitle = disableUppercasing ? title : title.toUpperCase();
 
     return (
       <TouchableOpacity onPress={this.onPress}>
@@ -43,7 +45,7 @@ export class FeaturedArticleView extends ArticleView {
             source={articleImage}
           >
             <Tile>
-              <Title>{title.toUpperCase()}</Title>
+              <Title>{resolvedTitle}</Title>
               <View styleName="horizontal md-gutter-top">
                 <Caption styleName="collapsible" numberOfLines={1}>
                   {author}

@@ -1,5 +1,6 @@
+import { CommonActions } from '@react-navigation/native';
 import _ from 'lodash';
-import { MODAL } from '../const';
+import { MODAL, navigationRef } from '../const';
 import { closeStack, openStack } from './navigationStacks';
 
 const ModalScreens = [];
@@ -49,8 +50,17 @@ export function openInModal(screen, params) {
   openStack(MODAL, { ...params }, screen);
 }
 
+function closeModalAction(modalStack) {
+  navigationRef.current?.dispatch(
+    CommonActions.navigate({
+      key: modalStack.previousRoute.key,
+      params: modalStack.previousRoute.params,
+    }),
+  );
+}
+
 export function closeModal() {
-  closeStack(MODAL);
+  closeStack(MODAL, closeModalAction);
 }
 
 export default {

@@ -1,0 +1,58 @@
+{
+  "title": "Theme",
+  "properties": {
+    "progressBarContainerBackgroundColor": {
+      "type": "string",
+      "title": "Background color of the progress bar container, color of the incomplete portion of the progress bar",
+      "format": "color",
+      "default": "#FFF"
+    },
+    "episodeProgressPlaybackIconColor": {
+      "type": "string",
+      "title": "Color of the icon displayed next to progress bar on list and grid items, indicating the playback status",
+      "format": "color",
+      "default": "#000"
+    },
+    "featuredEpisodeProgressPlaybackIconColor": {
+      "type": "string",
+      "title": "Color of the icon displayed next to progress bar on featured episode item, indicating the playback status",
+      "format": "color",
+      "default": "#FFF"
+    },
+    "completeProgressBackgroundColor": {
+      "type": "string",
+      "title": "Color of the progress bar when progress is completed",
+      "format": "color",
+      "default": "@featuredColor"
+    },
+    "progressBarBorderColor": {
+      "type": "string",
+      "title": "Border color",
+      "format": "color",
+      "default": "transparent"
+    },
+    "progressBarBorderWidth": {
+      "type": "number",
+      "title": "Border width",
+      "format": "number",
+      "default": "0.2"
+    }
+    
+    
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Podcast episode progress bar",
+        "properties": [
+          "progressBarContainerBackgroundColor",
+          "episodeProgressPlaybackIconColor",
+          "featuredEpisodeProgressPlaybackIconColor",
+          "completeProgressBackgroundColor",
+          "progressBarBorderColor",
+          "progressBarBorderWidth"
+        ]
+      }
+    ]
+  }
+}

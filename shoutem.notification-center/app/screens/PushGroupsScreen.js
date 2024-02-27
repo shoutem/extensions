@@ -160,8 +160,7 @@ export class PushGroupsScreen extends PureComponent {
           <Switch
             value={_.includes(selectedGroups, prefixedTag)}
             onValueChange={value =>
-              this.onToggleGroupSubscription(prefixedTag, value)
-            }
+              this.onToggleGroupSubscription(prefixedTag, value)}
           />
         </Row>
         <Divider styleName="line" />

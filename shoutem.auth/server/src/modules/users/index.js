@@ -1,21 +1,21 @@
-export { moduleName, DEFAULT_LIMIT, DEFAULT_OFFSET } from './const';
+import { reducer } from './redux';
 
 export { UsersDashboard } from './components';
-
-export { getErrorMessage } from './services';
-
+export { DEFAULT_LIMIT, DEFAULT_OFFSET, moduleName } from './const';
 export {
-  reducer,
-  getUsers,
-  loadUsers,
-  loadNextUsersPage,
-  loadPreviousUsersPage,
+  changePassword,
+  changeRole,
   createUser,
   deleteUser,
-  updateUser,
-  changePassword,
   downloadUserData,
+  getUsers,
+  loadNextUsersPage,
+  loadPreviousUsersPage,
+  loadUser,
+  loadUsers,
+  reducer,
+  updateUser,
 } from './redux';
+export { getErrorMessage } from './services';
 
-import { reducer } from './redux';
 export default reducer;

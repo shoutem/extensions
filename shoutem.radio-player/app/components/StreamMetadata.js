@@ -8,27 +8,31 @@ function StreamMetadata({
   artist,
   artwork,
   showArtwork,
-  songName,
+  title,
   style,
   withOverlay,
 }) {
-  if (!artist && !songName) {
+  if (!artist && !title) {
     return null;
   }
 
   return (
     <View style={[style.songMetaContainer, withOverlay && style.withOverlay]}>
       {!!showArtwork && (
-        <Image source={artwork} style={style.artworkStyle} styleName="small" />
+        <Image
+          source={{ uri: artwork }}
+          style={style.artworkStyle}
+          styleName="small"
+        />
       )}
       <View
         styleName="vertical center"
-        style={!showArtwork && style.alignSelfCenter}
+        style={[style.metaTextContainer, !showArtwork && style.alignSelfCenter]}
       >
         <Text numberOfLines={1} style={style.artistName}>
           {artist}
         </Text>
-        <Text style={style.songName}>{songName}</Text>
+        <Text style={style.songName}>{title}</Text>
       </View>
     </View>
   );
@@ -36,10 +40,10 @@ function StreamMetadata({
 
 StreamMetadata.propTypes = {
   artist: PropTypes.string,
-  artwork: PropTypes.object,
+  artwork: PropTypes.string,
   showArtwork: PropTypes.bool,
-  songName: PropTypes.string,
   style: PropTypes.object,
+  title: PropTypes.string,
   withOverlay: PropTypes.bool,
 };
 
@@ -47,7 +51,7 @@ StreamMetadata.defaultProps = {
   artist: null,
   artwork: null,
   showArtwork: false,
-  songName: null,
+  title: null,
   style: {},
   withOverlay: false,
 };

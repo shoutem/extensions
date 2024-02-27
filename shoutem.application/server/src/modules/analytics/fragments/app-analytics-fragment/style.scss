@@ -1,0 +1,15 @@
+.app-analytics__analytics-container {
+  margin-top: 15px;
+  border: 1px solid #f3f4f6;
+  padding: 16px;
+}
+
+.app-analytics__main-container {
+  flex-direction: row;
+}
+
+.analytics-dropdown {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 5px;
+}

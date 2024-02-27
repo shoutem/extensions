@@ -1,10 +1,10 @@
 {
   "name": "about",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "platform": ">=6",
   "title": "About",
   "description": "Show info about your app or your business",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "releaseNotes": "* Adjusted Navigation Bar title capitalization to adhere to Main Navigation settings",
   "icon": "server/assets/add-about-image.png",
   "dependencies": [
     "shoutem.application",

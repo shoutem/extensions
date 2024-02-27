@@ -1,0 +1,12 @@
+{
+  "shoutem": {
+    "google-analytics": {
+      "app-form.property-id": "Property ID",
+      "app-form.service-account-key-json": "Service account key (.json)",
+      "app-form.required-field-message": "Required field",
+      "app-form.save": "Save",
+      "app-form.error-message": "Something went wrong, please try again",
+      "settings-page.configuration": "Configuration"
+    }
+  }
+}

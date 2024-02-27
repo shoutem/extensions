@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { shouldRefresh } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { Screen, Spinner } from '@shoutem/ui';
 import { CATEGORIES_SCHEMA } from 'shoutem.cms';
@@ -24,16 +25,21 @@ renderMessage.propTypes = { item: PropTypes.object };
 
 export class InteractiveFaqScreen extends PureComponent {
   static propTypes = {
-    isTabBar: PropTypes.bool,
-    parentCategoryId: PropTypes.string,
-    startingMessage: PropTypes.string,
-    loadCategories: PropTypes.func,
-    openCategory: PropTypes.func,
-    loadQuestions: PropTypes.func,
-    goBack: PropTypes.func,
-    questions: PropTypes.array,
-    categoryPath: PropTypes.array,
+    allQuestions: PropTypes.array.isRequired,
+    categoryPath: PropTypes.array.isRequired,
+    goBack: PropTypes.func.isRequired,
+    isTabBar: PropTypes.bool.isRequired,
+    loadCategories: PropTypes.func.isRequired,
+    loadQuestions: PropTypes.func.isRequired,
+    openCategory: PropTypes.func.isRequired,
+    parentCategoryId: PropTypes.string.isRequired,
+    questions: PropTypes.array.isRequired,
+    startingMessage: PropTypes.string.isRequired,
     style: PropTypes.any,
+  };
+
+  static defaultProps = {
+    style: {},
   };
 
   constructor(props) {
@@ -58,12 +64,22 @@ export class InteractiveFaqScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const {
-      navigation,
-      parentCategoryId,
-      loadCategories,
-      loadQuestions,
-    } = this.props;
+    this.loadData();
+  }
+
+  componentDidUpdate() {
+    const { allQuestions } = this.props;
+
+    if (shouldRefresh(allQuestions)) {
+      this.loadData();
+    }
+  }
+
+  loadData() {
+    const { parentCategoryId, loadCategories, loadQuestions } = this.props;
+
+    LayoutAnimation.easeInEaseOut();
+    this.setState({ loading: true });
 
     if (!parentCategoryId) {
       LayoutAnimation.easeInEaseOut();
@@ -134,6 +150,7 @@ export class InteractiveFaqScreen extends PureComponent {
 
   render() {
     const { questions, categoryPath, style, isTabBar } = this.props;
+
     const { conversationHistory, loading } = this.state;
     const hasHistory = !_.isEmpty(categoryPath);
     const screenStyle = [style.container, isTabBar && style.paddedConatiner];
@@ -174,6 +191,7 @@ const mapStateToProps = (state, ownProps) => {
     parentCategoryId,
     startingMessage,
     questions: selectors.getActiveLevelQuestions(state),
+    allQuestions: selectors.getQuestions(state),
     isTabBar: isTabBarNavigation(state),
     categoryPath: selectors.getQuestionsPath(state),
   };

@@ -1,0 +1,8 @@
+{
+  "shoutem": {
+    "audio": {
+      "playbackErrorTitle": "Playback Error",
+      "playbackErrorMessage": "Oops! Something went wrong during audio playback. Please try again."
+    }
+  }
+}

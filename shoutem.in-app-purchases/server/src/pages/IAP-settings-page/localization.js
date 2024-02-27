@@ -11,6 +11,7 @@ const IAPHUB_API_KEY = `${key}.iaphub-api-key`;
 const IAPHUB_ENVIRONMENT = `${key}.iaphub-environment`;
 const ENABLE_SUBSCRIPTION_SCREEN = `${key}.enable-subscription-screen`;
 const SAVE_BUTTON = `${key}.save-button`;
+const ERROR_MESSAGE = `${key}.error-message`;
 
 export default {
   GENERAL_SETTINGS_TITLE,
@@ -24,4 +25,5 @@ export default {
   IAPHUB_ENVIRONMENT,
   ENABLE_SUBSCRIPTION_SCREEN,
   SAVE_BUTTON,
+  ERROR_MESSAGE,
 };

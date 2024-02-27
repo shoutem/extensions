@@ -1,14 +1,14 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "12.0.0",
+  "version": "12.0.3",
   "platform": ">=13",
   "nativeChanges": {
     "lastVersion": "10.0.0",
     "settingsKeys": []
   },
   "skipClone": false,
-  "releaseNotes": "* Added support for GIF attachments in statuses and comments",
+  "releaseNotes": "* No user facing changes\n* Optimized swagger usage to reduce download size when building apps",
   "description": "Let members create posts, comment and like them",
   "categories": [
     "users"

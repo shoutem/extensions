@@ -1,0 +1,37 @@
+{
+  "name": "google-analytics",
+  "title": "Google analytics",
+  "version": "3.0.1",
+  "description": "Measure and analyze activity across your app with Google analytics",
+  "releaseNotes": "* No user facing changes, cloud improvements",
+  "platform": ">=13.0.4",
+  "icon": "server/assets/add-analytics-image.png",
+  "nativeChanges": {
+    "lastVersion": "3.0.0"
+  },
+  "categories": [
+    "analytics"
+  ],
+  "dependencies": [
+    "shoutem.analytics",
+    "shoutem.firebase"
+  ],
+  "settingsPages": [
+    {
+      "page": "@.SettingsPage",
+      "title": "Settings"
+    }
+  ],
+  "pages": [
+    {
+      "name": "SettingsPage",
+      "type": "react-page"
+    }
+  ],
+  "cloud": [
+    {
+      "type": "api",
+      "script": "npm run migrate:docker && npm run start:server:docker"
+    }
+  ]
+}

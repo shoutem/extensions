@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { cloneStatus } from '@shoutem/redux-io';
+import { cloneStatus, getMeta } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
@@ -32,7 +32,7 @@ class EpisodesGridScreen extends EpisodesListScreen {
   }
 
   renderFeaturedItem(episode) {
-    const { enableDownload, feedUrl } = this.props;
+    const { enableDownload, feedUrl, data } = this.props;
     const { screenSettings } = getRouteParams(this.props);
 
     return screenSettings.hasFeaturedItem && episode ? (
@@ -42,12 +42,13 @@ class EpisodesGridScreen extends EpisodesListScreen {
         episode={episode[0]}
         feedUrl={feedUrl}
         onPress={this.openEpisodeWithId}
+        meta={getMeta(data)}
       />
     ) : null;
   }
 
   renderRow(episodes) {
-    const { enableDownload, feedUrl } = this.props;
+    const { enableDownload, feedUrl, data } = this.props;
 
     const episodeViews = _.map(episodes, episode => {
       return (
@@ -57,6 +58,7 @@ class EpisodesGridScreen extends EpisodesListScreen {
           episode={episode}
           feedUrl={feedUrl}
           onPress={this.openEpisodeWithId}
+          meta={getMeta(data)}
         />
       );
     });

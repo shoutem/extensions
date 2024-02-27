@@ -5,6 +5,7 @@ import {
   ControlLabel,
   FormControl,
   FormGroup,
+  HelpBlock,
 } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -52,6 +53,7 @@ class IAPSettingsPage extends PureComponent {
 
     this.state = {
       loading: false,
+      error: null,
       settings: _.pick(settings, SETTINGS_KEYS),
     };
   }
@@ -92,7 +94,10 @@ class IAPSettingsPage extends PureComponent {
     return event => {
       const newText = event.target.value;
 
-      this.setState({ settings: { ...settings, [fieldName]: newText } });
+      this.setState({
+        settings: { ...settings, [fieldName]: newText },
+        error: null,
+      });
     };
   }
 
@@ -107,20 +112,29 @@ class IAPSettingsPage extends PureComponent {
     });
   }
 
-  handleSave() {
+  async handleSave() {
     const { extension, updateExtensionSettingsAction } = this.props;
     const { settings } = this.state;
 
-    this.setState({ loading: true });
+    this.setState({ loading: true, error: null });
 
-    updateExtensionSettingsAction(extension, settings).finally(() =>
-      this.setState({ loading: false }),
-    );
+    try {
+      await updateExtensionSettingsAction(extension, settings);
+      this.setState({ loading: false, error: null });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+      this.setState({
+        loading: false,
+        error: i18next.t(LOCALIZATION.ERROR_MESSAGE),
+      });
+    }
   }
 
   render() {
     const {
       loading,
+      error,
       settings: {
         iOSProductId,
         androidProductId,
@@ -134,7 +148,7 @@ class IAPSettingsPage extends PureComponent {
     const saveEnabled = this.saveEnabled();
 
     return (
-      <div className="chat-settings-page">
+      <div className="iap-settings-page">
         <div className="instructions-container">
           <p className="instructions">
             <Trans i18nKey={LOCALIZATION.SETUP_INSTRUCTIONS}>
@@ -211,6 +225,11 @@ class IAPSettingsPage extends PureComponent {
             />
           </FormGroup>
         </form>
+        {error && (
+          <FormGroup validationState="error">
+            <HelpBlock>{error}</HelpBlock>
+          </FormGroup>
+        )}
         <ButtonToolbar>
           <Button
             bsStyle="primary"

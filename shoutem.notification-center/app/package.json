@@ -1,12 +1,14 @@
 {
   "name": "shoutem.notification-center",
-  "version": "8.1.1",
+  "version": "9.0.1",
   "description": "Manage push notification settings within the app",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
     "react-native-localize": "2.2.2",
+    "react-native-select-dropdown": "3.4.0",
+    "react-native-modal": "13.0.1",
     "xcode": "3.0.1"
   },
   "peerDependencies": {
@@ -15,7 +17,11 @@
     "@shoutem/redux-io": "*",
     "@shoutem/theme": "*",
     "@shoutem/ui": "*",
-    "react-native-permissions": "*"
+    "@react-native-community/datetimepicker": "*",
+    "react-native-permissions": "*",
+    "reselect": "*",
+    "react-native-safe-area-context": "*",
+    "lottie-react-native": "*"
   },
   "nativeDependencies": [
     "react-native-localize"

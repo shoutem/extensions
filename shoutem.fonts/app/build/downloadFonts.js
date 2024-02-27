@@ -43,7 +43,9 @@ function ensureFontsFilePath() {
 function downloadFont(fontConfig) {
   console.log(`Downloading ${fontConfig.name} font`);
 
-  const fontDownloadPaths = _.values(_.omit(fontConfig, ['name', 'default']));
+  const fontDownloadPaths = _.compact(
+    _.values(_.omit(fontConfig, ['name', 'default'])),
+  );
   const fontFileNames = _.map(
     fontDownloadPaths,
     fontUrl => /[^/]*$/.exec(fontUrl)[0],
