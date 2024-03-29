@@ -27,3 +27,4 @@ export { default as NavigationStacks } from './navigationStacks';
 export { default as resolveScrollViewProps } from './resolveScrollViewProps';
 export { default as Scaler } from './Scaler';
 export { default as Decorators } from './screenDecorators';
+export { default as TabBarRenderer } from './tabBarRenderer';

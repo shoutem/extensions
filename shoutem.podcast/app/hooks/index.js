@@ -1,1 +1,1 @@
-export { usePodcastPlayerFeatures } from './usePodcastPlayerFeatures';
+export { usePodcastEpisodePlayer } from './usePodcastEpisodePlayer';

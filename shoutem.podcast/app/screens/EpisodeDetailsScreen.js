@@ -26,7 +26,7 @@ import { closeModal, getRouteParams } from 'shoutem.navigation';
 import { ext as rssExt, getLeadImageUrl } from 'shoutem.rss';
 import { FavoriteButton } from '../components';
 import { ext } from '../const';
-import { PodcastPlayer } from '../fragments';
+import { PodcastEpisodePlayer } from '../fragments';
 import {
   deleteEpisode,
   downloadEpisode,
@@ -276,30 +276,16 @@ export class EpisodeDetailsScreen extends PureComponent {
     );
   }
 
-  renderPlayer() {
-    const { downloadedEpisode, episode, id, meta } = this.props;
-
-    const audioFile = _.get(episode, 'audioAttachments.0.src');
-
-    if (!audioFile) {
-      return null;
-    }
-
-    const episodeImageUrl = getLeadImageUrl(episode) ?? meta?.imageUrl;
-
-    return (
-      <PodcastPlayer
-        downloadedEpisode={downloadedEpisode}
-        episode={episode}
-        episodeId={id}
-        url={audioFile}
-        artwork={episodeImageUrl}
-      />
-    );
-  }
-
   render() {
-    const { data, episode, episodeNotFound, style } = this.props;
+    const {
+      data,
+      episode,
+      episodeNotFound,
+      meta,
+      feedUrl,
+      shortcutTitle,
+      style,
+    } = this.props;
 
     const loading = isBusy(data) || episodeNotFound;
     const author = _.get(episode, 'author', '');
@@ -333,12 +319,19 @@ export class EpisodeDetailsScreen extends PureComponent {
                     </Caption>
                   )}
                 </View>
+                <PodcastEpisodePlayer
+                  episode={episode}
+                  artwork={getLeadImageUrl(episode) ?? meta?.imageUrl}
+                  playlist={{
+                    id: feedUrl,
+                    title: shortcutTitle,
+                  }}
+                />
               </View>
               <View styleName="solid">
                 <SimpleHtml body={body} />
               </View>
             </ScrollView>
-            {this.renderPlayer()}
           </View>
         )}
       </Screen>
@@ -347,33 +340,40 @@ export class EpisodeDetailsScreen extends PureComponent {
 }
 
 EpisodeDetailsScreen.propTypes = {
-  actionSheetOptions: PropTypes.array.isRequired,
   deleteEpisode: PropTypes.func.isRequired,
   downloadEpisode: PropTypes.func.isRequired,
-  downloadInProgress: PropTypes.bool.isRequired,
   enableDownload: PropTypes.bool.isRequired,
-  enableSharing: PropTypes.bool.isRequired,
-  episodeNotFound: PropTypes.bool.isRequired,
-  favoriteEpisode: PropTypes.func.isRequired,
-  feedUrl: PropTypes.func.isRequired,
-  hasFavorites: PropTypes.bool.isRequired,
-  id: PropTypes.string.isRequired,
-  isFavorited: PropTypes.bool.isRequired,
+  episode: PropTypes.object.isRequired,
+  feedUrl: PropTypes.string.isRequired,
+  meta: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
-  unfavoriteEpisode: PropTypes.func.isRequired,
+  actionSheetOptions: PropTypes.array,
   data: PropTypes.array,
   downloadedEpisode: PropTypes.object,
-  episode: PropTypes.object,
-  meta: PropTypes.object,
+  downloadInProgress: PropTypes.bool,
+  enableSharing: PropTypes.bool,
+  episodeNotFound: PropTypes.bool,
+  favoriteEpisode: PropTypes.func,
+  hasFavorites: PropTypes.bool,
+  isFavorited: PropTypes.bool,
+  shortcutTitle: PropTypes.string,
   style: PropTypes.object,
+  unfavoriteEpisode: PropTypes.func,
 };
 
 EpisodeDetailsScreen.defaultProps = {
+  actionSheetOptions: [],
   data: undefined,
-  downloadedEpisode: undefined,
-  episode: undefined,
-  meta: undefined,
+  downloadInProgress: false,
+  downloadedEpisode: null,
+  episodeNotFound: false,
+  enableSharing: false,
+  favoriteEpisode: _.noop,
+  hasFavorites: false,
+  isFavorited: false,
+  shortcutTitle: '',
   style: {},
+  unfavoriteEpisode: _.noop,
 };
 
 export function mapStateToProps(state, ownProps) {
@@ -384,6 +384,7 @@ export function mapStateToProps(state, ownProps) {
     screenSettings: { enableSharing = false },
     episode: favoritedEpisode,
     meta,
+    shortcutTitle,
   } = getRouteParams(ownProps);
 
   const data = getEpisodesFeed(state, feedUrl);
@@ -435,6 +436,7 @@ export function mapStateToProps(state, ownProps) {
     hasFavorites,
     isFavorited,
     meta,
+    shortcutTitle,
   };
 }
 

@@ -1,6 +1,11 @@
-import { Platform } from 'react-native';
-import { Event, TrackPlayer, updateAudioTrackProgress } from 'shoutem.audio';
+import {
+  Event,
+  State,
+  TrackPlayer,
+  updateAudioTrackProgress,
+} from 'shoutem.audio';
 import { ext, PODCAST_TRACK_IDENTIFIER } from '../const';
+import { clearLastPlayed } from '../redux';
 
 const shouldHandleEvent = activeTrack => {
   if (!activeTrack || !activeTrack.id.startsWith(PODCAST_TRACK_IDENTIFIER)) {
@@ -14,7 +19,7 @@ export const PlaybackService = async dispatch => {
   TrackPlayer.addEventListener(
     Event.PlaybackPlayWhenReadyChanged,
     async event => {
-      if (!event.playWhenReady || Platform.OS === 'android') {
+      if (!event.playWhenReady) {
         return;
       }
 
@@ -31,6 +36,14 @@ export const PlaybackService = async dispatch => {
       });
     },
   );
+
+  TrackPlayer.addEventListener(Event.PlaybackState, async event => {
+    if (event.state !== State.Ended) {
+      return;
+    }
+
+    dispatch(clearLastPlayed());
+  });
 
   TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, async event => {
     const activeTrack = await TrackPlayer.getActiveTrack();

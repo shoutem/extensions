@@ -1,14 +1,32 @@
 {
   "name": "audio",
   "title": "Audio",
-  "version": "5.0.0",
-  "platform": ">=13.0.5",
+  "version": "6.0.0",
+  "platform": ">=13.0.7",
   "description": "Track player components for other extensions to utilize. NOTE: Lock screen controls will not be visible in the preview.",
-  "releaseNotes": "* Updated underlying library for audio playback (react-native-track-player) to enhance the overall user experience during listening.",
+  "releaseNotes": "* Incorporated audio player banner and modal",
   "dependencies": ["shoutem.application"],
   "nativeChanges": {
     "lastVersion": "5.0.0"
   },
   "icon": "server/assets/add-audio-image.png",
-  "type": "system"
+  "type": "system",
+  "settingsPages": [
+    {
+      "page": "shoutem.theme.ExtensionThemeSettingsPage",
+      "title": "Settings",
+      "categories": [
+        "style"
+      ],
+      "parameters": {
+        "extensionTheme": "Theme"
+      }
+    }
+  ],
+  "extensionThemes": [
+    {
+      "name": "Theme",
+      "path": "server/themes/theme.json"
+    }
+  ]
 }

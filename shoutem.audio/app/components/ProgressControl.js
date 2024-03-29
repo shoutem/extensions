@@ -83,11 +83,13 @@ ProgressControl.propTypes = {
   maxValue: PropTypes.number.isRequired,
   onValueChange: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
+  hideTotalDuration: PropTypes.bool,
   style: PropTypes.object,
 };
 
 ProgressControl.defaultProps = {
   disabled: false,
+  hideTotalDuration: false,
   style: {},
 };
 

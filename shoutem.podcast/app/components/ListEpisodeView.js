@@ -28,13 +28,11 @@ import FavoriteButton from './FavoriteButton';
  */
 export class ListEpisodeView extends EpisodeView {
   render() {
-    const { isActiveTrack, isPlaying } = this.state;
     const {
       enableDownload,
       episode,
       hasFavorites,
       isFavorited,
-      savedProgress,
       style,
     } = this.props;
     const { downloadInProgress, timeUpdated, title } = episode;
@@ -87,12 +85,7 @@ export class ListEpisodeView extends EpisodeView {
               </>
             </View>
           </View>
-          <EpisodeProgress
-            showPlaybackIcon={isActiveTrack}
-            isPlaying={isPlaying}
-            progressPercentage={savedProgress?.completionPercentage ?? 0}
-            style={style.episodeProgress}
-          />
+          <EpisodeProgress episode={episode} style={style.episodeProgress} />
         </View>
         <Divider styleName="line" />
       </TouchableOpacity>

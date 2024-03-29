@@ -1,3 +1,11 @@
-export { updateAudioTrackProgress } from './actions';
+export {
+  setActivePlaylistOrStream,
+  setBannerShown,
+  updateAudioTrackProgress,
+} from './actions';
 export { default as reducer } from './reducer';
-export { getAudioTrackProgress } from './selectors';
+export {
+  getActivePlaylistOrStream,
+  getAudioPlayerBannerShown,
+  getAudioTrackProgress,
+} from './selectors';

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
@@ -12,12 +12,12 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
+import { images } from 'shoutem.audio';
 import { I18n } from 'shoutem.i18n';
 import {
   composeNavigationStyles,
   isTabBarNavigation,
 } from 'shoutem.navigation';
-import { images } from '../assets';
 import { RadioActionSheet } from '../components';
 import { ext } from '../const';
 import { RadioPlayer } from '../fragments';
@@ -43,10 +43,7 @@ export function ArtworkRadioScreen({
     });
   }, [navigation, navbarTitle]);
 
-  const { nowPlayingMetadata, isActiveStream } = useRadioFeatures(
-    streamUrl,
-    streamTitle,
-  );
+  const { nowPlayingMetadata, isActiveStream } = useRadioFeatures(streamUrl);
 
   const {
     shouldSleep,
@@ -64,19 +61,37 @@ export function ArtworkRadioScreen({
     shareStream,
   } = useRadioActionSheet(streamUrl, streamTitle);
 
+  const resolvedImage = useMemo(
+    () =>
+      isActiveStream && nowPlayingMetadata?.artwork
+        ? { uri: nowPlayingMetadata.artwork }
+        : images.music,
+    [isActiveStream, nowPlayingMetadata?.artwork],
+  );
+
+  const disabledOpacityStyle = useMemo(
+    () => (!isActiveStream ? style.disabledOpacity : {}),
+    [isActiveStream, style.disabledOpacity],
+  );
+
+  const nowPlayingContainerStyle = useMemo(
+    () =>
+      isTabBar ? style.nowPlayingContainer : style.nowPlayingContainerTabBar,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [style.nowPlayingContainer, style.nowPlayingContainerTabBar],
+  );
+
+  const liveStream = useMemo(
+    () => ({
+      url: streamUrl,
+      name: shortcut.title,
+    }),
+    [shortcut.title, streamUrl],
+  );
+
   if (!streamUrl) {
     return <EmptyListImage message={I18n.t(ext('missingStreamUrl'))} />;
   }
-
-  const resolvedImage =
-    isActiveStream && nowPlayingMetadata?.artwork
-      ? { uri: nowPlayingMetadata.artwork }
-      : images.music;
-
-  const disabledOpacityStyle = !isActiveStream ? style.disabledOpacity : {};
-  const nowPlayingContainerStyle = isTabBar
-    ? style.nowPlayingContainer
-    : style.nowPlayingContainerTabBar;
 
   return (
     <Screen style={style.screen}>
@@ -98,7 +113,8 @@ export function ArtworkRadioScreen({
             imageStyle={style.artworkCircularImage}
           >
             <RadioPlayer
-              url={streamUrl}
+              liveStream={liveStream}
+              title={shortcut.title}
               onSleepTriggered={handleSleep}
               triggerSleep={shouldSleep}
               style={style.radioPlayer}

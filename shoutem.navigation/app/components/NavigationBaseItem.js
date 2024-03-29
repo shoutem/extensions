@@ -2,24 +2,27 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { Image, Text } from '@shoutem/ui';
 import { I18n, LocalizationContext } from 'shoutem.i18n';
 import { resolveIconSource } from 'shoutem.theme/helpers/resolveIconSource';
-import { Text, Image } from '@shoutem/ui';
 
 const missingIconSource = require('../assets/images/missing_icon.png');
 
 export class NavigationBaseItem extends PureComponent {
   static propTypes = {
-    /* eslint-disable react/forbid-prop-types */
-    shortcut: PropTypes.object.isRequired,
-    style: PropTypes.object,
-    showText: PropTypes.bool,
+    shortcut: PropTypes.object, // Shortcut can be undefined if there is less than 5 tab items in tab bar navigation.
     showIcon: PropTypes.bool,
+    showText: PropTypes.bool,
+    style: PropTypes.object,
     onPress: PropTypes.func,
   };
 
   static defaultProps = {
+    shortcut: undefined,
     showIcon: true,
+    showText: false,
+    style: {},
+    onPress: _.noop,
   };
 
   constructor(props) {

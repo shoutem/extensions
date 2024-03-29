@@ -1,4 +1,7 @@
 import TrackPlayer, { Event } from 'react-native-track-player';
+import { Toast } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { ext } from '../const';
 
 // Common event handlers that are applied universally to all track player implementations. If you wish to
 // extend this behavior with module specific logic, create PlaybackService inside appropriate module and register it
@@ -33,5 +36,12 @@ export const PlaybackService = async () => {
   TrackPlayer.addEventListener(Event.RemoteSeek, async event => {
     await TrackPlayer.seekTo(event.position);
     await TrackPlayer.play();
+  });
+
+  TrackPlayer.addEventListener(Event.PlaybackError, async () => {
+    Toast.showInfo({
+      title: I18n.t(ext('playbackErrorTitle')),
+      message: I18n.t(ext('playbackErrorMessage')),
+    });
   });
 };

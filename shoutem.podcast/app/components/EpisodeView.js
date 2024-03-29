@@ -1,11 +1,9 @@
 /* eslint-disable react/no-unused-state */
-import { createRef, PureComponent } from 'react';
+import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { Event, getAudioTrackProgress, TrackPlayer } from 'shoutem.audio';
 import { getLeadImageUrl } from 'shoutem.rss';
-import { ext } from '../const';
 import {
   deleteEpisode,
   downloadEpisode,
@@ -14,7 +12,6 @@ import {
   getIsFavorited,
   unfavoriteEpisode,
 } from '../redux';
-import { getTrackId } from '../services';
 
 export class EpisodeView extends PureComponent {
   static propTypes = {
@@ -41,45 +38,6 @@ export class EpisodeView extends PureComponent {
     super(props);
 
     autoBindReact(this);
-
-    this.activeTrackChangedSubscription = createRef();
-    this.playbackSubscription = createRef();
-
-    this.state = {
-      isActiveTrack: false,
-      isPlaying: false,
-    };
-  }
-
-  componentDidMount() {
-    const { episode } = this.props;
-
-    this.activeTrackChangedSubscription.current = TrackPlayer.addEventListener(
-      Event.PlaybackActiveTrackChanged,
-      event => {
-        const isActiveTrack =
-          event.track?.id === getTrackId(episode.id, episode.url);
-
-        this.setState({ isActiveTrack });
-      },
-    );
-
-    this.playbackSubscription.current = TrackPlayer.addEventListener(
-      Event.PlaybackPlayWhenReadyChanged,
-      event => {
-        this.setState({ isPlaying: event.playWhenReady });
-      },
-    );
-  }
-
-  componentWillUnmount() {
-    if (this.activeTrackChangedSubscription.current) {
-      this.activeTrackChangedSubscription.current.remove();
-    }
-
-    if (this.playbackSubscription.current) {
-      this.playbackSubscription.current.remove();
-    }
   }
 
   getEpisodeUrl() {
@@ -138,13 +96,12 @@ export class EpisodeView extends PureComponent {
 
 export function mapStateToProps(state, ownProps) {
   const {
-    episode: { id, url },
+    episode: { id },
   } = ownProps;
 
   return {
     hasFavorites: getHasFavorites(state),
     isFavorited: getIsFavorited(state, id),
-    savedProgress: getAudioTrackProgress(state, ext(), getTrackId(id, url)),
   };
 }
 

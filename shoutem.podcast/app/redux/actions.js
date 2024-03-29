@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { getShortcut } from 'shoutem.application';
+import { getActivePlaylistOrStream } from 'shoutem.audio';
 import { loadFeed } from 'shoutem.rss';
 import {
   DEFAULT_PAGE_LIMIT,
@@ -10,6 +11,7 @@ import {
   ext,
   RSS_PODCAST_SCHEMA,
   SET_DOWNLOAD_IN_PROGRESS,
+  UPDATE_LAST_PLAYED,
 } from '../const';
 import {
   episodeDownloadManager,
@@ -101,3 +103,17 @@ export function favoriteEpisode(episode, enableDownload, feedUrl, meta) {
 export function unfavoriteEpisode(id) {
   return { type: UNFAVORITE_EPISODE, payload: { id } };
 }
+
+export const updateLastPlayed = (feedUrl, track) => {
+  return {
+    type: UPDATE_LAST_PLAYED,
+    payload: { feedUrl, track },
+  };
+};
+
+export const clearLastPlayed = () => (dispatch, getState) => {
+  const state = getState();
+  const activePlaylist = getActivePlaylistOrStream(state);
+
+  dispatch(updateLastPlayed(activePlaylist.id, null));
+};

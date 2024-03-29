@@ -50,6 +50,17 @@ export default () => ({
       flexDirection: 'row',
       alignItems: 'center',
     },
+    progressBar: {
+      progressContainer: {
+        backgroundColor: resolveVariable('progressBarContainerBackgroundColor'),
+        borderColor: resolveVariable('progressBarBorderColor'),
+        // Somehow we get string value here and then Android crashes if in release mode. Add safeguard...
+        borderWidth: parseFloat(resolveVariable('progressBarBorderWidth')),
+      },
+      completeProgressBarBackground: {
+        backgroundColor: resolveVariable('completeProgressBackgroundColor'),
+      },
+    },
   },
 
   [`${ext('FeaturedEpisodeView')}`]: {
@@ -91,20 +102,6 @@ export default () => ({
     },
   },
 
-  [`${ext('EpisodeDetailsScreen')}`]: {
-    container: {
-      flex: 1,
-      // Add padding because PodcastPlayer is position absolutely, so that screen content doesn't go under it.
-      // PodcastPlayer height 100 + bottom padding 15 + top padding 5 - details screen content (we want content
-      // to disappear as it touches player's border, not X pixel before)
-      paddingBottom:
-        responsiveHeight(100) +
-        resolveVariable('mediumGutter') +
-        resolveVariable('smallGutter') -
-        resolveVariable('mediumGutter'),
-    },
-  },
-
   [`${ext('LargeGridEpisodeView')}`]: {
     image: {
       alignSelf: 'center',
@@ -138,18 +135,43 @@ export default () => ({
         },
       }),
     },
-    controls: { marginTop: responsiveHeight(-20) },
-    spinnerContainer: {
-      height: responsiveHeight(45),
-      width: responsiveHeight(45),
+  },
+
+  [`${ext('PodcastEpisodePlayer')}`]: {
+    button: {
+      height: responsiveHeight(50),
+      width: responsiveHeight(50),
+      borderRadius: responsiveHeight(25),
+      backgroundColor: resolveVariable('secondaryButtonBackgroundColor'),
+      marginTop: resolveVariable('mediumGutter'),
       justifyContent: 'center',
       alignItems: 'center',
     },
-    playbackIcon: {
-      icon: { height: responsiveHeight(45), width: responsiveHeight(45) },
+    icon: {
+      color: resolveVariable('secondaryButtonTextColor'),
+      width: responsiveHeight(30),
+      height: responsiveHeight(30),
     },
-    disabledJumpTimeIcon: {
-      container: { opacity: 0.5 },
+  },
+
+  [`${ext('ContinuePlayingButton')}`]: {
+    button: {
+      position: 'absolute',
+      width: responsiveHeight(50),
+      height: responsiveHeight(50),
+      borderRadius: responsiveHeight(25),
+      bottom: responsiveHeight(50),
+      right: responsiveHeight(30),
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: resolveVariable('controlsContainerBackgroundColor'),
+      borderColor: resolveVariable('controlsPrimaryColor'),
+      borderWidth: 1,
+    },
+    icon: {
+      height: responsiveHeight(30),
+      width: responsiveHeight(30),
+      color: resolveVariable('controlsPrimaryColor'),
     },
   },
 });

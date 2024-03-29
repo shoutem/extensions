@@ -1,4 +1,3 @@
-export { calculateProgressInterval } from './calculateProgressInterval';
 export {
   episodeDownloadManager,
   getDownloadDir,
@@ -7,4 +6,3 @@ export {
   getPathFromFileName,
 } from './episodeDownloadManager';
 export { PlaybackService } from './PlaybackService';
-export * from './track';

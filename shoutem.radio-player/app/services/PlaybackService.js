@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import { Event, TrackPlayer } from 'shoutem.audio';
 import { RADIO_TRACK_IDENTIFIER } from '../const';
 import { resolveMetadata } from './metadata';
@@ -33,13 +32,13 @@ export const PlaybackService = async () => {
     });
   });
 
-  // On certain Android devices, the Pause remote control is displayed regardless of the specified remote capabilities.
   // It's crucial to avoid pausing the stream, as resuming playback might result in a delay. Our goal is to stop the current stream,
   // buffer it anew, and then resume playback to ensure real-time streaming.
+  // On other note, on certain Android devices, the Pause remote control is displayed regardless of the specified remote capabilities.
   TrackPlayer.addEventListener(Event.RemotePlay, async () => {
     const activeTrack = await TrackPlayer.getActiveTrack();
 
-    if (!shouldHandleEvent(activeTrack) || Platform.OS !== 'android') {
+    if (!shouldHandleEvent(activeTrack)) {
       return;
     }
 

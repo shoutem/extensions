@@ -86,10 +86,6 @@ export default () => ({
       width: responsiveHeight(36),
       height: responsiveHeight(36),
     },
-    spinner: {
-      height: responsiveHeight(45),
-      width: responsiveHeight(45),
-    },
   },
 
   [`${ext('PlaybackAnimation')}`]: {
@@ -176,13 +172,7 @@ export default () => ({
     artworkContainer: {
       position: 'absolute',
       top:
-        resolveVariable('sizes.window.height') / 2 -
-        getSizeRelativeToReference(
-          250,
-          812,
-          resolveVariable('sizes.window.height'),
-        ) /
-          2,
+        resolveVariable('sizes.window.height') / 2 - responsiveHeight(300) / 2,
       width: getSizeRelativeToReference(
         250,
         812,

@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import { getCollection } from '@shoutem/redux-io';
 import { getShortcut } from 'shoutem.application';
-import { ext } from '../const';
+import { ext, getEpisodeTrackId } from '../const';
+import { getPathFromEpisode } from '../services';
 
 function getModuleState(state) {
   return state[ext()];
@@ -76,3 +77,26 @@ export function getIsFavorited(state, id) {
 
   return !!favoritedEpisode;
 }
+
+export const getEpisodeTrack = (state, episode, artwork) => {
+  const downloadedEpisode = getDownloadedEpisode(state, episode.id);
+
+  const id = getEpisodeTrackId(episode.id);
+  const audioFileUrl = episode.audioAttachments?.[0]?.src;
+  const resolvedUrl = downloadedEpisode
+    ? `file://${getPathFromEpisode(downloadedEpisode)}`
+    : audioFileUrl;
+
+  return {
+    id,
+    url: resolvedUrl,
+    extensionCanonicalName: ext(),
+    title: episode.title,
+    artist: episode.author ?? '',
+    artwork,
+  };
+};
+
+export const getLastPlayed = (state, feedUrl) => {
+  return getModuleState(state).lastPlayed[feedUrl];
+};

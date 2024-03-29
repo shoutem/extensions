@@ -1,6 +1,6 @@
 {
   "name": "shoutem.podcast",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
