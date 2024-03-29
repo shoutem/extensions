@@ -1,7 +1,6 @@
 require('colors');
 const fs = require('fs-extra');
 const _ = require('lodash');
-const path = require('path');
 const plist = require('plist');
 const buildTools = require('shoutem.application/build');
 const {
@@ -10,14 +9,13 @@ const {
   inject,
   projectPath,
   getAndroidManifestPath,
+  getPodfilePath,
 } = require('@shoutem/build-tools');
 const {
   IOS_PERMISSION_NATIVE_DATA,
   ANDROID_PERMISSION_NATIVE_DATA,
   PERMISSION_IOS_RATIONALE_PREFIX,
 } = require('./const');
-const { setupIosPermissions } = require('./setupIosPermissions');
-const { name: extName } = require('../package.json');
 
 const { getExtensionSettings } = buildTools.configuration;
 
@@ -71,36 +69,6 @@ function overwriteRationales(appConfiguration) {
   }
 }
 
-function injectPermissionsToPackageJson() {
-  const packageJsonPath = path.join(projectPath, 'package.json');
-  const rootPackageJson = fs.readJsonSync(packageJsonPath);
-
-  if (_.isEmpty(registeredPermissions)) {
-    return;
-  }
-
-  const iosPermissions = _.filter(registeredPermissions, isIOSPermission);
-
-  if (_.isEmpty(iosPermissions)) {
-    return;
-  }
-
-  rootPackageJson.reactNativePermissionsIOS = [];
-
-  iosPermissions.forEach(permission => {
-    rootPackageJson.reactNativePermissionsIOS.push(permission.name);
-  });
-
-  if (rootPackageJson.reactNativePermissionsIOS?.length) {
-    fs.writeJsonSync(packageJsonPath, rootPackageJson, { spaces: 2 });
-    // eslint-disable-next-line no-console
-    console.log(
-      `[${extName}]: Added IOS permissions to package.json:`,
-      rootPackageJson.reactNativePermissionsIOS,
-    );
-  }
-}
-
 function parsePlist(plistPath) {
   let plistResult = {};
 
@@ -116,6 +84,26 @@ function parsePlist(plistPath) {
   }
 
   return plistResult;
+}
+
+function injectPodfilePermissions(permisions) {
+  const podfilePath = getPodfilePath({ cwd: projectPath });
+
+  const permissionArray = `setup_permissions([
+  ${permisions.map(permission => `'${permission}'`).join(',\n\t')}
+])`;
+
+  inject(
+    podfilePath,
+    ANCHORS.IOS.PODFILE.ADDITIONAL_NODE_SCRIPTS,
+    `node_require('react-native-permissions/scripts/setup.rb')`,
+  );
+
+  inject(
+    podfilePath,
+    ANCHORS.IOS.PODFILE.POST_PREPARE_RN_PROJECT,
+    permissionArray,
+  );
 }
 
 function injectPlistPermissions() {
@@ -203,9 +191,19 @@ function preBuild(appConfiguration) {
     }
   });
 
+  const registerediOSPermissionNames = [];
+
+  _.forEach(registeredPermissions, permission => {
+    if (permission.name) {
+      registerediOSPermissionNames.push(permission.name);
+    }
+  });
+
+  if (registerediOSPermissionNames.length > 0) {
+    injectPodfilePermissions(registerediOSPermissionNames);
+  }
+
   overwriteRationales(appConfiguration);
-  injectPermissionsToPackageJson();
-  setupIosPermissions();
   injectPlistPermissions();
   injectManifestPermissions();
 }

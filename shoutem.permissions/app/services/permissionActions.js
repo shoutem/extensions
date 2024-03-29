@@ -1,15 +1,15 @@
 import { Alert } from 'react-native';
-import _ from 'lodash';
 import {
   check,
   checkMultiple,
+  checkNotifications,
+  openSettings,
   request,
   requestMultiple,
-  openSettings,
-  checkNotifications,
   requestNotifications,
   RESULTS,
 } from 'react-native-permissions';
+import _ from 'lodash';
 import { I18n } from 'shoutem.i18n';
 import { ext, PERMISSION_RESULT_TYPES } from '../const';
 
@@ -95,10 +95,10 @@ export function requestPermissions(...permissions) {
 }
 
 export {
-  checkNotifications,
-  requestNotifications,
-  openSettings,
-  RESULTS,
   check,
+  checkNotifications,
+  openSettings,
   request,
+  requestNotifications,
+  RESULTS,
 };

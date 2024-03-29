@@ -5,6 +5,8 @@ import messaging from '@react-native-firebase/messaging';
 import _ from 'lodash';
 import { handleAPNSTokenReceived, handleFCMTokenReceived } from './handlers';
 
+const isAndroid14 = Platform.OS === 'android' && Platform.Version >= 34;
+
 function requestPermissions() {
   PushNotifications.requestPermissions();
 }
@@ -53,6 +55,12 @@ function presentLocalNotification(config) {
 }
 
 function scheduleLocalNotification(config) {
+  // Disable for Android 14 until proper ALARM permission
+  // handling is implemented
+  if (isAndroid14) {
+    return;
+  }
+
   PushNotifications.localNotificationSchedule(config);
 }
 

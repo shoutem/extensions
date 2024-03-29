@@ -29,6 +29,7 @@ const PERMISSION_TYPES = {
   ANDROID_WRITE_CALL_LOG: 'android.permission.WRITE_CALL_LOG',
   ANDROID_WRITE_CONTACTS: 'android.permission.WRITE_CONTACTS',
   ANDROID_WRITE_EXTERNAL_STORAGE: 'android.permission.WRITE_EXTERNAL_STORAGE',
+  ANDROID_NOTIFICATIONS: 'android.permission.POST_NOTIFICATIONS',
   IOS_APP_TRACKING_TRANSPARENCY: 'ios.permission.IOS_APP_TRACKING_TRANSPARENCY',
   IOS_BLUETOOTH_PERIPHERAL: 'ios.permission.BLUETOOTH_PERIPHERAL',
   IOS_CALENDARS: 'ios.permission.CALENDARS',
@@ -211,6 +212,8 @@ const ANDROID_PERMISSION_NATIVE_DATA = {
     '<uses-permission android:name="com.android.vending.BILLING" />',
   [PERMISSION_TYPES.ANDROID_EXACT_ALARM]:
     '<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>',
+  [PERMISSION_TYPES.ANDROID_NOTIFICATIONS]:
+    '<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />',
 };
 
 const PERMISSION_IOS_RATIONALE_PREFIX = {
