@@ -1,7 +1,7 @@
 {
   "name": "firebase",
-  "version": "5.0.2",
-  "platform": ">=13.0.4",
+  "version": "5.0.3",
+  "platform": ">=13.0.6",
   "type": "system",
   "skipClone": false,
   "title": "Firebase",
@@ -9,7 +9,7 @@
     "lastVersion": "5.0.2"
   },
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
-  "releaseNotes": "* Minor changes related to internal configuration and google analytics support",
+  "releaseNotes": "* Temporary fix for Android14 local notification scheduling",
   "icon": "server/assets/add-firebase-image.png",
   "dependencies": [
     "shoutem.application",

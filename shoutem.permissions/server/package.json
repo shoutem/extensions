@@ -1,6 +1,6 @@
 {
   "name": "shoutem.permissions",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "Extension for app permission management.",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

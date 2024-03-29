@@ -1,5 +1,6 @@
 export {
   addDownloadedEpisode,
+  clearLastPlayed,
   deleteEpisode,
   downloadEpisode,
   favoriteEpisode,
@@ -8,6 +9,7 @@ export {
   setDownloadInProgress,
   unfavoriteEpisode,
   updateDownloadedEpisode,
+  updateLastPlayed,
 } from './actions';
 export { default as reducer } from './reducer';
 export {
@@ -15,8 +17,10 @@ export {
   getDownloadedEpisodes,
   getEpisodesFeed,
   getEpisodesFeedWithDownloads,
+  getEpisodeTrack,
   getFavoritedEpisodes,
   getFeedUrl,
   getHasFavorites,
   getIsFavorited,
+  getLastPlayed,
 } from './selectors';

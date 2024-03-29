@@ -631,6 +631,24 @@
       "title": "Error toast",
       "format": "color",
       "default": "#D0021B"
+    },
+    "controlsContainerBackgroundColor": {
+      "type": "string",
+      "title": "Background color of controls container",
+      "format": "color",
+      "default": "#659CEC"
+    },
+    "controlsPrimaryColor": {
+      "type": "string",
+      "title": "Controls primary color",
+      "format": "color",
+      "default": "#FFF"
+    },
+    "controlsSecondaryColor": {
+      "type": "string",
+      "title": "Controls primary color",
+      "format": "color",
+      "default": "#666"
     }
   },
   "layout": {

@@ -136,6 +136,8 @@ export class RssListScreen extends RemoteDataListScreen {
     );
   }
 
+  renderFooter() {}
+
   render() {
     const { data, style = {} } = this.props;
 
@@ -143,6 +145,7 @@ export class RssListScreen extends RemoteDataListScreen {
       <Screen style={style.screen}>
         {this.renderHeader()}
         {this.renderData(data)}
+        {this.renderFooter()}
       </Screen>
     );
   }
@@ -150,8 +153,6 @@ export class RssListScreen extends RemoteDataListScreen {
 
 RssListScreen.propTypes = {
   ...RemoteDataListScreen.propTypes,
-  find: PropTypes.func.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   feedUrl: PropTypes.string,
   next: PropTypes.func,
 };

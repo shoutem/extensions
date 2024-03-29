@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -65,6 +65,14 @@ const Radio = ({ navigation, route, style, renderAdBanner }) => {
     style,
   });
 
+  const liveStream = useMemo(
+    () => ({
+      url: streamUrl,
+      name: shortcut.title,
+    }),
+    [shortcut.title, streamUrl],
+  );
+
   if (!streamUrl) {
     return <EmptyStateView message={I18n.t(ext('missingStreamUrl'))} />;
   }
@@ -81,7 +89,8 @@ const Radio = ({ navigation, route, style, renderAdBanner }) => {
               <View style={style.adBannerContainer}>{renderAdBanner()}</View>
             )}
             <RadioPlayer
-              url={streamUrl}
+              liveStream={liveStream}
+              title={shortcut.title}
               onSleepTriggered={handleSleep}
               triggerSleep={shouldSleep}
             />

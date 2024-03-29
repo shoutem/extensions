@@ -27,13 +27,11 @@ import { FavoriteButton } from './FavoriteButton';
  */
 export class LargeGridEpisodeView extends EpisodeView {
   render() {
-    const { isActiveTrack, isPlaying } = this.state;
     const {
       enableDownload,
       episode,
       hasFavorites,
       isFavorited,
-      savedProgress,
       style,
     } = this.props;
     const { downloadInProgress, timeUpdated, title } = episode;
@@ -83,11 +81,7 @@ export class LargeGridEpisodeView extends EpisodeView {
               {!!downloadInProgress && <Spinner />}
             </View>
           </View>
-          <EpisodeProgress
-            showPlaybackIcon={isActiveTrack}
-            isPlaying={isPlaying}
-            progressPercentage={savedProgress?.completionPercentage ?? 0}
-          />
+          <EpisodeProgress episode={episode} />
         </View>
       </TouchableOpacity>
     );

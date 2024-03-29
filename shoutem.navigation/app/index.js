@@ -60,6 +60,7 @@ export {
   openInModal,
   push,
   replace,
+  TabBarRenderer,
 } from './services';
 
 export { IconGrid, List };

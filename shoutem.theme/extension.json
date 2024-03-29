@@ -1,11 +1,11 @@
 {
   "name": "theme",
-  "version": "7.0.2",
-  "platform": ">=13",
+  "version": "8.0.0",
+  "platform": ">=13.0.7",
   "type": "system",
   "title": "Theme",
   "description": "Resolve and store theme related configuration",
-  "releaseNotes": "* Updated version of UI library",
+  "releaseNotes": "* No user facing changes\n* Dev - changed how StyleProvider children are rendered\n* Updated version of UI and theme libraries",
   "icon": "server/assets/add-theme-image.png",
   "categories": [],
   "i18n": {

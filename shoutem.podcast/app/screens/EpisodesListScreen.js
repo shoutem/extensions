@@ -4,9 +4,14 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import { cloneStatus, getMeta } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
+import { updateAudioPlayerBannerShown as updateAudioPlayerBannerAction } from 'shoutem.audio';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
-import { FeaturedEpisodeView, ListEpisodeView } from '../components';
+import {
+  ContinuePlayingButton,
+  FeaturedEpisodeView,
+  ListEpisodeView,
+} from '../components';
 import { EPISODES_COLLECTION_TAG, ext, RSS_PODCAST_SCHEMA } from '../const';
 import {
   addDownloadedEpisode,
@@ -29,7 +34,7 @@ export class EpisodesListScreen extends RssListScreen {
   }
 
   openEpisodeWithId(id) {
-    const { data, feedUrl, enableDownload } = this.props;
+    const { data, feedUrl, enableDownload, shortcutTitle } = this.props;
 
     const episode = _.find(data, { id });
     const meta = getMeta(data);
@@ -39,6 +44,7 @@ export class EpisodesListScreen extends RssListScreen {
       feedUrl,
       enableDownload,
       meta,
+      shortcutTitle,
       analyticsPayload: {
         itemId: id,
         itemName: episode.title,
@@ -84,6 +90,17 @@ export class EpisodesListScreen extends RssListScreen {
       />
     );
   }
+
+  renderFooter() {
+    const { feedUrl, shortcutTitle } = this.props;
+
+    const playlist = {
+      id: feedUrl,
+      title: shortcutTitle,
+    };
+
+    return <ContinuePlayingButton playlist={playlist} />;
+  }
 }
 
 export const mapStateToProps = (state, ownProps) => {
@@ -108,6 +125,7 @@ export const mapStateToProps = (state, ownProps) => {
     data: resolvedFeed || episodesFeed,
     feedUrl,
     shortcutId,
+    shortcutTitle: shortcut.title,
     enableDownload,
     isSearchSettingEnabled,
   };
@@ -120,6 +138,7 @@ EpisodesListScreen.propTypes = {
 export const mapDispatchToProps = RssListScreen.createMapDispatchToProps({
   addDownloadedEpisode,
   removeDownloadedEpisode,
+  updateAudioPlayerBannerShown: updateAudioPlayerBannerAction,
 });
 
 export default connect(

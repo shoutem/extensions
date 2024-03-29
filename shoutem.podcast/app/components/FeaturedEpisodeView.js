@@ -29,13 +29,11 @@ import { FavoriteButton } from './FavoriteButton';
  */
 export class FeaturedEpisodeView extends EpisodeView {
   render() {
-    const { isActiveTrack, isPlaying } = this.state;
     const {
       enableDownload,
       episode,
       hasFavorites,
       isFavorited,
-      savedProgress,
       style,
     } = this.props;
     const { author, downloadInProgress, timeUpdated, title } = episode;
@@ -90,17 +88,13 @@ export class FeaturedEpisodeView extends EpisodeView {
                 <Spinner style={style.downloadManagerButton} />
               )}
             </View>
-            {savedProgress?.completionPercentage > 0 && (
-              <EpisodeProgress
-                showPlaybackIcon={isActiveTrack}
-                isPlaying={isPlaying}
-                progressPercentage={savedProgress.completionPercentage}
-                style={{
-                  container: style.episodeProgressContainer,
-                  playbackIcon: style.playbackIcon,
-                }}
-              />
-            )}
+            <EpisodeProgress
+              episode={episode}
+              style={{
+                container: style.episodeProgressContainer,
+                playbackIcon: style.playbackIcon,
+              }}
+            />
           </ImageBackground>
         </View>
         <Divider styleName="line" />

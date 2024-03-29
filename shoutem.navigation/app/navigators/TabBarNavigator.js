@@ -6,7 +6,11 @@ import { connectStyle } from '@shoutem/theme';
 import { HeaderBackButton, TabBarItem } from '../components';
 import { ext } from '../const';
 import NoScreens from '../screens/NoScreens';
-import { createChildNavigators, getRouteParams } from '../services';
+import {
+  createChildNavigators,
+  getRouteParams,
+  TabBarRenderer,
+} from '../services';
 import { createCustomStackNavigators } from './CustomStackNavigators';
 
 const TabBarStack = createBottomTabNavigator();
@@ -94,6 +98,7 @@ function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
         inactiveBackgroundColor: style.inactiveBackgroundColor,
         style: style.container,
       }}
+      tabBar={TabBarRenderer.getRenderer()}
     >
       {[..._.slice(TabComponents, 0, 5), ...CustomNavigators]}
     </TabBarStack.Navigator>

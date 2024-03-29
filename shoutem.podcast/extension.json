@@ -1,10 +1,10 @@
 {
   "name": "podcast",
-  "version": "7.0.0",
-  "platform": ">=13.0.5",
+  "version": "8.0.0",
+  "platform": ">=13.0.7",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* Incorporated podcast episode progress tracking functionality\n* Enhanced overall playback experience for podcast episodes, as well as lock screen playback UX/UI\n* Added new featured image layout\n* Builder UX improvements",
+  "releaseNotes": "* Incorporated audio player banner and modal",
   "nativeChanges": {
     "lastVersion": "7.0.0"
   },

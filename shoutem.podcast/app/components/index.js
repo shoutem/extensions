@@ -7,4 +7,4 @@ export { default as LargeGridEpisodeView } from './LargeGridEpisodeView';
 export { default as ListEpisodeView } from './ListEpisodeView';
 export { default as NextEpisode } from './NextEpisode';
 export { default as PlaybackIcon } from './PlaybackIcon';
-export { default as ProgressBar } from './ProgressBar';
+export { default as ContinuePlayingButton } from './ContinuePlayingButton';

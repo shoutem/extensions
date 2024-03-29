@@ -10,6 +10,7 @@ import {
   ext,
   RSS_PODCAST_SCHEMA,
   SET_DOWNLOAD_IN_PROGRESS,
+  UPDATE_LAST_PLAYED,
 } from '../const';
 import { getFileNameFromPath } from '../services';
 import { FAVORITE_EPISODE, UNFAVORITE_EPISODE } from './actions';
@@ -92,9 +93,27 @@ const favoritedEpisodes = (state = [], action) => {
   return state;
 };
 
+const lastPlayed = (state = {}, action) => {
+  if (action.type === REHYDRATE) {
+    return _.get(action, ['payload', ext(), 'lastPlayed'], {});
+  }
+
+  if (action.type === UPDATE_LAST_PLAYED) {
+    const { payload } = action;
+
+    return {
+      ...state.lastPlayed,
+      [payload.feedUrl]: payload.track,
+    };
+  }
+
+  return state;
+};
+
 export default combineReducers({
   downloadedEpisodes,
   episodes: storage(RSS_PODCAST_SCHEMA),
   favoritedEpisodes,
   latestEpisodes: rssFeed(RSS_PODCAST_SCHEMA, 'latestEpisodes'),
+  lastPlayed,
 });

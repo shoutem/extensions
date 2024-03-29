@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { appActions } from 'shoutem.application';
 import { HeaderBackButton, HeaderTitle } from '../components';
 import TabBarItem from '../components/TabBarItem';
-import { navigateTo } from './commonActions';
+import { navigationRef } from '../const';
 import { HeaderStyles } from './createNavigationStyles';
 import { collectShortcutScreens } from './helpers';
 
@@ -106,13 +106,29 @@ export function createChildNavigators(
           appActions[shortcut.action] &&
           _.isFunction(appActions[shortcut.action]);
         const action = appActions[shortcut.action];
-        const onShortcutPress = isAction
-          ? () => action(shortcut)
-          : () =>
-              navigateTo(stackName, {
-                screen: firstScreenName,
-                params: {},
-              });
+
+        const onShortcutPress = isAlreadyActiveTabItem => {
+          if (isAction) {
+            action(shortcut);
+            return;
+          }
+
+          // If user presses on tab item that is already active, we want to reset stack inside that tab, unless user
+          // is already on first screen of that stack.
+          // Otherwise, if user is changing between tabs, we want to keep last active stack of tab item user has pressed.
+          if (isAlreadyActiveTabItem) {
+            // Using native navigate, instead of our navigateTo, because navigateTo results in broken behavior, it fails
+            // to resolve proper navigation params in this scenario.
+            // Note that, with navigateTo, it works properly the first time user resets state of the stack, but later, if user navigates to
+            // that tab again, it will always open first screen on stack, instead of last stack's state.
+            navigationRef.current?.navigate(stackName, {
+              screen: firstScreenName,
+              params: {},
+            });
+          } else {
+            navigationRef.current?.navigate(stackName);
+          }
+        };
 
         return (
           <Stack.Screen
@@ -132,7 +148,9 @@ export function createChildNavigators(
                 <TabBarItem
                   {...parentShortcutSettings}
                   {...props}
-                  onPress={onShortcutPress}
+                  onPress={() => {
+                    onShortcutPress(props.accessibilityState.selected);
+                  }}
                   shortcut={shortcut}
                   // eslint-disable-next-line react/prop-types
                   selected={props.accessibilityState.selected}

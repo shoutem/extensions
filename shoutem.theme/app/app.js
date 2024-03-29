@@ -74,10 +74,7 @@ export function appDidMount(app) {
 }
 
 function styleProvider({ children, style }) {
-  // StyleProvider requires singular child
-  const resolvedChidren = _.isArray(children) ? _.head(children) : children;
-
-  return <StyleProvider style={style}>{resolvedChidren}</StyleProvider>;
+  return <StyleProvider style={style}>{children}</StyleProvider>;
 }
 
 const mapStateToProps = state => ({

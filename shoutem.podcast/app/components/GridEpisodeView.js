@@ -28,14 +28,7 @@ import { FavoriteButton } from './FavoriteButton';
  */
 export class GridEpisodeView extends EpisodeView {
   render() {
-    const { isActiveTrack, isPlaying } = this.state;
-    const {
-      enableDownload,
-      episode,
-      hasFavorites,
-      isFavorited,
-      savedProgress,
-    } = this.props;
+    const { enableDownload, episode, hasFavorites, isFavorited } = this.props;
     const { downloadInProgress, timeUpdated, title } = episode;
 
     const isDownloaded = downloadInProgress !== undefined;
@@ -77,11 +70,7 @@ export class GridEpisodeView extends EpisodeView {
                 {!!downloadInProgress && <Spinner />}
               </View>
             </View>
-            <EpisodeProgress
-              showPlaybackIcon={isActiveTrack}
-              isPlaying={isPlaying}
-              progressPercentage={savedProgress?.completionPercentage ?? 0}
-            />
+            <EpisodeProgress episode={episode} />
           </View>
         </Card>
       </TouchableOpacity>

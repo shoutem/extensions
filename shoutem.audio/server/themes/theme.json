@@ -1,0 +1,118 @@
+{
+  "title": "Theme",
+  "properties": {
+    "playerBannerBackgroundColor": {
+      "type": "string",
+      "title": "Player banner background color",
+      "format": "color",
+      "default": "@controlsContainerBackgroundColor"
+    },
+    "playerBannerIconsColor": {
+      "type": "string",
+      "title": "Player banner icons color",
+      "format": "color",
+      "default": "@controlsPrimaryColor"
+    },
+    "playerBannerMetadataTextColor": {
+      "type": "string",
+      "title": "Player banner metadata text color",
+      "format": "color",
+      "default": "@controlsPrimaryColor"
+    },
+    "playerModalBackgroundColor": {
+      "type": "string",
+      "title": "Player modal background color",
+      "format": "color",
+      "default": "@paperColor"
+    },
+    "playerModalTitleColor": {
+      "type": "string",
+      "title": "Player modal title color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "playerModalSubtitleColor": {
+      "type": "string",
+      "title": "Player modal subtitle color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "playerModalCloseIconColor": {
+      "type": "string",
+      "title": "Player modal close icon color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "playerModalMetadataTextColor": {
+      "type": "string",
+      "title": "Player modal metadata text color",
+      "format": "color",
+      "default": "@text.color"
+    },
+    "playerModalControlsColor": {
+      "type": "string",
+      "title": "Player modal controls color",
+      "format": "color",
+      "default": "@text.color"
+    }
+  },
+  "layout": {
+    "sections": [
+      {
+        "title": "Audio player banner",
+        "properties": [
+          {
+            "name": "playerBannerBackgroundColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "playerBannerIconsColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "playerBannerMetadataTextColor",
+            "inline": true,
+            "size": 4
+          }
+        ]
+      },
+      {
+        "title": "Audio player modal",
+        "properties": [
+          {
+            "name": "playerModalBackgroundColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "playerModalTitleColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "playerModalSubtitleColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "playerModalCloseIconColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "playerModalMetadataTextColor",
+            "inline": true,
+            "size": 4
+          },
+          {
+            "name": "playerModalControlsColor",
+            "inline": true,
+            "size": 4
+          }
+        ]
+      }
+    ]
+  }
+}

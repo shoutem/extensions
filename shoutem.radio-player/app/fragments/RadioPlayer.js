@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import slugify from '@sindresorhus/slugify';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -7,34 +7,51 @@ import { connectStyle } from '@shoutem/theme';
 import { View } from '@shoutem/ui';
 import {
   Capability,
-  PlaybackControl,
-  State,
-  STOP_PLAYBACK_TYPE,
+  LiveStreamAudioControls,
+  setActivePlaylistOrStream,
   TrackPlayer,
-  usePlayer,
+  useSetupPlayerAndOptions,
+  useTrackState,
 } from 'shoutem.audio';
 import { PlaybackAnimation } from '../components';
 import { ext, RADIO_TRACK_IDENTIFIER } from '../const';
 
 const PLAYER_OPTIONS = {
-  capabilities: [Capability.Play, Capability.Stop],
-  compactCapabilities: [Capability.Play, Capability.Stop],
+  capabilities: [Capability.Play, Capability.Pause],
+  compactCapabilities: [Capability.Play, Capability.Pause],
 };
 
-const RadioPlayer = ({ url, triggerSleep, onSleepTriggered, style }) => {
-  const radioStream = {
-    id: `${RADIO_TRACK_IDENTIFIER}-${slugify(`${url}`)}`,
-    artist: '',
-    title: '',
-    url,
-    isLiveStream: true,
-  };
+const RadioPlayer = ({
+  liveStream,
+  title,
+  triggerSleep,
+  onSleepTriggered,
+  style,
+}) => {
+  const dispatch = useDispatch();
 
-  const { isActivePlayer, playback, onPlaybackButtonPress } = usePlayer({
-    tracks: [radioStream],
+  const radioStream = useMemo(
+    () => ({
+      id: `${RADIO_TRACK_IDENTIFIER}-${slugify(`${liveStream.url}`)}`,
+      url: liveStream.url,
+      extensionCanonicalName: ext(),
+      isLiveStream: true,
+    }),
+    [liveStream],
+  );
+
+  useSetupPlayerAndOptions({
+    track: radioStream,
     updateOptions: PLAYER_OPTIONS,
-    stopPlaybackType: STOP_PLAYBACK_TYPE.STOP,
   });
+
+  const { isActiveAndPlaying } = useTrackState({ track: radioStream });
+
+  const onFirstPlay = useCallback(
+    () => dispatch(setActivePlaylistOrStream({ id: liveStream.url, title })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   useEffect(() => {
     if (triggerSleep) {
@@ -43,46 +60,42 @@ const RadioPlayer = ({ url, triggerSleep, onSleepTriggered, style }) => {
     }
   }, [onSleepTriggered, triggerSleep]);
 
-  const isActiveAndPlaying = isActivePlayer && playback.state === State.Playing;
-  const isLoadingOrBuffering =
-    isActivePlayer &&
-    (playback.state === State.Loading || playback.state === State.Buffering);
-
   return (
     <View style={style.container}>
       <PlaybackAnimation
-        shouldAnimate={isActivePlayer}
-        isPlaying={playback.state === State.Playing}
-        isStopped={
-          // We always Stop radio stream programatically, but Android devices execute Pause when using remote controls.
-          playback.state === State.Stopped || playback.state === State.Paused
-        }
+        shouldAnimate={isActiveAndPlaying}
+        isPlaying={isActiveAndPlaying}
+        isStopped={!isActiveAndPlaying}
         style={style.playbackMainCircle}
       />
-      {isLoadingOrBuffering && <ActivityIndicator style={style.spinner} />}
-      {!isLoadingOrBuffering && (
-        <PlaybackControl
-          onPress={onPlaybackButtonPress}
-          iconName={isActiveAndPlaying ? 'stop' : 'play'}
-          style={{
+      <LiveStreamAudioControls
+        liveStream={radioStream}
+        onFirstPlay={onFirstPlay}
+        style={{
+          playbackButton: {
             icon: style.playbackIcon,
             container: style.playbackContainer,
-          }}
-        />
-      )}
+          },
+        }}
+      />
     </View>
   );
 };
 
 RadioPlayer.propTypes = {
+  liveStream: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    name: PropTypes.string,
+  }).isRequired,
   triggerSleep: PropTypes.bool.isRequired,
-  url: PropTypes.string.isRequired,
   style: PropTypes.object,
+  title: PropTypes.string,
   onSleepTriggered: PropTypes.func,
 };
 
 RadioPlayer.defaultProps = {
   onSleepTriggered: _.noop,
+  title: '',
   style: {},
 };
 
