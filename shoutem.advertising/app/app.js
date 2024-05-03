@@ -1,11 +1,11 @@
 import React from 'react';
-import AdMob from '@react-native-admob/admob';
+import mobileAds from 'react-native-google-mobile-ads';
 import { getExtensionSettings } from 'shoutem.application/redux';
 import { after, priorities, setPriority } from 'shoutem-core';
 import { ext } from './const';
 import { AdProvider } from './providers';
 
-export const appDidMount = setPriority(app => {
+export const appDidMount = setPriority(async app => {
   const store = app.getStore();
   const state = store.getState();
   const extensionSettings = getExtensionSettings(state, ext());
@@ -15,7 +15,7 @@ export const appDidMount = setPriority(app => {
     tagForUnderAgeOfConsent,
   } = extensionSettings;
 
-  AdMob.setRequestConfiguration({
+  await mobileAds().setRequestConfiguration({
     // Update all future requests suitable for parental guidance
     maxAdContentRating,
 
@@ -26,6 +26,8 @@ export const appDidMount = setPriority(app => {
     // manner suitable for users under the age of consent.
     tagForUnderAgeOfConsent,
   });
+
+  await mobileAds().initialize();
 }, after(priorities.INIT));
 
 export function renderProvider(children) {

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.auth",
-  "version": "7.5.2",
+  "version": "8.0.0-rc.0",
   "description": "Authentication extension that uses the Shoutem authentication backend.",
   "scripts": {
     "postconfigure": "node -e 'require(\"./build\").runPostConfigure()'",

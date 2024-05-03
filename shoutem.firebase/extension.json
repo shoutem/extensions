@@ -1,15 +1,15 @@
 {
   "name": "firebase",
-  "version": "5.0.3",
-  "platform": ">=13.0.6",
-  "type": "system",
-  "skipClone": false,
   "title": "Firebase",
-  "nativeChanges": {
-    "lastVersion": "5.0.2"
-  },
+  "type": "system",
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
-  "releaseNotes": "* Temporary fix for Android14 local notification scheduling",
+  "version": "5.1.0-rc.0",
+  "platform": ">=14",
+  "nativeChanges": {
+    "lastVersion": "5.1.0-rc.0"
+  },
+  "releaseNotes": "* No user facing changes\n* Updated firebase libraries",
+  "skipClone": false,
   "icon": "server/assets/add-firebase-image.png",
   "dependencies": [
     "shoutem.application",

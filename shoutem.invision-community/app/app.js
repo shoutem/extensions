@@ -1,5 +1,5 @@
 import React from 'react';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Linking } from 'react-native';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
 import { authProviders, logoutAction } from 'shoutem.auth';

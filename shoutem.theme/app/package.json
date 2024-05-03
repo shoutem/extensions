@@ -1,9 +1,9 @@
 {
   "name": "shoutem.theme",
-  "version": "8.0.0",
+  "version": "8.0.2-rc.0",
   "dependencies": {
     "@shoutem/theme": "0.13.2",
-    "@shoutem/ui": "~6.5.0"
+    "@shoutem/ui": "~7.0.0-rc.1"
   },
   "peerDependencies": {
     "@shoutem/redux-io": "*",

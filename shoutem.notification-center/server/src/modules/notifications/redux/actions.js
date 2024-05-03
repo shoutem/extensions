@@ -1,30 +1,31 @@
 import ext from 'src/const';
 import { shoutemUrls } from 'src/services';
+import Uri from 'urijs';
 import { find, invalidate } from '@shoutem/redux-io';
 import { NOTIFICATIONS } from '../const';
 
 export function loadNotifications(appId, offset = 0, limit = 10) {
-  const params = {
-    q: {
-      limit: limit,
-      offset: offset,
-      type: 'Manual',
-    },
-  };
+  const baseUrl = shoutemUrls.legacyApi(
+    `${appId}/notifications/objects/ScheduledNotification`,
+  );
+  const uri = new Uri(baseUrl)
+    .addQuery('limit', limit)
+    .addQuery('offset', offset)
+    .addQuery('type', 'Manual')
+    .addQuery('type', 'Cms')
+    .addQuery('type', 'Rss');
 
   const config = {
     schema: NOTIFICATIONS,
     request: {
-      endpoint: shoutemUrls.legacyApi(
-        `${appId}/notifications/objects/ScheduledNotification{?q*}`,
-      ),
+      endpoint: uri.toString(),
       headers: {
         Accept: 'application/vnd.api+json',
       },
     },
   };
 
-  return find(config, ext('notificationsPage'), params);
+  return find(config, ext('notificationsPage'));
 }
 
 export function createNotification(appId, notification) {

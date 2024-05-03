@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ext } from '../const';
 
 const APPLICATION_EXTENSION = 'shoutem.application';

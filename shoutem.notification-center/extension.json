@@ -1,16 +1,13 @@
 {
   "name": "notification-center",
   "title": "Notification center",
-  "version": "9.0.1",
-  "platform": ">=13.0.3",
-  "nativeChanges": {
-    "lastVersion": "7.1.1",
-    "settingsKeys": [
-      "chime"
-    ]
-  },
   "description": "View and manage push notifications within the app",
-  "releaseNotes": "* Added 'app' target option for new push notification creation",
+  "version": "9.0.3-rc.0",
+  "platform": ">=14",
+  "nativeChanges": {
+    "lastVersion": "9.0.3-rc.0"
+  },
+  "releaseNotes": "* No user facing changes\n* Dev changes - updated @react-native-async-storage/async-storage library for ios privacy info inclusion",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": [
     "users"

@@ -1,14 +1,14 @@
 {
   "name": "google-analytics",
   "title": "Google analytics",
-  "version": "3.0.1",
   "description": "Measure and analyze activity across your app with Google analytics",
-  "releaseNotes": "* No user facing changes, cloud improvements",
-  "platform": ">=13.0.4",
-  "icon": "server/assets/add-analytics-image.png",
+  "version": "3.1.0-rc.0",
+  "platform": ">=14",
   "nativeChanges": {
-    "lastVersion": "3.0.0"
+    "lastVersion": "3.1.0-rc.0"
   },
+  "releaseNotes": "* No user facing changes\n* Updated firebase libraries",
+  "icon": "server/assets/add-analytics-image.png",
   "categories": [
     "analytics"
   ],

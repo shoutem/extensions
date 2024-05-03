@@ -1,6 +1,6 @@
 {
   "name": "shoutem.google-analytics",
-  "version": "3.0.1",
+  "version": "3.1.0-rc.0",
   "private": true,
   "scripts": {
     "@comment init": "Generates env files for all workflow types - should work out of the box",

@@ -1,14 +1,14 @@
 {
   "name": "shoutem.persist",
-  "version": "4.0.2",
+  "version": "4.0.3-rc.0",
   "dependencies": {
-    "@react-native-community/async-storage": "1.6.3",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "redux-persist": "4.10.2"
   },
   "peerDependencies": {
     "@shoutem/redux-io": "*"
   },
   "nativeDependencies": [
-    "@react-native-community/async-storage"
+    "@react-native-async-storage/async-storage"
   ]
 }

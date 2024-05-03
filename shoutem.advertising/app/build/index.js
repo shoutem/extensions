@@ -1,12 +1,10 @@
 const { getAppConfiguration } = require('@shoutem/build-tools');
-const { injectAndroid } = require('./injectAndroid');
-const { injectAdMobPlistData } = require('./injectAdMobPlistData');
-const { setSwiftVersion } = require('./setSwiftVersion');
+const {
+  injectMobileAdsConfiguration,
+} = require('./injectMobileAdsConfiguration');
 
 function preBuild(appConfiguration) {
-  injectAndroid(appConfiguration);
-  injectAdMobPlistData(appConfiguration);
-  setSwiftVersion();
+  injectMobileAdsConfiguration(appConfiguration);
 }
 
 function runPreBuild() {

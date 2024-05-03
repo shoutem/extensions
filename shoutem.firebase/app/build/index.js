@@ -16,6 +16,7 @@ const { injectFirebase } = require('./injectFirebase');
 const { injectReactNativePush } = require('./injectReactNativePush');
 const { injectFirebaseSettingsFile } = require('./injectFirebaseSettingsFile');
 const { name: firebaseExtensionName } = require('../package.json');
+const { injectFirebaseAsStaticFramework } = require('./injectFirebaseAsStaticFramework');
 
 const extensionPath = `${projectPath}/node_modules/shoutem.firebase`;
 
@@ -213,6 +214,7 @@ async function preBuild(appConfiguration, buildConfiguration) {
   injectFirebase();
   injectReactNativePush();
   injectFirebaseSettingsFile();
+  injectFirebaseAsStaticFramework();
 }
 
 function runPreBuild() {

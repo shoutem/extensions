@@ -1,8 +1,3 @@
-const reactNativeFbSdkPostInstall = `
-  installer.pods_project.build_configurations.each do |config|
-    config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
-  end`;
-
 const appDelegateImport = `
 #import <React/RCTLinkingManager.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
@@ -46,9 +41,6 @@ const fbSdk = {
         '[[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];',
       body: appDelegateOpenUrl,
     },
-    podfile: {
-      postInstall: reactNativeFbSdkPostInstall,
-    },
   },
   android: {
     mainApplication: {
@@ -84,13 +76,7 @@ const appleSignIn = {
   },
 };
 
-const resolutionStrategy = `
-          // Temporary fix, this should be removed once we upgrade to RN 0.71.0 or higher
-          // https://github.com/facebook/react-native/issues/35210#issuecomment-1304536693
-          force "com.facebook.react:react-native:" + new File(['node', '--print',"JSON.parse(require('fs').readFileSync(require.resolve('react-native/package.json'), 'utf-8')).version"].execute(null, rootDir).text.trim())`;
-
 module.exports = {
   fbSdk,
   appleSignIn,
-  resolutionStrategy,
 };

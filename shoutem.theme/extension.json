@@ -1,11 +1,14 @@
 {
   "name": "theme",
-  "version": "8.0.0",
-  "platform": ">=13.0.7",
+  "version": "8.0.2-rc.0",
+  "platform": ">=14",
   "type": "system",
   "title": "Theme",
   "description": "Resolve and store theme related configuration",
-  "releaseNotes": "* No user facing changes\n* Dev - changed how StyleProvider children are rendered\n* Updated version of UI and theme libraries",
+  "releaseNotes": "* No user facing changes\n* Dev - updated version of UI library",
+  "nativeChanges": {
+    "latestVersion": "8.0.2-rc.0"
+  },
   "icon": "server/assets/add-theme-image.png",
   "categories": [],
   "i18n": {
