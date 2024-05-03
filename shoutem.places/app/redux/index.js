@@ -1,3 +1,3 @@
-export { openPlacesList } from './actions';
+export { fetchPlaceDeals, openPlacesList } from './actions';
 export { default } from './reducers';
-export { getAllPlaces } from './selectors';
+export { getAllPlaces, getPlaceDeals } from './selectors';

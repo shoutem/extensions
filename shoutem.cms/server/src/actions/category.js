@@ -1,11 +1,11 @@
-import _ from 'lodash';
-import { url, appId, auth } from 'environment';
-import Uri from 'urijs';
-import { RSAA } from 'redux-api-middleware';
-import { find, invalidate } from '@shoutem/redux-io';
 import { ext } from 'context';
+import { appId, auth, url } from 'environment';
+import _ from 'lodash';
+import { RSAA } from 'redux-api-middleware';
+import Uri from 'urijs';
+import { find, invalidate } from '@shoutem/redux-io';
+import { getAllCategoryName, rsaaPromise } from '../services';
 import { CATEGORIES, CURRENT_SCHEMA } from '../types';
-import { rsaaPromise, getAllCategoryName } from '../services';
 import { initializeShortcutCategories } from './shortcut';
 
 const CREATE_CATEGORY_REQUEST = '@@cms/CREATE_CATEGORY_REQUEST';

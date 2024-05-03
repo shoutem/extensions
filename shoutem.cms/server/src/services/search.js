@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { getCollectionParams } from '@shoutem/redux-io/reducers/collection';
 import { getFilterableSchemaKeys } from '@shoutem/cms-dashboard';
+import { getCollectionParams } from '@shoutem/redux-io/reducers/collection';
 import { SEARCH_CAPABILITIES } from '../const';
 
 export function canSearch(shortcut) {

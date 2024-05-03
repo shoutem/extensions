@@ -1,27 +1,27 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Button } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { Button } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { FontIcon } from '@shoutem/react-web-ui';
-import { resolveResourceForm } from '../resource-form';
 import {
-  mapModelToView,
-  mapViewToModel,
   getEditorCreateTitle,
   getEditorUpdateTitle,
+  mapModelToView,
+  mapViewToModel,
 } from '../../services';
+import { resolveResourceForm } from '../resource-form';
 import './style.scss';
 
 export default class ResourceFormModal extends Component {
   static propTypes = {
-    schema: PropTypes.object.required,
-    canonicalName: PropTypes.string,
     assetManager: PropTypes.object,
-    resource: PropTypes.object,
+    canonicalName: PropTypes.string,
     googleApiKey: PropTypes.string,
-    loadSchema: PropTypes.func,
     loadResources: PropTypes.func,
+    loadSchema: PropTypes.func,
+    resource: PropTypes.object,
+    schema: PropTypes.object.required,
     onHide: PropTypes.func,
     onResourceCreate: PropTypes.func,
     onResourceUpdate: PropTypes.func,

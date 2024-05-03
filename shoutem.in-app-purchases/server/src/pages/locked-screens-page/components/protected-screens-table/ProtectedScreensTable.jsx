@@ -45,7 +45,12 @@ export default class ProtectedScreensTable extends PureComponent {
   }
 
   renderProtectedScreenRow(shortcutTreeItem) {
-    const { onShortcutSettingsUpdate, allScreensProtected } = this.props;
+    const {
+      onShortcutSettingsUpdate,
+      allScreensProtected,
+      onShortcutSettingsPress,
+      settingsModalEnabled,
+    } = this.props;
     const { shortcut, level } = shortcutTreeItem;
 
     return (
@@ -54,6 +59,8 @@ export default class ProtectedScreensTable extends PureComponent {
         shortcut={shortcut}
         level={level}
         onShortcutSettingsUpdate={onShortcutSettingsUpdate}
+        onShortcutSettingsPress={onShortcutSettingsPress}
+        settingsModalEnabled={settingsModalEnabled}
         disabled={allScreensProtected}
       />
     );
@@ -80,7 +87,9 @@ export default class ProtectedScreensTable extends PureComponent {
 }
 
 ProtectedScreensTable.propTypes = {
-  shortcuts: PropTypes.array,
+  allScreensProtected: PropTypes.bool.isRequired,
+  settingsModalEnabled: PropTypes.bool.isRequired,
+  shortcuts: PropTypes.array.isRequired,
+  onShortcutSettingsPress: PropTypes.func.isRequired,
   onShortcutSettingsUpdate: PropTypes.func.isRequired,
-  allScreensProtected: PropTypes.bool,
 };

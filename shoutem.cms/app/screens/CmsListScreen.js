@@ -16,6 +16,7 @@ import {
   next,
   shouldRefresh,
 } from '@shoutem/redux-io';
+import { getCollectionParams } from '@shoutem/redux-io/reducers/collection';
 import {
   DropDownMenu,
   EmptyStateView,
@@ -160,6 +161,7 @@ export class CmsListScreen extends PureComponent {
         allCategories,
         visibleCategories,
       );
+
       const channelId = i18nSelectors.getActiveChannelId(state);
 
       const collection = getCmsCollection(state);
@@ -222,6 +224,10 @@ export class CmsListScreen extends PureComponent {
     autoBindReact(this);
 
     this.debouncedSearchData = _.debounce(this.searchData, 500);
+    // Due to the late RIO status change, we tend to fetch multiple times on
+    // initial screen load. refreshInvalidContent triggers on multiple rerenders while the
+    // initial fetch has been triggered but the RIO status hasn't changed the isBusy value yet
+    this.debouncedFetchData = _.debounce(this.fetchData, 100);
 
     this.state = {
       searchEnabled: true,
@@ -303,17 +309,11 @@ export class CmsListScreen extends PureComponent {
       sortOrder,
     } = this.props;
     const { screenId } = getRouteParams(this.props);
-    const { searchText } = this.state;
 
     if (selectedCategory.id === category.id) {
       // The category is already selected.
       return;
     }
-
-    // When we do search, only currently selected collection/category is updated with
-    // search results in RIO storage. If we switch category, we have to do search for
-    // newly selected category, otherwise RIO will just return last (wrong) state of it.
-    this.searchData(searchText, category);
 
     setScreenState(screenId, {
       selectedCategoryId: category.id,
@@ -405,6 +405,7 @@ export class CmsListScreen extends PureComponent {
    * @param initialization {bool} - Is screen initializing
    */
   refreshInvalidContent(prevProps = this.props, initialization = false) {
+    const { searchText } = this.state;
     const {
       categories,
       currentLocation,
@@ -416,11 +417,15 @@ export class CmsListScreen extends PureComponent {
     } = this.props;
 
     if (isBusy(categories)) {
-      // Do not do anything related to categories until they are loaded.
       return;
     }
 
-    if (parentCategoryId && shouldRefresh(categories, initialization)) {
+    if (
+      (parentCategoryId &&
+        isInitialized(categories) &&
+        shouldRefresh(categories)) ||
+      initialization
+    ) {
       // Expired case.
       this.fetchCategories();
       return;
@@ -442,8 +447,14 @@ export class CmsListScreen extends PureComponent {
       this.onCategorySelected(categories[0]);
     }
 
+    const categoryChanged =
+      prevProps.selectedCategory &&
+      selectedCategory.id !== prevProps.selectedCategory.id;
+    const collectionParams = getCollectionParams(data);
+    const collectionSearchQuery = _.get(collectionParams, 'query.query', '');
     const shouldRefreshData =
-      this.isCategoryValid(selectedCategory) && shouldRefresh(data);
+      (this.isCategoryValid(selectedCategory) && shouldRefresh(data)) ||
+      (categoryChanged && collectionSearchQuery !== searchText);
     const hasOrderingChanged =
       sortField !== prevProps.sortField || sortOrder !== prevProps.sortOrder;
     const hasLocationChanged = !_.isEqual(
@@ -452,7 +463,7 @@ export class CmsListScreen extends PureComponent {
     );
 
     if (shouldRefreshData || hasOrderingChanged || hasLocationChanged) {
-      this.fetchData(this.getFetchDataOptions(this.props));
+      this.debouncedFetchData(this.getFetchDataOptions(this.props));
     }
   }
 
@@ -522,7 +533,7 @@ export class CmsListScreen extends PureComponent {
   }
 
   refreshData() {
-    this.fetchData(this.getFetchDataOptions(this.props));
+    this.debouncedFetchData(this.getFetchDataOptions(this.props));
   }
 
   searchData(searchTerm, category) {
@@ -617,7 +628,7 @@ export class CmsListScreen extends PureComponent {
     );
   }
 
-  renderFeaturedItem() { }
+  renderFeaturedItem() {}
 
   renderLoading() {
     const { screenSettings } = this.props;

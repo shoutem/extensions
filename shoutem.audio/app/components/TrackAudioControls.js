@@ -9,6 +9,7 @@ import { usePlaybackBehavior } from '../hooks/usePlaybackBehavior';
 import { convertSecondsToTimeDisplay } from '../services';
 import JumpTimeControl from './JumpTimeControl';
 import PlaybackControl from './PlaybackControl';
+import PlaybackRateControl from './PlaybackRateControl';
 import ProgressControl from './ProgressControl';
 
 export const TrackAudioControls = ({
@@ -60,6 +61,7 @@ export const TrackAudioControls = ({
 
   return (
     <>
+      <PlaybackRateControl style={style.playbackRateControl} />
       <ProgressControl
         currentValue={position}
         maxValue={duration ?? 0}

@@ -1,10 +1,10 @@
 {
   "name": "places",
-  "version": "6.2.1",
+  "version": "6.3.0",
   "platform": ">=12.1.0",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "releaseNotes": "Display map list on favorites screen",
+  "releaseNotes": "Display deals connected to a place inside place details screen",
   "icon": "./server/assets/images/add-places-image.png",
   "dependencies": [
     "shoutem.application",

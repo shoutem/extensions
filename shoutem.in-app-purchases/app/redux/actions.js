@@ -3,6 +3,7 @@ import { ext } from '../const';
 
 export const PRODUCTS_LOADED_ACTION = `${ext()}.PRODUCTS_LOADED`;
 export const ACTIVE_PRODUCTS_LOADED_ACTION = `${ext()}.ACTIVE_PRODUCTS_LOADED`;
+export const SET_MOCKED_SUBSCRIPTION_ACTION = `${ext()}.SET_MOCKED_SUBSCRIPTION`;
 
 export function loadAvailableProducts() {
   return dispatch =>
@@ -33,6 +34,13 @@ export function loadProducts() {
   };
 }
 
+export function setMockedSubscriptionStatus(status) {
+  return {
+    type: SET_MOCKED_SUBSCRIPTION_ACTION,
+    payload: status,
+  };
+}
+
 export function buyProduct(productId) {
   return dispatch => Iaphub.buy(productId).then(() => dispatch(loadProducts()));
 }
@@ -47,4 +55,5 @@ export default {
   buyProduct,
   loadProducts,
   restorePurchases,
+  setMockedSubscriptionStatus,
 };

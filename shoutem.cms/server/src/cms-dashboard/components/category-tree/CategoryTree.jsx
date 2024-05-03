@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { ConfirmModal, NestedSortable } from '@shoutem/react-web-ui';
 import { isMainCategory } from '../../services';
 import CategoryNameModal from '../category-name-modal';
@@ -36,12 +36,12 @@ export default class CategoryTree extends Component {
   static propTypes = {
     categories: PropTypes.array,
     categoryActionWhitelist: PropTypes.object,
-    staticCategories: PropTypes.array,
     selectedCategoryId: PropTypes.string,
-    onCategorySelected: PropTypes.func,
-    onCategoryUpdate: PropTypes.func,
+    staticCategories: PropTypes.array,
     onCategoryCreate: PropTypes.func,
     onCategoryDelete: PropTypes.func,
+    onCategorySelected: PropTypes.func,
+    onCategoryUpdate: PropTypes.func,
     onDragAndDropComplete: PropTypes.func,
   };
 
@@ -50,11 +50,11 @@ export default class CategoryTree extends Component {
     autoBindReact(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.refreshData(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.refreshData(nextProps, this.props);
   }
 

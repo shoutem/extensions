@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { find, remove, create, update, invalidate } from '@shoutem/redux-io';
-import { shoutemUrls, getResourceRelationships } from '../services';
+import { create, find, invalidate, remove, update } from '@shoutem/redux-io';
 import { CATEGORIES } from '../const';
+import { getResourceRelationships, shoutemUrls } from '../services';
 
 // ACTIONS
 export function loadResources(
@@ -39,6 +39,26 @@ export function loadResources(
   };
 
   return find(config, tag, params);
+}
+
+export function loadResource(appId, schema, resourceId, scope = {}) {
+  const config = {
+    schema,
+    request: {
+      endpoint: shoutemUrls.buildLegacyUrl(
+        `/v1/apps/${appId}/resources/${schema}/${resourceId}{?q*}`,
+      ),
+      headers: {
+        Accept: 'application/vnd.api+json',
+      },
+    },
+  };
+
+  const params = {
+    ...scope,
+  };
+
+  return find(config, `resource-${resourceId}`, params);
 }
 
 export function deleteResource(appId, resourceId, schema, scope = {}) {
@@ -182,7 +202,12 @@ export function updateResourceCategories(
   );
 }
 
-export function updateResourceLanguages(appId, languageIds, resource) {
+export function updateResourceLanguages(
+  appId,
+  languageIds,
+  resource,
+  scope = {},
+) {
   return dispatch => {
     const resourceId = _.get(resource, 'id');
     const schema = _.get(resource, 'type');
@@ -220,7 +245,9 @@ export function updateResourceLanguages(appId, languageIds, resource) {
       promises.push(dispatch(find(config, 'toggle-channel', params)));
     });
 
-    return Promise.all(promises).then(() => dispatch(invalidate(schema)));
+    return Promise.all(promises).then(() =>
+      dispatch(loadResource(appId, schema, resourceId, scope)),
+    );
   };
 }
 

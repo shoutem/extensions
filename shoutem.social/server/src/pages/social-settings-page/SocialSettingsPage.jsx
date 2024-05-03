@@ -26,14 +26,10 @@ import { shouldLoad } from '@shoutem/redux-io';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-class SocialSettingsPage extends Component {
-  static propTypes = {
-    ownExtension: PropTypes.object,
-    fetchExtension: PropTypes.func,
-    updateExtensionSettings: PropTypes.func,
-    extension: PropTypes.object,
-  };
+const MIN_STATUS_LENGTH = 1;
+const MAX_STATUS_LENGTH = 4000;
 
+class SocialSettingsPage extends Component {
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -42,23 +38,40 @@ class SocialSettingsPage extends Component {
     this.state = {
       settings,
       error: null,
-      hasChanges: false,
+      maxStatusLengthError: null,
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { fetchExtension } = this.props;
+
     if (shouldLoad(nextProps, this.props, 'ownExtension')) {
-      this.props.fetchExtension();
+      fetchExtension();
     }
   }
 
-  handleTextChange(event) {
+  handleMaxStatusLengthChange(event) {
     const { settings } = this.state;
 
+    let maxStatusLengthError = null;
+    const maxStatusLength = Number(event.target.value);
+    if (maxStatusLength < 0) {
+      maxStatusLengthError = `${i18next.t(
+        LOCALIZATION.STATUS_LENGTH_MUST_BE_GREATER_OR_EQUAL,
+      )} ${MIN_STATUS_LENGTH}`;
+    }
+
+    if (maxStatusLength > 4000) {
+      maxStatusLengthError = `${i18next.t(
+        LOCALIZATION.STATUS_LENGTH_MUST_BE_LOWER_OR_EQUAL,
+      )} ${MAX_STATUS_LENGTH}`;
+    }
+
     this.setState({
+      maxStatusLengthError,
       settings: {
         ...settings,
-        maxStatusLength: Number(event.target.value),
+        maxStatusLength,
       },
     });
   }
@@ -117,13 +130,12 @@ class SocialSettingsPage extends Component {
   }
 
   handleSave() {
-    const { extension } = this.props;
+    const { extension, updateExtensionSettings } = this.props;
     const { settings } = this.state;
 
     this.setState({ error: null, inProgress: true });
 
-    this.props
-      .updateExtensionSettings(extension, settings)
+    return updateExtensionSettings(extension, settings)
       .then(() => this.setState({ inProgress: false }))
       .catch(() =>
         this.setState({
@@ -134,7 +146,7 @@ class SocialSettingsPage extends Component {
   }
 
   render() {
-    const { error, inProgress, settings } = this.state;
+    const { error, maxStatusLengthError, inProgress, settings } = this.state;
     const {
       maxStatusLength,
       enablePhotoAttachments,
@@ -145,6 +157,7 @@ class SocialSettingsPage extends Component {
 
     const initialSettings = _.get(this.props, 'ownExtension.settings', {});
     const hasChanges = !_.isEqual(settings, initialSettings);
+    const isDisabled = !hasChanges || !!maxStatusLengthError;
 
     return (
       <div className="social-settings-page">
@@ -157,9 +170,16 @@ class SocialSettingsPage extends Component {
             <FormControl
               type="number"
               className="form-control"
+              min={MIN_STATUS_LENGTH}
+              max={MAX_STATUS_LENGTH}
               value={maxStatusLength}
-              onChange={this.handleTextChange}
+              onChange={this.handleMaxStatusLengthChange}
             />
+            {maxStatusLengthError && (
+              <HelpBlock className="text-error">
+                {maxStatusLengthError}
+              </HelpBlock>
+            )}
           </FormGroup>
           <FormGroup className="social-settings-page__photos">
             <ControlLabel>
@@ -215,7 +235,7 @@ class SocialSettingsPage extends Component {
         <ButtonToolbar>
           <Button
             bsStyle="primary"
-            disabled={!hasChanges}
+            disabled={isDisabled}
             onClick={this.handleSave}
           >
             <LoaderContainer isLoading={inProgress}>
@@ -227,6 +247,13 @@ class SocialSettingsPage extends Component {
     );
   }
 }
+
+SocialSettingsPage.propTypes = {
+  extension: PropTypes.object.isRequired,
+  fetchExtension: PropTypes.func.isRequired,
+  ownExtension: PropTypes.object.isRequired,
+  updateExtensionSettings: PropTypes.func.isRequired,
+};
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { ownExtensionName } = ownProps;

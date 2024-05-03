@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import { FontIcon } from '@shoutem/react-web-ui';
 import './style.scss';
 
@@ -33,7 +33,7 @@ export default class ImagePreview extends Component {
     });
 
     const style = { width, height };
-    if (!!src) {
+    if (src) {
       style.backgroundImage = `url('${src}')`;
     }
 
@@ -63,18 +63,6 @@ ImagePreview.propTypes = {
    */
   src: PropTypes.string.isRequired,
   /**
-   * Additional classes to apply
-   */
-  className: PropTypes.string,
-  /**
-   * Click handler for delete icon
-   */
-  onDeleteClick: PropTypes.func,
-  /**
-   * Click handler for preview icon
-   */
-  onPreviewClick: PropTypes.func,
-  /**
    * Flag indicating whether file can be deleted
    */
   canBeDeleted: PropTypes.bool,
@@ -83,13 +71,25 @@ ImagePreview.propTypes = {
    */
   canBePreviewed: PropTypes.bool,
   /**
-   * Preview width
+   * Additional classes to apply
    */
-  width: PropTypes.string,
+  className: PropTypes.string,
   /**
    * Preview height
    */
   height: PropTypes.string,
+  /**
+   * Preview width
+   */
+  width: PropTypes.string,
+  /**
+   * Click handler for delete icon
+   */
+  onDeleteClick: PropTypes.func,
+  /**
+   * Click handler for preview icon
+   */
+  onPreviewClick: PropTypes.func,
 };
 
 ImagePreview.defaultProps = {

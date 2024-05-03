@@ -871,12 +871,11 @@ export const IANA_WINDOWS_TIMEZONE_MAPPER = {
 
   // (UTC-08:00) Coordinated Universal Time-08
   'Etc/GMT+8': 'UTC-08',
-  'Etc/GMT+8': 'Pacific/Pitcairn',
 
   // (UTC-08:00) Pacific Time (US & Canada)
   'America/Los_Angeles': 'Pacific Standard Time',
   'America/Vancouver': 'Pacific Standard Time',
-  'PST8PDT': 'Pacific Standard Time',
+  PST8PDT: 'Pacific Standard Time',
 
   // (UTC-07:00) Arizona
   'America/Phoenix': 'US Mountain Standard Time',
@@ -897,7 +896,7 @@ export const IANA_WINDOWS_TIMEZONE_MAPPER = {
   'America/Yellowknife': 'Mountain Standard Time',
   'America/Ciudad_Juarez': 'Mountain Standard Time',
   'America/Boise': 'Mountain Standard Time',
-  'MST7MDT': 'Mountain Standard Time',
+  MST7MDT: 'Mountain Standard Time',
 
   // (UTC-07:00) Yukon
   'America/Whitehorse': 'Yukon Standard Time',
@@ -927,7 +926,7 @@ export const IANA_WINDOWS_TIMEZONE_MAPPER = {
   'America/North_Dakota/Beulah': 'Central Standard Time',
   'America/North_Dakota/Center': 'Central Standard Time',
   'America/North_Dakota/New_Salem': 'Central Standard Time',
-  'CST6CDT': 'Central Standard Time',
+  CST6CDT: 'Central Standard Time',
 
   // (UTC-06:00) Guadalajara, Mexico City, Monterrey
   'America/Mexico_City': 'Central Standard Time (Mexico)',
@@ -970,7 +969,7 @@ export const IANA_WINDOWS_TIMEZONE_MAPPER = {
   'America/Indiana/Winamac': 'Eastern Standard Time',
   'America/Kentucky/Monticello': 'Eastern Standard Time',
   'America/Louisville': 'Eastern Standard Time',
-  'EST5EDT': 'Eastern Standard Time',
+  EST5EDT: 'Eastern Standard Time',
 
   // (UTC-05:00) Haiti
   'America/Port-au-Prince': 'Haiti Standard Time',
@@ -1025,8 +1024,6 @@ export const IANA_WINDOWS_TIMEZONE_MAPPER = {
   'America/St_Kitts': 'SA Western Standard Time',
   'America/St_Lucia': 'SA Western Standard Time',
   'America/Marigot': 'SA Western Standard Time',
-  'America/Martinique': 'SA Western Standard Time',
-  'America/Montserrat': 'SA Western Standard Time',
   'America/Martinique': 'SA Western Standard Time',
   'America/Montserrat': 'SA Western Standard Time',
   'America/Puerto_Rico': 'SA Western Standard Time',
@@ -1098,7 +1095,6 @@ export const IANA_WINDOWS_TIMEZONE_MAPPER = {
 
   // (UTC-01:00) Azores
   'Atlantic/Azores': 'Azores Standard Time',
-  'Atlantic/Azores': 'America/Scoresbysund',
 
   // (UTC-01:00) Cape Verde Is.
   'Atlantic/Cape_Verde': 'Cape Verde Standard Time',
@@ -1311,7 +1307,6 @@ export const IANA_WINDOWS_TIMEZONE_MAPPER = {
 
   // (UTC+04:00) Astrakhan, Ulyanovsk
   'Europe/Astrakhan': 'Astrakhan Standard Time',
-  'Europe/Astrakhan': 'Europe/Ulyanovsk',
 
   // (UTC+04:00) Baku
   'Asia/Baku': 'Azerbaijan Standard Time',
@@ -1465,7 +1460,6 @@ export const IANA_WINDOWS_TIMEZONE_MAPPER = {
 
   // (UTC+09:00) Yakutsk
   'Asia/Yakutsk': 'Yakutsk Standard Time',
-  'Asia/Yakutsk': 'Asia/Khandyga',
 
   // (UTC+09:30) Adelaide
   'Australia/Adelaide': 'Cen. Australia Standard Time',

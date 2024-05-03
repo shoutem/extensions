@@ -1,14 +1,14 @@
 {
   "name": "social",
   "title": "Social",
-  "version": "12.0.4",
+  "version": "12.0.5",
   "platform": ">=13.0.7",
   "nativeChanges": {
     "lastVersion": "10.0.0",
     "settingsKeys": []
   },
   "skipClone": false,
-  "releaseNotes": "* No user facing changes",
+  "releaseNotes": "* Fixed a bug with max status length",
   "description": "Let members create posts, comment and like them",
   "categories": [
     "users"

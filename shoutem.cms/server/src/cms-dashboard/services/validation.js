@@ -92,10 +92,12 @@ function validateProperty(schemaProperty, field) {
 
   if (required) {
     if (schemaProperty.type == PROPERTY_TYPES.OBJECT) {
-      // check if video and photo object has url
+      // check if video, audio and photo object has url
       if (
         schemaProperty.referencedSchema ===
           PROPERTY_REFERENCED_SCHEMAS.VIDEO_ATTACHMENT ||
+        schemaProperty.referencedSchema ===
+          PROPERTY_REFERENCED_SCHEMAS.AUDIO_ATTACHMENT ||
         schemaProperty.referencedSchema ===
           PROPERTY_REFERENCED_SCHEMAS.IMAGE_ATTACHMENT
       ) {

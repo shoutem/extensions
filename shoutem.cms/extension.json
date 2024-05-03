@@ -1,16 +1,18 @@
 {
   "name": "cms",
-  "version": "7.0.1",
+  "version": "7.1.2",
   "platform": ">=13.0.2",
   "type": "system",
   "title": "CMS",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",
-  "releaseNotes": "* No user facing changes\n* Dev improvements - removed unused dependencies",
+  "releaseNotes": "* Added option to upload image in html editor",
   "nativeChanges": {
     "lastVersion": "6.3.0"
   },
   "icon": "server/assets/add-cms-image.png",
-  "categories": ["content"],
+  "categories": [
+    "content"
+  ],
   "dependencies": [
     "shoutem.application",
     "shoutem.layouts",

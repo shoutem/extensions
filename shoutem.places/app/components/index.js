@@ -1,4 +1,5 @@
 export { default as MapList } from './MapList';
+export { PlaceDealsSection } from './PlaceDeals';
 export { default as PlaceFullGridRowView } from './PlaceFullGridRowView';
 export { default as PlaceHalfGridRowView } from './PlaceHalfGridRowView';
 export { default as PlaceIconView } from './PlaceIconView';

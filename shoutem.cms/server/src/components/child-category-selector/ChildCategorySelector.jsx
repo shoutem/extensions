@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { ControlLabel, FormGroup, MenuItem } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { Dropdown, LoaderContainer } from '@shoutem/react-web-ui';
 import { isBusy } from '@shoutem/redux-io';
-import { LoaderContainer, Dropdown } from '@shoutem/react-web-ui';
-import { FormGroup, ControlLabel, MenuItem } from 'react-bootstrap';
 import {
-  getDropdownOptions,
-  getSelectedOptionLabel,
   ALL_CATEGORIES_OPTION_KEY,
   getAllCategoriesOption,
+  getDropdownOptions,
+  getSelectedOptionLabel,
   isAllCategoriesSelected,
 } from '../../services';
 import CheckboxMenuItem from '../checkbox-menu-item';
@@ -35,11 +35,11 @@ export default class ChildCategorySelector extends Component {
     autoBindReact(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.checkData(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.checkData(nextProps, this.props);
   }
 
@@ -127,8 +127,8 @@ export default class ChildCategorySelector extends Component {
 ChildCategorySelector.propTypes = {
   categories: PropTypes.array,
   disabled: PropTypes.bool,
-  onVisibleCategoriesChange: PropTypes.func,
   visibleCategoryIds: PropTypes.array,
+  onVisibleCategoriesChange: PropTypes.func,
 };
 
 ChildCategorySelector.defaultProps = {

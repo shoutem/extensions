@@ -1,3 +1,4 @@
+import './navigation';
 import * as actions from './redux/actions';
 import FavoritesList from './screens/FavoritesList';
 import FavoritesListWithIcons from './screens/FavoritesListWithIcons';
@@ -7,6 +8,7 @@ import { PlacesGridScreen } from './screens/PlacesGridScreen';
 import { PlacesListScreen } from './screens/PlacesList';
 import PlacesListWithIcons from './screens/PlacesListWithIcons';
 import SinglePlaceMap from './screens/SinglePlaceMap';
+import enTranslations from './translations/en.json';
 import reducer from './redux';
 
 export { PLACE_DETAILS_SCREEN, PLACES_SCHEMA } from './const';
@@ -24,5 +26,12 @@ export const screens = {
   FavoritesListWithIcons,
 };
 
-export { reducer };
-export { actions };
+const shoutem = {
+  i18n: {
+    translations: {
+      en: enTranslations,
+    },
+  },
+};
+
+export { actions, reducer, shoutem };

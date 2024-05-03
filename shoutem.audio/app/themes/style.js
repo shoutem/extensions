@@ -156,6 +156,13 @@ export default () => ({
       },
       icon: { height: responsiveHeight(70), width: responsiveHeight(70) },
     },
+    playbackRateControl: {
+      container: {
+        alignSelf: 'flex-end',
+        marginRight: resolveVariable('mediumGutter'),
+      },
+      icon: { width: responsiveHeight(30), height: responsiveHeight(30) },
+    },
   },
 
   [`${ext('LiveStreamAudioControls')}`]: {
@@ -193,8 +200,10 @@ export default () => ({
       paddingHorizontal: responsiveWidth(50),
     },
     liveStreamText: {
+      textAlign: 'center',
       fontWeight: resolveFontWeight('400'),
       color: resolveVariable('playerModalSubtitleColor'),
+      marginBottom: resolveVariable('largeGutter'),
     },
     closeModalButton: {
       position: 'absolute',
@@ -288,6 +297,19 @@ export default () => ({
     progressBar: {
       borderRadius: responsiveHeight(5),
       height: responsiveHeight(5),
+    },
+  },
+
+  [`${ext('PlaybackRateOption')}`]: {
+    icon: { width: responsiveHeight(25), height: responsiveHeight(25) },
+  },
+
+  [`${ext('PlaybackSettingsModal')}`]: {
+    modal: {
+      margin: 0,
+      justifyContent: 'flex-end',
+      marginBottom: responsiveHeight(50),
+      paddingHorizontal: responsiveWidth(20),
     },
   },
 });

@@ -1,14 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import i18next from 'i18next';
 import { HelpBlock } from 'react-bootstrap';
-import { LoaderContainer } from '@shoutem/react-web-ui';
 import Dropzone from 'react-dropzone';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 import FilePreview from '../file-preview';
 import FileUploadPlaceholder from '../file-upload-placeholder';
+import { resolveCdnUrl } from '../services';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -24,16 +25,31 @@ export default class FileUploader extends React.Component {
   }
 
   handleUploadFailed(errorMessage) {
+    const { onError } = this.props;
     this.setState({
       error: errorMessage,
       inProgress: false,
     });
-    this.props.onError(errorMessage);
+
+    if (_.isFunction(onError)) {
+      onError(errorMessage);
+    }
   }
 
   handleUploadSucceeded(fileUrl) {
-    this.props.onUploadSuccess(fileUrl);
+    const { onUploadSuccess, useCdn } = this.props;
+
     this.setState({ inProgress: false });
+
+    if (_.isFunction(onUploadSuccess)) {
+      if (useCdn) {
+        const cdnUrl = resolveCdnUrl(fileUrl);
+        onUploadSuccess(cdnUrl);
+        return;
+      }
+
+      onUploadSuccess(fileUrl);
+    }
   }
 
   validateFileSize(file) {
@@ -152,11 +168,12 @@ export default class FileUploader extends React.Component {
 
   render() {
     const { className, showValidationError, helpText, accept } = this.props;
+    const { inProgress, error } = this.state;
 
     const classes = classNames(className, 'file-uploader');
 
     return (
-      <LoaderContainer isLoading={this.state.inProgress} className={classes}>
+      <LoaderContainer isLoading={inProgress} className={classes}>
         <Dropzone
           className="file-uploader__dropzone"
           onDrop={this.handleDrop}
@@ -166,10 +183,10 @@ export default class FileUploader extends React.Component {
         >
           {dropzoneProps => this.renderDropzoneContent(dropzoneProps)}
         </Dropzone>
-        {showValidationError && this.state.error && (
-          <div className="text-error">{this.state.error}</div>
+        {showValidationError && error && (
+          <div className="text-error">{error}</div>
         )}
-        {helpText && !this.state.error && <HelpBlock>{helpText}</HelpBlock>}
+        {helpText && !error && <HelpBlock>{helpText}</HelpBlock>}
       </LoaderContainer>
     );
   }
@@ -185,62 +202,63 @@ FileUploader.propTypes = {
    */
   onUploadSuccess: PropTypes.func.isRequired,
   /**
-   *  Callback invoked when upload fails
+   * By providing accept prop you can make Dropzone to accept
+   * specific file types and reject the others.
    */
-  onError: PropTypes.func,
+  accept: PropTypes.string,
+  assetManager: PropTypes.shape({
+    deleteFile: PropTypes.func.isRequired,
+    listFolder: PropTypes.func.isRequired,
+    uploadFile: PropTypes.func.isRequired,
+  }),
+  /**
+   * Flag indicating whether file can be deleted
+   */
+  canBeDeleted: PropTypes.bool,
   /**
    * Additional classes to apply
    */
   className: PropTypes.string,
   /**
-   *  Url to the src
+   * Provides a way to perform custom file validation before upload.
+   * If you return a promise it will be resolved.
    */
-  src: PropTypes.string,
+  customValidator: PropTypes.func,
+  folderName: PropTypes.string,
+  /**
+   * Help text positioned below dropzone
+   */
+  helpText: PropTypes.string,
+  /**
+   * Max file size allowed to be uploaded
+   */
+  maxFileSize: PropTypes.number,
+  resolveFilename: PropTypes.func,
+  /**
+   * Max file size allowed to be uploaded
+   */
+  shallowDelete: PropTypes.bool,
   /**
    * Flag indicating whether to show validation error in component.
    * If set to false, onError function should be provided for displaying upload error.
    */
   showValidationError: PropTypes.bool,
   /**
-   * Help text positioned below dropzone
+   * Flag indicating whether to use CDN url or bucket url
    */
-  helpText: PropTypes.string,
+  useCdn: PropTypes.bool,
   /**
-   * Object containing methods for inProgress, listing, and deleting files on cloud
+   *  Url to the src
    */
-  assetManager: PropTypes.shape({
-    deleteFile: PropTypes.func.isRequired,
-    uploadFile: PropTypes.func.isRequired,
-    listFolder: PropTypes.func.isRequired,
-  }),
-  folderName: PropTypes.string,
-  resolveFilename: PropTypes.func,
+  src: PropTypes.string,
   /**
    *  Callback forwarded to FilePreview component; invoked when existing file is deleted
    */
   onDeleteSuccess: PropTypes.func,
   /**
-   * Flag indicating whether file can be deleted
+   *  Callback invoked when upload fails
    */
-  canBeDeleted: PropTypes.bool,
-  /**
-   * By providing accept prop you can make Dropzone to accept
-   * specific file types and reject the others.
-   */
-  accept: PropTypes.string,
-  /**
-   * Max file size allowed to be uploaded
-   */
-  maxFileSize: PropTypes.number,
-  /**
-   * Max file size allowed to be uploaded
-   */
-  shallowDelete: PropTypes.bool,
-  /**
-   * Provides a way to perform custom file validation before upload.
-   * If you return a promise it will be resolved.
-   */
-  customValidator: PropTypes.func,
+  onError: PropTypes.func,
 };
 
 FileUploader.defaultProps = {
@@ -249,6 +267,6 @@ FileUploader.defaultProps = {
   customValidator: _.noop,
   showValidationError: true,
   canBeDeleted: true,
-  autoResize: true,
+  useCdn: true,
   resolveFilename: file => file.name,
 };

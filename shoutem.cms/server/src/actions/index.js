@@ -6,6 +6,8 @@ export {
   loadImporters,
 } from './importer';
 export { loadLanguageModuleStatus, loadLanguages } from './language';
+export { loadModules } from './module';
+export { createNotification } from './notification';
 export {
   fetchCmsDataZip,
   loadNextResourcesPage,

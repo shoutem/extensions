@@ -1,10 +1,17 @@
+import { ext, store } from 'context';
 import _ from 'lodash';
 import { ReduxApiStateDenormalizer } from '@shoutem/redux-io';
-import { ext, store } from 'context';
-import { CATEGORIES, CHANNELS, SCHEMAS, CURRENT_SCHEMA } from './types';
+import {
+  CATEGORIES,
+  CHANNELS,
+  CURRENT_SCHEMA,
+  MODULES,
+  SCHEMAS,
+} from './types';
 
 // define your storage mappings here
 const denormalizerMappings = {
+  [MODULES]: [ext(), 'storage', MODULES],
   [CATEGORIES]: [ext(), 'storage', CATEGORIES],
   [CHANNELS]: [ext(), 'storage', CHANNELS],
   [SCHEMAS]: [ext(), 'storage', SCHEMAS],

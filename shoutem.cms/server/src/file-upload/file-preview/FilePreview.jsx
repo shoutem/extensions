@@ -1,8 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
-import Uri from 'urijs';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import Uri from 'urijs';
 import { FontIcon } from '@shoutem/react-web-ui';
 import './style.scss';
 
@@ -49,6 +49,10 @@ FilePreview.propTypes = {
    */
   src: PropTypes.string.isRequired,
   /**
+   * Flag indicating whether file can be deleted
+   */
+  canBeDeleted: PropTypes.bool,
+  /**
    * Additional classes to apply
    */
   className: PropTypes.string,
@@ -56,8 +60,4 @@ FilePreview.propTypes = {
    * Click handler for delete icon
    */
   onDeleteClick: PropTypes.func,
-  /**
-   * Flag indicating whether file can be deleted
-   */
-  canBeDeleted: PropTypes.bool,
 };

@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import i18next from 'i18next';
-import classNames from 'classnames';
+import { Button, ButtonGroup, Col, Row } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { shouldLoad, shouldRefresh } from '@shoutem/redux-io';
+import autoBindReact from 'auto-bind/react';
+import classNames from 'classnames';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { Row, Col, Button, ButtonGroup } from 'react-bootstrap';
+import { shouldLoad, shouldRefresh } from '@shoutem/redux-io';
 import { loadCategories, updateShortcutCategories } from '../../actions';
 import {
-  ParentCategorySelector,
   ChildCategorySelector,
+  ParentCategorySelector,
   ToggleContent,
 } from '../../components';
 import { getCategories } from '../../selectors';
@@ -46,11 +46,11 @@ export class AdvancedSetup extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.checkData(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.checkData(nextProps, this.props);
   }
 
@@ -196,17 +196,17 @@ export class AdvancedSetup extends Component {
 }
 
 AdvancedSetup.propTypes = {
+  childCategories: PropTypes.array,
+  loadChildCategories: PropTypes.func,
+  loadRootCategories: PropTypes.func,
+  parentCategoryId: PropTypes.string,
+  rootCategories: PropTypes.array,
   schema: PropTypes.object,
   shortcut: PropTypes.object,
-  rootCategories: PropTypes.array,
-  childCategories: PropTypes.array,
-  parentCategoryId: PropTypes.string,
-  visibleCategoryIds: PropTypes.array,
   showImporters: PropTypes.bool,
-  loadRootCategories: PropTypes.func,
-  loadChildCategories: PropTypes.func,
-  onCreateCategory: PropTypes.func,
   updateAdvancedOptions: PropTypes.func,
+  visibleCategoryIds: PropTypes.array,
+  onCreateCategory: PropTypes.func,
 };
 
 function mapStateToProps(state) {

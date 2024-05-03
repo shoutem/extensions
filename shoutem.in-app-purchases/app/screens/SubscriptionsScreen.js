@@ -54,19 +54,30 @@ class SubscriptionsScreen extends PureComponent {
 
   componentDidUpdate(prevProps) {
     const { hasActiveProduct } = this.props;
-    const { successDescription } = this.state;
     const { hasActiveProduct: prevHasActiveProduct } = prevProps;
 
     if (!prevHasActiveProduct && hasActiveProduct) {
-      navigateTo(ext('SuccessScreen'), {
-        onButtonPress: this.handleSuccessConfirmPress,
-        description: successDescription,
-      });
+      this.handleSubscriptionObtained();
     }
   }
 
   setLoadingState(loading) {
     this.setState({ loading });
+  }
+
+  handleSubscriptionObtained() {
+    const { successDescription } = this.state;
+
+    navigateTo(ext('SuccessScreen'), {
+      onButtonPress: this.handleSuccessConfirmPress,
+      description: successDescription,
+    });
+  }
+
+  handlePreviewSubscribePress() {
+    const { setMockedSubscriptionStatus } = this.props;
+
+    setMockedSubscriptionStatus(true).then(this.handleSubscriptionObtained);
   }
 
   handleSuccessConfirmPress() {
@@ -77,6 +88,11 @@ class SubscriptionsScreen extends PureComponent {
 
   handleBuyPress() {
     const { productId, buyProduct } = this.props;
+
+    if (isPreviewApp) {
+      this.handlePreviewSubscribePress();
+      return;
+    }
 
     this.setLoadingState(true);
 
@@ -90,6 +106,11 @@ class SubscriptionsScreen extends PureComponent {
 
   handleRestorePress() {
     const { restorePurchases, hasActiveProduct } = this.props;
+
+    if (isPreviewApp) {
+      this.handlePreviewSubscribePress();
+      return;
+    }
 
     this.setLoadingState(true);
     restorePurchases()
@@ -175,7 +196,7 @@ class SubscriptionsScreen extends PureComponent {
         </View>
         <View style={style.buttonContainer}>
           <Button
-            disabled={loading || isPreviewApp}
+            disabled={loading}
             onPress={this.handleBuyPress}
             style={style.button}
           >
@@ -190,7 +211,7 @@ class SubscriptionsScreen extends PureComponent {
             <Text style={style.trialText}>{trialDuration}</Text>
           )}
           <Button
-            disabled={loading || isPreviewApp}
+            disabled={loading}
             onPress={this.handleRestorePress}
             style={[style.button, style.buttonSecondary]}
           >
@@ -220,6 +241,7 @@ SubscriptionsScreen.propTypes = {
   privacyPolicyUrl: PropTypes.string.isRequired,
   productId: PropTypes.string.isRequired,
   restorePurchases: PropTypes.func.isRequired,
+  setMockedSubscriptionStatus: PropTypes.func.isRequired,
   subscriptionMetadata: PropTypes.object.isRequired,
   subscriptionProduct: PropTypes.object.isRequired,
   termsOfServiceUrl: PropTypes.string.isRequired,
@@ -230,8 +252,10 @@ SubscriptionsScreen.defaultProps = {
   style: {},
 };
 
-const mapStateToProps = state => {
-  const productId = selectors.getSubscriptionProductId(state);
+const mapStateToProps = (state, ownProps) => {
+  const shortcutProductId = _.get(ownProps.route, ['params', 'productId']);
+  const productId =
+    shortcutProductId ?? selectors.getGlobalSubscriptionProductId(state);
 
   return {
     hasActiveProduct: selectors.hasActiveProduct(productId, state),
@@ -246,6 +270,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   buyProduct: actions.buyProduct,
   restorePurchases: actions.restorePurchases,
+  setMockedSubscriptionStatus: actions.setMockedSubscriptionStatus,
 };
 
 export default connect(

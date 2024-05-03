@@ -1,10 +1,10 @@
 {
   "name": "ical-events",
   "title": "iCal Events",
-  "version": "5.3.0",
+  "version": "5.3.1",
   "platform": ">=12.1.0",
   "description": "Shoutem extension for managing iCal events",
-  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
+  "releaseNotes": "* Support all day events properly",
   "nativeChanges": {
     "lastVersion": "5.0.1"
   },

@@ -7,3 +7,5 @@ export function ext(resourceName) {
 
 export const PLACES_SCHEMA = ext('places');
 export const PLACE_DETAILS_SCREEN = ext('PlaceDetails');
+export const DEALS_SCHEMA = 'shoutem.deals.deals';
+export const DEALS_DETAILS_SCREEN = 'shoutem.deals.LargeDealDetailsScreen';

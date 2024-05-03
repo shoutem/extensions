@@ -5,6 +5,7 @@ const SHORTCUT_DEFAULT_FROM_UNDEFINED_EXTENSION = `${key}.shortcut-default-from-
 const SHORTCUT_DEFAULT_FROM_EXTENSION = `${key}.shortcut-default-from-extension`;
 const BUTTON_ADD_ITEM = `${key}.button-add-item`;
 const ENABLE_SEARCH_IN_APP = `${key}.enable-search-in-app`;
+const ENABLE_SEND_PUSH_NOTIFICATION_IN_APP = `${key}.enable-send-push-notification-in-app`;
 
 export default {
   SHORTCUT_FROM_EXTENSION,
@@ -12,4 +13,5 @@ export default {
   SHORTCUT_DEFAULT_FROM_EXTENSION,
   BUTTON_ADD_ITEM,
   ENABLE_SEARCH_IN_APP,
+  ENABLE_SEND_PUSH_NOTIFICATION_IN_APP,
 };

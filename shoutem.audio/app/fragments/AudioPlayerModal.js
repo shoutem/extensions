@@ -29,6 +29,7 @@ const AudioPlayerModal = ({ isVisible, onClose, style }) => {
       swipeDirection={['down']}
       onSwipeComplete={onClose}
       style={style.modal}
+      propagateSwipe
     >
       <Screen style={style.screenContainer}>
         <View style={style.container}>
@@ -45,7 +46,7 @@ const AudioPlayerModal = ({ isVisible, onClose, style }) => {
                 {activePlaylistOrStream?.title}
               </Title>
               {isLiveStream && (
-                <Text styleName="lg-gutter-bottom" style={style.liveStreamText}>
+                <Text style={style.liveStreamText}>
                   {I18n.t(ext('liveStreamText'))}
                 </Text>
               )}

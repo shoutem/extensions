@@ -22,9 +22,12 @@ export const appDidMount = app => {
     iapHubApiKey,
     iapHubEnvironment,
     subscriptionRequired,
+    singularProductPerScreenEnabled,
   } = extensionSettings;
 
-  const subscriptionConfigured = selectors.hasProperConfiguration(state);
+  const subscriptionConfigured = singularProductPerScreenEnabled
+    ? true
+    : selectors.hasProperGlobalConfiguration(state);
 
   if (!subscriptionConfigured || !subscriptionRequired || isPreviewApp) {
     store.dispatch(setQueueTargetComplete(ext()));

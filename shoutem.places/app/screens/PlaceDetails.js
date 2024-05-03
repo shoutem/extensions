@@ -28,15 +28,12 @@ import {
   navigateTo,
 } from 'shoutem.navigation';
 import { openURL } from 'shoutem.web-view';
-import { PlaceImageGallery } from '../components';
+import { PlaceDealsSection, PlaceImageGallery } from '../components';
 import { ext } from '../const';
+import { dealsExtensionInstalled } from '../services';
 import { getMapUrl, getPlaceImages } from '../services/places';
 
 export class PlaceDetails extends PureComponent {
-  static propTypes = {
-    navigation: PropTypes.object.isRequired,
-  };
-
   constructor(props) {
     super(props);
 
@@ -238,6 +235,16 @@ export class PlaceDetails extends PureComponent {
     );
   }
 
+  renderPlaceDeals() {
+    if (!dealsExtensionInstalled()) {
+      return null;
+    }
+
+    const { place } = getRouteParams(this.props);
+
+    return <PlaceDealsSection placeId={place.id} />;
+  }
+
   render() {
     const { place } = getRouteParams(this.props);
     const location = _.get(place, 'location', {});
@@ -274,10 +281,15 @@ export class PlaceDetails extends PureComponent {
             'call',
             this.openPhoneLink,
           )}
+          {this.renderPlaceDeals()}
         </ScrollView>
       </Screen>
     );
   }
 }
+
+PlaceDetails.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
 
 export default connectStyle(ext('PlaceDetails'))(PlaceDetails);

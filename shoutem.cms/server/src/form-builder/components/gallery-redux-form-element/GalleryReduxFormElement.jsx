@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { ControlLabel, FormGroup } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { ControlLabel, FormGroup } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import ImageUploaderReduxFormElement from '../image-uploader-redux-form-element';
 import './style.scss';
 
 export default class GalleryReduxFormElement extends Component {
   static propTypes = {
-    elementId: PropTypes.string,
     assetManager: PropTypes.object,
-    name: PropTypes.string,
-    field: PropTypes.object,
-    helpText: PropTypes.string,
     className: PropTypes.string,
-    folderName: PropTypes.string,
-    editorWidth: PropTypes.string,
     editorHeight: PropTypes.string,
+    editorWidth: PropTypes.string,
+    elementId: PropTypes.string,
+    field: PropTypes.object,
+    folderName: PropTypes.string,
+    helpText: PropTypes.string,
+    name: PropTypes.string,
   };
 
   constructor(props) {
@@ -31,7 +31,7 @@ export default class GalleryReduxFormElement extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { field } = nextProps;
 
     const emptyImage = _.find(field, item => {

@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
 import LOCALIZATION from './localization';
 
 export function getSchemaProperties(schema) {
@@ -82,6 +82,10 @@ export function getSectionPropertyKey(sectionProperty) {
 
 export function getSchemaPropertyKeys(schema) {
   return _.keys(_.get(schema, 'properties'));
+}
+
+export function getSchemaPropertyTitle(schema) {
+  return _.get(schema, 'titleProperty');
 }
 
 export function getEditorCreateTitle(schema) {

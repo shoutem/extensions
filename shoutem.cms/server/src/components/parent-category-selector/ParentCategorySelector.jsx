@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { ControlLabel, FormGroup, MenuItem } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import i18next from 'i18next';
-import { IconLabel, Dropdown } from '@shoutem/react-web-ui';
-import { FormGroup, ControlLabel, MenuItem } from 'react-bootstrap';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { Dropdown, IconLabel } from '@shoutem/react-web-ui';
 import { getDropdownOptions, getSelectedOptionLabel } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';
@@ -15,11 +15,11 @@ export default class ParentCategorySelector extends Component {
     autoBindReact(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.checkData(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.checkData(nextProps, this.props);
   }
 
@@ -97,7 +97,7 @@ export default class ParentCategorySelector extends Component {
 ParentCategorySelector.propTypes = {
   categories: PropTypes.array,
   currentCategoryId: PropTypes.string,
+  schemaTitle: PropTypes.string,
   onCategorySelected: PropTypes.func,
   onCreateCategorySelected: PropTypes.func,
-  schemaTitle: PropTypes.string,
 };
