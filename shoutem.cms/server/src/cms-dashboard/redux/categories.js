@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { RSAA } from 'redux-api-middleware';
-import { setShortcutScope, setExtensionScope } from '@shoutem/redux-api-sdk';
-import { find, remove, invalidate } from '@shoutem/redux-io';
-import { shoutemUrls, rsaaPromise } from '../services';
+import { setExtensionScope, setShortcutScope } from '@shoutem/redux-api-sdk';
+import { find, invalidate, remove } from '@shoutem/redux-io';
 import { CATEGORIES } from '../const';
+import { rsaaPromise, shoutemUrls } from '../services';
 
 export function loadCategories(
   appId,

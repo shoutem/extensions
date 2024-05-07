@@ -1,6 +1,8 @@
 var pack = require('../package.json');
 var _ = require('lodash');
 var path = require('path');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 var publicPath = '/server/build/';
 var extensionClass = _.kebabCase(pack.name);
@@ -81,6 +83,16 @@ module.exports = {
   },
   optimization: {
     minimize: true,
+    minimizer: [
+      new OptimizeCSSAssetsPlugin({}),
+      new TerserPlugin({
+        terserOptions: {
+          output: {
+            comments: false,
+          },
+        },
+      }),
+    ],
   },
   output: {
     libraryTarget: 'amd',

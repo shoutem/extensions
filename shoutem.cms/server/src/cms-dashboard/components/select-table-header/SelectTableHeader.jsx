@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import classNames from 'classnames';
 import Select from 'react-select';
+import autoBindReact from 'auto-bind/react';
+import classNames from 'classnames';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 
 /**
  * Table header with select component. On selection change, callback function from props is called.

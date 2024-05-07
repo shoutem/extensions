@@ -1,2 +1,1 @@
-import ManageContentButton from './ManageContentButton';
-export default ManageContentButton;
+export { default } from './ManageContentButton';

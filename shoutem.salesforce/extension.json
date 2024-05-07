@@ -1,9 +1,9 @@
 {
   "name": "salesforce",
   "title": "Salesforce MC",
-  "version": "2.1.1",
   "description": "Salesforce Marketing Cloud",
-  "platform": ">=9.0.1",
+  "version": "2.1.2-rc.0",
+  "platform": ">=14",
   "nativeChanges": {
     "lastVersion": "2.0.0",
     "settingsKeys": [
@@ -13,7 +13,7 @@
       "fcmSenderId"
     ]
   },
-  "releaseNotes": "* No user facing changes\n* Optimized swagger usage to reduce download size when building apps",
+  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added Node 18 support for server segment",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

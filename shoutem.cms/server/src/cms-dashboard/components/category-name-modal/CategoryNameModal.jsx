@@ -1,18 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import i18next from 'i18next';
+import { Button, ControlLabel, FormGroup, Modal } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
-import { Modal, Button, FormGroup, ControlLabel } from 'react-bootstrap';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 
 export default class CategoryNameModal extends Component {
-  static propTypes = {
-    onCategoryUpdate: PropTypes.func,
-    onCategoryCreate: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -120,3 +115,8 @@ export default class CategoryNameModal extends Component {
     );
   }
 }
+
+CategoryNameModal.propTypes = {
+  onCategoryUpdate: PropTypes.func,
+  onCategoryCreate: PropTypes.func,
+};

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Button, ControlLabel, FormGroup, Modal } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
-import { Modal, Button, FormGroup, ControlLabel } from 'react-bootstrap';
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { IMPORTER_SCHEDULE_SETTINGS } from '../../const';
 import ImporterLanguageSelector from '../importer-language-selector';
@@ -67,7 +67,7 @@ export default class ImporterRssForm extends Component {
     const hasLanguages = !_.isEmpty(languages);
 
     return (
-      <React.Fragment>
+      <>
         <Modal.Body>
           <FormGroup>
             <ControlLabel>
@@ -102,7 +102,7 @@ export default class ImporterRssForm extends Component {
             </LoaderContainer>
           </Button>
         </Modal.Footer>
-      </React.Fragment>
+      </>
     );
   }
 }

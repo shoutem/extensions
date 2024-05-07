@@ -1,7 +1,7 @@
-import { find } from '@shoutem/redux-io';
-import { url, appId } from 'environment';
 import { ext } from 'context';
-import { SCHEMAS, CURRENT_SCHEMA } from '../types';
+import { appId, url } from 'environment';
+import { find } from '@shoutem/redux-io';
+import { CURRENT_SCHEMA, SCHEMAS } from '../types';
 
 export function loadSchema(schema = CURRENT_SCHEMA, tag = 'schema') {
   const config = {

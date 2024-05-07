@@ -29,12 +29,6 @@ export function createLanguageOptions(languages) {
 }
 
 export default class LanguageSelector extends Component {
-  static propTypes = {
-    languages: PropTypes.array.isRequired,
-    onSelectionChanged: PropTypes.func.isRequired,
-    selectedLanguages: PropTypes.array,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -109,3 +103,9 @@ export default class LanguageSelector extends Component {
     );
   }
 }
+
+LanguageSelector.propTypes = {
+  languages: PropTypes.array.isRequired,
+  onSelectionChanged: PropTypes.func.isRequired,
+  selectedLanguages: PropTypes.array,
+};

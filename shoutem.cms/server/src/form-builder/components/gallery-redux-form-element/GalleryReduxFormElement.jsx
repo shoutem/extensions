@@ -7,18 +7,6 @@ import ImageUploaderReduxFormElement from '../image-uploader-redux-form-element'
 import './style.scss';
 
 export default class GalleryReduxFormElement extends Component {
-  static propTypes = {
-    assetManager: PropTypes.object,
-    className: PropTypes.string,
-    editorHeight: PropTypes.string,
-    editorWidth: PropTypes.string,
-    elementId: PropTypes.string,
-    field: PropTypes.object,
-    folderName: PropTypes.string,
-    helpText: PropTypes.string,
-    name: PropTypes.string,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -71,6 +59,18 @@ export default class GalleryReduxFormElement extends Component {
     );
   }
 }
+
+GalleryReduxFormElement.propTypes = {
+  assetManager: PropTypes.object,
+  className: PropTypes.string,
+  editorHeight: PropTypes.string,
+  editorWidth: PropTypes.string,
+  elementId: PropTypes.string,
+  field: PropTypes.object,
+  folderName: PropTypes.string,
+  helpText: PropTypes.string,
+  name: PropTypes.string,
+};
 
 GalleryReduxFormElement.defaultProps = {
   editorWidth: '150px',

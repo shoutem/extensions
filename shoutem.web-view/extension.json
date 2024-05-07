@@ -8,7 +8,7 @@
   "nativeChanges": {
     "latestVersion": "6.0.3-rc.0"
   },
-  "releaseNotes": "* No user facing changes\n* Dev changes - updated react-native-blob-util library for ios privacy info inclusion",
+  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Updated react-native-blob-util library for ios privacy info inclusion",
   "icon": "server/assets/add-web-page.png",
   "dependencies": [
     "shoutem.cms",

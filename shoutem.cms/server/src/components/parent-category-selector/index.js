@@ -1,2 +1,1 @@
-import ParentCategorySelector from './ParentCategorySelector';
-export default ParentCategorySelector;
+export { default } from './ParentCategorySelector';

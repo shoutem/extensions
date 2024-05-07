@@ -1,3 +1,1 @@
-import PushNotificationModal from './PushNotificationModal';
-
-export default PushNotificationModal;
+export { default } from './PushNotificationModal';

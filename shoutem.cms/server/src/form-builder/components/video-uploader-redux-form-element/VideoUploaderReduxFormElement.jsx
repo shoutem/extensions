@@ -45,18 +45,6 @@ function resolveThumbnailUrl(url) {
 }
 
 export default class VideoUploaderReduxFormElement extends Component {
-  static propTypes = {
-    assetManager: PropTypes.object,
-    className: PropTypes.string,
-    elementId: PropTypes.string,
-    field: PropTypes.object,
-    folderName: PropTypes.string,
-    helpText: PropTypes.string,
-    name: PropTypes.string,
-    thumbnailName: PropTypes.string,
-    touch: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -166,3 +154,15 @@ export default class VideoUploaderReduxFormElement extends Component {
     );
   }
 }
+
+VideoUploaderReduxFormElement.propTypes = {
+  assetManager: PropTypes.object,
+  className: PropTypes.string,
+  elementId: PropTypes.string,
+  field: PropTypes.object,
+  folderName: PropTypes.string,
+  helpText: PropTypes.string,
+  name: PropTypes.string,
+  thumbnailName: PropTypes.string,
+  touch: PropTypes.func,
+};

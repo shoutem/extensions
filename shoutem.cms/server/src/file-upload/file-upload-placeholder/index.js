@@ -1,2 +1,1 @@
-import FileUploadPlaceholder from './FileUploadPlaceholder';
-export default FileUploadPlaceholder;
+export { default } from './FileUploadPlaceholder';

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
 import { Checkbox } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import './style.scss';
 
 export default class CheckboxMenuItem extends Component {

@@ -1,9 +1,9 @@
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
 import { invalidate } from '@shoutem/redux-io';
-import { IMPORTER_STATUSES, IMPORT_CAPABILITIES } from '../const';
-import { CATEGORIES } from '../types';
 import { loadImporters } from '../actions';
+import { IMPORT_CAPABILITIES, IMPORTER_STATUSES } from '../const';
+import { CATEGORIES } from '../types';
 import LOCALIZATION from './localization';
 
 const MAX_RETRIES = 30;

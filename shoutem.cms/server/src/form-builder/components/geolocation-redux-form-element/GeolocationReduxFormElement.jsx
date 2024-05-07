@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Col, Row } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { Row, Col } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { ReduxFormElement } from '@shoutem/react-web-ui';
 import SelectReduxFormElement from '../select-redux-form-element';
 import './style.scss';
@@ -27,17 +27,6 @@ const loadScript = (url, callback) => {
 };
 
 export default class GeolocationReduxFormElement extends Component {
-  static propTypes = {
-    elementId: PropTypes.string,
-    name: PropTypes.string,
-    placeholder: PropTypes.string,
-    latitudeName: PropTypes.string,
-    longitudeName: PropTypes.string,
-    googleApiKey: PropTypes.string,
-    field: PropTypes.object,
-    touch: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -228,3 +217,14 @@ export default class GeolocationReduxFormElement extends Component {
     );
   }
 }
+
+GeolocationReduxFormElement.propTypes = {
+  elementId: PropTypes.string,
+  name: PropTypes.string,
+  placeholder: PropTypes.string,
+  latitudeName: PropTypes.string,
+  longitudeName: PropTypes.string,
+  googleApiKey: PropTypes.string,
+  field: PropTypes.object,
+  touch: PropTypes.func,
+};

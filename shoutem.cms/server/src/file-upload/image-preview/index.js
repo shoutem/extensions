@@ -1,2 +1,1 @@
-import ImagePreview from './ImagePreview';
-export default ImagePreview;
+export { default } from './ImagePreview';

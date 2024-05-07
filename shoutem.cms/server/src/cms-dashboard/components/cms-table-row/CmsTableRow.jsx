@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
-import { FontIcon } from '@shoutem/react-web-ui';
 import _ from 'lodash';
 import moment from 'moment';
+import PropTypes from 'prop-types';
+import { FontIcon } from '@shoutem/react-web-ui';
 import CategorySelector from '../category-selector';
 import LanguageSelector from '../language-selector';
 import TextTableColumn from '../text-table-column';
@@ -12,31 +12,19 @@ import './style.scss';
 const DEFAULT_DATE_TIME_FORMAT = 'DD MMM YYYY @ hh:mm a';
 
 export default class CmsTableRow extends Component {
-  static propTypes = {
-    item: PropTypes.object,
-    headers: PropTypes.array,
-    className: PropTypes.string,
-    actionsMenu: PropTypes.node,
-    languages: PropTypes.array,
-    categories: PropTypes.array,
-    mainCategoryId: PropTypes.string,
-    onUpdateItemCategories: PropTypes.func,
-    onUpdateItemLanguages: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
   }
 
   handleCategoriesChanged(selectedCategories) {
-    const { item } = this.props;
-    return this.props.onUpdateItemCategories(selectedCategories, item);
+    const { onUpdateItemCategories, item } = this.props;
+    return onUpdateItemCategories(selectedCategories, item);
   }
 
   handleLanguagesChanged(selectedLanguages) {
-    const { item } = this.props;
-    return this.props.onUpdateItemLanguages(selectedLanguages, item);
+    const { onUpdateItemLanguages, item } = this.props;
+    return onUpdateItemLanguages(selectedLanguages, item);
   }
 
   formatValue(header, value) {
@@ -132,3 +120,16 @@ export default class CmsTableRow extends Component {
     );
   }
 }
+
+CmsTableRow.propTypes = {
+  rowProps: PropTypes.object.isRequired,
+  item: PropTypes.object,
+  headers: PropTypes.array,
+  className: PropTypes.string,
+  actionsMenu: PropTypes.node,
+  languages: PropTypes.array,
+  categories: PropTypes.array,
+  mainCategoryId: PropTypes.string,
+  onUpdateItemCategories: PropTypes.func,
+  onUpdateItemLanguages: PropTypes.func,
+};

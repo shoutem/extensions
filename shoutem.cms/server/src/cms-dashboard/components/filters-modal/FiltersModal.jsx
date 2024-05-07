@@ -1,10 +1,10 @@
 import React, { Component, createRef } from 'react';
-import PropTypes from 'prop-types';
+import { Button, Modal } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import classNames from 'classnames';
 import i18next from 'i18next';
 import _ from 'lodash';
-import autoBindReact from 'auto-bind/react';
-import { Modal, Button } from 'react-bootstrap';
-import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import FiltersForm from '../filters-form';
 import LOCALIZATION from './localization';
 

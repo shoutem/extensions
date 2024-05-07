@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Button, ButtonGroup } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
-import { Button, ButtonGroup } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { FontIcon, LoaderContainer } from '@shoutem/react-web-ui';
 import './style.scss';
 

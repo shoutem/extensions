@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import Select from 'react-select';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import Select from 'react-select';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import LOCALIZATION from './localization';
 
 export default class ImporterCsvMappingItem extends Component {

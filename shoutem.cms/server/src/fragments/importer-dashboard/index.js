@@ -1,2 +1,1 @@
-import ImporterDashboard from './ImporterDashboard';
-export default ImporterDashboard;
+export { default } from './ImporterDashboard';

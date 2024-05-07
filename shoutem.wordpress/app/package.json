@@ -1,6 +1,6 @@
 {
   "name": "shoutem.wordpress",
-  "version": "5.1.1",
+  "version": "5.1.2-rc.0",
   "dependencies": {
     "he": "1.2.0"
   },

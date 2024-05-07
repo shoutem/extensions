@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Col, FormGroup, Row } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import classNames from 'classnames';
 import i18next from 'i18next';
-import { Row, Col, FormGroup } from 'react-bootstrap';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { SelectReduxFormElement } from '@shoutem/form-builder';
-import { getSchemaPropertyOperators } from '../../services';
 import { FILTER_OPERATOR_TYPES } from '../../const';
+import { getSchemaPropertyOperators } from '../../services';
 import LOCALIZATION from './localization';
 
 // not using classNames as this is modal and CSS is not working

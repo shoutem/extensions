@@ -1,10 +1,10 @@
 {
   "name": "products",
-  "version": "5.3.0",
-  "platform": ">=12.1.0",
   "title": "Products",
   "description": "Show products with purchase link",
-  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
+  "version": "5.3.1-rc.0",
+  "platform": ">=14",
+  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added Node 18 support for server segment",
   "categories": ["commerce"],
   "i18n": {
     "locale": "en",

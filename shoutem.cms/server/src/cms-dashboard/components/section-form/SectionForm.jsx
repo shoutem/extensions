@@ -1,6 +1,6 @@
 import React from 'react';
+import { Col, Row } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { Row, Col } from 'react-bootstrap';
 
 export default function SectionForm({ children, title, editorSize }) {
   return (

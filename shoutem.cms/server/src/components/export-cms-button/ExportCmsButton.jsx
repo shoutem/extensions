@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import { Button } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { Button } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { FontIcon, LoaderContainer } from '@shoutem/react-web-ui';
 import { fetchCmsDataZip } from '../../actions';
 import { CURRENT_SCHEMA } from '../../types';

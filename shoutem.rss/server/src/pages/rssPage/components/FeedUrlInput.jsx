@@ -1,17 +1,18 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind';
-import _ from 'lodash';
-import i18next from 'i18next';
-import PropTypes from 'prop-types';
 import {
   Button,
+  ButtonToolbar,
   ControlLabel,
   FormControl,
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
-import { LoaderContainer } from '@shoutem/react-web-ui';
+import autoBindReact from 'auto-bind';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import validator from 'validator';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -68,17 +69,20 @@ export default class FeedUrlInput extends PureComponent {
             className="form-control"
             onChange={this.handleTextChange}
           />
-          <HelpBlock className="text-error">{error}</HelpBlock>
+          {error && <HelpBlock className="text-error">{error}</HelpBlock>}
         </FormGroup>
-        <Button
-          bsStyle="primary"
-          disabled={!feedUrl}
-          onClick={this.handleContinue}
-        >
-          <LoaderContainer isLoading={inProgress}>
-            {i18next.t(LOCALIZATION.BUTTON_CONTINUE)}
-          </LoaderContainer>
-        </Button>
+        <ControlLabel>{i18next.t(LOCALIZATION.RSS_WARNING)}</ControlLabel>
+        <ButtonToolbar>
+          <Button
+            bsStyle="primary"
+            disabled={!feedUrl}
+            onClick={this.handleContinue}
+          >
+            <LoaderContainer isLoading={inProgress}>
+              {i18next.t(LOCALIZATION.BUTTON_CONTINUE)}
+            </LoaderContainer>
+          </Button>
+        </ButtonToolbar>
       </div>
     );
   }

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Button, ControlLabel, FormGroup, Modal } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
-import { Modal, Button, FormGroup, ControlLabel } from 'react-bootstrap';
-import _ from 'lodash';
 import i18next from 'i18next';
-import { LoaderContainer } from '@shoutem/react-web-ui';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { getMappedCmsToCsvProperties, Table } from '@shoutem/cms-dashboard';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 import ImporterCsvMappingItem from '../importer-csv-mapping-item';
 import LOCALIZATION from './localization';
 
@@ -117,7 +117,7 @@ export default class ImporterCsvMappingForm extends Component {
     const { headers, cmsOptions, inProgress } = this.state;
 
     return (
-      <React.Fragment>
+      <>
         <Modal.Body>
           <FormGroup style={CVS_MAPPING_FORM_STYLE}>
             <ControlLabel>{i18next.t(LOCALIZATION.FORM_TITLE)}</ControlLabel>
@@ -140,7 +140,7 @@ export default class ImporterCsvMappingForm extends Component {
             </LoaderContainer>
           </Button>
         </Modal.Footer>
-      </React.Fragment>
+      </>
     );
   }
 }

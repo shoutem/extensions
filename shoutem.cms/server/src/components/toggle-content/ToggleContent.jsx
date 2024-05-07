@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import { FontIcon } from '@shoutem/react-web-ui';
 import './style.scss';
 
@@ -27,7 +27,7 @@ export default class ToggleContent extends Component {
     const classes = classNames('toggle-content', className);
 
     return (
-      <React.Fragment>
+      <>
         <div className={classes}>
           <h3>{title}</h3>
           <div onClick={this.handleToggleChildren}>
@@ -35,7 +35,7 @@ export default class ToggleContent extends Component {
           </div>
         </div>
         {showChildren && children}
-      </React.Fragment>
+      </>
     );
   }
 }

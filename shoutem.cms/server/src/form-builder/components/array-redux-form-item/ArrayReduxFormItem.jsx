@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
-import { ReduxFormElement, FontIcon } from '@shoutem/react-web-ui';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { FontIcon, ReduxFormElement } from '@shoutem/react-web-ui';
 import './style.scss';
 
 export default class ArrayReduxFormItem extends Component {

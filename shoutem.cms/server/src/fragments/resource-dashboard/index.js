@@ -1,2 +1,1 @@
-import ResourceDashboard from './ResourceDashboard';
-export default ResourceDashboard;
+export { default } from './ResourceDashboard';

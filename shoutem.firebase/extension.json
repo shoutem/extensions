@@ -8,7 +8,7 @@
   "nativeChanges": {
     "lastVersion": "5.1.0-rc.0"
   },
-  "releaseNotes": "* No user facing changes\n* Updated firebase libraries",
+  "releaseNotes": "* No user facing changes\n* For developers: Updated firebase libraries",
   "skipClone": false,
   "icon": "server/assets/add-firebase-image.png",
   "dependencies": [

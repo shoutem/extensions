@@ -4,7 +4,7 @@
   "platform": ">=14",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "* No user facing changes\n* Dev changes - updated react-native-gesture-handler",
+  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Updated react-native-gesture-handler",
   "description": "App-level navigation",
   "nativeChanges": {
     "lastVersion": "5.2.0"

@@ -1,21 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { FormGroup, HelpBlock } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
-import { HelpBlock, FormGroup } from 'react-bootstrap';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import { Switch } from '@shoutem/react-web-ui';
 import { fieldInError } from '../services';
 import './style.scss';
 
 export default class BooleanReduxFormElement extends Component {
-  static propTypes = {
-    elementId: PropTypes.string,
-    name: PropTypes.string,
-    field: PropTypes.object,
-    helpText: PropTypes.string,
-    className: PropTypes.string,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -57,3 +49,11 @@ export default class BooleanReduxFormElement extends Component {
     );
   }
 }
+
+BooleanReduxFormElement.propTypes = {
+  elementId: PropTypes.string,
+  name: PropTypes.string,
+  field: PropTypes.object,
+  helpText: PropTypes.string,
+  className: PropTypes.string,
+};

@@ -14,6 +14,7 @@ const BUTTON_CONTINUE = `${key}.button-continue`;
 const INVALID_RSS_FEED = `${key}.invalid-rss-feed`;
 const FORM_SHOW_FEED = `${key}.form-show-feed`;
 const ENABLE_SEARCH_IN_APP = `${key}.enable-search-in-app`;
+const RSS_WARNING = `${key}.warning`;
 
 export default {
   FORM_LOADING_FROM,
@@ -30,4 +31,5 @@ export default {
   INVALID_RSS_FEED,
   FORM_SHOW_FEED,
   ENABLE_SEARCH_IN_APP,
+  RSS_WARNING,
 };

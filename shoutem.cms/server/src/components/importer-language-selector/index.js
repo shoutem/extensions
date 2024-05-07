@@ -1,2 +1,1 @@
-import ImporterLanguageSelector from './ImporterLanguageSelector';
-export default ImporterLanguageSelector;
+export { default } from './ImporterLanguageSelector';

@@ -33,13 +33,6 @@ export function createCategoryOptions(categories, mainCategoryId) {
 }
 
 export default class CategorySelector extends Component {
-  static propTypes = {
-    categories: PropTypes.array.isRequired,
-    mainCategoryId: PropTypes.string.isRequired,
-    onSelectionChanged: PropTypes.func.isRequired,
-    selectedCategories: PropTypes.array,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -123,3 +116,10 @@ export default class CategorySelector extends Component {
     );
   }
 }
+
+CategorySelector.propTypes = {
+  categories: PropTypes.array.isRequired,
+  mainCategoryId: PropTypes.string.isRequired,
+  onSelectionChanged: PropTypes.func.isRequired,
+  selectedCategories: PropTypes.array,
+};

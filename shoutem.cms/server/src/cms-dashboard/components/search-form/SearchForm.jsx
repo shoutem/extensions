@@ -1,9 +1,9 @@
 import React, { Component, createRef } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import i18next from 'i18next';
-import autoBindReact from 'auto-bind/react';
 import { Button, ButtonGroup } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { FontIcon, ReduxFormElement } from '@shoutem/react-web-ui';
 import FiltersModal from '../filters-modal';
 import LOCALIZATION from './localization';

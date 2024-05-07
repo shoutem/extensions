@@ -1,10 +1,10 @@
 {
   "name": "deals",
   "title": "Deals",
-  "version": "6.3.1",
-  "platform": ">=12.1.0",
   "description": "Create special deals and redeem them with coupons",
-  "releaseNotes": "* Add year when start or end date of a deal is more than a year away",
+  "version": "6.3.2-rc.0",
+  "platform": ">=14",
+  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added Node 18 support for server segment",
   "nativeChanges": {
     "lastVersion": "6.0.2"
   },

@@ -1,2 +1,1 @@
-import TextTableHeader from './TextTableHeader';
-export default TextTableHeader;
+export { default } from './TextTableHeader';

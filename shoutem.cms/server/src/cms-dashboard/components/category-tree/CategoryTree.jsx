@@ -33,18 +33,6 @@ function generateTree(categories, staticCategories, categoryActionWhitelist) {
 }
 
 export default class CategoryTree extends Component {
-  static propTypes = {
-    categories: PropTypes.array,
-    categoryActionWhitelist: PropTypes.object,
-    selectedCategoryId: PropTypes.string,
-    staticCategories: PropTypes.array,
-    onCategoryCreate: PropTypes.func,
-    onCategoryDelete: PropTypes.func,
-    onCategorySelected: PropTypes.func,
-    onCategoryUpdate: PropTypes.func,
-    onDragAndDropComplete: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -156,3 +144,15 @@ export default class CategoryTree extends Component {
     );
   }
 }
+
+CategoryTree.propTypes = {
+  categories: PropTypes.array,
+  categoryActionWhitelist: PropTypes.object,
+  selectedCategoryId: PropTypes.string,
+  staticCategories: PropTypes.array,
+  onCategoryCreate: PropTypes.func,
+  onCategoryDelete: PropTypes.func,
+  onCategorySelected: PropTypes.func,
+  onCategoryUpdate: PropTypes.func,
+  onDragAndDropComplete: PropTypes.func,
+};

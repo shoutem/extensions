@@ -1,14 +1,14 @@
 {
   "name": "theme",
+  "title": "Theme",
+  "type": "system",
+  "description": "Resolve and store theme related configuration",
   "version": "8.0.2-rc.0",
   "platform": ">=14",
-  "type": "system",
-  "title": "Theme",
-  "description": "Resolve and store theme related configuration",
-  "releaseNotes": "* No user facing changes\n* Dev - updated version of UI library",
   "nativeChanges": {
     "latestVersion": "8.0.2-rc.0"
   },
+  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Updated version of UI library",
   "icon": "server/assets/add-theme-image.png",
   "categories": [],
   "i18n": {

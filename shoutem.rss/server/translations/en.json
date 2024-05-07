@@ -14,7 +14,8 @@
       "rss-page.button-continue": "Continue",
       "rss-page.invalid-rss-feed": "URL does not contain valid RSS feeds.",
       "rss-page.form-show-feed": "This is a {{feedType}} feed.",
-      "rss-page.enable-search-in-app": "Enable in-app search of items per title"
+      "rss-page.enable-search-in-app": "Enable in-app search of items per title",
+      "rss-page.warning": "If your RSS link doesn't load or you have crawler bot protection enabled for your RSS link, please get in touch with our support and we will help you out."
     }
   }
 }

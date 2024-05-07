@@ -1,2 +1,1 @@
-import CategorySelector from './CategorySelector';
-export default CategorySelector;
+export { default } from './CategorySelector';

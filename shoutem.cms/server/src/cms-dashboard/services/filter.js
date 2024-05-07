@@ -1,5 +1,6 @@
-import { PROPERTY_TYPES, FILTER_OPERATOR_TYPES } from '../const';
-import { getSchemaPropertyKeys, getSchemaProperty } from './schema';
+import _ from 'lodash';
+import { FILTER_OPERATOR_TYPES, PROPERTY_TYPES } from '../const';
+import { getSchemaProperty, getSchemaPropertyKeys } from './schema';
 
 export function getFilterableSchemaKeys(schema) {
   const schemaPropertyKeys = getSchemaPropertyKeys(schema);

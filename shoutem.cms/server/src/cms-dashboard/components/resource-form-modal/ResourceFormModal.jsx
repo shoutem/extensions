@@ -14,19 +14,6 @@ import { resolveResourceForm } from '../resource-form';
 import './style.scss';
 
 export default class ResourceFormModal extends Component {
-  static propTypes = {
-    assetManager: PropTypes.object,
-    canonicalName: PropTypes.string,
-    googleApiKey: PropTypes.string,
-    loadResources: PropTypes.func,
-    loadSchema: PropTypes.func,
-    resource: PropTypes.object,
-    schema: PropTypes.object.required,
-    onHide: PropTypes.func,
-    onResourceCreate: PropTypes.func,
-    onResourceUpdate: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -116,3 +103,16 @@ export default class ResourceFormModal extends Component {
     );
   }
 }
+
+ResourceFormModal.propTypes = {
+  assetManager: PropTypes.object,
+  canonicalName: PropTypes.string,
+  googleApiKey: PropTypes.string,
+  loadResources: PropTypes.func,
+  loadSchema: PropTypes.func,
+  resource: PropTypes.object,
+  schema: PropTypes.object.required,
+  onHide: PropTypes.func,
+  onResourceCreate: PropTypes.func,
+  onResourceUpdate: PropTypes.func,
+};

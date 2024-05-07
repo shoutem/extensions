@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Col, Row } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { Row, Col } from 'react-bootstrap';
 import moment from 'moment-timezone';
+import PropTypes from 'prop-types';
 import { DateTimePicker, ReduxFormElement } from '@shoutem/react-web-ui';
 import SelectReduxFormElement from '../select-redux-form-element';
-import { TIMEZONES, IANA_WINDOWS_TIMEZONE_MAPPER } from './const';
+import { IANA_WINDOWS_TIMEZONE_MAPPER, TIMEZONES } from './const';
 import './style.scss';
 
 function getISODateFromDatetimeAndZone(datetime, timezone) {
@@ -76,15 +76,6 @@ function resoloveTimezone(timezoneField, field) {
 }
 
 export default class DateTimeReduxFormElement extends Component {
-  static propTypes = {
-    elementId: PropTypes.string,
-    name: PropTypes.string,
-    timezoneName: PropTypes.string,
-    field: PropTypes.object,
-    timezoneField: PropTypes.object,
-    touch: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -92,7 +83,7 @@ export default class DateTimeReduxFormElement extends Component {
     const { field, timezoneField } = props;
     const timezone = resoloveTimezone(timezoneField, field);
 
-    // update timezone field for initial setup when 
+    // update timezone field for initial setup when
     // timezoneField was never selected before
     if (timezoneField && !timezoneField.value) {
       timezoneField.onChange(timezone);
@@ -192,3 +183,12 @@ export default class DateTimeReduxFormElement extends Component {
     );
   }
 }
+
+DateTimeReduxFormElement.propTypes = {
+  elementId: PropTypes.string,
+  name: PropTypes.string,
+  timezoneName: PropTypes.string,
+  field: PropTypes.object,
+  timezoneField: PropTypes.object,
+  touch: PropTypes.func,
+};

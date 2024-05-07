@@ -1,3 +1,1 @@
-import CmsActionsMenu from './CmsActionsMenu';
-export default CmsActionsMenu;
-
+export { default } from './CmsActionsMenu';

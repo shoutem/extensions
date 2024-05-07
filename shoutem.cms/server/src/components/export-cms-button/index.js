@@ -1,2 +1,1 @@
-import ExportCmsButton from './ExportCmsButton';
-export default ExportCmsButton;
+export { default } from './ExportCmsButton';

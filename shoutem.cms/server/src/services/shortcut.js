@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import { data } from 'context';
+import _ from 'lodash';
 import { SORT_OPTIONS } from '../const';
 
 export function getSortFieldProperty() {

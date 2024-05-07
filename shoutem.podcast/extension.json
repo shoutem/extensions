@@ -4,7 +4,7 @@
   "platform": ">=14",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "releaseNotes": "* No user facing changes\n* Dev changes - updated react-native-blob-util library for ios privacy info inclusion",
+  "releaseNotes": "* No user facing changes\n\nFor developers\n* Updated react-native-blob-util library for ios privacy info inclusion",
   "nativeChanges": {
     "lastVersion": "8.0.1-rc.0"
   },

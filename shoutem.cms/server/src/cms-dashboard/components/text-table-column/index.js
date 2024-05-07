@@ -1,2 +1,1 @@
-import TextTableColumn from './TextTableColumn';
-export default TextTableColumn;
+export { default } from './TextTableColumn';

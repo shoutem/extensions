@@ -1,6 +1,6 @@
 {
   "name": "shoutem.layouts",
-  "version": "7.0.2",
+  "version": "7.0.3-rc.0",
   "peerDependencies": {
     "@shoutem/theme": "*",
     "@shoutem/ui": "*",

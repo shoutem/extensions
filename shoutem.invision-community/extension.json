@@ -7,7 +7,7 @@
   "nativeChanges": {
     "lastVersion": "2.1.1-rc.0"
   },
-  "releaseNotes": "* No user facing changes\n* Dev changes - updated @react-native-async-storage/async-storage library for ios privacy info inclusion",
+  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Updated @react-native-async-storage/async-storage library for ios privacy info inclusion\n* Added Node 18 support in server segment",
   "icon": "./server/assets/add-invision-image.png",
   "capabilities": ["shoutem.auth.provider", "shoutem.auth.invision-comunity"],
   "dependencies": ["shoutem.application", "shoutem.auth", "shoutem.i18n"],

@@ -1,8 +1,8 @@
+import { ext } from 'context';
 import { url } from 'environment';
 import _ from 'lodash';
 import Uri from 'urijs';
 import { find, remove } from '@shoutem/redux-io';
-import { ext } from 'context';
 import { IMPORTERS } from '../types';
 
 export function loadImporters(appId, groupId, tag = 'all-importers') {

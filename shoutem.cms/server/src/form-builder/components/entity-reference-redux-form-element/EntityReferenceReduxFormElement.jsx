@@ -1,21 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import SelectReduxFormElement from '../select-redux-form-element';
 
 export default class EntityReferenceReduxFormElement extends Component {
-  static propTypes = {
-    elementId: PropTypes.string,
-    name: PropTypes.string,
-    placeholder: PropTypes.string,
-    canonicalName: PropTypes.string,
-    field: PropTypes.object,
-    touch: PropTypes.func,
-    loadSchema: PropTypes.func,
-    loadResources: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -118,3 +107,14 @@ export default class EntityReferenceReduxFormElement extends Component {
     );
   }
 }
+
+EntityReferenceReduxFormElement.propTypes = {
+  elementId: PropTypes.string,
+  name: PropTypes.string,
+  placeholder: PropTypes.string,
+  canonicalName: PropTypes.string,
+  field: PropTypes.object,
+  touch: PropTypes.func,
+  loadSchema: PropTypes.func,
+  loadResources: PropTypes.func,
+};

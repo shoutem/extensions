@@ -1,2 +1,1 @@
-import ResourceFormModal from './ResourceFormModal';
-export default ResourceFormModal;
+export { default } from './ResourceFormModal';

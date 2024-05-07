@@ -1,2 +1,1 @@
-import ImporterCsvForm from './ImporterCsvForm';
-export default ImporterCsvForm;
+export { default } from './ImporterCsvForm';

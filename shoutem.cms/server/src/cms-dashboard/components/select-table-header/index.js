@@ -1,2 +1,1 @@
-import SelectTableHeader from './SelectTableHeader';
-export default SelectTableHeader;
+export { default } from './SelectTableHeader';

@@ -1,27 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
+import { ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
 import Select from 'react-select';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { fieldInError } from '../services';
 
 export default class SelectReduxFormElement extends Component {
-  static propTypes = {
-    elementId: PropTypes.string,
-    name: PropTypes.string,
-    field: PropTypes.object,
-    helpText: PropTypes.string,
-    className: PropTypes.string,
-    valueKey: PropTypes.string,
-    options: PropTypes.aray,
-  };
-
-  static defaultProps = {
-    valueKey: 'value',
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -66,3 +52,17 @@ export default class SelectReduxFormElement extends Component {
     );
   }
 }
+
+SelectReduxFormElement.propTypes = {
+  elementId: PropTypes.string,
+  name: PropTypes.string,
+  field: PropTypes.object,
+  helpText: PropTypes.string,
+  className: PropTypes.string,
+  valueKey: PropTypes.string,
+  options: PropTypes.aray,
+};
+
+SelectReduxFormElement.defaultProps = {
+  valueKey: 'value',
+};

@@ -1,2 +1,1 @@
-import ImporterModal from './ImporterModal';
-export default ImporterModal;
+export { default } from './ImporterModal';

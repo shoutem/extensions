@@ -1,2 +1,1 @@
-import ImporterTable from './ImporterTable';
-export default ImporterTable;
+export { default } from './ImporterTable';

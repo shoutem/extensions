@@ -1,10 +1,10 @@
 {
   "name": "i18n",
   "title": "Language & Region",
-  "version": "4.1.2",
-  "platform": ">=13.0.2",
-  "releaseNotes": "* Fixed a minor issue with translation changes in preview",
   "description": "Configure the language and regional settings of your app.",
+  "version": "4.1.3-rc.0",
+  "platform": ">=14",
+  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added Node 18 support for server segment",
   "dependencies": [
     "shoutem.application"
   ],

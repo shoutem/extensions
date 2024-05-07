@@ -7,7 +7,7 @@
   "nativeChanges": {
     "lastVersion": "3.1.0-rc.0"
   },
-  "releaseNotes": "* No user facing changes\n* Updated firebase libraries",
+  "releaseNotes": "* No user facing changes\n* For developers: Updated firebase libraries in app segment, added Node 18 support in server segment",
   "icon": "server/assets/add-analytics-image.png",
   "categories": [
     "analytics"
