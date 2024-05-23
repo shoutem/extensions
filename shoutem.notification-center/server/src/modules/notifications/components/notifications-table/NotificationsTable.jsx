@@ -9,6 +9,24 @@ import { RECURRING_PERIOD_TYPES } from '../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
 
+function resolveTypeDisplayValue(item) {
+  const value = _.get(item, 'type');
+
+  if (value === 'Manual') {
+    return i18next.t(LOCALIZATION.NOTIFICATION_TYPE_MANUAL);
+  }
+
+  if (value === 'Cms') {
+    return i18next.t(LOCALIZATION.NOTIFICATION_TYPE_CMS);
+  }
+
+  if (value === 'Rss') {
+    return i18next.t(LOCALIZATION.NOTIFICATION_TYPE_RSS);
+  }
+
+  return value;
+}
+
 function resolveAudiencDisplayValue(item) {
   const value = _.get(item, 'audience.type');
 
@@ -36,6 +54,7 @@ function getHeaders() {
     i18next.t(LOCALIZATION.HEADER_STATUS_LABEL),
     i18next.t(LOCALIZATION.HEADER_MESSAGE_LABEL),
     i18next.t(LOCALIZATION.HEADER_AUDIENCE_LABEL),
+    i18next.t(LOCALIZATION.HEADER_TYPE_LABEL),
     '',
     '',
   ];
@@ -63,6 +82,11 @@ export default class NotificationsTable extends Component {
       isRequired: true,
     };
 
+    const typeDescriptor = {
+      getDisplayValue: resolveTypeDisplayValue,
+      isRequired: true,
+    };
+
     const editDescriptor = {
       getDisplayValue: this.renderEditValue,
       isRequired: false,
@@ -77,6 +101,7 @@ export default class NotificationsTable extends Component {
       statusDescriptor,
       messageDescriptor,
       audienceDescriptor,
+      typeDescriptor,
       editDescriptor,
       deleteDescriptor,
     ];

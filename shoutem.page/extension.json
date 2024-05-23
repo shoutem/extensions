@@ -1,10 +1,10 @@
 {
   "name": "page",
-  "version": "5.1.0",
-  "platform": ">=6",
   "title": "Page",
   "description": "Show a single screen with info and child items",
-  "releaseNotes": "* No user facing changes\n* For developers: Add node 16 support for server segment",
+  "version": "5.1.1",
+  "platform": ">=14",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
   "icon": "server/assets/add-page-image.png",
   "dependencies": [
     "shoutem.application",

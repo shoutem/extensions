@@ -1,10 +1,10 @@
 {
   "name": "ical-events",
   "title": "iCal Events",
-  "version": "5.3.0",
-  "platform": ">=12.1.0",
   "description": "Shoutem extension for managing iCal events",
-  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
+  "version": "5.3.2",
+  "platform": ">=14",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
   "nativeChanges": {
     "lastVersion": "5.0.1"
   },

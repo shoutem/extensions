@@ -9,6 +9,8 @@ const FORM_TITLE_INTERACTIONS = `${key}.form-title-interactions`;
 const FORM_TITLE_GIF_ATTACHMENTS = `${key}.form-title-gif-attachments`;
 const POPOVER_ENABLE_LIKE_TEXT = `${key}.popoover-enable-like-text`;
 const BUTTON_SAVE = `${key}.button-save`;
+const STATUS_LENGTH_MUST_BE_GREATER_OR_EQUAL = `${key}.status-length-must-be-greater-or-equal`;
+const STATUS_LENGTH_MUST_BE_LOWER_OR_EQUAL = `${key}.status-length-must-be-lower-or-equal`;
 
 export default {
   ERROR_TEXT,
@@ -20,4 +22,6 @@ export default {
   FORM_TITLE_GIF_ATTACHMENTS,
   POPOVER_ENABLE_LIKE_TEXT,
   BUTTON_SAVE,
+  STATUS_LENGTH_MUST_BE_GREATER_OR_EQUAL,
+  STATUS_LENGTH_MUST_BE_LOWER_OR_EQUAL,
 };

@@ -1,22 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import i18next from 'i18next';
 import { ControlLabel, FormGroup } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { FontIcon } from '@shoutem/react-web-ui';
 import LOCALIZATION from '../../localization';
 import './style.scss';
 
 export default class ArrayFormElement extends Component {
-  static propTypes = {
-    elementId: PropTypes.string,
-    element: PropTypes.node,
-    name: PropTypes.string,
-    field: PropTypes.object,
-    ItemComponent: PropTypes.object,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -75,3 +67,11 @@ export default class ArrayFormElement extends Component {
     );
   }
 }
+
+ArrayFormElement.propTypes = {
+  elementId: PropTypes.string,
+  element: PropTypes.node,
+  name: PropTypes.string,
+  field: PropTypes.object,
+  ItemComponent: PropTypes.object,
+};

@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { ControlLabel, FormGroup } from 'react-bootstrap';
 import i18next from 'i18next';
-import { FormGroup, ControlLabel } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { LanguageSelector } from '@shoutem/cms-dashboard';
 import LOCALIZATION from './localization';
 

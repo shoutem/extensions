@@ -1,22 +1,22 @@
-require('es6-promise').polyfill();
-import 'fetch-everywhere';
-
-import '@shoutem/react-web-ui/lib/styles/index.scss';
-import '@shoutem/extension-sandbox';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import _ from 'lodash';
 import URI from 'urijs';
-import api from '@shoutem/redux-api-sdk';
 import { LoaderContainer } from '@shoutem/react-web-ui';
+import api from '@shoutem/redux-api-sdk';
 import { RioStateSerializer } from '@shoutem/redux-io';
 import { SyncStateEngine } from '@shoutem/redux-sync-state-engine';
+import 'fetch-everywhere';
+import '@shoutem/extension-sandbox';
 import * as extension from '../src/index';
-import { PageProvider, connectPage, Page } from './page';
-import { LocalizationProvider } from './localization';
-import { SyncStateEngineProvider } from './syncStateEngine';
 import configureStore from './configureStore';
+import { LocalizationProvider } from './localization';
+import { connectPage, Page, PageProvider } from './page';
+import { SyncStateEngineProvider } from './syncStateEngine';
+import '@shoutem/react-web-ui/lib/styles/index.scss';
+
+require('es6-promise').polyfill();
 
 const uri = new URI(window.location.href);
 const pageName = _.get(uri.search(true), 'page', '');
@@ -25,13 +25,11 @@ const rioStateSerializer = new RioStateSerializer();
 
 function renderPage() {
   if (!PageComponent) {
-    return (
-      <div>Page not found: {pageName}</div>
-    );
+    return <div>Page not found: {pageName}</div>;
   }
 
   const ConnectedPageComponent = connectPage()(PageComponent);
-  return (<ConnectedPageComponent />);
+  return <ConnectedPageComponent />;
 }
 
 // handler for Shoutem initialization finished
@@ -43,7 +41,13 @@ function onShoutemReady(event) {
 
   const page = new Page(context, parameters);
 
-  api.init(context);
+  // add cloud url to the list of additional api endpoints to get access token
+  // cloud domain is not changed for agency domain so we need to do this
+  const cloudUri = new URI(_.get(context, 'url.cloud'));
+  const newContext = _.cloneDeep(context);
+  _.set(newContext, 'url.additionalApiEndpoints', [cloudUri.hostname()]);
+
+  api.init(newContext);
 
   const pageWillMount = _.get(extension, 'pageWillMount');
   if (pageWillMount) {
@@ -61,12 +65,12 @@ function onShoutemReady(event) {
   ReactDOM.render(
     <Provider store={store}>
       <SyncStateEngineProvider syncStateEngine={syncStateEngine}>
-      <LocalizationProvider context={context}>
+        <LocalizationProvider context={context}>
           <PageProvider page={page}>{renderPage()}</PageProvider>
         </LocalizationProvider>
       </SyncStateEngineProvider>
     </Provider>,
-    document.getElementById('root')
+    document.getElementById('root'),
   );
 }
 
@@ -76,7 +80,5 @@ document.addEventListener('shoutemready', onShoutemReady, false);
 // Render it to DOM
 ReactDOM.render(
   <LoaderContainer size="50px" isLoading />,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
-
-

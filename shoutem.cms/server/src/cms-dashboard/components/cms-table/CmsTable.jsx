@@ -1,33 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import { getTableHeaders } from '../../services';
-import Table from '../table';
-import CmsTableRow from '../cms-table-row';
 import CmsActionsMenu from '../cms-actions-menu';
+import CmsTableRow from '../cms-table-row';
+import Table from '../table';
 import './style.scss';
 
 export default class CmsTable extends Component {
-  static propTypes = {
-    schema: PropTypes.object,
-    items: PropTypes.array,
-    sortable: PropTypes.bool,
-    mainCategoryId: PropTypes.string,
-    className: PropTypes.string,
-    canDelete: PropTypes.bool,
-    canUpdate: PropTypes.bool,
-    onUpdateClick: PropTypes.func,
-    onDeleteClick: PropTypes.func,
-    additionalActions: PropTypes.array,
-    actionsInline: PropTypes.bool,
-    languages: PropTypes.array,
-    categories: PropTypes.array,
-    onUpdateItemCategories: PropTypes.func,
-    onUpdateItemLanguages: PropTypes.func,
-    onUpdateItemIndex: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -36,20 +17,24 @@ export default class CmsTable extends Component {
   renderActionsMenu(item) {
     const {
       actionsInline,
+      canSendPush,
       canDelete,
       canUpdate,
       onDeleteClick,
       onUpdateClick,
+      onSendPushClick,
     } = this.props;
 
     return (
       <CmsActionsMenu
+        canSendPush={canSendPush}
         canDelete={canDelete}
         canUpdate={canUpdate}
         inline={actionsInline}
         item={item}
         onDeleteClick={onDeleteClick}
         onUpdateClick={onUpdateClick}
+        onSendPushClick={onSendPushClick}
       />
     );
   }
@@ -108,3 +93,24 @@ export default class CmsTable extends Component {
     );
   }
 }
+
+CmsTable.propTypes = {
+  onDeleteClick: PropTypes.func.isRequired,
+  onSendPushClick: PropTypes.func.isRequired,
+  onUpdateClick: PropTypes.func.isRequired,
+  onUpdateItemCategories: PropTypes.func.isRequired,
+  onUpdateItemIndex: PropTypes.func.isRequired,
+  onUpdateItemLanguages: PropTypes.func.isRequired,
+  actionsInline: PropTypes.bool,
+  additionalActions: PropTypes.array,
+  canDelete: PropTypes.bool,
+  canSendPush: PropTypes.bool,
+  canUpdate: PropTypes.bool,
+  categories: PropTypes.array,
+  className: PropTypes.string,
+  items: PropTypes.array,
+  languages: PropTypes.array,
+  mainCategoryId: PropTypes.string,
+  schema: PropTypes.object,
+  sortable: PropTypes.bool,
+};

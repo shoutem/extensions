@@ -32,6 +32,7 @@ import {
   loadImporters,
   loadLanguageModuleStatus,
   loadLanguages,
+  loadModules,
   loadReferenceResources,
   loadSchema,
   updateShortcutSortOptions,
@@ -55,11 +56,13 @@ import {
   getImporters,
   getLanguageModuleStatus,
   getLanguages,
+  getModules,
   getRawLanguages,
   getSchema,
 } from '../../selectors';
 import {
   canExportData,
+  canSendInAppPush,
   checkStatusOfImporters,
   getCategoryName,
   getImporterCapabilities,
@@ -112,12 +115,15 @@ export class CmsPage extends PureComponent {
 
     const importerCapabilites = getImporterCapabilities(shortcut);
     const showImporters = !_.isEmpty(importerCapabilites);
-    const visibleCategoryIds = getVisibleCategoryIds(shortcut);
-    const showAdvancedSetup = !_.isEmpty(visibleCategoryIds);
     const isInAppContentSearchEnabled = _.get(
       props,
       'shortcut.settings.isInAppContentSearchEnabled',
       true,
+    );
+    const isInAppSendPushNotificationEnabled = _.get(
+      props,
+      'shortcut.settings.isInAppSendPushNotificationEnabled',
+      false,
     );
 
     // create parent category if not exist !!!
@@ -129,13 +135,13 @@ export class CmsPage extends PureComponent {
     this.state = {
       legacyApiUrl,
       showImporters,
-      showAdvancedSetup,
       showAdditionalOptions: false,
       showResourceModal: false,
       currentResource: null,
       parentCategoryId,
       selectedCategoryId: null,
       isInAppContentSearchEnabled,
+      isInAppSendPushNotificationEnabled,
     };
   }
 
@@ -143,11 +149,21 @@ export class CmsPage extends PureComponent {
     this.checkData(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.checkData(nextProps, this.props);
   }
 
   checkData(nextProps, props = {}) {
+    const {
+      loadSchema,
+      loadLanguageModuleStatus,
+      loadModules,
+      loadLanguages,
+      loadCategories,
+      loadChildCategories,
+      loadImporters,
+      checkStatusOfImporters,
+    } = this.props;
     const {
       schema: nextSchema,
       categories: nextCategories,
@@ -171,26 +187,30 @@ export class CmsPage extends PureComponent {
     }
 
     if (shouldLoad(nextProps, props, 'schema')) {
-      this.props.loadSchema();
+      loadSchema();
     }
 
     if (shouldLoad(nextProps, props, 'languageModuleStatus')) {
-      this.props.loadLanguageModuleStatus();
+      loadLanguageModuleStatus();
+    }
+
+    if (shouldLoad(nextProps, props, 'modules')) {
+      loadModules();
     }
 
     if (
       isLanguageModuleEnabled(nextLanguageModuleStatus) &&
       shouldRefresh(nextLanguages)
     ) {
-      this.props.loadLanguages();
+      loadLanguages();
     }
 
     if (nextParentCategoryId && shouldLoad(nextProps, props, 'categories')) {
-      this.props.loadCategories();
+      loadCategories();
     }
 
     if (nextParentCategoryId && shouldRefresh(nextChildCategories)) {
-      this.props.loadChildCategories(nextParentCategoryId);
+      loadChildCategories(nextParentCategoryId);
     }
 
     if (
@@ -198,12 +218,12 @@ export class CmsPage extends PureComponent {
       nextParentCategoryId &&
       shouldLoad(nextProps, props, 'importers')
     ) {
-      this.props.loadImporters(nextParentCategoryId);
+      loadImporters(nextParentCategoryId);
     }
 
     // check if some importer is in progress
     if (showImporters) {
-      this.props.checkStatusOfImporters(nextImporters);
+      checkStatusOfImporters(nextImporters);
     }
 
     // do not load resources if schema is not initialized
@@ -248,16 +268,17 @@ export class CmsPage extends PureComponent {
   }
 
   handleRenameCategory(categoryId, name) {
-    return this.props.renameCategory(categoryId, categoryId, name);
+    const { renameCategory } = this.props;
+    return renameCategory(categoryId, categoryId, name);
   }
 
   handleCreateCategory() {
-    const { shortcut } = this.props;
-    return this.props.createCategory(shortcut);
+    const { shortcut, createCategory } = this.props;
+    return createCategory(shortcut);
   }
 
   handleSortOptionsChange(options) {
-    const { shortcut } = this.props;
+    const { shortcut, updateSortOptions } = this.props;
     const newSortOptions = { ...options };
 
     // Manual sorting only support ascending order. Otherwise, if order was descending and user tried to
@@ -267,7 +288,7 @@ export class CmsPage extends PureComponent {
       newSortOptions.sortOrder = 'ascending';
     }
 
-    this.props.updateSortOptions(shortcut, newSortOptions);
+    return updateSortOptions(shortcut, newSortOptions);
   }
 
   handleToggleAdditionalOptions() {
@@ -298,12 +319,12 @@ export class CmsPage extends PureComponent {
   }
 
   handleCreateResource(resource) {
-    const { schema, shortcut } = this.props;
+    const { schema, shortcut, createResourceWithRelationships } = this.props;
     const { selectedCategoryId } = this.state;
 
     trackEvent('screens', 'content-item-added', _.get(shortcut, 'screen'));
 
-    return this.props.createResourceWithRelationships(
+    return createResourceWithRelationships(
       [selectedCategoryId],
       CURRENT_SCHEMA,
       schema,
@@ -312,11 +333,11 @@ export class CmsPage extends PureComponent {
   }
 
   handleUpdateResource(resource, initialResource) {
-    const { schema, shortcut } = this.props;
+    const { schema, shortcut, updateResourceWithRelationships } = this.props;
 
     trackEvent('screens', 'content-item-edited', _.get(shortcut, 'screen'));
 
-    return this.props.updateResourceWithRelationships(
+    return updateResourceWithRelationships(
       CURRENT_SCHEMA,
       schema,
       resource,
@@ -333,6 +354,21 @@ export class CmsPage extends PureComponent {
       () =>
         updateShortcutSettings(shortcut, {
           isInAppContentSearchEnabled: !isInAppContentSearchEnabled,
+        }),
+    );
+  }
+
+  handleToggleEnableSendPush() {
+    const { shortcut, updateShortcutSettings } = this.props;
+    const { isInAppSendPushNotificationEnabled } = this.state;
+
+    this.setState(
+      {
+        isInAppSendPushNotificationEnabled: !isInAppSendPushNotificationEnabled,
+      },
+      () =>
+        updateShortcutSettings(shortcut, {
+          isInAppSendPushNotificationEnabled: !isInAppSendPushNotificationEnabled,
         }),
     );
   }
@@ -386,6 +422,7 @@ export class CmsPage extends PureComponent {
       languageModuleStatus,
       rawLanguages,
       importers,
+      modules,
       shortcut,
     } = this.props;
     const {
@@ -394,6 +431,7 @@ export class CmsPage extends PureComponent {
       showImporters,
       selectedCategoryId,
       isInAppContentSearchEnabled,
+      isInAppSendPushNotificationEnabled,
     } = this.state;
 
     const hasLanguages = resolveHasLanguages(languageModuleStatus, languages);
@@ -410,13 +448,23 @@ export class CmsPage extends PureComponent {
       <div>
         {extensionInfo && <ControlLabel>{extensionInfo}</ControlLabel>}
         <Checkbox
-          className="cms__checkbox-enable-search"
+          className="cms__checkbox-enable"
           checked={isInAppContentSearchEnabled}
           name="isInAppContentSearchEnabled"
           onChange={this.handleToggleEnableSearch}
         >
           {i18next.t(LOCALIZATION.ENABLE_SEARCH_IN_APP)}
         </Checkbox>
+        {canSendInAppPush(shortcut, modules) && (
+          <Checkbox
+            className="cms__checkbox-enable"
+            checked={isInAppSendPushNotificationEnabled}
+            name="isInAppContentSearchEnabled"
+            onChange={this.handleToggleEnableSendPush}
+          >
+            {i18next.t(LOCALIZATION.ENABLE_SEND_PUSH_NOTIFICATION_IN_APP)}
+          </Checkbox>
+        )}
         <div className="cms__header">
           <SortOptions
             className="pull-left"
@@ -471,6 +519,7 @@ export class CmsPage extends PureComponent {
             parentCategoryId={parentCategoryId}
             languages={resolvedLanguages}
             categories={childCategories}
+            modules={modules}
             selectedCategoryId={selectedCategoryId}
             sortOptions={sortOptions}
             sortable={sortable}
@@ -535,33 +584,36 @@ export class CmsPage extends PureComponent {
 }
 
 CmsPage.propTypes = {
-  initialized: PropTypes.bool,
-  shortcut: PropTypes.object,
+  appId: PropTypes.string.isRequired,
+  canonicalName: PropTypes.string.isRequired,
+  createCategory: PropTypes.func.isRequired,
+  shortcut: PropTypes.object.isRequired,
+  updateShortcutSettings: PropTypes.func.isRequired,
   categories: PropTypes.array,
+  checkStatusOfImporters: PropTypes.func,
+  childCategories: PropTypes.array,
+  createResourceWithRelationships: PropTypes.func,
+  importers: PropTypes.array,
+  initialized: PropTypes.bool,
   languageModuleStatus: PropTypes.object,
   languages: PropTypes.array,
+  loadCategories: PropTypes.func,
+  loadChildCategories: PropTypes.func,
+  loadImporters: PropTypes.func,
+  loadLanguageModuleStatus: PropTypes.func,
+  loadLanguages: PropTypes.func,
+  loadModules: PropTypes.func,
+  loadReferenceResources: PropTypes.func,
+  loadReferenceSchema: PropTypes.func,
+  loadSchema: PropTypes.func,
+  modules: PropTypes.array,
   rawLanguages: PropTypes.array,
-  importers: PropTypes.array,
+  renameCategory: PropTypes.func,
   schema: PropTypes.shape({
     titleProperty: PropTypes.string,
   }),
-  loadLanguageModuleStatus: PropTypes.func,
-  loadImporters: PropTypes.func,
-  checkStatusOfImporters: PropTypes.func,
-  loadLanguages: PropTypes.func,
-  loadCategories: PropTypes.func,
-  createCategory: PropTypes.func,
-  renameCategory: PropTypes.func,
-  loadSchema: PropTypes.func,
-  updateSortOptions: PropTypes.func,
-  createResourceWithRelationships: PropTypes.func,
   updateResourceWithRelationships: PropTypes.func,
-  loadReferenceSchema: PropTypes.func,
-  loadReferenceResources: PropTypes.func,
-  appId: PropTypes.string,
-  canonicalName: PropTypes.string,
-  childCategories: PropTypes.array,
-  loadChildCategories: PropTypes.func,
+  updateSortOptions: PropTypes.func,
 };
 
 function mapStateToProps(state) {
@@ -574,6 +626,7 @@ function mapStateToProps(state) {
     shortcut,
     initialized,
     categories: getCategories(state),
+    modules: getModules(state),
     childCategories: getChildCategories(state),
     languageModuleStatus: getLanguageModuleStatus(state),
     languages: getLanguages(state),
@@ -631,6 +684,7 @@ function mapDispatchToProps(dispatch) {
       ),
     loadLanguages: () => dispatch(loadLanguages()).catch(() => null),
     loadCategories: () => dispatch(loadCategories()),
+    loadModules: () => dispatch(loadModules()),
     loadChildCategories: (parentCategoryId, schema) =>
       dispatch(loadCategories(parentCategoryId, schema, 'child')),
     loadSchema: () => dispatch(loadSchema()),

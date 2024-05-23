@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { InteractionManager, Linking, Platform } from 'react-native';
+import { Linking, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
@@ -78,9 +78,8 @@ export class PlaceDetails extends PureComponent {
       navigation,
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({ animateLeadImage: true });
-    });
+    this.setState({ animateLeadImage: true });
+
     fetchPlaceRewards(place.id);
     refreshTransactions();
     navigation.setOptions({ ...this.getNavBarProps() });

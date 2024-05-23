@@ -1,10 +1,15 @@
 import { Platform } from 'react-native';
 import _ from 'lodash';
 import { getExtensionSettings } from 'shoutem.application/redux';
+import { isPreviewApp } from 'shoutem.preview';
 import { ext } from '../const';
 
 function getModuleState(state) {
   return state[ext()];
+}
+
+export function getMockedSubscriptionStatus(state) {
+  return getModuleState(state).mockedSubscription;
 }
 
 export function getAvailableProducts(state) {
@@ -21,7 +26,7 @@ export function hasActiveProduct(productId, state) {
   return !!_.find(activeProducts, { sku: productId });
 }
 
-export function getSubscriptionProductId(state) {
+export function getGlobalSubscriptionProductId(state) {
   const extensionSettings = getExtensionSettings(state, ext());
 
   return Platform.OS === 'ios'
@@ -29,10 +34,13 @@ export function getSubscriptionProductId(state) {
     : _.get(extensionSettings, 'androidProductId');
 }
 
-export function isSubscribed(state) {
-  const requiredProductId = getSubscriptionProductId(state);
+export function isSubscribed(productId, state) {
+  const requiredProductId = productId ?? getGlobalSubscriptionProductId(state);
 
-  return hasActiveProduct(requiredProductId, state);
+  return (
+    hasActiveProduct(requiredProductId, state) ||
+    (isPreviewApp && getMockedSubscriptionStatus(state) === true)
+  );
 }
 
 export function isSubscriptionRequired(state) {
@@ -81,9 +89,9 @@ export function getSubscriptionMetadata(state) {
   };
 }
 
-export function hasProperConfiguration(state) {
+export function hasProperGlobalConfiguration(state) {
   const extensionSettings = getExtensionSettings(state, ext());
-  const productId = getSubscriptionProductId(state);
+  const productId = getGlobalSubscriptionProductId(state);
 
   const { iapHubApiKey, iapHubAppId } = extensionSettings;
 
@@ -96,12 +104,12 @@ export default {
   getAvailableProducts,
   getActiveProducts,
   hasActiveProduct,
-  getSubscriptionProductId,
+  getGlobalSubscriptionProductId,
   isSubscriptionRequired,
   getAvailableProduct,
   getPrivacyPolicyLink,
   getTermsOfServiceLink,
   isSubscribed,
   getSubscriptionMetadata,
-  hasProperConfiguration,
+  hasProperGlobalConfiguration,
 };

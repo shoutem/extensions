@@ -10,6 +10,7 @@
       "file-uploader.file-upload-failed-error": "File upload failed.",
       "file-uploader.file-rejected-error": "File rejected",
       "file-uploader.file-delete-failed-error": "Delete failed.",
+      "audio-upload-placeholder.button-browse": "Browse",
       "form-builder.add-more": "Add more",
       "form-builder.remove-section": "Remove section",
       "form-builder.image-picker-empty-search-term-title": "No images",
@@ -105,6 +106,7 @@
       "cms-page.shortcut-default-from-undefined-extension": "This is the {{defaultShortcutTitle}} shortcut of an undefined extension.",
       "cms-page.shortcut-default-from-extension": "This is the {{defaultShortcutTitle}} shortcut from the {{extensionTitle}} extension.",
       "cms-page.enable-search-in-app": "Enable in-app search",
+      "cms-page.enable-send-push-notification-in-app": "Enable in-app send push notification",
       "cms-page.button-add-item": "Add item",
       "settings-page.title": "CMS settings",
       "settings-page.form-api-endpoint": "Api endpoint",
@@ -158,7 +160,14 @@
       "hide-timestamp-label": "Hide time since item creation or latest modification",
       "inline-category-picker-label": "Display picker as dropdown above the list. Picker opens in modal",
       "nav-header-category-picker-label": "Display picker as dropdown in navigation header. Picker opens in modal",
-      "inline-horizontal-category-picker-label": "Display picker as horizontal list"
+      "inline-horizontal-category-picker-label": "Display picker as horizontal list",
+      "push-notification-modal.modal-title": "Push notification",
+      "push-notification-modal.form-title": "Title",
+      "push-notification-modal.form-message": "Message",
+      "push-notification-modal.form-languages": "Languages",
+      "push-notification-modal.button-send": "Send",
+      "push-notification-modal.button-cancel": "Cancel",
+      "push-notification-modal.generic-error": "Something went wrong, please try again"
     }
   }
 }

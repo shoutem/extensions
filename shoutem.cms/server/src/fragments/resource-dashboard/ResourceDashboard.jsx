@@ -1,90 +1,69 @@
 import React, { Component, createRef } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
-import i18next from 'i18next';
 import { connect } from 'react-redux';
-import { LoaderContainer, ConfirmModal, Paging } from '@shoutem/react-web-ui';
+import autoBindReact from 'auto-bind/react';
+import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {
-  shouldRefresh,
-  isBusy,
-  isInitialized,
-  hasNext,
-  hasPrev,
-} from '@shoutem/redux-io';
-import {
+  CategoryTree,
+  CmsTable,
   createCategory,
-  renameCategory,
   deleteCategory,
   deleteResource,
   dragAndDropCategory,
-  getMainCategoryId,
   getIncludeProperties,
-  updateResourceCategories,
-  updateResourceLanguages,
-  updateResourceIndex,
-  CategoryTree,
-  CmsTable,
+  getMainCategoryId,
+  renameCategory,
   SearchForm,
+  updateResourceCategories,
+  updateResourceIndex,
+  updateResourceLanguages,
 } from '@shoutem/cms-dashboard';
-import { trackEvent } from '../../providers/analytics';
+import { ConfirmModal, LoaderContainer, Paging } from '@shoutem/react-web-ui';
 import {
-  loadResources,
+  hasNext,
+  hasPrev,
+  isBusy,
+  isInitialized,
+  shouldRefresh,
+} from '@shoutem/redux-io';
+import {
+  createNotification,
   loadNextResourcesPage,
   loadPreviousResourcesPage,
+  loadResources,
 } from '../../actions';
+import { PagingMore, PushNotificationModal } from '../../components';
+import { SORT_OPTIONS } from '../../const';
+import { trackEvent } from '../../providers/analytics';
 import { getResources } from '../../selectors';
 import {
+  canFilter,
+  canSearch,
+  canSendPush,
   getCurrentPagingOffsetFromCollection,
   getCurrentSearchOptionsFromCollection,
   getCurrentSortFromCollection,
   getSortFromSortOptions,
-  canSearch,
-  canFilter,
 } from '../../services';
-import { PagingMore } from '../../components';
-import { SORT_OPTIONS } from '../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
 
 const DEFAULT_LIMIT = 10;
+const DEFAULT_OFFSET = 0;
 
 function resolvePageLabel(pageNumber) {
   return i18next.t(LOCALIZATION.PAGE_LABEL, { pageNumber });
 }
 
 export class ResourceDashboard extends Component {
-  static propTypes = {
-    schema: PropTypes.object,
-    shortcut: PropTypes.object,
-    parentCategoryId: PropTypes.string,
-    selectedCategoryId: PropTypes.string,
-    sortOptions: PropTypes.object,
-    sortable: PropTypes.bool,
-    categories: PropTypes.array,
-    languages: PropTypes.array,
-    resources: PropTypes.array,
-    updateResourceCategories: PropTypes.func,
-    updateResourceLanguages: PropTypes.func,
-    loadResources: PropTypes.func,
-    createCategory: PropTypes.func,
-    renameCategory: PropTypes.func,
-    deleteCategory: PropTypes.func,
-    deleteResource: PropTypes.func,
-    loadNextPage: PropTypes.func,
-    loadPreviousPage: PropTypes.func,
-    loadMore: PropTypes.func,
-    onCategorySelected: PropTypes.func,
-    onResourceEditClick: PropTypes.func,
-    updateResourceIndex: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
 
     this.paging = createRef();
     this.resourceDeleteModal = createRef();
+    this.pushNotificationModal = createRef();
 
     const { schema } = props;
 
@@ -94,11 +73,11 @@ export class ResourceDashboard extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.checkData(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.checkData(nextProps, this.props);
   }
 
@@ -126,23 +105,33 @@ export class ResourceDashboard extends Component {
       const nextSort = getSortFromSortOptions(nextSortOptions);
 
       let limit = DEFAULT_LIMIT;
+      let offset = DEFAULT_OFFSET;
+
       if (nextResources && currentSort === SORT_OPTIONS.MANUAL) {
         if (limit < nextResources.length) {
           limit = nextResources.length;
         }
       }
 
+      if (nextResources && currentSort !== SORT_OPTIONS.MANUAL) {
+        offset = getCurrentPagingOffsetFromCollection(
+          nextResources,
+          DEFAULT_LIMIT,
+        );
+      }
+
       // when sort is changed we are returning default pagination limit
       // as manually sorting can increase that limit
       if (currentSort !== nextSort) {
         limit = DEFAULT_LIMIT;
+        offset = DEFAULT_OFFSET;
       }
 
       this.handleLoadResources(
         nextSelectedCategoryId,
         {},
         nextSortOptions,
-        0,
+        offset,
         limit,
       );
     }
@@ -152,12 +141,13 @@ export class ResourceDashboard extends Component {
     categoryId,
     filterOptions,
     sortOptions,
-    offset,
+    offset = DEFAULT_OFFSET,
     limit = DEFAULT_LIMIT,
   ) {
+    const { loadResources } = this.props;
     const { include } = this.state;
 
-    this.props.loadResources(
+    return loadResources(
       categoryId,
       filterOptions,
       sortOptions,
@@ -169,26 +159,26 @@ export class ResourceDashboard extends Component {
 
   handleFilterChange(searchOptions) {
     const { selectedCategoryId, sortOptions } = this.props;
-    this.handleLoadResources(selectedCategoryId, searchOptions, sortOptions, 0);
+    this.handleLoadResources(selectedCategoryId, searchOptions, sortOptions);
   }
 
   handleLoadMoreClick() {
-    const { resources } = this.props;
-    return this.props.loadMore(resources);
+    const { resources, loadMore } = this.props;
+    return loadMore(resources);
   }
 
   handleNextPageClick() {
-    const { resources } = this.props;
-    return this.props.loadNextPage(resources);
+    const { resources, loadNextPage } = this.props;
+    return loadNextPage(resources);
   }
 
   handlePreviousPageClick() {
-    const { resources } = this.props;
-    return this.props.loadPreviousPage(resources);
+    const { resources, loadPreviousPage } = this.props;
+    return loadPreviousPage(resources);
   }
 
   handleCategoryCreate(categoryName) {
-    const { parentCategoryId, shortcut } = this.props;
+    const { parentCategoryId, shortcut, createCategory } = this.props;
 
     trackEvent(
       'screens',
@@ -196,11 +186,16 @@ export class ResourceDashboard extends Component {
       _.get(shortcut, 'screen'),
     );
 
-    return this.props.createCategory(categoryName, parentCategoryId);
+    return createCategory(categoryName, parentCategoryId);
   }
 
   async handleCategoryDelete(categoryId) {
-    const { shortcut, onCategorySelected, selectedCategoryId } = this.props;
+    const {
+      shortcut,
+      onCategorySelected,
+      selectedCategoryId,
+      deleteCategory,
+    } = this.props;
     const { mainCategoryId } = this.state;
 
     trackEvent(
@@ -209,7 +204,7 @@ export class ResourceDashboard extends Component {
       _.get(shortcut, 'screen'),
     );
 
-    await this.props.deleteCategory(categoryId);
+    await deleteCategory(categoryId);
 
     if (selectedCategoryId === categoryId) {
       if (mainCategoryId && _.isFunction(onCategorySelected)) {
@@ -219,7 +214,7 @@ export class ResourceDashboard extends Component {
   }
 
   handleCategoryRename(categoryId, categoryName) {
-    const { shortcut, parentCategoryId } = this.props;
+    const { shortcut, parentCategoryId, renameCategory } = this.props;
 
     trackEvent(
       'screens',
@@ -227,24 +222,19 @@ export class ResourceDashboard extends Component {
       _.get(shortcut, 'screen'),
     );
 
-    return this.props.renameCategory(
-      parentCategoryId,
-      categoryId,
-      categoryName,
-    );
+    return renameCategory(parentCategoryId, categoryId, categoryName);
   }
 
   handleResourceIndexChange(index, resource) {
-    const { selectedCategoryId } = this.props;
+    const { selectedCategoryId, updateResourceIndex } = this.props;
 
     this.setState({ reordering: true });
 
-    return this.props
-      .updateResourceIndex(selectedCategoryId, index, resource)
+    return updateResourceIndex(selectedCategoryId, index, resource)
       .then(() => {
         this.setState({ reordering: false });
       })
-      .catch(error => {
+      .catch(() => {
         this.setState({ reordering: false });
       });
   }
@@ -255,6 +245,7 @@ export class ResourceDashboard extends Component {
   }
 
   handleDeleteResourceClick(resource) {
+    const { deleteResource } = this.props;
     const { id, title } = resource;
 
     this.resourceDeleteModal.current.show({
@@ -263,7 +254,13 @@ export class ResourceDashboard extends Component {
       confirmLabel: i18next.t(LOCALIZATION.DELETE_MODAL_BUTTON_CONFIRM_TITLE),
       confirmBsStyle: 'danger',
       abortLabel: i18next.t(LOCALIZATION.DELETE_MODAL_BUTTON_ABORT_TITLE),
-      onConfirm: () => this.props.deleteResource(id),
+      onConfirm: () => deleteResource(id),
+    });
+  }
+
+  handleSendPushClick(resource) {
+    this.pushNotificationModal.current.show({
+      resource,
     });
   }
 
@@ -271,11 +268,17 @@ export class ResourceDashboard extends Component {
     const {
       selectedCategoryId,
       languages,
+      modules,
       categories,
       resources,
       schema,
       shortcut,
       sortable,
+      onCategorySelected,
+      onResourceEditClick,
+      updateResourceCategories,
+      updateResourceLanguages,
+      createNotification,
     } = this.props;
     const { mainCategoryId, reordering } = this.state;
 
@@ -289,6 +292,7 @@ export class ResourceDashboard extends Component {
 
     const showSearch = canSearch(shortcut);
     const showFilter = canFilter(shortcut);
+    const showPush = canSendPush(shortcut, modules);
     const showSearchForm = showSearch || showFilter;
 
     return (
@@ -300,7 +304,7 @@ export class ResourceDashboard extends Component {
             onCategoryCreate={this.handleCategoryCreate}
             onCategoryUpdate={this.handleCategoryRename}
             onCategoryDelete={this.handleCategoryDelete}
-            onCategorySelected={this.props.onCategorySelected}
+            onCategorySelected={onCategorySelected}
             onDragAndDropComplete={this.handleCategoryDragAndDrop}
             selectedCategoryId={selectedCategoryId}
             staticCategories={[mainCategoryId]}
@@ -325,11 +329,13 @@ export class ResourceDashboard extends Component {
             categories={categories}
             items={resources}
             sortable={sortable}
+            canSendPush={showPush}
             mainCategoryId={mainCategoryId}
+            onSendPushClick={this.handleSendPushClick}
             onDeleteClick={this.handleDeleteResourceClick}
-            onUpdateClick={this.props.onResourceEditClick}
-            onUpdateItemCategories={this.props.updateResourceCategories}
-            onUpdateItemLanguages={this.props.updateResourceLanguages}
+            onUpdateClick={onResourceEditClick}
+            onUpdateItemCategories={updateResourceCategories}
+            onUpdateItemLanguages={updateResourceLanguages}
             onUpdateItemIndex={this.handleResourceIndexChange}
           />
           {!sortable && (
@@ -355,10 +361,45 @@ export class ResourceDashboard extends Component {
           className="resources-dashboard__delete settings-page-modal-small"
           ref={this.resourceDeleteModal}
         />
+        <PushNotificationModal
+          schema={schema}
+          shortcut={shortcut}
+          languages={languages}
+          createPushNotification={createNotification}
+          ref={this.pushNotificationModal}
+        />
       </div>
     );
   }
 }
+
+ResourceDashboard.propTypes = {
+  categories: PropTypes.array.isRequired,
+  createCategory: PropTypes.func.isRequired,
+  createNotification: PropTypes.func.isRequired,
+  deleteCategory: PropTypes.func.isRequired,
+  deleteResource: PropTypes.func.isRequired,
+  dragAndDropCategory: PropTypes.func.isRequired,
+  languages: PropTypes.array.isRequired,
+  loadMore: PropTypes.func.isRequired,
+  loadNextPage: PropTypes.func.isRequired,
+  loadPreviousPage: PropTypes.func.isRequired,
+  loadResources: PropTypes.func.isRequired,
+  modules: PropTypes.array.isRequired,
+  parentCategoryId: PropTypes.string.isRequired,
+  renameCategory: PropTypes.func.isRequired,
+  resources: PropTypes.array.isRequired,
+  schema: PropTypes.object.isRequired,
+  shortcut: PropTypes.object.isRequired,
+  updateResourceCategories: PropTypes.func.isRequired,
+  updateResourceIndex: PropTypes.func.isRequired,
+  updateResourceLanguages: PropTypes.func.isRequired,
+  onCategorySelected: PropTypes.func.isRequired,
+  onResourceEditClick: PropTypes.func.isRequired,
+  selectedCategoryId: PropTypes.string,
+  sortable: PropTypes.bool,
+  sortOptions: PropTypes.object,
+};
 
 function mapStateToProps(state, ownProps) {
   const { selectedCategoryId } = ownProps;
@@ -372,6 +413,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { appId, canonicalName } = ownProps;
 
   return {
+    createNotification: notification =>
+      dispatch(createNotification(notification)),
     createCategory: (categoryName, parentCategoryId) =>
       dispatch(
         createCategory(appId, canonicalName, categoryName, parentCategoryId),

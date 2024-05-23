@@ -22,12 +22,23 @@ export default function adaptProxiedEvent(proxiedEvent) {
     attachments,
     geo,
     RSVP,
+    allDay,
   } = proxiedEvent;
 
-  const start = toUtcTime(startDate, startTime, startTimeZone);
-  const end = toUtcTime(endDate, endTime, endTimeZone);
   const name = summary;
   const imageUrl = _.get(attachments, '[0].source');
+
+  let start = toUtcTime(startDate, startTime, startTimeZone);
+  let end = toUtcTime(endDate, endTime, endTimeZone);
+
+  if (allDay) {
+    const momentStartDate = moment(startDate);
+    const momentEndDate = moment(endDate);
+
+    start = momentStartDate.startOf('day');
+
+    end = momentEndDate.startOf('day');
+  }
 
   return {
     name,
@@ -46,5 +57,6 @@ export default function adaptProxiedEvent(proxiedEvent) {
     imageUrl,
     geo,
     RSVP,
+    allDay,
   };
 }

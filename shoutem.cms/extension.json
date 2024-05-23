@@ -1,16 +1,18 @@
 {
   "name": "cms",
-  "version": "7.0.1",
-  "platform": ">=13.0.2",
-  "type": "system",
   "title": "CMS",
+  "type": "system",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",
-  "releaseNotes": "* No user facing changes\n* Dev improvements - removed unused dependencies",
+  "version": "7.2.0",
+  "platform": ">=14",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support, linted most of files and added css assets optimizer in server segment",
   "nativeChanges": {
     "lastVersion": "6.3.0"
   },
   "icon": "server/assets/add-cms-image.png",
-  "categories": ["content"],
+  "categories": [
+    "content"
+  ],
   "dependencies": [
     "shoutem.application",
     "shoutem.layouts",

@@ -122,6 +122,7 @@ class MediumPlaceDetails extends PlaceDetails {
             'call',
             this.openPhoneLink,
           )}
+          {this.renderPlaceDeals()}
         </ScrollView>
       </Screen>
     );

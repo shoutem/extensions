@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer, MultiselectDropdown } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
@@ -29,12 +29,6 @@ export function createLanguageOptions(languages) {
 }
 
 export default class LanguageSelector extends Component {
-  static propTypes = {
-    selectedLanguages: PropTypes.array,
-    languages: PropTypes.array.isRequired,
-    onSelectionChanged: PropTypes.func.isRequired,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -44,11 +38,11 @@ export default class LanguageSelector extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.refreshData(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.refreshData(nextProps, this.props);
   }
 
@@ -109,3 +103,9 @@ export default class LanguageSelector extends Component {
     );
   }
 }
+
+LanguageSelector.propTypes = {
+  languages: PropTypes.array.isRequired,
+  onSelectionChanged: PropTypes.func.isRequired,
+  selectedLanguages: PropTypes.array,
+};

@@ -1,10 +1,10 @@
 {
   "name": "checklist",
   "title": "Checklist",
-  "version": "5.0.2",
-  "platform": ">=6",
   "description": "Create to-do list, onboarding tasklist and more.",
-  "releaseNotes": "* No user facing changes\n* For developers: Switched from eslintConfig to .eslintrc in server segment",
+  "version": "5.0.3",
+  "platform": ">=14",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
   "icon": "server/assets/images/add-checklist-image.png",
   "dependencies": [
     "shoutem.application",

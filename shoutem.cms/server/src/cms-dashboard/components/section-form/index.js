@@ -1,2 +1,1 @@
-import SectionForm from './SectionForm';
-export default SectionForm;
+export { default } from './SectionForm';

@@ -1,7 +1,7 @@
+import { ext } from 'context';
+import { appId, url } from 'environment';
 import _ from 'lodash';
 import { find, next, prev } from '@shoutem/redux-io';
-import { url, appId } from 'environment';
-import { ext } from 'context';
 import { getSortFromSortOptions } from '../services';
 import { CURRENT_SCHEMA } from '../types';
 

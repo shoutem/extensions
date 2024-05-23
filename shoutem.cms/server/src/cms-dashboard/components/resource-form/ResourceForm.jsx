@@ -1,19 +1,19 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import { reduxForm } from 'redux-form';
 import { Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { reduxForm } from 'redux-form';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { getFormState } from '../../redux';
 import {
+  getEditorCreateAbortButtonLabel,
+  getEditorCreateConfirmButtonLabel,
+  getEditorUpdateAbortButtonLabel,
+  getEditorUpdateConfirmButtonLabel,
+  getFormPropertyKeys,
   resolveIsArrayPropertiesChanged,
   resolveSchemaElements,
   validateResourceForm,
-  getFormPropertyKeys,
-  getEditorCreateConfirmButtonLabel,
-  getEditorUpdateConfirmButtonLabel,
-  getEditorCreateAbortButtonLabel,
-  getEditorUpdateAbortButtonLabel,
 } from '../../services';
 import './style.scss';
 

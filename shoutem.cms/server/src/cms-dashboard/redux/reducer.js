@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import { storage } from '@shoutem/redux-io';
 import { reducer as formReducer } from 'redux-form';
+import { storage } from '@shoutem/redux-io';
 import { CATEGORIES, SCHEMAS } from '../const';
 
 // REDUCER

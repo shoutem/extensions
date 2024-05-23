@@ -1,2 +1,1 @@
-import ImporterCsvMappingItem from './ImporterCsvMappingItem';
-export default ImporterCsvMappingItem;
+export { default } from './ImporterCsvMappingItem';

@@ -1,18 +1,18 @@
 import React from 'react';
 import {
-  TouchableOpacity,
-  Title,
-  Caption,
-  View,
-  Tile,
   Button,
-  Text,
-  Icon,
+  Caption,
   Divider,
+  Icon,
+  Text,
+  Tile,
+  Title,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { formatToLocalDate } from '../services/Calendar';
 import { ext } from '../const';
+import { formatToAllDayDate, formatToLocalDate } from '../services/Calendar';
 import { BaseEventItem } from './BaseEventItem';
 
 /**
@@ -21,6 +21,10 @@ import { BaseEventItem } from './BaseEventItem';
 export default class FeaturedEventView extends BaseEventItem {
   render() {
     const { event, styleName } = this.props;
+
+    const caption = event.allDay
+      ? formatToAllDayDate(event.start, event.end)
+      : formatToLocalDate(event.start);
 
     const containerStyleName = `sm-gutter featured ${styleName || ''}`;
 
@@ -31,11 +35,15 @@ export default class FeaturedEventView extends BaseEventItem {
             <Title styleName="md-gutter-vertical">
               {(event.name || '').toUpperCase()}
             </Title>
-            <Caption>{formatToLocalDate(event.start)}</Caption>
-            <Divider styleName="line small center" />
-            <Caption styleName="md-gutter-bottom">
-              {formatToLocalDate(event.end)}
-            </Caption>
+            <Caption>{caption}</Caption>
+            {!event.allDay && (
+              <>
+                <Divider styleName="line small center" />
+                <Caption styleName="md-gutter-bottom">
+                  {formatToLocalDate(event.end)}
+                </Caption>
+              </>
+            )}
             <Button onPress={this.action} styleName="md-gutter-top">
               <Icon name="add-event" />
               <Text>{I18n.t(ext('addToCalendarButton'))}</Text>

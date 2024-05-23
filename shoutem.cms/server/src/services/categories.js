@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
 import LOCALIZATION from './localization';
 
 export const ALL_CATEGORIES_OPTION_KEY = 'all';

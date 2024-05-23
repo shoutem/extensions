@@ -1,10 +1,10 @@
 {
   "name": "in-app-purchases",
-  "version": "6.1.2",
-  "platform": ">=8",
   "title": "Subscriptions",
   "description": "Add Apple/Google Play subscriptions to your app",
-  "releaseNotes": "No user facing changes\n* Settings page under the hood improvements.",
+  "version": "6.2.1",
+  "platform": ">=14",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
   "nativeChanges": {
     "lastVersion": "6.0.0"
   },
@@ -93,6 +93,7 @@
     "confirmationMessageRegular": "",
     "allScreensProtected": false,
     "descriptionHtml": null,
-    "descriptionHtmlEnabled": false
+    "descriptionHtmlEnabled": false,
+    "singularProductPerScreenEnabled": false
   }
 }

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
 import { useIsFocused } from '@react-navigation/native';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { getNavInitialized } from '../redux';
 
 export class FocusTriggerBase extends PureComponent {
@@ -12,9 +12,9 @@ export class FocusTriggerBase extends PureComponent {
   };
 
   static createMapStateToProps = mapStateToProps => {
-    return state => ({
+    return (state, ownProps) => ({
       navigationReady: getNavInitialized(state),
-      ...(mapStateToProps && mapStateToProps(state)),
+      ...(mapStateToProps && mapStateToProps(state, ownProps)),
     });
   };
 

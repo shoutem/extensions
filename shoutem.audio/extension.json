@@ -1,10 +1,10 @@
 {
   "name": "audio",
   "title": "Audio",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "platform": ">=13.0.7",
   "description": "Track player components for other extensions to utilize. NOTE: Lock screen controls will not be visible in the preview.",
-  "releaseNotes": "* Incorporated audio player banner and modal",
+  "releaseNotes": "* Incorporated playback rate selection for audio tracks",
   "dependencies": ["shoutem.application"],
   "nativeChanges": {
     "lastVersion": "5.0.0"

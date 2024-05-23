@@ -131,7 +131,7 @@ export function createNavigatonStyles(config) {
     ...defaultStyle,
     headerTitleStyle: {
       ...headerTitleStyle,
-      ...headerSolidifyStyle(animationDriver).title,
+      ...headerSolidifyStyle(animationDriver, shouldHideTitle).title,
     },
     headerBackground: () => (
       <HeaderBackground

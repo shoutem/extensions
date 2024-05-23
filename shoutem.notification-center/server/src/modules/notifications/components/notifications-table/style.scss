@@ -20,12 +20,18 @@
 
     > thead > tr {
       > :nth-child(3) {
-        width: 150px;
+        width: 120px;
       }
     }
 
     > thead > tr {
       > :nth-child(4) {
+        width: 120px;
+      }
+    }
+
+    > thead > tr {
+      > :nth-child(5) {
         width: 35px;
       }
     }
@@ -42,7 +48,7 @@
     }
 
     > tbody > tr {
-      > :nth-child(4) {
+      > :nth-child(5) {
         .form-control-static {
           padding-top: 0px;
         }

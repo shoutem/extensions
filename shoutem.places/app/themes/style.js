@@ -1,15 +1,24 @@
+import { Dimensions } from 'react-native';
 import { INCLUDE } from '@shoutem/theme';
-import { createScopedResolver, dimensionRelativeToIphone } from '@shoutem/ui';
+import {
+  createScopedResolver,
+  dimensionRelativeToIphone,
+  resolveFontWeight,
+  responsiveWidth,
+} from '@shoutem/ui';
 import { ext } from '../const';
 
 const resolveVariable = createScopedResolver(ext());
 
+const DEALS_LIST_ITEM_WIDTH = Dimensions.get('window').width / 2.5;
+const DEALS_LIST_ITEM_HEIGHT = DEALS_LIST_ITEM_WIDTH * (16 / 9);
+
 export default () => ({
-  'shoutem.places.PlacesGridScreen': {
+  [`${ext()}.PlacesGridScreen`]: {
     list: { marginHorizontal: 8, marginTop: 8 },
   },
 
-  'shoutem.places.PlaceFullGridRowView': {
+  [`${ext()}.PlaceFullGridRowView`]: {
     container: {
       borderColor: 'rgba(68,79,108,0.2)',
       borderRadius: 4,
@@ -36,7 +45,7 @@ export default () => ({
     },
   },
 
-  'shoutem.places.PlaceHalfGridRowView': {
+  [`${ext()}.PlaceHalfGridRowView`]: {
     [INCLUDE]: ['shoutem.places.PlaceFullGridRowView'],
     container: {
       ...['shoutem.places.PlaceFullGridRowView'],
@@ -46,6 +55,48 @@ export default () => ({
     textContainer: {
       ...['shoutem.places.PlaceFullGridRowView'],
       height: dimensionRelativeToIphone(108),
+    },
+  },
+
+  [`${ext()}.PlaceDealsList`]: {
+    list: {
+      listContent: {
+        paddingLeft: resolveVariable('mediumGutter'),
+        backgroundColor: resolveVariable('paperColor'),
+      },
+      loadMoreSpinner: {
+        width: DEALS_LIST_ITEM_WIDTH / 2,
+        height: DEALS_LIST_ITEM_HEIGHT,
+        justifyContent: 'center',
+      },
+    },
+  },
+
+  [`${ext()}.DealListItem`]: {
+    itemSize: {
+      width: DEALS_LIST_ITEM_WIDTH,
+      height: DEALS_LIST_ITEM_HEIGHT,
+    },
+    overlayContainer: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      right: 0,
+      left: 0,
+      borderRadius: 6,
+      backgroundColor: 'rgba(0,0,0, 0.4)',
+    },
+    endsCaption: { color: '#FFF', textAlign: 'center' },
+    title: {
+      color: '#FFF',
+      textAlign: 'center',
+      fontWeight: resolveFontWeight('500'),
+    },
+    regularPriceCaption: { color: '#FFF' },
+    discountPriceCaption: {
+      color: '#FFF',
+      fontWeight: resolveFontWeight('500'),
+      marginRight: responsiveWidth(-4), // Text has some weird space on the right when rendering currency
     },
   },
 });

@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
+import { Button } from 'react-bootstrap';
 import i18next from 'i18next';
-import { isBusy } from '@shoutem/redux-io';
+import moment from 'moment';
+import PropTypes from 'prop-types';
 import {
   EditableTable,
-  LoaderContainer,
-  IconLabel,
   FontIcon,
   FontIconPopover,
+  IconLabel,
+  LoaderContainer,
 } from '@shoutem/react-web-ui';
-import { Button } from 'react-bootstrap';
+import { isBusy } from '@shoutem/redux-io';
 import {
-  getImporterTitle,
-  getTranslatedImporterStatus,
-  getLastStartedOn,
   getImporterStatusMessage,
+  getImporterTitle,
+  getLastStartedOn,
+  getTranslatedImporterStatus,
   showImporterMessage,
 } from '../../services';
 import LOCALIZATION from './localization';

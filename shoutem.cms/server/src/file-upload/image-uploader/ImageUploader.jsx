@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
 import { HelpBlock } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import i18next from 'i18next';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import ImageUploadPlaceholder from '../image-upload-placeholder';
 import ImagePreview from '../image-preview';
+import ImageUploadPlaceholder from '../image-upload-placeholder';
+import { resolveCdnUrl } from '../services';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -24,16 +25,26 @@ export default class ImageUploader extends Component {
   }
 
   handleUploadFailed(errorMessage) {
+    const { onError } = this.props;
     this.setState({
       error: errorMessage,
       inProgress: false,
     });
-    this.props.onError(errorMessage);
+
+    if (_.isFunction(onError)) {
+      onError(errorMessage);
+    }
   }
 
   handleUploadSucceeded(fileUrl) {
-    this.props.onUploadSuccess(fileUrl);
+    const { onUploadSuccess } = this.props;
+
     this.setState({ inProgress: false });
+
+    if (_.isFunction(onUploadSuccess)) {
+      const cdnUrl = resolveCdnUrl(fileUrl);
+      onUploadSuccess(cdnUrl);
+    }
   }
 
   validateFileSize(file) {
@@ -165,16 +176,14 @@ export default class ImageUploader extends Component {
       editorWidth,
       editorHeight,
     } = this.props;
+    const { inProgress, error } = this.state;
 
     const classes = classNames(className, 'image-uploader');
     const style = { width: editorWidth, height: editorHeight };
 
     return (
       <div className={classes} style={style}>
-        <LoaderContainer
-          className="image-loader"
-          isLoading={this.state.inProgress}
-        >
+        <LoaderContainer className="image-loader" isLoading={inProgress}>
           <Dropzone
             accept={accept}
             className="image-uploader__dropzone"
@@ -185,10 +194,10 @@ export default class ImageUploader extends Component {
           >
             {dropzoneProps => this.renderDropzoneContent(dropzoneProps)}
           </Dropzone>
-          {showValidationError && this.state.error && (
-            <div className="text-error">{this.state.error}</div>
+          {showValidationError && error && (
+            <div className="text-error">{error}</div>
           )}
-          {helpText && !this.state.error && <HelpBlock>{helpText}</HelpBlock>}
+          {helpText && !error && <HelpBlock>{helpText}</HelpBlock>}
         </LoaderContainer>
       </div>
     );
@@ -196,6 +205,11 @@ export default class ImageUploader extends Component {
 }
 
 ImageUploader.propTypes = {
+  assetManager: PropTypes.shape({
+    deleteFile: PropTypes.func.isRequired,
+    listFolder: PropTypes.func.isRequired,
+    uploadFile: PropTypes.func.isRequired,
+  }).isRequired,
   /**
    *  Callback invoked when file is dropped and upload starts
    */
@@ -205,41 +219,10 @@ ImageUploader.propTypes = {
    */
   onUploadSuccess: PropTypes.func.isRequired,
   /**
-   *  Callback invoked when upload fails
+   * By providing accept prop you can make Dropzone to accept
+   * specific file types and reject the others.
    */
-  onError: PropTypes.func,
-  /**
-   * Additional classes to apply
-   */
-  className: PropTypes.string,
-  /**
-   *  Url to the src
-   */
-  src: PropTypes.string,
-  /**
-   * Flag indicating whether to show validation error in component.
-   * If set to false, onError function should be provided for displaying upload error.
-   */
-  showValidationError: PropTypes.bool,
-  /**
-   * Help text positioned below dropzone
-   */
-  helpText: PropTypes.string,
-  /**
-   * Object containing methods for inProgress, listing, and deleting files on cloud
-   */
-  assetManager: PropTypes.shape({
-    deleteFile: PropTypes.func.isRequired,
-    uploadFile: PropTypes.func.isRequired,
-    listFolder: PropTypes.func.isRequired,
-  }),
-  folderName: PropTypes.string,
-  resolveFilename: PropTypes.func,
-  onPreviewClick: PropTypes.func,
-  /**
-   *  Callback forwarded to ImagePreview component; invoked when existing file is deleted
-   */
-  onDeleteSuccess: PropTypes.func,
+  accept: PropTypes.string,
   /**
    * Flag indicating whether file can be deleted
    */
@@ -249,30 +232,53 @@ ImageUploader.propTypes = {
    */
   canBePreviewed: PropTypes.bool,
   /**
-   * By providing accept prop you can make Dropzone to accept
-   * specific file types and reject the others.
+   * Additional classes to apply
    */
-  accept: PropTypes.string,
-  /**
-   * Max file size allowed to be uploaded
-   */
-  maxFileSize: PropTypes.number,
-  /**
-   * Max file size allowed to be uploaded
-   */
-  shallowDelete: PropTypes.bool,
+  className: PropTypes.string,
   /**
    * Flag indicating whether upload is disabled
    */
   disabled: PropTypes.bool,
   /**
-   * Editor width
-   */
-  editorWidth: PropTypes.number,
-  /**
    * Editor heigth
    */
   editorHeight: PropTypes.number,
+  /**
+   * Editor width
+   */
+  editorWidth: PropTypes.number,
+  folderName: PropTypes.string,
+  /**
+   * Help text positioned below dropzone
+   */
+  helpText: PropTypes.string,
+  /**
+   * Max file size allowed to be uploaded
+   */
+  maxFileSize: PropTypes.number,
+  resolveFilename: PropTypes.func,
+  /**
+   * Max file size allowed to be uploaded
+   */
+  shallowDelete: PropTypes.bool,
+  /**
+   * Flag indicating whether to show validation error in component.
+   * If set to false, onError function should be provided for displaying upload error.
+   */
+  showValidationError: PropTypes.bool,
+  /**
+   *  Url to the src
+   */
+  src: PropTypes.string,
+  /**
+   *  Callback forwarded to ImagePreview component; invoked when existing file is deleted
+   */
+  onDeleteSuccess: PropTypes.func,
+  /**
+   *  Callback invoked when upload fails
+   */
+  onError: PropTypes.func,
+  onPreviewClick: PropTypes.func,
 };
 
 ImageUploader.defaultProps = {
@@ -281,7 +287,6 @@ ImageUploader.defaultProps = {
   showValidationError: true,
   canBeDeleted: true,
   canBePreviewed: true,
-  autoResize: true,
   resolveFilename: file => file.name,
   editorWidth: '200px',
   editorHeight: '200px',

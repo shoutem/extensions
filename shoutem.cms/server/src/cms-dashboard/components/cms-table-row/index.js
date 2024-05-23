@@ -1,2 +1,1 @@
-import CmsTableRow from './CmsTableRow';
-export default CmsTableRow;
+export { default } from './CmsTableRow';

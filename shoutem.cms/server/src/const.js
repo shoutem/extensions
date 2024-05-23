@@ -27,6 +27,11 @@ export const SEARCH_CAPABILITIES = {
   FILTER: 'shoutem.cms.filter',
 };
 
+export const NOTIFICATION_CAPABILITIES = {
+  PUSH: 'shoutem.cms.push-notification',
+  IN_APP_PUSH: 'shoutem.cms.in-app-push-notification',
+};
+
 export const SORT_OPTIONS = {
   MANUAL: 'manual',
   CREATED_TIME: 'timeCreated',

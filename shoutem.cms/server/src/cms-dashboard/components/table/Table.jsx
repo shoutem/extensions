@@ -1,14 +1,14 @@
 import React, { Component, createRef } from 'react';
-import PropTypes from 'prop-types';
+import { List } from 'react-movable';
 import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
-import _ from 'lodash';
 import i18next from 'i18next';
-import { List } from 'react-movable';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { HEADER_TYPES } from '../../services';
-import TextTableHeader from '../text-table-header';
 import InputTableHeader from '../input-table-header';
 import SelectTableHeader from '../select-table-header';
+import TextTableHeader from '../text-table-header';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -98,7 +98,7 @@ export default class Table extends Component {
       );
     }
 
-    return <th key={id} className={className}></th>;
+    return <th key={id} className={className} />;
   }
 
   renderSortableList({ children, props }) {
@@ -109,7 +109,7 @@ export default class Table extends Component {
     const { renderItem } = this.props;
     const { widths } = this.state;
 
-    let customStyle = {
+    const customStyle = {
       ...props.style,
     };
 
@@ -165,7 +165,7 @@ export default class Table extends Component {
         <thead>
           <tr>{_.map(columnHeaders, this.renderTableHeader)}</tr>
         </thead>
-        <tbody ref={this.sortableRef} className="drag-body-wrapper"></tbody>
+        <tbody ref={this.sortableRef} className="drag-body-wrapper" />
         {isEmpty && <tbody>{this.renderEmptyTableRow()}</tbody>}
         {!isEmpty &&
           (sortable ? this.renderSortableTable() : this.renderTable())}

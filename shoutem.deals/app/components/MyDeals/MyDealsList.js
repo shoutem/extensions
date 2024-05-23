@@ -3,7 +3,6 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { InteractionManager } from 'react-native';
 import { bindActionCreators } from 'redux';
 import {
   cloneStatus,
@@ -77,9 +76,7 @@ export class MyDealsList extends PureComponent {
       return;
     }
 
-    InteractionManager.runAfterInteractions(() =>
-      this.props.fetchMyDealTransactions(catalogId),
-    );
+    this.props.fetchMyDealTransactions(catalogId);
   }
 
   loadMore() {

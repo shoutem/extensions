@@ -1,2 +1,1 @@
-import ImporterScheduleSelector from './ImporterScheduleSelector';
-export default ImporterScheduleSelector;
+export { default } from './ImporterScheduleSelector';

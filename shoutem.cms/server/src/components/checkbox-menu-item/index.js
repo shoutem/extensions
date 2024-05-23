@@ -1,2 +1,1 @@
-import CheckboxMenuItem from './CheckboxMenuItem';
-export default CheckboxMenuItem;
+export { default } from './CheckboxMenuItem';

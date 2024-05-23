@@ -1,11 +1,11 @@
 {
   "name": "sendbird",
   "title": "SendBird Chat",
-  "version": "6.0.1",
-  "platform": ">=7",
-  "icon": "./server/assets/chat.png",
   "description": "Connect your users with real-time chat!",
-  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
+  "version": "6.0.2",
+  "platform": ">=14",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
+  "icon": "./server/assets/chat.png",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

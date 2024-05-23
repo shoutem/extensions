@@ -1,12 +1,12 @@
 import React, { Component, createRef } from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { connect } from 'react-redux';
-import { invalidate } from '@shoutem/redux-io';
+import PropTypes from 'prop-types';
 import { ConfirmModal } from '@shoutem/react-web-ui';
-import { ImporterTable, ImporterModal, ToggleContent } from '../../components';
-import { deleteImporter, loadCsvColumns, createImporter } from '../../actions';
+import { invalidate } from '@shoutem/redux-io';
+import { createImporter, deleteImporter, loadCsvColumns } from '../../actions';
+import { ImporterModal, ImporterTable, ToggleContent } from '../../components';
 import { IMPORTERS } from '../../types';
 import LOCALIZATION from './localization';
 import './style.scss';

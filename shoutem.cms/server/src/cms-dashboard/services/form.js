@@ -1,39 +1,40 @@
-import _ from 'lodash';
 import React from 'react';
 import i18next from 'i18next';
-import { ReduxFormElement } from '@shoutem/react-web-ui';
+import _ from 'lodash';
 import {
-  GalleryReduxFormElement,
   ArrayFormElement,
   ArrayReduxFormItem,
   ArrayTextEditorFormItem,
-  ImageUploaderReduxFormElement,
-  VideoUploaderReduxFormElement,
-  GeolocationReduxFormElement,
-  DateTimeReduxFormElement,
-  TextEditorReduxFormElement,
-  TextAreaReduxFormElement,
-  EntityReferenceReduxFormElement,
+  AudioUploaderReduxFormElement,
   BooleanReduxFormElement,
+  DateTimeReduxFormElement,
+  EntityReferenceReduxFormElement,
+  GalleryReduxFormElement,
+  GeolocationReduxFormElement,
+  ImageUploaderReduxFormElement,
+  TextAreaReduxFormElement,
+  TextEditorReduxFormElement,
+  VideoUploaderReduxFormElement,
 } from '@shoutem/form-builder';
-import SectionForm from '../components/section-form';
+import { ReduxFormElement } from '@shoutem/react-web-ui';
 import FormContainer from '../components/form-container';
+import SectionForm from '../components/section-form';
 import {
-  PROPERTY_TYPES,
   PROPERTY_FORMATS,
   PROPERTY_REFERENCED_SCHEMAS,
+  PROPERTY_TYPES,
 } from '../const';
+import LOCALIZATION from './localization';
 import {
-  getEditorSize,
   getEditorSections,
-  getSchemaPropertyKeys,
+  getEditorSize,
   getSchemaProperty,
+  getSchemaPropertyKeys,
   getSectionPropertyKey,
 } from './schema';
-import LOCALIZATION from './localization';
 
 export function resolveTimezoneKey(key) {
-  return key + 'TimezoneId';
+  return `${key}TimezoneId`;
 }
 
 export function fieldInError(formField) {
@@ -211,6 +212,8 @@ export function resolveFormElement(sectionProperty, schema, fields, options) {
         field: propertyField,
         name: schemaProperty.title,
         maxLength: schemaProperty.maxLength,
+        assetManager: options.assetManager,
+        folderName: options.canonicalName,
       };
       return resolveReactComponent(TextEditorReduxFormElement, props);
     }
@@ -291,6 +294,23 @@ export function resolveFormElement(sectionProperty, schema, fields, options) {
 
   if (
     schemaProperty.type === PROPERTY_TYPES.OBJECT &&
+    schemaProperty.format === PROPERTY_FORMATS.ATTACHMENT &&
+    schemaProperty.referencedSchema ===
+      PROPERTY_REFERENCED_SCHEMAS.AUDIO_ATTACHMENT
+  ) {
+    const props = {
+      elementId: propertyKey,
+      field: propertyField,
+      name: schemaProperty.title,
+      touch: options.touch,
+      assetManager: options.assetManager,
+      folderName: options.canonicalName,
+    };
+    return resolveReactComponent(AudioUploaderReduxFormElement, props);
+  }
+
+  if (
+    schemaProperty.type === PROPERTY_TYPES.OBJECT &&
     schemaProperty.format === PROPERTY_FORMATS.GEOLOCATION
   ) {
     const props = {
@@ -321,7 +341,7 @@ export function resolveFormElement(sectionProperty, schema, fields, options) {
     const props = {
       elementId: propertyKey,
       field: propertyField,
-      timezoneField: timezoneField,
+      timezoneField,
       name: schemaProperty.title,
       timezoneName: i18next.t(LOCALIZATION.DATE_TIME_TIMEZONE_LABEL),
       touch: options.touch,

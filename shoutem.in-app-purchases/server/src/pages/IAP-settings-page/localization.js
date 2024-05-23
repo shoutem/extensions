@@ -10,6 +10,7 @@ const IAPHUB_APP_ID = `${key}.iaphub-app-id`;
 const IAPHUB_API_KEY = `${key}.iaphub-api-key`;
 const IAPHUB_ENVIRONMENT = `${key}.iaphub-environment`;
 const ENABLE_SUBSCRIPTION_SCREEN = `${key}.enable-subscription-screen`;
+const ENABLE_PER_SCREEN_GRANULATION = `${key}.enable-per-screen-granulation`;
 const SAVE_BUTTON = `${key}.save-button`;
 const ERROR_MESSAGE = `${key}.error-message`;
 
@@ -26,4 +27,5 @@ export default {
   ENABLE_SUBSCRIPTION_SCREEN,
   SAVE_BUTTON,
   ERROR_MESSAGE,
+  ENABLE_PER_SCREEN_GRANULATION,
 };

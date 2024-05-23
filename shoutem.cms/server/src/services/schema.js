@@ -1,9 +1,9 @@
-import _ from 'lodash';
-import i18next from 'i18next';
 import { getExtensionInstallation } from 'environment';
+import i18next from 'i18next';
+import _ from 'lodash';
 import {
-  getSchemaPropertyKeys,
   getSchemaProperty,
+  getSchemaPropertyKeys,
 } from '@shoutem/cms-dashboard';
 
 function translateExt18n(extCanonicalName, key) {

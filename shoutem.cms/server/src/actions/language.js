@@ -1,6 +1,6 @@
-import { url, appId } from 'environment';
-import { find } from '@shoutem/redux-io';
 import { ext } from 'context';
+import { appId, url } from 'environment';
+import { find } from '@shoutem/redux-io';
 import { CHANNELS, LANGUAGE_MODULE_STATUS } from '../types';
 
 const CHANNEL_MODULE_TYPE = 38;

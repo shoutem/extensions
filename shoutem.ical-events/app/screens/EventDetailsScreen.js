@@ -7,10 +7,11 @@ import {
   Button,
   Caption,
   Divider,
-  ScrollView,
   Icon,
   Row,
   Screen,
+  ScrollView,
+  ShareButton,
   SimpleHtml,
   Subtitle,
   Text,
@@ -18,19 +19,22 @@ import {
   Title,
   TouchableOpacity,
   View,
-  ShareButton,
 } from '@shoutem/ui';
 import { InlineMap } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import {
-  getRouteParams,
   composeNavigationStyles,
+  getRouteParams,
   navigateTo,
 } from 'shoutem.navigation';
 import { openURL } from 'shoutem.web-view';
-import { formatToLocalDate, addToCalendar } from '../services/Calendar';
-import isValidEvent from '../services/isValidEvent';
 import { ext } from '../const';
+import {
+  addToCalendar,
+  formatToAllDayDate,
+  formatToLocalDate,
+} from '../services/Calendar';
+import isValidEvent from '../services/isValidEvent';
 
 /**
  * Extracts location into marker out of event.
@@ -138,17 +142,23 @@ export class EventDetailsScreen extends PureComponent {
     const paddingTop = navBarClear ? 90 : 0;
 
     return (
-      <View style={{ paddingTop }}>
+      <View styleName="vertical h-center" style={{ paddingTop }}>
         <Title styleName={`${textColorStyle} md-gutter-bottom`}>
           {event.name.toUpperCase()}
         </Title>
         <Caption styleName={`${textColorStyle} sm-gutter-bottom`}>
-          {formatToLocalDate(event.start)}
+          {event.allDay
+            ? formatToAllDayDate(event.start, event.end)
+            : formatToLocalDate(event.start)}
         </Caption>
-        <Divider styleName="line small center" />
-        <Caption styleName={`${textColorStyle} md-gutter-bottom`}>
-          {formatToLocalDate(event.end)}
-        </Caption>
+        {!event.allDay && (
+          <>
+            <Divider styleName="line small center" />
+            <Caption styleName={`${textColorStyle} md-gutter-bottom`}>
+              {formatToLocalDate(event.end)}
+            </Caption>
+          </>
+        )}
       </View>
     );
   }

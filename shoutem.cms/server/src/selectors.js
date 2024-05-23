@@ -1,16 +1,17 @@
-import _ from 'lodash';
 import { ext } from 'context';
 import { denormalizeCollection, denormalizeItem } from 'denormalizer';
+import _ from 'lodash';
+import { createSelector } from 'reselect';
 import { isInitialized } from '@shoutem/redux-io';
 import { getStatus, setStatus } from '@shoutem/redux-io/status';
-import { createSelector } from 'reselect';
 import {
   CATEGORIES,
   CHANNELS,
-  IMPORTERS,
-  SCHEMAS,
   CURRENT_SCHEMA,
+  IMPORTERS,
   LANGUAGE_MODULE_STATUS,
+  MODULES,
+  SCHEMAS,
 } from './types';
 
 export function getCmsState(state) {
@@ -21,6 +22,12 @@ export function getCategories(state, tag = 'all') {
   const cmsState = getCmsState(state);
   const categories = _.get(cmsState, ['categories', tag]);
   return denormalizeCollection(categories, undefined, CATEGORIES);
+}
+
+export function getModules(state) {
+  const cmsState = getCmsState(state);
+  const modules = _.get(cmsState, 'modules');
+  return denormalizeCollection(modules, undefined, MODULES);
 }
 
 export function getChildCategories(state) {

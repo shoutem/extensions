@@ -1,12 +1,12 @@
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
 import {
-  PROPERTY_TYPES,
   PROPERTY_FORMATS,
   PROPERTY_REFERENCED_SCHEMAS,
+  PROPERTY_TYPES,
 } from '../const';
-import { getSchemaPropertyKeys, getSchemaProperty } from './schema';
 import LOCALIZATION from './localization';
+import { getSchemaProperty, getSchemaPropertyKeys } from './schema';
 
 export function getMappedCmsToCsvProperties(schema) {
   const schemaPropertyKeys = getSchemaPropertyKeys(schema);

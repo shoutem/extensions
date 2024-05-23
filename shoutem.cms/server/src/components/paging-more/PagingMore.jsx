@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import i18next from 'i18next';
 import { Button } from 'react-bootstrap';
+import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import LOCALIZATION from './localization';
 import './style.scss';
 

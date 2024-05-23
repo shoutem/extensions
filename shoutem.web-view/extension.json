@@ -1,15 +1,15 @@
 {
   "name": "web-view",
-  "version": "6.0.1",
-  "platform": ">=13",
-  "type": "system",
   "title": "Web view",
-  "releaseNotes": "* Enhance the web page loading experience with the option to display pages in a loading state",
+  "type": "system",
   "description": "Show a web page in-app or in a browser",
-  "icon": "server/assets/add-web-page.png",
+  "version": "6.0.3",
+  "platform": ">=14",
   "nativeChanges": {
-    "latestVersion": "5.2.0"
+    "latestVersion": "6.0.3"
   },
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Updated react-native-blob-util library for ios privacy info inclusion",
+  "icon": "server/assets/add-web-page.png",
   "dependencies": [
     "shoutem.cms",
     "shoutem.i18n",

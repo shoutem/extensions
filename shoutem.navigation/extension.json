@@ -1,10 +1,10 @@
 {
   "name": "navigation",
-  "version": "5.4.0",
-  "platform": ">=13.0.7",
+  "version": "5.4.3",
+  "platform": ">=14",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "* Improved user experience during tab navigation: The app will now retain the last opened screen when navigating between tab items. Additionally, if a user taps on an already active tab item, the app will open the first screen of that tab for a smoother interaction.",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Updated react-native-gesture-handler",
   "description": "App-level navigation",
   "nativeChanges": {
     "lastVersion": "5.2.0"

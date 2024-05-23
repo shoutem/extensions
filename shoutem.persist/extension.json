@@ -1,11 +1,14 @@
 {
   "name": "persist",
-  "version": "4.0.2",
-  "platform": ">=4",
-  "type": "system",
   "title": "Persist",
+  "type": "system",
   "description": "Extensions that persist redux state",
-  "releaseNotes": "*  Added support for new extension scoped theming",
+  "version": "4.0.3",
+  "platform": ">=14",
+  "nativeChanges": {
+    "lastVersion": "4.0.3"
+  },
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Updated @react-native-async-storage/async-storage library for ios privacy info inclusion",
   "icon": "server/assets/add-persist-image.png",
   "dependencies": [],
   "categories": []

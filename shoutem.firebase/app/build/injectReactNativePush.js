@@ -43,7 +43,7 @@ const androidManifestApplication = `
 const androidRootGradle = "classpath('com.google.gms:google-services:4.3.14')";
 const androidPlugins = "apply plugin: 'com.google.gms.google-services'";
 const androidGradleDependencies = `
-  implementation platform('com.google.firebase:firebase-bom:28.4.2')
+  implementation platform('com.google.firebase:firebase-bom:32.8.1')
   implementation 'com.google.firebase:firebase-analytics'
 `;
 

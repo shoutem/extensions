@@ -180,6 +180,7 @@ export class WebViewScreen extends PureComponent {
       showsVerticalScrollIndicator: false,
       sharedCookiesEnabled: trackingGranted,
       javaScriptCanOpenWindowsAutomatically: true,
+      originWhitelist: ['*'],
       mixedContentMode: isAndroid ? 'compatibility' : 'never',
     };
 

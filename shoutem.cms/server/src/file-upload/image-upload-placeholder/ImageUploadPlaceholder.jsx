@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import { FontIcon } from '@shoutem/react-web-ui';
 import './style.scss';
 
@@ -23,13 +23,13 @@ ImageUploadPlaceholder.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * Placeholder width
-   */
-  width: PropTypes.string,
-  /**
    * Placeholder height
    */
   height: PropTypes.string,
+  /**
+   * Placeholder width
+   */
+  width: PropTypes.string,
 };
 
 ImageUploadPlaceholder.defaultProps = {

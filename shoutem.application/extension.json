@@ -1,11 +1,10 @@
 {
   "name": "application",
-  "version": "6.2.0",
-  "platform": ">=13.0.4",
-  "type": "system",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "releaseNotes": "* Added app analytics",
+  "version": "6.2.2",
+  "platform": ">=14",
+  "releaseNotes": "* Disabled image resizing for imgur images\n\nFor developers\n* Added node 18 support for server segment",
   "nativeChanges": {
     "lastVersion": "4.1.4"
   },

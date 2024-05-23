@@ -1,53 +1,34 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Button, MenuItem } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import i18next from 'i18next';
-import { MenuItem, Button } from 'react-bootstrap';
-import { IconLabel, ActionsMenu, FontIcon } from '@shoutem/react-web-ui';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { ActionsMenu, FontIcon, IconLabel } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class CmsActionsMenu extends Component {
-  static propTypes = {
-    item: PropTypes.object,
-    canUpdate: PropTypes.bool,
-    canDelete: PropTypes.bool,
-    inline: PropTypes.bool,
-    onUpdateClick: PropTypes.func,
-    onDeleteClick: PropTypes.func,
-    additionalActions: PropTypes.arrayOf(
-      PropTypes.shape({
-        icon: PropTypes.string,
-        label: PropTypes.string,
-        onClick: PropTypes.func,
-      }),
-    ),
-  };
-
-  static defaultProps = {
-    canUpdate: true,
-    canDelete: true,
-    inline: true,
-    additionalActions: [],
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
-  }
 
-  componentWillMount() {
-    this.resolveActions();
+    const { additionalActions } = props;
+    const actions = this.resolveActions();
+
+    this.state = {
+      actions: [...actions, ...additionalActions],
+    };
   }
 
   resolveActions() {
     const {
       canUpdate,
       canDelete,
+      canSendPush,
       onDeleteClick,
       onUpdateClick,
-      additionalActions,
+      onSendPushClick,
     } = this.props;
 
     const actions = [];
@@ -67,9 +48,16 @@ export default class CmsActionsMenu extends Component {
       });
     }
 
-    this.setState({
-      actions: [...actions, ...additionalActions],
-    });
+    if (canSendPush) {
+      actions.push({
+        icon: 'engage',
+        iconSize: 22,
+        handleClick: () => this.handleActionClick(onSendPushClick),
+        label: i18next.t(LOCALIZATION.EDIT_ACTION_LABEL),
+      });
+    }
+
+    return actions;
   }
 
   handleActionClick(onClickCallback) {
@@ -101,7 +89,7 @@ export default class CmsActionsMenu extends Component {
             key={action.label}
             onClick={action.handleClick}
           >
-            <FontIcon name={action.icon} size={24} />
+            <FontIcon name={action.icon} size={action.iconSize || 24} />
           </Button>
         ))}
       </div>
@@ -124,3 +112,29 @@ export default class CmsActionsMenu extends Component {
     );
   }
 }
+
+CmsActionsMenu.propTypes = {
+  item: PropTypes.object.isRequired,
+  onDeleteClick: PropTypes.func.isRequired,
+  onSendPushClick: PropTypes.func.isRequired,
+  onUpdateClick: PropTypes.func.isRequired,
+  additionalActions: PropTypes.arrayOf(
+    PropTypes.shape({
+      icon: PropTypes.string,
+      label: PropTypes.string,
+      onClick: PropTypes.func,
+    }),
+  ),
+  canDelete: PropTypes.bool,
+  canSendPush: PropTypes.bool,
+  canUpdate: PropTypes.bool,
+  inline: PropTypes.bool,
+};
+
+CmsActionsMenu.defaultProps = {
+  canUpdate: true,
+  canDelete: true,
+  canSendPush: false,
+  inline: true,
+  additionalActions: [],
+};

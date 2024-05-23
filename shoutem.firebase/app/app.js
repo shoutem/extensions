@@ -20,7 +20,7 @@ function formatiOSNotificationPayload(message) {
   };
 }
 
-export const appWillMount = setPriority(app => {
+export const appWillMount = setPriority(async app => {
   if (!isProduction()) {
     return;
   }
@@ -34,12 +34,10 @@ export const appWillMount = setPriority(app => {
   const store = app.getStore();
   const { dispatch } = store;
 
-  messaging()
-    .registerDeviceForRemoteMessages()
-    .then(() => {
-      Firebase.obtainFCMToken()(dispatch);
-      Firebase.obtainAPNSToken()(dispatch);
-    });
+  await messaging().registerDeviceForRemoteMessages();
+
+  await Firebase.obtainAPNSToken()(dispatch);
+  await Firebase.obtainFCMToken()(dispatch);
 }, priorities.FIREBASE);
 
 export function appDidMount(app) {

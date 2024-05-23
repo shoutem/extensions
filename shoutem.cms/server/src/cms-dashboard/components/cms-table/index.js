@@ -1,2 +1,1 @@
-import CmsTable from './CmsTable';
-export default CmsTable;
+export { default } from './CmsTable';

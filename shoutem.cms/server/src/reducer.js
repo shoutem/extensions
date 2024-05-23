@@ -1,33 +1,37 @@
-import { combineReducers } from 'redux';
-import { storage, one, collection, resource } from '@shoutem/redux-io';
-import { mapReducers } from '@shoutem/redux-composers';
-import { reducer as cmsReducer } from '@shoutem/cms-dashboard';
 import { ext } from 'context';
+import _ from 'lodash';
+import { combineReducers } from 'redux';
+import { reducer as cmsReducer } from '@shoutem/cms-dashboard';
+import { mapReducers } from '@shoutem/redux-composers';
+import { collection, one, resource, storage } from '@shoutem/redux-io';
 import {
+  AUDIOS,
   CATEGORIES,
-  SCHEMAS,
-  IMAGES,
-  VIDEOS,
-  CURRENT_SCHEMA,
   CHANNELS,
-  LANGUAGE_MODULE_STATUS,
+  CURRENT_SCHEMA,
+  IMAGES,
   IMPORTERS,
+  LANGUAGE_MODULE_STATUS,
+  MODULES,
+  SCHEMAS,
+  VIDEOS,
 } from './types';
 
 function resourceCategoriesSelector(action) {
   return _.get(action, ['meta', 'params', 'filter[categories]']);
 }
 
-// TODO images, videos, loyalty places need to be loaded dynamically
 const storageMappings = {
   [IMAGES]: storage(IMAGES),
   [VIDEOS]: storage(VIDEOS),
+  [AUDIOS]: storage(AUDIOS),
   [CATEGORIES]: storage(CATEGORIES),
   [CHANNELS]: storage(CHANNELS),
+  [MODULES]: storage(MODULES),
   [SCHEMAS]: storage(SCHEMAS),
   [LANGUAGE_MODULE_STATUS]: storage(LANGUAGE_MODULE_STATUS),
   [CURRENT_SCHEMA]: storage(CURRENT_SCHEMA),
-  ['shoutem.loyalty.places']: storage('shoutem.loyalty.places'),
+  'shoutem.loyalty.places': storage('shoutem.loyalty.places'),
 };
 
 const storageReducer = combineReducers(storageMappings);
@@ -41,6 +45,7 @@ const cmsPage = combineReducers({
     advancedChild: collection(CATEGORIES, ext('advancedChild')),
     advancedParent: collection(CATEGORIES, ext('advancedParent')),
   }),
+  modules: collection(MODULES, ext('all-modules')),
   rawChannels: resource(CHANNELS),
   rawLanguageModule: resource(LANGUAGE_MODULE_STATUS),
   languageModule: one(LANGUAGE_MODULE_STATUS, ext('language-module')),

@@ -1,2 +1,1 @@
-import ImageUploader from './ImageUploader';
-export default ImageUploader;
+export { default } from './ImageUploader';

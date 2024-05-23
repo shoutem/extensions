@@ -1,2 +1,1 @@
-import InputTableHeader from './InputTableHeader';
-export default InputTableHeader;
+export { default } from './InputTableHeader';

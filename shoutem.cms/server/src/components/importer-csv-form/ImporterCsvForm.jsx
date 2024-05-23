@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
 import {
-  Modal,
   Button,
-  FormGroup,
   ControlLabel,
+  FormGroup,
   HelpBlock,
+  Modal,
 } from 'react-bootstrap';
-import _ from 'lodash';
+import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { FileUploader } from '../../file-upload';
 import { IMPORTER_SCHEDULE_SETTINGS } from '../../const';
+import { FileUploader } from '../../file-upload';
 import ImporterLanguageSelector from '../importer-language-selector';
 import LOCALIZATION from './localization';
 
@@ -100,7 +100,7 @@ export default class ImporterCsvForm extends Component {
 
     // using heigth 100 !!! as class is not working
     return (
-      <React.Fragment>
+      <>
         <Modal.Body>
           <FormGroup>
             <ControlLabel>
@@ -108,6 +108,7 @@ export default class ImporterCsvForm extends Component {
             </ControlLabel>
             <div style={FILE_UPLOAD_STYLE}>
               <FileUploader
+                useCdn={false}
                 src={fileUrl}
                 assetManager={assetManager}
                 folderName="importers/csv"
@@ -144,7 +145,7 @@ export default class ImporterCsvForm extends Component {
             </LoaderContainer>
           </Button>
         </Modal.Footer>
-      </React.Fragment>
+      </>
     );
   }
 }

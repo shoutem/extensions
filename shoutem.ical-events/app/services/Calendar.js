@@ -1,6 +1,6 @@
-import momentTimezone from 'moment-timezone';
 import { Alert, Linking } from 'react-native';
 import { getTimeZone } from 'react-native-localize';
+import momentTimezone from 'moment-timezone';
 import CalendarManager, {
   PERMISSION_ERROR,
 } from '@shoutem/react-native-calendar-manager';
@@ -58,4 +58,14 @@ export function formatToLocalDate(date) {
   const momentDate = toMoment(date);
 
   return momentDate.tz(localTimezone).format(DATE_FORMAT);
+}
+
+export function formatToAllDayDate(startDate, endDate) {
+  const isOneDayEvent = endDate.diff(startDate, 'days') === 1;
+
+  if (isOneDayEvent) {
+    return startDate.format('MMM D');
+  }
+
+  return `${startDate.format('MMM D - ')}${endDate.format('MMM D')}`;
 }

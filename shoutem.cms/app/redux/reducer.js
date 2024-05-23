@@ -1,16 +1,14 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
-import { preventStateRehydration } from 'shoutem.redux';
 import { REHYDRATE } from 'redux-persist/constants';
-
 import { mapReducers } from '@shoutem/redux-composers';
-import { storage, collection } from '@shoutem/redux-io';
-
+import { collection, storage } from '@shoutem/redux-io';
+import { preventStateRehydration } from 'shoutem.redux';
 import {
-  UPDATE_LOCATION_PERMISSION,
-  UPDATE_SECOND_PROMPT,
   CLEAR_SCREEN_STATE,
   SET_SCREEN_STATE,
+  UPDATE_LOCATION_PERMISSION,
+  UPDATE_SECOND_PROMPT,
 } from './actions';
 
 export const CATEGORIES_SCHEMA = 'shoutem.core.categories';

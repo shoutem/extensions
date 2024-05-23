@@ -3,7 +3,7 @@ const { getAppConfiguration } = require('@shoutem/build-tools');
 const {
   PERMISSION_TYPES,
 } = require('../../shoutem.permissions/app/build/const');
-const package = require('./package.json');
+const packageJson = require('./package.json');
 
 function requiresTrackingPermission(appConfiguration) {
   const included = _.get(appConfiguration, 'included');
@@ -13,7 +13,7 @@ function requiresTrackingPermission(appConfiguration) {
     included,
     item =>
       item.type === 'shoutem.core.shortcuts' &&
-      _.startsWith(item.attributes.canonicalName, package.name),
+      _.startsWith(item.attributes.canonicalName, packageJson.name),
   );
 
   const shortcutSettings = _.map(

@@ -1,5 +1,4 @@
 import React from 'react';
-import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
@@ -83,15 +82,13 @@ export class EventsListScreen extends RemoteDataListScreen {
     const now = moment();
     const endDate = now.format('YYYY-MM-DD');
 
-    InteractionManager.runAfterInteractions(() =>
-      find(EVENTS_PROXY_SCHEMA, 'urlSpecificEvents', {
-        query: {
-          url: icalUrl,
-          'filter[endDate]': endDate, // filtering past events
-          sort: 'startDate,-startTime',
-        },
-      }),
-    );
+    find(EVENTS_PROXY_SCHEMA, 'urlSpecificEvents', {
+      query: {
+        url: icalUrl,
+        'filter[endDate]': endDate, // filtering past events
+        sort: 'startDate,-startTime',
+      },
+    });
   }
 
   getNavBarProps() {

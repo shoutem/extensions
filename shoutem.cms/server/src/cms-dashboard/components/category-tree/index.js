@@ -1,2 +1,1 @@
-import CategoryTree from './CategoryTree';
-export default CategoryTree;
+export { default } from './CategoryTree';

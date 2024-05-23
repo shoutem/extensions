@@ -85,6 +85,13 @@ export const usePlaybackBehavior = ({
 
     if (track && !isActive) {
       try {
+        if (track.isLiveStream) {
+          // If currently playing track has playback rate !== 1 and user is trying to play radio stream
+          // it fails to load it. Reset playback rate for stream to successfully load.
+          // Playback rate is not reset with TrackPlayer.reset().
+          await TrackPlayer.setRate(1);
+        }
+
         await TrackPlayer.reset();
         await TrackPlayer.updateNowPlayingMetadata({});
       } catch (e) {

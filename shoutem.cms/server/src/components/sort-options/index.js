@@ -1,2 +1,1 @@
-import SortOptions from './SortOptions';
-export default SortOptions;
+export { default } from './SortOptions';

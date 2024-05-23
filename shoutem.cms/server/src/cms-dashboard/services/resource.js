@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import uuid from 'uuid-random';
-import { createResource, updateResource } from '../redux';
 import { PROPERTY_FORMATS } from '../const';
+import { createResource, updateResource } from '../redux';
+import { calculateDifferenceObject } from './form';
 import {
   getIncludeProperties,
   getReferencedSchema,
   getSchemaProperty,
 } from './schema';
-import { calculateDifferenceObject } from './form';
 
 function isExternalReference(element) {
   if (_.isArray(element)) {
@@ -170,25 +170,21 @@ function updateToOneRelationships(
 
         promises.push(Promise.resolve(relationships));
       }
+    } else if (!_.isEmpty(value) && !isEntityReference) {
+      promises.push(
+        dispatch(createToOneRelationship(appId, referencedSchema, key, value)),
+      );
     } else {
-      if (!_.isEmpty(value) && !isEntityReference) {
-        promises.push(
-          dispatch(
-            createToOneRelationship(appId, referencedSchema, key, value),
-          ),
-        );
-      } else {
-        const relationships = {
-          [key]: {
-            data: {
-              id,
-              type: referencedSchema,
-            },
+      const relationships = {
+        [key]: {
+          data: {
+            id,
+            type: referencedSchema,
           },
-        };
+        },
+      };
 
-        promises.push(Promise.resolve(relationships));
-      }
+      promises.push(Promise.resolve(relationships));
     }
 
     return promises;
@@ -244,27 +240,25 @@ function updateToManyRelationships(
 
           promises.push(Promise.resolve(relationships));
         }
+      } else if (!_.isEmpty(value) && !isEntityReference) {
+        promises.push(
+          dispatch(
+            createToManyRelationship(appId, referencedSchema, key, value),
+          ),
+        );
       } else {
-        if (!_.isEmpty(value) && !isEntityReference) {
-          promises.push(
-            dispatch(
-              createToManyRelationship(appId, referencedSchema, key, value),
-            ),
-          );
-        } else {
-          const relationships = {
-            [key]: {
-              data: [
-                {
-                  id,
-                  type: referencedSchema,
-                },
-              ],
-            },
-          };
+        const relationships = {
+          [key]: {
+            data: [
+              {
+                id,
+                type: referencedSchema,
+              },
+            ],
+          },
+        };
 
-          promises.push(Promise.resolve(relationships));
-        }
+        promises.push(Promise.resolve(relationships));
       }
     });
 

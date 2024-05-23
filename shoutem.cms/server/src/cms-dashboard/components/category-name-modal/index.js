@@ -1,2 +1,1 @@
-import CategoryNameModal from './CategoryNameModal';
-export default CategoryNameModal;
+export { default } from './CategoryNameModal';

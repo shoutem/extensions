@@ -1,5 +1,4 @@
 import React from 'react';
-/* eslint-disable simple-import-sort/exports */
 import TrackPlayer from 'react-native-track-player';
 import { isTabBarNavigation, TabBarRenderer } from 'shoutem.navigation';
 import {

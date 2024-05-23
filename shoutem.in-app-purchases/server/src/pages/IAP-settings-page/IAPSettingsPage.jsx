@@ -14,7 +14,12 @@ import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
-import { getExtension, updateExtensionSettings } from '@shoutem/redux-api-sdk';
+import {
+  fetchExtension,
+  getExtension,
+  updateExtensionSettings,
+} from '@shoutem/redux-api-sdk';
+import { shouldRefresh } from '@shoutem/redux-io';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -25,6 +30,7 @@ const SETTINGS_KEYS = [
   'iapHubApiKey',
   'iapHubEnvironment',
   'subscriptionRequired',
+  'singularProductPerScreenEnabled',
 ];
 
 class IAPSettingsPage extends PureComponent {
@@ -58,6 +64,15 @@ class IAPSettingsPage extends PureComponent {
     };
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { extension, fetchExtensionAction } = this.props;
+    const { extension: nextExtension } = nextProps;
+
+    if (extension !== nextExtension && shouldRefresh(nextExtension)) {
+      fetchExtensionAction();
+    }
+  }
+
   saveEnabled() {
     const {
       loading,
@@ -67,13 +82,16 @@ class IAPSettingsPage extends PureComponent {
         iapHubAppId,
         iapHubApiKey,
         iapHubEnvironment,
+        singularProductPerScreenEnabled,
       },
     } = this.state;
 
     const iapHubConfigured =
       !!iapHubAppId && !!iapHubEnvironment && !!iapHubApiKey;
+    const productsConfigured =
+      singularProductPerScreenEnabled || (iOSProductId && androidProductId);
 
-    if (loading || !iapHubConfigured || (!iOSProductId && !androidProductId)) {
+    if (loading || !iapHubConfigured || !productsConfigured) {
       return false;
     }
 
@@ -112,6 +130,17 @@ class IAPSettingsPage extends PureComponent {
     });
   }
 
+  handlePerScreenGranulationToggle() {
+    const { settings } = this.state;
+
+    this.setState({
+      settings: {
+        ...settings,
+        singularProductPerScreenEnabled: !settings.singularProductPerScreenEnabled,
+      },
+    });
+  }
+
   async handleSave() {
     const { extension, updateExtensionSettingsAction } = this.props;
     const { settings } = this.state;
@@ -142,6 +171,7 @@ class IAPSettingsPage extends PureComponent {
         iapHubApiKey,
         iapHubEnvironment,
         subscriptionRequired,
+        singularProductPerScreenEnabled,
       },
     } = this.state;
 
@@ -174,28 +204,39 @@ class IAPSettingsPage extends PureComponent {
               onChange={this.handleSubscriptionScreenToggle}
               value={subscriptionRequired}
             />
-          </FormGroup>
-          <h3>{i18next.t(LOCALIZATION.STORE_PRODUCTS_TITLE)}</h3>
-          <FormGroup>
             <ControlLabel>
-              {i18next.t(LOCALIZATION.IOS_PRODUCT_ID)}
+              {i18next.t(LOCALIZATION.ENABLE_PER_SCREEN_GRANULATION)}
             </ControlLabel>
-            <FormControl
-              className="form-control"
-              onChange={this.handleTextSettingChange('iOSProductId')}
-              type="text"
-              value={iOSProductId}
-            />
-            <ControlLabel>
-              {i18next.t(LOCALIZATION.ANDROD_PRODUCT_ID)}
-            </ControlLabel>
-            <FormControl
-              className="form-control"
-              onChange={this.handleTextSettingChange('androidProductId')}
-              type="text"
-              value={androidProductId}
+            <Switch
+              onChange={this.handlePerScreenGranulationToggle}
+              value={singularProductPerScreenEnabled}
             />
           </FormGroup>
+          {!singularProductPerScreenEnabled && (
+            <>
+              <h3>{i18next.t(LOCALIZATION.STORE_PRODUCTS_TITLE)}</h3>
+              <FormGroup>
+                <ControlLabel>
+                  {i18next.t(LOCALIZATION.IOS_PRODUCT_ID)}
+                </ControlLabel>
+                <FormControl
+                  className="form-control"
+                  onChange={this.handleTextSettingChange('iOSProductId')}
+                  type="text"
+                  value={iOSProductId}
+                />
+                <ControlLabel>
+                  {i18next.t(LOCALIZATION.ANDROD_PRODUCT_ID)}
+                </ControlLabel>
+                <FormControl
+                  className="form-control"
+                  onChange={this.handleTextSettingChange('androidProductId')}
+                  type="text"
+                  value={androidProductId}
+                />
+              </FormGroup>
+            </>
+          )}
           <h3>{i18next.t(LOCALIZATION.IAPHUB_SETTINGS_TITLE)}</h3>
           <FormGroup>
             <ControlLabel>{i18next.t(LOCALIZATION.IAPHUB_APP_ID)}</ControlLabel>
@@ -248,6 +289,7 @@ class IAPSettingsPage extends PureComponent {
 
 IAPSettingsPage.propTypes = {
   extension: PropTypes.object.isRequired,
+  fetchExtensionAction: PropTypes.func.isRequired,
   updateExtensionSettingsAction: PropTypes.func.isRequired,
 };
 
@@ -260,8 +302,11 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
+  const { extensionName } = ownProps;
+
   return {
+    fetchExtensionAction: () => dispatch(fetchExtension(extensionName)),
     updateExtensionSettingsAction: (extension, settings) =>
       dispatch(updateExtensionSettings(extension, settings)),
   };

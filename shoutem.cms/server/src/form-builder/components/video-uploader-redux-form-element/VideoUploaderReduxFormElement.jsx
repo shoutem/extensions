@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { ControlLabel, FormGroup, Row } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { Row, ControlLabel, FormGroup } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { ImageUploader } from '@shoutem/file-upload';
 import { ReduxFormElement } from '@shoutem/react-web-ui';
 
@@ -45,18 +45,6 @@ function resolveThumbnailUrl(url) {
 }
 
 export default class VideoUploaderReduxFormElement extends Component {
-  static propTypes = {
-    elementId: PropTypes.string,
-    assetManager: PropTypes.object,
-    name: PropTypes.string,
-    field: PropTypes.object,
-    helpText: PropTypes.string,
-    className: PropTypes.string,
-    folderName: PropTypes.string,
-    thumbnailName: PropTypes.string,
-    touch: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -166,3 +154,15 @@ export default class VideoUploaderReduxFormElement extends Component {
     );
   }
 }
+
+VideoUploaderReduxFormElement.propTypes = {
+  assetManager: PropTypes.object,
+  className: PropTypes.string,
+  elementId: PropTypes.string,
+  field: PropTypes.object,
+  folderName: PropTypes.string,
+  helpText: PropTypes.string,
+  name: PropTypes.string,
+  thumbnailName: PropTypes.string,
+  touch: PropTypes.func,
+};

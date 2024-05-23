@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Button, ControlLabel, FormGroup, Modal } from 'react-bootstrap';
+import Select from 'react-select';
 import autoBindReact from 'auto-bind/react';
-import { Modal, Button, FormGroup, ControlLabel } from 'react-bootstrap';
-import _ from 'lodash';
 import classNames from 'classnames';
 import i18next from 'i18next';
-import Select from 'react-select';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { IMPORT_CAPABILITIES } from '../../const';
 import { getImporterCapabilities } from '../../services';
-import ImporterRssForm from '../importer-rss-form';
 import ImporterCsvForm from '../importer-csv-form';
 import ImporterCsvMappingForm from '../importer-csv-mapping-form';
+import ImporterRssForm from '../importer-rss-form';
 import LOCALIZATION from './localization';
 
 const IMPORTER_STEPS = {
@@ -187,7 +187,7 @@ export default class ImporterModal extends Component {
     const options = resolveSourceOptions(shortcut);
 
     return (
-      <React.Fragment>
+      <>
         <Modal.Body>
           <FormGroup controlId="select-source">
             <ControlLabel>
@@ -215,7 +215,7 @@ export default class ImporterModal extends Component {
             {i18next.t(LOCALIZATION.BUTTON_NEXT_LABEL)}
           </Button>
         </Modal.Footer>
-      </React.Fragment>
+      </>
     );
   }
 

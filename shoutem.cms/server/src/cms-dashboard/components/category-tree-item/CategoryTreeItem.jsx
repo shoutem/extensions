@@ -1,21 +1,15 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
 import { MenuItem } from 'react-bootstrap';
+import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import i18next from 'i18next';
-import { FontIcon, ActionsMenu, IconLabel } from '@shoutem/react-web-ui';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { ActionsMenu, FontIcon, IconLabel } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
 
 export default class CategoryTreeItem extends Component {
-  static propTypes = {
-    category: PropTypes.object,
-    onCategoryRenameClick: PropTypes.func,
-    onCategoryDeleteClick: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -94,3 +88,9 @@ export default class CategoryTreeItem extends Component {
     );
   }
 }
+
+CategoryTreeItem.propTypes = {
+  category: PropTypes.object,
+  onCategoryRenameClick: PropTypes.func,
+  onCategoryDeleteClick: PropTypes.func,
+};

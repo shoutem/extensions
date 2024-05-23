@@ -29,6 +29,7 @@ export const PROPERTY_FORMATS = {
 export const PROPERTY_REFERENCED_SCHEMAS = {
   IMAGE_ATTACHMENT: 'shoutem.core.image-attachments',
   VIDEO_ATTACHMENT: 'shoutem.core.video-attachments',
+  AUDIO_ATTACHMENT: 'shoutem.core.audio-attachments',
 };
 
 export const FILTER_OPERATOR_TYPES = {

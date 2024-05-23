@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -21,6 +22,19 @@ function isShortcutProtected(route) {
   );
 }
 
+function getShortcutProductId(route) {
+  const resolvedProductKey =
+    Platform.OS === 'ios' ? 'iOSProductId' : 'androidProductId';
+
+  return _.get(route, [
+    'params',
+    'shortcut',
+    'settings',
+    _.camelCase(ext()),
+    resolvedProductKey,
+  ]);
+}
+
 export function withSubscriptionRequired(WrappedComponent) {
   class SubscriptionComponent extends FocusTriggerBase {
     handleFocus() {
@@ -30,12 +44,14 @@ export function withSubscriptionRequired(WrappedComponent) {
         isSubscriptionRequired,
         hasProperConfiguration,
         allScreensProtected,
+        singularProductPerScreenEnabled,
       } = this.props;
       const { skipSubscriptionPrompt } = getRouteParams(this.props);
 
       const shouldPromptForSubscription =
         !skipSubscriptionPrompt &&
-        (isShortcutProtected(route) || allScreensProtected);
+        (isShortcutProtected(route) ||
+          (!singularProductPerScreenEnabled && allScreensProtected));
 
       if (
         shouldPromptForSubscription &&
@@ -44,6 +60,10 @@ export function withSubscriptionRequired(WrappedComponent) {
         hasProperConfiguration
       ) {
         const previousRoute = _.get(route, 'params.previousRoute');
+        const requiredProductId = singularProductPerScreenEnabled
+          ? getShortcutProductId(route)
+          : undefined;
+
         const onCancel = () => {
           NavigationStacks.closeStack(ext(), () =>
             navigateTo({
@@ -58,6 +78,7 @@ export function withSubscriptionRequired(WrappedComponent) {
           onCancel,
           onBack: onCancel,
           onSubscriptionObtained: () => NavigationStacks.closeStack(ext()),
+          productId: requiredProductId,
         });
       }
     }
@@ -76,16 +97,32 @@ export function withSubscriptionRequired(WrappedComponent) {
     route: PropTypes.object.isRequired,
   };
 
-  const mapStateToProps = state => ({
-    isSubscribed: selectors.isSubscribed(state),
-    isSubscriptionRequired: selectors.isSubscriptionRequired(state),
-    hasProperConfiguration: selectors.hasProperConfiguration(state),
-    allScreensProtected: _.get(
+  const mapStateToProps = (state, ownProps) => {
+    const shortcutProductId = getShortcutProductId(ownProps.route);
+    const singularProductPerScreenEnabled = _.get(
       getExtensionSettings(state, ext()),
-      'allScreensProtected',
+      'singularProductPerScreenEnabled',
       false,
-    ),
-  });
+    );
+    const requiredProductId = singularProductPerScreenEnabled
+      ? shortcutProductId
+      : undefined;
+    const hasProperConfiguration = singularProductPerScreenEnabled
+      ? !!shortcutProductId
+      : selectors.hasProperGlobalConfiguration(state);
+
+    return {
+      isSubscribed: selectors.isSubscribed(requiredProductId, state),
+      isSubscriptionRequired: selectors.isSubscriptionRequired(state),
+      hasProperConfiguration,
+      allScreensProtected: _.get(
+        getExtensionSettings(state, ext()),
+        'allScreensProtected',
+        false,
+      ),
+      singularProductPerScreenEnabled,
+    };
+  };
 
   const resolvedMapStateToProps = FocusTriggerBase.createMapStateToProps(
     mapStateToProps,

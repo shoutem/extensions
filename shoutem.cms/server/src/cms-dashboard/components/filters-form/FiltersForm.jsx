@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import classNames from 'classnames';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { reduxForm } from 'redux-form';
 import { getFilterableSchemaKeys, getSchemaProperty } from '../../services';
 import FiltersFormItem from '../filters-form-item';

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Checkbox } from '@shoutem/react-web-ui';
+import { Checkbox, FontIcon } from '@shoutem/react-web-ui';
 import './style.scss';
 
 function isShortcutProtected(shortcut) {
@@ -35,13 +35,21 @@ export default class ProtectedScreenRow extends PureComponent {
     onShortcutSettingsUpdate(shortcut, settingsPatch);
   }
 
+  handleShortcutSettingsPress(event) {
+    event.stopPropagation();
+    const { shortcut, onShortcutSettingsPress } = this.props;
+
+    onShortcutSettingsPress(shortcut);
+  }
+
   render() {
-    const { shortcut, level, disabled } = this.props;
+    const { shortcut, level, disabled, settingsModalEnabled } = this.props;
 
     const isProtected = isShortcutProtected(shortcut);
     const indentation = level * 32 + 8;
     const indentationStyle = {
       paddingLeft: `${indentation}px`,
+      position: 'relative',
     };
     const className = !disabled
       ? 'protected-screen-row'
@@ -51,6 +59,15 @@ export default class ProtectedScreenRow extends PureComponent {
       <tr className={className} onClick={this.handleShortcutSelected}>
         <td style={indentationStyle}>
           <Checkbox checked={isProtected}>{shortcut.title}</Checkbox>
+          {settingsModalEnabled && (
+            <div
+              className="protected-row-settings-button"
+              onClick={this.handleShortcutSettingsPress}
+              aria-hidden="true"
+            >
+              <FontIcon name="more" size={20} />
+            </div>
+          )}
         </td>
       </tr>
     );
@@ -58,8 +75,10 @@ export default class ProtectedScreenRow extends PureComponent {
 }
 
 ProtectedScreenRow.propTypes = {
-  shortcut: PropTypes.object,
-  level: PropTypes.number,
-  onShortcutSettingsUpdate: PropTypes.func,
-  disabled: PropTypes.bool,
+  disabled: PropTypes.bool.isRequired,
+  level: PropTypes.number.isRequired,
+  settingsModalEnabled: PropTypes.bool.isRequired,
+  shortcut: PropTypes.object.isRequired,
+  onShortcutSettingsPress: PropTypes.func.isRequired,
+  onShortcutSettingsUpdate: PropTypes.func.isRequired,
 };

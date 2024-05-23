@@ -1,6 +1,6 @@
 {
   "name": "shoutem.checklist",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "Create checklists for app users to complete.",
   "peerDependencies": {
     "@shoutem/redux-io": "*",

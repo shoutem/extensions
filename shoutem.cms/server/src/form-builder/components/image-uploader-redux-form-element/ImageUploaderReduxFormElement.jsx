@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { ImageUploader } from '@shoutem/file-upload';
 import { fieldInError } from '../services';
 
@@ -14,16 +14,6 @@ function resolveFilename(file) {
 }
 
 export default class ImageUploaderReduxFormElement extends Component {
-  static propTypes = {
-    elementId: PropTypes.string,
-    assetManager: PropTypes.object,
-    name: PropTypes.string,
-    field: PropTypes.object,
-    helpText: PropTypes.string,
-    className: PropTypes.string,
-    folderName: PropTypes.string,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -98,3 +88,13 @@ export default class ImageUploaderReduxFormElement extends Component {
     );
   }
 }
+
+ImageUploaderReduxFormElement.propTypes = {
+  elementId: PropTypes.string,
+  assetManager: PropTypes.object,
+  name: PropTypes.string,
+  field: PropTypes.object,
+  helpText: PropTypes.string,
+  className: PropTypes.string,
+  folderName: PropTypes.string,
+};

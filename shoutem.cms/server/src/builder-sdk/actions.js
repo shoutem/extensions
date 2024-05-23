@@ -1,5 +1,5 @@
+import { appId, url } from 'environment';
 import { update } from '@shoutem/redux-io';
-import { url, appId } from 'environment';
 import { EXTENSION_INSTALLATIONS, SHORTCUTS } from './types';
 
 export function updateExtensionInstallationSettings(id, settings) {

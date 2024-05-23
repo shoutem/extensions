@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
+import { getExtensionInstallation, i18n } from 'environment';
 import i18next from 'i18next';
 import _ from 'lodash';
-import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { i18n, getExtensionInstallation } from 'environment';
-import translation from '../../../translations/en.json';
 import pack from '../../../package.json';
+import translation from '../../../translations/en.json';
 
 export class LocalizationProvider extends Component {
   constructor(props) {
@@ -39,7 +39,7 @@ export class LocalizationProvider extends Component {
     this.handleInjection(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.handleInjection(this.props, nextProps);
   }
 
@@ -158,12 +158,12 @@ export class LocalizationProvider extends Component {
 
 LocalizationProvider.propTypes = {
   children: PropTypes.node,
-  ownExtensionName: PropTypes.string,
-  extensionName: PropTypes.string,
-  locale: PropTypes.string,
-  translationUrl: PropTypes.string,
   extensionLocale: PropTypes.string,
+  extensionName: PropTypes.string,
   extensionTranslationUrl: PropTypes.string,
+  locale: PropTypes.string,
+  ownExtensionName: PropTypes.string,
+  translationUrl: PropTypes.string,
 };
 
 function mapStateToProps() {

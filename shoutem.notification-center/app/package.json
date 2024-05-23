@@ -1,6 +1,6 @@
 {
   "name": "shoutem.notification-center",
-  "version": "9.0.1",
+  "version": "9.0.3",
   "description": "Manage push notification settings within the app",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
@@ -12,7 +12,7 @@
     "xcode": "3.0.1"
   },
   "peerDependencies": {
-    "@react-native-community/async-storage": "*",
+    "@react-native-async-storage/async-storage": "*",
     "@shoutem/redux-composers": "*",
     "@shoutem/redux-io": "*",
     "@shoutem/theme": "*",

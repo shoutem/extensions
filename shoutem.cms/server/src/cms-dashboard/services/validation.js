@@ -1,17 +1,17 @@
-import { isURL } from 'validator';
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
+import { isURL } from 'validator';
 import {
-  getEditorSections,
-  getSectionPropertyKey,
-  getSchemaProperty,
-} from './schema';
-import {
-  PROPERTY_TYPES,
   PROPERTY_FORMATS,
   PROPERTY_REFERENCED_SCHEMAS,
+  PROPERTY_TYPES,
 } from '../const';
 import LOCALIZATION from './localization';
+import {
+  getEditorSections,
+  getSchemaProperty,
+  getSectionPropertyKey,
+} from './schema';
 
 function validateRequiredField(fieldValue) {
   if (!fieldValue) {
@@ -74,7 +74,7 @@ function validatePattern(fieldValue, pattern) {
     return null;
   }
 
-  var regex = new RegExp(pattern);
+  const regex = new RegExp(pattern);
   const match = regex.test(fieldValue);
 
   if (!match) {
@@ -92,10 +92,12 @@ function validateProperty(schemaProperty, field) {
 
   if (required) {
     if (schemaProperty.type == PROPERTY_TYPES.OBJECT) {
-      // check if video and photo object has url
+      // check if video, audio and photo object has url
       if (
         schemaProperty.referencedSchema ===
           PROPERTY_REFERENCED_SCHEMAS.VIDEO_ATTACHMENT ||
+        schemaProperty.referencedSchema ===
+          PROPERTY_REFERENCED_SCHEMAS.AUDIO_ATTACHMENT ||
         schemaProperty.referencedSchema ===
           PROPERTY_REFERENCED_SCHEMAS.IMAGE_ATTACHMENT
       ) {

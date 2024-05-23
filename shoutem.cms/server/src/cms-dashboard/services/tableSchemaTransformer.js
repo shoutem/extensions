@@ -1,7 +1,7 @@
-import _ from 'lodash';
 import i18next from 'i18next';
-import { getLayoutsTable } from './schema';
+import _ from 'lodash';
 import LOCALIZATION from './localization';
+import { getLayoutsTable } from './schema';
 
 export const HEADER_TYPES = {
   TEXT: 'text',

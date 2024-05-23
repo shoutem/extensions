@@ -1,2 +1,1 @@
-import ToggleContent from './ToggleContent';
-export default ToggleContent;
+export { default } from './ToggleContent';

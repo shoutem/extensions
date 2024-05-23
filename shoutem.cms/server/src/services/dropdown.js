@@ -1,7 +1,7 @@
-import _ from 'lodash';
 import i18next from 'i18next';
-import LOCALIZATION from './localization';
+import _ from 'lodash';
 import { getArrayDisplayLabel } from './array';
+import LOCALIZATION from './localization';
 
 export function getDropdownOptions(
   resources,

@@ -2,6 +2,8 @@ import { Dimensions, PixelRatio } from 'react-native';
 
 const window = Dimensions.get('window');
 
+const EXCLUDED_SERVICES = ['imgur'];
+
 /**
  * Modifies the source prop of remote images so that images are
  * resized to the dimensions of the Image component that renders
@@ -14,8 +16,13 @@ const window = Dimensions.get('window');
 export const resizeImageSource = imageProps => {
   const { style, source } = imageProps;
 
-  if (!source || !source.uri || source.uri.startsWith('data:')) {
-    // We can only resize remote images
+  if (
+    !source ||
+    !source.uri ||
+    source.uri.startsWith('data:') ||
+    EXCLUDED_SERVICES.some(service => source.uri.includes(service))
+  ) {
+    // We can only resize remote images and images from services that are not rate limiting or blocking weserv.
     return imageProps;
   }
 

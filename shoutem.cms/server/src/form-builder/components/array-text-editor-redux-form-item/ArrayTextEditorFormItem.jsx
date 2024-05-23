@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
 import { unsplashAccessKey } from 'environment';
 import i18next from 'i18next';
-import { RichTextEditor } from '@shoutem/react-web-ui';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { RichTextEditor } from '@shoutem/react-web-ui';
 import LOCALIZATION from '../../localization';
 import './style.scss';
 
