@@ -3,9 +3,9 @@
   "title": "User Profile",
   "type": "system",
   "description": "Add extended user profile",
-  "version": "5.1.3-rc.0",
+  "version": "5.1.3",
   "platform": ">=14",
-  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added Node 18 support for server segment",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
   "icon": "server/assets/add-user-profile-image.png",
   "nativeChanges": {
     "lastVersion": "4.2.1"

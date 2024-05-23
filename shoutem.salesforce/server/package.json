@@ -1,6 +1,6 @@
 {
   "name": "shoutem.salesforce",
-  "version": "2.1.2-rc.0",
+  "version": "2.1.2",
   "description": "Salesforce Marketing Cloud",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

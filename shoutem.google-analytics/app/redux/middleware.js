@@ -12,8 +12,8 @@ function trackScreenView(action) {
     return;
   }
 
-  const { title, screen, payload } = action;
-  const screenName = title || screen;
+  const { title, payload } = action;
+  const screenName = title || payload?.screen;
 
   const params = {
     screenName,
@@ -23,7 +23,7 @@ function trackScreenView(action) {
   analytics().logEvent('shoutem_screen_view', params);
   analytics().logScreenView({
     screen_name: screenName,
-    screen_class: screen,
+    screen_class: payload?.screen,
   });
 }
 setPriority(trackScreenView, ANALYTICS_OUT_MIDDLEWARE_PRIORITY);

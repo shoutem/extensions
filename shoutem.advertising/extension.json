@@ -2,12 +2,12 @@
   "name": "advertising",
   "title": "Advertising",
   "description": "Integrate AdMob and embed ads to your application",
-  "version": "7.0.0-rc.0",
+  "version": "7.0.0",
   "platform": ">=14",
   "nativeChanges": {
-    "lastVersion": "7.0.0-rc.0"
+    "lastVersion": "7.0.0"
   },
-  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Replaced deprecated @react-native-admob/admob library with react-native-google-mobile-ads & addressed required changes\n* Breaking change - removed obsolete Ad configuration injection script, added new script",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Replaced deprecated @react-native-admob/admob library with react-native-google-mobile-ads & addressed required changes\n* Breaking change - removed obsolete Ad configuration injection script, added new script",
   "icon": "server/assets/add-advertising-image.png",
   "dependencies": [
     "shoutem.application",

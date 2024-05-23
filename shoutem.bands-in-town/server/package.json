@@ -1,6 +1,6 @@
 {
   "name": "shoutem.bands-in-town",
-  "version": "1.0.2-rc.0",
+  "version": "1.0.2",
   "description": "Integrate a Bands in Town widget into your app.",
   "scripts": {
     "lint": "eslint --no-eslintrc src/**/*.{js,jsx}",

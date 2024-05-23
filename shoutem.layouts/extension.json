@@ -3,9 +3,9 @@
   "title": "Layouts",
   "type": "system",
   "description": "Extension that enables app creator to choose between different layouts of the same screen",
-  "version": "7.0.3-rc.0",
+  "version": "7.0.3",
   "platform": ">=14",
-  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added Node 18 support for server segment",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
   "icon": "server/assets/add-layouts-image.png",
   "dependencies": [
     "shoutem.i18n"

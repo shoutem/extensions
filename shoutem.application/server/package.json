@@ -1,6 +1,6 @@
 {
   "name": "shoutem.application",
-  "version": "6.2.2-rc.0",
+  "version": "6.2.2",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",
     "clean": "rimraf ./build/*",

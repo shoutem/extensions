@@ -2,14 +2,14 @@
   "name": "social",
   "title": "Social",
   "description": "Let members create posts, comment and like them",
-  "version": "12.0.6-rc.0",
+  "version": "12.0.6",
   "platform": ">=14",
   "nativeChanges": {
     "lastVersion": "10.0.0",
     "settingsKeys": []
   },
-  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added Node 18 support for server segment",
-  "skipClone": false,  
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
+  "skipClone": false,
   "categories": [
     "users"
   ],

@@ -2,12 +2,12 @@
   "name": "auth",
   "title": "Users",
   "description": "Show user profile, sign out user",
-  "version": "8.0.0-rc.0",
+  "version": "8.0.0",
   "platform": ">=14",
   "nativeChanges": {
-    "lastVersion": "8.0.0-rc.0"
+    "lastVersion": "8.0.0"
   },
-  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Updated @react-native-async-storage/async-storage library for ios privacy info inclusion\n* Breaking change - removed obsolete prebuild scripts\n* Added Node 18 support for server segment",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Updated @react-native-async-storage/async-storage library for ios privacy info inclusion\n* Breaking change - removed obsolete prebuild scripts\n* Added Node 18 support for server segment",
   "icon": "server/assets/add-authentication-image.png",
   "dependencies": [
     "shoutem.application",

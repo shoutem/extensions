@@ -103,7 +103,10 @@ const markNotificationAsRead = (state, action) => {
 };
 
 const processNotifications = (state, action) => {
-  const { payload } = action;
+  const {
+    payload,
+    meta: { schema },
+  } = action;
 
   const notifications = payload.data.map(resolveNotification);
   const newState = isAppendMode(action)
@@ -122,7 +125,7 @@ const processNotifications = (state, action) => {
       error: false,
       links,
       params,
-      schema: SCHEDULED_NOTIFICATIONS_SCHEMA,
+      schema,
     }),
   );
 

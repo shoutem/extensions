@@ -1,6 +1,6 @@
 {
   "name": "shoutem.page",
-  "version": "5.1.1-rc.0",
+  "version": "5.1.1",
   "description": "Page",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

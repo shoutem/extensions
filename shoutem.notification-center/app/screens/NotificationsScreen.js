@@ -1,5 +1,4 @@
 import React from 'react';
-import { InteractionManager } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
@@ -53,9 +52,7 @@ class NotificationsScreen extends ListScreen {
     const { fetchNotifications } = this.props;
     const rioFindParams = this.getSelectedGroupsAsParams();
 
-    InteractionManager.runAfterInteractions(() => {
-      fetchNotifications(rioFindParams);
-    });
+    fetchNotifications(rioFindParams);
   }
 
   /**

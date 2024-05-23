@@ -2,9 +2,9 @@
   "name": "geo-restrictions",
   "title": "Geo Restrictions",
   "description": "Restricts access to specific content based upon the user's geographical location",
-  "version": "4.1.1-rc.0",
+  "version": "4.1.1",
   "platform": ">=14",
-  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added node 18 support for server segment",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added node 18 support for server segment",
   "nativeChanges": {
     "lastVersion": "4.0.6"
   },

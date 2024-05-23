@@ -2,9 +2,9 @@
   "name": "fonts",
   "title": "Fonts",
   "description": "View and manage fonts for the app",
-  "version": "2.0.2-rc.0",
+  "version": "2.0.2",
   "platform": ">=14",
-  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added Node 18 support for server segment",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
   "icon": "server/assets/images/add-fonts-image.png",
   "categories": [],
   "nativeChanges": {

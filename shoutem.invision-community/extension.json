@@ -2,12 +2,12 @@
   "name": "invision-community",
   "title": "Invision community",
   "description": "Allow Invision Community to grant limited access to your app",
-  "version": "2.1.1-rc.0",
+  "version": "2.1.1",
   "platform": ">=14",
   "nativeChanges": {
-    "lastVersion": "2.1.1-rc.0"
+    "lastVersion": "2.1.1"
   },
-  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Updated @react-native-async-storage/async-storage library for ios privacy info inclusion\n* Added Node 18 support in server segment",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Updated @react-native-async-storage/async-storage library for ios privacy info inclusion\n* Added Node 18 support in server segment",
   "icon": "./server/assets/add-invision-image.png",
   "capabilities": ["shoutem.auth.provider", "shoutem.auth.invision-comunity"],
   "dependencies": ["shoutem.application", "shoutem.auth", "shoutem.i18n"],

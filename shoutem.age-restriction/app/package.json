@@ -1,6 +1,6 @@
 {
   "name": "shoutem.age-restriction",
-  "version": "1.0.1-rc.0",
+  "version": "1.0.1",
   "description": "Age Restriction",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

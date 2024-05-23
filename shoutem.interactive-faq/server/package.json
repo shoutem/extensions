@@ -1,6 +1,6 @@
 {
   "name": "shoutem.interactive-faq",
-  "version": "7.1.1-rc.0",
+  "version": "7.1.1",
   "description": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
   "author": "Shoutem",
   "scripts": {

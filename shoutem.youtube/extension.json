@@ -2,9 +2,9 @@
   "name": "youtube",
   "title": "YouTube",
   "description": "Show a video gallery from YouTube channel, user or playlist",
-  "version": "5.1.2-rc.0",
+  "version": "5.1.2",
   "platform": ">=14",
-  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added Node 18 support for server segment",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
   "dependencies": [
     "shoutem.application",
     "shoutem.layouts",

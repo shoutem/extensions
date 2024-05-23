@@ -2,9 +2,9 @@
   "name": "age-restriction",
   "title": "Age Restriction",
   "description": "Restricts access to specific content based upon the user's age",
-  "version": "1.0.1-rc.0",
+  "version": "1.0.1",
   "platform": ">=14",
-  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added Node 18 support for server segment",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
   "nativeChanges": {
     "lastVersion": "1.0.0"
   },

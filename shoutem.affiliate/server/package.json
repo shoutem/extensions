@@ -1,6 +1,6 @@
 {
   "name": "shoutem.affiliate",
-  "version": "3.1.1-rc.0",
+  "version": "3.1.1",
   "description": "Create affiliate program in your app and expand your advertising reach",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

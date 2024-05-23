@@ -2,16 +2,14 @@
   "name": "rss-monitoring",
   "title": "RSS Monitoring",
   "description": "Monitors RSS feed content and sends automated push notifications when new content is loaded.",
-  "version": "4.1.11-rc.0",
+  "version": "4.1.11",
   "platform": ">=14",
-  "releaseNotes": "* No user facing changes\n\nFor developers:\n* Added Node 18 support for server segment",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "dependencies": [
     "shoutem.rss"
   ],
-  "categories": [
-    "content"
-  ],
+  "categories": ["content"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"

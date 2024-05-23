@@ -209,7 +209,7 @@ export default () => ({
       };
     },
 
-    solidifyAnimation(driver) {
+    solidifyAnimation(driver, hideTitle = false) {
       return {
         icon: {
           opacity: driver.interpolate({
@@ -221,7 +221,10 @@ export default () => ({
         title: {
           color: driver.interpolate({
             inputRange: [250, 300],
-            outputRange: ['transparent', resolveVariable('navBarText.color')],
+            outputRange: [
+              'transparent',
+              hideTitle ? 'transparent' : resolveVariable('navBarText.color'),
+            ],
             extrapolate: 'clamp',
           }),
         },
