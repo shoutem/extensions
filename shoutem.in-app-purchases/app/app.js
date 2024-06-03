@@ -8,10 +8,15 @@ import { actions, selectors } from './redux';
 
 AppInitQueue.addExtension(ext());
 
-const deriveUserId = () =>
-  Iaphub.login(DeviceInfo.getUniqueId()).catch(() => {
+const deriveUserId = async () => {
+  try {
+    const uniqueId = await DeviceInfo.getUniqueId();
+    await Iaphub.login(uniqueId);
+  } catch {
+    // eslint-disable-next-line no-console
     console.log('IAP User not found. Continuing with anonymous mode');
-  });
+  }
+};
 
 export const appDidMount = app => {
   const store = app.getStore();
@@ -44,6 +49,7 @@ export const appDidMount = app => {
     .then(() => store.dispatch(actions.loadProducts()))
     .then(() => store.dispatch(setQueueTargetComplete(ext())))
     .catch(error => {
+      // eslint-disable-next-line no-console
       console.warn('Error initializing IAPHub', error);
       store.dispatch(setQueueTargetComplete(ext()));
     });

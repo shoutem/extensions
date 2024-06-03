@@ -1,37 +1,72 @@
-import { createScopedResolver, Device } from '@shoutem/ui';
-import { ext } from '../const';
-
-const resolveVariable = createScopedResolver(ext());
+import { Platform } from 'react-native';
+import { responsiveHeight, responsiveWidth } from '@shoutem/ui';
 
 export default () => ({
-  'shoutem.agora.VideoCallScreen': {
-    agoraScreenContainer: {
-      flex: 1,
-      backgroundColor: '#222222',
+  'shoutem.agora.CallInfo': {
+    container: {
+      position: 'absolute',
+      bottom: responsiveHeight(150),
+      left: 0,
+      right: 0,
+      alignItems: 'center',
+    },
+    remoteMutedContainer: {
+      height: responsiveHeight(25),
+      width: responsiveHeight(25),
+      borderRadius: responsiveHeight(12),
+      backgroundColor: '#FFF',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    remoteMutedIcon: {
+      width: responsiveHeight(15),
+      height: responsiveHeight(15),
+      color: '#000',
+    },
+    remoteUserName: {
+      alignSelf: 'center',
+      color: '#FFF',
+      fontSize: responsiveHeight(20),
+    },
+    stopwatchContainer: { height: responsiveHeight(30) },
+    stopwatch: {
+      container: {
+        paddingVertical: responsiveHeight(5),
+        backgroundColor: 'transparent',
+        alignSelf: 'center',
+      },
+      text: {
+        fontSize: responsiveHeight(15),
+        color: '#FFF',
+        marginLeft: responsiveWidth(7),
+      },
     },
   },
 
-  'shoutem.agora.VideoCallStartingView': {
-    videoCallStartingView: {
-      flex: 1,
-      backgroundColor: '#222222',
-    },
-    peerName: {
-      color: 'white',
-      fontSize: 20,
-    },
-    bottomContainer: {
-      flex: 1,
-      flexDirection: 'column',
-      justifyContent: 'flex-end',
+  'shoutem.agora.CloseButton': {
+    container: {
+      backgroundColor: '#000',
+      width: responsiveHeight(40),
+      height: responsiveHeight(40),
+      borderRadius: responsiveHeight(20),
+      justifyContent: 'center',
       alignItems: 'center',
-      alignSelf: 'center',
+      marginTop: Platform.OS === 'android' ? responsiveHeight(30) : 0,
+    },
+    closeButton: {
+      color: '#FFF',
+      width: responsiveHeight(20),
+      height: responsiveHeight(20),
+    },
+  },
+
+  'shoutem.agora.Controls': {
+    container: {
       position: 'absolute',
-      bottom: Device.select({
-        iPhoneX: 36 + resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
-        iPhoneXR: 36 + resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
-        default: 20,
-      }),
+      bottom: responsiveHeight(50),
+      left: 0,
+      right: 0,
+      alignItems: 'center',
     },
     controlButtonsContainer: {
       flexDirection: 'row',
@@ -39,16 +74,125 @@ export default () => ({
       justifyContent: 'center',
       alignSelf: 'center',
     },
+    videoButton: {
+      height: responsiveHeight(50),
+      width: responsiveHeight(50),
+      borderRadius: responsiveHeight(25),
+      backgroundColor: 'white',
+      margin: responsiveHeight(15),
+    },
+    videoIcon: {
+      width: responsiveHeight(24),
+      height: responsiveHeight(24),
+      color: '#000',
+    },
+    mutedIconColor: {
+      color: '#FF5858',
+    },
+    callButton: {
+      height: responsiveHeight(70),
+      width: responsiveHeight(70),
+      borderRadius: responsiveHeight(35),
+      margin: responsiveHeight(15),
+    },
+    startCallButton: {
+      backgroundColor: '#00B300',
+    },
+    endCallButton: {
+      backgroundColor: '#FF5858',
+    },
+    startCallIcon: {
+      color: '#FFF',
+      width: responsiveHeight(24),
+      height: responsiveHeight(24),
+      transform: [{ rotate: '220deg' }],
+    },
+    endCallIcon: {
+      width: responsiveHeight(24),
+      height: responsiveHeight(24),
+      color: '#000',
+    },
+    audioButton: {
+      height: responsiveHeight(50),
+      width: responsiveHeight(50),
+      borderRadius: responsiveHeight(25),
+      backgroundColor: '#FFFFFF',
+      margin: responsiveHeight(15),
+    },
+    audioIcon: {
+      width: responsiveHeight(24),
+      height: responsiveHeight(24),
+      color: '#000',
+    },
   },
 
-  'shoutem.agora.WaitingForPeerView': {
-    waitingForPeerView: {
+  'shoutem.agora.LocalVideoView': {
+    container: {
+      position: 'absolute',
+      width: responsiveWidth(115),
+      height: responsiveHeight(161),
+      right: responsiveWidth(15),
+      zIndex: 1,
+      elevation: 1,
+    },
+    localVideo: {
+      overflow: 'hidden',
+      flex: 1,
+      borderRadius: 6,
+      backgroundColor: '#000',
+    },
+    localProfileImage: {
+      image: {
+        width: responsiveHeight(50),
+        height: responsiveHeight(50),
+        borderRadius: responsiveHeight(25),
+      },
+    },
+    switchCameraButton: {
+      position: 'absolute',
+      bottom: responsiveWidth(5),
+      right: responsiveWidth(5),
+      height: responsiveHeight(32),
+      width: responsiveHeight(32),
+      borderRadius: responsiveHeight(16),
+      backgroundColor: 'white',
+      alignSelf: 'flex-start',
+    },
+    switchCameraIcon: {
+      textAlign: 'center',
+      width: responsiveHeight(24),
+      height: responsiveHeight(24),
+      color: '#000',
+    },
+    androidTopMargin: {
+      marginTop: responsiveHeight(30),
+    },
+  },
+
+  'shoutem.agora.ProfileImage': {
+    image: {
+      width: responsiveHeight(150),
+      height: responsiveHeight(150),
+      borderRadius: responsiveHeight(75),
+    },
+  },
+
+  'shoutem.agora.VideoCallView': {
+    container: {
       backgroundColor: '#222222',
       flex: 1,
     },
+  },
+
+  'shoutem.agora.WaitingForRemoteUserView': {
+    container: {
+      backgroundColor: '#222222',
+      flex: 1,
+    },
+    localVideo: { flex: 1 },
     message: {
       flex: 1,
-      marginHorizontal: 20,
+      marginHorizontal: responsiveWidth(20),
       position: 'absolute',
       top: 0,
       left: 0,
@@ -59,190 +203,26 @@ export default () => ({
       'shoutem.ui.Text': {
         textAlign: 'center',
         color: 'white',
-        fontSize: 20,
+        fontSize: responsiveHeight(20),
       },
     },
-    localVideo: {
-      flex: 1,
-    },
-    peerName: {
-      color: 'white',
-      fontSize: 20,
-    },
-    bottomContainer: {
-      flex: 1,
-      flexDirection: 'column',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-      alignSelf: 'center',
-      position: 'absolute',
-      bottom: Device.select({
-        iPhoneX: 36 + resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
-        iPhoneXR: 36 + resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
-        default: 20,
-      }),
-    },
   },
-  // Agora Video Call View
-  'shoutem.agora.VideoCallView': {
-    videoCallView: {
+
+  'shoutem.agora.VideoCallScreen': {
+    container: {
+      flex: 1,
       backgroundColor: '#222222',
-      flex: 1,
     },
-    agoraTwoPeersView: {
-      flex: 1,
-    },
-    peerName: {
-      color: 'white',
-      fontSize: 20,
-    },
-    stopwatch: {
-      container: {
-        paddingVertical: 5,
-        backgroundColor: 'transparent',
-      },
-      text: {
-        fontSize: 15,
-        color: 'white',
-        marginLeft: 7,
-      },
-    },
-    bottomContainer: {
-      flex: 1,
-      flexDirection: 'column',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-      alignSelf: 'center',
-      position: 'absolute',
-      bottom: Device.select({
-        iPhoneX: 36 + resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
-        iPhoneXR: 36 + resolveVariable('sizes.iphone.X.homeIndicatorPadding'),
-        default: 20,
-      }),
-    },
-  },
-
-  'shoutem.agora.LocalVideoContainer': {
-    localVideoContainer: {
-      position: 'absolute',
-      width: 115,
-      height: 161,
-      top: Device.select({
-        iPhoneX: 34 + resolveVariable('sizes.iphone.X.notchPadding'),
-        iPhoneXR: 30 + resolveVariable('sizes.iphone.XR.notchPadding'),
-        default: 30,
-      }),
-      right: 15,
-    },
-    localVideo: {
-      overflow: 'hidden',
-      flex: 1,
-      borderRadius: 6,
-    },
-    switchCameraButton: {
-      position: 'absolute',
-      bottom: 5,
-      right: 5,
-      height: 32,
-      width: 32,
-      borderRadius: 16,
-      backgroundColor: 'white',
-      alignSelf: 'flex-start',
-    },
-    switchCameraIcon: {
-      textAlign: 'center',
-      width: 24,
-      height: 24,
-      color: 'black',
-    },
-  },
-
-  'shoutem.agora.ControlButtonsView': {
-    controlButtonsContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      alignSelf: 'center',
-    },
-    startCall: {
-      height: 70,
-      width: 70,
-      borderRadius: 35,
-      backgroundColor: '#00B300',
-      margin: 15,
-      'shoutem.ui.Icon': {
-        transform: [{ rotate: '220deg' }],
-        width: 24,
-        height: 24,
-        color: 'white',
-      },
-    },
-    endCall: {
-      height: 70,
-      width: 70,
-      borderRadius: 35,
-      backgroundColor: '#FF5858',
-      margin: 15,
-      'shoutem.ui.Icon': {
-        width: 24,
-        height: 24,
-        color: 'white',
-      },
-    },
-    audioButton: {
-      height: 50,
-      width: 50,
-      borderRadius: 25,
-      backgroundColor: '#FFFFFF',
-      margin: 15,
-    },
-    audioIcon: {
-      width: 24,
-      height: 24,
-      color: 'black',
-    },
-    videoButton: {
-      height: 50,
-      width: 50,
-      borderRadius: 25,
-      backgroundColor: 'white',
-      margin: 15,
-    },
-    videoIcon: {
-      width: 24,
-      height: 24,
-      color: 'black',
-    },
-    buttonDisabled: {
-      height: 50,
-      width: 50,
-      borderRadius: 25,
-      backgroundColor: '#FFFFFF33',
-      margin: 15,
-    },
-    iconDisabled: {
-      width: 24,
-      height: 24,
-      color: '#FFFFFF4D',
-    },
-  },
-
-  'shoutem.agora.ProfileImage': {
-    profileImage: {
-      flex: 1,
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      justifyContent: 'center',
-      alignItems: 'center',
-      'shoutem.ui.ImageBackground': {
-        height: 145,
-        width: 145,
-        borderRadius: 72,
-        overflow: 'hidden',
-      },
+    linearGradient: {
+      style: { position: 'absolute', bottom: 0, left: 0, right: 0, top: 0 },
+      colors: [
+        'rgba(0, 0, 0, 0.5)',
+        'rgba(0, 0, 0, 0.05)',
+        'rgba(0, 0, 0, 0.01)',
+        'rgba(0, 0, 0, 0)',
+      ],
+      start: { x: 0, y: 1 },
+      end: { x: 0, y: 0 },
     },
   },
 });

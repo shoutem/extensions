@@ -1,8 +1,0 @@
-{
-  "shoutem": {
-    "invision-community": {
-      "invisionLoginButton": "Sign in with Invision",
-      "loginScreenExplanation": "Clicking the button bellow will let you log in using your Invision Community account. The login dialog will open in a new browser window."
-    }
-  }
-}

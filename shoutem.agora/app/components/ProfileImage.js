@@ -1,23 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, ImageBackground } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
+import { Image, View } from '@shoutem/ui';
 import { ext } from '../const';
 
-function ProfileImage({ image, style }) {
-  return (
-    <View style={style.profileImage}>
-      <ImageBackground source={image} />
-    </View>
-  );
-}
+const ProfileImage = ({ image, style }) => (
+  <View styleName="flexible vertical h-center v-center" style={style.container}>
+    <Image source={image} style={style.image} />
+  </View>
+);
 
 ProfileImage.propTypes = {
+  style: PropTypes.object.isRequired,
   image: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.shape({ uri: PropTypes.string }),
   ]),
-  style: PropTypes.object,
+};
+
+ProfileImage.defaultProps = {
+  image: null,
 };
 
 export default connectStyle(ext('ProfileImage'))(ProfileImage);

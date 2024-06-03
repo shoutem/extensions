@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native-agora/android/build.gradle b/node_modules/react-native-agora/android/build.gradle
+index c4f250a..4188436 100644
+--- a/node_modules/react-native-agora/android/build.gradle
++++ b/node_modules/react-native-agora/android/build.gradle
+@@ -164,8 +164,9 @@ dependencies {
+   //noinspection GradleDynamicVersion
+   implementation "com.facebook.react:react-native:+"
+   implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+-  api 'io.agora.rtc:full-sdk:4.3.1'
+-  implementation 'io.agora.rtc:full-screen-sharing:4.3.1'
++  // Agora app size reduction, after upgrading to v4.
++  // https://docs.agora.io/en/video-calling/reference/downloads?platform=android#reduce-the-app-size
++  api 'io.agora.rtc:full-rtc-basic:4.3.1'
+   implementation 'io.agora.rtc:iris-rtc:4.3.1-build.1'
+ }
+ 

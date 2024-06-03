@@ -1,51 +1,40 @@
-import { Alert, NativeModules } from 'react-native';
+import { Alert } from 'react-native';
+import _ from 'lodash';
 import { I18n } from 'shoutem.i18n';
+import { images } from '../assets';
 import { ext } from '../const';
 
-const { Agora } = NativeModules;
-const {
-  FPS30,
-  AudioProfileDefault,
-  AudioScenarioDefault,
-  FixedPortrait,
-} = Agora;
+export const resolveUserData = (localUser, remoteUser) => {
+  // Local user data
+  const localUserId = parseInt(_.get(localUser, 'legacyId'));
+  const localUserProfileImage = localUser?.profile?.image
+    ? { uri: localUser?.profile?.image }
+    : images.emptyUserProfile;
 
-// states of remote user's camera
-export const REMOTE_VIDEO_STATES = {
-  MUTED: 0,
-  STARTING: 1,
-  NOT_MUTED: 2,
-};
+  // Remote user data
+  const remoteUserId = parseInt(remoteUser.legacyId);
 
-// Agora events
-export const EVENTS = {
-  REMOTE_USER_JOINED: 'userJoined',
-  REMOTE_USER_LEFT: 'userOffline',
-  LOCAL_USER_JOINED_CHANNEL: 'joinChannelSuccess',
-  LOCAL_USER_LEFT_CHANNEL: 'leaveChannel',
-  REMOTE_VIDEO_STATE_CHANGED: 'remoteVideoStateChanged',
-};
+  const remoteUserFullName =
+    _.get(remoteUser, 'profile.name') || _.get(remoteUser, 'profile.nick', '');
 
-// defines Agora stream defaults
-export function getAgoraConfig(appId) {
+  const profileImageUrl = _.get(remoteUser, 'profile.image');
+  const remoteUserProfileImage = profileImageUrl
+    ? { uri: profileImageUrl }
+    : images.emptyUserProfile;
+
   return {
-    appid: appId,
-    channelProfile: 0,
-    videoEncoderConfig: {
-      width: 720,
-      height: 1080,
-      bitrate: 1,
-      frameRate: FPS30,
-      orientationMode: FixedPortrait,
+    localUser: { id: localUserId, profileImage: localUserProfileImage },
+    remoteUser: {
+      id: remoteUserId,
+      fullName: remoteUserFullName,
+      profileImage: remoteUserProfileImage,
     },
-    audioProfile: AudioProfileDefault,
-    audioScenario: AudioScenarioDefault,
   };
-}
+};
 
-export function resolveChannelName(localUser, remoteUser) {
-  const localUserId = localUser.legacyId;
-  const remoteUserId = remoteUser.legacyId;
+export const resolveChannelName = (localUser, remoteUser) => {
+  const localUserId = localUser.id;
+  const remoteUserId = remoteUser.id;
 
   if (!localUserId || !remoteUserId) {
     return Alert.alert(
@@ -67,23 +56,22 @@ export function resolveChannelName(localUser, remoteUser) {
       : `${localUserId}${remoteUserId}`;
 
   return channelName.toString();
-}
+};
 
-export function connectionFailedAlert() {
+export const connectionFailedAlert = onPress => {
   return Alert.alert(
     I18n.t(ext('localUserFailsToConnectTitle')),
     I18n.t(ext('localUserFailsToConnectMessage')),
     [
       {
         text: 'Ok',
-        style: 'cancel',
+        onPress,
       },
-      { cancelable: true },
     ],
   );
-}
+};
 
-export function authFailedAlert() {
+export const authFailedAlert = () => {
   return Alert.alert(
     I18n.t(ext('userNotAuthenticatedTitle')),
     I18n.t(ext('userNotAuthenticatedMessage')),
@@ -95,4 +83,4 @@ export function authFailedAlert() {
       { cancelable: true },
     ],
   );
-}
+};
