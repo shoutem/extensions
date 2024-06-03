@@ -2,11 +2,11 @@
   "name": "in-app-purchases",
   "title": "Subscriptions",
   "description": "Add Apple/Google Play subscriptions to your app",
-  "version": "6.2.1",
-  "platform": ">=14",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
+  "version": "6.3.0",
+  "platform": ">=14.0.1",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Updated react-native-iaphub for Android 14 support",
   "nativeChanges": {
-    "lastVersion": "6.0.0"
+    "lastVersion": "6.3.0"
   },
   "icon": "server/assets/iap.png",
   "repository": {

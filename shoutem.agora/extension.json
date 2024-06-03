@@ -2,9 +2,12 @@
   "name": "agora",
   "title": "Agora video calls",
   "description": "Connect your users with real-time video conferencing!",
-  "version": "5.1.1",
-  "platform": ">=14",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added node 18 support for server segment",
+  "version": "6.0.0",
+  "platform": ">=14.0.1",
+  "nativeChanges": {
+    "latestVersion": "6.0.0"
+  },
+  "releaseNotes": "User facing changes\n* Improved overall video call UX/UI\n\nDevelopment modifications\n* (Breaking) Update react-native-agora package\n* Refactored code for better readability and performance, easier maintainability",
   "icon": "server/assets/add-videos-image.png",
   "i18n": {
     "locale": "en",

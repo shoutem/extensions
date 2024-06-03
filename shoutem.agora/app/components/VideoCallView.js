@@ -1,96 +1,62 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { RtcSurfaceView, VideoSourceType } from 'react-native-agora';
 import PropTypes from 'prop-types';
-import { AgoraView } from 'react-native-agora';
-import { View, Text } from '@shoutem/ui';
 import { connectStyle } from '@shoutem/theme';
-import { Stopwatch } from 'react-native-stopwatch-timer';
-import ControlButtonsView from './ControlButtonsView';
-import ProfileImage from './ProfileImage';
-import LocalVideoContainer from './LocalVideoContainer';
+import { View } from '@shoutem/ui';
 import { ext } from '../const';
+import ProfileImage from './ProfileImage';
 
-function VideoCallView({
-  audioMute,
-  connectionSuccess,
-  remoteVideoMute,
-  stopwatchReset,
-  stopwatchStart,
-  onCameraSwitchPress,
-  videoMute,
-  fullName,
-  image,
-  remoteUserId,
-  getFormattedTime,
-  onAudioMutePress,
-  onEndCallPress,
-  onStartCallPress,
-  onVideoMutePress,
-  style,
-}) {
+const VideoCallView = ({ RtcEngine, remoteUser, style }) => {
+  const [remoteVideoMuted, setRemoteVideoMuted] = useState(false);
+
+  const onUserMuteVideo = useCallback(
+    (_connection, _remoteUid, muted) => setRemoteVideoMuted(muted),
+    [],
+  );
+
+  useEffect(() => {
+    // https://api-ref.agora.io/en/voice-sdk/react-native/4.x/API/class_irtcengineeventhandler.html#ariaid-title72
+    RtcEngine.addListener('onUserMuteVideo', onUserMuteVideo);
+
+    return () => {
+      RtcEngine.removeListener('onUserMuteVideo', onUserMuteVideo);
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  // At the moment, we'll only be handling 2 scenarios - showing video if it's successfully decoding,
+  // or showing user avatar if remote video is not streaming for any reason (stopped, starting, frozen, failed).
+
   return (
-    <View style={style.videoCallView}>
-      {!remoteVideoMute && (
-        <AgoraView
-          mode={1}
-          remoteUid={remoteUserId}
-          style={style.videoCallView}
+    <View style={style.container}>
+      {remoteVideoMuted && <ProfileImage image={remoteUser.profileImage} />}
+      {!remoteVideoMuted && (
+        <RtcSurfaceView
+          canvas={{
+            uid: remoteUser.id,
+            sourceType: VideoSourceType.VideoSourceRemote,
+          }}
+          style={style.container}
         />
       )}
-
-      {remoteVideoMute && <ProfileImage image={image} />}
-
-      {!videoMute && (
-        <LocalVideoContainer onCameraSwitchPress={onCameraSwitchPress} />
-      )}
-
-      <View style={style.bottomContainer}>
-        <Text style={style.peerName}>{fullName}</Text>
-
-        <View>
-          <Stopwatch
-            getTime={getFormattedTime}
-            laps
-            options={style.stopwatch}
-            reset={stopwatchReset}
-            start={stopwatchStart}
-          />
-        </View>
-
-        <ControlButtonsView
-          audioMute={audioMute}
-          connectionSuccess={connectionSuccess}
-          disabled={false}
-          onAudioMutePress={onAudioMutePress}
-          onEndCallPress={onEndCallPress}
-          onStartCallPress={onStartCallPress}
-          onVideoMutePress={onVideoMutePress}
-          videoMute={videoMute}
-        />
-      </View>
     </View>
   );
-}
+};
 
 VideoCallView.propTypes = {
-  audioMute: PropTypes.bool,
-  remoteVideoMute: PropTypes.bool,
-  fullName: PropTypes.string,
-  image: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.shape({ uri: PropTypes.string }),
-  ]),
-  getFormattedTime: PropTypes.func,
-  onAudioMutePress: PropTypes.func,
-  onEndCallPress: PropTypes.func,
-  onStartCallPress: PropTypes.func,
-  onVideoMutePress: PropTypes.func,
-  connectionSuccess: PropTypes.bool,
-  remoteUserId: PropTypes.number,
-  stopwatchReset: PropTypes.bool,
-  stopwatchStart: PropTypes.bool,
-  onCameraSwitchPress: PropTypes.func,
-  style: PropTypes.object,
-  videoMute: PropTypes.bool,
+  remoteUser: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    profileImage: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.shape({ uri: PropTypes.string }),
+    ]),
+  }).isRequired,
+  RtcEngine: PropTypes.shape({
+    addListener: PropTypes.func.isRequired,
+    removeListener: PropTypes.func.isRequired,
+    switchCamera: PropTypes.func.isRequired,
+  }).isRequired,
+  style: PropTypes.object.isRequired,
 };
 
 export default connectStyle(ext('VideoCallView'))(VideoCallView);
