@@ -1,11 +1,11 @@
 {
   "name": "push-notifications",
-  "version": "4.0.6",
-  "platform": ">=13.0.6",
+  "version": "4.0.7",
+  "platform": ">=14.0.2",
   "type": "system",
   "title": "Push Notifications",
   "description": "Base extension for push notifications",
-  "releaseNotes": "* Request push permissions on Android 14+",
+  "releaseNotes": "* Added support for Android 14 alarm permissions",
   "icon": "server/assets/add-push-notifications-image.png",
   "dependencies": [
     "shoutem.application",

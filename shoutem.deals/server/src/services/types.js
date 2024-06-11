@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import autoBind from 'auto-bind';
+import _ from 'lodash';
 
 class Types {
   constructor() {

@@ -5,12 +5,17 @@ import { reducer as cmsReducer } from '@shoutem/cms-dashboard';
 import { createScopedReducer } from '@shoutem/redux-api-sdk';
 import { storage } from '@shoutem/redux-io';
 import dealsReducer, {
-  moduleName as deals,
   createDealCategory,
+  moduleName as deals,
 } from './modules/deals';
+import languagesReducer, {
+  CHANNELS,
+  LANGUAGE_MODULE_STATUS,
+  moduleName as languages,
+} from './modules/languages';
 import statsReducer, {
-  moduleName as stats,
   createCatalog,
+  moduleName as stats,
 } from './modules/stats';
 import { ext } from './const';
 import { types } from './services';
@@ -48,11 +53,14 @@ export default () =>
       cms: cmsReducer,
       form: formReducer,
       [stats]: statsReducer(),
+      [languages]: languagesReducer(),
       storage: combineReducers({
         deals: storage(types.DEALS),
         places: storage(types.PLACES),
         transactions: storage(types.TRANSACTIONS),
         users: storage(types.USERS),
+        channels: storage(CHANNELS),
+        languageModuleStatus: storage(LANGUAGE_MODULE_STATUS),
       }),
     },
     shortcut: {

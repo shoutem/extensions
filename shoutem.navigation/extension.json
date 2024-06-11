@@ -1,10 +1,10 @@
 {
   "name": "navigation",
-  "version": "5.4.3",
+  "version": "5.4.4",
   "platform": ">=14",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Updated react-native-gesture-handler",
+  "releaseNotes": "User facing changes\n* Active screens now automatically update their titles when user changes the app language",
   "description": "App-level navigation",
   "nativeChanges": {
     "lastVersion": "5.2.0"

@@ -1,4 +1,5 @@
 import * as extension from './extension';
+import { localeChangedMiddleware } from './redux';
 
 const { PageScreen } = extension.screens;
 
@@ -10,7 +11,7 @@ export const screens = {
   SolidNavbarMediumPageScreen: PageScreen,
 };
 
-export { PAGE_SHORTCUT_NAME } from './const';
 export { reducer } from './redux';
 
+export const middleware = [localeChangedMiddleware];
 export const { themes } = extension;

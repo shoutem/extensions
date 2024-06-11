@@ -134,10 +134,8 @@ export default class MapViewBase extends PureComponent {
         ...DEFAULT_ZOOM_SETTINGS,
         ...region,
       },
+      isReady: true,
     });
-    InteractionManager.runAfterInteractions(() =>
-      this.setState({ isReady: true }),
-    );
   }
 
   // Override in subclass

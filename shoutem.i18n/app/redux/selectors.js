@@ -14,13 +14,17 @@ export function getActiveLocales(state) {
   const settings = getExtensionSettings(state, ext());
   const locales = _.get(settings, 'disabled');
 
-  return _.reduce(locales, (activeLocales, isDisabled, key) => {
-    if (!isDisabled) {
-      return [...activeLocales, key];
-    }
+  return _.reduce(
+    locales,
+    (activeLocales, isDisabled, key) => {
+      if (!isDisabled) {
+        return [...activeLocales, key];
+      }
 
-    return activeLocales;
-  }, []);
+      return activeLocales;
+    },
+    [],
+  );
 }
 
 export function getActiveChannelId(state) {

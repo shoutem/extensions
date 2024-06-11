@@ -1,4 +1,5 @@
 import enTranslations from './translations/en.json';
+import { changeLocaleMiddleware } from './redux';
 
 export { Header as CmsHeader } from './components';
 export { default as currentLocation } from './components/CurrentLocation';
@@ -24,5 +25,7 @@ export const shoutem = {
     },
   },
 };
+
+export const middleware = [changeLocaleMiddleware];
 
 export { appDidMount } from './app';

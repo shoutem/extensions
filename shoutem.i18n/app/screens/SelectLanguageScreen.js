@@ -1,25 +1,16 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-
 import { connectStyle } from '@shoutem/theme';
 import { ListView, Screen } from '@shoutem/ui';
-import { invalidateLoadedCollections } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import { LanguageListItem } from '../components';
 import { ext } from '../const';
 import { actions, selectors } from '../redux';
 
 export class SelectLanguageScreen extends PureComponent {
-  static propTypes = {
-    locales: PropTypes.array,
-    title: PropTypes.string,
-    selectedLocale: PropTypes.string,
-    setLocale: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
 
@@ -27,18 +18,21 @@ export class SelectLanguageScreen extends PureComponent {
   }
 
   handleLocaleChangePress(locale) {
-    const {
-      selectedLocale,
-      setLocale,
-      invalidateLoadedCollections,
-    } = this.props;
+    const { selectedLocale, setLocale, localeChanged } = this.props;
 
     if (locale === selectedLocale || !locale || _.isEmpty(locale)) {
       return;
     }
 
     setLocale(locale);
-    invalidateLoadedCollections();
+    // We are dispatching another action because we want locale to be updated first.
+    // After locale has been updated, we want to be able to react on update via middlewares,
+    // by utilizing this action.
+    // Before this was added, we had only setLocale action and respective middleware, app was
+    // fetching same data twice inside componentDidUpdate, after CMS collections were invalidated - once
+    // when locale is changed and again when collections were invalidated. Change triggered so fast,
+    // collections didn't have time to update their status to busy to prevent another fetch with shouldRefresh.
+    localeChanged();
   }
 
   renderLanguageItem(locale) {
@@ -76,13 +70,20 @@ export class SelectLanguageScreen extends PureComponent {
 
 const mapDispatchToProps = {
   setLocale: actions.setLocale,
-  invalidateLoadedCollections,
+  localeChanged: actions.localeChanged,
 };
 
 const mapStateToProps = state => ({
   locales: selectors.getActiveLocales(state),
   selectedLocale: selectors.getSelectedLocale(state),
 });
+
+SelectLanguageScreen.propTypes = {
+  localeChanged: PropTypes.func.isRequired,
+  locales: PropTypes.array.isRequired,
+  selectedLocale: PropTypes.string.isRequired,
+  setLocale: PropTypes.func.isRequired,
+};
 
 export default connect(
   mapStateToProps,

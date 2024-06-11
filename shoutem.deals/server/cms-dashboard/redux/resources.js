@@ -1,7 +1,10 @@
 import _ from 'lodash';
-import { find, remove, create, update, invalidate } from '@shoutem/redux-io';
-import { shoutemUrls, getResourceRelationships } from '../services';
+import { create, find, remove, update } from '@shoutem/redux-io';
 import { CATEGORIES } from '../const';
+import { getResourceRelationships, shoutemUrls } from '../services';
+
+// entity modelTypeId represents entity type in legacy API
+const ENTITY_MODEL_TYPE_ID = '5344b5e0-e0ba-46f7-b529-2c460e28df73';
 
 // ACTIONS
 export function loadResources(
@@ -39,6 +42,26 @@ export function loadResources(
   };
 
   return find(config, tag, params);
+}
+
+export function loadResource(appId, schema, resourceId, scope = {}) {
+  const config = {
+    schema,
+    request: {
+      endpoint: shoutemUrls.buildLegacyUrl(
+        `/v1/apps/${appId}/resources/${schema}/${resourceId}{?q*}`,
+      ),
+      headers: {
+        Accept: 'application/vnd.api+json',
+      },
+    },
+  };
+
+  const params = {
+    ...scope,
+  };
+
+  return find(config, `resource-${resourceId}`, params);
 }
 
 export function deleteResource(appId, resourceId, schema, scope = {}) {
@@ -182,7 +205,12 @@ export function updateResourceCategories(
   );
 }
 
-export function updateResourceLanguages(appId, languageIds, resource) {
+export function updateResourceLanguages(
+  appId,
+  languageIds,
+  resource,
+  scope = {},
+) {
   return dispatch => {
     const resourceId = _.get(resource, 'id');
     const schema = _.get(resource, 'type');
@@ -199,7 +227,7 @@ export function updateResourceLanguages(appId, languageIds, resource) {
       schema: 'legacy-channels',
       request: {
         endpoint: shoutemUrls.buildLegacyUrl(
-          `${appId}/channels/fn/toggleChannel`,
+          `${appId}/channels/fn/toggleChannel{?q*}`,
         ),
         method: 'POST',
         headers: {
@@ -208,18 +236,51 @@ export function updateResourceLanguages(appId, languageIds, resource) {
       },
     };
 
-    // modelTypeId represents entity type in legacy API
     const promises = [];
     _.forEach(toggleLanguageIds, channelId => {
       const params = {
-        modelTypeId: '5344b5e0-e0ba-46f7-b529-2c460e28df73',
-        entityId: resourceId,
-        channelId,
+        q: {
+          modelTypeId: ENTITY_MODEL_TYPE_ID,
+          entityId: resourceId,
+          channelId,
+        },
+        ...scope,
       };
 
       promises.push(dispatch(find(config, 'toggle-channel', params)));
     });
 
-    return Promise.all(promises).then(() => dispatch(invalidate(schema)));
+    return Promise.all(promises).then(() =>
+      dispatch(loadResource(appId, schema, resourceId, scope)),
+    );
   };
+}
+
+export function loadReferenceResources(
+  appId,
+  schema,
+  tag = 'reference-resources',
+  titleProperty,
+) {
+  const sortQuery = titleProperty ? { sort: titleProperty } : {};
+  const queryParams = {
+    q: {
+      'page[limit]': 10000,
+      ...sortQuery,
+    },
+  };
+
+  const config = {
+    schema,
+    request: {
+      endpoint: shoutemUrls.buildLegacyUrl(
+        `/v1/apps/${appId}/resources/${schema}{?q*}`,
+      ),
+      headers: {
+        Accept: 'application/vnd.api+json',
+      },
+    },
+  };
+
+  return find(config, tag, queryParams);
 }

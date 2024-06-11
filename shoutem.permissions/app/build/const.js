@@ -23,6 +23,9 @@ const PERMISSION_TYPES = {
   ANDROID_RECEIVE_SMS: 'android.permission.RECEIVE_SMS',
   ANDROID_RECEIVE_WAP_PUSH: 'android.permission.RECEIVE_WAP_PUSH',
   ANDROID_RECORD_AUDIO: 'android.permission.RECORD_AUDIO',
+  FOREGROUND_SERVICE_CAMERA: 'android.permission.FOREGROUND_SERVICE_CAMERA',
+  FOREGROUND_SERVICE_MICROPHONE:
+    'android.permission.FOREGROUND_SERVICE_MICROPHONE',
   ANDROID_SEND_SMS: 'android.permission.SEND_SMS',
   ANDROID_USE_SIP: 'android.permission.USE_SIP',
   ANDROID_WRITE_CALENDAR: 'android.permission.WRITE_CALENDAR',
@@ -58,6 +61,8 @@ const PERMISSION_TYPES = {
   ANDROID_INTERNET: 'android.permission.INTERNET',
   ANDROID_BLUETOOTH: 'android.permission.BLUETOOTH',
   ANDROID_FOREGROUND_SERVICE: 'android.permission.FOREGROUND_SERVICE',
+  FOREGROUND_SERVICE_MEDIA_PLAYBACK:
+    'android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK',
   ANDROID_ACCESS_NETWORK_STATE: 'android.permission.ACCESS_NETWORK_STATE',
   ANDROID_BILLING: 'com.android.vending.BILLING',
   ANDROID_EXACT_ALARM: 'android.permission.SCHEDULE_EXACT_ALARM',
@@ -214,6 +219,12 @@ const ANDROID_PERMISSION_NATIVE_DATA = {
     '<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>',
   [PERMISSION_TYPES.ANDROID_NOTIFICATIONS]:
     '<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />',
+  [PERMISSION_TYPES.FOREGROUND_SERVICE_CAMERA]:
+    '<uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />',
+  [PERMISSION_TYPES.FOREGROUND_SERVICE_MICROPHONE]:
+    '<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />',
+  [PERMISSION_TYPES.FOREGROUND_SERVICE_MEDIA_PLAYBACK]:
+    '<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />',
 };
 
 const PERMISSION_IOS_RATIONALE_PREFIX = {

@@ -1,19 +1,19 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import { reduxForm } from 'redux-form';
 import { Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { reduxForm } from 'redux-form';
 import { LoaderContainer } from '@shoutem/react-web-ui';
 import { getFormState } from '../../redux';
 import {
+  getEditorCreateAbortButtonLabel,
+  getEditorCreateConfirmButtonLabel,
+  getEditorUpdateAbortButtonLabel,
+  getEditorUpdateConfirmButtonLabel,
+  getFormPropertyKeys,
   resolveIsArrayPropertiesChanged,
   resolveSchemaElements,
   validateResourceForm,
-  getFormPropertyKeys,
-  getEditorCreateConfirmButtonLabel,
-  getEditorUpdateConfirmButtonLabel,
-  getEditorCreateAbortButtonLabel,
-  getEditorUpdateAbortButtonLabel,
 } from '../../services';
 import './style.scss';
 
@@ -94,22 +94,21 @@ function ResourceForm({
 }
 
 ResourceForm.propTypes = {
-  schema: PropTypes.object,
-  values: PropTypes.object,
-  canonicalName: PropTypes.string,
-  googleApiKey: PropTypes.string,
   assetManager: PropTypes.object,
-  ownInitialValues: PropTypes.func,
-  handleSubmit: PropTypes.func,
-  loadSchema: PropTypes.func,
-  loadResources: PropTypes.func,
-  touch: PropTypes.func,
-  pristine: PropTypes.bool,
-  submitting: PropTypes.bool,
-  fields: PropTypes.object,
-  onCancel: PropTypes.func,
+  canonicalName: PropTypes.string,
   error: PropTypes.string,
-  places: PropTypes.array,
+  fields: PropTypes.object,
+  googleApiKey: PropTypes.string,
+  handleSubmit: PropTypes.func,
+  loadResources: PropTypes.func,
+  loadSchema: PropTypes.func,
+  ownInitialValues: PropTypes.func,
+  pristine: PropTypes.bool,
+  schema: PropTypes.object,
+  submitting: PropTypes.bool,
+  touch: PropTypes.func,
+  values: PropTypes.object,
+  onCancel: PropTypes.func,
 };
 
 export function resolveResourceForm(schema) {

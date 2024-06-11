@@ -20,6 +20,12 @@ const permissions = [
     type: PERMISSION_TYPES.ANDROID_RECORD_AUDIO,
     rationale: microphonePermissionRationale,
   },
+  {
+    type: PERMISSION_TYPES.FOREGROUND_SERVICE_CAMERA,
+  },
+  {
+    type: PERMISSION_TYPES.FOREGROUND_SERVICE_MICROPHONE,
+  },
 ];
 
 module.exports = { permissions };

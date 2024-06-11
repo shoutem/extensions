@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { invalidate } from '@shoutem/redux-io';
-
 import { ext } from '../const';
 
 export const UPDATE_LOCATION_PERMISSION =
@@ -16,7 +15,7 @@ export const CLEAR_SCREEN_STATE = ext('CLEAR_SCREEN_STATE');
 export function invalidateLoadedCollections() {
   return (dispatch, getState) => {
     const state = getState();
-    const categories = state[ext()].categories;
+    const { categories } = state[ext()];
 
     const schemas = _.map(categories, category => {
       return _.get(category, 'relationships.schema.data.id');

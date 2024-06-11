@@ -1,10 +1,10 @@
 {
   "name": "places",
-  "version": "6.3.0",
-  "platform": ">=12.1.0",
+  "version": "6.3.1",
+  "platform": ">=14.0.2",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "releaseNotes": "Display deals connected to a place inside place details screen",
+  "releaseNotes": "* Added social inputs inside builder\n* Added social buttons for defined social profiles, in-app",
   "icon": "./server/assets/images/add-places-image.png",
   "dependencies": [
     "shoutem.application",

@@ -1,21 +1,21 @@
 export {
+  clearScreenState,
   invalidateLoadedCollections,
+  setScreenState,
   updateLocationPermission,
   updateSecondPromptStatus,
-  setScreenState,
-  clearScreenState,
 } from './actions';
-
+export { changeLocaleMiddleware } from './middleware';
 export {
-  default as reducer,
-  cmsCollection,
-  CATEGORIES_SCHEMA,
-  VIDEO_ATTACHMENTS_SCHEMA,
   AUDIO_ATTACHMENTS_SCHEMA,
+  CATEGORIES_SCHEMA,
   childCategories,
+  cmsCollection,
+  IMAGE_ATTACHMENTS_SCHEMA,
   PermissionStatus,
+  default as reducer,
+  VIDEO_ATTACHMENTS_SCHEMA,
 } from './reducer';
-
 export {
   getCategories,
   getLocationPermissionStatus,

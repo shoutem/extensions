@@ -29,37 +29,37 @@ class HeaderTitle extends PureComponent {
     const { style, shortcut, title } = this.props;
     const { manualTitle } = this.state;
 
-    const useManualTitle = !_.isUndefined(manualTitle);
-    const shortcutTitle = shortcut
-      ? I18n.t(`shoutem.navigation.shortcuts.${shortcut.id}`, {
-          defaultValue: shortcut.title,
-        })
-      : title;
-
-    const resolvedTitle = useManualTitle ? manualTitle : shortcutTitle;
-
     return (
       <LocalizationContext.Consumer>
-        {() => (
-          <AnimatedText style={style} numberOfLines={1}>
-            {resolvedTitle}
-          </AnimatedText>
-        )}
+        {() => {
+          const useManualTitle = !_.isUndefined(manualTitle);
+          const shortcutTitle = shortcut
+            ? I18n.t(`shoutem.navigation.shortcuts.${shortcut.id}`, {
+                defaultValue: shortcut.title,
+              })
+            : title;
+
+          const resolvedTitle = useManualTitle ? manualTitle : shortcutTitle;
+
+          return (
+            <AnimatedText style={style} numberOfLines={1}>
+              {resolvedTitle}
+            </AnimatedText>
+          );
+        }}
       </LocalizationContext.Consumer>
     );
   }
 }
 
 HeaderTitle.propTypes = {
-  shortcut: PropTypes.object,
-  style: PropTypes.object,
-  title: PropTypes.any,
+  shortcut: PropTypes.object.isRequired,
+  style: PropTypes.object.isRequired,
+  title: PropTypes.string,
 };
 
 HeaderTitle.defaultProps = {
-  shortcut: undefined,
-  style: undefined,
-  title: undefined,
+  title: '',
 };
 
 export default Animated.createAnimatedComponent(HeaderTitle);

@@ -1,15 +1,15 @@
-import {
-  loadResources,
-  deleteResource,
-  createResource,
-  updateResource,
-  loadCategories,
-  createCategory,
-} from '@shoutem/cms-dashboard';
-import { next, prev } from '@shoutem/redux-io';
 import { ext } from 'src/const';
 import { types } from 'src/services';
-import { DEFAULT_OFFSET, DEFAULT_LIMIT, MAX_PAGE_LIMIT } from '../const';
+import {
+  createCategory,
+  createResource,
+  deleteResource,
+  loadCategories,
+  loadResources,
+  updateResource,
+} from '@shoutem/cms-dashboard';
+import { next, prev } from '@shoutem/redux-io';
+import { DEFAULT_LIMIT, DEFAULT_OFFSET, MAX_PAGE_LIMIT } from '../const';
 
 export function loadDeals(
   appId,
@@ -21,6 +21,7 @@ export function loadDeals(
   const filter = {
     'page[limit]': limit,
     'page[offset]': offset,
+    include: 'place',
     sort: 'id',
   };
 
@@ -102,21 +103,6 @@ export function updateDeal(appId, categoryIds, placeId, resource, scope = {}) {
     types.DEALS,
     resource,
     relatedResources,
-    scope,
-  );
-}
-
-export function loadPlaces(appId, scope = {}) {
-  const filter = {
-    'page[limit]': MAX_PAGE_LIMIT,
-  };
-
-  return loadResources(
-    appId,
-    undefined,
-    types.PLACES,
-    ext('places'),
-    filter,
     scope,
   );
 }

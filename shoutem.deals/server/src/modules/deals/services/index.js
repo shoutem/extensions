@@ -1,3 +1,2 @@
-export { validateDeal } from './validation';
-
 export { mapModelToView, mapViewToModel } from './deal';
+export { validateDeal } from './validation';

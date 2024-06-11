@@ -6,6 +6,12 @@ export function ext(resourceName) {
   return resourceName ? `${pack.name}.${resourceName}` : pack.name;
 }
 
+export const ALARM_PERMISSION_STATUSES = {
+  GRANTED: 'GRANTED',
+  DENIED: 'DENIED',
+  UNKNOWN: 'UNKNOWN',
+};
+
 export const PERMISSION_RESULT_TYPES = {
   BLOCKED: RESULTS.BLOCKED,
   DENIED: RESULTS.DENIED,

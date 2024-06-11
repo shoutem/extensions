@@ -4,7 +4,11 @@ import moment from 'moment';
 import { RSAA } from 'redux-api-middleware';
 import { create, find, invalidate } from '@shoutem/redux-io';
 import { getExtensionSettings } from 'shoutem.application';
-import { checkNotifications, RESULTS } from 'shoutem.permissions';
+import {
+  checkNotifications,
+  RESULTS,
+  withAlarmPermission,
+} from 'shoutem.permissions';
 import { ext } from '../const';
 import getEndpointProvider from '../EndpointProvider';
 import {
@@ -156,23 +160,27 @@ export function updateActiveJourney(triggerId, journey, payload = null) {
       });
     }
 
-    notificationJourneys.scheduleNotifications(
-      triggerId,
-      journey.notifications,
-      payload,
-    );
+    const resultingAction = () => {
+      notificationJourneys.scheduleNotifications(
+        triggerId,
+        journey.notifications,
+        payload,
+      );
 
-    return dispatch({
-      type: SAVE_JOURNEY,
-      payload: {
-        [journey.id]: {
-          ...journey,
-          active: true,
-          startedAt: Date.now(),
-          estimatedEndsAt: notificationJourneys.calculateEndsAt(journey),
+      dispatch({
+        type: SAVE_JOURNEY,
+        payload: {
+          [journey.id]: {
+            ...journey,
+            active: true,
+            startedAt: Date.now(),
+            estimatedEndsAt: notificationJourneys.calculateEndsAt(journey),
+          },
         },
-      },
-    });
+      });
+    };
+
+    return dispatch(withAlarmPermission(resultingAction));
   };
 }
 
@@ -239,22 +247,26 @@ export function triggerOccured(triggerId, payload = null) {
     );
 
     if (!_.isEmpty(journey)) {
-      notificationJourneys.scheduleNotifications(
-        triggerId,
-        journey.notifications,
-        payload,
-      );
+      const resultingAction = () => {
+        notificationJourneys.scheduleNotifications(
+          triggerId,
+          journey.notifications,
+          payload,
+        );
 
-      return dispatch({
-        type: SAVE_JOURNEY,
-        payload: {
-          [journey.id]: {
-            ...journey,
-            startedAt: Date.now(),
-            estimatedEndsAt: notificationJourneys.calculateEndsAt(journey),
+        dispatch({
+          type: SAVE_JOURNEY,
+          payload: {
+            [journey.id]: {
+              ...journey,
+              startedAt: Date.now(),
+              estimatedEndsAt: notificationJourneys.calculateEndsAt(journey),
+            },
           },
-        },
-      });
+        });
+      };
+
+      return dispatch(withAlarmPermission(resultingAction));
     }
 
     return null;

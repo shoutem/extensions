@@ -1,101 +1,79 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import { ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
-import RichTextEditor from 'react-rte';
-import { fieldInError } from '../services';
-import LOCALIZATION from './localization';
+import { RichTextEditor } from '@shoutem/react-web-ui';
+import { fieldInError, resolveCdnUrl } from '../services';
 import './style.scss';
 
-function getToolbarConfig() {
-  return {
-    display: [
-      'INLINE_STYLE_BUTTONS',
-      'BLOCK_TYPE_BUTTONS',
-      'LINK_BUTTONS',
-      'BLOCK_TYPE_DROPDOWN',
-      'HISTORY_BUTTONS',
-    ],
-    INLINE_STYLE_BUTTONS: [
-      {
-        label: i18next.t(LOCALIZATION.TEXT_STYLE_BOLD_TITLE),
-        style: 'BOLD',
-        className: 'custom-css-class',
-      },
-      {
-        label: i18next.t(LOCALIZATION.TEXT_STYLE_ITALIC_TITLE),
-        style: 'ITALIC',
-      },
-      {
-        label: i18next.t(LOCALIZATION.TEXT_STYLE_UNDERLINE_TITLE),
-        style: 'UNDERLINE',
-      },
-    ],
-    BLOCK_TYPE_DROPDOWN: [
-      {
-        label: i18next.t(LOCALIZATION.HEADING_STYLE_NORMAL_TITLE),
-        style: 'unstyled',
-      },
-      {
-        label: i18next.t(LOCALIZATION.HEADING_STYLE_LARGE_TITLE),
-        style: 'header-one',
-      },
-      {
-        label: i18next.t(LOCALIZATION.HEADING_STYLE_MEDIUM_TITLE),
-        style: 'header-two',
-      },
-      {
-        label: i18next.t(LOCALIZATION.HEADING_STYLE_SMALL_TITLE),
-        style: 'header-three',
-      },
-    ],
-    BLOCK_TYPE_BUTTONS: [
-      {
-        label: i18next.t(LOCALIZATION.UNORDERED_LIST_TITLE),
-        style: 'unordered-list-item',
-      },
-      {
-        label: i18next.t(LOCALIZATION.ORDERED_LIST_TITLE),
-        style: 'ordered-list-item',
-      },
-    ],
-  };
+function resolveFilename(file) {
+  const timestamp = new Date().getTime();
+  const fileName = file.name ? `${timestamp}-${file.name}` : `${timestamp}`;
+
+  return fileName;
 }
 
-export default class TextEditorReduxFormElement extends PureComponent {
-  static propTypes = {
-    elementId: PropTypes.string,
-    name: PropTypes.string,
-    field: PropTypes.object,
-    helpText: PropTypes.string,
-    className: PropTypes.string,
-  };
-
+export default class TextEditorReduxFormElement extends Component {
   constructor(props) {
     super(props);
-
     autoBindReact(this);
 
     const { field } = props;
     const initialValue = _.get(field, 'value', '');
 
     this.state = {
-      value: RichTextEditor.createValueFromString(initialValue, 'html'),
+      value: initialValue,
     };
   }
 
   handleChange(value) {
+    const { field } = this.props;
+
     this.setState({ value });
+    field.onChange(value.toString('html'));
   }
 
-  handleBlur() {
-    const { field } = this.props;
-    const { value } = this.state;
+  validateFileSize(file) {
+    const { maxFileSize } = this.props;
 
-    field.onChange(value.toString('html'));
+    if (file.size > maxFileSize) {
+      // reusig image upload localization
+      return i18next.t('image-uploader.max-size-message', {
+        maxSize: maxFileSize / 1000000,
+      });
+    }
+
+    return null;
+  }
+
+  async handleImageUpload(file) {
+    const { assetManager, folderName } = this.props;
+
+    if (!file) {
+      return null;
+    }
+
+    const fileSizeError = this.validateFileSize(file);
+    if (fileSizeError) {
+      throw new Error(fileSizeError);
+    }
+
+    const resolvedFilename = resolveFilename(file);
+    const resolvedFolderPath = folderName ? `${folderName}/` : '';
+    const resolvedPath = resolvedFolderPath + resolvedFilename;
+
+    try {
+      const fileUrl = await assetManager.uploadFile(resolvedPath, file);
+      const cdnUrl = resolveCdnUrl(fileUrl);
+
+      return cdnUrl;
+    } catch (error) {
+      // reusing image uploader localization
+      throw new Error(i18next.t('image-uploader.upload-failed-message'));
+    }
   }
 
   render() {
@@ -121,9 +99,9 @@ export default class TextEditorReduxFormElement extends PureComponent {
       >
         <ControlLabel>{name}</ControlLabel>
         <RichTextEditor
-          onBlur={this.handleBlur}
+          enableImageUpload
           onChange={this.handleChange}
-          toolbarConfig={getToolbarConfig()}
+          onImageUpload={this.handleImageUpload}
           value={value}
           {...otherProps}
         />
@@ -132,3 +110,22 @@ export default class TextEditorReduxFormElement extends PureComponent {
     );
   }
 }
+
+TextEditorReduxFormElement.propTypes = {
+  assetManager: PropTypes.shape({
+    deleteFile: PropTypes.func.isRequired,
+    listFolder: PropTypes.func.isRequired,
+    uploadFile: PropTypes.func.isRequired,
+  }).isRequired,
+  className: PropTypes.string,
+  elementId: PropTypes.string,
+  field: PropTypes.object,
+  folderName: PropTypes.string,
+  helpText: PropTypes.string,
+  maxFileSize: PropTypes.number,
+  name: PropTypes.string,
+};
+
+TextEditorReduxFormElement.defaultProps = {
+  maxFileSize: 10000000,
+};

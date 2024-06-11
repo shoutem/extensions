@@ -8,6 +8,7 @@ import { connectStyle } from '@shoutem/theme';
 import { Button, Screen, ScrollView, Subtitle, Text } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { goBack, HeaderIconButton } from 'shoutem.navigation';
+import { withAlarmPermission } from 'shoutem.permissions';
 import { ReminderTimePickers } from '../components';
 import { DEFAULT_REMINDER, ext } from '../const';
 import {
@@ -22,6 +23,7 @@ function ReminderSettingsScreen({
   notificationSettings,
   reminder,
   setNotificationSettings,
+  withAlarmPermission,
   style,
 }) {
   const formattedReminderTimes = useMemo(() => {
@@ -85,10 +87,18 @@ function ReminderSettingsScreen({
 
     setNotificationSettings(newSettings);
 
-    notifications.rescheduleReminderNotifications(newSettings, reminder);
+    withAlarmPermission(() =>
+      notifications.rescheduleReminderNotifications(newSettings, reminder),
+    );
 
     goBack();
-  }, [notificationSettings, reminder, reminderTimes, setNotificationSettings]);
+  }, [
+    notificationSettings,
+    reminder,
+    reminderTimes,
+    setNotificationSettings,
+    withAlarmPermission,
+  ]);
 
   return (
     <Screen styleName="paper">
@@ -120,6 +130,7 @@ ReminderSettingsScreen.propTypes = {
   notificationSettings: PropTypes.object.isRequired,
   reminder: PropTypes.object.isRequired,
   setNotificationSettings: PropTypes.func.isRequired,
+  withAlarmPermission: PropTypes.func.isRequired,
   style: PropTypes.object,
 };
 
@@ -135,7 +146,10 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ setNotificationSettings }, dispatch);
+  bindActionCreators(
+    { setNotificationSettings, withAlarmPermission },
+    dispatch,
+  );
 
 export default connect(
   mapStateToProps,

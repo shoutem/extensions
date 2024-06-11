@@ -67,12 +67,18 @@
       "type": "string",
       "displayPriority": 11
     },
+    "tiktok": {
+      "format": "uri",
+      "title": "TikTok",
+      "type": "string",
+      "displayPriority": 12
+    },
     "image": {
       "format": "attachment",
       "title": "Image",
       "type": "object",
       "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 12
+      "displayPriority": 13
     }
   },
   "titleProperty": "name",

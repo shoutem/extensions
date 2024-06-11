@@ -1,11 +1,11 @@
 export {
+  check,
+  checkNotifications,
   checkPermissions,
   openDeviceSettings,
-  requestPermissions,
-  checkNotifications,
-  requestNotifications,
   openSettings,
-  check,
   request,
+  requestNotifications,
+  requestPermissions,
   RESULTS,
 } from './permissionActions';

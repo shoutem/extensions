@@ -1,7 +1,7 @@
 import { Children, PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { connect } from 'react-redux';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import sandbox from '@shoutem/extension-sandbox';
 import { ext } from '../../src/const';
 
@@ -9,11 +9,13 @@ export class SyncStateEngineProvider extends PureComponent {
   constructor(props) {
     super(props);
 
+    const { syncStateEngine } = props;
+
     this.handleActions = this.handleActions.bind(this);
     this.handleSandboxMessage = this.handleSandboxMessage.bind(this);
     this.checkData = this.checkData.bind(this);
 
-    this.syncStateEngine = this.props.syncStateEngine;
+    this.syncStateEngine = syncStateEngine;
 
     sandbox.subscribe(this.handleSandboxMessage);
     this.checkData(props);
@@ -23,7 +25,7 @@ export class SyncStateEngineProvider extends PureComponent {
     this.syncStateEngine.subscribeToActions(this.handleActions);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.checkData(nextProps, this.props);
   }
 
@@ -73,10 +75,10 @@ export class SyncStateEngineProvider extends PureComponent {
 }
 
 SyncStateEngineProvider.propTypes = {
-  state: PropTypes.object,
-  syncStateEngine: PropTypes.object,
-  syncAction: PropTypes.func,
   children: PropTypes.node,
+  state: PropTypes.object,
+  syncAction: PropTypes.func,
+  syncStateEngine: PropTypes.object,
 };
 
 function mapStateToProps(state) {

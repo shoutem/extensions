@@ -90,9 +90,10 @@ export class PlaceDetails extends PureComponent {
     openURL(place.rsvpLink, place.name);
   }
 
-  openWebLink() {
+  openWebLink(key) {
     const { place } = getRouteParams(this.props);
-    openURL(place.url);
+
+    openURL(place[key]);
   }
 
   openMapLink() {
@@ -261,7 +262,7 @@ export class PlaceDetails extends PureComponent {
             place.url,
             I18n.t('shoutem.cms.websiteButton'),
             'web',
-            this.openWebLink,
+            () => this.openWebLink('url'),
           )}
           {this.renderDisclosureButton(
             location.formattedAddress,
@@ -280,6 +281,30 @@ export class PlaceDetails extends PureComponent {
             I18n.t('shoutem.cms.phoneButton'),
             'call',
             this.openPhoneLink,
+          )}
+          {this.renderDisclosureButton(
+            place.instagram,
+            I18n.t('shoutem.cms.instagramButton'),
+            'instagram',
+            () => this.openWebLink('instagram'),
+          )}
+          {this.renderDisclosureButton(
+            place.facebook,
+            I18n.t('shoutem.cms.facebookButton'),
+            'facebook',
+            () => this.openWebLink('facebook'),
+          )}
+          {this.renderDisclosureButton(
+            place.twitter,
+            I18n.t('shoutem.cms.twitterButton'),
+            'tweet',
+            () => this.openWebLink('twitter'),
+          )}
+          {this.renderDisclosureButton(
+            place.tiktok,
+            I18n.t('shoutem.cms.tiktokButton'),
+            'tiktok',
+            () => this.openWebLink('tiktok'),
           )}
           {this.renderPlaceDeals()}
         </ScrollView>

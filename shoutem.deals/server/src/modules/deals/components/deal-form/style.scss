@@ -29,11 +29,10 @@
     }
   }
 
-  .se-icon {
-    opacity: 0.5;
-    vertical-align: middle;
-    padding-left: 4px;
-    margin-top: -3px;
+  .place-selector {
+    .Select {
+      z-index: 100;
+    }
   }
 }
 
@@ -83,6 +82,13 @@
   label {
     font-size: 13px;
     padding: 24px 12px 12px 0;
+  }
+
+  .se-icon {
+    opacity: 0.5;
+    vertical-align: middle;
+    padding-left: 4px;
+    margin-top: -3px;
   }
 }
 

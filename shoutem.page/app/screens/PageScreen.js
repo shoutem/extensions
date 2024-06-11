@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { InteractionManager, LayoutAnimation, StatusBar } from 'react-native';
+import { LayoutAnimation, StatusBar } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
@@ -27,7 +27,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { executeShortcut } from 'shoutem.application';
-import { I18n } from 'shoutem.i18n';
+import { I18n, selectors as i18nSelectors } from 'shoutem.i18n';
 import {
   composeNavigationStyles,
   getRouteParams,
@@ -59,47 +59,21 @@ export class PageScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const {
-      data,
-      navigation,
-      showTitle,
-      shortcut,
-      navigationBarImage,
-      backgroundImageEnabledFirstScreen,
-    } = this.props;
+    const { navigation, data } = this.props;
 
     if (shouldRefresh(data)) {
-      return this.fetchData();
-    }
+      this.fetchData().then(() => {
+        // Header title resolves as expected only if we set headerShown first, then calculate other options.
+        navigation.setOptions({ headerShown: true });
 
-    const shouldDisplayImage =
-      backgroundImageEnabledFirstScreen && navigationBarImage;
-    const title = showTitle ? _.get(shortcut, 'title', '') : '';
-
-    if (!shouldDisplayImage) {
-      return navigation.setOptions({
-        ...this.getNavBarProps(),
-        headerShown: true,
+        LayoutAnimation.easeInEaseOut();
+        navigation.setOptions(this.getNavBarProps());
       });
     }
-
-    return navigation.setOptions({
-      ...this.getNavBarProps(),
-      headerBackground: this.headerBackground,
-      headerShown: true,
-      title,
-    });
   }
 
-  componentDidUpdate(prevProps) {
-    const { data: prevData } = prevProps;
-    const {
-      data,
-      isFocused,
-      navigation,
-      navigationBarImage,
-      backgroundImageEnabledFirstScreen,
-    } = this.props;
+  componentDidUpdate() {
+    const { data, isFocused, navigation } = this.props;
 
     if (!!_.head(data)?.image && this.isNavigationBarClear()) {
       if (isFocused && !this.pushedBarStyle && !this.isScrolledDown) {
@@ -114,27 +88,11 @@ export class PageScreen extends PureComponent {
       }
     }
 
-    if (!isInitialized(prevData) && isInitialized(data)) {
-      LayoutAnimation.easeInEaseOut();
-
-      const shouldDisplayImage =
-        backgroundImageEnabledFirstScreen && navigationBarImage;
-
-      if (!shouldDisplayImage) {
-        return navigation.setOptions({
-          ...this.getNavBarProps(),
-          headerShown: true,
-        });
-      }
-
-      return navigation.setOptions({
-        ...this.getNavBarProps(),
-        headerBackground: this.headerBackground,
-        headerShown: true,
+    if (shouldRefresh(data)) {
+      this.fetchData().then(() => {
+        navigation.setOptions(this.getNavBarProps());
       });
     }
-
-    return null;
   }
 
   headerBackground() {
@@ -144,6 +102,7 @@ export class PageScreen extends PureComponent {
       fitContainer,
       showTitle,
     } = this.props;
+
     return (
       <HeaderBackground
         settings={{
@@ -158,19 +117,18 @@ export class PageScreen extends PureComponent {
   }
 
   fetchData(schema) {
-    const { find, parentCategoryId } = this.props;
+    const { find, parentCategoryId, channelId } = this.props;
 
     if (!parentCategoryId) {
-      return;
+      return Promise.resolve();
     }
 
-    InteractionManager.runAfterInteractions(() =>
-      find(schema || PAGE_SCHEMA, undefined, {
-        query: {
-          'filter[categories]': parentCategoryId,
-        },
-      }),
-    );
+    return find(schema || PAGE_SCHEMA, undefined, {
+      query: {
+        'filter[categories]': parentCategoryId,
+        'filter[channels]': channelId,
+      },
+    });
   }
 
   isNavigationBarClear(props = this.props) {
@@ -179,51 +137,63 @@ export class PageScreen extends PureComponent {
     return screenSettings.navigationBarStyle === 'clear';
   }
 
-  getNavBarProps() {
-    const {
-      data,
-      shortcut: { title = '' },
-      showTitle,
-    } = this.props;
+  resolveTitle() {
+    const { data, showTitle } = this.props;
 
-    const resolvedTitle = showTitle ? title : '';
-
-    if (!data || _.isEmpty(data)) {
-      // Show shortcut title if `EmptyStateView` is rendered (no collection or empty collection)
-      return { title: resolvedTitle };
+    if (!showTitle) {
+      return '';
     }
 
-    if (this.isNavigationBarClear()) {
-      const profile = _.head(data);
-      const hasImage = !!profile.image;
+    const isNavigationBarClear = this.isNavigationBarClear();
 
-      if (hasImage) {
-        // If navigation bar is clear and image exists, navigation bar should be initially clear
-        // with fade effect (to add shadow to image), but after scrolling down navigation bar
-        // should appear (solidify animation)
-        return {
-          ...composeNavigationStyles(['clear', 'fade']),
-          headerRight: this.headerRight,
-          title: '',
-        };
-      }
-      // If navigation bar is clear, but there is no image, navigation bar should be set to solid,
-      // but boxing animation should be applied so that title and borders appear
-
-      return {
-        ...composeNavigationStyles(['boxing']),
-        headerRight: this.headerRight,
-        title: '',
-      };
-    }
-
-    return {
+    if (isNavigationBarClear) {
       // If navigation bar is clear, show the name that is rendered below the image, so it looks like
       // it is transferred to the navigation bar when scrolling. Otherwise show the screen title
       // (from the shortcut). The screen title is always displayed on solid navigation bars.
+      const profile = _.head(data);
+
+      return profile.name;
+    }
+
+    // Using undefined when we want to show localized shortcut title - this way, we let HeaderTitle
+    // component take care of localized title, because we don't get updated shortcut.title when app
+    // locale changes.
+    return undefined;
+  }
+
+  getNavBarProps() {
+    const {
+      backgroundImageEnabledFirstScreen,
+      navigationBarImage,
+    } = this.props;
+
+    const title = this.resolveTitle();
+
+    const shouldDisplayImage =
+      backgroundImageEnabledFirstScreen && navigationBarImage;
+
+    return {
       headerRight: this.headerRight,
-      title: resolvedTitle,
+      title,
+      ...this.resolveNavigationStyles(),
+      ...(shouldDisplayImage && { headerBackground: this.headerBackground }),
     };
+  }
+
+  resolveNavigationStyles() {
+    const isNavigationBarClear = this.isNavigationBarClear();
+
+    if (isNavigationBarClear) {
+      const { data } = this.props;
+      const profile = _.head(data);
+      const hasImage = !!profile.image;
+
+      return hasImage
+        ? composeNavigationStyles(['clear', 'fade'])
+        : composeNavigationStyles(['boxing']);
+    }
+
+    return {};
   }
 
   handleScroll(event) {
@@ -353,7 +323,10 @@ export class PageScreen extends PureComponent {
     };
 
     return (
-      <ScrollView onScroll={this.handleScroll}>
+      <ScrollView
+        onScroll={this.handleScroll}
+        showsVerticalScrollIndicator={false}
+      >
         <NavigationComponent
           executeShortcut={executeShortcut}
           shortcut={shortcut}
@@ -385,7 +358,10 @@ export class PageScreen extends PureComponent {
     };
 
     return (
-      <ScrollView onScroll={this.handleScroll}>
+      <ScrollView
+        onScroll={this.handleScroll}
+        showsVerticalScrollIndicator={false}
+      >
         {this.renderImage(profile)}
         <View styleName="solid">
           {this.renderNameAndSubtitle(profile)}
@@ -483,6 +459,7 @@ export class PageScreen extends PureComponent {
 
 PageScreen.propTypes = {
   // Primary CMS data to display
+  channelId: PropTypes.number.isRequired,
   data: PropTypes.array.isRequired,
   executeShortcut: PropTypes.func.isRequired,
   // actions
@@ -524,12 +501,14 @@ export function mapStateToProps(state, ownProps) {
     'iconGrid',
   );
   const collection = state[ext()].allPage;
+  const channelId = i18nSelectors.getActiveChannelId(state);
 
   return {
     shortcut: resolvedShortcut,
     parentCategoryId,
     navigationLayoutType,
     data: getCollection(collection[parentCategoryId], state),
+    channelId,
   };
 }
 

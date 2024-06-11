@@ -1,7 +1,9 @@
-const { injectAgoraSubspecs } = require("./injectAgoraSubspecs");
+const { injectAgoraSubspecs } = require('./injectAgoraSubspecs');
+const { injectForegroundService } = require('./injectForegroundService');
 
 async function preBuild() {
   injectAgoraSubspecs();
+  injectForegroundService();
 }
 
 function runPreBuild() {

@@ -95,7 +95,7 @@ export function mapViewToModel(deal, catalog) {
   const available =
     !couponsEnabled || !couponsLimited || _.toNumber(remainingCoupons) > 0;
 
-  const startTime = !!viewStartTime
+  const startTime = viewStartTime
     ? dateToString(viewStartTime, timezone)
     : null;
   const endTime = dateToString(viewEndTime, timezone);
@@ -136,12 +136,11 @@ export function mapModelToView(deal) {
   const expirationTime = couponsEnabled
     ? toDisplayExpirationTime(couponsExpirationTime)
     : null;
-  const placeId = _.get(place, 'id');
 
   return {
     couponsEnabled,
     couponsExpirationTime: expirationTime,
-    place: placeId,
+    place,
     ...otherDealProps,
   };
 }
