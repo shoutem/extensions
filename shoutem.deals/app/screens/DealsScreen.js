@@ -97,13 +97,7 @@ export class DealsScreen extends CmsListScreen {
   }
 
   getQueryParams(options) {
-    // Deals currently can't assign channels for languages properly,
-    // so we're excluding this filter for the time being
-    // Improvement task in https://fiveminutes.jira.com/browse/SEEXT-8899
-
-    const queryParams = _.omit(super.getQueryParams(options), [
-      'filter[channels]',
-    ]);
+    const queryParams = super.getQueryParams(options);
     const todayStr = new Date().toISOString();
 
     return {

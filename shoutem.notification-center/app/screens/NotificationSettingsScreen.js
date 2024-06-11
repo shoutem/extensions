@@ -8,6 +8,7 @@ import { connectStyle } from '@shoutem/theme';
 import { Screen, Subtitle, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
+import { withAlarmPermission } from 'shoutem.permissions';
 import { SettingDetailsNavigationItem, SettingsToggle } from '../components';
 import { ext } from '../const';
 import {
@@ -44,6 +45,7 @@ export class NotificationSettingsScreen extends PureComponent {
   handleReminderSettingToggle() {
     const {
       notificationSettings,
+      withAlarmPermission,
       reminderAppSettings,
       setNotificationSettings,
     } = this.props;
@@ -68,9 +70,11 @@ export class NotificationSettingsScreen extends PureComponent {
         return;
       }
 
-      notifications.rescheduleReminderNotifications(
-        newNotificationSettings,
-        reminderAppSettings,
+      withAlarmPermission(() =>
+        notifications.rescheduleReminderNotifications(
+          newNotificationSettings,
+          reminderAppSettings,
+        ),
       );
     });
   }
@@ -181,6 +185,7 @@ NotificationSettingsScreen.propTypes = {
   reminderAppSettings: PropTypes.object,
   scheduledNotificationsEnabled: PropTypes.bool,
   setNotificationSettings: PropTypes.func,
+  withAlarmPermission: PropTypes.func.isRequired,
   style: PropTypes.object.isRequired,
 };
 
@@ -196,7 +201,7 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = { setNotificationSettings };
+const mapDispatchToProps = { setNotificationSettings, withAlarmPermission };
 
 export default connect(
   mapStateToProps,

@@ -9,6 +9,18 @@
       "required": true,
       "displayPriority": 1
     },
+    "location": {
+      "format": "geolocation",
+      "title": "Location",
+      "type": "object",
+      "displayPriority": 2
+    },
+    "rsvpLink": {
+      "format": "uri",
+      "title": "RSVP link",
+      "type": "string",
+      "displayPriority": 3
+    },
     "description": {
       "format": "html",
       "title": "Description",
@@ -22,44 +34,39 @@
       "pattern": "^(https?|bundle|shoutem|tel|sms|mail|itms)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|]$",
       "displayPriority": 5
     },
-    "image": {
-      "format": "attachment",
-      "title": "Image 1",
-      "type": "object",
-      "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 6
-    },
-    "image2": {
-      "format": "attachment",
-      "title": "Image 2",
-      "type": "object",
-      "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 7
-    },
-    "image3": {
-      "format": "attachment",
-      "title": "Image 3",
-      "type": "object",
-      "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 8
-    },
-    "image4": {
-      "format": "attachment",
-      "title": "Image 4",
-      "type": "object",
-      "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 9
-    },
-    "image5": {
-      "format": "attachment",
-      "title": "Image 5",
-      "type": "object",
-      "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 10
-    },
     "mail": {
       "format": "single-line",
       "title": "E-mail",
+      "type": "string",
+      "displayPriority": 6
+    },
+    "phone": {
+      "format": "single-line",
+      "title": "Phone",
+      "type": "string",
+      "displayPriority": 7
+    },
+    "twitter": {
+      "format": "uri",
+      "title": "Twitter",
+      "type": "string",
+      "displayPriority": 8
+    },
+    "facebook": {
+      "format": "uri",
+      "title": "Facebook",
+      "type": "string",
+      "displayPriority": 9
+    },
+    "instagram": {
+      "format": "uri",
+      "title": "Instagram",
+      "type": "string",
+      "displayPriority": 10
+    },
+    "tiktok": {
+      "format": "uri",
+      "title": "TikTok",
       "type": "string",
       "displayPriority": 11
     },
@@ -69,23 +76,40 @@
       "type": "string",
       "displayPriority": 12
     },
-    "phone": {
-      "format": "single-line",
-      "title": "Phone",
-      "type": "string",
+    "image": {
+      "format": "attachment",
+      "title": "Image 1",
+      "type": "object",
+      "referencedSchema": "shoutem.core.image-attachments",
       "displayPriority": 13
     },
-    "rsvpLink": {
-      "format": "uri",
-      "title": "RSVP link",
-      "type": "string",
-      "displayPriority": 3
-    },
-    "location": {
-      "format": "geolocation",
-      "title": "Location",
+    "image2": {
+      "format": "attachment",
+      "title": "Image 2",
       "type": "object",
-      "displayPriority": 2
+      "referencedSchema": "shoutem.core.image-attachments",
+      "displayPriority": 14
+    },
+    "image3": {
+      "format": "attachment",
+      "title": "Image 3",
+      "type": "object",
+      "referencedSchema": "shoutem.core.image-attachments",
+      "displayPriority": 15
+    },
+    "image4": {
+      "format": "attachment",
+      "title": "Image 4",
+      "type": "object",
+      "referencedSchema": "shoutem.core.image-attachments",
+      "displayPriority": 16
+    },
+    "image5": {
+      "format": "attachment",
+      "title": "Image 5",
+      "type": "object",
+      "referencedSchema": "shoutem.core.image-attachments",
+      "displayPriority": 17
     }
   },
   "titleProperty": "name",

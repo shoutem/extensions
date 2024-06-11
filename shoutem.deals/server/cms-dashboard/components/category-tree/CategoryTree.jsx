@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, createRef } from 'react';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { ConfirmModal, NestedSortable } from '@shoutem/react-web-ui';
 import CategoryNameModal from '../category-name-modal';
 import CategoryTreeItem from '../category-tree-item';
@@ -28,27 +28,18 @@ function generateTree(categories, staticCategories, categoryActionWhitelist) {
 }
 
 export default class CategoryTree extends Component {
-  static propTypes = {
-    categories: PropTypes.array,
-    categoryActionWhitelist: PropTypes.object,
-    staticCategories: PropTypes.array,
-    selectedCategoryId: PropTypes.string,
-    onCategorySelected: PropTypes.func,
-    onCategoryUpdate: PropTypes.func,
-    onCategoryCreate: PropTypes.func,
-    onCategoryDelete: PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
+
+    this.dealDeleteModal = createRef();
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.refreshData(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.refreshData(nextProps, this.props);
   }
 
@@ -138,3 +129,14 @@ export default class CategoryTree extends Component {
     );
   }
 }
+
+CategoryTree.propTypes = {
+  categories: PropTypes.array,
+  categoryActionWhitelist: PropTypes.object,
+  selectedCategoryId: PropTypes.string,
+  staticCategories: PropTypes.array,
+  onCategoryCreate: PropTypes.func,
+  onCategoryDelete: PropTypes.func,
+  onCategorySelected: PropTypes.func,
+  onCategoryUpdate: PropTypes.func,
+};

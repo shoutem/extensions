@@ -1,38 +1,37 @@
-export { default as Table } from './components/table';
-export { default as CmsTable } from './components/cms-table';
 export { default as CategoryTree } from './components/category-tree';
-export { default as ResourceFormModal } from './components/resource-form-modal';
+export { default as CmsTable } from './components/cms-table';
 export { default as FiltersModal } from './components/filters-modal';
 export { default as LanguageSelector } from './components/language-selector';
+export { default as ResourceFormModal } from './components/resource-form-modal';
 export { default as SearchForm } from './components/search-form';
-
+export { default as Table } from './components/table';
 export { CATEGORIES, SCHEMAS } from './const';
-
 export {
-  loadResources,
-  deleteResource,
+  createCategory,
   createResource,
+  deleteCategory,
+  deleteResource,
+  loadCategories,
+  loadReferenceResources,
+  loadResources,
+  loadSchema,
+  reducer,
+  renameCategory,
   updateResource,
   updateResourceCategories,
   updateResourceLanguages,
-  loadCategories,
-  createCategory,
-  deleteCategory,
-  renameCategory,
-  reducer,
 } from './redux';
-
 export {
-  shoutemUrls,
-  getMainCategoryId,
+  createResourceWithRelationships,
+  getFilterableSchemaKeys,
   getIncludeProperties,
-  getSchemaPropertyKeys,
-  getSchemaProperties,
-  getSchemaProperty,
+  getMainCategoryId,
+  getMappedCmsToCsvProperties,
   getReferencedSchema,
   getReferencedSchemas,
-  getMappedCmsToCsvProperties,
-  getFilterableSchemaKeys,
-  createResourceWithRelationships,
+  getSchemaProperties,
+  getSchemaProperty,
+  getSchemaPropertyKeys,
+  shoutemUrls,
   updateResourceWithRelationships,
 } from './services';

@@ -1,6 +1,6 @@
 import { shoutemUrls } from '@shoutem/cms-dashboard';
-import { types } from './services';
 import reducer from './redux';
+import { types } from './services';
 import './style.scss';
 
 // export everything from extension.js

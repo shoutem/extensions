@@ -11,6 +11,7 @@ import {
   isError,
   isInitialized,
   isValid,
+  shouldRefresh,
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { Image, Screen, ShareButton, SimpleHtml } from '@shoutem/ui';
@@ -41,19 +42,21 @@ export class AboutScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { navigation } = this.props;
+    const { navigation, data } = this.props;
 
-    this.fetchData()
-      .then(() => navigation.setOptions({ headerShown: true }))
-      .then(() => {
+    if (shouldRefresh(data)) {
+      this.fetchData().then(() => {
+        // Header title resolves as expected only if we set headerShown first, then calculate other options.
+        navigation.setOptions({ headerShown: true });
+
         LayoutAnimation.easeInEaseOut();
         navigation.setOptions(this.getNavBarProps());
       });
+    }
   }
 
-  componentDidUpdate(prevProps) {
-    const { channelId, data, isFocused, navigation } = this.props;
-    const { channelId: prevChannelId, data: prevData } = prevProps;
+  componentDidUpdate() {
+    const { navigation, data, isFocused } = this.props;
 
     if (!!_.head(data)?.image && this.isNavigationBarClear()) {
       if (isFocused && !this.pushedBarStyle && !this.isScrolledDown) {
@@ -68,13 +71,10 @@ export class AboutScreen extends PureComponent {
       }
     }
 
-    if (prevChannelId !== channelId) {
-      this.fetchData();
-    }
-
-    if (!isInitialized(prevData) && isInitialized(data)) {
-      LayoutAnimation.easeInEaseOut();
-      navigation.setOptions({ ...this.getNavBarProps(), headerShown: true });
+    if (shouldRefresh(data)) {
+      this.fetchData().then(() => {
+        navigation.setOptions(this.getNavBarProps());
+      });
     }
   }
 
@@ -136,7 +136,10 @@ export class AboutScreen extends PureComponent {
     return screenSettings.navigationBarStyle === 'clear';
   }
 
-  resolveNavigationStyles(isNavigationBarClear, hasImage) {
+  resolveNavigationStyles(isNavigationBarClear) {
+    const { profile } = this.props;
+    const hasImage = !!profile.image;
+
     if (isNavigationBarClear) {
       return hasImage
         ? composeNavigationStyles(['clear', 'fade'])
@@ -149,20 +152,25 @@ export class AboutScreen extends PureComponent {
   getNavBarProps() {
     const { profile } = this.props;
     const {
-      shortcut: { title },
+      shortcut: { id, title },
     } = getRouteParams(this.props);
 
     const isNavigationBarClear = this.isNavigationBarClear();
-    const hasImage = !!profile.image;
+
+    const localizedTitle = I18n.t(`shoutem.navigation.shortcuts.${id}`, {
+      defaultValue: title,
+    });
     // If navigation bar is clear, show the name that is rendered below the image, so it looks like
     // it is transferred to the navigation bar when scrolling. Otherwise show the screen title
     // (from the shortcut). The screen title is always displayed on solid navigation bars.
-    const resolvedTitle = isNavigationBarClear ? profile.name || title : title;
+    const resolvedTitle = isNavigationBarClear
+      ? profile.name ?? localizedTitle
+      : localizedTitle;
 
     return {
       headerRight: this.headerRight,
       title: resolvedTitle,
-      ...this.resolveNavigationStyles(isNavigationBarClear, hasImage),
+      ...this.resolveNavigationStyles(isNavigationBarClear),
     };
   }
 
@@ -311,6 +319,13 @@ export class AboutScreen extends PureComponent {
       openURL,
     };
 
+    const tikTokButton = {
+      icon: 'tiktok',
+      url: profile.tiktok,
+      title: 'TikTok',
+      openURL,
+    };
+
     return [
       webButton,
       callButton,
@@ -319,6 +334,7 @@ export class AboutScreen extends PureComponent {
       linkedinButton,
       facebookButton,
       instagramButton,
+      tikTokButton,
     ];
   }
 

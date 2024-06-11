@@ -1,21 +1,21 @@
 import React, { PureComponent } from 'react';
+import { ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
+import Select from 'react-select';
 import autoBindReact from 'auto-bind/react';
+import classNames from 'classnames';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
-import Select from 'react-select';
-import classNames from 'classnames';
 import { fieldInError } from '../services';
 
 export default class SelectReduxFormElement extends PureComponent {
   static propTypes = {
+    className: PropTypes.string,
     elementId: PropTypes.string,
-    name: PropTypes.string,
     field: PropTypes.object,
     helpText: PropTypes.string,
-    className: PropTypes.string,
-    valueKey: PropTypes.string,
+    name: PropTypes.string,
     options: PropTypes.aray,
+    valueKey: PropTypes.string,
   };
 
   static defaultProps = {

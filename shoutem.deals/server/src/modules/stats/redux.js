@@ -1,19 +1,19 @@
-import { combineReducers } from 'redux';
 import _ from 'lodash';
-import { loadResources } from '@shoutem/cms-dashboard';
-import { batchActions } from 'redux-batched-actions';
 import moment from 'moment';
+import { combineReducers } from 'redux';
+import { batchActions } from 'redux-batched-actions';
+import { ext } from 'src/const';
+import { dateToString, dealsApi, types } from 'src/services';
+import { loadResources } from '@shoutem/cms-dashboard';
 import {
-  find,
-  create,
-  next,
-  prev,
   collection,
+  create,
+  find,
   getCollection,
   invalidate,
+  next,
+  prev,
 } from '@shoutem/redux-io';
-import { ext } from 'src/const';
-import { dealsApi, types, dateToString } from 'src/services';
 import { moduleName, TRANSACTION_ACTIONS } from './const';
 
 // CONST

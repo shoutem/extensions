@@ -1,10 +1,10 @@
 {
   "name": "about",
-  "version": "6.1.0",
-  "platform": ">=6",
+  "version": "6.2.0",
+  "platform": ">=14.0.2",
   "title": "About",
   "description": "Show info about your app or your business",
-  "releaseNotes": "* Adjusted Navigation Bar title capitalization to adhere to Main Navigation settings",
+  "releaseNotes": "User facing changes\n*About screen now updates it's title as expected, when user changes the app language\n* Added TikTok info/hyperlink\n\nBuilder changes\n* Added TikTok URL input",
   "icon": "server/assets/add-about-image.png",
   "dependencies": [
     "shoutem.application",

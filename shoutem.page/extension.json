@@ -2,9 +2,9 @@
   "name": "page",
   "title": "Page",
   "description": "Show a single screen with info and child items",
-  "version": "5.1.1",
-  "platform": ">=14",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
+  "version": "5.1.2",
+  "platform": ">=14.0.2",
+  "releaseNotes": "User facing changes\n*Page screen now updates it's title and content as expected, when user changes the app language",
   "icon": "server/assets/add-page-image.png",
   "dependencies": [
     "shoutem.application",

@@ -10,7 +10,7 @@ function createNotificationId(stringifiedId) {
 
   const signedHash = _.reduce(stringifiedId, (result, _char, index) => {
     const char = stringifiedId.charCodeAt(index);
-    let hash = ((result << 5) - result) + char;
+    let hash = (result << 5) - result + char;
 
     // convert to 32Bit int
     hash |= 0;
@@ -19,7 +19,7 @@ function createNotificationId(stringifiedId) {
   });
 
   // make sure the signed Int is positive
-  return Math.abs(signedHash)
+  return Math.abs(signedHash);
 }
 
 function calculateEndsAt(journey) {
@@ -45,7 +45,9 @@ function isJourneyActive(journey) {
 
 function scheduleNotifications(triggerId, notifications, payload) {
   return notifications.forEach((notification, index) => {
-    const notificationId = createNotificationId(`${triggerId}-${index.toString()}`);
+    const notificationId = createNotificationId(
+      `${triggerId}-${index.toString()}`,
+    );
 
     return notificationService.scheduleLocalNotifications(
       { ...notification, channelId: JOURNEY_NOTIFICATIONS_CHANNEL_ID },

@@ -1,4 +1,5 @@
 import { AppState } from 'react-native';
+import _ from 'lodash';
 import { Firebase } from 'shoutem.firebase';
 import {
   checkNotifications,
@@ -20,25 +21,30 @@ const appWillMount = setPriority(app => {
   const store = app.getStore();
 
   registerNotificationHandlers(store);
+}, before(priorities.FIREBASE));
+
+const appDidMount = setPriority(() => {
+  appStateListener = AppState.addEventListener('change', handleAppStateChange);
 
   /**
    * Checks if the notification service has status DENIED => available on device but the permission has not been requested yet.
-   * If status is DENIED, we request permissions and obtain FCM token if user grants permissions.
+   * If status is DENIED, we request permissions and obtain FCM token if user grants permissions. Delay this window
+   * for a few seconds to allow other Alert.alert windows (shoutem.permissions generated alarm window) to stack before this one.
    */
-  checkNotifications()
-    .then(({ status }) => {
-      if (status === RESULTS.DENIED) {
-        requestNotifications(['alert', 'sound', 'badge']);
-      }
-    })
-    .catch(error => {
-      console.log('Check push notification permissions failed:', error);
-    });
+  _.delay(
+    () =>
+      checkNotifications()
+        .then(({ status }) => {
+          if (status === RESULTS.DENIED) {
+            requestNotifications(['alert', 'sound', 'badge']);
+          }
+        })
+        .catch(error => {
+          console.log('Check push notification permissions failed:', error);
+        }),
+    5000,
+  );
 }, before(priorities.FIREBASE));
-
-const appDidMount = () => {
-  appStateListener = AppState.addEventListener('change', handleAppStateChange);
-};
 
 const appWillUnmount = () => {
   appStateListener.remove();

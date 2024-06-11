@@ -10,7 +10,7 @@ export function getDeals(shortcutState, state) {
     return null;
   }
 
-  const deals = getDealsState(shortcutState).deals;
+  const { deals } = getDealsState(shortcutState);
   return getCollection(deals, state);
 }
 
@@ -19,15 +19,6 @@ export function getDealCategories(shortcutState, state) {
     return null;
   }
 
-  const categories = getDealsState(shortcutState).categories;
+  const { categories } = getDealsState(shortcutState);
   return getCollection(categories, state);
-}
-
-export function getPlaces(shortcutState, state) {
-  if (!shortcutState) {
-    return null;
-  }
-
-  const places = getDealsState(shortcutState).places;
-  return getCollection(places, state);
 }

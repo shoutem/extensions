@@ -1,15 +1,12 @@
-export { getDeals, getDealCategories, getPlaces } from './selectors';
-
 export {
+  createDeal,
+  createDealCategory,
+  deleteDeal,
+  loadDealCategories,
   loadDeals,
   loadNextDealsPage,
   loadPreviousDealsPage,
-  deleteDeal,
-  createDeal,
   updateDeal,
-  loadDealCategories,
-  createDealCategory,
-  loadPlaces,
 } from './actions';
-
 export { reducer } from './reducers';
+export { getDealCategories, getDeals } from './selectors';

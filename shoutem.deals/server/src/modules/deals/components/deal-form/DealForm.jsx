@@ -1,28 +1,32 @@
 import React from 'react';
+import { Button, ButtonToolbar, Col, HelpBlock, Row } from 'react-bootstrap';
 import currencies from 'currency-formatter/currencies.json';
 import i18next from 'i18next';
 import _ from 'lodash';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import { reduxForm } from 'redux-form';
-import { Row, Col, Button, ButtonToolbar, HelpBlock } from 'react-bootstrap';
+import { ext } from 'src/const';
+import { getFormState } from 'src/redux';
+import {
+  getDisplayDateFormat,
+  getDisplayTimeFormat,
+  types,
+} from 'src/services';
 import timezones from 'timezones.json';
 import {
-  DateTimePicker,
-  LoaderContainer,
-  ReduxFormElement,
-  Switch,
-  FontIcon,
-  FontIconPopover,
-} from '@shoutem/react-web-ui';
-import {
+  EntityReferenceReduxFormElement,
   ImageUploaderReduxFormElement,
   SelectReduxFormElement,
   TextEditorReduxFormElement,
 } from '@shoutem/form-builder';
-import { ext } from 'src/const';
-import { getDisplayDateFormat, getDisplayTimeFormat } from 'src/services';
-import { getFormState } from 'src/redux';
+import {
+  DateTimePicker,
+  FontIcon,
+  FontIconPopover,
+  LoaderContainer,
+  ReduxFormElement,
+  Switch,
+} from '@shoutem/react-web-ui';
 import { validateDeal } from '../../services';
 import LOCALIZATION from './localization';
 import './style.scss';
@@ -83,9 +87,11 @@ export function DealForm(props) {
       place,
     },
     onCancel,
+    touch,
     handleSubmit,
+    loadSchema,
+    loadResources,
     error,
-    places,
   } = props;
   const inEditMode = !_.isEmpty(id.value);
   const displayCoupons = !!couponsEnabled.value;
@@ -137,6 +143,8 @@ export function DealForm(props) {
           disabled={submitting}
           elementId="description"
           field={description}
+          assetManager={assetManager}
+          folderName={ext()}
           name={i18next.t(LOCALIZATION.FORM_DESCRIPTION_TITLE)}
         />
       </Row>
@@ -145,6 +153,8 @@ export function DealForm(props) {
           disabled={submitting}
           elementId="condition"
           field={condition}
+          assetManager={assetManager}
+          folderName={ext()}
           name={i18next.t(LOCALIZATION.FORM_CONDITION_TITLE)}
         />
       </Row>
@@ -265,15 +275,17 @@ export function DealForm(props) {
         />
       </Row>
       <Row>
-        <SelectReduxFormElement
-          disabled={submitting || _.isEmpty(places)}
+        <EntityReferenceReduxFormElement
+          disabled={submitting}
+          className="place-selector"
           elementId="place"
+          canonicalName={types.PLACES}
+          loadSchema={loadSchema}
+          loadResources={loadResources}
           field={place}
-          labelKey="name"
+          touch={touch}
           name={i18next.t(LOCALIZATION.FORM_PLACE_TITLE)}
-          options={places}
           placeholder={i18next.t(LOCALIZATION.FORM_PLACE_PLACEHOLDER_MESSAGE)}
-          valueKey="id"
         />
       </Row>
       <Row className="deal-form__hide-redeem-button">
@@ -384,14 +396,16 @@ export function DealForm(props) {
 }
 
 DealForm.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+  loadResources: PropTypes.func.isRequired,
+  loadSchema: PropTypes.func.isRequired,
+  touch: PropTypes.func.isRequired,
   assetManager: PropTypes.object,
-  handleSubmit: PropTypes.func,
+  error: PropTypes.string,
+  fields: PropTypes.object,
   pristine: PropTypes.bool,
   submitting: PropTypes.bool,
-  fields: PropTypes.object,
   onCancel: PropTypes.func,
-  error: PropTypes.string,
-  places: PropTypes.array,
 };
 
 export default reduxForm({

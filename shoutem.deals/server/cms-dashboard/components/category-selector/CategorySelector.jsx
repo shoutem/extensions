@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import autoBindReact from 'auto-bind/react';
-import _ from 'lodash';
 import i18next from 'i18next';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { LoaderContainer, MultiselectDropdown } from '@shoutem/react-web-ui';
 import LOCALIZATION from './localization';
 import './style.scss';
@@ -33,13 +33,6 @@ export function createCategoryOptions(categories, mainCategoryId) {
 }
 
 export default class CategorySelector extends Component {
-  static propTypes = {
-    selectedCategories: PropTypes.array,
-    categories: PropTypes.array.isRequired,
-    mainCategoryId: PropTypes.string.isRequired,
-    onSelectionChanged: PropTypes.func.isRequired,
-  };
-
   constructor(props) {
     super(props);
     autoBindReact(this);
@@ -49,11 +42,11 @@ export default class CategorySelector extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.refreshData(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.refreshData(nextProps, this.props);
   }
 
@@ -112,11 +105,21 @@ export default class CategorySelector extends Component {
           emptyText={i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_LABEL)}
           onSelectionChanged={this.handleSelectionChanged}
           options={categoryOptions}
-          selectNoneText={i18next.t(LOCALIZATION.EMPTY_PLACEHOLDER_LABEL)}
+          selectNoneText={i18next.t(LOCALIZATION.SELECT_NONE_LABEL)}
+          selectAllText={i18next.t(LOCALIZATION.SELECT_ALL_LABEL)}
+          selectText={i18next.t(LOCALIZATION.SELECT_LABEL)}
           selectedValues={selectedCategories}
           showSelectNoneOption
+          showSelectAllOption
         />
       </LoaderContainer>
     );
   }
 }
+
+CategorySelector.propTypes = {
+  categories: PropTypes.array.isRequired,
+  mainCategoryId: PropTypes.string.isRequired,
+  selectedCategories: PropTypes.array.isRequired,
+  onSelectionChanged: PropTypes.func.isRequired,
+};

@@ -7,6 +7,7 @@ import {
   getExtensionSettings,
 } from 'shoutem.application';
 import { Firebase } from 'shoutem.firebase';
+import { withAlarmPermission } from 'shoutem.permissions';
 import { before, priorities, setPriority } from 'shoutem-core';
 import {
   ext,
@@ -112,10 +113,15 @@ export const appDidMount = setPriority(async app => {
           // automatically scheduled after user runs the app for the first time after update
           // We do this, because user's reminder setting is enabled by default, if app owner
           // enabled that feature
+
           if (reminder.message && appNotificationSettings.remindMeToUseApp) {
-            notifications.rescheduleReminderNotifications(
-              appNotificationSettings,
-              reminder,
+            store.dispatch(
+              withAlarmPermission(() =>
+                notifications.rescheduleReminderNotifications(
+                  appNotificationSettings,
+                  reminder,
+                ),
+              ),
             );
           }
         },
@@ -128,9 +134,13 @@ export const appDidMount = setPriority(async app => {
       // We do this, because user's reminder setting is enabled by default, if app owner
       // enabled that feature
       if (reminder.message && appNotificationSettings.remindMeToUseApp) {
-        notifications.rescheduleReminderNotifications(
-          appNotificationSettings,
-          reminder,
+        store.dispatch(
+          withAlarmPermission(() =>
+            notifications.rescheduleReminderNotifications(
+              appNotificationSettings,
+              reminder,
+            ),
+          ),
         );
       }
     }

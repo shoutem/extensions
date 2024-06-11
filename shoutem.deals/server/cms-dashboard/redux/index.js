@@ -1,19 +1,18 @@
 export {
-  loadCategories,
   createCategory,
   deleteCategory,
+  loadCategories,
   renameCategory,
 } from './categories';
-
+export { getFormState } from './form';
+export { reducer } from './reducer';
 export {
-  loadResources,
-  deleteResource,
   createResource,
+  deleteResource,
+  loadReferenceResources,
+  loadResources,
   updateResource,
   updateResourceCategories,
   updateResourceLanguages,
 } from './resources';
-
-export { getFormState } from './form';
-
-export { reducer } from './reducer';
+export { loadSchema } from './schema';

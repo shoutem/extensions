@@ -1,50 +1,44 @@
-import React, { PureComponent } from 'react';
+import React, { createRef, PureComponent } from 'react';
+import { Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Button } from 'react-bootstrap';
-import { ConfirmModal, IconLabel } from '@shoutem/react-web-ui';
+import { ext } from 'src/const';
+import { createTransaction, TRANSACTION_ACTIONS } from 'src/modules/stats';
 import {
   CategoryTree,
   CmsTable,
   getMainCategoryId,
+  loadReferenceResources,
+  loadSchema,
   updateResourceCategories,
+  updateResourceLanguages,
 } from '@shoutem/cms-dashboard';
-import { createTransaction, TRANSACTION_ACTIONS } from 'src/modules/stats';
+import { ConfirmModal, IconLabel, Paging } from '@shoutem/react-web-ui';
+import { hasNext, hasPrev } from '@shoutem/redux-io';
 import DealFormModal from '../../components/deal-form-modal';
-import { createDeal, updateDeal, deleteDeal } from '../../redux';
+import { createDeal, deleteDeal, updateDeal } from '../../redux';
 import LOCALIZATION from './localization';
 import './style.scss';
 
-export class DealsCmsPage extends PureComponent {
-  static propTypes = {
-    assetManager: PropTypes.object,
-    catalogId: PropTypes.string,
-    deals: PropTypes.array,
-    dealsSchema: PropTypes.object,
-    places: PropTypes.array,
-    parentCategoryId: PropTypes.string,
-    selectedCategoryId: PropTypes.string,
-    categories: PropTypes.array,
-    createDeal: PropTypes.func,
-    deleteDeal: PropTypes.func,
-    updateDeal: PropTypes.func,
-    updateResourceCategories: PropTypes.func,
-    onCategorySelected: PropTypes.func,
-    onCategoryCreate: PropTypes.func,
-    onCategoryDelete: PropTypes.func,
-    onCategoryUpdate: PropTypes.func,
-  };
+function resolvePageLabel(pageNumber) {
+  return i18next.t(LOCALIZATION.PAGE_LABEL, { pageNumber });
+}
 
+export class DealsDashboard extends PureComponent {
   constructor(props) {
     super(props);
 
     autoBindReact(this);
 
+    this.dealDeleteModal = createRef();
+
     this.state = {
       mainCategoryId: undefined,
+      showDealModal: false,
+      currentDeal: null,
     };
   }
 
@@ -60,10 +54,6 @@ export class DealsCmsPage extends PureComponent {
     const { parentCategoryId, categories } = this.props;
     const { prevCategories } = prevProps;
 
-    if (!prevCategories) {
-      const mainCategoryId = getMainCategoryId(parentCategoryId, categories);
-    }
-
     if (!_.isEqual(prevCategories, categories)) {
       const mainCategoryId = getMainCategoryId(parentCategoryId, categories);
 
@@ -72,17 +62,21 @@ export class DealsCmsPage extends PureComponent {
   }
 
   handleAddDealClick() {
-    this.refs.dealFormModal.show();
+    this.setState({ showDealModal: true, currentDeal: null });
   }
 
   handleUpdateDealClick(deal) {
-    this.refs.dealFormModal.show(deal);
+    this.setState({ showDealModal: true, currentDeal: deal });
+  }
+
+  handleDealModalHide() {
+    this.setState({ showDealModal: false, currentDeal: null });
   }
 
   handleDeleteDealClick(deal) {
     const { id, title } = deal;
 
-    this.refs.confirm.show({
+    this.dealDeleteModal.current.show({
       title: i18next.t(LOCALIZATION.DELETE_MODAL_TITLE),
       message: i18next.t(LOCALIZATION.DELETE_MODAL_MESSAGE, { title }),
       confirmLabel: i18next.t(LOCALIZATION.DELETE_MODAL_BUTTON_CONFIRM_TITLE),
@@ -115,20 +109,21 @@ export class DealsCmsPage extends PureComponent {
     return deleteDeal(dealId, catalogId);
   }
 
-  render() {
+  renderBody() {
     const {
-      catalogId,
       selectedCategoryId,
       categories,
-      assetManager,
+      languages,
       deals,
       dealsSchema,
-      places,
       onCategorySelected,
       updateResourceCategories: handleUpdateCategories,
       onCategoryCreate,
       onCategoryDelete,
       onCategoryUpdate,
+      onNextPageClick,
+      onPreviousPageClick,
+      updateResourceLanguages,
     } = this.props;
     const { mainCategoryId } = this.state;
 
@@ -137,60 +132,131 @@ export class DealsCmsPage extends PureComponent {
     };
 
     return (
-      <div className="deals-dashboard">
-        <div className="deals-dashboard__title">
-          <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
-          <Button
-            className="btn-icon pull-right"
-            onClick={this.handleAddDealClick}
-          >
-            <IconLabel iconName="add">
-              {i18next.t(LOCALIZATION.BUTTON_ADD_TITLE)}
-            </IconLabel>
-          </Button>
+      <>
+        <div className="deals-dashboard">
+          <div className="deals-dashboard__title">
+            <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
+            <Button
+              className="btn-icon pull-right"
+              onClick={this.handleAddDealClick}
+            >
+              <IconLabel iconName="add">
+                {i18next.t(LOCALIZATION.BUTTON_ADD_TITLE)}
+              </IconLabel>
+            </Button>
+          </div>
+          <CategoryTree
+            categories={categories}
+            categoryActionWhitelist={categoryActionWhitelist}
+            onCategoryCreate={onCategoryCreate}
+            onCategoryDelete={onCategoryDelete}
+            onCategorySelected={onCategorySelected}
+            onCategoryUpdate={onCategoryUpdate}
+            selectedCategoryId={selectedCategoryId}
+            staticCategories={[mainCategoryId]}
+          />
+          <CmsTable
+            categories={categories}
+            languages={languages}
+            className="deals-cms-table"
+            items={deals}
+            mainCategoryId={mainCategoryId}
+            onDeleteClick={this.handleDeleteDealClick}
+            onUpdateClick={this.handleUpdateDealClick}
+            onUpdateItemCategories={handleUpdateCategories}
+            onUpdateItemLanguages={updateResourceLanguages}
+            schema={dealsSchema}
+          />
+          <ConfirmModal
+            className="settings-page-modal-small"
+            ref={this.dealDeleteModal}
+          />
         </div>
-        <CategoryTree
-          categories={categories}
-          categoryActionWhitelist={categoryActionWhitelist}
-          onCategoryCreate={onCategoryCreate}
-          onCategoryDelete={onCategoryDelete}
-          onCategorySelected={onCategorySelected}
-          onCategoryUpdate={onCategoryUpdate}
-          selectedCategoryId={selectedCategoryId}
-          staticCategories={[mainCategoryId]}
+        <Paging
+          hasNext={hasNext(deals)}
+          hasPrevious={hasPrev(deals)}
+          onNextPageClick={onNextPageClick}
+          onPreviousPageClick={onPreviousPageClick}
+          resolvePageLabel={resolvePageLabel}
         />
-        <CmsTable
-          categories={categories}
-          className="deals-cms-table"
-          items={deals}
-          mainCategoryId={mainCategoryId}
-          onDeleteClick={this.handleDeleteDealClick}
-          onUpdateClick={this.handleUpdateDealClick}
-          onUpdateItemCategories={handleUpdateCategories}
-          schema={dealsSchema}
-        />
-        <ConfirmModal
-          className="deals-dashboard__delete settings-page-modal-small"
-          ref="confirm"
-        />
-        <DealFormModal
-          assetManager={assetManager}
-          catalogId={catalogId}
-          onDealCreate={this.handleDealCreate}
-          onDealUpdate={this.handleDealUpdate}
-          places={places}
-          ref="dealFormModal"
-        />
-      </div>
+      </>
+    );
+  }
+
+  renderModal() {
+    const {
+      catalogId,
+      assetManager,
+      loadSchema,
+      loadReferenceResources,
+    } = this.props;
+    const { currentDeal } = this.state;
+
+    return (
+      <DealFormModal
+        assetManager={assetManager}
+        catalogId={catalogId}
+        deal={currentDeal}
+        onHide={this.handleDealModalHide}
+        onDealCreate={this.handleDealCreate}
+        onDealUpdate={this.handleDealUpdate}
+        loadSchema={loadSchema}
+        loadResources={loadReferenceResources}
+      />
+    );
+  }
+
+  render() {
+    const { showDealModal } = this.state;
+
+    return (
+      <>
+        {!showDealModal && this.renderBody()}
+        {showDealModal && this.renderModal()}
+      </>
     );
   }
 }
+
+DealsDashboard.propTypes = {
+  assetManager: PropTypes.object.isRequired,
+  catalogId: PropTypes.string.isRequired,
+  categories: PropTypes.array.isRequired,
+  createDeal: PropTypes.func.isRequired,
+  deals: PropTypes.array.isRequired,
+  dealsSchema: PropTypes.object.isRequired,
+  deleteDeal: PropTypes.func.isRequired,
+  languages: PropTypes.array.isRequired,
+  loadReferenceResources: PropTypes.func.isRequired,
+  loadSchema: PropTypes.func.isRequired,
+  parentCategoryId: PropTypes.string.isRequired,
+  selectedCategoryId: PropTypes.string.isRequired,
+  updateDeal: PropTypes.func.isRequired,
+  updateResourceCategories: PropTypes.func.isRequired,
+  updateResourceLanguages: PropTypes.func.isRequired,
+  onCategoryCreate: PropTypes.func.isRequired,
+  onCategoryDelete: PropTypes.func.isRequired,
+  onCategorySelected: PropTypes.func.isRequired,
+  onCategoryUpdate: PropTypes.func.isRequired,
+  onNextPageClick: PropTypes.func.isRequired,
+  onPreviousPageClick: PropTypes.func.isRequired,
+};
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { appId, shortcutId, extensionName } = ownProps;
   const scope = { shortcutId, extensionName };
 
   return {
+    loadSchema: schema => dispatch(loadSchema(appId, schema, ext(schema))),
+    loadReferenceResources: (schema, titleProperty) =>
+      dispatch(
+        loadReferenceResources(
+          appId,
+          schema,
+          ext('reference-resources'),
+          titleProperty,
+        ),
+      ),
     deleteDeal: (dealId, catalogId) =>
       dispatch(deleteDeal(appId, dealId, scope)).then(() =>
         dispatch(
@@ -229,7 +295,9 @@ function mapDispatchToProps(dispatch, ownProps) {
       ),
     updateResourceCategories: (categoryIds, resource) =>
       dispatch(updateResourceCategories(appId, categoryIds, resource, scope)),
+    updateResourceLanguages: (languageIds, resource) =>
+      dispatch(updateResourceLanguages(appId, languageIds, resource)),
   };
 }
 
-export default connect(null, mapDispatchToProps)(DealsCmsPage);
+export default connect(null, mapDispatchToProps)(DealsDashboard);

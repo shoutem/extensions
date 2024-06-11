@@ -2,9 +2,9 @@
   "name": "application",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "version": "6.2.2",
+  "version": "6.2.3",
   "platform": ">=14",
-  "releaseNotes": "* Disabled image resizing for imgur images\n\nFor developers\n* Added node 18 support for server segment",
+  "releaseNotes": "* Fixed the issue with mapView component rerender flow",
   "nativeChanges": {
     "lastVersion": "4.1.4"
   },

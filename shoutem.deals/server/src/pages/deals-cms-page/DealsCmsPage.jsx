@@ -1,82 +1,52 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind';
-import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import {
-  getShortcutState,
-  updateShortcutSettings,
-} from '@shoutem/redux-api-sdk';
-import { Paging, LoaderContainer } from '@shoutem/react-web-ui';
+  createDealCategory,
+  DealsDashboard,
+  DEFAULT_LIMIT,
+  getDealCategories,
+  getDeals,
+  loadDealCategories,
+  loadDeals,
+  loadNextDealsPage,
+  loadPreviousDealsPage,
+} from 'src/modules/deals';
+import {
+  getLanguageModuleStatus,
+  getLanguages,
+  getRawLanguages,
+  isLanguageModuleEnabled,
+  languagesApi,
+  loadLanguageModuleStatus,
+  loadLanguages,
+  resolveHasLanguages,
+} from 'src/modules/languages';
+import { initializeSpecialDeals } from 'src/redux';
+import { dealsApi, types } from 'src/services';
+import { AssetManager } from '@shoutem/assets-sdk';
 import {
   CATEGORIES,
   deleteCategory,
   renameCategory,
 } from '@shoutem/cms-dashboard';
-import { AssetManager } from '@shoutem/assets-sdk';
-import { shouldLoad, shouldRefresh, hasNext, hasPrev } from '@shoutem/redux-io';
+import { LoaderContainer } from '@shoutem/react-web-ui';
 import {
-  loadDeals,
-  loadNextDealsPage,
-  loadPreviousDealsPage,
-  loadDealCategories,
-  createDealCategory,
-  loadPlaces,
-  getDeals,
-  getDealCategories,
-  getPlaces,
-  DealsDashboard,
-  DEFAULT_LIMIT,
-  DEFAULT_OFFSET,
-} from 'src/modules/deals';
-import { initializeSpecialDeals } from 'src/redux';
-import { dealsApi, types } from 'src/services';
+  getShortcutState,
+  updateShortcutSettings,
+} from '@shoutem/redux-api-sdk';
+import {
+  isBusy,
+  isInitialized,
+  shouldLoad,
+  shouldRefresh,
+} from '@shoutem/redux-io';
 import dealsSchema from '../../../data-schemas/deals.json';
-import LOCALIZATION from './localization';
-import './style.scss';
-
-function resolvePaging(currentPagingRef, useDefaultPaging) {
-  const defaultPaging = {
-    limit: DEFAULT_LIMIT,
-    offset: DEFAULT_OFFSET,
-  };
-
-  if (useDefaultPaging) {
-    return defaultPaging;
-  }
-
-  if (!currentPagingRef) {
-    return defaultPaging;
-  }
-
-  return currentPagingRef.getPagingInfo();
-}
+import { getCurrentPagingOffsetFromCollection } from '../../services';
 
 class DealsCmsPage extends PureComponent {
-  static propTypes = {
-    appId: PropTypes.string,
-    shortcut: PropTypes.object,
-    extension: PropTypes.object,
-    updateShortcutSettings: PropTypes.func,
-    deals: PropTypes.array,
-    loadDeals: PropTypes.func,
-    loadNextPage: PropTypes.func,
-    loadPreviousPage: PropTypes.func,
-    categories: PropTypes.array,
-    loadDealCategories: PropTypes.func,
-    createDealCategory: PropTypes.func,
-    deleteDealCategory: PropTypes.func,
-    renameDealCategory: PropTypes.func,
-    places: PropTypes.array,
-    loadPlaces: PropTypes.func,
-    initializeSpecialDeals: PropTypes.func,
-  };
-
-  static contextTypes = {
-    page: PropTypes.object,
-  };
-
   constructor(props, context) {
     super(props, context);
 
@@ -88,6 +58,7 @@ class DealsCmsPage extends PureComponent {
     const parentCategoryId = _.get(shortcut, 'settings.parentCategory.id');
     const catalogId = _.get(shortcut, 'settings.catalog.id');
     const dealsEndpoint = _.get(extension, 'settings.services.core.deals');
+    const cmsEndpoint = _.get(extension, 'settings.services.core.cms');
     const appsUrl = _.get(page, 'pageContext.url.apps', {});
 
     this.assetManager = new AssetManager({
@@ -97,48 +68,60 @@ class DealsCmsPage extends PureComponent {
     });
 
     dealsApi.init(dealsEndpoint);
+    languagesApi.init(cmsEndpoint);
 
     this.state = {
       parentCategoryId,
       catalogId,
-      inProgress: false,
+      initializing: false,
       selectedCategoryId: parentCategoryId,
-      showLoaderOnRefresh: false,
     };
   }
 
-  componentDidMount() {
+  UNSAFE_componentWillMount() {
     const { parentCategoryId, catalogId } = this.state;
 
     if (!parentCategoryId || !catalogId) {
       this.initializeSpecialDeals();
-    } else {
-      this.refreshData(this.props, true, true);
     }
+
+    this.checkData(this.props);
   }
 
-  componentDidUpdate(prevProps) {
-    this.refreshData(prevProps);
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    this.checkData(nextProps, this.props);
   }
 
-  refreshData(prevProps, useDefaultPaging = false, forceLoading) {
-    const { deals, categories } = this.props;
+  checkData(nextProps, props = {}) {
+    const {
+      loadLanguageModuleStatus,
+      loadLanguages,
+      loadDealCategories,
+    } = this.props;
+
+    const {
+      languageModuleStatus: nextLanguageModuleStatus,
+      languages: nextLanguages,
+    } = nextProps;
     const { selectedCategoryId, parentCategoryId } = this.state;
 
-    if ((parentCategoryId && shouldRefresh(categories)) || forceLoading) {
-      const { loadDealCategories } = this.props;
-
-      loadDealCategories(parentCategoryId, useDefaultPaging);
+    if (shouldLoad(nextProps, props, 'languageModuleStatus')) {
+      loadLanguageModuleStatus();
     }
 
-    if ((selectedCategoryId && shouldRefresh(deals)) || forceLoading) {
-      this.loadDeals(useDefaultPaging);
+    if (
+      isLanguageModuleEnabled(nextLanguageModuleStatus) &&
+      shouldRefresh(nextLanguages)
+    ) {
+      loadLanguages();
     }
 
-    if (shouldLoad(this.props, prevProps, 'places') || forceLoading) {
-      const { loadPlaces } = this.props;
+    if (parentCategoryId && shouldLoad(nextProps, props, 'categories')) {
+      loadDealCategories(parentCategoryId);
+    }
 
-      loadPlaces();
+    if (selectedCategoryId && shouldLoad(nextProps, props, 'deals')) {
+      this.handleLoadDeals();
     }
   }
 
@@ -148,7 +131,7 @@ class DealsCmsPage extends PureComponent {
       shortcut: { title },
       updateShortcutSettings,
     } = this.props;
-    this.setState({ inProgress: true });
+    this.setState({ initializing: true });
 
     initializeSpecialDeals(title).then(({ parentCategoryId, catalogId }) => {
       const settingsPatch = {
@@ -167,57 +150,29 @@ class DealsCmsPage extends PureComponent {
           catalogId,
           parentCategoryId,
           selectedCategoryId: parentCategoryId,
-          inProgress: false,
+          initializing: false,
         }),
       );
     });
   }
 
-  loadDeals(useDefaultPaging = true) {
-    const { loadDeals } = this.props;
+  handleLoadDeals() {
+    const { deals, loadDeals } = this.props;
     const { selectedCategoryId } = this.state;
 
-    const paging = resolvePaging(this.refs.paging, useDefaultPaging);
-    this.setState({ inProgress: true });
+    const offset = getCurrentPagingOffsetFromCollection(deals, DEFAULT_LIMIT);
 
-    loadDeals(selectedCategoryId, paging.limit, paging.offset).then(() =>
-      this.setState({
-        inProgress: false,
-        showLoaderOnRefresh: false,
-      }),
-    );
+    return loadDeals(selectedCategoryId, DEFAULT_LIMIT, offset);
   }
 
   handleNextPageClick() {
     const { deals, loadNextPage } = this.props;
-
-    this.setState({
-      inProgress: true,
-      showLoaderOnRefresh: true,
-    });
-
-    loadNextPage(deals).then(() =>
-      this.setState({
-        inProgress: false,
-        showLoaderOnRefresh: false,
-      }),
-    );
+    return loadNextPage(deals);
   }
 
   handlePreviousPageClick() {
     const { deals, loadPreviousPage } = this.props;
-
-    this.setState({
-      inProgress: true,
-      showLoaderOnRefresh: true,
-    });
-
-    loadPreviousPage(deals).then(() =>
-      this.setState({
-        inProgress: false,
-        showLoaderOnRefresh: false,
-      }),
-    );
+    return loadPreviousPage(deals);
   }
 
   handleCategorySelected(newSelectedCategoryId) {
@@ -228,11 +183,8 @@ class DealsCmsPage extends PureComponent {
     }
 
     this.setState(
-      {
-        selectedCategoryId: newSelectedCategoryId,
-        showLoaderOnRefresh: true,
-      },
-      this.loadDeals,
+      { selectedCategoryId: newSelectedCategoryId },
+      this.handleLoadDeals,
     );
   }
 
@@ -260,20 +212,31 @@ class DealsCmsPage extends PureComponent {
     const {
       appId,
       deals,
-      places,
       categories,
+      languageModuleStatus,
+      languages,
+      rawLanguages,
       deleteDealCategory: handleCategoryDelete,
     } = this.props;
 
     const {
-      inProgress,
-      showLoaderOnRefresh,
+      initializing,
       parentCategoryId,
       catalogId,
       selectedCategoryId,
     } = this.state;
 
-    const isLoading = showLoaderOnRefresh && inProgress;
+    const hasLanguages = resolveHasLanguages(languageModuleStatus, languages);
+    const resolvedLanguages = hasLanguages ? rawLanguages : [];
+
+    const isLoading =
+      initializing ||
+      !isInitialized(deals) ||
+      isBusy(deals) ||
+      isBusy(languageModuleStatus) ||
+      isBusy(languages);
+
+    const inProgress = isBusy(deals);
 
     return (
       <LoaderContainer
@@ -286,30 +249,48 @@ class DealsCmsPage extends PureComponent {
           assetManager={this.assetManager}
           catalogId={catalogId}
           categories={categories}
+          languages={resolvedLanguages}
           deals={deals}
           dealsSchema={dealsSchema}
           onCategoryCreate={this.handleCategoryCreate}
           onCategoryDelete={handleCategoryDelete}
           onCategorySelected={this.handleCategorySelected}
           onCategoryUpdate={this.handleCategoryRename}
-          parentCategoryId={parentCategoryId}
-          places={places}
-          selectedCategoryId={selectedCategoryId}
-        />
-        <Paging
-          hasNext={hasNext(deals)}
-          hasPrevious={hasPrev(deals)}
-          onNextPageClick={this.handleNextPageClick}
           onPreviousPageClick={this.handlePreviousPageClick}
-          ref="paging"
-          resolvePageLabel={pageNumber =>
-            i18next.t(LOCALIZATION.PAGE_LABEL, { pageNumber })
-          }
+          onNextPageClick={this.handleNextPageClick}
+          parentCategoryId={parentCategoryId}
+          selectedCategoryId={selectedCategoryId}
         />
       </LoaderContainer>
     );
   }
 }
+
+DealsCmsPage.propTypes = {
+  appId: PropTypes.string.isRequired,
+  categories: PropTypes.array.isRequired,
+  createDealCategory: PropTypes.func.isRequired,
+  deals: PropTypes.array.isRequired,
+  deleteDealCategory: PropTypes.func.isRequired,
+  extension: PropTypes.object.isRequired,
+  initializeSpecialDeals: PropTypes.func.isRequired,
+  languageModuleStatus: PropTypes.object.isRequired,
+  languages: PropTypes.array.isRequired,
+  loadDealCategories: PropTypes.func.isRequired,
+  loadDeals: PropTypes.func.isRequired,
+  loadLanguageModuleStatus: PropTypes.func.isRequired,
+  loadLanguages: PropTypes.func.isRequired,
+  loadNextPage: PropTypes.func.isRequired,
+  loadPreviousPage: PropTypes.func.isRequired,
+  rawLanguages: PropTypes.array.isRequired,
+  renameDealCategory: PropTypes.func.isRequired,
+  shortcut: PropTypes.object.isRequired,
+  updateShortcutSettings: PropTypes.func.isRequired,
+};
+
+DealsCmsPage.contextTypes = {
+  page: PropTypes.object,
+};
 
 function mapStateToProps(state, ownProps) {
   const { extensionName, shortcutId } = ownProps;
@@ -318,7 +299,9 @@ function mapStateToProps(state, ownProps) {
   return {
     deals: getDeals(shortcutState, state),
     categories: getDealCategories(shortcutState, state),
-    places: getPlaces(shortcutState, state),
+    languageModuleStatus: getLanguageModuleStatus(state),
+    languages: getLanguages(state),
+    rawLanguages: getRawLanguages(state),
   };
 }
 
@@ -351,7 +334,8 @@ function mapDispatchToProps(dispatch, ownProps) {
           scope,
         ),
       ),
-    loadPlaces: () => dispatch(loadPlaces(appId, scope)),
+    loadLanguageModuleStatus: () => dispatch(loadLanguageModuleStatus(appId)),
+    loadLanguages: () => dispatch(loadLanguages(appId)).catch(() => null),
     initializeSpecialDeals: categoryName =>
       dispatch(initializeSpecialDeals(appId, categoryName, scope)).then(
         ([category, catalog]) => ({

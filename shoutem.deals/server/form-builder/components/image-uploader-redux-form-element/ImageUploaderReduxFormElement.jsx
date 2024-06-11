@@ -1,53 +1,43 @@
 import React, { PureComponent } from 'react';
+import { ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
-import PropTypes from 'prop-types';
-import { HelpBlock, ControlLabel, FormGroup } from 'react-bootstrap';
-import { ImageUploader } from '@shoutem/file-upload';
 import classNames from 'classnames';
-import { fieldInError } from '../services';
+import PropTypes from 'prop-types';
+import { ImageUploader } from '@shoutem/file-upload';
+import { fieldInError, resolveCdnUrl } from '../services';
 
 function resolveFilename(file) {
   const timestamp = new Date().getTime();
-
   return `${timestamp}-${file.name}`;
 }
 
 export default class ImageUploaderReduxFormElement extends PureComponent {
-  static propTypes = {
-    elementId: PropTypes.string,
-    assetManager: PropTypes.object,
-    name: PropTypes.string,
-    field: PropTypes.object,
-    helpText: PropTypes.string,
-    className: PropTypes.string,
-    folderName: PropTypes.string,
-  };
-
   constructor(props) {
     super(props);
 
     autoBindReact(this);
-
-    this.state = {
-      inProgress: false,
-    };
   }
 
   handleImageDrop() {
-    this.setState({ inProgress: true });
+    // do nothing
   }
 
   handleImageUploadSuccess(imageUrl) {
     const { field } = this.props;
 
-    this.setState({ inProgress: false });
-    field.onChange(imageUrl);
+    const cdnUrl = resolveCdnUrl(imageUrl);
+    field.onChange(cdnUrl);
   }
 
   handleImageDeleteSuccess() {
     const { field } = this.props;
-
     field.onChange('');
+  }
+
+  handlePreviewClick(link) {
+    if (link) {
+      window.open(link, '_blank');
+    }
   }
 
   render() {
@@ -82,6 +72,7 @@ export default class ImageUploaderReduxFormElement extends PureComponent {
           onDrop={this.handleImageDrop}
           onUploadSuccess={this.handleImageUploadSuccess}
           resolveFilename={resolveFilename}
+          onPreviewClick={this.handlePreviewClick}
           shallowDelete
           src={field.value}
           {...otherProps}
@@ -91,3 +82,13 @@ export default class ImageUploaderReduxFormElement extends PureComponent {
     );
   }
 }
+
+ImageUploaderReduxFormElement.propTypes = {
+  assetManager: PropTypes.object.isRequired,
+  elementId: PropTypes.string.isRequired,
+  field: PropTypes.object.isRequired,
+  folderName: PropTypes.string.isRequired,
+  helpText: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  className: PropTypes.string,
+};

@@ -1,16 +1,16 @@
 import enTranslations from './translations/en.json';
 
-export { PERMISSION_TYPES, PERMISSION_RESULT_TYPES } from './const';
-
+export { PERMISSION_RESULT_TYPES, PERMISSION_TYPES } from './const';
+export { reducer, withAlarmPermission } from './redux';
 export {
+  check,
+  checkNotifications,
   checkPermissions,
   openDeviceSettings,
-  requestPermissions,
-  checkNotifications,
-  requestNotifications,
   openSettings,
-  check,
   request,
+  requestNotifications,
+  requestPermissions,
   RESULTS,
 } from './services';
 
@@ -19,3 +19,5 @@ export const shoutem = {
     translations: { en: enTranslations },
   },
 };
+
+export { appDidMount } from './app';

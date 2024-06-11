@@ -1,6 +1,6 @@
 {
   "name": "shoutem.i18n",
-  "version": "4.1.3",
+  "version": "4.2.0",
   "description": "Configure the language and regional settings of your app.",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"

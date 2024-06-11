@@ -2,7 +2,7 @@ import AboutScreen, {
   AboutScreen as AboutScreenComponent,
 } from './screens/AboutScreen';
 import * as extension from './extension';
-import { reducer } from './redux';
+import { localeChangedMiddleware, reducer } from './redux';
 
 export const components = {
   AboutScreen: AboutScreenComponent,
@@ -17,5 +17,7 @@ export const screens = {
 };
 
 export const { themes } = extension;
+
+export const middleware = [localeChangedMiddleware];
 
 export { reducer };

@@ -1,48 +1,27 @@
 import React, { PureComponent } from 'react';
+import { Button } from 'react-bootstrap';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { InlineModal } from '@shoutem/react-web-ui';
-import DealForm from '../deal-form';
+import { FontIcon } from '@shoutem/react-web-ui';
 import { mapModelToView, mapViewToModel } from '../../services';
+import DealForm from '../deal-form';
 import LOCALIZATION from './localization';
 import './styles.scss';
 
 export default class DealFormModal extends PureComponent {
-  static propTypes = {
-    assetManager: PropTypes.object,
-    catalogId: PropTypes.string,
-    onDealCreate: PropTypes.func,
-    onDealUpdate: PropTypes.func,
-    places: PropTypes.array,
-  };
-
   constructor(props) {
     super(props);
-
     autoBindReact(this);
-
-    this.state = {
-      inProgress: false,
-      currentDeal: null,
-      show: false,
-    };
-  }
-
-  show(currentDeal) {
-    this.setState({
-      show: true,
-      currentDeal,
-    });
   }
 
   handleHide() {
-    this.setState({
-      inProgress: false,
-      show: false,
-      currentDeal: null,
-    });
+    const { onHide } = this.props;
+
+    if (_.isFunction(onHide)) {
+      onHide();
+    }
   }
 
   handleFormSubmit(deal) {
@@ -57,13 +36,12 @@ export default class DealFormModal extends PureComponent {
 
   handleSaveDeal(deal) {
     const { catalogId, onDealCreate, onDealUpdate } = this.props;
-    const { currentDeal } = this.state;
 
     const dealToSave = mapViewToModel(deal, catalogId);
-    const placeId = _.get(deal, 'place');
+    const placeId = _.get(deal, 'place.id');
     const categories = _.get(deal, 'categories');
 
-    if (currentDeal) {
+    if (_.get(deal, 'id')) {
       return onDealUpdate(dealToSave, placeId, categories);
     }
 
@@ -71,29 +49,43 @@ export default class DealFormModal extends PureComponent {
   }
 
   render() {
-    const { assetManager, places } = this.props;
-    const { show, currentDeal } = this.state;
+    const { assetManager, deal, loadSchema, loadResources } = this.props;
 
-    const modalTitle = currentDeal
+    const modalTitle = deal
       ? i18next.t(LOCALIZATION.MODAL_EDIT_TITLE)
       : i18next.t(LOCALIZATION.MODAL_ADD_TITLE);
-    const displayDeal = currentDeal && mapModelToView(currentDeal);
+    const displayDeal = deal && mapModelToView(deal);
 
     return (
-      <InlineModal
-        className="deal-form-modal"
-        onHide={this.handleHide}
-        show={show}
-        title={modalTitle}
-      >
+      <div className="deal-form-modal">
+        <div className="deal-form-modal-title-container">
+          <Button className="btn-icon pull-left" onClick={this.handleHide}>
+            <FontIcon name="back" size="24px" />
+          </Button>
+          {modalTitle && (
+            <h3 className="deal-form-modal-title">{modalTitle}</h3>
+          )}
+        </div>
         <DealForm
           assetManager={assetManager}
           initialValues={displayDeal}
           onCancel={this.handleHide}
           onSubmit={this.handleFormSubmit}
-          places={places}
+          loadSchema={loadSchema}
+          loadResources={loadResources}
         />
-      </InlineModal>
+      </div>
     );
   }
 }
+
+DealFormModal.propTypes = {
+  assetManager: PropTypes.object.isRequired,
+  catalogId: PropTypes.string.isRequired,
+  deal: PropTypes.object.isRequired,
+  loadResources: PropTypes.func.isRequired,
+  loadSchema: PropTypes.func.isRequired,
+  onDealCreate: PropTypes.func.isRequired,
+  onDealUpdate: PropTypes.func.isRequired,
+  onHide: PropTypes.func.isRequired,
+};

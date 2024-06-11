@@ -1,12 +1,8 @@
+.modal-backdrop {
+  background-color: #ffffff !important;
+}
+
 body.extension-sandbox-container {
-  .modal-backdrop {
-    background-color: #ffffff;
-
-    .in {
-      opacity: 0.8;
-    }
-  }
-
   &.modal-open {
     height: 1000px;
   }

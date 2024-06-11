@@ -185,6 +185,9 @@
           "dateFormat": "DD MMM 'YY hh:mm a"
         },
         {
+          "name": "languages"
+        },
+        {
           "name": "categories"
         }
       ]

@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
+import { HelpBlock } from 'react-bootstrap';
+import Dropzone from 'react-dropzone';
 import autoBindReact from 'auto-bind/react';
 import classNames from 'classnames';
 import i18next from 'i18next';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { HelpBlock } from 'react-bootstrap';
-import Dropzone from 'react-dropzone';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import ImageUploadPlaceholder from '../image-upload-placeholder';
 import ImagePreview from '../image-preview';
+import ImageUploadPlaceholder from '../image-upload-placeholder';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -125,7 +125,7 @@ export default class ImageUploader extends PureComponent {
   }
 
   renderDropzoneContent() {
-    const { src, canBeDeleted } = this.props;
+    const { src, canBeDeleted, canBePreviewed } = this.props;
 
     if (!src) {
       return <ImageUploadPlaceholder />;
@@ -134,10 +134,22 @@ export default class ImageUploader extends PureComponent {
     return (
       <ImagePreview
         canBeDeleted={canBeDeleted}
+        canBePreviewed={canBePreviewed}
         onDeleteClick={this.handleDeleteClick}
+        onPreviewClick={this.handlePreviewClick}
         src={src}
       />
     );
+  }
+
+  handlePreviewClick(event) {
+    event.stopPropagation();
+
+    const { src, onPreviewClick } = this.props;
+
+    if (_.isFunction(onPreviewClick)) {
+      onPreviewClick(src);
+    }
   }
 
   render() {
@@ -183,61 +195,63 @@ ImageUploader.propTypes = {
    */
   onUploadSuccess: PropTypes.func.isRequired,
   /**
-   *  Callback invoked when upload fails
+   * By providing accept prop you can make Dropzone to accept
+   * specific file types and reject the others.
    */
-  onError: PropTypes.func,
+  accept: PropTypes.string,
+  assetManager: PropTypes.shape({
+    deleteFile: PropTypes.func.isRequired,
+    listFolder: PropTypes.func.isRequired,
+    uploadFile: PropTypes.func.isRequired,
+  }),
+  /**
+   * Flag indicating whether file can be deleted
+   */
+  canBeDeleted: PropTypes.bool,
+  /**
+   * Flag indicating whether file can be previewed
+   */
+  canBePreviewed: PropTypes.bool,
   /**
    * Additional classes to apply
    */
   className: PropTypes.string,
   /**
-   *  Url to the src
+   * Flag indicating whether upload is disabled
    */
-  src: PropTypes.string,
+  disabled: PropTypes.bool,
+  folderName: PropTypes.string,
+  /**
+   * Help text positioned below dropzone
+   */
+  helpText: PropTypes.string,
+  /**
+   * Max file size allowed to be uploaded
+   */
+  maxFileSize: PropTypes.number,
+  resolveFilename: PropTypes.func,
+  /**
+   * Max file size allowed to be uploaded
+   */
+  shallowDelete: PropTypes.bool,
   /**
    * Flag indicating whether to show validation error in component.
    * If set to false, onError function should be provided for displaying upload error.
    */
   showValidationError: PropTypes.bool,
   /**
-   * Help text positioned below dropzone
+   *  Url to the src
    */
-  helpText: PropTypes.string,
-  /**
-   * Object containing methods for inProgress, listing, and deleting files on cloud
-   */
-  assetManager: PropTypes.shape({
-    deleteFile: PropTypes.func.isRequired,
-    uploadFile: PropTypes.func.isRequired,
-    listFolder: PropTypes.func.isRequired,
-  }),
-  folderName: PropTypes.string,
-  resolveFilename: PropTypes.func,
+  src: PropTypes.string,
   /**
    *  Callback forwarded to ImagePreview component; invoked when existing file is deleted
    */
   onDeleteSuccess: PropTypes.func,
   /**
-   * Flag indicating whether file can be deleted
+   *  Callback invoked when upload fails
    */
-  canBeDeleted: PropTypes.bool,
-  /**
-   * By providing accept prop you can make Dropzone to accept
-   * specific file types and reject the others.
-   */
-  accept: PropTypes.string,
-  /**
-   * Max file size allowed to be uploaded
-   */
-  maxFileSize: PropTypes.number,
-  /**
-   * Max file size allowed to be uploaded
-   */
-  shallowDelete: PropTypes.bool,
-  /**
-   * Flag indicating whether upload is disabled
-   */
-  disabled: PropTypes.bool,
+  onError: PropTypes.func,
+  onPreviewClick: PropTypes.func,
 };
 
 ImageUploader.defaultProps = {
@@ -245,6 +259,7 @@ ImageUploader.defaultProps = {
   onError: () => {},
   showValidationError: true,
   canBeDeleted: true,
+  canBePreviewed: true,
   autoResize: true,
   resolveFilename: file => file.name,
 };
