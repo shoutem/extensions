@@ -6,28 +6,30 @@ import {
   usePlaybackState,
 } from 'react-native-track-player';
 
+/**
+ * Matches given track against active track and returns general and computed playback state variables.
+ */
 export const useTrackState = ({ track } = {}) => {
   const playback = usePlaybackState();
-  const { playing = false, bufferingDuringPlay } = useIsPlaying();
   const activeTrack = useActiveTrack();
+  const { bufferingDuringPlay, playing } = useIsPlaying();
 
-  // We can pass track as undefined in scenarios where we want to get state of currently active track.
-  const isActive = useMemo(
-    () => (!track ? !!activeTrack : activeTrack?.id === track?.id),
-    [activeTrack, track],
-  );
+  const isActive = useMemo(() => activeTrack?.id === track?.id, [
+    activeTrack,
+    track,
+  ]);
 
   const isActiveAndPlaying = useMemo(() => isActive && playing, [
     isActive,
     playing,
   ]);
+
   const isLoadingOrBuffering = useMemo(
     () =>
       isActive &&
-      (bufferingDuringPlay ||
-        playback.state === State.Loading ||
-        playback.state === State.Buffering),
-    [isActive, bufferingDuringPlay, playback.state],
+      (playback.state === State.Loading ||
+        (playback.state === State.Buffering && !bufferingDuringPlay)),
+    [bufferingDuringPlay, isActive, playback.state],
   );
 
   return {

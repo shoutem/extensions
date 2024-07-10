@@ -38,7 +38,7 @@ export const ProgressBar = ({ percentage, style }) => {
     let baseColor = style.completeProgressBarBackground.backgroundColor;
 
     // Workaround until we change featured color to something other than #FFF in Rose theme...
-    if (theme.name === 'RubiconRose' && baseColor === 'rgb(255, 255, 255)')
+    if (theme.name === 'RubiconRose' && baseColor === '#FFFFFF')
       baseColor = resolveVariable('secondaryButtonBackgroundColor');
 
     const colorInstance = tinycolor(baseColor);

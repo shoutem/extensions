@@ -1,15 +1,15 @@
 import React from 'react';
-import { useAudioPlayerBanner } from '../hooks';
-import AudioPlayerBanner from './AudioPlayerBanner';
+import { useAudioBanner } from '../hooks';
+import AudioBanner from './AudioBanner';
 
 const AudioBannerRenderer = () => {
-  const { isShown } = useAudioPlayerBanner();
+  const { isShown } = useAudioBanner();
 
   if (!isShown) {
     return null;
   }
 
-  return <AudioPlayerBanner />;
+  return <AudioBanner />;
 };
 
 export default AudioBannerRenderer;

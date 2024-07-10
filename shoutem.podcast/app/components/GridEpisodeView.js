@@ -1,4 +1,5 @@
 import React from 'react';
+import FastImage from 'react-native-fast-image';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { connectStyle } from '@shoutem/theme';
@@ -7,7 +8,6 @@ import {
   Caption,
   Card,
   Icon,
-  Image,
   Spinner,
   Subtitle,
   TouchableOpacity,
@@ -28,7 +28,13 @@ import { FavoriteButton } from './FavoriteButton';
  */
 export class GridEpisodeView extends EpisodeView {
   render() {
-    const { enableDownload, episode, hasFavorites, isFavorited } = this.props;
+    const {
+      enableDownload,
+      episode,
+      hasFavorites,
+      isFavorited,
+      style,
+    } = this.props;
     const { downloadInProgress, timeUpdated, title } = episode;
 
     const isDownloaded = downloadInProgress !== undefined;
@@ -38,14 +44,15 @@ export class GridEpisodeView extends EpisodeView {
       ? this.onDeletePress
       : this.onDownloadPress;
     const imageUrl = this.getImageUrl(episode);
-    const episodeImage = imageUrl
-      ? { uri: imageUrl }
-      : assets.noImagePlaceholder;
 
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Card styleName="flexible">
-          <Image source={episodeImage} styleName="medium-wide placeholder" />
+          <FastImage
+            source={{ uri: imageUrl, priority: FastImage.priority.normal }}
+            defaultSource={assets.noImagePlaceholder}
+            style={style.image}
+          />
           <View styleName="flexible space-between clear">
             <Subtitle numberOfLines={2}>{title}</Subtitle>
             <View styleName="horizontal md-gutter-top space-between">

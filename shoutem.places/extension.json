@@ -1,10 +1,10 @@
 {
   "name": "places",
-  "version": "6.3.1",
-  "platform": ">=14.0.2",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "releaseNotes": "* Added social inputs inside builder\n* Added social buttons for defined social profiles, in-app",
+  "version": "7.0.0",
+  "platform": ">=14.1.1",
+  "releaseNotes": "Release notes\n* Added LinkedIn link UI in the app. This information can be managed within the builder by creating new Place CMS items or editing existing ones\n* Web and social profiles links will now be opened in external - native browser\n\nDeveloper notes\n* (Breaking) Link buttons functionality was moved to CMS extension",
   "icon": "./server/assets/images/add-places-image.png",
   "dependencies": [
     "shoutem.application",
@@ -13,7 +13,6 @@
     "shoutem.i18n",
     "shoutem.layouts",
     "shoutem.navigation",
-    "shoutem.web-view",
     "shoutem.theme"
   ],
   "i18n": {

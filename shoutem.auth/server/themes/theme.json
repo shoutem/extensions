@@ -79,6 +79,18 @@
       "format": "color",
       "default": "@backgroundColor"
     },
+    "forgotPasswordText": {
+      "type": "object",
+      "title": "Forgot password text",
+      "format": "font",
+      "default": {
+        "color": "@primaryButtonText.color",
+        "fontFamily": "@primaryButtonText.fontFamily",
+        "fontSize": 11,
+        "fontStyle": "@primaryButtonText.fontStyle",
+        "fontWeight": "400"
+      }
+    },
     "separatorLineColor": {
       "type": "string",
       "title": "Separator line color",
@@ -128,6 +140,7 @@
         "properties": [
           "loginAndRegisterScreenBackgroundColor",
           "createNewAccountText",
+          "forgotPasswordText",
           "separatorLineColor",
           "separatorText",
           "showPasswordButtonColor"

@@ -2,38 +2,15 @@
   "shoutem": {
     "radio-player": {
       "buffering": "Buffering...",
-      "cancelTimer": "Turn off timer",
-      "cancelSleepTimer": {
-        "one": "{{count}} minute left",
-        "other": "{{count}} minutes left",
-        "zero": "< 1 minute left"
-      },
-      "cancelSleepTimerArtworkLayout": {
-        "one": "{{count}} min",
-        "other": "{{count}} mins",
-        "zero": "< 1 min"
-      },
-      "cancelTimerWithDurationLeft": {
-        "one": "Turn off timer - {{count}} minute left",
-        "other": "Turn off timer - {{count}} minutes left",
-        "zero": "Turn off timer - Less than a minute left"
-      },
-      "closeSleepTimerOptionsLabel": "Back",
-      "timerOption": "{{duration}} minutes",
-      "timerOptionsExplanation": "Stop playing in...",
-      "turnOffTimer": "Turn off timer",
       "missingStreamUrl": "Please enter a valid stream URL and reload your app.",
       "moreOptionsLabel": "More options",
       "nowPlaying": "Now playing",
       "pressToPlay": "Press play to start the stream",
-      "sleepTimerLabel": "Sleep Timer",
       "shareButtonLabel": "Share",
       "shareMessage": "Stream address: {{streamUrl}}",
       "shareTitle": "Currently listening to {{streamTitle}}",
       "currentNews": "CURRENT NEWS",
-      "seeAll": "See all",
-      "sleepTimerToastTitle": "Sleep Timer Expired",
-      "sleepTimerToastMessage": "Your radio has completed its scheduled session."
+      "seeAll": "See all"
     }
   }
 }

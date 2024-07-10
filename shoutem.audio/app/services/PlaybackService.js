@@ -15,12 +15,15 @@ export const PlaybackService = async () => {
 
   TrackPlayer.addEventListener(Event.RemotePlay, TrackPlayer.play);
 
-  TrackPlayer.addEventListener(Event.RemoteNext, TrackPlayer.skipToNext);
+  TrackPlayer.addEventListener(Event.RemoteNext, async () => {
+    await TrackPlayer.skipToNext();
+    await TrackPlayer.play();
+  });
 
-  TrackPlayer.addEventListener(
-    Event.RemotePrevious,
-    TrackPlayer.skipToPrevious,
-  );
+  TrackPlayer.addEventListener(Event.RemotePrevious, async () => {
+    await TrackPlayer.skipToPrevious();
+    await TrackPlayer.play();
+  });
 
   // To enchance user experience, automatically play the track after user has seeked or jumped.
   TrackPlayer.addEventListener(Event.RemoteJumpForward, async event => {

@@ -1,15 +1,11 @@
 import React, { PureComponent } from 'react';
-import { Linking } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
-  Button,
   Caption,
   Divider,
-  Icon,
-  Row,
   Screen,
   ScrollView,
   SimpleHtml,
@@ -20,6 +16,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { InlineMap } from 'shoutem.application';
+import { UNIVERSAL_LINK_TYPE, UniversalLinkButton } from 'shoutem.cms';
 import { Favorite } from 'shoutem.favorites';
 import { I18n } from 'shoutem.i18n';
 import {
@@ -27,11 +24,10 @@ import {
   getRouteParams,
   navigateTo,
 } from 'shoutem.navigation';
-import { openURL } from 'shoutem.web-view';
 import { PlaceDealsSection, PlaceImageGallery } from '../components';
 import { ext } from '../const';
 import { dealsExtensionInstalled } from '../services';
-import { getMapUrl, getPlaceImages } from '../services/places';
+import { getPlaceImages } from '../services/places';
 
 export class PlaceDetails extends PureComponent {
   constructor(props) {
@@ -83,37 +79,6 @@ export class PlaceDetails extends PureComponent {
       headerRight,
       title,
     };
-  }
-
-  openURL() {
-    const { place } = getRouteParams(this.props);
-    openURL(place.rsvpLink, place.name);
-  }
-
-  openWebLink(key) {
-    const { place } = getRouteParams(this.props);
-
-    openURL(place[key]);
-  }
-
-  openMapLink() {
-    const { place } = getRouteParams(this.props);
-    const location = _.get(place, 'location', {});
-    const { latitude, longitude, formattedAddress } = location;
-
-    if (latitude && longitude) {
-      Linking.openURL(getMapUrl(latitude, longitude, formattedAddress));
-    }
-  }
-
-  openEmailLink() {
-    const { place } = getRouteParams(this.props);
-    Linking.openURL(`mailto:${place.mail}`);
-  }
-
-  openPhoneLink() {
-    const { place } = getRouteParams(this.props);
-    Linking.openURL(`tel:${place.phone}`);
   }
 
   openMapScreen() {
@@ -198,41 +163,72 @@ export class PlaceDetails extends PureComponent {
   }
 
   renderRsvpButton(place) {
-    return place.rsvpLink ? (
-      <Button onPress={this.openURL}>
-        <Text>{I18n.t('shoutem.cms.rsvpButton')}</Text>
-      </Button>
-    ) : null;
-  }
-
-  renderButtons() {
-    const { place } = getRouteParams(this.props);
     return (
-      <Row>
-        <View styleName="horizontal h-center">
-          {this.renderRsvpButton(place)}
-        </View>
-      </Row>
+      <UniversalLinkButton
+        link={place.rsvpLink}
+        title={I18n.t('shoutem.cms.rsvpButton')}
+        iconName="rsvp"
+      />
     );
   }
 
-  renderDisclosureButton(title, subtitle, icon, onPressCallback) {
-    if (!title) {
-      return null;
-    }
+  renderLinkButtons(place) {
     return (
-      <TouchableOpacity onPress={onPressCallback}>
-        <Divider styleName="line" />
-        <Row>
-          <Icon name={icon} styleName="indicator" />
-          <View styleName="vertical">
-            <Subtitle>{subtitle}</Subtitle>
-            <Text numberOfLines={1}>{title}</Text>
-          </View>
-          <Icon name="right-arrow" styleName="indicator disclosure" />
-        </Row>
-        <Divider styleName="line" />
-      </TouchableOpacity>
+      <>
+        <UniversalLinkButton
+          type={UNIVERSAL_LINK_TYPE.LOCATION}
+          location={place.location}
+          title={I18n.t('shoutem.cms.directionsButton')}
+          subtitle={place.location?.formattedAddress}
+        />
+        <UniversalLinkButton
+          link={place.url}
+          title={I18n.t('shoutem.cms.websiteButton')}
+          subtitle={place.url}
+        />
+        <UniversalLinkButton
+          type={UNIVERSAL_LINK_TYPE.EMAIL}
+          link={place.mail}
+          title={I18n.t('shoutem.cms.emailButton')}
+          subtitle={place.mail}
+        />
+        <UniversalLinkButton
+          type={UNIVERSAL_LINK_TYPE.PHONE}
+          link={place.phone}
+          title={I18n.t('shoutem.cms.phoneButton')}
+          subtitle={place.phone}
+        />
+        <UniversalLinkButton
+          link={place.twitter}
+          title={I18n.t('shoutem.cms.twitterButton')}
+          subtitle={place.twitter}
+          iconName="tweet"
+        />
+        <UniversalLinkButton
+          link={place.instagram}
+          title={I18n.t('shoutem.cms.instagramButton')}
+          subtitle={place.instagram}
+          iconName="instagram"
+        />
+        <UniversalLinkButton
+          link={place.facebook}
+          title={I18n.t('shoutem.cms.facebookButton')}
+          subtitle={place.facebook}
+          iconName="facebook"
+        />
+        <UniversalLinkButton
+          link={place.tiktok}
+          title={I18n.t('shoutem.cms.tiktokButton')}
+          subtitle={place.tiktok}
+          iconName="tiktok"
+        />
+        <UniversalLinkButton
+          link={place.linkedin}
+          title={I18n.t('shoutem.cms.linkedInButton')}
+          subtitle={place.linkedin}
+          iconName="linkedin"
+        />
+      </>
     );
   }
 
@@ -248,64 +244,16 @@ export class PlaceDetails extends PureComponent {
 
   render() {
     const { place } = getRouteParams(this.props);
-    const location = _.get(place, 'location', {});
 
     return (
       <Screen styleName="paper">
         <ScrollView>
           {this.renderLeadImage(place)}
           {this.renderOpeningHours(place)}
-          {this.renderButtons()}
+          {this.renderRsvpButton(place)}
           {this.renderInlineMap(place)}
           {this.renderDescription(place)}
-          {this.renderDisclosureButton(
-            place.url,
-            I18n.t('shoutem.cms.websiteButton'),
-            'web',
-            () => this.openWebLink('url'),
-          )}
-          {this.renderDisclosureButton(
-            location.formattedAddress,
-            I18n.t('shoutem.cms.directionsButton'),
-            'pin',
-            this.openMapLink,
-          )}
-          {this.renderDisclosureButton(
-            place.mail,
-            I18n.t('shoutem.cms.emailButton'),
-            'email',
-            this.openEmailLink,
-          )}
-          {this.renderDisclosureButton(
-            place.phone,
-            I18n.t('shoutem.cms.phoneButton'),
-            'call',
-            this.openPhoneLink,
-          )}
-          {this.renderDisclosureButton(
-            place.instagram,
-            I18n.t('shoutem.cms.instagramButton'),
-            'instagram',
-            () => this.openWebLink('instagram'),
-          )}
-          {this.renderDisclosureButton(
-            place.facebook,
-            I18n.t('shoutem.cms.facebookButton'),
-            'facebook',
-            () => this.openWebLink('facebook'),
-          )}
-          {this.renderDisclosureButton(
-            place.twitter,
-            I18n.t('shoutem.cms.twitterButton'),
-            'tweet',
-            () => this.openWebLink('twitter'),
-          )}
-          {this.renderDisclosureButton(
-            place.tiktok,
-            I18n.t('shoutem.cms.tiktokButton'),
-            'tiktok',
-            () => this.openWebLink('tiktok'),
-          )}
+          {this.renderLinkButtons(place)}
           {this.renderPlaceDeals()}
         </ScrollView>
       </Screen>

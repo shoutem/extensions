@@ -1,14 +1,16 @@
 import { useCallback, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Capability,
-  setActivePlaylistOrStream,
-  usePlaybackBehavior,
+  getActiveSource,
+  TrackPlayer,
+  updateActiveSource,
   useProgressTracking,
   useSetupPlayerAndOptions,
+  useTrackPlayer,
   useTrackState,
 } from 'shoutem.audio';
-import { updateLastPlayed } from '../redux';
+import { AUDIO_SOURCE_TYPE } from 'shoutem.audio/const';
 
 const PLAYER_OPTIONS = {
   capabilities: [
@@ -29,13 +31,26 @@ const PLAYER_OPTIONS = {
   forwardJumpInterval: 30,
 };
 
-export const usePodcastEpisodePlayer = ({ track, playlist }) => {
+/**
+ * Mathches given track against active track, provides playback status and playback callback definitions
+ * for given track.
+ */
+export const usePodcastEpisodePlayer = ({ track, title }) => {
   const dispatch = useDispatch();
 
-  const onFirstPlay = useCallback(() => {
-    dispatch(setActivePlaylistOrStream(playlist));
-    dispatch(updateLastPlayed(playlist.id, track));
-  }, [dispatch, playlist, track]);
+  const activeSource = useSelector(getActiveSource);
+
+  const onFirstPlay = useCallback(async () => {
+    await TrackPlayer.setQueue([track]);
+
+    dispatch(
+      updateActiveSource({
+        type: AUDIO_SOURCE_TYPE.TRACK,
+        url: track.url,
+        title,
+      }),
+    );
+  }, [track, dispatch, title]);
 
   const {
     progressUpdateEventInterval,
@@ -56,8 +71,9 @@ export const usePodcastEpisodePlayer = ({ track, playlist }) => {
     track,
   });
 
-  const { onPlaybackButtonPress } = usePlaybackBehavior({
+  const { onPlaybackButtonPress } = useTrackPlayer({
     track,
+    isFirstPlay: activeSource?.url !== track?.url,
     onFirstPlay,
     onBeforePlay: seekToInitialPosition,
   });

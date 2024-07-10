@@ -48,8 +48,6 @@ export default () => ({
       paddingBottom: 0,
       marginBottom: 0,
     },
-    activeSleepIconFill: resolveVariable('featuredColor'),
-    inactiveSleepIconFill: resolveVariable('navBarIconsColor'),
     adBannerContainer: {
       position: 'absolute',
       top: responsiveHeight(90),
@@ -129,13 +127,6 @@ export default () => ({
     songNameTitle: {
       color: resolveVariable('songNameTitleColor'),
     },
-    shareButton: {
-      paddingHorizontal: getSizeRelativeToReference(
-        resolveVariable('smallGutter'),
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-    },
     blurRadius: 7,
     overlay: {
       backgroundColor: changeColorAlpha(
@@ -207,12 +198,6 @@ export default () => ({
       ),
       borderWidth: resolveVariable('smallGutter'),
     },
-    playbackButton: {
-      opacity: 0.7,
-    },
-    playbackMainCircle: {
-      borderColor: resolveVariable('secondaryButtonBackgroundColor'),
-    },
     nowPlayingContainer: {
       position: 'absolute',
       bottom: getSizeRelativeToReference(
@@ -239,139 +224,9 @@ export default () => ({
         resolveVariable('sizes.window.height'),
       ),
     },
-    sleepTimerActiveText: {
-      color: resolveVariable('featuredColor'),
-    },
-    smallActionButton: {
-      paddingHorizontal: getSizeRelativeToReference(
-        resolveVariable('smallGutter'),
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-    },
-    smallActionIconFill: resolveVariable('shareButtonColor'),
-    smallActionRow: {
-      position: 'absolute',
-      bottom: 0,
-      height: getSizeRelativeToReference(
-        80,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      width: resolveVariable('sizes.window.width'),
-      paddingBottom: getSizeRelativeToReference(
-        resolveVariable('largeGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      paddingHorizontal: responsiveWidth(resolveVariable('largeGutter')),
-    },
-    smallActionContainerLeft: {
-      flex: 1,
-    },
-    smallActionContainerRight: {
-      flex: 1,
-    },
-    smallActionText: {
-      color: resolveVariable('shareButtonColor'),
-    },
-    disabledOpacity: {
-      opacity: 0.5,
-    },
     adBannerContainer: {
       position: 'absolute',
       top: responsiveHeight(90),
-    },
-  },
-
-  [`${ext('SheetHeader')}`]: {
-    container: {
-      borderTopLeftRadius: getSizeRelativeToReference(
-        10,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      borderTopRightRadius: getSizeRelativeToReference(
-        10,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-    },
-    iconFill: resolveVariable('text.color'),
-  },
-
-  [`${ext('TimerOptions')}`]: {
-    optionContainer: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      paddingHorizontal: getSizeRelativeToReference(
-        resolveVariable('mediumGutter'),
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-      paddingVertical: getSizeRelativeToReference(
-        resolveVariable('mediumGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-    },
-    optionText: {
-      fontSize: 15,
-      letterSpacing: 0.38,
-      color: resolveVariable('text.color'),
-      lineHeight: 24,
-      paddingLeft: getSizeRelativeToReference(
-        resolveVariable('smallGutter'),
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-    },
-  },
-
-  [`${ext('RadioActionSheet')}`]: {
-    container: {
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      flexDirection: 'column',
-      justifyContent: 'flex-end',
-    },
-    optionContainer: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      padding: getSizeRelativeToReference(
-        resolveVariable('mediumGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-    },
-    optionText: {
-      fontSize: 15,
-      letterSpacing: 0.38,
-      color: resolveVariable('text.color'),
-      lineHeight: 24,
-      paddingLeft: getSizeRelativeToReference(
-        resolveVariable('smallGutter'),
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-    },
-    segmentContainer: {
-      overflow: 'hidden',
-      backgroundColor: resolveVariable('paperColor'),
-      paddingVertical: getSizeRelativeToReference(
-        resolveVariable('mediumGutter'),
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-    },
-    sleepOptionDisabled: {
-      opacity: 0.5,
-    },
-    sleepOptionEnabled: {
-      opacity: 1,
     },
   },
 
@@ -402,8 +257,6 @@ export default () => ({
       paddingBottom: 0,
       marginBottom: 0,
     },
-    activeSleepIconFill: resolveVariable('featuredColor'),
-    inactiveSleepIconFill: resolveVariable('navBarIconsColor'),
     adBannerContainer: {
       position: 'absolute',
       top: responsiveHeight(90),

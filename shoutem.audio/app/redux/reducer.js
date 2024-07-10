@@ -4,7 +4,8 @@ import { REHYDRATE } from 'redux-persist/constants';
 import {
   AUDIO_PLAYER_BANNER_CHANGED,
   ext,
-  SET_ACTIVE_PLAYLIST_OR_STREAM,
+  UPDATE_ACTIVE_AUDIO_SOURCE,
+  SET_SLEEP_TIMER,
   UPDATE_AUDIO_TRACK_PROGRESS,
 } from '../const';
 
@@ -30,7 +31,7 @@ const audioTrackProgress = (state = {}, action) => {
   return state;
 };
 
-const audioPlayerBannerShown = (state = false, action) => {
+const bannerShown = (state = false, action) => {
   if (action.type === AUDIO_PLAYER_BANNER_CHANGED) {
     const { payload = false } = action;
 
@@ -40,9 +41,19 @@ const audioPlayerBannerShown = (state = false, action) => {
   return state;
 };
 
-const activePlaylistOrStream = (state = null, action) => {
-  if (action.type === SET_ACTIVE_PLAYLIST_OR_STREAM) {
-    const { payload = false } = action;
+const activeSource = (state = null, action) => {
+  if (action.type === UPDATE_ACTIVE_AUDIO_SOURCE) {
+    const { payload = null } = action;
+
+    return payload;
+  }
+
+  return state;
+};
+
+const sleepTimer = (state = null, action) => {
+  if (action.type === SET_SLEEP_TIMER) {
+    const { payload = null } = action;
 
     return payload;
   }
@@ -52,6 +63,7 @@ const activePlaylistOrStream = (state = null, action) => {
 
 export default combineReducers({
   audioTrackProgress,
-  activePlaylistOrStream,
-  audioPlayerBannerShown,
+  activeSource,
+  bannerShown,
+  sleepTimer,
 });

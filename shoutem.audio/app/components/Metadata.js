@@ -1,11 +1,16 @@
 import React, { useMemo } from 'react';
+import FastImage from 'react-native-fast-image';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { AnimatedScrollingText, Image, View } from '@shoutem/ui';
+import { AnimatedScrollingText, View } from '@shoutem/ui';
 import { useLayoutAnimation } from 'shoutem.layouts';
 import { images } from '../assets';
 import { ext } from '../const';
 
+/**
+ * Displays track metadata, including artwork, title, and subtitle, with smooth layout
+ * transitions and animated scrolling text for long titles and subtitles.
+ */
 export const Metadata = ({ artworkUri, title, subtitle, style }) => {
   const artworkSource = useMemo(
     () => (artworkUri ? { uri: artworkUri } : images.music),
@@ -17,7 +22,7 @@ export const Metadata = ({ artworkUri, title, subtitle, style }) => {
   return (
     <View style={style.container}>
       <View style={style.artworkContainer}>
-        <Image source={artworkSource} style={style.artwork} />
+        <FastImage source={artworkSource} style={style.artwork} />
       </View>
       <View style={style.trackInfoContainer}>
         <AnimatedScrollingText

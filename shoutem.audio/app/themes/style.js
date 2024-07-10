@@ -12,6 +12,7 @@ const resolveVariable = createScopedResolver(ext());
 
 export default () => ({
   [`${ext('ProgressControl')}`]: {
+    disabled: { opacity: 0.5 },
     timeDisplay: {
       lineHeight: responsiveHeight(15),
       fontSize: responsiveHeight(12),
@@ -63,9 +64,10 @@ export default () => ({
       justifyContent: 'center',
       alignItems: 'center',
     },
+    disabled: { opacity: 0.5 },
   },
 
-  [`${ext('AudioPlayerBanner')}`]: {
+  [`${ext('AudioBanner')}`]: {
     playerContainer: {
       height: responsiveHeight(60),
       width: '100%',
@@ -94,19 +96,23 @@ export default () => ({
       icon: { color: resolveVariable('playerBannerIconsColor') },
     },
     closeIcon: { color: resolveVariable('playerBannerIconsColor') },
+    progressBarBottom: {
+      container: {
+        bottom: 0,
+      },
+    },
+    progressBarBottomWithPadding: {
+      container: { bottom: responsiveHeight(30) },
+    },
   },
 
-  [`${ext('BannerProgressBar')}`]: {
+  [`${ext('TrackProgressBar')}`]: {
     container: {
       position: 'absolute',
       left: 0,
       right: 0,
       height: responsiveHeight(5),
     },
-    containerBottom: {
-      bottom: 0,
-    },
-    containerBottomWithPadding: { bottom: responsiveHeight(30) },
     progressContainer: {
       height: responsiveHeight(2),
       borderWidth: 0,
@@ -156,13 +162,11 @@ export default () => ({
       },
       icon: { height: responsiveHeight(70), width: responsiveHeight(70) },
     },
-    playbackRateControl: {
-      container: {
-        alignSelf: 'flex-end',
-        marginRight: resolveVariable('mediumGutter'),
-      },
-      icon: { width: responsiveHeight(30), height: responsiveHeight(30) },
+    skipToPrevButton: {
+      marginLeft: resolveVariable('mediumGutter'),
+      transform: [{ rotate: '180deg' }],
     },
+    skipToNextButton: { marginRight: resolveVariable('mediumGutter') },
   },
 
   [`${ext('LiveStreamAudioControls')}`]: {
@@ -177,7 +181,7 @@ export default () => ({
     },
   },
 
-  [`${ext('AudioPlayerModal')}`]: {
+  [`${ext('AudioModal')}`]: {
     modal: {
       margin: 0,
     },
@@ -195,9 +199,163 @@ export default () => ({
       justifyContent: 'flex-start',
       alignItems: 'center',
     },
+  },
+
+  [`${ext('ProgressBar')}`]: {
+    container: {
+      flex: 1,
+      height: responsiveHeight(20),
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+    },
+    progressContainer: {
+      height: responsiveHeight(7),
+      width: '100%',
+      backgroundColor: resolveVariable('paperColor'),
+      borderColor: resolveVariable('backgroundColor'),
+      borderWidth: 0.2,
+      padding: responsiveHeight(1),
+      borderRadius: responsiveHeight(5),
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+    },
+    completeProgressBarBackground: {
+      backgroundColor: resolveVariable('featuredColor'),
+    },
+    progressBar: {
+      borderRadius: responsiveHeight(5),
+      height: responsiveHeight(5),
+    },
+  },
+
+  [`${ext('RadioOption')}`]: {
+    icon: {
+      width: responsiveHeight(18),
+      height: responsiveHeight(18),
+      color: resolveVariable('playerModalControlsColor'),
+    },
+    radioOutterCircle: {
+      borderColor: resolveVariable('playerModalControlsColor'),
+      borderWidth: 1,
+      borderRadius: responsiveHeight(8),
+      width: responsiveHeight(16),
+      height: responsiveHeight(16),
+      justifyContent: 'center',
+      alignItems: 'center',
+      color: resolveVariable('playerModalControlsColor'),
+    },
+    radioInnerCircle: {
+      width: responsiveHeight(9),
+      height: responsiveHeight(9),
+      borderRadius: responsiveHeight(5),
+      backgroundColor: resolveVariable('playerModalControlsColor'),
+    },
+  },
+
+  [`${ext('SettingsModal')}`]: {
+    modal: {
+      margin: 0,
+      justifyContent: 'flex-end',
+      marginBottom: responsiveHeight(50),
+      paddingHorizontal: responsiveWidth(20),
+    },
+    bottomSheetHeight: { height: responsiveHeight(450) },
+    headerContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: responsiveHeight(40),
+    },
+    headerBackButton: {
+      position: 'absolute',
+      left: 0,
+    },
+    headerBackIcon: { color: resolveVariable('playerModalControlsColor') },
+  },
+
+  [`${ext('SleepTimerSettingsView')}`]: {
+    turnOffTimerButton: {
+      width: responsiveWidth(200),
+      height: responsiveHeight(50),
+      backgroundColor: resolveVariable('playerModalControlsColor'),
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 4,
+      alignSelf: 'center',
+      marginTop: responsiveHeight(50),
+      marginBottom: responsiveHeight(20),
+    },
+    turnOffText: {
+      color: resolveVariable('playerModalBackgroundColor'),
+      fontWeight: resolveFontWeight('500'),
+    },
+    turnOffCaption: { color: resolveVariable('playerModalBackgroundColor') },
+  },
+
+  [`${ext('SleepTimer')}`]: {
+    container: {
+      position: 'absolute',
+      top: responsiveHeight(-15),
+      right: responsiveWidth(5),
+      backgroundColor: resolveVariable('playerBannerIconsColor'),
+      width: responsiveHeight(30),
+      height: responsiveHeight(30),
+      borderRadius: responsiveHeight(8),
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    icon: {
+      width: responsiveHeight(15),
+      height: responsiveHeight(15),
+      color: resolveVariable('playerBannerBackgroundColor'),
+    },
+    text: {
+      fontSize: responsiveHeight(8),
+      fontWeight: resolveFontWeight('500'),
+      color: resolveVariable('playerBannerBackgroundColor'),
+    },
+  },
+
+  [`${ext('PlaybackSettings')}`]: {
+    icon: {
+      color: resolveVariable('playerModalCloseIconColor'),
+    },
+  },
+
+  [`${ext('SettingsOption')}`]: {
+    icon: {
+      width: responsiveHeight(20),
+      height: responsiveHeight(20),
+      color: resolveVariable('playerModalControlsColor'),
+    },
+    text: { color: resolveVariable('playerModalControlsColor') },
+    arrowIcon: { color: resolveVariable('playerModalControlsColor') },
+  },
+
+  [`${ext('PlaybackSpeedOption')}`]: {
+    optionText: {
+      color: resolveVariable('playerModalControlsColor'),
+    },
+  },
+
+  [`${ext('SkipTrackControl')}`]: {
+    disabled: { opacity: 0.5 },
+    skipIcon: {
+      color: resolveVariable('playerModalControlsColor'),
+      height: responsiveHeight(40),
+      width: responsiveHeight(40),
+    },
+  },
+
+  [`${ext('Header')}`]: {
+    closeModalIcon: {
+      color: resolveVariable('playerModalCloseIconColor'),
+      width: responsiveHeight(30),
+      height: responsiveHeight(30),
+    },
+    titleContainer: { width: '80%' },
     title: {
       color: resolveVariable('playerModalTitleColor'),
-      paddingHorizontal: responsiveWidth(50),
+      alignSelf: 'center',
     },
     liveStreamText: {
       textAlign: 'center',
@@ -205,16 +363,26 @@ export default () => ({
       color: resolveVariable('playerModalSubtitleColor'),
       marginBottom: resolveVariable('largeGutter'),
     },
-    closeModalButton: {
-      position: 'absolute',
-      left: responsiveWidth(10),
-      top: 0,
+    modal: {
+      margin: 0,
     },
-    closeModalIcon: {
-      color: resolveVariable('playerModalCloseIconColor'),
-      width: responsiveHeight(30),
-      height: responsiveHeight(30),
+    screenContainer: {
+      backgroundColor: resolveVariable('playerModalBackgroundColor'),
+      paddingTop:
+        Platform.OS === 'ios' ? responsiveHeight(70) : responsiveHeight(30),
+      paddingBottom:
+        Platform.OS === 'ios' ? responsiveHeight(40) : responsiveHeight(20),
+      paddingHorizontal: responsiveWidth(10),
+      borderRadius: Platform.OS === 'ios' ? 30 : 0,
     },
+    container: {
+      flex: 1,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+    },
+  },
+
+  [`${ext('AudioPlayerView')}`]: {
     metadata: {
       container: {
         flex: 1,
@@ -273,43 +441,98 @@ export default () => ({
     },
   },
 
-  [`${ext('ProgressBar')}`]: {
+  [`${ext('AnimatedAudioBars')}`]: {
     container: {
-      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      height: responsiveHeight(15),
+    },
+    bar: {
+      width: responsiveWidth(4),
+      backgroundColor: resolveVariable('playerModalControlsColor'),
+      marginHorizontal: responsiveWidth(1),
+    },
+  },
+
+  [`${ext('QueueList')}`]: {
+    container: { width: '100%' },
+  },
+
+  [`${ext('QueueListItem')}`]: {
+    container: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      paddingHorizontal: resolveVariable('smallGutter'),
+      marginHorizontal: resolveVariable('mediumGutter'),
+    },
+    image: {
+      width: responsiveHeight(40),
+      height: responsiveHeight(40),
+      borderRadius: 6,
+    },
+    title: {
+      fontWeight: resolveFontWeight('500'),
+      marginBottom: resolveVariable('smallGutter'),
+      color: resolveVariable('playerModalMetadataTextColor'),
+    },
+    artist: {
+      marginBottom: resolveVariable('smallGutter'),
+      color: resolveVariable('playerModalMetadataTextColor'),
+    },
+    playbackButton: {
+      borderColor: resolveVariable('playerModalControlsColor'),
+      borderRadius: responsiveHeight(10),
+      width: responsiveHeight(20),
       height: responsiveHeight(20),
-      alignItems: 'flex-start',
       justifyContent: 'center',
+      alignItems: 'center',
+      marginLeft: resolveVariable('mediumGutter'),
     },
-    progressContainer: {
-      height: responsiveHeight(7),
-      width: '100%',
-      backgroundColor: resolveVariable('paperColor'),
-      borderColor: resolveVariable('backgroundColor'),
-      borderWidth: 0.2,
-      padding: responsiveHeight(1),
-      borderRadius: responsiveHeight(5),
-      alignItems: 'flex-start',
-      justifyContent: 'center',
+    playbackButtonBorder: { borderWidth: 1 },
+    playbackIcon: {
+      color: resolveVariable('playerModalControlsColor'),
+      width: responsiveHeight(18),
+      height: responsiveHeight(18),
     },
-    completeProgressBarBackground: {
-      backgroundColor: resolveVariable('featuredColor'),
+  },
+  [`${ext('NowPlayingHeader')}`]: {
+    listTitle: {
+      color: resolveVariable('playerModalTitleColor'),
+      fontWeight: resolveFontWeight('500'),
+    },
+    bottomMargin: { marginBottom: resolveVariable('smallGutter') },
+    dividerShadow: {
+      shadowColor: '#222',
+      shadowOffset: { width: 1, height: 1 },
+      shadowRadius: 3,
+      shadowOpacity: 1,
+      marginHorizontal: responsiveWidth(-10),
+    },
+    queuePositionCaption: {
+      color: resolveVariable('playerModalTitleColor'),
+      lineHeight: responsiveHeight(30),
+      fontWeight: resolveFontWeight('500'),
     },
     progressBar: {
-      borderRadius: responsiveHeight(5),
-      height: responsiveHeight(5),
+      container: { bottom: 0 },
+      progressContainer: {
+        height: responsiveHeight(2),
+        borderWidth: 0,
+        backgroundColor: resolveVariable('playerModalBackgroundColor'),
+        paddingHorizontal: resolveVariable('mediumGutter'),
+        marginTop: responsiveHeight(10),
+      },
+      completeProgressBarBackground: {
+        backgroundColor: resolveVariable('playerModalMetadataTextColor'),
+      },
     },
   },
 
-  [`${ext('PlaybackRateOption')}`]: {
-    icon: { width: responsiveHeight(25), height: responsiveHeight(25) },
-  },
-
-  [`${ext('PlaybackSettingsModal')}`]: {
-    modal: {
-      margin: 0,
-      justifyContent: 'flex-end',
-      marginBottom: responsiveHeight(50),
-      paddingHorizontal: responsiveWidth(20),
+  [`${ext('QueueListHeader')}`]: {
+    title: {
+      fontWeight: resolveFontWeight('500'),
+      marginVertical: resolveVariable('mediumGutter'),
+      color: resolveVariable('playerModalTitleColor'),
     },
   },
 });

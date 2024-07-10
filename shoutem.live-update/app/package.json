@@ -1,0 +1,16 @@
+{
+  "name": "shoutem.live-update",
+  "version": "1.0.2",
+  "scripts": {
+    "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
+  },
+  "dependencies": {
+    "@shoutem/live-update": "1.0.1"
+  },
+  "peerDependencies": {
+    "react-native-device-info": "*"
+  },
+  "nativeDependencies": [
+    "@shoutem/live-update"
+  ]
+}

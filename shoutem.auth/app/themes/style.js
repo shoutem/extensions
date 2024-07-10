@@ -111,13 +111,6 @@ export default () => ({
       'shoutem.ui.Text': {
         ...resolveVariable('inputLabelText'),
       },
-      'shoutem.ui.Button': {
-        'shoutem.ui.Text': {
-          fontSize: 11,
-          fontWeight: resolveFontWeight('400'),
-          margin: 0,
-        },
-      },
     },
 
     loginButton: {
@@ -134,6 +127,11 @@ export default () => ({
         ...resolveVariable('buttonText'),
         margin: 0,
       },
+    },
+
+    forgotPasswordText: {
+      margin: 0,
+      ...resolveVariable('forgotPasswordText'),
     },
   },
 

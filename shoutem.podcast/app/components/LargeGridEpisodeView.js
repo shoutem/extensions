@@ -1,4 +1,5 @@
 import React from 'react';
+import FastImage from 'react-native-fast-image';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { connectStyle } from '@shoutem/theme';
@@ -6,7 +7,6 @@ import {
   Button,
   Caption,
   Icon,
-  Image,
   Spinner,
   Subtitle,
   TouchableOpacity,
@@ -43,18 +43,15 @@ export class LargeGridEpisodeView extends EpisodeView {
       ? this.onDeletePress
       : this.onDownloadPress;
     const imageUrl = this.getImageUrl(episode);
-    const episodeImage = imageUrl
-      ? { uri: imageUrl }
-      : assets.noImagePlaceholder;
 
     return (
       <TouchableOpacity
         styleName="flexible md-gutter-horizontal clear"
         onPress={this.onPress}
       >
-        <Image
-          source={episodeImage}
-          styleName="placeholder sm-gutter-bottom"
+        <FastImage
+          source={{ uri: imageUrl, priority: FastImage.priority.normal }}
+          defaultSource={assets.noImagePlaceholder}
           style={style.image}
         />
         <View styleName="flexible space-between clear">

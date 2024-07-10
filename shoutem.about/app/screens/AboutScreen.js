@@ -14,7 +14,8 @@ import {
   shouldRefresh,
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { Image, Screen, ShareButton, SimpleHtml } from '@shoutem/ui';
+import { Image, Screen, ShareButton, SimpleHtml, View } from '@shoutem/ui';
+import { UNIVERSAL_LINK_TYPE, UniversalLinkButton } from 'shoutem.cms';
 import { I18n, selectors as i18nSelectors } from 'shoutem.i18n';
 import { DetailsLayout } from 'shoutem.layouts';
 import {
@@ -23,8 +24,7 @@ import {
   navigateTo,
   withIsFocused,
 } from 'shoutem.navigation';
-import { openURL } from 'shoutem.web-view';
-import { FooterButtons, Map, OpeningHours } from '../components';
+import { Map, OpeningHours } from '../components';
 import { ext, schema } from '../const';
 
 export class AboutScreen extends PureComponent {
@@ -267,77 +267,6 @@ export class AboutScreen extends PureComponent {
     }
   }
 
-  resolveFooterButtons(profile) {
-    if (!profile) {
-      return null;
-    }
-
-    const webButton = {
-      icon: 'web',
-      url: profile.web,
-      title: I18n.t('shoutem.cms.websiteButton'),
-      openURL,
-    };
-
-    const callButton = {
-      icon: 'call',
-      url: profile.phone ? `tel:${profile.phone}` : null,
-      title: I18n.t('shoutem.cms.phoneButton'),
-    };
-
-    const tweetButton = {
-      icon: 'tweet',
-      url: profile.twitter,
-      title: 'Twitter',
-      openURL,
-    };
-
-    const emailButton = {
-      icon: 'email',
-      url: profile.mail ? `mailto:${profile.mail}` : null,
-      title: I18n.t('shoutem.cms.emailButton'),
-    };
-
-    const linkedinButton = {
-      icon: 'linkedin',
-      url: profile.linkedin,
-      title: 'LinkedIn',
-      openURL,
-    };
-
-    const facebookButton = {
-      icon: 'facebook',
-      url: profile.facebook,
-      title: 'Facebook',
-      openURL,
-    };
-
-    const instagramButton = {
-      icon: 'instagram',
-      url: profile.instagram,
-      title: 'Instagram',
-      openURL,
-    };
-
-    const tikTokButton = {
-      icon: 'tiktok',
-      url: profile.tiktok,
-      title: 'TikTok',
-      openURL,
-    };
-
-    return [
-      webButton,
-      callButton,
-      tweetButton,
-      emailButton,
-      linkedinButton,
-      facebookButton,
-      instagramButton,
-      tikTokButton,
-    ];
-  }
-
   renderLeadImage() {
     const { imageSize, profile } = this.props;
 
@@ -371,7 +300,70 @@ export class AboutScreen extends PureComponent {
             <Map {...this.resolveMapProps(profile)} />
           )}
           <OpeningHours htmlContent={profile.hours} />
-          <FooterButtons buttons={this.resolveFooterButtons(profile)} />
+          <View styleName="horizontal">
+            <UniversalLinkButton
+              link={profile.web}
+              title={I18n.t('shoutem.cms.websiteButton')}
+              subtitle={profile.web}
+              iconName="web"
+              buttonType="tile"
+            />
+            <UniversalLinkButton
+              type={UNIVERSAL_LINK_TYPE.PHONE}
+              link={profile.phone}
+              title={I18n.t('shoutem.cms.phoneButton')}
+              subtitle={profile.phone}
+              iconName="call"
+              buttonType="tile"
+            />
+            <UniversalLinkButton
+              type={UNIVERSAL_LINK_TYPE.EMAIL}
+              link={profile.mail}
+              title={I18n.t('shoutem.cms.emailButton')}
+              subtitle={profile.mail}
+              iconName="email"
+              buttonType="tile"
+            />
+          </View>
+          <View styleName="horizontal">
+            <UniversalLinkButton
+              link={profile.twitter}
+              title={I18n.t('shoutem.cms.twitterButton')}
+              subtitle={profile.twitter}
+              iconName="tweet"
+              buttonType="tile"
+            />
+            <UniversalLinkButton
+              link={profile.linkedin}
+              title={I18n.t('shoutem.cms.linkedInButton')}
+              subtitle={profile.linkedin}
+              iconName="linkedin"
+              buttonType="tile"
+            />
+            <UniversalLinkButton
+              link={profile.facebook}
+              title={I18n.t('shoutem.cms.facebookButton')}
+              subtitle={profile.facebook}
+              iconName="facebook"
+              buttonType="tile"
+            />
+          </View>
+          <View styleName="horizontal">
+            <UniversalLinkButton
+              link={profile.instagram}
+              title={I18n.t('shoutem.cms.instagramButton')}
+              subtitle={profile.instagram}
+              iconName="instagram"
+              buttonType="tile"
+            />
+            <UniversalLinkButton
+              link={profile.tiktok}
+              title={I18n.t('shoutem.cms.tiktokButton')}
+              subtitle={profile.tiktok}
+              iconName="tiktok"
+              buttonType="tile"
+            />
+          </View>
         </DetailsLayout>
       </Screen>
     );
@@ -379,17 +371,18 @@ export class AboutScreen extends PureComponent {
 }
 
 AboutScreen.propTypes = {
-  channelId: PropTypes.number.isRequired,
   data: PropTypes.array.isRequired,
   find: PropTypes.func.isRequired,
   isFocused: PropTypes.bool.isRequired,
   navigation: PropTypes.object.isRequired,
+  channelId: PropTypes.number,
   imageSize: PropTypes.string,
   parentCategoryId: PropTypes.string,
   profile: PropTypes.object,
 };
 
 AboutScreen.defaultProps = {
+  channelId: null,
   imageSize: 'large',
   parentCategoryId: undefined,
   profile: {},

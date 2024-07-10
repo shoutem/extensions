@@ -157,6 +157,18 @@ const productsStatus = (state = {}, key, isLoading, error) => {
 
 const productsForKey = keyName => (state = {}, action) => {
   const { payload = {}, type } = action;
+
+  // payload[keyName] will throw an error if any action will have payload=null. We have to
+  // return early if action type is not related to this reducer.
+  if (
+    type !== PRODUCTS_LOADED &&
+    type !== PRODUCTS_LOADING &&
+    type !== PRODUCTS_ERROR &&
+    type !== APP_MOUNTED
+  ) {
+    return state;
+  }
+
   const key = payload[keyName];
 
   // If key is not defined, such as collection ID for tag search or vice versa,

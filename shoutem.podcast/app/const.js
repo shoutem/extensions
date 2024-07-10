@@ -16,6 +16,7 @@ export const UPDATE_LAST_PLAYED = ext('UPDATE_LAST_PLAYED');
 // (https://fiveminutes.jira.com/browse/SEEXT-8462)
 export const RSS_PODCAST_SCHEMA = 'shoutem.proxy.news';
 export const EPISODES_COLLECTION_TAG = 'latestEpisodes';
+export const EPISODE_CHECK_TAG = 'episodeCheck';
 export const PODCAST_SCHEMA_ITEM = 'Podcast';
 export const DEFAULT_PAGE_LIMIT = 20;
 export const EPISODES_LIST_SCREEN = ext('EpisodesListScreen');

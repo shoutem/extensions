@@ -3,7 +3,7 @@
   "title": "Theme",
   "type": "system",
   "description": "Resolve and store theme related configuration",
-  "version": "8.0.3",
+  "version": "8.0.4",
   "platform": ">=14.0.2",
   "nativeChanges": {
     "latestVersion": "8.0.2"

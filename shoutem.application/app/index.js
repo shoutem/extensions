@@ -20,6 +20,7 @@ export { InlineMap } from './components/InlineMap';
 export { MapView } from './components/MapView';
 export { default as configuration } from './configuration.json';
 export { CONFIGURATION_SCHEMA, ext, EXTENSIONS_SCHEMA } from './const';
+export { useModalNavigation, usePreviousValue, useTimer } from './hooks';
 export {
   getAllShortcuts,
   getAppInitQueueComplete,

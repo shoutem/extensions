@@ -2,12 +2,12 @@
   "name": "radio-player",
   "title": "Radio+",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
-  "version": "10.0.1",
-  "platform": ">=14",
+  "version": "11.0.0",
+  "platform": ">=14.1.1",
   "nativeChanges": {
-    "lastVersion": "9.0.0"
+    "lastVersion": "11.0.0"
   },
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
+  "releaseNotes": "Release notes\n* Removed sleep timer feature from Radio screens - it has been moved to audio player screen\n* Changed the position of share button on Radio screen with dynamic artwork background\n\nDeveloper notes\n* (Breaking) Deleted all components and code implementing sleep timer feature. Components affected by these changes were also refactored\n* (Breaking) Moved react-native-background-timer into application extension",
   "icon": "server/assets/add-radio-image.png",
   "categories": ["media"],
   "dependencies": [

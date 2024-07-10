@@ -5,4 +5,5 @@ export {
   getPathFromEpisode,
   getPathFromFileName,
 } from './episodeDownloadManager';
+export { mapEpisodeToTrack } from './mapEpisodeToTrack';
 export { PlaybackService } from './PlaybackService';

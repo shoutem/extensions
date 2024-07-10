@@ -8,7 +8,13 @@
       "Start time": "Start time",
       "End time": "End time",
       "RSVP link": "RSVP link",
-      "Location": "Location"
+      "Location": "Location",
+      "E-mail": "E-mail",
+      "Twitter": "Twitter",
+      "Facebook": "Facebook",
+      "Instagram": "Instagram",
+      "TikTok": "TikTok",
+      "Linkedin": "Linkedin"
     }
   }
 }

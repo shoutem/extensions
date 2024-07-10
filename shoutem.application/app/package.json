@@ -1,10 +1,11 @@
 {
   "name": "shoutem.application",
-  "version": "6.2.3",
+  "version": "6.3.1",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
+    "react-native-background-timer": "2.4.1",
     "react-native-maps": "0.31.1",
     "react-native-splash-screen": "3.3.0",
     "reselect": "4.1.5"
@@ -17,6 +18,7 @@
     "react-native-device-info": "*"
   },
   "nativeDependencies": [
+    "react-native-background-timer",
     "react-native-maps",
     "react-native-splash-screen"
   ]

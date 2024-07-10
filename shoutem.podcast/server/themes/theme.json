@@ -7,18 +7,6 @@
       "format": "color",
       "default": "#FFF"
     },
-    "episodeProgressPlaybackIconColor": {
-      "type": "string",
-      "title": "Color of the icon displayed next to progress bar on list and grid items, indicating the playback status",
-      "format": "color",
-      "default": "#000"
-    },
-    "featuredEpisodeProgressPlaybackIconColor": {
-      "type": "string",
-      "title": "Color of the icon displayed next to progress bar on featured episode item, indicating the playback status",
-      "format": "color",
-      "default": "#FFF"
-    },
     "completeProgressBackgroundColor": {
       "type": "string",
       "title": "Color of the progress bar when progress is completed",
@@ -46,8 +34,6 @@
         "title": "Podcast episode progress bar",
         "properties": [
           "progressBarContainerBackgroundColor",
-          "episodeProgressPlaybackIconColor",
-          "featuredEpisodeProgressPlaybackIconColor",
           "completeProgressBackgroundColor",
           "progressBarBorderColor",
           "progressBarBorderWidth"

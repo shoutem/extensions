@@ -1,12 +1,11 @@
 import React from 'react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
-import { Image, View, Tile } from '@shoutem/ui';
+import { Image, Tile, View } from '@shoutem/ui';
 import { ext } from '../const';
-import { EventDetailsScreen, mapDispatchToProps } from './EventDetailsScreen';
+import { EventDetailsScreen } from './EventDetailsScreen';
 
-class MediumEventDetailsScreen extends EventDetailsScreen {
+export class MediumEventDetailsScreen extends EventDetailsScreen {
   renderWithoutPhoto(event) {
     return (
       <Tile styleName="text-centric xl-gutter-top">
@@ -37,7 +36,6 @@ class MediumEventDetailsScreen extends EventDetailsScreen {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps,
-)(connectStyle(ext('MediumEventDetailsScreen'))(MediumEventDetailsScreen));
+export default connectStyle(ext('MediumEventDetailsScreen'))(
+  MediumEventDetailsScreen,
+);
