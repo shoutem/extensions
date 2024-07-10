@@ -1,10 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { connectStyle } from '@shoutem/theme';
 import { Tile } from '@shoutem/ui';
 import EventImage from '../components/EventImage';
 import { ext } from '../const';
-import { EventDetailsScreen, mapDispatchToProps } from './EventDetailsScreen';
+import { EventDetailsScreen } from './EventDetailsScreen';
 
 export class LargeEventDetailsScreen extends EventDetailsScreen {
   renderHeader(event) {
@@ -24,7 +23,6 @@ export class LargeEventDetailsScreen extends EventDetailsScreen {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps,
-)(connectStyle(ext('LargeEventDetailsScreen'))(LargeEventDetailsScreen));
+export default connectStyle(ext('LargeEventDetailsScreen'))(
+  LargeEventDetailsScreen,
+);

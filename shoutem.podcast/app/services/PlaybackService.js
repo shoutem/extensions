@@ -1,11 +1,15 @@
+import { Platform } from 'react-native';
+import _ from 'lodash';
 import {
   Event,
-  State,
+  getActiveSource,
   TrackPlayer,
   updateAudioTrackProgress,
 } from 'shoutem.audio';
 import { ext, PODCAST_TRACK_IDENTIFIER } from '../const';
-import { clearLastPlayed } from '../redux';
+import { updateLastPlayed } from '../redux';
+
+const isIos = Platform.OS === 'ios';
 
 const shouldHandleEvent = activeTrack => {
   if (!activeTrack || !activeTrack.id.startsWith(PODCAST_TRACK_IDENTIFIER)) {
@@ -15,35 +19,58 @@ const shouldHandleEvent = activeTrack => {
   return true;
 };
 
-export const PlaybackService = async dispatch => {
+export const PlaybackService = async (dispatch, getState) => {
+  /**
+   * When active track changes & if it is Podcast episode, this handler will update last played episode
+   * in Redux state, update now playing metadata & load more episodes if active track is last or second
+   * to last in current queue.
+   */
   TrackPlayer.addEventListener(
-    Event.PlaybackPlayWhenReadyChanged,
+    Event.PlaybackActiveTrackChanged,
     async event => {
-      if (!event.playWhenReady) {
+      const newActiveTrack = event.track;
+
+      if (!shouldHandleEvent(newActiveTrack)) {
         return;
       }
 
-      const activeTrack = await TrackPlayer.getActiveTrack();
+      await dispatch(
+        updateLastPlayed(newActiveTrack.playlistOrStreamUrl, newActiveTrack),
+      );
 
-      if (!shouldHandleEvent(activeTrack)) {
-        return;
+      // Metadata automatically resolves on Android. If this is called on Android, artwork is missing in lock screen.
+      if (isIos) {
+        await TrackPlayer.updateNowPlayingMetadata({
+          artist: newActiveTrack.artist,
+          title: newActiveTrack.title,
+          artwork: newActiveTrack.artwork,
+        });
       }
 
-      await TrackPlayer.updateNowPlayingMetadata({
-        artist: activeTrack.artist,
-        title: activeTrack.title,
-        artwork: activeTrack.artwork,
-      });
+      // If new active track is last or second to last in queue and more tracks can be loaded,
+      // preload more tracks into queue for better UX. By preloading this when second to last track
+      // starts, skip to next button in audio modal will be enabled as soon as last track starts playing.
+      const queue = await TrackPlayer.getQueue();
+      const positionInQueue = _.findIndex(queue, { id: newActiveTrack.id }) + 1;
+
+      // If new active track is last or second to last in queue
+      if (
+        positionInQueue === queue.length ||
+        positionInQueue === queue.length - 1
+      ) {
+        const state = getState();
+        const activeSource = getActiveSource(state);
+
+        // If there are more tracks to be loaded into queue
+        if (
+          activeSource.trackCount > queue.length &&
+          _.isFunction(activeSource.onLoadMoreQueue)
+        ) {
+          activeSource.onLoadMoreQueue();
+        }
+      }
     },
   );
-
-  TrackPlayer.addEventListener(Event.PlaybackState, async event => {
-    if (event.state !== State.Ended) {
-      return;
-    }
-
-    dispatch(clearLastPlayed());
-  });
 
   TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, async event => {
     const activeTrack = await TrackPlayer.getActiveTrack();

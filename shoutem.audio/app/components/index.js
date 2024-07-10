@@ -1,11 +1,19 @@
-export { default as BannerProgressBar } from './BannerProgressBar';
-export { default as JumpTimeControl } from './JumpTimeControl';
-export { default as LiveStreamAudioControls } from './LiveStreamAudioControls';
+export { Header, QueueButton } from './audio-modal';
+export {
+  JumpTimeControl,
+  PlaybackControl,
+  ProgressControl,
+  SkipTrackControl,
+} from './controls';
 export { default as Metadata } from './Metadata';
-export { default as PlaybackControl } from './PlaybackControl';
-export { default as PlaybackRateControl } from './PlaybackRateControl';
-export { default as PlaybackRateOption } from './PlaybackRateOption';
-export { default as PlaybackSettingsModal } from './PlaybackSettingsModal';
+export { PlaybackSettings } from './playback-settings';
 export { default as ProgressBar } from './ProgressBar';
-export { default as ProgressControl } from './ProgressControl';
-export { default as TrackAudioControls } from './TrackAudioControls';
+export {
+  AnimatedAudioBars,
+  NowPlayingHeader,
+  QueueList,
+  QueueListFooter,
+  QueueListHeader,
+  QueueListItem,
+} from './queue';
+export { default as TrackProgressBar } from './TrackProgressBar';

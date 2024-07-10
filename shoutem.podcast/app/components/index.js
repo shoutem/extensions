@@ -6,5 +6,4 @@ export { default as GridEpisodeView } from './GridEpisodeView';
 export { default as LargeGridEpisodeView } from './LargeGridEpisodeView';
 export { default as ListEpisodeView } from './ListEpisodeView';
 export { default as NextEpisode } from './NextEpisode';
-export { default as PlaybackIcon } from './PlaybackIcon';
-export { default as ContinuePlayingButton } from './ContinuePlayingButton';
+export { default as PlayPodcastButton } from './PlayPodcastButton';

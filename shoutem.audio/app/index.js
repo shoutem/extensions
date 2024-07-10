@@ -40,31 +40,30 @@ export const appWillMount = setPriority(async app => {
 
   const PlaybackService = async () =>
     collectedPlaybackServices.forEach(async playbackService =>
-      playbackService(app.store.dispatch),
+      playbackService(app.store.dispatch, app.store.getState),
     );
 
   await TrackPlayer.registerPlaybackService(() => PlaybackService);
 }, before(priorities.NAVIGATION));
 
-export * from './redux';
-export * from './hooks';
-export * from './services';
+export * from './assets';
 export * from './components';
 export * from './fragments';
-export * from './assets';
-
+export * from './hooks';
+export * from './redux';
+export * from './services';
 export {
+  Capability,
+  Event,
+  State,
   default as TrackPlayer,
-  useIsPlaying,
   useActiveTrack,
+  useIsPlaying,
+  useNowPlayingMetadata,
   usePlaybackState,
   usePlayWhenReady,
   useProgress,
   useTrackPlayerEvents,
-  useNowPlayingMetadata,
-  Capability,
-  State,
-  Event,
 } from 'react-native-track-player';
 
 // Audio banner renderer for NON-tab navigation

@@ -1,18 +1,19 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useCallback, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import slugify from '@sindresorhus/slugify';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { View } from '@shoutem/ui';
 import {
   Capability,
+  getActiveSource,
   LiveStreamAudioControls,
-  setActivePlaylistOrStream,
   TrackPlayer,
+  updateActiveSource,
   useSetupPlayerAndOptions,
   useTrackState,
 } from 'shoutem.audio';
+import { AUDIO_SOURCE_TYPE } from 'shoutem.audio/const';
 import { PlaybackAnimation } from '../components';
 import { ext, RADIO_TRACK_IDENTIFIER } from '../const';
 
@@ -21,14 +22,10 @@ const PLAYER_OPTIONS = {
   compactCapabilities: [Capability.Play, Capability.Pause],
 };
 
-const RadioPlayer = ({
-  liveStream,
-  title,
-  triggerSleep,
-  onSleepTriggered,
-  style,
-}) => {
+const RadioPlayer = ({ liveStream, title, style }) => {
   const dispatch = useDispatch();
+
+  const activeSource = useSelector(getActiveSource);
 
   const radioStream = useMemo(
     () => ({
@@ -47,18 +44,17 @@ const RadioPlayer = ({
 
   const { isActiveAndPlaying } = useTrackState({ track: radioStream });
 
-  const onFirstPlay = useCallback(
-    () => dispatch(setActivePlaylistOrStream({ id: liveStream.url, title })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+  const onFirstPlay = useCallback(async () => {
+    await TrackPlayer.setQueue([radioStream]);
 
-  useEffect(() => {
-    if (triggerSleep) {
-      TrackPlayer.stop();
-      onSleepTriggered();
-    }
-  }, [onSleepTriggered, triggerSleep]);
+    dispatch(
+      updateActiveSource({
+        type: AUDIO_SOURCE_TYPE.LIVE_STREAM,
+        url: radioStream.url,
+        title,
+      }),
+    );
+  }, [dispatch, radioStream, title]);
 
   return (
     <View style={style.container}>
@@ -70,6 +66,7 @@ const RadioPlayer = ({
       />
       <LiveStreamAudioControls
         liveStream={radioStream}
+        isFirstPlay={activeSource?.url !== radioStream.url}
         onFirstPlay={onFirstPlay}
         style={{
           playbackButton: {
@@ -87,14 +84,11 @@ RadioPlayer.propTypes = {
     url: PropTypes.string.isRequired,
     name: PropTypes.string,
   }).isRequired,
-  triggerSleep: PropTypes.bool.isRequired,
   style: PropTypes.object,
   title: PropTypes.string,
-  onSleepTriggered: PropTypes.func,
 };
 
 RadioPlayer.defaultProps = {
-  onSleepTriggered: _.noop,
   title: '',
   style: {},
 };

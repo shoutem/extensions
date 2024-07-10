@@ -1,11 +1,13 @@
 export {
-  setActivePlaylistOrStream,
+  updateActiveSource,
   setBannerShown,
+  setSleepTimer,
   updateAudioTrackProgress,
 } from './actions';
 export { default as reducer } from './reducer';
 export {
-  getActivePlaylistOrStream,
-  getAudioPlayerBannerShown,
+  getActiveSource,
   getAudioTrackProgress,
+  getBannerShown,
+  getSleepTimer,
 } from './selectors';

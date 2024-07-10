@@ -3,12 +3,12 @@
   "title": "Shopify",
   "hidden": false,
   "description": "Sell from your Shopify store",
-  "version": "9.0.2",
+  "version": "9.0.3",
   "platform": ">=14",
   "nativeChanges": {
     "lastVersion": "9.0.0"
   },
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
+  "releaseNotes": "Release notes\n* No user facing changes\n\nFor developers\n* Fixed an issue where dispatching action with null value payload would throw error in one of reducers",
   "icon": "./server/assets/add-shopify-image.png",
   "capabilities": [
     "shoutem.shopify.places-api"

@@ -2,11 +2,11 @@
   "name": "application",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "version": "6.2.3",
-  "platform": ">=14",
-  "releaseNotes": "* Fixed the issue with mapView component rerender flow",
+  "version": "6.3.1",
+  "platform": ">=14.1.1",
+  "releaseNotes": "Release notes\n* No user facing changes\n\nDeveloper notes\n* Moved useTimer hook into application extension",
   "nativeChanges": {
-    "lastVersion": "4.1.4"
+    "lastVersion": "6.3.1"
   },
   "icon": "server/assets/add-application-image.png",
   "categories": [],

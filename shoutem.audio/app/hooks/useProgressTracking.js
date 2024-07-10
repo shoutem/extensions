@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import TrackPlayer, {
   useActiveTrack,
   useProgress,
@@ -33,7 +33,7 @@ export const useProgressTracking = ({ track } = {}) => {
     [savedProgress.duration],
   );
 
-  const seekToInitialPosition = async () => {
+  const seekToInitialPosition = useCallback(async () => {
     // Not using State.Ended here because it does not enter Ended state always - progress and duration
     // have high amount of decimals and progress doesn't always reach duration's value.
     // Instead, if progress is less than 1 second away from duration, consider this track has ended and play
@@ -45,7 +45,7 @@ export const useProgressTracking = ({ track } = {}) => {
         : savedProgress.position;
 
     await TrackPlayer.seekTo(resolvedSeekPosition);
-  };
+  }, [savedProgress]);
 
   const { isActive, isActiveAndPlaying } = useTrackState({ track });
 

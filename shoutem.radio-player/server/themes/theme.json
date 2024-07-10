@@ -39,7 +39,7 @@
     },
     "shareButtonColor": {
       "type": "string",
-      "title": "Share and Sleep button color",
+      "title": "Share button color",
       "format": "color",
       "default": "@shareButtonColor"
     },

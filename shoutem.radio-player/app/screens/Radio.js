@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -12,15 +12,11 @@ import {
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { RadioActionSheet, StreamMetadata } from '../components';
+import { StreamMetadata } from '../components';
 import { ext } from '../const';
 import { RadioPlayer } from '../fragments';
-import {
-  useRadioActionSheet,
-  useRadioFeatures,
-  useRadioNavigation,
-  useSleepTimer,
-} from '../hooks';
+import { useRadioFeatures, useRadioNavigationHeader } from '../hooks';
+import { shareStream } from '../services';
 
 const Radio = ({ navigation, route, style, renderAdBanner }) => {
   const { shortcut } = route.params;
@@ -40,29 +36,15 @@ const Radio = ({ navigation, route, style, renderAdBanner }) => {
     playbackStateText,
   } = useRadioFeatures(streamUrl, streamTitle);
 
-  const {
-    shouldSleep,
-    isTimerActive,
-    startTimer,
-    clearTimer,
-    timeRemaining,
-    handleSleep,
-  } = useSleepTimer();
+  const handleShareStream = useCallback(
+    () => shareStream(streamUrl, streamTitle),
+    [streamUrl, streamTitle],
+  );
 
-  const {
-    active: actionSheetActive,
-    showActionSheet,
-    hideActionSheet,
-    shareStream,
-  } = useRadioActionSheet(streamUrl, streamTitle);
-
-  useRadioNavigation({
+  useRadioNavigationHeader({
     navigation,
-    isActiveStream,
-    isTimerActive,
     showSharing,
-    setActionSheetActive: showActionSheet,
-    style,
+    onSharePress: handleShareStream,
   });
 
   const liveStream = useMemo(
@@ -88,12 +70,7 @@ const Radio = ({ navigation, route, style, renderAdBanner }) => {
             {!!renderAdBanner && (
               <View style={style.adBannerContainer}>{renderAdBanner()}</View>
             )}
-            <RadioPlayer
-              liveStream={liveStream}
-              title={shortcut.title}
-              onSleepTriggered={handleSleep}
-              triggerSleep={shouldSleep}
-            />
+            <RadioPlayer liveStream={liveStream} title={shortcut.title} />
           </Overlay>
         </Tile>
         <View style={style.nowPlaying} styleName="vertical h-center">
@@ -109,16 +86,6 @@ const Radio = ({ navigation, route, style, renderAdBanner }) => {
             )}
           </Row>
         </View>
-        <RadioActionSheet
-          active={actionSheetActive}
-          isActiveStream={isActiveStream}
-          timeRemaining={isTimerActive ? timeRemaining : 0}
-          onClearPress={clearTimer}
-          onDismiss={hideActionSheet}
-          onSharePress={shareStream}
-          onTimerSet={startTimer}
-          showSharing={showSharing}
-        />
       </ImageBackground>
     </Screen>
   );

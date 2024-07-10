@@ -1,0 +1,60 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "plugin:@typescript-eslint/recommended", // Uses the recommended rules from the @typescript-eslint/eslint-plugin
+    "prettier/@typescript-eslint", // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
+    "@shoutem/base",
+    "plugin:prettier/recommended"// Enables eslint-plugin-prettier and eslint-config-prettier. This will display prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
+  ],
+  "env": {
+    "mocha": true
+  },
+  "plugins": [
+    // "prettier"
+    "@typescript-eslint"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    },
+    "ecmaVersion": 8,
+    "sourceType": "module"
+  },
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "max-len": [2, 120, 2, {
+      "ignoreComments": true,
+      "ignoreUrls": true
+    }],
+    "func-names": 0,
+    "no-cap": 0,
+    "no-empty-label": 0,
+    "no-iterator": 0,
+    "no-param-reassign": [2, { "props": false }],
+    "no-shadow": 0,
+    "no-unused-expressions": 0,
+    "no-unused-vars": [2, { "argsIgnorePattern": "next" }],
+    "radix": 0,
+    "no-underscore-dangle": 0,
+    "space-after-keywords": 0,
+    "space-before-keywords": 0,
+    "space-return-throw-case": 0,
+    "space-before-function-paren": 0,
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "trailingComma": "all"
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.js"],
+      "rules": {
+          "@typescript-eslint/explicit-function-return-type": "off"
+      }
+    }
+  ]
+}

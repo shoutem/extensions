@@ -101,7 +101,9 @@ class LoginForm extends PureComponent {
         <View style={style.passwordLabelContainer}>
           <Text>{I18n.t(ext('password'))}</Text>
           <Button styleName="clear" onPress={onForgotPasswordPress}>
-            <Text>{I18n.t(ext('forgotPasswordText'))}</Text>
+            <Text style={style.forgotPasswordText}>
+              {I18n.t(ext('forgotPasswordText'))}
+            </Text>
           </Button>
         </View>
         <PasswordTextInput

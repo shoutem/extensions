@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Alert, Platform, Share } from 'react-native';
 import ActionSheet from 'react-native-action-sheet';
+import FastImage from 'react-native-fast-image';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
@@ -12,7 +13,6 @@ import {
   Button,
   Caption,
   Icon,
-  Image,
   Screen,
   ScrollView,
   ShareButton,
@@ -264,14 +264,14 @@ export class EpisodeDetailsScreen extends PureComponent {
   }
 
   renderHeaderImage() {
-    const { episode, meta } = this.props;
+    const { episode, meta, style } = this.props;
 
     const episodeImageUrl = getLeadImageUrl(episode) ?? meta?.imageUrl;
 
     return (
-      <Image
+      <FastImage
         source={episodeImageUrl ? { uri: episodeImageUrl } : undefined}
-        styleName="large placeholder"
+        style={style.artwork}
       />
     );
   }
@@ -321,11 +321,9 @@ export class EpisodeDetailsScreen extends PureComponent {
                 </View>
                 <PodcastEpisodePlayer
                   episode={episode}
-                  artwork={getLeadImageUrl(episode) ?? meta?.imageUrl}
-                  playlist={{
-                    id: feedUrl,
-                    title: shortcutTitle,
-                  }}
+                  feedUrl={feedUrl}
+                  defaultArtwork={meta?.imageUrl}
+                  title={shortcutTitle}
                 />
               </View>
               <View styleName="solid">

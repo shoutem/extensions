@@ -1,6 +1,6 @@
 {
   "name": "shoutem.audio",
-  "version": "6.1.1",
+  "version": "7.0.0",
   "description": "Track player components for other extensions to utilize.",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
@@ -17,6 +17,7 @@
     "@shoutem/ui": "*"
   },
   "nativeDependencies": [
+    "react-native-fast-image",
     "react-native-track-player",
     "@react-native-community/slider"
   ]

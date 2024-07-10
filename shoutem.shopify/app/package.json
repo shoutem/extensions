@@ -1,6 +1,6 @@
 {
   "name": "shoutem.shopify",
-  "version": "9.0.2",
+  "version": "9.0.3",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },

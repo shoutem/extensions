@@ -1,10 +1,11 @@
 export {
   addDownloadedEpisode,
-  clearLastPlayed,
   deleteEpisode,
   downloadEpisode,
   favoriteEpisode,
   fetchEpisodesFeed,
+  loadEpisodes,
+  loadMoreTracks,
   removeDownloadedEpisode,
   setDownloadInProgress,
   unfavoriteEpisode,

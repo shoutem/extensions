@@ -1,4 +1,5 @@
 import { Dimensions, Platform } from 'react-native';
+import { inverseColorBrightnessForAmount } from '@shoutem/theme';
 import {
   createScopedResolver,
   responsiveHeight,
@@ -37,14 +38,6 @@ export default () => ({
     },
   },
 
-  [`${ext('PlaybackIcon')}`]: {
-    icon: {
-      color: resolveVariable('episodeProgressPlaybackIconColor'),
-      width: responsiveHeight(20),
-      marginRight: responsiveWidth(10),
-    },
-  },
-
   [`${ext('EpisodeProgress')}`]: {
     container: {
       flexDirection: 'row',
@@ -64,6 +57,22 @@ export default () => ({
   },
 
   [`${ext('FeaturedEpisodeView')}`]: {
+    imageBackground: {
+      width: responsiveWidth(365),
+      height: responsiveWidth(345),
+      alignSelf: 'center',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: responsiveWidth(25),
+      paddingTop: responsiveHeight(45),
+      paddingBottom: responsiveHeight(40),
+    },
+    episodeInfo: {
+      position: 'absolute',
+      top: responsiveHeight(5),
+      right: responsiveWidth(5),
+      textAlign: 'center',
+    },
     actionButtonContainer: {
       position: 'absolute',
       top: responsiveHeight(5),
@@ -75,11 +84,7 @@ export default () => ({
       left: responsiveWidth(25),
       right: responsiveWidth(25),
     },
-    playbackIcon: {
-      icon: {
-        color: resolveVariable('featuredEpisodeProgressPlaybackIconColor'),
-      },
-    },
+    title: { textAlign: 'center' },
   },
 
   [`${ext('ListEpisodeView')}`]: {
@@ -91,7 +96,17 @@ export default () => ({
         30,
     },
     episodeProgress: {
-      container: { paddingHorizontal: resolveVariable('mediumGutter') },
+      container: { paddingHorizontal: resolveVariable('smallGutter') },
+    },
+    artwork: {
+      width: responsiveWidth(65),
+      height: responsiveWidth(65),
+      borderRadius: 2,
+      borderWidth: 0,
+      backgroundColor: inverseColorBrightnessForAmount(
+        resolveVariable('paperColor'),
+        10,
+      ),
     },
   },
 
@@ -99,6 +114,17 @@ export default () => ({
     gridRow: {
       paddingTop: responsiveHeight(30),
       paddingRight: 0,
+    },
+  },
+
+  [`${ext('GridEpisodeView')}`]: {
+    image: {
+      width: responsiveWidth(180),
+      height: responsiveWidth(85),
+      backgroundColor: inverseColorBrightnessForAmount(
+        resolveVariable('paperColor'),
+        10,
+      ),
     },
   },
 
@@ -111,7 +137,6 @@ export default () => ({
       width:
         Dimensions.get('window').width / 2 -
         2 * resolveVariable('mediumGutter'),
-      resizeMode: 'contain',
     },
   },
 
@@ -154,24 +179,50 @@ export default () => ({
     },
   },
 
-  [`${ext('ContinuePlayingButton')}`]: {
-    button: {
-      position: 'absolute',
-      width: responsiveHeight(50),
-      height: responsiveHeight(50),
-      borderRadius: responsiveHeight(25),
-      bottom: responsiveHeight(50),
-      right: responsiveHeight(30),
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: resolveVariable('controlsContainerBackgroundColor'),
-      borderColor: resolveVariable('controlsPrimaryColor'),
-      borderWidth: 1,
+  [`${ext('PlayPodcastButton')}`]: {
+    playButton: {
+      container: {
+        position: 'absolute',
+        width: responsiveHeight(50),
+        height: responsiveHeight(50),
+        borderRadius: responsiveHeight(25),
+        bottom: responsiveHeight(50),
+        right: responsiveHeight(30),
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: resolveVariable('controlsContainerBackgroundColor'),
+        borderColor: resolveVariable('controlsPrimaryColor'),
+        borderWidth: 1,
+      },
+      spinnerContainer: {
+        position: 'absolute',
+        width: responsiveHeight(50),
+        height: responsiveHeight(50),
+        borderRadius: responsiveHeight(25),
+        bottom: responsiveHeight(50),
+        right: responsiveHeight(30),
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: resolveVariable('controlsContainerBackgroundColor'),
+        borderColor: resolveVariable('controlsPrimaryColor'),
+        borderWidth: 1,
+      },
+      icon: {
+        height: responsiveHeight(30),
+        width: responsiveHeight(30),
+        color: resolveVariable('controlsPrimaryColor'),
+      },
     },
-    icon: {
-      height: responsiveHeight(30),
-      width: responsiveHeight(30),
-      color: resolveVariable('controlsPrimaryColor'),
+  },
+
+  [`${ext('EpisodeDetailsScreen')}`]: {
+    artwork: {
+      backgroundColor: inverseColorBrightnessForAmount(
+        resolveVariable('paperColor'),
+        10,
+      ),
+      width: Dimensions.get('window').width,
+      height: responsiveWidth(280),
     },
   },
 });

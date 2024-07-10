@@ -24,8 +24,8 @@ export const getAudioTrackProgress = (
   };
 };
 
-export const getAudioPlayerBannerShown = state =>
-  getModuleState(state).audioPlayerBannerShown;
+export const getBannerShown = state => getModuleState(state).bannerShown;
 
-export const getActivePlaylistOrStream = state =>
-  getModuleState(state).activePlaylistOrStream;
+export const getActiveSource = state => getModuleState(state).activeSource;
+
+export const getSleepTimer = state => getModuleState(state).sleepTimer;

@@ -1,7 +1,12 @@
 import enTranslations from './translations/en.json';
 import { changeLocaleMiddleware } from './redux';
 
-export { Header as CmsHeader } from './components';
+export {
+  Header as CmsHeader,
+  UNIVERSAL_LINK_BUTTON_TYPE,
+  UNIVERSAL_LINK_TYPE,
+  UniversalLinkButton,
+} from './components';
 export { default as currentLocation } from './components/CurrentLocation';
 export {
   CATEGORIES_SCHEMA,
@@ -17,6 +22,7 @@ export {
   VIDEO_ATTACHMENTS_SCHEMA,
 } from './redux';
 export { CmsListScreen } from './screens/CmsListScreen';
+export { getMapUrl } from './services';
 
 export const shoutem = {
   i18n: {

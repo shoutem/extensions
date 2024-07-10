@@ -1,0 +1,4 @@
+export const AUDIO_MODAL_VIEW = {
+  AUDIO_PLAYER: 'AUDIO_PLAYER',
+  QUEUE_LIST: 'QUEUE_LIST',
+};

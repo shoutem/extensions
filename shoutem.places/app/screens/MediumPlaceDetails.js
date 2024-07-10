@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { connectStyle } from '@shoutem/theme';
 import { Caption, Screen, ScrollView, Tile, Title } from '@shoutem/ui';
 import { Favorite } from 'shoutem.favorites';
-import { I18n } from 'shoutem.i18n';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { PlaceImageGallery } from '../components';
 import { ext } from '../const';
@@ -87,7 +86,6 @@ class MediumPlaceDetails extends PlaceDetails {
 
   render() {
     const { place } = getRouteParams(this.props);
-    const location = _.get(place, 'location', {});
 
     return (
       <Screen styleName="paper">
@@ -95,57 +93,10 @@ class MediumPlaceDetails extends PlaceDetails {
           {this.renderLeadImage(place)}
           {this.renderPlaceInfo(place)}
           {this.renderOpeningHours(place)}
-          {this.renderButtons()}
+          {this.renderRsvpButton(place)}
           {this.renderInlineMap(place)}
           {this.renderDescription(place)}
-          {this.renderDisclosureButton(
-            place.url,
-            I18n.t('shoutem.cms.websiteButton'),
-            'web',
-            () => this.openWebLink('url'),
-          )}
-          {this.renderDisclosureButton(
-            location.formattedAddress,
-            I18n.t('shoutem.cms.directionsButton'),
-            'pin',
-            this.openMapLink,
-          )}
-          {this.renderDisclosureButton(
-            place.mail,
-            I18n.t('shoutem.cms.emailButton'),
-            'email',
-            this.openEmailLink,
-          )}
-          {this.renderDisclosureButton(
-            place.phone,
-            I18n.t('shoutem.cms.phoneButton'),
-            'call',
-            this.openPhoneLink,
-          )}
-          {this.renderDisclosureButton(
-            place.instagram,
-            I18n.t('shoutem.cms.instagramButton'),
-            'instagram',
-            () => this.openWebLink('instagram'),
-          )}
-          {this.renderDisclosureButton(
-            place.facebook,
-            I18n.t('shoutem.cms.facebookButton'),
-            'facebook',
-            () => this.openWebLink('facebook'),
-          )}
-          {this.renderDisclosureButton(
-            place.twitter,
-            I18n.t('shoutem.cms.twitterButton'),
-            'tweet',
-            () => this.openWebLink('twitter'),
-          )}
-          {this.renderDisclosureButton(
-            place.tiktok,
-            I18n.t('shoutem.cms.tiktokButton'),
-            'tiktok',
-            () => this.openWebLink('tiktok'),
-          )}
+          {this.renderLinkButtons(place)}
           {this.renderPlaceDeals()}
         </ScrollView>
       </Screen>

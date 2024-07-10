@@ -1,4 +1,5 @@
 import React from 'react';
+import FastImage from 'react-native-fast-image';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { connectStyle } from '@shoutem/theme';
@@ -7,7 +8,6 @@ import {
   Caption,
   Divider,
   Icon,
-  Image,
   Spinner,
   Subtitle,
   TouchableOpacity,
@@ -44,18 +44,16 @@ export class ListEpisodeView extends EpisodeView {
       ? this.onDeletePress
       : this.onDownloadPress;
     const imageUrl = this.getImageUrl(episode);
-    const episodeImage = imageUrl
-      ? { uri: imageUrl }
-      : assets.noImagePlaceholder;
 
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Divider styleName="line" />
-        <View styleName="sm-gutter-vertical">
+        <View styleName="sm-gutter-vertical sm-gutter-horizontal">
           <View styleName="horizontal sm-gutter-horizontal space-between v-center">
-            <Image
-              source={episodeImage}
-              styleName="small rounded-corners placeholder"
+            <FastImage
+              source={{ uri: imageUrl, priority: FastImage.priority.normal }}
+              defaultSource={assets.noImagePlaceholder}
+              style={style.artwork}
             />
             <View styleName="horizontal v-center sm-gutter-bottom">
               <View styleName="sm-gutter-right">

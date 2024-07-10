@@ -22,7 +22,8 @@ export function loadFeed(schema, tag, shortcutId, options = {}) {
     const state = getState();
     const shortcut = getShortcut(state, shortcutId);
     const feedUrl = shortcut?.settings?.feedUrl;
-    const { searchText, pageLimit } = options;
+    // id can be single id, or array of ids
+    const { id, searchText, pageLimit } = options;
 
     const config = {
       schema,
@@ -41,6 +42,7 @@ export function loadFeed(schema, tag, shortcutId, options = {}) {
       find(config, tag, {
         query: {
           'filter[url]': feedUrl,
+          'filter[id]': id,
           'page[limit]': pageLimit || DEFAULT_PAGE_LIMIT,
           ...(searchText && {
             query: searchText,
@@ -55,6 +57,6 @@ export function loadNextFeedPage(collection, headers = {}, endpoint = null) {
   return dispatch => {
     const config = createConfig(endpoint, headers);
 
-    dispatch(next(collection, true, config));
+    return dispatch(next(collection, true, config));
   };
 }

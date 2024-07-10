@@ -4,7 +4,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Image, ScrollView, View } from '@shoutem/ui';
 import { appActions } from 'shoutem.application';
-import { Scaler, navigateTo } from '../services';
+import { navigateTo, Scaler } from '../services';
 
 const defaultResolution = {
   width: 375,
@@ -191,6 +191,10 @@ export default class FolderBase extends PureComponent {
     const { style } = this.props;
 
     return {
+      // When Navigation screen is nested inside FolderBase Main navigation (non-tab & non-drawer navigations), vertical scroll
+      // is not placed to the right edge of the screen, but has ~20% offset on iOS.
+      // Removing scroll because of this, but also because it's better UI.
+      showsVerticalScrollIndicator: false,
       style: {
         ...style.scrollView,
       },

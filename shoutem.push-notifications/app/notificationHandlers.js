@@ -52,7 +52,7 @@ function consumeNotification(notificationContent, state) {
     const shortcut = getShortcut(state, shortcutId);
     const screenSettings = _.get(
       _.find(shortcut.screens, { canonicalName: shortcut.screen }),
-      'screenSettings',
+      'settings',
       {},
     );
 

@@ -2,17 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { cloneStatus, getMeta } from '@shoutem/redux-io';
+import { cloneStatus, getMeta, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { updateAudioPlayerBannerShown as updateAudioPlayerBannerAction } from 'shoutem.audio';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { RssListScreen } from 'shoutem.rss';
-import {
-  ContinuePlayingButton,
-  FeaturedEpisodeView,
-  ListEpisodeView,
-} from '../components';
+import { FeaturedEpisodeView, ListEpisodeView } from '../components';
 import { EPISODES_COLLECTION_TAG, ext, RSS_PODCAST_SCHEMA } from '../const';
+import { PodcastPlaylistPlayer } from '../fragments';
 import {
   addDownloadedEpisode,
   getEpisodesFeed,
@@ -92,14 +88,26 @@ export class EpisodesListScreen extends RssListScreen {
   }
 
   renderFooter() {
-    const { feedUrl, shortcutTitle } = this.props;
+    const { data } = this.props;
 
-    const playlist = {
-      id: feedUrl,
-      title: shortcutTitle,
-    };
+    // Wait until initial data is fetched and initialized, then render player. Only after initial data
+    // is initialized, player is ready to resolve queue logic.
+    if (!isInitialized(data)) {
+      return null;
+    }
 
-    return <ContinuePlayingButton playlist={playlist} />;
+    const { shortcutId, shortcutTitle } = this.props;
+
+    const meta = getMeta(data);
+
+    return (
+      <PodcastPlaylistPlayer
+        data={data}
+        title={shortcutTitle}
+        meta={meta}
+        shortcutId={shortcutId}
+      />
+    );
   }
 }
 
@@ -138,7 +146,6 @@ EpisodesListScreen.propTypes = {
 export const mapDispatchToProps = RssListScreen.createMapDispatchToProps({
   addDownloadedEpisode,
   removeDownloadedEpisode,
-  updateAudioPlayerBannerShown: updateAudioPlayerBannerAction,
 });
 
 export default connect(

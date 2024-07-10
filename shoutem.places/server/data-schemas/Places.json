@@ -70,46 +70,52 @@
       "type": "string",
       "displayPriority": 11
     },
+    "linkedin": {
+      "format": "uri",
+      "title": "LinkedIn",
+      "type": "string",
+      "displayPriority": 12
+    },
     "openingHours": {
       "format": "multi-line",
       "title": "Open Hours",
       "type": "string",
-      "displayPriority": 12
+      "displayPriority": 13
     },
     "image": {
       "format": "attachment",
       "title": "Image 1",
       "type": "object",
       "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 13
+      "displayPriority": 14
     },
     "image2": {
       "format": "attachment",
       "title": "Image 2",
       "type": "object",
       "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 14
+      "displayPriority": 15
     },
     "image3": {
       "format": "attachment",
       "title": "Image 3",
       "type": "object",
       "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 15
+      "displayPriority": 16
     },
     "image4": {
       "format": "attachment",
       "title": "Image 4",
       "type": "object",
       "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 16
+      "displayPriority": 17
     },
     "image5": {
       "format": "attachment",
       "title": "Image 5",
       "type": "object",
       "referencedSchema": "shoutem.core.image-attachments",
-      "displayPriority": 17
+      "displayPriority": 18
     }
   },
   "titleProperty": "name",

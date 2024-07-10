@@ -1,12 +1,12 @@
 {
   "name": "shoutem.in-app-purchases",
-  "version": "6.3.0",
+  "version": "6.4.0",
   "description": "Add Apple/Google Play subscriptions to your app",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
-    "react-native-iaphub": "8.6.2"
+    "react-native-iaphub": "8.7.0"
   },
   "nativeDependencies": [
     "react-native-iaphub"

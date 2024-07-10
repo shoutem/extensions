@@ -1,4 +1,5 @@
 import React from 'react';
+import FastImage from 'react-native-fast-image';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { connectStyle } from '@shoutem/theme';
@@ -7,9 +8,7 @@ import {
   Caption,
   Divider,
   Icon,
-  ImageBackground,
   Spinner,
-  Tile,
   Title,
   TouchableOpacity,
   View,
@@ -52,50 +51,47 @@ export class FeaturedEpisodeView extends EpisodeView {
     return (
       <TouchableOpacity onPress={this.onPress}>
         <View styleName="sm-gutter featured">
-          <ImageBackground
-            source={episodeImage}
-            styleName="featured placeholder"
-          >
-            <Tile>
-              <Title>{(title ?? '').toUpperCase()}</Title>
-              <View styleName="horizontal md-gutter-top">
-                <Caption numberOfLines={1} styleName="collapsible">
-                  {author}
-                </Caption>
-                {momentDate.isAfter(0) && (
-                  <Caption styleName="md-gutter-left">
-                    {momentDate.fromNow()}
-                  </Caption>
+          <FastImage source={episodeImage} style={style.imageBackground}>
+            <View style={style.episodeInfo}>
+              <View style={style.actionButtonContainer}>
+                {!!hasFavorites && (
+                  <FavoriteButton
+                    onPress={this.onFavoritePress}
+                    isFavorited={isFavorited}
+                  />
+                )}
+                {!!enableDownload && !downloadInProgress && (
+                  <Button
+                    styleName="clear tight"
+                    onPress={handleDownloadManagerPress}
+                  >
+                    <Icon name={iconName} />
+                  </Button>
+                )}
+                {!!downloadInProgress && (
+                  <Spinner style={style.downloadManagerButton} />
                 )}
               </View>
-            </Tile>
-            <View style={style.actionButtonContainer}>
-              {!!hasFavorites && (
-                <FavoriteButton
-                  onPress={this.onFavoritePress}
-                  isFavorited={isFavorited}
-                />
-              )}
-              {!!enableDownload && !downloadInProgress && (
-                <Button
-                  styleName="clear tight"
-                  onPress={handleDownloadManagerPress}
-                >
-                  <Icon name={iconName} />
-                </Button>
-              )}
-              {!!downloadInProgress && (
-                <Spinner style={style.downloadManagerButton} />
+            </View>
+            <Title style={style.title}>{(title ?? '').toUpperCase()}</Title>
+            <View styleName="horizontal md-gutter-top">
+              <Caption numberOfLines={1} styleName="collapsible">
+                {author}
+              </Caption>
+              {momentDate.isAfter(0) && (
+                <Caption styleName="md-gutter-left">
+                  {momentDate.fromNow()}
+                </Caption>
               )}
             </View>
+
             <EpisodeProgress
               episode={episode}
               style={{
                 container: style.episodeProgressContainer,
-                playbackIcon: style.playbackIcon,
               }}
             />
-          </ImageBackground>
+          </FastImage>
         </View>
         <Divider styleName="line" />
       </TouchableOpacity>

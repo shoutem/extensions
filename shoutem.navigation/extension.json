@@ -1,10 +1,10 @@
 {
   "name": "navigation",
-  "version": "5.4.4",
+  "version": "5.4.5",
   "platform": ">=14",
   "type": "system",
   "title": "Main Navigation",
-  "releaseNotes": "User facing changes\n* Active screens now automatically update their titles when user changes the app language",
+  "releaseNotes": "User facing changes\n* Main navigation & Sub-navigation screens won't show vertical scroll indicator any more",
   "description": "App-level navigation",
   "nativeChanges": {
     "lastVersion": "5.2.0"

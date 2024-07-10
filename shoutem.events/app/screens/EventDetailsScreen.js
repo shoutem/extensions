@@ -2,34 +2,33 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { InlineMap } from 'shoutem.application';
 import { connectStyle } from '@shoutem/theme';
 import {
-  ScrollView,
-  Screen,
-  Title,
-  Caption,
-  Icon,
-  SimpleHtml,
-  View,
   Button,
-  Text,
+  Caption,
   Divider,
-  TouchableOpacity,
-  Row,
-  Subtitle,
+  Icon,
+  Screen,
+  ScrollView,
   ShareButton,
+  SimpleHtml,
+  Subtitle,
+  Text,
+  Title,
+  TouchableOpacity,
+  View,
 } from '@shoutem/ui';
+import { InlineMap } from 'shoutem.application';
+import { UNIVERSAL_LINK_TYPE, UniversalLinkButton } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import {
   composeNavigationStyles,
   getRouteParams,
   navigateTo,
 } from 'shoutem.navigation';
-import { openURL } from 'shoutem.web-view';
-import { formatDate, addToCalendar } from '../shared/Calendar';
-import isValidEvent from '../shared/isValidEvent';
 import { ext } from '../const';
+import { addToCalendar, formatDate } from '../shared/Calendar';
+import isValidEvent from '../shared/isValidEvent';
 
 /**
  * Extracts `coordinate` value for given event.
@@ -54,10 +53,6 @@ const getEventLocation = event => ({
 });
 
 export class EventDetailsScreen extends PureComponent {
-  static propTypes = {
-    navigation: PropTypes.object.isRequired,
-  };
-
   constructor(props, context) {
     super(props, context);
 
@@ -159,11 +154,6 @@ export class EventDetailsScreen extends PureComponent {
     });
   }
 
-  openURL() {
-    const { event } = getRouteParams(this.props);
-    openURL(event.rsvpLink, event.name);
-  }
-
   renderMap(event) {
     if (!isValidEvent(event)) {
       return null;
@@ -218,16 +208,33 @@ export class EventDetailsScreen extends PureComponent {
     );
   }
 
-  renderRsvpButton(event) {
-    return event.rsvpLink ? (
-      <TouchableOpacity onPress={this.openURL}>
-        <Divider styleName="line" />
-        <Row styleName="small">
-          <Icon name="add-event" />
-          <Text>{I18n.t('shoutem.cms.rsvpButton')}</Text>
-          <Icon styleName="disclosure" name="right-arrow" />
-        </Row>
-      </TouchableOpacity>
+  renderOpeningHours(event) {
+    return event.openingHours ? (
+      <View styleName="solid">
+        <Divider styleName="section-header">
+          <Caption>{I18n.t('shoutem.cms.openHours')}</Caption>
+        </Divider>
+        <SimpleHtml body={event.openingHours} />
+      </View>
+    ) : null;
+  }
+
+  renderWheelchairAccesibility(event) {
+    const { style } = this.props;
+
+    return event.wheelchairAccessibility ? (
+      <View styleName="solid md-gutter-bottom">
+        <View
+          styleName="horizontal md-gutter-left md-gutter-vertical v-center"
+          style={style.sectionHeader}
+        >
+          <Icon name="wheelchair" />
+          <Caption styleName="sm-gutter-left">
+            {I18n.t(ext('wheelchairFriendly'))}
+          </Caption>
+          <Divider styleName="line" />
+        </View>
+      </View>
     ) : null;
   }
 
@@ -246,9 +253,68 @@ export class EventDetailsScreen extends PureComponent {
     return (
       <ScrollView>
         {this.renderHeader(event)}
-        {this.renderRsvpButton(event)}
+        <UniversalLinkButton
+          link={event.rsvpLink}
+          title={I18n.t('shoutem.cms.rsvpButton')}
+          iconName="rsvp"
+        />
+        {this.renderOpeningHours(event)}
+        {this.renderWheelchairAccesibility(event)}
         {this.renderInformation(event)}
         {this.renderMap(event)}
+        <UniversalLinkButton
+          type={UNIVERSAL_LINK_TYPE.LOCATION}
+          location={event.location}
+          title={I18n.t('shoutem.cms.directionsButton')}
+          subtitle={event.location?.formattedAddress}
+        />
+        <UniversalLinkButton
+          link={event.web}
+          title={I18n.t('shoutem.cms.websiteButton')}
+          subtitle={event.web}
+        />
+        <UniversalLinkButton
+          type={UNIVERSAL_LINK_TYPE.EMAIL}
+          link={event.mail}
+          title={I18n.t('shoutem.cms.emailButton')}
+          subtitle={event.mail}
+        />
+        <UniversalLinkButton
+          type={UNIVERSAL_LINK_TYPE.PHONE}
+          link={event.phone}
+          title={I18n.t('shoutem.cms.phoneButton')}
+          subtitle={event.phone}
+        />
+        <UniversalLinkButton
+          link={event.twitter}
+          title={I18n.t('shoutem.cms.twitterButton')}
+          subtitle={event.twitter}
+          iconName="tweet"
+        />
+        <UniversalLinkButton
+          link={event.instagram}
+          title={I18n.t('shoutem.cms.instagramButton')}
+          subtitle={event.instagram}
+          iconName="instagram"
+        />
+        <UniversalLinkButton
+          link={event.facebook}
+          title={I18n.t('shoutem.cms.facebookButton')}
+          subtitle={event.facebook}
+          iconName="facebook"
+        />
+        <UniversalLinkButton
+          link={event.tiktok}
+          title={I18n.t('shoutem.cms.tiktokButton')}
+          subtitle={event.tiktok}
+          iconName="tiktok"
+        />
+        <UniversalLinkButton
+          link={event.linkedin}
+          title={I18n.t('shoutem.cms.linkedInButton')}
+          subtitle={event.linkedin}
+          iconName="linkedin"
+        />
       </ScrollView>
     );
   }
@@ -263,5 +329,10 @@ export class EventDetailsScreen extends PureComponent {
     return this.renderScreen();
   }
 }
+
+EventDetailsScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  style: PropTypes.object.isRequired,
+};
 
 export default connectStyle(ext('EventDetailsScreen'))(EventDetailsScreen);

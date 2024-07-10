@@ -1,0 +1,24 @@
+{
+  "name": "live-update",
+  "title": "App live update",
+  "type": "system",
+  "description": "Shoutem LiveUpdate service, used to deliver app updates and previews",
+  "version": "1.0.2",
+  "platform": ">=14.1.0",
+  "releaseNotes": "Release notes\n* No user facing changes\n\nDeveloper notes\n* Fixed an issue where app owners couldn't preview their app using Disclose preview app",
+  "nativeChanges": {
+    "lastVersion": "1.0.0"
+  },
+  "icon": "server/assets/add-live-update-image.png",
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.i18n",
+    "shoutem.redux"
+  ],
+  "cloud": [
+    {
+      "type": "api",
+      "script": "npm run migrate:docker && npm run start:server:docker"
+    }
+  ]
+}

@@ -1,8 +1,5 @@
 import { getShortcut } from 'shoutem.application';
 import { loadFeed } from 'shoutem.rss';
-import { ext } from '../../../shoutem.audio/app/const';
-
-export const REMOVE_RADIO_METADATA = ext('REMOVE_RADIO_METADATA');
 
 export const DEFAULT_PAGE_LIMIT = 20;
 export const RSS_NEWS_SCHEMA = 'shoutem.proxy.news';
