@@ -2,9 +2,9 @@
   "name": "events",
   "title": "Events",
   "description": "Show items with location and time",
-  "version": "5.4.0",
+  "version": "5.4.1",
   "platform": ">=14.1.1",
-  "releaseNotes": "Release notes\n* Added Event location (directions) and social profiles links UI in the app - Twitter, Facebook, Instagram, LinkedIn & TikTok. This information can be managed within the builder by creating new Event CMS items or editing existing ones\n* Web and social profiles links will now be opened in external - native browser\n\nDeveloper notes\n* (Breaking) Link buttons functionality was moved to CMS extension",
+  "releaseNotes": "Release notes\n* Adjusted Twitter labels, to X (Twitter)",
   "nativeChanges": {
     "lastVersion": "5.0.1"
   },

@@ -50,7 +50,6 @@
       "type": "object",
       "displayPriority": 7
     },
-
     "openingHours": {
       "format": "multi-line",
       "title": "Open Hours",
@@ -84,7 +83,7 @@
     },
     "twitter": {
       "format": "uri",
-      "title": "Twitter",
+      "title": "X (Twitter)",
       "type": "string",
       "displayPriority": 13
     },

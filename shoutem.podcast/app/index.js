@@ -29,7 +29,7 @@ const shoutem = {
   },
 };
 
-export { appDidMount } from './app';
+export { appWillMount } from './app';
 
 export { reducer, screens, shoutem };
 

@@ -4,19 +4,16 @@ import {
   NotificationHandlers,
   queueNotification,
 } from 'shoutem.firebase';
-import { getNavInitialized } from 'shoutem.navigation';
 import { resolveNotificationData } from 'shoutem.push-notifications';
 import { getStore } from 'shoutem.redux';
 import { ext } from './const';
 import { getNotificationSettings } from './redux';
 import { getStateFromAsyncStorage, notifications } from './services';
 
-// this extension handles only silent notifications
 function canHandle(notification) {
   return notification.silent;
 }
 
-// handle local notification opens from push journeys
 function canHandleJourneyNotification(notification) {
   return (
     !!notification.data?.triggerId &&
@@ -25,9 +22,10 @@ function canHandleJourneyNotification(notification) {
   );
 }
 
-// handles local scheduled pushes. This handles both cases,
-// when the queued notification becomes ready ( and triggers onNotificationTapped)
-// and when the nav is ready and the notification can be processed right away
+// If tapped notification is journey notification, all onConsumeNotification handlers
+// will process it. It should only be fully handled in shoutem.push-notifications onConsumeNotification handler.
+// On Android, notification is sometimes processed before store or navigation have been initialized, so we have
+// to queue notification for later consumption.
 async function handleJourneyNotificationTapped(notification, dispatch) {
   if (!canHandleJourneyNotification(notification)) {
     return;
@@ -37,14 +35,6 @@ async function handleJourneyNotificationTapped(notification, dispatch) {
 
   // no store, meaning nav is not yet initialized
   if (!store) {
-    dispatch(queueNotification(notification));
-    return;
-  }
-
-  const navInitialized = getNavInitialized(store.getState());
-
-  // store created, but nav is still not initialized
-  if (!navInitialized) {
     dispatch(queueNotification(notification));
     return;
   }
@@ -100,6 +90,12 @@ export async function handleBackgroundNotification(receivedNotification) {
   }
 }
 
+// This extension handles:
+// - Receiving User scheduled notifications, silent push notifications. After received, app will randomly schedule
+//   X number of local notifications with only title & body. Tapping that notification later is processed in
+//  shoutem.push-notifications' onConsumeNotification handler.
+// - Tapping Journey scheduled notifications, local notifications. After tapped, notification is processed in
+//  shoutem.push-notifications' onConsumeNotification handler.
 export function registerNotificationHandlers(store) {
   NotificationHandlers.registerNotificationReceivedHandlers({
     owner: ext(),
@@ -118,7 +114,6 @@ export function registerBackgroundMessageHandler() {
     notificationHandlers: {
       onNotificationReceivedBackground: notification =>
         handleBackgroundNotification(notification),
-      onNotification: handleJourneyNotificationTapped,
     },
   });
 }

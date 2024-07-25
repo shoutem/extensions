@@ -2,12 +2,12 @@
   "name": "podcast",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "version": "9.0.0",
-  "platform": ">=14.1.1",
+  "version": "9.0.1",
+  "platform": ">=14.1.2",
   "nativeChanges": {
     "lastVersion": "8.0.1"
   },
-  "releaseNotes": "Release notes\n\nStreamlined playlist player experience for podcast feeds\n* Podcast episodes will automatically play the next episode when the current episode ends\n* Users can skip to the previous or next episode within the audio modal.\n* Users can access the list of podcast episodes from anywhere in the app through the audio modal's queue list.\n\nDeveloper notes\n* (Breaking) Removed & renamed some of the components and functions/variables",
+  "releaseNotes": "Release notes\n* No user facing changes\n\n* Developer notes\n* Improved push notification handlers registration process by prioritizing notification handlers registration before token handler registration",
   "icon": "server/assets/extension-icon.png",
   "categories": [
     "media"

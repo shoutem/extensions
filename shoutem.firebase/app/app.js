@@ -1,16 +1,14 @@
-import { Platform } from 'react-native';
 import PushNotifications from 'react-native-push-notification';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import messaging from '@react-native-firebase/messaging';
 import { isProduction } from 'shoutem.application';
-import { Firebase } from 'shoutem.firebase';
 import { priorities, setPriority } from 'shoutem-core';
 import {
-  handleNotification,
-  handleNotificationReceivedBackground,
+  Firebase,
   handleNotificationReceivedForeground,
   handleNotificationTapped,
 } from './services';
+
+let unsubscribeForegroundNotificationListener;
 
 function formatiOSNotificationPayload(message) {
   return {
@@ -25,14 +23,29 @@ export const appWillMount = setPriority(async app => {
     return;
   }
 
-  if (Platform.OS === 'ios') {
-    messaging().onNotificationOpenedApp(message =>
-      handleNotificationTapped(formatiOSNotificationPayload(message), store),
-    );
-  }
-
   const store = app.getStore();
   const { dispatch } = store;
+
+  // Android & iOS - Handles notification received when in FOREGROUND state.
+  unsubscribeForegroundNotificationListener = messaging().onMessage(
+    async remoteMessage =>
+      handleNotificationReceivedForeground(remoteMessage, dispatch),
+  );
+
+  // Android & iOS - Handles notification tapped when app is in BACKGROUND state.
+  // iOS - Handles notification tapped when app is in QUIT state.
+  messaging().onNotificationOpenedApp(message =>
+    handleNotificationTapped(formatiOSNotificationPayload(message), store),
+  );
+
+  // Android - Handles notification tapped when app is in QUIT state.
+  messaging()
+    .getInitialNotification()
+    .then(remoteMessage => {
+      if (remoteMessage) {
+        handleNotificationTapped(remoteMessage, store);
+      }
+    });
 
   await messaging().registerDeviceForRemoteMessages();
 
@@ -45,42 +58,21 @@ export function appDidMount(app) {
     return;
   }
 
-  const store = app.getStore();
-  const { dispatch } = store;
-
+  // We're only handling local notifications here & notification tapped event only.
+  // The rest is handled by messaging().onMessage,  messaging().onNotificationOpenedApp() & messaging().setBackgroundMessageHandler.
   PushNotifications.configure({
     onNotification: notif => {
-      const { foreground, userInteraction } = notif;
-
-      const isForegroundNotification = foreground && userInteraction !== true;
-
-      if (isForegroundNotification) {
-        handleNotificationReceivedForeground(notif, dispatch);
-      }
-
+      // google.message_id (Android) & gcm.message_id (iOS) are present in remote notifications.
       if (
-        foreground === false &&
-        userInteraction !== true &&
-        Platform.OS === 'ios'
+        !!notif.data?.['google.message_id'] ||
+        !!notif.data?.['gcm.message_id'] ||
+        !notif.userInteraction
       ) {
-        handleNotificationReceivedBackground(notif, dispatch);
+        return;
       }
 
-      // iOS is excluded because onNotification handler is sometimes triggered twice
-      // with userInteraction:true.
-      // Because iOS excludes tapped notifications here, we have defined separate handler
-      // messaging().onNotificationOpenedApp, for when app is killed and user opens it via
-      // push notification tap
-      if (userInteraction === true && Platform.OS !== 'ios') {
-        handleNotificationTapped(notif, store);
-      }
-
-      // GENERIC Handler ( Use if you have custom logic or your library has some false positives with ShoutEm logic)
-      handleNotification(notif, dispatch);
-
-      if (Platform.OS === 'ios') {
-        notif.finish(PushNotificationIOS.FetchResult.NoData);
-      }
+      const store = app.getStore();
+      handleNotificationTapped(notif, store);
     },
     permissions: {
       alert: true,
@@ -90,4 +82,8 @@ export function appDidMount(app) {
     popInitialNotification: true,
     requestPermissions: false,
   });
+}
+
+export function appWillUnmount() {
+  unsubscribeForegroundNotificationListener();
 }

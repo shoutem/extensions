@@ -3,9 +3,9 @@
   "title": "CMS",
   "type": "system",
   "description": "Shoutem CMS extension provides the integration with the Shoutem CMS. Extensions using CMS extension are able to fetch data from CMS and use Shoutem CMS editor.",
-  "version": "7.3.0",
+  "version": "7.3.1",
   "platform": ">=14.1.1",
-  "releaseNotes": "No user facing changes\n\nDeveloper notes\n* Created and exported multi-purpose button component for opening various URLs or Maps app with directions to provided location",
+  "releaseNotes": "Release notes\n* Adjusted Twitter labels, to X (Twitter)",
   "nativeChanges": {
     "lastVersion": "6.3.0"
   },

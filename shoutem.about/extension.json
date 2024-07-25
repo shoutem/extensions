@@ -2,9 +2,9 @@
   "name": "about",
   "title": "About",
   "description": "Show info about your app or your business",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "platform": ">=14.1.1",
-  "releaseNotes": "Release notes\n* Contact and social profiles links in About screen will now be opened in external - native browser, instead in-app\n\nDeveloper notes\n* (Breaking) Removed link button components & logic. This functionality is now imported from CMS extension",
+  "releaseNotes": "Release notes\n* Adjusted About screen social buttons to show in expected order\n* Adjusted Twitter labels, to X (Twitter)",
   "icon": "server/assets/add-about-image.png",
   "dependencies": [
     "shoutem.application",

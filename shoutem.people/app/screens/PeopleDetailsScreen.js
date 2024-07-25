@@ -1,22 +1,22 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
 import { Linking } from 'react-native';
+import autoBindReact from 'auto-bind/react';
+import { connectStyle } from '@shoutem/theme';
+import {
+  Button,
+  Caption,
+  Icon,
+  Image,
+  Screen,
+  ScrollView,
+  SimpleHtml,
+  Text,
+  Title,
+  View,
+} from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { openURL } from 'shoutem.web-view';
-import { connectStyle } from '@shoutem/theme';
-import {
-  Screen,
-  Image,
-  Title,
-  Text,
-  Caption,
-  Button,
-  Icon,
-  View,
-  SimpleHtml,
-  ScrollView,
-} from '@shoutem/ui';
 import { ext } from '../const';
 
 export class PeopleDetailsScreen extends PureComponent {
@@ -74,7 +74,7 @@ export class PeopleDetailsScreen extends PureComponent {
             I18n.t('shoutem.cms.phoneButton'),
             person.phone ? `tel:${person.phone}` : null,
           )}
-          {this.renderLinkButton('tweet', 'Twitter', person.twitterPageUrl)}
+          {this.renderLinkButton('tweet', 'X (Twitter)', person.twitterPageUrl)}
           {this.renderLinkButton(
             'linkedin',
             'LinkedIn',

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.places",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "Interactive list of POIs",
   "dependencies": {
     "currency-formatter": "1.5.9",

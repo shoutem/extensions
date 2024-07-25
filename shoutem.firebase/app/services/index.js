@@ -1,12 +1,11 @@
+export { default as Firebase } from './firebase';
 export {
-  default as NotificationHandlers,
-  handleReceivedToken,
+  handleFCMTokenReceived,
+  handleNotification,
+  handleNotificationConsumed,
   handleNotificationReceivedBackground,
   handleNotificationReceivedForeground,
   handleNotificationTapped,
-  handleNotificationConsumed,
-  handleNotification,
   handlePendingNotification,
-  handleFCMTokenReceived,
+  default as NotificationHandlers,
 } from './handlers';
-export { default as Firebase } from './firebase';
