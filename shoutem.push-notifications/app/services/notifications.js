@@ -16,7 +16,7 @@ export function resolveNotificationData(receivedNotification) {
   const action = unparsedAction && JSON.parse(unparsedAction);
   const actions = unparsedActions && JSON.parse(unparsedActions);
 
-  if (!!action) {
+  if (action) {
     const { itemId, itemSchema, shortcutId } = action;
 
     return {

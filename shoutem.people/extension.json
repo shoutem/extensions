@@ -1,11 +1,11 @@
 {
   "name": "people",
   "title": "People",
-  "version": "5.2.0",
-  "platform": ">=12.1.0",
-  "icon": "./server/assets/images/add-people-image.png",
   "description": "Show people and contact details",
-  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
+  "version": "5.2.1",
+  "platform": ">=12.1.0",
+  "releaseNotes": "Release notes\n* Adjusted Twitter labels, to X (Twitter)",
+  "icon": "./server/assets/images/add-people-image.png",
   "dependencies": [
     "shoutem.cms",
     "shoutem.i18n",

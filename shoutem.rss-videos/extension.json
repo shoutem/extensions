@@ -1,10 +1,10 @@
 {
   "name": "rss-videos",
   "title": "Videos RSS",
-  "version": "5.2.0",
-  "platform": ">=12.1.0",
   "description": "Show a video gallery from an RSS feed",
-  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
+  "version": "5.2.1",
+  "platform": ">=14.1.2",
+  "releaseNotes": "Release notes\n* No user facing changes\n\n* Developer notes\n* Improved push notification handlers registration process by prioritizing notification handlers registration before token handler registration",
   "icon": "server/assets/add-videos-image.png",
   "categories": ["media"],
   "repository": {

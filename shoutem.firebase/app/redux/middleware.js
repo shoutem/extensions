@@ -6,7 +6,8 @@ import {
 import { CONSUME_NOTIFICATION } from './actions';
 import { getQueuedNotification } from './selectors';
 
-export const consumeNotificationMiddleware = store => next => action => {
+// eslint-disable-next-line no-unused-vars
+export const consumeNotificationMiddleware = _store => next => action => {
   if (action.type === CONSUME_NOTIFICATION) {
     handleNotificationConsumed(action.payload);
   }

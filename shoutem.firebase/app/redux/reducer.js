@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { preventStateRehydration } from 'shoutem.redux';
-import { QUEUE_NOTIFICATION, CLEAR_NOTIFICATION_QUEUE } from './actions';
+import { CLEAR_NOTIFICATION_QUEUE, QUEUE_NOTIFICATION } from './actions';
 
 const notificationQueue = (state = null, action) => {
   if (action.type === QUEUE_NOTIFICATION) {

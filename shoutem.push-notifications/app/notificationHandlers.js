@@ -94,11 +94,17 @@ export function displayLocalNotification(title, message, notification, store) {
   const defaultAction = {
     text: I18n.t(ext('messageReceivedAlertDismiss')),
     onPress: () => null,
+    style: 'cancel',
   };
 
   const action = _.get(notification, 'action');
+
+  const hasOpenShortcutAction = action.type === NAVIGATE_ACTION_TYPE;
+  const hasOpenModalAction = action.type === OPEN_IN_MODAL_ACTION_TYPE;
+
   const alertOptions =
-    action && !navigatesToSameShortcut(action)
+    (hasOpenShortcutAction || hasOpenModalAction) &&
+    !navigatesToSameShortcut(action)
       ? [defaultAction, viewAction]
       : [defaultAction];
 
@@ -132,6 +138,9 @@ function handleForegroundNotification(receivedNotification, store) {
   displayLocalNotification(title, notification.body, notification, store);
 }
 
+// This extension handles:
+// - Tapping non-RSS, non-silent notification, that has either navigate to shortcut OR open in modal action as payload.
+// - Displaying non-RSS, non-silent notification in Alert window
 export function registerNotificationHandlers(store) {
   NotificationHandlers.registerFCMTokenReceivedHandler({
     owner: ext(),

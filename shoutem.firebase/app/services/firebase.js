@@ -22,6 +22,7 @@ function obtainFCMToken() {
     messaging()
       .getToken()
       .then(token => handleFCMTokenReceived(token, dispatch))
+      // eslint-disable-next-line no-console
       .catch(err => console.warn('Fetch Firebase token failed!', err));
 }
 
@@ -30,6 +31,7 @@ function obtainAPNSToken() {
     messaging()
       .getAPNSToken()
       .then(token => handleAPNSTokenReceived(token, dispatch))
+      // eslint-disable-next-line no-console
       .catch(err => console.warn('Fetch APNS token failed!', err));
 }
 
@@ -38,7 +40,11 @@ function clearBadge() {
     return null;
   }
 
-  return PushNotificationIOS.setApplicationIconBadgeNumber(0);
+  return PushNotificationIOS.getDeliveredNotifications(notifications => {
+    if (notifications.length === 0) {
+      PushNotificationIOS.setApplicationIconBadgeNumber(0);
+    }
+  });
 }
 
 function selectGroups(groups) {

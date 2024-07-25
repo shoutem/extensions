@@ -2,9 +2,9 @@
   "name": "places",
   "title": "Places",
   "description": "Show items with location on list or map",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "platform": ">=14.1.1",
-  "releaseNotes": "Release notes\n* Added LinkedIn link UI in the app. This information can be managed within the builder by creating new Place CMS items or editing existing ones\n* Web and social profiles links will now be opened in external - native browser\n\nDeveloper notes\n* (Breaking) Link buttons functionality was moved to CMS extension",
+  "releaseNotes": "Release notes\n* Adjusted Twitter labels, to X (Twitter)",
   "icon": "./server/assets/images/add-places-image.png",
   "dependencies": [
     "shoutem.application",

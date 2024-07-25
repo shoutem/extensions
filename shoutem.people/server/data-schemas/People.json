@@ -60,7 +60,7 @@
     "twitterPageUrl": {
       "type": "string",
       "format": "uri",
-      "title": "Twitter page URL",
+      "title": "X (Twitter) page URL",
       "displayPriority": 10
     },
     "websiteUrl": {

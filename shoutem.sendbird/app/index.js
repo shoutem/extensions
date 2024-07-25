@@ -1,7 +1,10 @@
 import './navigation';
 import enTranslations from './translations/en.json';
 import { screens } from './extension.js';
+import { registerBackgroundMessageHandler } from './notificationHandlers.js';
 import { actions, handlers, middleware, reducer, selectors } from './redux';
+
+registerBackgroundMessageHandler();
 
 export const shoutem = {
   i18n: {

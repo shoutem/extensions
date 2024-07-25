@@ -2,12 +2,12 @@
   "name": "notification-center",
   "title": "Notification center",
   "description": "View and manage push notifications within the app",
-  "version": "9.0.4",
-  "platform": ">=14.0.2",
+  "version": "9.0.5",
+  "platform": ">=14.1.2",
   "nativeChanges": {
     "lastVersion": "9.0.3"
   },
-  "releaseNotes": "* Updated push journey scheduling to conform with new Android 14 alarm permission guidelines",
+  "releaseNotes": "Release notes\n* Improved user experience in cases where notification is received while user is in-app\n\nDeveloper notes\n* Improved push notification handlers registration process by prioritizing notification handlers registration before token handler registration",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": [
     "users"

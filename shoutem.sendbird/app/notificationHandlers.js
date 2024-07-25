@@ -44,26 +44,24 @@ function handleNotificationReceived(notification) {
   }
 }
 
-function handleNotification(notification, dispatch, store) {
-  const { userInteraction } = notification;
-
-  if (Platform.OS === 'ios' && userInteraction) {
-    handleNotificationOpened(notification, dispatch, store);
-  }
-}
-
 export function registerNotificationHandlers(store) {
   NotificationHandlers.registerNotificationReceivedHandlers({
     owner: ext(),
     notificationHandlers: {
-      onNotificationTapped: (notification, dispatch) =>
-        handleNotificationOpened(notification, dispatch, store),
-      onNotificationReceivedBackground: notification =>
-        handleNotificationReceived(notification),
       onNotificationReceivedForeground: notification =>
         handleNotificationReceived(notification),
-      onNotification: (notification, dispatch) =>
-        handleNotification(notification, dispatch, store),
+      onNotificationTapped: (notification, dispatch) =>
+        handleNotificationOpened(notification, dispatch, store),
+    },
+  });
+}
+
+export function registerBackgroundMessageHandler() {
+  NotificationHandlers.registerNotificationReceivedHandlers({
+    owner: ext(),
+    notificationHandlers: {
+      onNotificationReceivedBackground: notification =>
+        handleNotificationReceived(notification),
     },
   });
 }

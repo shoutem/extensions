@@ -43,7 +43,7 @@
     },
     "twitter": {
       "format": "uri",
-      "title": "Twitter",
+      "title": "X (Twitter)",
       "type": "string",
       "displayPriority": 7
     },

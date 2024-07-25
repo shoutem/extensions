@@ -300,7 +300,7 @@ export class AboutScreen extends PureComponent {
             <Map {...this.resolveMapProps(profile)} />
           )}
           <OpeningHours htmlContent={profile.hours} />
-          <View styleName="horizontal">
+          <View styleName="horizontal h-start wrap space-around">
             <UniversalLinkButton
               link={profile.web}
               title={I18n.t('shoutem.cms.websiteButton')}
@@ -324,8 +324,6 @@ export class AboutScreen extends PureComponent {
               iconName="email"
               buttonType="tile"
             />
-          </View>
-          <View styleName="horizontal">
             <UniversalLinkButton
               link={profile.twitter}
               title={I18n.t('shoutem.cms.twitterButton')}
@@ -347,8 +345,6 @@ export class AboutScreen extends PureComponent {
               iconName="facebook"
               buttonType="tile"
             />
-          </View>
-          <View styleName="horizontal">
             <UniversalLinkButton
               link={profile.instagram}
               title={I18n.t('shoutem.cms.instagramButton')}

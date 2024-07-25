@@ -1,10 +1,10 @@
 {
   "name": "rss-photos",
   "title": "Photos RSS",
-  "version": "5.2.1",
-  "platform": ">=12.1.0",
   "description": "Show a photo gallery from an RSS feed",
-  "releaseNotes": "Fixed photo details not opening in image gallery",
+  "version": "5.2.2",
+  "platform": ">=14.1.2",
+  "releaseNotes": "Release notes\n* No user facing changes\n\n* Developer notes\n* Improved push notification handlers registration process by prioritizing notification handlers registration before token handler registration",
   "icon": "server/assets/add-photos-image.png",
   "dependencies": [
     "shoutem.firebase",

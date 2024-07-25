@@ -18,8 +18,9 @@ import {
   triggerOccured,
 } from './redux';
 
-// Android only. Handles push notifications when the app is killed.
-// Has to be defined outside app lifecycle
+// Registers notification handlers for when app is in background or quit state.
+// Handles user scheduled - silent push notifications only.
+// If all conditions are met, will randomly schedule X local notifications.
 registerBackgroundMessageHandler();
 
 const screens = {
@@ -54,4 +55,4 @@ export {
   triggerOccured,
 };
 
-export { appDidMount } from './app';
+export { appDidMount, appWillMount } from './app';

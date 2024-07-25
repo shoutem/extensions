@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { getNavInitialized } from 'shoutem.navigation';
-import { queueNotification } from '../redux';
+import { queueNotification } from '../redux/actions';
 
 const APNSTokenReceivedHandlers = {};
 const FCMTokenReceivedhandlers = {};
