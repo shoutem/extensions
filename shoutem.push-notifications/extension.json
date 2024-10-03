@@ -3,9 +3,9 @@
   "type": "system",
   "title": "Push Notifications",
   "description": "Base extension for push notifications",
-  "version": "4.0.9",
-  "platform": ">=14.1.2",
-  "releaseNotes": "Release notes\n* iOS will now show notifications when app is in foreground, as expected\n* Improved user experience in cases where notification is received while user is in-app",
+  "version": "5.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "icon": "server/assets/add-push-notifications-image.png",
   "dependencies": [
     "shoutem.application",

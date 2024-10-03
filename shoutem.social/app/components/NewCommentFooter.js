@@ -3,7 +3,6 @@ import {
   Keyboard as RNKeyboard,
   KeyboardAvoidingView,
   LayoutAnimation,
-  Platform,
   TextInput,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -23,6 +22,7 @@ import {
 } from '@shoutem/ui';
 import { authenticate } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
+import { isIos, isWeb } from 'shoutem-core';
 import { ext } from '../const';
 import { createComment } from '../redux';
 import AddAttachmentButtons from './AddAttachmentButtons';
@@ -47,12 +47,19 @@ const NewCommentFooter = ({
   );
 
   const postButtonDisabled = commentText.length === 0 && !attachment;
-  const resolvedBehavior = Platform.OS === 'ios' ? 'padding' : '';
+  const resolvedBehavior = isIos ? 'padding' : '';
   const keyboardOffset = Keyboard.calculateKeyboardOffset();
 
   useEffect(() => {
     if (focusAddCommentInputOnMount) {
-      addCommentInputRef.current?.focus();
+      // Web focuses and looses focus on input on mount.
+      // Adding slight timeout resolve the issue.
+      setTimeout(
+        () => {
+          addCommentInputRef.current?.focus();
+        },
+        isWeb ? 0 : 0,
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

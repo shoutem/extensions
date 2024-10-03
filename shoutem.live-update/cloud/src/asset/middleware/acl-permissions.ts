@@ -9,7 +9,8 @@ export function assertCanUpload() {
     const authData = getAuthData(req);
     const app = getApp(req);
 
-    if (!isAllowedForApplication('update', app.appId, authData)) {
+    const allowed = await isAllowedForApplication('update', app.appId, authData);
+    if (!allowed) {
       throw new errors.ForbiddenError();
     }
   });

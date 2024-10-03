@@ -1,0 +1,25 @@
+diff --git a/node_modules/qrcode/lib/core/byte-data.js b/node_modules/qrcode/lib/core/byte-data.js
+index d562fcc..7309a81 100644
+--- a/node_modules/qrcode/lib/core/byte-data.js
++++ b/node_modules/qrcode/lib/core/byte-data.js
+@@ -1,9 +1,19 @@
+ const Mode = require('./mode')
+ 
++function stringToUtf8Uint8Array(str) {
++  const utf8 = encodeURIComponent(str)
++    .replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode('utf-8'));
++  const arr = new Uint8Array(utf8.length);
++  for (let i = 0; i < utf8.length; i++) {
++    arr[i] = utf8.charCodeAt(i);
++  }
++  return arr;
++}
++
+ function ByteData (data) {
+   this.mode = Mode.BYTE
+   if (typeof (data) === 'string') {
+-    this.data = new TextEncoder().encode(data)
++    this.data = stringToUtf8Uint8Array(data)
+   } else {
+     this.data = new Uint8Array(data)
+   }

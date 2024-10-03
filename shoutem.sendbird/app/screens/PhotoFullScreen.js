@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
-import { Platform, StatusBar } from 'react-native';
+import { StatusBar } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { ImageGallery, Screen } from '@shoutem/ui';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
+import { isIos } from 'shoutem-core';
 import { ext } from '../const';
 
 class PhotoFullScreen extends PureComponent {
@@ -53,7 +54,7 @@ class PhotoFullScreen extends PureComponent {
   handleGalleryModeChange(newMode) {
     const { mode } = this.state;
 
-    if (Platform.OS === 'ios') {
+    if (isIos) {
       const isHidden = newMode === ImageGallery.IMAGE_PREVIEW_MODE;
       StatusBar.setHidden(isHidden, 'fade');
     }

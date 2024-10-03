@@ -2,7 +2,9 @@
   "shoutem": {
     "web-view": {
       "noUrlErrorMessage": "Please enter a valid URL and reload your app.",
-      "noUrlErrorTitle": "No URL"
+      "noUrlErrorTitle": "No URL",
+      "unsupportedLinkTitle": "Failed to open link",
+      "unsupportedLinkMessage": "Unsupported link type"
     }
   }
 }

@@ -61,14 +61,15 @@ const PodcastEpisodePlayer = ({
 
 PodcastEpisodePlayer.propTypes = {
   episode: PropTypes.object.isRequired,
-  feedUrl: PropTypes.string.isRequired,
   style: PropTypes.object.isRequired,
   defaultArtwork: PropTypes.string,
+  feedUrl: PropTypes.string,
   title: PropTypes.string,
 };
 
 PodcastEpisodePlayer.defaultProps = {
   defaultArtwork: null,
+  feedUrl: undefined,
   title: '',
 };
 

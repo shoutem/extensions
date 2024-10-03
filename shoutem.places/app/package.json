@@ -1,15 +1,21 @@
 {
   "name": "shoutem.places",
-  "version": "7.0.1",
+  "version": "8.0.0",
   "description": "Interactive list of POIs",
   "dependencies": {
     "currency-formatter": "1.5.9",
     "react-native-fast-image": "8.6.3"
+  },
+  "webDependencies": {
+    "currency-formatter": "1.5.9"
   },
   "peerDependencies": {
     "@shoutem/redux-io": "*",
     "@shoutem/theme": "*",
     "@shoutem/ui": "*",
     "@shoutem/redux-composers": "*"
-  }
+  },
+  "nativeDependencies": [
+    "react-native-fast-image"
+  ]
 }

@@ -1,11 +1,11 @@
 {
   "name": "menu",
   "title": "Restaurant menu",
-  "version": "5.2.0",
-  "platform": ">=12.1.0",
+  "version": "6.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "icon": "./server/assets/images/add-menu-items-image.png",
   "description": "Show a restaurant menu",
-  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
   "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
   "categories": ["content"],
   "i18n": {

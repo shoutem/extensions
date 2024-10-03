@@ -1,29 +1,25 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
-import autoBindReact from 'auto-bind/react';
-import { connect } from 'react-redux';
-import { composeNavigationStyles } from 'shoutem.navigation';
-import { getLeadImageUrl, getImageAttachments } from 'shoutem.rss';
 import { connectStyle } from '@shoutem/theme';
 import {
-  ScrollView,
-  Screen,
-  Title,
   Caption,
   Image,
-  Tile,
-  View,
+  Screen,
+  ScrollView,
   ShareButton,
   SimpleHtml,
+  Tile,
+  Title,
+  View,
 } from '@shoutem/ui';
-import { ext } from '../const';
+import { composeNavigationStyles } from 'shoutem.navigation';
+import { getImageAttachments, getLeadImageUrl } from 'shoutem.rss';
 import { VideoGallery } from '../components/VideoGallery';
-import {
-  ArticleDetailsScreen,
-  mapStateToProps,
-  mapDispatchToProps,
-} from './ArticleDetailsScreen';
+import { ext } from '../const';
+import { ArticleDetailsScreen, mapStateToProps } from './ArticleDetailsScreen';
 
 class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
   static propTypes = {
@@ -38,7 +34,7 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
     props.navigation.setOptions(this.getNavBarProps());
   }
 
-  componentDidMount() { }
+  componentDidMount() {}
 
   getNavBarProps() {
     const { article } = this.props;
@@ -115,5 +111,5 @@ class ArticleMediumDetailsScreen extends ArticleDetailsScreen {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  null,
 )(connectStyle(ext('ArticleMediumDetailsScreen'))(ArticleMediumDetailsScreen));

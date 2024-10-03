@@ -1,6 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from 'lodash';
 import { combineReducers } from 'redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LOAD_FAVORITES_SCHEMAS = 'shoutem.favorites.LOAD_FAVORITES_SCHEMAS';
 const SAVE_FAVORITE_ITEM = 'shoutem.favorites.SAVE_FAVORITE_ITEM';

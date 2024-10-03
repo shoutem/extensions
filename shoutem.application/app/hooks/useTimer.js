@@ -1,8 +1,6 @@
 import { useCallback, useState } from 'react';
-import { Platform } from 'react-native';
 import RNBackgroundTimer from 'react-native-background-timer';
-
-const isAndroid = Platform.OS === 'android';
+import { isAndroid } from 'shoutem-core';
 /**
  * Custom hook for managing timers, with support for background timer on Android.
  *

@@ -3,9 +3,9 @@
   "title": "App live update",
   "type": "system",
   "description": "Shoutem LiveUpdate service, used to deliver app updates and previews",
-  "version": "1.0.2",
-  "platform": ">=14.1.0",
-  "releaseNotes": "Release notes\n* No user facing changes\n\nDeveloper notes\n* Fixed an issue where app owners couldn't preview their app using Disclose preview app",
+  "version": "2.0.2",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Continuous improvements",
   "nativeChanges": {
     "lastVersion": "1.0.0"
   },

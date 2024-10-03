@@ -1,11 +1,13 @@
 import React from 'react';
-import { Linking, Platform, Share } from 'react-native';
+import { Linking, Share } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Icon, Spinner, Text, Title, View } from '@shoutem/ui';
+import { unavailableInWeb } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
+import { isIos } from 'shoutem-core';
 import { GaugeProgressBar } from '../components';
 import { ext } from '../const';
 import {
@@ -15,8 +17,6 @@ import {
   getShareMessage,
   refreshCardState,
 } from '../redux';
-
-const IS_IOS = Platform.OS === 'ios';
 
 export function ProgressBar(props) {
   const { points, maxLevelPoints, style } = props;
@@ -42,7 +42,7 @@ export function ProgressBar(props) {
   }
 
   function handleCollectPress() {
-    const smsDivider = IS_IOS ? '&' : '?';
+    const smsDivider = isIos ? '&' : '?';
     const url = `sms:${collectPhoneNumber}${smsDivider}body=${collectMessage}`;
 
     return Linking.openURL(url);
@@ -78,7 +78,7 @@ export function ProgressBar(props) {
         <View styleName="horizontal h-center">
           <Button
             styleName="secondary md-gutter-right"
-            onPress={handleSharePress}
+            onPress={unavailableInWeb(handleSharePress)}
           >
             <Text>{I18n.t(ext('shareCodeButton'))}</Text>
           </Button>

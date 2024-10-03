@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Linking, Platform } from 'react-native';
+import { Linking } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Screen } from '@shoutem/ui';
+import { getMapUrl } from 'shoutem.cms';
 import { getRouteParams, HeaderIconButton } from 'shoutem.navigation';
 import MapList from '../../components/MapList';
 import { placeShape } from '../../components/shapes';
@@ -39,10 +40,7 @@ export default class SinglePlaceMap extends PureComponent {
     const location = _.get(place, 'location', {});
     const { latitude, longitude, formattedAddress } = location;
 
-    const resolvedScheme =
-      Platform.OS === 'ios'
-        ? `http://maps.apple.com/?ll=${latitude},${longitude}&q=${formattedAddress}`
-        : `geo:${latitude},${longitude}?q=${formattedAddress}`;
+    const resolvedScheme = getMapUrl(latitude, longitude, formattedAddress);
 
     if (latitude && longitude) {
       Linking.openURL(resolvedScheme);

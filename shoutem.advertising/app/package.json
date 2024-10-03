@@ -1,6 +1,6 @@
 {
   "name": "shoutem.advertising",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "Integrate AdMob and embed ads to your application",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
@@ -8,6 +8,7 @@
   "dependencies": {
     "react-native-google-mobile-ads": "13.2.0"
   },
+  "webDependencies": {},
   "nativeDependencies": [
     "react-native-google-mobile-ads"
   ]

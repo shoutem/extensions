@@ -4,6 +4,7 @@ import EpisodesFeaturedImageListScreen from './screens/EpisodesFeaturedImageList
 import EpisodesGridScreen from './screens/EpisodesGridScreen';
 import EpisodesLargeGridScreen from './screens/EpisodesLargeGridScreen';
 import EpisodesListScreen from './screens/EpisodesListScreen';
+import FavoriteEpisodeDetailsScreen from './screens/FavoriteEpisodeDetailsScreen';
 import MyPodcastsScreen from './screens/MyPodcastsScreen';
 import enTranslations from './translations/en.json';
 import { reducer } from './redux';
@@ -18,6 +19,7 @@ const screens = {
   EpisodesLargeGridScreen,
   EpisodesListScreen,
   MyPodcastsScreen,
+  FavoriteEpisodeDetailsScreen,
   EpisodesFeaturedImageListScreen,
 };
 

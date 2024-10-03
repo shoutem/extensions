@@ -6,6 +6,7 @@
       "restoreNoProductsDescription": "We couldn't find any purchases to restore per your account",
       "subscriptionTrialDuration": "days free trial",
       "subscribeButtonPrefix": "Subscribe for",
+      "subscribeButtonDurationWeek": "week",
       "subscribeButtonDurationMonth": "month",
       "subscribeButtonDurationMonths": "months",
       "termsOfService": "Terms of Service",

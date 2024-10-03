@@ -1,14 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
-import { Platform } from 'react-native';
 import { RtcSurfaceView, VideoSourceType } from 'react-native-agora';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Icon, View } from '@shoutem/ui';
+import { isIos } from 'shoutem-core';
 import { ext } from '../const';
 import ProfileImage from './ProfileImage';
-
-const isIos = Platform.OS === 'ios';
 
 const LocalVideoView = ({ RtcEngine, localUser, localVideoMuted, style }) => {
   const insets = useSafeAreaInsets();

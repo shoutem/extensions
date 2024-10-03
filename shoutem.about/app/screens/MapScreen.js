@@ -3,12 +3,12 @@ import { Linking } from 'react-native';
 import PropTypes from 'prop-types';
 import { Screen } from '@shoutem/ui';
 import { MapView } from 'shoutem.application';
+import { getMapUrl } from 'shoutem.cms';
 import {
   composeNavigationStyles,
   getRouteParams,
   HeaderIconButton,
 } from 'shoutem.navigation';
-import { getMapUrl } from '../services';
 
 function handleOpenMaps(marker) {
   const { latitude, longitude, title } = marker;

@@ -22,7 +22,11 @@ function PushNotificationCard(props) {
         </Text>
       </View>
       <View style={style.footerContainer}>
-        {active ? <ScheduledNotification /> : <SentNotification />}
+        {active ? (
+          <ScheduledNotification width={24} height={24} />
+        ) : (
+          <SentNotification width={24} height={24} />
+        )}
         <Text>{group}</Text>
       </View>
     </TouchableOpacity>

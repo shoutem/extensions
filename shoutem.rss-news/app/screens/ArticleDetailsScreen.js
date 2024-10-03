@@ -1,37 +1,37 @@
 import React, { PureComponent } from 'react';
-import _ from 'lodash';
+import { Alert, Dimensions } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { Dimensions, Alert } from 'react-native';
-import { connect } from 'react-redux';
-import { I18n } from 'shoutem.i18n';
-import {
-  closeModal,
-  getRouteParams,
-  composeNavigationStyles,
-} from 'shoutem.navigation';
-import {
-  getLeadImageUrl,
-  getImageAttachments,
-  ext as rssExt,
-} from 'shoutem.rss';
 import { isBusy, isValid } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
-  Screen,
-  ScrollView,
-  View,
-  Tile,
-  Title,
   Caption,
   Icon,
   ImageBackground,
   ImageGallery,
+  Screen,
+  ScrollView,
+  ShareButton,
   SimpleHtml,
   Spinner,
-  ShareButton,
+  Tile,
+  Title,
+  View,
 } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import {
+  closeModal,
+  composeNavigationStyles,
+  getRouteParams,
+} from 'shoutem.navigation';
+import {
+  ext as rssExt,
+  getImageAttachments,
+  getLeadImageUrl,
+} from 'shoutem.rss';
 import { NextArticle } from '../components/NextArticle';
 import { VideoGallery } from '../components/VideoGallery';
 import { ext } from '../const';

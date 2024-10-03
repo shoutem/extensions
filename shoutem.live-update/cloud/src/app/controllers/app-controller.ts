@@ -7,7 +7,13 @@ import { getPresignedUrl } from '../../asset/services/cf-request-builder';
 import appRepository from '../data/app-repository';
 import { getApp } from '../service';
 
-const BUNDLE_PROPERTIES = ['iosBundleUrl', 'androidBundleUrl', 'previewIosBundleUrl', 'previewAndroidBundleUrl'];
+const BUNDLE_PROPERTIES = [
+  'iosBundleUrl',
+  'androidBundleUrl',
+  'previewIosBundleUrl',
+  'previewAndroidBundleUrl',
+  'previewWebBundleUrl',
+];
 
 function presignUrlsForApp(app) {
   const clonedApp = _.cloneDeep(app);
@@ -39,6 +45,7 @@ export class AppController {
           'androidBundleUrl',
           'previewIosBundleUrl',
           'previewAndroidBundleUrl',
+          'previewWebBundleUrl',
         ]) || {};
 
       const appUpdated = await appRepository.update(app, changes);

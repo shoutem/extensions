@@ -1,6 +1,6 @@
 {
   "name": "shoutem.interactive-faq",
-  "version": "7.1.1",
+  "version": "8.0.0",
   "peerDependcies": {
     "@shoutem/redux-io": "*",
     "@shoutem/theme": "*",

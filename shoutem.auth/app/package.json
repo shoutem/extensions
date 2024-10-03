@@ -1,6 +1,6 @@
 {
   "name": "shoutem.auth",
-  "version": "8.1.0",
+  "version": "9.0.0",
   "description": "Authentication extension that uses the Shoutem authentication backend.",
   "scripts": {
     "postconfigure": "node -e 'require(\"./build\").runPostConfigure()'",
@@ -17,6 +17,13 @@
     "react-native-fbsdk-next": "11.1.0",
     "urijs": "1.19.7",
     "xcode": "3.0.1",
+    "base-64": "1.0.0"
+  },
+  "webDependencies": {
+    "auto-bind": "4.0.0",
+    "buffer": "4.9.2",
+    "is-email": "1.0.2",
+    "urijs": "1.19.7",
     "base-64": "1.0.0"
   },
   "peerDependencies": {

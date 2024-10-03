@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
   AdEventType,
   BannerAd,
@@ -13,9 +13,8 @@ import PropTypes from 'prop-types';
 import { getExtensionSettings } from 'shoutem.application';
 import { MAIN_NAVIGATION_SCREEN_TYPES } from 'shoutem.navigation';
 import { isPreviewApp } from 'shoutem.preview';
+import { isIos } from 'shoutem-core';
 import { BANNER_REQUEST_OPTIONS, ext } from '../const';
-
-const isIOS = Platform.OS === 'ios';
 
 export const AdContext = React.createContext();
 
@@ -40,10 +39,10 @@ const resolveContextData = (extensionSettings, appScreens) => {
   const AndroidConfigured =
     (AndroidBannerAdId || AndroidInterstitialAdId) && AndroidAdAppId;
 
-  const isConfigured = isIOS ? iOSConfigured : AndroidConfigured;
+  const isConfigured = isIos ? iOSConfigured : AndroidConfigured;
 
-  const liveBannerAdId = isIOS ? iOSBannerAdId : AndroidBannerAdId;
-  const liveInterstitialAdId = isIOS
+  const liveBannerAdId = isIos ? iOSBannerAdId : AndroidBannerAdId;
+  const liveInterstitialAdId = isIos
     ? iOSInterstitialAdId
     : AndroidInterstitialAdId;
   const bannerAdId = isPreviewApp ? TestIds.BANNER : liveBannerAdId;

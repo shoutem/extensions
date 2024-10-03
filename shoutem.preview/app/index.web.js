@@ -1,0 +1,1 @@
+export { isPreviewApp } from './app';

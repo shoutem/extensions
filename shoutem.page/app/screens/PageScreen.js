@@ -26,7 +26,6 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
-import { executeShortcut } from 'shoutem.application';
 import { I18n, selectors as i18nSelectors } from 'shoutem.i18n';
 import {
   composeNavigationStyles,
@@ -37,6 +36,7 @@ import {
   withChildrenRequired,
   withIsFocused,
 } from 'shoutem.navigation';
+import { isWeb } from 'shoutem-core';
 import { ext, PAGE_SCHEMA } from '../const';
 
 const navigationComponentsForLayoutTypes = {
@@ -66,16 +66,22 @@ export class PageScreen extends PureComponent {
         // Header title resolves as expected only if we set headerShown first, then calculate other options.
         navigation.setOptions({ headerShown: true });
 
+        // Web can't update in same lifecycle. Required data is fetched, but it isn't available from state
+        // until next lifecycle.
+        if (isWeb) {
+          return;
+        }
+
         LayoutAnimation.easeInEaseOut();
         navigation.setOptions(this.getNavBarProps());
       });
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { data, isFocused, navigation } = this.props;
 
-    if (!!_.head(data)?.image && this.isNavigationBarClear()) {
+    if (!!_.head(data)?.image && this.isNavigationBarClear() && !isWeb) {
       if (isFocused && !this.pushedBarStyle && !this.isScrolledDown) {
         this.pushedBarStyle = StatusBar.pushStackEntry({
           barStyle: 'light-content',
@@ -90,8 +96,19 @@ export class PageScreen extends PureComponent {
 
     if (shouldRefresh(data)) {
       this.fetchData().then(() => {
+        // Web can't update in same lifecycle. Required data is fetched, but it isn't available from state
+        // until next lifecycle.
+        if (isWeb) {
+          return;
+        }
+
         navigation.setOptions(this.getNavBarProps());
       });
+    }
+
+    // Web has to update navigation options here, after data has been fetched and is available from state.
+    if (isWeb && _.head(data) && _.head(prevProps.data) !== _.head(data)) {
+      navigation.setOptions(this.getNavBarProps());
     }
   }
 
@@ -146,7 +163,7 @@ export class PageScreen extends PureComponent {
 
     const isNavigationBarClear = this.isNavigationBarClear();
 
-    if (isNavigationBarClear) {
+    if (isNavigationBarClear && _.head(data)) {
       // If navigation bar is clear, show the name that is rendered below the image, so it looks like
       // it is transferred to the navigation bar when scrolling. Otherwise show the screen title
       // (from the shortcut). The screen title is always displayed on solid navigation bars.
@@ -213,14 +230,14 @@ export class PageScreen extends PureComponent {
       },
     } = event;
 
-    if (!this.pushedBarStyle && yOffset < targetYOffset) {
+    if (!this.pushedBarStyle && yOffset < targetYOffset && !isWeb) {
       this.pushedBarStyle = StatusBar.pushStackEntry({
         barStyle: 'light-content',
       });
       this.isScrolledDown = false;
     }
 
-    if (this.pushedBarStyle && yOffset > targetYOffset) {
+    if (this.pushedBarStyle && yOffset > targetYOffset && !isWeb) {
       StatusBar.popStackEntry(this.pushedBarStyle);
       this.pushedBarStyle = null;
       this.isScrolledDown = true;
@@ -304,12 +321,7 @@ export class PageScreen extends PureComponent {
   }
 
   renderNavigationOnly() {
-    const {
-      executeShortcut,
-      navigationLayoutType,
-      route,
-      shortcut,
-    } = this.props;
+    const { navigationLayoutType, route, shortcut } = this.props;
 
     const NavigationComponent =
       navigationComponentsForLayoutTypes[navigationLayoutType];
@@ -328,7 +340,6 @@ export class PageScreen extends PureComponent {
         showsVerticalScrollIndicator={false}
       >
         <NavigationComponent
-          executeShortcut={executeShortcut}
           shortcut={shortcut}
           route={resolvedRoute}
           styleName="paper"
@@ -338,12 +349,7 @@ export class PageScreen extends PureComponent {
   }
 
   renderAboutInfo(profile) {
-    const {
-      executeShortcut,
-      shortcut,
-      navigationLayoutType,
-      route,
-    } = this.props;
+    const { shortcut, navigationLayoutType, route } = this.props;
 
     const hasNavigationItems = !_.isEmpty(shortcut.children);
     const NavigationComponent =
@@ -370,7 +376,6 @@ export class PageScreen extends PureComponent {
             <>
               <Divider />
               <NavigationComponent
-                executeShortcut={executeShortcut}
                 shortcut={shortcut}
                 route={resolvedRoute}
                 styleName="paper"
@@ -461,7 +466,6 @@ PageScreen.propTypes = {
   // Primary CMS data to display
   channelId: PropTypes.number.isRequired,
   data: PropTypes.array.isRequired,
-  executeShortcut: PropTypes.func.isRequired,
   // actions
   find: PropTypes.func.isRequired,
   isFocused: PropTypes.bool.isRequired,
@@ -512,7 +516,7 @@ export function mapStateToProps(state, ownProps) {
   };
 }
 
-export const mapDispatchToProps = { executeShortcut, find };
+export const mapDispatchToProps = { find };
 
 export default withIsFocused(
   withChildrenRequired(

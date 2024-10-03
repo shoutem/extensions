@@ -1,6 +1,6 @@
+import enTranslations from './translations/en.json';
 import * as extension from './extension.js';
 import reducer from './redux';
-import enTranslations from './translations/en.json';
 
 const {
   GridEventsScreen,

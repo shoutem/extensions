@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
+import { isWeb } from 'shoutem-core';
 import { ATTACHMENT_TYPE, ext } from '../const';
 import { attachmentService, createResizedImage } from '../services';
 import AddAttachmentButtons from './AddAttachmentButtons';
@@ -82,7 +83,7 @@ const NewStatusFooter = ({
         {!isResizingImage && (
           <>
             {expanded && (
-              <View styleName="md-gutter-left">
+              <View styleName={isWeb ? undefined : 'md-gutter-left'}>
                 <AddAttachmentButtons
                   onAttachmentSelected={handleAttachmentSelected}
                   enableGifAttachments={enableGifAttachments}

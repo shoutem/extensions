@@ -1,12 +1,14 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Dimensions, KeyboardAvoidingView } from 'react-native';
 import WebView from 'react-native-webview';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { EmptyStateView, Keyboard, responsiveWidth } from '@shoutem/ui';
+import { unavailableInWeb } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
+import { isAndroid, isWeb } from 'shoutem-core';
 import { NavigationToolbar } from '../components';
 import { ext } from '../const';
 
@@ -15,7 +17,6 @@ const responsiveWindowWidth =
   windowWidth >= 430 ? windowWidth : responsiveWidth(windowWidth);
 
 const KEYBOARD_OFFSET = Keyboard.calculateKeyboardOffset();
-const isAndroid = Platform.OS === 'android';
 
 function BandsInTownScreen({
   shortcut: {
@@ -27,6 +28,10 @@ function BandsInTownScreen({
 
   const [webViewWidth, setWebViewWidth] = useState(responsiveWindowWidth * 2);
   const [webNavigationState, setWebNavigationState] = useState({});
+
+  useEffect(() => {
+    unavailableInWeb();
+  }, []);
 
   // Yes, this is hacky. No, I couldn't find a better solution without forking
   // react-native-webview which is even worse. The issue is the use of static
@@ -70,6 +75,10 @@ function BandsInTownScreen({
     }),
     [webViewWidth],
   );
+
+  if (isWeb) {
+    return null;
+  }
 
   if (!widget) {
     return <EmptyStateView message={I18n.t(ext('noWidgetMessage'))} />;

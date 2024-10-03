@@ -1,6 +1,6 @@
 {
   "name": "shoutem.cms",
-  "version": "7.3.1",
+  "version": "8.0.0",
   "dependencies": {
     "@react-native-community/geolocation": "2.1.0"
   },
@@ -8,6 +8,9 @@
     "@shoutem/redux-composers": "*",
     "@shoutem/redux-io": "*",
     "@shoutem/ui": "*"
+  },
+  "webDependencies": {
+    "@react-native-community/geolocation": "2.1.0"
   },
   "nativeDependencies": [
     "@react-native-community/geolocation"

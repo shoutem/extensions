@@ -23,10 +23,13 @@ export function formatSubscribeMessage(product) {
   const localisedPrice = _.get(product, 'localizedPrice');
   const subsscriptionDuration = _.get(product, 'subscriptionDuration');
   const durationInMonths = moment.duration(subsscriptionDuration).asMonths();
+
   const monthsText =
-    durationInMonths < 2
+    durationInMonths < 1
+      ? I18n.t(ext('subscribeButtonDurationWeek'))
+      : durationInMonths < 2
       ? I18n.t(ext('subscribeButtonDurationMonth'))
-      : `${durationInMonths} ${I18n.t(ext('subscribeButtonDurationMonth'))}`;
+      : `${durationInMonths} ${I18n.t(ext('subscribeButtonDurationMonths'))}`;
   const showMonthsText = type !== NON_CONSUMABLE_PRODUCT_TYPE;
 
   return `${I18n.t(ext('subscribeButtonPrefix'))} ${localisedPrice}${

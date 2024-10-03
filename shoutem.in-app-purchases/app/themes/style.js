@@ -52,6 +52,46 @@ export default () => ({
     },
   },
 
+  'shoutem.in-app-purchases.SubscribeButtons': {
+    container: {
+      paddingHorizontal: 16,
+      marginBottom: 16,
+      marginTop: 16,
+    },
+
+    button: {
+      height: 48,
+      borderRadius: 6,
+      borderColor: resolveVariable('primaryButtonBorderColor'),
+      backgroundColor: resolveVariable('primaryButtonBackgroundColor'),
+      marginTop: 8,
+    },
+
+    buttonText: {
+      fontSize: 17,
+      lineHeight: 24,
+      color: resolveVariable('primaryButtonTextColor'),
+      fontWeight: '400',
+    },
+
+    buttonTextSecondary: {
+      color: resolveVariable('secondaryButtonTextColor'),
+    },
+
+    buttonSecondary: {
+      marginTop: 16,
+      backgroundColor: resolveVariable('secondaryButtonBackgroundColor'),
+      borderColor: resolveVariable('secondaryButtonBackgroundColor'),
+    },
+
+    trialText: {
+      fontSize: 14,
+      lineHeight: 24,
+      marginTop: 8,
+      textAlign: 'center',
+    },
+  },
+
   'shoutem.in-app-purchases.SubscriptionsScreen': {
     scrollContainer: {
       paddingBottom: 16,
@@ -69,43 +109,6 @@ export default () => ({
       left: 0,
       right: 0,
       bottom: 0,
-    },
-
-    buttonContainer: {
-      paddingHorizontal: 16,
-      marginBottom: 16,
-      marginTop: 16,
-    },
-
-    button: {
-      height: 48,
-      borderRadius: 6,
-      borderColor: resolveVariable('primaryButtonBorderColor'),
-      backgroundColor: resolveVariable('primaryButtonBackgroundColor'),
-    },
-
-    buttonSecondary: {
-      marginTop: 16,
-      backgroundColor: resolveVariable('secondaryButtonBackgroundColor'),
-      borderColor: resolveVariable('secondaryButtonBackgroundColor'),
-    },
-
-    buttonText: {
-      fontSize: 17,
-      lineHeight: 24,
-      color: resolveVariable('primaryButtonTextColor'),
-      fontWeight: '400',
-    },
-
-    buttonTextSecondary: {
-      color: resolveVariable('secondaryButtonTextColor'),
-    },
-
-    trialText: {
-      fontSize: 14,
-      lineHeight: 24,
-      marginTop: 8,
-      textAlign: 'center',
     },
 
     leadingText: {

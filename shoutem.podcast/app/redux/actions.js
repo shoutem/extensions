@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { getCollection } from '@shoutem/redux-io';
+import { clear, find, getCollection } from '@shoutem/redux-io';
 import { getShortcut } from 'shoutem.application';
-import { loadFeed } from 'shoutem.rss';
+import { buildFeedUrl, loadFeed } from 'shoutem.rss';
 import { loadNextFeedPage } from 'shoutem.rss/redux';
 import {
   DEFAULT_PAGE_LIMIT,
@@ -10,6 +10,7 @@ import {
   DOWNLOADED_EPISODE_UPDATED,
   EPISODES_COLLECTION_TAG,
   ext,
+  FAVORITED_EPISODES_TAG,
   RSS_PODCAST_SCHEMA,
   SET_DOWNLOAD_IN_PROGRESS,
   UPDATE_LAST_PLAYED,
@@ -20,10 +21,10 @@ import {
   getFileNameFromPath,
   getPathFromEpisode,
 } from '../services/episodeDownloadManager';
-import { getDownloadedEpisodes, getEpisodesFeed } from './selectors';
+import { getAllFavoritedEpisodesMap, getDownloadedEpisodes } from './selectors';
 
-export const FAVORITE_EPISODE = ext('FAVORITE_EPISODE');
-export const UNFAVORITE_EPISODE = ext('UNFAVORITE_EPISODE');
+export const SAVE_FAVORITE_EPISODE = ext('SAVE_FAVORITE_EPISODE');
+export const REMOVE_FAVORITE_EPISODE = ext('REMOVE_FAVORITE_EPISODE');
 
 export function addDownloadedEpisode(id, fileName) {
   return { type: DOWNLOADED_EPISODE_ADDED, payload: { id, fileName } };
@@ -43,21 +44,18 @@ export function updateDownloadedEpisode(downloadedEpisode) {
   return { type: DOWNLOADED_EPISODE_UPDATED, payload: { downloadedEpisode } };
 }
 
-export function downloadEpisode(id, feedUrl) {
-  return (dispatch, getState) => {
-    dispatch(setDownloadInProgress(id)).then(() => {
-      const state = getState();
-      const episodes = getEpisodesFeed(state, feedUrl);
-      const episode = _.find(episodes, { id });
+export function downloadEpisode(episode) {
+  return dispatch => {
+    return dispatch(setDownloadInProgress(episode.id)).then(() => {
       const url = _.get(episode, 'audioAttachments.0.src');
 
       return episodeDownloadManager
         .download(url)
         .then(path => {
-          dispatch(addDownloadedEpisode(id, getFileNameFromPath(path)));
+          dispatch(addDownloadedEpisode(episode.id, getFileNameFromPath(path)));
         })
         .catch(errorMessage => {
-          dispatch(removeDownloadedEpisode(id));
+          dispatch(removeDownloadedEpisode(episode.id));
           // eslint-disable-next-line no-console
           console.error('Failed to download podcast episode:', errorMessage);
         });
@@ -69,7 +67,7 @@ export function deleteEpisode(downloadedEpisode) {
   const path = getPathFromEpisode(downloadedEpisode);
 
   return dispatch => {
-    episodeDownloadManager
+    return episodeDownloadManager
       .remove(path)
       .catch(error => {
         // eslint-disable-next-line no-console
@@ -90,19 +88,6 @@ export function fetchEpisodesFeed(
 
     return dispatch(loadFeed(RSS_PODCAST_SCHEMA, tag, shortcut, options));
   };
-}
-
-export function favoriteEpisode(episode, enableDownload, feedUrl, meta) {
-  return {
-    type: FAVORITE_EPISODE,
-    payload: {
-      episode: { ...episode, enableDownload, feedUrl, feedMeta: meta },
-    },
-  };
-}
-
-export function unfavoriteEpisode(id) {
-  return { type: UNFAVORITE_EPISODE, payload: { id } };
 }
 
 export const updateLastPlayed = (feedUrl, track) => {
@@ -159,5 +144,92 @@ export function loadEpisodes(
       getState(),
       RSS_PODCAST_SCHEMA,
     );
+  };
+}
+
+// FAVORITES
+
+export function saveFavoriteEpisode(uuid, shortcutId) {
+  return {
+    type: SAVE_FAVORITE_EPISODE,
+    payload: {
+      uuid,
+      shortcutId,
+    },
+  };
+}
+
+export function removeFavoriteEpisode(uuid) {
+  return {
+    type: REMOVE_FAVORITE_EPISODE,
+    payload: { uuid },
+  };
+}
+
+export function fetchFavoritedEpisodes() {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    // Get map of favorited episodes per shortcut.
+    const allFavoritedEpisodesMap = getAllFavoritedEpisodesMap(state);
+
+    // When all favorites have been removed, we have to clear collection reducer, because
+    // we won't be fetching
+    if (_.keys(allFavoritedEpisodesMap).length === 0) {
+      return Promise.resolve(
+        dispatch(clear(RSS_PODCAST_SCHEMA, FAVORITED_EPISODES_TAG)),
+      );
+    }
+
+    const config = {
+      schema: RSS_PODCAST_SCHEMA,
+      request: {
+        endpoint: buildFeedUrl(state, RSS_PODCAST_SCHEMA),
+        headers: {
+          Accept: 'application/vnd.api+json',
+          // Has to be defined as empty string, to override CMS's generic resourceConfigResolver. It appends 'Content-Type': 'application/vnd.api+json',
+          // which breaks our rss proxy - RIO find requests -> https://fiveminutes.jira.com/browse/SEEXT-11781
+          'Content-Type': '',
+        },
+      },
+    };
+
+    const episodesFetchActions = [];
+
+    // Clear all favorites, we'll (re)fetch them with this action.
+    dispatch(clear(RSS_PODCAST_SCHEMA, FAVORITED_EPISODES_TAG));
+
+    // For each different shortcut favorites, obtain feed url, then fetch filtered - favorited episodes from each feed.
+    // Then, append episodes from each feedUrl into collection.
+    _.forEach(allFavoritedEpisodesMap, (uuids, shortcutId) => {
+      // If all favorites have been removed for shortcut, clear that collections reducer.
+      if (uuids.length === 0) {
+        // No favorite episodes for this shortcut to fetch. We have to return early, because if we pass [] as
+        // filter, we'll get all feed episodes as result.
+        return;
+      }
+
+      const feedUrl = getShortcut(state, shortcutId)?.settings?.feedUrl;
+
+      // Create array of promises that'll return all favorited episodes from all feed urls at same time.
+      episodesFetchActions.push(
+        dispatch(
+          find(
+            config,
+            FAVORITED_EPISODES_TAG,
+            {
+              query: {
+                'filter[url]': feedUrl,
+                'filter[uuid]': uuids,
+                'page[limit]': DEFAULT_PAGE_LIMIT,
+              },
+            },
+            { shortcutId },
+          ),
+        ),
+      );
+    });
+
+    return Promise.allSettled(episodesFetchActions);
   };
 }

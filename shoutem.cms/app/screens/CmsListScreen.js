@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { AppState, Platform } from 'react-native';
+import { AppState } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -26,6 +26,7 @@ import {
 } from '@shoutem/ui';
 import { I18n, selectors as i18nSelectors } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
+import { isIos, isWeb } from 'shoutem-core';
 import { SkeletonLoading } from '../components';
 import Header from '../components/Header';
 import { ext } from '../const';
@@ -276,11 +277,7 @@ export class CmsListScreen extends PureComponent {
 
     this.setState({ currentAppState: appState });
 
-    if (
-      currentAppState === 'background' &&
-      appState === 'active' &&
-      Platform.OS === 'ios'
-    ) {
+    if (currentAppState === 'background' && appState === 'active' && isIos) {
       this.checkPermissionStatus();
     }
   }

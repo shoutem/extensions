@@ -1,8 +1,8 @@
-import _ from 'lodash';
 import MCReactModule from 'react-native-marketingcloudsdk';
+import _ from 'lodash';
 import { getExtensionSettings } from 'shoutem.application/redux';
-import { LOGIN, REGISTER, LOGOUT, getUser } from 'shoutem.auth';
-import { priorities, setPriority, before } from 'shoutem-core';
+import { getUser, LOGIN, LOGOUT, REGISTER } from 'shoutem.auth';
+import { before, priorities, setPriority } from 'shoutem-core';
 import { ext } from '../const';
 import { contactsApi } from '../services';
 
@@ -46,6 +46,7 @@ export const initMiddleware = setPriority(
               });
           }
         })
+        // eslint-disable-next-line no-console
         .catch(e => console.log(e, e.message));
 
       return next(action);
@@ -57,7 +58,8 @@ export const initMiddleware = setPriority(
 );
 
 export const logoutMiddleware = setPriority(
-  store => next => action => {
+  // eslint-disable-next-line no-unused-vars
+  _store => next => action => {
     if (action.type === LOGOUT) {
       MCReactModule.disablePush();
     }

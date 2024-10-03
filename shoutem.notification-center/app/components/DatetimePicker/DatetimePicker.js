@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
-import { Platform } from 'react-native';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import { isAndroid, isWeb } from 'shoutem-core';
 import DatePickerIOS from './DatePickerIOS';
 import DatetimePickerAndroid from './DatetimePickerAndroid';
+import DatetimePickerWeb from './DateTimePickerWeb';
 
 export default function DatetimePicker(props) {
   const { date, onDateSelected, isVisible, onDatepickerClose } = props;
@@ -12,7 +13,17 @@ export default function DatetimePicker(props) {
 
   const dateValue = useMemo(() => moment(date).toDate(), [date]);
 
-  if (Platform.OS === 'android') {
+  if (isWeb) {
+    return (
+      <DatetimePickerWeb
+        date={dateValue}
+        minimumDate={today}
+        onDateSelected={onDateSelected}
+      />
+    );
+  }
+
+  if (isAndroid) {
     return (
       <DatetimePickerAndroid
         date={dateValue}

@@ -1,6 +1,5 @@
-import _ from 'lodash';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import _ from 'lodash';
 import { loadFavoritesSchemas, saveFavorite } from './redux';
 
 const SETTINGS_ATTRIBUTE = 'favoritesSchemas';

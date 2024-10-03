@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Icon, View, Text, TouchableOpacity, Caption } from '@shoutem/ui';
+import { Caption, Icon, Text, TouchableOpacity, View } from '@shoutem/ui';
+import { isWeb } from 'shoutem-core';
 import { ext } from '../const';
 
 export class ConsentCheckbox extends PureComponent {
@@ -39,7 +40,13 @@ export class ConsentCheckbox extends PureComponent {
       <>
         <TouchableOpacity onPress={this.handleTogglePress}>
           <View styleName="horizontal v-start md-gutter-top md-gutter-right">
-            <Icon name={iconName} />
+            {isWeb ? (
+              <View>
+                <Icon name={iconName} />
+              </View>
+            ) : (
+              <Icon name={iconName} />
+            )}
             <Text styleName="md-gutter-left">{description}</Text>
           </View>
         </TouchableOpacity>

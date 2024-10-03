@@ -7,6 +7,7 @@ import {
   ModalScreens,
   NavigationStacks,
 } from 'shoutem.navigation';
+import { isWeb } from 'shoutem-core';
 import ChangePasswordScreen from './screens/ChangePasswordScreen';
 import LoginScreen from './screens/LoginScreen';
 import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
@@ -53,6 +54,6 @@ NavigationStacks.registerNavigationStack({
 ModalScreens.registerModalScreens([
   ext('EditProfileScreen'),
   ext('ConfirmDeletionScreen'),
-  AGORA_SCREEN_ID,
+  ...(isWeb ? [] : [AGORA_SCREEN_ID]),
   SENDBIRD_SCREEN_ID,
 ]);

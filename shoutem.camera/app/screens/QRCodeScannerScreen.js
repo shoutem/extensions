@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { Alert, Linking } from 'react-native';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Screen } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
+import { QRCodeScanner } from '../components';
 import { ext } from '../const';
-import QRCodeScanner from '../components/QRCodeScanner.js';
 
 /**
  * A screen that lets a user scan a QR code

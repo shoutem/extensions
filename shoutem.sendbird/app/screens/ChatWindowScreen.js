@@ -17,7 +17,10 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { ActionSheet, Keyboard, Screen, Spinner } from '@shoutem/ui';
-import { getSubscriptionValidState } from 'shoutem.application';
+import {
+  getSubscriptionValidState,
+  unavailableInWeb,
+} from 'shoutem.application';
 import { getUser, loginRequired } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import {
@@ -26,7 +29,6 @@ import {
   HeaderBackButton,
   isTabBarNavigation,
   openInModal,
-  withIsFocused,
 } from 'shoutem.navigation';
 import {
   PERMISSION_TYPES,
@@ -93,7 +95,7 @@ export class ChatWindowScreen extends PureComponent {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const {
       loadChannel,
       setActiveChannel,
@@ -113,12 +115,15 @@ export class ChatWindowScreen extends PureComponent {
     );
 
     if (channelId) {
-      loadChannel(channelId)
-        .then(() => {
-          setActiveChannel(channelId);
-          return this.loadData();
-        })
-        .catch(this.handleGenericError);
+      try {
+        // Wait for active channel to be set before loading data.
+        // We're using active channel id from state for obtaining channel data required for this screen.
+        await setActiveChannel(channelId);
+        await loadChannel(channelId);
+        this.loadData();
+      } catch (e) {
+        this.handleGenericError(e);
+      }
     }
 
     if (user && isConnected) {
@@ -158,8 +163,7 @@ export class ChatWindowScreen extends PureComponent {
     if (!wasConnected && isConnected && channelId) {
       loadChannel(channelId)
         .then(() => {
-          setActiveChannel(channelId);
-          return this.loadData();
+          setActiveChannel(channelId).then(() => this.loadData());
         })
         .catch(this.handleGenericError);
     }
@@ -257,29 +261,32 @@ export class ChatWindowScreen extends PureComponent {
     this.setState({ loading: false, modalActive: true, errorMessage });
   }
 
-  resolveChannelPerUser() {
+  async resolveChannelPerUser() {
     const { setActiveChannel, createChannel, currentUser } = this.props;
     const { user } = getRouteParams(this.props);
     const userId = composeSendBirdId(currentUser);
     const targetId = composeSendBirdId(user);
 
-    createChannel(userId, targetId)
-      .then(resp => {
-        const payload = _.get(resp, 'payload');
+    try {
+      const response = await createChannel(userId, targetId);
+      const createdChannel = _.get(response, 'payload');
 
-        if (!payload) {
-          this.handleGenericError(this.USER_UNAVAILABLE_MESSAGE);
-          return;
-        }
+      if (!createdChannel) {
+        this.handleGenericError(this.USER_UNAVAILABLE_MESSAGE);
+        return;
+      }
 
-        setActiveChannel(payload.url);
-        this.loadData();
-      })
-      .catch(this.handleGenericError);
+      await setActiveChannel(createdChannel.url);
+      this.loadData(createdChannel);
+    } catch (e) {
+      this.handleGenericError(e);
+    }
   }
 
-  loadData() {
-    const { channel, loadChannelMessages } = this.props;
+  loadData(newChannel) {
+    const { channel: activeChannel, loadChannelMessages } = this.props;
+
+    const channel = newChannel ? { channel: newChannel } : activeChannel;
 
     if (_.isEmpty(channel)) {
       return;
@@ -494,7 +501,7 @@ export class ChatWindowScreen extends PureComponent {
     );
 
     const confirmOptions = [
-      { title: 'Camera', onPress: this.handleTakePhotoPress },
+      { title: 'Camera', onPress: unavailableInWeb(this.handleTakePhotoPress) },
       { title: 'Photo & Video Library', onPress: this.handleChoosePhotoPress },
     ];
     const cancelOptions = [
@@ -595,12 +602,10 @@ const mapDispatchToProps = {
   loadChannel: actions.loadChannel,
 };
 
-export default withIsFocused(
-  loginRequired(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps,
-    )(connectStyle(ext('ChatWindowScreen'))(ChatWindowScreen)),
-    true,
-  ),
+export default loginRequired(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(connectStyle(ext('ChatWindowScreen'))(ChatWindowScreen)),
+  true,
 );

@@ -21,6 +21,7 @@ import {
   TextInput,
   View,
 } from '@shoutem/ui';
+import { unavailableInWeb } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { HeaderTextButton, openInModal } from 'shoutem.navigation';
 import {
@@ -28,6 +29,7 @@ import {
   requestPermissions,
   RESULTS,
 } from 'shoutem.permissions';
+import { isIos } from 'shoutem-core';
 import ProfileImage from '../components/ProfileImage';
 import { user as userShape } from '../components/shapes';
 import { ext } from '../const';
@@ -276,18 +278,19 @@ class EditProfileScreen extends PureComponent {
   render() {
     const { style } = this.props;
     const { pickerActive } = this.state;
-    const keyboardOffset =
-      Platform.OS === 'ios' ? Keyboard.calculateKeyboardOffset() : 0;
+    const keyboardOffset = isIos ? Keyboard.calculateKeyboardOffset() : 0;
 
-    const pickerOptions = [
+    const confirmOptions = [
       {
         title: I18n.t(ext('imagePickerCameraOption')),
-        onPress: this.handleCameraPickerPress,
+        onPress: unavailableInWeb(this.handleCameraPickerPress),
       },
       {
         title: I18n.t(ext('imagePickerGalleryOption')),
         onPress: this.handleGalleryPickerPress,
       },
+    ];
+    const cancelOptions = [
       {
         title: I18n.t(ext('imagePickerCancelOption')),
         onPress: this.handlePickerClosePress,
@@ -302,7 +305,8 @@ class EditProfileScreen extends PureComponent {
       >
         {this.renderContent()}
         <ActionSheet
-          confirmOptions={pickerOptions}
+          confirmOptions={confirmOptions}
+          cancelOptions={cancelOptions}
           active={pickerActive}
           onDismiss={this.handlePickerClosePress}
         />

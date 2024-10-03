@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Modal } from 'react-native';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { connectStyle } from '@shoutem/theme';
 import {
   Button,
   Caption,
@@ -16,22 +17,22 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
-import { connectStyle } from '@shoutem/theme';
+import { unavailableInWeb } from 'shoutem.application';
+import { I18n } from 'shoutem.i18n';
 import {
-  openInModal,
   getRouteParams,
   HeaderTextButton,
+  openInModal,
 } from 'shoutem.navigation';
-import { I18n } from 'shoutem.i18n';
-import { user as userShape } from '../components/shapes';
 import ProfileImage from '../components/ProfileImage';
+import { user as userShape } from '../components/shapes';
+import { AGORA_SCREEN_ID, ext, SENDBIRD_SCREEN_ID } from '../const';
 import {
   getUser,
-  logout,
-  isSendBirdConfigured,
   isAgoraConfigured,
+  isSendBirdConfigured,
+  logout,
 } from '../redux';
-import { ext, SENDBIRD_SCREEN_ID, AGORA_SCREEN_ID } from '../const';
 
 export class UserProfileScreen extends PureComponent {
   static propTypes = {
@@ -200,7 +201,10 @@ export class UserProfileScreen extends PureComponent {
     }
 
     return (
-      <Button onPress={this.handleAgoraPress} styleName="stacked clear">
+      <Button
+        onPress={unavailableInWeb(this.handleAgoraPress)}
+        styleName="stacked clear"
+      >
         <Icon name="video-chat" />
         <Text>{I18n.t(ext('videoChat'))}</Text>
       </Button>

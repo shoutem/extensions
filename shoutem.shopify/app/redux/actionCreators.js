@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import { Toast } from '@shoutem/ui';
-import { Platform } from 'react-native';
 import { getAppId, getExtensionCloudUrl } from 'shoutem.application';
 import { getUser, updateProfile } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
 import { triggerCanceled, triggerOccured } from 'shoutem.notification-center';
+import { isIos } from 'shoutem-core';
 import { ext } from '../const';
 import MBBridge, { SHOPIFY_ERROR_CODES } from '../MBBridge';
 import { normalizeOrderPrices, PROFILE_FIELDS } from '../services';
@@ -401,7 +401,7 @@ export function updateCustomerInformation(customer, cart) {
       let webUrl = checkoutUrl;
       let accessToken = '';
       // Log in disabled on Android
-      const isLoggedIn = Platform.OS === 'ios' && await MBBridge.isLoggedIn();
+      const isLoggedIn = isIos && (await MBBridge.isLoggedIn());
 
       if (isLoggedIn) {
         const associateResponse = await MBBridge.associateCheckout(checkoutId);

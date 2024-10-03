@@ -2,12 +2,12 @@
   "name": "audio",
   "title": "Audio",
   "description": "Track player components for other extensions to utilize. NOTE: Lock screen controls will not be visible in the preview.",
-  "version": "7.0.0",
-  "platform": ">=14.1.1",
+  "version": "8.0.0",
+  "platform": ">=15.0.0",
   "nativeChanges": {
     "lastVersion": "6.1.1"
   },
-  "releaseNotes": "Release notes\n* Added a sleep timer feature, enabling users to specify the number of minutes after which the audio will stop playing. This option is available in the playback settings on the audio player screen. Once the sleep timer is set, a badge displaying the remaining minutes will appear on the audio banner\n\nDeveloper notes\n* (Breaking) Deleted, renamed and/or refactored redux code and components within playback settings flow",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "dependencies": ["shoutem.application", "shoutem.permissions"],
   "icon": "server/assets/add-audio-image.png",
   "type": "system",

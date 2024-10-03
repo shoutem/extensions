@@ -2,9 +2,9 @@
   "name": "affiliate",
   "title": "Affiliate",
   "description": "Create affiliate program in your app and expand your advertising reach",
-  "version": "3.1.1",
-  "platform": ">=14",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
+  "version": "4.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "icon": "server/assets/images/add-affiliate-image.png",
   "dependencies": [
     "shoutem.application",

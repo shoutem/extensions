@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
+import { Linking } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { Linking } from 'react-native';
-import { Screen, Icon, Button, View } from '@shoutem/ui';
+import { Button, Icon, Screen, View } from '@shoutem/ui';
 import { MapView } from 'shoutem.application';
+import { getMapUrl } from 'shoutem.cms';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
-import { getMapUrl } from '../shared/getMapUrl';
 
 export default class SingleEventMapScreen extends PureComponent {
   static propTypes = {

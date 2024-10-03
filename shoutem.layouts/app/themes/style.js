@@ -1,8 +1,10 @@
-import { getSizeRelativeToReference, INCLUDE } from '@shoutem/theme';
+import { getSizeRelativeToReference } from '@shoutem/theme';
 import {
   createScopedResolver,
   dimensionRelativeToIphone,
   resolveFontWeight,
+  responsiveHeight,
+  responsiveWidth,
 } from '@shoutem/ui';
 import { ext } from '../const';
 
@@ -32,6 +34,13 @@ export default () => ({
         812,
         resolveVariable('sizes.window.height'),
       ),
+      width:
+        resolveVariable('sizes.window.width') -
+        getSizeRelativeToReference(
+          16,
+          375,
+          resolveVariable('sizes.window.width'),
+        ),
     },
     imageContainer: {
       width:
@@ -52,21 +61,8 @@ export default () => ({
     },
     textContainer: {
       height: dimensionRelativeToIphone(92),
-      paddingHorizontal: getSizeRelativeToReference(
-        16,
-        375,
-        resolveVariable('sizes.window.width'),
-      ),
-      paddingBottom: getSizeRelativeToReference(
-        4,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
-      paddingTop: getSizeRelativeToReference(
-        16,
-        812,
-        resolveVariable('sizes.window.height'),
-      ),
+      paddingHorizontal: responsiveWidth(10),
+      paddingVertical: responsiveHeight(5),
       backgroundColor: resolveVariable('grid122ItemBackgroundColor'),
       borderTopColor: 'rgba(68,79,108,0.2)',
       borderTopWidth: 1,
@@ -77,8 +73,27 @@ export default () => ({
   },
 
   'shoutem.layouts.FeaturedGridRowItemView': {
-    [INCLUDE]: ['shoutem.layouts.FullGridRowItemView'],
+    container: {
+      borderWidth: 0,
+      overflow: 'visible',
+      shadowColor: 'rgba(0, 0, 0, 0.12)',
+      shadowOffset: { width: 1, height: 2 },
+      shadowOpacity: 1,
+      shadowRadius: 2,
+      marginBottom: getSizeRelativeToReference(
+        8,
+        812,
+        resolveVariable('sizes.window.height'),
+      ),
+    },
     imageContainer: {
+      width:
+        resolveVariable('sizes.window.width') -
+        getSizeRelativeToReference(
+          16,
+          375,
+          resolveVariable('sizes.window.width'),
+        ),
       // Image has to be a square, 1:1 ratio. Using (-16) because
       // shoutem.layouts.Grid122FullRowView.container.marginHorizontal = 8
       height:
@@ -95,12 +110,24 @@ export default () => ({
         812,
         resolveVariable('sizes.window.height'),
       ),
+      paddingHorizontal: responsiveWidth(10),
+      paddingVertical: responsiveHeight(5),
+      backgroundColor: resolveVariable('grid122ItemBackgroundColor'),
+      borderTopColor: 'rgba(68,79,108,0.2)',
+      borderTopWidth: 1,
+    },
+    title: {
+      fontWeight: resolveFontWeight('bold'),
     },
   },
 
   'shoutem.layouts.HalfGridRowItemView': {
-    [INCLUDE]: ['shoutem.layouts.FullGridRowItemView'],
     container: {
+      overflow: 'visible',
+      shadowColor: 'rgba(0, 0, 0, 0.12)',
+      shadowOffset: { width: 1, height: 2 },
+      shadowOpacity: 1,
+      shadowRadius: 2,
       borderColor: 'rgba(68,79,108,0.2)',
       borderWidth: 1,
       borderTopLeftRadius: 4,
@@ -125,9 +152,12 @@ export default () => ({
           resolveVariable('sizes.window.width'),
         ),
     },
-    image: { borderTopLeftRadius: 4, borderTopRightRadius: 4 },
     textContainer: {
-      ...['shoutem.layouts.FullGridRowItemView'],
+      paddingHorizontal: responsiveWidth(10),
+      paddingVertical: responsiveHeight(5),
+      backgroundColor: resolveVariable('grid122ItemBackgroundColor'),
+      borderTopColor: 'rgba(68,79,108,0.2)',
+      borderTopWidth: 1,
       height: getSizeRelativeToReference(
         110,
         812,
@@ -141,6 +171,10 @@ export default () => ({
           resolveVariable('sizes.window.width'),
         ),
     },
+    title: {
+      fontWeight: resolveFontWeight('bold'),
+    },
+    image: { borderTopLeftRadius: 4, borderTopRightRadius: 4 },
   },
 
   'shoutem.layouts.CompactListSkeletonPlaceholder': {
@@ -245,5 +279,9 @@ export default () => ({
 
   'shoutem.layouts.TileListSkeletonPlaceholder': {
     itemContainer: { flex: 1, width: '100%', marginBottom: 1 },
+  },
+
+  [ext('LargeListItem')]: {
+    row: { width: '100%' },
   },
 });

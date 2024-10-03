@@ -1,11 +1,11 @@
-import _ from 'lodash';
-import moment from 'moment';
 import { Alert, Linking } from 'react-native';
 import { uses24HourClock } from 'react-native-localize';
-import { I18n } from 'shoutem.i18n';
+import _ from 'lodash';
+import moment from 'moment';
 import CalendarManager, {
   PERMISSION_ERROR,
 } from '@shoutem/react-native-calendar-manager';
+import { I18n } from 'shoutem.i18n';
 import { ext } from '../const';
 
 const showSuggestionToGrantCalendarAccess = () => {

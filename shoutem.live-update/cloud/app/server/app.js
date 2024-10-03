@@ -53,7 +53,7 @@ const errorHandlerOptions = {
 };
 
 app.use(errorHandler(errorHandlerOptions), (err, req, res, next) => {
-  logger.error({ err, req });
+  logger.error({ err, req, originalUrl: req.originalUrl });
   next();
 });
 

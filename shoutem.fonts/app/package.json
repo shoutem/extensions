@@ -1,7 +1,13 @@
 {
   "name": "shoutem.fonts",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
+  },
+  "dependencies": {
+    "colors": "1.4.0"
+  },
+  "webDependencies": {
+    "colors": "1.4.0"
   }
 }

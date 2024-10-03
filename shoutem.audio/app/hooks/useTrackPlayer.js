@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
-import { Platform } from 'react-native';
 import TrackPlayer, { State, useActiveTrack } from 'react-native-track-player';
 import _ from 'lodash';
+import { isIos } from 'shoutem-core';
 import { useAudioBanner } from './useAudioBanner';
 import { useTrackState } from './useTrackState';
 
@@ -45,7 +45,7 @@ export const useTrackPlayer = ({
 
     // Android throws Unhandled Promise Rejection when trying to reset or clear metadata, when
     // there's no active track, while iOS needs to clear metadata regardless of active track.
-    if (Platform.OS === 'ios' || activeTrack) {
+    if (isIos || activeTrack) {
       await TrackPlayer.updateNowPlayingMetadata({});
     }
 
@@ -98,7 +98,6 @@ export const useTrackPlayer = ({
           await TrackPlayer.setRate(1);
         }
 
-        await TrackPlayer.reset();
         await TrackPlayer.updateNowPlayingMetadata({});
       } catch (e) {
         if (e.code === 'no_current_item') {

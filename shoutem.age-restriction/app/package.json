@@ -1,6 +1,6 @@
 {
   "name": "shoutem.age-restriction",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Age Restriction",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
@@ -8,6 +8,7 @@
   "dependencies": {
     "react-native-exit-app": "1.1.0"
   },
+  "webDependencies": {},
   "peerDependencies": {
     "@shoutem/theme": "*",
     "@shoutem/ui": "*",

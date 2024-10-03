@@ -3,6 +3,7 @@ import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Caption, View } from '@shoutem/ui';
+import { isWeb } from 'shoutem-core';
 import { ext } from '../../const';
 import { convertSecondsToTimeDisplay } from '../../services';
 
@@ -26,6 +27,16 @@ export const ProgressControl = ({
     return totalDuration === '0:00' ? '' : totalDuration;
   }, [maxValue]);
 
+  const resolvedCurrentValue = () => {
+    if (isWeb) {
+      // Web Slider throws error when it receives 0.
+      // Adding this check rather than patching the library.
+      return currentValue > 0 ? currentValue : 0.00001;
+    }
+
+    return currentValue;
+  };
+
   const resolveCurrentTime = () => {
     if (slidingInProgress) {
       return convertSecondsToTimeDisplay(
@@ -39,29 +50,20 @@ export const ProgressControl = ({
   const handleSlidingComplete = useCallback(
     newPosition => {
       setSlidingInProgress(false);
-
       onValueChange(newPosition);
     },
     [onValueChange],
   );
 
   const handleValueChange = useCallback(
-    newPosition => {
-      setSlidingPosition(newPosition);
-      // Continue playing, until sliding is done.
-      if (slidingInProgress) {
-        return;
-      }
-
-      onValueChange(newPosition);
-    },
-    [onValueChange, slidingInProgress],
+    newPosition => setSlidingPosition(newPosition),
+    [],
   );
 
   return (
     <View styleName="md-gutter-horizontal">
       <Slider
-        value={!currentValue || !maxValue ? 0 : currentValue / maxValue}
+        value={resolvedCurrentValue() / maxValue}
         disabled={disabled}
         step={0.01}
         tapToSeek

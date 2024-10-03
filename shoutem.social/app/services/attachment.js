@@ -9,6 +9,7 @@ import {
   requestPermissions,
   RESULTS,
 } from 'shoutem.permissions';
+import { isIos } from 'shoutem-core';
 import { ATTACHMENT_TYPE, ext } from '../const';
 
 const INVALID_TEXT_ERROR =
@@ -79,10 +80,7 @@ function openCamera(onImageSelected) {
   RNKeyboard.dismiss();
 
   requestPermissions(CAMERA_PERMISSION).then(result => {
-    if (
-      Platform.OS === 'ios' &&
-      result[CAMERA_PERMISSION] !== RESULTS.GRANTED
-    ) {
+    if (isIos && result[CAMERA_PERMISSION] !== RESULTS.GRANTED) {
       return noPermissionsAlert(I18n.t(ext('noCameraPermissionsAlertText')));
     }
 
@@ -112,7 +110,7 @@ function openImageGallery(onImageSelected) {
 
   requestPermissions(GALLERY_PERMISSION).then(result => {
     if (
-      Platform.OS === 'ios' &&
+      isIos &&
       result[GALLERY_PERMISSION] !== RESULTS.GRANTED &&
       result[GALLERY_PERMISSION] !== RESULTS.LIMITED
     ) {

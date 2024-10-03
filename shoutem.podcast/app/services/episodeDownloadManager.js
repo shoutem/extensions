@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import autoBind from 'auto-bind';
 import _ from 'lodash';
@@ -9,6 +8,7 @@ import {
   PERMISSION_TYPES,
   requestPermissions,
 } from 'shoutem.permissions';
+import { isAndroid, isIos } from 'shoutem-core';
 import { ext } from '../const';
 
 const { BLOCKED, DENIED, GRANTED, UNAVAILABLE } = PERMISSION_RESULT_TYPES;
@@ -18,7 +18,6 @@ const {
 } = PERMISSION_TYPES;
 
 const PERMISSION_UNAVAILABLE = 'PERMISSION_UNAVAILABLE';
-const isAndroid = Platform.OS === 'android';
 
 export function getDownloadDir(isOnOldPath) {
   const {
@@ -70,7 +69,7 @@ class EpisodeDownloadManager {
         path: `${getDownloadDir()}/${_.uniqueId()}.mp3`,
       };
 
-      if (Platform.OS === 'ios') {
+      if (isIos) {
         return ReactNativeBlobUtil.config(downloadConfig)
           .fetch('GET', episodeUrl)
           .then(({ path }) => resolve(path()))

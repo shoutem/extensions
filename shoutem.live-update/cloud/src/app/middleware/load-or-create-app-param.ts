@@ -15,7 +15,8 @@ export default function() {
     if (!app) {
       // if there is no permission to read an app, throw an error, do not create app automatically
       const authData = getAuthData(req);
-      if (!isAllowedForApplication('read', id, authData)) {
+      const allowed = await isAllowedForApplication('read', id, authData);
+      if (!allowed) {
         throw new errors.ForbiddenError();
       }
 

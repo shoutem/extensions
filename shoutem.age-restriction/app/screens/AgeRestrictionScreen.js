@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useLayoutEffect } from 'react';
-import RNExitApp from 'react-native-exit-app';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
@@ -13,6 +12,7 @@ import {
   ImageBackgroundContainer,
 } from '../components';
 import { ext } from '../const';
+import { exitApp } from '../services';
 import { getBackgroundImage, setVerificationCompleted } from '../redux';
 
 function AgeRestrictionScreen({
@@ -99,7 +99,7 @@ function AgeRestrictionScreen({
               {I18n.t(ext('continueButtonTitle'))}
             </Text>
           </Button>
-          <Button style={style.exitButton} onPress={RNExitApp.exitApp}>
+          <Button style={style.exitButton} onPress={exitApp}>
             <Text style={style.exitButtonText}>
               {I18n.t(ext('exitTheAppButtonTitle'))}
             </Text>

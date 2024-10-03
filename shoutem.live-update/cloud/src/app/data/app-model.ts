@@ -1,11 +1,4 @@
-import {
-  Column,
-  DataType,
-  Model,
-  Table,
-  CreatedAt,
-  UpdatedAt,
-} from 'sequelize-typescript';
+import { Column, DataType, Model, Table, CreatedAt, UpdatedAt } from 'sequelize-typescript';
 
 @Table({ modelName: 'Apps' })
 export class App extends Model<App> {
@@ -41,6 +34,9 @@ export class App extends Model<App> {
 
   @Column(DataType.STRING)
   previewAndroidBundleUrl?: string;
+
+  @Column(DataType.STRING)
+  previewWebBundleUrl?: string;
 
   @CreatedAt
   createdAt!: Date;

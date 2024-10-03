@@ -2,11 +2,11 @@
   "name": "application",
   "title": "Application",
   "description": "System Shoutem extension that initializes and configures the application",
-  "version": "6.3.1",
-  "platform": ">=14.1.1",
-  "releaseNotes": "Release notes\n* No user facing changes\n\nDeveloper notes\n* Moved useTimer hook into application extension",
+  "version": "7.0.1",
+  "platform": ">=15.0.0",
+  "releaseNotes": "Release notes\n* Resolved issues with MapView for Android devices",
   "nativeChanges": {
-    "lastVersion": "6.3.1"
+    "lastVersion": "7.0.1"
   },
   "icon": "server/assets/add-application-image.png",
   "categories": [],

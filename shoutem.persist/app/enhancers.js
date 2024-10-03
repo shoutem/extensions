@@ -11,7 +11,7 @@ export function purgeStore() {
 
   return Promise.reject(
     'Trying to purge a store that has not yet been created. ' +
-    'Disabling store rehydration is not available at the moment.'
+    'Disabling store rehydration is not available at the moment.',
   );
 }
 
@@ -24,13 +24,10 @@ export function purgeStore() {
  */
 const persistStoreEnhancer = createStore => (...args) => {
   const store = createStore(...args);
-  storePersistor = persistStore(
-    store,
-    {
-      storage: AsyncStorage, // Use RN storage system
-      transforms: [createTransform(toSerializableFormat, fromSerializableFormat)],
-    }
-  );
+  storePersistor = persistStore(store, {
+    storage: AsyncStorage, // Use RN storage system
+    transforms: [createTransform(toSerializableFormat, fromSerializableFormat)],
+  });
   return store;
 };
 

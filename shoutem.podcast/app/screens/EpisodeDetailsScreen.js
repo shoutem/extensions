@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react';
-import { Alert, Platform, Share } from 'react-native';
-import ActionSheet from 'react-native-action-sheet';
+import { Share } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { isBusy, isValid } from '@shoutem/redux-io';
+import { getOne } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
+  ActionSheet,
   Button,
   Caption,
   Icon,
@@ -19,23 +19,25 @@ import {
   SimpleHtml,
   Spinner,
   Title,
+  Toast,
   View,
 } from '@shoutem/ui';
+import { getShortcut, unavailableInWeb } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-import { closeModal, getRouteParams } from 'shoutem.navigation';
-import { ext as rssExt, getLeadImageUrl } from 'shoutem.rss';
+import { getRouteParams } from 'shoutem.navigation';
+import { getLeadImageUrl } from 'shoutem.rss';
+import { isAndroid, isWeb } from 'shoutem-core';
 import { FavoriteButton } from '../components';
-import { ext } from '../const';
+import { ext, RSS_PODCAST_SCHEMA } from '../const';
 import { PodcastEpisodePlayer } from '../fragments';
 import {
   deleteEpisode,
   downloadEpisode,
-  favoriteEpisode,
   getDownloadedEpisode,
-  getEpisodesFeed,
   getHasFavorites,
   getIsFavorited,
-  unfavoriteEpisode,
+  removeFavoriteEpisode,
+  saveFavoriteEpisode,
 } from '../redux';
 
 export class EpisodeDetailsScreen extends PureComponent {
@@ -43,28 +45,21 @@ export class EpisodeDetailsScreen extends PureComponent {
     super(props);
 
     autoBindReact(this);
+
+    this.state = {
+      actionSheetOpen: false,
+    };
   }
 
   componentDidMount() {
-    const { episodeNotFound, navigation } = this.props;
+    const { navigation } = this.props;
 
     navigation.setOptions(this.getNavBarProps());
-
-    if (episodeNotFound) {
-      this.handleItemNotFound();
-    }
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      episodeNotFound: prevEpisodeNotFound,
-      isFavorited: prevIsFavorited,
-    } = prevProps;
-    const { episodeNotFound, isFavorited, navigation } = this.props;
-
-    if (!prevEpisodeNotFound && episodeNotFound) {
-      this.handleItemNotFound();
-    }
+    const { isFavorited: prevIsFavorited } = prevProps;
+    const { isFavorited, navigation } = this.props;
 
     if (prevIsFavorited !== isFavorited) {
       navigation.setOptions(this.getNavBarProps());
@@ -74,110 +69,44 @@ export class EpisodeDetailsScreen extends PureComponent {
   deleteDownload() {
     const { deleteEpisode, downloadedEpisode } = this.props;
 
-    deleteEpisode(downloadedEpisode);
+    deleteEpisode(downloadedEpisode).then(() => {
+      Toast.showSuccess({
+        title: I18n.t(ext('episodeDeleteTitle')),
+        message: I18n.t(ext('episodeDeleteMessage')),
+      });
+    });
   }
 
   startDownload() {
     const { episode, downloadEpisode } = this.props;
-    const { feedUrl } = getRouteParams(this.props);
 
-    downloadEpisode(episode.id, feedUrl);
-  }
-
-  openActionSheet() {
-    const {
-      actionSheetOptions,
-      downloadInProgress,
-      downloadedEpisode,
-      enableSharing,
-      episode,
-      hasFavorites,
-    } = this.props;
-
-    const url = _.get(episode, 'link', '');
-    const audioAttachmentUrl = episode.audioAttachments[0]?.src || '';
-    const resolvedUrl = url || audioAttachmentUrl;
-    const title = _.get(episode, 'title', '');
-
-    ActionSheet.showActionSheetWithOptions(
-      {
-        options: actionSheetOptions,
-        cancelButtonIndex: 0,
-        tintColor: 'black',
-      },
-      index => {
-        // Index 1 can only be Share or Favorite
-        if (index === 1) {
-          if (enableSharing) {
-            Share.share({
-              title,
-              // URL property isn't supported on Android, so we are
-              // including it as the message for now.
-              message: Platform.OS === 'android' ? resolvedUrl : null,
-              url: resolvedUrl,
-            });
-          } else {
-            this.onFavoritePress();
-          }
-        }
-
-        // Index two can only be Favorite and Download
-        if (index === 2) {
-          if (enableSharing && hasFavorites) {
-            this.onFavoritePress();
-          }
-
-          if (enableSharing && !hasFavorites && !downloadInProgress) {
-            if (downloadedEpisode) {
-              this.deleteDownload();
-            } else {
-              this.startDownload();
-            }
-          }
-
-          if (!enableSharing && hasFavorites && !downloadInProgress) {
-            if (downloadedEpisode) {
-              this.deleteDownload();
-            } else {
-              this.startDownload();
-            }
-          }
-        }
-
-        if (index === 3 && !downloadInProgress) {
-          if (downloadedEpisode) {
-            this.deleteDownload();
-          } else {
-            this.startDownload();
-          }
-        }
-      },
-    );
+    downloadEpisode(episode).then(() => {
+      Toast.showSuccess({
+        title: I18n.t(ext('episodeDownloadSuccessTitle')),
+        message: I18n.t(ext('episodeDownloadSuccessMessage')),
+      });
+    });
   }
 
   getNavBarProps() {
-    const { actionSheetOptions } = this.props;
-
     return {
-      headerRight: actionSheetOptions.length > 1 ? this.headerRight : null,
+      headerRight: this.headerRight,
       title: '',
     };
   }
 
   onFavoritePress() {
     const {
-      enableDownload,
       episode,
-      favoriteEpisode,
-      feedUrl,
+      saveFavoriteEpisode,
       isFavorited,
-      unfavoriteEpisode,
-      meta,
+      removeFavoriteEpisode,
+      shortcutId,
     } = this.props;
 
     return isFavorited
-      ? unfavoriteEpisode(episode.id)
-      : favoriteEpisode(episode, enableDownload, feedUrl, meta);
+      ? removeFavoriteEpisode(episode.uuid)
+      : saveFavoriteEpisode(episode.uuid, shortcutId);
   }
 
   headerRight(props) {
@@ -203,7 +132,7 @@ export class EpisodeDetailsScreen extends PureComponent {
       (enableSharing && hasFavorites)
     ) {
       return (
-        <Button styleName="clear tight" onPress={this.openActionSheet}>
+        <Button styleName="clear tight" onPress={this.handleOptionsPress}>
           <Icon name="more-horizontal" style={props.tintColor} />
         </Button>
       );
@@ -220,7 +149,10 @@ export class EpisodeDetailsScreen extends PureComponent {
         : this.startDownload;
 
       return (
-        <Button styleName="clear tight" onPress={handleDownloadPress}>
+        <Button
+          styleName="clear tight"
+          onPress={unavailableInWeb(handleDownloadPress)}
+        >
           <Icon name={iconName} style={props.tintColor} />
         </Button>
       );
@@ -234,6 +166,11 @@ export class EpisodeDetailsScreen extends PureComponent {
           iconColor={props.tintColor}
         />
       );
+    }
+
+    // early return for web as we do not support share on web
+    if (isWeb) {
+      return null;
     }
 
     const title = episode.title || '';
@@ -251,16 +188,49 @@ export class EpisodeDetailsScreen extends PureComponent {
     );
   }
 
-  handleItemNotFound() {
-    const okButton = {
-      onPress: closeModal,
-    };
+  handleActionSheetDismiss() {
+    this.setState({ actionSheetOpen: false });
+  }
 
-    return Alert.alert(
-      I18n.t(rssExt('itemNotFoundTitle')),
-      I18n.t(rssExt('itemNotFoundMessage')),
-      [okButton],
-    );
+  handleOptionsPress() {
+    this.setState({ actionSheetOpen: true });
+  }
+
+  handleSharePress() {
+    if (isWeb) {
+      unavailableInWeb();
+
+      this.setState({
+        actionSheetOpen: false,
+      });
+
+      return;
+    }
+
+    const { episode } = this.props;
+
+    const url = _.get(episode, 'link', '');
+    const audioAttachmentUrl = episode.audioAttachments[0]?.src || '';
+    const resolvedUrl = url || audioAttachmentUrl;
+    const title = _.get(episode, 'title', '');
+
+    Share.share({
+      title,
+      // URL property isn't supported on Android, so we are
+      // including it as the message for now.
+      message: isAndroid ? resolvedUrl : null,
+      url: resolvedUrl,
+    });
+  }
+
+  handleDownloadOptionPress() {
+    const { downloadedEpisode } = this.props;
+
+    if (downloadedEpisode) {
+      this.deleteDownload();
+    } else {
+      this.startDownload();
+    }
   }
 
   renderHeaderImage() {
@@ -276,18 +246,76 @@ export class EpisodeDetailsScreen extends PureComponent {
     );
   }
 
-  render() {
+  composeActionSheetOptions() {
     const {
-      data,
-      episode,
-      episodeNotFound,
-      meta,
-      feedUrl,
-      shortcutTitle,
-      style,
+      enableSharing,
+      hasFavorites,
+      isFavorited,
+      enableDownload,
+      downloadedEpisode,
+      downloadInProgress,
     } = this.props;
 
-    const loading = isBusy(data) || episodeNotFound;
+    const confirmOptions = [];
+
+    if (enableSharing) {
+      confirmOptions.push({
+        title: I18n.t(ext('actionSheetShareOption')),
+        onPress: this.handleSharePress,
+      });
+    }
+
+    if (hasFavorites) {
+      const favoriteTitle = isFavorited
+        ? I18n.t(ext('actionSheetUnfavorite'))
+        : I18n.t(ext('actionSheetFavorite'));
+
+      confirmOptions.push({
+        title: favoriteTitle,
+        onPress: this.onFavoritePress,
+      });
+    }
+
+    if (enableDownload && !downloadedEpisode) {
+      confirmOptions.push({
+        title: I18n.t(ext('actionSheetDownloadOption')),
+        onPress: unavailableInWeb(this.handleDownloadOptionPress),
+      });
+    }
+
+    // If downloads are disabled after a user has already downloaded an episode
+    // we must allow the user to delete the episode to clear space.
+    if (downloadedEpisode && !downloadInProgress) {
+      confirmOptions.push({
+        title: I18n.t(ext('actionSheetDeleteOption')),
+        onPress: unavailableInWeb(this.handleDownloadOptionPress),
+      });
+    }
+
+    if (downloadInProgress) {
+      confirmOptions.push({
+        title: I18n.t(ext('actionSheetDownloadInProgress')),
+        onPress: this.handleActionSheetDismiss,
+      });
+    }
+
+    const cancelOptions = [
+      {
+        title: I18n.t(ext('actionSheetCancelOption')),
+        onPress: this.handleActionSheetDismiss,
+      },
+    ];
+
+    return {
+      cancelOptions,
+      confirmOptions,
+    };
+  }
+
+  render() {
+    const { episode, meta, feedUrl, shortcutTitle } = this.props;
+    const { actionSheetOpen } = this.state;
+
     const author = _.get(episode, 'author', '');
     const body = _.get(episode, 'body', '');
     const timeUpdated = _.get(episode, 'timeUpdated', '');
@@ -295,43 +323,41 @@ export class EpisodeDetailsScreen extends PureComponent {
 
     const momentDate = moment(timeUpdated);
     const validDate = momentDate.isAfter(0);
+    const { confirmOptions, cancelOptions } = this.composeActionSheetOptions();
 
     return (
       <Screen styleName="paper">
-        {loading && (
-          <View styleName="flexible vertical h-center v-center">
-            <Spinner />
+        <ScrollView>
+          {this.renderHeaderImage()}
+          <View styleName="text-centric md-gutter-horizontal md-gutter-top vertical h-center">
+            <Title numberOfLines={2}>{title.toUpperCase()}</Title>
+            <View styleName="horizontal collapsed sm-gutter-top">
+              <Caption numberOfLines={1} styleName="collapsible">
+                {author}
+              </Caption>
+              {validDate && (
+                <Caption styleName="md-gutter-left">
+                  {momentDate.fromNow()}
+                </Caption>
+              )}
+            </View>
+            <PodcastEpisodePlayer
+              episode={episode}
+              feedUrl={feedUrl}
+              defaultArtwork={meta?.imageUrl}
+              title={shortcutTitle}
+            />
           </View>
-        )}
-        {!loading && (
-          <View style={style.container}>
-            <ScrollView>
-              {this.renderHeaderImage()}
-              <View styleName="text-centric md-gutter-horizontal md-gutter-top vertical h-center">
-                <Title numberOfLines={2}>{title.toUpperCase()}</Title>
-                <View styleName="horizontal collapsed sm-gutter-top">
-                  <Caption numberOfLines={1} styleName="collapsible">
-                    {author}
-                  </Caption>
-                  {validDate && (
-                    <Caption styleName="md-gutter-left">
-                      {momentDate.fromNow()}
-                    </Caption>
-                  )}
-                </View>
-                <PodcastEpisodePlayer
-                  episode={episode}
-                  feedUrl={feedUrl}
-                  defaultArtwork={meta?.imageUrl}
-                  title={shortcutTitle}
-                />
-              </View>
-              <View styleName="solid">
-                <SimpleHtml body={body} />
-              </View>
-            </ScrollView>
+          <View styleName="solid">
+            <SimpleHtml body={body} />
           </View>
-        )}
+        </ScrollView>
+        <ActionSheet
+          active={actionSheetOpen}
+          cancelOptions={cancelOptions}
+          confirmOptions={confirmOptions}
+          onDismiss={this.handleActionSheetDismiss}
+        />
       </Screen>
     );
   }
@@ -340,109 +366,82 @@ export class EpisodeDetailsScreen extends PureComponent {
 EpisodeDetailsScreen.propTypes = {
   deleteEpisode: PropTypes.func.isRequired,
   downloadEpisode: PropTypes.func.isRequired,
-  enableDownload: PropTypes.bool.isRequired,
   episode: PropTypes.object.isRequired,
-  feedUrl: PropTypes.string.isRequired,
-  meta: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
-  actionSheetOptions: PropTypes.array,
-  data: PropTypes.array,
   downloadedEpisode: PropTypes.object,
   downloadInProgress: PropTypes.bool,
+  enableDownload: PropTypes.bool,
   enableSharing: PropTypes.bool,
-  episodeNotFound: PropTypes.bool,
-  favoriteEpisode: PropTypes.func,
+  feedUrl: PropTypes.string,
   hasFavorites: PropTypes.bool,
   isFavorited: PropTypes.bool,
+  meta: PropTypes.object,
+  removeFavoriteEpisode: PropTypes.func,
+  saveFavoriteEpisode: PropTypes.func,
+  shortcutId: PropTypes.string,
   shortcutTitle: PropTypes.string,
   style: PropTypes.object,
-  unfavoriteEpisode: PropTypes.func,
 };
 
 EpisodeDetailsScreen.defaultProps = {
-  actionSheetOptions: [],
-  data: undefined,
   downloadInProgress: false,
   downloadedEpisode: null,
-  episodeNotFound: false,
+  enableDownload: false,
   enableSharing: false,
-  favoriteEpisode: _.noop,
+  feedUrl: undefined,
+  saveFavoriteEpisode: _.noop,
   hasFavorites: false,
   isFavorited: false,
+  meta: {},
+  shortcutId: undefined,
   shortcutTitle: '',
   style: {},
-  unfavoriteEpisode: _.noop,
+  removeFavoriteEpisode: _.noop,
 };
 
 export function mapStateToProps(state, ownProps) {
   const {
-    enableDownload = false,
-    feedUrl,
     id,
-    screenSettings: { enableSharing = false },
-    episode: favoritedEpisode,
+    shortcutId,
     meta,
-    shortcutTitle,
+    screenSettings: { enableSharing = false },
   } = getRouteParams(ownProps);
 
-  const data = getEpisodesFeed(state, feedUrl);
+  const podcastShortcut = getShortcut(state, shortcutId);
+
+  const {
+    title: shortcutTitle,
+    settings: { feedUrl, enableDownload },
+  } = podcastShortcut;
+
   const downloadedEpisode = getDownloadedEpisode(state, id);
-  const episode = _.find(data, { id });
-  const episodeNotFound = isValid(data) && !episode;
+  const episode = getOne(id, state, RSS_PODCAST_SCHEMA);
+
   const hasFavorites = getHasFavorites(state);
-  const isFavorited = getIsFavorited(state, id);
-
-  const actionSheetOptions = [I18n.t(ext('actionSheetCancelOption'))];
-
-  if (enableSharing) {
-    actionSheetOptions.push(I18n.t(ext('actionSheetShareOption')));
-  }
-
-  if (hasFavorites) {
-    if (isFavorited) {
-      actionSheetOptions.push(I18n.t(ext('actionSheetUnfavorite')));
-    } else {
-      actionSheetOptions.push(I18n.t(ext('actionSheetFavorite')));
-    }
-  }
-
-  if (enableDownload && !downloadedEpisode) {
-    actionSheetOptions.push(I18n.t(ext('actionSheetDownloadOption')));
-  }
+  const isFavorited = getIsFavorited(state, episode.uuid);
 
   const downloadInProgress = downloadedEpisode?.downloadInProgress;
-  // If downloads are disabled after a user has already downloaded an episode
-  // we must allow the user to delete the episode to clear space.
-  if (downloadedEpisode && !downloadInProgress) {
-    actionSheetOptions.push(I18n.t(ext('actionSheetDeleteOption')));
-  }
-
-  if (downloadInProgress) {
-    actionSheetOptions.push(I18n.t(ext('actionSheetDownloadInProgress')));
-  }
 
   return {
-    actionSheetOptions,
-    data,
     downloadedEpisode,
     downloadInProgress,
     enableDownload,
     enableSharing,
-    episode: favoritedEpisode || episode,
-    episodeNotFound,
+    episode,
     feedUrl,
     hasFavorites,
     isFavorited,
     meta,
     shortcutTitle,
+    shortcutId,
   };
 }
 
 export const mapDispatchToProps = {
   deleteEpisode,
   downloadEpisode,
-  favoriteEpisode,
-  unfavoriteEpisode,
+  saveFavoriteEpisode,
+  removeFavoriteEpisode,
 };
 
 export default connect(

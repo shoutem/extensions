@@ -1,63 +1,41 @@
 const {
-  getMainApplicationPath,
-  getAppGradlePath,
-  getSettingsGradlePath,
   getAndroidManifestPath,
   inject,
-  replace,
   ANCHORS,
   projectPath,
 } = require('@shoutem/build-tools');
+const fs = require('fs-extra');
 const { maps } = require('./const');
 
-// cwd for build steps is extension/app directory. we want to run this on project directory
-function injectAndroid() {
-  // app/build.gradle mods
-  const appGradlePath = getAppGradlePath({ cwd: projectPath });
-  inject(
-    appGradlePath,
-    ANCHORS.ANDROID.GRADLE.APP.DEPENDENCIES,
-    maps.android.gradle.app.dependencies,
-  );
+function removeStringFromXML(filePath, stringToRemove) {
+  try {
+    const data = fs.readFileSync(filePath, 'utf8');
+    const updatedData = data.replace(new RegExp(stringToRemove, 'g'), '');
 
-  // settings.gradle mods
-  const settingsGradlePath = getSettingsGradlePath({ cwd: projectPath });
-  inject(
-    settingsGradlePath,
-    ANCHORS.ANDROID.GRADLE.SETTINGS,
-    maps.android.gradle.settings,
-  );
+    fs.writeFileSync(filePath, updatedData, 'utf8');
+  } catch (err) {
+    console.error('Error processing the file:', err);
+  }
+}
 
-  // MainApplication.java mods
-  const mainApplicationPath = getMainApplicationPath({ cwd: projectPath });
-  inject(
-    mainApplicationPath,
-    ANCHORS.ANDROID.MAIN_APPLICATION.IMPORT,
-    maps.android.mainApplication.import,
-  );
-  inject(
-    mainApplicationPath,
-    ANCHORS.ANDROID.MAIN_APPLICATION.GET_PACKAGES,
-    maps.android.mainApplication.getPackage,
-  );
-
-  // AndroidManifest.xml mods
+function injectAndroid(buildConfig) {
   const androidManifestPath = getAndroidManifestPath({ cwd: projectPath });
+
+  // Temporary failsafe for the old key inclusion via platform file. Safe to remove with next platform
+  // after version 15.0.0
+  const stringToRemove =
+    '<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBAefhRlXEH3vCko-zZTX6PHllTR6av4WI"/>';
+  removeStringFromXML(androidManifestPath, stringToRemove);
+
   inject(
     androidManifestPath,
     ANCHORS.ANDROID.MANIFEST.APPLICATION,
-    maps.android.manifest,
+    maps.android.manifest(buildConfig.googleMapsAndroidKey),
   );
 }
 
-/**
- * Injects required modifications for react-native-maps package as described
- * here: https://github.com/react-community/react-native-maps/blob/master/docs/installation.md
- *
- * This must be run before pod install step
- */
-function injectMaps() {
-  injectAndroid();
+function injectMaps(buildConfig) {
+  injectAndroid(buildConfig);
 }
 
 module.exports = injectMaps;

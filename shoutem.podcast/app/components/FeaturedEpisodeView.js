@@ -1,6 +1,4 @@
 import React from 'react';
-import FastImage from 'react-native-fast-image';
-import { connect } from 'react-redux';
 import moment from 'moment';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -8,6 +6,7 @@ import {
   Caption,
   Divider,
   Icon,
+  ImageBackground,
   Spinner,
   Title,
   TouchableOpacity,
@@ -16,11 +15,7 @@ import {
 import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import EpisodeProgress from './EpisodeProgress';
-import {
-  EpisodeView,
-  mapDispatchToProps,
-  mapStateToProps,
-} from './EpisodeView';
+import { EpisodeView } from './EpisodeView';
 import { FavoriteButton } from './FavoriteButton';
 
 /**
@@ -29,13 +24,16 @@ import { FavoriteButton } from './FavoriteButton';
 export class FeaturedEpisodeView extends EpisodeView {
   render() {
     const {
-      enableDownload,
       episode,
-      hasFavorites,
       isFavorited,
+      downloadInProgress,
+      appHasFavoritesShortcut,
+      shortcutSettings,
       style,
     } = this.props;
-    const { author, downloadInProgress, timeUpdated, title } = episode;
+    const { enableDownload } = shortcutSettings;
+
+    const { author, timeUpdated, title } = episode;
 
     const isDownloaded = downloadInProgress !== undefined;
     const momentDate = moment(timeUpdated);
@@ -51,10 +49,13 @@ export class FeaturedEpisodeView extends EpisodeView {
     return (
       <TouchableOpacity onPress={this.onPress}>
         <View styleName="sm-gutter featured">
-          <FastImage source={episodeImage} style={style.imageBackground}>
+          <ImageBackground
+            source={episodeImage}
+            styleName="featured placeholder"
+          >
             <View style={style.episodeInfo}>
               <View style={style.actionButtonContainer}>
-                {!!hasFavorites && (
+                {!!appHasFavoritesShortcut && (
                   <FavoriteButton
                     onPress={this.onFavoritePress}
                     isFavorited={isFavorited}
@@ -91,7 +92,7 @@ export class FeaturedEpisodeView extends EpisodeView {
                 container: style.episodeProgressContainer,
               }}
             />
-          </FastImage>
+          </ImageBackground>
         </View>
         <Divider styleName="line" />
       </TouchableOpacity>
@@ -99,7 +100,7 @@ export class FeaturedEpisodeView extends EpisodeView {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(connectStyle(ext('FeaturedEpisodeView'), {})(FeaturedEpisodeView));
+export default connectStyle(
+  ext('FeaturedEpisodeView'),
+  {},
+)(FeaturedEpisodeView);

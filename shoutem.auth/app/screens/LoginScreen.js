@@ -14,6 +14,7 @@ import {
   navigateTo,
   withIsFocused,
 } from 'shoutem.navigation';
+import { isIos } from 'shoutem-core';
 import {
   AppleSignInButton,
   FacebookButton,
@@ -186,7 +187,7 @@ export class LoginScreen extends PureComponent {
     const isAppleAuthEnabled = _.get(settings, 'providers.apple.enabled');
     const isSignupEnabled = _.get(settings, 'signupEnabled');
     const isEligibleForAppleSignIn =
-      isAppleAuthEnabled && Platform.OS === 'ios' && platformVersion >= 13;
+      isAppleAuthEnabled && isIos && platformVersion >= 13;
     const { termsOfServiceLink, privacyPolicyLink } = gdprSettings;
 
     // As per Apple's regulation, if a user is registering a new account, terms

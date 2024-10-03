@@ -4,6 +4,7 @@ import {
   createScopedResolver,
   Device,
   dimensionRelativeToIphone,
+  responsiveWidth,
 } from '@shoutem/ui';
 import { ext } from '../const';
 
@@ -366,7 +367,16 @@ export default () => ({
       opacity: 0.6,
     },
     profileImage: {
-      borderRadius: dimensionRelativeToIphone(145 / 2),
+      container: {
+        width: responsiveWidth(145),
+        height: responsiveWidth(145),
+        borderRadius: responsiveWidth(72.5),
+        borderWidth: 0,
+      },
+      image: {
+        borderRadius: responsiveWidth(72.5),
+        borderWidth: 0,
+      },
     },
   },
 });

@@ -47,6 +47,8 @@ import { APP_TYPE } from './types';
  *                 type: string
  *               previewAndroidBundleUrl:
  *                 type: string
+ *               previewWebBundleUrl:
+ *                 type: string
  *           relationships:
  *             type: object
  *             properties:

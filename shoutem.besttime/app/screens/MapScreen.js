@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
+import { Linking } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Linking, Platform } from 'react-native';
 import {
   Caption,
   Icon,
@@ -12,6 +12,7 @@ import {
   View,
 } from '@shoutem/ui';
 import { MapView } from 'shoutem.application';
+import { getMapUrl } from 'shoutem.cms';
 import { getRouteParams } from 'shoutem.navigation';
 
 function createMarker(place) {
@@ -45,10 +46,7 @@ export default class MapScreen extends PureComponent {
       },
     } = getRouteParams(this.props);
 
-    const mapUrl =
-      Platform.OS === 'ios'
-        ? `http://maps.apple.com/?ll=${lat},${lng}&q=${formattedAddress}`
-        : `geo:${lat},${lng}?q=${formattedAddress}`;
+    const mapUrl = getMapUrl(lat, lng, formattedAddress);
 
     Linking.openURL(mapUrl);
   }

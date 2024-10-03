@@ -2,12 +2,12 @@
   "name": "podcast",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "version": "9.0.1",
-  "platform": ">=14.1.2",
+  "version": "11.0.0",
+  "platform": ">=15",
   "nativeChanges": {
     "lastVersion": "8.0.1"
   },
-  "releaseNotes": "Release notes\n* No user facing changes\n\n* Developer notes\n* Improved push notification handlers registration process by prioritizing notification handlers registration before token handler registration",
+  "releaseNotes": "Release notes\n* Favorite podcast episodes will now be in sync with remote feed information\n\n* Developer notes\n* (Breaking changes) Refactored more than few screens, components and redux (reducers, selectors, actions)",
   "icon": "server/assets/extension-icon.png",
   "categories": [
     "media"

@@ -1,5 +1,4 @@
 import { LogBox } from 'react-native';
-import 'react-native-gesture-handler';
 import './navigation';
 import CardList from './screens/CardList';
 import IconGrid from './screens/IconGrid';

@@ -4,6 +4,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Icon, ImageBackground, Text, View } from '@shoutem/ui';
+import { unavailableInWeb } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { openInModal } from 'shoutem.navigation';
 import { images } from '../assets';
@@ -51,18 +52,22 @@ function BaseUserProfile({ style, user }) {
   const source = image ? { uri: image } : images.defaultAvatar;
 
   return (
-    <View styleName="flexible vertical h-center v-center md-gutter-bottom">
+    <View styleName="vertical h-center v-center md-gutter-bottom">
       <ImageBackground
-        styleName="medium-avatar placeholder md-gutter-bottom"
+        styleName="placeholder md-gutter-bottom"
         source={source}
-        borderRadius={style.profileImage?.borderRadius}
+        imageStyle={style.profileImage.image}
+        style={style.profileImage.container}
       />
       {!_.isEmpty(name) && <Text style={style.name}>{name}</Text>}
       {!!nick && <Text style={style.nick}>{nick}</Text>}
       {!isProfileOwner && (
         <View styleName="flexible horizontal h-center md-gutter">
           {agoraConfigured && (
-            <Button onPress={handleVideoButtonPress} styleName="stacked clear">
+            <Button
+              onPress={unavailableInWeb(handleVideoButtonPress)}
+              styleName="stacked clear"
+            >
               <Icon name="video-chat" />
               <Text>{I18n.t(ext('video'))}</Text>
             </Button>

@@ -4,7 +4,6 @@ import {
   Animated,
   LayoutAnimation,
   NativeModules,
-  Platform,
   StyleSheet,
 } from 'react-native';
 import RNShake from 'react-native-shake';
@@ -15,6 +14,7 @@ import PropTypes from 'prop-types';
 import { Spinner, View } from '@shoutem/ui';
 import { getAppId } from 'shoutem.application';
 import { requestPermissions } from 'shoutem.permissions';
+import { isIos } from 'shoutem-core';
 import { Menu, Tip, Watermark } from '../components';
 import { clearPreviewStorage, GALLERY_PERMISSION } from '../services';
 
@@ -107,7 +107,7 @@ export function PreviewProvider({ app, children }) {
   // eg. stopping TrackPlayer
   // Currently not needed on Android since everything executes properly
   const handleUnmount = useCallback(() => {
-    if (Platform.OS === 'ios' && _.isFunction(app?.componentWillUnmount)) {
+    if (isIos && _.isFunction(app?.componentWillUnmount)) {
       app.componentWillUnmount();
     }
   }, [app]);

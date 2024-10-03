@@ -3,16 +3,14 @@
 // It is important to use those exact names
 
 // export everything from extension.js
-export * from './extension';
-
 // list of exports supported by shoutem can be found here: https://shoutem.github.io/docs/extensions/reference/extension-exports
 import { Platform, UIManager } from 'react-native';
+import { isAndroid } from 'shoutem-core';
 import enTranslations from './translations/en.json';
 
-export { reducer } from './redux';
-
 export { appDidMount } from './app';
-
+export * from './extension';
+export { reducer } from './redux';
 export const shoutem = {
   i18n: {
     translations: {
@@ -21,7 +19,7 @@ export const shoutem = {
   },
 };
 
-if (Platform.OS === 'android') {
+if (isAndroid) {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
   }

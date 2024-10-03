@@ -1,9 +1,10 @@
+/* eslint-disable react/sort-prop-types */
 import React from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { find, isValid, next, shouldRefresh } from '@shoutem/redux-io';
+import { find, next, shouldRefresh } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { EmptyStateView } from '@shoutem/ui';
 import { getAppId, getExtensionSettings } from 'shoutem.application';
@@ -26,28 +27,6 @@ import NoProgramScreen from './NoProgramScreen';
  * The user can redeem a reward once he collects the required number of points on his loyalty card.
  */
 export class RewardsListScreen extends CmsListScreen {
-  static propTypes = {
-    ...CmsListScreen.propTypes,
-    // Loyalty card for user
-    card: PropTypes.shape({
-      // Card ID
-      id: PropTypes.string,
-    }),
-    // Parent category ID in Shoutem CMS
-    parentCategoryId: PropTypes.string,
-    // ID of loyalty program for this extension
-    programId: PropTypes.string,
-    // Currently logged in user
-    user: PropTypes.shape({
-      id: PropTypes.string,
-    }),
-    // Actions
-    find: PropTypes.func,
-    next: PropTypes.func,
-    // Refreshes the loyalty card
-    refreshCard: PropTypes.func,
-  };
-
   constructor(props, context) {
     super(props, context);
 
@@ -64,7 +43,7 @@ export class RewardsListScreen extends CmsListScreen {
     const { user } = this.props;
     const { user: prevUser } = prevProps;
 
-    if (user.id && user.id !== prevUser.id) {
+    if (!!user.id && user.id !== prevUser?.id) {
       this.refreshData(prevProps);
       return;
     }
@@ -85,7 +64,7 @@ export class RewardsListScreen extends CmsListScreen {
     const data = _.get(prevProps, 'data');
     const prevUser = _.get(prevProps, 'user');
 
-    if (prevUser !== user && isValid(user)) {
+    if (!!user.id && user.id !== prevUser?.id) {
       return this.fetchData();
     }
 
@@ -218,6 +197,28 @@ export function mapStateToProps(state, ownProps) {
     user: getUser(state),
   };
 }
+
+RewardsListScreen.propTypes = {
+  ...CmsListScreen.propTypes,
+  // Loyalty card for user
+  card: PropTypes.shape({
+    // Card ID
+    id: PropTypes.string,
+  }),
+  // Parent category ID in Shoutem CMS
+  parentCategoryId: PropTypes.string,
+  // ID of loyalty program for this extension
+  programId: PropTypes.string,
+  // Currently logged in user
+  user: PropTypes.shape({
+    id: PropTypes.string,
+  }),
+  // Actions
+  find: PropTypes.func,
+  next: PropTypes.func,
+  // Refreshes the loyalty card
+  refreshCard: PropTypes.func,
+};
 
 export const mapDispatchToProps = CmsListScreen.createMapDispatchToProps({
   find,

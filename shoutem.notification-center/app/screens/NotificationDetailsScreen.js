@@ -14,6 +14,7 @@ import {
   Title,
   View,
 } from '@shoutem/ui';
+import { unavailableInWeb } from 'shoutem.application';
 import { consumeNotification } from 'shoutem.firebase';
 import { I18n } from 'shoutem.i18n';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
@@ -54,7 +55,10 @@ export class NotificationDetailsScreen extends PureComponent {
 
   renderViewNotificationButton() {
     return (
-      <Button onPress={this.handleViewNotification} styleName="secondary">
+      <Button
+        onPress={unavailableInWeb(this.handleViewNotification)}
+        styleName="secondary"
+      >
         <Text>{I18n.t(ext('viewNotificationButton'))}</Text>
       </Button>
     );

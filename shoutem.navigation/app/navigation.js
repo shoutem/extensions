@@ -1,7 +1,7 @@
-import { Platform } from 'react-native';
-import { Decorators } from './services';
+import { isIos } from 'shoutem-core';
 import { withBackHandling } from './hoc';
+import { Decorators } from './services';
 
-if (Platform.OS !== 'ios') {
+if (!isIos) {
   Decorators.registerDecorator(withBackHandling);
 }

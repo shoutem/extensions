@@ -5,6 +5,7 @@ import {
 } from '@react-navigation/stack';
 import _ from 'lodash';
 import { appActions } from 'shoutem.application';
+import { isAndroid, isWeb } from 'shoutem-core';
 import { HeaderBackButton, HeaderTitle } from '../components';
 import TabBarItem from '../components/TabBarItem';
 import { navigationRef } from '../const';
@@ -16,6 +17,9 @@ function stackScreenOptions() {
     ...TransitionPresets.SlideFromRightIOS,
     headerLeft: props => <HeaderBackButton {...props} />,
     headerTitleAlign: 'center',
+    ...(isWeb && {
+      cardStyle: { flex: 1 },
+    }),
   };
 }
 
@@ -51,6 +55,9 @@ export function createChildNavigators(
           <ComponentStack.Navigator
             screenOptions={screenOptions}
             initialRouteName={firstScreenName}
+            // Disable optimization due to the issues with audio
+            // banner rendering on Android
+            detachInactiveScreens={!isAndroid}
           >
             {_.map(screens, screen => {
               const matchingShortcutScreen = _.find(shortcutScreens, {

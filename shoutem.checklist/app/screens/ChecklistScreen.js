@@ -84,10 +84,12 @@ export class ChecklistScreen extends CmsListScreen {
       [
         {
           text: I18n.t(ext('submitAlertCancel')),
+          style: 'cancel',
         },
         {
           onPress: this.submitProgress,
           text: I18n.t(ext('submitAlertAccept')),
+          type: 'confirm',
         },
       ],
       { cancelable: false },

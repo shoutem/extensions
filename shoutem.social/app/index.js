@@ -1,18 +1,18 @@
 // Reference for app/index.js can be found here:
 // http://shoutem.github.io/docs/extensions/reference/extension-exports
 
+import './navigation';
+import enTranslations from './translations/en.json';
 import * as extension from './extension.js';
 import reducer, {
-  collectionStatusMiddleware,
-  authChangeMiddleware,
-  selectors,
   actions,
+  authChangeMiddleware,
+  collectionStatusMiddleware,
+  selectors,
 } from './redux';
-import enTranslations from './translations/en.json';
-import './navigation';
 
-export const screens = extension.screens;
-export const themes = extension.themes;
+export const { screens } = extension;
+export const { themes } = extension;
 
 export const shoutem = {
   i18n: {
@@ -24,6 +24,6 @@ export const shoutem = {
 
 export const middleware = [collectionStatusMiddleware, authChangeMiddleware];
 
-export { appDidMount, appDidFinishLaunching } from './app';
+export { appDidFinishLaunching, appDidMount } from './app';
 
-export { reducer, selectors, actions };
+export { actions, reducer, selectors };

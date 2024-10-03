@@ -1,6 +1,6 @@
 {
   "name": "shoutem.salesforce",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "description": "Salesforce Marketing Cloud",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
@@ -8,6 +8,7 @@
   "dependencies": {
     "react-native-marketingcloudsdk": "7.4.0"
   },
+  "webDependencies": {},
   "peerDependencies": {
     "@shoutem/redux-io": "*",
     "@shoutem/theme": "*",

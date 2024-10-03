@@ -1,10 +1,10 @@
 {
   "name": "rubicon-theme",
-  "version": "6.1.2",
-  "platform": ">=13.0.7",
+  "version": "7.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "type": "system",
   "title": "Rubicon Theme",
-  "releaseNotes": "* Incorporated audio player color selection",
   "description": "Rubicon theme",
   "icon": "server/assets/add-rubicon-theme-image.png",
   "categories": [],

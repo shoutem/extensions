@@ -1,5 +1,5 @@
 import React, { createRef, PureComponent } from 'react';
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Linking } from 'react-native';
 import Pdf from 'react-native-pdf';
 import WebView from 'react-native-webview';
 import CookieManager from '@react-native-cookies/cookies';
@@ -7,7 +7,7 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { EmptyStateView, Keyboard, Screen, View } from '@shoutem/ui';
+import { EmptyStateView, Keyboard, Screen, Toast, View } from '@shoutem/ui';
 import { currentLocation } from 'shoutem.cms';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
@@ -16,12 +16,11 @@ import {
   requestPermissions,
   RESULTS,
 } from 'shoutem.permissions';
-import { AppContextProvider } from 'shoutem-core';
+import { AppContextProvider, isAndroid } from 'shoutem-core';
 import NavigationToolbar from '../components/NavigationToolbar';
 import { AUTH_EXTENSION, ext } from '../const';
 import { parseUrl } from '../services';
 
-const isAndroid = Platform.OS === 'android';
 const KEYBOARD_OFFSET = Keyboard.calculateKeyboardOffset();
 
 export class WebViewScreen extends PureComponent {
@@ -181,6 +180,9 @@ export class WebViewScreen extends PureComponent {
       sharedCookiesEnabled: trackingGranted,
       javaScriptCanOpenWindowsAutomatically: true,
       originWhitelist: ['*'],
+      // This was added because opening phone links would fail inside webview.
+      // See https://github.com/react-native-webview/react-native-webview/issues/1084#issuecomment-573434774.
+      onShouldStartLoadWithRequest: this.handleShouldStartLoadWithRequest,
       mixedContentMode: isAndroid ? 'compatibility' : 'never',
     };
 
@@ -193,6 +195,37 @@ export class WebViewScreen extends PureComponent {
     }
 
     return { ...defaultWebViewProps, ...webViewProps };
+  }
+
+  handleShouldStartLoadWithRequest(request) {
+    // block blobs
+    if (request.url.startsWith('blob')) {
+      Toast.showInfo({
+        title: I18n.t(ext('unsupportedLinkTitle')),
+        message: I18n.t(ext('unsupportedLinkMessage,')),
+      });
+      return false;
+    }
+
+    // schemas to open natively & then prevent webview from opening them too
+    if (
+      request.url.startsWith('tel:') ||
+      request.url.startsWith('mailto:') ||
+      request.url.startsWith('maps:') ||
+      request.url.startsWith('geo:') ||
+      request.url.startsWith('sms:')
+    ) {
+      Linking.openURL(request.url).catch(error => {
+        Toast.showError({
+          title: I18n.t(ext('unsupportedLinkTitle')),
+          message: error.message,
+        });
+      });
+      return false;
+    }
+
+    // let everything else to the webview
+    return true;
   }
 
   renderWebView(appContext) {

@@ -1,10 +1,10 @@
 {
   "name": "video",
   "title": "Videos",
-  "version": "7.2.1",
-  "platform": ">=12.1.0",
+  "version": "8.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "description": "Show a video gallery",
-  "releaseNotes": "* Addressed stability issue regarding deprecated AppState listener, no user facing changes",
   "icon": "server/assets/add-videos-image.png",
   "dependencies": [
     "shoutem.cms",

@@ -1,5 +1,5 @@
 import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { Alert, KeyboardAvoidingView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -18,18 +18,16 @@ import {
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { goBack, HeaderIconButton, navigateTo } from 'shoutem.navigation';
+import { isAndroid } from 'shoutem-core';
 import { FormInput } from '../components';
 import { ext } from '../const';
 import { actions, selectors } from '../redux';
 import { formatAutocompleteData, isPhoneValid } from '../services';
 import { countries } from '../services/countries';
 
-const KEYBOARD_AVOIDING_BEHAVIOUR =
-  Platform.OS === 'android' ? 'null' : 'padding';
-const KEYBOARD_OFFSET =
-  Platform.OS === 'android' ? Keyboard.calculateKeyboardOffset() : 0;
-const KEYBOARD_DISMISS_MODE =
-  Platform.OS === 'android' ? 'on-drag' : 'interactive';
+const KEYBOARD_AVOIDING_BEHAVIOUR = isAndroid ? 'null' : 'padding';
+const KEYBOARD_OFFSET = isAndroid ? Keyboard.calculateKeyboardOffset() : 0;
+const KEYBOARD_DISMISS_MODE = isAndroid ? 'on-drag' : 'interactive';
 
 function EditAddressScreen({ route: { params }, navigation, style }) {
   const { addressId = null, isDefaultAddress = false } = params;

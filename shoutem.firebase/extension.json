@@ -3,12 +3,12 @@
   "title": "Firebase",
   "type": "system",
   "description": "Extension for configuring the integration with Firebase for sending push notifications, storage, ... ",
-  "version": "5.1.2",
-  "platform": ">=14.1.2",
+  "version": "6.0.0",
   "nativeChanges": {
     "lastVersion": "5.1.0"
   },
-  "releaseNotes": "Release notes\n* iOS will now show show notifications when app is in foreground, as expected\n* Opening app via notification on iOS won't clear other app notifications any more\n\nDeveloper notes\n* Remote notifications are now handled by Firebase handlers. react-native-push-notifications now only handles opening local notification event",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "skipClone": false,
   "icon": "server/assets/add-firebase-image.png",
   "dependencies": [

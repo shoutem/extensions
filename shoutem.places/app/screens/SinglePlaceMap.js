@@ -3,9 +3,9 @@ import { Linking } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Icon, Screen, TouchableOpacity, View } from '@shoutem/ui';
+import { getMapUrl } from 'shoutem.cms';
 import { getRouteParams } from 'shoutem.navigation';
 import { MapList } from '../components';
-import { getMapUrl } from '../services/places';
 
 const openMapLink = place => {
   const location = _.get(place, 'location', {});

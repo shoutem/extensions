@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Platform, SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Modal from 'react-native-modal';
 import { GiphyFetch } from '@giphy/js-fetch-api';
@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Icon, TextInput, Title, Toast, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
+import { isAndroid } from 'shoutem-core';
 import { images } from '../assets';
 import { ext } from '../const';
 import GiphyImage from './GiphyImage';
@@ -29,23 +30,29 @@ const GiphyPicker = ({ apiKey, isVisible, onGifSelected, onClose, style }) => {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchTrendingGifs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const fetchSearchQueryGifs = useCallback(async () => {
+    try {
+      setLoading(true);
 
-  useEffect(() => {
-    if (!query) {
-      setQueriedGifs({
-        gifs: [],
-        nextPage: 0,
+      const response = await gf.search(query, {
+        offset: queriedGifs.nextPage * PAGE_SIZE,
+      });
+
+      setLoading(false);
+      setQueriedGifs(prevData => ({
+        gifs: [...prevData.gifs, ...response.data],
+        nextPage: prevData.nextPage + 1,
+      }));
+    } catch (e) {
+      setLoading(false);
+
+      Toast.showError({
+        title: I18n.t(ext('fetchGifsError')),
+        message: e.message,
       });
     }
-
-    if (query) {
-      fetchSearchQueryGifs();
-    }
-  }, [fetchSearchQueryGifs, query]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queriedGifs.nextPage, query]);
 
   const fetchTrendingGifs = useCallback(async () => {
     setLoading(true);
@@ -72,29 +79,23 @@ const GiphyPicker = ({ apiKey, isVisible, onGifSelected, onClose, style }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trendingGifs.nextPage]);
 
-  const fetchSearchQueryGifs = useCallback(async () => {
-    try {
-      setLoading(true);
+  useEffect(() => {
+    fetchTrendingGifs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-      const response = await gf.search(query, {
-        offset: queriedGifs.nextPage * PAGE_SIZE,
-      });
-
-      setLoading(false);
-      setQueriedGifs(prevData => ({
-        gifs: [...prevData.gifs, ...response.data],
-        nextPage: prevData.nextPage + 1,
-      }));
-    } catch (e) {
-      setLoading(false);
-
-      Toast.showError({
-        title: I18n.t(ext('fetchGifsError')),
-        message: e.message,
+  useEffect(() => {
+    if (!query) {
+      setQueriedGifs({
+        gifs: [],
+        nextPage: 0,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queriedGifs.nextPage, query]);
+
+    if (query) {
+      fetchSearchQueryGifs();
+    }
+  }, [fetchSearchQueryGifs, query]);
 
   const handleEndReached = _.debounce(() => {
     if (loading) {
@@ -146,9 +147,7 @@ const GiphyPicker = ({ apiKey, isVisible, onGifSelected, onClose, style }) => {
           onEndReachedThreshold={0.5}
           onEndReached={handleEndReached}
         />
-        <View
-          styleName={Platform.OS === 'android' ? 'md-gutter' : 'md-gutter-top'}
-        >
+        <View styleName={isAndroid ? 'md-gutter' : 'md-gutter-top'}>
           <FastImage
             source={images.GiphyAnimatedLogo}
             resizeMode="contain"

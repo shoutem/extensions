@@ -1,5 +1,6 @@
 import './navigation';
 import SubscriptionMissingScreen from './screens/SubscriptionMissingScreen';
+import UnavailableInWebScreen from './screens/UnavailableInWebScreen';
 import enTranslations from './translations/en.json';
 import {
   navigationInitializedMiddleware,
@@ -48,7 +49,11 @@ export {
   default as ListScreen,
   default as RemoteDataListScreen,
 } from './screens/RemoteDataListScreen';
-export { AppInitQueue } from './services';
+export {
+  AppInitQueue,
+  resolveUnavailableText,
+  unavailableInWeb,
+} from './services';
 export { getFirstShortcut } from './shared/getFirstShortcut';
 export { isConfigurationLoaded } from './shared/isConfigurationLoaded';
 export { isProduction } from './shared/isProduction';
@@ -70,4 +75,4 @@ export const shoutem = {
   },
 };
 
-export const screens = { SubscriptionMissingScreen };
+export const screens = { SubscriptionMissingScreen, UnavailableInWebScreen };

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.fonts",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "Shoutem fonts extension",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

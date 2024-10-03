@@ -1,6 +1,6 @@
 {
   "name": "shoutem.notification-center",
-  "version": "9.0.5",
+  "version": "10.0.0",
   "description": "Manage push notification settings within the app",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
@@ -10,6 +10,11 @@
     "react-native-select-dropdown": "3.4.0",
     "react-native-modal": "13.0.1",
     "xcode": "3.0.1"
+  },
+  "webDependencies": {
+    "react-native-localize": "2.2.2",
+    "react-native-select-dropdown": "3.4.0",
+    "react-native-modal": "13.0.1"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": "*",

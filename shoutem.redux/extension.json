@@ -1,10 +1,10 @@
 {
   "name": "redux",
-  "version": "4.1.3",
-  "platform": ">=7",
+  "version": "5.0.1",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "title": "Redux",
   "description": "Redux integration",
-  "releaseNotes": "* Bug fixes",
   "icon": "server/assets/add-redux-image.png",
   "dependencies": [],
   "type": "system",

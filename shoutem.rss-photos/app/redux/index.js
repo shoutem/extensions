@@ -1,3 +1,3 @@
 export { fetchPhotosFeed } from './actions';
-export { default as reducer, tag } from './reducer';
+export { default as reducer } from './reducer';
 export { getFeedUrl, getPhotosFeed } from './selectors';

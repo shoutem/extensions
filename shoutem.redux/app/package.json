@@ -1,7 +1,12 @@
 {
   "name": "shoutem.redux",
-  "version": "4.1.3",
+  "version": "5.0.1",
   "dependencies": {
+    "@shoutem/redux-composers": "0.1.4",
+    "@shoutem/redux-io": "3.0.1-beta.3",
+    "reselect": "4.1.5"
+  },
+  "webDependencies": {
     "@shoutem/redux-composers": "0.1.4",
     "@shoutem/redux-io": "3.0.1-beta.3",
     "reselect": "4.1.5"

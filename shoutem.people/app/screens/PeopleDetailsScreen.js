@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Linking } from 'react-native';
 import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -62,8 +63,8 @@ export class PeopleDetailsScreen extends PureComponent {
     const { person } = getRouteParams(this.props);
 
     return (
-      <View styleName="horizontal h-center">
-        <View styleName="horizontal wrap h-start">
+      <View styleName="flexible horizontal h-center">
+        <View styleName="flexible horizontal wrap h-start">
           {this.renderLinkButton(
             'web',
             I18n.t('shoutem.cms.websiteButton'),
@@ -147,5 +148,10 @@ export class PeopleDetailsScreen extends PureComponent {
     );
   }
 }
+
+PeopleDetailsScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  style: PropTypes.object.isRequired,
+};
 
 export default connectStyle(ext('PeopleDetailsScreen'))(PeopleDetailsScreen);

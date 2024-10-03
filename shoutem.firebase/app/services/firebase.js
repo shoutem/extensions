@@ -1,8 +1,8 @@
-import { Platform } from 'react-native';
 import PushNotifications, { Importance } from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import messaging from '@react-native-firebase/messaging';
 import _ from 'lodash';
+import { isAndroid } from 'shoutem-core';
 import { handleAPNSTokenReceived, handleFCMTokenReceived } from './handlers';
 
 function requestPermissions() {
@@ -36,15 +36,14 @@ function obtainAPNSToken() {
 }
 
 function clearBadge() {
-  if (Platform.OS === 'android') {
+  if (isAndroid) {
     return null;
   }
 
-  return PushNotificationIOS.getDeliveredNotifications(notifications => {
-    if (notifications.length === 0) {
-      PushNotificationIOS.setApplicationIconBadgeNumber(0);
-    }
-  });
+  // Apple natively expects -1 value for when we want to clear badge and NOT all
+  // app notifications too, in Notification Centre (lock screen).
+  // If we pass 0, all notifications would be clear too... That is not desired UX.
+  return PushNotificationIOS.setApplicationIconBadgeNumber(-1);
 }
 
 function selectGroups(groups) {

@@ -2,12 +2,12 @@
   "name": "agora",
   "title": "Agora video calls",
   "description": "Connect your users with real-time video conferencing!",
-  "version": "6.0.1",
-  "platform": ">=14.0.2",
+  "version": "7.0.0",
+  "platform": ">=15.0.0",
   "nativeChanges": {
     "latestVersion": "6.0.1"
   },
-  "releaseNotes": "No user facing changes.\n\nDeveloper notes\n* Added required Android foreground service permissions - camera & microphone",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "icon": "server/assets/add-videos-image.png",
   "i18n": {
     "locale": "en",

@@ -2,9 +2,9 @@
   "name": "onboarding",
   "title": "Onboarding",
   "description": "Shows a quick tour on the first app launch.",
-  "version": "5.1.1",
-  "platform": ">=14",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
+  "version": "6.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "icon": "server/assets/onboarding-icon.png",
   "dependencies": ["shoutem.application", "shoutem.i18n", "shoutem.navigation"],
   "i18n": {

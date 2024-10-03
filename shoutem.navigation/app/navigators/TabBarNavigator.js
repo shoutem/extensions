@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
+import { isAndroid } from 'shoutem-core';
 import { HeaderBackButton, TabBarItem } from '../components';
 import { ext } from '../const';
 import NoScreens from '../screens/NoScreens';
@@ -76,13 +77,17 @@ function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
     false,
     hiddenShortcuts,
     screens,
+    { headerShown: false },
   );
   const CustomNavigators = createCustomStackNavigators(
     TabBarStack,
     {
       screenOptions: customStackScreenOptions,
     },
-    { tabBarButton: props => <TabBarItem {...props} selected={false} /> },
+    {
+      tabBarButton: props => <TabBarItem {...props} selected={false} />,
+      headerShown: false,
+    },
   );
 
   if (_.size(TabComponents) < 1) {
@@ -91,14 +96,17 @@ function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
 
   return (
     <TabBarStack.Navigator
-      tabBarOptions={{
-        activeTintColor: style.activeTintColor,
-        inactiveTintColor: style.inactiveTintColor,
-        activeBackgroundColor: style.activeBackgroundColor,
-        inactiveBackgroundColor: style.inactiveBackgroundColor,
-        style: style.container,
+      screenOptions={{
+        tabBarActiveTintColor: style.activeTintColor,
+        tabBarInactiveTintColor: style.inactiveTintColor,
+        tabBarActiveBackgroundColor: style.activeBackgroundColor,
+        tabBarInactiveBackgroundColor: style.inactiveBackgroundColor,
+        tabBarStyle: style.container,
       }}
       tabBar={TabBarRenderer.getRenderer()}
+      // Disable optimization due to the issues with audio
+      // banner rendering on Android
+      detachInactiveScreens={!isAndroid}
     >
       {[..._.slice(TabComponents, 0, 5), ...CustomNavigators]}
     </TabBarStack.Navigator>

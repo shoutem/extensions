@@ -35,15 +35,12 @@ const defaultResolution = {
  *   rowStyle
  *   itemStyle - nested {item, icon, text} style
  * Implement "resolveScreenStyles" at child class to provide previously mentioned styles.
- * Required props
- *  executeShortcut {redux action}
  */
 export default class FolderBase extends PureComponent {
   static propTypes = {
     isRootScreen: PropTypes.bool,
     shortcut: PropTypes.object.isRequired,
     style: PropTypes.object,
-    executeShortcut: PropTypes.func,
     showText: PropTypes.bool,
     iconSize: PropTypes.string,
   };

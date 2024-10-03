@@ -1,10 +1,4 @@
 export { default as attachmentService } from './attachment';
-export {
-  openBlockActionSheet,
-  openBlockAndReportActionSheet,
-  openBlockOrReportActionSheet,
-  openUnblockActionSheet,
-} from './reporting';
 export { createResizedImage } from './resizeImage';
 export { shoutemApi } from './shoutemApi';
 export {

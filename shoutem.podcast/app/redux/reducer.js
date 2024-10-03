@@ -1,19 +1,23 @@
 import _ from 'lodash';
 import { combineReducers } from 'redux';
 import { REHYDRATE } from 'redux-persist/constants';
-import { storage } from '@shoutem/redux-io';
+import { mapReducers } from '@shoutem/redux-composers';
+import { collection, one, storage } from '@shoutem/redux-io';
+import { getAllShortcuts } from 'shoutem.application';
 import { rssFeed } from 'shoutem.rss';
 import {
   DOWNLOADED_EPISODE_ADDED,
   DOWNLOADED_EPISODE_REMOVED,
   DOWNLOADED_EPISODE_UPDATED,
+  EPISODE_TAG,
   ext,
+  FAVORITED_EPISODES_TAG,
   RSS_PODCAST_SCHEMA,
   SET_DOWNLOAD_IN_PROGRESS,
   UPDATE_LAST_PLAYED,
 } from '../const';
 import { getFileNameFromPath } from '../services';
-import { FAVORITE_EPISODE, UNFAVORITE_EPISODE } from './actions';
+import { REMOVE_FAVORITE_EPISODE, SAVE_FAVORITE_EPISODE } from './actions';
 
 const downloadedEpisodes = (state = [], action) => {
   if (action.type === REHYDRATE) {
@@ -63,29 +67,108 @@ const downloadedEpisodes = (state = [], action) => {
   return state;
 };
 
+// Handle backwards compatibility - before reducer was an array of episodes,
+// and now it'll be object with shortcutId as key & episode.uuid array as value.
+const remapReducerForBackwardsCompatibiltiy = (state, favoritedEpisodes) => {
+  try {
+    // We get all shortcuts, to be able to associate favorited episode to its shortcut.
+    // We do it by comparing episode feedUrl and shortcut settings feedUrl.
+    // Then, we remap reducer - we're now using object with shortcutId as key & episode uuid array as value.
+    const shortcuts = getAllShortcuts(state);
+
+    return _.reduce(
+      favoritedEpisodes,
+      (result = {}, episode) => {
+        const shortcutId = _.find(
+          shortcuts,
+          shortcut => shortcut.settings?.feedUrl === episode.feedUrl,
+        )?.id;
+
+        if (!shortcutId || !episode) {
+          return result;
+        }
+
+        return {
+          ...result,
+          [shortcutId]: [...(result[shortcutId] ?? []), episode.uuid],
+        };
+      },
+      {},
+    );
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log('Failed to remap reducer, ', e);
+
+    // Return old reducer in case anything has failed while remapping reducer.
+    return [..._.get(state, [ext(), 'favoritedEpisodes'], [])];
+  }
+};
+
+// State shape example:
+// {
+//   'shortcutId3094530iojfdojfi3u03': [uuid1, uuid2, uuid3],
+//   'shortcutId398z78ifduh93': [uuid1, uuid2, uuid3]
+// }
 const favoritedEpisodes = (state = [], action) => {
   if (action.type === REHYDRATE) {
-    return [..._.get(action, ['payload', ext(), 'favoritedEpisodes'], [])];
+    const favoritedEpisodes = _.get(
+      action,
+      ['payload', ext(), 'favoritedEpisodes'],
+      {},
+    );
+
+    // Handle backwards compatibility for when we were saving array of episode objects
+    // into favoriteEpisodes reducer. We're remapping these objects to be saved in new state shape.
+    if (_.isArray(favoritedEpisodes)) {
+      return remapReducerForBackwardsCompatibiltiy(
+        action.payload,
+        favoritedEpisodes,
+      );
+    }
+
+    // Current favorites state is implemented, all good.
+    return favoritedEpisodes;
   }
 
-  if (action.type === FAVORITE_EPISODE) {
+  if (action.type === SAVE_FAVORITE_EPISODE) {
     const {
-      payload: { episode },
+      payload: { uuid, shortcutId },
     } = action;
 
-    const alreadyFavorited = !!state.find(
-      favoritedEpisode => favoritedEpisode.id === episode.id,
+    const alreadyFavorited = _.some(
+      state[shortcutId],
+      favoritedUuid => favoritedUuid === uuid,
     );
 
     if (alreadyFavorited) {
       return state;
     }
 
-    return [...state, episode];
+    return {
+      ...state,
+      [shortcutId]: [...(state[shortcutId] ?? []), uuid],
+    };
   }
 
-  if (action.type === UNFAVORITE_EPISODE) {
-    const newState = state.filter(episode => episode.id !== action.payload.id);
+  if (action.type === REMOVE_FAVORITE_EPISODE) {
+    const {
+      payload: { uuid },
+    } = action;
+
+    // Go through all shortcut favorite reducers and remove given uuid when found.
+    const newState = _.reduce(
+      state,
+      (result, shortcutFavorites, shortcutId) => {
+        return {
+          ...result,
+          [shortcutId]: _.filter(
+            shortcutFavorites,
+            favoriteUuid => favoriteUuid !== uuid,
+          ),
+        };
+      },
+      {},
+    );
 
     return newState;
   }
@@ -110,10 +193,18 @@ const lastPlayed = (state = {}, action) => {
   return state;
 };
 
+function getShortcutId(action) {
+  return _.get(action, ['meta', 'options', 'shortcutId']);
+}
+
 export default combineReducers({
   downloadedEpisodes,
   episodes: storage(RSS_PODCAST_SCHEMA),
-  favoritedEpisodes,
   latestEpisodes: rssFeed(RSS_PODCAST_SCHEMA, 'latestEpisodes'),
+  favoritedEpisodes,
+  favoritedEpisodesCollection: mapReducers(getShortcutId, () =>
+    collection(RSS_PODCAST_SCHEMA, FAVORITED_EPISODES_TAG),
+  ),
+  episode: one(RSS_PODCAST_SCHEMA, EPISODE_TAG),
   lastPlayed,
 });

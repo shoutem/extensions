@@ -1,11 +1,11 @@
 {
   "name": "books",
-  "version": "6.2.0",
-  "platform": ">=12.1.0",
+  "version": "7.0.0",
   "title": "Books",
   "icon": "./server/assets/images/add-books-image.png",
   "description": "Show books and authors",
-  "releaseNotes": "No user facing changes\n* Support for more accurate analytics when opening item details screen.",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "categories": ["content"],
   "i18n": {
     "locale": "en",

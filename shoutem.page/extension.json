@@ -2,9 +2,9 @@
   "name": "page",
   "title": "Page",
   "description": "Show a single screen with info and child items",
-  "version": "5.1.2",
-  "platform": ">=14.0.2",
-  "releaseNotes": "User facing changes\n*Page screen now updates it's title and content as expected, when user changes the app language",
+  "version": "6.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "icon": "server/assets/add-page-image.png",
   "dependencies": [
     "shoutem.application",

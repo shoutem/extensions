@@ -158,6 +158,7 @@ export class MessageListScreen extends PureComponent {
       ])
         .then(this.handleSearchLoaded)
         .catch(error => {
+          // eslint-disable-next-line no-console
           console.warn('Error while trying to perform search', error);
           this.setState({ membersLoading: false });
         });

@@ -1,5 +1,10 @@
 import { changeColorAlpha } from '@shoutem/theme';
-import { createScopedResolver, resolveFontWeight } from '@shoutem/ui';
+import {
+  createScopedResolver,
+  resolveFontWeight,
+  responsiveHeight,
+  responsiveWidth,
+} from '@shoutem/ui';
 import { ext } from '../const';
 
 const resolveVariable = createScopedResolver(ext());
@@ -12,6 +17,22 @@ export default () => ({
       height: 44,
       margin: 10,
       alignSelf: 'center',
+    },
+  },
+
+  'shoutem.auth.ProfileImage': {
+    imageContainer: {
+      width: responsiveWidth(145),
+      height: responsiveWidth(145),
+      borderRadius: responsiveWidth(72.5),
+      borderWidth: 0,
+    },
+    image: {
+      borderRadius: responsiveWidth(72.5),
+      borderWidth: 0,
+    },
+    noImageIcon: {
+      color: '#ffffff',
     },
   },
 
@@ -218,6 +239,15 @@ export default () => ({
         ...resolveVariable('buttonText'),
         margin: 0,
       },
+    },
+    emailContainerMargin: {
+      paddingBottom: responsiveHeight(50),
+    },
+    usernameContainerMargin: {
+      paddingBottom: responsiveHeight(80),
+    },
+    passwordContainerMargin: {
+      paddingBottom: responsiveHeight(50),
     },
   },
 
