@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import _ from 'lodash';
 import rio from '@shoutem/redux-io';
 import {
@@ -8,7 +7,13 @@ import {
 } from 'shoutem.application';
 import { Firebase } from 'shoutem.firebase';
 import { withAlarmPermission } from 'shoutem.permissions';
-import { before, priorities, setPriority } from 'shoutem-core';
+import {
+  before,
+  isAndroid,
+  isIos,
+  priorities,
+  setPriority,
+} from 'shoutem-core';
 import {
   ext,
   JOURNEY_NOTIFICATIONS_CHANNEL_ID,
@@ -69,7 +74,7 @@ export const appDidMount = setPriority(async app => {
   const chimeSoundName = extensionSettings.chime?.fileName;
   notifications.setChimeSoundName(chimeSoundName);
 
-  if (Platform.OS === 'android') {
+  if (isAndroid) {
     const dailyNotificationsChannelConfig = {
       channelId: SCHEDULED_NOTIFICATIONS_CHANNEL_ID, // (required, Android only)
       channelName: `${getAppId()}_daily_notifications`, // (required, Android only)
@@ -97,7 +102,7 @@ export const appDidMount = setPriority(async app => {
   if (extensionSettings.reminder?.enabled) {
     const { reminder } = extensionSettings;
 
-    if (Platform.OS === 'android') {
+    if (isAndroid) {
       const remindersChannelConfig = {
         channelId: REMINDER_CHANNEL_ID, // (required, Android only)
         channelName: `${getAppId()}_reminders`, // (required, Android only)
@@ -128,7 +133,7 @@ export const appDidMount = setPriority(async app => {
       );
     }
 
-    if (Platform.OS === 'ios') {
+    if (isIos) {
       // After app owner enables reminder and republishes the app, reminder will be
       // automatically scheduled after user runs the app for the first time after update
       // We do this, because user's reminder setting is enabled by default, if app owner

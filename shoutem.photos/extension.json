@@ -1,10 +1,10 @@
 {
   "name": "photos",
-  "version": "5.1.0",
-  "platform": ">=9.1.0",
+  "version": "6.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "title": "Photos",
   "description": "Show a photo gallery",
-  "releaseNotes": "* Introduced layout settings page for customizing layout specific UI\n* Added option to display category picker as horizontal list",
   "icon": "server/assets/add-photos-image.png",
   "dependencies": ["shoutem.cms", "shoutem.layouts", "shoutem.navigation"],
   "categories": ["media"],

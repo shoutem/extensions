@@ -1,7 +1,7 @@
-import { Platform } from 'react-native';
 import _ from 'lodash';
 import { getExtensionSettings } from 'shoutem.application/redux';
 import { isPreviewApp } from 'shoutem.preview';
+import { isIos } from 'shoutem-core';
 import { ext } from '../const';
 
 function getModuleState(state) {
@@ -23,13 +23,15 @@ export function getActiveProducts(state) {
 export function hasActiveProduct(productId, state) {
   const activeProducts = getActiveProducts(state);
 
-  return !!_.find(activeProducts, { sku: productId });
+  return !!_.find(activeProducts, product => 
+    product.sku === productId || product?.groupName === productId
+  );
 }
 
 export function getGlobalSubscriptionProductId(state) {
   const extensionSettings = getExtensionSettings(state, ext());
 
-  return Platform.OS === 'ios'
+  return isIos
     ? _.get(extensionSettings, 'iOSProductId')
     : _.get(extensionSettings, 'androidProductId');
 }
@@ -50,7 +52,9 @@ export function isSubscriptionRequired(state) {
 }
 
 export function getAvailableProduct(productId, state) {
-  return _.find(getAvailableProducts(state), { sku: productId });
+  return _.filter(getAvailableProducts(state), product => 
+    product.sku === productId || product?.groupName === productId
+  );
 }
 
 export function getPrivacyPolicyLink(state) {

@@ -1,8 +1,8 @@
-import { Platform } from 'react-native';
 import PushNotifications from 'react-native-push-notification';
 import _ from 'lodash';
 import moment from 'moment';
 import { Firebase } from 'shoutem.firebase';
+import { isIos, isWeb } from 'shoutem-core';
 import {
   REMINDER_CHANNEL_ID,
   REPEAT_CONFIG,
@@ -41,7 +41,7 @@ function scheduleLocalNotifications(
     userInfo: additionalConfig,
   };
 
-  if (Platform.OS === 'ios') {
+  if (isIos) {
     return Firebase.scheduleLocalNotification(defaultConfig);
   }
 
@@ -83,7 +83,7 @@ function cancelLocalNotifications(triggerId) {
 }
 
 function scheduleRepeatingNotifications(message, date) {
-  if (Platform.OS === 'ios') {
+  if (isIos) {
     const config = {
       id: _.uniqueId(), // has to be stringified integer
       fireDate: date,
@@ -115,6 +115,10 @@ function scheduleRepeatingNotifications(message, date) {
 }
 
 function cancelReminderNotifications() {
+  if (isWeb) {
+    return Promise.resolve();
+  }
+
   return new Promise(resolve => {
     PushNotifications.getScheduledLocalNotifications(
       scheduledLocalNotifications => {

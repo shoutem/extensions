@@ -1,8 +1,8 @@
 import { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import { ColorPropType, Image, InteractionManager } from 'react-native';
 import autoBindReact from 'auto-bind/react';
-import { Image, InteractionManager, ColorPropType } from 'react-native';
-import _ from 'lodash';
+import _, { property } from 'lodash';
+import PropTypes from 'prop-types';
 
 const DEFAULT_ZOOM_SETTINGS = {
   latitudeDelta: 0.01,
@@ -229,7 +229,9 @@ const Annotations = PropTypes.arrayOf(
     /**
      * Custom pin image. This must be a static image resource inside the app.
      */
-    image: Image.propTypes.source,
+    image: PropTypes.shape({
+      uri: PropTypes.string,
+    }),
 
     /**
      * Custom pin view. If set, this replaces the pin or custom pin image.
@@ -244,8 +246,12 @@ const Annotations = PropTypes.arrayOf(
 );
 
 MapViewBase.propTypes = {
-  markerImage: Image.propTypes.source,
-  selectedMarkerImage: Image.propTypes.source,
+  markerImage: PropTypes.shape({
+    uri: PropTypes.string,
+  }),
+  selectedMarkerImage: PropTypes.shape({
+    uri: PropTypes.string,
+  }),
   selectedMarker: Region,
   style: PropTypes.object,
   initialRegion: Region,

@@ -2,9 +2,9 @@
   "name": "wordpress",
   "title": "WordPress",
   "description": "Show news articles from WordPress blog.",
-  "version": "5.1.2",
-  "platform": ">=14",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
+  "version": "6.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "icon": "server/assets/extension-icon.png",
   "dependencies": [
     "shoutem.application",

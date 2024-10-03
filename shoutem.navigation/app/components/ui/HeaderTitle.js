@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Animated } from 'react-native';
+import { Animated, Text as RNText } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Text } from '@shoutem/ui';
 import { I18n, LocalizationContext } from 'shoutem.i18n';
 
-const AnimatedText = Animated.createAnimatedComponent(Text);
+const AnimatedText = Animated.createAnimatedComponent(RNText);
 
-class HeaderTitle extends PureComponent {
+export default class HeaderTitle extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -61,5 +60,3 @@ HeaderTitle.propTypes = {
 HeaderTitle.defaultProps = {
   title: '',
 };
-
-export default Animated.createAnimatedComponent(HeaderTitle);

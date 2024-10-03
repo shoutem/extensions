@@ -6,12 +6,10 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
-  Button,
   Image,
   LinearGradient,
   Screen,
   SimpleHtml,
-  Spinner,
   Text,
   View,
 } from '@shoutem/ui';
@@ -19,13 +17,12 @@ import { I18n } from 'shoutem.i18n';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import { isPreviewApp } from 'shoutem.preview';
 import { openURL } from 'shoutem.web-view';
-import { TermsAndPolicy } from '../components';
+import { SubscribeButtons, TermsAndPolicy } from '../components';
 import { ext } from '../const';
 import { actions, selectors } from '../redux';
 import {
   formatPurchaseError,
   formatRestoreError,
-  formatSubscribeMessage,
   formatTrialDuration,
 } from '../services';
 
@@ -86,8 +83,8 @@ class SubscriptionsScreen extends PureComponent {
     onSubscriptionObtained();
   }
 
-  handleBuyPress() {
-    const { productId, buyProduct } = this.props;
+  handleBuyPress(sku) {
+    const { buyProduct } = this.props;
 
     if (isPreviewApp) {
       this.handlePreviewSubscribePress();
@@ -96,7 +93,7 @@ class SubscriptionsScreen extends PureComponent {
 
     this.setLoadingState(true);
 
-    buyProduct(productId)
+    buyProduct(sku)
       .then(() => this.setLoadingState(false))
       .catch(err => {
         this.setLoadingState(false);
@@ -194,35 +191,13 @@ class SubscriptionsScreen extends PureComponent {
             style={style.scrollGradient}
           />
         </View>
-        <View style={style.buttonContainer}>
-          <Button
-            disabled={loading}
-            onPress={this.handleBuyPress}
-            style={style.button}
-          >
-            {!loading && (
-              <Text style={style.buttonText}>
-                {formatSubscribeMessage(subscriptionProduct)}
-              </Text>
-            )}
-            {loading && <Spinner style={style.spinner} />}
-          </Button>
-          {trialDuration && (
-            <Text style={style.trialText}>{trialDuration}</Text>
-          )}
-          <Button
-            disabled={loading}
-            onPress={this.handleRestorePress}
-            style={[style.button, style.buttonSecondary]}
-          >
-            {!loading && (
-              <Text style={[style.buttonText, style.buttonTextSecondary]}>
-                {I18n.t(ext('restoreButtonTitle'))}
-              </Text>
-            )}
-            {loading && <Spinner style={style.spinnerSecondary} />}
-          </Button>
-        </View>
+        <SubscribeButtons
+          products={subscriptionProduct}
+          onSubscribePress={this.handleBuyPress}
+          onRestorePress={this.handleRestorePress}
+          loading={loading}
+          trialDuration={trialDuration}
+        />
         <TermsAndPolicy
           onPrivacyPolicyPress={this.handlePrivacyPolicyPress}
           onTermsPress={this.handleTermsPress}
@@ -239,11 +214,10 @@ SubscriptionsScreen.propTypes = {
   hasActiveProduct: PropTypes.bool.isRequired,
   navigation: PropTypes.object.isRequired,
   privacyPolicyUrl: PropTypes.string.isRequired,
-  productId: PropTypes.string.isRequired,
   restorePurchases: PropTypes.func.isRequired,
   setMockedSubscriptionStatus: PropTypes.func.isRequired,
   subscriptionMetadata: PropTypes.object.isRequired,
-  subscriptionProduct: PropTypes.object.isRequired,
+  subscriptionProduct: PropTypes.array.isRequired,
   termsOfServiceUrl: PropTypes.string.isRequired,
   style: PropTypes.object,
 };
@@ -259,7 +233,6 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     hasActiveProduct: selectors.hasActiveProduct(productId, state),
-    productId,
     subscriptionProduct: selectors.getAvailableProduct(productId, state),
     privacyPolicyUrl: selectors.getPrivacyPolicyLink(state),
     termsOfServiceUrl: selectors.getTermsOfServiceLink(state),

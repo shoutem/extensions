@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { View } from '@shoutem/ui';
+import { unavailableInWeb } from 'shoutem.application';
 import { PlaybackControl } from '../components/controls';
 import { ext } from '../const';
 import { useTrackPlayer, useTrackState } from '../hooks';
@@ -28,7 +29,7 @@ export const LiveStreamAudioControls = ({
   return (
     <View styleName="justify-center items-center md-gutter-horizontal">
       <PlaybackControl
-        onPress={onPlaybackButtonPress}
+        onPress={unavailableInWeb(onPlaybackButtonPress)}
         isLoadingOrBuffering={isLoadingOrBuffering}
         iconName={isActiveAndPlaying ? 'pause' : 'play'}
         style={style.playbackButton}

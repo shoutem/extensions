@@ -71,6 +71,11 @@ const TextInput = React.forwardRef((props, ref) => {
     ],
   );
 
+  const resolvedContainerStyle = useMemo(
+    () => [style.input, ...resolvedTextInputStyle],
+    [resolvedTextInputStyle, style.input],
+  );
+
   function resolvedActionButton() {
     if (_.isFunction(renderActionButton)) {
       return renderActionButton();
@@ -83,7 +88,7 @@ const TextInput = React.forwardRef((props, ref) => {
     <View style={style.container}>
       <View style={style.textInputContainer}>
         {label && <Text style={style.label}>{label}</Text>}
-        <View style={[style.input, resolvedTextInputStyle]}>
+        <View style={resolvedContainerStyle}>
           <RNTextInput
             ref={ref}
             allowFontScaling={false}

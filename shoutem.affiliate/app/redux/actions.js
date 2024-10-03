@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { create, find } from '@shoutem/redux-io';
 import { getExtensionSettings } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
@@ -121,10 +122,9 @@ export const refreshCard = () => {
     const { legacyId: userId } = getUser(state);
 
     const settings = getExtensionSettings(state, ext());
-    const {
-      program: { id: programId },
-    } = settings;
+    const { program } = settings;
 
+    const programId = _.get(program, 'id');
     const params = `user:${userId}`;
     const fetchEndpoint = createCardEndpoint(programId, params);
     const createEndpoint = createCardEndpoint(programId);
@@ -145,9 +145,9 @@ export const refreshCardState = () => {
 
     const state = getState();
     const settings = getExtensionSettings(state, ext());
-    const {
-      program: { id: programId },
-    } = settings;
+    const { program } = settings;
+
+    const programId = _.get(program, 'id');
 
     try {
       await dispatch(refreshCard());

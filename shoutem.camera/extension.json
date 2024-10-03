@@ -1,11 +1,11 @@
 {
   "name": "camera",
-  "version": "5.1.0",
-  "platform": ">=6",
+  "version": "6.0.0",
   "title": "Camera",
   "type": "system",
   "description": "Shoutem camera extension",
-  "releaseNotes": "* Updated react-native-image-picker library, no user facing changes",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "dependencies": ["shoutem.i18n", "shoutem.navigation", "shoutem.theme"],
   "icon": "server/assets/add-camera-image.png",
   "screens": [

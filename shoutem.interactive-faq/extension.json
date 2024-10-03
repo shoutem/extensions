@@ -2,9 +2,9 @@
   "name": "interactive-faq",
   "title": "Interactive FAQ",
   "description": "Make your FAQ screen fun and more user-friendly with this chatbot-like experience",
-  "version": "7.1.1",
-  "platform": ">=14",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
+  "version": "8.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "icon": "./server/assets/faq.png",
   "dependencies": [
     "shoutem.cms",

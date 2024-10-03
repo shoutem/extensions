@@ -1,20 +1,21 @@
 import React, { PureComponent } from 'react';
+import { StatusBar } from 'react-native';
 import autoBind from 'auto-bind';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { StatusBar, Platform } from 'react-native';
+import { connectStyle } from '@shoutem/theme';
+import {
+  ImageGallery,
+  ImageGalleryOverlay,
+  Screen,
+  ShareButton,
+} from '@shoutem/ui';
 import {
   composeNavigationStyles,
   getRouteParams,
   HeaderCloseButton,
 } from 'shoutem.navigation';
-import { connectStyle } from '@shoutem/theme';
-import {
-  ImageGallery,
-  Screen,
-  ImageGalleryOverlay,
-  ShareButton,
-} from '@shoutem/ui';
+import { isIos } from 'shoutem-core';
 import { ext } from '../const';
 
 function calculateStartingIndex(photo, photos) {
@@ -119,7 +120,7 @@ class PhotoDetailsScreen extends PureComponent {
   handleImageGalleryModeChange(newMode) {
     const { mode } = this.state;
 
-    if (Platform.OS === 'ios') {
+    if (isIos) {
       const isHidden = newMode === ImageGallery.IMAGE_PREVIEW_MODE;
       StatusBar.setHidden(isHidden, 'fade');
     }

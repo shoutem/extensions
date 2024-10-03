@@ -4,23 +4,49 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import { isBusy, isInitialized, isValid, next } from '@shoutem/redux-io';
+import {
+  isBusy,
+  isError,
+  isInitialized,
+  isValid,
+  next,
+} from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { ListView, Spinner, View } from '@shoutem/ui';
-import { RemoteDataListScreen } from 'shoutem.application';
+import {
+  ActionSheet,
+  EmptyStateView,
+  ListView,
+  Spinner,
+  View,
+} from '@shoutem/ui';
+import {
+  ext as applicationExt,
+  RemoteDataListScreen,
+} from 'shoutem.application';
 import { authenticate, getUser } from 'shoutem.auth/redux';
+import { I18n } from 'shoutem.i18n';
 import { getRouteParams, navigateTo } from 'shoutem.navigation';
 import MemberView from '../components/MemberView';
 import { user as userShape } from '../components/shapes';
 import { ext } from '../const';
 import { loadBlockedUsers, selectors, unblockUser } from '../redux';
-import { openProfileForLegacyUser, openUnblockActionSheet } from '../services';
+import { openProfileForLegacyUser } from '../services';
 
 export class BlockedUsers extends RemoteDataListScreen {
   constructor(props) {
     super(props);
 
     autoBindReact(this);
+
+    this.state = {
+      actionSheetOpen: false,
+      cancelOptions: [
+        {
+          title: I18n.t(ext('unblockOptionCancel')),
+          onPress: this.handleActionSheetDismiss,
+        },
+      ],
+    };
   }
 
   fetchData() {
@@ -47,6 +73,10 @@ export class BlockedUsers extends RemoteDataListScreen {
     return { title };
   }
 
+  handleActionSheetDismiss() {
+    this.setState({ actionSheetOpen: false });
+  }
+
   handleUnblockPress(user) {
     const {
       authenticate,
@@ -57,11 +87,20 @@ export class BlockedUsers extends RemoteDataListScreen {
     const userId = _.get(user, 'legacyId');
 
     const handleUnblockUser = () =>
-      authenticate(() =>
-        unblockUser(userId, currentUserId).then(loadBlockedUsers),
-      );
+      authenticate(() => {
+        unblockUser(userId, currentUserId).then(loadBlockedUsers);
+        this.handleActionSheetDismiss();
+      });
 
-    return openUnblockActionSheet(handleUnblockUser);
+    this.setState({
+      confirmOptions: [
+        {
+          title: I18n.t(ext('unblockOption')),
+          onPress: handleUnblockUser,
+        },
+      ],
+      actionSheetOpen: true,
+    });
   }
 
   handleMemberItemPress(user) {
@@ -92,8 +131,25 @@ export class BlockedUsers extends RemoteDataListScreen {
     );
   }
 
+  renderPlaceholderView(data) {
+    const { style = {} } = this.props;
+
+    const emptyStateViewProps = {
+      icon: 'error',
+      message: isError(data)
+        ? I18n.t(applicationExt('unexpectedErrorMessage'))
+        : I18n.t(ext('emptyBlockedUsersListMessage')),
+      onRetry: this.fetchData,
+      retryButtonTitle: I18n.t(ext('reloadButton')),
+      style: style.emptyState,
+    };
+
+    return <EmptyStateView {...emptyStateViewProps} />;
+  }
+
   renderData(data) {
     const { style } = this.props;
+    const { actionSheetOpen, cancelOptions, confirmOptions } = this.state;
 
     if (!isValid(data) || (isBusy(data) && !isInitialized(data))) {
       return (
@@ -108,16 +164,24 @@ export class BlockedUsers extends RemoteDataListScreen {
     }
 
     return (
-      <ListView
-        data={data}
-        getSectionId={this.getSectionId}
-        initialListSize={1}
-        loading={isBusy(data)}
-        onLoadMore={this.loadMore}
-        onRefresh={this.fetchData}
-        renderRow={this.renderRow}
-        style={style.list}
-      />
+      <>
+        <ListView
+          data={data}
+          getSectionId={this.getSectionId}
+          initialListSize={1}
+          loading={isBusy(data)}
+          onLoadMore={this.loadMore}
+          onRefresh={this.fetchData}
+          renderRow={this.renderRow}
+          style={style.list}
+        />
+        <ActionSheet
+          active={actionSheetOpen}
+          cancelOptions={cancelOptions}
+          confirmOptions={confirmOptions}
+          onDismiss={this.handleActionSheetDismiss}
+        />
+      </>
     );
   }
 }

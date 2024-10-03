@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Keyboard, LayoutAnimation, Platform, TextInput } from 'react-native';
+import { Keyboard, LayoutAnimation, TextInput } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Image, Text, TouchableOpacity, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
+import { isIos } from 'shoutem-core';
 import { images } from '../assets';
 import { ext } from '../const';
 import ProgressBar from './ProgressBar';
@@ -78,7 +79,7 @@ class ChatInputBox extends PureComponent {
   handleFocus() {
     const { message } = this.state;
 
-    if (Platform.OS === 'ios') {
+    if (isIos) {
       return;
     }
 

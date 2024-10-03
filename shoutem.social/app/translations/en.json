@@ -67,7 +67,9 @@
       "postStatusError": "Failed to post a status. Please try again later.",
       "giphyPickerTitle": "Select GIF",
       "giphyPickerInputPlaceholder": "Search GIPHY",
-      "fetchGifsError": "There was a problem loading GIFs"
+      "fetchGifsError": "There was a problem loading GIFs",
+      "emptyBlockedUsersListMessage": "You haven't blocked anyone yet.",
+      "reloadButton": "Reload"
     }
   }
 }

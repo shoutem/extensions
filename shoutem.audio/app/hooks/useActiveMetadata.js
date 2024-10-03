@@ -1,8 +1,8 @@
-import { Platform } from 'react-native';
 import {
   useActiveTrack,
   useNowPlayingMetadata,
 } from 'react-native-track-player';
+import { isIos } from 'shoutem-core';
 
 /**
  * Resolve metadata for active track or stream.
@@ -13,12 +13,11 @@ export const useActiveMetadata = () => {
 
   // We're note manually updating track metdata on Android, because lock screen artwork gets
   // messed up.
+  // Also, web uses active track instead of now playing metadata, because it doesn't
   // So, we're using metadata info from active track instead.
   // Everything works as expected on iOS and for live streams.
   const activeMetadata =
-    Platform.OS === 'android' && !activeTrack?.isLiveStream
-      ? activeTrack
-      : nowPlayingMetadata;
+    isIos || activeTrack?.isLiveStream ? nowPlayingMetadata : activeTrack;
 
   return { activeTrack, activeMetadata };
 };

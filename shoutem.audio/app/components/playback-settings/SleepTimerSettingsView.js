@@ -5,7 +5,9 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Caption, Text, TouchableOpacity } from '@shoutem/ui';
+import { unavailableInWeb } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
+import { isWeb } from 'shoutem-core';
 import { ext } from '../../const';
 import { getSleepTimer, setSleepTimer } from '../../redux';
 import RadioOption from './RadioOption';
@@ -17,7 +19,7 @@ const TIMER_OPTIONS = [5, 10, 15, 30, 45, 60];
  * options and turn off the timer if set. It displays countdown information when the
  * timer is active and provides options to set or disable the timer.
  */
-const SleepTimerSettingsView = ({ onClose, style }) => {
+const SleepTimerSettingsView = ({ onClose, onAudioModalClose, style }) => {
   const dispatch = useDispatch();
 
   const sleepTimer = useSelector(getSleepTimer) ?? {};
@@ -61,6 +63,13 @@ const SleepTimerSettingsView = ({ onClose, style }) => {
     );
 
     onClose();
+
+    // In web, we want to close audio modal completely, so that user can see
+    // unavailable in web Toast. Otherwise, toast is hidden behind audio modal.
+    if (isWeb) {
+      onAudioModalClose();
+      unavailableInWeb();
+    }
   };
 
   const handleTurnOffTimerPress = () => {
@@ -107,11 +116,8 @@ const SleepTimerSettingsView = ({ onClose, style }) => {
 
 SleepTimerSettingsView.propTypes = {
   style: PropTypes.object.isRequired,
-  onClose: PropTypes.func,
-};
-
-SleepTimerSettingsView.defaultProps = {
-  onClose: undefined,
+  onAudioModalClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default connectStyle(ext('SleepTimerSettingsView'))(

@@ -1,13 +1,17 @@
 {
   "name": "shoutem.podcast",
-  "version": "9.0.1",
+  "version": "11.0.0",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
     "@sindresorhus/slugify": "0.9.1",
     "moment": "2.24.0",
-    "react-native-action-sheet": "2.2.0",
+    "react-native-blob-util": "0.19.9"
+  },
+  "webDependencies": {
+    "@sindresorhus/slugify": "0.9.1",
+    "moment": "2.24.0",
     "react-native-blob-util": "0.19.9"
   },
   "peerDepencies": {
@@ -17,7 +21,6 @@
     "tinycolor2": "*"
   },
   "nativeDependencies": [
-    "react-native-action-sheet",
     "react-native-blob-util"
   ]
 }

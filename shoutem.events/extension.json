@@ -2,9 +2,9 @@
   "name": "events",
   "title": "Events",
   "description": "Show items with location and time",
-  "version": "5.4.1",
-  "platform": ">=14.1.1",
-  "releaseNotes": "Release notes\n* Adjusted Twitter labels, to X (Twitter)",
+  "version": "6.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "nativeChanges": {
     "lastVersion": "5.0.1"
   },

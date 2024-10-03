@@ -14,24 +14,13 @@ import {
   View,
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
+import { isWeb } from 'shoutem-core';
 import { ext } from '../const';
 import { errorMessages } from '../errorMessages';
 import ConsentCheckbox from './ConsentCheckbox';
 import PasswordTextInput from './PasswordTextInput';
 
 class RegisterForm extends PureComponent {
-  static propTypes = {
-    inProgress: PropTypes.bool.isRequired,
-    onSubmit: PropTypes.func,
-    style: PropTypes.object,
-    gdprSettings: PropTypes.object,
-    newsletterSettings: PropTypes.object,
-  };
-
-  static defaultProps = {
-    onSubmit: _.noop,
-  };
-
   constructor(props) {
     super(props);
 
@@ -185,7 +174,10 @@ class RegisterForm extends PureComponent {
 
     return (
       <>
-        <View styleName="lg-gutter-vertical">
+        <View
+          styleName="lg-gutter-vertical"
+          style={isWeb && emailError && style.emailContainerMargin}
+        >
           <Text>{I18n.t(ext('email'))}</Text>
           <TextInput
             autoCapitalize="none"
@@ -212,7 +204,10 @@ class RegisterForm extends PureComponent {
             </>
           )}
         </View>
-        <View styleName="lg-gutter-bottom">
+        <View
+          styleName="lg-gutter-bottom"
+          style={isWeb && usernameError && style.usernameContainerMargin}
+        >
           <Text>{I18n.t(ext('username'))}</Text>
           <TextInput
             autoCapitalize="none"
@@ -225,7 +220,10 @@ class RegisterForm extends PureComponent {
             returnKeyType="done"
           />
         </View>
-        <View styleName="lg-gutter-bottom">
+        <View
+          styleName="lg-gutter-bottom"
+          style={isWeb && passwordError && style.passwordContainerMargin}
+        >
           <Text>{I18n.t(ext('password'))}</Text>
           <PasswordTextInput
             onChangeText={this.handlePasswordChangeText}
@@ -265,5 +263,20 @@ class RegisterForm extends PureComponent {
     );
   }
 }
+
+RegisterForm.propTypes = {
+  emailTaken: PropTypes.bool.isRequired,
+  inProgress: PropTypes.bool.isRequired,
+  style: PropTypes.object.isRequired,
+  onRecoverPasswordPress: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  gdprSettings: PropTypes.object,
+  newsletterSettings: PropTypes.object,
+};
+
+RegisterForm.defaultProps = {
+  gdprSettings: {},
+  newsletterSettings: {},
+};
 
 export default connectStyle(ext('RegisterForm'))(RegisterForm);

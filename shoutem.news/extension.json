@@ -1,10 +1,10 @@
 {
   "name": "news",
-  "version": "6.3.0",
-  "platform": ">=12.1.0",
+  "version": "7.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "title": "News",
   "description": "Show news articles",
-  "releaseNotes": "* Added support for disabling uppercasing of titles in layouts that currently do so\n* Update CMS extension to add checkbox for this setting in Layout settings page",
   "icon": "server/assets/add-news-image.png",
   "dependencies": [
     "shoutem.cms",

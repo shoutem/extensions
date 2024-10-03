@@ -1,9 +1,9 @@
 import { AppState } from 'react-native';
 import _ from 'lodash';
 import { registerIcons } from '@shoutem/ui';
-import { Platform } from 'react-native';
 import { getExtensionSettings } from 'shoutem.application';
 import { cancelPendingJourney } from 'shoutem.notification-center';
+import { isIos } from 'shoutem-core';
 import {
   appMounted,
   refreshProducts,
@@ -66,16 +66,16 @@ export async function appDidMount(app) {
   initShopifyClient(shopifyStore, apiKey);
 
   // Log in disabled on Android
-  if (Platform.OS === 'ios') {
+  if (isIos) {
     MBBridge.isLoggedIn()
-    .then(isLoggedIn => {
-      if (isLoggedIn) {
-        dispatch(actions.getCustomer());
-      }
-    })
-    .catch(error =>
-      console.error('Error while checking Shopify isLoggedIn:', error),
-    );
+      .then(isLoggedIn => {
+        if (isLoggedIn) {
+          dispatch(actions.getCustomer());
+        }
+      })
+      .catch(error =>
+        console.error('Error while checking Shopify isLoggedIn:', error),
+      );
   }
 
   dispatch(shopLoading());

@@ -10,7 +10,6 @@ import {
   Keyboard as RNKeyboard,
   KeyboardAvoidingView,
   LayoutAnimation,
-  Platform,
   Pressable,
   TextInput,
 } from 'react-native';
@@ -34,6 +33,7 @@ import { getExtensionSettings } from 'shoutem.application';
 import { authenticate } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { HeaderTextButton, isTabBarNavigation } from 'shoutem.navigation';
+import { isAndroid } from 'shoutem-core';
 import { images } from '../assets';
 import NewStatusFooter from '../components/NewStatusFooter';
 import { ext } from '../const';
@@ -41,10 +41,9 @@ import { clearDraft, saveDraft, selectors } from '../redux';
 import { getGiphyApiKey } from '../redux/selectors';
 import { attachmentService } from '../services';
 
-const KEYBOARD_OFFSET =
-  Platform.OS === 'android'
-    ? Keyboard.calculateKeyboardOffset(-30)
-    : Keyboard.calculateKeyboardOffset();
+const KEYBOARD_OFFSET = isAndroid
+  ? Keyboard.calculateKeyboardOffset(-30)
+  : Keyboard.calculateKeyboardOffset();
 
 export function CreateStatusScreen({ navigation, route, style }) {
   const {
@@ -74,6 +73,8 @@ export function CreateStatusScreen({ navigation, route, style }) {
 
   const debouncedHandleTextChange = _.debounce(setStatusText, 250);
 
+  const setStatusPosted = useCallback(() => setPostingStatus(false), []);
+
   const addNewStatus = useCallback(() => {
     if (statusText.length === 0 && !attachment) {
       Alert.alert(I18n.t(ext('blankPostWarning')));
@@ -87,8 +88,6 @@ export function CreateStatusScreen({ navigation, route, style }) {
       );
     }
   }, [dispatch, attachment, onStatusCreated, setStatusPosted, statusText]);
-
-  const setStatusPosted = useCallback(() => setPostingStatus(false), []);
 
   const headerRight = useCallback(
     props => {

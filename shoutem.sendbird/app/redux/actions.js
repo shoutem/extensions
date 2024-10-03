@@ -1,4 +1,8 @@
 import _ from 'lodash';
+import { Toast } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { isWeb } from 'shoutem-core';
+import { ext } from '../const';
 import { SendBird } from '../services';
 
 export const NEW_MESSAGE_ADDED = 'shoutem.sendbird.NEW_MESSAGE_ADDED';
@@ -56,13 +60,23 @@ export function sendFileMessage(channel, file, progressHandler) {
   return dispatch => {
     const channelId = _.get(channel, 'url');
 
-    return SendBird.sendFileMessage(file, channel, progressHandler).then(
-      newMessage =>
+    const resolvedSendFileMessage = isWeb
+      ? SendBird.sendFileMessageWeb
+      : SendBird.sendFileMessage;
+
+    return resolvedSendFileMessage(file, channel, progressHandler)
+      .then(newMessage =>
         dispatch({
           type: NEW_MESSAGE_ADDED,
           payload: { message: newMessage, channelId },
         }),
-    );
+      )
+      .catch(() =>
+        Toast.showError({
+          title: I18n.t(ext('fileMessageErrorTitle')),
+          message: I18n.t(ext('fileMessageErrorMessage')),
+        }),
+      );
   };
 }
 

@@ -12,8 +12,8 @@ const resolveVariable = createScopedResolver(ext());
 export default () => ({
   'shoutem.onboarding.OnboardingScreen': {
     imageBackground: {
-      width: '100%',
-      height: '100%',
+      width: resolveVariable('sizes.window.width'),
+      height: resolveVariable('sizes.window.height'),
     },
     image: {
       resizeMode: 'stretch',

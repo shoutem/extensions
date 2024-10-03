@@ -1,10 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Alert } from 'react-native';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { clear, isBusy } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { Divider, ListView, Screen, SearchField, View } from '@shoutem/ui';
+import {
+  ActionSheet,
+  Divider,
+  ListView,
+  Screen,
+  SearchField,
+  View,
+} from '@shoutem/ui';
 import { authenticate, getUser, USER_SCHEMA } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { goBack, HeaderTextButton } from 'shoutem.navigation';
@@ -17,7 +25,7 @@ import {
   searchUsersNextPage,
 } from '../redux';
 import { getSearchUsers } from '../redux/selectors';
-import { openBlockActionSheet, openProfileForLegacyUser } from '../services';
+import { openProfileForLegacyUser } from '../services';
 
 export function SearchScreen({
   searchData,
@@ -37,9 +45,21 @@ export function SearchScreen({
       headerLeft,
       headerRight,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [text, setText] = useState('');
+  const [actionSheetOpen, setActionSheetOpen] = useState(false);
+  const [confirmOptions, setConfirmOptions] = useState();
+
+  const cancelOptions = useMemo(() => {
+    return [
+      {
+        title: I18n.t(ext('cancelCommentSelectionOption')),
+        onPress: () => setActionSheetOpen(false),
+      },
+    ];
+  }, []);
 
   function handleTextChange(text) {
     const lowerCaseText = text.toLowerCase();
@@ -98,16 +118,38 @@ export function SearchScreen({
     );
   }
 
-  function handleMenuPress(user) {
+  async function handleBlockUser(user) {
     const authenticateCallback = async currentUser => {
       await dispatch(blockUser(user.legacyId, currentUser.legacyId));
       await dispatch(loadBlockedUsers);
     };
 
-    const handleBlockPress = async () =>
-      dispatch(authenticate(authenticateCallback));
+    await dispatch(authenticate(authenticateCallback));
+    setActionSheetOpen(false);
+  }
 
-    return openBlockActionSheet(handleBlockPress);
+  function handleReportUser() {
+    setActionSheetOpen(false);
+
+    Alert.alert(
+      I18n.t(ext('reportSuccessTitle')),
+      I18n.t(ext('reportSuccessMessage')),
+    );
+  }
+
+  function handleMenuPress(user) {
+    setConfirmOptions([
+      {
+        title: I18n.t(ext('blockOption')),
+        onPress: () => handleBlockUser(user),
+      },
+      {
+        title: I18n.t(ext('reportOption')),
+        onPress: handleReportUser,
+      },
+    ]);
+
+    setActionSheetOpen(true);
   }
 
   function handleMemberItemPress(user) {
@@ -145,17 +187,23 @@ export function SearchScreen({
         onLoadMore={loadMore}
         renderRow={renderRow}
       />
+      <ActionSheet
+        active={actionSheetOpen}
+        cancelOptions={cancelOptions}
+        confirmOptions={confirmOptions}
+        onDismiss={() => setActionSheetOpen(false)}
+      />
     </Screen>
   );
 }
 
 SearchScreen.propTypes = {
-  searchData: PropTypes.func,
-  searchUsersNextPage: PropTypes.func,
-  searchUsers: PropTypes.func,
-  clear: PropTypes.func,
-  navigation: PropTypes.object,
-  style: PropTypes.object,
+  clear: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  searchData: PropTypes.func.isRequired,
+  searchUsers: PropTypes.func.isRequired,
+  searchUsersNextPage: PropTypes.func.isRequired,
+  style: PropTypes.object.isRequired,
 };
 
 export function mapStateToProps(state) {

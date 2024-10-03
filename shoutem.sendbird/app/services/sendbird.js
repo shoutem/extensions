@@ -1,7 +1,7 @@
-import { Platform } from 'react-native';
 import _ from 'lodash';
 import moment from 'moment';
 import SendBird from 'sendbird';
+import { isIos } from 'shoutem-core';
 
 const requiredConfigKeys = ['appId', 'user'];
 
@@ -174,9 +174,13 @@ function createUserMetadata(metadata) {
     const currentMeta = _.get(user, 'metaData');
 
     if (!_.isEmpty(currentMeta)) {
+      // Skip updating user metadata if it already exists.
       resolve(
+        // eslint-disable-next-line no-console
         console.log('Metadata already exists. Skipping metadata creation'),
       );
+
+      return;
     }
 
     user.createMetaData(metadata, (computedData, error) => {
@@ -276,6 +280,36 @@ function sendFileMessage(source, channel, uploadProgressHandler) {
 
       resolve(message);
     });
+  });
+}
+
+// In web we need to convert base64 object to File
+function sendFileMessageWeb(source, channel, uploadProgressHandler) {
+  return new Promise((resolve, reject) => {
+    if (_.isEmpty(source)) {
+      reject(new Error('Invalid file message source'));
+    }
+
+    fetch(source.uri)
+      .then(res => res.blob())
+      .then(blob => {
+        // eslint-disable-next-line no-undef
+        const file = new File([blob], source.fileName || 'image.jpeg', {
+          type: source.type || 'image/png',
+        });
+
+        channel.sendFileMessage(
+          file,
+          uploadProgressHandler,
+          (message, error) => {
+            if (error) {
+              reject(error);
+            }
+
+            resolve(message);
+          },
+        );
+      });
   });
 }
 
@@ -388,7 +422,7 @@ function registerPushToken(token = pushToken) {
     return new Error(SENDBIRD_NOT_INITIALIZED_ERROR);
   }
 
-  if (Platform.OS === 'ios') {
+  if (isIos) {
     return SendBirdInstance.registerAPNSPushTokenForCurrentUser(
       token,
       response => {
@@ -454,6 +488,7 @@ export default {
   connect,
   sendMessage,
   sendFileMessage,
+  sendFileMessageWeb,
   createDirectChat,
   updateUserInfo,
   createGroupChat,

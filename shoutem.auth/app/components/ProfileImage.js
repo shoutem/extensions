@@ -1,42 +1,46 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-
-import {
-  Icon,
-  ImageBackground,
-  TouchableOpacity,
-  View,
-  dimensionRelativeToIphone,
-} from '@shoutem/ui';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-
+import { Icon, ImageBackground, TouchableOpacity, View } from '@shoutem/ui';
 import { ext } from '../const';
 
-const ProfileImage = ({ isEditable, onPress, uri }) => (
+const ProfileImage = ({ isEditable, onPress, uri, style }) => (
   <View styleName="h-center lg-gutter-vertical solid vertical">
     <TouchableOpacity onPress={onPress}>
       <ImageBackground
-        styleName="medium-avatar placeholder"
+        styleName="placeholder"
+        imageStyle={style.image}
+        style={style.imageContainer}
         source={{ uri: uri || undefined }}
-        borderRadius={dimensionRelativeToIphone(145) / 2}
       >
         {isEditable && (
-          <Icon name="take-a-photo" style={uri ? { color: '#ffffff' } : {}} />
+          <Icon name="take-a-photo" style={uri ? style.noImageIcon : {}} />
         )}
       </ImageBackground>
     </TouchableOpacity>
   </View>
 );
 
-const { bool, func, string } = PropTypes;
+const { bool, func, string, object } = PropTypes;
 
 ProfileImage.propTypes = {
   // Determines whether the image should render an indicator that it can be edited
   isEditable: bool,
+  style: object,
+  // Image URI
+  uri: string,
+  // Called when the image is pressed
+  onPress: func,
+};
+
+ProfileImage.defaultProps = {
+  // Determines whether the image should render an indicator that it can be edited
+  isEditable: false,
   // Called when the image is pressed
   onPress: func,
   // Image URI
   uri: string,
+  style: PropTypes.object,
 };
 
 export default connectStyle(ext('ProfileImage'))(ProfileImage);

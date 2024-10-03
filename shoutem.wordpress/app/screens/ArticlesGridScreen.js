@@ -1,20 +1,20 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import he from 'he';
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { cloneStatus } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import { GridRow } from '@shoutem/ui';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
 import { GridArticleView } from '../components/GridArticleView';
 import { ext } from '../const';
 import { getLeadImageUrl } from '../services';
 import {
   ArticlesListScreen,
-  mapStateToProps,
   mapDispatchToProps,
+  mapStateToProps,
 } from './ArticlesListScreen';
 
 class ArticlesGridScreen extends ArticlesListScreen {

@@ -2,9 +2,9 @@
   "name": "loyalty",
   "title": "Loyalty",
   "description": "Reward your returning customers",
-  "version": "7.0.1",
-  "platform": ">=14.1.1",
-  "releaseNotes": "Release notes\n* Adjusted Twitter labels, to X (Twitter)",
+  "version": "8.0.1",
+  "platform": ">=15.0.0",
+  "releaseNotes": "Release notes\n\n* Resolved a problem where data wouldn't load on specific screens in certain situations",
   "dependencies": [
     "shoutem.application",
     "shoutem.auth",

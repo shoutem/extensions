@@ -93,7 +93,7 @@ export default () => ({
         resolveVariable('sizes.window.width') -
         3 * resolveVariable('mediumGutter') -
         responsiveWidth(65) -
-        30,
+        40,
     },
     episodeProgress: {
       container: { paddingHorizontal: resolveVariable('smallGutter') },

@@ -64,7 +64,8 @@
       "pushNotificationsViewPushScreenTitle": "View push notification",
       "pushNotificationsViewPushScreenCloseButton": "Close",
       "pushNotificationsSendNowType": "Send now",
-      "pushNotificationsScheduledType": "Scheduled"
+      "pushNotificationsScheduledType": "Scheduled",
+      "noNotificationSettingsMessage": "No settings available.\n\nEnable user scheduled and/or reminder notifications to manage their settings here."
     }
   }
 }

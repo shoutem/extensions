@@ -10,7 +10,12 @@
       "actionSheetUnfavorite": "Unfavorite",
       "deviceSettingsDescription": "To download and play offline podcast episodes, the app requires read and write access to external storage.",
       "deviceSettingsTitle": "Go to Settings",
-      "upNext": "UP NEXT"
+      "fetchFailedTitle": "Something went wrong",
+      "fetchFailedMessage": "We couldn't process your request. Please check your internet connection and try again.",
+      "episodeDownloadSuccessTitle": "Download complete",
+      "episodeDownloadSuccessMessage": "Episode was successfully downloaded.",
+      "episodeDeleteTitle": "Episode removed",
+      "episodeDeleteMessage": "Episode was successfully removed from downloaded episodes."
     }
   }
 }

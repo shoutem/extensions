@@ -1,4 +1,5 @@
 import React from 'react';
+import { Alert } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
@@ -18,9 +19,10 @@ import {
   validationStatus,
 } from '@shoutem/redux-io/status';
 import { connectStyle } from '@shoutem/theme';
-import { ListView, Spinner, View } from '@shoutem/ui';
+import { ActionSheet, ListView, Spinner, View } from '@shoutem/ui';
 import { RemoteDataListScreen } from 'shoutem.application';
 import { authenticate, getUser } from 'shoutem.auth/redux';
+import { I18n } from 'shoutem.i18n';
 import {
   getRouteParams,
   HeaderIconButton,
@@ -35,7 +37,7 @@ import {
   loadUsersInGroups,
 } from '../redux';
 import { getUsers, getUsersInGroups } from '../redux/selectors';
-import { openBlockActionSheet, openProfileForLegacyUser } from '../services';
+import { openProfileForLegacyUser } from '../services';
 
 export class MembersScreen extends RemoteDataListScreen {
   static propTypes = {
@@ -47,6 +49,16 @@ export class MembersScreen extends RemoteDataListScreen {
     super(props);
 
     autoBindReact(this);
+
+    this.state = {
+      actionSheetOpen: false,
+      cancelOptions: [
+        {
+          title: I18n.t(ext('reportOptionCancel')),
+          onPress: this.handleActionSheetDismiss,
+        },
+      ],
+    };
   }
 
   getNavBarProps() {
@@ -89,11 +101,37 @@ export class MembersScreen extends RemoteDataListScreen {
     const { authenticate, blockUser, loadBlockedUsers } = this.props;
 
     const handleBlockPress = () =>
-      authenticate(currentUser =>
-        blockUser(user.legacyId, currentUser.legacyId).then(loadBlockedUsers),
-      );
+      authenticate(currentUser => {
+        blockUser(user.legacyId, currentUser.legacyId).then(loadBlockedUsers);
+        this.handleActionSheetDismiss();
+      });
 
-    return openBlockActionSheet(handleBlockPress);
+    this.setState({
+      confirmOptions: [
+        {
+          title: I18n.t(ext('blockOption')),
+          onPress: handleBlockPress,
+        },
+        {
+          title: I18n.t(ext('reportOption')),
+          onPress: this.handleReportUser,
+        },
+      ],
+      actionSheetOpen: true,
+    });
+  }
+
+  handleActionSheetDismiss() {
+    this.setState({ actionSheetOpen: false });
+  }
+
+  handleReportUser() {
+    this.handleActionSheetDismiss();
+
+    Alert.alert(
+      I18n.t(ext('reportSuccessTitle')),
+      I18n.t(ext('reportSuccessMessage')),
+    );
   }
 
   openSearchScreen() {
@@ -157,6 +195,7 @@ export class MembersScreen extends RemoteDataListScreen {
 
   renderData(data) {
     const { style } = this.props;
+    const { actionSheetOpen, cancelOptions, confirmOptions } = this.state;
 
     if (!isValid(data) || (isBusy(data) && !isInitialized(data))) {
       return (
@@ -171,16 +210,24 @@ export class MembersScreen extends RemoteDataListScreen {
     }
 
     return (
-      <ListView
-        data={data}
-        getSectionId={this.getSectionId}
-        initialListSize={1}
-        loading={isBusy(data)}
-        onLoadMore={this.loadMore}
-        onRefresh={this.fetchData}
-        renderRow={this.renderRow}
-        style={style.list}
-      />
+      <>
+        <ListView
+          data={data}
+          getSectionId={this.getSectionId}
+          initialListSize={1}
+          loading={isBusy(data)}
+          onLoadMore={this.loadMore}
+          onRefresh={this.fetchData}
+          renderRow={this.renderRow}
+          style={style.list}
+        />
+        <ActionSheet
+          active={actionSheetOpen}
+          cancelOptions={cancelOptions}
+          confirmOptions={confirmOptions}
+          onDismiss={this.handleActionSheetDismiss}
+        />
+      </>
     );
   }
 }

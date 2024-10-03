@@ -6,6 +6,7 @@ import {
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { I18n } from 'shoutem.i18n';
+import { isWeb } from 'shoutem-core';
 import { HeaderBackButton, HeaderTitle } from '../components';
 import { ext } from '../const';
 import { NoContent } from '../screens';
@@ -22,6 +23,9 @@ const stackScreenOptions = () => {
     ...TransitionPresets.SlideFromRightIOS,
     headerLeft: props => <HeaderBackButton {...props} />,
     headerTitleAlign: 'center',
+    ...(isWeb && {
+      cardStyle: { flex: 1 },
+    }),
   };
 };
 
@@ -87,6 +91,9 @@ export function NoneStackNavigator({
                 />
               ),
               ...HeaderStyles.default,
+              ...(isWeb && {
+                cardStyle: { flex: 1 },
+              }),
             }}
             initialParams={{
               screenSettings,

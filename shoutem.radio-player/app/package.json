@@ -1,8 +1,11 @@
 {
   "name": "shoutem.radio-player",
-  "version": "11.0.0",
+  "version": "12.0.0",
   "description": "Radio extension",
   "dependencies": {
+    "@sindresorhus/slugify": "0.9.1"
+  },
+  "webDependencies": {
     "@sindresorhus/slugify": "0.9.1"
   },
   "peerDependencies": {

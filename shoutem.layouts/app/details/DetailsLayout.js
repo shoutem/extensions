@@ -39,7 +39,7 @@ export function DetailsLayout({
       <View styleName="solid">
         {!!title && (
           <View styleName={resolvedStyleName}>
-            <Title styleName="xl-gutter-top md-gutter-bottom h-center">
+            <Title styleName="xl-gutter-top md-gutter-bottom md-gutter-horizontal h-center">
               {title}
             </Title>
           </View>

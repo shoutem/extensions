@@ -4,6 +4,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Icon } from '@shoutem/ui';
+import { isAndroid, isWeb } from 'shoutem-core';
 import { Drawer, HeaderBackButton } from '../components';
 import { ext, NO_SCREENS } from '../const';
 import NoScreens from '../screens/NoScreens';
@@ -33,6 +34,9 @@ function screenOptions(navigationProps) {
       return <HeaderBackButton {...props} />;
     },
     headerTitleAlign: 'center',
+    ...(isWeb && {
+      cardStyle: { flex: 1 },
+    }),
   };
 }
 
@@ -80,6 +84,9 @@ function customStackScreenOptions(navigationProps) {
       return <HeaderBackButton {...props} onPress={defaultBackHandler} />;
     },
     headerTitleAlign: 'center',
+    ...(isWeb && {
+      cardStyle: { flex: 1 },
+    }),
   };
 }
 
@@ -105,9 +112,11 @@ function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
   const NoScreensComponent = (
     <DrawerStack.Screen name={NO_SCREENS} component={NoScreens} />
   );
-  const CustomNavigators = createCustomStackNavigators(DrawerStack, {
-    screenOptions: customStackScreenOptions,
-  });
+  const CustomNavigators = createCustomStackNavigators(
+    DrawerStack,
+    { screenOptions: customStackScreenOptions },
+    { headerShown: false },
+  );
 
   return (
     <DrawerStack.Navigator
@@ -121,6 +130,14 @@ function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
         />
       )}
       drawerStyle={style.menu}
+      screenOptions={{
+        ...(isWeb && {
+          cardStyle: { flex: 1 },
+        }),
+      }}
+      // Disable optimization due to the issues with audio
+      // banner rendering on Android
+      detachInactiveScreens={!isAndroid}
     >
       {[...DrawerComponents, ...CustomNavigators, NoScreensComponent]}
     </DrawerStack.Navigator>

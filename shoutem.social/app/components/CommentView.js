@@ -1,13 +1,13 @@
 /* eslint-disable camelcase */
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { LayoutAnimation } from 'react-native';
-import ActionSheet from 'react-native-action-sheet';
 import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import {
+  ActionSheet,
   Caption,
   Image,
   Row,
@@ -32,35 +32,48 @@ function CommentView({
   style,
 }) {
   const dispatch = useDispatch();
+  const [actionSheetOpen, setActionSheetOpen] = useState(false);
 
   const handleUserAvatarPress = () => onUserAvatarPress(comment);
 
-  const showActionSheet = () => {
+  const handleLongPress = useCallback(() => {
     if (_.get(comment, 'deletable') !== 'yes') {
       return;
     }
 
-    ActionSheet.showActionSheetWithOptions(
-      {
-        options: [
-          I18n.t(ext('deleteCommentOption')),
-          I18n.t(ext('cancelCommentSelectionOption')),
-        ],
-        destructiveButtonIndex: 0,
-        cancelButtonIndex: 1,
-      },
-      index => {
-        if (index === 0) {
-          // We have to load statuses to fetch updated state after deleting comment
-          dispatch(deleteComment(comment)).then(() =>
-            dispatch(loadStatus(statusId)),
-          );
+    setActionSheetOpen(true);
+  }, [comment]);
 
-          LayoutAnimation.easeInEaseOut();
-        }
+  const handleDeleteCommentPress = useCallback(() => {
+    // We have to load statuses to fetch updated state after deleting comment
+    dispatch(deleteComment(comment)).then(() => {
+      setActionSheetOpen(false);
+      dispatch(loadStatus(statusId));
+    });
+
+    LayoutAnimation.easeInEaseOut();
+  }, [comment, deleteComment, dispatch, statusId]);
+
+  const actionSheetOptions = useMemo(() => {
+    const cancelOptions = [
+      {
+        title: I18n.t(ext('cancelCommentSelectionOption')),
+        onPress: () => setActionSheetOpen(false),
       },
-    );
-  };
+    ];
+
+    const confirmOptions = [
+      {
+        title: I18n.t(ext('deleteCommentOption')),
+        onPress: handleDeleteCommentPress,
+      },
+    ];
+
+    return {
+      cancelOptions,
+      confirmOptions,
+    };
+  }, [handleDeleteCommentPress]);
 
   const { user, created_at, shoutem_attachments, html_text: text } = comment;
   const { profile_image_url, name: userName } = user;
@@ -87,7 +100,7 @@ function CommentView({
         />
       </TouchableOpacity>
       <TouchableOpacity
-        onLongPress={showActionSheet}
+        onLongPress={handleLongPress}
         style={style.contentContainer}
       >
         <Row style={style.row}>
@@ -107,6 +120,13 @@ function CommentView({
           </View>
         </Row>
       </TouchableOpacity>
+      <ActionSheet
+        active={actionSheetOpen}
+        cancelOptions={actionSheetOptions.cancelOptions}
+        confirmOptions={actionSheetOptions.confirmOptions}
+        onDismiss={() => setActionSheetOpen(false)}
+        style={style.actionSheet}
+      />
     </View>
   );
 }

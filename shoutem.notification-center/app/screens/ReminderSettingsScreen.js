@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Screen, ScrollView, Subtitle, Text } from '@shoutem/ui';
+import { resolveUnavailableText, unavailableInWeb } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { goBack, HeaderIconButton } from 'shoutem.navigation';
 import { withAlarmPermission } from 'shoutem.permissions';
@@ -90,6 +91,8 @@ function ReminderSettingsScreen({
     withAlarmPermission(() =>
       notifications.rescheduleReminderNotifications(newSettings, reminder),
     );
+
+    unavailableInWeb(null, resolveUnavailableText('Notifications are'));
 
     goBack();
   }, [

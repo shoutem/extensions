@@ -5,10 +5,12 @@ import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Screen, Subtitle, View } from '@shoutem/ui';
+import { EmptyStateView, Screen, Subtitle, View } from '@shoutem/ui';
+import { resolveUnavailableText, unavailableInWeb } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
 import { withAlarmPermission } from 'shoutem.permissions';
+import { isWeb } from 'shoutem-core';
 import { SettingDetailsNavigationItem, SettingsToggle } from '../components';
 import { ext } from '../const';
 import {
@@ -70,6 +72,10 @@ export class NotificationSettingsScreen extends PureComponent {
         return;
       }
 
+      if (isWeb && remindMeToUseApp) {
+        unavailableInWeb(null, resolveUnavailableText('Notifications are'));
+      }
+
       withAlarmPermission(() =>
         notifications.rescheduleReminderNotifications(
           newNotificationSettings,
@@ -96,6 +102,11 @@ export class NotificationSettingsScreen extends PureComponent {
 
       if (!dailyMessages) {
         await notifications.cancelScheduledNotifications();
+        return;
+      }
+
+      if (isWeb) {
+        unavailableInWeb(null, resolveUnavailableText('Notifications are'));
       }
     });
   }
@@ -121,6 +132,7 @@ export class NotificationSettingsScreen extends PureComponent {
             text: I18n.t(ext('alertConfirmButton')),
             onPress: () =>
               this.handleDailyMessagesSettingToggle(!dailyMessages),
+            style: 'destructive',
           },
         ],
       );
@@ -136,6 +148,15 @@ export class NotificationSettingsScreen extends PureComponent {
     const reminderSettingsEnabled =
       !!reminderAppSettings && reminderAppSettings.enabled;
     const resolvedStyleName = reminderSettingsEnabled ? 'xl-gutter-top' : '';
+
+    if (!reminderSettingsEnabled && !scheduledNotificationsEnabled) {
+      const emptyStateViewProps = {
+        icon: 'refresh',
+        message: I18n.t(ext('noNotificationSettingsMessage')),
+      };
+
+      return <EmptyStateView {...emptyStateViewProps} />;
+    }
 
     return (
       <Screen>

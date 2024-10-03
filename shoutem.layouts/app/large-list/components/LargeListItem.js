@@ -52,7 +52,7 @@ export function LargeListItem({
             </Overlay>
           )}
         </ImageBackground>
-        <Row>
+        <Row style={style.row}>
           <View>
             <Title numberOfLines={numberOfLines}>{title}</Title>
             <ItemSubtitle

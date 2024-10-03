@@ -1,8 +1,8 @@
 import React from 'react';
-import MapView from 'react-native-maps';
-
+import MapView, { Marker } from 'react-native-maps';
 import { connectStyle } from '@shoutem/theme';
-
+import { isWeb } from 'shoutem-core';
+import buildConfig from '../buildConfig.json';
 import MapViewBase from './MapViewBase';
 
 /**
@@ -70,10 +70,14 @@ class MapViewAndroid extends MapViewBase {
         onRegionChange={this.onRegionChange}
         onMarkerPress={this.onMarkerPress}
         {...this.props}
+        {...(isWeb && {
+          provider: 'google',
+          googleMapsApiKey: buildConfig.googleMapsWebApiKey,
+        })}
       >
         {markers &&
           markers.map((marker, key) => (
-            <MapView.Marker
+            <Marker
               coordinate={marker}
               title={marker.title}
               description={marker.subtitle}

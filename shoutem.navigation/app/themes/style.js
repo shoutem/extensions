@@ -8,7 +8,9 @@ import {
   resolveFontFamily,
   resolveFontStyle,
   resolveFontWeight,
+  responsiveWidth,
 } from '@shoutem/ui';
+import { isAndroid, isWeb } from 'shoutem-core';
 import { ext } from '../const';
 
 const resolveVariable = createScopedResolver(ext());
@@ -139,6 +141,9 @@ export default () => ({
       ),
       fontWeight: resolveFontWeight(resolveVariable('navBarText.fontWeight')),
       fontStyle: resolveFontStyle(resolveVariable('navBarText.fontStyle')),
+      ...(isWeb && {
+        paddingHorizontal: responsiveWidth(resolveVariable('largeGutter')),
+      }),
     },
     icon: {
       color: resolveVariable('navBarIconsColor'),
@@ -154,9 +159,11 @@ export default () => ({
     },
     leftContainer: {
       paddingLeft: resolveVariable('mediumGutter'),
+      ...(isWeb && { flex: 1 }),
     },
     rightContainer: {
       paddingRight: resolveVariable('mediumGutter'),
+      ...(isWeb && { flex: 1 }),
     },
 
     '.clear': {
@@ -277,7 +284,7 @@ export default () => ({
       borderTopWidth: 1,
       borderTopColor: resolveVariable('mainNavBorderColor'),
       backgroundColor: resolveVariable('mainNavBackground'),
-      minHeight: resolveVariable('sizes.tabBarItemHeight'),
+      minHeight: resolveVariable('sizes.tabBarHeight'),
     },
   },
 
@@ -340,7 +347,7 @@ export default () => ({
       },
       touchableNativeFeedback: {
         background:
-          Platform.OS === 'android' &&
+          isAndroid &&
           // Ripple effect is not supported on older Android versions and crashes the app
           (Platform.Version >= 21
             ? TouchableNativeFeedback.Ripple(
@@ -375,6 +382,10 @@ export default () => ({
       ),
     },
   },
+  'shoutem.navigation.DrawerScrollContainer': {
+    container: { backgroundColor: resolveVariable('mainNavBackground') },
+  },
+
   'shoutem.navigation.Drawer': {
     menu: {
       backgroundColor: resolveVariable('mainNavBackground'),
@@ -412,7 +423,7 @@ export default () => ({
       },
       touchableNativeFeedback: {
         background:
-          Platform.OS === 'android' &&
+          isAndroid &&
           // Ripple effect is not supported on older Android versions and crashes the app
           (Platform.Version >= 21
             ? TouchableNativeFeedback.Ripple(
@@ -593,9 +604,9 @@ export default () => ({
     icon: {},
 
     text: {
+      flex: -1,
       marginBottom: 12,
       maxWidth: 72,
-      flex: -1,
     },
     'small-text': {
       paddingTop: Platform.isPad && 8,

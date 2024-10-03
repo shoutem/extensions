@@ -1,0 +1,1 @@
+export { exitApp } from './app';

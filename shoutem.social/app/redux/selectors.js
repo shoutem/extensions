@@ -1,14 +1,14 @@
-import { Platform } from 'react-native';
 import _ from 'lodash';
 import { cloneStatus, getCollection, getOne } from '@shoutem/redux-io';
 import { getExtensionSettings } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
+import { isIos } from 'shoutem-core';
 import { ext } from '../const';
 
 export function getGiphyApiKey(state) {
   const settings = getExtensionSettings(state, ext());
 
-  if (Platform.OS === 'ios') {
+  if (isIos) {
     return _.get(settings, 'services.self.apiKeys.giphyIosApiKey');
   }
 
@@ -60,8 +60,9 @@ export function getUsers(state) {
 
 export function getSearchUsers(state) {
   const searchState = state[ext()].searchUsers;
+  const searchResults = getCollection(searchState, state);
 
-  return getCollection(searchState, state);
+  return filterBlockedUsers(state, searchResults, 'legacyId');
 }
 
 export function getStatuses(state) {

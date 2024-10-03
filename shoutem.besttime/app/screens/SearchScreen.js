@@ -1,17 +1,19 @@
 import React, { PureComponent } from 'react';
+import { Keyboard } from 'react-native';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
-import { Keyboard, Platform } from 'react-native';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { connectStyle } from '@shoutem/theme';
 import { Image, ListView, Screen } from '@shoutem/ui';
+import { unavailableInWeb } from 'shoutem.application';
 import { currentLocation } from 'shoutem.cms';
 import {
   composeNavigationStyles,
   getRouteParams,
   navigateTo,
 } from 'shoutem.navigation';
+import { isAndroid, isWeb } from 'shoutem-core';
 import {
   GooglePlaceItem,
   GooglePlacesError,
@@ -43,6 +45,11 @@ export class SearchScreen extends PureComponent {
   }
 
   componentDidMount() {
+    if (isWeb) {
+      unavailableInWeb();
+      return;
+    }
+
     const { currentLocation, useLocationBiasing, navigation } = this.props;
 
     navigation.setOptions({
@@ -89,7 +96,7 @@ export class SearchScreen extends PureComponent {
     const { addRecentSearch } = this.props;
     const { place_id: placeId } = autocompletedPlace;
 
-    if (Platform.OS === 'android') {
+    if (isAndroid) {
       Keyboard.dismiss();
     }
 
@@ -126,27 +133,31 @@ export class SearchScreen extends PureComponent {
     return (
       <Screen>
         <Image style={style.backgroundImage} source={backgroundImage} />
-        <SearchInput
-          onChangeText={this.updateSearchInput}
-          onClearPress={this.clearSearchInput}
-          input={searchInput}
-        />
-        {showGooglePlaces && (
-          <ListView
-            data={googlePlaces}
-            keyboardShouldPersistTaps="always"
-            renderRow={this.renderRow}
-          />
+        {!isWeb && (
+          <>
+            <SearchInput
+              onChangeText={this.updateSearchInput}
+              onClearPress={this.clearSearchInput}
+              input={searchInput}
+            />
+            {showGooglePlaces && (
+              <ListView
+                data={googlePlaces}
+                keyboardShouldPersistTaps="always"
+                renderRow={this.renderRow}
+              />
+            )}
+            {showRecentSearches && (
+              <ListView
+                data={recentSearches}
+                keyboardShouldPersistTaps="always"
+                renderRow={this.renderRow}
+              />
+            )}
+            {showSearchInstructions && <SearchInstructions />}
+            {showGooglePlacesError && <GooglePlacesError />}
+          </>
         )}
-        {showRecentSearches && (
-          <ListView
-            data={recentSearches}
-            keyboardShouldPersistTaps="always"
-            renderRow={this.renderRow}
-          />
-        )}
-        {showSearchInstructions && <SearchInstructions />}
-        {showGooglePlacesError && <GooglePlacesError />}
       </Screen>
     );
   }

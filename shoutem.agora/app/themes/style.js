@@ -1,5 +1,5 @@
-import { Platform } from 'react-native';
 import { responsiveHeight, responsiveWidth } from '@shoutem/ui';
+import { isAndroid } from 'shoutem-core';
 
 export default () => ({
   'shoutem.agora.CallInfo': {
@@ -51,7 +51,7 @@ export default () => ({
       borderRadius: responsiveHeight(20),
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: Platform.OS === 'android' ? responsiveHeight(30) : 0,
+      marginTop: isAndroid ? responsiveHeight(30) : 0,
     },
     closeButton: {
       color: '#FFF',

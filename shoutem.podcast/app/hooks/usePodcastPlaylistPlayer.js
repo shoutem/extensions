@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from 'react';
-import { Platform } from 'react-native';
 import { useDispatch } from 'react-redux';
 import {
   Capability,
@@ -11,6 +10,7 @@ import {
   useTrackState,
 } from 'shoutem.audio';
 import { AUDIO_SOURCE_TYPE } from 'shoutem.audio/const';
+import { isIos } from 'shoutem-core';
 
 const IOS_CAPABILITIES = [Capability.SkipToNext, Capability.SkipToPrevious];
 // Jump controls will be shown on Android only, when playing Podcast playlist.
@@ -29,7 +29,7 @@ const PLAYER_OPTIONS = {
     Capability.SkipToNext,
     Capability.SkipToPrevious,
     Capability.SeekTo,
-    ...(Platform.OS === 'ios' ? IOS_CAPABILITIES : ANDROID_CAPABILITIES),
+    ...(isIos ? IOS_CAPABILITIES : ANDROID_CAPABILITIES),
   ],
   compactCapabilities: [
     Capability.Play,
@@ -37,7 +37,7 @@ const PLAYER_OPTIONS = {
     Capability.SeekTo,
     Capability.SkipToNext,
     Capability.SkipToPrevious,
-    ...(Platform.OS === 'ios' ? IOS_CAPABILITIES : ANDROID_CAPABILITIES),
+    ...(isIos ? IOS_CAPABILITIES : ANDROID_CAPABILITIES),
   ],
   backwardJumpInterval: 10,
   forwardJumpInterval: 30,

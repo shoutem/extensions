@@ -1,10 +1,11 @@
 import React from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { View } from '@shoutem/ui';
+import { isAndroid } from 'shoutem-core';
 import { PreviewOverlay } from '../assets';
 
 export function Watermark() {
-  if (Platform.OS === 'android') {
+  if (isAndroid) {
     return null;
   }
 

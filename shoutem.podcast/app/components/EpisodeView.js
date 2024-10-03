@@ -1,39 +1,10 @@
 /* eslint-disable react/no-unused-state */
 import { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
 import { getLeadImageUrl } from 'shoutem.rss';
-import {
-  deleteEpisode,
-  downloadEpisode,
-  favoriteEpisode,
-  getHasFavorites,
-  getIsFavorited,
-  unfavoriteEpisode,
-} from '../redux';
 
 export class EpisodeView extends PureComponent {
-  static propTypes = {
-    deleteEpisode: PropTypes.func.isRequired,
-    downloadEpisode: PropTypes.func.isRequired,
-    enableDownload: PropTypes.bool.isRequired,
-    favoriteEpisode: PropTypes.func.isRequired,
-    isFavorited: PropTypes.bool.isRequired,
-    unfavoriteEpisode: PropTypes.func.isRequired,
-    episode: PropTypes.object,
-    feedUrl: PropTypes.string,
-    meta: PropTypes.object,
-    onPress: PropTypes.func,
-  };
-
-  static defaultProps = {
-    episode: undefined,
-    feedUrl: undefined,
-    meta: undefined,
-    onPress: undefined,
-  };
-
   constructor(props) {
     super(props);
 
@@ -53,35 +24,29 @@ export class EpisodeView extends PureComponent {
   }
 
   onDownloadPress() {
-    const {
-      downloadEpisode,
-      episode: { id },
-      feedUrl,
-    } = this.props;
+    const { onDownload, episode } = this.props;
 
-    downloadEpisode(id, feedUrl);
+    onDownload(episode);
   }
 
   onDeletePress() {
-    const { deleteEpisode, episode } = this.props;
+    const { onDelete, episode } = this.props;
 
-    deleteEpisode(episode);
+    onDelete(episode);
   }
 
   onFavoritePress() {
     const {
-      enableDownload,
       episode,
-      favoriteEpisode,
-      feedUrl,
+      onSaveToFavorites,
       isFavorited,
-      unfavoriteEpisode,
-      meta,
+      onRemoveFromFavorites,
+      shortcutId,
     } = this.props;
 
     return isFavorited
-      ? unfavoriteEpisode(episode.id)
-      : favoriteEpisode(episode, enableDownload, feedUrl, meta);
+      ? onRemoveFromFavorites(episode.uuid)
+      : onSaveToFavorites(episode.uuid, shortcutId);
   }
 
   onPress() {
@@ -94,22 +59,29 @@ export class EpisodeView extends PureComponent {
   }
 }
 
-export function mapStateToProps(state, ownProps) {
-  const {
-    episode: { id },
-  } = ownProps;
-
-  return {
-    hasFavorites: getHasFavorites(state),
-    isFavorited: getIsFavorited(state, id),
-  };
-}
-
-export const mapDispatchToProps = {
-  deleteEpisode,
-  downloadEpisode,
-  favoriteEpisode,
-  unfavoriteEpisode,
+EpisodeView.propTypes = {
+  // appHasFavoritesShortcut is used in child components.
+  // eslint-disable-next-line react/no-unused-prop-types
+  appHasFavoritesShortcut: PropTypes.bool.isRequired,
+  shortcutId: PropTypes.string.isRequired,
+  // shortcutSettings is used in child componenets.
+  // eslint-disable-next-line react/no-unused-prop-types
+  shortcutSettings: PropTypes.object.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onDownload: PropTypes.func.isRequired,
+  onRemoveFromFavorites: PropTypes.func.isRequired,
+  onSaveToFavorites: PropTypes.func.isRequired,
+  episode: PropTypes.object,
+  isFavorited: PropTypes.bool,
+  meta: PropTypes.object,
+  onPress: PropTypes.func,
 };
 
-export default connect(undefined, mapDispatchToProps)(EpisodeView);
+EpisodeView.defaultProps = {
+  episode: undefined,
+  isFavorited: false,
+  meta: undefined,
+  onPress: undefined,
+};
+
+export default EpisodeView;

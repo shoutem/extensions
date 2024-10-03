@@ -1,7 +1,7 @@
 import { Firebase } from 'shoutem.firebase';
 import {
-  SELECT_PUSH_NOTIFICATION_GROUPS,
   DEVICE_TOKEN_RECEIVED,
+  SELECT_PUSH_NOTIFICATION_GROUPS,
 } from './actionTypes';
 
 /**

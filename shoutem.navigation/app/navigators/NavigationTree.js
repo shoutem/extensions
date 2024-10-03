@@ -56,15 +56,19 @@ export function NavigationTree({
         backgroundColor={HeaderStyles.default?.headerStyle?.backgroundColor}
       />
       <ParentStack.Navigator
-        headerMode="none"
         mode="modal"
         screenOptions={{
           ...TransitionPresets.SlideFromRightIOS,
+          headerShown: false,
         }}
       >
         <ParentStack.Screen name="root_stack">
           {() => (
-            <RootStack.Navigator headerMode="none">
+            <RootStack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
               {isStackLayout && (
                 <RootStack.Screen name={GRID_STACK}>
                   {() => (

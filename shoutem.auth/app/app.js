@@ -1,4 +1,4 @@
-import { AppState, Platform } from 'react-native';
+import { AppState } from 'react-native';
 import { Settings } from 'react-native-fbsdk-next';
 import rio from '@shoutem/redux-io';
 import {
@@ -15,6 +15,7 @@ import {
   RESULTS,
 } from 'shoutem.permissions';
 import { isPreviewApp } from 'shoutem.preview';
+import { isIos } from 'shoutem-core';
 import { authProviders } from './services/authProviders';
 import { shoutemApi } from './services/shoutemApi';
 import { COMPLETE_REGISTRATION_TRIGGER, ext } from './const';
@@ -80,7 +81,7 @@ const createHandleAppStateChange = (dispatch, getState) => appState => {
     const { trackFbsdkEvents } = getExtensionSettings(state, ext());
 
     if (trackFbsdkEvents && !isPreviewApp) {
-      if (Platform.OS === 'ios') {
+      if (isIos) {
         const TRACKING_PERMISSION =
           PERMISSION_TYPES.IOS_APP_TRACKING_TRANSPARENCY;
 
@@ -116,7 +117,7 @@ export async function appDidMount(app) {
   if (trackFbsdkEvents) {
     const TRACKING_PERMISSION = PERMISSION_TYPES.IOS_APP_TRACKING_TRANSPARENCY;
 
-    if (Platform.OS === 'ios') {
+    if (isIos) {
       requestPermissions(TRACKING_PERMISSION).then(async result => {
         if (result[TRACKING_PERMISSION] === RESULTS.GRANTED) {
           Settings.setAdvertiserTrackingEnabled(true);

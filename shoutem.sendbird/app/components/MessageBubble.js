@@ -10,8 +10,6 @@ import { ext } from '../const';
 import { formatMessageDate } from '../services';
 import NewMessagesLabel from './NewMessagesLabel';
 
-const AnimatedView = Animated.createAnimatedComponent(View);
-
 function resolveProfileImage(senderImage, defaultImage) {
   if (!senderImage || _.isEmpty(senderImage)) {
     return defaultImage;
@@ -84,9 +82,6 @@ class MessageBubble extends PureComponent {
     );
     const isOwnMessage = currentUserId === sender.userId;
     const isFileMessage = _.get(message, 'messageType') === 'file';
-    const containerStyleName = isOwnMessage
-      ? 'vertical h-end sm-gutter-bottom'
-      : 'vertical h-start sm-gutter-bottom';
     const translateYtransform = this.appearValue.interpolate({
       inputRange: [0, 1],
       outputRange: [50, 0],
@@ -98,12 +93,15 @@ class MessageBubble extends PureComponent {
         disabled={!isFileMessage}
         onPress={this.handlePhotoPress}
       >
-        <AnimatedView
+        <Animated.View
           style={{
             opacity: this.appearValue,
             transform: [{ translateY: translateYtransform }],
+            ...style.animatedContainer,
+            ...(isOwnMessage
+              ? style.ownMessagePosition
+              : style.partnerMessagePosition),
           }}
-          styleName={containerStyleName}
         >
           {showNewLabel && <NewMessagesLabel />}
           <View styleName="horizontal v-start">
@@ -117,8 +115,14 @@ class MessageBubble extends PureComponent {
               style={[
                 style.container,
                 !isOwnMessage && style.secondaryContainer,
-                firstMessage && isOwnMessage && style.firstMessage,
-                firstMessage && !isOwnMessage && style.firstMessageSecondary,
+                firstMessage &&
+                  isOwnMessage &&
+                  !isFileMessage &&
+                  style.firstMessage,
+                firstMessage &&
+                  !isOwnMessage &&
+                  !isFileMessage &&
+                  style.firstMessageSecondary,
                 isFileMessage && style.fileMessage,
                 showProfileImage && style.withProfileImage,
               ]}
@@ -145,7 +149,7 @@ class MessageBubble extends PureComponent {
               {formatMessageDate(createdAt)}
             </Text>
           )}
-        </AnimatedView>
+        </Animated.View>
       </TouchableOpacity>
     );
   }

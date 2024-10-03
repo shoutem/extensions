@@ -14,6 +14,7 @@ import { getUser, USER_SCHEMA } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { openInModal } from 'shoutem.navigation';
 import { ext as userProfileExt } from 'shoutem.user-profile';
+import { isWeb } from 'shoutem-core';
 import {
   apiVersion,
   ATTACHMENT_TYPE,
@@ -530,9 +531,11 @@ export function createComment(statusId, text, attachment) {
 
 export function uploadImage(image, type) {
   return dispatch => {
+    const uploadFn = isWeb ? webUploadImageToS3 : uploadImageToS3;
+
     return dispatch(
       createAssetPolicy(`shoutem.social/${Date.now()}.${type}`, type),
-    ).then(assetPolicy => uploadImageToS3(image, type, assetPolicy));
+    ).then(assetPolicy => uploadFn(image, type, assetPolicy));
   };
 }
 
@@ -569,6 +572,7 @@ export function uploadImageToS3(image, type, assetPolicy) {
     assetPolicy,
     'payload.data.attributes.signedRequest',
   );
+
   // eslint-disable-next-line no-undef
   const formData = new FormData();
   _.forOwn(IMAGE_PARAMS, (uploadDataKey, key) =>
@@ -590,6 +594,41 @@ export function uploadImageToS3(image, type, assetPolicy) {
           const location = _.get(res, 'headers.map.location');
 
           resolve(location);
+        }
+      })
+      .catch(error => reject(error));
+  });
+}
+
+export function webUploadImageToS3(image, type, assetPolicy) {
+  const { endpoint, formData: uploadData } = _.get(
+    assetPolicy,
+    'payload.data.attributes.signedRequest',
+  );
+
+  // eslint-disable-next-line no-undef
+  const formData = new FormData();
+  _.forOwn(IMAGE_PARAMS, (uploadDataKey, key) =>
+    formData.append(key, uploadData[uploadDataKey]),
+  );
+
+  return new Promise((resolve, reject) => {
+    fetch(image.uri)
+      .then(res => res.blob())
+      .then(blob => {
+        formData.append('file', blob);
+
+        return fetch(endpoint, {
+          method: 'POST',
+          body: formData,
+          headers: {},
+        });
+      })
+      .then(res => {
+        if (res.status !== 204) {
+          reject(res);
+        } else {
+          resolve(`${endpoint}/${uploadData.key}`);
         }
       })
       .catch(error => reject(error));

@@ -1,10 +1,16 @@
-import { AppState, Platform } from 'react-native';
+import { AppState } from 'react-native';
 import _ from 'lodash';
 import { getAppId, getSubscriptionValidState } from 'shoutem.application';
 import { getExtensionSettings } from 'shoutem.application/redux';
 import { getUser, isAuthenticated } from 'shoutem.auth';
 import { Firebase, NotificationHandlers } from 'shoutem.firebase';
-import { before, priorities, setPriority } from 'shoutem-core';
+import {
+  before,
+  isAndroid,
+  isIos,
+  priorities,
+  setPriority,
+} from 'shoutem-core';
 import { CONNECTION_STATUSES, ext } from './const';
 import { registerNotificationHandlers } from './notificationHandlers';
 import { actions, handlers } from './redux';
@@ -26,7 +32,7 @@ function handleAppStateChange(nextState) {
 export const appWillMount = setPriority(app => {
   const store = app.getStore();
 
-  if (Platform.OS === 'android') {
+  if (isAndroid) {
     const sendbirdChannelConfig = {
       channelId: 'SENDBIRD',
       channelName: 'SENDBIRD_CHANNEL',
@@ -36,14 +42,14 @@ export const appWillMount = setPriority(app => {
     Firebase.createNotificationChannels([sendbirdChannelConfig]);
   }
 
-  if (Platform.OS !== 'ios') {
+  if (!isIos) {
     NotificationHandlers.registerFCMTokenReceivedHandler({
       owner: ext(),
       onTokenReceived: SendBird.registerPushToken,
     });
   }
 
-  if (Platform.OS === 'ios') {
+  if (isIos) {
     NotificationHandlers.registerAPNSTokenReceivedHandler({
       owner: ext(),
       onTokenReceived: SendBird.registerPushToken,

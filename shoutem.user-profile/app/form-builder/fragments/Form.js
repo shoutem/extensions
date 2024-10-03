@@ -1,13 +1,12 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native';
 import PropTypes from 'prop-types';
 import { Keyboard, ScrollView } from '@shoutem/ui';
+import { isAndroid } from 'shoutem-core';
 import { useForm } from '../hooks';
 
-const KEYBOARD_AVOIDING_BEHAVIOUR =
-  Platform.OS === 'android' ? 'null' : 'padding';
-const KEYBOARD_DISMISS_MODE =
-  Platform.OS === 'android' ? 'on-drag' : 'interactive';
+const KEYBOARD_AVOIDING_BEHAVIOUR = isAndroid ? 'null' : 'padding';
+const KEYBOARD_DISMISS_MODE = isAndroid ? 'on-drag' : 'interactive';
 
 export default function Form({
   containerStyle,

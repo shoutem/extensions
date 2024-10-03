@@ -25,29 +25,6 @@ appRouter.use('/:appId/assets', assetRouter);
 /**
  * @swagger
  * /v1/apps/{appId}:
- *   get:
- *     summary: Returns app for given id
- *     tags:
- *     - App
- *     parameters:
- *     - $ref: '#/parameters/appId'
- *     responses:
- *       '200':
- *         description: app object
- *         schema:
- *           $ref: '#/definitions/AppJsonApiDocument'
- */
-appRouter.get(
-  '/:appId', //
-  jsonapi.parseInput(),
-  assertCanAccess(),
-  controller.get(),
-  jsonapi.generateOutput(APP_TYPE),
-);
-
-/**
- * @swagger
- * /v1/apps/{appId}:
  *   patch:
  *     tags:
  *     - App
@@ -69,6 +46,29 @@ appRouter.patch(
   jsonapi.parseInput(APP_TYPE),
   assertCanUpdate(),
   controller.update(),
+  jsonapi.generateOutput(APP_TYPE),
+);
+
+/**
+ * @swagger
+ * /v1/apps/{appId}:
+ *   get:
+ *     summary: Returns app for given id
+ *     tags:
+ *     - App
+ *     parameters:
+ *     - $ref: '#/parameters/appId'
+ *     responses:
+ *       '200':
+ *         description: app object
+ *         schema:
+ *           $ref: '#/definitions/AppJsonApiDocument'
+ */
+appRouter.get(
+  '/:appId', //
+  jsonapi.parseInput(),
+  assertCanAccess(),
+  controller.get(),
   jsonapi.generateOutput(APP_TYPE),
 );
 

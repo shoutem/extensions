@@ -1,17 +1,9 @@
+const path = require('path');
+const { projectPath } = require('@shoutem/build-tools');
+
 const maps = {
   android: {
-    mainApplication: {
-      import: 'import com.airbnb.android.react.maps.MapsPackage;',
-      getPackage: 'packages.add(new MapsPackage());',
-    },
-    gradle: {
-      app: {
-        dependencies: "implementation project(':react-native-maps')",
-      },
-      settings: `include ':react-native-maps'\nproject(':react-native-maps').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-maps/android')`,
-    },
-    manifest:
-      '<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBAefhRlXEH3vCko-zZTX6PHllTR6av4WI"/>',
+    manifest: key => `<meta-data android:name="com.google.android.geo.API_KEY" android:value="${key}"/>`,
   },
 };
 
@@ -30,7 +22,18 @@ const splashScreen = {
   },
 };
 
+const aliases = {
+  'react-native-maps': '@teovilla/react-native-web-maps',
+  crypto: 'crypto-js',
+  'shoutem-core': path.resolve(projectPath, 'core'),
+  'react-native': 'react-native-web',
+  'react-native-fast-image': 'react-native-web/dist/exports/Image',
+  'react-native/Libraries/vendor/emitter/EventEmitter':
+    'react-native-web/dist/vendor/react-native/EventEmitter/RCTDeviceEventEmitter.js',
+};
+
 module.exports = {
   maps,
   splashScreen,
+  aliases,
 };

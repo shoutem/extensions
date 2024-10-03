@@ -41,8 +41,6 @@ export const usePodcastEpisodePlayer = ({ track, title }) => {
   const activeSource = useSelector(getActiveSource);
 
   const onFirstPlay = useCallback(async () => {
-    await TrackPlayer.setQueue([track]);
-
     dispatch(
       updateActiveSource({
         type: AUDIO_SOURCE_TYPE.TRACK,
@@ -50,6 +48,8 @@ export const usePodcastEpisodePlayer = ({ track, title }) => {
         title,
       }),
     );
+
+    await TrackPlayer.setQueue([track]);
   }, [track, dispatch, title]);
 
   const {

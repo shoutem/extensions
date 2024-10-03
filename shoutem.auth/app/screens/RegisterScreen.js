@@ -9,6 +9,7 @@ import { Screen, ScrollView, View } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams, goBack, navigateTo } from 'shoutem.navigation';
+import { isIos } from 'shoutem-core';
 import {
   AppleSignInButton,
   FacebookButton,
@@ -84,12 +85,10 @@ export class RegisterScreen extends PureComponent {
       .finally(() => this.setState({ inProgress: false }));
   }
 
-  handleRegistrationFailed({ payload }) {
-    const { response } = payload;
-
+  handleRegistrationFailed(res) {
     this.setState({ inProgress: false });
 
-    const code = _.get(response, 'errors[0].code');
+    const code = _.get(res, 'payload.response.errors[0].code');
 
     if (code === EMAIL_TAKEN_ERROR) {
       this.setState({ emailTaken: true });
@@ -148,7 +147,7 @@ export class RegisterScreen extends PureComponent {
     const { termsOfServiceLink, privacyPolicyLink } = gdprSettings;
     const platformVersion = parseInt(Platform.Version, 10);
     const isEligibleForAppleSignIn =
-      isAppleAuthEnabled && Platform.OS === 'ios' && platformVersion >= 13;
+      isAppleAuthEnabled && isIos && platformVersion >= 13;
 
     return (
       <Screen style={style.registerScreen}>

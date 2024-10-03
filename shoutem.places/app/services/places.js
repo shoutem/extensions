@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import _ from 'lodash';
 
 export function getPlaceImages(place) {
@@ -16,10 +15,4 @@ export function getPlaceImages(place) {
 export function getFirstImage(place) {
   const images = getPlaceImages(place);
   return _.first(images);
-}
-
-export function getMapUrl(lat, long, address) {
-  return Platform.OS === 'ios'
-    ? `http://maps.apple.com/?ll=${lat},${long}&q=${address}`
-    : `geo:${lat},${long}?q=${address}`;
 }

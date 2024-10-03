@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Easing, Platform } from 'react-native';
+import { Animated, Easing } from 'react-native';
 import TrackPlayer, {
   State,
   useActiveTrack,
@@ -13,12 +13,11 @@ import { connectStyle } from '@shoutem/theme';
 import { Caption, Divider, Title, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { useLayoutAnimation } from 'shoutem.layouts';
+import { isIos } from 'shoutem-core';
 import { ext } from '../../const';
 import { getActiveSource } from '../../redux';
 import TrackProgressBar from '../TrackProgressBar';
 import QueueListItem from './QueueListItem';
-
-const isIos = Platform.OS === 'ios';
 
 /**
  * The NowPlayingHeader component displays the currently playing track's information.

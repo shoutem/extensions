@@ -9,7 +9,8 @@ export function assertCanAccess() {
     const authData = getAuthData(req);
     const app = getApp(req);
 
-    if (!isAllowedForApplication('access', app.appId, authData)) {
+    const allowed = await isAllowedForApplication('access', app.appId, authData);
+    if (!allowed) {
       throw new errors.ForbiddenError();
     }
   });
@@ -20,7 +21,8 @@ export function assertCanUpdate() {
     const authData = getAuthData(req);
     const app = getApp(req);
 
-    if (!isAllowedForApplication('update', app.appId, authData)) {
+    const allowed = await isAllowedForApplication('update', app.appId, authData);
+    if (!allowed) {
       throw new errors.ForbiddenError();
     }
   });

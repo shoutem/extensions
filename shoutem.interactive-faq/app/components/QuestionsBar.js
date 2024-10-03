@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
+import { FlatList } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { FlatList, Platform } from 'react-native';
-import { I18n } from 'shoutem.i18n';
 import { connectStyle } from '@shoutem/theme';
+import { I18n } from 'shoutem.i18n';
+import { isAndroid, isIos } from '../../../../core/services/platform';
 import { ext } from '../const';
 import Question from './Question';
 
@@ -44,13 +45,13 @@ export class QuestionsBar extends PureComponent {
     // scrollview doesn't know how to modify scroll offset in this case, even through one
     // of many scrollTo native methods
     if (prevItems !== items) {
-      if (Platform.OS === 'ios') {
+      if (isIos) {
         this.setState({
           items: hasHistory ? [{ name: this.BACK_ITEM_NAME }, ...items] : items,
         });
       }
 
-      if (Platform.OS === 'android') {
+      if (isAndroid) {
         this.setState(
           {
             items: hasHistory

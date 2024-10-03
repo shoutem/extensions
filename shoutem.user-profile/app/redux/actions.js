@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { create, update } from '@shoutem/redux-io';
 import { getAppId } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
+import { isWeb } from 'shoutem-core';
 import { ext } from '../const';
 import {
   getImageFieldKeys,
@@ -73,6 +74,7 @@ function createAssetPolicy(appId, path) {
 }
 
 function uploadImage(file, endpoint, uploadData) {
+  // eslint-disable-next-line no-undef
   const formData = new FormData();
 
   _.forOwn(IMAGE_PARAMS, (uploadDataKey, key) =>
@@ -94,7 +96,40 @@ function uploadImage(file, endpoint, uploadData) {
   });
 }
 
+function webUploadImage(file, endpoint, uploadData) {
+  // eslint-disable-next-line no-undef
+  const formData = new FormData();
+
+  _.forOwn(IMAGE_PARAMS, (uploadDataKey, key) =>
+    formData.append(key, uploadData[uploadDataKey]),
+  );
+
+  return new Promise((resolve, reject) => {
+    fetch(file.uri)
+      .then(res => res.blob())
+      .then(blob => {
+        formData.append('file', blob);
+
+        return fetch(endpoint, {
+          method: 'POST',
+          body: formData,
+          headers: {},
+        });
+      })
+      .then(res => {
+        if (res.status !== 204) {
+          reject(res);
+        } else {
+          resolve(`${endpoint}/${uploadData.key}`);
+        }
+      })
+      .catch(error => reject(error));
+  });
+}
+
 function uploadAllImages(appId, key, images) {
+  const uploadFn = isWeb ? webUploadImage : uploadImage;
+
   return dispatch => {
     const uploadImagesRequests = _.map(images, image =>
       dispatch(createAssetPolicy(appId, image.name)).then(response => {
@@ -103,7 +138,7 @@ function uploadAllImages(appId, key, images) {
           'payload.data.attributes.signedRequest',
         );
 
-        return uploadImage(image, endpoint, formData);
+        return uploadFn(image, endpoint, formData);
       }),
     );
 

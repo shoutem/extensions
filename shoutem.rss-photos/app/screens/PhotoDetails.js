@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { Alert, Platform, StatusBar } from 'react-native';
+import { Alert, StatusBar } from 'react-native';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -15,6 +15,7 @@ import {
 import { I18n } from 'shoutem.i18n';
 import { closeModal, HeaderStyles } from 'shoutem.navigation';
 import { ext as rssExt } from 'shoutem.rss';
+import { isIos } from 'shoutem-core';
 import { getPhotosFeed } from '../redux';
 import { remapAndFilterPhotos } from '../services';
 
@@ -86,6 +87,12 @@ export default function PhotoDetails({
     });
   }, [mode, navigation, photos, selectedPhotoIndex]);
 
+  const photoNotFound = useMemo(() => isValid(data) && !photo, [data, photo]);
+  const loading = useMemo(() => isBusy(data) || photoNotFound, [
+    data,
+    photoNotFound,
+  ]);
+
   useEffect(() => {
     if (photoNotFound) {
       handleItemNotFound();
@@ -96,14 +103,8 @@ export default function PhotoDetails({
     }
   }, [photo, photos, photoNotFound]);
 
-  const photoNotFound = useMemo(() => isValid(data) && !photo, [data, photo]);
-  const loading = useMemo(() => isBusy(data) || photoNotFound, [
-    data,
-    photoNotFound,
-  ]);
-
   function handleImageGalleryModeChange(newMode) {
-    if (Platform.OS === 'ios') {
+    if (isIos) {
       const isHidden = newMode === ImageGallery.IMAGE_PREVIEW_MODE;
       StatusBar.setHidden(isHidden, 'fade');
     }

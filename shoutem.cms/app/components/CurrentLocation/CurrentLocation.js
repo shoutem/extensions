@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Alert, Platform } from 'react-native';
+import { Alert } from 'react-native';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
@@ -14,6 +14,7 @@ import {
   requestPermissions,
   RESULTS,
 } from 'shoutem.permissions';
+import { isIos } from 'shoutem-core';
 import { ext } from '../../const';
 import {
   getLocationPermissionStatus,
@@ -22,10 +23,9 @@ import {
   updateSecondPromptStatus,
 } from '../../redux';
 
-const LOCATION_PERMISSION =
-  Platform.OS === 'ios'
-    ? PERMISSION_TYPES.IOS_LOCATION_WHEN_IN_USE
-    : PERMISSION_TYPES.ANDROID_ACCESS_FINE_LOCATION;
+const LOCATION_PERMISSION = isIos
+  ? PERMISSION_TYPES.IOS_LOCATION_WHEN_IN_USE
+  : PERMISSION_TYPES.ANDROID_ACCESS_FINE_LOCATION;
 
 export default function(WrappedComponent) {
   class CurrentLocation extends PureComponent {
@@ -106,8 +106,7 @@ export default function(WrappedComponent) {
       } = this.props;
 
       checkPermissions(LOCATION_PERMISSION).then(result => {
-        const shouldPrompt =
-          Platform.OS === 'ios' ? true : _.isUndefined(permission);
+        const shouldPrompt = isIos ? true : _.isUndefined(permission);
 
         if (result === RESULTS.DENIED) {
           if (shouldPrompt) {
@@ -161,14 +160,14 @@ export default function(WrappedComponent) {
         ext('androidLocationPermissionEnable'),
       );
 
-      const alert = Platform.OS === 'ios' ? alertIOS : alertAndroid;
-      const confirmationMessage =
-        Platform.OS === 'ios'
-          ? confirmationMessageIOS
-          : confirmationMessageAndroid;
+      const alert = isIos ? alertIOS : alertAndroid;
+      const confirmationMessage = isIos
+        ? confirmationMessageIOS
+        : confirmationMessageAndroid;
 
-      const onConfirmation =
-        Platform.OS === 'ios' ? openSettings : this.requestPermissionAndroid;
+      const onConfirmation = isIos
+        ? openSettings
+        : this.requestPermissionAndroid;
 
       const confirmOption = {
         text: confirmationMessage,

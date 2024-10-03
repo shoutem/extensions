@@ -3,12 +3,12 @@
   "title": "Builder Preview",
   "type": "system",
   "description": "Provides the support for app preview in the Builder",
-  "version": "6.0.1",
-  "platform": ">=14",
+  "version": "7.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "nativeChanges": {
     "lastVersion": "6.0.1"
   },
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Updated @react-native-async-storage/async-storage library for ios privacy info inclusion",
   "icon": "server/assets/add-preview-image.png",
   "dependencies": [
     "shoutem.application",

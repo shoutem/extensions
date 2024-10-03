@@ -11,7 +11,7 @@ import { loadUser, openOwnProfile, openProfile } from '../redux/actions';
 export function openProfileForLegacyUser(legacyUserId, isOwnUserProfile) {
   return dispatch => {
     if (isOwnUserProfile) {
-      return dispatch(openOwnProfile);
+      return openOwnProfile();
     }
 
     // Dispatch the loadUser action and handle the promise
@@ -25,8 +25,7 @@ export function openProfileForLegacyUser(legacyUserId, isOwnUserProfile) {
         },
       };
 
-      // Dispatch the openProfile action with the unpackedUser
-      dispatch(openProfile(unpackedUser));
+      openProfile(unpackedUser);
     });
   };
 }

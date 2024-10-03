@@ -6,6 +6,7 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from '@shoutem/ui';
+import { isIos, isWeb } from 'shoutem-core';
 import { ext } from '../const';
 
 const resolveVariable = createScopedResolver(ext());
@@ -32,6 +33,7 @@ export default () => ({
       ),
       thumbTintColor: Platform.select({
         android: resolveVariable('primaryButtonText.color'),
+        web: resolveVariable('primaryButtonText.color'),
       }),
     },
   },
@@ -83,8 +85,8 @@ export default () => ({
       shadowOpacity: 1,
     },
     playerContainerWithPadding: {
-      height: responsiveHeight(100),
-      paddingBottom: responsiveHeight(40),
+      height: isWeb ? responsiveHeight(70) : responsiveHeight(100),
+      paddingBottom: isWeb ? responsiveHeight(5) : responsiveHeight(40),
     },
     playbackControl: {
       container: {
@@ -102,7 +104,7 @@ export default () => ({
       },
     },
     progressBarBottomWithPadding: {
-      container: { bottom: responsiveHeight(30) },
+      container: { bottom: isWeb ? responsiveHeight(5) : responsiveHeight(30) },
     },
   },
 
@@ -140,7 +142,7 @@ export default () => ({
       borderRadius: 5,
     },
     textContainer: { justifyContent: 'flex-end' },
-    trackInfoContainer: { justifyContent: 'center' },
+    trackInfoContainer: { justifyContent: 'center', width: '100%' },
     title: {
       fontSize: responsiveHeight(15),
       fontWeight: resolveFontWeight('500'),
@@ -187,12 +189,10 @@ export default () => ({
     },
     screenContainer: {
       backgroundColor: resolveVariable('playerModalBackgroundColor'),
-      paddingTop:
-        Platform.OS === 'ios' ? responsiveHeight(70) : responsiveHeight(30),
-      paddingBottom:
-        Platform.OS === 'ios' ? responsiveHeight(40) : responsiveHeight(20),
+      paddingTop: isIos ? responsiveHeight(70) : responsiveHeight(30),
+      paddingBottom: isIos ? responsiveHeight(40) : responsiveHeight(20),
       paddingHorizontal: responsiveWidth(10),
-      borderRadius: Platform.OS === 'ios' ? 30 : 0,
+      borderRadius: isIos ? 30 : 0,
     },
     container: {
       flex: 1,
@@ -368,12 +368,10 @@ export default () => ({
     },
     screenContainer: {
       backgroundColor: resolveVariable('playerModalBackgroundColor'),
-      paddingTop:
-        Platform.OS === 'ios' ? responsiveHeight(70) : responsiveHeight(30),
-      paddingBottom:
-        Platform.OS === 'ios' ? responsiveHeight(40) : responsiveHeight(20),
+      paddingTop: isIos ? responsiveHeight(70) : responsiveHeight(30),
+      paddingBottom: isIos ? responsiveHeight(40) : responsiveHeight(20),
       paddingHorizontal: responsiveWidth(10),
-      borderRadius: Platform.OS === 'ios' ? 30 : 0,
+      borderRadius: isIos ? 30 : 0,
     },
     container: {
       flex: 1,
@@ -399,15 +397,17 @@ export default () => ({
         shadowRadius: 5,
         shadowOpacity: 1,
         marginRight: 0,
+        borderRadius: 20,
       },
       artwork: {
         width: Dimensions.get('window').width - responsiveHeight(30),
         height: Dimensions.get('window').width - responsiveHeight(30),
-        marginBottom: responsiveHeight(30),
+        marginBottom: isWeb ? 0 : responsiveHeight(30),
         marginRight: 0,
         borderRadius: 20,
       },
       trackInfoContainer: {
+        marginTop: isWeb ? responsiveHeight(30) : 0,
         justifyContent: 'center',
         alignItems: 'center',
       },
@@ -533,6 +533,13 @@ export default () => ({
       fontWeight: resolveFontWeight('500'),
       marginVertical: resolveVariable('mediumGutter'),
       color: resolveVariable('playerModalTitleColor'),
+    },
+  },
+
+  [`${ext('QueueButton')}`]: {
+    container: {
+      height: responsiveHeight(24),
+      width: responsiveHeight(24),
     },
   },
 });

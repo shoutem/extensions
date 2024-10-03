@@ -1,24 +1,24 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import he from 'he';
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { RemoteDataListScreen } from 'shoutem.application';
-import { getRouteParams, push } from 'shoutem.navigation';
 import { next } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
+import { RemoteDataListScreen } from 'shoutem.application';
+import { getRouteParams, push } from 'shoutem.navigation';
 import { FeaturedArticleView } from '../components/FeaturedArticleView';
 import { ListArticleView } from '../components/ListArticleView';
 import { ext, POSTS_PER_PAGE } from '../const';
 import {
+  fetchCategories,
+  fetchPostsAuthor,
+  fetchPostsMedia,
   fetchWordpressPosts,
   getFeedCategories,
-  fetchPostsMedia,
-  fetchPostsAuthor,
   getFeedItems,
-  fetchCategories,
 } from '../redux';
-import { getLeadImageUrl, getAuthorName } from '../services';
+import { getAuthorName, getLeadImageUrl } from '../services';
 
 export class ArticlesListScreen extends RemoteDataListScreen {
   static propTypes = {

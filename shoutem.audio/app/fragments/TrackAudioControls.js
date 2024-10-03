@@ -17,7 +17,7 @@ import { useProgressTracking, useTrackState } from '../hooks';
 import { useTrackPlayer } from '../hooks/useTrackPlayer';
 import { getActiveSource } from '../redux';
 import { convertSecondsToTimeDisplay } from '../services';
-import { AUDIO_MODAL_VIEW } from './audio-modal';
+import { AUDIO_MODAL_VIEW } from './audio-modal/const';
 
 /**
  * A set of audio playback controls for controling active track.
@@ -36,6 +36,8 @@ export const TrackAudioControls = ({
   const [skipToPrevEnabled, setSkipToPrevEnabled] = useState(true);
   const [skipToNextEnabled, setSkipToNextEnabled] = useState(true);
   const [buttonPressCount, setButtonPressCount] = useState(0);
+
+  const { position, duration } = useProgressTracking({ track });
 
   const onFirstPlay = useCallback(async () => TrackPlayer.setQueue([track]), [
     track,
@@ -82,7 +84,6 @@ export const TrackAudioControls = ({
     });
   }, [track?.id]);
 
-  const { position, duration } = useProgressTracking({ track });
   const { onPlaybackButtonPress, onSeekComplete } = useTrackPlayer({
     track,
     onFirstPlay,

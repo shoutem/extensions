@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+/* eslint-disable no-console */
 import Geolocation from '@react-native-community/geolocation';
 import { I18n } from 'shoutem.i18n';
 import {
@@ -8,9 +8,8 @@ import {
   requestPermissions,
   RESULTS,
 } from 'shoutem.permissions';
+import { isIos } from 'shoutem-core';
 import { ext } from '../const';
-
-const isIos = Platform.OS === 'ios';
 
 const LOCATION_PERMISSION = isIos
   ? PERMISSION_TYPES.IOS_LOCATION_WHEN_IN_USE
@@ -24,44 +23,44 @@ const LOCATION_OPTIONS = {
 
 export function getCurrentLocation() {
   return new Promise((resolve, reject) => {
-    checkPermissions(LOCATION_PERMISSION).then(result => {
-      if (result === RESULTS.DENIED) {
-        requestPermissions(LOCATION_PERMISSION).then(result => {
-          if (result[LOCATION_PERMISSION] === RESULTS.GRANTED) {
-            Geolocation.getCurrentPosition(
-              position => {
-                return resolve(position);
-              },
-              error => {
-                console.log(error.code, error.message);
-                return reject(error);
-              },
-              LOCATION_OPTIONS,
-            );
-          }
-        });
-      }
+    checkPermissions(LOCATION_PERMISSION)
+      .then(result => {
+        // Permission is not yet requested/ denied, but requestable
+        if (result === RESULTS.DENIED) {
+          return requestPermissions(LOCATION_PERMISSION)
+            .then(result => {
+              if (result[LOCATION_PERMISSION] === RESULTS.GRANTED) {
+                return Geolocation.getCurrentPosition(
+                  resolve,
+                  reject,
+                  LOCATION_OPTIONS,
+                );
+              }
 
-      if (result === RESULTS.GRANTED) {
-        Geolocation.getCurrentPosition(
-          position => {
-            return resolve(position);
-          },
-          error => {
-            console.log(error.code, error.message);
-            return reject(error);
-          },
-          LOCATION_OPTIONS,
-        );
-      }
+              return reject();
+            })
+            .catch(error => reject(error));
+        }
 
-      if (result === RESULTS.BLOCKED || result === RESULTS.UNAVAILABLE) {
+        // Permission is granted
+        if (result === RESULTS.GRANTED) {
+          return Geolocation.getCurrentPosition(
+            resolve,
+            reject,
+            LOCATION_OPTIONS,
+          );
+        }
+
+        // The permission is denied and not requestable anymore, or unavailable. In that case, open
+        // the device settings prompt. This should happen only once, on the first launch, as the subsequent
+        // app launches will detect the previous scenarios
         openDeviceSettings(
           I18n.t(ext('missingPermissionsTitle')),
           I18n.t(ext('missingPermissionsMessage')),
         );
+
         return reject(I18n.t(ext('missingPermissionsTitle')));
-      }
-    });
+      })
+      .catch(error => reject(error));
   });
 }

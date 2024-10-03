@@ -2,9 +2,9 @@
   "name": "bands-in-town",
   "title": "Bands in Town",
   "description": "Integrate a Bands in Town widget into your app.",
-  "version": "1.0.2",
-  "platform": ">=14",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added Node 18 support for server segment",
+  "version": "2.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "icon": "server/assets/add-bandsintown-image.png",
   "screens": [
     {

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Platform } from 'react-native';
+import { getMapUrl } from 'shoutem.cms';
 
 export function dealHasLocation(deal) {
   return (
@@ -82,7 +82,5 @@ export function resolveMapScheme(deal) {
   } = deal;
   const { latitude, longitude, formattedAddress } = location;
 
-  return Platform.OS === 'ios'
-    ? `http://maps.apple.com/?ll=${latitude},${longitude}&q=${formattedAddress}`
-    : `geo:${latitude},${longitude}?q=${formattedAddress}`;
+  return getMapUrl(latitude, longitude, formattedAddress);
 }

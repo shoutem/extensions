@@ -1,4 +1,4 @@
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { changeColorAlpha } from '@shoutem/theme';
 import {
   createScopedResolver,
@@ -7,6 +7,7 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from '@shoutem/ui';
+import { isAndroid } from 'shoutem-core';
 import { ext } from '../const';
 
 const resolveVariable = createScopedResolver(ext());
@@ -556,7 +557,7 @@ export default () => ({
       paddingLeft: 0,
       marginVertical: responsiveHeight(resolveVariable('smallGutter')),
       ...dropShadowStyle,
-      ...(Platform.OS === 'android' && {
+      ...(isAndroid && {
         borderWidth: StyleSheet.hairlineWidth,
         borderColor: resolveVariable('shadowColor'),
       }),

@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
+import { Linking } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import PropTypes from 'prop-types';
-import { Platform, Linking } from 'react-native';
-import { Screen, Text, Button } from '@shoutem/ui';
+import { Button, Screen, Text } from '@shoutem/ui';
 import { MapView } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams, HeaderStyles } from 'shoutem.navigation';
+import { isIos } from 'shoutem-core';
 
 export default class EventMapScreen extends PureComponent {
   static propTypes = {
@@ -52,7 +53,7 @@ export default class EventMapScreen extends PureComponent {
   }
 
   headerRight(props) {
-    if (Platform.OS === 'ios') {
+    if (isIos) {
       return (
         <Button styleName="clear" onPress={this.openMaps}>
           <Text style={props.tintColor}>

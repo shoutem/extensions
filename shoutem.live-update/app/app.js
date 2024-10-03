@@ -1,4 +1,4 @@
-import { Alert, AppState, Platform } from 'react-native';
+import { Alert, AppState } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import _ from 'lodash';
 import Uri from 'urijs';
@@ -11,6 +11,7 @@ import {
   isProduction,
 } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
+import { isIos } from 'shoutem-core';
 import { ext, LIVE_UPDATE_STATUS_SCHEMA } from './const';
 import {
   fetchLiveUpdateStatus,
@@ -24,11 +25,13 @@ function syncWithLiveUpdate(app) {
   const store = app.getStore();
   const state = store.getState();
 
-  const binaryVersionNameProp =
-    Platform.OS === 'ios' ? 'iosBinaryVersionName' : 'androidBinaryVersionName';
-  const bundleVersionCodeProp =
-    Platform.OS === 'ios' ? 'iosBundleVersionCode' : 'androidBundleVersionCode';
-  const bundleUrl = Platform.OS === 'ios' ? 'iosBundleUrl' : 'androidBundleUrl';
+  const binaryVersionNameProp = isIos
+    ? 'iosBinaryVersionName'
+    : 'androidBinaryVersionName';
+  const bundleVersionCodeProp = isIos
+    ? 'iosBundleVersionCode'
+    : 'androidBundleVersionCode';
+  const bundleUrl = isIos ? 'iosBundleUrl' : 'androidBundleUrl';
   const currentBundleVersionCode = getCurrentVersion(state);
 
   store

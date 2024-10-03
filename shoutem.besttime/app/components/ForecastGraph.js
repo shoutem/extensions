@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
-import autoBindReact from 'auto-bind/react';
-import PropTypes from 'prop-types';
-import { Platform, LayoutAnimation } from 'react-native';
+import { LayoutAnimation } from 'react-native';
 import { uses24HourClock } from 'react-native-localize';
 import { BarChart, Grid, XAxis, YAxis } from 'react-native-svg-charts';
-import { I18n } from 'shoutem.i18n';
+import autoBindReact from 'auto-bind/react';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Spinner, Subtitle, View } from '@shoutem/ui';
+import { I18n } from 'shoutem.i18n';
+import { isIos } from 'shoutem-core';
 import {
-  EMPTY_LIVE_FORECAST_BUSYNESS,
   ext,
   NO_DATA_FOUND_ERROR,
   NO_LIVE_DATA_FOUND_ERROR,
@@ -117,7 +117,7 @@ export class ForecastGraph extends PureComponent {
           />
           <View>
             <BarChart
-              animate={Platform.OS === 'ios'}
+              animate={isIos}
               animationDuration={200}
               data={rawDayForecast}
               contentInset={style.chartContentInsets}
@@ -131,7 +131,7 @@ export class ForecastGraph extends PureComponent {
               <Grid />
             </BarChart>
             <BarChart
-              animate={Platform.OS === 'ios'}
+              animate={isIos}
               animationDuration={200}
               data={rawLiveForecast}
               contentInset={style.chartContentInsets}

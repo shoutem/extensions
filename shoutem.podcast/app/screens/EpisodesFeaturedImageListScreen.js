@@ -7,6 +7,7 @@ import { connectStyle } from '@shoutem/theme';
 import { EmptyStateView, Image, responsiveHeight } from '@shoutem/ui';
 import { SearchInput } from 'shoutem.cms/components';
 import { I18n } from 'shoutem.i18n';
+import { getRouteParams } from 'shoutem.navigation';
 import { ext } from '../const';
 import {
   EpisodesListScreen,
@@ -26,7 +27,13 @@ class EpisodesFeaturedImageListScreen extends EpisodesListScreen {
   }
 
   getListProps() {
-    const { data, isSearchSettingEnabled } = this.props;
+    const { data, downloadedEpisodes, shortcutFavoritedEpisodes } = this.props;
+    const { shortcut } = getRouteParams(this.props);
+
+    const settings = shortcut?.settings ?? {};
+    const {
+      isInAppContentSearchEnabled: isSearchSettingEnabled = false,
+    } = settings;
 
     const dataWithSearchItem = isSearchSettingEnabled
       ? [{ id: SEARCH_INPUT_ID }, ...data]
@@ -39,6 +46,7 @@ class EpisodesFeaturedImageListScreen extends EpisodesListScreen {
       stickyHeaderIndices: isSearchSettingEnabled ? [1] : undefined,
       data: dataWithSearchItem,
       ref: this.listRef,
+      extraData: { downloadedEpisodes, shortcutFavoritedEpisodes },
     };
   }
 

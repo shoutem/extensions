@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import _ from 'lodash';
 import moment from 'moment';
 import { RSAA } from 'redux-api-middleware';
@@ -9,6 +8,7 @@ import {
   RESULTS,
   withAlarmPermission,
 } from 'shoutem.permissions';
+import { isAndroid } from 'shoutem-core';
 import { ext } from '../const';
 import getEndpointProvider from '../EndpointProvider';
 import {
@@ -219,7 +219,6 @@ export function cancelPendingJourney(triggerId) {
 export function triggerOccured(triggerId, payload = null) {
   return async (dispatch, getState) => {
     const state = getState();
-    const isAndroid = Platform.OS === 'android';
 
     const activeJourneys = getActiveJourneys(state);
 

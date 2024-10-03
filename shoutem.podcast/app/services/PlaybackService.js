@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import _ from 'lodash';
 import {
   Event,
@@ -6,10 +5,9 @@ import {
   TrackPlayer,
   updateAudioTrackProgress,
 } from 'shoutem.audio';
+import { isIos } from 'shoutem-core';
 import { ext, PODCAST_TRACK_IDENTIFIER } from '../const';
 import { updateLastPlayed } from '../redux';
-
-const isIos = Platform.OS === 'ios';
 
 const shouldHandleEvent = activeTrack => {
   if (!activeTrack || !activeTrack.id.startsWith(PODCAST_TRACK_IDENTIFIER)) {

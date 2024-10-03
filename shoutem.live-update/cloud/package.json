@@ -1,6 +1,6 @@
 {
   "name": "shoutem.live-update",
-  "version": "1.0.2",
+  "version": "2.0.2",
   "private": true,
   "scripts": {
     "@comment init": "Generates env files for all workflow types - should work out of the box",
@@ -62,7 +62,7 @@
     "dotenv": "8.6.0",
     "env-cmd": "7.0.0",
     "express": "4.16.2",
-    "express-urlrewrite": "1.2.0",
+    "express-urlrewrite": "2.0.3",
     "extendify": "1.0.0",
     "glob": "7.1.2",
     "gzip-js": "0.3.2",

@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { isAndroid } from 'shoutem-core';
 import { HeaderBackButton } from '../components';
 import { HeaderStyles, NavigationStacks } from '../services';
 
@@ -51,6 +52,9 @@ export function CustomStack({ stackConfig, parentStackConfig }) {
       })}
       {..._.get(parentStackConfig, 'navigatorOptions', {})}
       {...stackConfig.stack.navigatorOptions}
+      // Disable optimization due to the issues with audio
+      // banner rendering on Android
+      detachInactiveScreens={!isAndroid}
     >
       {_.map(stackConfig.stack.screens, screen => (
         <NavigationStack.Screen

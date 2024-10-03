@@ -20,7 +20,10 @@ function DropdownPicker({
   style,
   ...otherProps
 }) {
-  const renderDropdownIcon = useCallback(() => <ChevronDown />, []);
+  const renderDropdownIcon = useCallback(
+    () => <ChevronDown width={24} height={24} />,
+    [],
+  );
 
   const defaultText = useMemo(() => defaultValue ?? _.get(options, 0, null), [
     defaultValue,

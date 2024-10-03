@@ -78,50 +78,58 @@ function downloadFont(fontConfig) {
 }
 
 function downloadFonts(appConfiguration) {
-  ensureFontsFilePath();
+  return new Promise((resolve, reject) => {
+    ensureFontsFilePath();
 
-  const fontList = _.get(appConfiguration, 'data.relationships.fonts.data', []);
-  const extensionSettings = getExtensionSettings(appConfiguration);
-  const { excludedFonts } = extensionSettings;
+    const fontList = _.get(
+      appConfiguration,
+      'data.relationships.fonts.data',
+      [],
+    );
+    const extensionSettings = getExtensionSettings(appConfiguration);
+    const { excludedFonts } = extensionSettings;
 
-  // Exclude default but excluded fonts
-  const fonts = _.compact(
-    _.map(fontList, fontData =>
-      _.find(
-        appConfiguration.included,
-        item =>
-          item.id === fontData.id &&
-          item.type === fontData.type &&
-          !_.includes(excludedFonts, item.id),
+    // Exclude default but excluded fonts
+    const fonts = _.compact(
+      _.map(fontList, fontData =>
+        _.find(
+          appConfiguration.included,
+          item =>
+            item.id === fontData.id &&
+            item.type === fontData.type &&
+            !_.includes(excludedFonts, item.id),
+        ),
       ),
-    ),
-  );
+    );
 
-  const fontsToDownload = _.map(fonts, fontData =>
-    downloadFont(fontData.attributes),
-  );
+    const fontsToDownload = _.map(fonts, fontData =>
+      downloadFont(fontData.attributes),
+    );
 
-  if (fonts.length) {
-    Promise.all(fontsToDownload)
-      .then(() => {
-        console.log('Font download complete, adding asset linking path');
-        const extPackageJsonPath = path.resolve(
-          projectPath,
-          `extensions/${pack.name}/app/package.json`,
-        );
-        const extPackageJson = fs.readJsonSync(extPackageJsonPath);
-        const { assets: existingAssets = [] } = extPackageJson;
-        const newPackageJson = {
-          ...extPackageJson,
-          assets: [...existingAssets, FONT_ASSET_DIR],
-        };
+    if (fonts.length) {
+      Promise.all(fontsToDownload)
+        .then(() => {
+          console.log('Font download complete, adding asset linking path');
+          const extPackageJsonPath = path.resolve(
+            projectPath,
+            `extensions/${pack.name}/app/package.json`,
+          );
+          const extPackageJson = fs.readJsonSync(extPackageJsonPath);
+          const { assets: existingAssets = [] } = extPackageJson;
+          const newPackageJson = {
+            ...extPackageJson,
+            assets: [...existingAssets, FONT_ASSET_DIR],
+          };
 
-        fs.writeJsonSync(extPackageJsonPath, newPackageJson, { spaces: 2 });
-      })
-      .catch(e => {
-        throw new Error(e);
-      });
-  }
+          fs.writeJsonSync(extPackageJsonPath, newPackageJson, { spaces: 2 });
+          resolve(fonts);
+        })
+        .catch(e => {
+          reject();
+          throw new Error(e);
+        });
+    }
+  });
 }
 
 module.exports = {

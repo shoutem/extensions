@@ -2,18 +2,19 @@
   "name": "notification-center",
   "title": "Notification center",
   "description": "View and manage push notifications within the app",
-  "version": "9.0.5",
-  "platform": ">=14.1.2",
+  "version": "10.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "nativeChanges": {
     "lastVersion": "9.0.3"
   },
-  "releaseNotes": "Release notes\n* Improved user experience in cases where notification is received while user is in-app\n\nDeveloper notes\n* Improved push notification handlers registration process by prioritizing notification handlers registration before token handler registration",
   "icon": "./server/assets/images/add-notifications-settings-image.png",
   "categories": [
     "users"
   ],
   "dependencies": [
     "shoutem.application",
+    "shoutem.navigation",
     "shoutem.firebase",
     "shoutem.i18n",
     "shoutem.permissions",

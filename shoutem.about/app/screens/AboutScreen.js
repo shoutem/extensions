@@ -24,6 +24,7 @@ import {
   navigateTo,
   withIsFocused,
 } from 'shoutem.navigation';
+import { isWeb } from 'shoutem-core';
 import { Map, OpeningHours } from '../components';
 import { ext, schema } from '../const';
 
@@ -58,14 +59,14 @@ export class AboutScreen extends PureComponent {
   componentDidUpdate() {
     const { navigation, data, isFocused } = this.props;
 
-    if (!!_.head(data)?.image && this.isNavigationBarClear()) {
+    if (!!_.head(data)?.image && this.isNavigationBarClear() && !isWeb) {
       if (isFocused && !this.pushedBarStyle && !this.isScrolledDown) {
         this.pushedBarStyle = StatusBar.pushStackEntry({
           barStyle: 'light-content',
         });
       }
 
-      if (!isFocused && this.pushedBarStyle) {
+      if (!isFocused && this.pushedBarStyle && !isWeb) {
         StatusBar.popStackEntry(this.pushedBarStyle);
         this.pushedBarStyle = null;
       }
@@ -239,7 +240,7 @@ export class AboutScreen extends PureComponent {
   handleScroll(event) {
     const { data } = this.props;
 
-    if (!_.head(data)?.image || !this.isNavigationBarClear()) {
+    if (!_.head(data)?.image || !this.isNavigationBarClear() || isWeb) {
       return;
     }
 

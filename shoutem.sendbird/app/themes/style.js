@@ -1,5 +1,10 @@
-import { Platform } from 'react-native';
-import { createScopedResolver, Device, resolveFontWeight } from '@shoutem/ui';
+import {
+  createScopedResolver,
+  Device,
+  resolveFontWeight,
+  responsiveHeight,
+} from '@shoutem/ui';
+import { isAndroid, isWeb } from 'shoutem-core';
 import { ext } from '../const';
 
 const resolveVariable = createScopedResolver(ext());
@@ -214,6 +219,16 @@ export default () => ({
       backgroundColor: resolveVariable('sendbirdSentMessageBackgroundColor'),
       padding: 15,
     },
+    animatedContainer: {
+      flexDirection: 'column',
+      marginBottom: responsiveHeight(5),
+    },
+    ownMessagePosition: {
+      alignItems: 'flex-end',
+    },
+    partnerMessagePosition: {
+      alignItems: 'flex-start',
+    },
     secondaryContainer: {
       marginLeft: 49,
       marginRight: 40,
@@ -309,10 +324,9 @@ export default () => ({
   [`${ext('ChatEncryptionMessage')}`]: {
     container: {
       flex: 0,
-      transform:
-        Platform.OS === 'android'
-          ? [{ scaleY: -1 }, { scaleX: -1 }]
-          : [{ scaleY: -1 }],
+      transform: isAndroid
+        ? [{ scaleY: -1 }, { scaleX: -1 }]
+        : [{ scaleY: -1 }],
       padding: 10,
       borderRadius: 8,
       borderWidth: 1,
@@ -377,7 +391,7 @@ export default () => ({
       },
       wrapper: {
         position: 'absolute',
-        top: '50%',
+        top: isWeb ? undefined : '50%',
         right: 20,
       },
     },

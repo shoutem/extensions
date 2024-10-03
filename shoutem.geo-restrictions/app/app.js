@@ -42,6 +42,7 @@ export const appDidMount = setPriority(app => {
       });
     })
     .catch(error => {
+      // eslint-disable-next-line no-console
       console.error('Fetching user address failed!', error);
       if (error === MISSING_PERMISSIONS_ERROR) {
         dispatch(

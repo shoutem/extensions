@@ -13,7 +13,7 @@ function PushNotificationsDisabled({
 }) {
   return (
     <Screen style={style.container}>
-      <EmptyStatePush />
+      <EmptyStatePush width={55} height={105} />
       <Text style={style.title}>{title}</Text>
       <Text style={style.subtitle}>{subtitle}</Text>
     </Screen>

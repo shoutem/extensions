@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react';
+import { AppState } from 'react-native';
 import he from 'he';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import { Platform, AppState } from 'react-native';
-import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
 import { connectStyle } from '@shoutem/theme';
 import {
+  Caption,
+  Screen,
   ScrollView,
+  ShareButton,
+  SimpleHtml,
+  Tile,
   Title,
   Video,
-  Screen,
-  Caption,
-  Tile,
   View,
-  SimpleHtml,
-  ShareButton,
 } from '@shoutem/ui';
+import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
+import { isIos } from 'shoutem-core';
 import { ext } from '../const';
 
 const YoutubeVideoDetailsScreen = props => {
@@ -42,6 +43,7 @@ const YoutubeVideoDetailsScreen = props => {
     );
     navigation.setOptions({
       ...composeNavigationStyles(['boxing']),
+      // eslint-disable-next-line react/no-multi-comp
       headerRight: () => (
         <ShareButton styleName="clear" title={titleSource} url={videoUrl} />
       ),
@@ -57,7 +59,6 @@ const YoutubeVideoDetailsScreen = props => {
   // When an iOS device is locked, the video pauses automatically
   // on android we have to explicitly remove it from component tree
   const isAppActive = appState === 'active';
-  const isIos = Platform.OS === 'ios';
   const shouldRenderVideo = isAppActive || isIos;
 
   return (

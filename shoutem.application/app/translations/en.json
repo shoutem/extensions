@@ -16,7 +16,8 @@
       "configurationLoadErrorMessage": "App configuration failed to load.",
       "networkErrorTitle": "Network error",
       "networkErrorMessage": "No internet connection, please check your network.",
-      "noSubscriptionMessage": "This app is currently inactive. Please contact its developer for support!"
+      "noSubscriptionMessage": "This app is currently inactive. Please contact its developer for support!",
+      "screenUnavailableInWebMessage": "This screen is currently unavailable in Web Preview.\n\nFor a full native experience of the app you're creating, please download the Disclose app."
     }
   }
 }

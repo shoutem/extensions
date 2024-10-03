@@ -1,1 +1,0 @@
-export { getMapUrl } from './directions';

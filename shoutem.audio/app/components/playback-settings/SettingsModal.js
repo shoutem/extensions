@@ -17,7 +17,7 @@ import SleepTimerSettingsView from './SleepTimerSettingsView';
  * It allows users to navigate through various settings options with navigation-like animations during transitions.
  * Currently supported settings are playback speed & sleep timer.
  */
-const SettingsModal = ({ isVisible, onClose, style }) => {
+const SettingsModal = ({ isVisible, onClose, onAudioModalClose, style }) => {
   const {
     currentRoute,
     translateX,
@@ -86,7 +86,10 @@ const SettingsModal = ({ isVisible, onClose, style }) => {
             <PlaybackSpeedSettingsView onClose={handleClose} />
           )}
           {currentRoute === SETTINGS_VIEW.SLEEP_TIMER && (
-            <SleepTimerSettingsView onClose={handleClose} />
+            <SleepTimerSettingsView
+              onClose={handleClose}
+              onAudioModalClose={onAudioModalClose}
+            />
           )}
         </Animated.View>
       </View>
@@ -97,6 +100,7 @@ const SettingsModal = ({ isVisible, onClose, style }) => {
 SettingsModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   style: PropTypes.object.isRequired,
+  onAudioModalClose: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 

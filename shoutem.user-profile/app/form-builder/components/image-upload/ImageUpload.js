@@ -1,20 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Alert } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Text } from '@shoutem/ui';
+import { ActionSheet, Text } from '@shoutem/ui';
+import { unavailableInWeb } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
 import { ext } from '../../../const';
-import imagePicker from './services/imagePicker';
+import { ERRORS } from './services/imagePicker';
 import { SHAPE_VALUES, SHAPES } from './const';
 import EmptyImagesView from './EmptyImagesView';
 import ImageCarousel from './ImageCarousel';
-import {
-  CIRCULAR_CROP_OPTIONS,
-  ImagePicker,
-  openActionSheet,
-} from './services';
+import { CIRCULAR_CROP_OPTIONS, ImagePicker } from './services';
 
 export function ImageUpload({
   icon,
@@ -27,6 +24,8 @@ export function ImageUpload({
   showLabel,
   style,
 }) {
+  const [actionSheetOpen, setActionSheetOpen] = useState(false);
+
   // Backward compatibility for when we were saving images as a single string
   const resolvedImages = useMemo(
     () => (_.isArray(images) ? images : [images]),
@@ -40,68 +39,87 @@ export function ImageUpload({
     [isCircular],
   );
 
-  async function resolveImages(imagePickerAction) {
-    try {
-      const newImages = await imagePickerAction({
-        ...imagePickerOptions,
-        maxFiles: maxItems - resolvedImages?.length,
-      });
+  const resolveImages = useCallback(
+    async imagePickerAction => {
+      try {
+        const newImages = await imagePickerAction({
+          ...imagePickerOptions,
+          maxFiles: maxItems - resolvedImages?.length,
+        });
 
-      if (_.isEmpty(newImages)) {
-        return null;
-      }
+        if (_.isEmpty(newImages)) {
+          return;
+        }
 
-      return onImagesChange([...resolvedImages, ...newImages]);
-    } catch (e) {
-      let error = {
-        title: I18n.t(ext('errorTitle')),
-        message: I18n.t(ext('errorMessage')),
-      };
-
-      if (e?.message === imagePicker.ERRORS.CAMERA_PERMISSION) {
-        error = {
-          title: I18n.t(ext('cannotAccessCameraTitle')),
-          message: I18n.t(ext('cannotAccessCameraMessage')),
+        onImagesChange([...resolvedImages, ...newImages]);
+        setActionSheetOpen(false);
+      } catch (e) {
+        let error = {
+          title: I18n.t(ext('errorTitle')),
+          message: I18n.t(ext('errorMessage')),
         };
-      } else if (
-        e?.message === imagePicker.ERRORS.CANNOT_ACCESS ||
-        e?.message === imagePicker.ERRORS.LIBRARY_PERMISSION ||
-        e?.message === imagePicker.ERRORS.REQUIRED_PERMISSION
-      ) {
-        error = {
-          title: I18n.t(ext('galleryPermissionErrorTitle')),
-          message: I18n.t(ext('galleryPermissionErrorMessage')),
-        };
+
+        if (e?.message === ERRORS.CAMERA_PERMISSION) {
+          error = {
+            title: I18n.t(ext('cannotAccessCameraTitle')),
+            message: I18n.t(ext('cannotAccessCameraMessage')),
+          };
+        } else if (
+          e?.message === ERRORS.CANNOT_ACCESS ||
+          e?.message === ERRORS.LIBRARY_PERMISSION ||
+          e?.message === ERRORS.REQUIRED_PERMISSION
+        ) {
+          error = {
+            title: I18n.t(ext('galleryPermissionErrorTitle')),
+            message: I18n.t(ext('galleryPermissionErrorMessage')),
+          };
+        }
+
+        // Custom permission denied handler
+        if (onPermissionDenied) {
+          onPermissionDenied(error.title, error.message);
+          return;
+        }
+
+        Alert.alert(error.title, error.message);
       }
+    },
+    [
+      imagePickerOptions,
+      maxItems,
+      onImagesChange,
+      onPermissionDenied,
+      resolvedImages,
+    ],
+  );
 
-      // Custom permission denied handler
-      if (onPermissionDenied) {
-        return onPermissionDenied(error.title, error.message);
-      }
-
-      return Alert.alert(error.title, error.message);
-    }
-  }
-
-  function handleOpenActionSheet() {
-    const actionSheetOptionActions = [
-      () => resolveImages(ImagePicker.openCamera),
-      () => resolveImages(ImagePicker.openPicker),
+  // This function has to be defined after resolveImages fn in web, because of dependency.
+  // resolveImages fn will update when resolvedImages is changed, which will then update this function.
+  // If not defined in this order, this function will have resolveImages with previous values because it hasn't updated yet.
+  const actionSheetOptions = useMemo(() => {
+    const cancelOptions = [
+      {
+        title: I18n.t(ext('cancel')),
+        onPress: () => setActionSheetOpen(false),
+      },
     ];
 
-    return openActionSheet(
-      [
-        I18n.t(ext('takePhoto')),
-        I18n.t(ext('chooseFromLibrary')),
-        I18n.t(ext('cancel')),
-      ],
-      actionSheetOptionActions,
+    const confirmOptions = [
       {
-        tintColor: style.actionSheet.tintColor,
-        userInterfaceStyle: style.actionSheet.userInterfaceStyle,
+        title: I18n.t(ext('takePhoto')),
+        onPress: unavailableInWeb(() => resolveImages(ImagePicker.openCamera)),
       },
-    );
-  }
+      {
+        title: I18n.t(ext('chooseFromLibrary')),
+        onPress: () => resolveImages(ImagePicker.openPicker),
+      },
+    ];
+
+    return {
+      cancelOptions,
+      confirmOptions,
+    };
+  }, [resolveImages]);
 
   if (_.isEmpty(resolvedImages)) {
     return (
@@ -110,7 +128,13 @@ export function ImageUpload({
         <EmptyImagesView
           icon={icon}
           uploadMessage={I18n.t(ext('selectImagesToUpload'))}
-          onUploadPress={handleOpenActionSheet}
+          onUploadPress={() => setActionSheetOpen(true)}
+        />
+        <ActionSheet
+          active={actionSheetOpen}
+          cancelOptions={actionSheetOptions.cancelOptions}
+          confirmOptions={actionSheetOptions.confirmOptions}
+          onDismiss={() => setActionSheetOpen(false)}
         />
       </>
     );
@@ -125,7 +149,13 @@ export function ImageUpload({
         isCircular={isCircular}
         maxItems={maxItems}
         onImagesChange={onImagesChange}
-        onAddImage={handleOpenActionSheet}
+        onAddImage={() => setActionSheetOpen(true)}
+      />
+      <ActionSheet
+        active={actionSheetOpen}
+        cancelOptions={actionSheetOptions.cancelOptions}
+        confirmOptions={actionSheetOptions.confirmOptions}
+        onDismiss={() => setActionSheetOpen(false)}
       />
     </>
   );

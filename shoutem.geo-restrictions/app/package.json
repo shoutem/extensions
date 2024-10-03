@@ -1,6 +1,6 @@
 {
   "name": "shoutem.geo-restrictions",
-  "version": "4.1.1",
+  "version": "5.0.0",
   "description": "Geo restriction extension",
   "dependencies": {
     "@react-native-community/geolocation": "2.1.0"
@@ -9,6 +9,9 @@
     "@shoutem/redux-composers": "*",
     "@shoutem/redux-io": "*",
     "@shoutem/ui": "*"
+  },
+  "webDependencies": {
+    "@react-native-community/geolocation": "2.1.0"
   },
   "nativeDependencies": [
     "@react-native-community/geolocation"

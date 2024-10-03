@@ -1,5 +1,4 @@
 import React from 'react';
-import { Platform } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -11,6 +10,7 @@ import {
   NavigationStacks,
   withIsFocused,
 } from 'shoutem.navigation';
+import { isIos } from 'shoutem-core';
 import { ext } from '../const';
 import { selectors } from '../redux';
 
@@ -23,8 +23,7 @@ function isShortcutProtected(route) {
 }
 
 function getShortcutProductId(route) {
-  const resolvedProductKey =
-    Platform.OS === 'ios' ? 'iOSProductId' : 'androidProductId';
+  const resolvedProductKey = isIos ? 'iOSProductId' : 'androidProductId';
 
   return _.get(route, [
     'params',

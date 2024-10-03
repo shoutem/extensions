@@ -2,12 +2,12 @@
   "name": "auth",
   "title": "Users",
   "description": "Show user profile, sign out user",
-  "version": "8.1.0",
-  "platform": ">=14",
+  "version": "9.0.0",
+  "platform": ">=15.0.0",
   "nativeChanges": {
     "lastVersion": "8.0.0"
   },
-  "releaseNotes": "User facing changes\n* Made \"Forgot password\" text customizable through Style changes",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "icon": "server/assets/add-authentication-image.png",
   "dependencies": [
     "shoutem.application",

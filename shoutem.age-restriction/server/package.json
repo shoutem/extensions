@@ -1,6 +1,6 @@
 {
   "name": "shoutem.age-restriction",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Age Restriction",
   "scripts": {
     "lint": "eslint src/**/*.{js,jsx}",

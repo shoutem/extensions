@@ -4,8 +4,8 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react';
-import ActionSheet from 'react-native-action-sheet';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -17,7 +17,14 @@ import {
   next,
 } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
-import { Divider, ListView, Screen, Text, View } from '@shoutem/ui';
+import {
+  ActionSheet,
+  Divider,
+  ListView,
+  Screen,
+  Text,
+  View,
+} from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
 import { getUser } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
@@ -42,7 +49,7 @@ export function StatusDetailsScreen(props) {
     maxStatusLength,
     focusAddCommentInputOnMount,
   } = getRouteParams(props);
-
+  const [actionSheetOpen, setActionSheetOpen] = useState(false);
   const addCommentInputRef = useRef(null);
 
   const dispatch = useDispatch();
@@ -74,33 +81,20 @@ export function StatusDetailsScreen(props) {
       return (
         <HeaderIconButton
           iconName="more-horizontal"
-          onPress={openActionSheet}
+          onPress={() => setActionSheetOpen(true)}
           {...props}
         />
       );
     },
-    [openActionSheet, status],
+    [status],
   );
 
-  const openActionSheet = useCallback(() => {
-    ActionSheet.showActionSheetWithOptions(
-      {
-        options: [
-          I18n.t(ext('deleteStatusOption')),
-          I18n.t(ext('cancelStatusSelectionOption')),
-        ],
-        destructiveButtonIndex: 0,
-        cancelButtonIndex: 1,
-      },
-      index => {
-        if (index === 0) {
-          return dispatch(deleteStatus(status)).then(navigation.goBack);
-        }
-
-        return null;
-      },
-    );
-  }, [dispatch, navigation.goBack, status]);
+  const handleDeleteStatusPress = useCallback(() => {
+    dispatch(deleteStatus(status)).then(() => {
+      setActionSheetOpen(false);
+      navigation.goBack();
+    });
+  }, [dispatch, navigation, status]);
 
   const loadStatusComments = useCallback(() => {
     if (status?.id) {
@@ -213,6 +207,27 @@ export function StatusDetailsScreen(props) {
     [initialLoading, skeletonLoading.component, renderRow],
   );
 
+  const actionSheetOptions = useMemo(() => {
+    const cancelOptions = [
+      {
+        title: I18n.t(ext('cancelStatusSelectionOption')),
+        onPress: () => setActionSheetOpen(false),
+      },
+    ];
+
+    const confirmOptions = [
+      {
+        title: I18n.t(ext('deleteStatusOption')),
+        onPress: handleDeleteStatusPress,
+      },
+    ];
+
+    return {
+      cancelOptions,
+      confirmOptions,
+    };
+  }, [handleDeleteStatusPress]);
+
   const screenStyle = isTabBar ? 'paper' : 'paper md-gutter-bottom';
 
   return (
@@ -239,6 +254,12 @@ export function StatusDetailsScreen(props) {
           giphyApiKey={giphyApiKey}
         />
       )}
+      <ActionSheet
+        active={actionSheetOpen}
+        cancelOptions={actionSheetOptions.cancelOptions}
+        confirmOptions={actionSheetOptions.confirmOptions}
+        onDismiss={() => setActionSheetOpen(false)}
+      />
     </Screen>
   );
 }

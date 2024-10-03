@@ -253,6 +253,16 @@ export default () => ({
     },
   },
 
+  'shoutem.notification-center.PushNotificationDatePicker': {
+    webLabel: {
+      marginTop: responsiveHeight(16),
+      backgroundColor: 'transparent',
+      fontSize: 14,
+      lineHeight: 24,
+      paddingBottom: responsiveHeight(3),
+    },
+  },
+
   'shoutem.notification-center.TextInputButton': {
     textInputContainer: {
       alignSelf: 'stretch',
@@ -330,6 +340,7 @@ export default () => ({
       fontWeight: resolveFontWeight('300'),
       fontSize: 14,
       height: responsiveHeight(48),
+      outline: 'none',
     },
     disabled: {
       color: changeColorAlpha(resolveVariable('text.color'), 0.6),

@@ -2,6 +2,13 @@ import _ from 'lodash';
 import { combineReducers } from 'redux';
 import URI from 'urijs';
 import { mapReducers } from '@shoutem/redux-composers';
+import {
+  cloneStatus,
+  find,
+  LOAD_SUCCESS,
+  resource,
+  STATUS,
+} from '@shoutem/redux-io';
 import { APPEND_MODE } from '@shoutem/redux-io/actions/find';
 import Outdated from '@shoutem/redux-io/outdated';
 import {
@@ -12,17 +19,10 @@ import {
   validationStatus,
 } from '@shoutem/redux-io/status';
 import {
-  cloneStatus,
-  find,
-  LOAD_SUCCESS,
-  resource,
-  STATUS,
-} from '@shoutem/redux-io';
-import {
   getActionCurrentPage,
   getResponseTotalPages,
 } from './services/pagination';
-import { ext, POSTS_PER_PAGE } from './const';
+import { ext, POSTS_PER_PAGE, WP_CATEGORIES_REQUEST_HEADERS } from './const';
 import { createCategoryFilter, extractBaseUrl } from './services';
 
 export const CATEGORIES_ENDPOINT = '{feedUrl}/wp-json/wp/v2/categories';
@@ -71,9 +71,7 @@ export function fetchCategories({ feedUrl, page, appendMode = false }) {
     request: {
       endpoint: resolveCategoriesUrl(feedUrl),
       resourceType: 'json',
-      headers: {
-        'Access-Control-Request-Method': 'application/json',
-      },
+      headers: WP_CATEGORIES_REQUEST_HEADERS,
     },
   };
 
@@ -106,9 +104,7 @@ export function fetchPosts({
     request: {
       endpoint,
       resourceType: 'json',
-      headers: {
-        'Access-Control-Request-Method': 'application/json',
-      },
+      headers: WP_CATEGORIES_REQUEST_HEADERS,
     },
   };
 
@@ -134,9 +130,7 @@ export function fetchPostsMedia({ feedUrl, posts, appendMode = false }) {
     request: {
       endpoint: resolvePostsMediaUrl(feedUrl),
       resourceType: 'json',
-      headers: {
-        'Access-Control-Request-Method': 'application/json',
-      },
+      headers: WP_CATEGORIES_REQUEST_HEADERS,
     },
   };
 
@@ -155,9 +149,7 @@ export function fetchPostsAuthor({ feedUrl, posts, appendMode = false }) {
     request: {
       endpoint: resolvePostsAuthorUrl(feedUrl),
       resourceType: 'json',
-      headers: {
-        'Access-Control-Request-Method': 'application/json',
-      },
+      headers: WP_CATEGORIES_REQUEST_HEADERS,
     },
   };
 
@@ -326,6 +318,7 @@ export function getFeedItemInfo(item, state, feedUrl) {
   const itemInfo = { ...item };
 
   if (itemInfo.featured_media) {
+    // eslint-disable-next-line camelcase
     itemInfo.featured_media_object = _.find(mediaList, [
       'id',
       itemInfo.featured_media,
@@ -333,6 +326,7 @@ export function getFeedItemInfo(item, state, feedUrl) {
   }
 
   if (itemInfo.author) {
+    // eslint-disable-next-line camelcase
     itemInfo.author_object = _.find(authorList, ['id', itemInfo.author]);
   }
 

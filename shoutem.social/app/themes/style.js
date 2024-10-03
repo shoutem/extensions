@@ -1,4 +1,3 @@
-import { Dimensions } from 'react-native';
 import {
   changeColorAlpha,
   getSizeRelativeToReference,
@@ -13,6 +12,7 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from '@shoutem/ui';
+import { isWeb } from 'shoutem-core';
 import { ext } from '../const';
 
 const resolveVariable = createScopedResolver(ext());
@@ -31,6 +31,7 @@ export default () => ({
       fontWeight: resolveFontWeight(resolveVariable('text.fontWeight')),
       fontStyle: resolveFontStyle(resolveVariable('text.fontStyle')),
       padding: resolveVariable('mediumGutter'),
+      outline: 'none',
     },
     profileAvatar: {
       width: getSizeRelativeToReference(
@@ -624,6 +625,11 @@ export default () => ({
         },
       },
     },
+    actionSheet: {
+      option: {
+        text: { color: '#F9483E' }, // iOS destructive red
+      },
+    },
   },
 
   'shoutem.social.CommentViewSkeleton': {
@@ -762,7 +768,9 @@ export default () => ({
   },
 
   'shoutem.social.ImageAttachment': {
-    imagePreview: { flex: 1 },
+    imagePreview: {
+      ...(!isWeb && { flex: 1 }),
+    },
     loadingIndicator: {
       position: 'absolute',
       top: 0,
@@ -890,7 +898,7 @@ export default () => ({
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'center',
-      paddingRight: responsiveWidth(15),
+      paddingRight: isWeb ? 0 : responsiveWidth(15),
       paddingTop: responsiveHeight(5),
       paddingBottom: responsiveHeight(10),
     },
@@ -972,6 +980,7 @@ export default () => ({
         375,
         resolveVariable('sizes.window.width'),
       ),
+      justifyContent: 'center',
     },
     plusIconRotated: {
       transform: [{ rotate: '45deg' }],
@@ -1025,6 +1034,7 @@ export default () => ({
       flex: 1,
       backgroundColor: 'white',
       width: '100%',
+      paddingVertical: isWeb ? responsiveHeight(30) : undefined,
     },
     closeButton: { position: 'absolute' },
     title: {

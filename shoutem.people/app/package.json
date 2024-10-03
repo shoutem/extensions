@@ -1,10 +1,11 @@
 {
   "name": "shoutem.people",
-  "version": "5.2.1",
+  "version": "6.0.0",
   "description": "List of people",
   "peerDependencies": {
     "@shoutem/redux-io": "*",
     "@shoutem/theme": "*",
     "@shoutem/ui": "*"
-  }
+  },
+  "dependencies": {}
 }

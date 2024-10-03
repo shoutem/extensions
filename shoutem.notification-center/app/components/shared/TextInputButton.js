@@ -16,7 +16,7 @@ function TextInputButton(props) {
         <View style={style.textInput}>
           <View style={style.row}>
             <Text style={style.value}>{value}</Text>
-            <ChevronDown />
+            <ChevronDown width={24} height={24} />
           </View>
         </View>
       </View>

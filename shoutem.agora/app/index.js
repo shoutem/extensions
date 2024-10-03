@@ -5,9 +5,8 @@
 // export everything from extension.js
 // list of exports supported by shoutem can be found here: https://shoutem.github.io/docs/extensions/reference/extension-exports
 
-import { appDidFinishLaunching } from './app';
-import enTranslations from './translations/en.json';
 import './navigation';
+import enTranslations from './translations/en.json';
 
 export const shoutem = {
   i18n: {
@@ -18,4 +17,3 @@ export const shoutem = {
 };
 
 export * from './extension';
-export { appDidFinishLaunching };

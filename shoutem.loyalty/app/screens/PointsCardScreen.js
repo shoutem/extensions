@@ -1,3 +1,4 @@
+/* eslint-disable react/sort-prop-types */
 import React, { PureComponent } from 'react';
 import QRCode from 'react-native-qrcode-svg';
 import { connect } from 'react-redux';
@@ -49,36 +50,6 @@ import NoProgramScreen from './NoProgramScreen';
  * Shows points card details for a single card loyalty program
  */
 export class PointsCardScreen extends PureComponent {
-  static propTypes = {
-    // Assigns points to card when the user scans a bar code
-    authorizeTransactionByBarCode: PropTypes.func.isRequired,
-    // Assigns points to card when cashier scans a QR code
-    authorizeTransactionByQRCode: PropTypes.func.isRequired,
-    // Card ID for user's loyalty card
-    cardId: PropTypes.string,
-    // Card state, with points
-    cardState: PropTypes.shape({
-      points: PropTypes.number,
-    }),
-    // Cashier info for this user, empty if he's not a cashier.
-    // A cashier can scan a QR code and a user can see his points card info.
-    cashierInfo: cashierShape,
-    // True if the user can collect points by scanning a bar code, false otherwise
-    enableBarcodeScan: PropTypes.bool,
-    // ID of loyalty program for this extension
-    programId: PropTypes.string,
-    // Refreshes loyalty card points
-    refreshCardState: PropTypes.func,
-    // Refreshes loyalty card transactions
-    refreshTransactions: PropTypes.func,
-    // Recent transactions
-    transactions: PropTypes.arrayOf(transactionShape),
-    // logged in user
-    user: PropTypes.object,
-    cardStates: PropTypes.array,
-    style: PropTypes.object,
-  };
-
   constructor(props) {
     super(props);
 
@@ -116,9 +87,9 @@ export class PointsCardScreen extends PureComponent {
     }
 
     const { user } = props;
-    const prevUser = _.get(prevProps, 'user');
+    const prevUser = _.get(prevProps, 'user', {});
 
-    if (prevUser !== user && isValid(user)) {
+    if (!!user.id && user.id !== prevUser.id) {
       this.refreshCardState();
     }
   }
@@ -365,6 +336,36 @@ export const mapStateToProps = state => {
     transactions: getCollection(allTransactions, state),
     user,
   };
+};
+
+PointsCardScreen.propTypes = {
+  // Assigns points to card when the user scans a bar code
+  authorizeTransactionByBarCode: PropTypes.func.isRequired,
+  // Assigns points to card when cashier scans a QR code
+  authorizeTransactionByQRCode: PropTypes.func.isRequired,
+  // Card ID for user's loyalty card
+  cardId: PropTypes.string,
+  // Card state, with points
+  cardState: PropTypes.shape({
+    points: PropTypes.number,
+  }),
+  // Cashier info for this user, empty if he's not a cashier.
+  // A cashier can scan a QR code and a user can see his points card info.
+  cashierInfo: cashierShape,
+  // True if the user can collect points by scanning a bar code, false otherwise
+  enableBarcodeScan: PropTypes.bool,
+  // ID of loyalty program for this extension
+  programId: PropTypes.string,
+  // Refreshes loyalty card points
+  refreshCardState: PropTypes.func,
+  // Refreshes loyalty card transactions
+  refreshTransactions: PropTypes.func,
+  // Recent transactions
+  transactions: PropTypes.arrayOf(transactionShape),
+  // logged in user
+  user: PropTypes.object,
+  cardStates: PropTypes.array,
+  style: PropTypes.object,
 };
 
 export const mapDispatchToProps = {

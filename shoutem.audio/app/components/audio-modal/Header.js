@@ -59,7 +59,7 @@ const Header = ({ currentRoute, onClose, style }) => {
         )}
       </View>
       <View styleName="sm-gutter-top">
-        <PlaybackSettings />
+        <PlaybackSettings onAudioModalClose={onClose} />
       </View>
     </View>
   );

@@ -2,18 +2,23 @@ import React, { useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { isWeb } from 'shoutem-core';
 import { DRAWER, TAB_BAR } from '../const';
 import { BackHandlerAndroid } from '../services';
 
 export function withBackHandling(Component) {
+  if (isWeb) {
+    return Component;
+  }
+
   const ResultComponent = ({ navigation, ...otherProps }) => {
     useFocusEffect(
       useCallback(() => {
-        const currentNavState = navigation.dangerouslyGetState();
-        const parentNavigation = navigation.dangerouslyGetParent();
-        const rootNavigation = parentNavigation?.dangerouslyGetParent();
-        const rootNavState = rootNavigation?.dangerouslyGetState();
-        const parentState = parentNavigation?.dangerouslyGetState();
+        const currentNavState = navigation.getState();
+        const parentNavigation = navigation.getParent();
+        const rootNavigation = parentNavigation?.getParent();
+        const rootNavState = rootNavigation?.getState();
+        const parentState = parentNavigation?.getState();
         const rootIndex = _.get(rootNavState, 'index');
         const rootRouteName = _.get(rootNavState, `routes[${rootIndex}].name`);
         const parentIndexRoot = _.get(parentState, 'index') === 0;
@@ -23,7 +28,7 @@ export function withBackHandling(Component) {
         const isTabBarRoot =
           rootRouteName === TAB_BAR && parentIndexRoot && currentIndexRoot;
         const isDrawerOrTabbarRoot = isDrawerRoot || isTabBarRoot;
-        const isRoot = rootNavigation?.dangerouslyGetParent() === undefined;
+        const isRoot = rootNavigation?.getParent() === undefined;
         const isGenericMainLayout = rootRouteName === 'root_stack';
 
         const onBackPress = () => {

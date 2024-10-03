@@ -1,6 +1,5 @@
 import React from 'react';
 import FastImage from 'react-native-fast-image';
-import { connect } from 'react-redux';
 import moment from 'moment';
 import { connectStyle } from '@shoutem/theme';
 import {
@@ -16,11 +15,7 @@ import {
 import { assets } from 'shoutem.layouts';
 import { ext } from '../const';
 import EpisodeProgress from './EpisodeProgress';
-import {
-  EpisodeView,
-  mapDispatchToProps,
-  mapStateToProps,
-} from './EpisodeView';
+import { EpisodeView } from './EpisodeView';
 import { FavoriteButton } from './FavoriteButton';
 
 /**
@@ -29,27 +24,29 @@ import { FavoriteButton } from './FavoriteButton';
 export class GridEpisodeView extends EpisodeView {
   render() {
     const {
-      enableDownload,
       episode,
-      hasFavorites,
       isFavorited,
+      downloadInProgress,
+      appHasFavoritesShortcut,
+      shortcutSettings,
       style,
     } = this.props;
-    const { downloadInProgress, timeUpdated, title } = episode;
+    const { enableDownload, feedUrl } = shortcutSettings;
+    const { timeUpdated, title } = episode;
 
     const isDownloaded = downloadInProgress !== undefined;
     const momentDate = moment(timeUpdated);
     const iconName = isDownloaded ? 'delete' : 'download';
     const handleDownloadManagerPress = isDownloaded
       ? this.onDeletePress
-      : this.onDownloadPress;
+      : id => this.onDownloadPress(id, feedUrl);
     const imageUrl = this.getImageUrl(episode);
 
     return (
       <TouchableOpacity onPress={this.onPress}>
         <Card styleName="flexible">
           <FastImage
-            source={{ uri: imageUrl, priority: FastImage.priority.normal }}
+            source={{ uri: imageUrl, priority: 'normal' }}
             defaultSource={assets.noImagePlaceholder}
             style={style.image}
           />
@@ -60,7 +57,7 @@ export class GridEpisodeView extends EpisodeView {
                 <Caption>{momentDate.fromNow()}</Caption>
               )}
               <View styleName="horizontal">
-                {!!hasFavorites && (
+                {!!appHasFavoritesShortcut && (
                   <FavoriteButton
                     isFavorited={isFavorited}
                     onPress={this.onFavoritePress}
@@ -85,7 +82,4 @@ export class GridEpisodeView extends EpisodeView {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(connectStyle(ext('GridEpisodeView'), {})(GridEpisodeView));
+export default connectStyle(ext('GridEpisodeView'), {})(GridEpisodeView);

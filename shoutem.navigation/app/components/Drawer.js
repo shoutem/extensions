@@ -1,13 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { connectStyle } from '@shoutem/theme';
 import { appActions } from 'shoutem.application';
+import { isWeb } from 'shoutem-core';
+import { ext } from '../const';
 import { getCurrentRoute, navigateTo } from '../services';
 import DrawerItem from './DrawerItem';
 
-export function Drawer(props) {
-  const { parentShortcut, hiddenShortcuts, ...otherProps } = props;
+const DrawerScrollContainer = props => {
+  const { parentShortcut, hiddenShortcuts, style, ...otherProps } = props;
 
   const itemSettings = _.get(parentShortcut, 'screens[0].settings', {});
   const currentRouteName = _.get(
@@ -15,8 +18,10 @@ export function Drawer(props) {
     'params.shortcut.navigationCanonicalName',
   );
 
+  const resolvedStyle = isWeb ? { style: style.container } : undefined;
+
   return (
-    <DrawerContentScrollView {...otherProps}>
+    <DrawerContentScrollView {...otherProps} {...resolvedStyle}>
       {_.map(parentShortcut.children, child => {
         if (_.includes(hiddenShortcuts, child.id)) {
           return null;
@@ -47,9 +52,19 @@ export function Drawer(props) {
       })}
     </DrawerContentScrollView>
   );
-}
-
-Drawer.propTypes = {
-  parentShortcut: PropTypes.object,
-  hiddenShortcuts: PropTypes.array,
 };
+
+DrawerScrollContainer.propTypes = {
+  style: PropTypes.object.isRequired,
+  hiddenShortcuts: PropTypes.array,
+  parentShortcut: PropTypes.object,
+};
+
+DrawerScrollContainer.defaultProps = {
+  hiddenShortcuts: [],
+  parentShortcut: {},
+};
+
+export const Drawer = connectStyle(ext('DrawerScrollContainer'))(
+  DrawerScrollContainer,
+);

@@ -3,12 +3,12 @@
   "title": "Favorites",
   "type": "system",
   "description": "Extensions that are using Shoutem Favorites extension are able to store and retrieve user bookmarked items from local app storage. ",
-  "version": "6.0.2",
-  "platform": ">=14",
+  "version": "7.0.0",
   "nativeChanges": {
     "lastVersion": "6.0.2"
   },
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Updated @react-native-async-storage/async-storage library for ios privacy info inclusion",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "icon": "server/assets/add-favorites-image.png",
   "categories": ["content"],
   "dependencies": ["shoutem.i18n", "shoutem.navigation"],

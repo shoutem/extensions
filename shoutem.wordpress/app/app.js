@@ -1,11 +1,12 @@
 import rio from '@shoutem/redux-io';
+import { WP_CATEGORIES_REQUEST_HEADERS } from './const';
 import {
   API_ENDPOINT,
   AUTHOR_API_ENDPOINT,
   CATEGORIES_ENDPOINT,
   MEDIA_API_ENDPOINT,
-  WORDPRESS_CATEGORIES_SCHEMA,
   WORDPRESS_AUTHOR_SCHEMA,
+  WORDPRESS_CATEGORIES_SCHEMA,
   WORDPRESS_MEDIA_SCHEMA,
   WORDPRESS_NEWS_SCHEMA,
 } from './redux';
@@ -16,9 +17,7 @@ export function appDidMount() {
     request: {
       endpoint: API_ENDPOINT,
       resourceType: 'json',
-      headers: {
-        'Access-Control-Request-Method': 'application/json',
-      },
+      headers: WP_CATEGORIES_REQUEST_HEADERS,
     },
   });
 
@@ -27,9 +26,7 @@ export function appDidMount() {
     request: {
       endpoint: MEDIA_API_ENDPOINT,
       resourceType: 'json',
-      headers: {
-        'Access-Control-Request-Method': 'application/json',
-      },
+      headers: WP_CATEGORIES_REQUEST_HEADERS,
     },
   });
 
@@ -38,9 +35,7 @@ export function appDidMount() {
     request: {
       endpoint: CATEGORIES_ENDPOINT,
       resourceType: 'json',
-      headers: {
-        'Access-Conrol-Request-Method': 'application/json',
-      },
+      headers: WP_CATEGORIES_REQUEST_HEADERS,
     },
   });
 
@@ -49,9 +44,7 @@ export function appDidMount() {
     request: {
       endpoint: AUTHOR_API_ENDPOINT,
       resourceType: 'json',
-      headers: {
-        'Access-Control-Request-Method': 'application/json',
-      },
+      headers: WP_CATEGORIES_REQUEST_HEADERS,
     },
   });
 }

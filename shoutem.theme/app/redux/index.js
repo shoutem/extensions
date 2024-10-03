@@ -4,7 +4,6 @@ export {
   SET_APP_STYLE,
   setAppStyle,
   setThemeResolvers,
-  setThemes,
 } from './actions';
 export { default as reducer } from './reducer';
 export {

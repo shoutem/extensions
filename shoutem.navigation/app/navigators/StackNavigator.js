@@ -1,11 +1,11 @@
 import React from 'react';
-import { Platform } from 'react-native';
 import {
   createStackNavigator,
   TransitionPresets,
 } from '@react-navigation/stack';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { isAndroid, isIos, isWeb } from 'shoutem-core';
 import { HeaderBackButton, HeaderTitle } from '../components';
 import { createChildNavigators, HeaderStyles } from '../services';
 import { createCustomStackNavigators } from './CustomStackNavigators';
@@ -17,6 +17,9 @@ function screenOptions() {
     ...TransitionPresets.SlideFromRightIOS,
     headerLeft: props => <HeaderBackButton {...props} />,
     headerTitleAlign: 'center',
+    ...(isWeb && {
+      cardStyle: { flex: 1 },
+    }),
   };
 }
 
@@ -34,7 +37,13 @@ export function StackNavigator({ parentShortcut, hiddenShortcuts, screens }) {
     { headerShown: false },
   );
 
-  const CustomNavigators = createCustomStackNavigators(GridStack);
+  const CustomNavigators = createCustomStackNavigators(GridStack, {
+    screenOptions: {
+      ...(isWeb && {
+        cardStyle: { flex: 1 },
+      }),
+    },
+  });
 
   return (
     <GridStack.Navigator
@@ -43,13 +52,19 @@ export function StackNavigator({ parentShortcut, hiddenShortcuts, screens }) {
         ...HeaderStyles.default,
         ...TransitionPresets.SlideFromRightIOS,
         headerTitleAlign: 'center',
+        ...(isWeb && {
+          cardStyle: { flex: 1 },
+        }),
       }}
+      // Disable optimization due to the issues with audio
+      // banner rendering on Android
+      detachInactiveScreens={!isAndroid}
     >
       <GridStack.Screen
         name="root_layout"
         component={screens[layoutType]}
         options={{
-          ...(Platform.OS !== 'ios' && {
+          ...(!isIos && {
             safeAreaInsets: { top: 0 },
           }),
           headerShown: true,

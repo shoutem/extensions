@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Text, View } from '@shoutem/ui';
 import { loginRequired } from 'shoutem.auth';

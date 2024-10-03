@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { AppState, Platform } from 'react-native';
+import { AppState } from 'react-native';
 import autoBindReact from 'auto-bind/react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -17,6 +17,7 @@ import {
 } from '@shoutem/ui';
 import { Favorite } from 'shoutem.favorites';
 import { composeNavigationStyles, getRouteParams } from 'shoutem.navigation';
+import { isIos } from 'shoutem-core';
 import { ext } from '../const';
 import { VIDEOS_SCHEMA } from '../redux';
 
@@ -83,7 +84,6 @@ export class VideoDetails extends PureComponent {
     // When an iOS device is locked, the video pauses automatically on android
     // we have to explicitly remove it from component tree.
     const isAppActive = appState === 'active';
-    const isIos = Platform.OS === 'ios';
 
     // For some reason we pass an object instead of a string, so another check
     // is necessary.
@@ -117,7 +117,6 @@ export class VideoDetails extends PureComponent {
 
 VideoDetails.propTypes = {
   navigation: PropTypes.object.isRequired,
-  video: PropTypes.object.isRequired,
 };
 
 export default connectStyle(ext('VideoDetails'))(VideoDetails);

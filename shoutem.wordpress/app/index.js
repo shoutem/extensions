@@ -1,7 +1,7 @@
 import ArticleDetailsScreen from './screens/ArticleDetailsScreen';
+import ArticleMediumDetailsScreen from './screens/ArticleMediumDetailsScreen';
 import ArticlesGridScreen from './screens/ArticlesGridScreen';
 import ArticlesListScreen from './screens/ArticlesListScreen';
-import ArticleMediumDetailsScreen from './screens/ArticleMediumDetailsScreen';
 import enTranslations from './translations/en.json';
 import reducer from './redux';
 

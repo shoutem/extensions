@@ -2,9 +2,9 @@
   "name": "i18n",
   "title": "Language & Region",
   "description": "Configure the language and regional settings of your app.",
-  "version": "4.2.0",
-  "platform": ">=14.0.2",
-  "releaseNotes": "No user facing changes\n\nDeveloper notes\n* Created and exported locale changed middleware factory",
+  "version": "5.0.0",
+  "platform": ">=15.0.0",
+  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
   "dependencies": [
     "shoutem.application"
   ],
