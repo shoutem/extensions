@@ -25,6 +25,8 @@ const AudioPlayerView = ({ onQueuePress, style }) => {
         artworkUri={activeMetadata?.artwork}
         title={activeMetadata?.title}
         subtitle={activeMetadata?.artist}
+        showArtwork={activeSource.showArtwork}
+        visualComponent={activeSource.showArtwork ? 'artwork' : 'placeholder'}
         style={style.metadata}
       />
       <View styleName="vertical stretch">

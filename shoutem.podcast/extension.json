@@ -2,12 +2,12 @@
   "name": "podcast",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "version": "11.0.0",
-  "platform": ">=15",
+  "version": "12.0.0",
+  "platform": ">=15.0.1",
   "nativeChanges": {
     "lastVersion": "8.0.1"
   },
-  "releaseNotes": "Release notes\n* Favorite podcast episodes will now be in sync with remote feed information\n\n* Developer notes\n* (Breaking changes) Refactored more than few screens, components and redux (reducers, selectors, actions)",
+  "releaseNotes": "Release notes\n* Playing episode from details screen will now play it as a part of whole feed playlist\n\n* Developer notes\n* (Breaking changes) Changed components & hooks props, deleted unused component & hook",
   "icon": "server/assets/extension-icon.png",
   "categories": [
     "media"

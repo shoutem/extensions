@@ -62,7 +62,9 @@ class EpisodesFeaturedImageListScreen extends EpisodesListScreen {
   }
 
   handleSearchFocus() {
-    if (!this.listRef || !this.listRef?.current) {
+    const { data } = this.props;
+
+    if (data.length === 0 || !this.listRef || !this.listRef?.current) {
       return;
     }
 

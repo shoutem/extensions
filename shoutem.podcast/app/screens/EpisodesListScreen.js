@@ -19,6 +19,7 @@ import {
   getEpisodesFeed,
   getHasFavorites,
   getIsFavorited,
+  getLastPlayed,
   removeFavoriteEpisode,
   saveFavoriteEpisode,
 } from '../redux';
@@ -163,7 +164,7 @@ export class EpisodesListScreen extends RssListScreen {
   }
 
   renderFooter() {
-    const { data } = this.props;
+    const { data, lastPlayedEpisodeTrack } = this.props;
 
     // Wait until initial data is fetched and initialized, then render player. Only after initial data
     // is initialized, player is ready to resolve queue logic.
@@ -172,17 +173,14 @@ export class EpisodesListScreen extends RssListScreen {
     }
 
     const {
-      shortcut: { id: shortcutId, title: shortcutTitle },
+      shortcut: { id: shortcutId },
     } = getRouteParams(this.props);
-
-    const meta = getMeta(data);
 
     return (
       <PodcastPlaylistPlayer
-        data={data}
-        title={shortcutTitle}
-        meta={meta}
+        resumePlaylistMode
         shortcutId={shortcutId}
+        initialTrackId={lastPlayedEpisodeTrack?.id}
       />
     );
   }
@@ -195,6 +193,7 @@ export const mapStateToProps = (state, ownProps) => {
 
   const episodesFeed = getEpisodesFeed(state, feedUrl);
   const downloadedEpisodes = getDownloadedEpisodes(state);
+  const lastPlayedEpisodeTrack = getLastPlayed(state, feedUrl);
 
   const hasFavorites = getHasFavorites(state);
   const isFavorited = episode => getIsFavorited(state, episode.uuid);
@@ -210,6 +209,7 @@ export const mapStateToProps = (state, ownProps) => {
     shortcutFavoritedEpisodes,
     isFavorited,
     hasFavorites,
+    lastPlayedEpisodeTrack,
     // Below props are required because RssListScreen expects them to be mapped in props.
     // TODO - refactor RssListScreen not to expect below props. Each screen should extract
     // required data & only have data mapped in props.

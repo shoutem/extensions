@@ -5,7 +5,7 @@ import { getUser, updateProfile } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
 import { triggerCanceled, triggerOccured } from 'shoutem.notification-center';
-import { isIos } from 'shoutem-core';
+import { isAndroid } from 'shoutem-core';
 import { ext } from '../const';
 import MBBridge, { SHOPIFY_ERROR_CODES } from '../MBBridge';
 import { normalizeOrderPrices, PROFILE_FIELDS } from '../services';
@@ -245,7 +245,6 @@ export function createCustomer(customer) {
   return async (dispatch, getState) => {
     try {
       const response = await MBBridge.createCustomer(customer);
-
       const {
         customerCreate: { customerUserErrors },
       } = response;
@@ -360,7 +359,7 @@ export async function refreshToken() {
 /**
  * Used to update customer information and proceed to the next checkout step
  * @param customer - Email and address information
- * @returns {{ type: String, payload: { customer: {} }}
+ * @returns {{ type: String, payload: { customer: {} }}}
  */
 export function updateCustomerInformation(customer, cart) {
   return async (dispatch, getState) => {
@@ -394,14 +393,19 @@ export function updateCustomerInformation(customer, cart) {
           setCustomerError({
             title: I18n.t(ext('checkoutErrorTitle')),
             message: fullErrorMessage,
+            displayErrorToastOnAndroid: true,
           }),
         );
       }
 
       let webUrl = checkoutUrl;
       let accessToken = '';
-      // Log in disabled on Android
-      const isLoggedIn = isIos && (await MBBridge.isLoggedIn());
+
+      // Android doesn't have native isLoggedIn implemented. On Android, we want to skip this
+      // check and direct user to web checkout straight away.
+      // Without !isAndroid check, isLoggedIn gracefully fails and enters catch, which then
+      // shows error toast and prevents web redirection.
+      const isLoggedIn = await MBBridge.isLoggedIn();
 
       if (isLoggedIn) {
         const associateResponse = await MBBridge.associateCheckout(checkoutId);
@@ -423,6 +427,7 @@ export function updateCustomerInformation(customer, cart) {
             setCustomerError({
               title: I18n.t(ext('checkoutErrorTitle')),
               message: fullErrorMessage,
+              displayErrorToastOnAndroid: true,
             }),
           );
         }
@@ -454,6 +459,7 @@ export function updateCustomerInformation(customer, cart) {
         setCustomerError({
           title: I18n.t(ext('checkoutErrorTitle')),
           message: e?.message,
+          displayErrorToastOnAndroid: true,
         }),
       );
     }
@@ -465,7 +471,7 @@ export function updateCustomerInformation(customer, cart) {
  * Used to notify that the user has saved his email and address during checkout
  * and proceeded to the next step
  * @param customer - Customer information
- * @returns {{ type: String, payload: { customer: {} }}
+ * @returns {{ type: String, payload: { customer: {} }}}
  */
 export function customerInformationUpdated(payload) {
   return {
@@ -590,7 +596,7 @@ export function loadNextOrders(pageSize = DEFAULT_PAGE_SIZE) {
 
     const pageInfo = getOrdersPageInfo(getState());
 
-    if (!pageInfo.hasNextPage) {
+    if (!pageInfo?.hasNextPage) {
       return dispatch(setOrdersLoading(false));
     }
 
@@ -640,17 +646,17 @@ export function getCustomer(addressCursor = '') {
 
 export function updateCustomer(updates) {
   return async dispatch => {
-    dispatch(setCustomerLoading(true));
-
-    const isLoggedIn = await MBBridge.isLoggedIn();
-
-    if (!isLoggedIn) {
-      return dispatch(setCustomerLoading(false));
-    }
-
-    const updatedUser = _.pick(updates, PROFILE_FIELDS);
-
     try {
+      dispatch(setCustomerLoading(true));
+
+      const isLoggedIn = await MBBridge.isLoggedIn();
+
+      if (!isLoggedIn) {
+        return dispatch(setCustomerLoading(false));
+      }
+
+      const updatedUser = _.pick(updates, PROFILE_FIELDS);
+
       const {
         customerUpdate: { customer, customerUserErrors },
       } = await MBBridge.updateCustomer(updatedUser);

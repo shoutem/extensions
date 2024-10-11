@@ -1,4 +1,5 @@
 import React from 'react';
+import { State } from 'react-native-track-player';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { View } from '@shoutem/ui';
@@ -16,9 +17,7 @@ export const LiveStreamAudioControls = ({
   onFirstPlay,
   style,
 }) => {
-  const { isActiveAndPlaying, isLoadingOrBuffering } = useTrackState({
-    track: liveStream,
-  });
+  const { playback, isActive } = useTrackState({ track: liveStream });
 
   const { onPlaybackButtonPress } = useTrackPlayer({
     track: liveStream,
@@ -26,12 +25,21 @@ export const LiveStreamAudioControls = ({
     onFirstPlay,
   });
 
+  const isLoading =
+    isActive &&
+    (playback.state === State.Loading || playback.state === State.Buffering);
+  const resolvedIconName =
+    isActive &&
+    (playback.state === State.Playing || playback.state === State.Ready)
+      ? 'pause'
+      : 'play';
+
   return (
     <View styleName="justify-center items-center md-gutter-horizontal">
       <PlaybackControl
         onPress={unavailableInWeb(onPlaybackButtonPress)}
-        isLoadingOrBuffering={isLoadingOrBuffering}
-        iconName={isActiveAndPlaying ? 'pause' : 'play'}
+        isLoadingOrBuffering={isLoading}
+        iconName={resolvedIconName}
         style={style.playbackButton}
       />
     </View>

@@ -1,6 +1,6 @@
 {
   "name": "shoutem.navigation",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "Main navigation",
   "dependencies": {
     "@react-navigation/bottom-tabs": "6.6.0",

@@ -73,7 +73,11 @@ const RadioRssScreen = ({ navigation, route, style, renderAdBanner }) => {
             styleName="clear text-centric"
             style={style.radioPlayerContainer}
           >
-            <RadioPlayer liveStream={liveStream} title={shortcut.title} />
+            <RadioPlayer
+              liveStream={liveStream}
+              title={shortcut.title}
+              showArtwork={!!shortcut.settings.showArtwork}
+            />
             <Text style={style.nowPlayingText}>{playbackStateText}</Text>
           </Tile>
           <View style={style.nowPlaying} styleName="vertical h-center">

@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 import URI from 'urijs';
 import { getMeta, hasNext, isBusy } from '@shoutem/redux-io';
 import { getStatus, setStatus } from '@shoutem/redux-io/status';
-import { getActiveSource, updateActiveSource } from 'shoutem.audio';
+import { updateActiveSource } from 'shoutem.audio';
 import {
   DEFAULT_PAGE_LIMIT,
   EPISODE_CHECK_TAG,
   EPISODES_COLLECTION_TAG,
   PODCAST_TRACK_IDENTIFIER,
 } from '../const';
-import { getLastPlayed, loadEpisodes, loadMoreTracks } from '../redux';
+import { loadEpisodes, loadMoreTracks } from '../redux';
 
 /**
  *
@@ -20,40 +20,38 @@ import { getLastPlayed, loadEpisodes, loadMoreTracks } from '../redux';
  * then load all tracks before it **and** 20 tracks after it.
  * @returns boolean indicator if initial queue is loaded & onLoadMoreQueue callback
  */
-export const useLoadQueue = (feedUrl, data, shortcutId) => {
+
+// TODO - initial track prop koji je lastplayed ili initial track s details.
+export const useLoadQueue = ({
+  queueLoaded,
+  shortcutId,
+  feedUrl,
+  data,
+  activeSource,
+  initialTrackId,
+}) => {
   const dispatch = useDispatch();
 
-  const [initialQueueLoaded, setInitialQueueLoaded] = useState(false);
+  const [initialQueueLoaded, setInitialQueueLoaded] = useState(queueLoaded);
   const [statusUpdated, setStatusUpdated] = useState(false);
 
-  const activeSource = useSelector(getActiveSource);
-  const lastPlayedEpisodeTrack = useSelector(state =>
-    getLastPlayed(state, feedUrl),
-  );
-
-  const lastPlayedEpisodeId = lastPlayedEpisodeTrack?.id.replace(
-    `${PODCAST_TRACK_IDENTIFIER}-`,
-    '',
-  );
-
-  useEffect(() => {
-    loadInitialQueue();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    updateFeedLinks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusUpdated, initialQueueLoaded, data?.length]);
-
   const loadInitialQueue = async () => {
-    // Skip if feed is still loading, or if more queue is loading or if already loaded.
+    // Skip if feed is still loading,
+    // or if more queue is loading,
+    // or if queue is already loaded.
+    // Last is possible when starting player from details screen, or if
+    // we want to exit here early - when feed tracks are loaded and user has not played any episode before.
     if (initialQueueLoaded || isBusy(data)) {
       return;
     }
 
-    // Set queue loaded if user has not played any track before or if feed has only 20 items.
-    if (!lastPlayedEpisodeTrack || !hasNext(data)) {
+    // The rest of the hook code takes care of case when user is resuming playlist.
+    // Initial track is actually last played track in feed playlist.
+    // We have to check if last played episode exists in feed and if it does,
+    // we have to preload all episodes before it.
+
+    // Set queue loaded & ready if feed has only 20 items.
+    if (!hasNext(data)) {
       setInitialQueueLoaded(true);
       return;
     }
@@ -63,7 +61,11 @@ export const useLoadQueue = (feedUrl, data, shortcutId) => {
     const episodeResults = await dispatch(
       loadEpisodes(
         shortcutId,
-        { id: lastPlayedEpisodeId, pageLimit: 1 },
+        {
+          // Transform track id to episode id, to be able to perform search request.
+          id: initialTrackId.replace(`${PODCAST_TRACK_IDENTIFIER}-`, ''),
+          pageLimit: 1,
+        },
         EPISODE_CHECK_TAG,
       ),
     );
@@ -135,6 +137,16 @@ export const useLoadQueue = (feedUrl, data, shortcutId) => {
     [data?.length],
   );
 
+  useEffect(() => {
+    loadInitialQueue();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    updateFeedLinks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statusUpdated, initialQueueLoaded, data?.length]);
+
   // When more queue data is loaded, onLoadMoreQueue has to be updated.
   useEffect(() => {
     if (!initialQueueLoaded || activeSource?.url !== feedUrl) {
@@ -145,6 +157,7 @@ export const useLoadQueue = (feedUrl, data, shortcutId) => {
       updateActiveSource({
         ...activeSource,
         onLoadMoreQueue: handleLoadMoreQueue,
+        showArtwork: true,
       }),
     );
 

@@ -70,7 +70,11 @@ const Radio = ({ navigation, route, style, renderAdBanner }) => {
             {!!renderAdBanner && (
               <View style={style.adBannerContainer}>{renderAdBanner()}</View>
             )}
-            <RadioPlayer liveStream={liveStream} title={shortcut.title} />
+            <RadioPlayer
+              liveStream={liveStream}
+              title={shortcut.title}
+              showArtwork={!!shortcut.settings.showArtwork}
+            />
           </Overlay>
         </Tile>
         <View style={style.nowPlaying} styleName="vertical h-center">

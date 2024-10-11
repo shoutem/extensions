@@ -93,6 +93,7 @@ export function ArtworkRadioScreen({
             <RadioPlayer
               liveStream={liveStream}
               title={shortcut.title}
+              showArtwork={!!shortcut.settings.showArtwork}
               style={style.radioPlayer}
             />
           </ImageBackground>

@@ -76,6 +76,7 @@ export const usePodcastPlaylistPlayer = ({ playlist, onLoadMoreQueue }) => {
         title: playlist.title,
         trackCount: playlist.trackCount,
         onLoadMoreQueue,
+        showArtwork: true,
       }),
     );
 

@@ -10,6 +10,7 @@ import { ext } from '../../const';
 import SettingsView from './AllSettingsView';
 import { HIT_SLOP, SETTINGS_VIEW } from './const';
 import PlaybackSpeedSettingsView from './PlaybackSpeedSettingsView';
+import RepeatModeSettingsView from './RepeatModeSettingsView';
 import SleepTimerSettingsView from './SleepTimerSettingsView';
 
 /**
@@ -42,6 +43,7 @@ const SettingsModal = ({ isVisible, onClose, onAudioModalClose, style }) => {
     () => ({
       ROOT: I18n.t(ext('settingsModalTitle')),
       PLAYBACK_SPEED: I18n.t(ext('playbackSpeedTitle')),
+      REPEAT_MODE: I18n.t(ext('repeatModeTitle')),
       SLEEP_TIMER: I18n.t(ext('sleepTimerSettingsTitle')),
     }),
     [],
@@ -84,6 +86,9 @@ const SettingsModal = ({ isVisible, onClose, onAudioModalClose, style }) => {
           )}
           {currentRoute === SETTINGS_VIEW.PLAYBACK_SPEED && (
             <PlaybackSpeedSettingsView onClose={handleClose} />
+          )}
+          {currentRoute === SETTINGS_VIEW.REPEAT_MODE && (
+            <RepeatModeSettingsView onClose={handleClose} />
           )}
           {currentRoute === SETTINGS_VIEW.SLEEP_TIMER && (
             <SleepTimerSettingsView

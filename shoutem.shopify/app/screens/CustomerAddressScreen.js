@@ -4,10 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { EmptyListImage, Icon, Screen, Spinner, Text, View } from '@shoutem/ui';
+import {
+  EmptyListImage,
+  Icon,
+  Screen,
+  Spinner,
+  Text,
+  Toast,
+  View,
+} from '@shoutem/ui';
 import { loginRequired } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { HeaderIconButton, navigateTo } from 'shoutem.navigation';
+import { isAndroid } from 'shoutem-core';
 import { ext } from '../const';
 import { actions, selectors } from '../redux';
 
@@ -54,21 +63,35 @@ export function CustomerAddressScreen({ navigation, style }) {
     [sections],
   );
 
+  const handleCreateAddressPress = useCallback(() => {
+    if (isAndroid) {
+      Toast.showInfo({
+        title: I18n.t(ext('addressCreateDisabledTitle')),
+        message: I18n.t(ext('addressCreateDisabledMessage')),
+      });
+
+      return;
+    }
+
+    navigateTo(ext('EditAddressScreen'));
+  }, []);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: navProps => {
         return (
           <HeaderIconButton
             iconName="plus-button"
-            onPress={() => navigateTo(ext('EditAddressScreen'))}
+            onPress={handleCreateAddressPress}
             {...navProps}
           />
         );
       },
     });
-  }, [navigation]);
+  }, [navigation, handleCreateAddressPress]);
 
   const renderItem = useCallback(
+    // eslint-disable-next-line no-unused-vars
     ({ item, _index, section }) => (
       <Pressable
         style={style.itemRow}

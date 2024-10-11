@@ -4,5 +4,6 @@ export const HIT_SLOP = { top: 10, bottom: 10, left: 10, right: 10 };
 export const SETTINGS_VIEW = {
   ROOT: 'ROOT',
   PLAYBACK_SPEED: 'PLAYBACK_SPEED',
+  REPEAT_MODE: 'REPEAT_MODE',
   SLEEP_TIMER: 'SLEEP_TIMER',
 };

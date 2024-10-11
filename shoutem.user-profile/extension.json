@@ -3,12 +3,12 @@
   "title": "User Profile",
   "type": "system",
   "description": "Add extended user profile",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "platform": ">=15.0.0",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
+  "releaseNotes": "No user facing changes.\n\nFor developers\n* Upgraded version of the image-crop-picker, resolving issues with XCode 16",
   "icon": "server/assets/add-user-profile-image.png",
   "nativeChanges": {
-    "lastVersion": "4.2.1"
+    "lastVersion": "6.0.1"
   },
   "dependencies": [
     "shoutem.application",

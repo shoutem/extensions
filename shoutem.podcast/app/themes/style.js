@@ -162,20 +162,29 @@ export default () => ({
     },
   },
 
-  [`${ext('PodcastEpisodePlayer')}`]: {
-    button: {
-      height: responsiveHeight(50),
-      width: responsiveHeight(50),
-      borderRadius: responsiveHeight(25),
-      backgroundColor: resolveVariable('secondaryButtonBackgroundColor'),
-      marginTop: resolveVariable('mediumGutter'),
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    icon: {
-      color: resolveVariable('secondaryButtonTextColor'),
-      width: responsiveHeight(30),
-      height: responsiveHeight(30),
+  [`${ext('PodcastPlaylistPlayer')}`]: {
+    podcastEpisodePlayer: {
+      container: {
+        width: responsiveHeight(50),
+        height: responsiveHeight(50),
+        borderRadius: responsiveHeight(25),
+        backgroundColor: resolveVariable('secondaryButtonBackgroundColor'),
+        marginTop: resolveVariable('mediumGutter'),
+        alignSelf: 'center',
+      },
+      spinnerContainer: {
+        width: responsiveHeight(50),
+        height: responsiveHeight(50),
+        borderRadius: responsiveHeight(25),
+        backgroundColor: resolveVariable('secondaryButtonBackgroundColor'),
+        marginTop: resolveVariable('mediumGutter'),
+        alignSelf: 'center',
+      },
+      icon: {
+        color: resolveVariable('secondaryButtonTextColor'),
+        width: responsiveHeight(30),
+        height: responsiveHeight(30),
+      },
     },
   },
 

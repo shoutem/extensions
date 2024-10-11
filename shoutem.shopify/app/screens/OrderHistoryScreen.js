@@ -3,7 +3,7 @@ import { FlatList } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { EmptyListImage,  Screen, Spinner } from '@shoutem/ui';
+import { EmptyListImage, Screen, Spinner } from '@shoutem/ui';
 import { loginRequired } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
