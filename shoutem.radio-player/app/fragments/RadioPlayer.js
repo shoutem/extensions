@@ -22,7 +22,7 @@ const PLAYER_OPTIONS = {
   compactCapabilities: [Capability.Play, Capability.Pause],
 };
 
-const RadioPlayer = ({ liveStream, title, style }) => {
+const RadioPlayer = ({ liveStream, title, showArtwork, style }) => {
   const dispatch = useDispatch();
 
   const activeSource = useSelector(getActiveSource);
@@ -52,15 +52,16 @@ const RadioPlayer = ({ liveStream, title, style }) => {
         type: AUDIO_SOURCE_TYPE.LIVE_STREAM,
         url: radioStream.url,
         title,
+        showArtwork,
       }),
     );
-  }, [dispatch, radioStream, title]);
+  }, [dispatch, radioStream, showArtwork, title]);
 
   return (
     <View style={style.container}>
       <PlaybackAnimation
-        shouldAnimate={isActiveAndPlaying}
-        isPlaying={isActiveAndPlaying}
+        shouldAnimate={!!isActiveAndPlaying}
+        isPlaying={!!isActiveAndPlaying}
         isStopped={!isActiveAndPlaying}
         style={style.playbackMainCircle}
       />
@@ -84,6 +85,7 @@ RadioPlayer.propTypes = {
     url: PropTypes.string.isRequired,
     name: PropTypes.string,
   }).isRequired,
+  showArtwork: PropTypes.bool.isRequired,
   style: PropTypes.object,
   title: PropTypes.string,
 };

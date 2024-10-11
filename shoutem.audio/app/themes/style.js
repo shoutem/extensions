@@ -1,4 +1,4 @@
-import { Dimensions, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { changeColorAlpha } from '@shoutem/theme';
 import {
   createScopedResolver,
@@ -106,6 +106,14 @@ export default () => ({
     progressBarBottomWithPadding: {
       container: { bottom: isWeb ? responsiveHeight(5) : responsiveHeight(30) },
     },
+    metadata: {
+      audioBarsContainer: {
+        width: responsiveHeight(40),
+      },
+      audioBarColor: {
+        backgroundColor: resolveVariable('playerBannerIconsColor'),
+      },
+    },
   },
 
   [`${ext('TrackProgressBar')}`]: {
@@ -140,6 +148,12 @@ export default () => ({
       width: responsiveHeight(40),
       height: responsiveHeight(40),
       borderRadius: 5,
+    },
+    placeholder: {
+      width: responsiveHeight(25),
+      height: responsiveHeight(25),
+      margin: responsiveHeight(7.5), // making up for difference between artwork and placeholder icon size
+      color: resolveVariable('playerBannerMetadataTextColor'),
     },
     textContainer: { justifyContent: 'flex-end' },
     trackInfoContainer: { justifyContent: 'center', width: '100%' },
@@ -389,6 +403,13 @@ export default () => ({
         justifyContent: 'center',
         flexDirection: 'column',
         paddingVertical: responsiveHeight(3),
+        audioBarsColor: {
+          backgroundColor: resolveVariable('playerModalMetadataTextColor'),
+        },
+        audioBarsInterpolationConfig: {
+          inputRangeValue: [3, 8],
+          outputRangeMultiplier: [0.4, 1],
+        },
       },
       animatedText: { containerMaxHeight: { maxHeight: responsiveHeight(30) } },
       artworkContainer: {
@@ -400,11 +421,17 @@ export default () => ({
         borderRadius: 20,
       },
       artwork: {
-        width: Dimensions.get('window').width - responsiveHeight(30),
-        height: Dimensions.get('window').width - responsiveHeight(30),
+        width: resolveVariable('sizes.window.width') - responsiveHeight(30),
+        height: resolveVariable('sizes.window.width') - responsiveHeight(30),
         marginBottom: isWeb ? 0 : responsiveHeight(30),
         marginRight: 0,
         borderRadius: 20,
+      },
+      placeholder: {
+        width: resolveVariable('sizes.window.width') / 2,
+        height: resolveVariable('sizes.window.width') / 2,
+        marginBottom: isWeb ? 0 : responsiveHeight(30),
+        color: resolveVariable('playerModalMetadataTextColor'),
       },
       trackInfoContainer: {
         marginTop: isWeb ? responsiveHeight(30) : 0,
@@ -447,10 +474,16 @@ export default () => ({
       alignItems: 'flex-end',
       height: responsiveHeight(15),
     },
-    bar: {
+    barSize: {
       width: responsiveWidth(4),
-      backgroundColor: resolveVariable('playerModalControlsColor'),
+      heightInterpolationConfig: {
+        inputRangeValue: [0.4, 1],
+        outputRangeMultiplier: [0.4, 1],
+      },
       marginHorizontal: responsiveWidth(1),
+    },
+    barColor: {
+      backgroundColor: resolveVariable('playerModalControlsColor'),
     },
   },
 
@@ -540,6 +573,14 @@ export default () => ({
     container: {
       height: responsiveHeight(24),
       width: responsiveHeight(24),
+    },
+  },
+
+  [`${ext('PlaybackSpeedSettingsView')}`]: {
+    caption: {
+      fontSize: responsiveHeight(10),
+      fontWeight: resolveFontWeight('400'),
+      paddingRight: resolveVariable('mediumGutter'),
     },
   },
 });

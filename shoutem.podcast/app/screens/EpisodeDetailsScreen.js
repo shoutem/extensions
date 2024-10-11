@@ -28,8 +28,8 @@ import { getRouteParams } from 'shoutem.navigation';
 import { getLeadImageUrl } from 'shoutem.rss';
 import { isAndroid, isWeb } from 'shoutem-core';
 import { FavoriteButton } from '../components';
-import { ext, RSS_PODCAST_SCHEMA } from '../const';
-import { PodcastEpisodePlayer } from '../fragments';
+import { ext, getEpisodeTrackId, RSS_PODCAST_SCHEMA } from '../const';
+import { PodcastPlaylistPlayer } from '../fragments';
 import {
   deleteEpisode,
   downloadEpisode,
@@ -313,7 +313,7 @@ export class EpisodeDetailsScreen extends PureComponent {
   }
 
   render() {
-    const { episode, meta, feedUrl, shortcutTitle } = this.props;
+    const { episode, shortcutId } = this.props;
     const { actionSheetOpen } = this.state;
 
     const author = _.get(episode, 'author', '');
@@ -329,8 +329,10 @@ export class EpisodeDetailsScreen extends PureComponent {
       <Screen styleName="paper">
         <ScrollView>
           {this.renderHeaderImage()}
-          <View styleName="text-centric md-gutter-horizontal md-gutter-top vertical h-center">
-            <Title numberOfLines={2}>{title.toUpperCase()}</Title>
+          <View styleName="md-gutter-horizontal md-gutter-top vertical h-center">
+            <Title styleName="h-center" numberOfLines={2}>
+              {title.toUpperCase()}
+            </Title>
             <View styleName="horizontal collapsed sm-gutter-top">
               <Caption numberOfLines={1} styleName="collapsible">
                 {author}
@@ -341,13 +343,12 @@ export class EpisodeDetailsScreen extends PureComponent {
                 </Caption>
               )}
             </View>
-            <PodcastEpisodePlayer
-              episode={episode}
-              feedUrl={feedUrl}
-              defaultArtwork={meta?.imageUrl}
-              title={shortcutTitle}
-            />
           </View>
+          <PodcastPlaylistPlayer
+            shortcutId={shortcutId}
+            initialTrackId={getEpisodeTrackId(episode.id)}
+            resumePlaylistMode={false}
+          />
           <View styleName="solid">
             <SimpleHtml body={body} />
           </View>
@@ -372,14 +373,12 @@ EpisodeDetailsScreen.propTypes = {
   downloadInProgress: PropTypes.bool,
   enableDownload: PropTypes.bool,
   enableSharing: PropTypes.bool,
-  feedUrl: PropTypes.string,
   hasFavorites: PropTypes.bool,
   isFavorited: PropTypes.bool,
   meta: PropTypes.object,
   removeFavoriteEpisode: PropTypes.func,
   saveFavoriteEpisode: PropTypes.func,
   shortcutId: PropTypes.string,
-  shortcutTitle: PropTypes.string,
   style: PropTypes.object,
 };
 
@@ -388,13 +387,11 @@ EpisodeDetailsScreen.defaultProps = {
   downloadedEpisode: null,
   enableDownload: false,
   enableSharing: false,
-  feedUrl: undefined,
   saveFavoriteEpisode: _.noop,
   hasFavorites: false,
   isFavorited: false,
   meta: {},
   shortcutId: undefined,
-  shortcutTitle: '',
   style: {},
   removeFavoriteEpisode: _.noop,
 };

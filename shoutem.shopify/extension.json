@@ -3,9 +3,9 @@
   "title": "Shopify",
   "hidden": false,
   "description": "Sell from your Shopify store",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "platform": ">=15.0.0",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
+  "releaseNotes": "Releast notes\n* Fixed an issue with updating user profile",
   "nativeChanges": {
     "lastVersion": "9.0.0"
   },

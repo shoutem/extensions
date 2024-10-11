@@ -19,15 +19,23 @@ const AllSettingsView = ({ onPress }) => {
 
   const showSleepTimerOptions = () => onPress(SETTINGS_VIEW.SLEEP_TIMER);
   const showPlaybackSpeedOptions = () => onPress(SETTINGS_VIEW.PLAYBACK_SPEED);
+  const showRepeatModeOptions = () => onPress(SETTINGS_VIEW.REPEAT_MODE);
 
   return (
     <>
       {!isLiveStream && (
-        <SettingsOption
-          iconName="speed-meter"
-          text={I18n.t(ext('playbackSpeedTitle'))}
-          onPress={showPlaybackSpeedOptions}
-        />
+        <>
+          <SettingsOption
+            iconName="speed-meter"
+            text={I18n.t(ext('playbackSpeedTitle'))}
+            onPress={showPlaybackSpeedOptions}
+          />
+          <SettingsOption
+            iconName="repeat"
+            text={I18n.t(ext('repeatModeTitle'))}
+            onPress={showRepeatModeOptions}
+          />
+        </>
       )}
       <SettingsOption
         iconName="sleep"

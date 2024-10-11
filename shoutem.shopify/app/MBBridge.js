@@ -295,16 +295,16 @@ export default {
         .then(addCollections)
         .catch(reject);
     }),
-  getProductsForCollection: collectionId =>
-    new Promise((accept, reject) => {
-      MBBridge.getProductsForCollection(collectionId)
-        .then(productsResolver(accept))
-        .catch(reject);
-    }),
   filterProducts: filter =>
     new Promise((accept, reject) => {
       MBBridge.filterProducts(filter)
         .then(productsSearchResolver(accept))
+        .catch(reject);
+    }),
+  getProductsForCollection: collectionId =>
+    new Promise((accept, reject) => {
+      MBBridge.getProductsForCollection(collectionId)
+        .then(productsResolver(accept))
         .catch(reject);
     }),
   createCheckoutWithCartAndClientInfo: (cart, userInfo) =>
@@ -313,6 +313,9 @@ export default {
         .then(o => accept(cleanUp(o, true)))
         .catch(reject);
     }),
+  // Below functions work only on iOS. We haven't implemented Android native functions
+  // for these and calling any of these will reject Promise.
+  // Check MBBridge.android.js for more clarification.
   associateCheckout: checkoutId =>
     new Promise((accept, reject) => {
       MBBridge.associateCheckout(checkoutId)

@@ -6,6 +6,7 @@ import {
 } from '@shoutem/redux-io';
 import { Toast } from '@shoutem/ui';
 import { LOGOUT, USER_SCHEMA } from 'shoutem.auth';
+import { isAndroid } from 'shoutem-core';
 import MBBridge from '../MBBridge';
 import { decodeFromBase64 } from '../services';
 import {
@@ -84,15 +85,28 @@ export const customerMiddleware = store => next => action => {
   return next(action);
 };
 
-export const errorMiddleware = store => next => action => {
+// eslint-disable-next-line no-unused-vars
+export const errorMiddleware = _store => next => action => {
+  // We don't have Android native customer implementations, so
+  // we don't want to show error toasts for Android. Instead,
+  // we'll gracefully fail when calling these functions.
   if (action.type === SET_ORDERS_ERROR || action.type === CUSTOMER_ERROR) {
-    const { title, message } = action.payload;
-
-    Toast.showError({
+    const {
       title,
       message,
-      visibilityTime: 8000,
-    });
+      // On Android, we usually want to hide error toast because everything
+      // fails - until we implement the rest of Shopify native functions.
+      // However, when user performs actions, we do want to show them it failed.
+      displayErrorToastOnAndroid = !isAndroid,
+    } = action.payload;
+
+    if (displayErrorToastOnAndroid) {
+      Toast.showError({
+        title,
+        message,
+        visibilityTime: 8000,
+      });
+    }
   }
 
   return next(action);
@@ -110,7 +124,8 @@ export const updateProfileMiddleware = store => next => action => {
   return next(action);
 };
 
-export const logoutMiddleware = store => next => action => {
+// eslint-disable-next-line no-unused-vars
+export const logoutMiddleware = _store => next => action => {
   if (action.type === LOGOUT) {
     return MBBridge.logout().finally(() => next(action));
   }

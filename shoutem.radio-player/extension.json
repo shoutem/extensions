@@ -2,9 +2,9 @@
   "name": "radio-player",
   "title": "Radio+",
   "description": "Show full multimedia potential of your app radio streams by displaying “now playing” metadata such as song name, artist name, album artwork…",
-  "version": "12.0.0",
-  "platform": ">=15.0.0",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
+  "version": "12.0.1",
+  "platform": ">=15.0.1",
+  "releaseNotes": "Release notes\n* Users will now see artwork image in audio banner and modal, only if radio started playing from screen with artwork enabled",
   "nativeChanges": {
     "lastVersion": "11.0.0"
   },

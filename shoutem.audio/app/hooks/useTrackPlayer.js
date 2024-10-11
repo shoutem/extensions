@@ -43,14 +43,14 @@ export const useTrackPlayer = ({
     // If the new source's metadata lacks  any essential information such as artwork, artist, or title, the metadata
     // will retain these missing details from the previous source.
 
-    // Android throws Unhandled Promise Rejection when trying to reset or clear metadata, when
+    // Android throws Unhandled Promise Rejection when trying to reset or clear metadata and
     // there's no active track, while iOS needs to clear metadata regardless of active track.
     if (isIos || activeTrack) {
       await TrackPlayer.updateNowPlayingMetadata({});
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activeTrack]);
 
   useEffect(() => {
     if (error && isActive && _.isFunction(onError)) {

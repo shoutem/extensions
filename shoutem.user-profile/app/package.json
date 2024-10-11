@@ -1,9 +1,9 @@
 {
   "name": "shoutem.user-profile",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Add extended user profile",
   "dependencies": {
-    "react-native-image-crop-picker": "0.38.0"
+    "react-native-image-crop-picker": "0.41.2"
   },
   "peerDependencies": {
     "reselect": "*"

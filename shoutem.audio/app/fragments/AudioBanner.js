@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, { State } from 'react-native-track-player';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
@@ -38,9 +38,7 @@ export const AudioBanner = ({ style }) => {
 
   const { activeMetadata, activeTrack } = useActiveMetadata();
 
-  const { isActiveAndPlaying, isLoadingOrBuffering } = useTrackState({
-    track: activeTrack,
-  });
+  const { playback } = useTrackState({ track: activeTrack });
 
   const { onPlaybackButtonPress } = useTrackPlayer({ track: activeTrack });
 
@@ -61,13 +59,16 @@ export const AudioBanner = ({ style }) => {
     }
 
     await TrackPlayer.reset();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const iconName = useMemo(() => (isActiveAndPlaying ? 'pause' : 'play'), [
-    isActiveAndPlaying,
-  ]);
+  const resolvedIconName =
+    playback.state === State.Playing || playback.state === State.Ready
+      ? 'pause'
+      : 'play';
+
+  const isLoading =
+    playback.state === State.Loading || playback.state === State.Buffering;
 
   const trackInformationText = useMemo(() => {
     const { artist, title } = activeMetadata ?? {};
@@ -106,13 +107,16 @@ export const AudioBanner = ({ style }) => {
             artworkUri={activeMetadata?.artwork}
             title={activeSource?.title}
             subtitle={trackInformationText}
+            visualComponent={activeSource.showArtwork ? 'artwork' : 'audioBars'}
+            playbackState={playback.state}
+            style={style.metadata}
           />
         </View>
         <View styleName="horizontal v-center sm-gutter-left">
           <PlaybackControl
             onPress={onPlaybackButtonPress}
-            isLoadingOrBuffering={isLoadingOrBuffering}
-            iconName={iconName}
+            isLoadingOrBuffering={isLoading}
+            iconName={resolvedIconName}
             style={style.playbackControl}
           />
           <TouchableOpacity

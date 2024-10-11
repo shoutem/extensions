@@ -35,7 +35,7 @@ export const AudioBanner = ({ style }) => {
 
   const { activeMetadata, activeTrack } = useActiveMetadata();
 
-  const { isActiveAndPlaying, isLoadingOrBuffering } = useTrackState({
+  const { playback, isActiveAndPlaying, isLoadingOrBuffering } = useTrackState({
     track: activeTrack,
   });
 
@@ -58,7 +58,6 @@ export const AudioBanner = ({ style }) => {
     }
 
     await TrackPlayer.reset();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -103,6 +102,9 @@ export const AudioBanner = ({ style }) => {
             artworkUri={activeMetadata?.artwork}
             title={activeSource?.title}
             subtitle={trackInformationText}
+            visualComponent={activeSource.showArtwork ? 'artwork' : 'audioBars'}
+            playbackState={playback.state}
+            style={style.metadata}
           />
         </View>
         <View styleName="horizontal v-center sm-gutter-left">

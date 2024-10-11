@@ -169,7 +169,7 @@ export const TrackAudioControls = ({
       </View>
       <ProgressControl
         currentValue={position}
-        maxValue={duration ?? 0}
+        maxValue={duration}
         disabled={isProgressControlDisabled || !controlsEnabled}
         onValueChange={handleSliderValueChange}
       />
