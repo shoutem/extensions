@@ -1,32 +1,32 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import {
+  createUserGroup,
+  DEFAULT_LIMIT,
+  DEFAULT_OFFSET,
+  deleteUserGroup,
+  getAllUserGroups,
+  getUserGroupCount,
+  getUserGroups,
+  loadAllUserGroups,
+  loadNextUserGroupsPage,
+  loadPreviousUserGroupsPage,
+  loadUserGroups,
+  updateUserGroup,
+  UserGroupScreenSettings,
+  UserGroupsDashboard,
+} from 'src/modules/user-groups';
+import { LoaderContainer, Paging } from '@shoutem/react-web-ui';
 import {
   fetchExtension,
   fetchShortcuts,
-  updateShortcutSettings,
   getShortcuts,
+  updateShortcutSettings,
 } from '@shoutem/redux-api-sdk';
-import { LoaderContainer, Paging } from '@shoutem/react-web-ui';
-import { shouldLoad, isInitialized, isBusy } from '@shoutem/redux-io';
-import {
-  DEFAULT_LIMIT,
-  DEFAULT_OFFSET,
-  UserGroupsDashboard,
-  UserGroupScreenSettings,
-  getUserGroups,
-  getAllUserGroups,
-  loadUserGroups,
-  loadAllUserGroups,
-  createUserGroup,
-  deleteUserGroup,
-  updateUserGroup,
-  loadNextUserGroupsPage,
-  loadPreviousUserGroupsPage,
-  getUserGroupCount,
-} from 'src/modules/user-groups';
+import { isBusy, isInitialized, shouldLoad } from '@shoutem/redux-io';
 
 function resolvePaging(currentPagingRef, useDefaultPaging) {
   const defaultPaging = {
@@ -160,21 +160,21 @@ export class UserGroupsPage extends Component {
 }
 
 UserGroupsPage.propTypes = {
-  appId: PropTypes.string,
-  extension: PropTypes.object,
-  fetchExtension: PropTypes.func,
-  shortcuts: PropTypes.array,
-  fetchShortcuts: PropTypes.func,
-  userGroups: PropTypes.array,
   allUserGroups: PropTypes.array,
-  loadUserGroups: PropTypes.func,
-  loadAllUserGroups: PropTypes.func,
+  appId: PropTypes.string,
   createUserGroup: PropTypes.func,
   deleteUserGroup: PropTypes.func,
-  updateUserGroup: PropTypes.func,
-  updateShortcutSettings: PropTypes.func,
+  extension: PropTypes.object,
+  fetchExtension: PropTypes.func,
+  fetchShortcuts: PropTypes.func,
+  loadAllUserGroups: PropTypes.func,
   loadNextPage: PropTypes.func,
   loadPreviousPage: PropTypes.func,
+  loadUserGroups: PropTypes.func,
+  shortcuts: PropTypes.array,
+  updateShortcutSettings: PropTypes.func,
+  updateUserGroup: PropTypes.func,
+  userGroups: PropTypes.array,
 };
 
 UserGroupsPage.contextTypes = {

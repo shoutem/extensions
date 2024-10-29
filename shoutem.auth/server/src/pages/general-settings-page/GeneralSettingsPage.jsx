@@ -19,8 +19,12 @@ import {
 } from 'src/modules/general-settings';
 import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
 import {
+  createModule,
+  fetchModules,
   fetchShortcuts,
+  getModules,
   getShortcuts,
+  removeModule,
   updateExtensionSettings,
 } from '@shoutem/redux-api-sdk';
 import { isInitialized, shouldLoad } from '@shoutem/redux-io';
@@ -46,6 +50,7 @@ export class GeneralSettingsPage extends Component {
     const {
       appId,
       fetchShortcuts,
+      fetchModules,
       loadAppSettings,
       loadAppStoreSettings,
     } = this.props;
@@ -59,6 +64,10 @@ export class GeneralSettingsPage extends Component {
     }
     if (shouldLoad(nextProps, props, 'storeSettings')) {
       loadAppStoreSettings(appId);
+    }
+
+    if (shouldLoad(nextProps, props, 'modules')) {
+      fetchModules();
     }
   }
 
@@ -75,6 +84,11 @@ export class GeneralSettingsPage extends Component {
     const { appId, updateAppSettings } = this.props;
 
     return updateAppSettings(appId, settingsPatch);
+  }
+
+  handleRealmUpdate(patch) {
+    const { appId, updateAppRealm } = this.props;
+    return updateAppRealm(appId, patch);
   }
 
   changeAppleClientId() {
@@ -97,6 +111,19 @@ export class GeneralSettingsPage extends Component {
     };
 
     this.handleExtensionSettingsUpdate(settingsPatch);
+  }
+
+  async handleFeatureToggle(featureName, enable) {
+    const { modules, createModule, removeModule } = this.props;
+    const module = _.find(modules, { name: featureName });
+
+    if (enable && !module) {
+      await createModule({ name: featureName });
+    }
+
+    if (!enable && module) {
+      await removeModule(module);
+    }
   }
 
   render() {
@@ -132,6 +159,8 @@ export class GeneralSettingsPage extends Component {
           extensionSettings={extensionSettings}
           onAppSettingsUpdate={this.handleAppSettingsUpdate}
           onExtensionSettingsUpdate={this.handleExtensionSettingsUpdate}
+          onRealmUpdate={this.handleRealmUpdate}
+          onFeatureToggle={this.handleFeatureToggle}
         />
         <h3>{i18next.t(LOCALIZATION.TITLE)}</h3>
         <FormGroup className={providerClasses}>
@@ -165,10 +194,14 @@ export class GeneralSettingsPage extends Component {
 GeneralSettingsPage.propTypes = {
   appId: PropTypes.string.isRequired,
   appSettings: PropTypes.object.isRequired,
+  createModule: PropTypes.func.isRequired,
   extension: PropTypes.object.isRequired,
+  fetchModules: PropTypes.func.isRequired,
   fetchShortcuts: PropTypes.func.isRequired,
   loadAppSettings: PropTypes.func.isRequired,
   loadAppStoreSettings: PropTypes.func.isRequired,
+  modules: PropTypes.array.isRequired,
+  removeModule: PropTypes.func.isRequired,
   shortcuts: PropTypes.array.isRequired,
   storeSettings: PropTypes.object.isRequired,
   updateAppRealm: PropTypes.func.isRequired,
@@ -178,6 +211,7 @@ GeneralSettingsPage.propTypes = {
 
 function mapStateToProps(state) {
   return {
+    modules: getModules(state),
     shortcuts: getShortcuts(state),
     appSettings: getAppSettings(state),
     storeSettings: getAppStoreSettings(state),
@@ -198,6 +232,9 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(updateAppSettings(appId, appSettings, scope)),
     updateAppRealm: (appId, realmPatch) =>
       dispatch(updateAppRealm(appId, realmPatch)),
+    fetchModules: () => dispatch(fetchModules()),
+    createModule: module => dispatch(createModule(module)),
+    removeModule: module => dispatch(removeModule(module)),
   };
 }
 

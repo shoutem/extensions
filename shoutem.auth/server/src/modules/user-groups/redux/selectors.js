@@ -1,5 +1,5 @@
-import { getCollection } from '@shoutem/redux-io';
 import ext from 'src/const';
+import { getCollection } from '@shoutem/redux-io';
 import { moduleName } from '../const';
 
 function getUserGroupsState(state) {
@@ -7,11 +7,11 @@ function getUserGroupsState(state) {
 }
 
 export function getUserGroups(state) {
-  const userGroups = getUserGroupsState(state).userGroups;
+  const { userGroups } = getUserGroupsState(state);
   return getCollection(userGroups, state);
 }
 
 export function getAllUserGroups(state) {
-  const allUserGroups = getUserGroupsState(state).allUserGroups;
+  const { allUserGroups } = getUserGroupsState(state);
   return getCollection(allUserGroups, state);
 }

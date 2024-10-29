@@ -32,7 +32,10 @@ function syncWithLiveUpdate(app) {
     ? 'iosBundleVersionCode'
     : 'androidBundleVersionCode';
   const bundleUrl = isIos ? 'iosBundleUrl' : 'androidBundleUrl';
-  const currentBundleVersionCode = getCurrentVersion(state);
+  const {
+    version: currentBundleVersionCode,
+    binaryVersionName: installationBinaryVersion,
+  } = getCurrentVersion(state);
 
   store
     .dispatch(fetchLiveUpdateStatus())
@@ -48,7 +51,11 @@ function syncWithLiveUpdate(app) {
       const shouldDownloadNewBundle =
         matchingBinaryVersions &&
         !!remoteBundleVersionCode &&
-        remoteBundleVersionCode > currentBundleVersionCode;
+        (remoteBundleVersionCode > currentBundleVersionCode ||
+          // Detect app store update scenario after the old binary had the
+          // higher bundle version than the newer bundle.
+          (remoteBundleVersionCode > 1 &&
+            installationBinaryVersion !== remoteBinaryVersionName));
 
       if (shouldDownloadNewBundle) {
         LiveUpdate.downloadUpdatePackage(
@@ -56,7 +63,12 @@ function syncWithLiveUpdate(app) {
           remoteBundleVersionCode.toString(),
         )
           .then(() => {
-            store.dispatch(setCurrentVersion(remoteBundleVersionCode));
+            store.dispatch(
+              setCurrentVersion({
+                binaryVersionName: remoteBinaryVersionName,
+                version: remoteBundleVersionCode,
+              }),
+            );
             Alert.alert(
               I18n.t(ext('newContentAlertTitle')),
               I18n.t(ext('newContentAlertMessage')),

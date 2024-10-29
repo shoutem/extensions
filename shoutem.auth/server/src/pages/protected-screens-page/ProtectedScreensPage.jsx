@@ -1,17 +1,17 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { ControlLabel, FormGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import i18next from 'i18next';
-import { ControlLabel, FormGroup } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { LoaderContainer, Switch } from '@shoutem/react-web-ui';
-import { shouldLoad, isInitialized } from '@shoutem/redux-io';
 import {
-  updateExtensionSettings,
   fetchShortcuts,
-  updateShortcutSettings,
   getShortcuts,
+  updateExtensionSettings,
+  updateShortcutSettings,
 } from '@shoutem/redux-api-sdk';
+import { isInitialized, shouldLoad } from '@shoutem/redux-io';
 import { ProtectedScreensTable } from './components';
 import LOCALIZATION from './localization';
 
@@ -83,9 +83,9 @@ export class SettingsPage extends Component {
 SettingsPage.propTypes = {
   appId: PropTypes.string,
   extension: PropTypes.object,
+  fetchShortcuts: PropTypes.func,
   shortcuts: PropTypes.array,
   updateExtensionSettings: PropTypes.func,
-  fetchShortcuts: PropTypes.func,
   updateShortcutSettings: PropTypes.func,
 };
 

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { isWeb } from 'shoutem-core';
 import { images } from '../assets';
 
 export function getCurrentItem(item) {
@@ -46,7 +47,8 @@ export const getAvailableValuesForOption = (availableVariants, option) => {
  * first variant if none are available.
  */
 export const getFirstAvailableVariant = item =>
-  _.find(item.variants, 'availableForSale') || item.variants[0];
+  _.find(item.variants, isWeb ? 'available' : 'availableForSale') ||
+  item.variants[0];
 
 /**
  * Gets values uniquely identifying a variant, for example a

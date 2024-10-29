@@ -7,6 +7,8 @@ const FORM_MANUALLY_APPROVE_NEW_MEMBERS_TITLE = `${key}.form-manually-approve-ne
 const TITLE = `${key}.title`;
 const TRACK_FBSDK_EVENTS_DESCRIPTION = `${key}.track-fbsdk-events-description`;
 const TRACK_FBSDK_EVENTS_LEARN_MORE = `${key}.fbsdk-facebook-events-tracking-setup-learn-more`;
+const ENABLE_EMAIL_NOTIFICATION_ABOUT_NEW_USER_REGISTRATION = `${key}.enable-email-notification-about-new-user-registration`;
+const ENABLE_EMAIL_NOTIFICATION_ABOUT_NEW_USER_REGISTRATION_DESCRIPTION = `${key}.enable-email-notification-about-new-user-registration-description`;
 
 export default {
   MANUALLY_APPROVE_MEMBERS_DESCRIPTION,
@@ -16,4 +18,6 @@ export default {
   TITLE,
   TRACK_FBSDK_EVENTS_DESCRIPTION,
   TRACK_FBSDK_EVENTS_LEARN_MORE,
+  ENABLE_EMAIL_NOTIFICATION_ABOUT_NEW_USER_REGISTRATION,
+  ENABLE_EMAIL_NOTIFICATION_ABOUT_NEW_USER_REGISTRATION_DESCRIPTION,
 };

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
-import { Image, Text, TouchableOpacity, View } from '@shoutem/ui';
+import { Image, Subtitle, Text, TouchableOpacity, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { images } from '../../assets';
 import { ext } from '../../const';
@@ -13,6 +13,7 @@ export function QuantitySelector({
   disabled,
   maxCount,
   minCount,
+  availableForSale,
 }) {
   const [currentCount, setCurrentCount] = useState(count);
 
@@ -41,20 +42,29 @@ export function QuantitySelector({
   return (
     <View style={style.mainContainer}>
       <Text style={style.caption}>{I18n.t(ext('quickBuyQuantity'))}</Text>
-      <View style={style.container}>
-        <TouchableOpacity disabled={disabled} onPress={handleRemovePress}>
-          <Image source={images.remove} style={style.control} />
-        </TouchableOpacity>
-        <Text style={style.count}>{currentCount}</Text>
-        <TouchableOpacity disabled={disabled} onPress={handleAddPress}>
-          <Image source={images.add} style={style.control} />
-        </TouchableOpacity>
-      </View>
+      {!availableForSale && (
+        <Subtitle styleName="muted md-gutter-vertical">
+          {I18n.t(ext('outOfStockMessage'))}
+        </Subtitle>
+      )}
+
+      {availableForSale && (
+        <View style={style.container}>
+          <TouchableOpacity disabled={disabled} onPress={handleRemovePress}>
+            <Image source={images.remove} style={style.control} />
+          </TouchableOpacity>
+          <Text style={style.count}>{currentCount}</Text>
+          <TouchableOpacity disabled={disabled} onPress={handleAddPress}>
+            <Image source={images.add} style={style.control} />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
 
 QuantitySelector.propTypes = {
+  availableForSale: PropTypes.bool,
   count: PropTypes.number,
   disabled: PropTypes.bool,
   maxCount: PropTypes.number,
@@ -64,6 +74,7 @@ QuantitySelector.propTypes = {
 };
 
 QuantitySelector.defaultProps = {
+  availableForSale: false,
   count: 1,
   disabled: false,
   style: {},

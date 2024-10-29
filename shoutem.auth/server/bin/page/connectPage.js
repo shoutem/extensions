@@ -1,7 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { getShortcut, getExtension } from '@shoutem/redux-api-sdk';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { getExtension, getShortcut } from '@shoutem/redux-api-sdk';
 
 export function connectPageContext(WrappedComponent) {
   function PageProvider(props, context) {

@@ -9,7 +9,9 @@ function QuickAddTitle({ onPress, title, style }) {
   return (
     <Pressable onPress={onPress} style={style.container}>
       <Icon name="down-arrow" style={style.icon} />
-      <Text style={style.title}>{title}</Text>
+      <Text style={style.title} numberOfLines={1}>
+        {title}
+      </Text>
     </Pressable>
   );
 }

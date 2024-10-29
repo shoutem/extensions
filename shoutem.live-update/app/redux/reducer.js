@@ -1,7 +1,13 @@
 import { combineReducers } from 'redux';
 import { SET_CURRENT_UPDATE_VERSION } from './actions';
 
-const currentUpdateVersion = (state = 1, action) => {
+const currentUpdateVersion = (
+  state = {
+    binaryVersionName: undefined,
+    version: 1,
+  },
+  action,
+) => {
   if (action.type === SET_CURRENT_UPDATE_VERSION) {
     return action.payload;
   }

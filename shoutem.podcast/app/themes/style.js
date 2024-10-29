@@ -1,4 +1,4 @@
-import { Dimensions, Platform } from 'react-native';
+import { Dimensions } from 'react-native';
 import { inverseColorBrightnessForAmount } from '@shoutem/theme';
 import {
   createScopedResolver,
@@ -140,30 +140,8 @@ export default () => ({
     },
   },
 
-  [`${ext('PodcastPlayer')}`]: {
-    container: {
-      position: 'absolute',
-      bottom: 0,
-      right: 0,
-      left: 0,
-      height: responsiveHeight(100),
-      backgroundColor: resolveVariable('paperColor'),
-      ...Platform.select({
-        ios: {
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.4,
-          shadowRadius: 8,
-        },
-        android: {
-          elevation: 8,
-        },
-      }),
-    },
-  },
-
   [`${ext('PodcastPlaylistPlayer')}`]: {
-    podcastEpisodePlayer: {
+    playbackControl: {
       container: {
         width: responsiveHeight(50),
         height: responsiveHeight(50),

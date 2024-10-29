@@ -221,7 +221,7 @@ export function fetchFavoritedEpisodes() {
               query: {
                 'filter[url]': feedUrl,
                 'filter[uuid]': uuids,
-                'page[limit]': DEFAULT_PAGE_LIMIT,
+                'page[limit]': 100, // TODO - implement pagination, next links are available if using default page limit - 20.
               },
             },
             { shortcutId },

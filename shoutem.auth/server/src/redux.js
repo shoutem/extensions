@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import { reducer as formReducer } from 'redux-form';
 import { createScopedReducer } from '@shoutem/redux-api-sdk';
+import generalSettingsReducer, {
+  moduleName as generalSettings,
+} from './modules/general-settings';
 import userGroupsReducer, {
   moduleName as userGroups,
 } from './modules/user-groups';
 import usersReducer, { moduleName as users } from './modules/users';
-import generalSettingsReducer, {
-  moduleName as generalSettings,
-} from './modules/general-settings';
 import ext from './const';
 
 // SELECTORS

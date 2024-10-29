@@ -5,9 +5,10 @@ import PropTypes from 'prop-types';
 import { ListView, Screen, Toast } from '@shoutem/ui';
 import { unavailableInWeb } from 'shoutem.application';
 import { I18n } from 'shoutem.i18n';
-import { navigateTo, withIsFocused } from 'shoutem.navigation';
+import { getRouteParams, navigateTo, withIsFocused } from 'shoutem.navigation';
 import { ListEpisodeView } from '../components';
-import { ext } from '../const';
+import { ext, PODCAST_FAVORITES_PLAYLIST_IDENTIFIER } from '../const';
+import { FavoritePodcastPlaylistPlayer } from '../fragments';
 import {
   deleteEpisode as deleteEpisodeAction,
   downloadEpisode as downloadEpisodeAction,
@@ -17,12 +18,15 @@ import {
   getAllFavoritesData,
   getDownloadedEpisodes,
   getFavoriteEpisodesLoading,
+  getLastPlayed,
   removeFavoriteEpisode as removeFavoriteEpisodeAction,
   saveFavoriteEpisode as saveFavoriteEpisodeAction,
 } from '../redux';
 import { resolveDownloadInProgress } from '../services';
 
-export const MyPodcastsScreen = ({ isFocused }) => {
+export const MyPodcastsScreen = props => {
+  const { isFocused } = props;
+
   const dispatch = useDispatch();
 
   const deleteEpisode = episode => dispatch(deleteEpisodeAction(episode));
@@ -32,11 +36,17 @@ export const MyPodcastsScreen = ({ isFocused }) => {
   const removeFavoriteEpisode = uuid =>
     dispatch(removeFavoriteEpisodeAction(uuid));
 
+  // TODO - sort list by episode favorited time.
+  // List is currently sorted by shortcuts - episodes are grouped per shortcut, then
+  // within each shortcut episodes group, episodes are sorted by favorited time.
   const allFavoritesData = useSelector(getAllFavoritesData);
   const listData = useSelector(getAllFavoriteEpisodes);
   const dataLoading = useSelector(getFavoriteEpisodesLoading);
   const downloadedEpisodes = useSelector(getDownloadedEpisodes);
   const currentlyFavoritedEpisodes = useSelector(getAllFavoritedEpisodesMap);
+  const lastPlayedFavoritesTrack = useSelector(state =>
+    getLastPlayed(state, PODCAST_FAVORITES_PLAYLIST_IDENTIFIER),
+  );
 
   const fetchFavorites = useCallback(() => {
     try {
@@ -118,6 +128,13 @@ export const MyPodcastsScreen = ({ isFocused }) => {
         onRefresh={fetchFavorites}
         loading={dataLoading}
         initialListSize={1}
+      />
+      <FavoritePodcastPlaylistPlayer
+        resumePlaylistMode
+        favorites={allFavoritesData}
+        initialTrackId={lastPlayedFavoritesTrack?.id}
+        queueLoading={dataLoading}
+        playlistTitle={getRouteParams(props).shortcut.title}
       />
     </Screen>
   );

@@ -43,8 +43,7 @@ const actionTypes = {
  * Gets variant and quantity for initial state based on props
  */
 const getInitialStateFromProps = props => {
-  const { variant, quantity } = props;
-  const { item } = getRouteParams(props);
+  const { item, variant, quantity } = getRouteParams(props);
 
   return {
     variant: variant || getFirstAvailableVariant(item),
@@ -185,6 +184,7 @@ class UpdateItemScreen extends PureComponent {
     const { availableForSale } = variant;
 
     const canUpdate = availableForSale && quantity;
+
     const resolvedStyleName = `horizontal h-end md-gutter ${
       canUpdate ? '' : 'muted'
     }`;
@@ -201,22 +201,33 @@ class UpdateItemScreen extends PureComponent {
   }
 
   renderUpdateButtons() {
+    const { style } = this.props;
     const { variant, quantity } = this.state;
     const { availableForSale } = variant;
 
     const canUpdate = availableForSale && quantity;
-    const resolvedStyleName = `horizontal md-gutter-vertical ${
-      canUpdate ? '' : 'muted'
-    }`;
 
     return (
-      <View styleName={resolvedStyleName}>
-        <Button styleName="confirmation" onPress={this.handleRemove}>
-          <Text>{I18n.t(ext('cartItemRemoveButton'))}</Text>
-        </Button>
-        <Button styleName="confirmation secondary" onPress={this.handleUpdate}>
-          <Text>{I18n.t(ext('cartItemUpdateButton'))}</Text>
-        </Button>
+      <View styleName="horizontal md-gutter-top">
+        <View style={style.updateButtonContainer}>
+          <Button styleName="confirmation" onPress={this.handleRemove}>
+            <Text>{I18n.t(ext('cartItemRemoveButton'))}</Text>
+          </Button>
+        </View>
+        <View
+          style={{
+            ...style.updateButtonContainer,
+            ...(!canUpdate ? style.updateButtonDisabled : {}),
+          }}
+        >
+          <Button
+            styleName="confirmation secondary"
+            onPress={this.handleUpdate}
+            disabled={!canUpdate}
+          >
+            <Text>{I18n.t(ext('cartItemUpdateButton'))}</Text>
+          </Button>
+        </View>
       </View>
     );
   }
@@ -287,9 +298,11 @@ class UpdateItemScreen extends PureComponent {
     const {
       shop: { currency },
     } = this.props;
-    const { variant, quantity } = this.state;
+    const {
+      variant: { availableForSale, price },
+      quantity,
+    } = this.state;
 
-    const { availableForSale, price } = variant;
     const canUpdate = availableForSale && quantity;
     const resolvedStyleName = `horizontal md-gutter space-between ${
       canUpdate ? '' : 'muted'

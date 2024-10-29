@@ -6,6 +6,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { FontIcon, FontIconPopover, Switch } from '@shoutem/react-web-ui';
 import MessageWithLink from '../../../../components/message-with-link';
+import { FEATURES } from '../../../../const';
 import LOCALIZATION from './localization';
 import './style.scss';
 
@@ -34,6 +35,20 @@ function isTrackFbsdkEventsEnabled(prevSettings, settings) {
   return _.get(settings, 'trackFbsdkEvents', prevTrackFbsdkEvents);
 }
 
+function isNotificationRegistrationForOwnerEnabled(prevSettings, settings) {
+  const notificationEnabled = _.get(
+    prevSettings,
+    'sendEmailNotificationForUserRegistrationToOwner',
+    false,
+  );
+
+  return _.get(
+    settings,
+    'sendEmailNotificationForUserRegistrationToOwner',
+    notificationEnabled,
+  );
+}
+
 export default class GeneralSettings extends Component {
   constructor(props) {
     super(props);
@@ -44,6 +59,7 @@ export default class GeneralSettings extends Component {
       manuallyApproveMembers: false,
       signupEnabled: true,
       trackFbsdkEvents: false,
+      sendEmailNotificationForUserRegistrationToOwner: false,
     };
   }
 
@@ -81,6 +97,10 @@ export default class GeneralSettings extends Component {
           prevExtensionSettings,
           extensionSettings,
         ),
+        sendEmailNotificationForUserRegistrationToOwner: isNotificationRegistrationForOwnerEnabled(
+          prevExtensionSettings,
+          extensionSettings,
+        ),
       });
     }
   }
@@ -114,6 +134,46 @@ export default class GeneralSettings extends Component {
     );
   }
 
+  async handleRegistrationNotificationForOwnerChange() {
+    const {
+      onRealmUpdate,
+      onExtensionSettingsUpdate,
+      onFeatureToggle,
+    } = this.props;
+    const { sendEmailNotificationForUserRegistrationToOwner } = this.state;
+
+    const enable = !sendEmailNotificationForUserRegistrationToOwner;
+
+    try {
+      const settingsPatch = {
+        sendEmailNotificationForUserRegistrationToOwner: enable,
+      };
+
+      const promises = [
+        onFeatureToggle(FEATURES.USER_REGISTRATION_EMAIL_NOTIFICATION, enable),
+        onRealmUpdate(settingsPatch),
+        onExtensionSettingsUpdate(settingsPatch),
+      ];
+
+      await Promise.all(promises);
+      this.setState(settingsPatch);
+    } catch (error) {
+      // revert changes
+      const revertPatch = {
+        sendEmailNotificationForUserRegistrationToOwner: !enable,
+      };
+
+      const promises = [
+        onFeatureToggle(FEATURES.USER_REGISTRATION_EMAIL_NOTIFICATION, !enable),
+        onRealmUpdate(revertPatch),
+        onExtensionSettingsUpdate(revertPatch),
+      ];
+
+      await Promise.all(promises).catch(() => null);
+      this.setState(revertPatch);
+    }
+  }
+
   handleTrackFbsdkEventsChange() {
     const { onAppSettingsUpdate, onExtensionSettingsUpdate } = this.props;
     const { trackFbsdkEvents } = this.state;
@@ -135,6 +195,7 @@ export default class GeneralSettings extends Component {
       signupEnabled,
       trackFbsdkEvents,
       manuallyApproveMembers,
+      sendEmailNotificationForUserRegistrationToOwner,
     } = this.state;
 
     return (
@@ -195,6 +256,28 @@ export default class GeneralSettings extends Component {
             />
           </FontIconPopover>
         </FormGroup>
+        <FormGroup className="switch-form-group">
+          <ControlLabel>
+            {i18next.t(
+              LOCALIZATION.ENABLE_EMAIL_NOTIFICATION_ABOUT_NEW_USER_REGISTRATION,
+            )}
+          </ControlLabel>
+          <Switch
+            checked={sendEmailNotificationForUserRegistrationToOwner}
+            onChange={this.handleRegistrationNotificationForOwnerChange}
+          />
+          <FontIconPopover
+            message={i18next.t(
+              LOCALIZATION.ENABLE_EMAIL_NOTIFICATION_ABOUT_NEW_USER_REGISTRATION_DESCRIPTION,
+            )}
+          >
+            <FontIcon
+              className="general-settings__icon-popover"
+              name="info"
+              size="24px"
+            />
+          </FontIconPopover>
+        </FormGroup>
       </div>
     );
   }
@@ -203,6 +286,8 @@ export default class GeneralSettings extends Component {
 GeneralSettings.propTypes = {
   onAppSettingsUpdate: PropTypes.func.isRequired,
   onExtensionSettingsUpdate: PropTypes.func.isRequired,
+  onFeatureToggle: PropTypes.func.isRequired,
+  onRealmUpdate: PropTypes.func.isRequired,
   appSettings: PropTypes.object,
   extensionSettings: PropTypes.object,
 };

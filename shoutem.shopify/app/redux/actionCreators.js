@@ -5,7 +5,7 @@ import { getUser, updateProfile } from 'shoutem.auth';
 import { I18n } from 'shoutem.i18n';
 import { navigateTo } from 'shoutem.navigation';
 import { triggerCanceled, triggerOccured } from 'shoutem.notification-center';
-import { isAndroid } from 'shoutem-core';
+import { isWeb } from 'shoutem-core';
 import { ext } from '../const';
 import MBBridge, { SHOPIFY_ERROR_CODES } from '../MBBridge';
 import { normalizeOrderPrices, PROFILE_FIELDS } from '../services';
@@ -450,7 +450,13 @@ export function updateCustomerInformation(customer, cart) {
 
       dispatch(customerInformationUpdated({ customer, isLoggedIn }));
 
-      navigateTo(ext('WebCheckoutScreen'), {
+      if (isWeb) {
+        // eslint-disable-next-line no-undef
+        window.open(webUrl, '_blank');
+        return null;
+      }
+
+      return navigateTo(ext('WebCheckoutScreen'), {
         checkoutUrl: webUrl,
         accessToken,
       });

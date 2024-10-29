@@ -69,7 +69,7 @@ export default () => ({
     },
     buyIcon: {
       color: 'white',
-      size: 20,
+      size: responsiveWidth(20),
       marginRight: 0,
     },
     buyIconSize: responsiveWidth(25),
@@ -215,8 +215,8 @@ export default () => ({
       borderBottomLeftRadius: 4,
       borderTopLeftRadius: 4,
       marginRight: 0,
-      height: 95,
-      width: 95,
+      height: responsiveHeight(95),
+      width: responsiveWidth(95),
     },
     infoContainer: {
       flex: 1,
@@ -393,9 +393,7 @@ export default () => ({
       textDecorationLine: 'line-through',
     },
     price: {
-      boldTextStyle: {
-        fontWeight: resolveFontWeight('500'),
-      },
+      fontWeight: resolveFontWeight('500'),
     },
     footer: {
       backgroundColor: resolveVariable('paperColor'),
@@ -407,6 +405,7 @@ export default () => ({
       shadowColor: resolveVariable('shadowColor'),
       shadowOpacity: 0.8,
       elevation: 4,
+      paddingBottom: resolveVariable('largeGutter'),
     },
     screen: {
       backgroundColor: resolveVariable('paperColor'),
@@ -507,6 +506,13 @@ export default () => ({
         borderRightWidth: 0,
       },
     },
+    updateButtonContainer: {
+      flex: 1,
+      height: responsiveHeight(40),
+    },
+    updateButtonDisabled: {
+      opacity: 0.5,
+    },
   },
   [`${ext('CartScreen')}`]: {
     screen: {
@@ -584,7 +590,7 @@ export default () => ({
     paidStatus: {
       color: '#88C242',
     },
-    iconSize: 20,
+    iconSize: responsiveWidth(20),
     icon: {
       width: responsiveWidth(20),
       alignSelf: 'center',
@@ -636,7 +642,7 @@ export default () => ({
       flexDirection: 'row',
       alignItems: 'center',
     },
-    iconSize: 24,
+    iconSize: responsiveWidth(24),
     icon: {
       color: 'transparent',
     },
@@ -776,11 +782,12 @@ export default () => ({
       ),
       borderColor: resolveVariable('quickBuyAddToCartButtonBackgroundColor'),
     },
+    confirmButtonDisabled: { opacity: 0.5 },
     confirmButtonText: {
       fontFamily: resolveFontFamily(resolveVariable('text.fontFamily'), '500'),
       fontWeight: resolveFontWeight('500'),
       fontSize: 13,
-      lineHeight: 24,
+      lineHeight: 13,
       color: resolveVariable('quickBuyAddToCartButtonTextColor'),
     },
   },

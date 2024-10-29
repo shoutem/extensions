@@ -1,19 +1,19 @@
 {
   "name": "shoutem.shopify",
-  "version": "10.0.1",
+  "version": "10.1.0",
   "scripts": {
     "prebuild": "node -e 'require(\"./build\").runPreBuild()'"
   },
   "dependencies": {
     "pluralize": "8.0.0",
     "react-native-google-places-autocomplete": "2.4.1",
-    "shopify-buy": "2.11.0",
+    "shopify-buy": "2.22.0",
     "world-countries": "1.8.1"
   },
   "webDependencies": {
     "pluralize": "8.0.0",
     "react-native-google-places-autocomplete": "2.4.1",
-    "shopify-buy": "2.11.0",
+    "shopify-buy": "2.22.0",
     "world-countries": "1.8.1"
   },
   "peerDependencies": {

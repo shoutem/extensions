@@ -40,8 +40,9 @@ class WebCheckoutScreen extends PureComponent {
         this.setState({ userAgent });
       })
       .catch(error => {
-        // no other action taken, as `null` user agent will result with default behavior which is
-        // not an issue
+        // no other action taken, as `null` user agent will result with default
+        // behavior which is not an issue
+        // eslint-disable-next-line no-console
         console.error('Failed to get user agent from device info.\n', error);
       });
   }
@@ -76,20 +77,6 @@ class WebCheckoutScreen extends PureComponent {
     checkoutCompleted();
     closeModal();
     goBack();
-  }
-
-  renderCloseButton(props) {
-    return <HeaderCloseButton onPress={closeModal} {...props} />;
-  }
-
-  renderDoneButton(props) {
-    return (
-      <HeaderTextButton
-        title={I18n.t(ext('doneButton'))}
-        onPress={this.completeTransaction}
-        {...props}
-      />
-    );
   }
 
   renderCloseButton(props) {
