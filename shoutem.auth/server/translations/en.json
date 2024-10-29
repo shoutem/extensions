@@ -26,6 +26,8 @@
       "general-settings.enable-fbsdk-event-tracking": "Enable Facebook automatic event tracking",
       "general-settings.track-fbsdk-events-description": "App installation, launch and in-app-purchase events will be logged automatically. This requires you to set up a Facebook App in the form below. iOS users who do not allow tracking accross apps on both this app and Meta's Facebook app will not have their events logged.",
       "general-settings.fbsdk-facebook-events-tracking-setup-learn-more": "Learn more",
+      "general-settings.enable-email-notification-about-new-user-registration": "Enable email notification about new user registration",
+      "general-settings.enable-email-notification-about-new-user-registration-description": "Email about new user registration will be send to the owner of the app",
       "gdpr-settings.title": "GDPR settings",
       "gdpr-settings.terms-of-service-title": "Terms of Service URL",
       "gdpr-settings.privacy-policy-title": "Privacy Policy URL",

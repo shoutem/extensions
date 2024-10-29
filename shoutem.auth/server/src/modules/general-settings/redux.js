@@ -1,13 +1,13 @@
-import { combineReducers } from 'redux';
 import _ from 'lodash';
-import { find, update, getOne, storage, one } from '@shoutem/redux-io';
-import { shoutemUrls } from 'src/services';
+import { combineReducers } from 'redux';
 import ext from 'src/const';
+import { shoutemUrls } from 'src/services';
+import { find, getOne, one, storage, update } from '@shoutem/redux-io';
 import {
-  moduleName,
   APPLICATION_SETTINGS,
   APPLICATION_STORE_SETTINGS,
   AUTH_REALMS,
+  moduleName,
 } from './const';
 
 // SELECTORS
@@ -93,7 +93,7 @@ export function updateAppRealm(appId, realmPatch) {
   const updatedAppRealm = {
     type: AUTH_REALMS,
     id: appId,
-    attributes: realmPatch
+    attributes: realmPatch,
   };
 
   return update(config, updatedAppRealm);

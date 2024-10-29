@@ -22,7 +22,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 function QuickAddModal({ visible, onCancel, style, product, onSubmit }) {
   const appearAnimationValue = useRef(new Animated.Value(0)).current;
-  const [selectedVariant, selectVariant] = useState(undefined);
+  const [selectedVariant, setSelectedVariant] = useState(undefined);
   const [height, setHeight] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
@@ -30,11 +30,11 @@ function QuickAddModal({ visible, onCancel, style, product, onSubmit }) {
     if (product) {
       const variant = getFirstAvailableVariant(product);
 
-      selectVariant(variant);
+      setSelectedVariant(variant);
       return;
     }
 
-    selectVariant(undefined);
+    setSelectedVariant(undefined);
   }, [product]);
 
   const handleContentLayout = useCallback(event => {
@@ -74,7 +74,7 @@ function QuickAddModal({ visible, onCancel, style, product, onSubmit }) {
     );
 
     LayoutAnimation.easeInEaseOut();
-    selectVariant(newVariant);
+    setSelectedVariant(newVariant);
   }
 
   const getSelectedOptionValue = useCallback(
@@ -143,7 +143,10 @@ function QuickAddModal({ visible, onCancel, style, product, onSubmit }) {
             variant={selectedVariant}
             quantity={quantity}
           />
-          <QuantitySelector onCountChange={setQuantity} />
+          <QuantitySelector
+            onCountChange={setQuantity}
+            availableForSale={selectedVariant?.availableForSale}
+          />
           {_.map(productOptions, option => (
             <QuickAddOption
               key={option.name}
@@ -152,7 +155,16 @@ function QuickAddModal({ visible, onCancel, style, product, onSubmit }) {
               onValueSelected={handleOptionValueSelected}
             />
           ))}
-          <Button style={style.confirmButton} onPress={handleAddToCartPress}>
+          <Button
+            style={{
+              ...style.confirmButton,
+              ...(!selectedVariant?.availableForSale
+                ? style.confirmButtonDisabled
+                : {}),
+            }}
+            onPress={handleAddToCartPress}
+            disabled={!selectedVariant?.availableForSale}
+          >
             <Text style={style.confirmButtonText}>
               {I18n.t(ext('quickBuyAddToCartButton'))}
             </Text>

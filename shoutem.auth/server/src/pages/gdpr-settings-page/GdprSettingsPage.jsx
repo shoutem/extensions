@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import autoBindReact from 'auto-bind/react';
-import { connect } from 'react-redux';
+import { GDPRSettings, NewsletterSettings } from 'src/modules/gdpr-settings';
+import { getAppSettings, loadAppSettings } from 'src/modules/general-settings';
 import { LoaderContainer } from '@shoutem/react-web-ui';
-import { shouldLoad, isInitialized } from '@shoutem/redux-io';
 import {
-  updateExtensionSettings,
   fetchShortcuts,
   getShortcuts,
+  updateExtensionSettings,
 } from '@shoutem/redux-api-sdk';
-import { getAppSettings, loadAppSettings } from 'src/modules/general-settings';
-import { GDPRSettings, NewsletterSettings } from 'src/modules/gdpr-settings';
+import { isInitialized, shouldLoad } from '@shoutem/redux-io';
 import './style.scss';
 
 export class GdprSettingsPage extends Component {
@@ -77,12 +77,12 @@ export class GdprSettingsPage extends Component {
 
 GdprSettingsPage.propTypes = {
   appId: PropTypes.string,
-  extension: PropTypes.object,
-  shortcuts: PropTypes.array,
   appSettings: PropTypes.object,
-  loadAppSettings: PropTypes.func,
-  updateExtensionSettings: PropTypes.func,
+  extension: PropTypes.object,
   fetchShortcuts: PropTypes.func,
+  loadAppSettings: PropTypes.func,
+  shortcuts: PropTypes.array,
+  updateExtensionSettings: PropTypes.func,
 };
 
 function mapStateToProps(state) {

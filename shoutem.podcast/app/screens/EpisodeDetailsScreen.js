@@ -312,8 +312,20 @@ export class EpisodeDetailsScreen extends PureComponent {
     };
   }
 
-  render() {
+  renderPlayer() {
     const { episode, shortcutId } = this.props;
+
+    return (
+      <PodcastPlaylistPlayer
+        shortcutId={shortcutId}
+        initialTrackId={getEpisodeTrackId(episode.id)}
+        resumePlaylistMode={false}
+      />
+    );
+  }
+
+  render() {
+    const { episode } = this.props;
     const { actionSheetOpen } = this.state;
 
     const author = _.get(episode, 'author', '');
@@ -344,11 +356,7 @@ export class EpisodeDetailsScreen extends PureComponent {
               )}
             </View>
           </View>
-          <PodcastPlaylistPlayer
-            shortcutId={shortcutId}
-            initialTrackId={getEpisodeTrackId(episode.id)}
-            resumePlaylistMode={false}
-          />
+          {this.renderPlayer()}
           <View styleName="solid">
             <SimpleHtml body={body} />
           </View>

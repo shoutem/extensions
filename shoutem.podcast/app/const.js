@@ -24,5 +24,7 @@ export const EPISODE_DETAILS_SCREEN = ext('EpisodeDetailsScreen');
 export const FAVORITED_EPISODES_TAG = 'favoritedEpisodes';
 export const EPISODE_TAG = 'episode';
 
+export const PODCAST_FAVORITES_PLAYLIST_IDENTIFIER =
+  'podcast-favorites-playlist';
 export const PODCAST_TRACK_IDENTIFIER = 'podcast';
 export const getEpisodeTrackId = id => `${PODCAST_TRACK_IDENTIFIER}-${id}`;

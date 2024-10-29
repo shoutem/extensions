@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import { collection, storage } from '@shoutem/redux-io';
 import ext from 'src/const';
+import { collection, storage } from '@shoutem/redux-io';
 import { USER_GROUPS } from '../const';
 
 export const reducer = combineReducers({

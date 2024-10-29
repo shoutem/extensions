@@ -1,6 +1,6 @@
 {
   "name": "shoutem.auth",
-  "version": "9.0.0",
+  "version": "9.1.0",
   "description": "Shoutem user authentication",
   "author": "Shoutem",
   "scripts": {
@@ -50,13 +50,13 @@
     "webpack-dev-server": "3.11.3"
   },
   "dependencies": {
-    "@shoutem/extension-sandbox": "^0.1.4",
-    "@shoutem/react-web-ui": "^1.0.2",
-    "@shoutem/redux-api-sdk": "1.1.7",
-    "@shoutem/redux-composers": "^0.1.5",
-    "@shoutem/redux-io": "^2.3.0",
-    "@shoutem/redux-sync-state-engine": "^0.0.2",
-    "auto-bind": "^4.0.0",
+    "@shoutem/extension-sandbox": "0.1.4",
+    "@shoutem/react-web-ui": "1.0.2",
+    "@shoutem/redux-api-sdk": "2.0.4",
+    "@shoutem/redux-composers": "0.1.6",
+    "@shoutem/redux-io": "3.2.5",
+    "@shoutem/redux-sync-state-engine": "0.0.2",
+    "auto-bind": "4.0.0",
     "bootstrap-sass": "^3.3.6",
     "classnames": "^2.2.5",
     "es6-promise": "^4.1.1",

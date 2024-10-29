@@ -3,16 +3,14 @@
   "title": "Shopify",
   "hidden": false,
   "description": "Sell from your Shopify store",
-  "version": "10.0.1",
+  "version": "10.1.0",
   "platform": ">=15.0.0",
-  "releaseNotes": "Releast notes\n* Fixed an issue with updating user profile",
+  "releaseNotes": "Release notes\n* (New) Search products screen now supports quick add-to-cart feature\n* Fixed wrong availability displayed, in some scenarios, inside quick-add-to-cart flow\n* Fixed \"Add to cart\" button styling on quick-add modal\n\nFor developers\n* Added support for web preview",
   "nativeChanges": {
     "lastVersion": "9.0.0"
   },
   "icon": "./server/assets/add-shopify-image.png",
-  "capabilities": [
-    "shoutem.shopify.places-api"
-  ],
+  "capabilities": ["shoutem.shopify.places-api"],
   "i18n": {
     "locale": "en",
     "translationPath": "server/translations/en.json"
@@ -33,9 +31,7 @@
     "shoutem.notification-center",
     "shoutem.redux"
   ],
-  "categories": [
-    "commerce"
-  ],
+  "categories": ["commerce"],
   "repository": {
     "type": "git",
     "url": "https://github.com/shoutem/extensions"
@@ -266,9 +262,7 @@
     {
       "page": "shoutem.theme.ExtensionThemeSettingsPage",
       "title": "Settings",
-      "categories": [
-        "style"
-      ],
+      "categories": ["style"],
       "parameters": {
         "extensionTheme": "Theme"
       }

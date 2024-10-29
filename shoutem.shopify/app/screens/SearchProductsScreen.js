@@ -17,9 +17,10 @@ import {
 } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
 import { goBack } from 'shoutem.navigation';
+import { QuickAddModal } from '../components';
 import ProductsList from '../components/ProductsList';
 import { ext } from '../const';
-import { refreshProducts } from '../redux/actionCreators';
+import { cartItemAdded, refreshProducts } from '../redux/actionCreators';
 
 const renderCancelButton = onPress => (
   <Button styleName="clear" onPress={onPress}>
@@ -35,6 +36,8 @@ export class SearchProductsScreen extends PureComponent {
 
     this.state = {
       tagFilter: '',
+      quickAddItem: undefined,
+      quickAddVisible: false,
     };
   }
 
@@ -93,6 +96,29 @@ export class SearchProductsScreen extends PureComponent {
     refreshProducts(undefined, selectedTag);
   }
 
+  handleQuickBuyPress(item) {
+    this.setState({
+      quickAddItem: item,
+      quickAddVisible: true,
+    });
+  }
+
+  handleCloseQuickAddModal() {
+    this.setState({
+      quickAddItem: undefined,
+      quickAddVisible: false,
+    });
+  }
+
+  handleAddToCart(variant, quantity) {
+    const { cartItemAdded } = this.props;
+    const { quickAddItem } = this.state;
+
+    cartItemAdded({ item: quickAddItem, variant, quantity }).then(
+      this.handleCloseQuickAddModal,
+    );
+  }
+
   renderTagRow(tag) {
     return (
       <TouchableOpacity onPress={() => this.selectTag(tag)}>
@@ -124,7 +150,13 @@ export class SearchProductsScreen extends PureComponent {
   }
 
   render() {
-    const { tagFilter, selectedTag, submitted } = this.state;
+    const {
+      tagFilter,
+      selectedTag,
+      submitted,
+      quickAddVisible,
+      quickAddItem,
+    } = this.state;
 
     if (submitted && !selectedTag) {
       const message = `${I18n.t(ext('noItemsWithSpecificTag'))} "${tagFilter}"`;
@@ -141,13 +173,25 @@ export class SearchProductsScreen extends PureComponent {
       <Screen styleName="paper">
         {this.renderSearchField()}
         {!!tagFilter && !selectedTag ? this.renderTagSuggestions() : null}
-        {!!selectedTag && <ProductsList tag={selectedTag} />}
+        {!!selectedTag && (
+          <ProductsList
+            tag={selectedTag}
+            onQuickAddPress={this.handleQuickBuyPress}
+          />
+        )}
+        <QuickAddModal
+          visible={quickAddVisible}
+          product={quickAddItem}
+          onCancel={this.handleCloseQuickAddModal}
+          onSubmit={this.handleAddToCart}
+        />
       </Screen>
     );
   }
 }
 
 SearchProductsScreen.propTypes = {
+  cartItemAdded: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   refreshProducts: PropTypes.func.isRequired,
   tags: PropTypes.array.isRequired,
@@ -161,7 +205,7 @@ export function mapStateToProps(state) {
   };
 }
 
-export const mapDispatchToProps = { refreshProducts };
+export const mapDispatchToProps = { refreshProducts, cartItemAdded };
 
 export default connect(
   mapStateToProps,

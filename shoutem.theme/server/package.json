@@ -1,6 +1,6 @@
 {
   "name": "shoutem.theme",
-  "version": "9.0.1",
+  "version": "9.0.2",
   "description": "Shoutem theme extension",
   "scripts": {
     "lint": "eslint --no-eslintrc -c .eslintrc src/**/*.{js,jsx}",

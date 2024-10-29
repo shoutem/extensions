@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { registerIcons } from '@shoutem/ui';
 import { getExtensionSettings } from 'shoutem.application';
 import { cancelPendingJourney } from 'shoutem.notification-center';
-import { isIos } from 'shoutem-core';
+import { isAndroid } from 'shoutem-core';
 import {
   appMounted,
   refreshProducts,
@@ -66,7 +66,7 @@ export async function appDidMount(app) {
   initShopifyClient(shopifyStore, apiKey);
 
   // Log in disabled on Android
-  if (isIos) {
+  if (!isAndroid) {
     MBBridge.isLoggedIn()
       .then(isLoggedIn => {
         if (isLoggedIn) {

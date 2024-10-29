@@ -163,7 +163,7 @@ const PodcastPlaylistPlayer = ({
       onPress={handleEpisodePlaybackButtonPress}
       isLoadingOrBuffering={isLoadingOrBuffering}
       iconName={resolvedIconName}
-      style={style.podcastEpisodePlayer}
+      style={style.playbackControl}
     />
   );
 };

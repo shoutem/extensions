@@ -7,3 +7,4 @@ export * from './location';
 export * from './orders';
 export * from './price';
 export * from './product';
+export * from './shopifyClient';

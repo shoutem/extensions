@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';

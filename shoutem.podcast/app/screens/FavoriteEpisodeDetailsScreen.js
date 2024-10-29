@@ -1,9 +1,12 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
-import { EPISODE_DETAILS_SCREEN, ext } from '../const';
+import { EPISODE_DETAILS_SCREEN, ext, getEpisodeTrackId } from '../const';
+import { FavoritePodcastPlaylistPlayer } from '../fragments';
 import {
   getAllFavoritesData,
   getDownloadedEpisode,
@@ -14,6 +17,20 @@ import {
   EpisodeDetailsScreen,
   mapDispatchToProps,
 } from './EpisodeDetailsScreen';
+
+class FavoriteEpisodeDetailsScreen extends EpisodeDetailsScreen {
+  renderPlayer() {
+    const { allFavoritesData, episode } = this.props;
+
+    return (
+      <FavoritePodcastPlaylistPlayer
+        favorites={allFavoritesData}
+        initialTrackId={getEpisodeTrackId(episode.id)}
+        queueLoading={false}
+      />
+    );
+  }
+}
 
 function mapStateToProps(state, ownProps) {
   const { id } = getRouteParams(ownProps);
@@ -87,6 +104,7 @@ function mapStateToProps(state, ownProps) {
   }
 
   return {
+    allFavoritesData,
     actionSheetOptions,
     downloadedEpisode,
     episode,
@@ -101,7 +119,12 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
+FavoriteEpisodeDetailsScreen.propTypes = {
+  ...EpisodeDetailsScreen.propTypes,
+  allFavoritesData: PropTypes.object,
+};
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(connectStyle(ext('EpisodeDetailsScreen'))(EpisodeDetailsScreen));
+)(connectStyle(ext('EpisodeDetailsScreen'))(FavoriteEpisodeDetailsScreen));
