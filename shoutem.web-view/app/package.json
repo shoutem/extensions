@@ -1,6 +1,6 @@
 {
   "name": "shoutem.web-view",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "dependencies": {
     "@react-native-cookies/cookies": "6.2.1",
     "react-native-blob-util": "0.19.9",

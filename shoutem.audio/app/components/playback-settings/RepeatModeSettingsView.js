@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import TrackPlayer, { RepeatMode } from 'react-native-track-player';
+import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { Caption, Text, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';
-import { ext } from '../../const';
+import { AUDIO_SOURCE_TYPE, ext } from '../../const';
+import { getActiveSource } from '../../redux';
 import RadioOption from './RadioOption';
 
 /**
@@ -15,6 +17,8 @@ import RadioOption from './RadioOption';
  * allowing users to see selected option for better UX.
  */
 const PlaybackSpeedSettingsView = ({ onClose, style }) => {
+  const activeSource = useSelector(getActiveSource);
+
   const [activeRepeatMode, setActiveRepeatMode] = useState(RepeatMode.Queue);
 
   useEffect(() => {
@@ -29,9 +33,14 @@ const PlaybackSpeedSettingsView = ({ onClose, style }) => {
     onClose();
   };
 
+  const repeatOptions =
+    activeSource.type === AUDIO_SOURCE_TYPE.TRACK
+      ? ['Off', 'Track']
+      : ['Off', 'Track', 'Queue'];
+
   return (
     <>
-      {_.map(_.pick(RepeatMode, ['Off', 'Track', 'Queue']), (value, key) => (
+      {_.map(_.pick(RepeatMode, repeatOptions), (value, key) => (
         <RadioOption
           key={key}
           text={I18n.t(ext(`repeat${key.toString()}`))}

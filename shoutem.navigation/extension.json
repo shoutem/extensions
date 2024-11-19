@@ -1,8 +1,8 @@
 {
   "name": "navigation",
-  "version": "7.0.1",
+  "version": "7.0.3",
   "platform": ">=15.0.0",
-  "releaseNotes": "Release notes\n* Fixed Drawer navigation background color not updating to reflect changes in Main Navigation style page inside builder",
+  "releaseNotes": "No user facing changes.\n\nDeveloper notes\n* We're now dispatching redux action when bottom tabs item is pressed to be able to handle that even elsewhere.",
   "type": "system",
   "title": "Main Navigation",
   "description": "App-level navigation",

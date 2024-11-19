@@ -69,8 +69,13 @@ export function NoneStackNavigator({
   const shortcutScreens = collectShortcutScreens(designatedShortcut, screens);
 
   return (
-    <NoneStack.Navigator initialRouteName={firstScreenName}>
+    <NoneStack.Navigator
+      initialRouteName={firstScreenName}
+      screenOptions={{ headerTitleAlign: 'center' }}
+    >
       {_.map(shortcutScreens, screen => {
+        const isFirstScreen = firstScreenName === screen.name;
+
         const matchingShortcutScreen = _.find(designatedShortcutScreens, {
           canonicalName: screen.name,
         });
@@ -82,6 +87,8 @@ export function NoneStackNavigator({
             key={screen.name}
             component={screen.component}
             options={{
+              headerLeft: props =>
+                !isFirstScreen && <HeaderBackButton {...props} />,
               // eslint-disable-next-line react/prop-types
               headerTitle: ({ style, children }) => (
                 <HeaderTitle
@@ -97,9 +104,9 @@ export function NoneStackNavigator({
             }}
             initialParams={{
               screenSettings,
-              isFirstScreen: firstScreenName === screen.name,
+              isFirstScreen,
               screenId: _.uniqueId(screen.name),
-              ...(firstScreenName === screen.name && {
+              ...(isFirstScreen && {
                 shortcut: designatedShortcut,
               }),
             }}

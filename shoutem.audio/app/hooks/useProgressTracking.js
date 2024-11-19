@@ -4,7 +4,12 @@ import TrackPlayer, {
   useProgress,
 } from 'react-native-track-player';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAudioTrackProgress, updateAudioTrackProgress } from '../redux';
+import { AUDIO_SOURCE_TYPE } from '../const';
+import {
+  getActiveSource,
+  getAudioTrackProgress,
+  updateAudioTrackProgress,
+} from '../redux';
 import { calculateProgressInterval } from '../services';
 import { useTrackState } from './useTrackState';
 
@@ -16,6 +21,8 @@ export const useProgressTracking = ({ track } = {}) => {
   const resolvedTrack = track ?? activeTrack;
 
   const { position: livePosition, duration } = useProgress();
+
+  const activeSource = useSelector(getActiveSource);
 
   const savedProgress = useSelector(state =>
     getAudioTrackProgress(
@@ -33,26 +40,25 @@ export const useProgressTracking = ({ track } = {}) => {
     [savedProgress.duration],
   );
 
+  const { isActive, isActiveAndPlaying } = useTrackState({ track });
+
   const seekToInitialPosition = useCallback(async () => {
-    // Not using State.Ended here because it does not enter Ended state always - progress and duration
-    // have high amount of decimals and progress doesn't always reach duration's value.
-    // Instead, if progress is less than 1 second away from duration, consider this track has ended and play
-    // the track from the beggining.
-    const resolvedSeekPosition =
-      savedProgress.duration - savedProgress.position < 1 ||
-      !savedProgress.position
-        ? 0
-        : savedProgress.position;
+    const resolvedSeekPosition = !savedProgress.position
+      ? 0
+      : savedProgress.position;
 
     await TrackPlayer.seekTo(resolvedSeekPosition);
-  }, [savedProgress]);
-
-  const { isActive, isActiveAndPlaying } = useTrackState({ track });
+  }, [savedProgress.position]);
 
   // If episode progress wasn't saved into redux state before, wait for duration to be resolved in RNTP, then
   // save initial state - indicating, in future, that episode has been played at least once before.
   useEffect(() => {
-    if (isActiveAndPlaying && !!duration && !savedProgress.duration) {
+    if (
+      isActiveAndPlaying &&
+      !!duration &&
+      !savedProgress.duration &&
+      activeSource?.type === AUDIO_SOURCE_TYPE.PLAYLIST
+    ) {
       dispatch(
         updateAudioTrackProgress(
           resolvedTrack?.extensionCanonicalName,
@@ -63,7 +69,7 @@ export const useProgressTracking = ({ track } = {}) => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isActiveAndPlaying, duration]);
+  }, [isActiveAndPlaying, duration, activeSource?.type]);
 
   const resolvedPosition = useMemo(
     () => (isActive ? livePosition : savedProgress.position ?? 0),
@@ -72,7 +78,7 @@ export const useProgressTracking = ({ track } = {}) => {
 
   return {
     position: resolvedPosition,
-    duration: savedProgress.duration,
+    duration: savedProgress?.duration ?? duration,
     progressUpdateEventInterval,
     seekToInitialPosition,
   };

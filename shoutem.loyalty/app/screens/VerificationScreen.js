@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 import { Dimensions } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
+import QRCode from 'react-qr-code';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import utf8 from 'utf8';
 import { connectStyle } from '@shoutem/theme';
 import { Button, Screen, Subtitle, Text, View } from '@shoutem/ui';
 import { loginRequired } from 'shoutem.auth';
@@ -84,7 +85,12 @@ export class VerificationScreen extends PureComponent {
     const rewardData = reward ? getEncodedRewardValues(reward) : '';
     const placeId = _.get(place, 'id');
 
-    const transactionData = [cardId, placeId, rewardData, redeem];
+    const data = [cardId, placeId, rewardData, redeem];
+    const stringifiedData = JSON.stringify(data);
+    // Encode data to utf8 to handle special characters, such as Latin or Chinese...
+    // Encoding is required here because we're sending Reward title inside payload,
+    // and it can contain any characters.
+    const encodedData = utf8.encode(stringifiedData);
 
     // qr code size is 80% of available screen space
     const qrCodeWidth =
@@ -101,10 +107,7 @@ export class VerificationScreen extends PureComponent {
             style={style.qrBackground}
             styleName="md-gutter-vertical md-gutter-horizontal"
           >
-            <QRCode
-              size={qrCodeWidth}
-              value={JSON.stringify(transactionData)}
-            />
+            <QRCode size={qrCodeWidth} value={encodedData} />
           </View>
           <Button
             styleName="secondary md-gutter-vertical"

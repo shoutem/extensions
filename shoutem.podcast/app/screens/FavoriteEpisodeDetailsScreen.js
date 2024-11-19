@@ -1,12 +1,9 @@
-import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
 import { connectStyle } from '@shoutem/theme';
 import { I18n } from 'shoutem.i18n';
 import { getRouteParams } from 'shoutem.navigation';
-import { EPISODE_DETAILS_SCREEN, ext, getEpisodeTrackId } from '../const';
-import { FavoritePodcastPlaylistPlayer } from '../fragments';
+import { EPISODE_DETAILS_SCREEN, ext } from '../const';
 import {
   getAllFavoritesData,
   getDownloadedEpisode,
@@ -18,19 +15,7 @@ import {
   mapDispatchToProps,
 } from './EpisodeDetailsScreen';
 
-class FavoriteEpisodeDetailsScreen extends EpisodeDetailsScreen {
-  renderPlayer() {
-    const { allFavoritesData, episode } = this.props;
-
-    return (
-      <FavoritePodcastPlaylistPlayer
-        favorites={allFavoritesData}
-        initialTrackId={getEpisodeTrackId(episode.id)}
-        queueLoading={false}
-      />
-    );
-  }
-}
+class FavoriteEpisodeDetailsScreen extends EpisodeDetailsScreen {}
 
 function mapStateToProps(state, ownProps) {
   const { id } = getRouteParams(ownProps);
@@ -42,21 +27,19 @@ function mapStateToProps(state, ownProps) {
       _.some(favoritesData.favorites, favorite => favorite.id === id),
     ) ?? {};
 
+  // When favs list screen is focused, we clear redux state and we end up with empty allFavoritesData, before
+  // data is updated from fetch response.
+  // We do early return because we can't calculate the rest of values without this value.
+  if (_.isEmpty(shortcutFavoritesData)) {
+    return { episode: {}, shortcutId: '' };
+  }
+
   const { shortcut, meta } = shortcutFavoritesData;
 
   const episode = _.find(
     shortcutFavoritesData.favorites,
     episode => episode.id === id,
   );
-
-  // Handling the case when favorite episode is unfavorited in episode details screen & we go back
-  // to favorite list screen.
-  // Details screen does not unmount yet & is re-rendering, and it fails to find episode because
-  // it was removed from favorites (reducers were updated already).
-  // Return empty object so that code doesn't fail, everything will resolve successfully once screen unmounts.
-  if (!episode) {
-    return { episode: {} };
-  }
 
   const {
     id: shortcutId,
@@ -104,7 +87,6 @@ function mapStateToProps(state, ownProps) {
   }
 
   return {
-    allFavoritesData,
     actionSheetOptions,
     downloadedEpisode,
     episode,
@@ -118,11 +100,6 @@ function mapStateToProps(state, ownProps) {
     enableSharing,
   };
 }
-
-FavoriteEpisodeDetailsScreen.propTypes = {
-  ...EpisodeDetailsScreen.propTypes,
-  allFavoritesData: PropTypes.object,
-};
 
 export default connect(
   mapStateToProps,

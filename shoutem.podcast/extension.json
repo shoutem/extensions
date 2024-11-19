@@ -2,12 +2,12 @@
   "name": "podcast",
   "title": "Podcast RSS",
   "description": "Show podcast episodes from an RSS feed",
-  "version": "12.1.0",
-  "platform": ">=15.0.1",
+  "version": "12.1.2",
+  "platform": ">=15.0.3",
   "nativeChanges": {
     "lastVersion": "8.0.1"
   },
-  "releaseNotes": "Release notes\n* (New) Favorite episodes can now be played as a playlist\n* Playing episode from details screen will now play it as a part of whole feed playlist\n\n* Developer notes\n* (Breaking changes) Changed components & hooks props, deleted unused component & hook",
+  "releaseNotes": "Release notes\n* Starting podcast episode from episode details screen will play it in a single track mode, instead of playlist mode. Player will be stopped after episode has finished playing.\n* After player has finished playing last episode in playlist, user it notified about playlist completion via toast message. Player then resets back to first playlist episode and is paused.",
   "icon": "server/assets/extension-icon.png",
   "categories": [
     "media"

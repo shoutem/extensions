@@ -96,7 +96,9 @@
       "noPointsAwardedErrorTitle": "No points selected",
       "noPointsAwardedErrorMessage": "Please select points to award or cancel",
       "cardPointCountInvalid": "Card doesn't have enough points.",
-      "processing": "Processing..."
+      "processing": "Processing...",
+      "qrScanErrorToastTitle": "Error",
+      "qrScanErrorToastMessage": "Something went wrong while trying to read QR code."
     }
   }
 }

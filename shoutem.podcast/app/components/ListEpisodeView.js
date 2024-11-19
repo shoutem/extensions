@@ -47,22 +47,20 @@ export class ListEpisodeView extends EpisodeView {
       <TouchableOpacity onPress={this.onPress}>
         <Divider styleName="line" />
         <View styleName="sm-gutter-vertical sm-gutter-horizontal">
-          <View styleName="horizontal sm-gutter-horizontal space-between v-center">
+          <View styleName="horizontal sm-gutter-horizontal v-center">
             <FastImage
               source={{ uri: imageUrl, priority: 'normal' }}
               defaultSource={assets.noImagePlaceholder}
               style={style.artwork}
             />
-            <View styleName="horizontal v-center sm-gutter-bottom">
-              <View styleName="sm-gutter-right">
-                <Subtitle numberOfLines={2} style={style.episodeTitle}>
-                  {title}
-                </Subtitle>
+            <View styleName="flexible horizontal v-center sm-gutter-bottom">
+              <View styleName="flexible md-gutter-horizontal">
+                <Subtitle numberOfLines={2}>{title}</Subtitle>
                 {momentDate.isAfter(0) && (
                   <Caption>{momentDate.fromNow()}</Caption>
                 )}
               </View>
-              <>
+              <View styleName="horizontal">
                 {!!appHasFavoritesShortcut && (
                   <FavoriteButton
                     onPress={this.onFavoritePress}
@@ -78,7 +76,7 @@ export class ListEpisodeView extends EpisodeView {
                   </Button>
                 )}
                 {!!downloadInProgress && <Spinner />}
-              </>
+              </View>
             </View>
           </View>
           <EpisodeProgress episode={episode} style={style.episodeProgress} />

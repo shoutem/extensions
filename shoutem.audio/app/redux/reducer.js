@@ -4,8 +4,8 @@ import { REHYDRATE } from 'redux-persist/constants';
 import {
   AUDIO_PLAYER_BANNER_CHANGED,
   ext,
-  UPDATE_ACTIVE_AUDIO_SOURCE,
   SET_SLEEP_TIMER,
+  UPDATE_ACTIVE_AUDIO_SOURCE,
   UPDATE_AUDIO_TRACK_PROGRESS,
 } from '../const';
 

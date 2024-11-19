@@ -1,5 +1,9 @@
 import { useCallback, useEffect } from 'react';
-import TrackPlayer, { State, useActiveTrack } from 'react-native-track-player';
+import TrackPlayer, {
+  RepeatMode,
+  State,
+  useActiveTrack,
+} from 'react-native-track-player';
 import _ from 'lodash';
 import { isIos } from 'shoutem-core';
 import { useAudioBanner } from './useAudioBanner';
@@ -98,6 +102,7 @@ export const useTrackPlayer = ({
           await TrackPlayer.setRate(1);
         }
 
+        await TrackPlayer.setRepeatMode(RepeatMode.Off);
         await TrackPlayer.updateNowPlayingMetadata({});
       } catch (e) {
         if (e.code === 'no_current_item') {

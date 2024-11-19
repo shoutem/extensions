@@ -306,7 +306,6 @@ const getPostAuthorizationRoute = (authorization, place, reward) => ({
 export const authorizeTransactionByQRCode = dataString => {
   return (dispatch, getState) => {
     const data = JSON.parse(dataString);
-
     const [cardId, placeId, rewardData, redeem] = data;
 
     const reward = rewardData && getRewardFromEncodedValues(rewardData);

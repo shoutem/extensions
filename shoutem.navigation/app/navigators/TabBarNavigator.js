@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -6,6 +7,7 @@ import { connectStyle } from '@shoutem/theme';
 import { isAndroid } from 'shoutem-core';
 import { HeaderBackButton, TabBarItem } from '../components';
 import { ext } from '../const';
+import { navItemPressed } from '../redux';
 import NoScreens from '../screens/NoScreens';
 import {
   createChildNavigators,
@@ -70,6 +72,9 @@ function customStackScreenOptions(navigationProps) {
 }
 
 function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
+  const dispatch = useDispatch();
+  const navItemPressedAction = shortcut => dispatch(navItemPressed(shortcut));
+
   const TabComponents = createChildNavigators(
     parentShortcut,
     TabBarStack,
@@ -78,6 +83,7 @@ function Navigator({ parentShortcut, hiddenShortcuts, screens, style }) {
     hiddenShortcuts,
     screens,
     { headerShown: false },
+    navItemPressedAction,
   );
   const CustomNavigators = createCustomStackNavigators(
     TabBarStack,

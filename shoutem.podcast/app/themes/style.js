@@ -88,13 +88,6 @@ export default () => ({
   },
 
   [`${ext('ListEpisodeView')}`]: {
-    episodeTitle: {
-      width:
-        resolveVariable('sizes.window.width') -
-        3 * resolveVariable('mediumGutter') -
-        responsiveWidth(65) -
-        40,
-    },
     episodeProgress: {
       container: { paddingHorizontal: resolveVariable('smallGutter') },
     },
@@ -141,6 +134,32 @@ export default () => ({
   },
 
   [`${ext('PodcastPlaylistPlayer')}`]: {
+    playbackControl: {
+      container: {
+        width: responsiveHeight(50),
+        height: responsiveHeight(50),
+        borderRadius: responsiveHeight(25),
+        backgroundColor: resolveVariable('secondaryButtonBackgroundColor'),
+        marginTop: resolveVariable('mediumGutter'),
+        alignSelf: 'center',
+      },
+      spinnerContainer: {
+        width: responsiveHeight(50),
+        height: responsiveHeight(50),
+        borderRadius: responsiveHeight(25),
+        backgroundColor: resolveVariable('secondaryButtonBackgroundColor'),
+        marginTop: resolveVariable('mediumGutter'),
+        alignSelf: 'center',
+      },
+      icon: {
+        color: resolveVariable('secondaryButtonTextColor'),
+        width: responsiveHeight(30),
+        height: responsiveHeight(30),
+      },
+    },
+  },
+
+  [`${ext('PodcastEpisodePlayer')}`]: {
     playbackControl: {
       container: {
         width: responsiveHeight(50),

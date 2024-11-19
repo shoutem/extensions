@@ -1,16 +1,12 @@
 /* eslint-disable react/sort-prop-types */
 import React, { PureComponent } from 'react';
-import QRCode from 'react-native-qrcode-svg';
+import QRCode from 'react-qr-code';
 import { connect } from 'react-redux';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import {
-  getCollection,
-  isBusy,
-  isInitialized,
-  isValid,
-} from '@shoutem/redux-io';
+import { bindActionCreators } from 'redux';
+import { getCollection, isBusy, isInitialized } from '@shoutem/redux-io';
 import { connectStyle } from '@shoutem/theme';
 import {
   Button,
@@ -20,6 +16,7 @@ import {
   Spinner,
   Text,
   Title,
+  Toast,
   TouchableOpacity,
   View,
 } from '@shoutem/ui';
@@ -149,13 +146,26 @@ export class PointsCardScreen extends PureComponent {
 
     const { authorizeTransactionByQRCode } = this.props;
 
-    await authorizeTransactionByQRCode(code.data);
+    try {
+      // Scanned QR code should be utf8 encoded if there's any possibility for
+      // special characters inside QR payload. react-native-camera-vision does
+      // utf8 decoding before returning value, no need to decode here.
+      const scannedQrValue = _.first(code).value;
+      await authorizeTransactionByQRCode(scannedQrValue);
 
-    // Delay the state change so that the screen change animations have enough
-    // time to finish.
-    setTimeout(() => {
+      // Delay the state change so that the screen change animations have enough
+      // time to finish.
+      setTimeout(() => {
+        this.setState({ isProcessingQRCodeData: false });
+      }, 2000);
+    } catch (e) {
+      Toast.showError({
+        title: I18n.t(ext('qrScanErrorToastTitle')),
+        message: I18n.t(ext('qrScanErrorToastMessage')),
+      });
+
       this.setState({ isProcessingQRCodeData: false });
-    }, 2000);
+    }
   }
 
   navigateToPointsHistoryScreen() {
@@ -368,13 +378,17 @@ PointsCardScreen.propTypes = {
   style: PropTypes.object,
 };
 
-export const mapDispatchToProps = {
-  authorizeTransactionByBarCode,
-  authorizeTransactionByQRCode,
-  fetchCashierInfo,
-  refreshCardState,
-  refreshTransactions,
-};
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      authorizeTransactionByBarCode,
+      authorizeTransactionByQRCode,
+      fetchCashierInfo,
+      refreshCardState,
+      refreshTransactions,
+    },
+    dispatch,
+  );
 
 export default loginRequired(
   connect(

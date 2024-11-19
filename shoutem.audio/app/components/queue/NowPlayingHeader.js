@@ -94,7 +94,6 @@ const NowPlayingHeader = ({ onPress, style }) => {
           activeTrack={activeTrack}
           isPlaying={isPlaying}
           onPress={onPress}
-          loading={playback.state === State.Loading}
         />
         <TrackProgressBar style={style.progressBar} />
       </Animated.View>

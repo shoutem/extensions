@@ -29,10 +29,7 @@ export const LiveStreamAudioControls = ({
     isActive &&
     (playback.state === State.Loading || playback.state === State.Buffering);
   const resolvedIconName =
-    isActive &&
-    (playback.state === State.Playing || playback.state === State.Ready)
-      ? 'pause'
-      : 'play';
+    isActive && playback.state === State.Playing ? 'pause' : 'play';
 
   return (
     <View styleName="justify-center items-center md-gutter-horizontal">
