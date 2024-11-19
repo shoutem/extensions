@@ -31,6 +31,7 @@ export function createChildNavigators(
   hiddenShortcuts,
   decoratedScreens,
   parentScreenOptions = {},
+  onNavItemPress,
 ) {
   return _.compact(
     _.map(parentShortcut.children, shortcut => {
@@ -156,6 +157,10 @@ export function createChildNavigators(
                   {...parentShortcutSettings}
                   {...props}
                   onPress={() => {
+                    if (_.isFunction(onNavItemPress)) {
+                      onNavItemPress(shortcut);
+                    }
+
                     onShortcutPress(props.accessibilityState.selected);
                   }}
                   shortcut={shortcut}

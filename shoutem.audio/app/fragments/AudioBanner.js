@@ -62,10 +62,7 @@ export const AudioBanner = ({ style }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const resolvedIconName =
-    playback.state === State.Playing || playback.state === State.Ready
-      ? 'pause'
-      : 'play';
+  const resolvedIconName = playback.state === State.Playing ? 'pause' : 'play';
 
   const isLoading =
     playback.state === State.Loading || playback.state === State.Buffering;

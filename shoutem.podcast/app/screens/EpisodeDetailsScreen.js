@@ -28,8 +28,8 @@ import { getRouteParams } from 'shoutem.navigation';
 import { getLeadImageUrl } from 'shoutem.rss';
 import { isAndroid, isWeb } from 'shoutem-core';
 import { FavoriteButton } from '../components';
-import { ext, getEpisodeTrackId, RSS_PODCAST_SCHEMA } from '../const';
-import { PodcastPlaylistPlayer } from '../fragments';
+import { ext, RSS_PODCAST_SCHEMA } from '../const';
+import { PodcastEpisodePlayer } from '../fragments';
 import {
   deleteEpisode,
   downloadEpisode,
@@ -315,13 +315,7 @@ export class EpisodeDetailsScreen extends PureComponent {
   renderPlayer() {
     const { episode, shortcutId } = this.props;
 
-    return (
-      <PodcastPlaylistPlayer
-        shortcutId={shortcutId}
-        initialTrackId={getEpisodeTrackId(episode.id)}
-        resumePlaylistMode={false}
-      />
-    );
+    return <PodcastEpisodePlayer shortcutId={shortcutId} episode={episode} />;
   }
 
   render() {

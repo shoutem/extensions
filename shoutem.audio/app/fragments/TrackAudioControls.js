@@ -39,19 +39,6 @@ export const TrackAudioControls = ({
 
   const { position, duration } = useProgressTracking({ track });
 
-  const onFirstPlay = useCallback(async () => TrackPlayer.setQueue([track]), [
-    track,
-  ]);
-  const onBeforePlay = useCallback(async () => {
-    // Not using State.Ended here because it does not enter Ended state always - progress and duration
-    // have high amount of decimals and progress doesn't always reach duration's value.
-    // Instead, if progress is less than 1 second away from duration, consider this track has ended and play
-    // the track from the beggining.
-    if (duration - position < 1) {
-      await TrackPlayer.seekTo(0);
-    }
-  }, [duration, position]);
-
   const { playback, isActiveAndPlaying, isLoadingOrBuffering } = useTrackState({
     track,
   });
@@ -84,11 +71,7 @@ export const TrackAudioControls = ({
     });
   }, [track?.id]);
 
-  const { onPlaybackButtonPress, onSeekComplete } = useTrackPlayer({
-    track,
-    onFirstPlay,
-    onBeforePlay,
-  });
+  const { onPlaybackButtonPress, onSeekComplete } = useTrackPlayer({ track });
 
   const handleSliderValueChange = useCallback(
     async newPosition => onSeekComplete(newPosition * duration),

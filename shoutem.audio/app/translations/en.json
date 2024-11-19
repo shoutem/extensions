@@ -36,7 +36,9 @@
         "other": "{{count}} minutes left"
       },
       "queueTitle": "Queue",
-      "nowPlayingTitle": "Now playing"
+      "nowPlayingTitle": "Now playing",
+      "queueFinishedToastTitle": "Playback status",
+      "queueFinishedToastMessage": "Playlist has finished playing."
     }
   }
 }

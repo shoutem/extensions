@@ -17,6 +17,7 @@ function Web({ shortcut, updateShortcut }) {
       requireCookiesPermission,
       forwardAuthHeader,
       startInLoadingState,
+      showScreenTitle,
     },
   } = shortcut;
 
@@ -69,6 +70,12 @@ function Web({ shortcut, updateShortcut }) {
     });
   }
 
+  function handleShowScreenTitleChange(checked) {
+    updateShortcutSettings({
+      showScreenTitle: checked,
+    });
+  }
+
   return (
     <div>
       {!url && <WebUrlInput onContinueClick={handleUrlInputContinueClick} />}
@@ -81,6 +88,7 @@ function Web({ shortcut, updateShortcut }) {
           requireCookiesPermission={requireCookiesPermission}
           requireGeolocationPermission={requireGeolocationPermission}
           startInLoadingState={startInLoadingState}
+          showScreenTitle={showScreenTitle}
           onRemoveClick={handleUrlRemoveClick}
           onShowNavigationToolbarChange={handleShowNavigationToolbarChange}
           onForwardAuthHeaderChange={handleForwardAuthHeaderChange}
@@ -89,6 +97,7 @@ function Web({ shortcut, updateShortcut }) {
           }
           onRequireCookiesPermissionChange={handleCookiesPermissionChange}
           onStartInLoadingStateChange={handleStartInLoadingStateChange}
+          onShowScreenTitleChange={handleShowScreenTitleChange}
         />
       )}
     </div>

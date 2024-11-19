@@ -14,12 +14,14 @@ export default function WebEdit({
   hasWebsiteSettings,
   forwardAuthHeader,
   startInLoadingState,
+  showScreenTitle,
   onForwardAuthHeaderChange,
   onRemoveClick,
   onRequireGeolocationPermissionChange,
   onRequireCookiesPermissionChange,
   onShowNavigationToolbarChange,
   onStartInLoadingStateChange,
+  onShowScreenTitleChange,
 }) {
   function handleShowNavigationToolbarChange(event) {
     if (event.target) {
@@ -36,6 +38,12 @@ export default function WebEdit({
   function handleStartInLoadingStateChange(event) {
     if (event.target) {
       onStartInLoadingStateChange(event.target.checked);
+    }
+  }
+
+  function handleShowScreenTitle(event) {
+    if (event.target) {
+      onShowScreenTitleChange(event.target.checked);
     }
   }
 
@@ -102,6 +110,12 @@ export default function WebEdit({
             >
               {i18next.t(LOCALIZATION.FORM_START_IN_LOADING_STATE)}
             </Checkbox>
+            <Checkbox
+              checked={showScreenTitle}
+              onChange={handleShowScreenTitle}
+            >
+              {i18next.t(LOCALIZATION.FORM_SHOW_SCREEN_TITLE)}
+            </Checkbox>
           </>
         )}
       </FormGroup>
@@ -115,12 +129,14 @@ WebEdit.propTypes = {
   onRequireCookiesPermissionChange: PropTypes.func.isRequired,
   onRequireGeolocationPermissionChange: PropTypes.func.isRequired,
   onShowNavigationToolbarChange: PropTypes.func.isRequired,
+  onShowScreenTitleChange: PropTypes.func.isRequired,
   onStartInLoadingStateChange: PropTypes.func.isRequired,
   forwardAuthHeader: PropTypes.bool,
   hasWebsiteSettings: PropTypes.bool,
   requireCookiesPermission: PropTypes.bool,
   requireGeolocationPermission: PropTypes.bool,
   showNavigationToolbar: PropTypes.bool,
+  showScreenTitle: PropTypes.bool,
   startInLoadingState: PropTypes.bool,
   url: PropTypes.string,
 };
@@ -131,6 +147,7 @@ WebEdit.defaultProps = {
   showNavigationToolbar: false,
   requireCookiesPermission: false,
   requireGeolocationPermission: false,
+  showScreenTitle: true,
   startInLoadingState: true,
   forwardAuthHeader: false,
 };

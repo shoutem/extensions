@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import QRCode from 'react-native-qrcode-svg';
+import QRCode from 'react-qr-code';
 import { connectStyle } from '@shoutem/theme';
 import { Caption, Title, TouchableOpacity, View } from '@shoutem/ui';
 import { I18n } from 'shoutem.i18n';

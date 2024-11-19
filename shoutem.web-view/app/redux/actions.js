@@ -2,11 +2,19 @@ import { openInModal } from 'shoutem.navigation';
 import { ext } from '../const';
 
 export const OPEN_EXTERNAL_BROWSER = 'OPEN_EXTERNAL_BROWSER';
+export const SET_RESET_WEB_VIEW_CALLBACK = 'SET_RESET_WEB_VIEW_CALLBACK';
 
 function openExternalBrowserActionCreator(url) {
   return {
     type: OPEN_EXTERNAL_BROWSER,
     url,
+  };
+}
+
+export function setWebViewResetCallback(shortcutId, onReset) {
+  return {
+    type: SET_RESET_WEB_VIEW_CALLBACK,
+    payload: { shortcutId, onReset },
   };
 }
 

@@ -67,8 +67,6 @@ export const usePodcastPlaylistPlayer = ({ playlist, onLoadMoreQueue }) => {
   });
 
   const onFirstPlay = useCallback(async () => {
-    await TrackPlayer.setQueue(playlist.tracks);
-
     await dispatch(
       updateActiveSource({
         type: AUDIO_SOURCE_TYPE.PLAYLIST,
@@ -79,6 +77,8 @@ export const usePodcastPlaylistPlayer = ({ playlist, onLoadMoreQueue }) => {
         showArtwork: true,
       }),
     );
+
+    await TrackPlayer.setQueue(playlist.tracks);
 
     if (playlist.lastPlayed) {
       await TrackPlayer.skip(playlist.lastPlayed.queueIndex);

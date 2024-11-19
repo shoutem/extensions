@@ -2,13 +2,16 @@
   "name": "audio",
   "title": "Audio",
   "description": "Track player components for other extensions to utilize. NOTE: Lock screen controls will not be visible in the preview.",
-  "version": "8.1.0",
-  "platform": ">=15.0.1",
+  "version": "8.1.1",
+  "platform": ">=15.0.3",
   "nativeChanges": {
     "lastVersion": "6.1.1"
   },
-  "releaseNotes": "Release notes\n* (New) Users can now choose repeat mode for their current active audio source, from within audio modal\n* Artwork placeholder image has been updated\n* Playing track will now provide more accurate visual for loading state\n* Fixed blank screen when opening audio modal, if Podcast episode is playing\n\nFor developers\n* Improved default audio behavior within hooks",
-  "dependencies": ["shoutem.application", "shoutem.permissions"],
+  "releaseNotes": "Release notes\n* After player has finished playing last track in playlist, user it notified about playlist completion via toast message. Player then resets back to first playlist track and is paused.\n* Other improvements to audio player behavior",
+  "dependencies": [
+    "shoutem.application",
+    "shoutem.permissions"
+  ],
   "icon": "server/assets/add-audio-image.png",
   "type": "system",
   "settingsPages": [

@@ -41,6 +41,7 @@ export {
 export {
   getNavInitialized,
   isTabBarNavigation,
+  NAVIGATION_ITEM_PRESSED,
   reducer,
   SET_NAVIGATION_INITIALIZED,
 } from './redux';

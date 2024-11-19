@@ -3,9 +3,9 @@
   "title": "Web view",
   "type": "system",
   "description": "Show a web page in-app or in a browser",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "platform": ">=15.0.0",
-  "releaseNotes": "No user facing changes\n\nFor developers\n* Added support for web preview",
+  "releaseNotes": "Release notes\n* Reset web view to initial URL & reset web navigation state, if user presses on Web View bottom tabs navigation item while it's already active\n* Added builder shortcut settings page option to show or hide Web View screen title",
   "nativeChanges": {
     "latestVersion": "6.0.3"
   },
@@ -43,7 +43,9 @@
             "requireCookiesPermission": false,
             "requireGeolocationPermission": false,
             "showNavigationToolbar": false,
-            "url": ""
+            "url": "",
+            "startInLoadingState": true,
+            "showScreenTitle": true
           }
         },
         {

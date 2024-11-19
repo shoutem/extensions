@@ -2,10 +2,12 @@ import React, { createRef, PureComponent } from 'react';
 import { KeyboardAvoidingView, Linking } from 'react-native';
 import Pdf from 'react-native-pdf';
 import WebView from 'react-native-webview';
+import { connect } from 'react-redux';
 import CookieManager from '@react-native-cookies/cookies';
 import autoBindReact from 'auto-bind/react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 import { connectStyle } from '@shoutem/theme';
 import { EmptyStateView, Keyboard, Screen, Toast, View } from '@shoutem/ui';
 import { currentLocation } from 'shoutem.cms';
@@ -19,6 +21,7 @@ import {
 import { AppContextProvider, isAndroid } from 'shoutem-core';
 import NavigationToolbar from '../components/NavigationToolbar';
 import { AUTH_EXTENSION, ext } from '../const';
+import { setWebViewResetCallback as setWebViewResetCallbackAction } from '../redux';
 import { parseUrl } from '../services';
 
 const KEYBOARD_OFFSET = Keyboard.calculateKeyboardOffset();
@@ -29,11 +32,25 @@ export class WebViewScreen extends PureComponent {
 
     autoBindReact(this);
 
+    // showScreenTitle was implemented recently and default value is true.
+    // We should only hide header title if app owner explicitly disabled the option
+    // and republished the app.
+    if (getRouteParams(props).shortcut.settings.showScreenTitle === false) {
+      props.navigation.setOptions({
+        headerTitle: '',
+      });
+    }
+
     this.webViewRef = createRef();
 
     this.state = {
       trackingGranted: isAndroid,
       webNavigationState: {},
+      // React default key for component, used in state to be able to force WebView re-render.
+      // Updating WebView's key to completely replace the component in DOM was the only way
+      // to reset WebView's navigation state - otherwise it'd have previous history when we reset it
+      // to initial URL.
+      webViewKey: 1,
     };
 
     // Since WebView rerenders after every change, check for
@@ -53,9 +70,18 @@ export class WebViewScreen extends PureComponent {
   }
 
   componentDidMount() {
-    const { navigation } = this.props;
+    const { navigation, setWebViewResetCallback } = this.props;
+    const { shortcut } = getRouteParams(this.props);
 
     navigation.setOptions(this.getNavBarProps());
+
+    // Save the reset WebView function into redux state, so that it can be used
+    // by middleware later. If this shortcut is active in bottom tabs nav and user
+    // presses active tab item again - we'll reset Web View & it's state by
+    // replacing whole component in DOM.
+    setWebViewResetCallback(shortcut.id, () =>
+      this.setState(prevState => ({ webViewKey: prevState.webViewKey + 1 })),
+    );
 
     if (!isAndroid) {
       const TRACKING_PERMISSION =
@@ -135,7 +161,7 @@ export class WebViewScreen extends PureComponent {
   }
 
   resolveWebViewProps(appContext) {
-    const { trackingGranted } = this.state;
+    const { trackingGranted, webViewKey } = this.state;
 
     const {
       headers,
@@ -170,6 +196,7 @@ export class WebViewScreen extends PureComponent {
         };
 
     const defaultWebViewProps = {
+      key: webViewKey,
       ref: this.webViewRef,
       startInLoadingState,
       onNavigationStateChange: this.onNavigationStateChange,
@@ -305,6 +332,7 @@ export class WebViewScreen extends PureComponent {
 WebViewScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
+  setWebViewResetCallback: PropTypes.func.isRequired,
   style: PropTypes.object.isRequired,
   checkPermissionStatus: PropTypes.func,
   currentLocation: PropTypes.object,
@@ -317,6 +345,13 @@ WebViewScreen.defaultProps = {
   headers: {},
 };
 
-export default connectStyle(ext('WebViewScreen'))(
-  currentLocation(WebViewScreen),
-);
+export const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    { setWebViewResetCallback: setWebViewResetCallbackAction },
+    dispatch,
+  );
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(connectStyle(ext('WebViewScreen'))(currentLocation(WebViewScreen)));
