@@ -167,7 +167,7 @@ export class PlaceDetails extends PureComponent {
       <UniversalLinkButton
         link={place.rsvpLink}
         title={I18n.t('shoutem.cms.rsvpButton')}
-        iconName="rsvp"
+        iconName="Book Online"
       />
     );
   }
