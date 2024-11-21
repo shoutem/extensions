@@ -30,6 +30,9 @@ export function PreviewProvider({ app, children }) {
   const [isWatermarkVisible, setIsWatermarkVisible] = useState(true);
   const [isInitialTipVisible, setIsInitialTipVisible] = useState(true);
   const [triggerScreenshot, setTriggerScreenshot] = useState(false);
+  // We want to completely remove Animated View from DOM, to be sure it's not active
+  // View when taking screenshot.
+  const [screenshotViewVisible, setScreenshotViewVisible] = useState(false);
 
   useEffect(() => {
     requestPermissions(GALLERY_PERMISSION);
@@ -70,18 +73,11 @@ export function PreviewProvider({ app, children }) {
 
   useEffect(() => {
     if (triggerScreenshot && !isOverlayVisible && !isWatermarkVisible) {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-
-      Animated.timing(fadeAnim, {
-        toValue: 100,
-        duration: 800,
-        useNativeDriver: true,
-      }).start();
-
       captureScreen().then(
         uri => {
           CameraRoll.save(uri);
           handleScreenshotFinished();
+          setScreenshotViewVisible(true);
         },
         () => {
           Alert.alert('Oops, screenshot failed');
@@ -96,6 +92,18 @@ export function PreviewProvider({ app, children }) {
     isWatermarkVisible,
     handleScreenshotFinished,
   ]);
+
+  useEffect(() => {
+    if (screenshotViewVisible) {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
+      Animated.timing(fadeAnim, {
+        toValue: 100,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => setScreenshotViewVisible(false));
+    }
+  }, [fadeAnim, screenshotViewVisible]);
 
   const handleTipClose = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -132,16 +140,18 @@ export function PreviewProvider({ app, children }) {
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        pointerEvents="box-none"
-        style={{
-          ...styles.screenshotAnimation,
-          opacity: fadeAnim.interpolate({
-            inputRange: [0, 30, 100],
-            outputRange: [0, 100, 0],
-          }),
-        }}
-      />
+      {screenshotViewVisible && (
+        <Animated.View
+          pointerEvents="box-none"
+          style={{
+            ...styles.screenshotAnimation,
+            opacity: fadeAnim.interpolate({
+              inputRange: [0, 30, 100],
+              outputRange: [0, 100, 0],
+            }),
+          }}
+        />
+      )}
       {isWatermarkVisible && <Watermark />}
       {isOverlayVisible && (
         <Menu

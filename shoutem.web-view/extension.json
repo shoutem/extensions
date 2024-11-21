@@ -3,9 +3,9 @@
   "title": "Web view",
   "type": "system",
   "description": "Show a web page in-app or in a browser",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "platform": ">=15.0.0",
-  "releaseNotes": "Release notes\n* Reset web view to initial URL & reset web navigation state, if user presses on Web View bottom tabs navigation item while it's already active\n* Added builder shortcut settings page option to show or hide Web View screen title",
+  "releaseNotes": "Release notes\n* Fixed issues in layout with share button",
   "nativeChanges": {
     "latestVersion": "6.0.3"
   },

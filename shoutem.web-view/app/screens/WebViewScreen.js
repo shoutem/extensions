@@ -32,15 +32,6 @@ export class WebViewScreen extends PureComponent {
 
     autoBindReact(this);
 
-    // showScreenTitle was implemented recently and default value is true.
-    // We should only hide header title if app owner explicitly disabled the option
-    // and republished the app.
-    if (getRouteParams(props).shortcut.settings.showScreenTitle === false) {
-      props.navigation.setOptions({
-        headerTitle: '',
-      });
-    }
-
     this.webViewRef = createRef();
 
     this.state = {
@@ -136,7 +127,15 @@ export class WebViewScreen extends PureComponent {
   getNavBarProps() {
     const { title } = this.getSettings();
 
-    return { title };
+    // showScreenTitle was implemented recently and default value is true.
+    // We should only hide header title if app owner explicitly disabled the option
+    // and republished the app.
+    const resolvedTitle =
+      getRouteParams(this.props).shortcut.settings.showScreenTitle === false
+        ? ''
+        : title;
+
+    return { title: resolvedTitle };
   }
 
   goForward() {
